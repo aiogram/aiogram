@@ -11,8 +11,6 @@ from aiogram.types import Chat, Message, User
 from aiogram.utils.chat_action import ChatActionMiddleware, ChatActionSender
 from tests.mocked_bot import MockedBot
 
-pytestmark = pytest.mark.asyncio
-
 
 class TestChatActionSender:
     async def test_wait(self, bot: Bot, loop: asyncio.BaseEventLoop):

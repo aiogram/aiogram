@@ -3,8 +3,6 @@ import pytest
 from aiogram.dispatcher.event.bases import UNHANDLED, SkipHandler, skip
 from aiogram.dispatcher.router import Router
 
-pytestmark = pytest.mark.asyncio
-
 
 class TestRouter:
     def test_including_routers(self):
@@ -34,6 +32,20 @@ class TestRouter:
         assert router2.sub_routers == [router3]
         assert router3.parent_router is router2
         assert router3.sub_routers == []
+
+    def test_including_many_routers(self):
+        router = Router()
+        router1 = Router()
+        router2 = Router()
+
+        router.include_routers(router1, router2)
+
+        assert router.sub_routers == [router1, router2]
+
+    def test_including_many_routers_bad_type(self):
+        router = Router()
+        with pytest.raises(ValueError, match="At least one router must be provided"):
+            router.include_routers()
 
     def test_include_router_by_string_bad_type(self):
         router = Router()

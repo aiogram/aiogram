@@ -5,7 +5,9 @@ python:
   install:
     - method: pip
       path: .
-    - requirements: requirements/docs.txt
+      extra_requirements:
+        - docs
+        - redis
 
 sphinx:
   configuration: docs/conf.py

@@ -1,15 +1,18 @@
 import asyncio
+import secrets
 from abc import ABC, abstractmethod
 from asyncio import Transport
 from typing import Any, Awaitable, Callable, Dict, Optional, Tuple, cast
 
-from aiohttp import web
+from aiohttp import MultipartWriter, web
 from aiohttp.abc import Application
 from aiohttp.typedefs import Handler
 from aiohttp.web_middlewares import middleware
 
 from aiogram import Bot, Dispatcher, loggers
 from aiogram.methods import TelegramMethod
+from aiogram.methods.base import TelegramType
+from aiogram.types import InputFile
 from aiogram.webhook.security import IPFilter
 
 
@@ -84,11 +87,15 @@ class BaseRequestHandler(ABC):
     """
 
     def __init__(
-        self, dispatcher: Dispatcher, handle_in_background: bool = True, **data: Any
+        self,
+        dispatcher: Dispatcher,
+        handle_in_background: bool = False,
+        **data: Any,
     ) -> None:
         """
         :param dispatcher: instance of :class:`aiogram.dispatcher.dispatcher.Dispatcher`
-        :param handle_in_background: immediately respond to the Telegram instead of waiting end of handler process
+        :param handle_in_background: immediately respond to the Telegram instead of
+            waiting end of handler process
         """
         self.dispatcher = dispatcher
         self.handle_in_background = handle_in_background
@@ -137,15 +144,44 @@ class BaseRequestHandler(ABC):
         )
         return web.json_response({}, dumps=bot.session.json_dumps)
 
+    def _build_response_writer(
+        self, bot: Bot, result: Optional[TelegramMethod[TelegramType]]
+    ) -> MultipartWriter:
+        writer = MultipartWriter(
+            "form-data",
+            boundary=f"webhookBoundary{secrets.token_urlsafe(16)}",
+        )
+        if not result:
+            return writer
+
+        payload = writer.append(result.__api_method__)
+        payload.set_content_disposition("form-data", name="method")
+
+        files: Dict[str, InputFile] = {}
+        for key, value in result.dict().items():
+            value = bot.session.prepare_value(value, bot=bot, files=files)
+            if not value:
+                continue
+            payload = writer.append(value)
+            payload.set_content_disposition("form-data", name=key)
+
+        for key, value in files.items():
+            payload = writer.append(value)
+            payload.set_content_disposition(
+                "form-data",
+                name=key,
+                filename=value.filename or key,
+            )
+
+        return writer
+
     async def _handle_request(self, bot: Bot, request: web.Request) -> web.Response:
-        result = await self.dispatcher.feed_webhook_update(
+        result: Optional[TelegramMethod[Any]] = await self.dispatcher.feed_webhook_update(
             bot,
             await request.json(loads=bot.session.json_loads),
             **self.data,
         )
-        if result:
-            return web.json_response(result, dumps=bot.session.json_dumps)
-        return web.json_response({}, dumps=bot.session.json_dumps)
+        return web.Response(body=self._build_response_writer(bot=bot, result=result))
 
     async def handle(self, request: web.Request) -> web.Response:
         bot = await self.resolve_bot(request)
@@ -166,7 +202,8 @@ class SimpleRequestHandler(BaseRequestHandler):
     ) -> None:
         """
         :param dispatcher: instance of :class:`aiogram.dispatcher.dispatcher.Dispatcher`
-        :param handle_in_background: immediately respond to the Telegram instead of waiting end of handler process
+        :param handle_in_background: immediately respond to the Telegram instead of
+            waiting end of handler process
         :param bot: instance of :class:`aiogram.client.bot.Bot`
         """
         super().__init__(dispatcher=dispatcher, handle_in_background=handle_in_background, **data)
@@ -184,7 +221,8 @@ class SimpleRequestHandler(BaseRequestHandler):
 
 class TokenBasedRequestHandler(BaseRequestHandler):
     """
-    Handler that supports multiple bots, the context will be resolved from path variable 'bot_token'
+    Handler that supports multiple bots, the context will be resolved
+    from path variable 'bot_token'
     """
 
     def __init__(
@@ -196,7 +234,8 @@ class TokenBasedRequestHandler(BaseRequestHandler):
     ) -> None:
         """
         :param dispatcher: instance of :class:`aiogram.dispatcher.dispatcher.Dispatcher`
-        :param handle_in_background: immediately respond to the Telegram instead of waiting end of handler process
+        :param handle_in_background: immediately respond to the Telegram instead of
+            waiting end of handler process
         :param bot_settings: kwargs that will be passed to new Bot instance
         """
         super().__init__(dispatcher=dispatcher, handle_in_background=handle_in_background, **data)

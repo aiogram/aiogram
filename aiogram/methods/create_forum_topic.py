@@ -1,12 +1,9 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, Optional, Union
+from typing import TYPE_CHECKING, Optional, Union
 
 from ..types import ForumTopic
-from .base import Request, TelegramMethod
-
-if TYPE_CHECKING:
-    from ..client.bot import Bot
+from .base import TelegramMethod
 
 
 class CreateForumTopic(TelegramMethod[ForumTopic]):
@@ -17,6 +14,7 @@ class CreateForumTopic(TelegramMethod[ForumTopic]):
     """
 
     __returning__ = ForumTopic
+    __api_method__ = "createForumTopic"
 
     chat_id: Union[int, str]
     """Unique identifier for the target chat or username of the target supergroup (in the format :code:`@supergroupusername`)"""
@@ -26,8 +24,3 @@ class CreateForumTopic(TelegramMethod[ForumTopic]):
     """Color of the topic icon in RGB format. Currently, must be one of 7322096 (0x6FB9F0), 16766590 (0xFFD67E), 13338331 (0xCB86DB), 9367192 (0x8EEE98), 16749490 (0xFF93B2), or 16478047 (0xFB6F5F)"""
     icon_custom_emoji_id: Optional[str] = None
     """Unique identifier of the custom emoji shown as the topic icon. Use :class:`aiogram.methods.get_forum_topic_icon_stickers.GetForumTopicIconStickers` to get all allowed custom emoji identifiers."""
-
-    def build_request(self, bot: Bot) -> Request:
-        data: Dict[str, Any] = self.dict()
-
-        return Request(method="createForumTopic", data=data)

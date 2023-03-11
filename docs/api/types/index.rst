@@ -59,6 +59,8 @@ Available types
     bot_command_scope_chat_administrators
     bot_command_scope_chat_member
     bot_command_scope_default
+    bot_description
+    bot_short_description
     callback_query
     chat
     chat_administrator_rights
@@ -75,6 +77,7 @@ Available types
     chat_member_updated
     chat_permissions
     chat_photo
+    chat_shared
     contact
     dice
     document
@@ -83,7 +86,10 @@ Available types
     forum_topic
     forum_topic_closed
     forum_topic_created
+    forum_topic_edited
     forum_topic_reopened
+    general_forum_topic_hidden
+    general_forum_topic_unhidden
     inline_keyboard_button
     inline_keyboard_markup
     input_file
@@ -95,6 +101,8 @@ Available types
     input_media_video
     keyboard_button
     keyboard_button_poll_type
+    keyboard_button_request_chat
+    keyboard_button_request_user
     location
     login_url
     menu_button
@@ -115,6 +123,7 @@ Available types
     response_parameters
     user
     user_profile_photos
+    user_shared
     venue
     video
     video_chat_ended
@@ -125,6 +134,7 @@ Available types
     voice
     web_app_data
     web_app_info
+    write_access_allowed
 
 Telegram Passport
 =================
@@ -162,6 +172,7 @@ Stickers
 .. toctree::
     :maxdepth: 1
 
+    input_sticker
     mask_position
     sticker
     sticker_set
@@ -190,11 +201,3 @@ Games
     callback_game
     game
     game_high_score
-
-Internals
-=========
-
-.. toctree::
-    :maxdepth: 1
-
-    error_event

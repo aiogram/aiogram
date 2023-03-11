@@ -23,8 +23,8 @@ msgstr ""
 
 #: aiogram.enums.mask_position_point.MaskPositionPoint:1 of
 msgid "The part of the face relative to which the mask should be placed."
-msgstr ""
+msgstr "Частина обличчя, щодо якої слід розмістити маску."
 
 #: aiogram.enums.mask_position_point.MaskPositionPoint:3 of
 msgid "Source: https://core.telegram.org/bots/api#maskposition"
-msgstr ""
+msgstr "Джерело: https://core.telegram.org/bots/api#maskposition"

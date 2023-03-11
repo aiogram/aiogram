@@ -36,7 +36,6 @@ async def send_message_handler(request: Request):
     except ValueError:
         return json_response({"ok": False, "err": "Unauthorized"}, status=401)
 
-    print(data)
     reply_markup = None
     if data["with_webview"] == "1":
         reply_markup = InlineKeyboardMarkup(

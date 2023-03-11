@@ -11,6 +11,7 @@ from .menu_button_type import MenuButtonType
 from .message_entity_type import MessageEntityType
 from .parse_mode import ParseMode
 from .poll_type import PollType
+from .sticker_format import StickerFormat
 from .sticker_type import StickerType
 from .topic_icon_color import TopicIconColor
 from .update_type import UpdateType
@@ -29,6 +30,7 @@ __all__ = (
     "MessageEntityType",
     "ParseMode",
     "PollType",
+    "StickerFormat",
     "StickerType",
     "TopicIconColor",
     "UpdateType",

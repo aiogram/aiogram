@@ -23,7 +23,7 @@ class VideoNote(TelegramObject):
     """Video width and height (diameter of the video message) as defined by sender"""
     duration: int
     """Duration of the video in seconds as defined by sender"""
-    thumb: Optional[PhotoSize] = None
+    thumbnail: Optional[PhotoSize] = None
     """*Optional*. Video thumbnail"""
     file_size: Optional[int] = None
     """*Optional*. File size in bytes"""

@@ -1,13 +1,9 @@
 import datetime
 from typing import Any
 
-import pytest
-
 from aiogram.filters import CommandObject
 from aiogram.handlers import MessageHandler, MessageHandlerCommandMixin
 from aiogram.types import Chat, Message, User
-
-pytestmark = pytest.mark.asyncio
 
 
 class MyHandler(MessageHandler):

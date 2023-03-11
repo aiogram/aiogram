@@ -5,8 +5,6 @@ from aiogram.fsm.storage.base import StorageKey
 from aiogram.fsm.storage.memory import MemoryStorage
 from tests.mocked_bot import MockedBot
 
-pytestmark = pytest.mark.asyncio
-
 
 @pytest.fixture()
 def state(bot: MockedBot):

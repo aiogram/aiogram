@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-10-01 22:51+0300\n"
+"POT-Creation-Date: 2023-01-07 23:33+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -27,16 +27,17 @@ msgid ""
 "in-middlewares>`_ or special `utilities <#use-in-utilities>`_ to make "
 "classification of the handlers."
 msgstr ""
-"Маркери це, так звані мітки для обробників, які можна використовувати `міддлварах <#use-"
-"in-middlewares>`_ або в спеціальних `утилітах <#use-in-utilities>`_ щоб "
-"провести класифікацію обробників."
+"Маркери це, так звані мітки для обробників, які можна використовувати "
+"`міддлварах <#use-in-middlewares>`_ або в спеціальних `утилітах <#use-in-"
+"utilities>`_ щоб провести класифікацію обробників."
 
 #: ../../dispatcher/flags.rst:8
 msgid ""
 "Flags can be added to the handler via `decorators <#via-decorators>`_, "
 "`handlers registration <#via-handler-registration-method>`_ or `filters "
 "<via-filters>`_."
-msgstr "Маркери можна додати до обробника через `декоратори <#via-decorators>`_, "
+msgstr ""
+"Маркери можна додати до обробника через `декоратори <#via-decorators>`_, "
 "`реєстрацію обробників <#via-handler-registration-method>`_ або `фільтри "
 "<via-filters>`_."
 
@@ -64,20 +65,71 @@ msgstr "Через фільтри"
 msgid "Use in middlewares"
 msgstr "Використовувати в міддлварах"
 
-#: aiogram.flags.getter:1 of
-msgid "FlagDecorator(flag: aiogram.dispatcher.flags.Flag)"
+#: aiogram.dispatcher.flags.check_flags:1 of
+msgid "Check flags via magic filter"
 msgstr ""
 
-#: ../../dispatcher/flags.rst:61
+#: aiogram.dispatcher.flags.check_flags aiogram.dispatcher.flags.extract_flags
+#: aiogram.dispatcher.flags.get_flag of
+msgid "Parameters"
+msgstr ""
+
+#: aiogram.dispatcher.flags.check_flags:3
+#: aiogram.dispatcher.flags.extract_flags:3 aiogram.dispatcher.flags.get_flag:3
+#: of
+msgid "handler object or data"
+msgstr ""
+
+#: aiogram.dispatcher.flags.check_flags:4 of
+msgid "instance of the magic"
+msgstr ""
+
+#: aiogram.dispatcher.flags.check_flags aiogram.dispatcher.flags.extract_flags
+#: aiogram.dispatcher.flags.get_flag of
+msgid "Returns"
+msgstr ""
+
+#: aiogram.dispatcher.flags.check_flags:5 of
+msgid "the result of magic filter check"
+msgstr ""
+
+#: aiogram.dispatcher.flags.extract_flags:1 of
+msgid "Extract flags from handler or middleware context data"
+msgstr ""
+
+#: aiogram.dispatcher.flags.extract_flags:4 of
+msgid "dictionary with all handler flags"
+msgstr ""
+
+#: aiogram.dispatcher.flags.get_flag:1 of
+msgid "Get flag by name"
+msgstr ""
+
+#: aiogram.dispatcher.flags.get_flag:4 of
+msgid "name of the flag"
+msgstr ""
+
+#: aiogram.dispatcher.flags.get_flag:5 of
+msgid "default value (None)"
+msgstr ""
+
+#: aiogram.dispatcher.flags.get_flag:6 of
+msgid "value of the flag or default"
+msgstr ""
+
+#: ../../dispatcher/flags.rst:62
 msgid "Example in middlewares"
 msgstr "Приклад в міддлварах"
 
-#: ../../dispatcher/flags.rst:74
+#: ../../dispatcher/flags.rst:75
 msgid "Use in utilities"
 msgstr "Використання в утилітах"
 
-#: ../../dispatcher/flags.rst:76
+#: ../../dispatcher/flags.rst:77
 msgid ""
 "For example you can collect all registered commands with handler "
 "description and then it can be used for generating commands help"
-msgstr "Наприклад, ви можете зібрати всі зареєстровані команди з описом обробника, а потім його можна використовувати для створення довідки щодо команд"
+msgstr ""
+"Наприклад, ви можете зібрати всі зареєстровані команди з описом "
+"обробника, а потім його можна використовувати для створення довідки щодо "
+"команд"

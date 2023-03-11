@@ -1,0 +1,25 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Stickers",
+    "anchor": "stickers"
+  },
+  "object": {
+    "anchor": "deletestickerset",
+    "name": "deleteStickerSet",
+    "description": "Use this method to delete a sticker set that was created by the bot. Returns True on success.",
+    "html_description": "<p>Use this method to delete a sticker set that was created by the bot. Returns <em>True</em> on success.</p>",
+    "rst_description": "Use this method to delete a sticker set that was created by the bot. Returns :code:`True` on success.",
+    "annotations": [
+      {
+        "type": "String",
+        "required": true,
+        "description": "Sticker set name",
+        "html_description": "<td>Sticker set name</td>",
+        "rst_description": "Sticker set name\n",
+        "name": "name"
+      }
+    ],
+    "category": "methods"
+  }
+}

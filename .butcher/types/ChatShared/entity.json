@@ -1,0 +1,33 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "chatshared",
+    "name": "ChatShared",
+    "description": "This object contains information about the chat whose identifier was shared with the bot using a KeyboardButtonRequestChat button.",
+    "html_description": "<p>This object contains information about the chat whose identifier was shared with the bot using a <a href=\"#keyboardbuttonrequestchat\">KeyboardButtonRequestChat</a> button.</p>",
+    "rst_description": "This object contains information about the chat whose identifier was shared with the bot using a :class:`aiogram.types.keyboard_button_request_chat.KeyboardButtonRequestChat` button.",
+    "annotations": [
+      {
+        "type": "Integer",
+        "description": "Identifier of the request",
+        "html_description": "<td>Identifier of the request</td>",
+        "rst_description": "Identifier of the request\n",
+        "name": "request_id",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "Identifier of the shared chat. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier. The bot may not have access to the chat and could be unable to use this identifier, unless the chat is already known to the bot by some other means.",
+        "html_description": "<td>Identifier of the shared chat. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier. The bot may not have access to the chat and could be unable to use this identifier, unless the chat is already known to the bot by some other means.</td>",
+        "rst_description": "Identifier of the shared chat. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier. The bot may not have access to the chat and could be unable to use this identifier, unless the chat is already known to the bot by some other means.\n",
+        "name": "chat_id",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

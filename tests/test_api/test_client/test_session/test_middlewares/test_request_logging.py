@@ -1,14 +1,10 @@
 import datetime
 import logging
 
-import pytest
-
 from aiogram.client.session.middlewares.request_logging import RequestLogging
 from aiogram.methods import GetMe, SendMessage
 from aiogram.types import Chat, Message, User
 from tests.mocked_bot import MockedBot
-
-pytestmark = pytest.mark.asyncio
 
 
 class TestRequestLogging:

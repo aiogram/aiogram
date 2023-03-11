@@ -36,70 +36,49 @@ Step by step
 Before handle any states you will need to specify what kind of states you want to handle
 
 .. literalinclude:: ../../../examples/finite_state_machine.py
-    :language: python
-    :linenos:
-    :lineno-start: 15
-    :lines: 15-18
+    :pyobject: Form
 
 And then write handler for each state separately from the start of dialog
 
 Here is dialog can be started only via command :code:`/start`, so lets handle it and make transition user to state :code:`Form.name`
 
 .. literalinclude:: ../../../examples/finite_state_machine.py
-    :language: python
-    :linenos:
-    :lineno-start: 21
-    :lines: 21-27
+    :pyobject: command_start
 
 After that you will need to save some data to the storage and make transition to next step.
 
 .. literalinclude:: ../../../examples/finite_state_machine.py
-    :language: python
-    :linenos:
-    :lineno-start: 48
-    :lines: 48-63
+    :pyobject: process_name
 
 At the next steps user can make different answers, it can be `yes`, `no` or any other
 
 Handle :code:`yes` and soon we need to handle :code:`Form.language` state
 
 .. literalinclude:: ../../../examples/finite_state_machine.py
-    :language: python
-    :linenos:
-    :lineno-start: 77
-    :lines: 77-84
+    :pyobject: process_like_write_bots
 
 Handle :code:`no`
 
 .. literalinclude:: ../../../examples/finite_state_machine.py
-    :language: python
-    :linenos:
-    :lineno-start: 66
-    :lines: 66-74
+    :pyobject: process_dont_like_write_bots
 
 And handle any other answers
 
 .. literalinclude:: ../../../examples/finite_state_machine.py
-    :language: python
-    :linenos:
-    :lineno-start: 87
-    :lines: 87-89
+    :pyobject: process_unknown_write_bots
 
 All possible cases of `like_bots` step was covered, let's implement finally step
 
 .. literalinclude:: ../../../examples/finite_state_machine.py
-    :language: python
-    :linenos:
-    :lineno-start: 92
-    :lines: 92-102
+    :pyobject: process_language
+
+.. literalinclude:: ../../../examples/finite_state_machine.py
+    :pyobject: show_summary
 
 And now you have covered all steps from the image, but you can make possibility to cancel conversation, lets do that via command or text
 
 .. literalinclude:: ../../../examples/finite_state_machine.py
-    :language: python
-    :linenos:
-    :lineno-start: 30
-    :lines: 30-45
+    :pyobject: cancel_handler
 
 Complete example
 ----------------

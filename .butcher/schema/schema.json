@@ -1,7 +1,7 @@
 {
   "api": {
-    "version": "6.3",
-    "release_date": "2022-11-05"
+    "version": "6.6",
+    "release_date": "2023-03-09"
   },
   "items": [
     {
@@ -637,6 +637,22 @@
             },
             {
               "type": "True",
+              "description": "True, if aggressive anti-spam checks are enabled in the supergroup. The field is only available to chat administrators. Returned only in getChat.",
+              "html_description": "<td><em>Optional</em>. <em>True</em>, if aggressive anti-spam checks are enabled in the supergroup. The field is only available to chat administrators. Returned only in <a href=\"#getchat\">getChat</a>.</td>",
+              "rst_description": "*Optional*. :code:`True`, if aggressive anti-spam checks are enabled in the supergroup. The field is only available to chat administrators. Returned only in :class:`aiogram.methods.get_chat.GetChat`.\n",
+              "name": "has_aggressive_anti_spam_enabled",
+              "required": false
+            },
+            {
+              "type": "True",
+              "description": "True, if non-administrators can only get the list of bots and administrators in the chat. Returned only in getChat.",
+              "html_description": "<td><em>Optional</em>. <em>True</em>, if non-administrators can only get the list of bots and administrators in the chat. Returned only in <a href=\"#getchat\">getChat</a>.</td>",
+              "rst_description": "*Optional*. :code:`True`, if non-administrators can only get the list of bots and administrators in the chat. Returned only in :class:`aiogram.methods.get_chat.GetChat`.\n",
+              "name": "has_hidden_members",
+              "required": false
+            },
+            {
+              "type": "True",
               "description": "True, if messages from the chat can't be forwarded to other chats. Returned only in getChat.",
               "html_description": "<td><em>Optional</em>. <em>True</em>, if messages from the chat can't be forwarded to other chats. Returned only in <a href=\"#getchat\">getChat</a>.</td>",
               "rst_description": "*Optional*. :code:`True`, if messages from the chat can't be forwarded to other chats. Returned only in :class:`aiogram.methods.get_chat.GetChat`.\n",
@@ -942,6 +958,14 @@
               "required": false
             },
             {
+              "type": "True",
+              "description": "True, if the message media is covered by a spoiler animation",
+              "html_description": "<td><em>Optional</em>. <em>True</em>, if the message media is covered by a spoiler animation</td>",
+              "rst_description": "*Optional*. :code:`True`, if the message media is covered by a spoiler animation\n",
+              "name": "has_media_spoiler",
+              "required": false
+            },
+            {
               "type": "Contact",
               "description": "Message is a shared contact, information about the contact",
               "html_description": "<td><em>Optional</em>. Message is a shared contact, information about the contact</td>",
@@ -1102,11 +1126,35 @@
               "required": false
             },
             {
+              "type": "UserShared",
+              "description": "Service message: a user was shared with the bot",
+              "html_description": "<td><em>Optional</em>. Service message: a user was shared with the bot</td>",
+              "rst_description": "*Optional*. Service message: a user was shared with the bot\n",
+              "name": "user_shared",
+              "required": false
+            },
+            {
+              "type": "ChatShared",
+              "description": "Service message: a chat was shared with the bot",
+              "html_description": "<td><em>Optional</em>. Service message: a chat was shared with the bot</td>",
+              "rst_description": "*Optional*. Service message: a chat was shared with the bot\n",
+              "name": "chat_shared",
+              "required": false
+            },
+            {
               "type": "String",
               "description": "The domain name of the website on which the user has logged in.",
               "html_description": "<td><em>Optional</em>. The domain name of the website on which the user has logged in. <a href=\"/widgets/login\">More about Telegram Login &#187;</a></td>",
               "rst_description": "*Optional*. The domain name of the website on which the user has logged in. `More about Telegram Login » <https://core.telegram.org/widgets/login>`_\n",
               "name": "connected_website",
+              "required": false
+            },
+            {
+              "type": "WriteAccessAllowed",
+              "description": "Service message: the user allowed the bot added to the attachment menu to write messages",
+              "html_description": "<td><em>Optional</em>. Service message: the user allowed the bot added to the attachment menu to write messages</td>",
+              "rst_description": "*Optional*. Service message: the user allowed the bot added to the attachment menu to write messages\n",
+              "name": "write_access_allowed",
               "required": false
             },
             {
@@ -1134,6 +1182,14 @@
               "required": false
             },
             {
+              "type": "ForumTopicEdited",
+              "description": "Service message: forum topic edited",
+              "html_description": "<td><em>Optional</em>. Service message: forum topic edited</td>",
+              "rst_description": "*Optional*. Service message: forum topic edited\n",
+              "name": "forum_topic_edited",
+              "required": false
+            },
+            {
               "type": "ForumTopicClosed",
               "description": "Service message: forum topic closed",
               "html_description": "<td><em>Optional</em>. Service message: forum topic closed</td>",
@@ -1147,6 +1203,22 @@
               "html_description": "<td><em>Optional</em>. Service message: forum topic reopened</td>",
               "rst_description": "*Optional*. Service message: forum topic reopened\n",
               "name": "forum_topic_reopened",
+              "required": false
+            },
+            {
+              "type": "GeneralForumTopicHidden",
+              "description": "Service message: the 'General' forum topic hidden",
+              "html_description": "<td><em>Optional</em>. Service message: the 'General' forum topic hidden</td>",
+              "rst_description": "*Optional*. Service message: the 'General' forum topic hidden\n",
+              "name": "general_forum_topic_hidden",
+              "required": false
+            },
+            {
+              "type": "GeneralForumTopicUnhidden",
+              "description": "Service message: the 'General' forum topic unhidden",
+              "html_description": "<td><em>Optional</em>. Service message: the 'General' forum topic unhidden</td>",
+              "rst_description": "*Optional*. Service message: the 'General' forum topic unhidden\n",
+              "name": "general_forum_topic_unhidden",
               "required": false
             },
             {
@@ -1386,7 +1458,7 @@
               "description": "Animation thumbnail as defined by sender",
               "html_description": "<td><em>Optional</em>. Animation thumbnail as defined by sender</td>",
               "rst_description": "*Optional*. Animation thumbnail as defined by sender\n",
-              "name": "thumb",
+              "name": "thumbnail",
               "required": false
             },
             {
@@ -1492,7 +1564,7 @@
               "description": "Thumbnail of the album cover to which the music file belongs",
               "html_description": "<td><em>Optional</em>. Thumbnail of the album cover to which the music file belongs</td>",
               "rst_description": "*Optional*. Thumbnail of the album cover to which the music file belongs\n",
-              "name": "thumb",
+              "name": "thumbnail",
               "required": false
             }
           ],
@@ -1526,7 +1598,7 @@
               "description": "Document thumbnail as defined by sender",
               "html_description": "<td><em>Optional</em>. Document thumbnail as defined by sender</td>",
               "rst_description": "*Optional*. Document thumbnail as defined by sender\n",
-              "name": "thumb",
+              "name": "thumbnail",
               "required": false
             },
             {
@@ -1608,7 +1680,7 @@
               "description": "Video thumbnail",
               "html_description": "<td><em>Optional</em>. Video thumbnail</td>",
               "rst_description": "*Optional*. Video thumbnail\n",
-              "name": "thumb",
+              "name": "thumbnail",
               "required": false
             },
             {
@@ -1682,7 +1754,7 @@
               "description": "Video thumbnail",
               "html_description": "<td><em>Optional</em>. Video thumbnail</td>",
               "rst_description": "*Optional*. Video thumbnail\n",
-              "name": "thumb",
+              "name": "thumbnail",
               "required": false
             },
             {
@@ -2242,11 +2314,116 @@
           "category": "types"
         },
         {
+          "anchor": "forumtopicedited",
+          "name": "ForumTopicEdited",
+          "description": "This object represents a service message about an edited forum topic.",
+          "html_description": "<p>This object represents a service message about an edited forum topic.</p>",
+          "rst_description": "This object represents a service message about an edited forum topic.",
+          "annotations": [
+            {
+              "type": "String",
+              "description": "New name of the topic, if it was edited",
+              "html_description": "<td><em>Optional</em>. New name of the topic, if it was edited</td>",
+              "rst_description": "*Optional*. New name of the topic, if it was edited\n",
+              "name": "name",
+              "required": false
+            },
+            {
+              "type": "String",
+              "description": "New identifier of the custom emoji shown as the topic icon, if it was edited; an empty string if the icon was removed",
+              "html_description": "<td><em>Optional</em>. New identifier of the custom emoji shown as the topic icon, if it was edited; an empty string if the icon was removed</td>",
+              "rst_description": "*Optional*. New identifier of the custom emoji shown as the topic icon, if it was edited; an empty string if the icon was removed\n",
+              "name": "icon_custom_emoji_id",
+              "required": false
+            }
+          ],
+          "category": "types"
+        },
+        {
           "anchor": "forumtopicreopened",
           "name": "ForumTopicReopened",
           "description": "This object represents a service message about a forum topic reopened in the chat. Currently holds no information.",
           "html_description": "<p>This object represents a service message about a forum topic reopened in the chat. Currently holds no information.</p>",
           "rst_description": "This object represents a service message about a forum topic reopened in the chat. Currently holds no information.",
+          "annotations": [],
+          "category": "types"
+        },
+        {
+          "anchor": "generalforumtopichidden",
+          "name": "GeneralForumTopicHidden",
+          "description": "This object represents a service message about General forum topic hidden in the chat. Currently holds no information.",
+          "html_description": "<p>This object represents a service message about General forum topic hidden in the chat. Currently holds no information.</p>",
+          "rst_description": "This object represents a service message about General forum topic hidden in the chat. Currently holds no information.",
+          "annotations": [],
+          "category": "types"
+        },
+        {
+          "anchor": "generalforumtopicunhidden",
+          "name": "GeneralForumTopicUnhidden",
+          "description": "This object represents a service message about General forum topic unhidden in the chat. Currently holds no information.",
+          "html_description": "<p>This object represents a service message about General forum topic unhidden in the chat. Currently holds no information.</p>",
+          "rst_description": "This object represents a service message about General forum topic unhidden in the chat. Currently holds no information.",
+          "annotations": [],
+          "category": "types"
+        },
+        {
+          "anchor": "usershared",
+          "name": "UserShared",
+          "description": "This object contains information about the user whose identifier was shared with the bot using a KeyboardButtonRequestUser button.",
+          "html_description": "<p>This object contains information about the user whose identifier was shared with the bot using a <a href=\"#keyboardbuttonrequestuser\">KeyboardButtonRequestUser</a> button.</p>",
+          "rst_description": "This object contains information about the user whose identifier was shared with the bot using a :class:`aiogram.types.keyboard_button_request_user.KeyboardButtonRequestUser` button.",
+          "annotations": [
+            {
+              "type": "Integer",
+              "description": "Identifier of the request",
+              "html_description": "<td>Identifier of the request</td>",
+              "rst_description": "Identifier of the request\n",
+              "name": "request_id",
+              "required": true
+            },
+            {
+              "type": "Integer",
+              "description": "Identifier of the shared user. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier. The bot may not have access to the user and could be unable to use this identifier, unless the user is already known to the bot by some other means.",
+              "html_description": "<td>Identifier of the shared user. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier. The bot may not have access to the user and could be unable to use this identifier, unless the user is already known to the bot by some other means.</td>",
+              "rst_description": "Identifier of the shared user. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier. The bot may not have access to the user and could be unable to use this identifier, unless the user is already known to the bot by some other means.\n",
+              "name": "user_id",
+              "required": true
+            }
+          ],
+          "category": "types"
+        },
+        {
+          "anchor": "chatshared",
+          "name": "ChatShared",
+          "description": "This object contains information about the chat whose identifier was shared with the bot using a KeyboardButtonRequestChat button.",
+          "html_description": "<p>This object contains information about the chat whose identifier was shared with the bot using a <a href=\"#keyboardbuttonrequestchat\">KeyboardButtonRequestChat</a> button.</p>",
+          "rst_description": "This object contains information about the chat whose identifier was shared with the bot using a :class:`aiogram.types.keyboard_button_request_chat.KeyboardButtonRequestChat` button.",
+          "annotations": [
+            {
+              "type": "Integer",
+              "description": "Identifier of the request",
+              "html_description": "<td>Identifier of the request</td>",
+              "rst_description": "Identifier of the request\n",
+              "name": "request_id",
+              "required": true
+            },
+            {
+              "type": "Integer",
+              "description": "Identifier of the shared chat. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier. The bot may not have access to the chat and could be unable to use this identifier, unless the chat is already known to the bot by some other means.",
+              "html_description": "<td>Identifier of the shared chat. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier. The bot may not have access to the chat and could be unable to use this identifier, unless the chat is already known to the bot by some other means.</td>",
+              "rst_description": "Identifier of the shared chat. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier. The bot may not have access to the chat and could be unable to use this identifier, unless the chat is already known to the bot by some other means.\n",
+              "name": "chat_id",
+              "required": true
+            }
+          ],
+          "category": "types"
+        },
+        {
+          "anchor": "writeaccessallowed",
+          "name": "WriteAccessAllowed",
+          "description": "This object represents a service message about a user allowing a bot added to the attachment menu to write messages. Currently holds no information.",
+          "html_description": "<p>This object represents a service message about a user allowing a bot added to the attachment menu to write messages. Currently holds no information.</p>",
+          "rst_description": "This object represents a service message about a user allowing a bot added to the attachment menu to write messages. Currently holds no information.",
           "annotations": [],
           "category": "types"
         },
@@ -2416,6 +2593,14 @@
             },
             {
               "type": "Boolean",
+              "description": "Requests clients to always show the keyboard when the regular keyboard is hidden. Defaults to false, in which case the custom keyboard can be hidden and opened with a keyboard icon.",
+              "html_description": "<td><em>Optional</em>. Requests clients to always show the keyboard when the regular keyboard is hidden. Defaults to <em>false</em>, in which case the custom keyboard can be hidden and opened with a keyboard icon.</td>",
+              "rst_description": "*Optional*. Requests clients to always show the keyboard when the regular keyboard is hidden. Defaults to *false*, in which case the custom keyboard can be hidden and opened with a keyboard icon.\n",
+              "name": "is_persistent",
+              "required": false
+            },
+            {
+              "type": "Boolean",
               "description": "Requests clients to resize the keyboard vertically for optimal fit (e.g., make the keyboard smaller if there are just two rows of buttons). Defaults to false, in which case the custom keyboard is always of the same height as the app's standard keyboard.",
               "html_description": "<td><em>Optional</em>. Requests clients to resize the keyboard vertically for optimal fit (e.g., make the keyboard smaller if there are just two rows of buttons). Defaults to <em>false</em>, in which case the custom keyboard is always of the same height as the app's standard keyboard.</td>",
               "rst_description": "*Optional*. Requests clients to resize the keyboard vertically for optimal fit (e.g., make the keyboard smaller if there are just two rows of buttons). Defaults to *false*, in which case the custom keyboard is always of the same height as the app's standard keyboard.\n",
@@ -2452,9 +2637,9 @@
         {
           "anchor": "keyboardbutton",
           "name": "KeyboardButton",
-          "description": "This object represents one button of the reply keyboard. For simple text buttons String can be used instead of this object to specify text of the button. Optional fields web_app, request_contact, request_location, and request_poll are mutually exclusive.\nNote: request_contact and request_location options will only work in Telegram versions released after 9 April, 2016. Older clients will display unsupported message.\nNote: request_poll option will only work in Telegram versions released after 23 January, 2020. Older clients will display unsupported message.\nNote: web_app option will only work in Telegram versions released after 16 April, 2022. Older clients will display unsupported message.",
-          "html_description": "<p>This object represents one button of the reply keyboard. For simple text buttons <em>String</em> can be used instead of this object to specify text of the button. Optional fields <em>web_app</em>, <em>request_contact</em>, <em>request_location</em>, and <em>request_poll</em> are mutually exclusive.</p><p><strong>Note:</strong> <em>request_contact</em> and <em>request_location</em> options will only work in Telegram versions released after 9 April, 2016. Older clients will display <em>unsupported message</em>.<br/>\n<strong>Note:</strong> <em>request_poll</em> option will only work in Telegram versions released after 23 January, 2020. Older clients will display <em>unsupported message</em>.<br/>\n<strong>Note:</strong> <em>web_app</em> option will only work in Telegram versions released after 16 April, 2022. Older clients will display <em>unsupported message</em>.</p>",
-          "rst_description": "This object represents one button of the reply keyboard. For simple text buttons *String* can be used instead of this object to specify text of the button. Optional fields *web_app*, *request_contact*, *request_location*, and *request_poll* are mutually exclusive.\n**Note:** *request_contact* and *request_location* options will only work in Telegram versions released after 9 April, 2016. Older clients will display *unsupported message*.\n\n**Note:** *request_poll* option will only work in Telegram versions released after 23 January, 2020. Older clients will display *unsupported message*.\n\n**Note:** *web_app* option will only work in Telegram versions released after 16 April, 2022. Older clients will display *unsupported message*.",
+          "description": "This object represents one button of the reply keyboard. For simple text buttons, String can be used instead of this object to specify the button text. The optional fields web_app, request_user, request_chat, request_contact, request_location, and request_poll are mutually exclusive.\nNote: request_contact and request_location options will only work in Telegram versions released after 9 April, 2016. Older clients will display unsupported message.\nNote: request_poll option will only work in Telegram versions released after 23 January, 2020. Older clients will display unsupported message.\nNote: web_app option will only work in Telegram versions released after 16 April, 2022. Older clients will display unsupported message.\nNote: request_user and request_chat options will only work in Telegram versions released after 3 February, 2023. Older clients will display unsupported message.",
+          "html_description": "<p>This object represents one button of the reply keyboard. For simple text buttons, <em>String</em> can be used instead of this object to specify the button text. The optional fields <em>web_app</em>, <em>request_user</em>, <em>request_chat</em>, <em>request_contact</em>, <em>request_location</em>, and <em>request_poll</em> are mutually exclusive.</p><p><strong>Note:</strong> <em>request_contact</em> and <em>request_location</em> options will only work in Telegram versions released after 9 April, 2016. Older clients will display <em>unsupported message</em>.<br/>\n<strong>Note:</strong> <em>request_poll</em> option will only work in Telegram versions released after 23 January, 2020. Older clients will display <em>unsupported message</em>.<br/>\n<strong>Note:</strong> <em>web_app</em> option will only work in Telegram versions released after 16 April, 2022. Older clients will display <em>unsupported message</em>.<br/>\n<strong>Note:</strong> <em>request_user</em> and <em>request_chat</em> options will only work in Telegram versions released after 3 February, 2023. Older clients will display <em>unsupported message</em>.</p>",
+          "rst_description": "This object represents one button of the reply keyboard. For simple text buttons, *String* can be used instead of this object to specify the button text. The optional fields *web_app*, *request_user*, *request_chat*, *request_contact*, *request_location*, and *request_poll* are mutually exclusive.\n**Note:** *request_contact* and *request_location* options will only work in Telegram versions released after 9 April, 2016. Older clients will display *unsupported message*.\n\n**Note:** *request_poll* option will only work in Telegram versions released after 23 January, 2020. Older clients will display *unsupported message*.\n\n**Note:** *web_app* option will only work in Telegram versions released after 16 April, 2022. Older clients will display *unsupported message*.\n\n**Note:** *request_user* and *request_chat* options will only work in Telegram versions released after 3 February, 2023. Older clients will display *unsupported message*.",
           "annotations": [
             {
               "type": "String",
@@ -2463,6 +2648,22 @@
               "rst_description": "Text of the button. If none of the optional fields are used, it will be sent as a message when the button is pressed\n",
               "name": "text",
               "required": true
+            },
+            {
+              "type": "KeyboardButtonRequestUser",
+              "description": "If specified, pressing the button will open a list of suitable users. Tapping on any user will send their identifier to the bot in a 'user_shared' service message. Available in private chats only.",
+              "html_description": "<td><em>Optional.</em> If specified, pressing the button will open a list of suitable users. Tapping on any user will send their identifier to the bot in a &#8220;user_shared&#8221; service message. Available in private chats only.</td>",
+              "rst_description": "*Optional.* If specified, pressing the button will open a list of suitable users. Tapping on any user will send their identifier to the bot in a 'user_shared' service message. Available in private chats only.\n",
+              "name": "request_user",
+              "required": false
+            },
+            {
+              "type": "KeyboardButtonRequestChat",
+              "description": "If specified, pressing the button will open a list of suitable chats. Tapping on a chat will send its identifier to the bot in a 'chat_shared' service message. Available in private chats only.",
+              "html_description": "<td><em>Optional.</em> If specified, pressing the button will open a list of suitable chats. Tapping on a chat will send its identifier to the bot in a &#8220;chat_shared&#8221; service message. Available in private chats only.</td>",
+              "rst_description": "*Optional.* If specified, pressing the button will open a list of suitable chats. Tapping on a chat will send its identifier to the bot in a 'chat_shared' service message. Available in private chats only.\n",
+              "name": "request_chat",
+              "required": false
             },
             {
               "type": "Boolean",
@@ -2494,6 +2695,114 @@
               "html_description": "<td><em>Optional</em>. If specified, the described <a href=\"/bots/webapps\">Web App</a> will be launched when the button is pressed. The Web App will be able to send a &#8220;web_app_data&#8221; service message. Available in private chats only.</td>",
               "rst_description": "*Optional*. If specified, the described `Web App <https://core.telegram.org/bots/webapps>`_ will be launched when the button is pressed. The Web App will be able to send a 'web_app_data' service message. Available in private chats only.\n",
               "name": "web_app",
+              "required": false
+            }
+          ],
+          "category": "types"
+        },
+        {
+          "anchor": "keyboardbuttonrequestuser",
+          "name": "KeyboardButtonRequestUser",
+          "description": "This object defines the criteria used to request a suitable user. The identifier of the selected user will be shared with the bot when the corresponding button is pressed.",
+          "html_description": "<p>This object defines the criteria used to request a suitable user. The identifier of the selected user will be shared with the bot when the corresponding button is pressed.</p>",
+          "rst_description": "This object defines the criteria used to request a suitable user. The identifier of the selected user will be shared with the bot when the corresponding button is pressed.",
+          "annotations": [
+            {
+              "type": "Integer",
+              "description": "Signed 32-bit identifier of the request, which will be received back in the UserShared object. Must be unique within the message",
+              "html_description": "<td>Signed 32-bit identifier of the request, which will be received back in the <a href=\"#usershared\">UserShared</a> object. Must be unique within the message</td>",
+              "rst_description": "Signed 32-bit identifier of the request, which will be received back in the :class:`aiogram.types.user_shared.UserShared` object. Must be unique within the message\n",
+              "name": "request_id",
+              "required": true
+            },
+            {
+              "type": "Boolean",
+              "description": "Pass True to request a bot, pass False to request a regular user. If not specified, no additional restrictions are applied.",
+              "html_description": "<td><em>Optional</em>. Pass <em>True</em> to request a bot, pass <em>False</em> to request a regular user. If not specified, no additional restrictions are applied.</td>",
+              "rst_description": "*Optional*. Pass :code:`True` to request a bot, pass :code:`False` to request a regular user. If not specified, no additional restrictions are applied.\n",
+              "name": "user_is_bot",
+              "required": false
+            },
+            {
+              "type": "Boolean",
+              "description": "Pass True to request a premium user, pass False to request a non-premium user. If not specified, no additional restrictions are applied.",
+              "html_description": "<td><em>Optional</em>. Pass <em>True</em> to request a premium user, pass <em>False</em> to request a non-premium user. If not specified, no additional restrictions are applied.</td>",
+              "rst_description": "*Optional*. Pass :code:`True` to request a premium user, pass :code:`False` to request a non-premium user. If not specified, no additional restrictions are applied.\n",
+              "name": "user_is_premium",
+              "required": false
+            }
+          ],
+          "category": "types"
+        },
+        {
+          "anchor": "keyboardbuttonrequestchat",
+          "name": "KeyboardButtonRequestChat",
+          "description": "This object defines the criteria used to request a suitable chat. The identifier of the selected chat will be shared with the bot when the corresponding button is pressed.",
+          "html_description": "<p>This object defines the criteria used to request a suitable chat. The identifier of the selected chat will be shared with the bot when the corresponding button is pressed.</p>",
+          "rst_description": "This object defines the criteria used to request a suitable chat. The identifier of the selected chat will be shared with the bot when the corresponding button is pressed.",
+          "annotations": [
+            {
+              "type": "Integer",
+              "description": "Signed 32-bit identifier of the request, which will be received back in the ChatShared object. Must be unique within the message",
+              "html_description": "<td>Signed 32-bit identifier of the request, which will be received back in the <a href=\"#chatshared\">ChatShared</a> object. Must be unique within the message</td>",
+              "rst_description": "Signed 32-bit identifier of the request, which will be received back in the :class:`aiogram.types.chat_shared.ChatShared` object. Must be unique within the message\n",
+              "name": "request_id",
+              "required": true
+            },
+            {
+              "type": "Boolean",
+              "description": "Pass True to request a channel chat, pass False to request a group or a supergroup chat.",
+              "html_description": "<td>Pass <em>True</em> to request a channel chat, pass <em>False</em> to request a group or a supergroup chat.</td>",
+              "rst_description": "Pass :code:`True` to request a channel chat, pass :code:`False` to request a group or a supergroup chat.\n",
+              "name": "chat_is_channel",
+              "required": true
+            },
+            {
+              "type": "Boolean",
+              "description": "Pass True to request a forum supergroup, pass False to request a non-forum chat. If not specified, no additional restrictions are applied.",
+              "html_description": "<td><em>Optional</em>. Pass <em>True</em> to request a forum supergroup, pass <em>False</em> to request a non-forum chat. If not specified, no additional restrictions are applied.</td>",
+              "rst_description": "*Optional*. Pass :code:`True` to request a forum supergroup, pass :code:`False` to request a non-forum chat. If not specified, no additional restrictions are applied.\n",
+              "name": "chat_is_forum",
+              "required": false
+            },
+            {
+              "type": "Boolean",
+              "description": "Pass True to request a supergroup or a channel with a username, pass False to request a chat without a username. If not specified, no additional restrictions are applied.",
+              "html_description": "<td><em>Optional</em>. Pass <em>True</em> to request a supergroup or a channel with a username, pass <em>False</em> to request a chat without a username. If not specified, no additional restrictions are applied.</td>",
+              "rst_description": "*Optional*. Pass :code:`True` to request a supergroup or a channel with a username, pass :code:`False` to request a chat without a username. If not specified, no additional restrictions are applied.\n",
+              "name": "chat_has_username",
+              "required": false
+            },
+            {
+              "type": "Boolean",
+              "description": "Pass True to request a chat owned by the user. Otherwise, no additional restrictions are applied.",
+              "html_description": "<td><em>Optional</em>. Pass <em>True</em> to request a chat owned by the user. Otherwise, no additional restrictions are applied.</td>",
+              "rst_description": "*Optional*. Pass :code:`True` to request a chat owned by the user. Otherwise, no additional restrictions are applied.\n",
+              "name": "chat_is_created",
+              "required": false
+            },
+            {
+              "type": "ChatAdministratorRights",
+              "description": "A JSON-serialized object listing the required administrator rights of the user in the chat. The rights must be a superset of bot_administrator_rights. If not specified, no additional restrictions are applied.",
+              "html_description": "<td><em>Optional</em>. A JSON-serialized object listing the required administrator rights of the user in the chat. The rights must be a superset of <em>bot_administrator_rights</em>. If not specified, no additional restrictions are applied.</td>",
+              "rst_description": "*Optional*. A JSON-serialized object listing the required administrator rights of the user in the chat. The rights must be a superset of *bot_administrator_rights*. If not specified, no additional restrictions are applied.\n",
+              "name": "user_administrator_rights",
+              "required": false
+            },
+            {
+              "type": "ChatAdministratorRights",
+              "description": "A JSON-serialized object listing the required administrator rights of the bot in the chat. The rights must be a subset of user_administrator_rights. If not specified, no additional restrictions are applied.",
+              "html_description": "<td><em>Optional</em>. A JSON-serialized object listing the required administrator rights of the bot in the chat. The rights must be a subset of <em>user_administrator_rights</em>. If not specified, no additional restrictions are applied.</td>",
+              "rst_description": "*Optional*. A JSON-serialized object listing the required administrator rights of the bot in the chat. The rights must be a subset of *user_administrator_rights*. If not specified, no additional restrictions are applied.\n",
+              "name": "bot_administrator_rights",
+              "required": false
+            },
+            {
+              "type": "Boolean",
+              "description": "Pass True to request a chat with the bot as a member. Otherwise, no additional restrictions are applied.",
+              "html_description": "<td><em>Optional</em>. Pass <em>True</em> to request a chat with the bot as a member. Otherwise, no additional restrictions are applied.</td>",
+              "rst_description": "*Optional*. Pass :code:`True` to request a chat with the bot as a member. Otherwise, no additional restrictions are applied.\n",
+              "name": "bot_is_member",
               "required": false
             }
           ],
@@ -2958,9 +3267,9 @@
             },
             {
               "type": "Boolean",
-              "description": "True, if the administrator can add new administrators with a subset of their own privileges or demote administrators that he has promoted, directly or indirectly (promoted by administrators that were appointed by the user)",
-              "html_description": "<td><em>True</em>, if the administrator can add new administrators with a subset of their own privileges or demote administrators that he has promoted, directly or indirectly (promoted by administrators that were appointed by the user)</td>",
-              "rst_description": ":code:`True`, if the administrator can add new administrators with a subset of their own privileges or demote administrators that he has promoted, directly or indirectly (promoted by administrators that were appointed by the user)\n",
+              "description": "True, if the administrator can add new administrators with a subset of their own privileges or demote administrators that they have promoted, directly or indirectly (promoted by administrators that were appointed by the user)",
+              "html_description": "<td><em>True</em>, if the administrator can add new administrators with a subset of their own privileges or demote administrators that they have promoted, directly or indirectly (promoted by administrators that were appointed by the user)</td>",
+              "rst_description": ":code:`True`, if the administrator can add new administrators with a subset of their own privileges or demote administrators that they have promoted, directly or indirectly (promoted by administrators that were appointed by the user)\n",
               "name": "can_promote_members",
               "required": true
             },
@@ -3139,9 +3448,9 @@
             },
             {
               "type": "Boolean",
-              "description": "True, if the administrator can add new administrators with a subset of their own privileges or demote administrators that he has promoted, directly or indirectly (promoted by administrators that were appointed by the user)",
-              "html_description": "<td><em>True</em>, if the administrator can add new administrators with a subset of their own privileges or demote administrators that he has promoted, directly or indirectly (promoted by administrators that were appointed by the user)</td>",
-              "rst_description": ":code:`True`, if the administrator can add new administrators with a subset of their own privileges or demote administrators that he has promoted, directly or indirectly (promoted by administrators that were appointed by the user)\n",
+              "description": "True, if the administrator can add new administrators with a subset of their own privileges or demote administrators that they have promoted, directly or indirectly (promoted by administrators that were appointed by the user)",
+              "html_description": "<td><em>True</em>, if the administrator can add new administrators with a subset of their own privileges or demote administrators that they have promoted, directly or indirectly (promoted by administrators that were appointed by the user)</td>",
+              "rst_description": ":code:`True`, if the administrator can add new administrators with a subset of their own privileges or demote administrators that they have promoted, directly or indirectly (promoted by administrators that were appointed by the user)\n",
               "name": "can_promote_members",
               "required": true
             },
@@ -3263,6 +3572,86 @@
             },
             {
               "type": "Boolean",
+              "description": "True, if the user is allowed to send text messages, contacts, invoices, locations and venues",
+              "html_description": "<td><em>True</em>, if the user is allowed to send text messages, contacts, invoices, locations and venues</td>",
+              "rst_description": ":code:`True`, if the user is allowed to send text messages, contacts, invoices, locations and venues\n",
+              "name": "can_send_messages",
+              "required": true
+            },
+            {
+              "type": "Boolean",
+              "description": "True, if the user is allowed to send audios",
+              "html_description": "<td><em>True</em>, if the user is allowed to send audios</td>",
+              "rst_description": ":code:`True`, if the user is allowed to send audios\n",
+              "name": "can_send_audios",
+              "required": true
+            },
+            {
+              "type": "Boolean",
+              "description": "True, if the user is allowed to send documents",
+              "html_description": "<td><em>True</em>, if the user is allowed to send documents</td>",
+              "rst_description": ":code:`True`, if the user is allowed to send documents\n",
+              "name": "can_send_documents",
+              "required": true
+            },
+            {
+              "type": "Boolean",
+              "description": "True, if the user is allowed to send photos",
+              "html_description": "<td><em>True</em>, if the user is allowed to send photos</td>",
+              "rst_description": ":code:`True`, if the user is allowed to send photos\n",
+              "name": "can_send_photos",
+              "required": true
+            },
+            {
+              "type": "Boolean",
+              "description": "True, if the user is allowed to send videos",
+              "html_description": "<td><em>True</em>, if the user is allowed to send videos</td>",
+              "rst_description": ":code:`True`, if the user is allowed to send videos\n",
+              "name": "can_send_videos",
+              "required": true
+            },
+            {
+              "type": "Boolean",
+              "description": "True, if the user is allowed to send video notes",
+              "html_description": "<td><em>True</em>, if the user is allowed to send video notes</td>",
+              "rst_description": ":code:`True`, if the user is allowed to send video notes\n",
+              "name": "can_send_video_notes",
+              "required": true
+            },
+            {
+              "type": "Boolean",
+              "description": "True, if the user is allowed to send voice notes",
+              "html_description": "<td><em>True</em>, if the user is allowed to send voice notes</td>",
+              "rst_description": ":code:`True`, if the user is allowed to send voice notes\n",
+              "name": "can_send_voice_notes",
+              "required": true
+            },
+            {
+              "type": "Boolean",
+              "description": "True, if the user is allowed to send polls",
+              "html_description": "<td><em>True</em>, if the user is allowed to send polls</td>",
+              "rst_description": ":code:`True`, if the user is allowed to send polls\n",
+              "name": "can_send_polls",
+              "required": true
+            },
+            {
+              "type": "Boolean",
+              "description": "True, if the user is allowed to send animations, games, stickers and use inline bots",
+              "html_description": "<td><em>True</em>, if the user is allowed to send animations, games, stickers and use inline bots</td>",
+              "rst_description": ":code:`True`, if the user is allowed to send animations, games, stickers and use inline bots\n",
+              "name": "can_send_other_messages",
+              "required": true
+            },
+            {
+              "type": "Boolean",
+              "description": "True, if the user is allowed to add web page previews to their messages",
+              "html_description": "<td><em>True</em>, if the user is allowed to add web page previews to their messages</td>",
+              "rst_description": ":code:`True`, if the user is allowed to add web page previews to their messages\n",
+              "name": "can_add_web_page_previews",
+              "required": true
+            },
+            {
+              "type": "Boolean",
               "description": "True, if the user is allowed to change the chat title, photo and other settings",
               "html_description": "<td><em>True</em>, if the user is allowed to change the chat title, photo and other settings</td>",
               "rst_description": ":code:`True`, if the user is allowed to change the chat title, photo and other settings\n",
@@ -3291,46 +3680,6 @@
               "html_description": "<td><em>True</em>, if the user is allowed to create forum topics</td>",
               "rst_description": ":code:`True`, if the user is allowed to create forum topics\n",
               "name": "can_manage_topics",
-              "required": true
-            },
-            {
-              "type": "Boolean",
-              "description": "True, if the user is allowed to send text messages, contacts, locations and venues",
-              "html_description": "<td><em>True</em>, if the user is allowed to send text messages, contacts, locations and venues</td>",
-              "rst_description": ":code:`True`, if the user is allowed to send text messages, contacts, locations and venues\n",
-              "name": "can_send_messages",
-              "required": true
-            },
-            {
-              "type": "Boolean",
-              "description": "True, if the user is allowed to send audios, documents, photos, videos, video notes and voice notes",
-              "html_description": "<td><em>True</em>, if the user is allowed to send audios, documents, photos, videos, video notes and voice notes</td>",
-              "rst_description": ":code:`True`, if the user is allowed to send audios, documents, photos, videos, video notes and voice notes\n",
-              "name": "can_send_media_messages",
-              "required": true
-            },
-            {
-              "type": "Boolean",
-              "description": "True, if the user is allowed to send polls",
-              "html_description": "<td><em>True</em>, if the user is allowed to send polls</td>",
-              "rst_description": ":code:`True`, if the user is allowed to send polls\n",
-              "name": "can_send_polls",
-              "required": true
-            },
-            {
-              "type": "Boolean",
-              "description": "True, if the user is allowed to send animations, games, stickers and use inline bots",
-              "html_description": "<td><em>True</em>, if the user is allowed to send animations, games, stickers and use inline bots</td>",
-              "rst_description": ":code:`True`, if the user is allowed to send animations, games, stickers and use inline bots\n",
-              "name": "can_send_other_messages",
-              "required": true
-            },
-            {
-              "type": "Boolean",
-              "description": "True, if the user is allowed to add web page previews to their messages",
-              "html_description": "<td><em>True</em>, if the user is allowed to add web page previews to their messages</td>",
-              "rst_description": ":code:`True`, if the user is allowed to add web page previews to their messages\n",
-              "name": "can_add_web_page_previews",
               "required": true
             },
             {
@@ -3487,6 +3836,14 @@
             },
             {
               "type": "Integer",
+              "description": "Identifier of a private chat with the user who sent the join request. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier. The bot can use this identifier for 24 hours to send messages until the join request is processed, assuming no other administrator contacted the user.",
+              "html_description": "<td>Identifier of a private chat with the user who sent the join request. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier. The bot can use this identifier for 24 hours to send messages until the join request is processed, assuming no other administrator contacted the user.</td>",
+              "rst_description": "Identifier of a private chat with the user who sent the join request. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier. The bot can use this identifier for 24 hours to send messages until the join request is processed, assuming no other administrator contacted the user.\n",
+              "name": "user_chat_id",
+              "required": true
+            },
+            {
+              "type": "Integer",
               "description": "Date the request was sent in Unix time",
               "html_description": "<td>Date the request was sent in Unix time</td>",
               "rst_description": "Date the request was sent in Unix time\n",
@@ -3521,41 +3878,81 @@
           "annotations": [
             {
               "type": "Boolean",
-              "description": "True, if the user is allowed to send text messages, contacts, locations and venues",
-              "html_description": "<td><em>Optional</em>. <em>True</em>, if the user is allowed to send text messages, contacts, locations and venues</td>",
-              "rst_description": "*Optional*. :code:`True`, if the user is allowed to send text messages, contacts, locations and venues\n",
+              "description": "True, if the user is allowed to send text messages, contacts, invoices, locations and venues",
+              "html_description": "<td><em>Optional</em>. <em>True</em>, if the user is allowed to send text messages, contacts, invoices, locations and venues</td>",
+              "rst_description": "*Optional*. :code:`True`, if the user is allowed to send text messages, contacts, invoices, locations and venues\n",
               "name": "can_send_messages",
               "required": false
             },
             {
               "type": "Boolean",
-              "description": "True, if the user is allowed to send audios, documents, photos, videos, video notes and voice notes, implies can_send_messages",
-              "html_description": "<td><em>Optional</em>. <em>True</em>, if the user is allowed to send audios, documents, photos, videos, video notes and voice notes, implies can_send_messages</td>",
-              "rst_description": "*Optional*. :code:`True`, if the user is allowed to send audios, documents, photos, videos, video notes and voice notes, implies can_send_messages\n",
-              "name": "can_send_media_messages",
+              "description": "True, if the user is allowed to send audios",
+              "html_description": "<td><em>Optional</em>. <em>True</em>, if the user is allowed to send audios</td>",
+              "rst_description": "*Optional*. :code:`True`, if the user is allowed to send audios\n",
+              "name": "can_send_audios",
               "required": false
             },
             {
               "type": "Boolean",
-              "description": "True, if the user is allowed to send polls, implies can_send_messages",
-              "html_description": "<td><em>Optional</em>. <em>True</em>, if the user is allowed to send polls, implies can_send_messages</td>",
-              "rst_description": "*Optional*. :code:`True`, if the user is allowed to send polls, implies can_send_messages\n",
+              "description": "True, if the user is allowed to send documents",
+              "html_description": "<td><em>Optional</em>. <em>True</em>, if the user is allowed to send documents</td>",
+              "rst_description": "*Optional*. :code:`True`, if the user is allowed to send documents\n",
+              "name": "can_send_documents",
+              "required": false
+            },
+            {
+              "type": "Boolean",
+              "description": "True, if the user is allowed to send photos",
+              "html_description": "<td><em>Optional</em>. <em>True</em>, if the user is allowed to send photos</td>",
+              "rst_description": "*Optional*. :code:`True`, if the user is allowed to send photos\n",
+              "name": "can_send_photos",
+              "required": false
+            },
+            {
+              "type": "Boolean",
+              "description": "True, if the user is allowed to send videos",
+              "html_description": "<td><em>Optional</em>. <em>True</em>, if the user is allowed to send videos</td>",
+              "rst_description": "*Optional*. :code:`True`, if the user is allowed to send videos\n",
+              "name": "can_send_videos",
+              "required": false
+            },
+            {
+              "type": "Boolean",
+              "description": "True, if the user is allowed to send video notes",
+              "html_description": "<td><em>Optional</em>. <em>True</em>, if the user is allowed to send video notes</td>",
+              "rst_description": "*Optional*. :code:`True`, if the user is allowed to send video notes\n",
+              "name": "can_send_video_notes",
+              "required": false
+            },
+            {
+              "type": "Boolean",
+              "description": "True, if the user is allowed to send voice notes",
+              "html_description": "<td><em>Optional</em>. <em>True</em>, if the user is allowed to send voice notes</td>",
+              "rst_description": "*Optional*. :code:`True`, if the user is allowed to send voice notes\n",
+              "name": "can_send_voice_notes",
+              "required": false
+            },
+            {
+              "type": "Boolean",
+              "description": "True, if the user is allowed to send polls",
+              "html_description": "<td><em>Optional</em>. <em>True</em>, if the user is allowed to send polls</td>",
+              "rst_description": "*Optional*. :code:`True`, if the user is allowed to send polls\n",
               "name": "can_send_polls",
               "required": false
             },
             {
               "type": "Boolean",
-              "description": "True, if the user is allowed to send animations, games, stickers and use inline bots, implies can_send_media_messages",
-              "html_description": "<td><em>Optional</em>. <em>True</em>, if the user is allowed to send animations, games, stickers and use inline bots, implies can_send_media_messages</td>",
-              "rst_description": "*Optional*. :code:`True`, if the user is allowed to send animations, games, stickers and use inline bots, implies can_send_media_messages\n",
+              "description": "True, if the user is allowed to send animations, games, stickers and use inline bots",
+              "html_description": "<td><em>Optional</em>. <em>True</em>, if the user is allowed to send animations, games, stickers and use inline bots</td>",
+              "rst_description": "*Optional*. :code:`True`, if the user is allowed to send animations, games, stickers and use inline bots\n",
               "name": "can_send_other_messages",
               "required": false
             },
             {
               "type": "Boolean",
-              "description": "True, if the user is allowed to add web page previews to their messages, implies can_send_media_messages",
-              "html_description": "<td><em>Optional</em>. <em>True</em>, if the user is allowed to add web page previews to their messages, implies can_send_media_messages</td>",
-              "rst_description": "*Optional*. :code:`True`, if the user is allowed to add web page previews to their messages, implies can_send_media_messages\n",
+              "description": "True, if the user is allowed to add web page previews to their messages",
+              "html_description": "<td><em>Optional</em>. <em>True</em>, if the user is allowed to add web page previews to their messages</td>",
+              "rst_description": "*Optional*. :code:`True`, if the user is allowed to add web page previews to their messages\n",
               "name": "can_add_web_page_previews",
               "required": false
             },
@@ -3856,6 +4253,42 @@
           "category": "types"
         },
         {
+          "anchor": "botdescription",
+          "name": "BotDescription",
+          "description": "This object represents the bot's description.",
+          "html_description": "<p>This object represents the bot's description.</p>",
+          "rst_description": "This object represents the bot's description.",
+          "annotations": [
+            {
+              "type": "String",
+              "description": "The bot's description",
+              "html_description": "<td>The bot's description</td>",
+              "rst_description": "The bot's description\n",
+              "name": "description",
+              "required": true
+            }
+          ],
+          "category": "types"
+        },
+        {
+          "anchor": "botshortdescription",
+          "name": "BotShortDescription",
+          "description": "This object represents the bot's short description.",
+          "html_description": "<p>This object represents the bot's short description.</p>",
+          "rst_description": "This object represents the bot's short description.",
+          "annotations": [
+            {
+              "type": "String",
+              "description": "The bot's short description",
+              "html_description": "<td>The bot's short description</td>",
+              "rst_description": "The bot's short description\n",
+              "name": "short_description",
+              "required": true
+            }
+          ],
+          "category": "types"
+        },
+        {
           "anchor": "menubutton",
           "name": "MenuButton",
           "description": "This object describes the bot's menu button in a private chat. It should be one of\n - MenuButtonCommands\n - MenuButtonWebApp\n - MenuButtonDefault\nIf a menu button other than MenuButtonDefault is set for a private chat, then it is applied in the chat. Otherwise the default menu button is applied. By default, the menu button opens the list of bot commands.",
@@ -4015,6 +4448,14 @@
               "rst_description": "*Optional*. List of special entities that appear in the caption, which can be specified instead of *parse_mode*\n",
               "name": "caption_entities",
               "required": false
+            },
+            {
+              "type": "Boolean",
+              "description": "Pass True if the photo needs to be covered with a spoiler animation",
+              "html_description": "<td><em>Optional</em>. Pass <em>True</em> if the photo needs to be covered with a spoiler animation</td>",
+              "rst_description": "*Optional*. Pass :code:`True` if the photo needs to be covered with a spoiler animation\n",
+              "name": "has_spoiler",
+              "required": false
             }
           ],
           "category": "types"
@@ -4047,7 +4488,7 @@
               "description": "Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. More information on Sending Files",
               "html_description": "<td><em>Optional</em>. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass &#8220;attach://&lt;file_attach_name&gt;&#8221; if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href=\"#sending-files\">More information on Sending Files &#187;</a></td>",
               "rst_description": "*Optional*. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`\n",
-              "name": "thumb",
+              "name": "thumbnail",
               "required": false
             },
             {
@@ -4105,6 +4546,14 @@
               "rst_description": "*Optional*. Pass :code:`True` if the uploaded video is suitable for streaming\n",
               "name": "supports_streaming",
               "required": false
+            },
+            {
+              "type": "Boolean",
+              "description": "Pass True if the video needs to be covered with a spoiler animation",
+              "html_description": "<td><em>Optional</em>. Pass <em>True</em> if the video needs to be covered with a spoiler animation</td>",
+              "rst_description": "*Optional*. Pass :code:`True` if the video needs to be covered with a spoiler animation\n",
+              "name": "has_spoiler",
+              "required": false
             }
           ],
           "category": "types"
@@ -4137,7 +4586,7 @@
               "description": "Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. More information on Sending Files",
               "html_description": "<td><em>Optional</em>. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass &#8220;attach://&lt;file_attach_name&gt;&#8221; if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href=\"#sending-files\">More information on Sending Files &#187;</a></td>",
               "rst_description": "*Optional*. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`\n",
-              "name": "thumb",
+              "name": "thumbnail",
               "required": false
             },
             {
@@ -4187,6 +4636,14 @@
               "rst_description": "*Optional*. Animation duration in seconds\n",
               "name": "duration",
               "required": false
+            },
+            {
+              "type": "Boolean",
+              "description": "Pass True if the animation needs to be covered with a spoiler animation",
+              "html_description": "<td><em>Optional</em>. Pass <em>True</em> if the animation needs to be covered with a spoiler animation</td>",
+              "rst_description": "*Optional*. Pass :code:`True` if the animation needs to be covered with a spoiler animation\n",
+              "name": "has_spoiler",
+              "required": false
             }
           ],
           "category": "types"
@@ -4219,7 +4676,7 @@
               "description": "Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. More information on Sending Files",
               "html_description": "<td><em>Optional</em>. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass &#8220;attach://&lt;file_attach_name&gt;&#8221; if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href=\"#sending-files\">More information on Sending Files &#187;</a></td>",
               "rst_description": "*Optional*. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`\n",
-              "name": "thumb",
+              "name": "thumbnail",
               "required": false
             },
             {
@@ -4301,7 +4758,7 @@
               "description": "Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. More information on Sending Files",
               "html_description": "<td><em>Optional</em>. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass &#8220;attach://&lt;file_attach_name&gt;&#8221; if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href=\"#sending-files\">More information on Sending Files &#187;</a></td>",
               "rst_description": "*Optional*. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`\n",
-              "name": "thumb",
+              "name": "thumbnail",
               "required": false
             },
             {
@@ -4702,6 +5159,14 @@
             {
               "type": "Boolean",
               "required": false,
+              "description": "Pass True if the photo needs to be covered with a spoiler animation",
+              "html_description": "<td>Pass <em>True</em> if the photo needs to be covered with a spoiler animation</td>",
+              "rst_description": "Pass :code:`True` if the photo needs to be covered with a spoiler animation\n",
+              "name": "has_spoiler"
+            },
+            {
+              "type": "Boolean",
+              "required": false,
               "description": "Sends the message silently. Users will receive a notification with no sound.",
               "html_description": "<td>Sends the message <a href=\"https://telegram.org/blog/channels-2-0#silent-messages\">silently</a>. Users will receive a notification with no sound.</td>",
               "rst_description": "Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.\n",
@@ -4827,7 +5292,7 @@
               "description": "Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. More information on Sending Files",
               "html_description": "<td>Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass &#8220;attach://&lt;file_attach_name&gt;&#8221; if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href=\"#sending-files\">More information on Sending Files &#187;</a></td>",
               "rst_description": "Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`\n",
-              "name": "thumb"
+              "name": "thumbnail"
             },
             {
               "type": "Boolean",
@@ -4909,7 +5374,7 @@
               "description": "Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. More information on Sending Files",
               "html_description": "<td>Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass &#8220;attach://&lt;file_attach_name&gt;&#8221; if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href=\"#sending-files\">More information on Sending Files &#187;</a></td>",
               "rst_description": "Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`\n",
-              "name": "thumb"
+              "name": "thumbnail"
             },
             {
               "type": "String",
@@ -5047,7 +5512,7 @@
               "description": "Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. More information on Sending Files",
               "html_description": "<td>Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass &#8220;attach://&lt;file_attach_name&gt;&#8221; if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href=\"#sending-files\">More information on Sending Files &#187;</a></td>",
               "rst_description": "Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`\n",
-              "name": "thumb"
+              "name": "thumbnail"
             },
             {
               "type": "String",
@@ -5072,6 +5537,14 @@
               "html_description": "<td>A JSON-serialized list of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em></td>",
               "rst_description": "A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*\n",
               "name": "caption_entities"
+            },
+            {
+              "type": "Boolean",
+              "required": false,
+              "description": "Pass True if the video needs to be covered with a spoiler animation",
+              "html_description": "<td>Pass <em>True</em> if the video needs to be covered with a spoiler animation</td>",
+              "rst_description": "Pass :code:`True` if the video needs to be covered with a spoiler animation\n",
+              "name": "has_spoiler"
             },
             {
               "type": "Boolean",
@@ -5185,7 +5658,7 @@
               "description": "Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. More information on Sending Files",
               "html_description": "<td>Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass &#8220;attach://&lt;file_attach_name&gt;&#8221; if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href=\"#sending-files\">More information on Sending Files &#187;</a></td>",
               "rst_description": "Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`\n",
-              "name": "thumb"
+              "name": "thumbnail"
             },
             {
               "type": "String",
@@ -5210,6 +5683,14 @@
               "html_description": "<td>A JSON-serialized list of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em></td>",
               "rst_description": "A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*\n",
               "name": "caption_entities"
+            },
+            {
+              "type": "Boolean",
+              "required": false,
+              "description": "Pass True if the animation needs to be covered with a spoiler animation",
+              "html_description": "<td>Pass <em>True</em> if the animation needs to be covered with a spoiler animation</td>",
+              "rst_description": "Pass :code:`True` if the animation needs to be covered with a spoiler animation\n",
+              "name": "has_spoiler"
             },
             {
               "type": "Boolean",
@@ -5413,7 +5894,7 @@
               "description": "Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. More information on Sending Files",
               "html_description": "<td>Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass &#8220;attach://&lt;file_attach_name&gt;&#8221; if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href=\"#sending-files\">More information on Sending Files &#187;</a></td>",
               "rst_description": "Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`\n",
-              "name": "thumb"
+              "name": "thumbnail"
             },
             {
               "type": "Boolean",
@@ -5633,130 +6114,6 @@
               "description": "Additional interface options. A JSON-serialized object for an inline keyboard, custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user.",
               "html_description": "<td>Additional interface options. A JSON-serialized object for an <a href=\"/bots/features#inline-keyboards\">inline keyboard</a>, <a href=\"/bots/features#keyboards\">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user.</td>",
               "rst_description": "Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.\n",
-              "name": "reply_markup"
-            }
-          ],
-          "category": "methods"
-        },
-        {
-          "anchor": "editmessagelivelocation",
-          "name": "editMessageLiveLocation",
-          "description": "Use this method to edit live location messages. A location can be edited until its live_period expires or editing is explicitly disabled by a call to stopMessageLiveLocation. On success, if the edited message is not an inline message, the edited Message is returned, otherwise True is returned.",
-          "html_description": "<p>Use this method to edit live location messages. A location can be edited until its <em>live_period</em> expires or editing is explicitly disabled by a call to <a href=\"#stopmessagelivelocation\">stopMessageLiveLocation</a>. On success, if the edited message is not an inline message, the edited <a href=\"#message\">Message</a> is returned, otherwise <em>True</em> is returned.</p>",
-          "rst_description": "Use this method to edit live location messages. A location can be edited until its *live_period* expires or editing is explicitly disabled by a call to :class:`aiogram.methods.stop_message_live_location.StopMessageLiveLocation`. On success, if the edited message is not an inline message, the edited :class:`aiogram.types.message.Message` is returned, otherwise :code:`True` is returned.",
-          "annotations": [
-            {
-              "type": "Integer or String",
-              "required": false,
-              "description": "Required if inline_message_id is not specified. Unique identifier for the target chat or username of the target channel (in the format @channelusername)",
-              "html_description": "<td>Required if <em>inline_message_id</em> is not specified. Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)</td>",
-              "rst_description": "Required if *inline_message_id* is not specified. Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)\n",
-              "name": "chat_id"
-            },
-            {
-              "type": "Integer",
-              "required": false,
-              "description": "Required if inline_message_id is not specified. Identifier of the message to edit",
-              "html_description": "<td>Required if <em>inline_message_id</em> is not specified. Identifier of the message to edit</td>",
-              "rst_description": "Required if *inline_message_id* is not specified. Identifier of the message to edit\n",
-              "name": "message_id"
-            },
-            {
-              "type": "String",
-              "required": false,
-              "description": "Required if chat_id and message_id are not specified. Identifier of the inline message",
-              "html_description": "<td>Required if <em>chat_id</em> and <em>message_id</em> are not specified. Identifier of the inline message</td>",
-              "rst_description": "Required if *chat_id* and *message_id* are not specified. Identifier of the inline message\n",
-              "name": "inline_message_id"
-            },
-            {
-              "type": "Float number",
-              "required": true,
-              "description": "Latitude of new location",
-              "html_description": "<td>Latitude of new location</td>",
-              "rst_description": "Latitude of new location\n",
-              "name": "latitude"
-            },
-            {
-              "type": "Float number",
-              "required": true,
-              "description": "Longitude of new location",
-              "html_description": "<td>Longitude of new location</td>",
-              "rst_description": "Longitude of new location\n",
-              "name": "longitude"
-            },
-            {
-              "type": "Float number",
-              "required": false,
-              "description": "The radius of uncertainty for the location, measured in meters; 0-1500",
-              "html_description": "<td>The radius of uncertainty for the location, measured in meters; 0-1500</td>",
-              "rst_description": "The radius of uncertainty for the location, measured in meters; 0-1500\n",
-              "name": "horizontal_accuracy"
-            },
-            {
-              "type": "Integer",
-              "required": false,
-              "description": "Direction in which the user is moving, in degrees. Must be between 1 and 360 if specified.",
-              "html_description": "<td>Direction in which the user is moving, in degrees. Must be between 1 and 360 if specified.</td>",
-              "rst_description": "Direction in which the user is moving, in degrees. Must be between 1 and 360 if specified.\n",
-              "name": "heading"
-            },
-            {
-              "type": "Integer",
-              "required": false,
-              "description": "The maximum distance for proximity alerts about approaching another chat member, in meters. Must be between 1 and 100000 if specified.",
-              "html_description": "<td>The maximum distance for proximity alerts about approaching another chat member, in meters. Must be between 1 and 100000 if specified.</td>",
-              "rst_description": "The maximum distance for proximity alerts about approaching another chat member, in meters. Must be between 1 and 100000 if specified.\n",
-              "name": "proximity_alert_radius"
-            },
-            {
-              "type": "InlineKeyboardMarkup",
-              "required": false,
-              "description": "A JSON-serialized object for a new inline keyboard.",
-              "html_description": "<td>A JSON-serialized object for a new <a href=\"/bots/features#inline-keyboards\">inline keyboard</a>.</td>",
-              "rst_description": "A JSON-serialized object for a new `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_.\n",
-              "name": "reply_markup"
-            }
-          ],
-          "category": "methods"
-        },
-        {
-          "anchor": "stopmessagelivelocation",
-          "name": "stopMessageLiveLocation",
-          "description": "Use this method to stop updating a live location message before live_period expires. On success, if the message is not an inline message, the edited Message is returned, otherwise True is returned.",
-          "html_description": "<p>Use this method to stop updating a live location message before <em>live_period</em> expires. On success, if the message is not an inline message, the edited <a href=\"#message\">Message</a> is returned, otherwise <em>True</em> is returned.</p>",
-          "rst_description": "Use this method to stop updating a live location message before *live_period* expires. On success, if the message is not an inline message, the edited :class:`aiogram.types.message.Message` is returned, otherwise :code:`True` is returned.",
-          "annotations": [
-            {
-              "type": "Integer or String",
-              "required": false,
-              "description": "Required if inline_message_id is not specified. Unique identifier for the target chat or username of the target channel (in the format @channelusername)",
-              "html_description": "<td>Required if <em>inline_message_id</em> is not specified. Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)</td>",
-              "rst_description": "Required if *inline_message_id* is not specified. Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)\n",
-              "name": "chat_id"
-            },
-            {
-              "type": "Integer",
-              "required": false,
-              "description": "Required if inline_message_id is not specified. Identifier of the message with live location to stop",
-              "html_description": "<td>Required if <em>inline_message_id</em> is not specified. Identifier of the message with live location to stop</td>",
-              "rst_description": "Required if *inline_message_id* is not specified. Identifier of the message with live location to stop\n",
-              "name": "message_id"
-            },
-            {
-              "type": "String",
-              "required": false,
-              "description": "Required if chat_id and message_id are not specified. Identifier of the inline message",
-              "html_description": "<td>Required if <em>chat_id</em> and <em>message_id</em> are not specified. Identifier of the inline message</td>",
-              "rst_description": "Required if *chat_id* and *message_id* are not specified. Identifier of the inline message\n",
-              "name": "inline_message_id"
-            },
-            {
-              "type": "InlineKeyboardMarkup",
-              "required": false,
-              "description": "A JSON-serialized object for a new inline keyboard.",
-              "html_description": "<td>A JSON-serialized object for a new <a href=\"/bots/features#inline-keyboards\">inline keyboard</a>.</td>",
-              "rst_description": "A JSON-serialized object for a new `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_.\n",
               "name": "reply_markup"
             }
           ],
@@ -6242,6 +6599,14 @@
               "name": "chat_id"
             },
             {
+              "type": "Integer",
+              "required": false,
+              "description": "Unique identifier for the target message thread; supergroups only",
+              "html_description": "<td>Unique identifier for the target message thread; supergroups only</td>",
+              "rst_description": "Unique identifier for the target message thread; supergroups only\n",
+              "name": "message_thread_id"
+            },
+            {
               "type": "String",
               "required": true,
               "description": "Type of action to broadcast. Choose one, depending on what the user is about to receive: typing for text messages, upload_photo for photos, record_video or upload_video for videos, record_voice or upload_voice for voice notes, upload_document for general files, choose_sticker for stickers, find_location for location data, record_video_note or upload_video_note for video notes.",
@@ -6412,6 +6777,14 @@
               "name": "permissions"
             },
             {
+              "type": "Boolean",
+              "required": false,
+              "description": "Pass True if chat permissions are set independently. Otherwise, the can_send_other_messages and can_add_web_page_previews permissions will imply the can_send_messages, can_send_audios, can_send_documents, can_send_photos, can_send_videos, can_send_video_notes, and can_send_voice_notes permissions; the can_send_polls permission will imply the can_send_messages permission.",
+              "html_description": "<td>Pass <em>True</em> if chat permissions are set independently. Otherwise, the <em>can_send_other_messages</em> and <em>can_add_web_page_previews</em> permissions will imply the <em>can_send_messages</em>, <em>can_send_audios</em>, <em>can_send_documents</em>, <em>can_send_photos</em>, <em>can_send_videos</em>, <em>can_send_video_notes</em>, and <em>can_send_voice_notes</em> permissions; the <em>can_send_polls</em> permission will imply the <em>can_send_messages</em> permission.</td>",
+              "rst_description": "Pass :code:`True` if chat permissions are set independently. Otherwise, the *can_send_other_messages* and *can_add_web_page_previews* permissions will imply the *can_send_messages*, *can_send_audios*, *can_send_documents*, *can_send_photos*, *can_send_videos*, *can_send_video_notes*, and *can_send_voice_notes* permissions; the *can_send_polls* permission will imply the *can_send_messages* permission.\n",
+              "name": "use_independent_chat_permissions"
+            },
+            {
               "type": "Integer",
               "required": false,
               "description": "Date when restrictions will be lifted for the user, unix time. If user is restricted for more than 366 days or less than 30 seconds from the current time, they are considered to be restricted forever",
@@ -6504,9 +6877,9 @@
             {
               "type": "Boolean",
               "required": false,
-              "description": "Pass True if the administrator can add new administrators with a subset of their own privileges or demote administrators that he has promoted, directly or indirectly (promoted by administrators that were appointed by him)",
-              "html_description": "<td>Pass <em>True</em> if the administrator can add new administrators with a subset of their own privileges or demote administrators that he has promoted, directly or indirectly (promoted by administrators that were appointed by him)</td>",
-              "rst_description": "Pass :code:`True` if the administrator can add new administrators with a subset of their own privileges or demote administrators that he has promoted, directly or indirectly (promoted by administrators that were appointed by him)\n",
+              "description": "Pass True if the administrator can add new administrators with a subset of their own privileges or demote administrators that they have promoted, directly or indirectly (promoted by administrators that were appointed by him)",
+              "html_description": "<td>Pass <em>True</em> if the administrator can add new administrators with a subset of their own privileges or demote administrators that they have promoted, directly or indirectly (promoted by administrators that were appointed by him)</td>",
+              "rst_description": "Pass :code:`True` if the administrator can add new administrators with a subset of their own privileges or demote administrators that they have promoted, directly or indirectly (promoted by administrators that were appointed by him)\n",
               "name": "can_promote_members"
             },
             {
@@ -6652,6 +7025,14 @@
               "html_description": "<td>A JSON-serialized object for new default chat permissions</td>",
               "rst_description": "A JSON-serialized object for new default chat permissions\n",
               "name": "permissions"
+            },
+            {
+              "type": "Boolean",
+              "required": false,
+              "description": "Pass True if chat permissions are set independently. Otherwise, the can_send_other_messages and can_add_web_page_previews permissions will imply the can_send_messages, can_send_audios, can_send_documents, can_send_photos, can_send_videos, can_send_video_notes, and can_send_voice_notes permissions; the can_send_polls permission will imply the can_send_messages permission.",
+              "html_description": "<td>Pass <em>True</em> if chat permissions are set independently. Otherwise, the <em>can_send_other_messages</em> and <em>can_add_web_page_previews</em> permissions will imply the <em>can_send_messages</em>, <em>can_send_audios</em>, <em>can_send_documents</em>, <em>can_send_photos</em>, <em>can_send_videos</em>, <em>can_send_video_notes</em>, and <em>can_send_voice_notes</em> permissions; the <em>can_send_polls</em> permission will imply the <em>can_send_messages</em> permission.</td>",
+              "rst_description": "Pass :code:`True` if chat permissions are set independently. Otherwise, the *can_send_other_messages* and *can_add_web_page_previews* permissions will imply the *can_send_messages*, *can_send_audios*, *can_send_documents*, *can_send_photos*, *can_send_videos*, *can_send_video_notes*, and *can_send_voice_notes* permissions; the *can_send_polls* permission will imply the *can_send_messages* permission.\n",
+              "name": "use_independent_chat_permissions"
             }
           ],
           "category": "methods"
@@ -7109,9 +7490,9 @@
         {
           "anchor": "getchatmember",
           "name": "getChatMember",
-          "description": "Use this method to get information about a member of a chat. Returns a ChatMember object on success.",
-          "html_description": "<p>Use this method to get information about a member of a chat. Returns a <a href=\"#chatmember\">ChatMember</a> object on success.</p>",
-          "rst_description": "Use this method to get information about a member of a chat. Returns a :class:`aiogram.types.chat_member.ChatMember` object on success.",
+          "description": "Use this method to get information about a member of a chat. The method is only guaranteed to work for other users if the bot is an administrator in the chat. Returns a ChatMember object on success.",
+          "html_description": "<p>Use this method to get information about a member of a chat. The method is only guaranteed to work for other users if the bot is an administrator in the chat. Returns a <a href=\"#chatmember\">ChatMember</a> object on success.</p>",
+          "rst_description": "Use this method to get information about a member of a chat. The method is only guaranteed to work for other users if the bot is an administrator in the chat. Returns a :class:`aiogram.types.chat_member.ChatMember` object on success.",
           "annotations": [
             {
               "type": "Integer or String",
@@ -7252,18 +7633,18 @@
             },
             {
               "type": "String",
-              "required": true,
-              "description": "New topic name, 1-128 characters",
-              "html_description": "<td>New topic name, 1-128 characters</td>",
-              "rst_description": "New topic name, 1-128 characters\n",
+              "required": false,
+              "description": "New topic name, 0-128 characters. If not specified or empty, the current name of the topic will be kept",
+              "html_description": "<td>New topic name, 0-128 characters. If not specified or empty, the current name of the topic will be kept</td>",
+              "rst_description": "New topic name, 0-128 characters. If not specified or empty, the current name of the topic will be kept\n",
               "name": "name"
             },
             {
               "type": "String",
-              "required": true,
-              "description": "New unique identifier of the custom emoji shown as the topic icon. Use getForumTopicIconStickers to get all allowed custom emoji identifiers.",
-              "html_description": "<td>New unique identifier of the custom emoji shown as the topic icon. Use <a href=\"#getforumtopiciconstickers\">getForumTopicIconStickers</a> to get all allowed custom emoji identifiers.</td>",
-              "rst_description": "New unique identifier of the custom emoji shown as the topic icon. Use :class:`aiogram.methods.get_forum_topic_icon_stickers.GetForumTopicIconStickers` to get all allowed custom emoji identifiers.\n",
+              "required": false,
+              "description": "New unique identifier of the custom emoji shown as the topic icon. Use getForumTopicIconStickers to get all allowed custom emoji identifiers. Pass an empty string to remove the icon. If not specified, the current icon will be kept",
+              "html_description": "<td>New unique identifier of the custom emoji shown as the topic icon. Use <a href=\"#getforumtopiciconstickers\">getForumTopicIconStickers</a> to get all allowed custom emoji identifiers. Pass an empty string to remove the icon. If not specified, the current icon will be kept</td>",
+              "rst_description": "New unique identifier of the custom emoji shown as the topic icon. Use :class:`aiogram.methods.get_forum_topic_icon_stickers.GetForumTopicIconStickers` to get all allowed custom emoji identifiers. Pass an empty string to remove the icon. If not specified, the current icon will be kept\n",
               "name": "icon_custom_emoji_id"
             }
           ],
@@ -7369,6 +7750,104 @@
               "html_description": "<td>Unique identifier for the target message thread of the forum topic</td>",
               "rst_description": "Unique identifier for the target message thread of the forum topic\n",
               "name": "message_thread_id"
+            }
+          ],
+          "category": "methods"
+        },
+        {
+          "anchor": "editgeneralforumtopic",
+          "name": "editGeneralForumTopic",
+          "description": "Use this method to edit the name of the 'General' topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have can_manage_topics administrator rights. Returns True on success.",
+          "html_description": "<p>Use this method to edit the name of the 'General' topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have <em>can_manage_topics</em> administrator rights. Returns <em>True</em> on success.</p>",
+          "rst_description": "Use this method to edit the name of the 'General' topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have *can_manage_topics* administrator rights. Returns :code:`True` on success.",
+          "annotations": [
+            {
+              "type": "Integer or String",
+              "required": true,
+              "description": "Unique identifier for the target chat or username of the target supergroup (in the format @supergroupusername)",
+              "html_description": "<td>Unique identifier for the target chat or username of the target supergroup (in the format <code>@supergroupusername</code>)</td>",
+              "rst_description": "Unique identifier for the target chat or username of the target supergroup (in the format :code:`@supergroupusername`)\n",
+              "name": "chat_id"
+            },
+            {
+              "type": "String",
+              "required": true,
+              "description": "New topic name, 1-128 characters",
+              "html_description": "<td>New topic name, 1-128 characters</td>",
+              "rst_description": "New topic name, 1-128 characters\n",
+              "name": "name"
+            }
+          ],
+          "category": "methods"
+        },
+        {
+          "anchor": "closegeneralforumtopic",
+          "name": "closeGeneralForumTopic",
+          "description": "Use this method to close an open 'General' topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the can_manage_topics administrator rights. Returns True on success.",
+          "html_description": "<p>Use this method to close an open 'General' topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the <em>can_manage_topics</em> administrator rights. Returns <em>True</em> on success.</p>",
+          "rst_description": "Use this method to close an open 'General' topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the *can_manage_topics* administrator rights. Returns :code:`True` on success.",
+          "annotations": [
+            {
+              "type": "Integer or String",
+              "required": true,
+              "description": "Unique identifier for the target chat or username of the target supergroup (in the format @supergroupusername)",
+              "html_description": "<td>Unique identifier for the target chat or username of the target supergroup (in the format <code>@supergroupusername</code>)</td>",
+              "rst_description": "Unique identifier for the target chat or username of the target supergroup (in the format :code:`@supergroupusername`)\n",
+              "name": "chat_id"
+            }
+          ],
+          "category": "methods"
+        },
+        {
+          "anchor": "reopengeneralforumtopic",
+          "name": "reopenGeneralForumTopic",
+          "description": "Use this method to reopen a closed 'General' topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the can_manage_topics administrator rights. The topic will be automatically unhidden if it was hidden. Returns True on success.",
+          "html_description": "<p>Use this method to reopen a closed 'General' topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the <em>can_manage_topics</em> administrator rights. The topic will be automatically unhidden if it was hidden. Returns <em>True</em> on success.</p>",
+          "rst_description": "Use this method to reopen a closed 'General' topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the *can_manage_topics* administrator rights. The topic will be automatically unhidden if it was hidden. Returns :code:`True` on success.",
+          "annotations": [
+            {
+              "type": "Integer or String",
+              "required": true,
+              "description": "Unique identifier for the target chat or username of the target supergroup (in the format @supergroupusername)",
+              "html_description": "<td>Unique identifier for the target chat or username of the target supergroup (in the format <code>@supergroupusername</code>)</td>",
+              "rst_description": "Unique identifier for the target chat or username of the target supergroup (in the format :code:`@supergroupusername`)\n",
+              "name": "chat_id"
+            }
+          ],
+          "category": "methods"
+        },
+        {
+          "anchor": "hidegeneralforumtopic",
+          "name": "hideGeneralForumTopic",
+          "description": "Use this method to hide the 'General' topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the can_manage_topics administrator rights. The topic will be automatically closed if it was open. Returns True on success.",
+          "html_description": "<p>Use this method to hide the 'General' topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the <em>can_manage_topics</em> administrator rights. The topic will be automatically closed if it was open. Returns <em>True</em> on success.</p>",
+          "rst_description": "Use this method to hide the 'General' topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the *can_manage_topics* administrator rights. The topic will be automatically closed if it was open. Returns :code:`True` on success.",
+          "annotations": [
+            {
+              "type": "Integer or String",
+              "required": true,
+              "description": "Unique identifier for the target chat or username of the target supergroup (in the format @supergroupusername)",
+              "html_description": "<td>Unique identifier for the target chat or username of the target supergroup (in the format <code>@supergroupusername</code>)</td>",
+              "rst_description": "Unique identifier for the target chat or username of the target supergroup (in the format :code:`@supergroupusername`)\n",
+              "name": "chat_id"
+            }
+          ],
+          "category": "methods"
+        },
+        {
+          "anchor": "unhidegeneralforumtopic",
+          "name": "unhideGeneralForumTopic",
+          "description": "Use this method to unhide the 'General' topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the can_manage_topics administrator rights. Returns True on success.",
+          "html_description": "<p>Use this method to unhide the 'General' topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the <em>can_manage_topics</em> administrator rights. Returns <em>True</em> on success.</p>",
+          "rst_description": "Use this method to unhide the 'General' topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the *can_manage_topics* administrator rights. Returns :code:`True` on success.",
+          "annotations": [
+            {
+              "type": "Integer or String",
+              "required": true,
+              "description": "Unique identifier for the target chat or username of the target supergroup (in the format @supergroupusername)",
+              "html_description": "<td>Unique identifier for the target chat or username of the target supergroup (in the format <code>@supergroupusername</code>)</td>",
+              "rst_description": "Unique identifier for the target chat or username of the target supergroup (in the format :code:`@supergroupusername`)\n",
+              "name": "chat_id"
             }
           ],
           "category": "methods"
@@ -7510,6 +7989,94 @@
           "category": "methods"
         },
         {
+          "anchor": "setmydescription",
+          "name": "setMyDescription",
+          "description": "Use this method to change the bot's description, which is shown in the chat with the bot if the chat is empty. Returns True on success.",
+          "html_description": "<p>Use this method to change the bot's description, which is shown in the chat with the bot if the chat is empty. Returns <em>True</em> on success.</p>",
+          "rst_description": "Use this method to change the bot's description, which is shown in the chat with the bot if the chat is empty. Returns :code:`True` on success.",
+          "annotations": [
+            {
+              "type": "String",
+              "required": false,
+              "description": "New bot description; 0-512 characters. Pass an empty string to remove the dedicated description for the given language.",
+              "html_description": "<td>New bot description; 0-512 characters. Pass an empty string to remove the dedicated description for the given language.</td>",
+              "rst_description": "New bot description; 0-512 characters. Pass an empty string to remove the dedicated description for the given language.\n",
+              "name": "description"
+            },
+            {
+              "type": "String",
+              "required": false,
+              "description": "A two-letter ISO 639-1 language code. If empty, the description will be applied to all users for whose language there is no dedicated description.",
+              "html_description": "<td>A two-letter ISO 639-1 language code. If empty, the description will be applied to all users for whose language there is no dedicated description.</td>",
+              "rst_description": "A two-letter ISO 639-1 language code. If empty, the description will be applied to all users for whose language there is no dedicated description.\n",
+              "name": "language_code"
+            }
+          ],
+          "category": "methods"
+        },
+        {
+          "anchor": "getmydescription",
+          "name": "getMyDescription",
+          "description": "Use this method to get the current bot description for the given user language. Returns BotDescription on success.",
+          "html_description": "<p>Use this method to get the current bot description for the given user language. Returns <a href=\"#botdescription\">BotDescription</a> on success.</p>",
+          "rst_description": "Use this method to get the current bot description for the given user language. Returns :class:`aiogram.types.bot_description.BotDescription` on success.",
+          "annotations": [
+            {
+              "type": "String",
+              "required": false,
+              "description": "A two-letter ISO 639-1 language code or an empty string",
+              "html_description": "<td>A two-letter ISO 639-1 language code or an empty string</td>",
+              "rst_description": "A two-letter ISO 639-1 language code or an empty string\n",
+              "name": "language_code"
+            }
+          ],
+          "category": "methods"
+        },
+        {
+          "anchor": "setmyshortdescription",
+          "name": "setMyShortDescription",
+          "description": "Use this method to change the bot's short description, which is shown on the bot's profile page and is sent together with the link when users share the bot. Returns True on success.",
+          "html_description": "<p>Use this method to change the bot's short description, which is shown on the bot's profile page and is sent together with the link when users share the bot. Returns <em>True</em> on success.</p>",
+          "rst_description": "Use this method to change the bot's short description, which is shown on the bot's profile page and is sent together with the link when users share the bot. Returns :code:`True` on success.",
+          "annotations": [
+            {
+              "type": "String",
+              "required": false,
+              "description": "New short description for the bot; 0-120 characters. Pass an empty string to remove the dedicated short description for the given language.",
+              "html_description": "<td>New short description for the bot; 0-120 characters. Pass an empty string to remove the dedicated short description for the given language.</td>",
+              "rst_description": "New short description for the bot; 0-120 characters. Pass an empty string to remove the dedicated short description for the given language.\n",
+              "name": "short_description"
+            },
+            {
+              "type": "String",
+              "required": false,
+              "description": "A two-letter ISO 639-1 language code. If empty, the short description will be applied to all users for whose language there is no dedicated short description.",
+              "html_description": "<td>A two-letter ISO 639-1 language code. If empty, the short description will be applied to all users for whose language there is no dedicated short description.</td>",
+              "rst_description": "A two-letter ISO 639-1 language code. If empty, the short description will be applied to all users for whose language there is no dedicated short description.\n",
+              "name": "language_code"
+            }
+          ],
+          "category": "methods"
+        },
+        {
+          "anchor": "getmyshortdescription",
+          "name": "getMyShortDescription",
+          "description": "Use this method to get the current bot short description for the given user language. Returns BotShortDescription on success.",
+          "html_description": "<p>Use this method to get the current bot short description for the given user language. Returns <a href=\"#botshortdescription\">BotShortDescription</a> on success.</p>",
+          "rst_description": "Use this method to get the current bot short description for the given user language. Returns :class:`aiogram.types.bot_short_description.BotShortDescription` on success.",
+          "annotations": [
+            {
+              "type": "String",
+              "required": false,
+              "description": "A two-letter ISO 639-1 language code or an empty string",
+              "html_description": "<td>A two-letter ISO 639-1 language code or an empty string</td>",
+              "rst_description": "A two-letter ISO 639-1 language code or an empty string\n",
+              "name": "language_code"
+            }
+          ],
+          "category": "methods"
+        },
+        {
           "anchor": "setchatmenubutton",
           "name": "setChatMenuButton",
           "description": "Use this method to change the bot's menu button in a private chat, or the default menu button. Returns True on success.",
@@ -7556,9 +8123,9 @@
         {
           "anchor": "setmydefaultadministratorrights",
           "name": "setMyDefaultAdministratorRights",
-          "description": "Use this method to change the default administrator rights requested by the bot when it's added as an administrator to groups or channels. These rights will be suggested to users, but they are are free to modify the list before adding the bot. Returns True on success.",
-          "html_description": "<p>Use this method to change the default administrator rights requested by the bot when it's added as an administrator to groups or channels. These rights will be suggested to users, but they are are free to modify the list before adding the bot. Returns <em>True</em> on success.</p>",
-          "rst_description": "Use this method to change the default administrator rights requested by the bot when it's added as an administrator to groups or channels. These rights will be suggested to users, but they are are free to modify the list before adding the bot. Returns :code:`True` on success.",
+          "description": "Use this method to change the default administrator rights requested by the bot when it's added as an administrator to groups or channels. These rights will be suggested to users, but they are free to modify the list before adding the bot. Returns True on success.",
+          "html_description": "<p>Use this method to change the default administrator rights requested by the bot when it's added as an administrator to groups or channels. These rights will be suggested to users, but they are free to modify the list before adding the bot. Returns <em>True</em> on success.</p>",
+          "rst_description": "Use this method to change the default administrator rights requested by the bot when it's added as an administrator to groups or channels. These rights will be suggested to users, but they are free to modify the list before adding the bot. Returns :code:`True` on success.",
           "annotations": [
             {
               "type": "ChatAdministratorRights",
@@ -7795,6 +8362,130 @@
           "category": "methods"
         },
         {
+          "anchor": "editmessagelivelocation",
+          "name": "editMessageLiveLocation",
+          "description": "Use this method to edit live location messages. A location can be edited until its live_period expires or editing is explicitly disabled by a call to stopMessageLiveLocation. On success, if the edited message is not an inline message, the edited Message is returned, otherwise True is returned.",
+          "html_description": "<p>Use this method to edit live location messages. A location can be edited until its <em>live_period</em> expires or editing is explicitly disabled by a call to <a href=\"#stopmessagelivelocation\">stopMessageLiveLocation</a>. On success, if the edited message is not an inline message, the edited <a href=\"#message\">Message</a> is returned, otherwise <em>True</em> is returned.</p>",
+          "rst_description": "Use this method to edit live location messages. A location can be edited until its *live_period* expires or editing is explicitly disabled by a call to :class:`aiogram.methods.stop_message_live_location.StopMessageLiveLocation`. On success, if the edited message is not an inline message, the edited :class:`aiogram.types.message.Message` is returned, otherwise :code:`True` is returned.",
+          "annotations": [
+            {
+              "type": "Integer or String",
+              "required": false,
+              "description": "Required if inline_message_id is not specified. Unique identifier for the target chat or username of the target channel (in the format @channelusername)",
+              "html_description": "<td>Required if <em>inline_message_id</em> is not specified. Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)</td>",
+              "rst_description": "Required if *inline_message_id* is not specified. Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)\n",
+              "name": "chat_id"
+            },
+            {
+              "type": "Integer",
+              "required": false,
+              "description": "Required if inline_message_id is not specified. Identifier of the message to edit",
+              "html_description": "<td>Required if <em>inline_message_id</em> is not specified. Identifier of the message to edit</td>",
+              "rst_description": "Required if *inline_message_id* is not specified. Identifier of the message to edit\n",
+              "name": "message_id"
+            },
+            {
+              "type": "String",
+              "required": false,
+              "description": "Required if chat_id and message_id are not specified. Identifier of the inline message",
+              "html_description": "<td>Required if <em>chat_id</em> and <em>message_id</em> are not specified. Identifier of the inline message</td>",
+              "rst_description": "Required if *chat_id* and *message_id* are not specified. Identifier of the inline message\n",
+              "name": "inline_message_id"
+            },
+            {
+              "type": "Float number",
+              "required": true,
+              "description": "Latitude of new location",
+              "html_description": "<td>Latitude of new location</td>",
+              "rst_description": "Latitude of new location\n",
+              "name": "latitude"
+            },
+            {
+              "type": "Float number",
+              "required": true,
+              "description": "Longitude of new location",
+              "html_description": "<td>Longitude of new location</td>",
+              "rst_description": "Longitude of new location\n",
+              "name": "longitude"
+            },
+            {
+              "type": "Float number",
+              "required": false,
+              "description": "The radius of uncertainty for the location, measured in meters; 0-1500",
+              "html_description": "<td>The radius of uncertainty for the location, measured in meters; 0-1500</td>",
+              "rst_description": "The radius of uncertainty for the location, measured in meters; 0-1500\n",
+              "name": "horizontal_accuracy"
+            },
+            {
+              "type": "Integer",
+              "required": false,
+              "description": "Direction in which the user is moving, in degrees. Must be between 1 and 360 if specified.",
+              "html_description": "<td>Direction in which the user is moving, in degrees. Must be between 1 and 360 if specified.</td>",
+              "rst_description": "Direction in which the user is moving, in degrees. Must be between 1 and 360 if specified.\n",
+              "name": "heading"
+            },
+            {
+              "type": "Integer",
+              "required": false,
+              "description": "The maximum distance for proximity alerts about approaching another chat member, in meters. Must be between 1 and 100000 if specified.",
+              "html_description": "<td>The maximum distance for proximity alerts about approaching another chat member, in meters. Must be between 1 and 100000 if specified.</td>",
+              "rst_description": "The maximum distance for proximity alerts about approaching another chat member, in meters. Must be between 1 and 100000 if specified.\n",
+              "name": "proximity_alert_radius"
+            },
+            {
+              "type": "InlineKeyboardMarkup",
+              "required": false,
+              "description": "A JSON-serialized object for a new inline keyboard.",
+              "html_description": "<td>A JSON-serialized object for a new <a href=\"/bots/features#inline-keyboards\">inline keyboard</a>.</td>",
+              "rst_description": "A JSON-serialized object for a new `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_.\n",
+              "name": "reply_markup"
+            }
+          ],
+          "category": "methods"
+        },
+        {
+          "anchor": "stopmessagelivelocation",
+          "name": "stopMessageLiveLocation",
+          "description": "Use this method to stop updating a live location message before live_period expires. On success, if the message is not an inline message, the edited Message is returned, otherwise True is returned.",
+          "html_description": "<p>Use this method to stop updating a live location message before <em>live_period</em> expires. On success, if the message is not an inline message, the edited <a href=\"#message\">Message</a> is returned, otherwise <em>True</em> is returned.</p>",
+          "rst_description": "Use this method to stop updating a live location message before *live_period* expires. On success, if the message is not an inline message, the edited :class:`aiogram.types.message.Message` is returned, otherwise :code:`True` is returned.",
+          "annotations": [
+            {
+              "type": "Integer or String",
+              "required": false,
+              "description": "Required if inline_message_id is not specified. Unique identifier for the target chat or username of the target channel (in the format @channelusername)",
+              "html_description": "<td>Required if <em>inline_message_id</em> is not specified. Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)</td>",
+              "rst_description": "Required if *inline_message_id* is not specified. Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)\n",
+              "name": "chat_id"
+            },
+            {
+              "type": "Integer",
+              "required": false,
+              "description": "Required if inline_message_id is not specified. Identifier of the message with live location to stop",
+              "html_description": "<td>Required if <em>inline_message_id</em> is not specified. Identifier of the message with live location to stop</td>",
+              "rst_description": "Required if *inline_message_id* is not specified. Identifier of the message with live location to stop\n",
+              "name": "message_id"
+            },
+            {
+              "type": "String",
+              "required": false,
+              "description": "Required if chat_id and message_id are not specified. Identifier of the inline message",
+              "html_description": "<td>Required if <em>chat_id</em> and <em>message_id</em> are not specified. Identifier of the inline message</td>",
+              "rst_description": "Required if *chat_id* and *message_id* are not specified. Identifier of the inline message\n",
+              "name": "inline_message_id"
+            },
+            {
+              "type": "InlineKeyboardMarkup",
+              "required": false,
+              "description": "A JSON-serialized object for a new inline keyboard.",
+              "html_description": "<td>A JSON-serialized object for a new <a href=\"/bots/features#inline-keyboards\">inline keyboard</a>.</td>",
+              "rst_description": "A JSON-serialized object for a new `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_.\n",
+              "name": "reply_markup"
+            }
+          ],
+          "category": "methods"
+        },
+        {
           "anchor": "editmessagereplymarkup",
           "name": "editMessageReplyMarkup",
           "description": "Use this method to edit only the reply markup of messages. On success, if the edited message is not an inline message, the edited Message is returned, otherwise True is returned.",
@@ -7971,7 +8662,7 @@
               "description": "Sticker thumbnail in the .WEBP or .JPG format",
               "html_description": "<td><em>Optional</em>. Sticker thumbnail in the .WEBP or .JPG format</td>",
               "rst_description": "*Optional*. Sticker thumbnail in the .WEBP or .JPG format\n",
-              "name": "thumb",
+              "name": "thumbnail",
               "required": false
             },
             {
@@ -8012,6 +8703,14 @@
               "html_description": "<td><em>Optional</em>. For custom emoji stickers, unique identifier of the custom emoji</td>",
               "rst_description": "*Optional*. For custom emoji stickers, unique identifier of the custom emoji\n",
               "name": "custom_emoji_id",
+              "required": false
+            },
+            {
+              "type": "True",
+              "description": "True, if the sticker must be repainted to a text color in messages, the color of the Telegram Premium badge in emoji status, white color on chat photos, or another appropriate color in other places",
+              "html_description": "<td><em>Optional</em>. <em>True</em>, if the sticker must be repainted to a text color in messages, the color of the Telegram Premium badge in emoji status, white color on chat photos, or another appropriate color in other places</td>",
+              "rst_description": "*Optional*. :code:`True`, if the sticker must be repainted to a text color in messages, the color of the Telegram Premium badge in emoji status, white color on chat photos, or another appropriate color in other places\n",
+              "name": "needs_repainting",
               "required": false
             },
             {
@@ -8085,7 +8784,7 @@
               "description": "Sticker set thumbnail in the .WEBP, .TGS, or .WEBM format",
               "html_description": "<td><em>Optional</em>. Sticker set thumbnail in the .WEBP, .TGS, or .WEBM format</td>",
               "rst_description": "*Optional*. Sticker set thumbnail in the .WEBP, .TGS, or .WEBM format\n",
-              "name": "thumb",
+              "name": "thumbnail",
               "required": false
             }
           ],
@@ -8134,6 +8833,48 @@
           "category": "types"
         },
         {
+          "anchor": "inputsticker",
+          "name": "InputSticker",
+          "description": "This object describes a sticker to be added to a sticker set.",
+          "html_description": "<p>This object describes a sticker to be added to a sticker set.</p>",
+          "rst_description": "This object describes a sticker to be added to a sticker set.",
+          "annotations": [
+            {
+              "type": "InputFile or String",
+              "description": "The added sticker. Pass a file_id as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. Animated and video stickers can't be uploaded via HTTP URL. More information on Sending Files",
+              "html_description": "<td>The added sticker. Pass a <em>file_id</em> as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. Animated and video stickers can't be uploaded via HTTP URL. <a href=\"#sending-files\">More information on Sending Files &#187;</a></td>",
+              "rst_description": "The added sticker. Pass a *file_id* as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. Animated and video stickers can't be uploaded via HTTP URL. :ref:`More information on Sending Files » <sending-files>`\n",
+              "name": "sticker",
+              "required": true
+            },
+            {
+              "type": "Array of String",
+              "description": "List of 1-20 emoji associated with the sticker",
+              "html_description": "<td>List of 1-20 emoji associated with the sticker</td>",
+              "rst_description": "List of 1-20 emoji associated with the sticker\n",
+              "name": "emoji_list",
+              "required": true
+            },
+            {
+              "type": "MaskPosition",
+              "description": "Position where the mask should be placed on faces. For 'mask' stickers only.",
+              "html_description": "<td><em>Optional</em>. Position where the mask should be placed on faces. For &#8220;mask&#8221; stickers only.</td>",
+              "rst_description": "*Optional*. Position where the mask should be placed on faces. For 'mask' stickers only.\n",
+              "name": "mask_position",
+              "required": false
+            },
+            {
+              "type": "Array of String",
+              "description": "List of 0-20 search keywords for the sticker with total length of up to 64 characters. For 'regular' and 'custom_emoji' stickers only.",
+              "html_description": "<td><em>Optional</em>. List of 0-20 search keywords for the sticker with total length of up to 64 characters. For &#8220;regular&#8221; and &#8220;custom_emoji&#8221; stickers only.</td>",
+              "rst_description": "*Optional*. List of 0-20 search keywords for the sticker with total length of up to 64 characters. For 'regular' and 'custom_emoji' stickers only.\n",
+              "name": "keywords",
+              "required": false
+            }
+          ],
+          "category": "types"
+        },
+        {
           "anchor": "sendsticker",
           "name": "sendSticker",
           "description": "Use this method to send static .WEBP, animated .TGS, or video .WEBM stickers. On success, the sent Message is returned.",
@@ -8159,10 +8900,18 @@
             {
               "type": "InputFile or String",
               "required": true,
-              "description": "Sticker to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a .WEBP file from the Internet, or upload a new one using multipart/form-data. More information on Sending Files",
-              "html_description": "<td>Sticker to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a .WEBP file from the Internet, or upload a new one using multipart/form-data. <a href=\"#sending-files\">More information on Sending Files &#187;</a></td>",
-              "rst_description": "Sticker to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a .WEBP file from the Internet, or upload a new one using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`\n",
+              "description": "Sticker to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a .WEBP sticker from the Internet, or upload a new .WEBP or .TGS sticker using multipart/form-data. More information on Sending Files. Video stickers can only be sent by a file_id. Animated stickers can't be sent via an HTTP URL.",
+              "html_description": "<td>Sticker to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a .WEBP sticker from the Internet, or upload a new .WEBP or .TGS sticker using multipart/form-data. <a href=\"#sending-files\">More information on Sending Files &#187;</a>. Video stickers can only be sent by a file_id. Animated stickers can't be sent via an HTTP URL.</td>",
+              "rst_description": "Sticker to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a .WEBP sticker from the Internet, or upload a new .WEBP or .TGS sticker using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`. Video stickers can only be sent by a file_id. Animated stickers can't be sent via an HTTP URL.\n",
               "name": "sticker"
+            },
+            {
+              "type": "String",
+              "required": false,
+              "description": "Emoji associated with the sticker; only for just uploaded stickers",
+              "html_description": "<td>Emoji associated with the sticker; only for just uploaded stickers</td>",
+              "rst_description": "Emoji associated with the sticker; only for just uploaded stickers\n",
+              "name": "emoji"
             },
             {
               "type": "Boolean",
@@ -8246,9 +8995,9 @@
         {
           "anchor": "uploadstickerfile",
           "name": "uploadStickerFile",
-          "description": "Use this method to upload a .PNG file with a sticker for later use in createNewStickerSet and addStickerToSet methods (can be used multiple times). Returns the uploaded File on success.",
-          "html_description": "<p>Use this method to upload a .PNG file with a sticker for later use in <em>createNewStickerSet</em> and <em>addStickerToSet</em> methods (can be used multiple times). Returns the uploaded <a href=\"#file\">File</a> on success.</p>",
-          "rst_description": "Use this method to upload a .PNG file with a sticker for later use in *createNewStickerSet* and *addStickerToSet* methods (can be used multiple times). Returns the uploaded :class:`aiogram.types.file.File` on success.",
+          "description": "Use this method to upload a file with a sticker for later use in the createNewStickerSet and addStickerToSet methods (the file can be used multiple times). Returns the uploaded File on success.",
+          "html_description": "<p>Use this method to upload a file with a sticker for later use in the <a href=\"#createnewstickerset\">createNewStickerSet</a> and <a href=\"#addstickertoset\">addStickerToSet</a> methods (the file can be used multiple times). Returns the uploaded <a href=\"#file\">File</a> on success.</p>",
+          "rst_description": "Use this method to upload a file with a sticker for later use in the :class:`aiogram.methods.create_new_sticker_set.CreateNewStickerSet` and :class:`aiogram.methods.add_sticker_to_set.AddStickerToSet` methods (the file can be used multiple times). Returns the uploaded :class:`aiogram.types.file.File` on success.",
           "annotations": [
             {
               "type": "Integer",
@@ -8261,10 +9010,18 @@
             {
               "type": "InputFile",
               "required": true,
-              "description": "PNG image with the sticker, must be up to 512 kilobytes in size, dimensions must not exceed 512px, and either width or height must be exactly 512px. More information on Sending Files",
-              "html_description": "<td><strong>PNG</strong> image with the sticker, must be up to 512 kilobytes in size, dimensions must not exceed 512px, and either width or height must be exactly 512px. <a href=\"#sending-files\">More information on Sending Files &#187;</a></td>",
-              "rst_description": "**PNG** image with the sticker, must be up to 512 kilobytes in size, dimensions must not exceed 512px, and either width or height must be exactly 512px. :ref:`More information on Sending Files » <sending-files>`\n",
-              "name": "png_sticker"
+              "description": "A file with the sticker in .WEBP, .PNG, .TGS, or .WEBM format. See https://core.telegram.org/stickers for technical requirements. More information on Sending Files",
+              "html_description": "<td>A file with the sticker in .WEBP, .PNG, .TGS, or .WEBM format. See <a href=\"/stickers\"/><a href=\"https://core.telegram.org/stickers\">https://core.telegram.org/stickers</a> for technical requirements. <a href=\"#sending-files\">More information on Sending Files &#187;</a></td>",
+              "rst_description": "A file with the sticker in .WEBP, .PNG, .TGS, or .WEBM format. See `https://core.telegram.org/stickers <https://core.telegram.org/stickers>`_`https://core.telegram.org/stickers <https://core.telegram.org/stickers>`_ for technical requirements. :ref:`More information on Sending Files » <sending-files>`\n",
+              "name": "sticker"
+            },
+            {
+              "type": "String",
+              "required": true,
+              "description": "Format of the sticker, must be one of 'static', 'animated', 'video'",
+              "html_description": "<td>Format of the sticker, must be one of &#8220;static&#8221;, &#8220;animated&#8221;, &#8220;video&#8221;</td>",
+              "rst_description": "Format of the sticker, must be one of 'static', 'animated', 'video'\n",
+              "name": "sticker_format"
             }
           ],
           "category": "methods"
@@ -8272,9 +9029,9 @@
         {
           "anchor": "createnewstickerset",
           "name": "createNewStickerSet",
-          "description": "Use this method to create a new sticker set owned by a user. The bot will be able to edit the sticker set thus created. You must use exactly one of the fields png_sticker, tgs_sticker, or webm_sticker. Returns True on success.",
-          "html_description": "<p>Use this method to create a new sticker set owned by a user. The bot will be able to edit the sticker set thus created. You <strong>must</strong> use exactly one of the fields <em>png_sticker</em>, <em>tgs_sticker</em>, or <em>webm_sticker</em>. Returns <em>True</em> on success.</p>",
-          "rst_description": "Use this method to create a new sticker set owned by a user. The bot will be able to edit the sticker set thus created. You **must** use exactly one of the fields *png_sticker*, *tgs_sticker*, or *webm_sticker*. Returns :code:`True` on success.",
+          "description": "Use this method to create a new sticker set owned by a user. The bot will be able to edit the sticker set thus created. Returns True on success.",
+          "html_description": "<p>Use this method to create a new sticker set owned by a user. The bot will be able to edit the sticker set thus created. Returns <em>True</em> on success.</p>",
+          "rst_description": "Use this method to create a new sticker set owned by a user. The bot will be able to edit the sticker set thus created. Returns :code:`True` on success.",
           "annotations": [
             {
               "type": "Integer",
@@ -8301,52 +9058,36 @@
               "name": "title"
             },
             {
-              "type": "InputFile or String",
-              "required": false,
-              "description": "PNG image with the sticker, must be up to 512 kilobytes in size, dimensions must not exceed 512px, and either width or height must be exactly 512px. Pass a file_id as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. More information on Sending Files",
-              "html_description": "<td><strong>PNG</strong> image with the sticker, must be up to 512 kilobytes in size, dimensions must not exceed 512px, and either width or height must be exactly 512px. Pass a <em>file_id</em> as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. <a href=\"#sending-files\">More information on Sending Files &#187;</a></td>",
-              "rst_description": "**PNG** image with the sticker, must be up to 512 kilobytes in size, dimensions must not exceed 512px, and either width or height must be exactly 512px. Pass a *file_id* as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`\n",
-              "name": "png_sticker"
-            },
-            {
-              "type": "InputFile",
-              "required": false,
-              "description": "TGS animation with the sticker, uploaded using multipart/form-data. See https://core.telegram.org/stickers#animated-sticker-requirements for technical requirements",
-              "html_description": "<td><strong>TGS</strong> animation with the sticker, uploaded using multipart/form-data. See <a href=\"/stickers#animated-sticker-requirements\"/><a href=\"https://core.telegram.org/stickers#animated-sticker-requirements\">https://core.telegram.org/stickers#animated-sticker-requirements</a> for technical requirements</td>",
-              "rst_description": "**TGS** animation with the sticker, uploaded using multipart/form-data. See `https://core.telegram.org/stickers#animated-sticker-requirements <https://core.telegram.org/stickers#animated-sticker-requirements>`_`https://core.telegram.org/stickers#animated-sticker-requirements <https://core.telegram.org/stickers#animated-sticker-requirements>`_ for technical requirements\n",
-              "name": "tgs_sticker"
-            },
-            {
-              "type": "InputFile",
-              "required": false,
-              "description": "WEBM video with the sticker, uploaded using multipart/form-data. See https://core.telegram.org/stickers#video-sticker-requirements for technical requirements",
-              "html_description": "<td><strong>WEBM</strong> video with the sticker, uploaded using multipart/form-data. See <a href=\"/stickers#video-sticker-requirements\"/><a href=\"https://core.telegram.org/stickers#video-sticker-requirements\">https://core.telegram.org/stickers#video-sticker-requirements</a> for technical requirements</td>",
-              "rst_description": "**WEBM** video with the sticker, uploaded using multipart/form-data. See `https://core.telegram.org/stickers#video-sticker-requirements <https://core.telegram.org/stickers#video-sticker-requirements>`_`https://core.telegram.org/stickers#video-sticker-requirements <https://core.telegram.org/stickers#video-sticker-requirements>`_ for technical requirements\n",
-              "name": "webm_sticker"
-            },
-            {
-              "type": "String",
-              "required": false,
-              "description": "Type of stickers in the set, pass 'regular' or 'mask'. Custom emoji sticker sets can't be created via the Bot API at the moment. By default, a regular sticker set is created.",
-              "html_description": "<td>Type of stickers in the set, pass &#8220;regular&#8221; or &#8220;mask&#8221;. Custom emoji sticker sets can't be created via the Bot API at the moment. By default, a regular sticker set is created.</td>",
-              "rst_description": "Type of stickers in the set, pass 'regular' or 'mask'. Custom emoji sticker sets can't be created via the Bot API at the moment. By default, a regular sticker set is created.\n",
-              "name": "sticker_type"
+              "type": "Array of InputSticker",
+              "required": true,
+              "description": "A JSON-serialized list of 1-50 initial stickers to be added to the sticker set",
+              "html_description": "<td>A JSON-serialized list of 1-50 initial stickers to be added to the sticker set</td>",
+              "rst_description": "A JSON-serialized list of 1-50 initial stickers to be added to the sticker set\n",
+              "name": "stickers"
             },
             {
               "type": "String",
               "required": true,
-              "description": "One or more emoji corresponding to the sticker",
-              "html_description": "<td>One or more emoji corresponding to the sticker</td>",
-              "rst_description": "One or more emoji corresponding to the sticker\n",
-              "name": "emojis"
+              "description": "Format of stickers in the set, must be one of 'static', 'animated', 'video'",
+              "html_description": "<td>Format of stickers in the set, must be one of &#8220;static&#8221;, &#8220;animated&#8221;, &#8220;video&#8221;</td>",
+              "rst_description": "Format of stickers in the set, must be one of 'static', 'animated', 'video'\n",
+              "name": "sticker_format"
             },
             {
-              "type": "MaskPosition",
+              "type": "String",
               "required": false,
-              "description": "A JSON-serialized object for position where the mask should be placed on faces",
-              "html_description": "<td>A JSON-serialized object for position where the mask should be placed on faces</td>",
-              "rst_description": "A JSON-serialized object for position where the mask should be placed on faces\n",
-              "name": "mask_position"
+              "description": "Type of stickers in the set, pass 'regular', 'mask', or 'custom_emoji'. By default, a regular sticker set is created.",
+              "html_description": "<td>Type of stickers in the set, pass &#8220;regular&#8221;, &#8220;mask&#8221;, or &#8220;custom_emoji&#8221;. By default, a regular sticker set is created.</td>",
+              "rst_description": "Type of stickers in the set, pass 'regular', 'mask', or 'custom_emoji'. By default, a regular sticker set is created.\n",
+              "name": "sticker_type"
+            },
+            {
+              "type": "Boolean",
+              "required": false,
+              "description": "Pass True if stickers in the sticker set must be repainted to the color of text when used in messages, the accent color if used as emoji status, white on chat photos, or another appropriate color based on context; for custom emoji sticker sets only",
+              "html_description": "<td>Pass <em>True</em> if stickers in the sticker set must be repainted to the color of text when used in messages, the accent color if used as emoji status, white on chat photos, or another appropriate color based on context; for custom emoji sticker sets only</td>",
+              "rst_description": "Pass :code:`True` if stickers in the sticker set must be repainted to the color of text when used in messages, the accent color if used as emoji status, white on chat photos, or another appropriate color based on context; for custom emoji sticker sets only\n",
+              "name": "needs_repainting"
             }
           ],
           "category": "methods"
@@ -8354,9 +9095,9 @@
         {
           "anchor": "addstickertoset",
           "name": "addStickerToSet",
-          "description": "Use this method to add a new sticker to a set created by the bot. You must use exactly one of the fields png_sticker, tgs_sticker, or webm_sticker. Animated stickers can be added to animated sticker sets and only to them. Animated sticker sets can have up to 50 stickers. Static sticker sets can have up to 120 stickers. Returns True on success.",
-          "html_description": "<p>Use this method to add a new sticker to a set created by the bot. You <strong>must</strong> use exactly one of the fields <em>png_sticker</em>, <em>tgs_sticker</em>, or <em>webm_sticker</em>. Animated stickers can be added to animated sticker sets and only to them. Animated sticker sets can have up to 50 stickers. Static sticker sets can have up to 120 stickers. Returns <em>True</em> on success.</p>",
-          "rst_description": "Use this method to add a new sticker to a set created by the bot. You **must** use exactly one of the fields *png_sticker*, *tgs_sticker*, or *webm_sticker*. Animated stickers can be added to animated sticker sets and only to them. Animated sticker sets can have up to 50 stickers. Static sticker sets can have up to 120 stickers. Returns :code:`True` on success.",
+          "description": "Use this method to add a new sticker to a set created by the bot. The format of the added sticker must match the format of the other stickers in the set. Emoji sticker sets can have up to 200 stickers. Animated and video sticker sets can have up to 50 stickers. Static sticker sets can have up to 120 stickers. Returns True on success.",
+          "html_description": "<p>Use this method to add a new sticker to a set created by the bot. The format of the added sticker must match the format of the other stickers in the set. Emoji sticker sets can have up to 200 stickers. Animated and video sticker sets can have up to 50 stickers. Static sticker sets can have up to 120 stickers. Returns <em>True</em> on success.</p>",
+          "rst_description": "Use this method to add a new sticker to a set created by the bot. The format of the added sticker must match the format of the other stickers in the set. Emoji sticker sets can have up to 200 stickers. Animated and video sticker sets can have up to 50 stickers. Static sticker sets can have up to 120 stickers. Returns :code:`True` on success.",
           "annotations": [
             {
               "type": "Integer",
@@ -8375,44 +9116,12 @@
               "name": "name"
             },
             {
-              "type": "InputFile or String",
-              "required": false,
-              "description": "PNG image with the sticker, must be up to 512 kilobytes in size, dimensions must not exceed 512px, and either width or height must be exactly 512px. Pass a file_id as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. More information on Sending Files",
-              "html_description": "<td><strong>PNG</strong> image with the sticker, must be up to 512 kilobytes in size, dimensions must not exceed 512px, and either width or height must be exactly 512px. Pass a <em>file_id</em> as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. <a href=\"#sending-files\">More information on Sending Files &#187;</a></td>",
-              "rst_description": "**PNG** image with the sticker, must be up to 512 kilobytes in size, dimensions must not exceed 512px, and either width or height must be exactly 512px. Pass a *file_id* as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`\n",
-              "name": "png_sticker"
-            },
-            {
-              "type": "InputFile",
-              "required": false,
-              "description": "TGS animation with the sticker, uploaded using multipart/form-data. See https://core.telegram.org/stickers#animated-sticker-requirements for technical requirements",
-              "html_description": "<td><strong>TGS</strong> animation with the sticker, uploaded using multipart/form-data. See <a href=\"/stickers#animated-sticker-requirements\"/><a href=\"https://core.telegram.org/stickers#animated-sticker-requirements\">https://core.telegram.org/stickers#animated-sticker-requirements</a> for technical requirements</td>",
-              "rst_description": "**TGS** animation with the sticker, uploaded using multipart/form-data. See `https://core.telegram.org/stickers#animated-sticker-requirements <https://core.telegram.org/stickers#animated-sticker-requirements>`_`https://core.telegram.org/stickers#animated-sticker-requirements <https://core.telegram.org/stickers#animated-sticker-requirements>`_ for technical requirements\n",
-              "name": "tgs_sticker"
-            },
-            {
-              "type": "InputFile",
-              "required": false,
-              "description": "WEBM video with the sticker, uploaded using multipart/form-data. See https://core.telegram.org/stickers#video-sticker-requirements for technical requirements",
-              "html_description": "<td><strong>WEBM</strong> video with the sticker, uploaded using multipart/form-data. See <a href=\"/stickers#video-sticker-requirements\"/><a href=\"https://core.telegram.org/stickers#video-sticker-requirements\">https://core.telegram.org/stickers#video-sticker-requirements</a> for technical requirements</td>",
-              "rst_description": "**WEBM** video with the sticker, uploaded using multipart/form-data. See `https://core.telegram.org/stickers#video-sticker-requirements <https://core.telegram.org/stickers#video-sticker-requirements>`_`https://core.telegram.org/stickers#video-sticker-requirements <https://core.telegram.org/stickers#video-sticker-requirements>`_ for technical requirements\n",
-              "name": "webm_sticker"
-            },
-            {
-              "type": "String",
+              "type": "InputSticker",
               "required": true,
-              "description": "One or more emoji corresponding to the sticker",
-              "html_description": "<td>One or more emoji corresponding to the sticker</td>",
-              "rst_description": "One or more emoji corresponding to the sticker\n",
-              "name": "emojis"
-            },
-            {
-              "type": "MaskPosition",
-              "required": false,
-              "description": "A JSON-serialized object for position where the mask should be placed on faces",
-              "html_description": "<td>A JSON-serialized object for position where the mask should be placed on faces</td>",
-              "rst_description": "A JSON-serialized object for position where the mask should be placed on faces\n",
-              "name": "mask_position"
+              "description": "A JSON-serialized object with information about the added sticker. If exactly the same sticker had already been added to the set, then the set isn't changed.",
+              "html_description": "<td>A JSON-serialized object with information about the added sticker. If exactly the same sticker had already been added to the set, then the set isn't changed.</td>",
+              "rst_description": "A JSON-serialized object with information about the added sticker. If exactly the same sticker had already been added to the set, then the set isn't changed.\n",
+              "name": "sticker"
             }
           ],
           "category": "methods"
@@ -8462,11 +9171,115 @@
           "category": "methods"
         },
         {
-          "anchor": "setstickersetthumb",
-          "name": "setStickerSetThumb",
-          "description": "Use this method to set the thumbnail of a sticker set. Animated thumbnails can be set for animated sticker sets only. Video thumbnails can be set only for video sticker sets only. Returns True on success.",
-          "html_description": "<p>Use this method to set the thumbnail of a sticker set. Animated thumbnails can be set for animated sticker sets only. Video thumbnails can be set only for video sticker sets only. Returns <em>True</em> on success.</p>",
-          "rst_description": "Use this method to set the thumbnail of a sticker set. Animated thumbnails can be set for animated sticker sets only. Video thumbnails can be set only for video sticker sets only. Returns :code:`True` on success.",
+          "anchor": "setstickeremojilist",
+          "name": "setStickerEmojiList",
+          "description": "Use this method to change the list of emoji assigned to a regular or custom emoji sticker. The sticker must belong to a sticker set created by the bot. Returns True on success.",
+          "html_description": "<p>Use this method to change the list of emoji assigned to a regular or custom emoji sticker. The sticker must belong to a sticker set created by the bot. Returns <em>True</em> on success.</p>",
+          "rst_description": "Use this method to change the list of emoji assigned to a regular or custom emoji sticker. The sticker must belong to a sticker set created by the bot. Returns :code:`True` on success.",
+          "annotations": [
+            {
+              "type": "String",
+              "required": true,
+              "description": "File identifier of the sticker",
+              "html_description": "<td>File identifier of the sticker</td>",
+              "rst_description": "File identifier of the sticker\n",
+              "name": "sticker"
+            },
+            {
+              "type": "Array of String",
+              "required": true,
+              "description": "A JSON-serialized list of 1-20 emoji associated with the sticker",
+              "html_description": "<td>A JSON-serialized list of 1-20 emoji associated with the sticker</td>",
+              "rst_description": "A JSON-serialized list of 1-20 emoji associated with the sticker\n",
+              "name": "emoji_list"
+            }
+          ],
+          "category": "methods"
+        },
+        {
+          "anchor": "setstickerkeywords",
+          "name": "setStickerKeywords",
+          "description": "Use this method to change search keywords assigned to a regular or custom emoji sticker. The sticker must belong to a sticker set created by the bot. Returns True on success.",
+          "html_description": "<p>Use this method to change search keywords assigned to a regular or custom emoji sticker. The sticker must belong to a sticker set created by the bot. Returns <em>True</em> on success.</p>",
+          "rst_description": "Use this method to change search keywords assigned to a regular or custom emoji sticker. The sticker must belong to a sticker set created by the bot. Returns :code:`True` on success.",
+          "annotations": [
+            {
+              "type": "String",
+              "required": true,
+              "description": "File identifier of the sticker",
+              "html_description": "<td>File identifier of the sticker</td>",
+              "rst_description": "File identifier of the sticker\n",
+              "name": "sticker"
+            },
+            {
+              "type": "Array of String",
+              "required": false,
+              "description": "A JSON-serialized list of 0-20 search keywords for the sticker with total length of up to 64 characters",
+              "html_description": "<td>A JSON-serialized list of 0-20 search keywords for the sticker with total length of up to 64 characters</td>",
+              "rst_description": "A JSON-serialized list of 0-20 search keywords for the sticker with total length of up to 64 characters\n",
+              "name": "keywords"
+            }
+          ],
+          "category": "methods"
+        },
+        {
+          "anchor": "setstickermaskposition",
+          "name": "setStickerMaskPosition",
+          "description": "Use this method to change the mask position of a mask sticker. The sticker must belong to a sticker set that was created by the bot. Returns True on success.",
+          "html_description": "<p>Use this method to change the <a href=\"#maskposition\">mask position</a> of a mask sticker. The sticker must belong to a sticker set that was created by the bot. Returns <em>True</em> on success.</p>",
+          "rst_description": "Use this method to change the `mask position <https://core.telegram.org/bots/api#maskposition>`_ of a mask sticker. The sticker must belong to a sticker set that was created by the bot. Returns :code:`True` on success.",
+          "annotations": [
+            {
+              "type": "String",
+              "required": true,
+              "description": "File identifier of the sticker",
+              "html_description": "<td>File identifier of the sticker</td>",
+              "rst_description": "File identifier of the sticker\n",
+              "name": "sticker"
+            },
+            {
+              "type": "MaskPosition",
+              "required": false,
+              "description": "A JSON-serialized object with the position where the mask should be placed on faces. Omit the parameter to remove the mask position.",
+              "html_description": "<td>A JSON-serialized object with the position where the mask should be placed on faces. Omit the parameter to remove the mask position.</td>",
+              "rst_description": "A JSON-serialized object with the position where the mask should be placed on faces. Omit the parameter to remove the mask position.\n",
+              "name": "mask_position"
+            }
+          ],
+          "category": "methods"
+        },
+        {
+          "anchor": "setstickersettitle",
+          "name": "setStickerSetTitle",
+          "description": "Use this method to set the title of a created sticker set. Returns True on success.",
+          "html_description": "<p>Use this method to set the title of a created sticker set. Returns <em>True</em> on success.</p>",
+          "rst_description": "Use this method to set the title of a created sticker set. Returns :code:`True` on success.",
+          "annotations": [
+            {
+              "type": "String",
+              "required": true,
+              "description": "Sticker set name",
+              "html_description": "<td>Sticker set name</td>",
+              "rst_description": "Sticker set name\n",
+              "name": "name"
+            },
+            {
+              "type": "String",
+              "required": true,
+              "description": "Sticker set title, 1-64 characters",
+              "html_description": "<td>Sticker set title, 1-64 characters</td>",
+              "rst_description": "Sticker set title, 1-64 characters\n",
+              "name": "title"
+            }
+          ],
+          "category": "methods"
+        },
+        {
+          "anchor": "setstickersetthumbnail",
+          "name": "setStickerSetThumbnail",
+          "description": "Use this method to set the thumbnail of a regular or mask sticker set. The format of the thumbnail file must match the format of the stickers in the set. Returns True on success.",
+          "html_description": "<p>Use this method to set the thumbnail of a regular or mask sticker set. The format of the thumbnail file must match the format of the stickers in the set. Returns <em>True</em> on success.</p>",
+          "rst_description": "Use this method to set the thumbnail of a regular or mask sticker set. The format of the thumbnail file must match the format of the stickers in the set. Returns :code:`True` on success.",
           "annotations": [
             {
               "type": "String",
@@ -8487,10 +9300,54 @@
             {
               "type": "InputFile or String",
               "required": false,
-              "description": "A PNG image with the thumbnail, must be up to 128 kilobytes in size and have width and height exactly 100px, or a TGS animation with the thumbnail up to 32 kilobytes in size; see https://core.telegram.org/stickers#animated-sticker-requirements for animated sticker technical requirements, or a WEBM video with the thumbnail up to 32 kilobytes in size; see https://core.telegram.org/stickers#video-sticker-requirements for video sticker technical requirements. Pass a file_id as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. More information on Sending Files. Animated sticker set thumbnails can't be uploaded via HTTP URL.",
-              "html_description": "<td>A <strong>PNG</strong> image with the thumbnail, must be up to 128 kilobytes in size and have width and height exactly 100px, or a <strong>TGS</strong> animation with the thumbnail up to 32 kilobytes in size; see <a href=\"/stickers#animated-sticker-requirements\"/><a href=\"https://core.telegram.org/stickers#animated-sticker-requirements\">https://core.telegram.org/stickers#animated-sticker-requirements</a> for animated sticker technical requirements, or a <strong>WEBM</strong> video with the thumbnail up to 32 kilobytes in size; see <a href=\"/stickers#video-sticker-requirements\"/><a href=\"https://core.telegram.org/stickers#video-sticker-requirements\">https://core.telegram.org/stickers#video-sticker-requirements</a> for video sticker technical requirements. Pass a <em>file_id</em> as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. <a href=\"#sending-files\">More information on Sending Files &#187;</a>. Animated sticker set thumbnails can't be uploaded via HTTP URL.</td>",
-              "rst_description": "A **PNG** image with the thumbnail, must be up to 128 kilobytes in size and have width and height exactly 100px, or a **TGS** animation with the thumbnail up to 32 kilobytes in size; see `https://core.telegram.org/stickers#animated-sticker-requirements <https://core.telegram.org/stickers#animated-sticker-requirements>`_`https://core.telegram.org/stickers#animated-sticker-requirements <https://core.telegram.org/stickers#animated-sticker-requirements>`_ for animated sticker technical requirements, or a **WEBM** video with the thumbnail up to 32 kilobytes in size; see `https://core.telegram.org/stickers#video-sticker-requirements <https://core.telegram.org/stickers#video-sticker-requirements>`_`https://core.telegram.org/stickers#video-sticker-requirements <https://core.telegram.org/stickers#video-sticker-requirements>`_ for video sticker technical requirements. Pass a *file_id* as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`. Animated sticker set thumbnails can't be uploaded via HTTP URL.\n",
-              "name": "thumb"
+              "description": "A .WEBP or .PNG image with the thumbnail, must be up to 128 kilobytes in size and have a width and height of exactly 100px, or a .TGS animation with a thumbnail up to 32 kilobytes in size (see https://core.telegram.org/stickers#animated-sticker-requirements for animated sticker technical requirements), or a WEBM video with the thumbnail up to 32 kilobytes in size; see https://core.telegram.org/stickers#video-sticker-requirements for video sticker technical requirements. Pass a file_id as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. More information on Sending Files. Animated and video sticker set thumbnails can't be uploaded via HTTP URL. If omitted, then the thumbnail is dropped and the first sticker is used as the thumbnail.",
+              "html_description": "<td>A <strong>.WEBP</strong> or <strong>.PNG</strong> image with the thumbnail, must be up to 128 kilobytes in size and have a width and height of exactly 100px, or a <strong>.TGS</strong> animation with a thumbnail up to 32 kilobytes in size (see <a href=\"/stickers#animated-sticker-requirements\"/><a href=\"https://core.telegram.org/stickers#animated-sticker-requirements\">https://core.telegram.org/stickers#animated-sticker-requirements</a> for animated sticker technical requirements), or a <strong>WEBM</strong> video with the thumbnail up to 32 kilobytes in size; see <a href=\"/stickers#video-sticker-requirements\"/><a href=\"https://core.telegram.org/stickers#video-sticker-requirements\">https://core.telegram.org/stickers#video-sticker-requirements</a> for video sticker technical requirements. Pass a <em>file_id</em> as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. <a href=\"#sending-files\">More information on Sending Files &#187;</a>. Animated and video sticker set thumbnails can't be uploaded via HTTP URL. If omitted, then the thumbnail is dropped and the first sticker is used as the thumbnail.</td>",
+              "rst_description": "A **.WEBP** or **.PNG** image with the thumbnail, must be up to 128 kilobytes in size and have a width and height of exactly 100px, or a **.TGS** animation with a thumbnail up to 32 kilobytes in size (see `https://core.telegram.org/stickers#animated-sticker-requirements <https://core.telegram.org/stickers#animated-sticker-requirements>`_`https://core.telegram.org/stickers#animated-sticker-requirements <https://core.telegram.org/stickers#animated-sticker-requirements>`_ for animated sticker technical requirements), or a **WEBM** video with the thumbnail up to 32 kilobytes in size; see `https://core.telegram.org/stickers#video-sticker-requirements <https://core.telegram.org/stickers#video-sticker-requirements>`_`https://core.telegram.org/stickers#video-sticker-requirements <https://core.telegram.org/stickers#video-sticker-requirements>`_ for video sticker technical requirements. Pass a *file_id* as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`. Animated and video sticker set thumbnails can't be uploaded via HTTP URL. If omitted, then the thumbnail is dropped and the first sticker is used as the thumbnail.\n",
+              "name": "thumbnail"
+            }
+          ],
+          "category": "methods"
+        },
+        {
+          "anchor": "setcustomemojistickersetthumbnail",
+          "name": "setCustomEmojiStickerSetThumbnail",
+          "description": "Use this method to set the thumbnail of a custom emoji sticker set. Returns True on success.",
+          "html_description": "<p>Use this method to set the thumbnail of a custom emoji sticker set. Returns <em>True</em> on success.</p>",
+          "rst_description": "Use this method to set the thumbnail of a custom emoji sticker set. Returns :code:`True` on success.",
+          "annotations": [
+            {
+              "type": "String",
+              "required": true,
+              "description": "Sticker set name",
+              "html_description": "<td>Sticker set name</td>",
+              "rst_description": "Sticker set name\n",
+              "name": "name"
+            },
+            {
+              "type": "String",
+              "required": false,
+              "description": "Custom emoji identifier of a sticker from the sticker set; pass an empty string to drop the thumbnail and use the first sticker as the thumbnail.",
+              "html_description": "<td>Custom emoji identifier of a sticker from the sticker set; pass an empty string to drop the thumbnail and use the first sticker as the thumbnail.</td>",
+              "rst_description": "Custom emoji identifier of a sticker from the sticker set; pass an empty string to drop the thumbnail and use the first sticker as the thumbnail.\n",
+              "name": "custom_emoji_id"
+            }
+          ],
+          "category": "methods"
+        },
+        {
+          "anchor": "deletestickerset",
+          "name": "deleteStickerSet",
+          "description": "Use this method to delete a sticker set that was created by the bot. Returns True on success.",
+          "html_description": "<p>Use this method to delete a sticker set that was created by the bot. Returns <em>True</em> on success.</p>",
+          "rst_description": "Use this method to delete a sticker set that was created by the bot. Returns :code:`True` on success.",
+          "annotations": [
+            {
+              "type": "String",
+              "required": true,
+              "description": "Sticker set name",
+              "html_description": "<td>Sticker set name</td>",
+              "rst_description": "Sticker set name\n",
+              "name": "name"
             }
           ],
           "category": "methods"
@@ -8711,7 +9568,7 @@
               "description": "Url of the thumbnail for the result",
               "html_description": "<td><em>Optional</em>. Url of the thumbnail for the result</td>",
               "rst_description": "*Optional*. Url of the thumbnail for the result\n",
-              "name": "thumb_url",
+              "name": "thumbnail_url",
               "required": false
             },
             {
@@ -8719,7 +9576,7 @@
               "description": "Thumbnail width",
               "html_description": "<td><em>Optional</em>. Thumbnail width</td>",
               "rst_description": "*Optional*. Thumbnail width\n",
-              "name": "thumb_width",
+              "name": "thumbnail_width",
               "required": false
             },
             {
@@ -8727,7 +9584,7 @@
               "description": "Thumbnail height",
               "html_description": "<td><em>Optional</em>. Thumbnail height</td>",
               "rst_description": "*Optional*. Thumbnail height\n",
-              "name": "thumb_height",
+              "name": "thumbnail_height",
               "required": false
             }
           ],
@@ -8769,7 +9626,7 @@
               "description": "URL of the thumbnail for the photo",
               "html_description": "<td>URL of the thumbnail for the photo</td>",
               "rst_description": "URL of the thumbnail for the photo\n",
-              "name": "thumb_url",
+              "name": "thumbnail_url",
               "required": true
             },
             {
@@ -8907,7 +9764,7 @@
               "description": "URL of the static (JPEG or GIF) or animated (MPEG4) thumbnail for the result",
               "html_description": "<td>URL of the static (JPEG or GIF) or animated (MPEG4) thumbnail for the result</td>",
               "rst_description": "URL of the static (JPEG or GIF) or animated (MPEG4) thumbnail for the result\n",
-              "name": "thumb_url",
+              "name": "thumbnail_url",
               "required": true
             },
             {
@@ -8915,7 +9772,7 @@
               "description": "MIME type of the thumbnail, must be one of 'image/jpeg', 'image/gif', or 'video/mp4'. Defaults to 'image/jpeg'",
               "html_description": "<td><em>Optional</em>. MIME type of the thumbnail, must be one of &#8220;image/jpeg&#8221;, &#8220;image/gif&#8221;, or &#8220;video/mp4&#8221;. Defaults to &#8220;image/jpeg&#8221;</td>",
               "rst_description": "*Optional*. MIME type of the thumbnail, must be one of 'image/jpeg', 'image/gif', or 'video/mp4'. Defaults to 'image/jpeg'\n",
-              "name": "thumb_mime_type",
+              "name": "thumbnail_mime_type",
               "required": false
             },
             {
@@ -9029,7 +9886,7 @@
               "description": "URL of the static (JPEG or GIF) or animated (MPEG4) thumbnail for the result",
               "html_description": "<td>URL of the static (JPEG or GIF) or animated (MPEG4) thumbnail for the result</td>",
               "rst_description": "URL of the static (JPEG or GIF) or animated (MPEG4) thumbnail for the result\n",
-              "name": "thumb_url",
+              "name": "thumbnail_url",
               "required": true
             },
             {
@@ -9037,7 +9894,7 @@
               "description": "MIME type of the thumbnail, must be one of 'image/jpeg', 'image/gif', or 'video/mp4'. Defaults to 'image/jpeg'",
               "html_description": "<td><em>Optional</em>. MIME type of the thumbnail, must be one of &#8220;image/jpeg&#8221;, &#8220;image/gif&#8221;, or &#8220;video/mp4&#8221;. Defaults to &#8220;image/jpeg&#8221;</td>",
               "rst_description": "*Optional*. MIME type of the thumbnail, must be one of 'image/jpeg', 'image/gif', or 'video/mp4'. Defaults to 'image/jpeg'\n",
-              "name": "thumb_mime_type",
+              "name": "thumbnail_mime_type",
               "required": false
             },
             {
@@ -9135,7 +9992,7 @@
               "description": "URL of the thumbnail (JPEG only) for the video",
               "html_description": "<td>URL of the thumbnail (JPEG only) for the video</td>",
               "rst_description": "URL of the thumbnail (JPEG only) for the video\n",
-              "name": "thumb_url",
+              "name": "thumbnail_url",
               "required": true
             },
             {
@@ -9509,7 +10366,7 @@
               "description": "URL of the thumbnail (JPEG only) for the file",
               "html_description": "<td><em>Optional</em>. URL of the thumbnail (JPEG only) for the file</td>",
               "rst_description": "*Optional*. URL of the thumbnail (JPEG only) for the file\n",
-              "name": "thumb_url",
+              "name": "thumbnail_url",
               "required": false
             },
             {
@@ -9517,7 +10374,7 @@
               "description": "Thumbnail width",
               "html_description": "<td><em>Optional</em>. Thumbnail width</td>",
               "rst_description": "*Optional*. Thumbnail width\n",
-              "name": "thumb_width",
+              "name": "thumbnail_width",
               "required": false
             },
             {
@@ -9525,7 +10382,7 @@
               "description": "Thumbnail height",
               "html_description": "<td><em>Optional</em>. Thumbnail height</td>",
               "rst_description": "*Optional*. Thumbnail height\n",
-              "name": "thumb_height",
+              "name": "thumbnail_height",
               "required": false
             }
           ],
@@ -9631,7 +10488,7 @@
               "description": "Url of the thumbnail for the result",
               "html_description": "<td><em>Optional</em>. Url of the thumbnail for the result</td>",
               "rst_description": "*Optional*. Url of the thumbnail for the result\n",
-              "name": "thumb_url",
+              "name": "thumbnail_url",
               "required": false
             },
             {
@@ -9639,7 +10496,7 @@
               "description": "Thumbnail width",
               "html_description": "<td><em>Optional</em>. Thumbnail width</td>",
               "rst_description": "*Optional*. Thumbnail width\n",
-              "name": "thumb_width",
+              "name": "thumbnail_width",
               "required": false
             },
             {
@@ -9647,7 +10504,7 @@
               "description": "Thumbnail height",
               "html_description": "<td><em>Optional</em>. Thumbnail height</td>",
               "rst_description": "*Optional*. Thumbnail height\n",
-              "name": "thumb_height",
+              "name": "thumbnail_height",
               "required": false
             }
           ],
@@ -9761,7 +10618,7 @@
               "description": "Url of the thumbnail for the result",
               "html_description": "<td><em>Optional</em>. Url of the thumbnail for the result</td>",
               "rst_description": "*Optional*. Url of the thumbnail for the result\n",
-              "name": "thumb_url",
+              "name": "thumbnail_url",
               "required": false
             },
             {
@@ -9769,7 +10626,7 @@
               "description": "Thumbnail width",
               "html_description": "<td><em>Optional</em>. Thumbnail width</td>",
               "rst_description": "*Optional*. Thumbnail width\n",
-              "name": "thumb_width",
+              "name": "thumbnail_width",
               "required": false
             },
             {
@@ -9777,7 +10634,7 @@
               "description": "Thumbnail height",
               "html_description": "<td><em>Optional</em>. Thumbnail height</td>",
               "rst_description": "*Optional*. Thumbnail height\n",
-              "name": "thumb_height",
+              "name": "thumbnail_height",
               "required": false
             }
           ],
@@ -9859,7 +10716,7 @@
               "description": "Url of the thumbnail for the result",
               "html_description": "<td><em>Optional</em>. Url of the thumbnail for the result</td>",
               "rst_description": "*Optional*. Url of the thumbnail for the result\n",
-              "name": "thumb_url",
+              "name": "thumbnail_url",
               "required": false
             },
             {
@@ -9867,7 +10724,7 @@
               "description": "Thumbnail width",
               "html_description": "<td><em>Optional</em>. Thumbnail width</td>",
               "rst_description": "*Optional*. Thumbnail width\n",
-              "name": "thumb_width",
+              "name": "thumbnail_width",
               "required": false
             },
             {
@@ -9875,7 +10732,7 @@
               "description": "Thumbnail height",
               "html_description": "<td><em>Optional</em>. Thumbnail height</td>",
               "rst_description": "*Optional*. Thumbnail height\n",
-              "name": "thumb_height",
+              "name": "thumbnail_height",
               "required": false
             }
           ],

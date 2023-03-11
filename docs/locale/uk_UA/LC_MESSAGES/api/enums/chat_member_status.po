@@ -23,8 +23,8 @@ msgstr ""
 
 #: aiogram.enums.chat_member_status.ChatMemberStatus:1 of
 msgid "This object represents chat member status."
-msgstr ""
+msgstr "Цей об’єкт представляє статус учасника чату."
 
 #: aiogram.enums.chat_member_status.ChatMemberStatus:3 of
 msgid "Source: https://core.telegram.org/bots/api#chatmember"
-msgstr ""
+msgstr "Джерело: https://core.telegram.org/bots/api#chatmember"

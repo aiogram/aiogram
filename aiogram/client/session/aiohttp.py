@@ -19,11 +19,12 @@ from typing import (
 import certifi
 from aiohttp import BasicAuth, ClientError, ClientSession, FormData, TCPConnector
 
-from aiogram.methods import Request, TelegramMethod
+from aiogram.methods import TelegramMethod
 
 from ...exceptions import TelegramNetworkError
 from ...methods.base import TelegramType
-from .base import UNSET, BaseSession
+from ...types import InputFile
+from .base import BaseSession
 
 if TYPE_CHECKING:
     from ..bot import Bot
@@ -48,18 +49,22 @@ def _retrieve_basic(basic: _ProxyBasic) -> Dict[str, Any]:
         username = proxy_auth.login
         password = proxy_auth.password
 
-    return dict(
-        proxy_type=proxy_type,
-        host=host,
-        port=port,
-        username=username,
-        password=password,
-        rdns=True,
-    )
+    return {
+        "proxy_type": proxy_type,
+        "host": host,
+        "port": port,
+        "username": username,
+        "password": password,
+        "rdns": True,
+    }
 
 
 def _prepare_connector(chain_or_plain: _ProxyType) -> Tuple[Type["TCPConnector"], Dict[str, Any]]:
-    from aiohttp_socks import ChainProxyConnector, ProxyConnector, ProxyInfo  # type: ignore
+    from aiohttp_socks import (  # type: ignore
+        ChainProxyConnector,
+        ProxyConnector,
+        ProxyInfo,
+    )
 
     # since tuple is Iterable(compatible with _ProxyChain) object, we assume that
     # user wants chained proxies if tuple is a pair of string(url) and BasicAuth
@@ -74,7 +79,7 @@ def _prepare_connector(chain_or_plain: _ProxyType) -> Tuple[Type["TCPConnector"]
     for basic in chain_or_plain:
         infos.append(ProxyInfo(**_retrieve_basic(basic)))
 
-    return ChainProxyConnector, dict(proxy_infos=infos)
+    return ChainProxyConnector, {"proxy_infos": infos}
 
 
 class AiohttpSession(BaseSession):
@@ -125,15 +130,16 @@ class AiohttpSession(BaseSession):
         if self._session is not None and not self._session.closed:
             await self._session.close()
 
-    def build_form_data(self, request: Request) -> FormData:
+    def build_form_data(self, bot: Bot, method: TelegramMethod[TelegramType]) -> FormData:
         form = FormData(quote_fields=False)
-        for key, value in request.data.items():
-            if value is None or value is UNSET:
+        files: Dict[str, InputFile] = {}
+        for key, value in method.dict().items():
+            value = self.prepare_value(value, bot=bot, files=files)
+            if not value:
                 continue
-            form.add_field(key, self.prepare_value(value))
-        if request.files:
-            for key, value in request.files.items():
-                form.add_field(key, value, filename=value.filename or key)
+            form.add_field(key, value)
+        for key, value in files.items():
+            form.add_field(key, value, filename=value.filename or key)
         return form
 
     async def make_request(
@@ -141,9 +147,8 @@ class AiohttpSession(BaseSession):
     ) -> TelegramType:
         session = await self.create_session()
 
-        request = method.build_request(bot)
-        url = self.api.api_url(token=bot.token, method=request.method)
-        form = self.build_form_data(request)
+        url = self.api.api_url(token=bot.token, method=method.__api_method__)
+        form = self.build_form_data(bot=bot, method=method)
 
         try:
             async with session.post(
@@ -158,11 +163,11 @@ class AiohttpSession(BaseSession):
         return cast(TelegramType, response.result)
 
     async def stream_content(
-        self, url: str, timeout: int, chunk_size: int
+        self, url: str, timeout: int, chunk_size: int, raise_for_status: bool
     ) -> AsyncGenerator[bytes, None]:
         session = await self.create_session()
 
-        async with session.get(url, timeout=timeout) as resp:
+        async with session.get(url, timeout=timeout, raise_for_status=raise_for_status) as resp:
             async for chunk in resp.content.iter_chunked(chunk_size):
                 yield chunk
 

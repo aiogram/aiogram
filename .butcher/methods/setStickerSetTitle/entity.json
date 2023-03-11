@@ -1,0 +1,33 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Stickers",
+    "anchor": "stickers"
+  },
+  "object": {
+    "anchor": "setstickersettitle",
+    "name": "setStickerSetTitle",
+    "description": "Use this method to set the title of a created sticker set. Returns True on success.",
+    "html_description": "<p>Use this method to set the title of a created sticker set. Returns <em>True</em> on success.</p>",
+    "rst_description": "Use this method to set the title of a created sticker set. Returns :code:`True` on success.",
+    "annotations": [
+      {
+        "type": "String",
+        "required": true,
+        "description": "Sticker set name",
+        "html_description": "<td>Sticker set name</td>",
+        "rst_description": "Sticker set name\n",
+        "name": "name"
+      },
+      {
+        "type": "String",
+        "required": true,
+        "description": "Sticker set title, 1-64 characters",
+        "html_description": "<td>Sticker set title, 1-64 characters</td>",
+        "rst_description": "Sticker set title, 1-64 characters\n",
+        "name": "title"
+      }
+    ],
+    "category": "methods"
+  }
+}

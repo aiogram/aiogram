@@ -7,8 +7,6 @@ import pytest
 from aiogram.dispatcher.event.event import EventObserver
 from aiogram.dispatcher.event.handler import HandlerObject
 
-pytestmark = pytest.mark.asyncio
-
 
 async def my_handler(value: str, index: int = 0) -> Any:
     return value

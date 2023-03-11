@@ -91,6 +91,10 @@ class Chat(TelegramObject):
     """*Optional*. For supergroups, the minimum allowed delay between consecutive messages sent by each unpriviledged user; in seconds. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
     message_auto_delete_time: Optional[int] = None
     """*Optional*. The time after which all messages sent to the chat will be automatically deleted; in seconds. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
+    has_aggressive_anti_spam_enabled: Optional[bool] = None
+    """*Optional*. :code:`True`, if aggressive anti-spam checks are enabled in the supergroup. The field is only available to chat administrators. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
+    has_hidden_members: Optional[bool] = None
+    """*Optional*. :code:`True`, if non-administrators can only get the list of bots and administrators in the chat. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
     has_protected_content: Optional[bool] = None
     """*Optional*. :code:`True`, if messages from the chat can't be forwarded to other chats. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
     sticker_set_name: Optional[str] = None
@@ -403,6 +407,7 @@ class Chat(TelegramObject):
     def do(
         self,
         action: str,
+        message_thread_id: Optional[int] = None,
         **kwargs: Any,
     ) -> SendChatAction:
         """
@@ -420,6 +425,7 @@ class Chat(TelegramObject):
         Source: https://core.telegram.org/bots/api#sendchataction
 
         :param action: Type of action to broadcast. Choose one, depending on what the user is about to receive: *typing* for `text messages <https://core.telegram.org/bots/api#sendmessage>`_, *upload_photo* for `photos <https://core.telegram.org/bots/api#sendphoto>`_, *record_video* or *upload_video* for `videos <https://core.telegram.org/bots/api#sendvideo>`_, *record_voice* or *upload_voice* for `voice notes <https://core.telegram.org/bots/api#sendvoice>`_, *upload_document* for `general files <https://core.telegram.org/bots/api#senddocument>`_, *choose_sticker* for `stickers <https://core.telegram.org/bots/api#sendsticker>`_, *find_location* for `location data <https://core.telegram.org/bots/api#sendlocation>`_, *record_video_note* or *upload_video_note* for `video notes <https://core.telegram.org/bots/api#sendvideonote>`_.
+        :param message_thread_id: Unique identifier for the target message thread; supergroups only
         :return: instance of method :class:`aiogram.methods.send_chat_action.SendChatAction`
         """
         # DO NOT EDIT MANUALLY!!!
@@ -430,6 +436,7 @@ class Chat(TelegramObject):
         return SendChatAction(
             chat_id=self.id,
             action=action,
+            message_thread_id=message_thread_id,
             **kwargs,
         )
 
@@ -499,7 +506,7 @@ class Chat(TelegramObject):
 
         - :code:`chat_id`
 
-        Use this method to get information about a member of a chat. Returns a :class:`aiogram.types.chat_member.ChatMember` object on success.
+        Use this method to get information about a member of a chat. The method is only guaranteed to work for other users if the bot is an administrator in the chat. Returns a :class:`aiogram.types.chat_member.ChatMember` object on success.
 
         Source: https://core.telegram.org/bots/api#getchatmember
 
@@ -691,6 +698,7 @@ class Chat(TelegramObject):
     def set_permissions(
         self,
         permissions: ChatPermissions,
+        use_independent_chat_permissions: Optional[bool] = None,
         **kwargs: Any,
     ) -> SetChatPermissions:
         """
@@ -704,6 +712,7 @@ class Chat(TelegramObject):
         Source: https://core.telegram.org/bots/api#setchatpermissions
 
         :param permissions: A JSON-serialized object for new default chat permissions
+        :param use_independent_chat_permissions: Pass :code:`True` if chat permissions are set independently. Otherwise, the *can_send_other_messages* and *can_add_web_page_previews* permissions will imply the *can_send_messages*, *can_send_audios*, *can_send_documents*, *can_send_photos*, *can_send_videos*, *can_send_video_notes*, and *can_send_voice_notes* permissions; the *can_send_polls* permission will imply the *can_send_messages* permission.
         :return: instance of method :class:`aiogram.methods.set_chat_permissions.SetChatPermissions`
         """
         # DO NOT EDIT MANUALLY!!!
@@ -714,6 +723,7 @@ class Chat(TelegramObject):
         return SetChatPermissions(
             chat_id=self.id,
             permissions=permissions,
+            use_independent_chat_permissions=use_independent_chat_permissions,
             **kwargs,
         )
 
@@ -752,7 +762,7 @@ class Chat(TelegramObject):
         :param can_delete_messages: Pass :code:`True` if the administrator can delete messages of other users
         :param can_manage_video_chats: Pass :code:`True` if the administrator can manage video chats
         :param can_restrict_members: Pass :code:`True` if the administrator can restrict, ban or unban chat members
-        :param can_promote_members: Pass :code:`True` if the administrator can add new administrators with a subset of their own privileges or demote administrators that he has promoted, directly or indirectly (promoted by administrators that were appointed by him)
+        :param can_promote_members: Pass :code:`True` if the administrator can add new administrators with a subset of their own privileges or demote administrators that they have promoted, directly or indirectly (promoted by administrators that were appointed by him)
         :param can_change_info: Pass :code:`True` if the administrator can change chat title, photo and other settings
         :param can_invite_users: Pass :code:`True` if the administrator can invite new users to the chat
         :param can_pin_messages: Pass :code:`True` if the administrator can pin messages, supergroups only
@@ -786,6 +796,7 @@ class Chat(TelegramObject):
         self,
         user_id: int,
         permissions: ChatPermissions,
+        use_independent_chat_permissions: Optional[bool] = None,
         until_date: Optional[Union[datetime.datetime, datetime.timedelta, int]] = None,
         **kwargs: Any,
     ) -> RestrictChatMember:
@@ -801,6 +812,7 @@ class Chat(TelegramObject):
 
         :param user_id: Unique identifier of the target user
         :param permissions: A JSON-serialized object for new user permissions
+        :param use_independent_chat_permissions: Pass :code:`True` if chat permissions are set independently. Otherwise, the *can_send_other_messages* and *can_add_web_page_previews* permissions will imply the *can_send_messages*, *can_send_audios*, *can_send_documents*, *can_send_photos*, *can_send_videos*, *can_send_video_notes*, and *can_send_voice_notes* permissions; the *can_send_polls* permission will imply the *can_send_messages* permission.
         :param until_date: Date when restrictions will be lifted for the user, unix time. If user is restricted for more than 366 days or less than 30 seconds from the current time, they are considered to be restricted forever
         :return: instance of method :class:`aiogram.methods.restrict_chat_member.RestrictChatMember`
         """
@@ -813,6 +825,7 @@ class Chat(TelegramObject):
             chat_id=self.id,
             user_id=user_id,
             permissions=permissions,
+            use_independent_chat_permissions=use_independent_chat_permissions,
             until_date=until_date,
             **kwargs,
         )

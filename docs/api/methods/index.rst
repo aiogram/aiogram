@@ -17,6 +17,7 @@ Available methods
     ban_chat_sender_chat
     close
     close_forum_topic
+    close_general_forum_topic
     copy_message
     create_chat_invite_link
     create_forum_topic
@@ -27,7 +28,7 @@ Available methods
     delete_my_commands
     edit_chat_invite_link
     edit_forum_topic
-    edit_message_live_location
+    edit_general_forum_topic
     export_chat_invite_link
     forward_message
     get_chat
@@ -40,12 +41,16 @@ Available methods
     get_me
     get_my_commands
     get_my_default_administrator_rights
+    get_my_description
+    get_my_short_description
     get_user_profile_photos
+    hide_general_forum_topic
     leave_chat
     log_out
     pin_chat_message
     promote_chat_member
     reopen_forum_topic
+    reopen_general_forum_topic
     restrict_chat_member
     revoke_chat_invite_link
     send_animation
@@ -72,9 +77,11 @@ Available methods
     set_chat_title
     set_my_commands
     set_my_default_administrator_rights
-    stop_message_live_location
+    set_my_description
+    set_my_short_description
     unban_chat_member
     unban_chat_sender_chat
+    unhide_general_forum_topic
     unpin_all_chat_messages
     unpin_all_forum_topic_messages
     unpin_chat_message
@@ -99,11 +106,17 @@ Stickers
     add_sticker_to_set
     create_new_sticker_set
     delete_sticker_from_set
+    delete_sticker_set
     get_custom_emoji_stickers
     get_sticker_set
     send_sticker
+    set_custom_emoji_sticker_set_thumbnail
+    set_sticker_emoji_list
+    set_sticker_keywords
+    set_sticker_mask_position
     set_sticker_position_in_set
-    set_sticker_set_thumb
+    set_sticker_set_thumbnail
+    set_sticker_set_title
     upload_sticker_file
 
 Games
@@ -143,9 +156,11 @@ Updating messages
 
     delete_message
     edit_message_caption
+    edit_message_live_location
     edit_message_media
     edit_message_reply_markup
     edit_message_text
+    stop_message_live_location
     stop_poll
 
 Inline mode

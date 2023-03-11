@@ -23,8 +23,8 @@ msgstr ""
 
 #: aiogram.enums.bot_command_scope_type.BotCommandScopeType:1 of
 msgid "This object represents the scope to which bot commands are applied."
-msgstr ""
+msgstr "Цей об’єкт представляє область, до якої застосовуються команди бота."
 
 #: aiogram.enums.bot_command_scope_type.BotCommandScopeType:3 of
 msgid "Source: https://core.telegram.org/bots/api#botcommandscope"
-msgstr ""
+msgstr "Джерело: https://core.telegram.org/bots/api#botcommandscope"

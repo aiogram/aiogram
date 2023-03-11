@@ -1,0 +1,25 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "botshortdescription",
+    "name": "BotShortDescription",
+    "description": "This object represents the bot's short description.",
+    "html_description": "<p>This object represents the bot's short description.</p>",
+    "rst_description": "This object represents the bot's short description.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "The bot's short description",
+        "html_description": "<td>The bot's short description</td>",
+        "rst_description": "The bot's short description\n",
+        "name": "short_description",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

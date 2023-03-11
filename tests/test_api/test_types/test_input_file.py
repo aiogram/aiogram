@@ -1,12 +1,9 @@
 from typing import AsyncIterable
 
-import pytest
 from aresponses import ResponsesMockServer
 
 from aiogram import Bot
 from aiogram.types import BufferedInputFile, FSInputFile, InputFile, URLInputFile
-
-pytestmark = pytest.mark.asyncio
 
 
 class TestInputFile:

@@ -12,8 +12,6 @@ from aiogram import F
 from aiogram.filters.callback_data import CallbackData
 from aiogram.types import CallbackQuery, User
 
-pytestmark = pytest.mark.asyncio
-
 
 class MyIntEnum(Enum):
     FOO = auto()

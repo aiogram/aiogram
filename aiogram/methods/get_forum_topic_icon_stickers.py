@@ -1,12 +1,9 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, List
+from typing import TYPE_CHECKING, List
 
 from ..types import Sticker
-from .base import Request, TelegramMethod
-
-if TYPE_CHECKING:
-    from ..client.bot import Bot
+from .base import TelegramMethod
 
 
 class GetForumTopicIconStickers(TelegramMethod[List[Sticker]]):
@@ -17,8 +14,4 @@ class GetForumTopicIconStickers(TelegramMethod[List[Sticker]]):
     """
 
     __returning__ = List[Sticker]
-
-    def build_request(self, bot: Bot) -> Request:
-        data: Dict[str, Any] = self.dict()
-
-        return Request(method="getForumTopicIconStickers", data=data)
+    __api_method__ = "getForumTopicIconStickers"

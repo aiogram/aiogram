@@ -1,16 +1,18 @@
+import asyncio
 import logging
 
-from aiogram import Bot, Dispatcher, types
+from aiogram import Bot, Dispatcher, Router, types
 from aiogram.filters import Command
 from aiogram.types import Message
 
+# Bot token can be obtained via https://t.me/BotFahter
 TOKEN = "42:TOKEN"
-dp = Dispatcher()
 
-logger = logging.getLogger(__name__)
+# All handlers should be attached to the Router (or Dispatcher)
+router = Router()
 
 
-@dp.message(Command(commands=["start"]))
+@router.message(Command(commands=["start"]))
 async def command_start_handler(message: Message) -> None:
     """
     This handler receive messages with `/start` command
@@ -23,7 +25,7 @@ async def command_start_handler(message: Message) -> None:
     await message.answer(f"Hello, <b>{message.from_user.full_name}!</b>")
 
 
-@dp.message()
+@router.message()
 async def echo_handler(message: types.Message) -> None:
     """
     Handler will forward received message back to the sender
@@ -38,12 +40,18 @@ async def echo_handler(message: types.Message) -> None:
         await message.answer("Nice try!")
 
 
-def main() -> None:
-    # Initialize Bot instance with an default parse mode which will be passed to all API calls
+async def main() -> None:
+    # Dispatcher is a root router
+    dp = Dispatcher()
+    # ... and all other routers should be attached to Dispatcher
+    dp.include_router(router)
+
+    # Initialize Bot instance with a default parse mode which will be passed to all API calls
     bot = Bot(TOKEN, parse_mode="HTML")
     # And the run events dispatching
-    dp.run_polling(bot)
+    await dp.start_polling(bot)
 
 
 if __name__ == "__main__":
-    main()
+    logging.basicConfig(level=logging.INFO)
+    asyncio.run(main())

@@ -1,4 +1,3 @@
-import pytest
 from magic_filter import AttrDict
 
 from aiogram import F
@@ -7,7 +6,6 @@ from aiogram.types import Update
 
 
 class TestMagicDataFilter:
-    @pytest.mark.asyncio
     async def test_call(self):
         called = False
 

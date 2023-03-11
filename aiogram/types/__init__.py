@@ -2,16 +2,20 @@ from typing import Optional
 
 from .animation import Animation
 from .audio import Audio
-from .base import UNSET, TelegramObject
+from .base import UNSET_PARSE_MODE, TelegramObject
 from .bot_command import BotCommand
 from .bot_command_scope import BotCommandScope
-from .bot_command_scope_all_chat_administrators import BotCommandScopeAllChatAdministrators
+from .bot_command_scope_all_chat_administrators import (
+    BotCommandScopeAllChatAdministrators,
+)
 from .bot_command_scope_all_group_chats import BotCommandScopeAllGroupChats
 from .bot_command_scope_all_private_chats import BotCommandScopeAllPrivateChats
 from .bot_command_scope_chat import BotCommandScopeChat
 from .bot_command_scope_chat_administrators import BotCommandScopeChatAdministrators
 from .bot_command_scope_chat_member import BotCommandScopeChatMember
 from .bot_command_scope_default import BotCommandScopeDefault
+from .bot_description import BotDescription
+from .bot_short_description import BotShortDescription
 from .callback_game import CallbackGame
 from .callback_query import CallbackQuery
 from .chat import Chat
@@ -29,6 +33,7 @@ from .chat_member_restricted import ChatMemberRestricted
 from .chat_member_updated import ChatMemberUpdated
 from .chat_permissions import ChatPermissions
 from .chat_photo import ChatPhoto
+from .chat_shared import ChatShared
 from .chosen_inline_result import ChosenInlineResult
 from .contact import Contact
 from .dice import Dice
@@ -42,9 +47,12 @@ from .force_reply import ForceReply
 from .forum_topic import ForumTopic
 from .forum_topic_closed import ForumTopicClosed
 from .forum_topic_created import ForumTopicCreated
+from .forum_topic_edited import ForumTopicEdited
 from .forum_topic_reopened import ForumTopicReopened
 from .game import Game
 from .game_high_score import GameHighScore
+from .general_forum_topic_hidden import GeneralForumTopicHidden
+from .general_forum_topic_unhidden import GeneralForumTopicUnhidden
 from .inline_keyboard_button import InlineKeyboardButton
 from .inline_keyboard_markup import InlineKeyboardMarkup
 from .inline_query import InlineQuery
@@ -80,11 +88,14 @@ from .input_media_document import InputMediaDocument
 from .input_media_photo import InputMediaPhoto
 from .input_media_video import InputMediaVideo
 from .input_message_content import InputMessageContent
+from .input_sticker import InputSticker
 from .input_text_message_content import InputTextMessageContent
 from .input_venue_message_content import InputVenueMessageContent
 from .invoice import Invoice
 from .keyboard_button import KeyboardButton
 from .keyboard_button_poll_type import KeyboardButtonPollType
+from .keyboard_button_request_chat import KeyboardButtonRequestChat
+from .keyboard_button_request_user import KeyboardButtonRequestUser
 from .labeled_price import LabeledPrice
 from .location import Location
 from .login_url import LoginUrl
@@ -107,7 +118,9 @@ from .passport_element_error_front_side import PassportElementErrorFrontSide
 from .passport_element_error_reverse_side import PassportElementErrorReverseSide
 from .passport_element_error_selfie import PassportElementErrorSelfie
 from .passport_element_error_translation_file import PassportElementErrorTranslationFile
-from .passport_element_error_translation_files import PassportElementErrorTranslationFiles
+from .passport_element_error_translation_files import (
+    PassportElementErrorTranslationFiles,
+)
 from .passport_element_error_unspecified import PassportElementErrorUnspecified
 from .passport_file import PassportFile
 from .photo_size import PhotoSize
@@ -129,6 +142,7 @@ from .successful_payment import SuccessfulPayment
 from .update import Update
 from .user import User
 from .user_profile_photos import UserProfilePhotos
+from .user_shared import UserShared
 from .venue import Venue
 from .video import Video
 from .video_chat_ended import VideoChatEnded
@@ -140,6 +154,7 @@ from .voice import Voice
 from .web_app_data import WebAppData
 from .web_app_info import WebAppInfo
 from .webhook_info import WebhookInfo
+from .write_access_allowed import WriteAccessAllowed
 
 __all__ = (
     "Animation",
@@ -153,6 +168,8 @@ __all__ = (
     "BotCommandScopeChatAdministrators",
     "BotCommandScopeChatMember",
     "BotCommandScopeDefault",
+    "BotDescription",
+    "BotShortDescription",
     "BufferedInputFile",
     "CallbackGame",
     "CallbackQuery",
@@ -171,6 +188,7 @@ __all__ = (
     "ChatMemberUpdated",
     "ChatPermissions",
     "ChatPhoto",
+    "ChatShared",
     "ChosenInlineResult",
     "Contact",
     "ContentType",
@@ -186,9 +204,12 @@ __all__ = (
     "ForumTopic",
     "ForumTopicClosed",
     "ForumTopicCreated",
+    "ForumTopicEdited",
     "ForumTopicReopened",
     "Game",
     "GameHighScore",
+    "GeneralForumTopicHidden",
+    "GeneralForumTopicUnhidden",
     "InlineKeyboardButton",
     "InlineKeyboardMarkup",
     "InlineQuery",
@@ -224,11 +245,14 @@ __all__ = (
     "InputMediaPhoto",
     "InputMediaVideo",
     "InputMessageContent",
+    "InputSticker",
     "InputTextMessageContent",
     "InputVenueMessageContent",
     "Invoice",
     "KeyboardButton",
     "KeyboardButtonPollType",
+    "KeyboardButtonRequestChat",
+    "KeyboardButtonRequestUser",
     "LabeledPrice",
     "Location",
     "LoginUrl",
@@ -271,11 +295,12 @@ __all__ = (
     "StickerSet",
     "SuccessfulPayment",
     "TelegramObject",
-    "UNSET",
+    "UNSET_PARSE_MODE",
     "URLInputFile",
     "Update",
     "User",
     "UserProfilePhotos",
+    "UserShared",
     "Venue",
     "Video",
     "VideoChatEnded",
@@ -287,6 +312,7 @@ __all__ = (
     "WebAppData",
     "WebAppInfo",
     "WebhookInfo",
+    "WriteAccessAllowed",
 )
 
 # Load typing forward refs for every TelegramObject

@@ -1,9 +1,11 @@
 import pytest
 
 from aiogram.fsm.storage.base import DEFAULT_DESTINY, StorageKey
-from aiogram.fsm.storage.redis import DefaultKeyBuilder, RedisEventIsolation, RedisStorage
-
-pytestmark = pytest.mark.asyncio
+from aiogram.fsm.storage.redis import (
+    DefaultKeyBuilder,
+    RedisEventIsolation,
+    RedisStorage,
+)
 
 PREFIX = "test"
 BOT_ID = 42

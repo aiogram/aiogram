@@ -5,10 +5,19 @@ from typing import TYPE_CHECKING, Any, List, Optional, Union
 
 from pydantic import Field
 
-from aiogram.utils.text_decorations import TextDecoration, html_decoration, markdown_decoration
+from aiogram.utils.text_decorations import (
+    TextDecoration,
+    html_decoration,
+    markdown_decoration,
+)
 
 from ..enums import ContentType
-from .base import UNSET, TelegramObject
+from .base import (
+    UNSET_DISABLE_WEB_PAGE_PREVIEW,
+    UNSET_PARSE_MODE,
+    UNSET_PROTECT_CONTENT,
+    TelegramObject,
+)
 
 if TYPE_CHECKING:
     from ..methods import (
@@ -44,14 +53,18 @@ if TYPE_CHECKING:
     from .animation import Animation
     from .audio import Audio
     from .chat import Chat
+    from .chat_shared import ChatShared
     from .contact import Contact
     from .dice import Dice
     from .document import Document
     from .force_reply import ForceReply
     from .forum_topic_closed import ForumTopicClosed
     from .forum_topic_created import ForumTopicCreated
+    from .forum_topic_edited import ForumTopicEdited
     from .forum_topic_reopened import ForumTopicReopened
     from .game import Game
+    from .general_forum_topic_hidden import GeneralForumTopicHidden
+    from .general_forum_topic_unhidden import GeneralForumTopicUnhidden
     from .inline_keyboard_markup import InlineKeyboardMarkup
     from .input_file import InputFile
     from .input_media import InputMedia
@@ -73,6 +86,7 @@ if TYPE_CHECKING:
     from .sticker import Sticker
     from .successful_payment import SuccessfulPayment
     from .user import User
+    from .user_shared import UserShared
     from .venue import Venue
     from .video import Video
     from .video_chat_ended import VideoChatEnded
@@ -82,6 +96,7 @@ if TYPE_CHECKING:
     from .video_note import VideoNote
     from .voice import Voice
     from .web_app_data import WebAppData
+    from .write_access_allowed import WriteAccessAllowed
 
 
 class Message(TelegramObject):
@@ -155,6 +170,8 @@ class Message(TelegramObject):
     """*Optional*. Caption for the animation, audio, document, photo, video or voice"""
     caption_entities: Optional[List[MessageEntity]] = None
     """*Optional*. For messages with a caption, special entities like usernames, URLs, bot commands, etc. that appear in the caption"""
+    has_media_spoiler: Optional[bool] = None
+    """*Optional*. :code:`True`, if the message media is covered by a spoiler animation"""
     contact: Optional[Contact] = None
     """*Optional*. Message is a shared contact, information about the contact"""
     dice: Optional[Dice] = None
@@ -195,18 +212,30 @@ class Message(TelegramObject):
     """*Optional*. Message is an invoice for a `payment <https://core.telegram.org/bots/api#payments>`_, information about the invoice. `More about payments » <https://core.telegram.org/bots/api#payments>`_"""
     successful_payment: Optional[SuccessfulPayment] = None
     """*Optional*. Message is a service message about a successful payment, information about the payment. `More about payments » <https://core.telegram.org/bots/api#payments>`_"""
+    user_shared: Optional[UserShared] = None
+    """*Optional*. Service message: a user was shared with the bot"""
+    chat_shared: Optional[ChatShared] = None
+    """*Optional*. Service message: a chat was shared with the bot"""
     connected_website: Optional[str] = None
     """*Optional*. The domain name of the website on which the user has logged in. `More about Telegram Login » <https://core.telegram.org/widgets/login>`_"""
+    write_access_allowed: Optional[WriteAccessAllowed] = None
+    """*Optional*. Service message: the user allowed the bot added to the attachment menu to write messages"""
     passport_data: Optional[PassportData] = None
     """*Optional*. Telegram Passport data"""
     proximity_alert_triggered: Optional[ProximityAlertTriggered] = None
     """*Optional*. Service message. A user in the chat triggered another user's proximity alert while sharing Live Location."""
     forum_topic_created: Optional[ForumTopicCreated] = None
     """*Optional*. Service message: forum topic created"""
+    forum_topic_edited: Optional[ForumTopicEdited] = None
+    """*Optional*. Service message: forum topic edited"""
     forum_topic_closed: Optional[ForumTopicClosed] = None
     """*Optional*. Service message: forum topic closed"""
     forum_topic_reopened: Optional[ForumTopicReopened] = None
     """*Optional*. Service message: forum topic reopened"""
+    general_forum_topic_hidden: Optional[GeneralForumTopicHidden] = None
+    """*Optional*. Service message: the 'General' forum topic hidden"""
+    general_forum_topic_unhidden: Optional[GeneralForumTopicUnhidden] = None
+    """*Optional*. Service message: the 'General' forum topic unhidden"""
     video_chat_scheduled: Optional[VideoChatScheduled] = None
     """*Optional*. Service message: video chat scheduled"""
     video_chat_started: Optional[VideoChatStarted] = None
@@ -324,12 +353,13 @@ class Message(TelegramObject):
         duration: Optional[int] = None,
         width: Optional[int] = None,
         height: Optional[int] = None,
-        thumb: Optional[Union[InputFile, str]] = None,
+        thumbnail: Optional[Union[InputFile, str]] = None,
         caption: Optional[str] = None,
-        parse_mode: Optional[str] = UNSET,
+        parse_mode: Optional[str] = UNSET_PARSE_MODE,
         caption_entities: Optional[List[MessageEntity]] = None,
+        has_spoiler: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
+        protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -352,10 +382,11 @@ class Message(TelegramObject):
         :param duration: Duration of sent animation in seconds
         :param width: Animation width
         :param height: Animation height
-        :param thumb: Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`
+        :param thumbnail: Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`
         :param caption: Animation caption (may also be used when resending animation by *file_id*), 0-1024 characters after entities parsing
         :param parse_mode: Mode for parsing entities in the animation caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.
         :param caption_entities: A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*
+        :param has_spoiler: Pass :code:`True` if the animation needs to be covered with a spoiler animation
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
@@ -375,10 +406,11 @@ class Message(TelegramObject):
             duration=duration,
             width=width,
             height=height,
-            thumb=thumb,
+            thumbnail=thumbnail,
             caption=caption,
             parse_mode=parse_mode,
             caption_entities=caption_entities,
+            has_spoiler=has_spoiler,
             disable_notification=disable_notification,
             protect_content=protect_content,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -392,12 +424,13 @@ class Message(TelegramObject):
         duration: Optional[int] = None,
         width: Optional[int] = None,
         height: Optional[int] = None,
-        thumb: Optional[Union[InputFile, str]] = None,
+        thumbnail: Optional[Union[InputFile, str]] = None,
         caption: Optional[str] = None,
-        parse_mode: Optional[str] = UNSET,
+        parse_mode: Optional[str] = UNSET_PARSE_MODE,
         caption_entities: Optional[List[MessageEntity]] = None,
+        has_spoiler: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
+        protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         reply_to_message_id: Optional[int] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
@@ -420,10 +453,11 @@ class Message(TelegramObject):
         :param duration: Duration of sent animation in seconds
         :param width: Animation width
         :param height: Animation height
-        :param thumb: Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`
+        :param thumbnail: Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`
         :param caption: Animation caption (may also be used when resending animation by *file_id*), 0-1024 characters after entities parsing
         :param parse_mode: Mode for parsing entities in the animation caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.
         :param caption_entities: A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*
+        :param has_spoiler: Pass :code:`True` if the animation needs to be covered with a spoiler animation
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param reply_to_message_id: If the message is a reply, ID of the original message
@@ -443,10 +477,11 @@ class Message(TelegramObject):
             duration=duration,
             width=width,
             height=height,
-            thumb=thumb,
+            thumbnail=thumbnail,
             caption=caption,
             parse_mode=parse_mode,
             caption_entities=caption_entities,
+            has_spoiler=has_spoiler,
             disable_notification=disable_notification,
             protect_content=protect_content,
             reply_to_message_id=reply_to_message_id,
@@ -459,14 +494,14 @@ class Message(TelegramObject):
         self,
         audio: Union[InputFile, str],
         caption: Optional[str] = None,
-        parse_mode: Optional[str] = UNSET,
+        parse_mode: Optional[str] = UNSET_PARSE_MODE,
         caption_entities: Optional[List[MessageEntity]] = None,
         duration: Optional[int] = None,
         performer: Optional[str] = None,
         title: Optional[str] = None,
-        thumb: Optional[Union[InputFile, str]] = None,
+        thumbnail: Optional[Union[InputFile, str]] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
+        protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -493,7 +528,7 @@ class Message(TelegramObject):
         :param duration: Duration of the audio in seconds
         :param performer: Performer
         :param title: Track name
-        :param thumb: Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`
+        :param thumbnail: Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
@@ -516,7 +551,7 @@ class Message(TelegramObject):
             duration=duration,
             performer=performer,
             title=title,
-            thumb=thumb,
+            thumbnail=thumbnail,
             disable_notification=disable_notification,
             protect_content=protect_content,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -528,14 +563,14 @@ class Message(TelegramObject):
         self,
         audio: Union[InputFile, str],
         caption: Optional[str] = None,
-        parse_mode: Optional[str] = UNSET,
+        parse_mode: Optional[str] = UNSET_PARSE_MODE,
         caption_entities: Optional[List[MessageEntity]] = None,
         duration: Optional[int] = None,
         performer: Optional[str] = None,
         title: Optional[str] = None,
-        thumb: Optional[Union[InputFile, str]] = None,
+        thumbnail: Optional[Union[InputFile, str]] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
+        protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         reply_to_message_id: Optional[int] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
@@ -562,7 +597,7 @@ class Message(TelegramObject):
         :param duration: Duration of the audio in seconds
         :param performer: Performer
         :param title: Track name
-        :param thumb: Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`
+        :param thumbnail: Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param reply_to_message_id: If the message is a reply, ID of the original message
@@ -585,7 +620,7 @@ class Message(TelegramObject):
             duration=duration,
             performer=performer,
             title=title,
-            thumb=thumb,
+            thumbnail=thumbnail,
             disable_notification=disable_notification,
             protect_content=protect_content,
             reply_to_message_id=reply_to_message_id,
@@ -601,7 +636,7 @@ class Message(TelegramObject):
         last_name: Optional[str] = None,
         vcard: Optional[str] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
+        protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -657,7 +692,7 @@ class Message(TelegramObject):
         last_name: Optional[str] = None,
         vcard: Optional[str] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
+        protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         reply_to_message_id: Optional[int] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
@@ -710,13 +745,13 @@ class Message(TelegramObject):
     def reply_document(
         self,
         document: Union[InputFile, str],
-        thumb: Optional[Union[InputFile, str]] = None,
+        thumbnail: Optional[Union[InputFile, str]] = None,
         caption: Optional[str] = None,
-        parse_mode: Optional[str] = UNSET,
+        parse_mode: Optional[str] = UNSET_PARSE_MODE,
         caption_entities: Optional[List[MessageEntity]] = None,
         disable_content_type_detection: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
+        protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -736,7 +771,7 @@ class Message(TelegramObject):
         Source: https://core.telegram.org/bots/api#senddocument
 
         :param document: File to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`
-        :param thumb: Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`
+        :param thumbnail: Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`
         :param caption: Document caption (may also be used when resending documents by *file_id*), 0-1024 characters after entities parsing
         :param parse_mode: Mode for parsing entities in the document caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.
         :param caption_entities: A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*
@@ -757,7 +792,7 @@ class Message(TelegramObject):
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
             reply_to_message_id=self.message_id,
             document=document,
-            thumb=thumb,
+            thumbnail=thumbnail,
             caption=caption,
             parse_mode=parse_mode,
             caption_entities=caption_entities,
@@ -772,13 +807,13 @@ class Message(TelegramObject):
     def answer_document(
         self,
         document: Union[InputFile, str],
-        thumb: Optional[Union[InputFile, str]] = None,
+        thumbnail: Optional[Union[InputFile, str]] = None,
         caption: Optional[str] = None,
-        parse_mode: Optional[str] = UNSET,
+        parse_mode: Optional[str] = UNSET_PARSE_MODE,
         caption_entities: Optional[List[MessageEntity]] = None,
         disable_content_type_detection: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
+        protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         reply_to_message_id: Optional[int] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
@@ -798,7 +833,7 @@ class Message(TelegramObject):
         Source: https://core.telegram.org/bots/api#senddocument
 
         :param document: File to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`
-        :param thumb: Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`
+        :param thumbnail: Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`
         :param caption: Document caption (may also be used when resending documents by *file_id*), 0-1024 characters after entities parsing
         :param parse_mode: Mode for parsing entities in the document caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.
         :param caption_entities: A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*
@@ -819,7 +854,7 @@ class Message(TelegramObject):
             chat_id=self.chat.id,
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
             document=document,
-            thumb=thumb,
+            thumbnail=thumbnail,
             caption=caption,
             parse_mode=parse_mode,
             caption_entities=caption_entities,
@@ -836,7 +871,7 @@ class Message(TelegramObject):
         self,
         game_short_name: str,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
+        protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[InlineKeyboardMarkup] = None,
         **kwargs: Any,
@@ -881,7 +916,7 @@ class Message(TelegramObject):
         self,
         game_short_name: str,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
+        protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         reply_to_message_id: Optional[int] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[InlineKeyboardMarkup] = None,
@@ -947,7 +982,7 @@ class Message(TelegramObject):
         send_email_to_provider: Optional[bool] = None,
         is_flexible: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
+        protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[InlineKeyboardMarkup] = None,
         **kwargs: Any,
@@ -1052,7 +1087,7 @@ class Message(TelegramObject):
         send_email_to_provider: Optional[bool] = None,
         is_flexible: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
+        protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         reply_to_message_id: Optional[int] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[InlineKeyboardMarkup] = None,
@@ -1143,7 +1178,7 @@ class Message(TelegramObject):
         heading: Optional[int] = None,
         proximity_alert_radius: Optional[int] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
+        protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -1205,7 +1240,7 @@ class Message(TelegramObject):
         heading: Optional[int] = None,
         proximity_alert_radius: Optional[int] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
+        protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         reply_to_message_id: Optional[int] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
@@ -1263,7 +1298,7 @@ class Message(TelegramObject):
         self,
         media: List[Union[InputMediaAudio, InputMediaDocument, InputMediaPhoto, InputMediaVideo]],
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
+        protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         allow_sending_without_reply: Optional[bool] = None,
         **kwargs: Any,
     ) -> SendMediaGroup:
@@ -1305,7 +1340,7 @@ class Message(TelegramObject):
         self,
         media: List[Union[InputMediaAudio, InputMediaDocument, InputMediaPhoto, InputMediaVideo]],
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
+        protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         reply_to_message_id: Optional[int] = None,
         allow_sending_without_reply: Optional[bool] = None,
         **kwargs: Any,
@@ -1347,11 +1382,11 @@ class Message(TelegramObject):
     def reply(
         self,
         text: str,
-        parse_mode: Optional[str] = UNSET,
+        parse_mode: Optional[str] = UNSET_PARSE_MODE,
         entities: Optional[List[MessageEntity]] = None,
-        disable_web_page_preview: Optional[bool] = None,
+        disable_web_page_preview: Optional[bool] = UNSET_DISABLE_WEB_PAGE_PREVIEW,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
+        protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -1403,11 +1438,11 @@ class Message(TelegramObject):
     def answer(
         self,
         text: str,
-        parse_mode: Optional[str] = UNSET,
+        parse_mode: Optional[str] = UNSET_PARSE_MODE,
         entities: Optional[List[MessageEntity]] = None,
-        disable_web_page_preview: Optional[bool] = None,
+        disable_web_page_preview: Optional[bool] = UNSET_DISABLE_WEB_PAGE_PREVIEW,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
+        protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         reply_to_message_id: Optional[int] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
@@ -1461,10 +1496,11 @@ class Message(TelegramObject):
         self,
         photo: Union[InputFile, str],
         caption: Optional[str] = None,
-        parse_mode: Optional[str] = UNSET,
+        parse_mode: Optional[str] = UNSET_PARSE_MODE,
         caption_entities: Optional[List[MessageEntity]] = None,
+        has_spoiler: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
+        protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -1487,6 +1523,7 @@ class Message(TelegramObject):
         :param caption: Photo caption (may also be used when resending photos by *file_id*), 0-1024 characters after entities parsing
         :param parse_mode: Mode for parsing entities in the photo caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.
         :param caption_entities: A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*
+        :param has_spoiler: Pass :code:`True` if the photo needs to be covered with a spoiler animation
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
@@ -1506,6 +1543,7 @@ class Message(TelegramObject):
             caption=caption,
             parse_mode=parse_mode,
             caption_entities=caption_entities,
+            has_spoiler=has_spoiler,
             disable_notification=disable_notification,
             protect_content=protect_content,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -1517,10 +1555,11 @@ class Message(TelegramObject):
         self,
         photo: Union[InputFile, str],
         caption: Optional[str] = None,
-        parse_mode: Optional[str] = UNSET,
+        parse_mode: Optional[str] = UNSET_PARSE_MODE,
         caption_entities: Optional[List[MessageEntity]] = None,
+        has_spoiler: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
+        protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         reply_to_message_id: Optional[int] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
@@ -1543,6 +1582,7 @@ class Message(TelegramObject):
         :param caption: Photo caption (may also be used when resending photos by *file_id*), 0-1024 characters after entities parsing
         :param parse_mode: Mode for parsing entities in the photo caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.
         :param caption_entities: A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*
+        :param has_spoiler: Pass :code:`True` if the photo needs to be covered with a spoiler animation
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param reply_to_message_id: If the message is a reply, ID of the original message
@@ -1562,6 +1602,7 @@ class Message(TelegramObject):
             caption=caption,
             parse_mode=parse_mode,
             caption_entities=caption_entities,
+            has_spoiler=has_spoiler,
             disable_notification=disable_notification,
             protect_content=protect_content,
             reply_to_message_id=reply_to_message_id,
@@ -1579,13 +1620,13 @@ class Message(TelegramObject):
         allows_multiple_answers: Optional[bool] = None,
         correct_option_id: Optional[int] = None,
         explanation: Optional[str] = None,
-        explanation_parse_mode: Optional[str] = UNSET,
+        explanation_parse_mode: Optional[str] = UNSET_PARSE_MODE,
         explanation_entities: Optional[List[MessageEntity]] = None,
         open_period: Optional[int] = None,
         close_date: Optional[Union[datetime.datetime, datetime.timedelta, int]] = None,
         is_closed: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
+        protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -1659,13 +1700,13 @@ class Message(TelegramObject):
         allows_multiple_answers: Optional[bool] = None,
         correct_option_id: Optional[int] = None,
         explanation: Optional[str] = None,
-        explanation_parse_mode: Optional[str] = UNSET,
+        explanation_parse_mode: Optional[str] = UNSET_PARSE_MODE,
         explanation_entities: Optional[List[MessageEntity]] = None,
         open_period: Optional[int] = None,
         close_date: Optional[Union[datetime.datetime, datetime.timedelta, int]] = None,
         is_closed: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
+        protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         reply_to_message_id: Optional[int] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
@@ -1735,7 +1776,7 @@ class Message(TelegramObject):
         self,
         emoji: Optional[str] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
+        protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -1782,7 +1823,7 @@ class Message(TelegramObject):
         self,
         emoji: Optional[str] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
+        protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         reply_to_message_id: Optional[int] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
@@ -1829,8 +1870,9 @@ class Message(TelegramObject):
     def reply_sticker(
         self,
         sticker: Union[InputFile, str],
+        emoji: Optional[str] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
+        protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -1849,7 +1891,8 @@ class Message(TelegramObject):
 
         Source: https://core.telegram.org/bots/api#sendsticker
 
-        :param sticker: Sticker to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a .WEBP file from the Internet, or upload a new one using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`
+        :param sticker: Sticker to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a .WEBP sticker from the Internet, or upload a new .WEBP or .TGS sticker using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`. Video stickers can only be sent by a file_id. Animated stickers can't be sent via an HTTP URL.
+        :param emoji: Emoji associated with the sticker; only for just uploaded stickers
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
@@ -1866,6 +1909,7 @@ class Message(TelegramObject):
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
             reply_to_message_id=self.message_id,
             sticker=sticker,
+            emoji=emoji,
             disable_notification=disable_notification,
             protect_content=protect_content,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -1876,8 +1920,9 @@ class Message(TelegramObject):
     def answer_sticker(
         self,
         sticker: Union[InputFile, str],
+        emoji: Optional[str] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
+        protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         reply_to_message_id: Optional[int] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
@@ -1896,7 +1941,8 @@ class Message(TelegramObject):
 
         Source: https://core.telegram.org/bots/api#sendsticker
 
-        :param sticker: Sticker to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a .WEBP file from the Internet, or upload a new one using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`
+        :param sticker: Sticker to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a .WEBP sticker from the Internet, or upload a new .WEBP or .TGS sticker using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`. Video stickers can only be sent by a file_id. Animated stickers can't be sent via an HTTP URL.
+        :param emoji: Emoji associated with the sticker; only for just uploaded stickers
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param reply_to_message_id: If the message is a reply, ID of the original message
@@ -1913,6 +1959,7 @@ class Message(TelegramObject):
             chat_id=self.chat.id,
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
             sticker=sticker,
+            emoji=emoji,
             disable_notification=disable_notification,
             protect_content=protect_content,
             reply_to_message_id=reply_to_message_id,
@@ -1932,7 +1979,7 @@ class Message(TelegramObject):
         google_place_id: Optional[str] = None,
         google_place_type: Optional[str] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
+        protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -2000,7 +2047,7 @@ class Message(TelegramObject):
         google_place_id: Optional[str] = None,
         google_place_type: Optional[str] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
+        protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         reply_to_message_id: Optional[int] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
@@ -2064,13 +2111,14 @@ class Message(TelegramObject):
         duration: Optional[int] = None,
         width: Optional[int] = None,
         height: Optional[int] = None,
-        thumb: Optional[Union[InputFile, str]] = None,
+        thumbnail: Optional[Union[InputFile, str]] = None,
         caption: Optional[str] = None,
-        parse_mode: Optional[str] = UNSET,
+        parse_mode: Optional[str] = UNSET_PARSE_MODE,
         caption_entities: Optional[List[MessageEntity]] = None,
+        has_spoiler: Optional[bool] = None,
         supports_streaming: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
+        protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -2093,10 +2141,11 @@ class Message(TelegramObject):
         :param duration: Duration of sent video in seconds
         :param width: Video width
         :param height: Video height
-        :param thumb: Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`
+        :param thumbnail: Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`
         :param caption: Video caption (may also be used when resending videos by *file_id*), 0-1024 characters after entities parsing
         :param parse_mode: Mode for parsing entities in the video caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.
         :param caption_entities: A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*
+        :param has_spoiler: Pass :code:`True` if the video needs to be covered with a spoiler animation
         :param supports_streaming: Pass :code:`True` if the uploaded video is suitable for streaming
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
@@ -2117,10 +2166,11 @@ class Message(TelegramObject):
             duration=duration,
             width=width,
             height=height,
-            thumb=thumb,
+            thumbnail=thumbnail,
             caption=caption,
             parse_mode=parse_mode,
             caption_entities=caption_entities,
+            has_spoiler=has_spoiler,
             supports_streaming=supports_streaming,
             disable_notification=disable_notification,
             protect_content=protect_content,
@@ -2135,13 +2185,14 @@ class Message(TelegramObject):
         duration: Optional[int] = None,
         width: Optional[int] = None,
         height: Optional[int] = None,
-        thumb: Optional[Union[InputFile, str]] = None,
+        thumbnail: Optional[Union[InputFile, str]] = None,
         caption: Optional[str] = None,
-        parse_mode: Optional[str] = UNSET,
+        parse_mode: Optional[str] = UNSET_PARSE_MODE,
         caption_entities: Optional[List[MessageEntity]] = None,
+        has_spoiler: Optional[bool] = None,
         supports_streaming: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
+        protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         reply_to_message_id: Optional[int] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
@@ -2164,10 +2215,11 @@ class Message(TelegramObject):
         :param duration: Duration of sent video in seconds
         :param width: Video width
         :param height: Video height
-        :param thumb: Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`
+        :param thumbnail: Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`
         :param caption: Video caption (may also be used when resending videos by *file_id*), 0-1024 characters after entities parsing
         :param parse_mode: Mode for parsing entities in the video caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.
         :param caption_entities: A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*
+        :param has_spoiler: Pass :code:`True` if the video needs to be covered with a spoiler animation
         :param supports_streaming: Pass :code:`True` if the uploaded video is suitable for streaming
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
@@ -2188,10 +2240,11 @@ class Message(TelegramObject):
             duration=duration,
             width=width,
             height=height,
-            thumb=thumb,
+            thumbnail=thumbnail,
             caption=caption,
             parse_mode=parse_mode,
             caption_entities=caption_entities,
+            has_spoiler=has_spoiler,
             supports_streaming=supports_streaming,
             disable_notification=disable_notification,
             protect_content=protect_content,
@@ -2206,9 +2259,9 @@ class Message(TelegramObject):
         video_note: Union[InputFile, str],
         duration: Optional[int] = None,
         length: Optional[int] = None,
-        thumb: Optional[Union[InputFile, str]] = None,
+        thumbnail: Optional[Union[InputFile, str]] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
+        protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -2230,7 +2283,7 @@ class Message(TelegramObject):
         :param video_note: Video note to send. Pass a file_id as String to send a video note that exists on the Telegram servers (recommended) or upload a new video using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`. Sending video notes by a URL is currently unsupported
         :param duration: Duration of sent video in seconds
         :param length: Video width and height, i.e. diameter of the video message
-        :param thumb: Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`
+        :param thumbnail: Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
@@ -2249,7 +2302,7 @@ class Message(TelegramObject):
             video_note=video_note,
             duration=duration,
             length=length,
-            thumb=thumb,
+            thumbnail=thumbnail,
             disable_notification=disable_notification,
             protect_content=protect_content,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -2262,9 +2315,9 @@ class Message(TelegramObject):
         video_note: Union[InputFile, str],
         duration: Optional[int] = None,
         length: Optional[int] = None,
-        thumb: Optional[Union[InputFile, str]] = None,
+        thumbnail: Optional[Union[InputFile, str]] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
+        protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         reply_to_message_id: Optional[int] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
@@ -2286,7 +2339,7 @@ class Message(TelegramObject):
         :param video_note: Video note to send. Pass a file_id as String to send a video note that exists on the Telegram servers (recommended) or upload a new video using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`. Sending video notes by a URL is currently unsupported
         :param duration: Duration of sent video in seconds
         :param length: Video width and height, i.e. diameter of the video message
-        :param thumb: Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`
+        :param thumbnail: Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param reply_to_message_id: If the message is a reply, ID of the original message
@@ -2305,7 +2358,7 @@ class Message(TelegramObject):
             video_note=video_note,
             duration=duration,
             length=length,
-            thumb=thumb,
+            thumbnail=thumbnail,
             disable_notification=disable_notification,
             protect_content=protect_content,
             reply_to_message_id=reply_to_message_id,
@@ -2318,11 +2371,11 @@ class Message(TelegramObject):
         self,
         voice: Union[InputFile, str],
         caption: Optional[str] = None,
-        parse_mode: Optional[str] = UNSET,
+        parse_mode: Optional[str] = UNSET_PARSE_MODE,
         caption_entities: Optional[List[MessageEntity]] = None,
         duration: Optional[int] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
+        protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -2377,11 +2430,11 @@ class Message(TelegramObject):
         self,
         voice: Union[InputFile, str],
         caption: Optional[str] = None,
-        parse_mode: Optional[str] = UNSET,
+        parse_mode: Optional[str] = UNSET_PARSE_MODE,
         caption_entities: Optional[List[MessageEntity]] = None,
         duration: Optional[int] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
+        protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         reply_to_message_id: Optional[int] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
@@ -2433,7 +2486,7 @@ class Message(TelegramObject):
             **kwargs,
         )
 
-    def send_copy(
+    def send_copy(  # noqa: C901
         self: Message,
         chat_id: Union[str, int],
         disable_notification: Optional[bool] = None,
@@ -2506,7 +2559,7 @@ class Message(TelegramObject):
 
         if self.text:
             return SendMessage(text=text, entities=entities, **kwargs)
-        elif self.audio:
+        if self.audio:
             return SendAudio(
                 audio=self.audio.file_id,
                 caption=text,
@@ -2516,29 +2569,29 @@ class Message(TelegramObject):
                 caption_entities=entities,
                 **kwargs,
             )
-        elif self.animation:
+        if self.animation:
             return SendAnimation(
                 animation=self.animation.file_id, caption=text, caption_entities=entities, **kwargs
             )
-        elif self.document:
+        if self.document:
             return SendDocument(
                 document=self.document.file_id, caption=text, caption_entities=entities, **kwargs
             )
-        elif self.photo:
+        if self.photo:
             return SendPhoto(
                 photo=self.photo[-1].file_id, caption=text, caption_entities=entities, **kwargs
             )
-        elif self.sticker:
+        if self.sticker:
             return SendSticker(sticker=self.sticker.file_id, **kwargs)
-        elif self.video:
+        if self.video:
             return SendVideo(
                 video=self.video.file_id, caption=text, caption_entities=entities, **kwargs
             )
-        elif self.video_note:
+        if self.video_note:
             return SendVideoNote(video_note=self.video_note.file_id, **kwargs)
-        elif self.voice:
+        if self.voice:
             return SendVoice(voice=self.voice.file_id, **kwargs)
-        elif self.contact:
+        if self.contact:
             return SendContact(
                 phone_number=self.contact.phone_number,
                 first_name=self.contact.first_name,
@@ -2546,7 +2599,7 @@ class Message(TelegramObject):
                 vcard=self.contact.vcard,
                 **kwargs,
             )
-        elif self.venue:
+        if self.venue:
             return SendVenue(
                 latitude=self.venue.location.latitude,
                 longitude=self.venue.location.longitude,
@@ -2556,30 +2609,30 @@ class Message(TelegramObject):
                 foursquare_type=self.venue.foursquare_type,
                 **kwargs,
             )
-        elif self.location:
+        if self.location:
             return SendLocation(
                 latitude=self.location.latitude, longitude=self.location.longitude, **kwargs
             )
-        elif self.poll:
+        if self.poll:
             return SendPoll(
                 question=self.poll.question,
                 options=[option.text for option in self.poll.options],
                 **kwargs,
             )
-        elif self.dice:  # Dice value can't be controlled
+        if self.dice:  # Dice value can't be controlled
             return SendDice(**kwargs)
-        else:
-            raise TypeError("This type of message can't be copied.")
+
+        raise TypeError("This type of message can't be copied.")
 
     def copy_to(
         self,
         chat_id: Union[int, str],
         message_thread_id: Optional[int] = None,
         caption: Optional[str] = None,
-        parse_mode: Optional[str] = UNSET,
+        parse_mode: Optional[str] = UNSET_PARSE_MODE,
         caption_entities: Optional[List[MessageEntity]] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
+        protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         reply_to_message_id: Optional[int] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
@@ -2635,9 +2688,9 @@ class Message(TelegramObject):
         self,
         text: str,
         inline_message_id: Optional[str] = None,
-        parse_mode: Optional[str] = UNSET,
+        parse_mode: Optional[str] = UNSET_PARSE_MODE,
         entities: Optional[List[MessageEntity]] = None,
-        disable_web_page_preview: Optional[bool] = None,
+        disable_web_page_preview: Optional[bool] = UNSET_DISABLE_WEB_PAGE_PREVIEW,
         reply_markup: Optional[InlineKeyboardMarkup] = None,
         **kwargs: Any,
     ) -> EditMessageText:
@@ -2682,7 +2735,7 @@ class Message(TelegramObject):
         chat_id: Union[int, str],
         message_thread_id: Optional[int] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
+        protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         **kwargs: Any,
     ) -> ForwardMessage:
         """
@@ -2878,7 +2931,7 @@ class Message(TelegramObject):
         self,
         inline_message_id: Optional[str] = None,
         caption: Optional[str] = None,
-        parse_mode: Optional[str] = UNSET,
+        parse_mode: Optional[str] = UNSET_PARSE_MODE,
         caption_entities: Optional[List[MessageEntity]] = None,
         reply_markup: Optional[InlineKeyboardMarkup] = None,
         **kwargs: Any,
@@ -3034,9 +3087,10 @@ class Message(TelegramObject):
         if self.chat.type in ("private", "group"):
             return None
 
-        if not self.chat.username or force_private:
-            chat_value = f"c/{self.chat.shifted_id}"
-        else:
-            chat_value = self.chat.username
+        chat_value = (
+            f"c/{self.chat.shifted_id}"
+            if not self.chat.username or force_private
+            else self.chat.username
+        )
 
         return f"https://t.me/{chat_value}/{self.message_id}"

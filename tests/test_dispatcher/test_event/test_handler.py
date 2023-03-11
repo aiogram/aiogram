@@ -11,8 +11,6 @@ from aiogram.handlers import BaseHandler
 from aiogram.types import Update
 from aiogram.utils.warnings import Recommendation
 
-pytestmark = pytest.mark.asyncio
-
 
 def callback1(foo: int, bar: int, baz: int):
     return locals()

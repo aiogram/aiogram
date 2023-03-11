@@ -10,8 +10,6 @@ from aiogram.dispatcher.event.handler import HandlerObject
 from aiogram.handlers import BaseHandler
 from aiogram.types import Chat, Message, Update
 
-pytestmark = pytest.mark.asyncio
-
 
 class MyHandler(BaseHandler):
     async def handle(self) -> Any:

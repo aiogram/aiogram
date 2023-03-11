@@ -1,12 +1,9 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, Optional
+from typing import TYPE_CHECKING, Optional
 
 from ..types import ChatAdministratorRights
-from .base import Request, TelegramMethod
-
-if TYPE_CHECKING:
-    from ..client.bot import Bot
+from .base import TelegramMethod
 
 
 class GetMyDefaultAdministratorRights(TelegramMethod[ChatAdministratorRights]):
@@ -17,11 +14,7 @@ class GetMyDefaultAdministratorRights(TelegramMethod[ChatAdministratorRights]):
     """
 
     __returning__ = ChatAdministratorRights
+    __api_method__ = "getMyDefaultAdministratorRights"
 
     for_channels: Optional[bool] = None
     """Pass :code:`True` to get default administrator rights of the bot in channels. Otherwise, default administrator rights of the bot for groups and supergroups will be returned."""
-
-    def build_request(self, bot: Bot) -> Request:
-        data: Dict[str, Any] = self.dict()
-
-        return Request(method="getMyDefaultAdministratorRights", data=data)

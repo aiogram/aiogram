@@ -1,12 +1,9 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, Optional, Union
+from typing import TYPE_CHECKING, Optional, Union
 
 from ..types import InlineKeyboardMarkup, Message
-from .base import Request, TelegramMethod
-
-if TYPE_CHECKING:
-    from ..client.bot import Bot
+from .base import TelegramMethod
 
 
 class StopMessageLiveLocation(TelegramMethod[Union[Message, bool]]):
@@ -17,6 +14,7 @@ class StopMessageLiveLocation(TelegramMethod[Union[Message, bool]]):
     """
 
     __returning__ = Union[Message, bool]
+    __api_method__ = "stopMessageLiveLocation"
 
     chat_id: Optional[Union[int, str]] = None
     """Required if *inline_message_id* is not specified. Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)"""
@@ -26,8 +24,3 @@ class StopMessageLiveLocation(TelegramMethod[Union[Message, bool]]):
     """Required if *chat_id* and *message_id* are not specified. Identifier of the inline message"""
     reply_markup: Optional[InlineKeyboardMarkup] = None
     """A JSON-serialized object for a new `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_."""
-
-    def build_request(self, bot: Bot) -> Request:
-        data: Dict[str, Any] = self.dict()
-
-        return Request(method="stopMessageLiveLocation", data=data)

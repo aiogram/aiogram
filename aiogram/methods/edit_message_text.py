@@ -1,12 +1,10 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
+from typing import TYPE_CHECKING, List, Optional, Union
 
-from ..types import UNSET, InlineKeyboardMarkup, Message, MessageEntity
-from .base import Request, TelegramMethod, prepare_parse_mode
-
-if TYPE_CHECKING:
-    from ..client.bot import Bot
+from ..types import UNSET_PARSE_MODE, InlineKeyboardMarkup, Message, MessageEntity
+from ..types.base import UNSET_DISABLE_WEB_PAGE_PREVIEW
+from .base import TelegramMethod
 
 
 class EditMessageText(TelegramMethod[Union[Message, bool]]):
@@ -17,6 +15,7 @@ class EditMessageText(TelegramMethod[Union[Message, bool]]):
     """
 
     __returning__ = Union[Message, bool]
+    __api_method__ = "editMessageText"
 
     text: str
     """New text of the message, 1-4096 characters after entities parsing"""
@@ -26,20 +25,11 @@ class EditMessageText(TelegramMethod[Union[Message, bool]]):
     """Required if *inline_message_id* is not specified. Identifier of the message to edit"""
     inline_message_id: Optional[str] = None
     """Required if *chat_id* and *message_id* are not specified. Identifier of the inline message"""
-    parse_mode: Optional[str] = UNSET
+    parse_mode: Optional[str] = UNSET_PARSE_MODE
     """Mode for parsing entities in the message text. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details."""
     entities: Optional[List[MessageEntity]] = None
     """A JSON-serialized list of special entities that appear in message text, which can be specified instead of *parse_mode*"""
-    disable_web_page_preview: Optional[bool] = None
+    disable_web_page_preview: Optional[bool] = UNSET_DISABLE_WEB_PAGE_PREVIEW
     """Disables link previews for links in this message"""
     reply_markup: Optional[InlineKeyboardMarkup] = None
     """A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_."""
-
-    def build_request(self, bot: Bot) -> Request:
-        data: Dict[str, Any] = self.dict()
-
-        prepare_parse_mode(
-            bot, data, parse_mode_property="parse_mode", entities_property="entities"
-        )
-
-        return Request(method="editMessageText", data=data)

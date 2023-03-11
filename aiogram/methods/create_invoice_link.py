@@ -1,12 +1,9 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, List, Optional
+from typing import TYPE_CHECKING, List, Optional
 
 from ..types import LabeledPrice
-from .base import Request, TelegramMethod
-
-if TYPE_CHECKING:
-    from ..client.bot import Bot
+from .base import TelegramMethod
 
 
 class CreateInvoiceLink(TelegramMethod[str]):
@@ -17,6 +14,7 @@ class CreateInvoiceLink(TelegramMethod[str]):
     """
 
     __returning__ = str
+    __api_method__ = "createInvoiceLink"
 
     title: str
     """Product name, 1-32 characters"""
@@ -58,8 +56,3 @@ class CreateInvoiceLink(TelegramMethod[str]):
     """Pass :code:`True` if the user's email address should be sent to the provider"""
     is_flexible: Optional[bool] = None
     """Pass :code:`True` if the final price depends on the shipping method"""
-
-    def build_request(self, bot: Bot) -> Request:
-        data: Dict[str, Any] = self.dict()
-
-        return Request(method="createInvoiceLink", data=data)

@@ -2,6 +2,29 @@
 Keyboard builder
 ================
 
+Keyboard builder helps to dynamically generate markup.
+
+.. note::
+
+    Note that if you have static markup, it's best to define it explicitly rather than using builder,
+    but if you have dynamic markup configuration, feel free to use builder as you wish.
+
+
+Usage example
+=============
+
+.. code-block:: python
+
+    builder = InlineKeyboardBuilder()
+
+    for index in range(1, 11):
+        builder.button(text=f"Set {index}", callback_data=f"set:{index}")
+
+    builder.adjust(3, 2)
+
+    await message.answer("Some text here", reply_markup=builder.as_markup())
+
+
 Base builder
 ============
 .. autoclass:: aiogram.utils.keyboard.ReplyKeyboardBuilder
