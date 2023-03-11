@@ -1,7 +1,5 @@
 {
-  "meta": {
-    "deprecated": false
-  },
+  "meta": {},
   "group": {
     "title": "Telegram Passport",
     "anchor": "telegram-passport"
