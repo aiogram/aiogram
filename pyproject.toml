@@ -148,7 +148,7 @@ features = [
     "test",
 ]
 extra-dependencies = [
-    "butcher @ git+https://github.com/aiogram/butcher.git@v0.1.11"
+    "butcher @ git+https://github.com/aiogram/butcher.git@v0.1.12"
 ]
 
 [tool.hatch.envs.test]
