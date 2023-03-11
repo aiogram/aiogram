@@ -1,11 +1,8 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, Union
+from typing import TYPE_CHECKING, Union
 
-from .base import Request, TelegramMethod
-
-if TYPE_CHECKING:
-    from ..client.bot import Bot
+from .base import TelegramMethod
 
 
 class ApproveChatJoinRequest(TelegramMethod[bool]):
@@ -16,13 +13,9 @@ class ApproveChatJoinRequest(TelegramMethod[bool]):
     """
 
     __returning__ = bool
+    __api_method__ = "approveChatJoinRequest"
 
     chat_id: Union[int, str]
     """Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)"""
     user_id: int
     """Unique identifier of the target user"""
-
-    def build_request(self, bot: Bot) -> Request:
-        data: Dict[str, Any] = self.dict()
-
-        return Request(method="approveChatJoinRequest", data=data)

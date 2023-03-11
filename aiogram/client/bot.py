@@ -136,7 +136,7 @@ from ..methods import (
     UploadStickerFile,
 )
 from ..types import (
-    UNSET,
+    UNSET_PARSE_MODE,
     BotCommand,
     BotCommandScope,
     BotDescription,
@@ -186,6 +186,7 @@ from ..types import (
     UserProfilePhotos,
     WebhookInfo,
 )
+from ..types.base import UNSET_DISABLE_WEB_PAGE_PREVIEW, UNSET_PROTECT_CONTENT
 from .session.aiohttp import AiohttpSession
 from .session.base import BaseSession
 
@@ -198,6 +199,8 @@ class Bot(ContextInstanceMixin["Bot"]):
         token: str,
         session: Optional[BaseSession] = None,
         parse_mode: Optional[str] = None,
+        disable_web_page_preview: Optional[bool] = None,
+        protect_content: Optional[bool] = None,
     ) -> None:
         """
         Bot class
@@ -206,6 +209,10 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param session: HTTP Client session (For example AiohttpSession).
             If not specified it will be automatically created.
         :param parse_mode: Default parse mode.
+            If specified it will be propagated into the API methods at runtime.
+        :param disable_web_page_preview: Default disable_web_page_preview mode.
+            If specified it will be propagated into the API methods at runtime.
+        :param protect_content: Default protect_content mode.
             If specified it will be propagated into the API methods at runtime.
         :raise TokenValidationError: When token has invalid format this exception will be raised
         """
@@ -217,6 +224,8 @@ class Bot(ContextInstanceMixin["Bot"]):
 
         self.session = session
         self.parse_mode = parse_mode
+        self.disable_web_page_preview = disable_web_page_preview
+        self.protect_content = protect_content
         self.__token = token
         self._me: Optional[User] = None
 
@@ -704,10 +713,10 @@ class Bot(ContextInstanceMixin["Bot"]):
         message_id: int,
         message_thread_id: Optional[int] = None,
         caption: Optional[str] = None,
-        parse_mode: Optional[str] = UNSET,
+        parse_mode: Optional[str] = UNSET_PARSE_MODE,
         caption_entities: Optional[List[MessageEntity]] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
+        protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         reply_to_message_id: Optional[int] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
@@ -1188,7 +1197,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         message_id: Optional[int] = None,
         inline_message_id: Optional[str] = None,
         caption: Optional[str] = None,
-        parse_mode: Optional[str] = UNSET,
+        parse_mode: Optional[str] = UNSET_PARSE_MODE,
         caption_entities: Optional[List[MessageEntity]] = None,
         reply_markup: Optional[InlineKeyboardMarkup] = None,
         request_timeout: Optional[int] = None,
@@ -1331,9 +1340,9 @@ class Bot(ContextInstanceMixin["Bot"]):
         chat_id: Optional[Union[int, str]] = None,
         message_id: Optional[int] = None,
         inline_message_id: Optional[str] = None,
-        parse_mode: Optional[str] = UNSET,
+        parse_mode: Optional[str] = UNSET_PARSE_MODE,
         entities: Optional[List[MessageEntity]] = None,
-        disable_web_page_preview: Optional[bool] = None,
+        disable_web_page_preview: Optional[bool] = UNSET_DISABLE_WEB_PAGE_PREVIEW,
         reply_markup: Optional[InlineKeyboardMarkup] = None,
         request_timeout: Optional[int] = None,
     ) -> Union[Message, bool]:
@@ -1395,7 +1404,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         message_id: int,
         message_thread_id: Optional[int] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
+        protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         request_timeout: Optional[int] = None,
     ) -> Message:
         """
@@ -1995,11 +2004,11 @@ class Bot(ContextInstanceMixin["Bot"]):
         height: Optional[int] = None,
         thumbnail: Optional[Union[InputFile, str]] = None,
         caption: Optional[str] = None,
-        parse_mode: Optional[str] = UNSET,
+        parse_mode: Optional[str] = UNSET_PARSE_MODE,
         caption_entities: Optional[List[MessageEntity]] = None,
         has_spoiler: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
+        protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         reply_to_message_id: Optional[int] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
@@ -2058,14 +2067,14 @@ class Bot(ContextInstanceMixin["Bot"]):
         audio: Union[InputFile, str],
         message_thread_id: Optional[int] = None,
         caption: Optional[str] = None,
-        parse_mode: Optional[str] = UNSET,
+        parse_mode: Optional[str] = UNSET_PARSE_MODE,
         caption_entities: Optional[List[MessageEntity]] = None,
         duration: Optional[int] = None,
         performer: Optional[str] = None,
         title: Optional[str] = None,
         thumbnail: Optional[Union[InputFile, str]] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
+        protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         reply_to_message_id: Optional[int] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
@@ -2156,7 +2165,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         last_name: Optional[str] = None,
         vcard: Optional[str] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
+        protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         reply_to_message_id: Optional[int] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
@@ -2205,7 +2214,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         message_thread_id: Optional[int] = None,
         emoji: Optional[str] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
+        protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         reply_to_message_id: Optional[int] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
@@ -2249,11 +2258,11 @@ class Bot(ContextInstanceMixin["Bot"]):
         message_thread_id: Optional[int] = None,
         thumbnail: Optional[Union[InputFile, str]] = None,
         caption: Optional[str] = None,
-        parse_mode: Optional[str] = UNSET,
+        parse_mode: Optional[str] = UNSET_PARSE_MODE,
         caption_entities: Optional[List[MessageEntity]] = None,
         disable_content_type_detection: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
+        protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         reply_to_message_id: Optional[int] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
@@ -2306,7 +2315,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         game_short_name: str,
         message_thread_id: Optional[int] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
+        protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         reply_to_message_id: Optional[int] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[InlineKeyboardMarkup] = None,
@@ -2367,7 +2376,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         send_email_to_provider: Optional[bool] = None,
         is_flexible: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
+        protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         reply_to_message_id: Optional[int] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[InlineKeyboardMarkup] = None,
@@ -2453,7 +2462,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         heading: Optional[int] = None,
         proximity_alert_radius: Optional[int] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
+        protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         reply_to_message_id: Optional[int] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
@@ -2506,7 +2515,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         media: List[Union[InputMediaAudio, InputMediaDocument, InputMediaPhoto, InputMediaVideo]],
         message_thread_id: Optional[int] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
+        protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         reply_to_message_id: Optional[int] = None,
         allow_sending_without_reply: Optional[bool] = None,
         request_timeout: Optional[int] = None,
@@ -2543,11 +2552,11 @@ class Bot(ContextInstanceMixin["Bot"]):
         chat_id: Union[int, str],
         text: str,
         message_thread_id: Optional[int] = None,
-        parse_mode: Optional[str] = UNSET,
+        parse_mode: Optional[str] = UNSET_PARSE_MODE,
         entities: Optional[List[MessageEntity]] = None,
-        disable_web_page_preview: Optional[bool] = None,
+        disable_web_page_preview: Optional[bool] = UNSET_DISABLE_WEB_PAGE_PREVIEW,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
+        protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         reply_to_message_id: Optional[int] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
@@ -2596,11 +2605,11 @@ class Bot(ContextInstanceMixin["Bot"]):
         photo: Union[InputFile, str],
         message_thread_id: Optional[int] = None,
         caption: Optional[str] = None,
-        parse_mode: Optional[str] = UNSET,
+        parse_mode: Optional[str] = UNSET_PARSE_MODE,
         caption_entities: Optional[List[MessageEntity]] = None,
         has_spoiler: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
+        protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         reply_to_message_id: Optional[int] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
@@ -2656,13 +2665,13 @@ class Bot(ContextInstanceMixin["Bot"]):
         allows_multiple_answers: Optional[bool] = None,
         correct_option_id: Optional[int] = None,
         explanation: Optional[str] = None,
-        explanation_parse_mode: Optional[str] = UNSET,
+        explanation_parse_mode: Optional[str] = UNSET_PARSE_MODE,
         explanation_entities: Optional[List[MessageEntity]] = None,
         open_period: Optional[int] = None,
         close_date: Optional[Union[datetime.datetime, datetime.timedelta, int]] = None,
         is_closed: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
+        protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         reply_to_message_id: Optional[int] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
@@ -2728,7 +2737,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         message_thread_id: Optional[int] = None,
         emoji: Optional[str] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
+        protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         reply_to_message_id: Optional[int] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
@@ -2780,7 +2789,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         google_place_id: Optional[str] = None,
         google_place_type: Optional[str] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
+        protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         reply_to_message_id: Optional[int] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
@@ -2841,12 +2850,12 @@ class Bot(ContextInstanceMixin["Bot"]):
         height: Optional[int] = None,
         thumbnail: Optional[Union[InputFile, str]] = None,
         caption: Optional[str] = None,
-        parse_mode: Optional[str] = UNSET,
+        parse_mode: Optional[str] = UNSET_PARSE_MODE,
         caption_entities: Optional[List[MessageEntity]] = None,
         has_spoiler: Optional[bool] = None,
         supports_streaming: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
+        protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         reply_to_message_id: Optional[int] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
@@ -2910,7 +2919,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         length: Optional[int] = None,
         thumbnail: Optional[Union[InputFile, str]] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
+        protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         reply_to_message_id: Optional[int] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[
@@ -2959,11 +2968,11 @@ class Bot(ContextInstanceMixin["Bot"]):
         voice: Union[InputFile, str],
         message_thread_id: Optional[int] = None,
         caption: Optional[str] = None,
-        parse_mode: Optional[str] = UNSET,
+        parse_mode: Optional[str] = UNSET_PARSE_MODE,
         caption_entities: Optional[List[MessageEntity]] = None,
         duration: Optional[int] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
+        protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
         reply_to_message_id: Optional[int] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_markup: Optional[

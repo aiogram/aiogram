@@ -1,13 +1,10 @@
 from __future__ import annotations
 
 import datetime
-from typing import TYPE_CHECKING, Any, Dict, Optional, Union
+from typing import TYPE_CHECKING, Optional, Union
 
 from ..types import ChatInviteLink
-from .base import Request, TelegramMethod
-
-if TYPE_CHECKING:
-    from ..client.bot import Bot
+from .base import TelegramMethod
 
 
 class CreateChatInviteLink(TelegramMethod[ChatInviteLink]):
@@ -18,6 +15,7 @@ class CreateChatInviteLink(TelegramMethod[ChatInviteLink]):
     """
 
     __returning__ = ChatInviteLink
+    __api_method__ = "createChatInviteLink"
 
     chat_id: Union[int, str]
     """Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)"""
@@ -29,8 +27,3 @@ class CreateChatInviteLink(TelegramMethod[ChatInviteLink]):
     """The maximum number of users that can be members of the chat simultaneously after joining the chat via this invite link; 1-99999"""
     creates_join_request: Optional[bool] = None
     """:code:`True`, if users joining the chat via the link need to be approved by chat administrators. If :code:`True`, *member_limit* can't be specified"""
-
-    def build_request(self, bot: Bot) -> Request:
-        data: Dict[str, Any] = self.dict()
-
-        return Request(method="createChatInviteLink", data=data)

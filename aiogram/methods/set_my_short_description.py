@@ -1,11 +1,8 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, Optional
+from typing import TYPE_CHECKING, Optional
 
-from .base import Request, TelegramMethod
-
-if TYPE_CHECKING:
-    from ..client.bot import Bot
+from .base import TelegramMethod
 
 
 class SetMyShortDescription(TelegramMethod[bool]):
@@ -16,13 +13,9 @@ class SetMyShortDescription(TelegramMethod[bool]):
     """
 
     __returning__ = bool
+    __api_method__ = "setMyShortDescription"
 
     short_description: Optional[str] = None
     """New short description for the bot; 0-120 characters. Pass an empty string to remove the dedicated short description for the given language."""
     language_code: Optional[str] = None
     """A two-letter ISO 639-1 language code. If empty, the short description will be applied to all users for whose language there is no dedicated short description."""
-
-    def build_request(self, bot: Bot) -> Request:
-        data: Dict[str, Any] = self.dict()
-
-        return Request(method="setMyShortDescription", data=data)

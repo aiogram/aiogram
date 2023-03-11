@@ -138,7 +138,7 @@ features = [
 serve = "sphinx-autobuild --watch aiogram/ --watch CHANGELOG.rst --watch README.rst docs/ docs/_build/ {args}"
 
 [tool.hatch.envs.dev]
-python = "3.10"
+python = "3.11"
 features = [
     "dev",
     "fast",
@@ -148,7 +148,7 @@ features = [
     "test",
 ]
 extra-dependencies = [
-    "butcher @ git+https://github.com/aiogram/butcher.git@v0.1.12"
+    "butcher @ git+https://github.com/aiogram/butcher.git@v0.1.13"
 ]
 
 [tool.hatch.envs.test]

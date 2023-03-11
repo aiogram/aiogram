@@ -1,11 +1,8 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, Optional, Union
+from typing import TYPE_CHECKING, Optional, Union
 
-from .base import Request, TelegramMethod
-
-if TYPE_CHECKING:
-    from ..client.bot import Bot
+from .base import TelegramMethod
 
 
 class PinChatMessage(TelegramMethod[bool]):
@@ -16,6 +13,7 @@ class PinChatMessage(TelegramMethod[bool]):
     """
 
     __returning__ = bool
+    __api_method__ = "pinChatMessage"
 
     chat_id: Union[int, str]
     """Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)"""
@@ -23,8 +21,3 @@ class PinChatMessage(TelegramMethod[bool]):
     """Identifier of a message to pin"""
     disable_notification: Optional[bool] = None
     """Pass :code:`True` if it is not necessary to send a notification to all chat members about the new pinned message. Notifications are always disabled in channels and private chats."""
-
-    def build_request(self, bot: Bot) -> Request:
-        data: Dict[str, Any] = self.dict()
-
-        return Request(method="pinChatMessage", data=data)

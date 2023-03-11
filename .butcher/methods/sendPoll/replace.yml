@@ -1,6 +1,8 @@
 annotations:
   explanation_parse_mode:
-    value: UNSET
+    value: UNSET_PARSE_MODE
+  protect_content:
+    value: UNSET_PROTECT_CONTENT
   close_date:
     parsed_type:
       type: union

@@ -10,8 +10,9 @@ from aiohttp.typedefs import Handler
 from aiohttp.web_middlewares import middleware
 
 from aiogram import Bot, Dispatcher, loggers
-from aiogram.methods import Request, TelegramMethod
-from aiogram.types import UNSET
+from aiogram.methods import TelegramMethod
+from aiogram.methods.base import TelegramType
+from aiogram.types import InputFile
 from aiogram.webhook.security import IPFilter
 
 
@@ -143,7 +144,9 @@ class BaseRequestHandler(ABC):
         )
         return web.json_response({}, dumps=bot.session.json_dumps)
 
-    def _build_response_writer(self, bot: Bot, result: Optional[Request]) -> MultipartWriter:
+    def _build_response_writer(
+        self, bot: Bot, result: Optional[TelegramMethod[TelegramType]]
+    ) -> MultipartWriter:
         writer = MultipartWriter(
             "form-data",
             boundary=f"webhookBoundary{secrets.token_urlsafe(16)}",
@@ -151,26 +154,29 @@ class BaseRequestHandler(ABC):
         if not result:
             return writer
 
-        payload = writer.append(result.method)
+        payload = writer.append(result.__api_method__)
         payload.set_content_disposition("form-data", name="method")
 
-        for key, value in result.data.items():
-            if value is None or value is UNSET:
+        files: Dict[str, InputFile] = {}
+        for key, value in result.dict().items():
+            value = bot.session.prepare_value(value, bot=bot, files=files)
+            if not value:
                 continue
-            payload = writer.append(bot.session.prepare_value(value))
+            payload = writer.append(value)
             payload.set_content_disposition("form-data", name=key)
 
-        if not result.files:
-            return writer
-
-        for key, value in result.files.items():
+        for key, value in files.items():
             payload = writer.append(value)
-            payload.set_content_disposition("form-data", name=key, filename=value.filename)
+            payload.set_content_disposition(
+                "form-data",
+                name=key,
+                filename=value.filename or key,
+            )
 
         return writer
 
     async def _handle_request(self, bot: Bot, request: web.Request) -> web.Response:
-        result = await self.dispatcher.feed_webhook_update(
+        result: Optional[TelegramMethod[Any]] = await self.dispatcher.feed_webhook_update(
             bot,
             await request.json(loads=bot.session.json_loads),
             **self.data,

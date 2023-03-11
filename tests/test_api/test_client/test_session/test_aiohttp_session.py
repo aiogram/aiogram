@@ -1,5 +1,5 @@
 import asyncio
-from typing import AsyncContextManager, AsyncGenerator
+from typing import Any, AsyncContextManager, AsyncGenerator, Dict, List
 from unittest.mock import AsyncMock, patch
 
 import aiohttp_socks
@@ -11,8 +11,8 @@ from aiogram import Bot
 from aiogram.client.session import aiohttp
 from aiogram.client.session.aiohttp import AiohttpSession
 from aiogram.exceptions import TelegramNetworkError
-from aiogram.methods import Request, TelegramMethod
-from aiogram.types import UNSET, InputFile
+from aiogram.methods import TelegramMethod
+from aiogram.types import UNSET_PARSE_MODE, InputFile
 from tests.mocked_bot import MockedBot
 
 
@@ -103,44 +103,60 @@ class TestAiohttpSession:
             await session.close()
             mocked_close.assert_called_once()
 
-    def test_build_form_data_with_data_only(self):
-        request = Request(
-            method="method",
-            data={
-                "str": "value",
-                "int": 42,
-                "bool": True,
-                "unset": UNSET,
-                "null": None,
-                "list": ["foo"],
-                "dict": {"bar": "baz"},
-            },
-        )
+    def test_build_form_data_with_data_only(self, bot: MockedBot):
+        class TestMethod(TelegramMethod[bool]):
+            __api_method__ = "test"
+            __returning__ = bool
+
+            str_: str
+            int_: int
+            bool_: bool
+            unset_: str = UNSET_PARSE_MODE
+            null_: None
+            list_: List[str]
+            dict_: Dict[str, Any]
 
         session = AiohttpSession()
-        form = session.build_form_data(request)
+        form = session.build_form_data(
+            bot,
+            TestMethod(
+                str_="value",
+                int_=42,
+                bool_=True,
+                unset_=UNSET_PARSE_MODE,
+                null_=None,
+                list_=["foo"],
+                dict_={"bar": "baz"},
+            ),
+        )
 
         fields = form._fields
         assert len(fields) == 5
         assert all(isinstance(field[2], str) for field in fields)
-        assert "null" not in [item[0]["name"] for item in fields]
+        assert "null_" not in [item[0]["name"] for item in fields]
 
-    def test_build_form_data_with_files(self):
-        request = Request(
-            method="method",
-            data={"key": "value"},
-            files={"document": BareInputFile(filename="file.txt")},
-        )
+    def test_build_form_data_with_files(self, bot: Bot):
+        class TestMethod(TelegramMethod[bool]):
+            __api_method__ = "test"
+            __returning__ = bool
+
+            key: str
+            document: InputFile
 
         session = AiohttpSession()
-        form = session.build_form_data(request)
+        form = session.build_form_data(
+            bot,
+            TestMethod(key="value", document=BareInputFile(filename="file.txt")),
+        )
 
         fields = form._fields
 
-        assert len(fields) == 2
+        assert len(fields) == 3
         assert fields[1][0]["name"] == "document"
-        assert fields[1][0]["filename"] == "file.txt"
-        assert isinstance(fields[1][2], BareInputFile)
+        assert fields[1][2].startswith("attach://")
+        assert fields[2][0]["name"] == fields[1][2][9:]
+        assert fields[2][0]["filename"] == "file.txt"
+        assert isinstance(fields[2][2], BareInputFile)
 
     async def test_make_request(self, bot: MockedBot, aresponses: ResponsesMockServer):
         aresponses.add(
@@ -158,9 +174,7 @@ class TestAiohttpSession:
 
         class TestMethod(TelegramMethod[int]):
             __returning__ = int
-
-            def build_request(self, bot: Bot) -> Request:
-                return Request(method="method", data={})
+            __api_method__ = "method"
 
         call = TestMethod()
 

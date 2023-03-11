@@ -1,12 +1,9 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, Optional
+from typing import TYPE_CHECKING, Optional
 
 from ..types import MaskPosition
-from .base import Request, TelegramMethod
-
-if TYPE_CHECKING:
-    from ..client.bot import Bot
+from .base import TelegramMethod
 
 
 class SetStickerMaskPosition(TelegramMethod[bool]):
@@ -17,13 +14,9 @@ class SetStickerMaskPosition(TelegramMethod[bool]):
     """
 
     __returning__ = bool
+    __api_method__ = "setStickerMaskPosition"
 
     sticker: str
     """File identifier of the sticker"""
     mask_position: Optional[MaskPosition] = None
     """A JSON-serialized object with the position where the mask should be placed on faces. Omit the parameter to remove the mask position."""
-
-    def build_request(self, bot: Bot) -> Request:
-        data: Dict[str, Any] = self.dict()
-
-        return Request(method="setStickerMaskPosition", data=data)

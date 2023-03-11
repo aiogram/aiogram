@@ -3,4 +3,6 @@ bases:
 
 annotations:
   parse_mode:
-    value: UNSET
+    value: UNSET_PARSE_MODE
+  disable_web_page_preview:
+    value: UNSET_DISABLE_WEB_PAGE_PREVIEW

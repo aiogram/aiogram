@@ -1,14 +1,15 @@
 import datetime
 import json
-from typing import AsyncContextManager, AsyncGenerator, Optional
+from typing import Any, AsyncContextManager, AsyncGenerator, Optional
 from unittest.mock import AsyncMock, patch
 
 import pytest
+from pytz import utc
 
 from aiogram import Bot
 from aiogram.client.session.base import BaseSession, TelegramType
 from aiogram.client.telegram import PRODUCTION, TelegramAPIServer
-from aiogram.enums import ChatType, TopicIconColor
+from aiogram.enums import ChatType, ParseMode, TopicIconColor
 from aiogram.exceptions import (
     ClientDecodeError,
     RestartingTelegram,
@@ -24,7 +25,8 @@ from aiogram.exceptions import (
     TelegramUnauthorizedError,
 )
 from aiogram.methods import DeleteMessage, GetMe, TelegramMethod
-from aiogram.types import UNSET, User
+from aiogram.types import UNSET_PARSE_MODE, User
+from aiogram.types.base import UNSET_DISABLE_WEB_PAGE_PREVIEW, UNSET_PROTECT_CONTENT
 from tests.mocked_bot import MockedBot
 
 
@@ -33,17 +35,21 @@ class CustomSession(BaseSession):
         pass
 
     async def make_request(
-        self, token: str, method: TelegramMethod[TelegramType], timeout: Optional[int] = UNSET
+        self,
+        token: str,
+        method: TelegramMethod[TelegramType],
+        timeout: Optional[int] = UNSET_PARSE_MODE,
     ) -> None:  # type: ignore
         assert isinstance(token, str)
         assert isinstance(method, TelegramMethod)
 
     async def stream_content(
-        self, url: str, timeout: int, chunk_size: int
+        self, url: str, timeout: int, chunk_size: int, raise_for_status: bool
     ) -> AsyncGenerator[bytes, None]:  # pragma: no cover
         assert isinstance(url, str)
         assert isinstance(timeout, int)
         assert isinstance(chunk_size, int)
+        assert isinstance(raise_for_status, bool)
         yield b"\f" * 10
 
 
@@ -79,58 +85,56 @@ class TestBaseSession:
         assert session.api == api
         assert "example.com" in session.api.base
 
-    def test_prepare_value(self):
+    @pytest.mark.parametrize(
+        "value,result",
+        [
+            [None, None],
+            ["text", "text"],
+            [ChatType.PRIVATE, "private"],
+            [TopicIconColor.RED, "16478047"],
+            [42, "42"],
+            [True, "true"],
+            [["test"], '["test"]'],
+            [["test", ["test"]], '["test", ["test"]]'],
+            [[{"test": "pass", "spam": None}], '[{"test": "pass"}]'],
+            [{"test": "pass", "number": 42, "spam": None}, '{"test": "pass", "number": 42}'],
+            [{"foo": {"test": "pass", "spam": None}}, '{"foo": {"test": "pass"}}'],
+            [
+                datetime.datetime(
+                    year=2017, month=5, day=17, hour=4, minute=11, second=42, tzinfo=utc
+                ),
+                "1494994302",
+            ],
+        ],
+    )
+    def test_prepare_value(self, value: Any, result: str, bot: MockedBot):
         session = CustomSession()
 
-        now = datetime.datetime.now()
+        assert session.prepare_value(value, bot=bot, files={}) == result
 
-        assert session.prepare_value("text") == "text"
-        assert session.prepare_value(["test"]) == '["test"]'
-        assert session.prepare_value({"test": "ok"}) == '{"test": "ok"}'
-        assert session.prepare_value(now) == str(round(now.timestamp()))
-        assert isinstance(session.prepare_value(datetime.timedelta(minutes=2)), str)
-        assert session.prepare_value(42) == "42"
-        assert session.prepare_value(ChatType.PRIVATE) == "private"
-        assert session.prepare_value(TopicIconColor.RED) == "16478047"
-
-    def test_clean_json(self):
+    def test_prepare_value_timedelta(self, bot: MockedBot):
         session = CustomSession()
 
-        cleaned_dict = session.clean_json({"key": "value", "null": None})
-        assert "key" in cleaned_dict
-        assert "null" not in cleaned_dict
+        value = session.prepare_value(datetime.timedelta(minutes=2), bot=bot, files={})
+        assert isinstance(value, str)
 
-        cleaned_list = session.clean_json(["kaboom", 42, None])
-        assert len(cleaned_list) == 2
-        assert 42 in cleaned_list
-        assert None not in cleaned_list
-        assert cleaned_list[0] == "kaboom"
-
-    def test_clean_json_with_nested_json(self):
-        session = CustomSession()
-
-        cleaned = session.clean_json(
-            {
-                "key": "value",
-                "null": None,
-                "nested_list": ["kaboom", 42, None],
-                "nested_dict": {"key": "value", "null": None},
-            }
+    def test_prepare_value_defaults_replace(self):
+        bot = MockedBot(
+            parse_mode=ParseMode.HTML,
+            protect_content=True,
+            disable_web_page_preview=True,
         )
+        assert bot.session.prepare_value(UNSET_PARSE_MODE, bot=bot, files={}) == "HTML"
+        assert (
+            bot.session.prepare_value(UNSET_DISABLE_WEB_PAGE_PREVIEW, bot=bot, files={}) == "true"
+        )
+        assert bot.session.prepare_value(UNSET_PROTECT_CONTENT, bot=bot, files={}) == "true"
 
-        assert len(cleaned) == 3
-        assert "null" not in cleaned
-
-        assert isinstance(cleaned["nested_list"], list)
-        assert cleaned["nested_list"] == ["kaboom", 42]
-
-        assert isinstance(cleaned["nested_dict"], dict)
-        assert cleaned["nested_dict"] == {"key": "value"}
-
-    def test_clean_json_not_json(self):
-        session = CustomSession()
-
-        assert session.clean_json(42) == 42
+    def test_prepare_value_defaults_unset(self):
+        bot = MockedBot()
+        assert bot.session.prepare_value(UNSET_PARSE_MODE, bot=bot, files={}) is None
+        assert bot.session.prepare_value(UNSET_DISABLE_WEB_PAGE_PREVIEW, bot=bot, files={}) is None
+        assert bot.session.prepare_value(UNSET_PROTECT_CONTENT, bot=bot, files={}) is None
 
     @pytest.mark.parametrize(
         "status_code,content,error",
@@ -210,7 +214,10 @@ class TestBaseSession:
     async def test_stream_content(self):
         session = CustomSession()
         stream = session.stream_content(
-            "https://www.python.org/static/img/python-logo.png", timeout=5, chunk_size=65536
+            "https://www.python.org/static/img/python-logo.png",
+            timeout=5,
+            chunk_size=65536,
+            raise_for_status=True,
         )
         assert isinstance(stream, AsyncGenerator)
 

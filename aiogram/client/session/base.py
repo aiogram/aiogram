@@ -3,6 +3,7 @@ from __future__ import annotations
 import abc
 import datetime
 import json
+import secrets
 from enum import Enum
 from http import HTTPStatus
 from types import TracebackType
@@ -11,10 +12,10 @@ from typing import (
     Any,
     AsyncGenerator,
     Callable,
+    Dict,
     Final,
     Optional,
     Type,
-    Union,
     cast,
 )
 
@@ -37,7 +38,8 @@ from aiogram.exceptions import (
 
 from ...methods import Response, TelegramMethod
 from ...methods.base import TelegramType
-from ...types import UNSET
+from ...types import UNSET_PARSE_MODE, InputFile
+from ...types.base import UNSET_DISABLE_WEB_PAGE_PREVIEW, UNSET_PROTECT_CONTENT
 from ..telegram import PRODUCTION, TelegramAPIServer
 from .middlewares.manager import RequestMiddlewareManager
 
@@ -138,7 +140,10 @@ class BaseSession(abc.ABC):
 
     @abc.abstractmethod
     async def make_request(
-        self, bot: Bot, method: TelegramMethod[TelegramType], timeout: Optional[int] = UNSET
+        self,
+        bot: Bot,
+        method: TelegramMethod[TelegramType],
+        timeout: Optional[int] = None,
     ) -> TelegramType:  # pragma: no cover
         """
         Make request to Telegram Bot API
@@ -160,35 +165,81 @@ class BaseSession(abc.ABC):
         """
         yield b""
 
-    def prepare_value(self, value: Any) -> Union[str, int, bool]:
+    def prepare_value(
+        self,
+        value: Any,
+        bot: Bot,
+        files: Dict[str, Any],
+        _dumps_json: bool = True,
+    ) -> Any:
         """
         Prepare value before send
         """
+        if value is None:
+            return None
         if isinstance(value, str):
             return value
-        if isinstance(value, (list, dict)):
-            return self.json_dumps(self.clean_json(value))
+        if value is UNSET_PARSE_MODE:
+            return self.prepare_value(
+                bot.parse_mode, bot=bot, files=files, _dumps_json=_dumps_json
+            )
+        if value is UNSET_DISABLE_WEB_PAGE_PREVIEW:
+            return self.prepare_value(
+                bot.disable_web_page_preview, bot=bot, files=files, _dumps_json=_dumps_json
+            )
+        if value is UNSET_PROTECT_CONTENT:
+            return self.prepare_value(
+                bot.protect_content, bot=bot, files=files, _dumps_json=_dumps_json
+            )
+        if isinstance(value, InputFile):
+            key = secrets.token_urlsafe(10)
+            files[key] = value
+            return f"attach://{key}"
+        if isinstance(value, dict):
+            value = {
+                key: prepared_item
+                for key, item in value.items()
+                if (
+                    prepared_item := self.prepare_value(
+                        item, bot=bot, files=files, _dumps_json=False
+                    )
+                )
+                is not None
+            }
+            if _dumps_json:
+                return self.json_dumps(value)
+            return value
+        if isinstance(value, list):
+            value = [
+                prepared_item
+                for item in value
+                if (
+                    prepared_item := self.prepare_value(
+                        item, bot=bot, files=files, _dumps_json=False
+                    )
+                )
+                is not None
+            ]
+            if _dumps_json:
+                return self.json_dumps(value)
+            return value
         if isinstance(value, datetime.timedelta):
             now = datetime.datetime.now()
             return str(round((now + value).timestamp()))
         if isinstance(value, datetime.datetime):
             return str(round(value.timestamp()))
         if isinstance(value, Enum):
-            return self.prepare_value(value.value)
-        return str(value)
+            return self.prepare_value(value.value, bot=bot, files=files)
 
-    def clean_json(self, value: Any) -> Any:
-        """
-        Clean data before send
-        """
-        if isinstance(value, list):
-            return [self.clean_json(v) for v in value if v is not None]
-        if isinstance(value, dict):
-            return {k: self.clean_json(v) for k, v in value.items() if v is not None}
+        if _dumps_json:
+            return self.json_dumps(value)
         return value
 
     async def __call__(
-        self, bot: Bot, method: TelegramMethod[TelegramType], timeout: Optional[int] = UNSET
+        self,
+        bot: Bot,
+        method: TelegramMethod[TelegramType],
+        timeout: Optional[int] = None,
     ) -> TelegramType:
         middleware = self.middleware.wrap_middlewares(self.make_request, timeout=timeout)
         return cast(TelegramType, await middleware(bot, method))

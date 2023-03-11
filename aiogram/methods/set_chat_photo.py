@@ -1,12 +1,9 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, Union
+from typing import TYPE_CHECKING, Union
 
 from ..types import InputFile
-from .base import Request, TelegramMethod, prepare_file
-
-if TYPE_CHECKING:
-    from ..client.bot import Bot
+from .base import TelegramMethod
 
 
 class SetChatPhoto(TelegramMethod[bool]):
@@ -17,16 +14,9 @@ class SetChatPhoto(TelegramMethod[bool]):
     """
 
     __returning__ = bool
+    __api_method__ = "setChatPhoto"
 
     chat_id: Union[int, str]
     """Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)"""
     photo: InputFile
     """New chat photo, uploaded using multipart/form-data"""
-
-    def build_request(self, bot: Bot) -> Request:
-        data: Dict[str, Any] = self.dict(exclude={"photo"})
-
-        files: Dict[str, InputFile] = {}
-        prepare_file(data=data, files=files, name="photo", value=self.photo)
-
-        return Request(method="setChatPhoto", data=data, files=files)

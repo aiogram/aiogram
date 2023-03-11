@@ -4,22 +4,11 @@ from tests.mocked_bot import MockedBot
 
 
 class TestGetMyDescription:
-    async def test_method(self, bot: MockedBot):
-        prepare_result = bot.add_result_for(
-            GetMyDescription, ok=True, result=BotDescription(description="Test")
-        )
-
-        response: BotDescription = await GetMyDescription()
-        request: Request = bot.get_request()
-        assert request.method == "getMyDescription"
-        assert response == prepare_result.result
-
     async def test_bot_method(self, bot: MockedBot):
         prepare_result = bot.add_result_for(
             GetMyDescription, ok=True, result=BotDescription(description="Test")
         )
 
         response: BotDescription = await bot.get_my_description()
-        request: Request = bot.get_request()
-        assert request.method == "getMyDescription"
+        request = bot.get_request()
         assert response == prepare_result.result

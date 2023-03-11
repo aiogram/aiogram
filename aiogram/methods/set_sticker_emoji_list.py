@@ -1,11 +1,8 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, List
+from typing import TYPE_CHECKING, List
 
-from .base import Request, TelegramMethod
-
-if TYPE_CHECKING:
-    from ..client.bot import Bot
+from .base import TelegramMethod
 
 
 class SetStickerEmojiList(TelegramMethod[bool]):
@@ -16,13 +13,9 @@ class SetStickerEmojiList(TelegramMethod[bool]):
     """
 
     __returning__ = bool
+    __api_method__ = "setStickerEmojiList"
 
     sticker: str
     """File identifier of the sticker"""
     emoji_list: List[str]
     """A JSON-serialized list of 1-20 emoji associated with the sticker"""
-
-    def build_request(self, bot: Bot) -> Request:
-        data: Dict[str, Any] = self.dict()
-
-        return Request(method="setStickerEmojiList", data=data)

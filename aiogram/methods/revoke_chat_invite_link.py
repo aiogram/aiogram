@@ -1,12 +1,9 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, Union
+from typing import TYPE_CHECKING, Union
 
 from ..types import ChatInviteLink
-from .base import Request, TelegramMethod
-
-if TYPE_CHECKING:
-    from ..client.bot import Bot
+from .base import TelegramMethod
 
 
 class RevokeChatInviteLink(TelegramMethod[ChatInviteLink]):
@@ -17,13 +14,9 @@ class RevokeChatInviteLink(TelegramMethod[ChatInviteLink]):
     """
 
     __returning__ = ChatInviteLink
+    __api_method__ = "revokeChatInviteLink"
 
     chat_id: Union[int, str]
     """Unique identifier of the target chat or username of the target channel (in the format :code:`@channelusername`)"""
     invite_link: str
     """The invite link to revoke"""
-
-    def build_request(self, bot: Bot) -> Request:
-        data: Dict[str, Any] = self.dict()
-
-        return Request(method="revokeChatInviteLink", data=data)

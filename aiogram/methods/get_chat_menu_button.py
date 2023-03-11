@@ -1,12 +1,9 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, Optional, Union
+from typing import TYPE_CHECKING, Optional, Union
 
 from ..types import MenuButtonCommands, MenuButtonDefault, MenuButtonWebApp
-from .base import Request, TelegramMethod
-
-if TYPE_CHECKING:
-    from ..client.bot import Bot
+from .base import TelegramMethod
 
 
 class GetChatMenuButton(
@@ -19,11 +16,7 @@ class GetChatMenuButton(
     """
 
     __returning__ = Union[MenuButtonDefault, MenuButtonWebApp, MenuButtonCommands]
+    __api_method__ = "getChatMenuButton"
 
     chat_id: Optional[int] = None
     """Unique identifier for the target private chat. If not specified, default bot's menu button will be returned"""
-
-    def build_request(self, bot: Bot) -> Request:
-        data: Dict[str, Any] = self.dict()
-
-        return Request(method="getChatMenuButton", data=data)

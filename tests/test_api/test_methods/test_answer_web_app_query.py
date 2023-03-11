@@ -4,18 +4,6 @@ from tests.mocked_bot import MockedBot
 
 
 class TestAnswerWebAppQuery:
-    async def test_method(self, bot: MockedBot):
-        prepare_result = bot.add_result_for(AnswerWebAppQuery, ok=True, result=SentWebAppMessage())
-
-        response: SentWebAppMessage = await AnswerWebAppQuery(
-            web_app_query_id="test",
-            result=InlineQueryResult(),
-        )
-        request: Request = bot.get_request()
-        assert request.method == "answerWebAppQuery"
-        # assert request.data == {}
-        assert response == prepare_result.result
-
     async def test_bot_method(self, bot: MockedBot):
         prepare_result = bot.add_result_for(AnswerWebAppQuery, ok=True, result=SentWebAppMessage())
 
@@ -23,7 +11,5 @@ class TestAnswerWebAppQuery:
             web_app_query_id="test",
             result=InlineQueryResult(),
         )
-        request: Request = bot.get_request()
-        assert request.method == "answerWebAppQuery"
-        # assert request.data == {}
+        request = bot.get_request()
         assert response == prepare_result.result

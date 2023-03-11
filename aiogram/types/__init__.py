@@ -2,7 +2,7 @@ from typing import Optional
 
 from .animation import Animation
 from .audio import Audio
-from .base import UNSET, TelegramObject
+from .base import UNSET_PARSE_MODE, TelegramObject
 from .bot_command import BotCommand
 from .bot_command_scope import BotCommandScope
 from .bot_command_scope_all_chat_administrators import (
@@ -295,7 +295,7 @@ __all__ = (
     "StickerSet",
     "SuccessfulPayment",
     "TelegramObject",
-    "UNSET",
+    "UNSET_PARSE_MODE",
     "URLInputFile",
     "Update",
     "User",

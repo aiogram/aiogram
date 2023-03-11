@@ -1,12 +1,9 @@
 from __future__ import annotations
 
 import datetime
-from typing import TYPE_CHECKING, Any, Dict, Optional, Union
+from typing import TYPE_CHECKING, Optional, Union
 
-from .base import Request, TelegramMethod
-
-if TYPE_CHECKING:
-    from ..client.bot import Bot
+from .base import TelegramMethod
 
 
 class BanChatMember(TelegramMethod[bool]):
@@ -17,6 +14,7 @@ class BanChatMember(TelegramMethod[bool]):
     """
 
     __returning__ = bool
+    __api_method__ = "banChatMember"
 
     chat_id: Union[int, str]
     """Unique identifier for the target group or username of the target supergroup or channel (in the format :code:`@channelusername`)"""
@@ -26,8 +24,3 @@ class BanChatMember(TelegramMethod[bool]):
     """Date when the user will be unbanned, unix time. If user is banned for more than 366 days or less than 30 seconds from the current time they are considered to be banned forever. Applied for supergroups and channels only."""
     revoke_messages: Optional[bool] = None
     """Pass :code:`True` to delete all messages from the chat for the user that is being removed. If :code:`False`, the user will be able to see messages in the group that were sent before the user was removed. Always :code:`True` for supergroups and channels."""
-
-    def build_request(self, bot: Bot) -> Request:
-        data: Dict[str, Any] = self.dict()
-
-        return Request(method="banChatMember", data=data)

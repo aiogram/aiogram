@@ -1,11 +1,8 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, Optional, Union
+from typing import TYPE_CHECKING, Optional, Union
 
-from .base import Request, TelegramMethod
-
-if TYPE_CHECKING:
-    from ..client.bot import Bot
+from .base import TelegramMethod
 
 
 class UnbanChatMember(TelegramMethod[bool]):
@@ -16,6 +13,7 @@ class UnbanChatMember(TelegramMethod[bool]):
     """
 
     __returning__ = bool
+    __api_method__ = "unbanChatMember"
 
     chat_id: Union[int, str]
     """Unique identifier for the target group or username of the target supergroup or channel (in the format :code:`@channelusername`)"""
@@ -23,8 +21,3 @@ class UnbanChatMember(TelegramMethod[bool]):
     """Unique identifier of the target user"""
     only_if_banned: Optional[bool] = None
     """Do nothing if the user is not banned"""
-
-    def build_request(self, bot: Bot) -> Request:
-        data: Dict[str, Any] = self.dict()
-
-        return Request(method="unbanChatMember", data=data)
