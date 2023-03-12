@@ -1,3 +1,4 @@
+.. _keyboard-builder
 ================
 Keyboard builder
 ================
