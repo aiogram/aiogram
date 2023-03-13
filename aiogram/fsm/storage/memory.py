@@ -4,7 +4,6 @@ from contextlib import asynccontextmanager
 from dataclasses import dataclass, field
 from typing import Any, AsyncGenerator, DefaultDict, Dict, Hashable, Optional
 
-from aiogram import Bot
 from aiogram.fsm.state import State
 from aiogram.fsm.storage.base import (
     BaseEventIsolation,
@@ -38,22 +37,22 @@ class MemoryStorage(BaseStorage):
     async def close(self) -> None:
         pass
 
-    async def set_state(self, bot: Bot, key: StorageKey, state: StateType = None) -> None:
+    async def set_state(self, key: StorageKey, state: StateType = None) -> None:
         self.storage[key].state = state.state if isinstance(state, State) else state
 
-    async def get_state(self, bot: Bot, key: StorageKey) -> Optional[str]:
+    async def get_state(self, key: StorageKey) -> Optional[str]:
         return self.storage[key].state
 
-    async def set_data(self, bot: Bot, key: StorageKey, data: Dict[str, Any]) -> None:
+    async def set_data(self, key: StorageKey, data: Dict[str, Any]) -> None:
         self.storage[key].data = data.copy()
 
-    async def get_data(self, bot: Bot, key: StorageKey) -> Dict[str, Any]:
+    async def get_data(self, key: StorageKey) -> Dict[str, Any]:
         return self.storage[key].data.copy()
 
 
 class DisabledEventIsolation(BaseEventIsolation):
     @asynccontextmanager
-    async def lock(self, bot: Bot, key: StorageKey) -> AsyncGenerator[None, None]:
+    async def lock(self, key: StorageKey) -> AsyncGenerator[None, None]:
         yield
 
     async def close(self) -> None:
@@ -66,7 +65,7 @@ class SimpleEventIsolation(BaseEventIsolation):
         self._locks: DefaultDict[Hashable, Lock] = defaultdict(Lock)
 
     @asynccontextmanager
-    async def lock(self, bot: Bot, key: StorageKey) -> AsyncGenerator[None, None]:
+    async def lock(self, key: StorageKey) -> AsyncGenerator[None, None]:
         lock = self._locks[key]
         async with lock:
             yield

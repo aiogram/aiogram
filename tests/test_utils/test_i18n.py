@@ -178,9 +178,7 @@ class TestFSMI18nMiddleware:
     async def test_middleware(self, i18n: I18n, bot: MockedBot, extra):
         middleware = FSMI18nMiddleware(i18n=i18n)
         storage = MemoryStorage()
-        state = FSMContext(
-            bot=bot, storage=storage, key=StorageKey(user_id=42, chat_id=42, bot_id=bot.id)
-        )
+        state = FSMContext(storage=storage, key=StorageKey(user_id=42, chat_id=42, bot_id=bot.id))
         data = {
             "event_from_user": User(id=42, is_bot=False, language_code="it", first_name="Test"),
             "state": state,

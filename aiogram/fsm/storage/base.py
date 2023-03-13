@@ -3,7 +3,6 @@ from contextlib import asynccontextmanager
 from dataclasses import dataclass
 from typing import Any, AsyncGenerator, Dict, Optional, Union
 
-from aiogram import Bot
 from aiogram.fsm.state import State
 
 StateType = Optional[Union[str, State]]
@@ -25,61 +24,56 @@ class BaseStorage(ABC):
     """
 
     @abstractmethod
-    async def set_state(self, bot: Bot, key: StorageKey, state: StateType = None) -> None:
+    async def set_state(self, key: StorageKey, state: StateType = None) -> None:
         """
         Set state for specified key
 
-        :param bot: instance of the current bot
         :param key: storage key
         :param state: new state
         """
         pass
 
     @abstractmethod
-    async def get_state(self, bot: Bot, key: StorageKey) -> Optional[str]:
+    async def get_state(self, key: StorageKey) -> Optional[str]:
         """
         Get key state
 
-        :param bot: instance of the current bot
         :param key: storage key
         :return: current state
         """
         pass
 
     @abstractmethod
-    async def set_data(self, bot: Bot, key: StorageKey, data: Dict[str, Any]) -> None:
+    async def set_data(self, key: StorageKey, data: Dict[str, Any]) -> None:
         """
         Write data (replace)
 
-        :param bot: instance of the current bot
         :param key: storage key
         :param data: new data
         """
         pass
 
     @abstractmethod
-    async def get_data(self, bot: Bot, key: StorageKey) -> Dict[str, Any]:
+    async def get_data(self, key: StorageKey) -> Dict[str, Any]:
         """
         Get current data for key
 
-        :param bot: instance of the current bot
         :param key: storage key
         :return: current data
         """
         pass
 
-    async def update_data(self, bot: Bot, key: StorageKey, data: Dict[str, Any]) -> Dict[str, Any]:
+    async def update_data(self, key: StorageKey, data: Dict[str, Any]) -> Dict[str, Any]:
         """
         Update date in the storage for key (like dict.update)
 
-        :param bot: instance of the current bot
         :param key: storage key
         :param data: partial data
         :return: new data
         """
-        current_data = await self.get_data(bot=bot, key=key)
+        current_data = await self.get_data(key=key)
         current_data.update(data)
-        await self.set_data(bot=bot, key=key, data=current_data)
+        await self.set_data(key=key, data=current_data)
         return current_data.copy()
 
     @abstractmethod
@@ -93,12 +87,11 @@ class BaseStorage(ABC):
 class BaseEventIsolation(ABC):
     @abstractmethod
     @asynccontextmanager
-    async def lock(self, bot: Bot, key: StorageKey) -> AsyncGenerator[None, None]:
+    async def lock(self, key: StorageKey) -> AsyncGenerator[None, None]:
         """
         Isolate events with lock.
         Will be used as context manager
 
-        :param bot: instance of the current bot
         :param key: storage key
         :return: An async generator
         """

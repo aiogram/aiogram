@@ -35,7 +35,7 @@ class FSMContextMiddleware(BaseMiddleware):
         data["fsm_storage"] = self.storage
         if context:
             data.update({"state": context, "raw_state": await context.get_state()})
-            async with self.events_isolation.lock(bot=bot, key=context.key):
+            async with self.events_isolation.lock(key=context.key):
                 return await handler(event, data)
         return await handler(event, data)
 
@@ -76,7 +76,6 @@ class FSMContextMiddleware(BaseMiddleware):
         destiny: str = DEFAULT_DESTINY,
     ) -> FSMContext:
         return FSMContext(
-            bot=bot,
             storage=self.storage,
             key=StorageKey(
                 user_id=user_id,
