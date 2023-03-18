@@ -1,0 +1,4 @@
+Change type of result in InlineQueryResult enum for `InlineQueryResultCachedMpeg4Gif`
+and `InlineQueryResultMpeg4Gif` to more correct according to documentation.
+
+Change regexp for entities parsing to more correct (`InlineQueryResultType.yml`).
