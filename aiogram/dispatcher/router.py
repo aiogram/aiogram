@@ -114,8 +114,7 @@ class Router:
 
         if observer:
             return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
-        else:
-            return await _wrapped(event, **kwargs)
+        return await _wrapped(event, **kwargs)
 
     async def _propagate_event(
         self,
