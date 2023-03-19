@@ -49,8 +49,9 @@ class TelegramEventObserver:
     def _resolve_middlewares(self) -> List[MiddlewareType[TelegramObject]]:
         middlewares: List[MiddlewareType[TelegramObject]] = []
         for router in reversed(tuple(self.router.chain_head)):
-            observer = router.observers[self.event_name]
-            middlewares.extend(observer.middleware)
+            observer = router.observers.get(self.event_name)
+            if observer:
+                middlewares.extend(observer.middleware)
 
         return middlewares
 
