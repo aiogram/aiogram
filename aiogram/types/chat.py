@@ -48,6 +48,8 @@ class Chat(base.TelegramObject):
     can_set_sticker_set: base.Boolean = fields.Field()
     linked_chat_id: base.Integer = fields.Field()
     location: ChatLocation = fields.Field()
+    has_hidden_members: base.Boolean = fields.Field()
+    has_aggressive_anti_spam_enabled: base.Boolean = fields.Field()
 
     def __hash__(self):
         return self.id
@@ -312,14 +314,18 @@ class Chat(base.TelegramObject):
     async def promote(self,
                       user_id: base.Integer,
                       is_anonymous: typing.Optional[base.Boolean] = None,
+                      can_manage_chat: typing.Optional[base.Boolean] = None,
                       can_change_info: typing.Optional[base.Boolean] = None,
                       can_post_messages: typing.Optional[base.Boolean] = None,
                       can_edit_messages: typing.Optional[base.Boolean] = None,
                       can_delete_messages: typing.Optional[base.Boolean] = None,
+                      can_manage_voice_chats: typing.Optional[base.Boolean] = None,
                       can_invite_users: typing.Optional[base.Boolean] = None,
                       can_restrict_members: typing.Optional[base.Boolean] = None,
                       can_pin_messages: typing.Optional[base.Boolean] = None,
-                      can_promote_members: typing.Optional[base.Boolean] = None) -> base.Boolean:
+                      can_promote_members: typing.Optional[base.Boolean] = None,
+                      can_manage_video_chats: typing.Optional[base.Boolean] = None,
+                      can_manage_topics: typing.Optional[base.Boolean] = None,) -> base.Boolean:
         """
         Use this method to promote or demote a user in a supergroup or a channel.
         The bot must be an administrator in the chat for this to work and must have the appropriate admin rights.
@@ -362,6 +368,7 @@ class Chat(base.TelegramObject):
         :return: Returns True on success.
         :rtype: :obj:`base.Boolean`
         """
+
         return await self.bot.promote_chat_member(self.id,
                                                   user_id=user_id,
                                                   is_anonymous=is_anonymous,
@@ -372,7 +379,12 @@ class Chat(base.TelegramObject):
                                                   can_invite_users=can_invite_users,
                                                   can_restrict_members=can_restrict_members,
                                                   can_pin_messages=can_pin_messages,
-                                                  can_promote_members=can_promote_members)
+                                                  can_promote_members=can_promote_members,
+                                                  can_manage_chat=can_manage_chat,
+                                                  can_manage_voice_chats=can_manage_voice_chats,
+                                                  can_manage_video_chats=can_manage_video_chats,
+                                                  can_manage_topics=can_manage_topics
+                                                  )
 
     async def set_permissions(self, permissions: ChatPermissions) -> base.Boolean:
         """
@@ -552,7 +564,7 @@ class Chat(base.TelegramObject):
         """
         return await self.bot.delete_chat_sticker_set(self.id)
 
-    async def do(self, action: base.String) -> base.Boolean:
+    async def do(self, action: base.String, message_thread_id: typing.Optional[base.Integer] = None) -> base.Boolean:
         """
         Use this method when you need to tell the user that something is happening on the bot's side.
         The status is set for 5 seconds or less
@@ -565,6 +577,8 @@ class Chat(base.TelegramObject):
 
         :param action: Type of action to broadcast.
         :type action: :obj:`base.String`
+        :param message_thread_id: Unique identifier for the target message thread; supergroups only
+        :type message_thread_id: :obj:`typing.Optional[base.Integer]`
         :return: Returns True on success.
         :rtype: :obj:`base.Boolean`
         """

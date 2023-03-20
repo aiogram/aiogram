@@ -2,8 +2,6 @@ import pytest
 
 from aiogram import Dispatcher, Bot
 
-pytestmark = pytest.mark.asyncio
-
 
 class TestDispatcherInit:
     async def test_successful_init(self, bot):

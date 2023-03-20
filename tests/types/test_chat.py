@@ -1,10 +1,7 @@
-import pytest
-
 from aiogram import Bot, types
 from .dataset import CHAT, FULL_CHAT
 from .. import FakeTelegram
 
-pytestmark = pytest.mark.asyncio
 
 chat = types.Chat(**CHAT)
 

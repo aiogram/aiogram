@@ -6,9 +6,6 @@ import pytest
 from aiogram.dispatcher.filters import Text, CommandStart
 from aiogram.types import Message, CallbackQuery, InlineQuery, Poll
 
-# enable asyncio mode
-pytestmark = pytest.mark.asyncio
-
 
 def data_sample_1():
     return [

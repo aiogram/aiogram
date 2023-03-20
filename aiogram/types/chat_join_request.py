@@ -16,6 +16,7 @@ class ChatJoinRequest(base.TelegramObject):
 
     chat: Chat = fields.Field(base=Chat)
     from_user: User = fields.Field(alias="from", base=User)
+    user_chat_id: base.Integer = fields.Field()
     date: datetime = fields.DateTimeField()
     bio: base.String = fields.Field()
     invite_link: ChatInviteLink = fields.Field(base=ChatInviteLink)
