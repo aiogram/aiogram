@@ -574,7 +574,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                          duration: typing.Optional[base.Integer] = None,
                          performer: typing.Optional[base.String] = None,
                          title: typing.Optional[base.String] = None,
-                         thumb: typing.Union[base.InputFile, base.String, None] = None,
+                         thumbnail: typing.Union[base.InputFile, base.String, None] = None,
                          message_thread_id: typing.Optional[base.Integer] = None,
                          disable_notification: typing.Optional[base.Boolean] = None,
                          protect_content: typing.Optional[base.Boolean] = None,
@@ -584,6 +584,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                          types.ReplyKeyboardMarkup,
                          types.ReplyKeyboardRemove,
                          types.ForceReply, None] = None,
+                         thumb: typing.Union[base.InputFile, base.String, None] = None,
                          ) -> types.Message:
         """
         Use this method to send audio files, if you want Telegram clients to display them in the music player.
@@ -623,8 +624,12 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :param title: Track name
         :type title: :obj:`typing.Optional[base.String]`
 
+
         :param thumb: Thumbnail of the file sent
         :type thumb: :obj:`typing.Union[base.InputFile, base.String, None]`
+
+        :param thumbnail: Thumbnail of the file sent
+        :type thumbnail: :obj:`typing.Union[base.InputFile, base.String, None]`
 
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound
         :type disable_notification: :obj:`typing.Optional[base.Boolean]`
@@ -650,7 +655,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         """
         reply_markup = prepare_arg(reply_markup)
         caption_entities = prepare_arg(caption_entities)
-        payload = generate_payload(**locals(), exclude=['audio', 'thumb'])
+        payload = generate_payload(**locals(), exclude=['audio', 'thumb', 'thumbnail'])
         if self.parse_mode and caption_entities is None:
             payload.setdefault('parse_mode', self.parse_mode)
         if self.protect_content is not None:
@@ -658,7 +663,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
         files = {}
         prepare_file(payload, files, 'audio', audio)
-        prepare_attachment(payload, files, 'thumb', thumb)
+        prepare_attachment(payload, files, 'thumbnail', thumbnail or thumb)
 
         result = await self.request(api.Methods.SEND_AUDIO, payload, files)
         return types.Message(**result)
@@ -666,7 +671,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
     async def send_document(self,
                             chat_id: typing.Union[base.Integer, base.String],
                             document: typing.Union[base.InputFile, base.String],
-                            thumb: typing.Union[base.InputFile, base.String, None] = None,
+                            thumbnail: typing.Union[base.InputFile, base.String, None] = None,
                             caption: typing.Optional[base.String] = None,
                             parse_mode: typing.Optional[base.String] = None,
                             caption_entities: typing.Optional[typing.List[types.MessageEntity]] = None,
@@ -681,6 +686,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                             types.ReplyKeyboardRemove,
                             types.ForceReply,
                             None] = None,
+                            thumb: typing.Union[base.InputFile, base.String, None] = None,
                             ) -> types.Message:
         """
         Use this method to send general files. On success, the sent Message is
@@ -700,6 +706,9 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
         :param document: File to send
         :type document: :obj:`typing.Union[base.InputFile, base.String]`
+
+        :param thumbnail: Thumbnail of the file sent
+        :type thumbnail: :obj:`typing.Union[base.InputFile, base.String, None]`
 
         :param thumb: Thumbnail of the file sent
         :type thumb: :obj:`typing.Union[base.InputFile, base.String, None]`
@@ -748,7 +757,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         """
         reply_markup = prepare_arg(reply_markup)
         caption_entities = prepare_arg(caption_entities)
-        payload = generate_payload(**locals(), exclude=['document'])
+        payload = generate_payload(**locals(), exclude=['document', 'thumb', 'thumbnail'])
         if self.parse_mode and caption_entities is None:
             payload.setdefault('parse_mode', self.parse_mode)
         if self.protect_content is not None:
@@ -756,7 +765,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
         files = {}
         prepare_file(payload, files, 'document', document)
-        prepare_attachment(payload, files, 'thumb', thumb)
+        prepare_attachment(payload, files, 'thumbnail', thumbnail or thumb)
 
         result = await self.request(api.Methods.SEND_DOCUMENT, payload, files)
         return types.Message(**result)
@@ -766,7 +775,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                          duration: typing.Optional[base.Integer] = None,
                          width: typing.Optional[base.Integer] = None,
                          height: typing.Optional[base.Integer] = None,
-                         thumb: typing.Union[base.InputFile, base.String, None] = None,
+                         thumbnail: typing.Union[base.InputFile, base.String, None] = None,
                          caption: typing.Optional[base.String] = None,
                          parse_mode: typing.Optional[base.String] = None,
                          caption_entities: typing.Optional[typing.List[types.MessageEntity]] = None,
@@ -781,6 +790,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                          types.ReplyKeyboardRemove,
                          types.ForceReply, None] = None,
                          has_spoiler: typing.Optional[base.Boolean] = None,
+                         thumb: typing.Union[base.InputFile, base.String, None] = None,
                          ) -> types.Message:
         """
         Use this method to send video files, Telegram clients support mp4 videos
@@ -806,6 +816,9 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
         :param height: Video height
         :type height: :obj:`typing.Optional[base.Integer]`
+
+        :param thumbnail: Thumbnail of the file sent
+        :type thumbnail: :obj:`typing.Union[base.InputFile, base.String, None]`
 
         :param thumb: Thumbnail of the file sent
         :type thumb: :obj:`typing.Union[base.InputFile, base.String, None]`
@@ -851,7 +864,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         """
         reply_markup = prepare_arg(reply_markup)
         caption_entities = prepare_arg(caption_entities)
-        payload = generate_payload(**locals(), exclude=['video', 'thumb'])
+        payload = generate_payload(**locals(), exclude=['video', 'thumb', 'thumbnail'])
         if self.parse_mode and caption_entities is None:
             payload.setdefault('parse_mode', self.parse_mode)
         if self.protect_content is not None:
@@ -859,7 +872,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
         files = {}
         prepare_file(payload, files, 'video', video)
-        prepare_attachment(payload, files, 'thumb', thumb)
+        prepare_attachment(payload, files, 'thumbnail', thumbnail or thumb)
 
         result = await self.request(api.Methods.SEND_VIDEO, payload, files)
         return types.Message(**result)
@@ -870,7 +883,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                              duration: typing.Optional[base.Integer] = None,
                              width: typing.Optional[base.Integer] = None,
                              height: typing.Optional[base.Integer] = None,
-                             thumb: typing.Union[typing.Union[base.InputFile, base.String], None] = None,
+                             thumbnail: typing.Union[typing.Union[base.InputFile, base.String], None] = None,
                              caption: typing.Optional[base.String] = None,
                              parse_mode: typing.Optional[base.String] = None,
                              caption_entities: typing.Optional[typing.List[types.MessageEntity]] = None,
@@ -884,6 +897,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                              types.ReplyKeyboardRemove,
                              types.ForceReply], None] = None,
                              has_spoiler: typing.Optional[base.Boolean] = None,
+                             thumb: typing.Union[typing.Union[base.InputFile, base.String], None] = None,
                              ) -> types.Message:
         """
         Use this method to send animation files (GIF or H.264/MPEG-4 AVC video without sound).
@@ -914,6 +928,10 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
         :param height: Animation height
         :type height: :obj:`typing.Optional[base.Integer]`
+
+        :param thumbnail: Thumbnail of the file sent. The thumbnail should be in JPEG format and less than 200 kB in size.
+            A thumbnail‘s width and height should not exceed 320.
+        :type thumbnail: :obj:`typing.Union[typing.Union[base.InputFile, base.String], None]`
 
         :param thumb: Thumbnail of the file sent. The thumbnail should be in JPEG format and less than 200 kB in size.
             A thumbnail‘s width and height should not exceed 320.
@@ -957,7 +975,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         """
         reply_markup = prepare_arg(reply_markup)
         caption_entities = prepare_arg(caption_entities)
-        payload = generate_payload(**locals(), exclude=["animation", "thumb"])
+        payload = generate_payload(**locals(), exclude=["animation", "thumbnail", "thumb"])
         if self.parse_mode and caption_entities is None:
             payload.setdefault('parse_mode', self.parse_mode)
         if self.protect_content is not None:
@@ -965,7 +983,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
         files = {}
         prepare_file(payload, files, 'animation', animation)
-        prepare_attachment(payload, files, 'thumb', thumb)
+        prepare_attachment(payload, files, 'thumbnail', thumbnail or thumb)
 
         result = await self.request(api.Methods.SEND_ANIMATION, payload, files)
         return types.Message(**result)
@@ -1060,7 +1078,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                               video_note: typing.Union[base.InputFile, base.String],
                               duration: typing.Optional[base.Integer] = None,
                               length: typing.Optional[base.Integer] = None,
-                              thumb: typing.Union[base.InputFile, base.String, None] = None,
+                              thumbnail: typing.Union[base.InputFile, base.String, None] = None,
                               message_thread_id: typing.Optional[base.Integer] = None,
                               disable_notification: typing.Optional[base.Boolean] = None,
                               protect_content: typing.Optional[base.Boolean] = None,
@@ -1070,6 +1088,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                               types.ReplyKeyboardMarkup,
                               types.ReplyKeyboardRemove,
                               types.ForceReply, None] = None,
+                              thumb: typing.Union[base.InputFile, base.String, None] = None,
                               ) -> types.Message:
         """
         As of v.4.0, Telegram clients support rounded square mp4 videos of up to 1 minute long.
@@ -1092,6 +1111,9 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
 
         :param length: Video width and height
         :type length: :obj:`typing.Optional[base.Integer]`
+
+        :param thumbnail: Thumbnail of the file sent
+        :type thumbnail: :obj:`typing.Union[base.InputFile, base.String, None]`
 
         :param thumb: Thumbnail of the file sent
         :type thumb: :obj:`typing.Union[base.InputFile, base.String, None]`
@@ -1119,12 +1141,13 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :rtype: :obj:`types.Message`
         """
         reply_markup = prepare_arg(reply_markup)
-        payload = generate_payload(**locals(), exclude=['video_note'])
+        payload = generate_payload(**locals(), exclude=['video_note', 'thumb', 'thumbnail'])
         if self.protect_content is not None:
             payload.setdefault('protect_content', self.protect_content)
 
         files = {}
         prepare_file(payload, files, 'video_note', video_note)
+        prepare_file(payload, files, 'thumbnail', thumbnail)
 
         result = await self.request(api.Methods.SEND_VIDEO_NOTE, payload, files)
         return types.Message(**result)
