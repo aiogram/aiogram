@@ -8,7 +8,7 @@ import warnings
 from .base import BaseBot, api
 from .. import types
 from ..types import base
-from ..utils.deprecated import deprecated
+from ..utils.deprecated import deprecated, renamed_argument
 from ..utils.exceptions import ValidationError
 from ..utils.mixins import DataMixin, ContextInstanceMixin
 from ..utils.payload import generate_payload, prepare_arg, prepare_attachment, prepare_file
@@ -565,6 +565,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         result = await self.request(api.Methods.SEND_PHOTO, payload, files)
         return types.Message(**result)
 
+    @renamed_argument('thumb', 'thumbnail', '3.0')
     async def send_audio(self,
                          chat_id: typing.Union[base.Integer, base.String],
                          audio: typing.Union[base.InputFile, base.String],
@@ -625,7 +626,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :type title: :obj:`typing.Optional[base.String]`
 
 
-        :param thumb: Thumbnail of the file sent
+        :param thumb: deprecated in API 6.6. Use thumbnail instead
         :type thumb: :obj:`typing.Union[base.InputFile, base.String, None]`
 
         :param thumbnail: Thumbnail of the file sent
@@ -660,6 +661,15 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
             payload.setdefault('parse_mode', self.parse_mode)
         if self.protect_content is not None:
             payload.setdefault('protect_content', self.protect_content)
+        deprecated_list = [thumb]
+        for param in deprecated_list:
+            if param is None:
+                warnings.warn(
+                    message=f"The parameter `{param}` deprecated, use updated method params instead.",
+                    category=DeprecationWarning,
+                    stacklevel=2
+                )
+
 
         files = {}
         prepare_file(payload, files, 'audio', audio)
@@ -668,6 +678,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         result = await self.request(api.Methods.SEND_AUDIO, payload, files)
         return types.Message(**result)
 
+    @renamed_argument('thumb', 'thumbnail', '3.0')
     async def send_document(self,
                             chat_id: typing.Union[base.Integer, base.String],
                             document: typing.Union[base.InputFile, base.String],
@@ -710,7 +721,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :param thumbnail: Thumbnail of the file sent
         :type thumbnail: :obj:`typing.Union[base.InputFile, base.String, None]`
 
-        :param thumb: Thumbnail of the file sent
+        :param thumb: deprecated in API 6.6. Use thumbnail instead
         :type thumb: :obj:`typing.Union[base.InputFile, base.String, None]`
 
         :param caption: Document caption (may also be used when resending documents
@@ -770,6 +781,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         result = await self.request(api.Methods.SEND_DOCUMENT, payload, files)
         return types.Message(**result)
 
+    @renamed_argument('thumb', 'thumbnail', '6.6')
     async def send_video(self, chat_id: typing.Union[base.Integer, base.String],
                          video: typing.Union[base.InputFile, base.String],
                          duration: typing.Optional[base.Integer] = None,
@@ -820,7 +832,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :param thumbnail: Thumbnail of the file sent
         :type thumbnail: :obj:`typing.Union[base.InputFile, base.String, None]`
 
-        :param thumb: Thumbnail of the file sent
+        :param thumb: deprecated in API 6.6, Use thumbnail instead
         :type thumb: :obj:`typing.Union[base.InputFile, base.String, None]`
 
         :param caption: Video caption (may also be used when resending videos by file_id), 0-1024 characters
@@ -877,6 +889,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         result = await self.request(api.Methods.SEND_VIDEO, payload, files)
         return types.Message(**result)
 
+    @renamed_argument('thumb', 'thumbnail', '3.0')
     async def send_animation(self,
                              chat_id: typing.Union[base.Integer, base.String],
                              animation: typing.Union[base.InputFile, base.String],
@@ -933,8 +946,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
             A thumbnail‘s width and height should not exceed 320.
         :type thumbnail: :obj:`typing.Union[typing.Union[base.InputFile, base.String], None]`
 
-        :param thumb: Thumbnail of the file sent. The thumbnail should be in JPEG format and less than 200 kB in size.
-            A thumbnail‘s width and height should not exceed 320.
+        :param thumb: deprecated in API 6.6. Use thumbnail instead
         :type thumb: :obj:`typing.Union[typing.Union[base.InputFile, base.String], None]`
 
         :param caption: Animation caption (may also be used when resending animation by file_id), 0-1024 characters
@@ -1074,6 +1086,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         result = await self.request(api.Methods.SEND_VOICE, payload, files)
         return types.Message(**result)
 
+    @renamed_argument('thumb', 'thumbnail', '3.0')
     async def send_video_note(self, chat_id: typing.Union[base.Integer, base.String],
                               video_note: typing.Union[base.InputFile, base.String],
                               duration: typing.Optional[base.Integer] = None,
@@ -1115,7 +1128,7 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
         :param thumbnail: Thumbnail of the file sent
         :type thumbnail: :obj:`typing.Union[base.InputFile, base.String, None]`
 
-        :param thumb: Thumbnail of the file sent
+        :param thumb: deprecated in API 6.6. Use thumbnail instead
         :type thumb: :obj:`typing.Union[base.InputFile, base.String, None]`
 
         :param disable_notification: Sends the message silently. Users will receive a notification with no sound
