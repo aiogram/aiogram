@@ -5,6 +5,7 @@ from . import fields
 from .inline_keyboard import InlineKeyboardMarkup
 from .input_message_content import InputMessageContent
 from .message_entity import MessageEntity
+from ..utils.deprecated import warn_deprecated
 
 
 class InlineQueryResult(base.TelegramObject):
@@ -42,9 +43,14 @@ class InlineQueryResultArticle(InlineQueryResult):
     url: base.String = fields.Field()
     hide_url: base.Boolean = fields.Field()
     description: base.String = fields.Field()
-    thumb_url: base.String = fields.Field()
-    thumb_width: base.Integer = fields.Field()
-    thumb_height: base.Integer = fields.Field()
+    # Deprecated fields
+    thumb_url: base.String = fields.Field()  # Deprecated, use thumbnail_url instead
+    thumb_width: base.Integer = fields.Field()  # Deprecated, use thumbnail_width instead
+    thumb_height: base.Integer = fields.Field()  # Deprecated, use thumbnail_height instead
+    # New fields
+    thumbnail_url: base.String = fields.Field()
+    thumbnail_width: base.Integer = fields.Field()
+    thumbnail_height: base.Integer = fields.Field()
 
     def __init__(self, *,
                  id: base.String,
@@ -54,14 +60,37 @@ class InlineQueryResultArticle(InlineQueryResult):
                  url: typing.Optional[base.String] = None,
                  hide_url: typing.Optional[base.Boolean] = None,
                  description: typing.Optional[base.String] = None,
-                 thumb_url: typing.Optional[base.String] = None,
-                 thumb_width: typing.Optional[base.Integer] = None,
-                 thumb_height: typing.Optional[base.Integer] = None):
-        super(InlineQueryResultArticle, self).__init__(id=id, title=title,
-                                                       input_message_content=input_message_content,
-                                                       reply_markup=reply_markup, url=url, hide_url=hide_url,
-                                                       description=description, thumb_url=thumb_url,
-                                                       thumb_width=thumb_width, thumb_height=thumb_height)
+                 thumb_url: typing.Optional[base.String] = None,  # Deprecated
+                 thumb_width: typing.Optional[base.Integer] = None,  # Deprecated
+                 thumb_height: typing.Optional[base.Integer] = None,  # Deprecated
+                 thumbnail_url: typing.Optional[base.String] = None,
+                 thumbnail_width: typing.Optional[base.Integer] = None,
+                 thumbnail_height: typing.Optional[base.Integer] = None):
+
+        if thumb_url and not thumbnail_url:
+            thumbnail_url = thumb_url
+            warn_deprecated(
+                "thumb_url parameter is deprecated, please use thumbnail_url."
+            )
+        if thumb_width and not thumbnail_width:
+            thumbnail_width = thumb_width
+            warn_deprecated(
+                "thumb_width parameter is deprecated, please use thumbnail_width."
+            )
+        if thumb_height and not thumbnail_height:
+            warn_deprecated(
+                "thumb_height parameter is deprecated, please use thumbnail_height."
+            )
+            thumbnail_height = thumb_height
+
+        super().__init__(id=id, title=title,
+                         input_message_content=input_message_content,
+                         reply_markup=reply_markup, url=url, hide_url=hide_url,
+                         description=description, thumb_url=thumb_url,
+                         thumb_width=thumb_width, thumb_height=thumb_height,
+                         thumbnail_url=thumbnail_url,
+                         thumbnail_width=thumbnail_width,
+                         thumbnail_height=thumbnail_height)
 
 
 class InlineQueryResultPhoto(InlineQueryResult):
@@ -76,7 +105,10 @@ class InlineQueryResultPhoto(InlineQueryResult):
     """
     type: base.String = fields.Field(alias='type', default='photo')
     photo_url: base.String = fields.Field()
+    # Deprecated field
     thumb_url: base.String = fields.Field()
+    # New field
+    thumbnail_url: base.String = fields.Field()
     photo_width: base.Integer = fields.Field()
     photo_height: base.Integer = fields.Field()
     title: base.String = fields.Field()
@@ -89,7 +121,8 @@ class InlineQueryResultPhoto(InlineQueryResult):
             *,
             id: base.String,
             photo_url: base.String,
-            thumb_url: base.String,
+            thumb_url: typing.Optional[base.String] = None,  # Deprecated
+            thumbnail_url: typing.Optional[base.String] = None,
             photo_width: typing.Optional[base.Integer] = None,
             photo_height: typing.Optional[base.Integer] = None,
             title: typing.Optional[base.String] = None,
@@ -100,8 +133,17 @@ class InlineQueryResultPhoto(InlineQueryResult):
             reply_markup: typing.Optional[InlineKeyboardMarkup] = None,
             input_message_content: typing.Optional[InputMessageContent] = None,
     ):
+        if not thumbnail_url:
+            if thumb_url:
+                warn_deprecated(
+                    "thumb_url parameter is deprecated, please use thumbnail_url."
+                )
+                thumbnail_url = thumb_url
+            else:
+                raise ValueError("thumbnail_url argument is required")
+
         super().__init__(
-            id=id, photo_url=photo_url, thumb_url=thumb_url,
+            id=id, photo_url=photo_url, thumbnail_url=thumbnail_url,
             photo_width=photo_width, photo_height=photo_height, title=title,
             description=description, caption=caption,
             parse_mode=parse_mode, caption_entities=caption_entities,
@@ -124,8 +166,12 @@ class InlineQueryResultGif(InlineQueryResult):
     gif_width: base.Integer = fields.Field()
     gif_height: base.Integer = fields.Field()
     gif_duration: base.Integer = fields.Field()
+    # Deprecated fields
     thumb_url: base.String = fields.Field()
     thumb_mime_type: base.String = fields.Field()
+    # New fields
+    thumbnail_url: base.String = fields.Field()
+    thumbnail_mime_type: base.String = fields.Field()
     title: base.String = fields.Field()
     caption: base.String = fields.Field()
     input_message_content: InputMessageContent = fields.Field(base=InputMessageContent)
@@ -138,7 +184,10 @@ class InlineQueryResultGif(InlineQueryResult):
             gif_width: typing.Optional[base.Integer] = None,
             gif_height: typing.Optional[base.Integer] = None,
             gif_duration: typing.Optional[base.Integer] = None,
-            thumb_url: typing.Optional[base.String] = None,
+            thumb_url: typing.Optional[base.String] = None,  # Deprecated
+            thumb_mime_type: typing.Optional[base.String] = None,  # Deprecated
+            thumbnail_url: typing.Optional[base.String] = None,
+            thumbnail_mime_type: typing.Optional[base.String] = None,
             title: typing.Optional[base.String] = None,
             caption: typing.Optional[base.String] = None,
             parse_mode: typing.Optional[base.String] = None,
@@ -146,9 +195,22 @@ class InlineQueryResultGif(InlineQueryResult):
             caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
             input_message_content: typing.Optional[InputMessageContent] = None,
     ):
+        if not thumbnail_url and thumb_url:
+            warn_deprecated(
+                "thumb_url parameter is deprecated, please use thumbnail_url."
+            )
+            thumbnail_url = thumb_url
+        if not thumbnail_mime_type and thumb_mime_type:
+            warn_deprecated(
+                "thumb_mime_type parameter is deprecated, please use thumbnail_mime_type."
+            )
+            thumbnail_mime_type = thumb_mime_type
+
         super().__init__(
             id=id, gif_url=gif_url, gif_width=gif_width, gif_height=gif_height,
-            gif_duration=gif_duration, thumb_url=thumb_url, title=title,
+            gif_duration=gif_duration,
+            thumbnail_url=thumbnail_url, thumbnail_mime_type=thumbnail_mime_type,
+            title=title,
             caption=caption, parse_mode=parse_mode, reply_markup=reply_markup,
             caption_entities=caption_entities,
             input_message_content=input_message_content,
@@ -170,8 +232,12 @@ class InlineQueryResultMpeg4Gif(InlineQueryResult):
     mpeg4_width: base.Integer = fields.Field()
     mpeg4_height: base.Integer = fields.Field()
     mpeg4_duration: base.Integer = fields.Field()
+    # Deprecated fields
     thumb_url: base.String = fields.Field()
     thumb_mime_type: base.String = fields.Field()
+    # New fields
+    thumbnail_url: base.String = fields.Field()
+    thumbnail_mime_type: base.String = fields.Field()
     title: base.String = fields.Field()
     caption: base.String = fields.Field()
     input_message_content: InputMessageContent = fields.Field(base=InputMessageContent)
@@ -181,7 +247,10 @@ class InlineQueryResultMpeg4Gif(InlineQueryResult):
             *,
             id: base.String,
             mpeg4_url: base.String,
-            thumb_url: base.String,
+            thumb_url: typing.Optional[base.String] = None,  # Deprecated
+            thumb_mime_type: typing.Optional[base.String] = None,  # Deprecated
+            thumbnail_url: typing.Optional[base.String] = None,
+            thumbnail_mime_type: typing.Optional[base.String] = None,
             mpeg4_width: typing.Optional[base.Integer] = None,
             mpeg4_height: typing.Optional[base.Integer] = None,
             mpeg4_duration: typing.Optional[base.Integer] = None,
@@ -192,10 +261,26 @@ class InlineQueryResultMpeg4Gif(InlineQueryResult):
             caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
             input_message_content: typing.Optional[InputMessageContent] = None,
     ):
+        if not thumbnail_url:
+            if thumb_url:
+                warn_deprecated(
+                    "thumb_url parameter is deprecated, please use thumbnail_url."
+                )
+                thumbnail_url = thumb_url
+            else:
+                raise ValueError("thumbnail_url is required")
+        if not thumbnail_mime_type and thumb_mime_type:
+            warn_deprecated(
+                "thumb_mime_type parameter is deprecated, please use thumbnail_mime_type."
+            )
+            thumbnail_mime_type = thumb_mime_type
+
+
         super().__init__(
             id=id, mpeg4_url=mpeg4_url, mpeg4_width=mpeg4_width,
             mpeg4_height=mpeg4_height, mpeg4_duration=mpeg4_duration,
-            thumb_url=thumb_url, title=title, caption=caption,
+            thumbnail_url=thumbnail_url, thumbnail_mime_type=thumbnail_mime_type,
+            title=title, caption=caption,
             parse_mode=parse_mode, reply_markup=reply_markup,
             caption_entities=caption_entities,
             input_message_content=input_message_content,
@@ -218,7 +303,10 @@ class InlineQueryResultVideo(InlineQueryResult):
     type: base.String = fields.Field(alias='type', default='video')
     video_url: base.String = fields.Field()
     mime_type: base.String = fields.Field()
+    # Deprecated fields
     thumb_url: base.String = fields.Field()
+    # New fields
+    thumbnail_url: base.String = fields.Field()
     title: base.String = fields.Field()
     caption: base.String = fields.Field()
     video_width: base.Integer = fields.Field()
@@ -233,7 +321,8 @@ class InlineQueryResultVideo(InlineQueryResult):
             id: base.String,
             video_url: base.String,
             mime_type: base.String,
-            thumb_url: base.String,
+            thumb_url: typing.Optional[base.String] = None,  # Deprecated
+            thumbnail_url: typing.Optional[base.String] = None,
             title: base.String,
             caption: typing.Optional[base.String] = None,
             parse_mode: typing.Optional[base.String] = None,
@@ -245,8 +334,17 @@ class InlineQueryResultVideo(InlineQueryResult):
             caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
             input_message_content: typing.Optional[InputMessageContent] = None,
     ):
+        if not thumbnail_url:
+            if thumb_url:
+                warn_deprecated(
+                    "thumb_url parameter is deprecated, please use thumbnail_url."
+                )
+                thumbnail_url = thumb_url
+            else:
+                raise ValueError("thumbnail_url is required")
+
         super().__init__(
-            id=id, video_url=video_url, mime_type=mime_type, thumb_url=thumb_url,
+            id=id, video_url=video_url, mime_type=mime_type, thumbnail_url=thumbnail_url,
             title=title, caption=caption, video_width=video_width,
             video_height=video_height, video_duration=video_duration,
             description=description, parse_mode=parse_mode,
@@ -357,9 +455,14 @@ class InlineQueryResultDocument(InlineQueryResult):
     mime_type: base.String = fields.Field()
     description: base.String = fields.Field()
     input_message_content: InputMessageContent = fields.Field(base=InputMessageContent)
+    # Deprecated fields
     thumb_url: base.String = fields.Field()
     thumb_width: base.Integer = fields.Field()
     thumb_height: base.Integer = fields.Field()
+    # New fields
+    thumbnail_url: base.String = fields.Field()
+    thumbnail_width: base.Integer = fields.Field()
+    thumbnail_height: base.Integer = fields.Field()
 
     def __init__(
             self,
@@ -374,17 +477,36 @@ class InlineQueryResultDocument(InlineQueryResult):
             description: typing.Optional[base.String] = None,
             reply_markup: typing.Optional[InlineKeyboardMarkup] = None,
             input_message_content: typing.Optional[InputMessageContent] = None,
-            thumb_url: typing.Optional[base.String] = None,
-            thumb_width: typing.Optional[base.Integer] = None,
-            thumb_height: typing.Optional[base.Integer] = None,
+            thumb_url: typing.Optional[base.String] = None,  # Deprecated
+            thumb_width: typing.Optional[base.Integer] = None,  # Deprecated
+            thumb_height: typing.Optional[base.Integer] = None,  # Deprecated
+            thumbnail_url: typing.Optional[base.String] = None,
+            thumbnail_width: typing.Optional[base.Integer] = None,
+            thumbnail_height: typing.Optional[base.Integer] = None,
     ):
+        if thumb_url and not thumbnail_url:
+            thumbnail_url = thumb_url
+            warn_deprecated(
+                'thumb_url is deprecated, use thumbnail_url instead',
+            )
+        if thumb_width and not thumbnail_width:
+            thumbnail_width = thumb_width
+            warn_deprecated(
+                'thumb_width is deprecated, use thumbnail_width instead',
+            )
+        if thumb_height and not thumbnail_height:
+            thumbnail_height = thumb_height
+            warn_deprecated(
+                'thumb_height is deprecated, use thumbnail_height instead',
+            )
+
         super().__init__(
             id=id, title=title, caption=caption, parse_mode=parse_mode,
             caption_entities=caption_entities, document_url=document_url,
             mime_type=mime_type, description=description, reply_markup=reply_markup,
             input_message_content=input_message_content,
-            thumb_url=thumb_url, thumb_width=thumb_width,
-            thumb_height=thumb_height,
+            thumbnail_url=thumbnail_url, thumbnail_width=thumbnail_width,
+            thumbnail_height=thumbnail_height,
         )
 
 
@@ -407,9 +529,14 @@ class InlineQueryResultLocation(InlineQueryResult):
     heading: typing.Optional[base.Integer] = fields.Field()
     proximity_alert_radius: typing.Optional[base.Integer] = fields.Field()
     input_message_content: InputMessageContent = fields.Field(base=InputMessageContent)
+    # Deprecated fields
     thumb_url: base.String = fields.Field()
     thumb_width: base.Integer = fields.Field()
     thumb_height: base.Integer = fields.Field()
+    # New fields
+    thumbnail_url: base.String = fields.Field()
+    thumbnail_width: base.Integer = fields.Field()
+    thumbnail_height: base.Integer = fields.Field()
 
     def __init__(self, *,
                  id: base.String,
@@ -422,10 +549,29 @@ class InlineQueryResultLocation(InlineQueryResult):
                  proximity_alert_radius: typing.Optional[base.Integer] = None,
                  reply_markup: typing.Optional[InlineKeyboardMarkup] = None,
                  input_message_content: typing.Optional[InputMessageContent] = None,
-                 thumb_url: typing.Optional[base.String] = None,
-                 thumb_width: typing.Optional[base.Integer] = None,
-                 thumb_height: typing.Optional[base.Integer] = None,
+                 thumb_url: typing.Optional[base.String] = None,  # Deprecated
+                 thumb_width: typing.Optional[base.Integer] = None,  # Deprecated
+                 thumb_height: typing.Optional[base.Integer] = None,  # Deprecated
+                 thumbnail_url: typing.Optional[base.String] = None,
+                 thumbnail_width: typing.Optional[base.Integer] = None,
+                 thumbnail_height: typing.Optional[base.Integer] = None,
                  ):
+        if thumb_url and not thumbnail_url:
+            thumbnail_url = thumb_url
+            warn_deprecated(
+                'thumb_url is deprecated, use thumbnail_url instead',
+            )
+        if thumb_width and not thumbnail_width:
+            thumbnail_width = thumb_width
+            warn_deprecated(
+                'thumb_width is deprecated, use thumbnail_width instead',
+            )
+        if thumb_height and not thumbnail_height:
+            thumbnail_height = thumb_height
+            warn_deprecated(
+                'thumb_height is deprecated, use thumbnail_height instead',
+            )
+
         super().__init__(
             id=id,
             latitude=latitude,
@@ -437,9 +583,9 @@ class InlineQueryResultLocation(InlineQueryResult):
             proximity_alert_radius=proximity_alert_radius,
             reply_markup=reply_markup,
             input_message_content=input_message_content,
-            thumb_url=thumb_url,
-            thumb_width=thumb_width,
-            thumb_height=thumb_height
+            thumbnail_url=thumbnail_url,
+            thumbnail_width=thumbnail_width,
+            thumbnail_height=thumbnail_height,
         )
 
 
@@ -465,9 +611,14 @@ class InlineQueryResultVenue(InlineQueryResult):
     google_place_id: base.String = fields.Field()
     google_place_type: base.String = fields.Field()
     input_message_content: InputMessageContent = fields.Field(base=InputMessageContent)
+    # Deprecated fields
     thumb_url: base.String = fields.Field()
     thumb_width: base.Integer = fields.Field()
     thumb_height: base.Integer = fields.Field()
+    # New fields
+    thumbnail_url: base.String = fields.Field()
+    thumbnail_width: base.Integer = fields.Field()
+    thumbnail_height: base.Integer = fields.Field()
 
     def __init__(
             self,
@@ -483,17 +634,36 @@ class InlineQueryResultVenue(InlineQueryResult):
             google_place_type: typing.Optional[base.String] = None,
             reply_markup: typing.Optional[InlineKeyboardMarkup] = None,
             input_message_content: typing.Optional[InputMessageContent] = None,
-            thumb_url: typing.Optional[base.String] = None,
-            thumb_width: typing.Optional[base.Integer] = None,
-            thumb_height: typing.Optional[base.Integer] = None,
+            thumb_url: typing.Optional[base.String] = None,  # Deprecated
+            thumb_width: typing.Optional[base.Integer] = None,  # Deprecated
+            thumb_height: typing.Optional[base.Integer] = None,  # Deprecated
+            thumbnail_url: typing.Optional[base.String] = None,
+            thumbnail_width: typing.Optional[base.Integer] = None,
+            thumbnail_height: typing.Optional[base.Integer] = None,
     ):
+        if thumb_url and not thumbnail_url:
+            thumbnail_url = thumb_url
+            warn_deprecated(
+                'thumb_url is deprecated, use thumbnail_url instead',
+            )
+        if thumb_width and not thumbnail_width:
+            thumbnail_width = thumb_width
+            warn_deprecated(
+                'thumb_width is deprecated, use thumbnail_width instead',
+            )
+        if thumb_height and not thumbnail_height:
+            thumbnail_height = thumb_height
+            warn_deprecated(
+                'thumb_height is deprecated, use thumbnail_height instead',
+            )
+
         super().__init__(
             id=id, latitude=latitude, longitude=longitude, title=title,
             address=address, foursquare_id=foursquare_id,
             foursquare_type=foursquare_type, google_place_id=google_place_id,
             google_place_type=google_place_type, reply_markup=reply_markup,
-            input_message_content=input_message_content, thumb_url=thumb_url,
-            thumb_width=thumb_width, thumb_height=thumb_height,
+            input_message_content=input_message_content, thumbnail_url=thumbnail_url,
+            thumbnail_width=thumbnail_width, thumbnail_height=thumbnail_height,
         )
 
 
@@ -515,9 +685,14 @@ class InlineQueryResultContact(InlineQueryResult):
     last_name: base.String = fields.Field()
     vcard: base.String = fields.Field()
     input_message_content: InputMessageContent = fields.Field(base=InputMessageContent)
+    # Deprecated fields
     thumb_url: base.String = fields.Field()
     thumb_width: base.Integer = fields.Field()
     thumb_height: base.Integer = fields.Field()
+    # New fields
+    thumbnail_url: base.String = fields.Field()
+    thumbnail_width: base.Integer = fields.Field()
+    thumbnail_height: base.Integer = fields.Field()
     foursquare_type: base.String = fields.Field()
 
     def __init__(self, *,
@@ -527,15 +702,36 @@ class InlineQueryResultContact(InlineQueryResult):
                  last_name: typing.Optional[base.String] = None,
                  reply_markup: typing.Optional[InlineKeyboardMarkup] = None,
                  input_message_content: typing.Optional[InputMessageContent] = None,
-                 thumb_url: typing.Optional[base.String] = None,
-                 thumb_width: typing.Optional[base.Integer] = None,
-                 thumb_height: typing.Optional[base.Integer] = None,
+                 thumb_url: typing.Optional[base.String] = None,  # Deprecated
+                 thumb_width: typing.Optional[base.Integer] = None,  # Deprecated
+                 thumb_height: typing.Optional[base.Integer] = None,  # Deprecated
+                 thumbnail_url: typing.Optional[base.String] = None,
+                 thumbnail_width: typing.Optional[base.Integer] = None,
+                 thumbnail_height: typing.Optional[base.Integer] = None,
                  foursquare_type: typing.Optional[base.String] = None):
+        if thumb_url and not thumbnail_url:
+            thumbnail_url = thumb_url
+            warn_deprecated(
+                'thumb_url is deprecated, use thumbnail_url instead',
+            )
+        if thumb_width and not thumbnail_width:
+            thumbnail_width = thumb_width
+            warn_deprecated(
+                'thumb_width is deprecated, use thumbnail_width instead',
+            )
+        if thumb_height and not thumbnail_height:
+            thumbnail_height = thumb_height
+            warn_deprecated(
+                'thumb_height is deprecated, use thumbnail_height instead',
+            )
+
         super(InlineQueryResultContact, self).__init__(id=id, phone_number=phone_number,
                                                        first_name=first_name, last_name=last_name,
                                                        reply_markup=reply_markup,
-                                                       input_message_content=input_message_content, thumb_url=thumb_url,
-                                                       thumb_width=thumb_width, thumb_height=thumb_height,
+                                                       input_message_content=input_message_content,
+                                                       thumbnail_url=thumbnail_url,
+                                                       thumbnail_width=thumbnail_width,
+                                                       thumbnail_height=thumbnail_height,
                                                        foursquare_type=foursquare_type)
 
 
