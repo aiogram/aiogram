@@ -661,15 +661,6 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
             payload.setdefault('parse_mode', self.parse_mode)
         if self.protect_content is not None:
             payload.setdefault('protect_content', self.protect_content)
-        deprecated_list = [thumb]
-        for param in deprecated_list:
-            if param is None:
-                warnings.warn(
-                    message=f"The parameter `{param}` deprecated, use updated method params instead.",
-                    category=DeprecationWarning,
-                    stacklevel=2
-                )
-
 
         files = {}
         prepare_file(payload, files, 'audio', audio)
