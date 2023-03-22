@@ -3,9 +3,9 @@ import typing
 from . import base
 from . import fields
 from . import mixins
+from .file import File
 from .mask_position import MaskPosition
 from .photo_size import PhotoSize
-from .file import File
 from ..utils.deprecated import warn_deprecated
 
 
@@ -22,7 +22,6 @@ class Sticker(base.TelegramObject, mixins.Downloadable):
     height: base.Integer = fields.Field()
     is_animated: base.Boolean = fields.Field()
     is_video: base.Boolean = fields.Field()
-    thumb: PhotoSize = fields.Field(base=PhotoSize)
     thumbnail: PhotoSize = fields.Field(base=PhotoSize)
     emoji: base.String = fields.Field()
     set_name: base.String = fields.Field()
@@ -32,48 +31,12 @@ class Sticker(base.TelegramObject, mixins.Downloadable):
     needs_repainting: base.Boolean = fields.Field()
     file_size: base.Integer = fields.Field()
 
-    def __init__(
-            self,
-            file_id: base.String,
-            file_unique_id: base.String,
-            type: base.String,
-            width: base.Integer,
-            height: base.Integer,
-            is_animated: base.Boolean,
-            is_video: base.Boolean,
-            thumb: typing.Optional[PhotoSize] = None,
-            thumbnail: typing.Optional[PhotoSize] = None,
-            emoji: typing.Optional[base.String] = None,
-            set_name: typing.Optional[base.String] = None,
-            premium_animation: typing.Optional[File] = None,
-            mask_position: typing.Optional[MaskPosition] = None,
-            custom_emoji_id: typing.Optional[base.String] = None,
-            needs_repainting: typing.Optional[base.Boolean] = None,
-            file_size: typing.Optional[base.Integer] = None,
-    ):
-        if thumb is not None:
-            warn_deprecated(
-                "The 'thumb' parameter is deprecated, use 'thumbnail' instead."
-            )
-            thumbnail = thumb
-
-        super().__init__(
-            file_id=file_id,
-            file_unique_id=file_unique_id,
-            type=type,
-            width=width,
-            height=height,
-            is_animated=is_animated,
-            is_video=is_video,
-            thumbnail=thumbnail,
-            emoji=emoji,
-            set_name=set_name,
-            premium_animation=premium_animation,
-            mask_position=mask_position,
-            custom_emoji_id=custom_emoji_id,
-            needs_repainting=needs_repainting,
-            file_size=file_size,
+    @property
+    def thumb(self) -> typing.Optional[PhotoSize]:
+        warn_deprecated(
+            "The 'thumb' property is deprecated, use 'thumbnail' instead."
         )
+        return self.thumbnail
 
     async def set_position_in_set(self, position: base.Integer) -> base.Boolean:
         """
