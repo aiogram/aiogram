@@ -4,6 +4,7 @@ from . import base
 from . import fields
 from .photo_size import PhotoSize
 from .sticker import Sticker
+from ..utils.deprecated import warn_deprecated
 
 
 class StickerSet(base.TelegramObject):
@@ -19,4 +20,9 @@ class StickerSet(base.TelegramObject):
     is_video: base.Boolean = fields.Field()
     contains_masks: base.Boolean = fields.Field()  # Deprecated
     stickers: typing.List[Sticker] = fields.ListField(base=Sticker)
-    thumb: PhotoSize = fields.Field(base=PhotoSize)
+    thumbnail: PhotoSize = fields.Field(base=PhotoSize)
+
+    @property
+    def thumb(self):
+        warn_deprecated('thumb is deprecated, use thumbnail instead')
+        return self.thumbnail

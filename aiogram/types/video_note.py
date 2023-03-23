@@ -1,7 +1,10 @@
+import typing
+
 from . import base
 from . import fields
 from . import mixins
 from .photo_size import PhotoSize
+from ..utils.deprecated import warn_deprecated
 
 
 class VideoNote(base.TelegramObject, mixins.Downloadable):
@@ -14,5 +17,12 @@ class VideoNote(base.TelegramObject, mixins.Downloadable):
     file_unique_id: base.String = fields.Field()
     length: base.Integer = fields.Field()
     duration: base.Integer = fields.Field()
-    thumb: PhotoSize = fields.Field(base=PhotoSize)
+    thumbnail: PhotoSize = fields.Field(base=PhotoSize)
     file_size: base.Integer = fields.Field()
+
+    @property
+    def thumb(self):
+        warn_deprecated(
+            "thumb is deprecated. Use thumbnail instead",
+        )
+        return self.thumbnail

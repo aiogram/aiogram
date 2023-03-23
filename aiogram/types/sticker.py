@@ -1,9 +1,12 @@
+import typing
+
 from . import base
 from . import fields
 from . import mixins
+from .file import File
 from .mask_position import MaskPosition
 from .photo_size import PhotoSize
-from .file import File
+from ..utils.deprecated import warn_deprecated
 
 
 class Sticker(base.TelegramObject, mixins.Downloadable):
@@ -19,7 +22,7 @@ class Sticker(base.TelegramObject, mixins.Downloadable):
     height: base.Integer = fields.Field()
     is_animated: base.Boolean = fields.Field()
     is_video: base.Boolean = fields.Field()
-    thumb: PhotoSize = fields.Field(base=PhotoSize)
+    thumbnail: PhotoSize = fields.Field(base=PhotoSize)
     emoji: base.String = fields.Field()
     set_name: base.String = fields.Field()
     premium_animation: File = fields.Field(base=File)
@@ -27,6 +30,13 @@ class Sticker(base.TelegramObject, mixins.Downloadable):
     custom_emoji_id: base.String = fields.Field()
     needs_repainting: base.Boolean = fields.Field()
     file_size: base.Integer = fields.Field()
+
+    @property
+    def thumb(self) -> typing.Optional[PhotoSize]:
+        warn_deprecated(
+            "The 'thumb' property is deprecated, use 'thumbnail' instead."
+        )
+        return self.thumbnail
 
     async def set_position_in_set(self, position: base.Integer) -> base.Boolean:
         """

@@ -6,6 +6,7 @@ from . import base
 from . import fields
 from .input_file import InputFile
 from .message_entity import MessageEntity
+from ..utils.deprecated import warn_deprecated
 
 ATTACHMENT_PREFIX = 'attach://'
 
@@ -112,7 +113,8 @@ class InputMediaAnimation(InputMedia):
     def __init__(
             self,
             media: base.InputFile,
-            thumb: typing.Union[base.InputFile, base.String] = None,
+            thumb: typing.Union[base.InputFile, base.String] = None,  # Deprecated
+            thumbnail: typing.Union[base.InputFile, base.String] = None,
             caption: base.String = None,
             width: base.Integer = None,
             height: base.Integer = None,
@@ -122,8 +124,14 @@ class InputMediaAnimation(InputMedia):
             has_spoiler: typing.Optional[base.Boolean] = None,
             **kwargs,
     ):
+        if not thumbnail and thumb:
+            thumbnail = thumb
+            warn_deprecated(
+                'thumb argument is deprecated, use thumbnail instead',
+            )
+
         super().__init__(
-            type='animation', media=media, thumb=thumb, caption=caption, width=width,
+            type='animation', media=media, thumbnail=thumbnail, caption=caption, width=width,
             height=height, duration=duration, parse_mode=parse_mode,
             caption_entities=caption_entities, has_spoiler=has_spoiler, conf=kwargs,
         )
@@ -139,15 +147,21 @@ class InputMediaDocument(InputMedia):
     def __init__(
             self,
             media: base.InputFile,
-            thumb: typing.Union[base.InputFile, base.String, None] = None,
+            thumb: typing.Union[base.InputFile, base.String, None] = None,  # Deprecated
+            thumbnail: typing.Union[base.InputFile, base.String, None] = None,
             caption: base.String = None,
             parse_mode: base.String = None,
             caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
             disable_content_type_detection: typing.Optional[base.Boolean] = None,
             **kwargs,
     ):
+        if not thumbnail and thumb:
+            thumbnail = thumb
+            warn_deprecated(
+                'thumb argument is deprecated, use thumbnail instead',
+            )
         super().__init__(
-            type='document', media=media, thumb=thumb, caption=caption,
+            type='document', media=media, thumbnail=thumbnail, caption=caption,
             parse_mode=parse_mode, caption_entities=caption_entities,
             disable_content_type_detection=disable_content_type_detection,
             conf=kwargs,
@@ -168,7 +182,8 @@ class InputMediaAudio(InputMedia):
     def __init__(
             self,
             media: base.InputFile,
-            thumb: typing.Union[base.InputFile, base.String] = None,
+            thumb: typing.Union[base.InputFile, base.String] = None, # Deprecated
+            thumbnail: typing.Union[base.InputFile, base.String] = None,
             caption: base.String = None,
             duration: base.Integer = None,
             performer: base.String = None,
@@ -177,8 +192,13 @@ class InputMediaAudio(InputMedia):
             caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
             **kwargs,
     ):
+        if not thumbnail and thumb:
+            thumbnail = thumb
+            warn_deprecated(
+                'thumb argument is deprecated, use thumbnail instead',
+            )
         super().__init__(
-            type='audio', media=media, thumb=thumb, caption=caption,
+            type='audio', media=media, thumbnail=thumbnail, caption=caption,
             duration=duration, performer=performer, title=title,
             parse_mode=parse_mode, caption_entities=caption_entities, conf=kwargs,
         )
@@ -216,6 +236,8 @@ class InputMediaVideo(InputMedia):
     width: base.Integer = fields.Field()
     height: base.Integer = fields.Field()
     duration: base.Integer = fields.Field()
+    thumb: typing.Union[base.InputFile, base.String] = fields.Field()  # Deprecated
+    thumbnail: typing.Union[base.InputFile, base.String] = fields.Field()
     supports_streaming: base.Boolean = fields.Field()
     has_spoiler: typing.Optional[base.Boolean] = fields.Field()
 
@@ -223,6 +245,7 @@ class InputMediaVideo(InputMedia):
             self,
             media: base.InputFile,
             thumb: typing.Union[base.InputFile, base.String] = None,
+            thumbnail: typing.Union[base.InputFile, base.String] = None,
             caption: base.String = None,
             width: base.Integer = None,
             height: base.Integer = None,
@@ -233,8 +256,13 @@ class InputMediaVideo(InputMedia):
             has_spoiler: typing.Optional[base.Boolean] = None,
             **kwargs,
     ):
+        if not thumbnail and thumb:
+            thumbnail = thumb
+            warn_deprecated(
+                'thumb argument is deprecated, use thumbnail instead',
+            )
         super().__init__(
-            type='video', media=media, thumb=thumb, caption=caption,
+            type='video', media=media, thumbnail=thumbnail, caption=caption,
             width=width, height=height, duration=duration,
             parse_mode=parse_mode, caption_entities=caption_entities,
             supports_streaming=supports_streaming, has_spoiler=has_spoiler, conf=kwargs
@@ -346,7 +374,7 @@ class MediaGroup(base.TelegramObject):
                                     caption_entities=caption_entities)
         self.attach(audio)
 
-    def attach_document(self, document: typing.Union[InputMediaDocument, base.InputFile], 
+    def attach_document(self, document: typing.Union[InputMediaDocument, base.InputFile],
                         thumb: typing.Union[base.InputFile, base.String] = None,
                         caption: base.String = None, parse_mode: base.String = None,
                         caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
@@ -362,7 +390,7 @@ class MediaGroup(base.TelegramObject):
         :param disable_content_type_detection:
         """
         if not isinstance(document, InputMedia):
-            document = InputMediaDocument(media=document, thumb=thumb, caption=caption, 
+            document = InputMediaDocument(media=document, thumb=thumb, caption=caption,
                                           parse_mode=parse_mode, caption_entities=caption_entities,
                                           disable_content_type_detection=disable_content_type_detection)
         self.attach(document)
@@ -386,7 +414,7 @@ class MediaGroup(base.TelegramObject):
     def attach_video(self, video: typing.Union[InputMediaVideo, base.InputFile],
                      thumb: typing.Union[base.InputFile, base.String] = None,
                      caption: base.String = None,
-                     width: base.Integer = None, height: base.Integer = None, 
+                     width: base.Integer = None, height: base.Integer = None,
                      duration: base.Integer = None, parse_mode: base.String = None,
                      caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
                      supports_streaming: base.Boolean = None):
