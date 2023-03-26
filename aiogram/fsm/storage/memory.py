@@ -71,5 +71,14 @@ class SimpleEventIsolation(BaseEventIsolation):
         async with lock:
             yield
 
+        self._cleanup(key)
+
     async def close(self) -> None:
         self._locks.clear()
+
+    def _cleanup(self, key: Hashable) -> None:
+        if self._locks[key]._waiters is None:  # type: ignore[attr-defined]
+            del self._locks[key]
+
+        elif len(self._locks[key]._waiters) == 0:  # type: ignore[attr-defined]
+            del self._locks[key]
