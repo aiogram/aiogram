@@ -488,8 +488,13 @@ class Dispatcher(Router):
                         signal.SIGINT, self._signal_stop_polling, signal.SIGINT
                     )
 
-            workflow_data = {"dispatcher": self, "bots": bots, "bot": bots[-1]}
-            workflow_data.update(kwargs)
+            workflow_data = {
+                "dispatcher": self,
+                "bots": bots,
+                "bot": bots[-1],
+                **kwargs,
+                **self.workflow_data,
+            }
             await self.emit_startup(**workflow_data)
             loggers.dispatcher.info("Start polling")
             try:
