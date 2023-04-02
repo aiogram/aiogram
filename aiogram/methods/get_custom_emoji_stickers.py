@@ -1,12 +1,9 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, List
+from typing import TYPE_CHECKING, List
 
 from ..types import Sticker
-from .base import Request, TelegramMethod
-
-if TYPE_CHECKING:
-    from ..client.bot import Bot
+from .base import TelegramMethod
 
 
 class GetCustomEmojiStickers(TelegramMethod[List[Sticker]]):
@@ -17,11 +14,7 @@ class GetCustomEmojiStickers(TelegramMethod[List[Sticker]]):
     """
 
     __returning__ = List[Sticker]
+    __api_method__ = "getCustomEmojiStickers"
 
     custom_emoji_ids: List[str]
     """List of custom emoji identifiers. At most 200 custom emoji identifiers can be specified."""
-
-    def build_request(self, bot: Bot) -> Request:
-        data: Dict[str, Any] = self.dict()
-
-        return Request(method="getCustomEmojiStickers", data=data)

@@ -2,6 +2,7 @@ from typing import Any, Optional
 
 from aiogram.methods import TelegramMethod
 from aiogram.methods.base import TelegramType
+from aiogram.utils.link import docs_url
 
 
 class AiogramError(Exception):
@@ -24,6 +25,14 @@ class DetailedAiogramError(AiogramError):
         return f"{type(self).__name__}('{self}')"
 
 
+class CallbackAnswerException(AiogramError):
+    pass
+
+
+class UnsupportedKeywordArgument(DetailedAiogramError):
+    url = docs_url("migration_2_to_3.html", fragment_="filtering-events")
+
+
 class TelegramAPIError(DetailedAiogramError):
     def __init__(
         self,
@@ -32,6 +41,10 @@ class TelegramAPIError(DetailedAiogramError):
     ) -> None:
         super().__init__(message=message)
         self.method = method
+
+    def __str__(self) -> str:
+        original_message = super().__str__()
+        return f"Telegram server says {original_message}"
 
 
 class TelegramNetworkError(TelegramAPIError):
@@ -116,6 +129,7 @@ class ClientDecodeError(AiogramError):
         original_type = type(self.original)
         return (
             f"{self.message}\n"
-            f"Caused from error: {original_type.__module__}.{original_type.__name__}: {self.original}\n"
+            f"Caused from error: "
+            f"{original_type.__module__}.{original_type.__name__}: {self.original}\n"
             f"Content: {self.data}"
         )

@@ -12,4 +12,4 @@ annotations:
             category: types
             name: InputFile
   parse_mode:
-    value: UNSET
+    value: UNSET_PARSE_MODE

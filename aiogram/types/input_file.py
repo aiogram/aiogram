@@ -135,7 +135,10 @@ class URLInputFile(InputFile):
 
         bot = Bot.get_current(no_error=False)
         stream = bot.session.stream_content(
-            url=self.url, timeout=self.timeout, chunk_size=self.chunk_size
+            url=self.url,
+            timeout=self.timeout,
+            chunk_size=self.chunk_size,
+            raise_for_status=True,
         )
 
         async for chunk in stream:

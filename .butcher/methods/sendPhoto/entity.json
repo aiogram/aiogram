@@ -1,7 +1,5 @@
 {
-  "meta": {
-    "deprecated": false
-  },
+  "meta": {},
   "group": {
     "title": "Available methods",
     "anchor": "available-methods"
@@ -60,6 +58,14 @@
         "html_description": "<td>A JSON-serialized list of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em></td>",
         "rst_description": "A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*\n",
         "name": "caption_entities"
+      },
+      {
+        "type": "Boolean",
+        "required": false,
+        "description": "Pass True if the photo needs to be covered with a spoiler animation",
+        "html_description": "<td>Pass <em>True</em> if the photo needs to be covered with a spoiler animation</td>",
+        "rst_description": "Pass :code:`True` if the photo needs to be covered with a spoiler animation\n",
+        "name": "has_spoiler"
       },
       {
         "type": "Boolean",

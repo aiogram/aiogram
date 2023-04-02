@@ -23,8 +23,8 @@ msgstr ""
 
 #: aiogram.enums.input_media_type.InputMediaType:1 of
 msgid "This object represents input media type"
-msgstr ""
+msgstr "Цей об’єкт представляє тип вхідного медіа."
 
 #: aiogram.enums.input_media_type.InputMediaType:3 of
 msgid "Source: https://core.telegram.org/bots/api#inputmedia"
-msgstr ""
+msgstr "Джерело: https://core.telegram.org/bots/api#inputmedia"

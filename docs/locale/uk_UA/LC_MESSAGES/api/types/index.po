@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-11-23 00:47+0200\n"
+"POT-Creation-Date: 2022-12-30 22:28+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -33,24 +33,28 @@ msgstr ""
 msgid "Available types"
 msgstr ""
 
-#: ../../api/types/index.rst:130
+#: ../../api/types/index.rst:134
 msgid "Telegram Passport"
 msgstr ""
 
-#: ../../api/types/index.rst:151
+#: ../../api/types/index.rst:155
 msgid "Getting updates"
 msgstr ""
 
-#: ../../api/types/index.rst:160
+#: ../../api/types/index.rst:164
 msgid "Stickers"
 msgstr ""
 
-#: ../../api/types/index.rst:170
+#: ../../api/types/index.rst:174
 msgid "Payments"
 msgstr ""
 
-#: ../../api/types/index.rst:185
+#: ../../api/types/index.rst:189
 msgid "Games"
+msgstr ""
+
+#: ../../api/types/index.rst:199
+msgid "Internals"
 msgstr ""
 
 #~ msgid "Internal events"

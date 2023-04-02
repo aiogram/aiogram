@@ -3,7 +3,12 @@ from typing import Any, Awaitable, Callable, Dict, Optional, cast
 from aiogram import Bot
 from aiogram.dispatcher.middlewares.base import BaseMiddleware
 from aiogram.fsm.context import FSMContext
-from aiogram.fsm.storage.base import DEFAULT_DESTINY, BaseEventIsolation, BaseStorage, StorageKey
+from aiogram.fsm.storage.base import (
+    DEFAULT_DESTINY,
+    BaseEventIsolation,
+    BaseStorage,
+    StorageKey,
+)
 from aiogram.fsm.strategy import FSMStrategy, apply_strategy
 from aiogram.types import TelegramObject
 

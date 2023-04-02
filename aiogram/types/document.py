@@ -19,7 +19,7 @@ class Document(TelegramObject):
     """Identifier for this file, which can be used to download or reuse the file"""
     file_unique_id: str
     """Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file."""
-    thumb: Optional[PhotoSize] = None
+    thumbnail: Optional[PhotoSize] = None
     """*Optional*. Document thumbnail as defined by sender"""
     file_name: Optional[str] = None
     """*Optional*. Original filename as defined by sender"""

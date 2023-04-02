@@ -10,9 +10,9 @@ there are three ways to send files (photos, stickers, audio, media, etc.):
 If the file is already stored somewhere on the Telegram servers or file is available by the URL,
 you don't need to reupload it.
 
-But if you need to upload new file just use subclasses of `InputFile <types/input_file.md>`__.
+But if you need to upload a new file just use subclasses of `InputFile <types/input_file.md>`__.
 
-Here is available three different builtin types of input file:
+Here are the three different available builtin types of input file:
 
 - :class:`aiogram.types.input_file.FSInputFile` - `uploading from file system <#upload-from-file-system>`__
 - :class:`aiogram.types.input_file.BufferedInputFile` - `uploading from buffer <#upload-from-buffer>`__
@@ -22,9 +22,9 @@ Here is available three different builtin types of input file:
 
     **Be respectful with Telegram**
 
-    Instances of `InputFile` is reusable.
+    Instances of `InputFile` are reusable.
     That's mean you can create instance of InputFile and sent this file multiple times but Telegram
-    is not recommend to do that and when you upload file once just save their `file_id`
+    does not recommend to do that and when you upload file once just save their `file_id`
     and use it in next times.
 
 Upload from file system
@@ -53,7 +53,7 @@ Upload from buffer
 
 Files can be also passed from buffer
 (For example you generate image using `Pillow <https://pillow.readthedocs.io/en/stable/>`_
-and the want's to sent it to the Telegram):
+and you want to send it to Telegram):
 
 Import wrapper:
 

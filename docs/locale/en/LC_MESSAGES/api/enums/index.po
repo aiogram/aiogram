@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-11-23 00:47+0200\n"
+"POT-Creation-Date: 2022-12-30 22:28+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,9 +18,12 @@ msgstr ""
 "Generated-By: Babel 2.10.3\n"
 
 #: ../../api/enums/index.rst:3
-msgid "Types"
+msgid "Enums"
 msgstr ""
 
 #: ../../api/enums/index.rst:5
 msgid "Here is list of all available enums:"
 msgstr ""
+
+#~ msgid "Types"
+#~ msgstr ""

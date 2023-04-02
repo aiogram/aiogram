@@ -23,8 +23,8 @@ msgstr ""
 
 #: aiogram.enums.parse_mode.ParseMode:1 of
 msgid "Formatting options"
-msgstr ""
+msgstr "Параметри форматування."
 
 #: aiogram.enums.parse_mode.ParseMode:3 of
 msgid "Source: https://core.telegram.org/bots/api#formatting-options"
-msgstr ""
+msgstr "Джерело: https://core.telegram.org/bots/api#formatting-options"

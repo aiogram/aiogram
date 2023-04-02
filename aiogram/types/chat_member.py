@@ -42,7 +42,7 @@ class ChatMember(TelegramObject):
     can_restrict_members: Optional[bool] = None
     """*Optional*. :code:`True`, if the administrator can restrict, ban or unban chat members"""
     can_promote_members: Optional[bool] = None
-    """*Optional*. :code:`True`, if the administrator can add new administrators with a subset of their own privileges or demote administrators that he has promoted, directly or indirectly (promoted by administrators that were appointed by the user)"""
+    """*Optional*. :code:`True`, if the administrator can add new administrators with a subset of their own privileges or demote administrators that they have promoted, directly or indirectly (promoted by administrators that were appointed by the user)"""
     can_change_info: Optional[bool] = None
     """*Optional*. :code:`True`, if the user is allowed to change the chat title, photo and other settings"""
     can_invite_users: Optional[bool] = None
@@ -58,9 +58,19 @@ class ChatMember(TelegramObject):
     is_member: Optional[bool] = None
     """*Optional*. :code:`True`, if the user is a member of the chat at the moment of the request"""
     can_send_messages: Optional[bool] = None
-    """*Optional*. :code:`True`, if the user is allowed to send text messages, contacts, locations and venues"""
-    can_send_media_messages: Optional[bool] = None
-    """*Optional*. :code:`True`, if the user is allowed to send audios, documents, photos, videos, video notes and voice notes"""
+    """*Optional*. :code:`True`, if the user is allowed to send text messages, contacts, invoices, locations and venues"""
+    can_send_audios: Optional[bool] = None
+    """*Optional*. :code:`True`, if the user is allowed to send audios"""
+    can_send_documents: Optional[bool] = None
+    """*Optional*. :code:`True`, if the user is allowed to send documents"""
+    can_send_photos: Optional[bool] = None
+    """*Optional*. :code:`True`, if the user is allowed to send photos"""
+    can_send_videos: Optional[bool] = None
+    """*Optional*. :code:`True`, if the user is allowed to send videos"""
+    can_send_video_notes: Optional[bool] = None
+    """*Optional*. :code:`True`, if the user is allowed to send video notes"""
+    can_send_voice_notes: Optional[bool] = None
+    """*Optional*. :code:`True`, if the user is allowed to send voice notes"""
     can_send_polls: Optional[bool] = None
     """*Optional*. :code:`True`, if the user is allowed to send polls"""
     can_send_other_messages: Optional[bool] = None

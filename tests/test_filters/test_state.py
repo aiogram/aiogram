@@ -8,8 +8,6 @@ from aiogram.filters import StateFilter
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.types import Update
 
-pytestmark = pytest.mark.asyncio
-
 
 class MyGroup(StatesGroup):
     state = State()
@@ -40,7 +38,6 @@ class TestStateFilter:
             [[MyGroup, State("state")], "state", False],
         ],
     )
-    @pytestmark
     async def test_filter(self, state, current_state, result):
         f = StateFilter(*state)
         assert bool(await f(obj=Update(update_id=42), raw_state=current_state)) is result
@@ -49,11 +46,9 @@ class TestStateFilter:
         with pytest.raises(ValueError):
             StateFilter()
 
-    @pytestmark
     async def test_create_filter_from_state(self):
         FilterObject(callback=State(state="state"))
 
-    @pytestmark
     async def test_state_copy(self):
         class SG(StatesGroup):
             state = State()

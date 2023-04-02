@@ -1,0 +1,25 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available methods",
+    "anchor": "available-methods"
+  },
+  "object": {
+    "anchor": "getmydescription",
+    "name": "getMyDescription",
+    "description": "Use this method to get the current bot description for the given user language. Returns BotDescription on success.",
+    "html_description": "<p>Use this method to get the current bot description for the given user language. Returns <a href=\"#botdescription\">BotDescription</a> on success.</p>",
+    "rst_description": "Use this method to get the current bot description for the given user language. Returns :class:`aiogram.types.bot_description.BotDescription` on success.",
+    "annotations": [
+      {
+        "type": "String",
+        "required": false,
+        "description": "A two-letter ISO 639-1 language code or an empty string",
+        "html_description": "<td>A two-letter ISO 639-1 language code or an empty string</td>",
+        "rst_description": "A two-letter ISO 639-1 language code or an empty string\n",
+        "name": "language_code"
+      }
+    ],
+    "category": "methods"
+  }
+}

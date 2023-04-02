@@ -1,11 +1,7 @@
 from typing import Any
 
-import pytest
-
 from aiogram.handlers import CallbackQueryHandler
 from aiogram.types import CallbackQuery, User
-
-pytestmark = pytest.mark.asyncio
 
 
 class TestCallbackQueryHandler:

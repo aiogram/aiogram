@@ -1,3 +1,4 @@
+import asyncio
 import logging
 
 from aiogram import Bot, Dispatcher, Router
@@ -11,13 +12,14 @@ from aiogram.types import (
 )
 
 TOKEN = "6wo"
-dp = Dispatcher()
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 
+router = Router()
 
-@dp.message(Command(commands=["start"]))
+
+@router.message(Command(commands=["start"]))
 async def command_start_handler(message: Message) -> None:
     """
     This handler receive messages with `/start` command
@@ -31,7 +33,7 @@ async def command_start_handler(message: Message) -> None:
     )
 
 
-@dp.chat_member()
+@router.chat_member()
 async def chat_member_update(chat_member: ChatMemberUpdated, bot: Bot) -> None:
     await bot.send_message(
         chat_member.chat.id,
@@ -71,20 +73,22 @@ async def my_chat_member_change(chat_member: ChatMemberUpdated, bot: Bot) -> Non
     )
 
 
-def main() -> None:
+async def main() -> None:
     # Initialize Bot instance with a default parse mode which will be passed to all API calls
     bot = Bot(TOKEN, parse_mode="HTML")
 
+    dp = Dispatcher()
+    dp.include_router(router)
     sub_router.include_router(deep_dark_router)
-
-    dp.include_router(sub_router)
-    dp.include_router(sub_sub_router)
+    router.include_router(sub_router)
+    router.include_router(sub_sub_router)
 
     useful_updates = dp.resolve_used_update_types()
 
     # And the run events dispatching
-    dp.run_polling(bot, allowed_updates=useful_updates)
+    await dp.start_polling(bot, allowed_updates=useful_updates)
 
 
 if __name__ == "__main__":
-    main()
+    logging.basicConfig(level=logging.INFO)
+    asyncio.run(main())

@@ -1,7 +1,5 @@
 {
-  "meta": {
-    "deprecated": false
-  },
+  "meta": {},
   "group": {
     "title": "Available types",
     "anchor": "available-types"
@@ -34,7 +32,7 @@
         "description": "Document thumbnail as defined by sender",
         "html_description": "<td><em>Optional</em>. Document thumbnail as defined by sender</td>",
         "rst_description": "*Optional*. Document thumbnail as defined by sender\n",
-        "name": "thumb",
+        "name": "thumbnail",
         "required": false
       },
       {

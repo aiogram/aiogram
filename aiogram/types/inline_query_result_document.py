@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, List, Optional
 from pydantic import Field
 
 from ..enums import InlineQueryResultType
-from .base import UNSET
+from .base import UNSET_PARSE_MODE
 from .inline_query_result import InlineQueryResult
 
 if TYPE_CHECKING:
@@ -34,7 +34,7 @@ class InlineQueryResultDocument(InlineQueryResult):
     """MIME type of the content of the file, either 'application/pdf' or 'application/zip'"""
     caption: Optional[str] = None
     """*Optional*. Caption of the document to be sent, 0-1024 characters after entities parsing"""
-    parse_mode: Optional[str] = UNSET
+    parse_mode: Optional[str] = UNSET_PARSE_MODE
     """*Optional*. Mode for parsing entities in the document caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details."""
     caption_entities: Optional[List[MessageEntity]] = None
     """*Optional*. List of special entities that appear in the caption, which can be specified instead of *parse_mode*"""
@@ -44,9 +44,9 @@ class InlineQueryResultDocument(InlineQueryResult):
     """*Optional*. Inline keyboard attached to the message"""
     input_message_content: Optional[InputMessageContent] = None
     """*Optional*. Content of the message to be sent instead of the file"""
-    thumb_url: Optional[str] = None
+    thumbnail_url: Optional[str] = None
     """*Optional*. URL of the thumbnail (JPEG only) for the file"""
-    thumb_width: Optional[int] = None
+    thumbnail_width: Optional[int] = None
     """*Optional*. Thumbnail width"""
-    thumb_height: Optional[int] = None
+    thumbnail_height: Optional[int] = None
     """*Optional*. Thumbnail height"""

@@ -23,8 +23,8 @@ msgstr ""
 
 #: aiogram.enums.update_type.UpdateType:1 of
 msgid "This object represents the complete list of allowed update types"
-msgstr ""
+msgstr "Цей об’єкт представляє повний список дозволених типів оновлення."
 
 #: aiogram.enums.update_type.UpdateType:3 of
 msgid "Source: https://core.telegram.org/bots/api#update"
-msgstr ""
+msgstr "Джерело: https://core.telegram.org/bots/api#update"

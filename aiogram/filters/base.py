@@ -37,7 +37,8 @@ class Filter(ABC):
 
     def update_handler_flags(self, flags: Dict[str, Any]) -> None:
         """
-        Also if you want to extend handler flags with using this filter you should implement this method
+        Also if you want to extend handler flags with using this filter
+        you should implement this method
 
         :param flags: existing flags, can be updated directly
         """

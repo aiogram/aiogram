@@ -1,32 +1,24 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict
+from typing import TYPE_CHECKING
 
 from ..types import File, InputFile
-from .base import Request, TelegramMethod, prepare_file
-
-if TYPE_CHECKING:
-    from ..client.bot import Bot
+from .base import TelegramMethod
 
 
 class UploadStickerFile(TelegramMethod[File]):
     """
-    Use this method to upload a .PNG file with a sticker for later use in *createNewStickerSet* and *addStickerToSet* methods (can be used multiple times). Returns the uploaded :class:`aiogram.types.file.File` on success.
+    Use this method to upload a file with a sticker for later use in the :class:`aiogram.methods.create_new_sticker_set.CreateNewStickerSet` and :class:`aiogram.methods.add_sticker_to_set.AddStickerToSet` methods (the file can be used multiple times). Returns the uploaded :class:`aiogram.types.file.File` on success.
 
     Source: https://core.telegram.org/bots/api#uploadstickerfile
     """
 
     __returning__ = File
+    __api_method__ = "uploadStickerFile"
 
     user_id: int
     """User identifier of sticker file owner"""
-    png_sticker: InputFile
-    """**PNG** image with the sticker, must be up to 512 kilobytes in size, dimensions must not exceed 512px, and either width or height must be exactly 512px. :ref:`More information on Sending Files » <sending-files>`"""
-
-    def build_request(self, bot: Bot) -> Request:
-        data: Dict[str, Any] = self.dict(exclude={"png_sticker"})
-
-        files: Dict[str, InputFile] = {}
-        prepare_file(data=data, files=files, name="png_sticker", value=self.png_sticker)
-
-        return Request(method="uploadStickerFile", data=data, files=files)
+    sticker: InputFile
+    """A file with the sticker in .WEBP, .PNG, .TGS, or .WEBM format. See `https://core.telegram.org/stickers <https://core.telegram.org/stickers>`_`https://core.telegram.org/stickers <https://core.telegram.org/stickers>`_ for technical requirements. :ref:`More information on Sending Files » <sending-files>`"""
+    sticker_format: str
+    """Format of the sticker, must be one of 'static', 'animated', 'video'"""

@@ -12,8 +12,9 @@ class AsFilterResultOperation(BaseOperation):
         self.name = name
 
     def resolve(self, value: Any, initial_value: Any) -> Any:
-        if value:
-            return {self.name: value}
+        if not value:
+            return None
+        return {self.name: value}
 
 
 class MagicFilter(_MagicFilter):

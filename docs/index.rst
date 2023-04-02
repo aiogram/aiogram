@@ -16,3 +16,4 @@ Contents
     dispatcher/index
     utils/index
     changelog
+    contributing

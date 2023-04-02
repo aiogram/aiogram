@@ -101,7 +101,7 @@ class Router:
                 if observer.handlers and update_name not in skip_events:
                     handlers_in_use.add(update_name)
 
-        return list(sorted(handlers_in_use))
+        return list(sorted(handlers_in_use))  # NOQA: C413
 
     async def propagate_event(self, update_type: str, event: TelegramObject, **kwargs: Any) -> Any:
         kwargs.update(event_router=self)
@@ -178,6 +178,12 @@ class Router:
 
         self._parent_router = router
         router.sub_routers.append(self)
+
+    def include_routers(self, *routers: Router) -> None:
+        if not routers:
+            raise ValueError("At least one router must be provided")
+        for router in routers:
+            self.include_router(router)
 
     def include_router(self, router: Router) -> Router:
         """

@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional
 
 from aiogram.dispatcher.middlewares.manager import MiddlewareManager
 
+from ...exceptions import UnsupportedKeywordArgument
 from ...filters.base import Filter
 from ...types import TelegramObject
 from .bases import REJECTED, UNHANDLED, MiddlewareType, SkipHandler
@@ -58,10 +59,21 @@ class TelegramEventObserver:
         callback: CallbackType,
         *filters: CallbackType,
         flags: Optional[Dict[str, Any]] = None,
+        **kwargs: Any,
     ) -> CallbackType:
         """
         Register event handler
         """
+        if kwargs:
+            raise UnsupportedKeywordArgument(
+                "Passing any additional keyword arguments to the registrar method "
+                "is not supported.\n"
+                "This error may be caused when you are trying to register filters like in 2.x "
+                "version of this framework, if it's true just look at correspoding "
+                "documentation pages.\n"
+                f"Please remove the {set(kwargs.keys())} arguments from this call.\n"
+            )
+
         if flags is None:
             flags = {}
 
@@ -118,13 +130,14 @@ class TelegramEventObserver:
         self,
         *filters: CallbackType,
         flags: Optional[Dict[str, Any]] = None,
+        **kwargs: Any,
     ) -> Callable[[CallbackType], CallbackType]:
         """
         Decorator for registering event handlers
         """
 
         def wrapper(callback: CallbackType) -> CallbackType:
-            self.register(callback, *filters, flags=flags)
+            self.register(callback, *filters, flags=flags, **kwargs)
             return callback
 
         return wrapper

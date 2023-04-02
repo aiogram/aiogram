@@ -17,7 +17,10 @@ class WebAppUser(TelegramObject):
     """
 
     id: int
-    """A unique identifier for the user or bot. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. It has at most 52 significant bits, so a 64-bit integer or a double-precision float type is safe for storing this identifier."""
+    """A unique identifier for the user or bot. This number may have more than 32 significant bits
+    and some programming languages may have difficulty/silent defects in interpreting it.
+    It has at most 52 significant bits, so a 64-bit integer or a double-precision float type
+    is safe for storing this identifier."""
     is_bot: Optional[bool] = None
     """True, if this user is a bot. Returns in the receiver field only."""
     first_name: str
@@ -29,24 +32,32 @@ class WebAppUser(TelegramObject):
     language_code: Optional[str] = None
     """IETF language tag of the user's language. Returns in user field only."""
     photo_url: Optional[str] = None
-    """URL of the user’s profile photo. The photo can be in .jpeg or .svg formats. Only returned for Web Apps launched from the attachment menu."""
+    """URL of the user’s profile photo. The photo can be in .jpeg or .svg formats.
+    Only returned for Web Apps launched from the attachment menu."""
 
 
 class WebAppInitData(TelegramObject):
     """
-    This object contains data that is transferred to the Web App when it is opened. It is empty if the Web App was launched from a keyboard button.
+    This object contains data that is transferred to the Web App when it is opened.
+    It is empty if the Web App was launched from a keyboard button.
 
     Source: https://core.telegram.org/bots/webapps#webappinitdata
     """
 
     query_id: Optional[str] = None
-    """A unique identifier for the Web App session, required for sending messages via the answerWebAppQuery method."""
+    """A unique identifier for the Web App session, required for sending messages
+    via the answerWebAppQuery method."""
     user: Optional[WebAppUser] = None
     """An object containing data about the current user."""
     receiver: Optional[WebAppUser] = None
-    """An object containing data about the chat partner of the current user in the chat where the bot was launched via the attachment menu. Returned only for Web Apps launched via the attachment menu."""
+    """An object containing data about the chat partner of the current user in the chat where
+    the bot was launched via the attachment menu.
+    Returned only for Web Apps launched via the attachment menu."""
     start_param: Optional[str] = None
-    """The value of the startattach parameter, passed via link. Only returned for Web Apps when launched from the attachment menu via link. The value of the start_param parameter will also be passed in the GET-parameter tgWebAppStartParam, so the Web App can load the correct interface right away."""
+    """The value of the startattach parameter, passed via link.
+    Only returned for Web Apps when launched from the attachment menu via link.
+    The value of the start_param parameter will also be passed in the GET-parameter
+    tgWebAppStartParam, so the Web App can load the correct interface right away."""
     auth_date: datetime
     """Unix time when the form was opened."""
     hash: str

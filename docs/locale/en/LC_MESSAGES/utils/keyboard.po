@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-10-14 19:29+0300\n"
+"POT-Creation-Date: 2023-01-07 23:24+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,7 +21,22 @@ msgstr ""
 msgid "Keyboard builder"
 msgstr ""
 
-#: ../../utils/keyboard.rst:6
+#: ../../utils/keyboard.rst:5
+msgid "Keyboard builder helps to dynamically generate markup."
+msgstr ""
+
+#: ../../utils/keyboard.rst:9
+msgid ""
+"Note that if you have static markup, it's best to define it explicitly "
+"rather than using builder, but if you have dynamic markup configuration, "
+"feel free to use builder as you wish."
+msgstr ""
+
+#: ../../utils/keyboard.rst:14
+msgid "Usage example"
+msgstr ""
+
+#: ../../utils/keyboard.rst:29
 msgid "Base builder"
 msgstr ""
 
@@ -80,7 +95,7 @@ msgstr ""
 msgid "When too much buttons is passed it will be separated to many rows"
 msgstr ""
 
-#: ../../utils/keyboard.rst:12
+#: ../../utils/keyboard.rst:35
 msgid "Inline Keyboard"
 msgstr ""
 
@@ -88,23 +103,23 @@ msgstr ""
 msgid "Inline keyboard builder inherits all methods from generic builder"
 msgstr ""
 
-#: ../../utils/keyboard.rst:20
+#: ../../utils/keyboard.rst:43
 msgid "Add new inline button to markup"
 msgstr ""
 
-#: ../../utils/keyboard.rst:25
+#: ../../utils/keyboard.rst:48
 msgid "Construct an InlineKeyboardMarkup"
 msgstr ""
 
-#: ../../utils/keyboard.rst:28
+#: ../../utils/keyboard.rst:51
 msgid "Reply Keyboard"
 msgstr ""
 
-#: ../../utils/keyboard.rst:36
+#: ../../utils/keyboard.rst:59
 msgid "Add new button to markup"
 msgstr ""
 
-#: ../../utils/keyboard.rst:41
+#: ../../utils/keyboard.rst:64
 msgid "Construct an ReplyKeyboardMarkup"
 msgstr ""
 

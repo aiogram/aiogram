@@ -1,3 +1,5 @@
+.. _flags:
+
 =====
 Flags
 =====
@@ -54,8 +56,9 @@ Via filters
 Use in middlewares
 ==================
 
-.. automodule:: aiogram.flags.getter
-    :members:
+.. automodule:: aiogram.dispatcher.flags
+    :members: extract_flags, get_flag, check_flags
+
 
 Example in middlewares
 ----------------------

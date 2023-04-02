@@ -9,7 +9,8 @@ class EventObserver:
     """
     Simple events observer
 
-    Is used for managing events is not related with Telegram (For example startup/shutdown processes)
+    Is used for managing events is not related with Telegram
+    (For example startup/shutdown processes)
 
     Handlers can be registered via decorator or method
 

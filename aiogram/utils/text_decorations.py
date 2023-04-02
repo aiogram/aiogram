@@ -81,13 +81,12 @@ class TextDecoration(ABC):
         :param entities: Array of MessageEntities
         :return:
         """
-        result = "".join(
+        return "".join(
             self._unparse_entities(
                 add_surrogates(text),
                 sorted(entities, key=lambda item: item.offset) if entities else [],
             )
         )
-        return result
 
     def _unparse_entities(
         self,

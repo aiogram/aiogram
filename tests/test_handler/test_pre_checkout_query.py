@@ -1,11 +1,7 @@
 from typing import Any
 
-import pytest
-
 from aiogram.handlers import PreCheckoutQueryHandler
 from aiogram.types import PreCheckoutQuery, User
-
-pytestmark = pytest.mark.asyncio
 
 
 class TestPreCheckoutQueryHandler:

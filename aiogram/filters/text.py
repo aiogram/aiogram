@@ -84,7 +84,7 @@ class Text(Filter):
     @classmethod
     def _validate_constraints(cls, **values: Any) -> None:
         # Validate that only one text filter type is presented
-        used_args = set(key for key, value in values.items() if value is not None)
+        used_args = {key for key, value in values.items() if value is not None}
         if len(used_args) < 1:
             raise ValueError(f"Filter should contain one of arguments: {set(values.keys())}")
         if len(used_args) > 1:
@@ -133,5 +133,4 @@ class Text(Filter):
     def prepare_text(self, text: str) -> str:
         if self.ignore_case:
             return str(text).lower()
-        else:
-            return str(text)
+        return str(text)

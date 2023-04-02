@@ -42,9 +42,9 @@ class InlineQueryResultLocation(InlineQueryResult):
     """*Optional*. `Inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_ attached to the message"""
     input_message_content: Optional[InputMessageContent] = None
     """*Optional*. Content of the message to be sent instead of the location"""
-    thumb_url: Optional[str] = None
+    thumbnail_url: Optional[str] = None
     """*Optional*. Url of the thumbnail for the result"""
-    thumb_width: Optional[int] = None
+    thumbnail_width: Optional[int] = None
     """*Optional*. Thumbnail width"""
-    thumb_height: Optional[int] = None
+    thumbnail_height: Optional[int] = None
     """*Optional*. Thumbnail height"""

@@ -7,8 +7,6 @@ from aiogram.filters import ExceptionMessageFilter, ExceptionTypeFilter
 from aiogram.types import Update
 from aiogram.types.error_event import ErrorEvent
 
-pytestmark = pytest.mark.asyncio
-
 
 class TestExceptionMessageFilter:
     @pytest.mark.parametrize("value", ["value", re.compile("value")])
