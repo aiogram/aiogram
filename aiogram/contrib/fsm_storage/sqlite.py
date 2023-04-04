@@ -18,11 +18,6 @@ class SqliteStorage(BaseStorage):
         await self._conn.commit()
         return self._conn
 
-    async def _has_in_db(self, *, chat: typing.Union[str, int, None] = None, user: typing.Union[str, int, None] = None) -> bool:
-        conn = self._conn or await self._get_connect()
-        cursor = await conn.execute(f'SELECT EXISTS(SELECT * FROM {self._tbl_name} WHERE chat=? AND user=?)', (chat, user))
-        return (await cursor.fetchone())[0]
-
     async def close(self):
         if self._conn:
             await self._conn.close()
