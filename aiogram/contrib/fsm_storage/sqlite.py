@@ -14,7 +14,7 @@ class SqliteStorage(BaseStorage):
         if self._conn:
             return self._conn
         self._conn = await aiosqlite.connect(self._db_name)
-        await self._conn.execute(f'CREATE TABLE IF NOT EXISTS {self._tbl_name}(chat INTEGER, user INTEGER, state VARCHAR(255), data BLOB, bucket BLOB)')
+        await self._conn.execute(f'CREATE TABLE IF NOT EXISTS {self._tbl_name}(chat INTEGER, user INTEGER, state VARCHAR(255), data BLOB, bucket BLOB, PRIMARY KEY (chat, user))')
         await self._conn.commit()
         return self._conn
 
@@ -47,19 +47,17 @@ class SqliteStorage(BaseStorage):
     async def set_state(self, *, chat: typing.Union[str, int, None] = None, user: typing.Union[str, int, None] = None, state: typing.Optional[typing.AnyStr] = None):
         chat, user = self.check_address(chat=chat, user=user)
         conn = self._conn or await self._get_connect()
-        if await self._has_in_db(chat=chat, user=user):
-            await conn.execute(f'UPDATE {self._tbl_name} SET state=? WHERE chat=? AND user=?', (self.resolve_state(state), chat, user))
-        else:
-            await conn.execute(f'INSERT INTO {self._tbl_name}(chat, user, state) VALUES(?, ?, ?)', (chat, user, self.resolve_state(state)))
+        _state = self.resolve_state(state)
+        await conn.execute(f'INSERT INTO {self._tbl_name}(chat, user, state) VALUES(?, ?, ?) ON CONFLICT(chat, user) DO UPDATE SET state=?',
+                           (chat, user, _state, _state))
         await conn.commit()
 
     async def set_data(self, *, chat: typing.Union[str, int, None] = None, user: typing.Union[str, int, None] = None, data: typing.Dict = None):
         chat, user = self.check_address(chat=chat, user=user)
         conn = self._conn or await self._get_connect()
-        if await self._has_in_db(chat=chat, user=user):
-            await conn.execute(f'UPDATE {self._tbl_name} SET data=? WHERE chat=? AND user=?', (pickle.dumps(data) if data else None, chat, user))
-        else:
-            await conn.execute(f'INSERT INTO {self._tbl_name}(chat, user, data) VALUES(?, ?, ?)', (chat, user, pickle.dumps(data) if data else None))
+        _data = pickle.dumps(data) if data else None
+        await conn.execute(f'INSERT INTO {self._tbl_name}(chat, user, data) VALUES(?, ?, ?) ON CONFLICT(chat, user) DO UPDATE SET data=?',
+                           (chat, user, _data, _data))
         await conn.commit()
 
     async def update_data(self, *, chat: typing.Union[str, int, None] = None, user: typing.Union[str, int, None] = None, data: typing.Dict, **kwargs):
@@ -82,12 +80,11 @@ class SqliteStorage(BaseStorage):
     async def set_bucket(self, *, chat: typing.Union[str, int, None] = None, user: typing.Union[str, int, None] = None, bucket: typing.Optional[dict] = None):
         chat, user = self.check_address(chat=chat, user=user)
         conn = self._conn or await self._get_connect()
-        if await self._has_in_db(chat=chat, user=user):
-            await conn.execute(f'UPDATE {self._tbl_name} SET bucket=? WHERE chat=? AND user=?', (pickle.dumps(bucket) if bucket else None, chat, user))
-        else:
-            await conn.execute(f'INSERT INTO {self._tbl_name}(chat, user, bucket) VALUES(?, ?, ?)', (chat, user, pickle.dumps(bucket) if bucket else None))
+        _bucket = pickle.dumps(bucket) if bucket else None
+        await conn.execute(f'INSERT INTO {self._tbl_name}(chat, user, bucket) VALUES(?, ?, ?) ON CONFLICT(chat, user) DO UPDATE SET bucket=?',
+                           (chat, user, _bucket, _bucket))
         await conn.commit()
-
+        
     async def update_bucket(self, *, chat: typing.Union[str, int, None] = None, user: typing.Union[str, int, None] = None, bucket: typing.Optional[dict] = None, **kwargs):
         chat, user = self.check_address(chat=chat, user=user)
         _bucket = await self.get_bucket(chat=chat, user=user)
