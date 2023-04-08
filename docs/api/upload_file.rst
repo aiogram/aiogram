@@ -10,7 +10,7 @@ there are three ways to send files (photos, stickers, audio, media, etc.):
 If the file is already stored somewhere on the Telegram servers or file is available by the URL,
 you don't need to reupload it.
 
-But if you need to upload a new file just use subclasses of `InputFile <types/input_file.md>`__.
+But if you need to upload a new file just use subclasses of `InputFile <types/input_file.html>`__.
 
 Here are the three different available builtin types of input file:
 
