@@ -5,7 +5,7 @@ description: |
   Source: https://core.telegram.org/bots/api#inlinequeryresult
 multi_parse:
   attribute: type
-  regexp: "must be ([a-z_]+)"
+  regexp: "must be ([a-z_0-9]+)"
   entities:
   - InlineQueryResultCachedAudio
   - InlineQueryResultCachedDocument

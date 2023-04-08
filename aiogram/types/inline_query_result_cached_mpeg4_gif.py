@@ -21,7 +21,7 @@ class InlineQueryResultCachedMpeg4Gif(InlineQueryResult):
     Source: https://core.telegram.org/bots/api#inlinequeryresultcachedmpeg4gif
     """
 
-    type: str = Field(InlineQueryResultType.MPEG, const=True)
+    type: str = Field(InlineQueryResultType.MPEG4_GIF, const=True)
     """Type of the result, must be *mpeg4_gif*"""
     id: str
     """Unique identifier for this result, 1-64 bytes"""

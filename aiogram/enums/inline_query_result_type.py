@@ -11,7 +11,7 @@ class InlineQueryResultType(str, Enum):
     AUDIO = "audio"
     DOCUMENT = "document"
     GIF = "gif"
-    MPEG = "mpeg"
+    MPEG4_GIF = "mpeg4_gif"
     PHOTO = "photo"
     STICKER = "sticker"
     VIDEO = "video"
