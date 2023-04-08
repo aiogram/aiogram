@@ -80,9 +80,9 @@ class Dispatcher(Router):
         # FSM middleware should always be registered after User context middleware
         # because here is used context from previous step
         self.fsm = FSMContextMiddleware(
-            storage=storage if storage else MemoryStorage(),
+            storage=storage or MemoryStorage(),
             strategy=fsm_strategy,
-            events_isolation=events_isolation if events_isolation else DisabledEventIsolation(),
+            events_isolation=events_isolation or DisabledEventIsolation(),
         )
         if not disable_fsm:
             # Note that when FSM middleware is disabled, the event isolation is also disabled
@@ -251,14 +251,14 @@ class Dispatcher(Router):
         try:
             update_type = update.event_type
             event = update.event
-        except UpdateTypeLookupError:
+        except UpdateTypeLookupError as e:
             warnings.warn(
                 "Detected unknown update type.\n"
                 "Seems like Telegram Bot API was updated and you have "
                 "installed not latest version of aiogram framework",
                 RuntimeWarning,
             )
-            raise SkipHandler()
+            raise SkipHandler() from e
 
         kwargs.update(event_update=update)
 
@@ -373,7 +373,7 @@ class Dispatcher(Router):
         loop = asyncio.get_running_loop()
         waiter = loop.create_future()
 
-        def release_waiter(*args: Any) -> None:
+        def release_waiter(*_: Any) -> None:
             if not waiter.done():
                 waiter.set_result(None)
 
@@ -488,8 +488,13 @@ class Dispatcher(Router):
                         signal.SIGINT, self._signal_stop_polling, signal.SIGINT
                     )
 
-            workflow_data = {"dispatcher": self, "bots": bots, "bot": bots[-1]}
-            workflow_data.update(kwargs)
+            workflow_data = {
+                "dispatcher": self,
+                "bots": bots,
+                "bot": bots[-1],
+                **kwargs,
+                **self.workflow_data,
+            }
             await self.emit_startup(**workflow_data)
             loggers.dispatcher.info("Start polling")
             try:
