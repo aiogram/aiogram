@@ -71,6 +71,8 @@ class DefaultKeyBuilder(KeyBuilder):
         if self.with_bot_id:
             parts.append(str(key.bot_id))
         parts.extend([str(key.chat_id), str(key.user_id)])
+        if key.thread_id:
+            parts.append(str(key.thread_id))
         if self.with_destiny:
             parts.append(key.destiny)
         elif key.destiny != DEFAULT_DESTINY:
