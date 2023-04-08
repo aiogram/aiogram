@@ -1,0 +1,1 @@
+If router does not support custom event it does not break and passes it to included routers
