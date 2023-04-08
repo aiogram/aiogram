@@ -105,27 +105,31 @@ class Router:
 
     async def propagate_event(self, update_type: str, event: TelegramObject, **kwargs: Any) -> Any:
         kwargs.update(event_router=self)
-        observer = self.observers[update_type]
+        observer = self.observers.get(update_type)
 
         async def _wrapped(telegram_event: TelegramObject, **data: Any) -> Any:
             return await self._propagate_event(
                 observer=observer, update_type=update_type, event=telegram_event, **data
             )
 
-        return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+        if observer:
+            return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+        return await _wrapped(event, **kwargs)
 
     async def _propagate_event(
         self,
-        observer: TelegramEventObserver,
+        observer: Optional[TelegramEventObserver],
         update_type: str,
         event: TelegramObject,
         **kwargs: Any,
     ) -> Any:
-        response = await observer.trigger(event, **kwargs)
-        if response is REJECTED:
-            return UNHANDLED
-        if response is not UNHANDLED:
-            return response
+        response = UNHANDLED
+        if observer:
+            response = await observer.trigger(event, **kwargs)
+            if response is REJECTED:
+                return UNHANDLED
+            if response is not UNHANDLED:
+                return response
 
         for router in self.sub_routers:
             response = await router.propagate_event(update_type=update_type, event=event, **kwargs)

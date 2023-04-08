@@ -1,6 +1,7 @@
 import pytest
 
 from aiogram.dispatcher.event.bases import UNHANDLED, SkipHandler, skip
+from aiogram.dispatcher.event.telegram import TelegramEventObserver
 from aiogram.dispatcher.router import Router
 
 
@@ -161,3 +162,20 @@ class TestRouter:
         assert tuple(r2_1.chain_head) == (r2_1, r1)
         assert tuple(r2_2.chain_head) == (r2_2, r1)
         assert tuple(r3.chain_head) == (r3, r2_1, r1)
+
+    async def test_custom_evenv_nested_router(self):
+        r1 = Router()
+        r2 = Router()
+        r3 = Router()
+        r3.observers["custom-event"] = TelegramEventObserver(r3, event_name="custom-event")
+
+        async def handler(evt):
+            return evt
+
+        r1.include_router(r2)
+        r1.include_router(r3)
+        r3.observers["custom-event"].register(handler)
+
+        assert await r1.propagate_event(update_type="custom-event", event=None) is None
+        assert await r2.propagate_event(update_type="custom-event", event=None) is UNHANDLED
+        assert await r3.propagate_event(update_type="custom-event", event=None) is None
