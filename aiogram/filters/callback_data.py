@@ -67,7 +67,11 @@ class CallbackData(BaseModel):
             return ""
         if isinstance(value, Enum):
             return str(value.value)
-        if isinstance(value, (int, str, float, Decimal, Fraction, UUID)):
+        if isinstance(value, UUID):
+            return value.hex
+        if isinstance(value, bool):
+            return str(int(value))
+        if isinstance(value, (int, str, float, Decimal, Fraction)):
             return str(value)
         raise ValueError(
             f"Attribute {key}={value!r} of type {type(value).__name__!r}"
