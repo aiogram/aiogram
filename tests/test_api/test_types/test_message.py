@@ -420,7 +420,7 @@ TEST_FORUM_TOPIC_EDITED = Message(
     date=datetime.datetime.now(),
     chat=Chat(id=42, type="private"),
     from_user=User(id=42, is_bot=False, first_name="Test"),
-    forum_topic_created=ForumTopicEdited(
+    forum_topic_edited=ForumTopicEdited(
         name="test_edited",
         icon_color=0xFFD67E,
     ),
