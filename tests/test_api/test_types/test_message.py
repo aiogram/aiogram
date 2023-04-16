@@ -43,6 +43,7 @@ from aiogram.types import (
     Document,
     EncryptedCredentials,
     ForumTopicClosed,
+    ForumTopicEdited,
     ForumTopicCreated,
     ForumTopicReopened,
     Game,
@@ -414,6 +415,16 @@ TEST_FORUM_TOPIC_CREATED = Message(
         icon_color=0xFFD67E,
     ),
 )
+TEST_FORUM_TOPIC_EDITED = Message(
+    message_id=42,
+    date=datetime.datetime.now(),
+    chat=Chat(id=42, type="private"),
+    from_user=User(id=42, is_bot=False, first_name="Test"),
+    forum_topic_edited=ForumTopicEdited(
+        name="test_edited",
+        icon_color=0xFFD67E,
+    ),
+)
 TEST_FORUM_TOPIC_CLOSED = Message(
     message_id=42,
     date=datetime.datetime.now(),
@@ -484,6 +495,7 @@ class TestMessage:
             [TEST_MESSAGE_DICE, ContentType.DICE],
             [TEST_MESSAGE_WEB_APP_DATA, ContentType.WEB_APP_DATA],
             [TEST_FORUM_TOPIC_CREATED, ContentType.FORUM_TOPIC_CREATED],
+            [TEST_FORUM_TOPIC_EDITED, ContentType.FORUM_TOPIC_EDITED],
             [TEST_FORUM_TOPIC_CLOSED, ContentType.FORUM_TOPIC_CLOSED],
             [TEST_FORUM_TOPIC_REOPENED, ContentType.FORUM_TOPIC_REOPENED],
             [TEST_MESSAGE_UNKNOWN, ContentType.UNKNOWN],
