@@ -13,7 +13,7 @@ def apply_strategy(
     strategy: FSMStrategy,
     chat_id: int,
     user_id: int,
-    thread_id: int | None = None,
+    thread_id: Optional[int] = None,
 ) -> Tuple[int, int, Optional[int]]:
     if strategy == FSMStrategy.CHAT:
         return chat_id, chat_id, None
