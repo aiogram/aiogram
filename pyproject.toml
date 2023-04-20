@@ -151,6 +151,13 @@ extra-dependencies = [
     "butcher @ git+https://github.com/aiogram/butcher.git@v0.1.14"
 ]
 
+[tool.hatch.envs.dev.scripts]
+update = [
+    "butcher parse",
+    "butcher refresh",
+    "butcher apply all",
+]
+
 [tool.hatch.envs.test]
 features = [
     "fast",
