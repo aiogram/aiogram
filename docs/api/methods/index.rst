@@ -171,3 +171,12 @@ Inline mode
 
     answer_inline_query
     answer_web_app_query
+
+Upcoming update
+===============
+
+.. toctree::
+    :maxdepth: 1
+
+    get_my_name
+    set_my_name

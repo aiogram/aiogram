@@ -66,6 +66,14 @@
         "html_description": "<td><a href=\"/bots/features#deep-linking\">Deep-linking</a> parameter for the /start message sent to the bot when user presses the switch button. 1-64 characters, only <code>A-Z</code>, <code>a-z</code>, <code>0-9</code>, <code>_</code> and <code>-</code> are allowed.<br/>\n<br/>\n<em>Example:</em> An inline bot that sends YouTube videos can ask the user to connect the bot to their YouTube account to adapt search results accordingly. To do this, it displays a 'Connect your YouTube account' button above the results, or even before showing any. The user presses the button, switches to a private chat with the bot and, in doing so, passes a start parameter that instructs the bot to return an OAuth link. Once done, the bot can offer a <a href=\"#inlinekeyboardmarkup\"><em>switch_inline</em></a> button so that the user can easily return to the chat where they wanted to use the bot's inline capabilities.</td>",
         "rst_description": "`Deep-linking <https://core.telegram.org/bots/features#deep-linking>`_ parameter for the /start message sent to the bot when user presses the switch button. 1-64 characters, only :code:`A-Z`, :code:`a-z`, :code:`0-9`, :code:`_` and :code:`-` are allowed.\n\n\n\n*Example:* An inline bot that sends YouTube videos can ask the user to connect the bot to their YouTube account to adapt search results accordingly. To do this, it displays a 'Connect your YouTube account' button above the results, or even before showing any. The user presses the button, switches to a private chat with the bot and, in doing so, passes a start parameter that instructs the bot to return an OAuth link. Once done, the bot can offer a `https://core.telegram.org/bots/api#inlinekeyboardmarkup <https://core.telegram.org/bots/api#inlinekeyboardmarkup>`_ *switch_inline* button so that the user can easily return to the chat where they wanted to use the bot's inline capabilities.\n",
         "name": "switch_pm_parameter"
+      },
+      {
+        "type": "InlineQueryResultsButton",
+        "required": false,
+        "description": "A JSON serialized object describing a button to be shown above inline query results",
+        "html_description": "<td>A JSON serialized object describing a button to be shown above inline query results</td>",
+        "rst_description": "A JSON serialized object describing a button to be shown above inline query results\n",
+        "name": "button"
       }
     ],
     "category": "methods"

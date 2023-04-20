@@ -192,6 +192,16 @@ Payments
     shipping_query
     successful_payment
 
+Upcoming update
+===============
+
+.. toctree::
+    :maxdepth: 1
+
+    bot_name
+    inline_query_results_button
+    switch_inline_query_chosen_chat
+
 Games
 =====
 

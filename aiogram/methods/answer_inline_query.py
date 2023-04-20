@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, List, Optional
 
-from ..types import InlineQueryResult
+from ..types import InlineQueryResult, InlineQueryResultsButton
 from .base import TelegramMethod
 
 
@@ -32,3 +32,5 @@ class AnswerInlineQuery(TelegramMethod[bool]):
     """If passed, clients will display a button with specified text that switches the user to a private chat with the bot and sends the bot a start message with the parameter *switch_pm_parameter*"""
     switch_pm_parameter: Optional[str] = None
     """`Deep-linking <https://core.telegram.org/bots/features#deep-linking>`_ parameter for the /start message sent to the bot when user presses the switch button. 1-64 characters, only :code:`A-Z`, :code:`a-z`, :code:`0-9`, :code:`_` and :code:`-` are allowed."""
+    button: Optional[InlineQueryResultsButton] = None
+    """A JSON serialized object describing a button to be shown above inline query results"""

@@ -9,6 +9,7 @@ from .base import TelegramObject
 if TYPE_CHECKING:
     from ..methods import AnswerInlineQuery
     from .inline_query_result import InlineQueryResult
+    from .inline_query_results_button import InlineQueryResultsButton
     from .location import Location
     from .user import User
 
@@ -41,6 +42,7 @@ class InlineQuery(TelegramObject):
         next_offset: Optional[str] = None,
         switch_pm_text: Optional[str] = None,
         switch_pm_parameter: Optional[str] = None,
+        button: Optional[InlineQueryResultsButton] = None,
         **kwargs: Any,
     ) -> AnswerInlineQuery:
         """
@@ -61,6 +63,7 @@ class InlineQuery(TelegramObject):
         :param next_offset: Pass the offset that a client should send in the next query with the same text to receive more results. Pass an empty string if there are no more results or if you don't support pagination. Offset length can't exceed 64 bytes.
         :param switch_pm_text: If passed, clients will display a button with specified text that switches the user to a private chat with the bot and sends the bot a start message with the parameter *switch_pm_parameter*
         :param switch_pm_parameter: `Deep-linking <https://core.telegram.org/bots/features#deep-linking>`_ parameter for the /start message sent to the bot when user presses the switch button. 1-64 characters, only :code:`A-Z`, :code:`a-z`, :code:`0-9`, :code:`_` and :code:`-` are allowed.
+        :param button: A JSON serialized object describing a button to be shown above inline query results
         :return: instance of method :class:`aiogram.methods.answer_inline_query.AnswerInlineQuery`
         """
         # DO NOT EDIT MANUALLY!!!
@@ -76,5 +79,6 @@ class InlineQuery(TelegramObject):
             next_offset=next_offset,
             switch_pm_text=switch_pm_text,
             switch_pm_parameter=switch_pm_parameter,
+            button=button,
             **kwargs,
         )
