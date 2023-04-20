@@ -49,34 +49,38 @@ class TestCallbackData:
                 pass
 
     @pytest.mark.parametrize(
-        "value,success,expected",
+        "value,expected",
         [
-            [None, True, ""],
-            [42, True, "42"],
-            ["test", True, "test"],
-            [9.99, True, "9.99"],
-            [Decimal("9.99"), True, "9.99"],
-            [Fraction("3/2"), True, "3/2"],
-            [
-                UUID("123e4567-e89b-12d3-a456-426655440000"),
-                True,
-                "123e4567-e89b-12d3-a456-426655440000",
-            ],
-            [MyIntEnum.FOO, True, "1"],
-            [MyStringEnum.FOO, True, "FOO"],
-            [..., False, "..."],
-            [object, False, "..."],
-            [object(), False, "..."],
-            [User(id=42, is_bot=False, first_name="test"), False, "..."],
+            [None, ""],
+            [True, "1"],
+            [False, "0"],
+            [42, "42"],
+            ["test", "test"],
+            [9.99, "9.99"],
+            [Decimal("9.99"), "9.99"],
+            [Fraction("3/2"), "3/2"],
+            [UUID("123e4567-e89b-12d3-a456-426655440000"), "123e4567e89b12d3a456426655440000"],
+            [MyIntEnum.FOO, "1"],
+            [MyStringEnum.FOO, "FOO"],
         ],
     )
-    def test_encode_value(self, value, success, expected):
+    def test_encode_value_positive(self, value, expected):
         callback = MyCallback(foo="test", bar=42)
-        if success:
-            assert callback._encode_value("test", value) == expected
-        else:
-            with pytest.raises(ValueError):
-                assert callback._encode_value("test", value) == expected
+        assert callback._encode_value("test", value) == expected
+
+    @pytest.mark.parametrize(
+        "value",
+        [
+            ...,
+            object,
+            object(),
+            User(id=42, is_bot=False, first_name="test"),
+        ],
+    )
+    def test_encode_value_negative(self, value):
+        callback = MyCallback(foo="test", bar=42)
+        with pytest.raises(ValueError):
+            callback._encode_value("test", value)
 
     def test_pack(self):
         with pytest.raises(ValueError, match="Separator symbol .+"):
