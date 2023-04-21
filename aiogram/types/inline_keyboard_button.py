@@ -32,9 +32,9 @@ class InlineKeyboardButton(MutableTelegramObject):
     """*Optional*. If set, pressing the button will prompt the user to select one of their chats, open that chat and insert the bot's username and the specified inline query in the input field. May be empty, in which case just the bot's username will be inserted."""
     switch_inline_query_current_chat: Optional[str] = None
     """*Optional*. If set, pressing the button will insert the bot's username and the specified inline query in the current chat's input field. May be empty, in which case only the bot's username will be inserted."""
+    switch_inline_query_chosen_chat: Optional[SwitchInlineQueryChosenChat] = None
+    """*Optional*. If set, pressing the button will prompt the user to select one of their chats of the specified type, open that chat and insert the bot's username and the specified inline query in the input field"""
     callback_game: Optional[CallbackGame] = None
     """*Optional*. Description of the game that will be launched when the user presses the button."""
     pay: Optional[bool] = None
     """*Optional*. Specify :code:`True`, to send a `Pay button <https://core.telegram.org/bots/api#payments>`_."""
-    switch_inline_query_chosen_chat: Optional[SwitchInlineQueryChosenChat] = None
-    """*Optional*. If set, pressing the button will prompt the user to select one of their chats of the specified type, open that chat and insert the bot's username and the specified inline query in the input field"""
