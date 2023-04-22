@@ -42,7 +42,7 @@ classifiers = [
 dependencies = [
     "magic-filter~=1.0.9",
     "aiohttp~=3.8.4",
-    "pydantic~=1.10.4",
+    "pydantic~=1.10.7",
     "aiofiles~=23.1.0",
     "certifi>=2022.9.24",
 ]
@@ -56,18 +56,18 @@ fast = [
     "uvloop>=0.17.0; (sys_platform == 'darwin' or sys_platform == 'linux') and platform_python_implementation != 'PyPy'",
 ]
 redis = [
-    "redis~=4.5.1",
+    "redis~=4.5.4",
 ]
 proxy = [
-    "aiohttp-socks~=0.7.1",
+    "aiohttp-socks~=0.8.0",
 ]
 i18n = [
-    "Babel~=2.11.0",
+    "Babel~=2.12.1",
 ]
 test = [
-    "pytest~=7.2.1",
+    "pytest~=7.3.1",
     "pytest-html~=3.2.0",
-    "pytest-asyncio~=0.20.3",
+    "pytest-asyncio~=0.21.0",
     "pytest-lazy-fixture~=0.6.3",
     "pytest-mock~=3.10.0",
     "pytest-mypy~=0.10.0",
@@ -91,15 +91,15 @@ docs = [
     "sphinxcontrib-towncrier~=0.3.1a3",
 ]
 dev = [
-    "black~=23.1",
+    "black~=23.3.0",
     "isort~=5.11",
-    "ruff~=0.0.246",
-    "mypy~=1.0.0",
+    "ruff~=0.0.262",
+    "mypy~=1.2.0",
     "toml~=0.10.2",
-    "pre-commit~=3.0.4",
+    "pre-commit~=3.2.2",
     "towncrier~=22.12.0",
     "packaging~=23.0",
-    "typing-extensions~=4.4.0",
+    "typing-extensions~=4.5.0",
 ]
 
 [project.urls]
