@@ -74,6 +74,7 @@ test = [
     "pytest-cov~=4.0.0",
     "pytest-aiohttp~=1.0.4",
     "aresponses~=2.1.6",
+    "pytz~=2022.7.1"
 ]
 docs = [
     "Sphinx~=5.2.3",
