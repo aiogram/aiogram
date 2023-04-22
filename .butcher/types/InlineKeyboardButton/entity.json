@@ -68,6 +68,14 @@
         "required": false
       },
       {
+        "type": "SwitchInlineQueryChosenChat",
+        "description": "If set, pressing the button will prompt the user to select one of their chats of the specified type, open that chat and insert the bot's username and the specified inline query in the input field",
+        "html_description": "<td><em>Optional</em>. If set, pressing the button will prompt the user to select one of their chats of the specified type, open that chat and insert the bot's username and the specified inline query in the input field</td>",
+        "rst_description": "*Optional*. If set, pressing the button will prompt the user to select one of their chats of the specified type, open that chat and insert the bot's username and the specified inline query in the input field\n",
+        "name": "switch_inline_query_chosen_chat",
+        "required": false
+      },
+      {
         "type": "CallbackGame",
         "description": "Description of the game that will be launched when the user presses the button.\n\nNOTE: This type of button must always be the first button in the first row.",
         "html_description": "<td><em>Optional</em>. Description of the game that will be launched when the user presses the button.<br/>\n<br/>\n<strong>NOTE:</strong> This type of button <strong>must</strong> always be the first button in the first row.</td>",

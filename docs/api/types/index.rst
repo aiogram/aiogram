@@ -34,6 +34,7 @@ Inline mode
     inline_query_result_venue
     inline_query_result_video
     inline_query_result_voice
+    inline_query_results_button
     input_contact_message_content
     input_invoice_message_content
     input_location_message_content
@@ -60,6 +61,7 @@ Available types
     bot_command_scope_chat_member
     bot_command_scope_default
     bot_description
+    bot_name
     bot_short_description
     callback_query
     chat
@@ -121,6 +123,7 @@ Available types
     reply_keyboard_markup
     reply_keyboard_remove
     response_parameters
+    switch_inline_query_chosen_chat
     user
     user_profile_photos
     user_shared
