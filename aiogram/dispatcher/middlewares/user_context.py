@@ -19,30 +19,13 @@ class UserContextMiddleware(BaseMiddleware):
         if not isinstance(event, Update):
             raise RuntimeError("UserContextMiddleware got an unexpected event type!")
         chat, user, thread_id = self.resolve_event_context(event=event)
-        with self.context(chat=chat, user=user):
-            if user is not None:
-                data[EVENT_FROM_USER_KEY] = user
-            if chat is not None:
-                data[EVENT_CHAT_KEY] = chat
-            if thread_id is not None:
-                data[EVENT_THREAD_ID_KEY] = thread_id
-            return await handler(event, data)
-
-    @contextmanager
-    def context(self, chat: Optional[Chat] = None, user: Optional[User] = None) -> Iterator[None]:
-        chat_token = None
-        user_token = None
-        if chat:
-            chat_token = chat.set_current(chat)
-        if user:
-            user_token = user.set_current(user)
-        try:
-            yield
-        finally:
-            if chat and chat_token:
-                chat.reset_current(chat_token)
-            if user and user_token:
-                user.reset_current(user_token)
+        if user is not None:
+            data[EVENT_FROM_USER_KEY] = user
+        if chat is not None:
+            data[EVENT_CHAT_KEY] = chat
+        if thread_id is not None:
+            data[EVENT_THREAD_ID_KEY] = thread_id
+        return await handler(event, data)
 
     @classmethod
     def resolve_event_context(

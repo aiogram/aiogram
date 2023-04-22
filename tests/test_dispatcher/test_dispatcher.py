@@ -14,7 +14,7 @@ from aiogram import Bot
 from aiogram.dispatcher.dispatcher import Dispatcher
 from aiogram.dispatcher.event.bases import UNHANDLED, SkipHandler
 from aiogram.dispatcher.router import Router
-from aiogram.methods import GetMe, GetUpdates, Request, SendMessage, TelegramMethod
+from aiogram.methods import GetMe, GetUpdates, SendMessage, TelegramMethod
 from aiogram.types import (
     CallbackQuery,
     Chat,
@@ -462,9 +462,9 @@ class TestDispatcher:
         async def my_handler(event: Any, **kwargs: Any):
             assert event == getattr(update, event_type)
             if has_chat:
-                assert Chat.get_current(False)
+                assert kwargs["event_chat"]
             if has_user:
-                assert User.get_current(False)
+                assert kwargs["event_from_user"]
             return kwargs
 
         result = await router.feed_update(bot, update, test="PASS")
