@@ -1,0 +1,3 @@
+Removed text filter in due to is planned to remove this filter few versions ago.
+
+Use :code:`F.text` instead
