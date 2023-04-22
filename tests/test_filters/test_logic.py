@@ -1,6 +1,6 @@
 import pytest
 
-from aiogram.filters import Text, and_f, invert_f, or_f
+from aiogram.filters import Command, and_f, invert_f, or_f
 from aiogram.filters.logic import _AndFilter, _InvertFilter, _OrFilter
 
 
@@ -28,10 +28,10 @@ class TestLogic:
     @pytest.mark.parametrize(
         "case,type_",
         [
-            [or_f(Text(text="test"), Text(text="test")), _OrFilter],
-            [and_f(Text(text="test"), Text(text="test")), _AndFilter],
-            [invert_f(Text(text="test")), _InvertFilter],
-            [~Text(text="test"), _InvertFilter],
+            [or_f(Command("test"), Command("test")), _OrFilter],
+            [and_f(Command("test"), Command("test")), _AndFilter],
+            [invert_f(Command("test")), _InvertFilter],
+            [~Command("test"), _InvertFilter],
         ],
     )
     def test_dunder_methods(self, case, type_):

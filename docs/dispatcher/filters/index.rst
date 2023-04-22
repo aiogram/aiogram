@@ -16,7 +16,6 @@ Here is list of builtin filters:
     :maxdepth: 1
 
     command
-    text
     chat_member_updated
     magic_filters
     magic_data
@@ -69,7 +68,7 @@ If you specify multiple filters in a row, it will be checked with an "and" condi
 
 .. code-block:: python
 
-    @<router>.message(Text(startswith="show"), Text(endswith="example"))
+    @<router>.message(F.text.startswith("show"), F.text.endswith("example"))
 
 
 Also, if you want to use two alternative ways to run the same handler ("or" condition)
@@ -77,7 +76,7 @@ you can register the handler twice or more times as you like
 
 .. code-block:: python
 
-    @<router>.message(Text(text="hi"))
+    @<router>.message(F.text == "hi")
     @<router>.message(CommandStart())
 
 
@@ -96,7 +95,7 @@ An alternative way is to combine using special functions (:func:`and_f`, :func:`
 
 .. code-block:: python
 
-    and_f(Text(startswith="show"), Text(endswith="example"))
-    or_f(Text(text="hi"), CommandStart())
+    and_f(F.text.startswith("show"), F.text.endswith("example"))
+    or_f(F.text(text="hi"), CommandStart())
     invert_f(IsAdmin())
     and_f(<A>, or_f(<B>, <C>))
