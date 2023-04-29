@@ -38,9 +38,9 @@
       {
         "type": "Boolean",
         "required": false,
-        "description": "Pass True if results may be cached on the server side only for the user that sent the query. By default, results may be returned to any user who sends the same query",
-        "html_description": "<td>Pass <em>True</em> if results may be cached on the server side only for the user that sent the query. By default, results may be returned to any user who sends the same query</td>",
-        "rst_description": "Pass :code:`True` if results may be cached on the server side only for the user that sent the query. By default, results may be returned to any user who sends the same query\n",
+        "description": "Pass True if results may be cached on the server side only for the user that sent the query. By default, results may be returned to any user who sends the same query.",
+        "html_description": "<td>Pass <em>True</em> if results may be cached on the server side only for the user that sent the query. By default, results may be returned to any user who sends the same query.</td>",
+        "rst_description": "Pass :code:`True` if results may be cached on the server side only for the user that sent the query. By default, results may be returned to any user who sends the same query.\n",
         "name": "is_personal"
       },
       {
@@ -52,12 +52,12 @@
         "name": "next_offset"
       },
       {
-        "type": "String",
+        "type": "InlineQueryResultsButton",
         "required": false,
-        "description": "If passed, clients will display a button with specified text that switches the user to a private chat with the bot and sends the bot a start message with the parameter switch_pm_parameter",
-        "html_description": "<td>If passed, clients will display a button with specified text that switches the user to a private chat with the bot and sends the bot a start message with the parameter <em>switch_pm_parameter</em></td>",
-        "rst_description": "If passed, clients will display a button with specified text that switches the user to a private chat with the bot and sends the bot a start message with the parameter *switch_pm_parameter*\n",
-        "name": "switch_pm_text"
+        "description": "A JSON-serialized object describing a button to be shown above inline query results",
+        "html_description": "<td>A JSON-serialized object describing a button to be shown above inline query results</td>",
+        "rst_description": "A JSON-serialized object describing a button to be shown above inline query results\n",
+        "name": "button"
       },
       {
         "type": "String",
@@ -65,7 +65,23 @@
         "description": "Deep-linking parameter for the /start message sent to the bot when user presses the switch button. 1-64 characters, only A-Z, a-z, 0-9, _ and - are allowed.\n\nExample: An inline bot that sends YouTube videos can ask the user to connect the bot to their YouTube account to adapt search results accordingly. To do this, it displays a 'Connect your YouTube account' button above the results, or even before showing any. The user presses the button, switches to a private chat with the bot and, in doing so, passes a start parameter that instructs the bot to return an OAuth link. Once done, the bot can offer a switch_inline button so that the user can easily return to the chat where they wanted to use the bot's inline capabilities.",
         "html_description": "<td><a href=\"/bots/features#deep-linking\">Deep-linking</a> parameter for the /start message sent to the bot when user presses the switch button. 1-64 characters, only <code>A-Z</code>, <code>a-z</code>, <code>0-9</code>, <code>_</code> and <code>-</code> are allowed.<br/>\n<br/>\n<em>Example:</em> An inline bot that sends YouTube videos can ask the user to connect the bot to their YouTube account to adapt search results accordingly. To do this, it displays a 'Connect your YouTube account' button above the results, or even before showing any. The user presses the button, switches to a private chat with the bot and, in doing so, passes a start parameter that instructs the bot to return an OAuth link. Once done, the bot can offer a <a href=\"#inlinekeyboardmarkup\"><em>switch_inline</em></a> button so that the user can easily return to the chat where they wanted to use the bot's inline capabilities.</td>",
         "rst_description": "`Deep-linking <https://core.telegram.org/bots/features#deep-linking>`_ parameter for the /start message sent to the bot when user presses the switch button. 1-64 characters, only :code:`A-Z`, :code:`a-z`, :code:`0-9`, :code:`_` and :code:`-` are allowed.\n\n\n\n*Example:* An inline bot that sends YouTube videos can ask the user to connect the bot to their YouTube account to adapt search results accordingly. To do this, it displays a 'Connect your YouTube account' button above the results, or even before showing any. The user presses the button, switches to a private chat with the bot and, in doing so, passes a start parameter that instructs the bot to return an OAuth link. Once done, the bot can offer a `https://core.telegram.org/bots/api#inlinekeyboardmarkup <https://core.telegram.org/bots/api#inlinekeyboardmarkup>`_ *switch_inline* button so that the user can easily return to the chat where they wanted to use the bot's inline capabilities.\n",
-        "name": "switch_pm_parameter"
+        "name": "switch_pm_parameter",
+        "deprecated": {
+          "version": "6.7",
+          "release_date": "2023-04-21"
+        }
+      },
+      {
+        "type": "String",
+        "required": false,
+        "description": "If passed, clients will display a button with specified text that switches the user to a private chat with the bot and sends the bot a start message with the parameter switch_pm_parameter",
+        "html_description": "<td>If passed, clients will display a button with specified text that switches the user to a private chat with the bot and sends the bot a start message with the parameter <em>switch_pm_parameter</em></td>",
+        "rst_description": "If passed, clients will display a button with specified text that switches the user to a private chat with the bot and sends the bot a start message with the parameter *switch_pm_parameter*\n",
+        "name": "switch_pm_text",
+        "deprecated": {
+          "version": "6.7",
+          "release_date": "2023-04-21"
+        }
       }
     ],
     "category": "methods"

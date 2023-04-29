@@ -1,0 +1,17 @@
+Added support for FSM in Forum topics.
+
+The strategy can be changed in dispatcher:
+
+.. code-block:: python
+
+    from aiogram.fsm.strategy import FSMStrategy
+    ...
+    dispatcher = Dispatcher(
+        fsm_strategy=FSMStrategy.USER_IN_THREAD,
+        storage=...,  # Any persistent storage
+    )
+
+.. note::
+
+    If you have implemented you own storages you should extend record key generation
+    with new one attribute - `thread_id`

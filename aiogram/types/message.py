@@ -317,6 +317,8 @@ class Message(TelegramObject):
             return ContentType.MESSAGE_AUTO_DELETE_TIMER_CHANGED
         if self.forum_topic_created:
             return ContentType.FORUM_TOPIC_CREATED
+        if self.forum_topic_edited:
+            return ContentType.FORUM_TOPIC_EDITED
         if self.forum_topic_closed:
             return ContentType.FORUM_TOPIC_CLOSED
         if self.forum_topic_reopened:

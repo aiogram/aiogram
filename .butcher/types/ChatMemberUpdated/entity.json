@@ -58,6 +58,14 @@
         "rst_description": "*Optional*. Chat invite link, which was used by the user to join the chat; for joining by invite link events only.\n",
         "name": "invite_link",
         "required": false
+      },
+      {
+        "type": "Boolean",
+        "description": "True, if the user joined the chat via a chat folder invite link",
+        "html_description": "<td><em>Optional</em>. True, if the user joined the chat via a chat folder invite link</td>",
+        "rst_description": "*Optional*. True, if the user joined the chat via a chat folder invite link\n",
+        "name": "via_chat_folder_invite_link",
+        "required": false
       }
     ],
     "category": "types"

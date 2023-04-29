@@ -92,8 +92,8 @@ class Dispatcher(Router):
 
         self.workflow_data: Dict[str, Any] = kwargs
         self._running_lock = Lock()
-        self._stop_signal = Event()
-        self._stopped_signal = Event()
+        self._stop_signal: Optional[Event] = None
+        self._stopped_signal: Optional[Event] = None
 
     def __getitem__(self, item: str) -> Any:
         return self.workflow_data[item]
@@ -430,6 +430,8 @@ class Dispatcher(Router):
         """
         if not self._running_lock.locked():
             raise RuntimeError("Polling is not started")
+        if not self._stop_signal or not self._stopped_signal:
+            return
         self._stop_signal.set()
         await self._stopped_signal.wait()
 
@@ -438,6 +440,8 @@ class Dispatcher(Router):
             return
 
         loggers.dispatcher.warning("Received %s signal", sig.name)
+        if not self._stop_signal:
+            return
         self._stop_signal.set()
 
     async def start_polling(
@@ -473,6 +477,11 @@ class Dispatcher(Router):
             )
 
         async with self._running_lock:  # Prevent to run this method twice at a once
+            if self._stop_signal is None:
+                self._stop_signal = Event()
+            if self._stopped_signal is None:
+                self._stopped_signal = Event()
+
             self._stop_signal.clear()
             self._stopped_signal.clear()
 

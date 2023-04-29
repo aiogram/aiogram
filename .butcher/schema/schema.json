@@ -1,7 +1,7 @@
 {
   "api": {
-    "version": "6.6",
-    "release_date": "2023-03-09"
+    "version": "6.7",
+    "release_date": "2023-04-21"
   },
   "items": [
     {
@@ -2421,10 +2421,19 @@
         {
           "anchor": "writeaccessallowed",
           "name": "WriteAccessAllowed",
-          "description": "This object represents a service message about a user allowing a bot added to the attachment menu to write messages. Currently holds no information.",
-          "html_description": "<p>This object represents a service message about a user allowing a bot added to the attachment menu to write messages. Currently holds no information.</p>",
-          "rst_description": "This object represents a service message about a user allowing a bot added to the attachment menu to write messages. Currently holds no information.",
-          "annotations": [],
+          "description": "This object represents a service message about a user allowing a bot to write messages after adding the bot to the attachment menu or launching a Web App from a link.",
+          "html_description": "<p>This object represents a service message about a user allowing a bot to write messages after adding the bot to the attachment menu or launching a Web App from a link.</p>",
+          "rst_description": "This object represents a service message about a user allowing a bot to write messages after adding the bot to the attachment menu or launching a Web App from a link.",
+          "annotations": [
+            {
+              "type": "String",
+              "description": "Name of the Web App which was launched from a link",
+              "html_description": "<td><em>Optional</em>. Name of the Web App which was launched from a link</td>",
+              "rst_description": "*Optional*. Name of the Web App which was launched from a link\n",
+              "name": "web_app_name",
+              "required": false
+            }
+          ],
           "category": "types"
         },
         {
@@ -2934,6 +2943,14 @@
               "required": false
             },
             {
+              "type": "SwitchInlineQueryChosenChat",
+              "description": "If set, pressing the button will prompt the user to select one of their chats of the specified type, open that chat and insert the bot's username and the specified inline query in the input field",
+              "html_description": "<td><em>Optional</em>. If set, pressing the button will prompt the user to select one of their chats of the specified type, open that chat and insert the bot's username and the specified inline query in the input field</td>",
+              "rst_description": "*Optional*. If set, pressing the button will prompt the user to select one of their chats of the specified type, open that chat and insert the bot's username and the specified inline query in the input field\n",
+              "name": "switch_inline_query_chosen_chat",
+              "required": false
+            },
+            {
               "type": "CallbackGame",
               "description": "Description of the game that will be launched when the user presses the button.\n\nNOTE: This type of button must always be the first button in the first row.",
               "html_description": "<td><em>Optional</em>. Description of the game that will be launched when the user presses the button.<br/>\n<br/>\n<strong>NOTE:</strong> This type of button <strong>must</strong> always be the first button in the first row.</td>",
@@ -2989,6 +3006,56 @@
               "html_description": "<td><em>Optional</em>. Pass <em>True</em> to request the permission for your bot to send messages to the user.</td>",
               "rst_description": "*Optional*. Pass :code:`True` to request the permission for your bot to send messages to the user.\n",
               "name": "request_write_access",
+              "required": false
+            }
+          ],
+          "category": "types"
+        },
+        {
+          "anchor": "switchinlinequerychosenchat",
+          "name": "SwitchInlineQueryChosenChat",
+          "description": "This object represents an inline button that switches the current user to inline mode in a chosen chat, with an optional default inline query.",
+          "html_description": "<p>This object represents an inline button that switches the current user to inline mode in a chosen chat, with an optional default inline query.</p>",
+          "rst_description": "This object represents an inline button that switches the current user to inline mode in a chosen chat, with an optional default inline query.",
+          "annotations": [
+            {
+              "type": "String",
+              "description": "The default inline query to be inserted in the input field. If left empty, only the bot's username will be inserted",
+              "html_description": "<td><em>Optional</em>. The default inline query to be inserted in the input field. If left empty, only the bot's username will be inserted</td>",
+              "rst_description": "*Optional*. The default inline query to be inserted in the input field. If left empty, only the bot's username will be inserted\n",
+              "name": "query",
+              "required": false
+            },
+            {
+              "type": "Boolean",
+              "description": "True, if private chats with users can be chosen",
+              "html_description": "<td><em>Optional</em>. True, if private chats with users can be chosen</td>",
+              "rst_description": "*Optional*. True, if private chats with users can be chosen\n",
+              "name": "allow_user_chats",
+              "required": false
+            },
+            {
+              "type": "Boolean",
+              "description": "True, if private chats with bots can be chosen",
+              "html_description": "<td><em>Optional</em>. True, if private chats with bots can be chosen</td>",
+              "rst_description": "*Optional*. True, if private chats with bots can be chosen\n",
+              "name": "allow_bot_chats",
+              "required": false
+            },
+            {
+              "type": "Boolean",
+              "description": "True, if group and supergroup chats can be chosen",
+              "html_description": "<td><em>Optional</em>. True, if group and supergroup chats can be chosen</td>",
+              "rst_description": "*Optional*. True, if group and supergroup chats can be chosen\n",
+              "name": "allow_group_chats",
+              "required": false
+            },
+            {
+              "type": "Boolean",
+              "description": "True, if channel chats can be chosen",
+              "html_description": "<td><em>Optional</em>. True, if channel chats can be chosen</td>",
+              "rst_description": "*Optional*. True, if channel chats can be chosen\n",
+              "name": "allow_channel_chats",
               "required": false
             }
           ],
@@ -3807,6 +3874,14 @@
               "rst_description": "*Optional*. Chat invite link, which was used by the user to join the chat; for joining by invite link events only.\n",
               "name": "invite_link",
               "required": false
+            },
+            {
+              "type": "Boolean",
+              "description": "True, if the user joined the chat via a chat folder invite link",
+              "html_description": "<td><em>Optional</em>. True, if the user joined the chat via a chat folder invite link</td>",
+              "rst_description": "*Optional*. True, if the user joined the chat via a chat folder invite link\n",
+              "name": "via_chat_folder_invite_link",
+              "required": false
             }
           ],
           "category": "types"
@@ -4247,6 +4322,24 @@
               "html_description": "<td>Unique identifier of the target user</td>",
               "rst_description": "Unique identifier of the target user\n",
               "name": "user_id",
+              "required": true
+            }
+          ],
+          "category": "types"
+        },
+        {
+          "anchor": "botname",
+          "name": "BotName",
+          "description": "This object represents the bot's name.",
+          "html_description": "<p>This object represents the bot's name.</p>",
+          "rst_description": "This object represents the bot's name.",
+          "annotations": [
+            {
+              "type": "String",
+              "description": "The bot's name",
+              "html_description": "<td>The bot's name</td>",
+              "rst_description": "The bot's name\n",
+              "name": "name",
               "required": true
             }
           ],
@@ -7989,6 +8082,50 @@
           "category": "methods"
         },
         {
+          "anchor": "setmyname",
+          "name": "setMyName",
+          "description": "Use this method to change the bot's name. Returns True on success.",
+          "html_description": "<p>Use this method to change the bot's name. Returns <em>True</em> on success.</p>",
+          "rst_description": "Use this method to change the bot's name. Returns :code:`True` on success.",
+          "annotations": [
+            {
+              "type": "String",
+              "required": false,
+              "description": "New bot name; 0-64 characters. Pass an empty string to remove the dedicated name for the given language.",
+              "html_description": "<td>New bot name; 0-64 characters. Pass an empty string to remove the dedicated name for the given language.</td>",
+              "rst_description": "New bot name; 0-64 characters. Pass an empty string to remove the dedicated name for the given language.\n",
+              "name": "name"
+            },
+            {
+              "type": "String",
+              "required": false,
+              "description": "A two-letter ISO 639-1 language code. If empty, the name will be shown to all users for whose language there is no dedicated name.",
+              "html_description": "<td>A two-letter ISO 639-1 language code. If empty, the name will be shown to all users for whose language there is no dedicated name.</td>",
+              "rst_description": "A two-letter ISO 639-1 language code. If empty, the name will be shown to all users for whose language there is no dedicated name.\n",
+              "name": "language_code"
+            }
+          ],
+          "category": "methods"
+        },
+        {
+          "anchor": "getmyname",
+          "name": "getMyName",
+          "description": "Use this method to get the current bot name for the given user language. Returns BotName on success.",
+          "html_description": "<p>Use this method to get the current bot name for the given user language. Returns <a href=\"#botname\">BotName</a> on success.</p>",
+          "rst_description": "Use this method to get the current bot name for the given user language. Returns :class:`aiogram.types.bot_name.BotName` on success.",
+          "annotations": [
+            {
+              "type": "String",
+              "required": false,
+              "description": "A two-letter ISO 639-1 language code or an empty string",
+              "html_description": "<td>A two-letter ISO 639-1 language code or an empty string</td>",
+              "rst_description": "A two-letter ISO 639-1 language code or an empty string\n",
+              "name": "language_code"
+            }
+          ],
+          "category": "methods"
+        },
+        {
           "anchor": "setmydescription",
           "name": "setMyDescription",
           "description": "Use this method to change the bot's description, which is shown in the chat with the bot if the chat is empty. Returns True on success.",
@@ -9451,9 +9588,9 @@
             {
               "type": "Boolean",
               "required": false,
-              "description": "Pass True if results may be cached on the server side only for the user that sent the query. By default, results may be returned to any user who sends the same query",
-              "html_description": "<td>Pass <em>True</em> if results may be cached on the server side only for the user that sent the query. By default, results may be returned to any user who sends the same query</td>",
-              "rst_description": "Pass :code:`True` if results may be cached on the server side only for the user that sent the query. By default, results may be returned to any user who sends the same query\n",
+              "description": "Pass True if results may be cached on the server side only for the user that sent the query. By default, results may be returned to any user who sends the same query.",
+              "html_description": "<td>Pass <em>True</em> if results may be cached on the server side only for the user that sent the query. By default, results may be returned to any user who sends the same query.</td>",
+              "rst_description": "Pass :code:`True` if results may be cached on the server side only for the user that sent the query. By default, results may be returned to any user who sends the same query.\n",
               "name": "is_personal"
             },
             {
@@ -9465,23 +9602,49 @@
               "name": "next_offset"
             },
             {
-              "type": "String",
+              "type": "InlineQueryResultsButton",
               "required": false,
-              "description": "If passed, clients will display a button with specified text that switches the user to a private chat with the bot and sends the bot a start message with the parameter switch_pm_parameter",
-              "html_description": "<td>If passed, clients will display a button with specified text that switches the user to a private chat with the bot and sends the bot a start message with the parameter <em>switch_pm_parameter</em></td>",
-              "rst_description": "If passed, clients will display a button with specified text that switches the user to a private chat with the bot and sends the bot a start message with the parameter *switch_pm_parameter*\n",
-              "name": "switch_pm_text"
-            },
-            {
-              "type": "String",
-              "required": false,
-              "description": "Deep-linking parameter for the /start message sent to the bot when user presses the switch button. 1-64 characters, only A-Z, a-z, 0-9, _ and - are allowed.\n\nExample: An inline bot that sends YouTube videos can ask the user to connect the bot to their YouTube account to adapt search results accordingly. To do this, it displays a 'Connect your YouTube account' button above the results, or even before showing any. The user presses the button, switches to a private chat with the bot and, in doing so, passes a start parameter that instructs the bot to return an OAuth link. Once done, the bot can offer a switch_inline button so that the user can easily return to the chat where they wanted to use the bot's inline capabilities.",
-              "html_description": "<td><a href=\"/bots/features#deep-linking\">Deep-linking</a> parameter for the /start message sent to the bot when user presses the switch button. 1-64 characters, only <code>A-Z</code>, <code>a-z</code>, <code>0-9</code>, <code>_</code> and <code>-</code> are allowed.<br/>\n<br/>\n<em>Example:</em> An inline bot that sends YouTube videos can ask the user to connect the bot to their YouTube account to adapt search results accordingly. To do this, it displays a 'Connect your YouTube account' button above the results, or even before showing any. The user presses the button, switches to a private chat with the bot and, in doing so, passes a start parameter that instructs the bot to return an OAuth link. Once done, the bot can offer a <a href=\"#inlinekeyboardmarkup\"><em>switch_inline</em></a> button so that the user can easily return to the chat where they wanted to use the bot's inline capabilities.</td>",
-              "rst_description": "`Deep-linking <https://core.telegram.org/bots/features#deep-linking>`_ parameter for the /start message sent to the bot when user presses the switch button. 1-64 characters, only :code:`A-Z`, :code:`a-z`, :code:`0-9`, :code:`_` and :code:`-` are allowed.\n\n\n\n*Example:* An inline bot that sends YouTube videos can ask the user to connect the bot to their YouTube account to adapt search results accordingly. To do this, it displays a 'Connect your YouTube account' button above the results, or even before showing any. The user presses the button, switches to a private chat with the bot and, in doing so, passes a start parameter that instructs the bot to return an OAuth link. Once done, the bot can offer a `https://core.telegram.org/bots/api#inlinekeyboardmarkup <https://core.telegram.org/bots/api#inlinekeyboardmarkup>`_ *switch_inline* button so that the user can easily return to the chat where they wanted to use the bot's inline capabilities.\n",
-              "name": "switch_pm_parameter"
+              "description": "A JSON-serialized object describing a button to be shown above inline query results",
+              "html_description": "<td>A JSON-serialized object describing a button to be shown above inline query results</td>",
+              "rst_description": "A JSON-serialized object describing a button to be shown above inline query results\n",
+              "name": "button"
             }
           ],
           "category": "methods"
+        },
+        {
+          "anchor": "inlinequeryresultsbutton",
+          "name": "InlineQueryResultsButton",
+          "description": "This object represents a button to be shown above inline query results. You must use exactly one of the optional fields.",
+          "html_description": "<p>This object represents a button to be shown above inline query results. You <strong>must</strong> use exactly one of the optional fields.</p>",
+          "rst_description": "This object represents a button to be shown above inline query results. You **must** use exactly one of the optional fields.",
+          "annotations": [
+            {
+              "type": "String",
+              "description": "Label text on the button",
+              "html_description": "<td>Label text on the button</td>",
+              "rst_description": "Label text on the button\n",
+              "name": "text",
+              "required": true
+            },
+            {
+              "type": "WebAppInfo",
+              "description": "Description of the Web App that will be launched when the user presses the button. The Web App will be able to switch back to the inline mode using the method web_app_switch_inline_query inside the Web App.",
+              "html_description": "<td><em>Optional</em>. Description of the <a href=\"/bots/webapps\">Web App</a> that will be launched when the user presses the button. The Web App will be able to switch back to the inline mode using the method <em>web_app_switch_inline_query</em> inside the Web App.</td>",
+              "rst_description": "*Optional*. Description of the `Web App <https://core.telegram.org/bots/webapps>`_ that will be launched when the user presses the button. The Web App will be able to switch back to the inline mode using the method *web_app_switch_inline_query* inside the Web App.\n",
+              "name": "web_app",
+              "required": false
+            },
+            {
+              "type": "String",
+              "description": "Deep-linking parameter for the /start message sent to the bot when a user presses the button. 1-64 characters, only A-Z, a-z, 0-9, _ and - are allowed.\n\nExample: An inline bot that sends YouTube videos can ask the user to connect the bot to their YouTube account to adapt search results accordingly. To do this, it displays a 'Connect your YouTube account' button above the results, or even before showing any. The user presses the button, switches to a private chat with the bot and, in doing so, passes a start parameter that instructs the bot to return an OAuth link. Once done, the bot can offer a switch_inline button so that the user can easily return to the chat where they wanted to use the bot's inline capabilities.",
+              "html_description": "<td><em>Optional</em>. <a href=\"/bots/features#deep-linking\">Deep-linking</a> parameter for the /start message sent to the bot when a user presses the button. 1-64 characters, only <code>A-Z</code>, <code>a-z</code>, <code>0-9</code>, <code>_</code> and <code>-</code> are allowed.<br/>\n<br/>\n<em>Example:</em> An inline bot that sends YouTube videos can ask the user to connect the bot to their YouTube account to adapt search results accordingly. To do this, it displays a 'Connect your YouTube account' button above the results, or even before showing any. The user presses the button, switches to a private chat with the bot and, in doing so, passes a start parameter that instructs the bot to return an OAuth link. Once done, the bot can offer a <a href=\"#inlinekeyboardmarkup\"><em>switch_inline</em></a> button so that the user can easily return to the chat where they wanted to use the bot's inline capabilities.</td>",
+              "rst_description": "*Optional*. `Deep-linking <https://core.telegram.org/bots/features#deep-linking>`_ parameter for the /start message sent to the bot when a user presses the button. 1-64 characters, only :code:`A-Z`, :code:`a-z`, :code:`0-9`, :code:`_` and :code:`-` are allowed.\n\n\n\n*Example:* An inline bot that sends YouTube videos can ask the user to connect the bot to their YouTube account to adapt search results accordingly. To do this, it displays a 'Connect your YouTube account' button above the results, or even before showing any. The user presses the button, switches to a private chat with the bot and, in doing so, passes a start parameter that instructs the bot to return an OAuth link. Once done, the bot can offer a `https://core.telegram.org/bots/api#inlinekeyboardmarkup <https://core.telegram.org/bots/api#inlinekeyboardmarkup>`_ *switch_inline* button so that the user can easily return to the chat where they wanted to use the bot's inline capabilities.\n",
+              "name": "start_parameter",
+              "required": false
+            }
+          ],
+          "category": "types"
         },
         {
           "anchor": "inlinequeryresult",

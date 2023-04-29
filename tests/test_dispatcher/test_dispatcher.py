@@ -14,7 +14,7 @@ from aiogram import Bot
 from aiogram.dispatcher.dispatcher import Dispatcher
 from aiogram.dispatcher.event.bases import UNHANDLED, SkipHandler
 from aiogram.dispatcher.router import Router
-from aiogram.methods import GetMe, GetUpdates, Request, SendMessage, TelegramMethod
+from aiogram.methods import GetMe, GetUpdates, SendMessage, TelegramMethod
 from aiogram.types import (
     CallbackQuery,
     Chat,
@@ -462,9 +462,9 @@ class TestDispatcher:
         async def my_handler(event: Any, **kwargs: Any):
             assert event == getattr(update, event_type)
             if has_chat:
-                assert Chat.get_current(False)
+                assert kwargs["event_chat"]
             if has_user:
-                assert User.get_current(False)
+                assert kwargs["event_from_user"]
             return kwargs
 
         result = await router.feed_update(bot, update, test="PASS")
@@ -708,10 +708,15 @@ class TestDispatcher:
         with pytest.raises(RuntimeError):
             await dispatcher.stop_polling()
 
-        assert not dispatcher._stop_signal.is_set()
-        assert not dispatcher._stopped_signal.is_set()
+        assert not dispatcher._stop_signal
+        assert not dispatcher._stopped_signal
         with patch("asyncio.locks.Event.wait", new_callable=AsyncMock) as mocked_wait:
             async with dispatcher._running_lock:
+                await dispatcher.stop_polling()
+                assert not dispatcher._stop_signal
+
+                dispatcher._stop_signal = Event()
+                dispatcher._stopped_signal = Event()
                 await dispatcher.stop_polling()
                 assert dispatcher._stop_signal.is_set()
                 mocked_wait.assert_awaited()
@@ -723,6 +728,11 @@ class TestDispatcher:
             mocked_set.assert_not_called()
 
             async with dispatcher._running_lock:
+                dispatcher._signal_stop_polling(signal.SIGINT)
+                mocked_set.assert_not_called()
+
+                dispatcher._stop_signal = Event()
+                dispatcher._stopped_signal = Event()
                 dispatcher._signal_stop_polling(signal.SIGINT)
                 mocked_set.assert_called()
 
@@ -764,11 +774,28 @@ class TestDispatcher:
 
     def test_run_polling(self, bot: MockedBot):
         dispatcher = Dispatcher()
+
+        async def stop():
+            await asyncio.sleep(0.5)
+            await dispatcher.stop_polling()
+
+        start_called = False
+
+        @dispatcher.startup()
+        async def startup():
+            nonlocal start_called
+            start_called = True
+            asyncio.create_task(stop())
+
+        original_start_polling = dispatcher.start_polling
         with patch(
-            "aiogram.dispatcher.dispatcher.Dispatcher.start_polling"
+            "aiogram.dispatcher.dispatcher.Dispatcher.start_polling",
+            side_effect=original_start_polling,
         ) as patched_start_polling:
             dispatcher.run_polling(bot)
             patched_start_polling.assert_awaited_once()
+
+        assert start_called
 
     async def test_feed_webhook_update_fast_process(self, bot: MockedBot):
         dispatcher = Dispatcher()

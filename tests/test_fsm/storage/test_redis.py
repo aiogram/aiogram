@@ -11,6 +11,7 @@ PREFIX = "test"
 BOT_ID = 42
 CHAT_ID = -1
 USER_ID = 2
+THREAD_ID = 3
 FIELD = "data"
 
 
@@ -45,6 +46,19 @@ class TestRedisDefaultKeyBuilder:
         )
         with pytest.raises(ValueError):
             key_builder.build(key, FIELD)
+
+    def test_thread_id(self):
+        key_builder = DefaultKeyBuilder(
+            prefix=PREFIX,
+        )
+        key = StorageKey(
+            chat_id=CHAT_ID,
+            user_id=USER_ID,
+            bot_id=BOT_ID,
+            thread_id=THREAD_ID,
+            destiny=DEFAULT_DESTINY,
+        )
+        assert key_builder.build(key, FIELD) == f"{PREFIX}:{CHAT_ID}:{THREAD_ID}:{USER_ID}:{FIELD}"
 
     def test_create_isolation(self):
         fake_redis = object()

@@ -5,7 +5,7 @@ from aiogram import Bot, Dispatcher, Router, types
 from aiogram.filters import Command
 from aiogram.types import Message
 
-# Bot token can be obtained via https://t.me/BotFahter
+# Bot token can be obtained via https://t.me/BotFather
 TOKEN = "42:TOKEN"
 
 # All handlers should be attached to the Router (or Dispatcher)

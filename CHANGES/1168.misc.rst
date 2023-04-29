@@ -1,0 +1,6 @@
+Added full support of `Bot API 6.7 <https://core.telegram.org/bots/api-changelog#april-21-2023>`_
+
+.. warning::
+
+    Note that arguments *switch_pm_parameter* and *switch_pm_text* was deprecated
+    and should be changed to *button* argument as described in API docs.

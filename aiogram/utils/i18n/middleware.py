@@ -4,7 +4,7 @@ from typing import Any, Awaitable, Callable, Dict, Optional, Set, cast
 try:
     from babel import Locale, UnknownLocaleError
 except ImportError:  # pragma: no cover
-    Locale = None
+    Locale = None  # type: ignore
 
     class UnknownLocaleError(Exception):  # type: ignore
         pass
@@ -127,7 +127,7 @@ class SimpleI18nMiddleware(I18nMiddleware):
 
         if locale.language not in self.i18n.available_locales:
             return self.i18n.default_locale
-        return cast(str, locale.language)
+        return locale.language
 
 
 class ConstI18nMiddleware(I18nMiddleware):

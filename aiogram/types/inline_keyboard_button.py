@@ -7,6 +7,7 @@ from .base import MutableTelegramObject
 if TYPE_CHECKING:
     from .callback_game import CallbackGame
     from .login_url import LoginUrl
+    from .switch_inline_query_chosen_chat import SwitchInlineQueryChosenChat
     from .web_app_info import WebAppInfo
 
 
@@ -31,6 +32,8 @@ class InlineKeyboardButton(MutableTelegramObject):
     """*Optional*. If set, pressing the button will prompt the user to select one of their chats, open that chat and insert the bot's username and the specified inline query in the input field. May be empty, in which case just the bot's username will be inserted."""
     switch_inline_query_current_chat: Optional[str] = None
     """*Optional*. If set, pressing the button will insert the bot's username and the specified inline query in the current chat's input field. May be empty, in which case only the bot's username will be inserted."""
+    switch_inline_query_chosen_chat: Optional[SwitchInlineQueryChosenChat] = None
+    """*Optional*. If set, pressing the button will prompt the user to select one of their chats of the specified type, open that chat and insert the bot's username and the specified inline query in the input field"""
     callback_game: Optional[CallbackGame] = None
     """*Optional*. Description of the game that will be launched when the user presses the button."""
     pay: Optional[bool] = None
