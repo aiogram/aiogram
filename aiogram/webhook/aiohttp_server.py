@@ -90,6 +90,7 @@ class BaseRequestHandler(ABC):
         self,
         dispatcher: Dispatcher,
         handle_in_background: bool = False,
+        secret_token: Optional[str] = None,
         **data: Any,
     ) -> None:
         """
@@ -99,6 +100,7 @@ class BaseRequestHandler(ABC):
         """
         self.dispatcher = dispatcher
         self.handle_in_background = handle_in_background
+        self.secret_token = secret_token
         self.data = data
 
     def register(self, app: Application, /, path: str, **kwargs: Any) -> None:
@@ -184,6 +186,10 @@ class BaseRequestHandler(ABC):
         return web.Response(body=self._build_response_writer(bot=bot, result=result))
 
     async def handle(self, request: web.Request) -> web.Response:
+        if self.secret_token:
+            t_token = request.headers.get("X-Telegram-Bot-Api-Secret-Token")
+            if t_token != self.secret_token:
+                return web.Response(body="Unauthorized", status=401)
         bot = await self.resolve_bot(request)
         if self.handle_in_background:
             return await self._handle_request_background(bot=bot, request=request)
@@ -198,7 +204,11 @@ class SimpleRequestHandler(BaseRequestHandler):
     """
 
     def __init__(
-        self, dispatcher: Dispatcher, bot: Bot, handle_in_background: bool = True, **data: Any
+        self, dispatcher: Dispatcher,
+        bot: Bot,
+        handle_in_background: bool = True,
+        secret_token: Optional[str] = None,
+        **data: Any
     ) -> None:
         """
         :param dispatcher: instance of :class:`aiogram.dispatcher.dispatcher.Dispatcher`
@@ -206,7 +216,11 @@ class SimpleRequestHandler(BaseRequestHandler):
             waiting end of handler process
         :param bot: instance of :class:`aiogram.client.bot.Bot`
         """
-        super().__init__(dispatcher=dispatcher, handle_in_background=handle_in_background, **data)
+        super().__init__(
+            dispatcher=dispatcher,
+            handle_in_background=handle_in_background,
+            secret_token=secret_token,
+            **data)
         self.bot = bot
 
     async def close(self) -> None:
