@@ -1,3 +1,5 @@
+.. _formatting-tool
+
 ==========
 Formatting
 ==========
