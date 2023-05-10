@@ -133,6 +133,10 @@ class BaseRequestHandler(ABC):
         """
         pass
 
+    @abstractmethod
+    def secret_verify(self, secret_token: str) -> bool:
+        pass
+
     async def _background_feed_update(self, bot: Bot, update: Dict[str, Any]) -> None:
         result = await self.dispatcher.feed_raw_update(bot=bot, update=update, **self.data)
         if isinstance(result, TelegramMethod):
@@ -186,10 +190,8 @@ class BaseRequestHandler(ABC):
         return web.Response(body=self._build_response_writer(bot=bot, result=result))
 
     async def handle(self, request: web.Request) -> web.Response:
-        if self.secret_token:
-            t_token = request.headers.get("X-Telegram-Bot-Api-Secret-Token")
-            if t_token != self.secret_token:
-                return web.Response(body="Unauthorized", status=401)
+        if not self.secret_verify(request.headers.get("X-Telegram-Bot-Api-Secret-Token")):
+            return web.Response(body="Unauthorized", status=401)
         bot = await self.resolve_bot(request)
         if self.handle_in_background:
             return await self._handle_request_background(bot=bot, request=request)
@@ -222,6 +224,9 @@ class SimpleRequestHandler(BaseRequestHandler):
             secret_token=secret_token,
             **data)
         self.bot = bot
+
+    def secret_verify(self, telegram_secret_token: str) -> bool:
+        return telegram_secret_token == self.secret_token
 
     async def close(self) -> None:
         """
