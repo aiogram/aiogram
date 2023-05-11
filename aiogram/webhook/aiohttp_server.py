@@ -224,7 +224,7 @@ class SimpleRequestHandler(BaseRequestHandler):
         self.secret_token = secret_token
 
     def verify_secret(self, telegram_secret_token: str) -> bool:
-        return telegram_secret_token == self.secret_token
+        return secrets.compare_digest(telegram_secret_token, self.secret_token)
 
     async def close(self) -> None:
         """
