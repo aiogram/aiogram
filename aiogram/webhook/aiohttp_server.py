@@ -204,7 +204,8 @@ class SimpleRequestHandler(BaseRequestHandler):
     """
 
     def __init__(
-        self, dispatcher: Dispatcher,
+        self, 
+        dispatcher: Dispatcher,
         bot: Bot,
         handle_in_background: bool = True,
         secret_token: Optional[str] = None,
