@@ -90,7 +90,6 @@ class BaseRequestHandler(ABC):
         self,
         dispatcher: Dispatcher,
         handle_in_background: bool = False,
-        secret_token: Optional[str] = None,
         **data: Any,
     ) -> None:
         """
@@ -100,7 +99,6 @@ class BaseRequestHandler(ABC):
         """
         self.dispatcher = dispatcher
         self.handle_in_background = handle_in_background
-        self.secret_token = secret_token
         self.data = data
 
     def register(self, app: Application, /, path: str, **kwargs: Any) -> None:
@@ -134,7 +132,7 @@ class BaseRequestHandler(ABC):
         pass
 
     @abstractmethod
-    def secret_verify(self, secret_token: str) -> bool:
+    def verify_secret(self, secret_token: str) -> bool:
         pass
 
     async def _background_feed_update(self, bot: Bot, update: Dict[str, Any]) -> None:
@@ -190,9 +188,9 @@ class BaseRequestHandler(ABC):
         return web.Response(body=self._build_response_writer(bot=bot, result=result))
 
     async def handle(self, request: web.Request) -> web.Response:
-        if not self.secret_verify(request.headers.get("X-Telegram-Bot-Api-Secret-Token")):
-            return web.Response(body="Unauthorized", status=401)
         bot = await self.resolve_bot(request)
+        if not self.verify_secret(request.headers.get("X-Telegram-Bot-Api-Secret-Token")):
+            return web.Response(body="Unauthorized", status=401)
         if self.handle_in_background:
             return await self._handle_request_background(bot=bot, request=request)
         return await self._handle_request(bot=bot, request=request)
@@ -221,11 +219,11 @@ class SimpleRequestHandler(BaseRequestHandler):
         super().__init__(
             dispatcher=dispatcher,
             handle_in_background=handle_in_background,
-            secret_token=secret_token,
             **data)
         self.bot = bot
+        self.secret_token = secret_token
 
-    def secret_verify(self, telegram_secret_token: str) -> bool:
+    def verify_secret(self, telegram_secret_token: str) -> bool:
         return telegram_secret_token == self.secret_token
 
     async def close(self) -> None:
