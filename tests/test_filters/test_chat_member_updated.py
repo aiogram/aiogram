@@ -1,5 +1,6 @@
 from datetime import datetime
 
+import msgspec
 import pytest
 
 from aiogram.filters.chat_member_updated import (
@@ -340,11 +341,17 @@ class TestChatMemberUpdatedStatusFilter:
             "can_send_other_messages": True,
             "can_add_web_page_previews": True,
         }
+        old = msgspec.to_builtins(old)
+        old["update"] = update
+        old = msgspec.from_builtins(old, ChatMember)
+        new = msgspec.to_builtins(new)
+        new["update"] = update
+        new = msgspec.from_builtins(new, ChatMember)
         event = ChatMemberUpdated(
             chat=Chat(id=42, type="test"),
             from_user=user,
-            old_chat_member=old.copy(update=update),
-            new_chat_member=new.copy(update=update),
+            old_chat_member=old,
+            new_chat_member=new,
             date=datetime.now(),
         )
 

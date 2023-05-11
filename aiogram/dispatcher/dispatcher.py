@@ -8,6 +8,8 @@ from asyncio import CancelledError, Event, Future, Lock
 from contextlib import suppress
 from typing import Any, AsyncGenerator, Dict, List, Optional, Union
 
+import msgspec.json
+
 from .. import loggers
 from ..client.bot import Bot
 from ..exceptions import TelegramAPIError
@@ -167,7 +169,9 @@ class Dispatcher(Router):
             )
             Bot.reset_current(token)
 
-    async def feed_raw_update(self, bot: Bot, update: Dict[str, Any], **kwargs: Any) -> Any:
+    async def feed_raw_update(
+        self, bot: Bot, update: Union[str, Dict[str, Any]], **kwargs: Any
+    ) -> Any:
         """
         Main entry point for incoming updates with automatic Dict->Update serializer
 
@@ -175,7 +179,10 @@ class Dispatcher(Router):
         :param update:
         :param kwargs:
         """
-        parsed_update = Update(**update)
+        if isinstance(update, dict):
+            parsed_update = msgspec.from_builtins(update, type=Update)
+        else:
+            parsed_update = msgspec.json.decode(update, type=Update)
         return await self.feed_update(bot=bot, update=parsed_update, **kwargs)
 
     @classmethod
@@ -202,6 +209,7 @@ class Dispatcher(Router):
         while True:
             try:
                 updates = await bot(get_updates, **kwargs)
+                # print('updates:', updates)
             except Exception as e:
                 failed = True
                 # In cases when Telegram Bot API was inaccessible don't need to stop polling
@@ -364,10 +372,13 @@ class Dispatcher(Router):
             raise
 
     async def feed_webhook_update(
-        self, bot: Bot, update: Union[Update, Dict[str, Any]], _timeout: float = 55, **kwargs: Any
+        self, bot: Bot, update: Union[bytes, str, Update], _timeout: float = 55, **kwargs: Any
     ) -> Optional[TelegramMethod[TelegramType]]:
         if not isinstance(update, Update):  # Allow to use raw updates
-            update = Update(**update)
+            if isinstance(update, dict):
+                update = msgspec.from_builtins(update, type=Update)
+            else:
+                update = msgspec.json.decode(update, type=Update)
 
         ctx = contextvars.copy_context()
         loop = asyncio.get_running_loop()

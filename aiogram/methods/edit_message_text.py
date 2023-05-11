@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, List, Optional, Union
 
+import msgspec
+
 from ..types import UNSET_PARSE_MODE, InlineKeyboardMarkup, Message, MessageEntity
 from ..types.base import UNSET_DISABLE_WEB_PAGE_PREVIEW
 from .base import TelegramMethod
@@ -25,11 +27,13 @@ class EditMessageText(TelegramMethod[Union[Message, bool]]):
     """Required if *inline_message_id* is not specified. Identifier of the message to edit"""
     inline_message_id: Optional[str] = None
     """Required if *chat_id* and *message_id* are not specified. Identifier of the inline message"""
-    parse_mode: Optional[str] = UNSET_PARSE_MODE
+    parse_mode: Optional[str] = msgspec.field(default_factory=lambda: UNSET_PARSE_MODE)
     """Mode for parsing entities in the message text. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details."""
     entities: Optional[List[MessageEntity]] = None
     """A JSON-serialized list of special entities that appear in message text, which can be specified instead of *parse_mode*"""
-    disable_web_page_preview: Optional[bool] = UNSET_DISABLE_WEB_PAGE_PREVIEW
+    disable_web_page_preview: Optional[bool] = msgspec.field(
+        default_factory=lambda: UNSET_DISABLE_WEB_PAGE_PREVIEW
+    )
     """Disables link previews for links in this message"""
     reply_markup: Optional[InlineKeyboardMarkup] = None
     """A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_."""

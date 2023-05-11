@@ -2,18 +2,18 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, List, Optional
 
-from pydantic import Field
+import msgspec
 
 from .base import TelegramObject
 
 if TYPE_CHECKING:
     from ..methods import AnswerShippingQuery
-    from ..types import ShippingOption
-    from .shipping_address import ShippingAddress
-    from .user import User
+from ..types import ShippingOption
+from .shipping_address import ShippingAddress
+from .user import User
 
 
-class ShippingQuery(TelegramObject):
+class ShippingQuery(TelegramObject, kw_only=True):
     """
     This object contains information about an incoming shipping query.
 
@@ -22,7 +22,7 @@ class ShippingQuery(TelegramObject):
 
     id: str
     """Unique query identifier"""
-    from_user: User = Field(..., alias="from")
+    from_user: User = msgspec.field(name="from")
     """User who sent the query"""
     invoice_payload: str
     """Bot specified invoice payload"""

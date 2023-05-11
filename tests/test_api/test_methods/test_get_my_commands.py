@@ -7,7 +7,7 @@ from tests.mocked_bot import MockedBot
 
 class TestGetMyCommands:
     async def test_bot_method(self, bot: MockedBot):
-        prepare_result = bot.add_result_for(GetMyCommands, ok=True, result=None)
+        prepare_result = bot.add_result_for(GetMyCommands, ok=True, result=[])
 
         response: List[BotCommand] = await bot.get_my_commands()
         request = bot.get_request()

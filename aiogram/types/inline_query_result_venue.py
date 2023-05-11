@@ -2,8 +2,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Optional
 
-from pydantic import Field
-
 from ..enums import InlineQueryResultType
 from .inline_query_result import InlineQueryResult
 
@@ -12,7 +10,7 @@ if TYPE_CHECKING:
     from .input_message_content import InputMessageContent
 
 
-class InlineQueryResultVenue(InlineQueryResult):
+class InlineQueryResultVenue(InlineQueryResult, kw_only=True):
     """
     Represents a venue. By default, the venue will be sent by the user. Alternatively, you can use *input_message_content* to send a message with the specified content instead of the venue.
     **Note:** This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.
@@ -20,7 +18,7 @@ class InlineQueryResultVenue(InlineQueryResult):
     Source: https://core.telegram.org/bots/api#inlinequeryresultvenue
     """
 
-    type: str = Field(InlineQueryResultType.VENUE, const=True)
+    type: str = InlineQueryResultType.VENUE
     """Type of the result, must be *venue*"""
     id: str
     """Unique identifier for this result, 1-64 Bytes"""

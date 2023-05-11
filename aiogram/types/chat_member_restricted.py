@@ -3,23 +3,19 @@ from __future__ import annotations
 import datetime
 from typing import TYPE_CHECKING
 
-from pydantic import Field
-
 from ..enums import ChatMemberStatus
 from .chat_member import ChatMember
-
-if TYPE_CHECKING:
-    from .user import User
+from .user import User
 
 
-class ChatMemberRestricted(ChatMember):
+class ChatMemberRestricted(ChatMember, kw_only=True, tag=True):
     """
     Represents a `chat member <https://core.telegram.org/bots/api#chatmember>`_ that is under certain restrictions in the chat. Supergroups only.
 
     Source: https://core.telegram.org/bots/api#chatmemberrestricted
     """
 
-    status: str = Field(ChatMemberStatus.RESTRICTED, const=True)
+    status: str = ChatMemberStatus.RESTRICTED
     """The member's status in the chat, always 'restricted'"""
     user: User
     """Information about the user"""

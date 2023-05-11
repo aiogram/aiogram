@@ -172,11 +172,17 @@ class CallbackQueryFilter(Filter):
     async def __call__(self, query: CallbackQuery) -> Union[Literal[False], Dict[str, Any]]:
         if not isinstance(query, CallbackQuery) or not query.data:
             return False
-        try:
-            callback_data = self.callback_data.unpack(query.data)
-        except (TypeError, ValueError):
+        prefix, *parts = query.data.split(self.callback_data.__separator__)
+        if prefix != self.callback_data.__prefix__:
             return False
 
-        if self.rule is None or self.rule.resolve(callback_data):
-            return {"callback_data": callback_data}
+        if query._callback_data is None:
+            try:
+                query._callback_data = self.callback_data.unpack(query.data)
+            except (TypeError, ValueError):
+                return False
+
+        if query._callback_data is not None:
+            if self.rule is None or self.rule.resolve(query._callback_data):
+                return {"callback_data": query._callback_data}
         return False

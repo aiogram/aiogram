@@ -1,6 +1,8 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional, Union
+from typing import Optional, Union
+
+import msgspec
 
 from ..types import (
     ForceReply,
@@ -37,7 +39,7 @@ class SendContact(TelegramMethod[Message]):
     """Additional data about the contact in the form of a `vCard <https://en.wikipedia.org/wiki/VCard>`_, 0-2048 bytes"""
     disable_notification: Optional[bool] = None
     """Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound."""
-    protect_content: Optional[bool] = UNSET_PROTECT_CONTENT
+    protect_content: Optional[bool] = msgspec.field(default_factory=lambda: UNSET_PROTECT_CONTENT)
     """Protects the contents of the sent message from forwarding and saving"""
     reply_to_message_id: Optional[int] = None
     """If the message is a reply, ID of the original message"""

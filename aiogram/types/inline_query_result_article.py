@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Optional
 
-from pydantic import Field
+import msgspec
 
 from ..enums import InlineQueryResultType
 from .inline_query_result import InlineQueryResult
@@ -12,14 +12,14 @@ if TYPE_CHECKING:
     from .input_message_content import InputMessageContent
 
 
-class InlineQueryResultArticle(InlineQueryResult):
+class InlineQueryResultArticle(InlineQueryResult, kw_only=True):
     """
     Represents a link to an article or web page.
 
     Source: https://core.telegram.org/bots/api#inlinequeryresultarticle
     """
 
-    type: str = Field(InlineQueryResultType.ARTICLE, const=True)
+    type: str = msgspec.field(default_factory=lambda: InlineQueryResultType.ARTICLE)
     """Type of the result, must be *article*"""
     id: str
     """Unique identifier for this result, 1-64 Bytes"""

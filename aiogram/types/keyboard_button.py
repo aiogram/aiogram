@@ -3,12 +3,10 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Optional
 
 from .base import MutableTelegramObject
-
-if TYPE_CHECKING:
-    from .keyboard_button_poll_type import KeyboardButtonPollType
-    from .keyboard_button_request_chat import KeyboardButtonRequestChat
-    from .keyboard_button_request_user import KeyboardButtonRequestUser
-    from .web_app_info import WebAppInfo
+from .keyboard_button_poll_type import KeyboardButtonPollType
+from .keyboard_button_request_chat import KeyboardButtonRequestChat
+from .keyboard_button_request_user import KeyboardButtonRequestUser
+from .web_app_info import WebAppInfo
 
 
 class KeyboardButton(MutableTelegramObject):

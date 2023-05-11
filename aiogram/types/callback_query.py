@@ -1,18 +1,18 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any, ClassVar, Optional
 
-from pydantic import Field
+import msgspec
 
 from .base import TelegramObject
 
 if TYPE_CHECKING:
     from ..methods import AnswerCallbackQuery
-    from .message import Message
-    from .user import User
+from .message import Message
+from .user import User
 
 
-class CallbackQuery(TelegramObject):
+class CallbackQuery(TelegramObject, kw_only=True):
     """
     This object represents an incoming callback query from a callback button in an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_. If the button that originated the query was attached to a message sent by the bot, the field *message* will be present. If the button was attached to a message sent via the bot (in `inline mode <https://core.telegram.org/bots/api#inline-mode>`_), the field *inline_message_id* will be present. Exactly one of the fields *data* or *game_short_name* will be present.
 
@@ -23,7 +23,7 @@ class CallbackQuery(TelegramObject):
 
     id: str
     """Unique identifier for this query"""
-    from_user: User = Field(..., alias="from")
+    from_user: User = msgspec.field(name="from")
     """Sender"""
     chat_instance: str
     """Global identifier, uniquely corresponding to the chat to which the message with the callback button was sent. Useful for high scores in :class:`aiogram.methods.games.Games`."""
@@ -35,6 +35,8 @@ class CallbackQuery(TelegramObject):
     """*Optional*. Data associated with the callback button. Be aware that the message originated the query can contain no callback buttons with this data."""
     game_short_name: Optional[str] = None
     """*Optional*. Short name of a `Game <https://core.telegram.org/bots/api#games>`_ to be returned, serves as the unique identifier for the game"""
+
+    _callback_data = None
 
     def answer(
         self,

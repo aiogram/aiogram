@@ -3,9 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, List, Optional
 
 from .base import TelegramObject
-
-if TYPE_CHECKING:
-    from .passport_file import PassportFile
+from .passport_file import PassportFile
 
 
 class EncryptedPassportElement(TelegramObject):

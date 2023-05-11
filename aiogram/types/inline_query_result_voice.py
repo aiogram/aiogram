@@ -2,8 +2,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, List, Optional
 
-from pydantic import Field
-
 from ..enums import InlineQueryResultType
 from .base import UNSET_PARSE_MODE
 from .inline_query_result import InlineQueryResult
@@ -14,7 +12,7 @@ if TYPE_CHECKING:
     from .message_entity import MessageEntity
 
 
-class InlineQueryResultVoice(InlineQueryResult):
+class InlineQueryResultVoice(InlineQueryResult, kw_only=True):
     """
     Represents a link to a voice recording in an .OGG container encoded with OPUS. By default, this voice recording will be sent by the user. Alternatively, you can use *input_message_content* to send a message with the specified content instead of the the voice message.
     **Note:** This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.
@@ -22,7 +20,7 @@ class InlineQueryResultVoice(InlineQueryResult):
     Source: https://core.telegram.org/bots/api#inlinequeryresultvoice
     """
 
-    type: str = Field(InlineQueryResultType.VOICE, const=True)
+    type: str = InlineQueryResultType.VOICE
     """Type of the result, must be *voice*"""
     id: str
     """Unique identifier for this result, 1-64 bytes"""

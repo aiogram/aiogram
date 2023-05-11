@@ -3,9 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Optional
 
 from .base import TelegramObject
-
-if TYPE_CHECKING:
-    from .order_info import OrderInfo
+from .order_info import OrderInfo
 
 
 class SuccessfulPayment(TelegramObject):

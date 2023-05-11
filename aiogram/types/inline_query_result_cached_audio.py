@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, List, Optional
 
-from pydantic import Field
+import msgspec
 
 from ..enums import InlineQueryResultType
 from .base import UNSET_PARSE_MODE
@@ -14,7 +14,7 @@ if TYPE_CHECKING:
     from .message_entity import MessageEntity
 
 
-class InlineQueryResultCachedAudio(InlineQueryResult):
+class InlineQueryResultCachedAudio(InlineQueryResult, kw_only=True):
     """
     Represents a link to an MP3 audio file stored on the Telegram servers. By default, this audio file will be sent by the user. Alternatively, you can use *input_message_content* to send a message with the specified content instead of the audio.
     **Note:** This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.
@@ -22,7 +22,7 @@ class InlineQueryResultCachedAudio(InlineQueryResult):
     Source: https://core.telegram.org/bots/api#inlinequeryresultcachedaudio
     """
 
-    type: str = Field(InlineQueryResultType.AUDIO, const=True)
+    type: str = msgspec.field(default_factory=lambda: InlineQueryResultType.AUDIO)
     """Type of the result, must be *audio*"""
     id: str
     """Unique identifier for this result, 1-64 bytes"""

@@ -3,9 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Optional
 
 from .base import TelegramObject
-
-if TYPE_CHECKING:
-    from .web_app_info import WebAppInfo
+from .web_app_info import WebAppInfo
 
 
 class InlineQueryResultsButton(TelegramObject):

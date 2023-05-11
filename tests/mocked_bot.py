@@ -1,6 +1,8 @@
 from collections import deque
 from typing import TYPE_CHECKING, AsyncGenerator, Deque, Optional, Type
 
+import msgspec
+
 from aiogram import Bot
 from aiogram.client.session.base import BaseSession
 from aiogram.methods import TelegramMethod
@@ -35,7 +37,7 @@ class MockedSession(BaseSession):
         self.requests.append(method)
         response: Response[TelegramType] = self.responses.pop()
         self.check_response(
-            method=method, status_code=response.error_code, content=response.json()
+            method=method, status_code=response.error_code, content=msgspec.to_builtins(response)
         )
         return response.result  # type: ignore
 

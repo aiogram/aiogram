@@ -2,8 +2,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, List, Optional
 
-from pydantic import Field
-
 from ..enums import InlineQueryResultType
 from .base import UNSET_PARSE_MODE
 from .inline_query_result import InlineQueryResult
@@ -14,14 +12,14 @@ if TYPE_CHECKING:
     from .message_entity import MessageEntity
 
 
-class InlineQueryResultMpeg4Gif(InlineQueryResult):
+class InlineQueryResultMpeg4Gif(InlineQueryResult, kw_only=True):
     """
     Represents a link to a video animation (H.264/MPEG-4 AVC video without sound). By default, this animated MPEG-4 file will be sent by the user with optional caption. Alternatively, you can use *input_message_content* to send a message with the specified content instead of the animation.
 
     Source: https://core.telegram.org/bots/api#inlinequeryresultmpeg4gif
     """
 
-    type: str = Field(InlineQueryResultType.MPEG4_GIF, const=True)
+    type: str = InlineQueryResultType.MPEG4_GIF
     """Type of the result, must be *mpeg4_gif*"""
     id: str
     """Unique identifier for this result, 1-64 bytes"""

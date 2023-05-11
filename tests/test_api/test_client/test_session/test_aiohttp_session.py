@@ -104,7 +104,7 @@ class TestAiohttpSession:
             mocked_close.assert_called_once()
 
     def test_build_form_data_with_data_only(self, bot: MockedBot):
-        class TestMethod(TelegramMethod[bool]):
+        class TestMethod(TelegramMethod[bool], kw_only=True):
             __api_method__ = "test"
             __returning__ = bool
 

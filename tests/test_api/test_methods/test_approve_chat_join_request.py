@@ -4,7 +4,7 @@ from tests.mocked_bot import MockedBot
 
 class TestApproveChatJoinRequest:
     async def test_bot_method(self, bot: MockedBot):
-        prepare_result = bot.add_result_for(ApproveChatJoinRequest, ok=True, result=None)
+        prepare_result = bot.add_result_for(ApproveChatJoinRequest, ok=True, result=True)
 
         response: bool = await bot.approve_chat_join_request(
             chat_id=-42,

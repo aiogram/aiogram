@@ -2,23 +2,19 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Optional
 
-from pydantic import Field
-
 from ..enums import ChatMemberStatus
 from .chat_member import ChatMember
-
-if TYPE_CHECKING:
-    from .user import User
+from .user import User
 
 
-class ChatMemberOwner(ChatMember):
+class ChatMemberOwner(ChatMember, kw_only=True, tag=True):
     """
     Represents a `chat member <https://core.telegram.org/bots/api#chatmember>`_ that owns the chat and has all administrator privileges.
 
     Source: https://core.telegram.org/bots/api#chatmemberowner
     """
 
-    status: str = Field(ChatMemberStatus.CREATOR, const=True)
+    status: str = ChatMemberStatus.CREATOR
     """The member's status in the chat, always 'creator'"""
     user: User
     """Information about the user"""

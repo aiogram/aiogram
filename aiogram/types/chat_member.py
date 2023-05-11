@@ -4,9 +4,7 @@ import datetime
 from typing import TYPE_CHECKING, Optional
 
 from .base import TelegramObject
-
-if TYPE_CHECKING:
-    from .user import User
+from .user import User
 
 
 class ChatMember(TelegramObject):

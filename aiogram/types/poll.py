@@ -4,10 +4,8 @@ import datetime
 from typing import TYPE_CHECKING, List, Optional
 
 from .base import TelegramObject
-
-if TYPE_CHECKING:
-    from .message_entity import MessageEntity
-    from .poll_option import PollOption
+from .message_entity import MessageEntity
+from .poll_option import PollOption
 
 
 class Poll(TelegramObject):

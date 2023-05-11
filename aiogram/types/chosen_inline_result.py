@@ -2,16 +2,14 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Optional
 
-from pydantic import Field
+import msgspec
 
 from .base import TelegramObject
-
-if TYPE_CHECKING:
-    from .location import Location
-    from .user import User
+from .location import Location
+from .user import User
 
 
-class ChosenInlineResult(TelegramObject):
+class ChosenInlineResult(TelegramObject, kw_only=True):
     """
     Represents a `result <https://core.telegram.org/bots/api#inlinequeryresult>`_ of an inline query that was chosen by the user and sent to their chat partner.
     **Note:** It is necessary to enable `inline feedback <https://core.telegram.org/bots/inline#collecting-feedback>`_ via `@BotFather <https://t.me/botfather>`_ in order to receive these objects in updates.
@@ -21,7 +19,7 @@ class ChosenInlineResult(TelegramObject):
 
     result_id: str
     """The unique identifier for the result that was chosen"""
-    from_user: User = Field(..., alias="from")
+    from_user: User = msgspec.field(name="from")
     """The user that chose the result"""
     query: str
     """The query that was used to obtain the result"""

@@ -4,21 +4,19 @@ from typing import TYPE_CHECKING, Optional, cast
 
 from ..utils.mypy_hacks import lru_cache
 from .base import TelegramObject
-
-if TYPE_CHECKING:
-    from .callback_query import CallbackQuery
-    from .chat_join_request import ChatJoinRequest
-    from .chat_member_updated import ChatMemberUpdated
-    from .chosen_inline_result import ChosenInlineResult
-    from .inline_query import InlineQuery
-    from .message import Message
-    from .poll import Poll
-    from .poll_answer import PollAnswer
-    from .pre_checkout_query import PreCheckoutQuery
-    from .shipping_query import ShippingQuery
+from .callback_query import CallbackQuery
+from .chat_join_request import ChatJoinRequest
+from .chat_member_updated import ChatMemberUpdated
+from .chosen_inline_result import ChosenInlineResult
+from .inline_query import InlineQuery
+from .message import Message
+from .poll import Poll
+from .poll_answer import PollAnswer
+from .pre_checkout_query import PreCheckoutQuery
+from .shipping_query import ShippingQuery
 
 
-class Update(TelegramObject):
+class Update(TelegramObject, weakref=True):
     """
     This `object <https://core.telegram.org/bots/api#available-types>`_ represents an incoming update.
 

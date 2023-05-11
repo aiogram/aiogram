@@ -6,9 +6,9 @@ from .base import TelegramObject
 
 if TYPE_CHECKING:
     from ..methods import DeleteStickerFromSet, SetStickerPositionInSet
-    from .file import File
-    from .mask_position import MaskPosition
-    from .photo_size import PhotoSize
+from .file import File
+from .mask_position import MaskPosition
+from .photo_size import PhotoSize
 
 
 class Sticker(TelegramObject):

@@ -1,15 +1,16 @@
 import hashlib
 import hmac
-import json
 from datetime import datetime
 from operator import itemgetter
-from typing import Any, Callable, Optional
+from typing import Any, Callable, Optional, Union
 from urllib.parse import parse_qsl
+
+import msgspec
 
 from aiogram.types import TelegramObject
 
 
-class WebAppUser(TelegramObject):
+class WebAppUser(TelegramObject, kw_only=True):
     """
     This object contains the data of the Web App user.
 
@@ -36,7 +37,7 @@ class WebAppUser(TelegramObject):
     Only returned for Web Apps launched from the attachment menu."""
 
 
-class WebAppInitData(TelegramObject):
+class WebAppInitData(TelegramObject, kw_only=True):
     """
     This object contains data that is transferred to the Web App when it is opened.
     It is empty if the Web App was launched from a keyboard button.
@@ -97,7 +98,7 @@ def check_webapp_signature(token: str, init_data: str) -> bool:
 def parse_webapp_init_data(
     init_data: str,
     *,
-    loads: Callable[..., Any] = json.loads,
+    loads: Callable[..., Any] = None,
 ) -> WebAppInitData:
     """
     Parse WebApp init data and return it as WebAppInitData object
@@ -114,16 +115,18 @@ def parse_webapp_init_data(
         if (value.startswith("[") and value.endswith("]")) or (
             value.startswith("{") and value.endswith("}")
         ):
-            value = loads(value)
+            value = msgspec.json.decode(value)
+        if key == "auth_date":
+            value = datetime.utcfromtimestamp(int(value))
         result[key] = value
-    return WebAppInitData(**result)
+    return msgspec.from_builtins(result, type=WebAppInitData)
 
 
 def safe_parse_webapp_init_data(
     token: str,
     init_data: str,
     *,
-    loads: Callable[..., Any] = json.loads,
+    loads: Callable[..., Any] = None,
 ) -> WebAppInitData:
     """
     Validate raw WebApp init data and return it as WebAppInitData object

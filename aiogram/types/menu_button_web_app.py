@@ -2,23 +2,21 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from pydantic import Field
+import msgspec
 
 from ..enums import MenuButtonType
 from .menu_button import MenuButton
-
-if TYPE_CHECKING:
-    from .web_app_info import WebAppInfo
+from .web_app_info import WebAppInfo
 
 
-class MenuButtonWebApp(MenuButton):
+class MenuButtonWebApp(MenuButton, kw_only=True):
     """
     Represents a menu button, which launches a `Web App <https://core.telegram.org/bots/webapps>`_.
 
     Source: https://core.telegram.org/bots/api#menubuttonwebapp
     """
 
-    type: str = Field(MenuButtonType.WEB_APP, const=True)
+    type: str = msgspec.field(default_factory=lambda: MenuButtonType.WEB_APP)
     """Type of the button, must be *web_app*"""
     text: str
     """Text on the button"""

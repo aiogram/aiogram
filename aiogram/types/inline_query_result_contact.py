@@ -2,8 +2,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Optional
 
-from pydantic import Field
-
 from ..enums import InlineQueryResultType
 from .inline_query_result import InlineQueryResult
 
@@ -12,7 +10,7 @@ if TYPE_CHECKING:
     from .input_message_content import InputMessageContent
 
 
-class InlineQueryResultContact(InlineQueryResult):
+class InlineQueryResultContact(InlineQueryResult, kw_only=True):
     """
     Represents a contact with a phone number. By default, this contact will be sent by the user. Alternatively, you can use *input_message_content* to send a message with the specified content instead of the contact.
     **Note:** This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.
@@ -20,7 +18,7 @@ class InlineQueryResultContact(InlineQueryResult):
     Source: https://core.telegram.org/bots/api#inlinequeryresultcontact
     """
 
-    type: str = Field(InlineQueryResultType.CONTACT, const=True)
+    type: str = InlineQueryResultType.CONTACT
     """Type of the result, must be *contact*"""
     id: str
     """Unique identifier for this result, 1-64 Bytes"""

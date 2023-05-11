@@ -3,7 +3,7 @@ from __future__ import annotations
 import datetime
 from typing import TYPE_CHECKING, Any, List, Optional, Union
 
-from pydantic import Field
+import msgspec
 
 from aiogram.utils.text_decorations import (
     TextDecoration,
@@ -50,56 +50,57 @@ if TYPE_CHECKING:
         StopMessageLiveLocation,
         UnpinChatMessage,
     )
-    from .animation import Animation
-    from .audio import Audio
-    from .chat import Chat
-    from .chat_shared import ChatShared
-    from .contact import Contact
-    from .dice import Dice
-    from .document import Document
-    from .force_reply import ForceReply
-    from .forum_topic_closed import ForumTopicClosed
-    from .forum_topic_created import ForumTopicCreated
-    from .forum_topic_edited import ForumTopicEdited
-    from .forum_topic_reopened import ForumTopicReopened
-    from .game import Game
-    from .general_forum_topic_hidden import GeneralForumTopicHidden
-    from .general_forum_topic_unhidden import GeneralForumTopicUnhidden
-    from .inline_keyboard_markup import InlineKeyboardMarkup
-    from .input_file import InputFile
-    from .input_media import InputMedia
-    from .input_media_audio import InputMediaAudio
-    from .input_media_document import InputMediaDocument
-    from .input_media_photo import InputMediaPhoto
-    from .input_media_video import InputMediaVideo
-    from .invoice import Invoice
-    from .labeled_price import LabeledPrice
-    from .location import Location
-    from .message_auto_delete_timer_changed import MessageAutoDeleteTimerChanged
-    from .message_entity import MessageEntity
-    from .passport_data import PassportData
-    from .photo_size import PhotoSize
-    from .poll import Poll
-    from .proximity_alert_triggered import ProximityAlertTriggered
-    from .reply_keyboard_markup import ReplyKeyboardMarkup
-    from .reply_keyboard_remove import ReplyKeyboardRemove
-    from .sticker import Sticker
-    from .successful_payment import SuccessfulPayment
-    from .user import User
-    from .user_shared import UserShared
-    from .venue import Venue
-    from .video import Video
-    from .video_chat_ended import VideoChatEnded
-    from .video_chat_participants_invited import VideoChatParticipantsInvited
-    from .video_chat_scheduled import VideoChatScheduled
-    from .video_chat_started import VideoChatStarted
-    from .video_note import VideoNote
-    from .voice import Voice
-    from .web_app_data import WebAppData
-    from .write_access_allowed import WriteAccessAllowed
+
+from .animation import Animation
+from .audio import Audio
+from .chat import Chat
+from .chat_shared import ChatShared
+from .contact import Contact
+from .dice import Dice
+from .document import Document
+from .force_reply import ForceReply
+from .forum_topic_closed import ForumTopicClosed
+from .forum_topic_created import ForumTopicCreated
+from .forum_topic_edited import ForumTopicEdited
+from .forum_topic_reopened import ForumTopicReopened
+from .game import Game
+from .general_forum_topic_hidden import GeneralForumTopicHidden
+from .general_forum_topic_unhidden import GeneralForumTopicUnhidden
+from .inline_keyboard_markup import InlineKeyboardMarkup
+from .input_file import InputFile
+from .input_media import InputMedia
+from .input_media_audio import InputMediaAudio
+from .input_media_document import InputMediaDocument
+from .input_media_photo import InputMediaPhoto
+from .input_media_video import InputMediaVideo
+from .invoice import Invoice
+from .labeled_price import LabeledPrice
+from .location import Location
+from .message_auto_delete_timer_changed import MessageAutoDeleteTimerChanged
+from .message_entity import MessageEntity
+from .passport_data import PassportData
+from .photo_size import PhotoSize
+from .poll import Poll
+from .proximity_alert_triggered import ProximityAlertTriggered
+from .reply_keyboard_markup import ReplyKeyboardMarkup
+from .reply_keyboard_remove import ReplyKeyboardRemove
+from .sticker import Sticker
+from .successful_payment import SuccessfulPayment
+from .user import User
+from .user_shared import UserShared
+from .venue import Venue
+from .video import Video
+from .video_chat_ended import VideoChatEnded
+from .video_chat_participants_invited import VideoChatParticipantsInvited
+from .video_chat_scheduled import VideoChatScheduled
+from .video_chat_started import VideoChatStarted
+from .video_note import VideoNote
+from .voice import Voice
+from .web_app_data import WebAppData
+from .write_access_allowed import WriteAccessAllowed
 
 
-class Message(TelegramObject):
+class Message(TelegramObject, kw_only=True):
     """
     This object represents a message.
 
@@ -108,13 +109,13 @@ class Message(TelegramObject):
 
     message_id: int
     """Unique message identifier inside this chat"""
-    date: datetime.datetime
+    date: datetime.datetime | int
     """Date the message was sent in Unix time"""
     chat: Chat
     """Conversation the message belongs to"""
     message_thread_id: Optional[int] = None
     """*Optional*. Unique identifier of a message thread to which the message belongs; for supergroups only"""
-    from_user: Optional[User] = Field(None, alias="from")
+    from_user: Optional[User] = msgspec.field(name="from", default=None)
     """*Optional*. Sender of the message; empty for messages sent to channels. For backward compatibility, the field contains a fake sender user in non-channel chats, if the message was sent on behalf of a chat."""
     sender_chat: Optional[Chat] = None
     """*Optional*. Sender of the message, sent on behalf of a chat. For example, the channel itself for channel posts, the supergroup itself for messages from anonymous group administrators, the linked channel for messages automatically forwarded to the discussion group. For backward compatibility, the field *from* contains a fake sender user in non-channel chats, if the message was sent on behalf of a chat."""

@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from typing import Any, Dict
 from unittest.mock import AsyncMock, patch
 
+import msgspec.json
 import pytest
 from aiohttp import MultipartReader, web
 from aiohttp.test_utils import TestClient
@@ -123,12 +124,9 @@ class TestSimpleRequestHandler:
 
         resp = await self.make_reqest(client=client)
         assert resp.status == 200
-        assert resp.content_type == "multipart/form-data"
-        result = {}
-        reader = MultipartReader.from_response(resp)
-        while part := await reader.next():
-            value = await part.read()
-            result[part.name] = value.decode()
+        assert resp.content_type == "application/json"
+        result = msgspec.json.decode(await resp.read())
+        print("RESULT:", result)
         assert result["method"] == "sendMessage"
         assert result["text"] == "PASS"
 
@@ -150,12 +148,8 @@ class TestSimpleRequestHandler:
 
         resp = await self.make_reqest(client=client, text="spam")
         assert resp.status == 200
-        assert resp.content_type == "multipart/form-data"
-        result = {}
-        reader = MultipartReader.from_response(resp)
-        while part := await reader.next():
-            value = await part.read()
-            result[part.name] = value.decode()
+        assert resp.content_type == "application/json"
+        result = msgspec.json.decode(await resp.read())
         assert not result
 
     async def test_reply_into_webhook_background(self, bot: MockedBot, aiohttp_client):

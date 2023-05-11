@@ -54,5 +54,5 @@ class TestUser:
     def test_get_profile_photos(self):
         user = User(id=42, is_bot=False, first_name="Test", last_name="User")
 
-        method = user.get_profile_photos(description="test")
+        method = user.get_profile_photos(offset=0, limit=10)
         assert method.user_id == user.id

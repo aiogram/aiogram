@@ -3,6 +3,8 @@ from __future__ import annotations
 import datetime
 from typing import TYPE_CHECKING, List, Optional, Union
 
+import msgspec
+
 from ..types import (
     UNSET_PARSE_MODE,
     ForceReply,
@@ -44,7 +46,7 @@ class SendPoll(TelegramMethod[Message]):
     """0-based identifier of the correct answer option, required for polls in quiz mode"""
     explanation: Optional[str] = None
     """Text that is shown when a user chooses an incorrect answer or taps on the lamp icon in a quiz-style poll, 0-200 characters with at most 2 line feeds after entities parsing"""
-    explanation_parse_mode: Optional[str] = UNSET_PARSE_MODE
+    explanation_parse_mode: Optional[str] = msgspec.field(default_factory=lambda: UNSET_PARSE_MODE)
     """Mode for parsing entities in the explanation. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details."""
     explanation_entities: Optional[List[MessageEntity]] = None
     """A JSON-serialized list of special entities that appear in the poll explanation, which can be specified instead of *parse_mode*"""
@@ -56,7 +58,7 @@ class SendPoll(TelegramMethod[Message]):
     """Pass :code:`True` if the poll needs to be immediately closed. This can be useful for poll preview."""
     disable_notification: Optional[bool] = None
     """Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound."""
-    protect_content: Optional[bool] = UNSET_PROTECT_CONTENT
+    protect_content: Optional[bool] = msgspec.field(default_factory=lambda: UNSET_PROTECT_CONTENT)
     """Protects the contents of the sent message from forwarding and saving"""
     reply_to_message_id: Optional[int] = None
     """If the message is a reply, ID of the original message"""

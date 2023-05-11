@@ -2,23 +2,19 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Optional
 
-from pydantic import Field
-
 from ..enums import ChatMemberStatus
 from .chat_member import ChatMember
-
-if TYPE_CHECKING:
-    from .user import User
+from .user import User
 
 
-class ChatMemberAdministrator(ChatMember):
+class ChatMemberAdministrator(ChatMember, kw_only=True, tag=True):
     """
     Represents a `chat member <https://core.telegram.org/bots/api#chatmember>`_ that has some additional privileges.
 
     Source: https://core.telegram.org/bots/api#chatmemberadministrator
     """
 
-    status: str = Field(ChatMemberStatus.ADMINISTRATOR, const=True)
+    status: str = ChatMemberStatus.ADMINISTRATOR
     """The member's status in the chat, always 'administrator'"""
     user: User
     """Information about the user"""

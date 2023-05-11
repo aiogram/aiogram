@@ -3,12 +3,10 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Optional
 
 from .base import MutableTelegramObject
-
-if TYPE_CHECKING:
-    from .callback_game import CallbackGame
-    from .login_url import LoginUrl
-    from .switch_inline_query_chosen_chat import SwitchInlineQueryChosenChat
-    from .web_app_info import WebAppInfo
+from .callback_game import CallbackGame
+from .login_url import LoginUrl
+from .switch_inline_query_chosen_chat import SwitchInlineQueryChosenChat
+from .web_app_info import WebAppInfo
 
 
 class InlineKeyboardButton(MutableTelegramObject):

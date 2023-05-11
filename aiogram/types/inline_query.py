@@ -2,19 +2,19 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, List, Optional
 
-from pydantic import Field
+import msgspec
 
 from .base import TelegramObject
 
 if TYPE_CHECKING:
     from ..methods import AnswerInlineQuery
-    from .inline_query_result import InlineQueryResult
-    from .inline_query_results_button import InlineQueryResultsButton
-    from .location import Location
-    from .user import User
+from .inline_query_result import InlineQueryResult
+from .inline_query_results_button import InlineQueryResultsButton
+from .location import Location
+from .user import User
 
 
-class InlineQuery(TelegramObject):
+class InlineQuery(TelegramObject, kw_only=True):
     """
     This object represents an incoming inline query. When the user sends an empty query, your bot could return some default or trending results.
 
@@ -23,7 +23,7 @@ class InlineQuery(TelegramObject):
 
     id: str
     """Unique identifier for this query"""
-    from_user: User = Field(..., alias="from")
+    from_user: User = msgspec.field(name="from")
     """Sender"""
     query: str
     """Text of the query (up to 256 characters)"""

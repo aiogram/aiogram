@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, List, Optional, Union
 
+import msgspec
+
 from ..types import InlineKeyboardMarkup, LabeledPrice, Message
 from ..types.base import UNSET_PROTECT_CONTENT
 from .base import TelegramMethod
@@ -65,7 +67,7 @@ class SendInvoice(TelegramMethod[Message]):
     """Pass :code:`True` if the final price depends on the shipping method"""
     disable_notification: Optional[bool] = None
     """Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound."""
-    protect_content: Optional[bool] = UNSET_PROTECT_CONTENT
+    protect_content: Optional[bool] = msgspec.field(default_factory=lambda: UNSET_PROTECT_CONTENT)
     """Protects the contents of the sent message from forwarding and saving"""
     reply_to_message_id: Optional[int] = None
     """If the message is a reply, ID of the original message"""

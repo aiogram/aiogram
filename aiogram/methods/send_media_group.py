@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, List, Optional, Union
 
+import msgspec
+
 from ..types import (
     InputMediaAudio,
     InputMediaDocument,
@@ -31,7 +33,7 @@ class SendMediaGroup(TelegramMethod[List[Message]]):
     """Unique identifier for the target message thread (topic) of the forum; for forum supergroups only"""
     disable_notification: Optional[bool] = None
     """Sends messages `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound."""
-    protect_content: Optional[bool] = UNSET_PROTECT_CONTENT
+    protect_content: Optional[bool] = msgspec.field(default_factory=lambda: UNSET_PROTECT_CONTENT)
     """Protects the contents of the sent messages from forwarding and saving"""
     reply_to_message_id: Optional[int] = None
     """If the messages are a reply, ID of the original message"""

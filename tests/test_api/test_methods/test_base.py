@@ -13,11 +13,18 @@ class TestTelegramMethodRemoveUnset:
         [
             [{}, set()],
             [{"foo": "bar"}, {"foo"}],
-            [{"foo": "bar", "baz": sentinel.DEFAULT}, {"foo"}],
+            [
+                {
+                    "foo": "bar",
+                },
+                {"foo"},
+            ],
         ],
     )
     def test_remove_unset(self, values, names):
-        validated = TelegramMethod.remove_unset(values)
+        import msgspec
+
+        validated = msgspec.to_builtins(values)
         assert set(validated.keys()) == names
 
 

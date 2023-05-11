@@ -178,7 +178,7 @@ class TestChat:
     def test_delete_photo(self):
         chat = Chat(id=-42, type="supergroup")
 
-        method = chat.delete_photo(description="test")
+        method = chat.delete_photo()
         assert method.chat_id == chat.id
 
     def test_set_photo(self):

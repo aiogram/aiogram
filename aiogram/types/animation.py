@@ -3,9 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Optional
 
 from .base import TelegramObject
-
-if TYPE_CHECKING:
-    from .photo_size import PhotoSize
+from .photo_size import PhotoSize
 
 
 class Animation(TelegramObject):

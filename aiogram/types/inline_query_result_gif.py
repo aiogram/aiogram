@@ -2,8 +2,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, List, Optional
 
-from pydantic import Field
-
 from ..enums import InlineQueryResultType
 from .base import UNSET_PARSE_MODE
 from .inline_query_result import InlineQueryResult
@@ -14,14 +12,14 @@ if TYPE_CHECKING:
     from .message_entity import MessageEntity
 
 
-class InlineQueryResultGif(InlineQueryResult):
+class InlineQueryResultGif(InlineQueryResult, kw_only=True):
     """
     Represents a link to an animated GIF file. By default, this animated GIF file will be sent by the user with optional caption. Alternatively, you can use *input_message_content* to send a message with the specified content instead of the animation.
 
     Source: https://core.telegram.org/bots/api#inlinequeryresultgif
     """
 
-    type: str = Field(InlineQueryResultType.GIF, const=True)
+    type: str = InlineQueryResultType.GIF
     """Type of the result, must be *gif*"""
     id: str
     """Unique identifier for this result, 1-64 bytes"""

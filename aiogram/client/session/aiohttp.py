@@ -17,13 +17,15 @@ from typing import (
 )
 
 import certifi
+import msgspec
 from aiohttp import BasicAuth, ClientError, ClientSession, FormData, TCPConnector
 
 from aiogram.methods import TelegramMethod
 
 from ...exceptions import TelegramNetworkError
 from ...methods.base import TelegramType
-from ...types import InputFile
+from ...types import UNSET_PARSE_MODE, InputFile
+from ...types.base import UNSET_DISABLE_WEB_PAGE_PREVIEW, UNSET_PROTECT_CONTENT
 from .base import BaseSession
 
 if TYPE_CHECKING:
@@ -121,7 +123,10 @@ class AiohttpSession(BaseSession):
             await self.close()
 
         if self._session is None or self._session.closed:
-            self._session = ClientSession(connector=self._connector_type(**self._connector_init))
+            self._session = ClientSession(
+                connector=self._connector_type(**self._connector_init),
+                json_serialize=self.json_dumps,
+            )
             self._should_reset_connector = False
 
         return self._session
@@ -133,10 +138,12 @@ class AiohttpSession(BaseSession):
     def build_form_data(self, bot: Bot, method: TelegramMethod[TelegramType]) -> FormData:
         form = FormData(quote_fields=False)
         files: Dict[str, InputFile] = {}
-        for key, value in method.dict().items():
-            value = self.prepare_value(value, bot=bot, files=files)
+        for key in method.__struct_fields__:
+            value = self.prepare_value(getattr(method, key), bot=bot, files=files)
             if not value:
                 continue
+            if isinstance(value, bytes):
+                value = value.decode("utf-8")
             form.add_field(key, value)
         for key, value in files.items():
             form.add_field(key, value, filename=value.filename or key)
@@ -148,13 +155,30 @@ class AiohttpSession(BaseSession):
         session = await self.create_session()
 
         url = self.api.api_url(token=bot.token, method=method.__api_method__)
-        form = self.build_form_data(bot=bot, method=method)
 
+        def enc_hook(obj):
+            if obj is UNSET_PARSE_MODE:
+                return bot.parse_mode
+            if obj is UNSET_DISABLE_WEB_PAGE_PREVIEW:
+                return bot.disable_web_page_preview
+            if obj is UNSET_PROTECT_CONTENT:
+                return bot.protect_content
+            raise ValueError(f"Unknown object: {obj}")
+
+        headers = {}
+        try:
+            form = msgspec.json.encode(method, enc_hook=enc_hook)
+            headers = {"content-type": "application/json"}
+        except ValueError:
+            form = self.build_form_data(bot=bot, method=method)
         try:
             async with session.post(
-                url, data=form, timeout=self.timeout if timeout is None else timeout
+                url,
+                data=form,
+                headers=headers,
+                timeout=self.timeout if timeout is None else timeout,
             ) as resp:
-                raw_result = await resp.text()
+                raw_result = await resp.read()
         except asyncio.TimeoutError:
             raise TelegramNetworkError(method=method, message="Request timeout error")
         except ClientError as e:

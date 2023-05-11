@@ -3,6 +3,7 @@ import json
 from typing import Any, AsyncContextManager, AsyncGenerator, Optional
 from unittest.mock import AsyncMock, patch
 
+import msgspec
 import pytest
 from pytz import utc
 
@@ -61,8 +62,8 @@ class TestBaseSession:
     def test_default_props(self):
         session = CustomSession()
         assert session.api == PRODUCTION
-        assert session.json_loads == json.loads
-        assert session.json_dumps == json.dumps
+        assert session.json_loads == msgspec.json.decode
+        assert session.json_dumps == msgspec.json.encode
 
         def custom_loads(*_):
             return json.loads
@@ -91,14 +92,14 @@ class TestBaseSession:
             [None, None],
             ["text", "text"],
             [ChatType.PRIVATE, "private"],
-            [TopicIconColor.RED, "16478047"],
-            [42, "42"],
-            [True, "true"],
-            [["test"], '["test"]'],
-            [["test", ["test"]], '["test", ["test"]]'],
-            [[{"test": "pass", "spam": None}], '[{"test": "pass"}]'],
-            [{"test": "pass", "number": 42, "spam": None}, '{"test": "pass", "number": 42}'],
-            [{"foo": {"test": "pass", "spam": None}}, '{"foo": {"test": "pass"}}'],
+            [TopicIconColor.RED, b"16478047"],
+            [42, b"42"],
+            [True, b"true"],
+            [["test"], b'["test"]'],
+            [["test", ["test"]], b'["test",["test"]]'],
+            [[{"test": "pass", "spam": None}], b'[{"test":"pass"}]'],
+            [{"test": "pass", "number": 42, "spam": None}, b'{"test":"pass","number":42}'],
+            [{"foo": {"test": "pass", "spam": None}}, b'{"foo":{"test":"pass"}}'],
             [
                 datetime.datetime(
                     year=2017, month=5, day=17, hour=4, minute=11, second=42, tzinfo=utc
@@ -126,9 +127,9 @@ class TestBaseSession:
         )
         assert bot.session.prepare_value(UNSET_PARSE_MODE, bot=bot, files={}) == "HTML"
         assert (
-            bot.session.prepare_value(UNSET_DISABLE_WEB_PAGE_PREVIEW, bot=bot, files={}) == "true"
+            bot.session.prepare_value(UNSET_DISABLE_WEB_PAGE_PREVIEW, bot=bot, files={}) == b"true"
         )
-        assert bot.session.prepare_value(UNSET_PROTECT_CONTENT, bot=bot, files={}) == "true"
+        assert bot.session.prepare_value(UNSET_PROTECT_CONTENT, bot=bot, files={}) == b"true"
 
     def test_prepare_value_defaults_unset(self):
         bot = MockedBot()
@@ -188,7 +189,7 @@ class TestBaseSession:
         session = CustomSession()
         method = DeleteMessage(chat_id=42, message_id=42)
 
-        with pytest.raises(ClientDecodeError, match="JSONDecodeError"):
+        with pytest.raises(ClientDecodeError):
             session.check_response(
                 method=method,
                 status_code=200,
@@ -199,7 +200,7 @@ class TestBaseSession:
         session = CustomSession()
         method = DeleteMessage(chat_id=42, message_id=42)
 
-        with pytest.raises(ClientDecodeError, match="ValidationError"):
+        with pytest.raises(ClientDecodeError):
             session.check_response(
                 method=method,
                 status_code=200,

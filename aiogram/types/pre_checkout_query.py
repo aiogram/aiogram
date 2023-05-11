@@ -2,17 +2,17 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Optional
 
-from pydantic import Field
+import msgspec
 
 from .base import TelegramObject
 
 if TYPE_CHECKING:
     from ..methods import AnswerPreCheckoutQuery
-    from .order_info import OrderInfo
-    from .user import User
+from .order_info import OrderInfo
+from .user import User
 
 
-class PreCheckoutQuery(TelegramObject):
+class PreCheckoutQuery(TelegramObject, kw_only=True):
     """
     This object contains information about an incoming pre-checkout query.
 
@@ -21,7 +21,7 @@ class PreCheckoutQuery(TelegramObject):
 
     id: str
     """Unique query identifier"""
-    from_user: User = Field(..., alias="from")
+    from_user: User = msgspec.field(name="from")
     """User who sent the query"""
     currency: str
     """Three-letter ISO 4217 `currency <https://core.telegram.org/bots/payments#supported-currencies>`_ code"""

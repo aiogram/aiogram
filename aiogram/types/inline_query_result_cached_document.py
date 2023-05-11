@@ -2,8 +2,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, List, Optional
 
-from pydantic import Field
-
 from ..enums import InlineQueryResultType
 from .base import UNSET_PARSE_MODE
 from .inline_query_result import InlineQueryResult
@@ -14,7 +12,7 @@ if TYPE_CHECKING:
     from .message_entity import MessageEntity
 
 
-class InlineQueryResultCachedDocument(InlineQueryResult):
+class InlineQueryResultCachedDocument(InlineQueryResult, kw_only=True):
     """
     Represents a link to a file stored on the Telegram servers. By default, this file will be sent by the user with an optional caption. Alternatively, you can use *input_message_content* to send a message with the specified content instead of the file.
     **Note:** This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.
@@ -22,7 +20,7 @@ class InlineQueryResultCachedDocument(InlineQueryResult):
     Source: https://core.telegram.org/bots/api#inlinequeryresultcacheddocument
     """
 
-    type: str = Field(InlineQueryResultType.DOCUMENT, const=True)
+    type: str = InlineQueryResultType.DOCUMENT
     """Type of the result, must be *document*"""
     id: str
     """Unique identifier for this result, 1-64 bytes"""

@@ -4,6 +4,7 @@ from abc import ABC, abstractmethod
 from asyncio import Transport
 from typing import Any, Awaitable, Callable, Dict, Optional, Tuple, cast
 
+import msgspec
 from aiohttp import MultipartWriter, web
 from aiohttp.abc import Application
 from aiohttp.typedefs import Handler
@@ -14,6 +15,9 @@ from aiogram.methods import TelegramMethod
 from aiogram.methods.base import TelegramType
 from aiogram.types import InputFile
 from aiogram.webhook.security import IPFilter
+
+from ..types import UNSET_PARSE_MODE
+from ..types.base import UNSET_DISABLE_WEB_PAGE_PREVIEW, UNSET_PROTECT_CONTENT
 
 
 def setup_application(app: Application, dispatcher: Dispatcher, /, **kwargs: Any) -> None:
@@ -131,18 +135,14 @@ class BaseRequestHandler(ABC):
         """
         pass
 
-    async def _background_feed_update(self, bot: Bot, update: Dict[str, Any]) -> None:
+    async def _background_feed_update(self, bot: Bot, update: str) -> None:
         result = await self.dispatcher.feed_raw_update(bot=bot, update=update, **self.data)
         if isinstance(result, TelegramMethod):
             await self.dispatcher.silent_call_request(bot=bot, result=result)
 
     async def _handle_request_background(self, bot: Bot, request: web.Request) -> web.Response:
-        asyncio.create_task(
-            self._background_feed_update(
-                bot=bot, update=await request.json(loads=bot.session.json_loads)
-            )
-        )
-        return web.json_response({}, dumps=bot.session.json_dumps)
+        asyncio.create_task(self._background_feed_update(bot=bot, update=await request.text()))
+        return web.Response(body=b"{}", headers={"Content-Type": "application/json"})
 
     def _build_response_writer(
         self, bot: Bot, result: Optional[TelegramMethod[TelegramType]]
@@ -158,8 +158,9 @@ class BaseRequestHandler(ABC):
         payload.set_content_disposition("form-data", name="method")
 
         files: Dict[str, InputFile] = {}
-        for key, value in result.dict().items():
-            value = bot.session.prepare_value(value, bot=bot, files=files)
+
+        for key in result.__struct_fields__:
+            value = bot.session.prepare_value(getattr(result, key), bot=bot, files=files)
             if not value:
                 continue
             payload = writer.append(value)
@@ -178,10 +179,29 @@ class BaseRequestHandler(ABC):
     async def _handle_request(self, bot: Bot, request: web.Request) -> web.Response:
         result: Optional[TelegramMethod[Any]] = await self.dispatcher.feed_webhook_update(
             bot,
-            await request.json(loads=bot.session.json_loads),
+            await request.text(),
             **self.data,
         )
-        return web.Response(body=self._build_response_writer(bot=bot, result=result))
+
+        def enc_hook(obj):
+            if obj is UNSET_PARSE_MODE:
+                return bot.parse_mode
+            if obj is UNSET_DISABLE_WEB_PAGE_PREVIEW:
+                return bot.disable_web_page_preview
+            if obj is UNSET_PROTECT_CONTENT:
+                return bot.protect_content
+            raise ValueError(f"Unknown object: {obj}")
+
+        headers = {}
+        try:
+            if result is not None:
+                result.method = result.__api_method__
+            result: bytes = msgspec.json.encode(result, enc_hook=enc_hook)
+            headers = {"content-type": "application/json"}
+        except ValueError:
+            result: MultipartWriter = self._build_response_writer(bot=bot, result=result)
+
+        return web.Response(body=result, headers=headers)
 
     async def handle(self, request: web.Request) -> web.Response:
         bot = await self.resolve_bot(request)

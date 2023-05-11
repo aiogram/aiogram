@@ -2,8 +2,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, List, Optional, Union
 
-from pydantic import Field
-
 from ..enums import InputMediaType
 from .base import UNSET_PARSE_MODE
 from .input_media import InputMedia
@@ -13,14 +11,14 @@ if TYPE_CHECKING:
     from .message_entity import MessageEntity
 
 
-class InputMediaAudio(InputMedia):
+class InputMediaAudio(InputMedia, kw_only=True):
     """
     Represents an audio file to be treated as music to be sent.
 
     Source: https://core.telegram.org/bots/api#inputmediaaudio
     """
 
-    type: str = Field(InputMediaType.AUDIO, const=True)
+    type: str = InputMediaType.AUDIO
     """Type of the result, must be *audio*"""
     media: Union[str, InputFile]
     """File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass 'attach://<file_attach_name>' to upload a new one using multipart/form-data under <file_attach_name> name. :ref:`More information on Sending Files » <sending-files>`"""

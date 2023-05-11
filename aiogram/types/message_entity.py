@@ -4,9 +4,7 @@ from typing import TYPE_CHECKING, Optional
 
 from ..utils.text_decorations import add_surrogates, remove_surrogates
 from .base import MutableTelegramObject
-
-if TYPE_CHECKING:
-    from .user import User
+from .user import User
 
 
 class MessageEntity(MutableTelegramObject):

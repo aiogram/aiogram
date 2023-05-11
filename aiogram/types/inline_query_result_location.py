@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Optional
 
-from pydantic import Field
+import msgspec
 
 from ..enums import InlineQueryResultType
 from .inline_query_result import InlineQueryResult
@@ -12,7 +12,7 @@ if TYPE_CHECKING:
     from .input_message_content import InputMessageContent
 
 
-class InlineQueryResultLocation(InlineQueryResult):
+class InlineQueryResultLocation(InlineQueryResult, kw_only=True):
     """
     Represents a location on a map. By default, the location will be sent by the user. Alternatively, you can use *input_message_content* to send a message with the specified content instead of the location.
     **Note:** This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.
@@ -20,7 +20,7 @@ class InlineQueryResultLocation(InlineQueryResult):
     Source: https://core.telegram.org/bots/api#inlinequeryresultlocation
     """
 
-    type: str = Field(InlineQueryResultType.LOCATION, const=True)
+    type: str = msgspec.field(default_factory=lambda: InlineQueryResultType.LOCATION)
     """Type of the result, must be *location*"""
     id: str
     """Unique identifier for this result, 1-64 Bytes"""

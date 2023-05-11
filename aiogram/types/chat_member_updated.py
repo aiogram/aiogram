@@ -3,23 +3,21 @@ from __future__ import annotations
 import datetime
 from typing import TYPE_CHECKING, Optional, Union
 
-from pydantic import Field
+import msgspec
 
 from .base import TelegramObject
-
-if TYPE_CHECKING:
-    from .chat import Chat
-    from .chat_invite_link import ChatInviteLink
-    from .chat_member_administrator import ChatMemberAdministrator
-    from .chat_member_banned import ChatMemberBanned
-    from .chat_member_left import ChatMemberLeft
-    from .chat_member_member import ChatMemberMember
-    from .chat_member_owner import ChatMemberOwner
-    from .chat_member_restricted import ChatMemberRestricted
-    from .user import User
+from .chat import Chat
+from .chat_invite_link import ChatInviteLink
+from .chat_member_administrator import ChatMemberAdministrator
+from .chat_member_banned import ChatMemberBanned
+from .chat_member_left import ChatMemberLeft
+from .chat_member_member import ChatMemberMember
+from .chat_member_owner import ChatMemberOwner
+from .chat_member_restricted import ChatMemberRestricted
+from .user import User
 
 
-class ChatMemberUpdated(TelegramObject):
+class ChatMemberUpdated(TelegramObject, kw_only=True):
     """
     This object represents changes in the status of a chat member.
 
@@ -28,7 +26,7 @@ class ChatMemberUpdated(TelegramObject):
 
     chat: Chat
     """Chat the user belongs to"""
-    from_user: User = Field(..., alias="from")
+    from_user: User = msgspec.field(name="from")
     """Performer of the action, which resulted in the change"""
     date: datetime.datetime
     """Date the change was done in Unix time"""

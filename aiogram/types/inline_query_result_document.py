@@ -2,19 +2,17 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, List, Optional
 
-from pydantic import Field
+import msgspec
 
 from ..enums import InlineQueryResultType
 from .base import UNSET_PARSE_MODE
+from .inline_keyboard_markup import InlineKeyboardMarkup
 from .inline_query_result import InlineQueryResult
-
-if TYPE_CHECKING:
-    from .inline_keyboard_markup import InlineKeyboardMarkup
-    from .input_message_content import InputMessageContent
-    from .message_entity import MessageEntity
+from .input_message_content import InputMessageContent
+from .message_entity import MessageEntity
 
 
-class InlineQueryResultDocument(InlineQueryResult):
+class InlineQueryResultDocument(InlineQueryResult, kw_only=True):
     """
     Represents a link to a file. By default, this file will be sent by the user with an optional caption. Alternatively, you can use *input_message_content* to send a message with the specified content instead of the file. Currently, only **.PDF** and **.ZIP** files can be sent using this method.
     **Note:** This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.
@@ -22,7 +20,7 @@ class InlineQueryResultDocument(InlineQueryResult):
     Source: https://core.telegram.org/bots/api#inlinequeryresultdocument
     """
 
-    type: str = Field(InlineQueryResultType.DOCUMENT, const=True)
+    type: str = msgspec.field(default_factory=lambda: InlineQueryResultType.DOCUMENT)
     """Type of the result, must be *document*"""
     id: str
     """Unique identifier for this result, 1-64 bytes"""

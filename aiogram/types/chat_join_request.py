@@ -3,20 +3,19 @@ from __future__ import annotations
 import datetime
 from typing import TYPE_CHECKING, Any, Optional
 
-from pydantic import Field
+import msgspec
 
 from .base import TelegramObject
 
 if TYPE_CHECKING:
     from ..methods import ApproveChatJoinRequest, DeclineChatJoinRequest
 
-if TYPE_CHECKING:
-    from .chat import Chat
-    from .chat_invite_link import ChatInviteLink
-    from .user import User
+from .chat import Chat
+from .chat_invite_link import ChatInviteLink
+from .user import User
 
 
-class ChatJoinRequest(TelegramObject):
+class ChatJoinRequest(TelegramObject, kw_only=True):
     """
     Represents a join request sent to a chat.
 
@@ -25,7 +24,7 @@ class ChatJoinRequest(TelegramObject):
 
     chat: Chat
     """Chat to which the request was sent"""
-    from_user: User = Field(..., alias="from")
+    from_user: User = msgspec.field(name="from")
     """User that sent the join request"""
     user_chat_id: int
     """Identifier of a private chat with the user who sent the join request. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier. The bot can use this identifier for 24 hours to send messages until the join request is processed, assuming no other administrator contacted the user."""

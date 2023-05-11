@@ -3,23 +3,19 @@ from __future__ import annotations
 import datetime
 from typing import TYPE_CHECKING
 
-from pydantic import Field
-
 from ..enums import ChatMemberStatus
 from .chat_member import ChatMember
-
-if TYPE_CHECKING:
-    from .user import User
+from .user import User
 
 
-class ChatMemberBanned(ChatMember):
+class ChatMemberBanned(ChatMember, kw_only=True, tag=True):
     """
     Represents a `chat member <https://core.telegram.org/bots/api#chatmember>`_ that was banned in the chat and can't return to the chat or view chat messages.
 
     Source: https://core.telegram.org/bots/api#chatmemberbanned
     """
 
-    status: str = Field(ChatMemberStatus.KICKED, const=True)
+    status: str = ChatMemberStatus.KICKED
     """The member's status in the chat, always 'kicked'"""
     user: User
     """Information about the user"""

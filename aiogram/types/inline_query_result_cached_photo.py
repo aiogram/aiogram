@@ -2,8 +2,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, List, Optional
 
-from pydantic import Field
-
 from ..enums import InlineQueryResultType
 from .base import UNSET_PARSE_MODE
 from .inline_query_result import InlineQueryResult
@@ -14,14 +12,14 @@ if TYPE_CHECKING:
     from .message_entity import MessageEntity
 
 
-class InlineQueryResultCachedPhoto(InlineQueryResult):
+class InlineQueryResultCachedPhoto(InlineQueryResult, kw_only=True):
     """
     Represents a link to a photo stored on the Telegram servers. By default, this photo will be sent by the user with an optional caption. Alternatively, you can use *input_message_content* to send a message with the specified content instead of the photo.
 
     Source: https://core.telegram.org/bots/api#inlinequeryresultcachedphoto
     """
 
-    type: str = Field(InlineQueryResultType.PHOTO, const=True)
+    type: str = InlineQueryResultType.PHOTO
     """Type of the result, must be *photo*"""
     id: str
     """Unique identifier for this result, 1-64 bytes"""

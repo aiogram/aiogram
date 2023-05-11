@@ -3,10 +3,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, List, Optional
 
 from .base import TelegramObject
-
-if TYPE_CHECKING:
-    from .photo_size import PhotoSize
-    from .sticker import Sticker
+from .photo_size import PhotoSize
+from .sticker import Sticker
 
 
 class StickerSet(TelegramObject):

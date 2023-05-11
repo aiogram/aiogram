@@ -178,7 +178,19 @@ class TestDispatcher:
 
     async def test_silent_call_request(self, bot: MockedBot, caplog):
         dispatcher = Dispatcher()
-        bot.add_result_for(SendMessage, ok=False, error_code=400, description="Kaboom")
+        bot.add_result_for(
+            SendMessage,
+            ok=False,
+            error_code=400,
+            description="Kaboom",
+            result=Message(
+                message_id=42,
+                date=datetime.datetime.now(),
+                text="test",
+                chat=Chat(id=42, type="private"),
+                from_user=User(id=42, is_bot=False, first_name="Test"),
+            ),
+        )
         await dispatcher.silent_call_request(bot, SendMessage(chat_id=42, text="test"))
         log_records = [rec.message for rec in caplog.records]
         assert len(log_records) == 1
@@ -239,6 +251,7 @@ class TestDispatcher:
                     channel_post=Message(
                         message_id=42,
                         date=datetime.datetime.now(),
+                        from_user=User(id=42, is_bot=False, first_name="test"),
                         text="test",
                         chat=Chat(id=-42, type="private"),
                     ),
@@ -253,6 +266,7 @@ class TestDispatcher:
                     edited_channel_post=Message(
                         message_id=42,
                         date=datetime.datetime.now(),
+                        from_user=User(id=42, is_bot=False, first_name="test"),
                         text="test",
                         chat=Chat(id=-42, type="private"),
                     ),

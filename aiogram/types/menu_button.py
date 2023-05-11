@@ -3,12 +3,10 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Optional
 
 from .base import MutableTelegramObject
-
-if TYPE_CHECKING:
-    from .web_app_info import WebAppInfo
+from .web_app_info import WebAppInfo
 
 
-class MenuButton(MutableTelegramObject):
+class MenuButton(MutableTelegramObject, tag_field="op", tag=str.lower):
     """
     This object describes the bot's menu button in a private chat. It should be one of
 

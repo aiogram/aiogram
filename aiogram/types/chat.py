@@ -35,11 +35,13 @@ if TYPE_CHECKING:
         UnpinAllChatMessages,
         UnpinChatMessage,
     )
-    from .chat_location import ChatLocation
-    from .chat_permissions import ChatPermissions
-    from .chat_photo import ChatPhoto
-    from .input_file import InputFile
     from .message import Message
+
+from . import message
+from .chat_location import ChatLocation
+from .chat_permissions import ChatPermissions
+from .chat_photo import ChatPhoto
+from .input_file import InputFile
 
 
 class Chat(TelegramObject):
@@ -83,7 +85,7 @@ class Chat(TelegramObject):
     """*Optional*. Description, for groups, supergroups and channel chats. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
     invite_link: Optional[str] = None
     """*Optional*. Primary invite link, for groups, supergroups and channel chats. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
-    pinned_message: Optional[Message] = None
+    pinned_message: Optional[message.Message] = None
     """*Optional*. The most recent pinned message (by sending date). Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
     permissions: Optional[ChatPermissions] = None
     """*Optional*. Default chat member permissions, for groups and supergroups. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""

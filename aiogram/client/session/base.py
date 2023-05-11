@@ -19,7 +19,7 @@ from typing import (
     cast,
 )
 
-from pydantic import ValidationError
+import msgspec
 
 from aiogram.exceptions import (
     ClientDecodeError,
@@ -56,8 +56,8 @@ class BaseSession(abc.ABC):
     def __init__(
         self,
         api: TelegramAPIServer = PRODUCTION,
-        json_loads: _JsonLoads = json.loads,
-        json_dumps: _JsonDumps = json.dumps,
+        json_loads: _JsonLoads = msgspec.json.decode,
+        json_dumps: _JsonDumps = msgspec.json.encode,
         timeout: float = DEFAULT_TIMEOUT,
     ) -> None:
         """
@@ -81,17 +81,12 @@ class BaseSession(abc.ABC):
         Check response status
         """
         try:
-            json_data = self.json_loads(content)
-        except Exception as e:
+            response = method.build_response(content)
+        except (msgspec.ValidationError, msgspec.DecodeError) as e:
             # Handled error type can't be classified as specific error
             # in due to decoder can be customized and raise any exception
 
-            raise ClientDecodeError("Failed to decode object", e, content)
-
-        try:
-            response = method.build_response(json_data)
-        except ValidationError as e:
-            raise ClientDecodeError("Failed to deserialize object", e, json_data)
+            raise ClientDecodeError("Failed to decode object", e, str(content))
 
         if HTTPStatus.OK <= status_code <= HTTPStatus.IM_USED and response.ok:
             return response
@@ -175,7 +170,7 @@ class BaseSession(abc.ABC):
         """
         Prepare value before send
         """
-        if value is None:
+        if value in (None, msgspec.UNSET):
             return None
         if isinstance(value, str):
             return value
