@@ -45,6 +45,7 @@ dependencies = [
     "pydantic~=1.10.7",
     "aiofiles~=23.1.0",
     "certifi>=2022.9.24",
+    "msgspec~=0.15.0"
 ]
 dynamic = ["version"]
 
