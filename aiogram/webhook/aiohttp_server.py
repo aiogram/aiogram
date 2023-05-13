@@ -204,7 +204,7 @@ class SimpleRequestHandler(BaseRequestHandler):
     """
 
     def __init__(
-        self, 
+        self,
         dispatcher: Dispatcher,
         bot: Bot,
         handle_in_background: bool = True,
@@ -225,7 +225,9 @@ class SimpleRequestHandler(BaseRequestHandler):
         self.secret_token = secret_token
 
     def verify_secret(self, telegram_secret_token: str) -> bool:
-        return secrets.compare_digest(telegram_secret_token, self.secret_token)
+        if self.secret_token:
+            return secrets.compare_digest(telegram_secret_token, self.secret_token)
+        return True
 
     async def close(self) -> None:
         """
