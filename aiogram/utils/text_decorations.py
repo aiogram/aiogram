@@ -233,7 +233,7 @@ class MarkdownDecoration(TextDecoration):
         return f"~{value}~"
 
     def spoiler(self, value: str) -> str:
-        return f"|{value}|"
+        return f"||{value}||"
 
     def quote(self, value: str) -> str:
         return re.sub(pattern=self.MARKDOWN_QUOTE_PATTERN, repl=r"\\\1", string=value)
