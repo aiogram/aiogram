@@ -132,7 +132,7 @@ class BaseRequestHandler(ABC):
         pass
 
     @abstractmethod
-    def verify_secret(self, secret_token: str) -> bool:
+    def verify_secret(self, telegram_secret_token: str) -> bool:
         pass
 
     async def _background_feed_update(self, bot: Bot, update: Dict[str, Any]) -> None:
@@ -224,7 +224,7 @@ class SimpleRequestHandler(BaseRequestHandler):
         self.bot = bot
         self.secret_token = secret_token
 
-    def verify_secret(self, telegram_secret_token: str) -> bool:
+    def verify_secret(self, telegram_secret_token: Optional[str]) -> bool:
         if self.secret_token:
             return secrets.compare_digest(telegram_secret_token, self.secret_token)
         return True
