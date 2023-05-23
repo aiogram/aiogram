@@ -451,6 +451,7 @@ class Dispatcher(Router):
         handle_as_tasks: bool = True,
         backoff_config: BackoffConfig = DEFAULT_BACKOFF_CONFIG,
         allowed_updates: Optional[List[str]] = None,
+        auto_resolve_update_types: Optional[bool] = False,
         handle_signals: bool = True,
         close_bot_session: bool = True,
         **kwargs: Any,
@@ -463,6 +464,7 @@ class Dispatcher(Router):
         :param handle_as_tasks: Run task for each event and no wait result
         :param backoff_config: backoff-retry config
         :param allowed_updates: List of the update types you want your bot to receive
+        :param auto_resolve_update_types: automatically resolve used update types in handlers
         :param handle_signals: handle signals (SIGINT/SIGTERM)
         :param close_bot_session: close bot sessions on shutdown
         :param kwargs: contextual data
@@ -496,6 +498,15 @@ class Dispatcher(Router):
                     loop.add_signal_handler(
                         signal.SIGINT, self._signal_stop_polling, signal.SIGINT
                     )
+
+            if auto_resolve_update_types:
+                if allowed_updates:
+                    loggers.dispatcher.warning(
+                        "auto_resolve_update_types and allowed_updates "
+                        "arguments are mutually exclusive, allowed_updates will be used instead"
+                    )
+                else:
+                    allowed_updates = self.resolve_used_update_types()
 
             workflow_data = {
                 "dispatcher": self,
@@ -547,6 +558,7 @@ class Dispatcher(Router):
         handle_as_tasks: bool = True,
         backoff_config: BackoffConfig = DEFAULT_BACKOFF_CONFIG,
         allowed_updates: Optional[List[str]] = None,
+        auto_resolve_update_types: Optional[bool] = False,
         handle_signals: bool = True,
         close_bot_session: bool = True,
         **kwargs: Any,
@@ -559,6 +571,7 @@ class Dispatcher(Router):
         :param handle_as_tasks: Run task for each event and no wait result
         :param backoff_config: backoff-retry config
         :param allowed_updates: List of the update types you want your bot to receive
+        :param auto_resolve_update_types: auto resolve update types from handlers
         :param handle_signals: handle signals (SIGINT/SIGTERM)
         :param close_bot_session: close bot sessions on shutdown
         :param kwargs: contextual data
@@ -573,6 +586,7 @@ class Dispatcher(Router):
                     handle_as_tasks=handle_as_tasks,
                     backoff_config=backoff_config,
                     allowed_updates=allowed_updates,
+                    auto_resolve_update_types=auto_resolve_update_types,
                     handle_signals=handle_signals,
                     close_bot_session=close_bot_session,
                 )
