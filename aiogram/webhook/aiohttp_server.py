@@ -189,7 +189,7 @@ class BaseRequestHandler(ABC):
 
     async def handle(self, request: web.Request) -> web.Response:
         bot = await self.resolve_bot(request)
-        if not self.verify_secret(request.headers.get("X-Telegram-Bot-Api-Secret-Token")):
+        if not self.verify_secret(request.headers.get("X-Telegram-Bot-Api-Secret-Token", "")):
             return web.Response(body="Unauthorized", status=401)
         if self.handle_in_background:
             return await self._handle_request_background(bot=bot, request=request)
