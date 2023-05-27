@@ -457,6 +457,7 @@ class Message(base.TelegramObject):
             caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
             disable_notification: typing.Optional[base.Boolean] = None,
             protect_content: typing.Optional[base.Boolean] = None,
+            has_spoiler: typing.Optional[base.Boolean] = None,
             allow_sending_without_reply: typing.Optional[base.Boolean] = None,
             reply_markup: typing.Union[
                 InlineKeyboardMarkup,
@@ -493,6 +494,9 @@ class Message(base.TelegramObject):
             from forwarding and saving
         :type protect_content: :obj:`typing.Optional[base.Boolean]`
 
+        :param has_spoiler: Hide the content like a spoiler
+        :type has_spoiler: :obj:`typing.Optional[base.Boolean]`
+
         :param allow_sending_without_reply: Pass True, if the message should be sent
             even if the specified replied-to message is not found
         :type allow_sending_without_reply: :obj:`typing.Optional[base.Boolean]`
@@ -517,6 +521,7 @@ class Message(base.TelegramObject):
             caption_entities=caption_entities,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            has_spoiler=has_spoiler,
             reply_to_message_id=self.message_id if reply else None,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
@@ -631,6 +636,7 @@ class Message(base.TelegramObject):
             caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
             disable_notification: typing.Optional[base.Boolean] = None,
             protect_content: typing.Optional[base.Boolean] = None,
+            has_spoiler: typing.Optional[base.Boolean] = None,
             allow_sending_without_reply: typing.Optional[base.Boolean] = None,
             reply_markup: typing.Union[
                 InlineKeyboardMarkup,
@@ -684,6 +690,9 @@ class Message(base.TelegramObject):
         :param protect_content: Protects the contents of sent messages
             from forwarding and saving
         :type protect_content: :obj:`typing.Optional[base.Boolean]`
+        
+        :param has_spoiler: Hide the content like a spoiler
+        :type has_spoiler: :obj:`typing.Optional[base.Boolean]`
 
         :param allow_sending_without_reply: Pass True, if the message should be sent
             even if the specified replied-to message is not found
@@ -713,6 +722,7 @@ class Message(base.TelegramObject):
             caption_entities=caption_entities,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            has_spoiler=has_spoiler,
             reply_to_message_id=self.message_id if reply else None,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
@@ -817,6 +827,7 @@ class Message(base.TelegramObject):
             thumb: typing.Union[base.InputFile, base.String, None] = None,
             caption: typing.Optional[base.String] = None,
             parse_mode: typing.Optional[base.String] = None,
+            has_spoiler: typing.Optional[base.Boolean] = None,
             caption_entities: typing.Optional[typing.List[MessageEntity]] = None,
             supports_streaming: typing.Optional[base.Boolean] = None,
             disable_notification: typing.Optional[base.Boolean] = None,
@@ -874,6 +885,9 @@ class Message(base.TelegramObject):
         :param protect_content: Protects the contents of sent messages
             from forwarding and saving
         :type protect_content: :obj:`typing.Optional[base.Boolean]`
+        
+        :param has_spoiler: Hide the content like a spoiler
+        :type has_spoiler: :obj:`typing.Optional[base.Boolean]`
 
         :param allow_sending_without_reply: Pass True, if the message should be sent
             even if the specified replied-to message is not found
@@ -904,6 +918,7 @@ class Message(base.TelegramObject):
             supports_streaming=supports_streaming,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            has_spoiler=has_spoiler,
             reply_to_message_id=self.message_id if reply else None,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
