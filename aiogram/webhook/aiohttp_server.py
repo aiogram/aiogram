@@ -209,7 +209,7 @@ class SimpleRequestHandler(BaseRequestHandler):
         bot: Bot,
         handle_in_background: bool = True,
         secret_token: Optional[str] = None,
-        **data: Any
+        **data: Any,
     ) -> None:
         """
         :param dispatcher: instance of :class:`aiogram.dispatcher.dispatcher.Dispatcher`
@@ -217,10 +217,7 @@ class SimpleRequestHandler(BaseRequestHandler):
             waiting end of handler process
         :param bot: instance of :class:`aiogram.client.bot.Bot`
         """
-        super().__init__(
-            dispatcher=dispatcher,
-            handle_in_background=handle_in_background,
-            **data)
+        super().__init__(dispatcher=dispatcher, handle_in_background=handle_in_background, **data)
         self.bot = bot
         self.secret_token = secret_token
 
