@@ -193,10 +193,7 @@ class TestSimpleRequestHandler:
         app = Application()
         dp = Dispatcher()
         handler = SimpleRequestHandler(
-            dispatcher=dp,
-            bot=bot,
-            handle_in_background=False,
-            secret_token="vasya228"
+            dispatcher=dp, bot=bot, handle_in_background=False, secret_token="vasya228"
         )
         handler.register(app, path="/webhook")
         client: TestClient = await aiohttp_client(app)
