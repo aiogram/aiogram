@@ -265,7 +265,7 @@ class TokenBasedRequestHandler(BaseRequestHandler):
         self.bots: Dict[str, Bot] = {}
 
     def verify_secret(self, telegram_secret_token: str) -> bool:
-        pass
+        return True
 
     async def close(self) -> None:
         for bot in self.bots.values():
