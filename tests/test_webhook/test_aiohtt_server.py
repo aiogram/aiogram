@@ -202,10 +202,10 @@ class TestSimpleRequestHandler:
 
 
 class TestTokenBasedRequestHandler:
-    async def test_verify_secret(self):
+    async def test_verify_secret(self, bot: MockedBot):
         dispatcher = Dispatcher()
         handler = TokenBasedRequestHandler(dispatcher=dispatcher)
-        assert handler.verify_secret("petro328")
+        assert handler.verify_secret("petro328", bot)
 
     async def test_register(self):
         dispatcher = Dispatcher()
