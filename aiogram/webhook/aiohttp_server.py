@@ -132,7 +132,7 @@ class BaseRequestHandler(ABC):
         pass
 
     @abstractmethod
-    def verify_secret(self, telegram_secret_token: str) -> bool:
+    def verify_secret(self, telegram_secret_token: str, bot: Bot) -> bool:
         pass
 
     async def _background_feed_update(self, bot: Bot, update: Dict[str, Any]) -> None:
@@ -189,7 +189,7 @@ class BaseRequestHandler(ABC):
 
     async def handle(self, request: web.Request) -> web.Response:
         bot = await self.resolve_bot(request)
-        if not self.verify_secret(request.headers.get("X-Telegram-Bot-Api-Secret-Token", "")):
+        if not self.verify_secret(request.headers.get("X-Telegram-Bot-Api-Secret-Token", ""), bot):
             return web.Response(body="Unauthorized", status=401)
         if self.handle_in_background:
             return await self._handle_request_background(bot=bot, request=request)
@@ -221,7 +221,7 @@ class SimpleRequestHandler(BaseRequestHandler):
         self.bot = bot
         self.secret_token = secret_token
 
-    def verify_secret(self, telegram_secret_token: str) -> bool:
+    def verify_secret(self, telegram_secret_token: str, bot: Bot) -> bool:
         if self.secret_token:
             return secrets.compare_digest(telegram_secret_token, self.secret_token)
         return True
@@ -261,7 +261,7 @@ class TokenBasedRequestHandler(BaseRequestHandler):
         self.bot_settings = bot_settings
         self.bots: Dict[str, Bot] = {}
 
-    def verify_secret(self, telegram_secret_token: str) -> bool:
+    def verify_secret(self, telegram_secret_token: str, bot: Bot) -> bool:
         return True
 
     async def close(self) -> None:
