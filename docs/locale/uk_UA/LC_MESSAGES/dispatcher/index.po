@@ -26,31 +26,37 @@ msgid ""
 "*aiogram* includes Dispatcher mechanism. Dispatcher is needed for "
 "handling incoming updates from Telegram."
 msgstr ""
+"*aiogram* реалізує механізм диспетчера. Диспетчер необхідний для обробки "
+"вхідних оновлень від Telegram."
 
 #: ../../dispatcher/index.rst:8
 msgid "With dispatcher you can do:"
-msgstr ""
+msgstr "З диспетчером ви можете зробити:"
 
 #: ../../dispatcher/index.rst:10
 msgid "Handle incoming updates;"
-msgstr ""
+msgstr "Обробляти вхідні оновлення;"
 
 #: ../../dispatcher/index.rst:11
 msgid "Filter incoming events before it will be processed by specific handler;"
-msgstr ""
+msgstr "Фільтрувати вхідні події (events) перед тим, як вони будуть оброблені будь-яким обробником;"
 
 #: ../../dispatcher/index.rst:12
 msgid "Modify event and related data in middlewares;"
-msgstr ""
+msgstr "Змінювати подію (event) та пов'язані з нею дані в міддлварах;"
 
 #: ../../dispatcher/index.rst:13
 msgid ""
 "Separate bot functionality between different handlers, modules and "
 "packages"
 msgstr ""
+"Розділяти функціональність бота між різними обробниками, модулями та "
+"пакетами"
 
 #: ../../dispatcher/index.rst:15
 msgid ""
 "Dispatcher is also separated into two entities - Router and Dispatcher. "
 "Dispatcher is subclass of router and should be always is root router."
 msgstr ""
+"Диспетчер також розділений на дві сутності - Router та Dispatcher. "
+"Dispatcher є підкласом router та завжди повинен бути кореневим router."

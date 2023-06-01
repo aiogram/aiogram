@@ -19,7 +19,7 @@ msgstr ""
 
 #: ../../dispatcher/router.rst:3
 msgid "Router"
-msgstr "Маршрутизатор"
+msgstr "Маршрутизатор (Router)"
 
 #: aiogram.dispatcher.router.Router:1 of
 msgid "Bases: :py:class:`object`"
@@ -106,7 +106,7 @@ msgstr ""
 
 #: ../../dispatcher/router.rst:23
 msgid "Update"
-msgstr "Оновлення"
+msgstr "Оновлення (Update)"
 
 #: ../../dispatcher/router.rst:32
 msgid ""

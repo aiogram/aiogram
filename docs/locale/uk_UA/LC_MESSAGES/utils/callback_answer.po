@@ -19,17 +19,20 @@ msgstr ""
 
 #: ../../utils/callback_answer.rst:4
 msgid "Callback answer"
-msgstr ""
+msgstr "Зворотна відповідь (Callback answer)"
 
 #: ../../utils/callback_answer.rst:6
 msgid ""
 "Helper for callback query handlers, can be useful in bots with a lot of "
 "callback handlers to automatically take answer to all requests."
 msgstr ""
+"Цей помічник для обробників запитів зворотного виклику, може бути корисним "
+"у ботах з великою кількістю обробників запитів зворотного виклику, щоб "
+"автоматично отримати відповідь на всі запити."
 
 #: ../../utils/callback_answer.rst:10
 msgid "Simple usage"
-msgstr ""
+msgstr "Просте використання"
 
 #: ../../utils/callback_answer.rst:12
 msgid ""
@@ -37,48 +40,61 @@ msgid ""
 ":class:`aiogram.utils.callback_answer.CallbackAnswerMiddleware` in "
 "dispatcher or specific router:"
 msgstr ""
+"Для використання достатньо зареєструвати внутрішній middleware "
+":class:`aiogram.utils.callback_answer.CallbackAnswerMiddleware` в "
+"диспетчері або конкретному маршрутизаторі (router):"
 
 #: ../../utils/callback_answer.rst:18
 msgid ""
 "After that all handled callback queries will be answered automatically "
 "after processing the handler."
 msgstr ""
+"Після цього всі оброблені запити зворотного виклику будуть автоматично "
+"відповідати після обробки обробника."
 
 #: ../../utils/callback_answer.rst:21
 msgid "Advanced usage"
-msgstr ""
+msgstr "Розширене використання"
 
 #: ../../utils/callback_answer.rst:23
 msgid ""
 "In some cases you need to have some non-standard response parameters, "
 "this can be done in several ways:"
-msgstr ""
+msgstr ""   
+"У деяких випадках вам потрібно мати деякі нестандартні параметри відповіді, "
+"це можна зробити декількома способами:"
 
 #: ../../utils/callback_answer.rst:26
 msgid "Global defaults"
-msgstr ""
+msgstr "Глобальні значення за замовчуванням"
 
 #: ../../utils/callback_answer.rst:28
 msgid ""
 "Change default parameters while initializing middleware, for example "
 "change answer to `pre` mode and text \"OK\":"
 msgstr ""
+"Змініть параметри за замовчуванням під час ініціалізації middleware, "
+"наприклад, змініть відповідь на режим `pre` та текст \"OK\":"
 
 #: ../../utils/callback_answer.rst:35
 msgid ""
 "Look at :class:`aiogram.utils.callback_answer.CallbackAnswerMiddleware` "
 "to get all available parameters"
 msgstr ""
+"Дивіться :class:`aiogram.utils.callback_answer.CallbackAnswerMiddleware` "
+"щоб отримати всі доступні параметри"
 
 #: ../../utils/callback_answer.rst:39
 msgid "Handler specific"
-msgstr ""
+msgstr "Для конкретного обробника"
 
 #: ../../utils/callback_answer.rst:41
 msgid ""
 "By using :ref:`flags <flags>` you can change the behavior for specific "
 "handler"
 msgstr ""
+"За допомогою :ref:`flags <flags>` ви можете змінити поведінку для "
+"конкретного обробника"
 
 #: ../../utils/callback_answer.rst:50
 msgid ""
@@ -86,10 +102,13 @@ msgid ""
 ":class:`aiogram.utils.callback_answer.CallbackAnswerMiddleware` with "
 "additional one :code:`disabled` to disable answer."
 msgstr ""
+"Аргументи маркерів такі ж, як і в "
+":class:`aiogram.utils.callback_answer.CallbackAnswerMiddleware` з "
+"додатковим :code:`disabled` для відключення відповіді."
 
 #: ../../utils/callback_answer.rst:54
 msgid "A special case"
-msgstr ""
+msgstr "Особливий випадок"
 
 #: ../../utils/callback_answer.rst:56
 msgid ""
@@ -98,16 +117,22 @@ msgid ""
 "of :class:`aiogram.utils.callback_answer.CallbackAnswer` object inside "
 "handler and change whatever you want."
 msgstr ""
+"Не завжди правильно відповідати однаково в кожному випадку, тому є "
+"можливість змінити відповідь всередині обробника. Ви можете отримати "
+"екземпляр об'єкта :class:`aiogram.utils.callback_answer.CallbackAnswer` "
+"всередині обробника і змінити все, що завгодно."
 
 #: ../../utils/callback_answer.rst:61
 msgid ""
 "Note that is impossible to change callback answer attributes when you use"
 " :code:`pre=True` mode."
 msgstr ""
+"Зверніть увагу, що неможливо змінити атрибути відповіді на виклик, коли "
+"ви використовуєте режим :code:`pre=True`."
 
 #: ../../utils/callback_answer.rst:76
 msgid "Combine that all at once"
-msgstr ""
+msgstr "Об'єднайте все це одночасно"
 
 #: ../../utils/callback_answer.rst:78
 msgid ""
@@ -115,10 +140,13 @@ msgid ""
 "\"🤔\" but at some cases need to answer after the handler with custom "
 "text, so you can do it:"
 msgstr ""
+"Наприклад, ви хочете відповісти в більшості випадків перед обробником з "
+"текстом \"🤔\", але в деяких випадках потрібно відповісти після обробника "
+"зі спеціальним текстом, тому ви можете зробити це:"
 
 #: ../../utils/callback_answer.rst:94
 msgid "Description of objects"
-msgstr ""
+msgstr "Опис об'єктів"
 
 #: aiogram.utils.callback_answer.CallbackAnswerMiddleware:1 of
 msgid "Bases: :py:class:`~aiogram.dispatcher.middlewares.base.BaseMiddleware`"
@@ -129,35 +157,38 @@ msgid ""
 "Inner middleware for callback query handlers, can be useful in bots with "
 "a lot of callback handlers to automatically take answer to all requests"
 msgstr ""
+"Внутрішня проміжна програма (middleware) для обробників запитів зворотного виклику, може бути "
+"корисно в ботах з багатьма обробниками зворотного виклику, щоб автоматично "
+"отримувати відповідь на всі запити"
 
 #: aiogram.utils.callback_answer.CallbackAnswer.__init__
 #: aiogram.utils.callback_answer.CallbackAnswerMiddleware.__init__ of
 msgid "Parameters"
-msgstr ""
+msgstr "Параметри"
 
 #: aiogram.utils.callback_answer.CallbackAnswerMiddleware.__init__:4 of
 msgid "send answer before execute handler"
-msgstr ""
+msgstr "відправити відповідь перед виконанням обробника"
 
 #: aiogram.utils.callback_answer.CallbackAnswer.__init__:5
 #: aiogram.utils.callback_answer.CallbackAnswerMiddleware.__init__:5 of
 msgid "answer with text"
-msgstr ""
+msgstr "відповісти текстом"
 
 #: aiogram.utils.callback_answer.CallbackAnswer.__init__:6
 #: aiogram.utils.callback_answer.CallbackAnswerMiddleware.__init__:6 of
 msgid "show alert"
-msgstr ""
+msgstr "показати сповіщення"
 
 #: aiogram.utils.callback_answer.CallbackAnswer.__init__:7
 #: aiogram.utils.callback_answer.CallbackAnswerMiddleware.__init__:7 of
 msgid "game url"
-msgstr ""
+msgstr "URL гри"
 
 #: aiogram.utils.callback_answer.CallbackAnswer.__init__:8
 #: aiogram.utils.callback_answer.CallbackAnswerMiddleware.__init__:8 of
 msgid "cache answer for some time"
-msgstr ""
+msgstr "кешувати відповідь на деякий час"
 
 #: aiogram.utils.callback_answer.CallbackAnswer:1 of
 msgid "Bases: :py:class:`object`"
@@ -165,41 +196,41 @@ msgstr ""
 
 #: aiogram.utils.callback_answer.CallbackAnswer.__init__:1 of
 msgid "Callback answer configuration"
-msgstr ""
+msgstr "Конфігурація відповіді на зворотній виклик"
 
 #: aiogram.utils.callback_answer.CallbackAnswer.__init__:3 of
 msgid "this request is already answered by middleware"
-msgstr ""
+msgstr "цей запит вже відповів проміжній програмі (middleware)"
 
 #: aiogram.utils.callback_answer.CallbackAnswer.__init__:4 of
 msgid "answer will not be performed"
-msgstr ""
+msgstr "відповідь не буде виконана"
 
 #: aiogram.utils.callback_answer.CallbackAnswer.disable:1 of
 msgid "Deactivate answering for this handler"
-msgstr ""
+msgstr "Деактивувати відповідь для цього обробника"
 
 #: aiogram.utils.callback_answer.CallbackAnswer.disabled:1 of
 msgid "Indicates that automatic answer is disabled in this handler"
-msgstr ""
+msgstr "Вказує, що автоматична відповідь відключена в цьому обробнику"
 
 #: aiogram.utils.callback_answer.CallbackAnswer.answered:1 of
 msgid "Indicates that request is already answered by middleware"
-msgstr ""
+msgstr "Вказує, що запит вже відповів проміжній програмі (middleware)"
 
 #: aiogram.utils.callback_answer.CallbackAnswer.text:1 of
 msgid "Response text :return:"
-msgstr ""
+msgstr "Текст відповіді :return:"
 
 #: aiogram.utils.callback_answer.CallbackAnswer.show_alert:1 of
 msgid "Whether to display an alert"
-msgstr ""
+msgstr "Чи показувати сповіщення"
 
 #: aiogram.utils.callback_answer.CallbackAnswer.url:1 of
 msgid "Game url"
-msgstr ""
+msgstr "URL гри"
 
 #: aiogram.utils.callback_answer.CallbackAnswer.cache_time:1 of
 msgid "Response cache time"
-msgstr ""
+msgstr "Час кешування відповіді"
 

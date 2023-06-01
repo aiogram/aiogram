@@ -39,7 +39,7 @@ msgstr ""
 
 #: ../../../README.rst:-1
 msgid "PyPi Package Version"
-msgstr ""
+msgstr "Версія пакету PyPi"
 
 #: ../../../README.rst:-1
 msgid "Downloads"

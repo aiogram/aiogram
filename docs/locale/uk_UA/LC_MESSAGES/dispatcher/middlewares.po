@@ -26,8 +26,8 @@ msgid ""
 "**aiogram** provides powerful mechanism for customizing event handlers via "
 "middlewares."
 msgstr ""
-"**aiogram** надає потужний механізм для налаштування обробників(handler) "
-"подій через проміжні програми."
+"**aiogram** надає потужний механізм для налаштування обробників (handler) "
+"подій через проміжні програми (міддлвари)."
 
 #: ../../dispatcher/middlewares.rst:7
 msgid ""
