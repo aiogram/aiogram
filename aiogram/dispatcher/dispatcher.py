@@ -451,7 +451,6 @@ class Dispatcher(Router):
         handle_as_tasks: bool = True,
         backoff_config: BackoffConfig = DEFAULT_BACKOFF_CONFIG,
         allowed_updates: Optional[List[str]] = None,
-        auto_resolve_update_types: Optional[bool] = False,
         handle_signals: bool = True,
         close_bot_session: bool = True,
         **kwargs: Any,
@@ -464,7 +463,6 @@ class Dispatcher(Router):
         :param handle_as_tasks: Run task for each event and no wait result
         :param backoff_config: backoff-retry config
         :param allowed_updates: List of the update types you want your bot to receive
-        :param auto_resolve_update_types: automatically resolve used update types in handlers
         :param handle_signals: handle signals (SIGINT/SIGTERM)
         :param close_bot_session: close bot sessions on shutdown
         :param kwargs: contextual data
@@ -499,14 +497,8 @@ class Dispatcher(Router):
                         signal.SIGINT, self._signal_stop_polling, signal.SIGINT
                     )
 
-            if auto_resolve_update_types:
-                if allowed_updates:
-                    loggers.dispatcher.warning(
-                        "auto_resolve_update_types and allowed_updates "
-                        "arguments are mutually exclusive, allowed_updates will be used instead"
-                    )
-                else:
-                    allowed_updates = self.resolve_used_update_types()
+            if allowed_updates is None:
+                allowed_updates = self.resolve_used_update_types()
 
             workflow_data = {
                 "dispatcher": self,
