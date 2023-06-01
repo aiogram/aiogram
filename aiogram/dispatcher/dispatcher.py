@@ -18,6 +18,7 @@ from ..fsm.strategy import FSMStrategy
 from ..methods import GetUpdates, TelegramMethod
 from ..methods.base import TelegramType
 from ..types import Update, User
+from ..types.base import UNSET_TYPE
 from ..types.update import UpdateTypeLookupError
 from ..utils.backoff import Backoff, BackoffConfig
 from .event.bases import UNHANDLED, SkipHandler
@@ -450,7 +451,7 @@ class Dispatcher(Router):
         polling_timeout: int = 10,
         handle_as_tasks: bool = True,
         backoff_config: BackoffConfig = DEFAULT_BACKOFF_CONFIG,
-        allowed_updates: Optional[List[str]] = None,
+        allowed_updates: Optional[List[str]] = UNSET_TYPE,
         handle_signals: bool = True,
         close_bot_session: bool = True,
         **kwargs: Any,
@@ -497,7 +498,7 @@ class Dispatcher(Router):
                         signal.SIGINT, self._signal_stop_polling, signal.SIGINT
                     )
 
-            if allowed_updates is None:
+            if allowed_updates is UNSET_TYPE:
                 allowed_updates = self.resolve_used_update_types()
 
             workflow_data = {
