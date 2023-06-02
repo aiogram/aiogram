@@ -1,1 +1,1 @@
-Add auto_resolve_update_types argument to start_polling method to collect the used update types automatically.
+Made allowed_updates list to revolve automatically in start_polling method if not set explicitly.
