@@ -451,7 +451,7 @@ class Dispatcher(Router):
         polling_timeout: int = 10,
         handle_as_tasks: bool = True,
         backoff_config: BackoffConfig = DEFAULT_BACKOFF_CONFIG,
-        allowed_updates: Optional[Union[List[str], Literal[UNSET_TYPE]]] = UNSET_TYPE,
+        allowed_updates: Optional[Union[List[str], UNSET_TYPE]] = UNSET_TYPE,
         handle_signals: bool = True,
         close_bot_session: bool = True,
         **kwargs: Any,
