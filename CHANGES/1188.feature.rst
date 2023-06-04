@@ -1,4 +1,5 @@
-Fill fsm/storage/__init.py__ and fsm/__init__.py to simplify imports.
+Fill ``fsm/storage/__init.py__`` and ``fsm/__init__.py`` to simplify imports.
+
 For example use
 
 .. code-block:: Python
