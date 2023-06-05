@@ -2,16 +2,14 @@ Fill ``fsm/storage/__init.py__`` and ``fsm/__init__.py`` to simplify imports.
 
 For example use
 
-.. code-block:: Python
+.. code-block:: python
 
-   from aiogram.fsm import RedisStorage, FSMContext, State
-..
+    from aiogram.fsm import RedisStorage, FSMContext, State
 
 instead of
 
-.. code-block:: Python
+.. code-block:: python
 
-   from aiogram.fsm.storage.redis import RedisStorage
-   from aiogram.fsm.context import FSMContext
-   from aiogram.fsm.state import State
-..
+    from aiogram.fsm.storage.redis import RedisStorage
+    from aiogram.fsm.context import FSMContext
+    from aiogram.fsm.state import State
