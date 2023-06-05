@@ -1,3 +1,5 @@
+from contextlib import suppress
+
 from .base import BaseEventIsolation, BaseStorage, StorageKey
 from .memory import (
     DisabledEventIsolation,
@@ -5,7 +7,9 @@ from .memory import (
     MemoryStorageRecord,
     SimpleEventIsolation,
 )
-from .redis import DefaultKeyBuilder, KeyBuilder, RedisEventIsolation, RedisStorage
+
+with suppress(ModuleNotFoundError):
+    from .redis import DefaultKeyBuilder, KeyBuilder, RedisEventIsolation, RedisStorage
 
 __all__ = (
     "StorageKey",
