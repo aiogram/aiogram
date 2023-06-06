@@ -1,5 +1,3 @@
-from contextlib import suppress
-
 from .base import BaseEventIsolation, BaseStorage, StorageKey
 from .memory import (
     DisabledEventIsolation,
@@ -8,8 +6,15 @@ from .memory import (
     SimpleEventIsolation,
 )
 
-with suppress(ModuleNotFoundError):
+try:
     from .redis import DefaultKeyBuilder, KeyBuilder, RedisEventIsolation, RedisStorage
+except ModuleNotFoundError:
+    from aiogram import loggers
+
+    loggers.dispatcher.warning(
+        msg="NOTE that Redis package should be installed to use RedisStorage"
+    )
+
 
 __all__ = (
     "StorageKey",
