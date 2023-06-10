@@ -1,0 +1,2 @@
+Added a tool to make text formatting flexible and easy.
+More details on the :ref:`corresponding documentation page <formatting-tool>`

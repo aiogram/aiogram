@@ -6,10 +6,10 @@ import pytest
 
 from aiogram.utils.link import (
     BRANCH,
+    create_channel_bot_link,
     create_telegram_link,
     create_tg_link,
     docs_url,
-    create_channel_bot_link,
 )
 
 
