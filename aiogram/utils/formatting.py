@@ -49,7 +49,7 @@ class Text(Iterable[NodeType]):
 
     @classmethod
     def from_entities(cls, text: str, entities: List[MessageEntity]) -> "Text":
-        return Text(
+        return cls(
             *_unparse_entities(
                 text=add_surrogates(text),
                 entities=sorted(entities, key=lambda item: item.offset) if entities else [],
@@ -145,13 +145,16 @@ class Text(Iterable[NodeType]):
         text, entities = self.render()
         return markdown_decoration.unparse(text, entities)
 
+    def replace(self: Self, *args: Any, **kwargs: Any) -> Self:
+        return type(self)(*args, **{**self._params, **kwargs})
+
     def as_pretty_string(self, indent: bool = False) -> str:
         sep = ",\n" if indent else ", "
         body = sep.join(
             item.as_pretty_string(indent=indent) if isinstance(item, Text) else repr(item)
             for item in self._body
         )
-        params = sep.join(f"{k}={v!r}" for k, v in self._params.items())
+        params = sep.join(f"{k}={v!r}" for k, v in self._params.items() if v is not None)
 
         args = []
         if body:
@@ -163,12 +166,6 @@ class Text(Iterable[NodeType]):
         if indent:
             args_str = textwrap.indent("\n" + args_str + "\n", "    ")
         return f"{type(self).__name__}({args_str})"
-
-    def replace(self: Self, *args: Any, **kwargs: Any) -> Self:
-        return type(self)(*args, **{**self._params, **kwargs})
-
-    def __repr__(self) -> str:
-        return self.as_pretty_string()
 
     def __add__(self, other: NodeType) -> "Text":
         if isinstance(other, Text) and other.type == self.type and self._params == other._params:
@@ -188,7 +185,7 @@ class Text(Iterable[NodeType]):
         if not isinstance(item, slice):
             raise TypeError("Can only be sliced")
         if (item.start is None or item.start == 0) and item.stop is None:
-            return self
+            return self.replace(*self._body)
         start = 0 if item.start is None else item.start
         stop = len(self) if item.stop is None else item.stop
         if start == stop:
@@ -369,7 +366,7 @@ class Pre(Text):
 
     type = MessageEntityType.PRE
 
-    def __init__(self, *body: NodeType, language: str, **params: Any) -> None:
+    def __init__(self, *body: NodeType, language: Optional[str] = None, **params: Any) -> None:
         super().__init__(*body, language=language, **params)
 
 
@@ -411,8 +408,8 @@ class CustomEmoji(Text):
 
     type = MessageEntityType.CUSTOM_EMOJI
 
-    def __init__(self, *body: NodeType, emoji_id: str, **params: Any) -> None:
-        super().__init__(*body, emoji_id=emoji_id, **params)
+    def __init__(self, *body: NodeType, custom_emoji_id: str, **params: Any) -> None:
+        super().__init__(*body, custom_emoji_id=custom_emoji_id, **params)
 
 
 NODE_TYPES: Dict[Optional[str], Type[Text]] = {
