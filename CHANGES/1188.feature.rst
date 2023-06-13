@@ -17,7 +17,7 @@ instead of
     from aiogram.fsm.strategy import FSMStrategy, apply_strategy
     from aiogram.fsm.middleware import FSMContextMiddleware
 
-But you should still use
+NOTE: You should still use
 
 .. code-block:: python
 
