@@ -25,4 +25,4 @@ NOTE: You should still use
     from aiogram.fsm.storage.memory import MemoryStorage
     from aiogram.fsm.storage.base import BaseStorage
 
-for import storages.
+to import storages.
