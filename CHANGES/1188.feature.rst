@@ -4,12 +4,25 @@ For example use
 
 .. code-block:: python
 
-    from aiogram.fsm import RedisStorage, FSMContext, State
+    from aiogram.fsm import FSMContext, StatesGroup, State
+    from aiogram.fsm import FSMStrategy, apply_strategy
+    from aiogram.fsm import FSMContextMiddleware
 
 instead of
 
 .. code-block:: python
 
-    from aiogram.fsm.storage.redis import RedisStorage
     from aiogram.fsm.context import FSMContext
-    from aiogram.fsm.state import State
+    from aiogram.fsm.state import State, StatesGroup
+    from aiogram.fsm.strategy import FSMStrategy, apply_strategy
+    from aiogram.fsm.middleware import FSMContextMiddleware
+
+But you should still use
+
+.. code-block:: python
+
+    from aiogram.fsm.storage.redis import RedisStorage
+    from aiogram.fsm.storage.memory import MemoryStorage
+    from aiogram.fsm.storage.base import BaseStorage
+
+for import storages.
