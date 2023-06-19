@@ -17,6 +17,9 @@ class TelegramObject(ContextInstanceMixin["TelegramObject"], BaseModel):
         allow_population_by_field_name = True
         json_encoders = {datetime.datetime: lambda dt: int(dt.timestamp())}
 
+    def __str__(self) -> str:
+        return self.__repr__()
+
 
 class MutableTelegramObject(TelegramObject):
     class Config:
