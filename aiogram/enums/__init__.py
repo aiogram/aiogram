@@ -3,6 +3,7 @@ from .chat_action import ChatAction
 from .chat_member_status import ChatMemberStatus
 from .chat_type import ChatType
 from .content_type import ContentType
+from .currency import Currency
 from .dice_emoji import DiceEmoji
 from .inline_query_result_type import InlineQueryResultType
 from .input_media_type import InputMediaType
@@ -22,6 +23,7 @@ __all__ = (
     "ChatMemberStatus",
     "ChatType",
     "ContentType",
+    "Currency",
     "DiceEmoji",
     "InlineQueryResultType",
     "InputMediaType",
