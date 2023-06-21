@@ -1,4 +1,4 @@
-Fill and ``fsm/__init__.py`` to simplify imports.
+Filled and ``fsm/__init__.py`` to simplify imports.
 
 For example use
 
@@ -17,12 +17,13 @@ instead of
     from aiogram.fsm.strategy import FSMStrategy, apply_strategy
     from aiogram.fsm.middleware import FSMContextMiddleware
 
-NOTE: You should still use
+.. note::
+    You should still use
 
-.. code-block:: python
-
-    from aiogram.fsm.storage.redis import RedisStorage
-    from aiogram.fsm.storage.memory import MemoryStorage
-    from aiogram.fsm.storage.base import BaseStorage
-
-to import storages.
+    .. code-block:: python
+    
+        from aiogram.fsm.storage.redis import RedisStorage
+        from aiogram.fsm.storage.memory import MemoryStorage
+        from aiogram.fsm.storage.base import BaseStorage
+    
+    to import storages.
