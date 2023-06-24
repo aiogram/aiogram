@@ -131,6 +131,10 @@ class BaseRequestHandler(ABC):
         """
         pass
 
+    @abstractmethod
+    def verify_secret(self, telegram_secret_token: str, bot: Bot) -> bool:
+        pass
+
     async def _background_feed_update(self, bot: Bot, update: Dict[str, Any]) -> None:
         result = await self.dispatcher.feed_raw_update(bot=bot, update=update, **self.data)
         if isinstance(result, TelegramMethod):
@@ -185,6 +189,8 @@ class BaseRequestHandler(ABC):
 
     async def handle(self, request: web.Request) -> web.Response:
         bot = await self.resolve_bot(request)
+        if not self.verify_secret(request.headers.get("X-Telegram-Bot-Api-Secret-Token", ""), bot):
+            return web.Response(body="Unauthorized", status=401)
         if self.handle_in_background:
             return await self._handle_request_background(bot=bot, request=request)
         return await self._handle_request(bot=bot, request=request)
@@ -198,7 +204,12 @@ class SimpleRequestHandler(BaseRequestHandler):
     """
 
     def __init__(
-        self, dispatcher: Dispatcher, bot: Bot, handle_in_background: bool = True, **data: Any
+        self,
+        dispatcher: Dispatcher,
+        bot: Bot,
+        handle_in_background: bool = True,
+        secret_token: Optional[str] = None,
+        **data: Any,
     ) -> None:
         """
         :param dispatcher: instance of :class:`aiogram.dispatcher.dispatcher.Dispatcher`
@@ -208,6 +219,12 @@ class SimpleRequestHandler(BaseRequestHandler):
         """
         super().__init__(dispatcher=dispatcher, handle_in_background=handle_in_background, **data)
         self.bot = bot
+        self.secret_token = secret_token
+
+    def verify_secret(self, telegram_secret_token: str, bot: Bot) -> bool:
+        if self.secret_token:
+            return secrets.compare_digest(telegram_secret_token, self.secret_token)
+        return True
 
     async def close(self) -> None:
         """
@@ -243,6 +260,9 @@ class TokenBasedRequestHandler(BaseRequestHandler):
             bot_settings = {}
         self.bot_settings = bot_settings
         self.bots: Dict[str, Bot] = {}
+
+    def verify_secret(self, telegram_secret_token: str, bot: Bot) -> bool:
+        return True
 
     async def close(self) -> None:
         for bot in self.bots.values():
