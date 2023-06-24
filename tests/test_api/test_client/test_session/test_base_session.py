@@ -1,6 +1,6 @@
 import datetime
 import json
-from typing import Any, AsyncContextManager, AsyncGenerator, Optional
+from typing import Any, AsyncContextManager, AsyncGenerator, Dict, Optional
 from unittest.mock import AsyncMock, patch
 
 import pytest
@@ -44,7 +44,12 @@ class CustomSession(BaseSession):
         assert isinstance(method, TelegramMethod)
 
     async def stream_content(
-        self, url: str, timeout: int, chunk_size: int, raise_for_status: bool
+        self,
+        url: str,
+        headers: Optional[Dict[str, Any]] = None,
+        timeout: int = 30,
+        chunk_size: int = 65536,
+        raise_for_status: bool = True,
     ) -> AsyncGenerator[bytes, None]:  # pragma: no cover
         assert isinstance(url, str)
         assert isinstance(timeout, int)
@@ -215,6 +220,7 @@ class TestBaseSession:
         session = CustomSession()
         stream = session.stream_content(
             "https://www.python.org/static/img/python-logo.png",
+            headers={},
             timeout=5,
             chunk_size=65536,
             raise_for_status=True,

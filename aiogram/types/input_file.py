@@ -4,7 +4,7 @@ import io
 import os
 from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import AsyncGenerator, AsyncIterator, Iterator, Optional, Union
+from typing import Any, AsyncGenerator, AsyncIterator, Dict, Iterator, Optional, Union
 
 import aiofiles
 
@@ -114,6 +114,7 @@ class URLInputFile(InputFile):
     def __init__(
         self,
         url: str,
+        headers: Optional[Dict[str, Any]] = None,
         filename: Optional[str] = None,
         chunk_size: int = DEFAULT_CHUNK_SIZE,
         timeout: int = 30,
@@ -122,12 +123,16 @@ class URLInputFile(InputFile):
         Represents object for streaming files from internet
 
         :param url: URL in internet
+        :param headers: HTTP Headers
         :param filename: Filename to be propagated to telegram.
         :param chunk_size: Uploading chunk size
         """
         super().__init__(filename=filename, chunk_size=chunk_size)
+        if headers is None:
+            headers = {}
 
         self.url = url
+        self.headers = headers
         self.timeout = timeout
 
     async def read(self, chunk_size: int) -> AsyncGenerator[bytes, None]:
@@ -136,6 +141,7 @@ class URLInputFile(InputFile):
         bot = Bot.get_current(no_error=False)
         stream = bot.session.stream_content(
             url=self.url,
+            headers=self.headers,
             timeout=self.timeout,
             chunk_size=self.chunk_size,
             raise_for_status=True,
