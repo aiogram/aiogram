@@ -18,7 +18,10 @@ from typing import (
 
 import certifi
 from aiohttp import BasicAuth, ClientError, ClientSession, FormData, TCPConnector
+from aiohttp.hdrs import USER_AGENT
+from aiohttp.http import SERVER_SOFTWARE
 
+from aiogram.__meta__ import __version__
 from aiogram.methods import TelegramMethod
 
 from ...exceptions import TelegramNetworkError
@@ -121,7 +124,12 @@ class AiohttpSession(BaseSession):
             await self.close()
 
         if self._session is None or self._session.closed:
-            self._session = ClientSession(connector=self._connector_type(**self._connector_init))
+            self._session = ClientSession(
+                connector=self._connector_type(**self._connector_init),
+                headers={
+                    USER_AGENT: f"{SERVER_SOFTWARE} aiogram/{__version__}",
+                },
+            )
             self._should_reset_connector = False
 
         return self._session
@@ -163,11 +171,21 @@ class AiohttpSession(BaseSession):
         return cast(TelegramType, response.result)
 
     async def stream_content(
-        self, url: str, timeout: int, chunk_size: int, raise_for_status: bool
+        self,
+        url: str,
+        headers: Optional[Dict[str, Any]] = None,
+        timeout: int = 30,
+        chunk_size: int = 65536,
+        raise_for_status: bool = True,
     ) -> AsyncGenerator[bytes, None]:
+        if headers is None:
+            headers = {}
+
         session = await self.create_session()
 
-        async with session.get(url, timeout=timeout, raise_for_status=raise_for_status) as resp:
+        async with session.get(
+            url, timeout=timeout, headers=headers, raise_for_status=raise_for_status
+        ) as resp:
             async for chunk in resp.content.iter_chunked(chunk_size):
                 yield chunk
 

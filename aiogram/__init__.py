@@ -3,6 +3,7 @@ from contextlib import suppress
 from aiogram.dispatcher.flags import FlagGenerator
 
 from . import enums, methods, types
+from .__meta__ import __api_version__, __version__
 from .client import session
 from .client.bot import Bot
 from .dispatcher.dispatcher import Dispatcher
@@ -36,6 +37,3 @@ __all__ = (
     "md",
     "flags",
 )
-
-__version__ = "3.0.0b8"
-__api_version__ = "6.6"

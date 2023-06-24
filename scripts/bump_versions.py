@@ -46,7 +46,7 @@ def replace_line(content: str, pattern: re.Pattern, new_value: str) -> str:
 
 
 def write_package_meta(api_version: str) -> None:
-    path = Path.cwd() / "aiogram" / "__init__.py"
+    path = Path.cwd() / "aiogram" / "__meta__.py"
     content = path.read_text()
 
     content = replace_line(content, API_VERSION, api_version)

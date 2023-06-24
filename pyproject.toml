@@ -49,7 +49,7 @@ dependencies = [
 dynamic = ["version"]
 
 [tool.hatch.version]
-path = "aiogram/__init__.py"
+path = "aiogram/__meta__.py"
 
 [project.optional-dependencies]
 fast = [
