@@ -7,7 +7,7 @@ The strategy can be changed in dispatcher:
     from aiogram.fsm.strategy import FSMStrategy
     ...
     dispatcher = Dispatcher(
-        fsm_strategy=FSMStrategy.USER_IN_THREAD,
+        fsm_strategy=FSMStrategy.USER_IN_TOPIC,
         storage=...,  # Any persistent storage
     )
 

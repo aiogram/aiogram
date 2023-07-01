@@ -24,9 +24,9 @@ class TestStrategy:
             [FSMStrategy.GLOBAL_USER, CHAT, PRIVATE],
             [FSMStrategy.GLOBAL_USER, PRIVATE, PRIVATE],
             [FSMStrategy.GLOBAL_USER, THREAD, PRIVATE],
-            [FSMStrategy.USER_IN_THREAD, CHAT, CHAT],
-            [FSMStrategy.USER_IN_THREAD, PRIVATE, PRIVATE],
-            [FSMStrategy.USER_IN_THREAD, THREAD, THREAD],
+            [FSMStrategy.USER_IN_TOPIC, CHAT, CHAT],
+            [FSMStrategy.USER_IN_TOPIC, PRIVATE, PRIVATE],
+            [FSMStrategy.USER_IN_TOPIC, THREAD, THREAD],
         ],
     )
     def test_strategy(self, strategy, case, expected):
