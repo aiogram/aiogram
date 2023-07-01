@@ -141,7 +141,7 @@ class AiohttpSession(BaseSession):
     def build_form_data(self, bot: Bot, method: TelegramMethod[TelegramType]) -> FormData:
         form = FormData(quote_fields=False)
         files: Dict[str, InputFile] = {}
-        for key, value in method.dict().items():
+        for key, value in method.model_dump(warnings=False).items():
             value = self.prepare_value(value, bot=bot, files=files)
             if not value:
                 continue

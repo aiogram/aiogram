@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Optional
 
-from .base import MutableTelegramObject
+from .base import MutableTelegramObject, TelegramObject
 
 if TYPE_CHECKING:
     from .web_app_info import WebAppInfo

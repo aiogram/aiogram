@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Literal, Optional
 
 from pydantic import Field
 
@@ -19,7 +19,7 @@ class InlineQueryResultGame(InlineQueryResult):
     Source: https://core.telegram.org/bots/api#inlinequeryresultgame
     """
 
-    type: str = Field(InlineQueryResultType.GAME, const=True)
+    type: Literal[InlineQueryResultType.GAME] = InlineQueryResultType.GAME
     """Type of the result, must be *game*"""
     id: str
     """Unique identifier for this result, 1-64 bytes"""

@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Optional
 
 from ..utils.text_decorations import add_surrogates, remove_surrogates
-from .base import MutableTelegramObject
+from .base import MutableTelegramObject, TelegramObject
 
 if TYPE_CHECKING:
     from .user import User

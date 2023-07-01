@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Literal
 
 from pydantic import Field
 
@@ -18,7 +18,7 @@ class ChatMemberMember(ChatMember):
     Source: https://core.telegram.org/bots/api#chatmembermember
     """
 
-    status: str = Field(ChatMemberStatus.MEMBER, const=True)
+    status: Literal[ChatMemberStatus.MEMBER] = ChatMemberStatus.MEMBER
     """The member's status in the chat, always 'member'"""
     user: User
     """Information about the user"""

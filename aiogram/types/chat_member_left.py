@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Literal
 
 from pydantic import Field
 
@@ -18,7 +18,7 @@ class ChatMemberLeft(ChatMember):
     Source: https://core.telegram.org/bots/api#chatmemberleft
     """
 
-    status: str = Field(ChatMemberStatus.LEFT, const=True)
+    status: Literal[ChatMemberStatus.LEFT] = ChatMemberStatus.LEFT
     """The member's status in the chat, always 'left'"""
     user: User
     """Information about the user"""

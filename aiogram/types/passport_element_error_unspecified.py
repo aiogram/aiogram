@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import Literal
+
 from pydantic import Field
 
 from .passport_element_error import PassportElementError
@@ -12,7 +14,7 @@ class PassportElementErrorUnspecified(PassportElementError):
     Source: https://core.telegram.org/bots/api#passportelementerrorunspecified
     """
 
-    source: str = Field("unspecified", const=True)
+    source: Literal["unspecified"] = "unspecified"
     """Error source, must be *unspecified*"""
     type: str
     """Type of element of the user's Telegram Passport which has the issue"""

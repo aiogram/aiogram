@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Literal, Optional
 
 from pydantic import Field
 
@@ -20,7 +20,7 @@ class InlineQueryResultLocation(InlineQueryResult):
     Source: https://core.telegram.org/bots/api#inlinequeryresultlocation
     """
 
-    type: str = Field(InlineQueryResultType.LOCATION, const=True)
+    type: Literal[InlineQueryResultType.LOCATION] = InlineQueryResultType.LOCATION
     """Type of the result, must be *location*"""
     id: str
     """Unique identifier for this result, 1-64 Bytes"""

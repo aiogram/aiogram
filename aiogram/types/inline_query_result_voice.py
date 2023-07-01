@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, List, Optional
+from typing import TYPE_CHECKING, List, Literal, Optional
 
 from pydantic import Field
 
@@ -22,7 +22,7 @@ class InlineQueryResultVoice(InlineQueryResult):
     Source: https://core.telegram.org/bots/api#inlinequeryresultvoice
     """
 
-    type: str = Field(InlineQueryResultType.VOICE, const=True)
+    type: Literal[InlineQueryResultType.VOICE] = InlineQueryResultType.VOICE
     """Type of the result, must be *voice*"""
     id: str
     """Unique identifier for this result, 1-64 bytes"""

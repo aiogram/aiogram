@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, List, Optional, Union
 
+from pydantic import Field
+
 from ..types import (
     UNSET_PARSE_MODE,
     ForceReply,

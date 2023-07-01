@@ -9,14 +9,12 @@ from aiogram.methods.base import TelegramType
 if TYPE_CHECKING:
     from ...bot import Bot
 
-NextRequestMiddlewareType = Callable[
-    ["Bot", TelegramMethod[TelegramType]], Awaitable[Response[TelegramType]]
-]
+NextRequestMiddlewareType = Callable[["Bot", TelegramMethod], Awaitable[Response]]
 RequestMiddlewareType = Union[
     "BaseRequestMiddleware",
     Callable[
-        [NextRequestMiddlewareType[TelegramType], "Bot", TelegramMethod[TelegramType]],
-        Awaitable[Response[TelegramType]],
+        [NextRequestMiddlewareType, "Bot", TelegramMethod],
+        Awaitable[Response],
     ],
 ]
 

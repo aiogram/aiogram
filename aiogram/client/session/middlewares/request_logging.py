@@ -24,9 +24,9 @@ class RequestLogging(BaseRequestMiddleware):
 
     async def __call__(
         self,
-        make_request: NextRequestMiddlewareType[TelegramType],
+        make_request: NextRequestMiddlewareType,
         bot: "Bot",
-        method: TelegramMethod[TelegramType],
+        method: TelegramMethod,
     ) -> Response[TelegramType]:
         if type(method) not in self.ignore_methods:
             loggers.middlewares.info(

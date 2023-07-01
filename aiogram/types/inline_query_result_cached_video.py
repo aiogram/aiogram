@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, List, Optional
+from typing import TYPE_CHECKING, List, Literal, Optional
 
 from pydantic import Field
 
@@ -21,7 +21,7 @@ class InlineQueryResultCachedVideo(InlineQueryResult):
     Source: https://core.telegram.org/bots/api#inlinequeryresultcachedvideo
     """
 
-    type: str = Field(InlineQueryResultType.VIDEO, const=True)
+    type: Literal[InlineQueryResultType.VIDEO] = InlineQueryResultType.VIDEO
     """Type of the result, must be *video*"""
     id: str
     """Unique identifier for this result, 1-64 bytes"""

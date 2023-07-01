@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Optional, cast
 
-from ..utils.mypy_hacks import lru_cache
 from .base import TelegramObject
+from ..utils.mypy_hacks import lru_cache
 
 if TYPE_CHECKING:
     from .callback_query import CallbackQuery

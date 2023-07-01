@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import Literal
+
 from pydantic import Field
 
 from .passport_element_error import PassportElementError
@@ -12,7 +14,7 @@ class PassportElementErrorSelfie(PassportElementError):
     Source: https://core.telegram.org/bots/api#passportelementerrorselfie
     """
 
-    source: str = Field("selfie", const=True)
+    source: Literal["selfie"] = "selfie"
     """Error source, must be *selfie*"""
     type: str
     """The section of the user's Telegram Passport which has the issue, one of 'passport', 'driver_license', 'identity_card', 'internal_passport'"""

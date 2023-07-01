@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import Literal
+
 from pydantic import Field
 
 from ..enums import MenuButtonType
@@ -13,5 +15,5 @@ class MenuButtonCommands(MenuButton):
     Source: https://core.telegram.org/bots/api#menubuttoncommands
     """
 
-    type: str = Field(MenuButtonType.COMMANDS, const=True)
+    type: Literal[MenuButtonType.COMMANDS] = MenuButtonType.COMMANDS
     """Type of the button, must be *commands*"""

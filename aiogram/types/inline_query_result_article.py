@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Literal, Optional
 
 from pydantic import Field
 
@@ -19,7 +19,7 @@ class InlineQueryResultArticle(InlineQueryResult):
     Source: https://core.telegram.org/bots/api#inlinequeryresultarticle
     """
 
-    type: str = Field(InlineQueryResultType.ARTICLE, const=True)
+    type: Literal[InlineQueryResultType.ARTICLE] = InlineQueryResultType.ARTICLE
     """Type of the result, must be *article*"""
     id: str
     """Unique identifier for this result, 1-64 Bytes"""

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Literal, Optional
 
 from pydantic import Field
 
@@ -20,7 +20,7 @@ class InlineQueryResultVenue(InlineQueryResult):
     Source: https://core.telegram.org/bots/api#inlinequeryresultvenue
     """
 
-    type: str = Field(InlineQueryResultType.VENUE, const=True)
+    type: Literal[InlineQueryResultType.VENUE] = InlineQueryResultType.VENUE
     """Type of the result, must be *venue*"""
     id: str
     """Unique identifier for this result, 1-64 Bytes"""

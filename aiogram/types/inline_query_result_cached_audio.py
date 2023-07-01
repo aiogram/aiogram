@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, List, Optional
+from typing import TYPE_CHECKING, List, Literal, Optional
 
 from pydantic import Field
 
@@ -22,7 +22,7 @@ class InlineQueryResultCachedAudio(InlineQueryResult):
     Source: https://core.telegram.org/bots/api#inlinequeryresultcachedaudio
     """
 
-    type: str = Field(InlineQueryResultType.AUDIO, const=True)
+    type: Literal[InlineQueryResultType.AUDIO] = InlineQueryResultType.AUDIO
     """Type of the result, must be *audio*"""
     id: str
     """Unique identifier for this result, 1-64 bytes"""

@@ -10,14 +10,13 @@ from aiogram.utils.text_decorations import (
     html_decoration,
     markdown_decoration,
 )
-
-from ..enums import ContentType
 from .base import (
     UNSET_DISABLE_WEB_PAGE_PREVIEW,
     UNSET_PARSE_MODE,
     UNSET_PROTECT_CONTENT,
     TelegramObject,
 )
+from ..enums import ContentType
 
 if TYPE_CHECKING:
     from ..methods import (

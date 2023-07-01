@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import Literal
+
 from pydantic import Field
 
 from ..enums import BotCommandScopeType
@@ -13,5 +15,5 @@ class BotCommandScopeAllGroupChats(BotCommandScope):
     Source: https://core.telegram.org/bots/api#botcommandscopeallgroupchats
     """
 
-    type: str = Field(BotCommandScopeType.ALL_GROUP_CHATS, const=True)
+    type: Literal[BotCommandScopeType.ALL_GROUP_CHATS] = BotCommandScopeType.ALL_GROUP_CHATS
     """Scope type, must be *all_group_chats*"""
