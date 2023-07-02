@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from pydantic import Field
+from typing import Literal
 
 from .passport_element_error import PassportElementError
 
@@ -12,7 +12,7 @@ class PassportElementErrorDataField(PassportElementError):
     Source: https://core.telegram.org/bots/api#passportelementerrordatafield
     """
 
-    source: str = Field("data", const=True)
+    source: Literal["data"] = "data"
     """Error source, must be *data*"""
     type: str
     """The section of the user's Telegram Passport which has the error, one of 'personal_details', 'passport', 'driver_license', 'identity_card', 'internal_passport', 'address'"""

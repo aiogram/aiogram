@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import List, Literal, Optional, Union
 
 from .animation import Animation
 from .audio import Audio
@@ -324,11 +324,16 @@ __all__ = (
 # Load typing forward refs for every TelegramObject
 for _entity_name in __all__:
     _entity = globals()[_entity_name]
-    if not hasattr(_entity, "update_forward_refs"):
+    if not hasattr(_entity, "model_rebuild"):
         continue
-    _entity.update_forward_refs(
-        **{k: v for k, v in globals().items() if k in __all__},
-        **{"Optional": Optional},
+    _entity.model_rebuild(
+        _types_namespace={
+            "List": List,
+            "Optional": Optional,
+            "Union": Union,
+            "Literal": Literal,
+            **{k: v for k, v in globals().items() if k in __all__},
+        }
     )
 
 del _entity

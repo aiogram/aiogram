@@ -1,8 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional
-
-from pydantic import Field
+from typing import TYPE_CHECKING, Literal, Optional
 
 from ..enums import InlineQueryResultType
 from .inline_query_result import InlineQueryResult
@@ -20,7 +18,7 @@ class InlineQueryResultCachedSticker(InlineQueryResult):
     Source: https://core.telegram.org/bots/api#inlinequeryresultcachedsticker
     """
 
-    type: str = Field(InlineQueryResultType.STICKER, const=True)
+    type: Literal[InlineQueryResultType.STICKER] = InlineQueryResultType.STICKER
     """Type of the result, must be *sticker*"""
     id: str
     """Unique identifier for this result, 1-64 bytes"""

@@ -1,26 +1,26 @@
-import datetime
 from typing import Any
 from unittest.mock import sentinel
 
-from pydantic import BaseModel, Extra
+from pydantic import BaseModel, ConfigDict
 
 from aiogram.utils.mixins import ContextInstanceMixin
 
 
 class TelegramObject(ContextInstanceMixin["TelegramObject"], BaseModel):
-    class Config:
-        use_enum_values = True
-        orm_mode = True
-        extra = Extra.allow
-        validate_assignment = True
-        allow_mutation = False
-        allow_population_by_field_name = True
-        json_encoders = {datetime.datetime: lambda dt: int(dt.timestamp())}
+    model_config = ConfigDict(
+        use_enum_values=True,
+        extra="allow",
+        validate_assignment=True,
+        frozen=True,
+        populate_by_name=True,
+        arbitrary_types_allowed=True,
+    )
 
 
 class MutableTelegramObject(TelegramObject):
-    class Config:
-        allow_mutation = True
+    model_config = ConfigDict(
+        frozen=False,
+    )
 
 
 # special sentinel object which used in situation when None might be a useful value

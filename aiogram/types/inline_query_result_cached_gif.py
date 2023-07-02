@@ -1,8 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, List, Optional
-
-from pydantic import Field
+from typing import TYPE_CHECKING, List, Literal, Optional
 
 from ..enums import InlineQueryResultType
 from .base import UNSET_PARSE_MODE
@@ -21,7 +19,7 @@ class InlineQueryResultCachedGif(InlineQueryResult):
     Source: https://core.telegram.org/bots/api#inlinequeryresultcachedgif
     """
 
-    type: str = Field(InlineQueryResultType.GIF, const=True)
+    type: Literal[InlineQueryResultType.GIF] = InlineQueryResultType.GIF
     """Type of the result, must be *gif*"""
     id: str
     """Unique identifier for this result, 1-64 bytes"""

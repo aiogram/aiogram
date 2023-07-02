@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import datetime
-from typing import TYPE_CHECKING, List, Optional, Union
+from typing import List, Optional, Union
 
 from ..types import (
     UNSET_PARSE_MODE,

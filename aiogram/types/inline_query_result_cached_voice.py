@@ -1,8 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, List, Optional
-
-from pydantic import Field
+from typing import TYPE_CHECKING, List, Literal, Optional
 
 from ..enums import InlineQueryResultType
 from .base import UNSET_PARSE_MODE
@@ -22,7 +20,7 @@ class InlineQueryResultCachedVoice(InlineQueryResult):
     Source: https://core.telegram.org/bots/api#inlinequeryresultcachedvoice
     """
 
-    type: str = Field(InlineQueryResultType.VOICE, const=True)
+    type: Literal[InlineQueryResultType.VOICE] = InlineQueryResultType.VOICE
     """Type of the result, must be *voice*"""
     id: str
     """Unique identifier for this result, 1-64 bytes"""

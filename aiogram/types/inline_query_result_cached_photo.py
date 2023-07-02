@@ -1,8 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, List, Optional
-
-from pydantic import Field
+from typing import TYPE_CHECKING, List, Literal, Optional
 
 from ..enums import InlineQueryResultType
 from .base import UNSET_PARSE_MODE
@@ -21,7 +19,7 @@ class InlineQueryResultCachedPhoto(InlineQueryResult):
     Source: https://core.telegram.org/bots/api#inlinequeryresultcachedphoto
     """
 
-    type: str = Field(InlineQueryResultType.PHOTO, const=True)
+    type: Literal[InlineQueryResultType.PHOTO] = InlineQueryResultType.PHOTO
     """Type of the result, must be *photo*"""
     id: str
     """Unique identifier for this result, 1-64 bytes"""

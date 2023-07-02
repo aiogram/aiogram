@@ -1,8 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, List, Optional
-
-from pydantic import Field
+from typing import TYPE_CHECKING, List, Literal, Optional
 
 from ..enums import InlineQueryResultType
 from .base import UNSET_PARSE_MODE
@@ -22,7 +20,7 @@ class InlineQueryResultCachedDocument(InlineQueryResult):
     Source: https://core.telegram.org/bots/api#inlinequeryresultcacheddocument
     """
 
-    type: str = Field(InlineQueryResultType.DOCUMENT, const=True)
+    type: Literal[InlineQueryResultType.DOCUMENT] = InlineQueryResultType.DOCUMENT
     """Type of the result, must be *document*"""
     id: str
     """Unique identifier for this result, 1-64 bytes"""

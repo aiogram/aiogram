@@ -1,8 +1,6 @@
 from __future__ import annotations
 
-from typing import Union
-
-from pydantic import Field
+from typing import Literal, Union
 
 from ..enums import BotCommandScopeType
 from .bot_command_scope import BotCommandScope
@@ -15,7 +13,7 @@ class BotCommandScopeChat(BotCommandScope):
     Source: https://core.telegram.org/bots/api#botcommandscopechat
     """
 
-    type: str = Field(BotCommandScopeType.CHAT, const=True)
+    type: Literal[BotCommandScopeType.CHAT] = BotCommandScopeType.CHAT
     """Scope type, must be *chat*"""
     chat_id: Union[int, str]
     """Unique identifier for the target chat or username of the target supergroup (in the format :code:`@supergroupusername`)"""

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from pydantic import Field
+from typing import Literal
 
 from ..enums import BotCommandScopeType
 from .bot_command_scope import BotCommandScope
@@ -13,5 +13,5 @@ class BotCommandScopeDefault(BotCommandScope):
     Source: https://core.telegram.org/bots/api#botcommandscopedefault
     """
 
-    type: str = Field(BotCommandScopeType.DEFAULT, const=True)
+    type: Literal[BotCommandScopeType.DEFAULT] = BotCommandScopeType.DEFAULT
     """Scope type, must be *default*"""

@@ -1,8 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, List, Optional, Union
-
-from pydantic import Field
+from typing import TYPE_CHECKING, List, Literal, Optional, Union
 
 from ..enums import InputMediaType
 from .base import UNSET_PARSE_MODE
@@ -20,7 +18,7 @@ class InputMediaDocument(InputMedia):
     Source: https://core.telegram.org/bots/api#inputmediadocument
     """
 
-    type: str = Field(InputMediaType.DOCUMENT, const=True)
+    type: Literal[InputMediaType.DOCUMENT] = InputMediaType.DOCUMENT
     """Type of the result, must be *document*"""
     media: Union[str, InputFile]
     """File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass 'attach://<file_attach_name>' to upload a new one using multipart/form-data under <file_attach_name> name. :ref:`More information on Sending Files » <sending-files>`"""

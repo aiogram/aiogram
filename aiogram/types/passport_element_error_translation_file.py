@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from pydantic import Field
+from typing import Literal
 
 from .passport_element_error import PassportElementError
 
@@ -12,7 +12,7 @@ class PassportElementErrorTranslationFile(PassportElementError):
     Source: https://core.telegram.org/bots/api#passportelementerrortranslationfile
     """
 
-    source: str = Field("translation_file", const=True)
+    source: Literal["translation_file"] = "translation_file"
     """Error source, must be *translation_file*"""
     type: str
     """Type of element of the user's Telegram Passport which has the issue, one of 'passport', 'driver_license', 'identity_card', 'internal_passport', 'utility_bill', 'bank_statement', 'rental_agreement', 'passport_registration', 'temporary_registration'"""

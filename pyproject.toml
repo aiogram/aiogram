@@ -42,9 +42,9 @@ classifiers = [
 dependencies = [
     "magic-filter~=1.0.9",
     "aiohttp~=3.8.4",
-    "pydantic~=1.10.7",
+    "pydantic~=2.0.0",
     "aiofiles~=23.1.0",
-    "certifi>=2022.9.24",
+    "certifi>=2023.5.7",
 ]
 dynamic = ["version"]
 
@@ -65,7 +65,7 @@ i18n = [
     "Babel~=2.12.1",
 ]
 test = [
-    "pytest~=7.3.1",
+    "pytest~=7.4.0",
     "pytest-html~=3.2.0",
     "pytest-asyncio~=0.21.0",
     "pytest-lazy-fixture~=0.6.3",
@@ -94,13 +94,13 @@ docs = [
 dev = [
     "black~=23.3.0",
     "isort~=5.11",
-    "ruff~=0.0.262",
-    "mypy~=1.2.0",
+    "ruff~=0.0.275",
+    "mypy~=1.4.1",
     "toml~=0.10.2",
-    "pre-commit~=3.2.2",
-    "towncrier~=22.12.0",
+    "pre-commit~=3.3.3",
+    "towncrier~=23.6.0",
     "packaging~=23.0",
-    "typing-extensions~=4.5.0",
+    "typing-extensions~=4.6.0",
 ]
 
 [project.urls]
@@ -149,7 +149,7 @@ features = [
     "test",
 ]
 extra-dependencies = [
-    "butcher @ git+https://github.com/aiogram/butcher.git@v0.1.14"
+    "butcher @ git+https://github.com/aiogram/butcher.git@v0.1.15"
 ]
 
 [tool.hatch.envs.dev.scripts]

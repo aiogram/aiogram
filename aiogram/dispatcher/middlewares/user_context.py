@@ -1,5 +1,4 @@
-from contextlib import contextmanager
-from typing import Any, Awaitable, Callable, Dict, Iterator, Optional, Tuple
+from typing import Any, Awaitable, Callable, Dict, Optional, Tuple
 
 from aiogram.dispatcher.middlewares.base import BaseMiddleware
 from aiogram.types import Chat, TelegramObject, Update, User

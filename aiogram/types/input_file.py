@@ -29,10 +29,6 @@ class InputFile(ABC):
         self.filename = filename
         self.chunk_size = chunk_size
 
-    @classmethod
-    def __get_validators__(cls) -> Iterator[None]:
-        yield None
-
     @abstractmethod
     async def read(self, chunk_size: int) -> AsyncGenerator[bytes, None]:  # pragma: no cover
         yield b""

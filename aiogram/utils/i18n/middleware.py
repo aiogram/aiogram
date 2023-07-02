@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Any, Awaitable, Callable, Dict, Optional, Set, cast
+from typing import Any, Awaitable, Callable, Dict, Optional, Set
 
 try:
     from babel import Locale, UnknownLocaleError
