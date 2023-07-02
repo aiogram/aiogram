@@ -1,9 +1,19 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, Any, Dict, Generator, Generic, Optional, TypeVar
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Awaitable,
+    Callable,
+    Dict,
+    Generator,
+    Generic,
+    Optional,
+    TypeVar,
+)
 
-from pydantic import BaseConfig, BaseModel, ConfigDict, Extra, root_validator
+from pydantic import BaseModel, ConfigDict
 from pydantic.functional_validators import model_validator
 
 from ..types import InputFile, ResponseParameters
@@ -67,8 +77,6 @@ class TelegramMethod(BaseModel, Generic[TelegramType], ABC):
 
     async def emit(self, bot: Bot) -> TelegramType:
         return await bot(self)
-
-    as_ = emit
 
     def __await__(self) -> Generator[Any, None, TelegramType]:
         from aiogram.client.bot import Bot

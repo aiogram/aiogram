@@ -2,9 +2,9 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Optional
 
-from .base import TelegramObject
 from ..utils import markdown
 from ..utils.link import create_tg_link
+from .base import TelegramObject
 
 if TYPE_CHECKING:
     from ..methods import GetUserProfilePhotos

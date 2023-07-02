@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, Awaitable, Callable, Union
+from typing import TYPE_CHECKING, Protocol
 
 from aiogram.methods import Response, TelegramMethod
 from aiogram.methods.base import TelegramType
@@ -9,14 +9,24 @@ from aiogram.methods.base import TelegramType
 if TYPE_CHECKING:
     from ...bot import Bot
 
-NextRequestMiddlewareType = Callable[["Bot", TelegramMethod], Awaitable[Response]]
-RequestMiddlewareType = Union[
-    "BaseRequestMiddleware",
-    Callable[
-        [NextRequestMiddlewareType, "Bot", TelegramMethod],
-        Awaitable[Response],
-    ],
-]
+
+class NextRequestMiddlewareType(Protocol[TelegramType]):
+    async def __call__(
+        self,
+        bot: "Bot",
+        method: TelegramMethod[TelegramType],
+    ) -> Response[TelegramType]:
+        pass
+
+
+class RequestMiddlewareProtocol(Protocol):
+    async def __call__(
+        self,
+        make_request: NextRequestMiddlewareType[TelegramType],
+        bot: "Bot",
+        method: TelegramMethod[TelegramType],
+    ) -> Response[TelegramType]:
+        pass
 
 
 class BaseRequestMiddleware(ABC):
