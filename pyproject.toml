@@ -100,7 +100,7 @@ dev = [
     "pre-commit~=3.3.3",
     "towncrier~=23.6.0",
     "packaging~=23.0",
-    "typing-extensions~=4.7.0",
+    "typing-extensions~=4.6.0",
 ]
 
 [project.urls]
