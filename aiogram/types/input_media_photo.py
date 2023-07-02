@@ -2,8 +2,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, List, Literal, Optional, Union
 
-from pydantic import Field
-
 from ..enums import InputMediaType
 from .base import UNSET_PARSE_MODE
 from .input_media import InputMedia

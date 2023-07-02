@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Optional
 
-from .base import MutableTelegramObject, TelegramObject
+from .base import MutableTelegramObject
 
 
 class ChatPermissions(MutableTelegramObject):

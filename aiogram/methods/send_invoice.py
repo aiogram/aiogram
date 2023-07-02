@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, List, Optional, Union
+from typing import List, Optional, Union
 
 from ..types import InlineKeyboardMarkup, LabeledPrice, Message
 from ..types.base import UNSET_PROTECT_CONTENT

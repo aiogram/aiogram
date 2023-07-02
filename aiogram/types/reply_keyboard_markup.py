@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, List, Optional
 
-from .base import MutableTelegramObject, TelegramObject
+from .base import MutableTelegramObject
 
 if TYPE_CHECKING:
     from .keyboard_button import KeyboardButton

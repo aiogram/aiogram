@@ -2,9 +2,7 @@ from __future__ import annotations
 
 from typing import Literal, Optional
 
-from pydantic import Field
-
-from .base import MutableTelegramObject, TelegramObject
+from .base import MutableTelegramObject
 
 
 class ForceReply(MutableTelegramObject):

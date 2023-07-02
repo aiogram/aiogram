@@ -2,8 +2,6 @@ from __future__ import annotations
 
 from typing import Literal
 
-from pydantic import Field
-
 from ..enums import MenuButtonType
 from .menu_button import MenuButton
 

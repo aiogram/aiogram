@@ -2,8 +2,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, List, Literal, Optional
 
-from pydantic import Field
-
 from ..enums import InlineQueryResultType
 from .base import UNSET_PARSE_MODE
 from .inline_query_result import InlineQueryResult

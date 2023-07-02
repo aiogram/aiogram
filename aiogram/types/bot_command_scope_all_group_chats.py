@@ -2,8 +2,6 @@ from __future__ import annotations
 
 from typing import Literal
 
-from pydantic import Field
-
 from ..enums import BotCommandScopeType
 from .bot_command_scope import BotCommandScope
 

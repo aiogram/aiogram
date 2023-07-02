@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
-
 from ..types import StickerSet
 from .base import TelegramMethod
 

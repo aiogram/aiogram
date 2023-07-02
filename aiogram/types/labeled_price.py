@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from .base import MutableTelegramObject, TelegramObject
+from .base import MutableTelegramObject
 
 
 class LabeledPrice(MutableTelegramObject):
