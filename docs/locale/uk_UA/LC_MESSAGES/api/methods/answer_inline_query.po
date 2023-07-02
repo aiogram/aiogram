@@ -8,14 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-11-23 00:47+0200\n"
+"POT-Creation-Date: 2023-07-02 15:10+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.10.3\n"
+"Generated-By: Babel 2.12.1\n"
 
 #: ../../api/methods/answer_inline_query.rst:3
 msgid "answerInlineQuery"
@@ -61,7 +61,7 @@ msgstr ""
 msgid ""
 "Pass :code:`True` if results may be cached on the server side only for "
 "the user that sent the query. By default, results may be returned to any "
-"user who sends the same query"
+"user who sends the same query."
 msgstr ""
 
 #: ../../docstring
@@ -74,11 +74,10 @@ msgid ""
 msgstr ""
 
 #: ../../docstring
-#: aiogram.methods.answer_inline_query.AnswerInlineQuery.switch_pm_text:1 of
+#: aiogram.methods.answer_inline_query.AnswerInlineQuery.button:1 of
 msgid ""
-"If passed, clients will display a button with specified text that "
-"switches the user to a private chat with the bot and sends the bot a "
-"start message with the parameter *switch_pm_parameter*"
+"A JSON-serialized object describing a button to be shown above inline "
+"query results"
 msgstr ""
 
 #: ../../docstring
@@ -89,6 +88,20 @@ msgid ""
 "parameter for the /start message sent to the bot when user presses the "
 "switch button. 1-64 characters, only :code:`A-Z`, :code:`a-z`, "
 ":code:`0-9`, :code:`_` and :code:`-` are allowed."
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.answer_inline_query.AnswerInlineQuery.switch_pm_parameter:3
+#: aiogram.methods.answer_inline_query.AnswerInlineQuery.switch_pm_text:3 of
+msgid "https://core.telegram.org/bots/api-changelog#april-21-2023"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.answer_inline_query.AnswerInlineQuery.switch_pm_text:1 of
+msgid ""
+"If passed, clients will display a button with specified text that "
+"switches the user to a private chat with the bot and sends the bot a "
+"start message with the parameter *switch_pm_parameter*"
 msgstr ""
 
 #: ../../api/methods/answer_inline_query.rst:14
@@ -139,4 +152,13 @@ msgstr ""
 #~ "characters, only :code:`A-Z`, :code:`a-z`, "
 #~ ":code:`0-9`, :code:`_` and :code:`-` are "
 #~ "allowed."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Pass :code:`True` if results may be "
+#~ "cached on the server side only for"
+#~ " the user that sent the query. "
+#~ "By default, results may be returned "
+#~ "to any user who sends the same "
+#~ "query"
 #~ msgstr ""
