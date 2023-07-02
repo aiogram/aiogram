@@ -2,7 +2,7 @@
 Installation
 ############
 
-Stable (2.x)
+Legacy (2.x)
 ============
 
 From PyPI
