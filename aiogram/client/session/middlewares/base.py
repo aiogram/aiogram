@@ -10,7 +10,7 @@ if TYPE_CHECKING:
     from ...bot import Bot
 
 
-class NextRequestMiddlewareType(Protocol[TelegramType]):
+class NextRequestMiddlewareType(Protocol[TelegramType]):  # pragma: no cover
     async def __call__(
         self,
         bot: "Bot",
@@ -19,7 +19,7 @@ class NextRequestMiddlewareType(Protocol[TelegramType]):
         pass
 
 
-class RequestMiddlewareProtocol(Protocol):
+class RequestMiddlewareType(Protocol):  # pragma: no cover
     async def __call__(
         self,
         make_request: NextRequestMiddlewareType[TelegramType],
