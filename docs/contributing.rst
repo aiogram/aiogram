@@ -209,5 +209,4 @@ it is my personal initiative (`@JRootJunior <https://t.me/JRootJunior>`_) and
 I am engaged in the development of the project in my free time.
 
 So, if you want to financially support the project, or, for example, give me a pizza or a beer,
-you can do it on `OpenCollective <https://opencollective.com/aiogram>`_
-or `Patreon <https://www.patreon.com/aiogram>`_.
+you can do it on `OpenCollective <https://opencollective.com/aiogram>`_.
