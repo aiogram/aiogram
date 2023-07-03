@@ -441,7 +441,9 @@ def _apply_entity(entity: MessageEntity, *nodes: NodeType) -> NodeType:
     :return:
     """
     node_type = NODE_TYPES.get(entity.type, Text)
-    return node_type(*nodes, **entity.dict(exclude={"type", "offset", "length"}))
+    return node_type(
+        *nodes, **entity.model_dump(exclude={"type", "offset", "length"}, warnings=False)
+    )
 
 
 def _unparse_entities(

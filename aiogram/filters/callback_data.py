@@ -85,7 +85,7 @@ class CallbackData(BaseModel):
         :return: valid callback data for Telegram Bot API
         """
         result = [self.__prefix__]
-        for key, value in self.dict().items():
+        for key, value in self.model_dump(mode="json").items():
             encoded = self._encode_value(key, value)
             if self.__separator__ in encoded:
                 raise ValueError(

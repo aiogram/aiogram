@@ -162,7 +162,7 @@ class BaseRequestHandler(ABC):
         payload.set_content_disposition("form-data", name="method")
 
         files: Dict[str, InputFile] = {}
-        for key, value in result.dict().items():
+        for key, value in result.model_dump(warnings=False).items():
             value = bot.session.prepare_value(value, bot=bot, files=files)
             if not value:
                 continue
