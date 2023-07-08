@@ -167,7 +167,9 @@ class AiohttpSession(BaseSession):
             raise TelegramNetworkError(method=method, message="Request timeout error")
         except ClientError as e:
             raise TelegramNetworkError(method=method, message=f"{type(e).__name__}: {e}")
-        response = self.check_response(method=method, status_code=resp.status, content=raw_result)
+        response = self.check_response(
+            bot=bot, method=method, status_code=resp.status, content=raw_result
+        )
         return cast(TelegramType, response.result)
 
     async def stream_content(

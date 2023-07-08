@@ -6,6 +6,8 @@ from typing import TYPE_CHECKING, Any, Dict, Generator, Generic, Optional, TypeV
 from pydantic import BaseModel, ConfigDict
 from pydantic.functional_validators import model_validator
 
+from aiogram.client.context_controller import BotContextController
+
 from ..types import InputFile, ResponseParameters
 from ..types.base import UNSET_TYPE
 
@@ -32,7 +34,7 @@ class Response(BaseModel, Generic[TelegramType]):
     parameters: Optional[ResponseParameters] = None
 
 
-class TelegramMethod(BaseModel, Generic[TelegramType], ABC):
+class TelegramMethod(BotContextController, BaseModel, Generic[TelegramType], ABC):
     model_config = ConfigDict(
         extra="allow",
         populate_by_name=True,
@@ -40,6 +42,7 @@ class TelegramMethod(BaseModel, Generic[TelegramType], ABC):
     )
 
     @model_validator(mode="before")
+    @classmethod
     def remove_unset(cls, values: Dict[str, Any]) -> Dict[str, Any]:
         """
         Remove UNSET before fields validation.
@@ -53,7 +56,7 @@ class TelegramMethod(BaseModel, Generic[TelegramType], ABC):
 
     @property
     @abstractmethod
-    def __returning__(self) -> type:  # pragma: no cover
+    def __returning__(self) -> type:
         pass
 
     @property
@@ -61,15 +64,16 @@ class TelegramMethod(BaseModel, Generic[TelegramType], ABC):
     def __api_method__(self) -> str:
         pass
 
-    def build_response(self, data: Dict[str, Any]) -> Response[TelegramType]:
-        # noinspection PyTypeChecker
-        return Response[self.__returning__](**data)  # type: ignore
-
     async def emit(self, bot: Bot) -> TelegramType:
         return await bot(self)
 
     def __await__(self) -> Generator[Any, None, TelegramType]:
-        from aiogram.client.bot import Bot
-
-        bot = Bot.get_current(no_error=False)
+        bot = self._bot
+        if not bot:
+            raise RuntimeError(
+                "This method is not mounted to a any bot instance, please call it explicilty "
+                "with bot instance `await bot(method)`\n"
+                "or mount method to a bot instance `method.as_(bot)` "
+                "and then call it `await method()`"
+            )
         return self.emit(bot).__await__()
