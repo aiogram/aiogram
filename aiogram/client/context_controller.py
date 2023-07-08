@@ -16,7 +16,12 @@ class BotContextController(BaseModel):
         else:
             self._bot = __context.get("bot")
 
-    def as_(self, bot: "Bot") -> Self:
-        """Bind object to a bot instance."""
+    def as_(self, bot: Optional["Bot"]) -> Self:
+        """
+        Bind object to a bot instance.
+
+        :param bot: Bot instance
+        :return: self
+        """
         self._bot = bot
         return self
