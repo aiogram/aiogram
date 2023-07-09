@@ -170,9 +170,11 @@ class TestBaseSession:
     )
     def test_check_response(self, status_code, content, error):
         session = CustomSession()
+        bot = MockedBot()
         method = DeleteMessage(chat_id=42, message_id=42)
         if error is None:
             session.check_response(
+                bot=bot,
                 method=method,
                 status_code=status_code,
                 content=content,
@@ -180,6 +182,7 @@ class TestBaseSession:
         else:
             with pytest.raises(error) as exc_info:
                 session.check_response(
+                    bot=bot,
                     method=method,
                     status_code=status_code,
                     content=content,
@@ -191,10 +194,12 @@ class TestBaseSession:
 
     def test_check_response_json_decode_error(self):
         session = CustomSession()
+        bot = MockedBot()
         method = DeleteMessage(chat_id=42, message_id=42)
 
         with pytest.raises(ClientDecodeError, match="JSONDecodeError"):
             session.check_response(
+                bot=bot,
                 method=method,
                 status_code=200,
                 content="is not a JSON object",
@@ -202,10 +207,12 @@ class TestBaseSession:
 
     def test_check_response_validation_error(self):
         session = CustomSession()
+        bot = MockedBot()
         method = DeleteMessage(chat_id=42, message_id=42)
 
         with pytest.raises(ClientDecodeError, match="ValidationError"):
             session.check_response(
+                bot=bot,
                 method=method,
                 status_code=200,
                 content='{"ok": "test"}',
