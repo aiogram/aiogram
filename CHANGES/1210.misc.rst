@@ -1,0 +1,2 @@
+Replaced ContextVar's with a new feature called `Validation Context <https://docs.pydantic.dev/latest/usage/validators/#validation-context>`_
+in Pydantic to improve the clarity, usability, and versatility of handling the Bot instance within method shortcuts.
