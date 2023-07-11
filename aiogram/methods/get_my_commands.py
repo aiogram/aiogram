@@ -1,8 +1,17 @@
 from __future__ import annotations
 
-from typing import List, Optional
+from typing import List, Optional, Union
 
-from ..types import BotCommand, BotCommandScope
+from ..types import (
+    BotCommand,
+    BotCommandScopeAllChatAdministrators,
+    BotCommandScopeAllGroupChats,
+    BotCommandScopeAllPrivateChats,
+    BotCommandScopeChat,
+    BotCommandScopeChatAdministrators,
+    BotCommandScopeChatMember,
+    BotCommandScopeDefault,
+)
 from .base import TelegramMethod
 
 
@@ -16,7 +25,17 @@ class GetMyCommands(TelegramMethod[List[BotCommand]]):
     __returning__ = List[BotCommand]
     __api_method__ = "getMyCommands"
 
-    scope: Optional[BotCommandScope] = None
+    scope: Optional[
+        Union[
+            BotCommandScopeDefault,
+            BotCommandScopeAllPrivateChats,
+            BotCommandScopeAllGroupChats,
+            BotCommandScopeAllChatAdministrators,
+            BotCommandScopeChat,
+            BotCommandScopeChatAdministrators,
+            BotCommandScopeChatMember,
+        ]
+    ] = None
     """A JSON-serialized object, describing scope of users. Defaults to :class:`aiogram.types.bot_command_scope_default.BotCommandScopeDefault`."""
     language_code: Optional[str] = None
     """A two-letter ISO 639-1 language code or an empty string"""

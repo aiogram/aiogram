@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Optional
 
 import pytest
 
@@ -22,6 +23,11 @@ from aiogram.types import (
     ChatMemberUpdated,
     User,
 )
+
+
+class ChatMemberCustom(ChatMember):
+    status: str
+    is_member: Optional[bool] = None
 
 
 class TestMemberStatusMarker:
@@ -113,11 +119,11 @@ class TestMemberStatusMarker:
     @pytest.mark.parametrize(
         "name,is_member,member,result",
         [
-            ["test", None, ChatMember(status="member"), False],
-            ["test", None, ChatMember(status="test"), True],
-            ["test", True, ChatMember(status="test"), False],
-            ["test", True, ChatMember(status="test", is_member=True), True],
-            ["test", True, ChatMember(status="test", is_member=False), False],
+            ["test", None, ChatMemberCustom(status="member"), False],
+            ["test", None, ChatMemberCustom(status="test"), True],
+            ["test", True, ChatMemberCustom(status="test"), False],
+            ["test", True, ChatMemberCustom(status="test", is_member=True), True],
+            ["test", True, ChatMemberCustom(status="test", is_member=False), False],
         ],
     )
     def test_check(self, name, is_member, member, result):
@@ -244,29 +250,34 @@ class TestMemberStatusTransition:
     @pytest.mark.parametrize(
         "transition,old,new,result",
         [
-            [JOIN_TRANSITION, ChatMember(status="left"), ChatMember(status="member"), True],
             [
                 JOIN_TRANSITION,
-                ChatMember(status="restricted", is_member=True),
-                ChatMember(status="member"),
-                False,
-            ],
-            [
-                JOIN_TRANSITION,
-                ChatMember(status="restricted", is_member=False),
-                ChatMember(status="member"),
+                ChatMemberCustom(status="left"),
+                ChatMemberCustom(status="member"),
                 True,
             ],
             [
                 JOIN_TRANSITION,
-                ChatMember(status="member"),
-                ChatMember(status="restricted", is_member=False),
+                ChatMemberCustom(status="restricted", is_member=True),
+                ChatMemberCustom(status="member"),
+                False,
+            ],
+            [
+                JOIN_TRANSITION,
+                ChatMemberCustom(status="restricted", is_member=False),
+                ChatMemberCustom(status="member"),
+                True,
+            ],
+            [
+                JOIN_TRANSITION,
+                ChatMemberCustom(status="member"),
+                ChatMemberCustom(status="restricted", is_member=False),
                 False,
             ],
             [
                 LEAVE_TRANSITION,
-                ChatMember(status="member"),
-                ChatMember(status="restricted", is_member=False),
+                ChatMemberCustom(status="member"),
+                ChatMemberCustom(status="restricted", is_member=False),
                 True,
             ],
         ],

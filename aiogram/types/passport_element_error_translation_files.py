@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import List, Literal
 
+from ..enums import PassportElementErrorType
 from .passport_element_error import PassportElementError
 
 
@@ -12,7 +13,9 @@ class PassportElementErrorTranslationFiles(PassportElementError):
     Source: https://core.telegram.org/bots/api#passportelementerrortranslationfiles
     """
 
-    source: Literal["translation_files"] = "translation_files"
+    source: Literal[
+        PassportElementErrorType.TRANSLATION_FILES
+    ] = PassportElementErrorType.TRANSLATION_FILES
     """Error source, must be *translation_files*"""
     type: str
     """Type of element of the user's Telegram Passport which has the issue, one of 'passport', 'driver_license', 'identity_card', 'internal_passport', 'utility_bill', 'bank_statement', 'rental_agreement', 'passport_registration', 'temporary_registration'"""

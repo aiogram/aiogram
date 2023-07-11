@@ -141,6 +141,13 @@ from ..types import (
     UNSET_PARSE_MODE,
     BotCommand,
     BotCommandScope,
+    BotCommandScopeAllChatAdministrators,
+    BotCommandScopeAllGroupChats,
+    BotCommandScopeAllPrivateChats,
+    BotCommandScopeChat,
+    BotCommandScopeChatAdministrators,
+    BotCommandScopeChatMember,
+    BotCommandScopeDefault,
     BotDescription,
     BotName,
     BotShortDescription,
@@ -161,9 +168,30 @@ from ..types import (
     GameHighScore,
     InlineKeyboardMarkup,
     InlineQueryResult,
+    InlineQueryResultArticle,
+    InlineQueryResultAudio,
+    InlineQueryResultCachedAudio,
+    InlineQueryResultCachedDocument,
+    InlineQueryResultCachedGif,
+    InlineQueryResultCachedMpeg4Gif,
+    InlineQueryResultCachedPhoto,
+    InlineQueryResultCachedSticker,
+    InlineQueryResultCachedVideo,
+    InlineQueryResultCachedVoice,
+    InlineQueryResultContact,
+    InlineQueryResultDocument,
+    InlineQueryResultGame,
+    InlineQueryResultGif,
+    InlineQueryResultLocation,
+    InlineQueryResultMpeg4Gif,
+    InlineQueryResultPhoto,
     InlineQueryResultsButton,
+    InlineQueryResultVenue,
+    InlineQueryResultVideo,
+    InlineQueryResultVoice,
     InputFile,
     InputMedia,
+    InputMediaAnimation,
     InputMediaAudio,
     InputMediaDocument,
     InputMediaPhoto,
@@ -579,7 +607,28 @@ class Bot(ContextInstanceMixin["Bot"]):
     async def answer_web_app_query(
         self,
         web_app_query_id: str,
-        result: InlineQueryResult,
+        result: Union[
+            InlineQueryResultCachedAudio,
+            InlineQueryResultCachedDocument,
+            InlineQueryResultCachedGif,
+            InlineQueryResultCachedMpeg4Gif,
+            InlineQueryResultCachedPhoto,
+            InlineQueryResultCachedSticker,
+            InlineQueryResultCachedVideo,
+            InlineQueryResultCachedVoice,
+            InlineQueryResultArticle,
+            InlineQueryResultAudio,
+            InlineQueryResultContact,
+            InlineQueryResultGame,
+            InlineQueryResultDocument,
+            InlineQueryResultGif,
+            InlineQueryResultLocation,
+            InlineQueryResultMpeg4Gif,
+            InlineQueryResultPhoto,
+            InlineQueryResultVenue,
+            InlineQueryResultVideo,
+            InlineQueryResultVoice,
+        ],
         request_timeout: Optional[int] = None,
     ) -> SentWebAppMessage:
         """
@@ -1073,7 +1122,17 @@ class Bot(ContextInstanceMixin["Bot"]):
 
     async def delete_my_commands(
         self,
-        scope: Optional[BotCommandScope] = None,
+        scope: Optional[
+            Union[
+                BotCommandScopeDefault,
+                BotCommandScopeAllPrivateChats,
+                BotCommandScopeAllGroupChats,
+                BotCommandScopeAllChatAdministrators,
+                BotCommandScopeChat,
+                BotCommandScopeChatAdministrators,
+                BotCommandScopeChatMember,
+            ]
+        ] = None,
         language_code: Optional[str] = None,
         request_timeout: Optional[int] = None,
     ) -> bool:
@@ -1282,7 +1341,13 @@ class Bot(ContextInstanceMixin["Bot"]):
 
     async def edit_message_media(
         self,
-        media: InputMedia,
+        media: Union[
+            InputMediaAnimation,
+            InputMediaDocument,
+            InputMediaAudio,
+            InputMediaPhoto,
+            InputMediaVideo,
+        ],
         chat_id: Optional[Union[int, str]] = None,
         message_id: Optional[int] = None,
         inline_message_id: Optional[str] = None,
@@ -1664,7 +1729,17 @@ class Bot(ContextInstanceMixin["Bot"]):
 
     async def get_my_commands(
         self,
-        scope: Optional[BotCommandScope] = None,
+        scope: Optional[
+            Union[
+                BotCommandScopeDefault,
+                BotCommandScopeAllPrivateChats,
+                BotCommandScopeAllGroupChats,
+                BotCommandScopeAllChatAdministrators,
+                BotCommandScopeChat,
+                BotCommandScopeChatAdministrators,
+                BotCommandScopeChatMember,
+            ]
+        ] = None,
         language_code: Optional[str] = None,
         request_timeout: Optional[int] = None,
     ) -> List[BotCommand]:
@@ -3077,7 +3152,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         self,
         chat_id: Optional[int] = None,
         menu_button: Optional[
-            Union[MenuButtonDefault, MenuButtonWebApp, MenuButtonCommands]
+            Union[MenuButtonCommands, MenuButtonWebApp, MenuButtonDefault]
         ] = None,
         request_timeout: Optional[int] = None,
     ) -> bool:
@@ -3234,7 +3309,17 @@ class Bot(ContextInstanceMixin["Bot"]):
     async def set_my_commands(
         self,
         commands: List[BotCommand],
-        scope: Optional[BotCommandScope] = None,
+        scope: Optional[
+            Union[
+                BotCommandScopeDefault,
+                BotCommandScopeAllPrivateChats,
+                BotCommandScopeAllGroupChats,
+                BotCommandScopeAllChatAdministrators,
+                BotCommandScopeChat,
+                BotCommandScopeChatAdministrators,
+                BotCommandScopeChatMember,
+            ]
+        ] = None,
         language_code: Optional[str] = None,
         request_timeout: Optional[int] = None,
     ) -> bool:

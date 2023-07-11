@@ -11,10 +11,7 @@ class BotContextController(BaseModel):
     _bot: Optional["Bot"] = PrivateAttr()
 
     def model_post_init(self, __context: Any) -> None:
-        if not __context:
-            self._bot = None
-        else:
-            self._bot = __context.get("bot")
+        self._bot = __context.get("bot") if __context else None
 
     def as_(self, bot: Optional["Bot"]) -> Self:
         """
