@@ -35,7 +35,7 @@ class MockedSession(BaseSession):
         self.requests.append(method)
         response: Response[TelegramType] = self.responses.pop()
         self.check_response(
-            method=method, status_code=response.error_code, content=response.json()
+            bot=bot, method=method, status_code=response.error_code, content=response.json()
         )
         return response.result  # type: ignore
 

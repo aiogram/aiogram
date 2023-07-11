@@ -3,10 +3,10 @@ from unittest.mock import sentinel
 
 from pydantic import BaseModel, ConfigDict
 
-from aiogram.utils.mixins import ContextInstanceMixin
+from aiogram.client.context_controller import BotContextController
 
 
-class TelegramObject(ContextInstanceMixin["TelegramObject"], BaseModel):
+class TelegramObject(BotContextController, BaseModel):
     model_config = ConfigDict(
         use_enum_values=True,
         extra="allow",

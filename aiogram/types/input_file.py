@@ -4,9 +4,20 @@ import io
 import os
 from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import Any, AsyncGenerator, AsyncIterator, Dict, Iterator, Optional, Union
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    AsyncGenerator,
+    AsyncIterator,
+    Dict,
+    Optional,
+    Union,
+)
 
 import aiofiles
+
+if TYPE_CHECKING:
+    from aiogram.client.bot import Bot
 
 DEFAULT_CHUNK_SIZE = 64 * 1024  # 64 kb
 
@@ -110,6 +121,7 @@ class URLInputFile(InputFile):
     def __init__(
         self,
         url: str,
+        bot: "Bot",
         headers: Optional[Dict[str, Any]] = None,
         filename: Optional[str] = None,
         chunk_size: int = DEFAULT_CHUNK_SIZE,
@@ -122,6 +134,9 @@ class URLInputFile(InputFile):
         :param headers: HTTP Headers
         :param filename: Filename to be propagated to telegram.
         :param chunk_size: Uploading chunk size
+        :param timeout: Timeout for downloading
+        :param bot: Bot instance to use HTTP session from.
+                    If not specified, will be used current bot from context.
         """
         super().__init__(filename=filename, chunk_size=chunk_size)
         if headers is None:
@@ -130,12 +145,10 @@ class URLInputFile(InputFile):
         self.url = url
         self.headers = headers
         self.timeout = timeout
+        self.bot = bot
 
     async def read(self, chunk_size: int) -> AsyncGenerator[bytes, None]:
-        from aiogram.client.bot import Bot
-
-        bot = Bot.get_current(no_error=False)
-        stream = bot.session.stream_content(
+        stream = self.bot.session.stream_content(
             url=self.url,
             headers=self.headers,
             timeout=self.timeout,

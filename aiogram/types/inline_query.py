@@ -81,4 +81,4 @@ class InlineQuery(TelegramObject):
             switch_pm_parameter=switch_pm_parameter,
             switch_pm_text=switch_pm_text,
             **kwargs,
-        )
+        ).as_(self._bot)

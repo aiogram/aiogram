@@ -75,7 +75,7 @@ class BaseSession(abc.ABC):
         self.middleware = RequestMiddlewareManager()
 
     def check_response(
-        self, method: TelegramMethod[TelegramType], status_code: int, content: str
+        self, bot: Bot, method: TelegramMethod[TelegramType], status_code: int, content: str
     ) -> Response[TelegramType]:
         """
         Check response status
@@ -89,7 +89,8 @@ class BaseSession(abc.ABC):
             raise ClientDecodeError("Failed to decode object", e, content)
 
         try:
-            response = method.build_response(json_data)
+            response_type = Response[method.__returning__]  # type: ignore
+            response = response_type.model_validate(json_data, context={"bot": bot})
         except ValidationError as e:
             raise ClientDecodeError("Failed to deserialize object", e, json_data)
 
