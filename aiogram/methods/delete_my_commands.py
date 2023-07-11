@@ -1,8 +1,16 @@
 from __future__ import annotations
 
-from typing import Optional
+from typing import Optional, Union
 
-from ..types import BotCommandScope
+from ..types import (
+    BotCommandScopeAllChatAdministrators,
+    BotCommandScopeAllGroupChats,
+    BotCommandScopeAllPrivateChats,
+    BotCommandScopeChat,
+    BotCommandScopeChatAdministrators,
+    BotCommandScopeChatMember,
+    BotCommandScopeDefault,
+)
 from .base import TelegramMethod
 
 
@@ -16,7 +24,17 @@ class DeleteMyCommands(TelegramMethod[bool]):
     __returning__ = bool
     __api_method__ = "deleteMyCommands"
 
-    scope: Optional[BotCommandScope] = None
+    scope: Optional[
+        Union[
+            BotCommandScopeDefault,
+            BotCommandScopeAllPrivateChats,
+            BotCommandScopeAllGroupChats,
+            BotCommandScopeAllChatAdministrators,
+            BotCommandScopeChat,
+            BotCommandScopeChatAdministrators,
+            BotCommandScopeChatMember,
+        ]
+    ] = None
     """A JSON-serialized object, describing scope of users for which the commands are relevant. Defaults to :class:`aiogram.types.bot_command_scope_default.BotCommandScopeDefault`."""
     language_code: Optional[str] = None
     """A two-letter ISO 639-1 language code. If empty, commands will be applied to all users from the given scope, for whose language there are no dedicated commands"""

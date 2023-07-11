@@ -67,7 +67,7 @@ if TYPE_CHECKING:
     from .general_forum_topic_unhidden import GeneralForumTopicUnhidden
     from .inline_keyboard_markup import InlineKeyboardMarkup
     from .input_file import InputFile
-    from .input_media import InputMedia
+    from .input_media_animation import InputMediaAnimation
     from .input_media_audio import InputMediaAudio
     from .input_media_document import InputMediaDocument
     from .input_media_photo import InputMediaPhoto
@@ -2774,7 +2774,13 @@ class Message(TelegramObject):
 
     def edit_media(
         self,
-        media: InputMedia,
+        media: Union[
+            InputMediaAnimation,
+            InputMediaDocument,
+            InputMediaAudio,
+            InputMediaPhoto,
+            InputMediaVideo,
+        ],
         inline_message_id: Optional[str] = None,
         reply_markup: Optional[InlineKeyboardMarkup] = None,
         **kwargs: Any,

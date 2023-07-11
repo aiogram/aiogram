@@ -18,5 +18,5 @@ class SetChatMenuButton(TelegramMethod[bool]):
 
     chat_id: Optional[int] = None
     """Unique identifier for the target private chat. If not specified, default bot's menu button will be changed"""
-    menu_button: Optional[Union[MenuButtonDefault, MenuButtonWebApp, MenuButtonCommands]] = None
+    menu_button: Optional[Union[MenuButtonCommands, MenuButtonWebApp, MenuButtonDefault]] = None
     """A JSON-serialized object for the bot's new menu button. Defaults to :class:`aiogram.types.menu_button_default.MenuButtonDefault`"""

@@ -2,7 +2,15 @@ from __future__ import annotations
 
 from typing import Optional, Union
 
-from ..types import InlineKeyboardMarkup, InputMedia, Message
+from ..types import (
+    InlineKeyboardMarkup,
+    InputMediaAnimation,
+    InputMediaAudio,
+    InputMediaDocument,
+    InputMediaPhoto,
+    InputMediaVideo,
+    Message,
+)
 from .base import TelegramMethod
 
 
@@ -16,7 +24,9 @@ class EditMessageMedia(TelegramMethod[Union[Message, bool]]):
     __returning__ = Union[Message, bool]
     __api_method__ = "editMessageMedia"
 
-    media: InputMedia
+    media: Union[
+        InputMediaAnimation, InputMediaDocument, InputMediaAudio, InputMediaPhoto, InputMediaVideo
+    ]
     """A JSON-serialized object for a new media content of the message"""
     chat_id: Optional[Union[int, str]] = None
     """Required if *inline_message_id* is not specified. Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)"""

@@ -1,6 +1,30 @@
 from __future__ import annotations
 
-from ..types import InlineQueryResult, SentWebAppMessage
+from typing import Union
+
+from ..types import (
+    InlineQueryResultArticle,
+    InlineQueryResultAudio,
+    InlineQueryResultCachedAudio,
+    InlineQueryResultCachedDocument,
+    InlineQueryResultCachedGif,
+    InlineQueryResultCachedMpeg4Gif,
+    InlineQueryResultCachedPhoto,
+    InlineQueryResultCachedSticker,
+    InlineQueryResultCachedVideo,
+    InlineQueryResultCachedVoice,
+    InlineQueryResultContact,
+    InlineQueryResultDocument,
+    InlineQueryResultGame,
+    InlineQueryResultGif,
+    InlineQueryResultLocation,
+    InlineQueryResultMpeg4Gif,
+    InlineQueryResultPhoto,
+    InlineQueryResultVenue,
+    InlineQueryResultVideo,
+    InlineQueryResultVoice,
+    SentWebAppMessage,
+)
 from .base import TelegramMethod
 
 
@@ -16,5 +40,26 @@ class AnswerWebAppQuery(TelegramMethod[SentWebAppMessage]):
 
     web_app_query_id: str
     """Unique identifier for the query to be answered"""
-    result: InlineQueryResult
+    result: Union[
+        InlineQueryResultCachedAudio,
+        InlineQueryResultCachedDocument,
+        InlineQueryResultCachedGif,
+        InlineQueryResultCachedMpeg4Gif,
+        InlineQueryResultCachedPhoto,
+        InlineQueryResultCachedSticker,
+        InlineQueryResultCachedVideo,
+        InlineQueryResultCachedVoice,
+        InlineQueryResultArticle,
+        InlineQueryResultAudio,
+        InlineQueryResultContact,
+        InlineQueryResultGame,
+        InlineQueryResultDocument,
+        InlineQueryResultGif,
+        InlineQueryResultLocation,
+        InlineQueryResultMpeg4Gif,
+        InlineQueryResultPhoto,
+        InlineQueryResultVenue,
+        InlineQueryResultVideo,
+        InlineQueryResultVoice,
+    ]
     """A JSON-serialized object describing the message to be sent"""

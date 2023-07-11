@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import Literal
 
+from ..enums import PassportElementErrorType
 from .passport_element_error import PassportElementError
 
 
@@ -12,7 +13,7 @@ class PassportElementErrorUnspecified(PassportElementError):
     Source: https://core.telegram.org/bots/api#passportelementerrorunspecified
     """
 
-    source: Literal["unspecified"] = "unspecified"
+    source: Literal[PassportElementErrorType.UNSPECIFIED] = PassportElementErrorType.UNSPECIFIED
     """Error source, must be *unspecified*"""
     type: str
     """Type of element of the user's Telegram Passport which has the issue"""
