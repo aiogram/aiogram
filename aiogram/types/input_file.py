@@ -121,11 +121,11 @@ class URLInputFile(InputFile):
     def __init__(
         self,
         url: str,
+        bot: "Bot",
         headers: Optional[Dict[str, Any]] = None,
         filename: Optional[str] = None,
         chunk_size: int = DEFAULT_CHUNK_SIZE,
         timeout: int = 30,
-        bot: "Bot" = None,
     ):
         """
         Represents object for streaming files from internet
@@ -148,13 +148,7 @@ class URLInputFile(InputFile):
         self.bot = bot
 
     async def read(self, chunk_size: int) -> AsyncGenerator[bytes, None]:
-        bot = self.bot
-        if bot is None:
-            from aiogram.client.bot import Bot
-
-            bot = Bot.get_current(no_error=False)
-
-        stream = bot.session.stream_content(
+        stream = self.bot.session.stream_content(
             url=self.url,
             headers=self.headers,
             timeout=self.timeout,

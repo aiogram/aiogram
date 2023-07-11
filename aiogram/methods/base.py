@@ -1,7 +1,16 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, Any, Dict, Generator, Generic, Optional, TypeVar
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    ClassVar,
+    Dict,
+    Generator,
+    Generic,
+    Optional,
+    TypeVar,
+)
 
 from pydantic import BaseModel, ConfigDict
 from pydantic.functional_validators import model_validator
@@ -54,15 +63,20 @@ class TelegramMethod(BotContextController, BaseModel, Generic[TelegramType], ABC
         """
         return {k: v for k, v in values.items() if not isinstance(v, UNSET_TYPE)}
 
-    @property
-    @abstractmethod
-    def __returning__(self) -> type:
-        pass
+    if TYPE_CHECKING:
+        __returning__: ClassVar[type]
+        __api_method__: ClassVar[str]
+    else:
 
-    @property
-    @abstractmethod
-    def __api_method__(self) -> str:
-        pass
+        @property
+        @abstractmethod
+        def __returning__(self) -> type:
+            pass
+
+        @property
+        @abstractmethod
+        def __api_method__(self) -> str:
+            pass
 
     async def emit(self, bot: Bot) -> TelegramType:
         return await bot(self)
