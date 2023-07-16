@@ -142,7 +142,16 @@ class Dispatcher(Router):
         handled = False
         start_time = loop.time()
 
-        token = Bot.set_current(bot)
+        if update.get_mounted_bot() != bot:
+            # Re-mounting update to the current bot instance for making possible to
+            # use it in shortcuts.
+            # Here is update is re-created because we need to propagate context to
+            # all nested objects and attributes of the Update, but it
+            # is impossible without roundtrip to JSON :(
+            # The preferred way is that pass already mounted Bot instance to this update
+            # before call feed_update method
+            update = Update.model_validate(update.model_dump(), context={"bot": bot})
+
         try:
             response = await self.update.wrap_outer_middleware(
                 self.update.trigger,
@@ -165,7 +174,6 @@ class Dispatcher(Router):
                 duration,
                 bot.id,
             )
-            Bot.reset_current(token)
 
     async def feed_raw_update(self, bot: Bot, update: Dict[str, Any], **kwargs: Any) -> Any:
         """
@@ -367,7 +375,7 @@ class Dispatcher(Router):
         self, bot: Bot, update: Union[Update, Dict[str, Any]], _timeout: float = 55, **kwargs: Any
     ) -> Optional[TelegramMethod[TelegramType]]:
         if not isinstance(update, Update):  # Allow to use raw updates
-            update = Update(**update)
+            update = Update.model_validate(update, context={"bot": bot})
 
         ctx = contextvars.copy_context()
         loop = asyncio.get_running_loop()

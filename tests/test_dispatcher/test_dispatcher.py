@@ -460,7 +460,9 @@ class TestDispatcher:
 
         @observer()
         async def my_handler(event: Any, **kwargs: Any):
-            assert event == getattr(update, event_type)
+            assert event.model_dump(exclude_defaults=True) == getattr(
+                update, event_type
+            ).model_dump(exclude_defaults=True)
             if has_chat:
                 assert kwargs["event_chat"]
             if has_user:
@@ -469,7 +471,9 @@ class TestDispatcher:
 
         result = await router.feed_update(bot, update, test="PASS")
         assert isinstance(result, dict)
-        assert result["event_update"] == update
+        assert result["event_update"].model_dump(exclude_defaults=True) == update.model_dump(
+            exclude_defaults=True
+        )
         assert result["event_router"] == router
         assert result["test"] == "PASS"
 
@@ -532,7 +536,9 @@ class TestDispatcher:
         )
         result = await dp.feed_update(bot, update, test="PASS")
         assert isinstance(result, dict)
-        assert result["event_update"] == update
+        assert result["event_update"].model_dump(exclude_defaults=True) == update.model_dump(
+            exclude_defaults=True
+        )
         assert result["event_router"] == router1
         assert result["test"] == "PASS"
 
