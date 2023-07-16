@@ -191,7 +191,7 @@ class Command(Filter):
         return command  # noqa: RET504
 
     def do_magic(self, command: CommandObject) -> Any:
-        if not self.magic:
+        if self.magic is None:
             return command
         result = self.magic.resolve(command)
         if not result:
