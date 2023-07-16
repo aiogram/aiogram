@@ -466,7 +466,7 @@ class Dispatcher(Router):
         """
         Polling runner
 
-        :param bots: Bot instances (one or mre)
+        :param bots: Bot instances (one or more)
         :param polling_timeout: Long-polling wait time
         :param handle_as_tasks: Run task for each event and no wait result
         :param backoff_config: backoff-retry config
