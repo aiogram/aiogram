@@ -276,6 +276,42 @@ class TestNode:
         )
 
 
+class TestHashTag:
+    def test_only_one_element_in_body(self):
+        with pytest.raises(ValueError):
+            HashTag("test", "test")
+
+    def test_body_is_not_str(self):
+        with pytest.raises(ValueError):
+            HashTag(Text("test"))
+
+    def test_with_no_prefix(self):
+        node = HashTag("test")
+        assert node._body == ("#test",)
+
+    def test_with_prefix(self):
+        node = HashTag("#test")
+        assert node._body == ("#test",)
+
+
+class TestCashTag:
+    def test_only_one_element_in_body(self):
+        with pytest.raises(ValueError):
+            CashTag("test", "test")
+
+    def test_body_is_not_str(self):
+        with pytest.raises(ValueError):
+            CashTag(Text("test"))
+
+    def test_with_no_prefix(self):
+        node = CashTag("USD")
+        assert node._body == ("$USD",)
+
+    def test_with_prefix(self):
+        node = CashTag("$USD")
+        assert node._body == ("$USD",)
+
+
 class TestUtils:
     def test_apply_entity(self):
         node = _apply_entity(
@@ -288,6 +324,16 @@ class TestUtils:
         node = as_line("test", "test", "test")
         assert isinstance(node, Text)
         assert len(node._body) == 4  # 3 + '\n'
+
+    def test_line_with_sep(self):
+        node = as_line("test", "test", "test", sep=" ")
+        assert isinstance(node, Text)
+        assert len(node._body) == 6  # 3 + 2 * ' ' + '\n'
+
+    def test_as_line_single_element_with_sep(self):
+        node = as_line("test", sep=" ")
+        assert isinstance(node, Text)
+        assert len(node._body) == 2  # 1 + '\n'
 
     def test_as_list(self):
         node = as_list("test", "test", "test")

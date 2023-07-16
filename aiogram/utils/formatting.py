@@ -226,6 +226,15 @@ class HashTag(Text):
 
     type = MessageEntityType.HASHTAG
 
+    def __init__(self, *body: NodeType, **params: Any) -> None:
+        if len(body) != 1:
+            raise ValueError("Hashtag can contain only one element")
+        if not isinstance(body[0], str):
+            raise ValueError("Hashtag can contain only string")
+        if not body[0].startswith("#"):
+            body = ("#" + body[0],)
+        super().__init__(*body, **params)
+
 
 class CashTag(Text):
     """
@@ -240,6 +249,15 @@ class CashTag(Text):
     """
 
     type = MessageEntityType.CASHTAG
+
+    def __init__(self, *body: NodeType, **params: Any) -> None:
+        if len(body) != 1:
+            raise ValueError("Cashtag can contain only one element")
+        if not isinstance(body[0], str):
+            raise ValueError("Cashtag can contain only string")
+        if not body[0].startswith("$"):
+            body = ("$" + body[0],)
+        super().__init__(*body, **params)
 
 
 class BotCommand(Text):
@@ -474,15 +492,24 @@ def _unparse_entities(
         yield remove_surrogates(text[offset:length])
 
 
-def as_line(*items: NodeType, end: str = "\n") -> Text:
+def as_line(*items: NodeType, end: str = "\n", sep: str = "") -> Text:
     """
     Wrap multiple nodes into line with :code:`\\\\n` at the end of line.
 
     :param items: Text or Any
     :param end: ending of the line, by default is :code:`\\\\n`
+    :param sep: separator between items, by default is empty string
     :return: Text
     """
-    return Text(*items, end)
+    if sep:
+        nodes = []
+        for item in items[:-1]:
+            nodes.extend([item, sep])
+        nodes.append(items[-1])
+        nodes.append(end)
+    else:
+        nodes = [*items, end]
+    return Text(*nodes)
 
 
 def as_list(*items: NodeType, sep: str = "\n") -> Text:
