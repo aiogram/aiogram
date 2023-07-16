@@ -40,7 +40,7 @@ classifiers = [
     "Topic :: Communications :: Chat",
 ]
 dependencies = [
-    "magic-filter~=1.0.9",
+    "magic-filter~=1.0.10",
     "aiohttp~=3.8.4",
     "pydantic~=2.0.0",
     "aiofiles~=23.1.0",
