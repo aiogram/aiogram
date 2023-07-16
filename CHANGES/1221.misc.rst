@@ -1,0 +1,4 @@
+Updated magic-filter with new features
+
+- Added hint for len(F) error
+- Added not in operation
