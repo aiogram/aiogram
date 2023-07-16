@@ -1,1 +1,1 @@
-Added X-Telegram-Bot-Api-Secret-Token header check
+Added :code:`X-Telegram-Bot-Api-Secret-Token` header check

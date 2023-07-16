@@ -1,1 +1,1 @@
-Added possibility to pass custom headers to URLInputFile object
+Added possibility to pass custom headers to :class:`URLInputFile` object

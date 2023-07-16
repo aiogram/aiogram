@@ -14,4 +14,4 @@ The strategy can be changed in dispatcher:
 .. note::
 
     If you have implemented you own storages you should extend record key generation
-    with new one attribute - `thread_id`
+    with new one attribute - :code:`thread_id`

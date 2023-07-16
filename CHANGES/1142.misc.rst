@@ -1,2 +1,2 @@
-Added global defaults `disable_web_page_preview` and `protect_content` in addition to `parse_mode` to the Bot instance,
+Added global defaults :code:`disable_web_page_preview` and :code:`protect_content` in addition to :code:`parse_mode` to the Bot instance,
 reworked internal request builder mechanism.
