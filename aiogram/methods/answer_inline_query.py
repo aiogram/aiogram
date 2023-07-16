@@ -1,10 +1,32 @@
 from __future__ import annotations
 
-from typing import List, Optional
+from typing import List, Optional, Union
 
 from pydantic import Field
 
-from ..types import InlineQueryResult, InlineQueryResultsButton
+from ..types import (
+    InlineQueryResultArticle,
+    InlineQueryResultAudio,
+    InlineQueryResultCachedAudio,
+    InlineQueryResultCachedDocument,
+    InlineQueryResultCachedGif,
+    InlineQueryResultCachedMpeg4Gif,
+    InlineQueryResultCachedPhoto,
+    InlineQueryResultCachedSticker,
+    InlineQueryResultCachedVideo,
+    InlineQueryResultCachedVoice,
+    InlineQueryResultContact,
+    InlineQueryResultDocument,
+    InlineQueryResultGame,
+    InlineQueryResultGif,
+    InlineQueryResultLocation,
+    InlineQueryResultMpeg4Gif,
+    InlineQueryResultPhoto,
+    InlineQueryResultsButton,
+    InlineQueryResultVenue,
+    InlineQueryResultVideo,
+    InlineQueryResultVoice,
+)
 from .base import TelegramMethod
 
 
@@ -22,7 +44,30 @@ class AnswerInlineQuery(TelegramMethod[bool]):
 
     inline_query_id: str
     """Unique identifier for the answered query"""
-    results: List[InlineQueryResult]
+    results: List[
+        Union[
+            InlineQueryResultCachedAudio,
+            InlineQueryResultCachedDocument,
+            InlineQueryResultCachedGif,
+            InlineQueryResultCachedMpeg4Gif,
+            InlineQueryResultCachedPhoto,
+            InlineQueryResultCachedSticker,
+            InlineQueryResultCachedVideo,
+            InlineQueryResultCachedVoice,
+            InlineQueryResultArticle,
+            InlineQueryResultAudio,
+            InlineQueryResultContact,
+            InlineQueryResultGame,
+            InlineQueryResultDocument,
+            InlineQueryResultGif,
+            InlineQueryResultLocation,
+            InlineQueryResultMpeg4Gif,
+            InlineQueryResultPhoto,
+            InlineQueryResultVenue,
+            InlineQueryResultVideo,
+            InlineQueryResultVoice,
+        ]
+    ]
     """A JSON-serialized array of results for the inline query"""
     cache_time: Optional[int] = None
     """The maximum amount of time in seconds that the result of the inline query may be cached on the server. Defaults to 300."""

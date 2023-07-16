@@ -1,8 +1,18 @@
 from __future__ import annotations
 
-from typing import List
+from typing import List, Union
 
-from ..types import PassportElementError
+from ..types import (
+    PassportElementErrorDataField,
+    PassportElementErrorFile,
+    PassportElementErrorFiles,
+    PassportElementErrorFrontSide,
+    PassportElementErrorReverseSide,
+    PassportElementErrorSelfie,
+    PassportElementErrorTranslationFile,
+    PassportElementErrorTranslationFiles,
+    PassportElementErrorUnspecified,
+)
 from .base import TelegramMethod
 
 
@@ -19,5 +29,17 @@ class SetPassportDataErrors(TelegramMethod[bool]):
 
     user_id: int
     """User identifier"""
-    errors: List[PassportElementError]
+    errors: List[
+        Union[
+            PassportElementErrorDataField,
+            PassportElementErrorFrontSide,
+            PassportElementErrorReverseSide,
+            PassportElementErrorSelfie,
+            PassportElementErrorFile,
+            PassportElementErrorFiles,
+            PassportElementErrorTranslationFile,
+            PassportElementErrorTranslationFiles,
+            PassportElementErrorUnspecified,
+        ]
+    ]
     """A JSON-serialized array describing the errors"""
