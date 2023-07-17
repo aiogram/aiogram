@@ -24,7 +24,8 @@ class MutableTelegramObject(TelegramObject):
 
 
 # special sentinel object which used in situation when None might be a useful value
+UNSET: Any = sentinel.UNSET
 UNSET_PARSE_MODE: Any = sentinel.UNSET_PARSE_MODE
-UNSET_DISABLE_WEB_PAGE_PREVIEW = sentinel.UNSET_DISABLE_WEB_PAGE_PREVIEW
-UNSET_PROTECT_CONTENT = sentinel.UNSET_PROTECT_CONTENT
-UNSET_TYPE = type(sentinel.DEFAULT)
+UNSET_DISABLE_WEB_PAGE_PREVIEW: Any = sentinel.UNSET_DISABLE_WEB_PAGE_PREVIEW
+UNSET_PROTECT_CONTENT: Any = sentinel.UNSET_PROTECT_CONTENT
+UNSET_TYPE: Any = type(UNSET)
