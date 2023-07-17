@@ -1,1 +1,0 @@
-Changed small grammar typos for :code:`upload_file`

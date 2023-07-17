@@ -1,1 +1,0 @@
-Removed bot parameters from storages

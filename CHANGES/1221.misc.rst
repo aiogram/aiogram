@@ -1,4 +1,0 @@
-Updated magic-filter with new features
-
-- Added hint for :code:`len(F)` error
-- Added not in operation

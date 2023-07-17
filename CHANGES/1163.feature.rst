@@ -1,4 +1,0 @@
-Improved CallbackData serialization.
-
-- Minimized UUID (hex without dashes)
-- Replaced bool values with int (true=1, false=0)

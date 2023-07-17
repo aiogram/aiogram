@@ -1,1 +1,0 @@
-Fixed signature of startup/shutdown events to include the :code:`**dispatcher.workflow_data` as the handler arguments.

@@ -1,6 +1,0 @@
-Updated `Pydantic to V2 <https://docs.pydantic.dev/2.0/migration/>`_
-
-.. warning::
-
-    Be careful, not all libraries is already updated to using V2
-    (for example at the time, when this warning was added FastAPI still not support V2)

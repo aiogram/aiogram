@@ -1,7 +1,0 @@
-Fixed the serialization error associated with nested subtypes
-like InputMedia, ChatMember, etc.
-
-The previously generated code resulted in an invalid schema under pydantic v2,
-which has stricter type parsing.
-Hence, subtypes without the specification of all subtype unions were generating
-an empty object. This has been rectified now.
