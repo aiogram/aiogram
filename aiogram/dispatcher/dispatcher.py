@@ -18,6 +18,7 @@ from ..fsm.strategy import FSMStrategy
 from ..methods import GetUpdates, TelegramMethod
 from ..methods.base import TelegramType
 from ..types import Update, User
+from ..types.base import UNSET_TYPE, UNSET
 from ..types.update import UpdateTypeLookupError
 from ..utils.backoff import Backoff, BackoffConfig
 from .event.bases import UNHANDLED, SkipHandler
@@ -458,7 +459,7 @@ class Dispatcher(Router):
         polling_timeout: int = 10,
         handle_as_tasks: bool = True,
         backoff_config: BackoffConfig = DEFAULT_BACKOFF_CONFIG,
-        allowed_updates: Optional[List[str]] = None,
+        allowed_updates: Optional[Union[List[str], UNSET_TYPE]] = UNSET,
         handle_signals: bool = True,
         close_bot_session: bool = True,
         **kwargs: Any,
@@ -471,6 +472,7 @@ class Dispatcher(Router):
         :param handle_as_tasks: Run task for each event and no wait result
         :param backoff_config: backoff-retry config
         :param allowed_updates: List of the update types you want your bot to receive
+               By default, all used update types are enabled (resolved from handlers)
         :param handle_signals: handle signals (SIGINT/SIGTERM)
         :param close_bot_session: close bot sessions on shutdown
         :param kwargs: contextual data
@@ -489,6 +491,9 @@ class Dispatcher(Router):
                 self._stop_signal = Event()
             if self._stopped_signal is None:
                 self._stopped_signal = Event()
+
+            if allowed_updates is UNSET:
+                allowed_updates = self.resolve_used_update_types()
 
             self._stop_signal.clear()
             self._stopped_signal.clear()
