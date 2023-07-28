@@ -4,7 +4,7 @@ import pytest
 from _pytest.config import UsageError
 from redis.asyncio.connection import parse_url as parse_redis_url
 
-from aiogram import Bot, Dispatcher
+from aiogram import Dispatcher
 from aiogram.fsm.storage.memory import (
     DisabledEventIsolation,
     MemoryStorage,
@@ -109,12 +109,7 @@ async def disabled_isolation():
 
 @pytest.fixture()
 def bot():
-    bot = MockedBot()
-    token = Bot.set_current(bot)
-    try:
-        yield bot
-    finally:
-        Bot.reset_current(token)
+    return MockedBot()
 
 
 @pytest.fixture()

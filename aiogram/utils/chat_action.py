@@ -129,7 +129,7 @@ class ChatActionSender:
     def typing(
         cls,
         chat_id: Union[int, str],
-        bot: Optional[Bot] = None,
+        bot: Bot,
         interval: float = DEFAULT_INTERVAL,
         initial_sleep: float = DEFAULT_INITIAL_SLEEP,
     ) -> "ChatActionSender":
@@ -146,7 +146,7 @@ class ChatActionSender:
     def upload_photo(
         cls,
         chat_id: Union[int, str],
-        bot: Optional[Bot] = None,
+        bot: Bot,
         interval: float = DEFAULT_INTERVAL,
         initial_sleep: float = DEFAULT_INITIAL_SLEEP,
     ) -> "ChatActionSender":
@@ -163,7 +163,7 @@ class ChatActionSender:
     def record_video(
         cls,
         chat_id: Union[int, str],
-        bot: Optional[Bot] = None,
+        bot: Bot,
         interval: float = DEFAULT_INTERVAL,
         initial_sleep: float = DEFAULT_INITIAL_SLEEP,
     ) -> "ChatActionSender":
@@ -180,7 +180,7 @@ class ChatActionSender:
     def upload_video(
         cls,
         chat_id: Union[int, str],
-        bot: Optional[Bot] = None,
+        bot: Bot,
         interval: float = DEFAULT_INTERVAL,
         initial_sleep: float = DEFAULT_INITIAL_SLEEP,
     ) -> "ChatActionSender":
@@ -197,7 +197,7 @@ class ChatActionSender:
     def record_voice(
         cls,
         chat_id: Union[int, str],
-        bot: Optional[Bot] = None,
+        bot: Bot,
         interval: float = DEFAULT_INTERVAL,
         initial_sleep: float = DEFAULT_INITIAL_SLEEP,
     ) -> "ChatActionSender":
@@ -214,7 +214,7 @@ class ChatActionSender:
     def upload_voice(
         cls,
         chat_id: Union[int, str],
-        bot: Optional[Bot] = None,
+        bot: Bot,
         interval: float = DEFAULT_INTERVAL,
         initial_sleep: float = DEFAULT_INITIAL_SLEEP,
     ) -> "ChatActionSender":
@@ -231,7 +231,7 @@ class ChatActionSender:
     def upload_document(
         cls,
         chat_id: Union[int, str],
-        bot: Optional[Bot] = None,
+        bot: Bot,
         interval: float = DEFAULT_INTERVAL,
         initial_sleep: float = DEFAULT_INITIAL_SLEEP,
     ) -> "ChatActionSender":
@@ -248,7 +248,7 @@ class ChatActionSender:
     def choose_sticker(
         cls,
         chat_id: Union[int, str],
-        bot: Optional[Bot] = None,
+        bot: Bot,
         interval: float = DEFAULT_INTERVAL,
         initial_sleep: float = DEFAULT_INITIAL_SLEEP,
     ) -> "ChatActionSender":
@@ -265,7 +265,7 @@ class ChatActionSender:
     def find_location(
         cls,
         chat_id: Union[int, str],
-        bot: Optional[Bot] = None,
+        bot: Bot,
         interval: float = DEFAULT_INTERVAL,
         initial_sleep: float = DEFAULT_INITIAL_SLEEP,
     ) -> "ChatActionSender":
@@ -282,7 +282,7 @@ class ChatActionSender:
     def record_video_note(
         cls,
         chat_id: Union[int, str],
-        bot: Optional[Bot] = None,
+        bot: Bot,
         interval: float = DEFAULT_INTERVAL,
         initial_sleep: float = DEFAULT_INITIAL_SLEEP,
     ) -> "ChatActionSender":
@@ -299,7 +299,7 @@ class ChatActionSender:
     def upload_video_note(
         cls,
         chat_id: Union[int, str],
-        bot: Optional[Bot] = None,
+        bot: Bot,
         interval: float = DEFAULT_INTERVAL,
         initial_sleep: float = DEFAULT_INITIAL_SLEEP,
     ) -> "ChatActionSender":

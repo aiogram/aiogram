@@ -18,7 +18,7 @@ from ..fsm.strategy import FSMStrategy
 from ..methods import GetUpdates, TelegramMethod
 from ..methods.base import TelegramType
 from ..types import Update, User
-from ..types.base import UNSET_TYPE, UNSET
+from ..types.base import UNSET, UNSET_TYPE
 from ..types.update import UpdateTypeLookupError
 from ..utils.backoff import Backoff, BackoffConfig
 from .event.bases import UNHANDLED, SkipHandler
