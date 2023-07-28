@@ -32,7 +32,7 @@ class BaseHandler(BaseHandlerMixin[T], ABC):
 
         if "bot" in self.data:
             return cast(Bot, self.data["bot"])
-        return Bot.get_current(no_error=False)
+        raise RuntimeError("Bot instance not found in the context")
 
     @property
     def update(self) -> Update:

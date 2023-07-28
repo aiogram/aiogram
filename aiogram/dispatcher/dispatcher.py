@@ -18,7 +18,7 @@ from ..fsm.strategy import FSMStrategy
 from ..methods import GetUpdates, TelegramMethod
 from ..methods.base import TelegramType
 from ..types import Update, User
-from ..types.base import UNSET_TYPE, UNSET
+from ..types.base import UNSET, UNSET_TYPE
 from ..types.update import UpdateTypeLookupError
 from ..utils.backoff import Backoff, BackoffConfig
 from .event.bases import UNHANDLED, SkipHandler
@@ -143,7 +143,7 @@ class Dispatcher(Router):
         handled = False
         start_time = loop.time()
 
-        if update.get_mounted_bot() != bot:
+        if update.bot != bot:
             # Re-mounting update to the current bot instance for making possible to
             # use it in shortcuts.
             # Here is update is re-created because we need to propagate context to
@@ -184,7 +184,7 @@ class Dispatcher(Router):
         :param update:
         :param kwargs:
         """
-        parsed_update = Update(**update)
+        parsed_update = Update.model_validate(update, context={"bot": bot})
         return await self.feed_update(bot=bot, update=parsed_update, **kwargs)
 
     @classmethod
@@ -558,7 +558,7 @@ class Dispatcher(Router):
         polling_timeout: int = 10,
         handle_as_tasks: bool = True,
         backoff_config: BackoffConfig = DEFAULT_BACKOFF_CONFIG,
-        allowed_updates: Optional[List[str]] = None,
+        allowed_updates: Optional[Union[List[str], UNSET_TYPE]] = UNSET,
         handle_signals: bool = True,
         close_bot_session: bool = True,
         **kwargs: Any,

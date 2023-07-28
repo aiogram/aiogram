@@ -27,7 +27,7 @@ class StateFilter(Filter):
         )
 
     async def __call__(
-        self, obj: Union[TelegramObject], raw_state: Optional[str] = None
+        self, obj: TelegramObject, raw_state: Optional[str] = None
     ) -> Union[bool, Dict[str, Any]]:
         allowed_states = cast(Sequence[StateType], self.states)
         for allowed_state in allowed_states:

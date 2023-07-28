@@ -29,14 +29,16 @@ class TestBaseClassBasedHandler:
 
     async def test_bot_from_context(self):
         event = Update(update_id=42)
-        handler = MyHandler(event=event, key=42)
         bot = Bot("42:TEST")
-
-        with pytest.raises(LookupError):
-            handler.bot
-
-        Bot.set_current(bot)
+        handler = MyHandler(event=event, key=42, bot=bot)
         assert handler.bot == bot
+
+    async def test_bot_from_context_missing(self):
+        event = Update(update_id=42)
+        handler = MyHandler(event=event, key=42)
+
+        with pytest.raises(RuntimeError):
+            handler.bot
 
     async def test_bot_from_data(self):
         event = Update(update_id=42)

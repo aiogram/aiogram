@@ -1,0 +1,2 @@
+Removed the use of the context instance (Bot.get_current) from all placements that were used previously.
+This is to avoid the use of the context instance in the wrong place.
