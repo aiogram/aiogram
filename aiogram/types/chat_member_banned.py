@@ -1,9 +1,7 @@
 from __future__ import annotations
 
 import datetime
-from typing import TYPE_CHECKING
-
-from pydantic import Field
+from typing import TYPE_CHECKING, Literal
 
 from ..enums import ChatMemberStatus
 from .chat_member import ChatMember
@@ -19,7 +17,7 @@ class ChatMemberBanned(ChatMember):
     Source: https://core.telegram.org/bots/api#chatmemberbanned
     """
 
-    status: str = Field(ChatMemberStatus.KICKED, const=True)
+    status: Literal[ChatMemberStatus.KICKED] = ChatMemberStatus.KICKED
     """The member's status in the chat, always 'kicked'"""
     user: User
     """Information about the user"""

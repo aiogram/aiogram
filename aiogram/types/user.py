@@ -90,4 +90,4 @@ class User(TelegramObject):
             offset=offset,
             limit=limit,
             **kwargs,
-        )
+        ).as_(self._bot)

@@ -42,6 +42,7 @@ Available methods
     get_my_commands
     get_my_default_administrator_rights
     get_my_description
+    get_my_name
     get_my_short_description
     get_user_profile_photos
     hide_general_forum_topic
@@ -78,6 +79,7 @@ Available methods
     set_my_commands
     set_my_default_administrator_rights
     set_my_description
+    set_my_name
     set_my_short_description
     unban_chat_member
     unban_chat_sender_chat

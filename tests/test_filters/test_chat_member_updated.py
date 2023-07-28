@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Optional
 
 import pytest
 
@@ -12,7 +13,21 @@ from aiogram.filters.chat_member_updated import (
     _MemberStatusMarker,
     _MemberStatusTransition,
 )
-from aiogram.types import Chat, ChatMember, ChatMemberUpdated, User
+from aiogram.types import (
+    Chat,
+    ChatMember,
+    ChatMemberAdministrator,
+    ChatMemberLeft,
+    ChatMemberMember,
+    ChatMemberRestricted,
+    ChatMemberUpdated,
+    User,
+)
+
+
+class ChatMemberCustom(ChatMember):
+    status: str
+    is_member: Optional[bool] = None
 
 
 class TestMemberStatusMarker:
@@ -104,11 +119,11 @@ class TestMemberStatusMarker:
     @pytest.mark.parametrize(
         "name,is_member,member,result",
         [
-            ["test", None, ChatMember(status="member"), False],
-            ["test", None, ChatMember(status="test"), True],
-            ["test", True, ChatMember(status="test"), False],
-            ["test", True, ChatMember(status="test", is_member=True), True],
-            ["test", True, ChatMember(status="test", is_member=False), False],
+            ["test", None, ChatMemberCustom(status="member"), False],
+            ["test", None, ChatMemberCustom(status="test"), True],
+            ["test", True, ChatMemberCustom(status="test"), False],
+            ["test", True, ChatMemberCustom(status="test", is_member=True), True],
+            ["test", True, ChatMemberCustom(status="test", is_member=False), False],
         ],
     )
     def test_check(self, name, is_member, member, result):
@@ -235,29 +250,34 @@ class TestMemberStatusTransition:
     @pytest.mark.parametrize(
         "transition,old,new,result",
         [
-            [JOIN_TRANSITION, ChatMember(status="left"), ChatMember(status="member"), True],
             [
                 JOIN_TRANSITION,
-                ChatMember(status="restricted", is_member=True),
-                ChatMember(status="member"),
-                False,
-            ],
-            [
-                JOIN_TRANSITION,
-                ChatMember(status="restricted", is_member=False),
-                ChatMember(status="member"),
+                ChatMemberCustom(status="left"),
+                ChatMemberCustom(status="member"),
                 True,
             ],
             [
                 JOIN_TRANSITION,
-                ChatMember(status="member"),
-                ChatMember(status="restricted", is_member=False),
+                ChatMemberCustom(status="restricted", is_member=True),
+                ChatMemberCustom(status="member"),
+                False,
+            ],
+            [
+                JOIN_TRANSITION,
+                ChatMemberCustom(status="restricted", is_member=False),
+                ChatMemberCustom(status="member"),
+                True,
+            ],
+            [
+                JOIN_TRANSITION,
+                ChatMemberCustom(status="member"),
+                ChatMemberCustom(status="restricted", is_member=False),
                 False,
             ],
             [
                 LEAVE_TRANSITION,
-                ChatMember(status="member"),
-                ChatMember(status="restricted", is_member=False),
+                ChatMemberCustom(status="member"),
+                ChatMemberCustom(status="restricted", is_member=False),
                 True,
             ],
         ],
@@ -267,84 +287,91 @@ class TestMemberStatusTransition:
 
 
 class TestChatMemberUpdatedStatusFilter:
+    USER = User(id=42, first_name="Test", is_bot=False)
+    PARAMS = {
+        "user": USER,
+        "until_date": datetime.now(),
+        "is_anonymous": True,
+        "custom_title": "title",
+        "can_be_edited": True,
+        "can_manage_chat": True,
+        "can_delete_messages": True,
+        "can_manage_video_chats": True,
+        "can_restrict_members": True,
+        "can_promote_members": True,
+        "can_change_info": True,
+        "can_invite_users": True,
+        "can_post_messages": True,
+        "can_edit_messages": True,
+        "can_pin_messages": True,
+        "can_manage_topics": True,
+        "can_send_messages": True,
+        "can_send_audios": True,
+        "can_send_documents": True,
+        "can_send_photos": True,
+        "can_send_videos": True,
+        "can_send_video_notes": True,
+        "can_send_voice_notes": True,
+        "can_send_polls": True,
+        "can_send_other_messages": True,
+        "can_add_web_page_previews": True,
+    }
+
     @pytest.mark.parametrize(
         "transition,old,new,result",
         [
-            [JOIN_TRANSITION, ChatMember(status="left"), ChatMember(status="member"), True],
             [
                 JOIN_TRANSITION,
-                ChatMember(status="restricted", is_member=True),
-                ChatMember(status="member"),
-                False,
-            ],
-            [
-                JOIN_TRANSITION,
-                ChatMember(status="restricted", is_member=False),
-                ChatMember(status="member"),
+                ChatMemberLeft(status="left", **PARAMS),
+                ChatMemberMember(status="member", **PARAMS),
                 True,
             ],
             [
                 JOIN_TRANSITION,
-                ChatMember(status="member"),
-                ChatMember(status="restricted", is_member=False),
+                ChatMemberRestricted(status="restricted", is_member=True, **PARAMS),
+                ChatMemberMember(status="member", **PARAMS),
+                False,
+            ],
+            [
+                JOIN_TRANSITION,
+                ChatMemberRestricted(status="restricted", is_member=False, **PARAMS),
+                ChatMemberMember(status="member", **PARAMS),
+                True,
+            ],
+            [
+                JOIN_TRANSITION,
+                ChatMemberMember(status="member", **PARAMS),
+                ChatMemberRestricted(status="restricted", is_member=False, **PARAMS),
                 False,
             ],
             [
                 LEAVE_TRANSITION,
-                ChatMember(status="member"),
-                ChatMember(status="restricted", is_member=False),
+                ChatMemberMember(status="member", **PARAMS),
+                ChatMemberRestricted(status="restricted", is_member=False, **PARAMS),
                 True,
             ],
             [
                 ADMINISTRATOR,
-                ChatMember(status="member"),
-                ChatMember(status="administrator"),
+                ChatMemberMember(status="member", **PARAMS),
+                ChatMemberAdministrator(status="administrator", **PARAMS),
                 True,
             ],
             [
                 IS_MEMBER,
-                ChatMember(status="restricted", is_member=False),
-                ChatMember(status="member"),
+                ChatMemberRestricted(status="restricted", is_member=False, **PARAMS),
+                ChatMemberMember(status="member", **PARAMS),
                 True,
             ],
         ],
     )
     async def test_call(self, transition, old, new, result):
         updated_filter = ChatMemberUpdatedFilter(member_status_changed=transition)
-        user = User(id=42, first_name="Test", is_bot=False)
-        update = {
-            "user": user,
-            "until_date": datetime.now(),
-            "is_anonymous": True,
-            "custom_title": True,
-            "can_be_edited": True,
-            "can_manage_chat": True,
-            "can_delete_messages": True,
-            "can_manage_video_chats": True,
-            "can_restrict_members": True,
-            "can_promote_members": True,
-            "can_change_info": True,
-            "can_invite_users": True,
-            "can_post_messages": True,
-            "can_edit_messages": True,
-            "can_pin_messages": True,
-            "can_manage_topics": True,
-            "can_send_messages": True,
-            "can_send_audios": True,
-            "can_send_documents": True,
-            "can_send_photos": True,
-            "can_send_videos": True,
-            "can_send_video_notes": True,
-            "can_send_voice_notes": True,
-            "can_send_polls": True,
-            "can_send_other_messages": True,
-            "can_add_web_page_previews": True,
-        }
+
         event = ChatMemberUpdated(
             chat=Chat(id=42, type="test"),
-            from_user=user,
-            old_chat_member=old.copy(update=update),
-            new_chat_member=new.copy(update=update),
+            from_user=self.USER,
+            old_chat_member=old,
+            new_chat_member=new,
             date=datetime.now(),
         )
 

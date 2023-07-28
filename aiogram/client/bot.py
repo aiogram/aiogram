@@ -71,6 +71,7 @@ from ..methods import (
     GetMyCommands,
     GetMyDefaultAdministratorRights,
     GetMyDescription,
+    GetMyName,
     GetMyShortDescription,
     GetStickerSet,
     GetUpdates,
@@ -115,6 +116,7 @@ from ..methods import (
     SetMyCommands,
     SetMyDefaultAdministratorRights,
     SetMyDescription,
+    SetMyName,
     SetMyShortDescription,
     SetPassportDataErrors,
     SetStickerEmojiList,
@@ -138,8 +140,15 @@ from ..methods import (
 from ..types import (
     UNSET_PARSE_MODE,
     BotCommand,
-    BotCommandScope,
+    BotCommandScopeAllChatAdministrators,
+    BotCommandScopeAllGroupChats,
+    BotCommandScopeAllPrivateChats,
+    BotCommandScopeChat,
+    BotCommandScopeChatAdministrators,
+    BotCommandScopeChatMember,
+    BotCommandScopeDefault,
     BotDescription,
+    BotName,
     BotShortDescription,
     Chat,
     ChatAdministratorRights,
@@ -157,9 +166,29 @@ from ..types import (
     ForumTopic,
     GameHighScore,
     InlineKeyboardMarkup,
-    InlineQueryResult,
+    InlineQueryResultArticle,
+    InlineQueryResultAudio,
+    InlineQueryResultCachedAudio,
+    InlineQueryResultCachedDocument,
+    InlineQueryResultCachedGif,
+    InlineQueryResultCachedMpeg4Gif,
+    InlineQueryResultCachedPhoto,
+    InlineQueryResultCachedSticker,
+    InlineQueryResultCachedVideo,
+    InlineQueryResultCachedVoice,
+    InlineQueryResultContact,
+    InlineQueryResultDocument,
+    InlineQueryResultGame,
+    InlineQueryResultGif,
+    InlineQueryResultLocation,
+    InlineQueryResultMpeg4Gif,
+    InlineQueryResultPhoto,
+    InlineQueryResultsButton,
+    InlineQueryResultVenue,
+    InlineQueryResultVideo,
+    InlineQueryResultVoice,
     InputFile,
-    InputMedia,
+    InputMediaAnimation,
     InputMediaAudio,
     InputMediaDocument,
     InputMediaPhoto,
@@ -173,7 +202,15 @@ from ..types import (
     Message,
     MessageEntity,
     MessageId,
-    PassportElementError,
+    PassportElementErrorDataField,
+    PassportElementErrorFile,
+    PassportElementErrorFiles,
+    PassportElementErrorFrontSide,
+    PassportElementErrorReverseSide,
+    PassportElementErrorSelfie,
+    PassportElementErrorTranslationFile,
+    PassportElementErrorTranslationFiles,
+    PassportElementErrorUnspecified,
     Poll,
     ReplyKeyboardMarkup,
     ReplyKeyboardRemove,
@@ -193,7 +230,7 @@ from .session.base import BaseSession
 T = TypeVar("T")
 
 
-class Bot(ContextInstanceMixin["Bot"]):
+class Bot:
     def __init__(
         self,
         token: str,
@@ -247,16 +284,14 @@ class Bot(ContextInstanceMixin["Bot"]):
         """
         Generate bot context
 
-        :param auto_close:
+        :param auto_close: close session on exit
         :return:
         """
-        token = self.set_current(self)
         try:
             yield self
         finally:
             if auto_close:
                 await self.session.close()
-            self.reset_current(token)
 
     async def me(self) -> User:
         """
@@ -477,12 +512,36 @@ class Bot(ContextInstanceMixin["Bot"]):
     async def answer_inline_query(
         self,
         inline_query_id: str,
-        results: List[InlineQueryResult],
+        results: List[
+            Union[
+                InlineQueryResultCachedAudio,
+                InlineQueryResultCachedDocument,
+                InlineQueryResultCachedGif,
+                InlineQueryResultCachedMpeg4Gif,
+                InlineQueryResultCachedPhoto,
+                InlineQueryResultCachedSticker,
+                InlineQueryResultCachedVideo,
+                InlineQueryResultCachedVoice,
+                InlineQueryResultArticle,
+                InlineQueryResultAudio,
+                InlineQueryResultContact,
+                InlineQueryResultGame,
+                InlineQueryResultDocument,
+                InlineQueryResultGif,
+                InlineQueryResultLocation,
+                InlineQueryResultMpeg4Gif,
+                InlineQueryResultPhoto,
+                InlineQueryResultVenue,
+                InlineQueryResultVideo,
+                InlineQueryResultVoice,
+            ]
+        ],
         cache_time: Optional[int] = None,
         is_personal: Optional[bool] = None,
         next_offset: Optional[str] = None,
-        switch_pm_text: Optional[str] = None,
+        button: Optional[InlineQueryResultsButton] = None,
         switch_pm_parameter: Optional[str] = None,
+        switch_pm_text: Optional[str] = None,
         request_timeout: Optional[int] = None,
     ) -> bool:
         """
@@ -495,10 +554,11 @@ class Bot(ContextInstanceMixin["Bot"]):
         :param inline_query_id: Unique identifier for the answered query
         :param results: A JSON-serialized array of results for the inline query
         :param cache_time: The maximum amount of time in seconds that the result of the inline query may be cached on the server. Defaults to 300.
-        :param is_personal: Pass :code:`True` if results may be cached on the server side only for the user that sent the query. By default, results may be returned to any user who sends the same query
+        :param is_personal: Pass :code:`True` if results may be cached on the server side only for the user that sent the query. By default, results may be returned to any user who sends the same query.
         :param next_offset: Pass the offset that a client should send in the next query with the same text to receive more results. Pass an empty string if there are no more results or if you don't support pagination. Offset length can't exceed 64 bytes.
-        :param switch_pm_text: If passed, clients will display a button with specified text that switches the user to a private chat with the bot and sends the bot a start message with the parameter *switch_pm_parameter*
+        :param button: A JSON-serialized object describing a button to be shown above inline query results
         :param switch_pm_parameter: `Deep-linking <https://core.telegram.org/bots/features#deep-linking>`_ parameter for the /start message sent to the bot when user presses the switch button. 1-64 characters, only :code:`A-Z`, :code:`a-z`, :code:`0-9`, :code:`_` and :code:`-` are allowed.
+        :param switch_pm_text: If passed, clients will display a button with specified text that switches the user to a private chat with the bot and sends the bot a start message with the parameter *switch_pm_parameter*
         :param request_timeout: Request timeout
         :return: On success, :code:`True` is returned.
         """
@@ -509,8 +569,9 @@ class Bot(ContextInstanceMixin["Bot"]):
             cache_time=cache_time,
             is_personal=is_personal,
             next_offset=next_offset,
-            switch_pm_text=switch_pm_text,
+            button=button,
             switch_pm_parameter=switch_pm_parameter,
+            switch_pm_text=switch_pm_text,
         )
         return await self(call, request_timeout=request_timeout)
 
@@ -572,7 +633,28 @@ class Bot(ContextInstanceMixin["Bot"]):
     async def answer_web_app_query(
         self,
         web_app_query_id: str,
-        result: InlineQueryResult,
+        result: Union[
+            InlineQueryResultCachedAudio,
+            InlineQueryResultCachedDocument,
+            InlineQueryResultCachedGif,
+            InlineQueryResultCachedMpeg4Gif,
+            InlineQueryResultCachedPhoto,
+            InlineQueryResultCachedSticker,
+            InlineQueryResultCachedVideo,
+            InlineQueryResultCachedVoice,
+            InlineQueryResultArticle,
+            InlineQueryResultAudio,
+            InlineQueryResultContact,
+            InlineQueryResultGame,
+            InlineQueryResultDocument,
+            InlineQueryResultGif,
+            InlineQueryResultLocation,
+            InlineQueryResultMpeg4Gif,
+            InlineQueryResultPhoto,
+            InlineQueryResultVenue,
+            InlineQueryResultVideo,
+            InlineQueryResultVoice,
+        ],
         request_timeout: Optional[int] = None,
     ) -> SentWebAppMessage:
         """
@@ -1066,7 +1148,17 @@ class Bot(ContextInstanceMixin["Bot"]):
 
     async def delete_my_commands(
         self,
-        scope: Optional[BotCommandScope] = None,
+        scope: Optional[
+            Union[
+                BotCommandScopeDefault,
+                BotCommandScopeAllPrivateChats,
+                BotCommandScopeAllGroupChats,
+                BotCommandScopeAllChatAdministrators,
+                BotCommandScopeChat,
+                BotCommandScopeChatAdministrators,
+                BotCommandScopeChatMember,
+            ]
+        ] = None,
         language_code: Optional[str] = None,
         request_timeout: Optional[int] = None,
     ) -> bool:
@@ -1275,7 +1367,13 @@ class Bot(ContextInstanceMixin["Bot"]):
 
     async def edit_message_media(
         self,
-        media: InputMedia,
+        media: Union[
+            InputMediaAnimation,
+            InputMediaDocument,
+            InputMediaAudio,
+            InputMediaPhoto,
+            InputMediaVideo,
+        ],
         chat_id: Optional[Union[int, str]] = None,
         message_id: Optional[int] = None,
         inline_message_id: Optional[str] = None,
@@ -1657,7 +1755,17 @@ class Bot(ContextInstanceMixin["Bot"]):
 
     async def get_my_commands(
         self,
-        scope: Optional[BotCommandScope] = None,
+        scope: Optional[
+            Union[
+                BotCommandScopeDefault,
+                BotCommandScopeAllPrivateChats,
+                BotCommandScopeAllGroupChats,
+                BotCommandScopeAllChatAdministrators,
+                BotCommandScopeChat,
+                BotCommandScopeChatAdministrators,
+                BotCommandScopeChatMember,
+            ]
+        ] = None,
         language_code: Optional[str] = None,
         request_timeout: Optional[int] = None,
     ) -> List[BotCommand]:
@@ -1737,7 +1845,7 @@ class Bot(ContextInstanceMixin["Bot"]):
 
         Source: https://core.telegram.org/bots/api#getupdates
 
-        :param offset: Identifier of the first update to be returned. Must be greater by one than the highest among the identifiers of previously received updates. By default, updates starting with the earliest unconfirmed update are returned. An update is considered confirmed as soon as :class:`aiogram.methods.get_updates.GetUpdates` is called with an *offset* higher than its *update_id*. The negative offset can be specified to retrieve updates starting from *-offset* update from the end of the updates queue. All previous updates will forgotten.
+        :param offset: Identifier of the first update to be returned. Must be greater by one than the highest among the identifiers of previously received updates. By default, updates starting with the earliest unconfirmed update are returned. An update is considered confirmed as soon as :class:`aiogram.methods.get_updates.GetUpdates` is called with an *offset* higher than its *update_id*. The negative offset can be specified to retrieve updates starting from *-offset* update from the end of the updates queue. All previous updates will be forgotten.
         :param limit: Limits the number of updates to be retrieved. Values between 1-100 are accepted. Defaults to 100.
         :param timeout: Timeout in seconds for long polling. Defaults to 0, i.e. usual short polling. Should be positive, short polling should be used for testing purposes only.
         :param allowed_updates: A JSON-serialized list of the update types you want your bot to receive. For example, specify ['message', 'edited_channel_post', 'callback_query'] to only receive updates of these types. See :class:`aiogram.types.update.Update` for a complete list of available update types. Specify an empty list to receive all update types except *chat_member* (default). If not specified, the previous setting will be used.
@@ -3070,7 +3178,7 @@ class Bot(ContextInstanceMixin["Bot"]):
         self,
         chat_id: Optional[int] = None,
         menu_button: Optional[
-            Union[MenuButtonDefault, MenuButtonWebApp, MenuButtonCommands]
+            Union[MenuButtonCommands, MenuButtonWebApp, MenuButtonDefault]
         ] = None,
         request_timeout: Optional[int] = None,
     ) -> bool:
@@ -3227,7 +3335,17 @@ class Bot(ContextInstanceMixin["Bot"]):
     async def set_my_commands(
         self,
         commands: List[BotCommand],
-        scope: Optional[BotCommandScope] = None,
+        scope: Optional[
+            Union[
+                BotCommandScopeDefault,
+                BotCommandScopeAllPrivateChats,
+                BotCommandScopeAllGroupChats,
+                BotCommandScopeAllChatAdministrators,
+                BotCommandScopeChat,
+                BotCommandScopeChatAdministrators,
+                BotCommandScopeChatMember,
+            ]
+        ] = None,
         language_code: Optional[str] = None,
         request_timeout: Optional[int] = None,
     ) -> bool:
@@ -3276,7 +3394,19 @@ class Bot(ContextInstanceMixin["Bot"]):
     async def set_passport_data_errors(
         self,
         user_id: int,
-        errors: List[PassportElementError],
+        errors: List[
+            Union[
+                PassportElementErrorDataField,
+                PassportElementErrorFrontSide,
+                PassportElementErrorReverseSide,
+                PassportElementErrorSelfie,
+                PassportElementErrorFile,
+                PassportElementErrorFiles,
+                PassportElementErrorTranslationFile,
+                PassportElementErrorTranslationFiles,
+                PassportElementErrorUnspecified,
+            ]
+        ],
         request_timeout: Optional[int] = None,
     ) -> bool:
         """
@@ -3911,5 +4041,48 @@ class Bot(ContextInstanceMixin["Bot"]):
         call = SetStickerSetTitle(
             name=name,
             title=title,
+        )
+        return await self(call, request_timeout=request_timeout)
+
+    async def get_my_name(
+        self,
+        language_code: Optional[str] = None,
+        request_timeout: Optional[int] = None,
+    ) -> BotName:
+        """
+        Use this method to get the current bot name for the given user language. Returns :class:`aiogram.types.bot_name.BotName` on success.
+
+        Source: https://core.telegram.org/bots/api#getmyname
+
+        :param language_code: A two-letter ISO 639-1 language code or an empty string
+        :param request_timeout: Request timeout
+        :return: Returns :class:`aiogram.types.bot_name.BotName` on success.
+        """
+
+        call = GetMyName(
+            language_code=language_code,
+        )
+        return await self(call, request_timeout=request_timeout)
+
+    async def set_my_name(
+        self,
+        name: Optional[str] = None,
+        language_code: Optional[str] = None,
+        request_timeout: Optional[int] = None,
+    ) -> bool:
+        """
+        Use this method to change the bot's name. Returns :code:`True` on success.
+
+        Source: https://core.telegram.org/bots/api#setmyname
+
+        :param name: New bot name; 0-64 characters. Pass an empty string to remove the dedicated name for the given language.
+        :param language_code: A two-letter ISO 639-1 language code. If empty, the name will be shown to all users for whose language there is no dedicated name.
+        :param request_timeout: Request timeout
+        :return: Returns :code:`True` on success.
+        """
+
+        call = SetMyName(
+            name=name,
+            language_code=language_code,
         )
         return await self(call, request_timeout=request_timeout)

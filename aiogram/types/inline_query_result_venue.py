@@ -1,15 +1,17 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional
-
-from pydantic import Field
+from typing import TYPE_CHECKING, Literal, Optional, Union
 
 from ..enums import InlineQueryResultType
 from .inline_query_result import InlineQueryResult
 
 if TYPE_CHECKING:
     from .inline_keyboard_markup import InlineKeyboardMarkup
-    from .input_message_content import InputMessageContent
+    from .input_contact_message_content import InputContactMessageContent
+    from .input_invoice_message_content import InputInvoiceMessageContent
+    from .input_location_message_content import InputLocationMessageContent
+    from .input_text_message_content import InputTextMessageContent
+    from .input_venue_message_content import InputVenueMessageContent
 
 
 class InlineQueryResultVenue(InlineQueryResult):
@@ -20,7 +22,7 @@ class InlineQueryResultVenue(InlineQueryResult):
     Source: https://core.telegram.org/bots/api#inlinequeryresultvenue
     """
 
-    type: str = Field(InlineQueryResultType.VENUE, const=True)
+    type: Literal[InlineQueryResultType.VENUE] = InlineQueryResultType.VENUE
     """Type of the result, must be *venue*"""
     id: str
     """Unique identifier for this result, 1-64 Bytes"""
@@ -42,7 +44,15 @@ class InlineQueryResultVenue(InlineQueryResult):
     """*Optional*. Google Places type of the venue. (See `supported types <https://developers.google.com/places/web-service/supported_types>`_.)"""
     reply_markup: Optional[InlineKeyboardMarkup] = None
     """*Optional*. `Inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_ attached to the message"""
-    input_message_content: Optional[InputMessageContent] = None
+    input_message_content: Optional[
+        Union[
+            InputTextMessageContent,
+            InputLocationMessageContent,
+            InputVenueMessageContent,
+            InputContactMessageContent,
+            InputInvoiceMessageContent,
+        ]
+    ] = None
     """*Optional*. Content of the message to be sent instead of the venue"""
     thumbnail_url: Optional[str] = None
     """*Optional*. Url of the thumbnail for the result"""

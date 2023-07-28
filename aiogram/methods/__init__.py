@@ -48,6 +48,7 @@ from .get_me import GetMe
 from .get_my_commands import GetMyCommands
 from .get_my_default_administrator_rights import GetMyDefaultAdministratorRights
 from .get_my_description import GetMyDescription
+from .get_my_name import GetMyName
 from .get_my_short_description import GetMyShortDescription
 from .get_sticker_set import GetStickerSet
 from .get_updates import GetUpdates
@@ -92,6 +93,7 @@ from .set_game_score import SetGameScore
 from .set_my_commands import SetMyCommands
 from .set_my_default_administrator_rights import SetMyDefaultAdministratorRights
 from .set_my_description import SetMyDescription
+from .set_my_name import SetMyName
 from .set_my_short_description import SetMyShortDescription
 from .set_passport_data_errors import SetPassportDataErrors
 from .set_sticker_emoji_list import SetStickerEmojiList
@@ -161,6 +163,7 @@ __all__ = (
     "GetMyCommands",
     "GetMyDefaultAdministratorRights",
     "GetMyDescription",
+    "GetMyName",
     "GetMyShortDescription",
     "GetStickerSet",
     "GetUpdates",
@@ -207,6 +210,7 @@ __all__ = (
     "SetMyCommands",
     "SetMyDefaultAdministratorRights",
     "SetMyDescription",
+    "SetMyName",
     "SetMyShortDescription",
     "SetPassportDataErrors",
     "SetStickerEmojiList",

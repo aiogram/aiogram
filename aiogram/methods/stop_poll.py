@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional, Union
+from typing import Optional, Union
 
 from ..types import InlineKeyboardMarkup, Poll
 from .base import TelegramMethod

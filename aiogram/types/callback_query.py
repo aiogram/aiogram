@@ -74,4 +74,4 @@ class CallbackQuery(TelegramObject):
             url=url,
             cache_time=cache_time,
             **kwargs,
-        )
+        ).as_(self._bot)

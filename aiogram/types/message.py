@@ -67,7 +67,7 @@ if TYPE_CHECKING:
     from .general_forum_topic_unhidden import GeneralForumTopicUnhidden
     from .inline_keyboard_markup import InlineKeyboardMarkup
     from .input_file import InputFile
-    from .input_media import InputMedia
+    from .input_media_animation import InputMediaAnimation
     from .input_media_audio import InputMediaAudio
     from .input_media_document import InputMediaDocument
     from .input_media_photo import InputMediaPhoto
@@ -317,6 +317,8 @@ class Message(TelegramObject):
             return ContentType.MESSAGE_AUTO_DELETE_TIMER_CHANGED
         if self.forum_topic_created:
             return ContentType.FORUM_TOPIC_CREATED
+        if self.forum_topic_edited:
+            return ContentType.FORUM_TOPIC_EDITED
         if self.forum_topic_closed:
             return ContentType.FORUM_TOPIC_CLOSED
         if self.forum_topic_reopened:
@@ -416,7 +418,7 @@ class Message(TelegramObject):
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def answer_animation(
         self,
@@ -488,7 +490,7 @@ class Message(TelegramObject):
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def reply_audio(
         self,
@@ -557,7 +559,7 @@ class Message(TelegramObject):
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def answer_audio(
         self,
@@ -627,7 +629,7 @@ class Message(TelegramObject):
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def reply_contact(
         self,
@@ -683,7 +685,7 @@ class Message(TelegramObject):
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def answer_contact(
         self,
@@ -740,7 +742,7 @@ class Message(TelegramObject):
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def reply_document(
         self,
@@ -802,7 +804,7 @@ class Message(TelegramObject):
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def answer_document(
         self,
@@ -865,7 +867,7 @@ class Message(TelegramObject):
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def reply_game(
         self,
@@ -910,7 +912,7 @@ class Message(TelegramObject):
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def answer_game(
         self,
@@ -956,7 +958,7 @@ class Message(TelegramObject):
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def reply_invoice(
         self,
@@ -1061,7 +1063,7 @@ class Message(TelegramObject):
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def answer_invoice(
         self,
@@ -1167,7 +1169,7 @@ class Message(TelegramObject):
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def reply_location(
         self,
@@ -1229,7 +1231,7 @@ class Message(TelegramObject):
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def answer_location(
         self,
@@ -1292,7 +1294,7 @@ class Message(TelegramObject):
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def reply_media_group(
         self,
@@ -1334,7 +1336,7 @@ class Message(TelegramObject):
             protect_content=protect_content,
             allow_sending_without_reply=allow_sending_without_reply,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def answer_media_group(
         self,
@@ -1377,7 +1379,7 @@ class Message(TelegramObject):
             reply_to_message_id=reply_to_message_id,
             allow_sending_without_reply=allow_sending_without_reply,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def reply(
         self,
@@ -1433,7 +1435,7 @@ class Message(TelegramObject):
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def answer(
         self,
@@ -1490,7 +1492,7 @@ class Message(TelegramObject):
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def reply_photo(
         self,
@@ -1549,7 +1551,7 @@ class Message(TelegramObject):
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def answer_photo(
         self,
@@ -1609,7 +1611,7 @@ class Message(TelegramObject):
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def reply_poll(
         self,
@@ -1689,7 +1691,7 @@ class Message(TelegramObject):
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def answer_poll(
         self,
@@ -1770,7 +1772,7 @@ class Message(TelegramObject):
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def reply_dice(
         self,
@@ -1817,7 +1819,7 @@ class Message(TelegramObject):
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def answer_dice(
         self,
@@ -1865,7 +1867,7 @@ class Message(TelegramObject):
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def reply_sticker(
         self,
@@ -1915,7 +1917,7 @@ class Message(TelegramObject):
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def answer_sticker(
         self,
@@ -1966,7 +1968,7 @@ class Message(TelegramObject):
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def reply_venue(
         self,
@@ -2034,7 +2036,7 @@ class Message(TelegramObject):
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def answer_venue(
         self,
@@ -2103,7 +2105,7 @@ class Message(TelegramObject):
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def reply_video(
         self,
@@ -2177,7 +2179,7 @@ class Message(TelegramObject):
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def answer_video(
         self,
@@ -2252,7 +2254,7 @@ class Message(TelegramObject):
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def reply_video_note(
         self,
@@ -2308,7 +2310,7 @@ class Message(TelegramObject):
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def answer_video_note(
         self,
@@ -2365,7 +2367,7 @@ class Message(TelegramObject):
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def reply_voice(
         self,
@@ -2424,7 +2426,7 @@ class Message(TelegramObject):
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def answer_voice(
         self,
@@ -2484,7 +2486,7 @@ class Message(TelegramObject):
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def send_copy(  # noqa: C901
         self: Message,
@@ -2682,7 +2684,7 @@ class Message(TelegramObject):
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def edit_text(
         self,
@@ -2728,7 +2730,7 @@ class Message(TelegramObject):
             disable_web_page_preview=disable_web_page_preview,
             reply_markup=reply_markup,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def forward(
         self,
@@ -2768,11 +2770,17 @@ class Message(TelegramObject):
             disable_notification=disable_notification,
             protect_content=protect_content,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def edit_media(
         self,
-        media: InputMedia,
+        media: Union[
+            InputMediaAnimation,
+            InputMediaDocument,
+            InputMediaAudio,
+            InputMediaPhoto,
+            InputMediaVideo,
+        ],
         inline_message_id: Optional[str] = None,
         reply_markup: Optional[InlineKeyboardMarkup] = None,
         **kwargs: Any,
@@ -2805,7 +2813,7 @@ class Message(TelegramObject):
             inline_message_id=inline_message_id,
             reply_markup=reply_markup,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def edit_reply_markup(
         self,
@@ -2839,7 +2847,7 @@ class Message(TelegramObject):
             inline_message_id=inline_message_id,
             reply_markup=reply_markup,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def delete_reply_markup(self) -> EditMessageReplyMarkup:
         return self.edit_reply_markup(reply_markup=None)
@@ -2891,7 +2899,7 @@ class Message(TelegramObject):
             proximity_alert_radius=proximity_alert_radius,
             reply_markup=reply_markup,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def stop_live_location(
         self,
@@ -2925,7 +2933,7 @@ class Message(TelegramObject):
             inline_message_id=inline_message_id,
             reply_markup=reply_markup,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def edit_caption(
         self,
@@ -2968,7 +2976,7 @@ class Message(TelegramObject):
             caption_entities=caption_entities,
             reply_markup=reply_markup,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def delete(
         self,
@@ -3014,7 +3022,7 @@ class Message(TelegramObject):
             chat_id=self.chat.id,
             message_id=self.message_id,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def pin(
         self,
@@ -3045,7 +3053,7 @@ class Message(TelegramObject):
             message_id=self.message_id,
             disable_notification=disable_notification,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def unpin(
         self,
@@ -3073,7 +3081,7 @@ class Message(TelegramObject):
             chat_id=self.chat.id,
             message_id=self.message_id,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def get_url(self, force_private: bool = False) -> Optional[str]:
         """

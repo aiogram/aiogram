@@ -35,7 +35,7 @@ class FSMContextMiddleware(BaseMiddleware):
         data["fsm_storage"] = self.storage
         if context:
             data.update({"state": context, "raw_state": await context.get_state()})
-            async with self.events_isolation.lock(bot=bot, key=context.key):
+            async with self.events_isolation.lock(key=context.key):
                 return await handler(event, data)
         return await handler(event, data)
 
@@ -47,25 +47,42 @@ class FSMContextMiddleware(BaseMiddleware):
     ) -> Optional[FSMContext]:
         user = data.get("event_from_user")
         chat = data.get("event_chat")
+        thread_id = data.get("event_thread_id")
         chat_id = chat.id if chat else None
         user_id = user.id if user else None
-        return self.resolve_context(bot=bot, chat_id=chat_id, user_id=user_id, destiny=destiny)
+        return self.resolve_context(
+            bot=bot,
+            chat_id=chat_id,
+            user_id=user_id,
+            thread_id=thread_id,
+            destiny=destiny,
+        )
 
     def resolve_context(
         self,
         bot: Bot,
         chat_id: Optional[int],
         user_id: Optional[int],
+        thread_id: Optional[int] = None,
         destiny: str = DEFAULT_DESTINY,
     ) -> Optional[FSMContext]:
         if chat_id is None:
             chat_id = user_id
 
         if chat_id is not None and user_id is not None:
-            chat_id, user_id = apply_strategy(
-                chat_id=chat_id, user_id=user_id, strategy=self.strategy
+            chat_id, user_id, thread_id = apply_strategy(
+                chat_id=chat_id,
+                user_id=user_id,
+                thread_id=thread_id,
+                strategy=self.strategy,
             )
-            return self.get_context(bot=bot, chat_id=chat_id, user_id=user_id, destiny=destiny)
+            return self.get_context(
+                bot=bot,
+                chat_id=chat_id,
+                user_id=user_id,
+                thread_id=thread_id,
+                destiny=destiny,
+            )
         return None
 
     def get_context(
@@ -73,15 +90,16 @@ class FSMContextMiddleware(BaseMiddleware):
         bot: Bot,
         chat_id: int,
         user_id: int,
+        thread_id: Optional[int] = None,
         destiny: str = DEFAULT_DESTINY,
     ) -> FSMContext:
         return FSMContext(
-            bot=bot,
             storage=self.storage,
             key=StorageKey(
                 user_id=user_id,
                 chat_id=chat_id,
                 bot_id=bot.id,
+                thread_id=thread_id,
                 destiny=destiny,
             ),
         )

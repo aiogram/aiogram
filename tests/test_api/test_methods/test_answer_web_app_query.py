@@ -1,5 +1,5 @@
-from aiogram.methods import AnswerWebAppQuery, Request
-from aiogram.types import InlineQueryResult, SentWebAppMessage
+from aiogram.methods import AnswerWebAppQuery
+from aiogram.types import InlineQueryResultPhoto, SentWebAppMessage
 from tests.mocked_bot import MockedBot
 
 
@@ -9,7 +9,11 @@ class TestAnswerWebAppQuery:
 
         response: SentWebAppMessage = await bot.answer_web_app_query(
             web_app_query_id="test",
-            result=InlineQueryResult(),
+            result=InlineQueryResultPhoto(
+                id="test",
+                photo_url="test",
+                thumbnail_url="test",
+            ),
         )
         request = bot.get_request()
         assert response == prepare_result.result

@@ -34,6 +34,8 @@ class UnsupportedKeywordArgument(DetailedAiogramError):
 
 
 class TelegramAPIError(DetailedAiogramError):
+    label: str = "Telegram server says"
+
     def __init__(
         self,
         method: TelegramMethod[TelegramType],
@@ -44,11 +46,11 @@ class TelegramAPIError(DetailedAiogramError):
 
     def __str__(self) -> str:
         original_message = super().__str__()
-        return f"Telegram server says {original_message}"
+        return f"{self.label} - {original_message}"
 
 
 class TelegramNetworkError(TelegramAPIError):
-    pass
+    label = "HTTP Client says"
 
 
 class TelegramRetryAfter(TelegramAPIError):

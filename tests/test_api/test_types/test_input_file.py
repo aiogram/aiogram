@@ -4,6 +4,7 @@ from aresponses import ResponsesMockServer
 
 from aiogram import Bot
 from aiogram.types import BufferedInputFile, FSInputFile, InputFile, URLInputFile
+from tests.mocked_bot import MockedBot
 
 
 class TestInputFile:
@@ -72,10 +73,8 @@ class TestInputFile:
         aresponses.add(
             aresponses.ANY, aresponses.ANY, "get", aresponses.Response(status=200, body=b"\f" * 10)
         )
-
-        Bot.set_current(Bot("42:TEST"))
-
-        file = URLInputFile("https://test.org/", chunk_size=1)
+        bot = Bot(token="42:TEST")
+        file = URLInputFile("https://test.org/", bot, chunk_size=1)
 
         size = 0
         async for chunk in file:

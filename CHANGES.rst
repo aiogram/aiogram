@@ -16,6 +16,136 @@ Changelog
 
 .. towncrier release notes start
 
+3.0.0b8 (2023-07-17)
+=====================
+
+Features
+--------
+
+- Added possibility to use custom events in routers (If router does not support custom event it does not break and passes it to included routers).
+  `#1147 <https://github.com/aiogram/aiogram/issues/1147>`_
+- Added support for FSM in Forum topics.
+
+  The strategy can be changed in dispatcher:
+
+  .. code-block:: python
+
+      from aiogram.fsm.strategy import FSMStrategy
+      ...
+      dispatcher = Dispatcher(
+          fsm_strategy=FSMStrategy.USER_IN_TOPIC,
+          storage=...,  # Any persistent storage
+      )
+
+  .. note::
+
+      If you have implemented you own storages you should extend record key generation
+      with new one attribute - :code:`thread_id`
+  `#1161 <https://github.com/aiogram/aiogram/issues/1161>`_
+- Improved CallbackData serialization.
+
+  - Minimized UUID (hex without dashes)
+  - Replaced bool values with int (true=1, false=0)
+  `#1163 <https://github.com/aiogram/aiogram/issues/1163>`_
+- Added a tool to make text formatting flexible and easy.
+  More details on the :ref:`corresponding documentation page <formatting-tool>`
+  `#1172 <https://github.com/aiogram/aiogram/issues/1172>`_
+- Added :code:`X-Telegram-Bot-Api-Secret-Token` header check
+  `#1173 <https://github.com/aiogram/aiogram/issues/1173>`_
+- Made :code:`allowed_updates` list to revolve automatically in start_polling method if not set explicitly.
+  `#1178 <https://github.com/aiogram/aiogram/issues/1178>`_
+- Added possibility to pass custom headers to :class:`URLInputFile` object
+  `#1191 <https://github.com/aiogram/aiogram/issues/1191>`_
+
+
+Bugfixes
+--------
+
+- Change type of result in InlineQueryResult enum for :code:`InlineQueryResultCachedMpeg4Gif`
+  and :code:`InlineQueryResultMpeg4Gif` to more correct according to documentation.
+
+  Change regexp for entities parsing to more correct (:code:`InlineQueryResultType.yml`).
+  `#1146 <https://github.com/aiogram/aiogram/issues/1146>`_
+- Fixed signature of startup/shutdown events to include the :code:`**dispatcher.workflow_data` as the handler arguments.
+  `#1155 <https://github.com/aiogram/aiogram/issues/1155>`_
+- Added missing :code:`FORUM_TOPIC_EDITED` value to content_type property
+  `#1160 <https://github.com/aiogram/aiogram/issues/1160>`_
+- Fixed compatibility with Python 3.8-3.9 (from previous release)
+  `#1162 <https://github.com/aiogram/aiogram/issues/1162>`_
+- Fixed the markdown spoiler parser.
+  `#1176 <https://github.com/aiogram/aiogram/issues/1176>`_
+- Fixed workflow data propagation
+  `#1196 <https://github.com/aiogram/aiogram/issues/1196>`_
+- Fixed the serialization error associated with nested subtypes
+  like InputMedia, ChatMember, etc.
+
+  The previously generated code resulted in an invalid schema under pydantic v2,
+  which has stricter type parsing.
+  Hence, subtypes without the specification of all subtype unions were generating
+  an empty object. This has been rectified now.
+  `#1213 <https://github.com/aiogram/aiogram/issues/1213>`_
+
+
+Improved Documentation
+----------------------
+
+- Changed small grammar typos for :code:`upload_file`
+  `#1133 <https://github.com/aiogram/aiogram/issues/1133>`_
+
+
+Deprecations and Removals
+-------------------------
+
+- Removed text filter in due to is planned to remove this filter few versions ago.
+
+  Use :code:`F.text` instead
+  `#1170 <https://github.com/aiogram/aiogram/issues/1170>`_
+
+
+Misc
+----
+
+- Added full support of `Bot API 6.6 <https://core.telegram.org/bots/api-changelog#march-9-2023>`_
+
+  .. danger::
+
+      Note that this issue has breaking changes described in in the Bot API changelog,
+      this changes is not breaking in the API but breaking inside aiogram because
+      Beta stage is not finished.
+  `#1139 <https://github.com/aiogram/aiogram/issues/1139>`_
+- Added full support of `Bot API 6.7 <https://core.telegram.org/bots/api-changelog#april-21-2023>`_
+
+  .. warning::
+
+      Note that arguments *switch_pm_parameter* and *switch_pm_text* was deprecated
+      and should be changed to *button* argument as described in API docs.
+  `#1168 <https://github.com/aiogram/aiogram/issues/1168>`_
+- Updated `Pydantic to V2 <https://docs.pydantic.dev/2.0/migration/>`_
+
+  .. warning::
+
+      Be careful, not all libraries is already updated to using V2
+  `#1202 <https://github.com/aiogram/aiogram/issues/1202>`_
+- Added global defaults :code:`disable_web_page_preview` and :code:`protect_content` in addition to :code:`parse_mode` to the Bot instance,
+  reworked internal request builder mechanism.
+  `#1142 <https://github.com/aiogram/aiogram/issues/1142>`_
+- Removed bot parameters from storages
+  `#1144 <https://github.com/aiogram/aiogram/issues/1144>`_
+
+- Replaced ContextVar's with a new feature called `Validation Context <https://docs.pydantic.dev/latest/usage/validators/#validation-context>`_
+  in Pydantic to improve the clarity, usability, and versatility of handling the Bot instance within method shortcuts.
+
+  .. danger::
+
+    **Breaking**: The 'bot' argument now is required in `URLInputFile`
+  `#1210 <https://github.com/aiogram/aiogram/issues/1210>`_
+- Updated magic-filter with new features
+
+  - Added hint for :code:`len(F)` error
+  - Added not in operation
+  `#1221 <https://github.com/aiogram/aiogram/issues/1221>`_
+
+
 3.0.0b7 (2023-02-18)
 =====================
 

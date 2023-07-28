@@ -76,7 +76,7 @@ class Sticker(TelegramObject):
             sticker=self.file_id,
             position=position,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def delete_from_set(
         self,
@@ -102,4 +102,4 @@ class Sticker(TelegramObject):
         return DeleteStickerFromSet(
             sticker=self.file_id,
             **kwargs,
-        )
+        ).as_(self._bot)

@@ -62,7 +62,7 @@ class ChatJoinRequest(TelegramObject):
             chat_id=self.chat.id,
             user_id=self.from_user.id,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def decline(
         self,
@@ -90,4 +90,4 @@ class ChatJoinRequest(TelegramObject):
             chat_id=self.chat.id,
             user_id=self.from_user.id,
             **kwargs,
-        )
+        ).as_(self._bot)

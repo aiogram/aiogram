@@ -18,6 +18,7 @@ from ..fsm.strategy import FSMStrategy
 from ..methods import GetUpdates, TelegramMethod
 from ..methods.base import TelegramType
 from ..types import Update, User
+from ..types.base import UNSET, UNSET_TYPE
 from ..types.update import UpdateTypeLookupError
 from ..utils.backoff import Backoff, BackoffConfig
 from .event.bases import UNHANDLED, SkipHandler
@@ -80,9 +81,9 @@ class Dispatcher(Router):
         # FSM middleware should always be registered after User context middleware
         # because here is used context from previous step
         self.fsm = FSMContextMiddleware(
-            storage=storage if storage else MemoryStorage(),
+            storage=storage or MemoryStorage(),
             strategy=fsm_strategy,
-            events_isolation=events_isolation if events_isolation else DisabledEventIsolation(),
+            events_isolation=events_isolation or DisabledEventIsolation(),
         )
         if not disable_fsm:
             # Note that when FSM middleware is disabled, the event isolation is also disabled
@@ -92,8 +93,8 @@ class Dispatcher(Router):
 
         self.workflow_data: Dict[str, Any] = kwargs
         self._running_lock = Lock()
-        self._stop_signal = Event()
-        self._stopped_signal = Event()
+        self._stop_signal: Optional[Event] = None
+        self._stopped_signal: Optional[Event] = None
 
     def __getitem__(self, item: str) -> Any:
         return self.workflow_data[item]
@@ -142,7 +143,16 @@ class Dispatcher(Router):
         handled = False
         start_time = loop.time()
 
-        token = Bot.set_current(bot)
+        if update.bot != bot:
+            # Re-mounting update to the current bot instance for making possible to
+            # use it in shortcuts.
+            # Here is update is re-created because we need to propagate context to
+            # all nested objects and attributes of the Update, but it
+            # is impossible without roundtrip to JSON :(
+            # The preferred way is that pass already mounted Bot instance to this update
+            # before call feed_update method
+            update = Update.model_validate(update.model_dump(), context={"bot": bot})
+
         try:
             response = await self.update.wrap_outer_middleware(
                 self.update.trigger,
@@ -165,7 +175,6 @@ class Dispatcher(Router):
                 duration,
                 bot.id,
             )
-            Bot.reset_current(token)
 
     async def feed_raw_update(self, bot: Bot, update: Dict[str, Any], **kwargs: Any) -> Any:
         """
@@ -175,7 +184,7 @@ class Dispatcher(Router):
         :param update:
         :param kwargs:
         """
-        parsed_update = Update(**update)
+        parsed_update = Update.model_validate(update, context={"bot": bot})
         return await self.feed_update(bot=bot, update=parsed_update, **kwargs)
 
     @classmethod
@@ -251,14 +260,14 @@ class Dispatcher(Router):
         try:
             update_type = update.event_type
             event = update.event
-        except UpdateTypeLookupError:
+        except UpdateTypeLookupError as e:
             warnings.warn(
                 "Detected unknown update type.\n"
                 "Seems like Telegram Bot API was updated and you have "
                 "installed not latest version of aiogram framework",
                 RuntimeWarning,
             )
-            raise SkipHandler()
+            raise SkipHandler() from e
 
         kwargs.update(event_update=update)
 
@@ -367,13 +376,13 @@ class Dispatcher(Router):
         self, bot: Bot, update: Union[Update, Dict[str, Any]], _timeout: float = 55, **kwargs: Any
     ) -> Optional[TelegramMethod[TelegramType]]:
         if not isinstance(update, Update):  # Allow to use raw updates
-            update = Update(**update)
+            update = Update.model_validate(update, context={"bot": bot})
 
         ctx = contextvars.copy_context()
         loop = asyncio.get_running_loop()
         waiter = loop.create_future()
 
-        def release_waiter(*args: Any) -> None:
+        def release_waiter(*_: Any) -> None:
             if not waiter.done():
                 waiter.set_result(None)
 
@@ -430,6 +439,8 @@ class Dispatcher(Router):
         """
         if not self._running_lock.locked():
             raise RuntimeError("Polling is not started")
+        if not self._stop_signal or not self._stopped_signal:
+            return
         self._stop_signal.set()
         await self._stopped_signal.wait()
 
@@ -438,6 +449,8 @@ class Dispatcher(Router):
             return
 
         loggers.dispatcher.warning("Received %s signal", sig.name)
+        if not self._stop_signal:
+            return
         self._stop_signal.set()
 
     async def start_polling(
@@ -446,7 +459,7 @@ class Dispatcher(Router):
         polling_timeout: int = 10,
         handle_as_tasks: bool = True,
         backoff_config: BackoffConfig = DEFAULT_BACKOFF_CONFIG,
-        allowed_updates: Optional[List[str]] = None,
+        allowed_updates: Optional[Union[List[str], UNSET_TYPE]] = UNSET,
         handle_signals: bool = True,
         close_bot_session: bool = True,
         **kwargs: Any,
@@ -454,11 +467,12 @@ class Dispatcher(Router):
         """
         Polling runner
 
-        :param bots: Bot instances (one or mre)
+        :param bots: Bot instances (one or more)
         :param polling_timeout: Long-polling wait time
         :param handle_as_tasks: Run task for each event and no wait result
         :param backoff_config: backoff-retry config
         :param allowed_updates: List of the update types you want your bot to receive
+               By default, all used update types are enabled (resolved from handlers)
         :param handle_signals: handle signals (SIGINT/SIGTERM)
         :param close_bot_session: close bot sessions on shutdown
         :param kwargs: contextual data
@@ -473,6 +487,14 @@ class Dispatcher(Router):
             )
 
         async with self._running_lock:  # Prevent to run this method twice at a once
+            if self._stop_signal is None:
+                self._stop_signal = Event()
+            if self._stopped_signal is None:
+                self._stopped_signal = Event()
+
+            if allowed_updates is UNSET:
+                allowed_updates = self.resolve_used_update_types()
+
             self._stop_signal.clear()
             self._stopped_signal.clear()
 
@@ -488,9 +510,13 @@ class Dispatcher(Router):
                         signal.SIGINT, self._signal_stop_polling, signal.SIGINT
                     )
 
-            workflow_data = {"dispatcher": self, "bots": bots, "bot": bots[-1]}
-            workflow_data.update(kwargs)
-            await self.emit_startup(**workflow_data)
+            workflow_data = {
+                "dispatcher": self,
+                "bots": bots,
+                **self.workflow_data,
+                **kwargs,
+            }
+            await self.emit_startup(bot=bots[-1], **workflow_data)
             loggers.dispatcher.info("Start polling")
             try:
                 tasks: List[asyncio.Task[Any]] = [
@@ -501,7 +527,7 @@ class Dispatcher(Router):
                             polling_timeout=polling_timeout,
                             backoff_config=backoff_config,
                             allowed_updates=allowed_updates,
-                            **kwargs,
+                            **workflow_data,
                         )
                     )
                     for bot in bots
@@ -520,7 +546,7 @@ class Dispatcher(Router):
             finally:
                 loggers.dispatcher.info("Polling stopped")
                 try:
-                    await self.emit_shutdown(**workflow_data)
+                    await self.emit_shutdown(bot=bots[-1], **workflow_data)
                 finally:
                     if close_bot_session:
                         await asyncio.gather(*(bot.session.close() for bot in bots))
@@ -532,7 +558,7 @@ class Dispatcher(Router):
         polling_timeout: int = 10,
         handle_as_tasks: bool = True,
         backoff_config: BackoffConfig = DEFAULT_BACKOFF_CONFIG,
-        allowed_updates: Optional[List[str]] = None,
+        allowed_updates: Optional[Union[List[str], UNSET_TYPE]] = UNSET,
         handle_signals: bool = True,
         close_bot_session: bool = True,
         **kwargs: Any,

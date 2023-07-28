@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import List, Literal, Optional, Union
 
 from .animation import Animation
 from .audio import Audio
@@ -15,6 +15,7 @@ from .bot_command_scope_chat_administrators import BotCommandScopeChatAdministra
 from .bot_command_scope_chat_member import BotCommandScopeChatMember
 from .bot_command_scope_default import BotCommandScopeDefault
 from .bot_description import BotDescription
+from .bot_name import BotName
 from .bot_short_description import BotShortDescription
 from .callback_game import CallbackGame
 from .callback_query import CallbackQuery
@@ -77,6 +78,7 @@ from .inline_query_result_photo import InlineQueryResultPhoto
 from .inline_query_result_venue import InlineQueryResultVenue
 from .inline_query_result_video import InlineQueryResultVideo
 from .inline_query_result_voice import InlineQueryResultVoice
+from .inline_query_results_button import InlineQueryResultsButton
 from .input_contact_message_content import InputContactMessageContent
 from .input_file import BufferedInputFile, FSInputFile, InputFile, URLInputFile
 from .input_invoice_message_content import InputInvoiceMessageContent
@@ -139,6 +141,7 @@ from .shipping_query import ShippingQuery
 from .sticker import Sticker
 from .sticker_set import StickerSet
 from .successful_payment import SuccessfulPayment
+from .switch_inline_query_chosen_chat import SwitchInlineQueryChosenChat
 from .update import Update
 from .user import User
 from .user_profile_photos import UserProfilePhotos
@@ -169,6 +172,7 @@ __all__ = (
     "BotCommandScopeChatMember",
     "BotCommandScopeDefault",
     "BotDescription",
+    "BotName",
     "BotShortDescription",
     "BufferedInputFile",
     "CallbackGame",
@@ -234,6 +238,7 @@ __all__ = (
     "InlineQueryResultVenue",
     "InlineQueryResultVideo",
     "InlineQueryResultVoice",
+    "InlineQueryResultsButton",
     "InputContactMessageContent",
     "InputFile",
     "InputInvoiceMessageContent",
@@ -294,6 +299,7 @@ __all__ = (
     "Sticker",
     "StickerSet",
     "SuccessfulPayment",
+    "SwitchInlineQueryChosenChat",
     "TelegramObject",
     "UNSET_PARSE_MODE",
     "URLInputFile",
@@ -318,11 +324,16 @@ __all__ = (
 # Load typing forward refs for every TelegramObject
 for _entity_name in __all__:
     _entity = globals()[_entity_name]
-    if not hasattr(_entity, "update_forward_refs"):
+    if not hasattr(_entity, "model_rebuild"):
         continue
-    _entity.update_forward_refs(
-        **{k: v for k, v in globals().items() if k in __all__},
-        **{"Optional": Optional},
+    _entity.model_rebuild(
+        _types_namespace={
+            "List": List,
+            "Optional": Optional,
+            "Union": Union,
+            "Literal": Literal,
+            **{k: v for k, v in globals().items() if k in __all__},
+        }
     )
 
 del _entity

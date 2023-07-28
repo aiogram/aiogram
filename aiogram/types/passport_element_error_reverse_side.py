@@ -1,7 +1,8 @@
 from __future__ import annotations
 
-from pydantic import Field
+from typing import Literal
 
+from ..enums import PassportElementErrorType
 from .passport_element_error import PassportElementError
 
 
@@ -12,7 +13,7 @@ class PassportElementErrorReverseSide(PassportElementError):
     Source: https://core.telegram.org/bots/api#passportelementerrorreverseside
     """
 
-    source: str = Field("reverse_side", const=True)
+    source: Literal[PassportElementErrorType.REVERSE_SIDE] = PassportElementErrorType.REVERSE_SIDE
     """Error source, must be *reverse_side*"""
     type: str
     """The section of the user's Telegram Passport which has the issue, one of 'driver_license', 'identity_card'"""

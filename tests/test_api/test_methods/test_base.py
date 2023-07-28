@@ -22,6 +22,14 @@ class TestTelegramMethodRemoveUnset:
 
 
 class TestTelegramMethodCall:
+    async def test_async_emit_unsuccessful(self, bot: MockedBot):
+        with pytest.raises(
+            RuntimeError,
+            match="This method is not mounted to a any bot instance.+",
+        ):
+            await GetMe()
+
     async def test_async_emit(self, bot: MockedBot):
         bot.add_result_for(GetMe, ok=True, result=User(id=42, is_bot=True, first_name="Test"))
-        assert isinstance(await GetMe(), User)
+        method = GetMe().as_(bot)
+        assert isinstance(await method, User)

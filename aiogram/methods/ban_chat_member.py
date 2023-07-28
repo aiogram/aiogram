@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import datetime
-from typing import TYPE_CHECKING, Optional, Union
+from typing import Optional, Union
 
 from .base import TelegramMethod
 

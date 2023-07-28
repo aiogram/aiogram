@@ -5,7 +5,7 @@ from tests.mocked_bot import MockedBot
 
 
 @pytest.fixture(name="storage_key")
-def create_storate_key(bot: MockedBot):
+def create_storage_key(bot: MockedBot):
     return StorageKey(chat_id=-42, user_id=42, bot_id=bot.id)
 
 
@@ -20,9 +20,8 @@ def create_storate_key(bot: MockedBot):
 class TestIsolations:
     async def test_lock(
         self,
-        bot: MockedBot,
         isolation: BaseEventIsolation,
         storage_key: StorageKey,
     ):
-        async with isolation.lock(bot=bot, key=storage_key):
+        async with isolation.lock(key=storage_key):
             assert True, "You are kidding me?"

@@ -1,8 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional
-
-from pydantic import Field
+from typing import TYPE_CHECKING, Literal, Optional
 
 from ..enums import ChatMemberStatus
 from .chat_member import ChatMember
@@ -18,7 +16,7 @@ class ChatMemberAdministrator(ChatMember):
     Source: https://core.telegram.org/bots/api#chatmemberadministrator
     """
 
-    status: str = Field(ChatMemberStatus.ADMINISTRATOR, const=True)
+    status: Literal[ChatMemberStatus.ADMINISTRATOR] = ChatMemberStatus.ADMINISTRATOR
     """The member's status in the chat, always 'administrator'"""
     user: User
     """Information about the user"""

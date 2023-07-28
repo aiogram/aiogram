@@ -1,10 +1,21 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, Any, Dict, Generator, Generic, Optional, TypeVar
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    ClassVar,
+    Dict,
+    Generator,
+    Generic,
+    Optional,
+    TypeVar,
+)
 
-from pydantic import BaseConfig, BaseModel, Extra, root_validator
-from pydantic.generics import GenericModel
+from pydantic import BaseModel, ConfigDict
+from pydantic.functional_validators import model_validator
+
+from aiogram.client.context_controller import BotContextController
 
 from ..types import InputFile, ResponseParameters
 from ..types.base import UNSET_TYPE
@@ -16,16 +27,15 @@ TelegramType = TypeVar("TelegramType", bound=Any)
 
 
 class Request(BaseModel):
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+
     method: str
 
     data: Dict[str, Optional[Any]]
     files: Optional[Dict[str, InputFile]]
 
-    class Config(BaseConfig):
-        arbitrary_types_allowed = True
 
-
-class Response(GenericModel, Generic[TelegramType]):
+class Response(BaseModel, Generic[TelegramType]):
     ok: bool
     result: Optional[TelegramType] = None
     description: Optional[str] = None
@@ -33,16 +43,15 @@ class Response(GenericModel, Generic[TelegramType]):
     parameters: Optional[ResponseParameters] = None
 
 
-class TelegramMethod(ABC, BaseModel, Generic[TelegramType]):
-    class Config(BaseConfig):
-        # use_enum_values = True
-        extra = Extra.allow
-        allow_population_by_field_name = True
-        arbitrary_types_allowed = True
-        orm_mode = True
-        smart_union = True  # https://github.com/aiogram/aiogram/issues/901
+class TelegramMethod(BotContextController, BaseModel, Generic[TelegramType], ABC):
+    model_config = ConfigDict(
+        extra="allow",
+        populate_by_name=True,
+        arbitrary_types_allowed=True,
+    )
 
-    @root_validator(pre=True)
+    @model_validator(mode="before")
+    @classmethod
     def remove_unset(cls, values: Dict[str, Any]) -> Dict[str, Any]:
         """
         Remove UNSET before fields validation.
@@ -54,33 +63,31 @@ class TelegramMethod(ABC, BaseModel, Generic[TelegramType]):
         """
         return {k: v for k, v in values.items() if not isinstance(v, UNSET_TYPE)}
 
-    @property
-    @abstractmethod
-    def __returning__(self) -> type:  # pragma: no cover
-        pass
+    if TYPE_CHECKING:
+        __returning__: ClassVar[type]
+        __api_method__: ClassVar[str]
+    else:
 
-    @property
-    @abstractmethod
-    def __api_method__(self) -> str:
-        pass
+        @property
+        @abstractmethod
+        def __returning__(self) -> type:
+            pass
 
-    def dict(self, **kwargs: Any) -> Any:
-        # override dict of pydantic.BaseModel to overcome exporting request_timeout field
-        exclude = kwargs.pop("exclude", set())
-
-        return super().dict(exclude=exclude, **kwargs)
-
-    def build_response(self, data: Dict[str, Any]) -> Response[TelegramType]:
-        # noinspection PyTypeChecker
-        return Response[self.__returning__](**data)  # type: ignore
+        @property
+        @abstractmethod
+        def __api_method__(self) -> str:
+            pass
 
     async def emit(self, bot: Bot) -> TelegramType:
         return await bot(self)
 
-    as_ = emit
-
     def __await__(self) -> Generator[Any, None, TelegramType]:
-        from aiogram.client.bot import Bot
-
-        bot = Bot.get_current(no_error=False)
+        bot = self._bot
+        if not bot:
+            raise RuntimeError(
+                "This method is not mounted to a any bot instance, please call it explicilty "
+                "with bot instance `await bot(method)`\n"
+                "or mount method to a bot instance `method.as_(bot)` "
+                "and then call it `await method()`"
+            )
         return self.emit(bot).__await__()

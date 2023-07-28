@@ -67,7 +67,11 @@ class CallbackData(BaseModel):
             return ""
         if isinstance(value, Enum):
             return str(value.value)
-        if isinstance(value, (int, str, float, Decimal, Fraction, UUID)):
+        if isinstance(value, UUID):
+            return value.hex
+        if isinstance(value, bool):
+            return str(int(value))
+        if isinstance(value, (int, str, float, Decimal, Fraction)):
             return str(value)
         raise ValueError(
             f"Attribute {key}={value!r} of type {type(value).__name__!r}"
@@ -81,7 +85,7 @@ class CallbackData(BaseModel):
         :return: valid callback data for Telegram Bot API
         """
         result = [self.__prefix__]
-        for key, value in self.dict().items():
+        for key, value in self.model_dump(mode="json").items():
             encoded = self._encode_value(key, value)
             if self.__separator__ in encoded:
                 raise ValueError(
@@ -106,7 +110,7 @@ class CallbackData(BaseModel):
         :return: instance of CallbackData
         """
         prefix, *parts = value.split(cls.__separator__)
-        names = cls.__fields__.keys()
+        names = cls.model_fields.keys()
         if len(parts) != len(names):
             raise TypeError(
                 f"Callback data {cls.__name__!r} takes {len(names)} arguments "
@@ -116,8 +120,8 @@ class CallbackData(BaseModel):
             raise ValueError(f"Bad prefix ({prefix!r} != {cls.__prefix__!r})")
         payload = {}
         for k, v in zip(names, parts):  # type: str, Optional[str]
-            if field := cls.__fields__.get(k):
-                if v == "" and not field.required:
+            if field := cls.model_fields.get(k):
+                if v == "" and not field.is_required():
                     v = None
             payload[k] = v
         return cls(**payload)

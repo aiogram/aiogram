@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, List, Union
+from typing import List, Union
 
 from ..types import (
     ChatMemberAdministrator,

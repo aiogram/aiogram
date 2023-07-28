@@ -1,8 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, List, Optional
-
-from pydantic import Field
+from typing import TYPE_CHECKING, List, Literal, Optional, Union
 
 from ..enums import InlineQueryResultType
 from .base import UNSET_PARSE_MODE
@@ -10,7 +8,11 @@ from .inline_query_result import InlineQueryResult
 
 if TYPE_CHECKING:
     from .inline_keyboard_markup import InlineKeyboardMarkup
-    from .input_message_content import InputMessageContent
+    from .input_contact_message_content import InputContactMessageContent
+    from .input_invoice_message_content import InputInvoiceMessageContent
+    from .input_location_message_content import InputLocationMessageContent
+    from .input_text_message_content import InputTextMessageContent
+    from .input_venue_message_content import InputVenueMessageContent
     from .message_entity import MessageEntity
 
 
@@ -23,7 +25,7 @@ class InlineQueryResultVideo(InlineQueryResult):
     Source: https://core.telegram.org/bots/api#inlinequeryresultvideo
     """
 
-    type: str = Field(InlineQueryResultType.VIDEO, const=True)
+    type: Literal[InlineQueryResultType.VIDEO] = InlineQueryResultType.VIDEO
     """Type of the result, must be *video*"""
     id: str
     """Unique identifier for this result, 1-64 bytes"""
@@ -51,5 +53,13 @@ class InlineQueryResultVideo(InlineQueryResult):
     """*Optional*. Short description of the result"""
     reply_markup: Optional[InlineKeyboardMarkup] = None
     """*Optional*. `Inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_ attached to the message"""
-    input_message_content: Optional[InputMessageContent] = None
+    input_message_content: Optional[
+        Union[
+            InputTextMessageContent,
+            InputLocationMessageContent,
+            InputVenueMessageContent,
+            InputContactMessageContent,
+            InputInvoiceMessageContent,
+        ]
+    ] = None
     """*Optional*. Content of the message to be sent instead of the video. This field is **required** if InlineQueryResultVideo is used to send an HTML-page as a result (e.g., a YouTube video)."""

@@ -164,7 +164,7 @@ class Chat(TelegramObject):
             chat_id=self.id,
             sender_chat_id=sender_chat_id,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def unban_sender_chat(
         self,
@@ -193,7 +193,7 @@ class Chat(TelegramObject):
             chat_id=self.id,
             sender_chat_id=sender_chat_id,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def get_administrators(
         self,
@@ -219,7 +219,7 @@ class Chat(TelegramObject):
         return GetChatAdministrators(
             chat_id=self.id,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def delete_message(
         self,
@@ -266,7 +266,7 @@ class Chat(TelegramObject):
             chat_id=self.id,
             message_id=message_id,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def revoke_invite_link(
         self,
@@ -295,7 +295,7 @@ class Chat(TelegramObject):
             chat_id=self.id,
             invite_link=invite_link,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def edit_invite_link(
         self,
@@ -336,7 +336,7 @@ class Chat(TelegramObject):
             member_limit=member_limit,
             creates_join_request=creates_join_request,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def create_invite_link(
         self,
@@ -374,7 +374,7 @@ class Chat(TelegramObject):
             member_limit=member_limit,
             creates_join_request=creates_join_request,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def export_invite_link(
         self,
@@ -402,7 +402,7 @@ class Chat(TelegramObject):
         return ExportChatInviteLink(
             chat_id=self.id,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def do(
         self,
@@ -438,7 +438,7 @@ class Chat(TelegramObject):
             action=action,
             message_thread_id=message_thread_id,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def delete_sticker_set(
         self,
@@ -464,7 +464,7 @@ class Chat(TelegramObject):
         return DeleteChatStickerSet(
             chat_id=self.id,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def set_sticker_set(
         self,
@@ -493,7 +493,7 @@ class Chat(TelegramObject):
             chat_id=self.id,
             sticker_set_name=sticker_set_name,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def get_member(
         self,
@@ -522,7 +522,7 @@ class Chat(TelegramObject):
             chat_id=self.id,
             user_id=user_id,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def get_member_count(
         self,
@@ -548,7 +548,7 @@ class Chat(TelegramObject):
         return GetChatMemberCount(
             chat_id=self.id,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def leave(
         self,
@@ -574,7 +574,7 @@ class Chat(TelegramObject):
         return LeaveChat(
             chat_id=self.id,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def unpin_all_messages(
         self,
@@ -600,7 +600,7 @@ class Chat(TelegramObject):
         return UnpinAllChatMessages(
             chat_id=self.id,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def unpin_message(
         self,
@@ -629,7 +629,7 @@ class Chat(TelegramObject):
             chat_id=self.id,
             message_id=message_id,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def pin_message(
         self,
@@ -661,7 +661,7 @@ class Chat(TelegramObject):
             message_id=message_id,
             disable_notification=disable_notification,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def set_administrator_custom_title(
         self,
@@ -693,7 +693,7 @@ class Chat(TelegramObject):
             user_id=user_id,
             custom_title=custom_title,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def set_permissions(
         self,
@@ -725,7 +725,7 @@ class Chat(TelegramObject):
             permissions=permissions,
             use_independent_chat_permissions=use_independent_chat_permissions,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def promote(
         self,
@@ -790,7 +790,7 @@ class Chat(TelegramObject):
             can_pin_messages=can_pin_messages,
             can_manage_topics=can_manage_topics,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def restrict(
         self,
@@ -828,7 +828,7 @@ class Chat(TelegramObject):
             use_independent_chat_permissions=use_independent_chat_permissions,
             until_date=until_date,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def unban(
         self,
@@ -860,7 +860,7 @@ class Chat(TelegramObject):
             user_id=user_id,
             only_if_banned=only_if_banned,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def ban(
         self,
@@ -895,7 +895,7 @@ class Chat(TelegramObject):
             until_date=until_date,
             revoke_messages=revoke_messages,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def set_description(
         self,
@@ -924,7 +924,7 @@ class Chat(TelegramObject):
             chat_id=self.id,
             description=description,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def set_title(
         self,
@@ -953,7 +953,7 @@ class Chat(TelegramObject):
             chat_id=self.id,
             title=title,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def delete_photo(
         self,
@@ -979,7 +979,7 @@ class Chat(TelegramObject):
         return DeleteChatPhoto(
             chat_id=self.id,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def set_photo(
         self,
@@ -1008,4 +1008,4 @@ class Chat(TelegramObject):
             chat_id=self.id,
             photo=photo,
             **kwargs,
-        )
+        ).as_(self._bot)

@@ -13,7 +13,7 @@ def state(bot: MockedBot):
     ctx = storage.storage[key]
     ctx.state = "test"
     ctx.data = {"foo": "bar"}
-    return FSMContext(bot=bot, storage=storage, key=key)
+    return FSMContext(storage=storage, key=key)
 
 
 class TestFSMContext:
@@ -22,15 +22,9 @@ class TestFSMContext:
         ctx = storage.storage[StorageKey(chat_id=-42, user_id=42, bot_id=bot.id)]
         ctx.state = "test"
         ctx.data = {"foo": "bar"}
-        state = FSMContext(
-            bot=bot, storage=storage, key=StorageKey(chat_id=-42, user_id=42, bot_id=bot.id)
-        )
-        state2 = FSMContext(
-            bot=bot, storage=storage, key=StorageKey(chat_id=42, user_id=42, bot_id=bot.id)
-        )
-        state3 = FSMContext(
-            bot=bot, storage=storage, key=StorageKey(chat_id=69, user_id=69, bot_id=bot.id)
-        )
+        state = FSMContext(storage=storage, key=StorageKey(chat_id=-42, user_id=42, bot_id=bot.id))
+        state2 = FSMContext(storage=storage, key=StorageKey(chat_id=42, user_id=42, bot_id=bot.id))
+        state3 = FSMContext(storage=storage, key=StorageKey(chat_id=69, user_id=69, bot_id=bot.id))
 
         assert await state.get_state() == "test"
         assert await state2.get_state() is None

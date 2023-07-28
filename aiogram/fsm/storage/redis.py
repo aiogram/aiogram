@@ -1,13 +1,13 @@
+import json
 from abc import ABC, abstractmethod
 from contextlib import asynccontextmanager
-from typing import Any, AsyncGenerator, Dict, Literal, Optional, cast
+from typing import Any, AsyncGenerator, Callable, Dict, Literal, Optional, cast
 
 from redis.asyncio.client import Redis
 from redis.asyncio.connection import ConnectionPool
 from redis.asyncio.lock import Lock
 from redis.typing import ExpiryT
 
-from aiogram import Bot
 from aiogram.fsm.state import State
 from aiogram.fsm.storage.base import (
     DEFAULT_DESTINY,
@@ -18,6 +18,8 @@ from aiogram.fsm.storage.base import (
 )
 
 DEFAULT_REDIS_LOCK_KWARGS = {"timeout": 60}
+_JsonLoads = Callable[..., Any]
+_JsonDumps = Callable[..., str]
 
 
 class KeyBuilder(ABC):
@@ -68,7 +70,10 @@ class DefaultKeyBuilder(KeyBuilder):
         parts = [self.prefix]
         if self.with_bot_id:
             parts.append(str(key.bot_id))
-        parts.extend([str(key.chat_id), str(key.user_id)])
+        parts.append(str(key.chat_id))
+        if key.thread_id:
+            parts.append(str(key.thread_id))
+        parts.append(str(key.user_id))
         if self.with_destiny:
             parts.append(key.destiny)
         elif key.destiny != DEFAULT_DESTINY:
@@ -93,13 +98,14 @@ class RedisStorage(BaseStorage):
         key_builder: Optional[KeyBuilder] = None,
         state_ttl: Optional[ExpiryT] = None,
         data_ttl: Optional[ExpiryT] = None,
+        json_loads: _JsonLoads = json.loads,
+        json_dumps: _JsonDumps = json.dumps,
     ) -> None:
         """
         :param redis: Instance of Redis connection
         :param key_builder: builder that helps to convert contextual key to string
         :param state_ttl: TTL for state records
         :param data_ttl: TTL for data records
-        :param lock_kwargs: Custom arguments for Redis lock
         """
         if key_builder is None:
             key_builder = DefaultKeyBuilder()
@@ -107,6 +113,8 @@ class RedisStorage(BaseStorage):
         self.key_builder = key_builder
         self.state_ttl = state_ttl
         self.data_ttl = data_ttl
+        self.json_loads = json_loads
+        self.json_dumps = json_dumps
 
     @classmethod
     def from_url(
@@ -134,7 +142,6 @@ class RedisStorage(BaseStorage):
 
     async def set_state(
         self,
-        bot: Bot,
         key: StorageKey,
         state: StateType = None,
     ) -> None:
@@ -150,7 +157,6 @@ class RedisStorage(BaseStorage):
 
     async def get_state(
         self,
-        bot: Bot,
         key: StorageKey,
     ) -> Optional[str]:
         redis_key = self.key_builder.build(key, "state")
@@ -161,7 +167,6 @@ class RedisStorage(BaseStorage):
 
     async def set_data(
         self,
-        bot: Bot,
         key: StorageKey,
         data: Dict[str, Any],
     ) -> None:
@@ -171,13 +176,12 @@ class RedisStorage(BaseStorage):
             return
         await self.redis.set(
             redis_key,
-            bot.session.json_dumps(data),
+            self.json_dumps(data),
             ex=self.data_ttl,
         )
 
     async def get_data(
         self,
-        bot: Bot,
         key: StorageKey,
     ) -> Dict[str, Any]:
         redis_key = self.key_builder.build(key, "data")
@@ -186,7 +190,7 @@ class RedisStorage(BaseStorage):
             return {}
         if isinstance(value, bytes):
             value = value.decode("utf-8")
-        return cast(Dict[str, Any], bot.session.json_loads(value))
+        return cast(Dict[str, Any], self.json_loads(value))
 
 
 class RedisEventIsolation(BaseEventIsolation):
@@ -220,7 +224,6 @@ class RedisEventIsolation(BaseEventIsolation):
     @asynccontextmanager
     async def lock(
         self,
-        bot: Bot,
         key: StorageKey,
     ) -> AsyncGenerator[None, None]:
         redis_key = self.key_builder.build(key, "lock")

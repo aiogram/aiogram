@@ -7,14 +7,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  aiogram\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-11-02 22:41+0200\n"
+"POT-Creation-Date: 2023-07-02 15:10+0300\n"
 "PO-Revision-Date: 2022-10-20 22:00+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.10.3\n"
+"Generated-By: Babel 2.12.1\n"
 
 #: ../../dispatcher/finite_state_machine/storages.rst:3
 msgid "Storages"
@@ -81,10 +81,6 @@ msgstr ""
 
 #: aiogram.fsm.storage.redis.RedisStorage.__init__:4 of
 msgid "TTL for data records"
-msgstr ""
-
-#: aiogram.fsm.storage.redis.RedisStorage.__init__:5 of
-msgid "Custom arguments for Redis lock"
 msgstr ""
 
 #: aiogram.fsm.storage.redis.RedisStorage.from_url:1 of
@@ -175,18 +171,10 @@ msgstr "Установити стан для вказаного ключа"
 #: aiogram.fsm.storage.base.BaseStorage.set_data:3
 #: aiogram.fsm.storage.base.BaseStorage.set_state:3
 #: aiogram.fsm.storage.base.BaseStorage.update_data:3 of
-msgid "instance of the current bot"
-msgstr "екземпляр поточного бота"
-
-#: aiogram.fsm.storage.base.BaseStorage.get_data:4
-#: aiogram.fsm.storage.base.BaseStorage.get_state:4
-#: aiogram.fsm.storage.base.BaseStorage.set_data:4
-#: aiogram.fsm.storage.base.BaseStorage.set_state:4
-#: aiogram.fsm.storage.base.BaseStorage.update_data:4 of
 msgid "storage key"
 msgstr "ключ сховища"
 
-#: aiogram.fsm.storage.base.BaseStorage.set_state:5 of
+#: aiogram.fsm.storage.base.BaseStorage.set_state:4 of
 msgid "new state"
 msgstr "новий стан"
 
@@ -194,7 +182,7 @@ msgstr "новий стан"
 msgid "Get key state"
 msgstr "Отримання стану ключа"
 
-#: aiogram.fsm.storage.base.BaseStorage.get_state:5 of
+#: aiogram.fsm.storage.base.BaseStorage.get_state:4 of
 msgid "current state"
 msgstr "поточний стан"
 
@@ -202,8 +190,8 @@ msgstr "поточний стан"
 msgid "Write data (replace)"
 msgstr "Запис даних (заміна)"
 
-#: aiogram.fsm.storage.base.BaseStorage.set_data:5
-#: aiogram.fsm.storage.base.BaseStorage.update_data:6 of
+#: aiogram.fsm.storage.base.BaseStorage.set_data:4
+#: aiogram.fsm.storage.base.BaseStorage.update_data:5 of
 msgid "new data"
 msgstr "нові дані"
 
@@ -211,7 +199,7 @@ msgstr "нові дані"
 msgid "Get current data for key"
 msgstr "Отримання поточних даних для ключа"
 
-#: aiogram.fsm.storage.base.BaseStorage.get_data:5 of
+#: aiogram.fsm.storage.base.BaseStorage.get_data:4 of
 msgid "current data"
 msgstr "нинішні дані"
 
@@ -219,10 +207,16 @@ msgstr "нинішні дані"
 msgid "Update date in the storage for key (like dict.update)"
 msgstr "Дата оновлення в сховищі для ключа (наприклад, dict.update)"
 
-#: aiogram.fsm.storage.base.BaseStorage.update_data:5 of
+#: aiogram.fsm.storage.base.BaseStorage.update_data:4 of
 msgid "partial data"
 msgstr "неповні дані"
 
 #: aiogram.fsm.storage.base.BaseStorage.close:1 of
 msgid "Close storage (database connection, file or etc.)"
 msgstr "Закриття сховища (підключення до бази даних, файлу тощо)"
+
+#~ msgid "Custom arguments for Redis lock"
+#~ msgstr ""
+
+#~ msgid "instance of the current bot"
+#~ msgstr "екземпляр поточного бота"

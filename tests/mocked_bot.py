@@ -1,5 +1,5 @@
 from collections import deque
-from typing import TYPE_CHECKING, AsyncGenerator, Deque, Optional, Type
+from typing import TYPE_CHECKING, Any, AsyncGenerator, Deque, Dict, Optional, Type
 
 from aiogram import Bot
 from aiogram.client.session.base import BaseSession
@@ -35,16 +35,20 @@ class MockedSession(BaseSession):
         self.requests.append(method)
         response: Response[TelegramType] = self.responses.pop()
         self.check_response(
-            method=method, status_code=response.error_code, content=response.json()
+            bot=bot,
+            method=method,
+            status_code=response.error_code,
+            content=response.model_dump_json(),
         )
         return response.result  # type: ignore
 
     async def stream_content(
         self,
         url: str,
-        timeout: int,
-        chunk_size: int,
-        raise_for_status: bool,
+        headers: Optional[Dict[str, Any]] = None,
+        timeout: int = 30,
+        chunk_size: int = 65536,
+        raise_for_status: bool = True,
     ) -> AsyncGenerator[bytes, None]:  # pragma: no cover
         yield b""
 

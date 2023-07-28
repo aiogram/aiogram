@@ -8,6 +8,7 @@ Returns: :obj:`List[Sticker]`
     :members:
     :member-order: bysource
     :undoc-members: True
+    :exclude-members: model_config,model_fields
 
 
 Usage

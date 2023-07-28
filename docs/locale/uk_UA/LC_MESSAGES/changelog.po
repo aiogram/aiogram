@@ -8,57 +8,238 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-03-11 01:52+0200\n"
+"POT-Creation-Date: 2023-07-02 15:10+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.11.0\n"
+"Generated-By: Babel 2.12.1\n"
 
 #: ../../../CHANGES.rst:3
 msgid "Changelog"
 msgstr ""
 
 #: ../../[towncrier-fragments]:2
-msgid "\\ |release| [UNRELEASED DRAFT] (2023-03-11)"
+msgid "\\ |release| [UNRELEASED DRAFT] (2023-07-02)"
 msgstr ""
 
-#: ../../../CHANGES.rst:193 ../../../CHANGES.rst:243 ../../../CHANGES.rst:623
+#: ../../../CHANGES.rst:56 ../../../CHANGES.rst:156 ../../../CHANGES.rst:216
+#: ../../../CHANGES.rst:267 ../../../CHANGES.rst:340 ../../../CHANGES.rst:381
+#: ../../../CHANGES.rst:419 ../../../CHANGES.rst:467 ../../../CHANGES.rst:543
+#: ../../../CHANGES.rst:576 ../../../CHANGES.rst:607
 #: ../../[towncrier-fragments]:5
-msgid "Improved Documentation"
+msgid "Features"
 msgstr ""
 
 #: ../../[towncrier-fragments]:7
 msgid ""
+"If router does not support custom event it does not break and passes it "
+"to included routers `#1147 "
+"<https://github.com/aiogram/aiogram/issues/1147>`_"
+msgstr ""
+
+#: ../../[towncrier-fragments]:9
+msgid "Added support for FSM in Forum topics."
+msgstr ""
+
+#: ../../[towncrier-fragments]:11
+msgid "The strategy can be changed in dispatcher:"
+msgstr ""
+
+#: ../../[towncrier-fragments]:24
+msgid ""
+"If you have implemented you own storages you should extend record key "
+"generation with new one attribute - `thread_id`"
+msgstr ""
+
+#: ../../[towncrier-fragments]:26
+msgid "`#1161 <https://github.com/aiogram/aiogram/issues/1161>`_"
+msgstr ""
+
+#: ../../[towncrier-fragments]:27
+msgid "Improved CallbackData serialization."
+msgstr ""
+
+#: ../../[towncrier-fragments]:29
+msgid "Minimized UUID (hex without dashes)"
+msgstr ""
+
+#: ../../[towncrier-fragments]:30
+msgid "Replaced bool values with int (true=1, false=0)"
+msgstr ""
+
+#: ../../[towncrier-fragments]:31
+msgid "`#1163 <https://github.com/aiogram/aiogram/issues/1163>`_"
+msgstr ""
+
+#: ../../[towncrier-fragments]:32
+msgid ""
+"Added a tool to make text formatting flexible and easy. More details on "
+"the :ref:`corresponding documentation page <formatting-tool>` `#1172 "
+"<https://github.com/aiogram/aiogram/issues/1172>`_"
+msgstr ""
+
+#: ../../[towncrier-fragments]:35
+msgid ""
+"Added X-Telegram-Bot-Api-Secret-Token header check `#1173 "
+"<https://github.com/aiogram/aiogram/issues/1173>`_"
+msgstr ""
+
+#: ../../[towncrier-fragments]:37
+msgid ""
+"Added possibility to pass custom headers to URLInputFile object `#1191 "
+"<https://github.com/aiogram/aiogram/issues/1191>`_"
+msgstr ""
+
+#: ../../../CHANGES.rst:118 ../../../CHANGES.rst:181 ../../../CHANGES.rst:230
+#: ../../../CHANGES.rst:291 ../../../CHANGES.rst:349 ../../../CHANGES.rst:395
+#: ../../../CHANGES.rst:443 ../../../CHANGES.rst:499 ../../../CHANGES.rst:584
+#: ../../../CHANGES.rst:616 ../../[towncrier-fragments]:42
+msgid "Bugfixes"
+msgstr ""
+
+#: ../../[towncrier-fragments]:44
+msgid ""
+"Change type of result in InlineQueryResult enum for "
+"`InlineQueryResultCachedMpeg4Gif` and `InlineQueryResultMpeg4Gif` to more"
+" correct according to documentation."
+msgstr ""
+
+#: ../../[towncrier-fragments]:47
+msgid ""
+"Change regexp for entities parsing to more correct "
+"(`InlineQueryResultType.yml`). `#1146 "
+"<https://github.com/aiogram/aiogram/issues/1146>`_"
+msgstr ""
+
+#: ../../[towncrier-fragments]:49
+msgid ""
+"Fixed signature of startup/shutdown events to include the "
+"**dispatcher.workflow_data as the handler arguments. `#1155 "
+"<https://github.com/aiogram/aiogram/issues/1155>`_"
+msgstr ""
+
+#: ../../[towncrier-fragments]:51
+msgid ""
+"Added missing FORUM_TOPIC_EDITED value to content_type property `#1160 "
+"<https://github.com/aiogram/aiogram/issues/1160>`_"
+msgstr ""
+
+#: ../../[towncrier-fragments]:53
+msgid ""
+"Fixed compatibility with Python 3.8-3.9 `#1162 "
+"<https://github.com/aiogram/aiogram/issues/1162>`_"
+msgstr ""
+
+#: ../../[towncrier-fragments]:55
+msgid ""
+"Fixed the markdown spoiler parser. `#1176 "
+"<https://github.com/aiogram/aiogram/issues/1176>`_"
+msgstr ""
+
+#: ../../[towncrier-fragments]:57
+msgid ""
+"Fixed workflow data propagation `#1196 "
+"<https://github.com/aiogram/aiogram/issues/1196>`_"
+msgstr ""
+
+#: ../../../CHANGES.rst:193 ../../../CHANGES.rst:243 ../../../CHANGES.rst:623
+#: ../../[towncrier-fragments]:62
+msgid "Improved Documentation"
+msgstr ""
+
+#: ../../[towncrier-fragments]:64
+msgid ""
 "Changed small grammar typos for `upload_file` `#1133 "
 "<https://github.com/aiogram/aiogram/issues/1133>`_"
+msgstr ""
+
+#: ../../../CHANGES.rst:250 ../../[towncrier-fragments]:69
+msgid "Deprecations and Removals"
+msgstr ""
+
+#: ../../[towncrier-fragments]:71
+msgid ""
+"Removed text filter in due to is planned to remove this filter few "
+"versions ago."
+msgstr ""
+
+#: ../../[towncrier-fragments]:73
+msgid ""
+"Use :code:`F.text` instead `#1170 "
+"<https://github.com/aiogram/aiogram/issues/1170>`_"
 msgstr ""
 
 #: ../../../CHANGES.rst:127 ../../../CHANGES.rst:204 ../../../CHANGES.rst:257
 #: ../../../CHANGES.rst:308 ../../../CHANGES.rst:362 ../../../CHANGES.rst:404
 #: ../../../CHANGES.rst:450 ../../../CHANGES.rst:510 ../../../CHANGES.rst:531
 #: ../../../CHANGES.rst:554 ../../../CHANGES.rst:591 ../../../CHANGES.rst:630
-#: ../../[towncrier-fragments]:12
+#: ../../[towncrier-fragments]:78
 msgid "Misc"
 msgstr ""
 
-#: ../../[towncrier-fragments]:14
+#: ../../[towncrier-fragments]:80
 msgid ""
 "Added full support of `Bot API 6.6 <https://core.telegram.org/bots/api-"
 "changelog#march-9-2023>`_"
 msgstr ""
 
-#: ../../[towncrier-fragments]:18
+#: ../../[towncrier-fragments]:84
 msgid ""
 "Note that this issue has breaking changes described in in the Bot API "
 "changelog, this changes is not breaking in the API but breaking inside "
 "aiogram because Beta stage is not finished."
 msgstr ""
 
-#: ../../[towncrier-fragments]:21
+#: ../../[towncrier-fragments]:87
 msgid "`#1139 <https://github.com/aiogram/aiogram/issues/1139>`_"
+msgstr ""
+
+#: ../../[towncrier-fragments]:88
+msgid ""
+"Added global defaults `disable_web_page_preview` and `protect_content` in"
+" addition to `parse_mode` to the Bot instance, reworked internal request "
+"builder mechanism. `#1142 "
+"<https://github.com/aiogram/aiogram/issues/1142>`_"
+msgstr ""
+
+#: ../../[towncrier-fragments]:91
+msgid ""
+"Removed bot parameters from storages `#1144 "
+"<https://github.com/aiogram/aiogram/issues/1144>`_"
+msgstr ""
+
+#: ../../[towncrier-fragments]:93
+msgid ""
+"Added full support of `Bot API 6.7 <https://core.telegram.org/bots/api-"
+"changelog#april-21-2023>`_"
+msgstr ""
+
+#: ../../[towncrier-fragments]:97
+msgid ""
+"Note that arguments *switch_pm_parameter* and *switch_pm_text* was "
+"deprecated and should be changed to *button* argument as described in API"
+" docs."
+msgstr ""
+
+#: ../../[towncrier-fragments]:99
+msgid "`#1168 <https://github.com/aiogram/aiogram/issues/1168>`_"
+msgstr ""
+
+#: ../../[towncrier-fragments]:100
+msgid "Updated `Pydantic to V2 <https://docs.pydantic.dev/2.0/migration/>`_"
+msgstr ""
+
+#: ../../[towncrier-fragments]:104
+msgid ""
+"Be careful, not all libraries is already updated to using V2 (for example"
+" at the time, when this warning was added FastAPI still not support V2)"
+msgstr ""
+
+#: ../../[towncrier-fragments]:106
+msgid "`#1202 <https://github.com/aiogram/aiogram/issues/1202>`_"
 msgstr ""
 
 #: ../../../CHANGES.rst:20
@@ -81,13 +262,6 @@ msgstr ""
 
 #: ../../../CHANGES.rst:40
 msgid "But if you change it like this it should works as well:"
-msgstr ""
-
-#: ../../../CHANGES.rst:56 ../../../CHANGES.rst:156 ../../../CHANGES.rst:216
-#: ../../../CHANGES.rst:267 ../../../CHANGES.rst:340 ../../../CHANGES.rst:381
-#: ../../../CHANGES.rst:419 ../../../CHANGES.rst:467 ../../../CHANGES.rst:543
-#: ../../../CHANGES.rst:576 ../../../CHANGES.rst:607
-msgid "Features"
 msgstr ""
 
 #: ../../../CHANGES.rst:58
@@ -187,13 +361,6 @@ msgstr ""
 msgid ""
 "Added a method that allows you to compactly register routers `#1117 "
 "<https://github.com/aiogram/aiogram/issues/1117>`_"
-msgstr ""
-
-#: ../../../CHANGES.rst:118 ../../../CHANGES.rst:181 ../../../CHANGES.rst:230
-#: ../../../CHANGES.rst:291 ../../../CHANGES.rst:349 ../../../CHANGES.rst:395
-#: ../../../CHANGES.rst:443 ../../../CHANGES.rst:499 ../../../CHANGES.rst:584
-#: ../../../CHANGES.rst:616
-msgid "Bugfixes"
 msgstr ""
 
 #: ../../../CHANGES.rst:120
@@ -457,10 +624,6 @@ msgstr ""
 msgid ""
 "Initialized Docs translation (added Ukrainian language) `#925 "
 "<https://github.com/aiogram/aiogram/issues/925>`_"
-msgstr ""
-
-#: ../../../CHANGES.rst:250
-msgid "Deprecations and Removals"
 msgstr ""
 
 #: ../../../CHANGES.rst:252
@@ -2620,4 +2783,7 @@ msgstr ""
 #~ ":class:`aiogram.enums.sticker_type.StickerType`, "
 #~ ":class:`aiogram.enums.topic_icon_color.TopicIconColor`, "
 #~ ":class:`aiogram.enums.update_type.UpdateType`,"
+#~ msgstr ""
+
+#~ msgid "\\ |release| [UNRELEASED DRAFT] (2023-03-11)"
 #~ msgstr ""
