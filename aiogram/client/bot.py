@@ -230,7 +230,7 @@ from .session.base import BaseSession
 T = TypeVar("T")
 
 
-class Bot(ContextInstanceMixin["Bot"]):
+class Bot:
     def __init__(
         self,
         token: str,
@@ -284,16 +284,14 @@ class Bot(ContextInstanceMixin["Bot"]):
         """
         Generate bot context
 
-        :param auto_close:
+        :param auto_close: close session on exit
         :return:
         """
-        token = self.set_current(self)
         try:
             yield self
         finally:
             if auto_close:
                 await self.session.close()
-            self.reset_current(token)
 
     async def me(self) -> User:
         """
