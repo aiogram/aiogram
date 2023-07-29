@@ -532,7 +532,7 @@ def as_marked_list(*items: NodeType, marker: str = "- ") -> Text:
     Wrap elements as marked list
 
     :param items:
-    :param marker: line marker, by default is :code:`- `
+    :param marker: line marker, by default is '- '
     :return: Text
     """
     return as_list(*(Text(marker, item) for item in items))
@@ -544,7 +544,7 @@ def as_numbered_list(*items: NodeType, start: int = 1, fmt: str = "{}. ") -> Tex
 
     :param items:
     :param start: initial number, by default 1
-    :param fmt: number format, by default :code:`{}. `
+    :param fmt: number format, by default '{}. '
     :return: Text
     """
     return as_list(*(Text(fmt.format(index), item) for index, item in enumerate(items, start)))
