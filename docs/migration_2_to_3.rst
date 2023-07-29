@@ -36,6 +36,10 @@ Dispatcher
 - Executor entirely removed, now you can use Dispatcher directly to start polling or webhook.
 - Throttling method is completely removed, now you can use middlewares to control
   the execution context and use any throttling mechanism you want.
+- Removed global context variables from the API types, Bot and Dispatcher object,
+  from now if you want to get current bot instance inside handlers or filters you should
+  accept the argument :code:`bot: Bot` and use it instead of :code:`Bot.get_current()`
+  Inside middlewares it can be accessed via :code:`data["bot"]`.
 
 
 Filtering events
