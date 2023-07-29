@@ -34,6 +34,9 @@ Dispatcher
 - Removed the **_handler** suffix from all event handler decorators and registering methods.
   (:ref:`Read more » <Event observers>`)
 - Executor entirely removed, now you can use Dispatcher directly to start polling or webhook.
+- Throttling method is completely removed, now you can use middlewares to control
+  the execution context and use any throttling mechanism you want.
+
 
 Filtering events
 ================
@@ -53,6 +56,7 @@ Filtering events
   the number of repetitions in the code and makes easily way to control
   for what each router will be used.
 
+
 Bot API
 =======
 
@@ -68,6 +72,7 @@ Bot API
   so in most cases you should check that only error type (by status-code) without checking error message.
   (:ref:`Read more » <error-types>`)
 
+
 Middlewares
 ===========
 
@@ -77,6 +82,7 @@ Middlewares
   get it in the filters layer as the same way as in the handlers via keyword arguments.
 - Added mechanism named **flags**, that helps to customize handler behavior
   in conjunction with middlewares. (:ref:`Read more » <flags>`)
+
 
 Keyboard Markup
 ===============
@@ -94,6 +100,7 @@ Callbacks data
 - Callback data factory now is strictly typed via `pydantic <https://docs.pydantic.dev/>`_ models
   (:ref:`Read more » <callback-data-factory>`)
 
+
 Finite State machine
 ====================
 
@@ -101,11 +108,13 @@ Finite State machine
 - Added possibility to change FSM strategy, for example if you want to control state
   for each user in chat topics instead of user in chat you can specify it in the Dispatcher.
 
+
 Sending Files
 =============
 
 - From now you should wrap sending files into InputFile object before send instead of passing
   IO object directly to the API method. (:ref:`Read more » <sending-files>`)
+
 
 Webhook
 =======
