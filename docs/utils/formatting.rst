@@ -1,4 +1,4 @@
-.. _formatting-tool
+.. _formatting-tool:
 
 ==========
 Formatting

@@ -8,3 +8,4 @@ Client sessions is used for interacting with API server.
     custom_server
     base
     aiohttp
+    middleware

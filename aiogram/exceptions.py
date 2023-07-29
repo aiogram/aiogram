@@ -6,10 +6,16 @@ from aiogram.utils.link import docs_url
 
 
 class AiogramError(Exception):
-    pass
+    """
+    Base exception for all aiogram errors.
+    """
 
 
 class DetailedAiogramError(AiogramError):
+    """
+    Base exception for all aiogram errors with detailed message.
+    """
+
     url: Optional[str] = None
 
     def __init__(self, message: str) -> None:
@@ -26,14 +32,24 @@ class DetailedAiogramError(AiogramError):
 
 
 class CallbackAnswerException(AiogramError):
-    pass
+    """
+    Exception for callback answer.
+    """
 
 
 class UnsupportedKeywordArgument(DetailedAiogramError):
+    """
+    Exception raised when a keyword argument is passed as filter.
+    """
+
     url = docs_url("migration_2_to_3.html", fragment_="filtering-events")
 
 
 class TelegramAPIError(DetailedAiogramError):
+    """
+    Base exception for all Telegram API errors.
+    """
+
     label: str = "Telegram server says"
 
     def __init__(
@@ -50,10 +66,18 @@ class TelegramAPIError(DetailedAiogramError):
 
 
 class TelegramNetworkError(TelegramAPIError):
+    """
+    Base exception for all Telegram network errors.
+    """
+
     label = "HTTP Client says"
 
 
 class TelegramRetryAfter(TelegramAPIError):
+    """
+    Exception raised when flood control exceeds.
+    """
+
     url = "https://core.telegram.org/bots/faq#my-bot-is-hitting-limits-how-do-i-avoid-this"
 
     def __init__(
@@ -73,6 +97,10 @@ class TelegramRetryAfter(TelegramAPIError):
 
 
 class TelegramMigrateToChat(TelegramAPIError):
+    """
+    Exception raised when chat has been migrated to a supergroup.
+    """
+
     url = "https://core.telegram.org/bots/api#responseparameters"
 
     def __init__(
@@ -90,38 +118,66 @@ class TelegramMigrateToChat(TelegramAPIError):
 
 
 class TelegramBadRequest(TelegramAPIError):
-    pass
+    """
+    Exception raised when request is malformed.
+    """
 
 
 class TelegramNotFound(TelegramAPIError):
-    pass
+    """
+    Exception raised when chat, message, user, etc. not found.
+    """
 
 
 class TelegramConflictError(TelegramAPIError):
-    pass
+    """
+    Exception raised when bot token is already used by another application in polling mode.
+    """
 
 
 class TelegramUnauthorizedError(TelegramAPIError):
-    pass
+    """
+    Exception raised when bot token is invalid.
+    """
 
 
 class TelegramForbiddenError(TelegramAPIError):
-    pass
+    """
+    Exception raised when bot is kicked from chat or etc.
+    """
 
 
 class TelegramServerError(TelegramAPIError):
-    pass
+    """
+    Exception raised when Telegram server returns 5xx error.
+    """
 
 
 class RestartingTelegram(TelegramServerError):
-    pass
+    """
+    Exception raised when Telegram server is restarting.
+
+    It seems like this error is not used by Telegram anymore,
+    but it's still here for backward compatibility.
+
+    Currently, you should expect that Telegram can raise RetryAfter (with timeout 5 seconds)
+     error instead of this one.
+    """
 
 
 class TelegramEntityTooLarge(TelegramNetworkError):
+    """
+    Exception raised when you are trying to send a file that is too large.
+    """
+
     url = "https://core.telegram.org/bots/api#sending-files"
 
 
 class ClientDecodeError(AiogramError):
+    """
+    Exception raised when client can't decode response. (Malformed response, etc.)
+    """
+
     def __init__(self, message: str, original: Exception, data: Any) -> None:
         self.message = message
         self.original = original

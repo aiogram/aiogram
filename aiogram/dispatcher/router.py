@@ -53,7 +53,7 @@ class Router:
         self.chat_member = TelegramEventObserver(router=self, event_name="chat_member")
         self.chat_join_request = TelegramEventObserver(router=self, event_name="chat_join_request")
 
-        self.errors = TelegramEventObserver(router=self, event_name="error")
+        self.errors = self.error = TelegramEventObserver(router=self, event_name="error")
 
         self.startup = EventObserver()
         self.shutdown = EventObserver()
@@ -184,6 +184,12 @@ class Router:
         router.sub_routers.append(self)
 
     def include_routers(self, *routers: Router) -> None:
+        """
+        Attach multiple routers.
+
+        :param routers:
+        :return:
+        """
         if not routers:
             raise ValueError("At least one router must be provided")
         for router in routers:

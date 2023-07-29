@@ -2,9 +2,6 @@
 Installation
 ############
 
-Stable (2.x)
-============
-
 From PyPI
 ---------
 
@@ -35,10 +32,3 @@ From GitHub
 .. code-block:: bash
 
     pip install https://github.com/aiogram/aiogram/archive/refs/heads/dev-3.x.zip
-
-From AUR
---------
-
-.. code-block:: bash
-
-    yay -S python-aiogram3

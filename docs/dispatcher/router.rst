@@ -3,9 +3,11 @@ Router
 ######
 
 .. autoclass:: aiogram.dispatcher.router.Router
-    :members: __init__, include_router
+    :members: __init__, include_router, include_routers, resolve_used_update_types
     :show-inheritance:
 
+
+.. _Event observers:
 
 Event observers
 ===============
@@ -18,19 +20,6 @@ Event observers
 Here is the list of available observers and examples of how to register handlers
 
 In these examples only decorator-style registering handlers are used, but if you don't like @decorators just use :obj:`<event type>.register(...)` method instead.
-
-Update
-------
-
-.. code-block:: python
-
-    @router.update()
-    async def message_handler(update: types.Update) -> Any: pass
-
-.. note::
-
-    By default Router already has an update handler which route all event types to another observers.
-
 
 Message
 -------
@@ -143,8 +132,11 @@ Errors
     @router.errors()
     async def error_handler(exception: ErrorEvent) -> Any: pass
 
-Is useful for handling errors from other handlers
+Is useful for handling errors from other handlers, error event described :ref:`here <error-event>`
 
+
+
+.. _Nested routers:
 
 Nested routers
 ==============
@@ -159,8 +151,8 @@ Nested routers
 Example:
 
 .. code-block:: python
-    :caption: module_2.py
-    :name: module_2
+    :caption: module_1.py
+    :name: module_1
 
     router2 = Router()
 
@@ -170,7 +162,7 @@ Example:
 
 .. code-block:: python
     :caption: module_2.py
-    :name: module_1
+    :name: module_2
 
     from module_2 import router2
 
@@ -178,6 +170,22 @@ Example:
     router1 = Router()
     router1.include_router(router2)
 
+
+Update
+------
+
+.. code-block:: python
+
+    @dispatcher.update()
+    async def message_handler(update: types.Update) -> Any: pass
+
+.. warning::
+
+    The only root Router (Dispatcher) can handle this type of event.
+
+.. note::
+
+    Dispatcher already has default handler for this event type, so you can use it for handling all updates that are not handled by any other handlers.
 
 How it works?
 -------------
