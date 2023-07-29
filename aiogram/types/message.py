@@ -2560,7 +2560,7 @@ class Message(TelegramObject):
         entities = self.entities or self.caption_entities
 
         if self.text:
-            return SendMessage(text=text, entities=entities, **kwargs)
+            return SendMessage(text=text, entities=entities, **kwargs).as_(self._bot)
         if self.audio:
             return SendAudio(
                 audio=self.audio.file_id,
@@ -2570,29 +2570,29 @@ class Message(TelegramObject):
                 duration=self.audio.duration,
                 caption_entities=entities,
                 **kwargs,
-            )
+            ).as_(self._bot)
         if self.animation:
             return SendAnimation(
                 animation=self.animation.file_id, caption=text, caption_entities=entities, **kwargs
-            )
+            ).as_(self._bot)
         if self.document:
             return SendDocument(
                 document=self.document.file_id, caption=text, caption_entities=entities, **kwargs
-            )
+            ).as_(self._bot)
         if self.photo:
             return SendPhoto(
                 photo=self.photo[-1].file_id, caption=text, caption_entities=entities, **kwargs
-            )
+            ).as_(self._bot)
         if self.sticker:
             return SendSticker(sticker=self.sticker.file_id, **kwargs)
         if self.video:
             return SendVideo(
                 video=self.video.file_id, caption=text, caption_entities=entities, **kwargs
-            )
+            ).as_(self._bot)
         if self.video_note:
-            return SendVideoNote(video_note=self.video_note.file_id, **kwargs)
+            return SendVideoNote(video_note=self.video_note.file_id, **kwargs).as_(self._bot)
         if self.voice:
-            return SendVoice(voice=self.voice.file_id, **kwargs)
+            return SendVoice(voice=self.voice.file_id, **kwargs).as_(self._bot)
         if self.contact:
             return SendContact(
                 phone_number=self.contact.phone_number,
@@ -2600,7 +2600,7 @@ class Message(TelegramObject):
                 last_name=self.contact.last_name,
                 vcard=self.contact.vcard,
                 **kwargs,
-            )
+            ).as_(self._bot)
         if self.venue:
             return SendVenue(
                 latitude=self.venue.location.latitude,
@@ -2610,19 +2610,19 @@ class Message(TelegramObject):
                 foursquare_id=self.venue.foursquare_id,
                 foursquare_type=self.venue.foursquare_type,
                 **kwargs,
-            )
+            ).as_(self._bot)
         if self.location:
             return SendLocation(
                 latitude=self.location.latitude, longitude=self.location.longitude, **kwargs
-            )
+            ).as_(self._bot)
         if self.poll:
             return SendPoll(
                 question=self.poll.question,
                 options=[option.text for option in self.poll.options],
                 **kwargs,
-            )
+            ).as_(self._bot)
         if self.dice:  # Dice value can't be controlled
-            return SendDice(**kwargs)
+            return SendDice(**kwargs).as_(self._bot)
 
         raise TypeError("This type of message can't be copied.")
 
