@@ -17,7 +17,6 @@ Dispatcher is subclass of router and should be always is root router.
 
 .. toctree::
 
-    observer
     router
     dispatcher
     class_based_handlers/index
@@ -25,3 +24,4 @@ Dispatcher is subclass of router and should be always is root router.
     middlewares
     finite_state_machine/index
     flags
+    errors

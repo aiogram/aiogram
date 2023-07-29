@@ -82,7 +82,6 @@ docs = [
     "sphinx-autobuild~=2021.3.14",
     "sphinx-copybutton~=0.5.2",
     "furo~=2023.7.26",
-    "sphinx-prompt~=1.7.0",
     "Sphinx-Substitution-Extensions~=2022.2.16",
     "towncrier~=23.6.0",
     "pygments~=2.15.1",

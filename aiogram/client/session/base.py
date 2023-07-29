@@ -53,6 +53,12 @@ DEFAULT_TIMEOUT: Final[float] = 60.0
 
 
 class BaseSession(abc.ABC):
+    """
+    This is base class for all HTTP sessions in aiogram.
+
+    If you want to create your own session, you must inherit from this class.
+    """
+
     def __init__(
         self,
         api: TelegramAPIServer = PRODUCTION,
