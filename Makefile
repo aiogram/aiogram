@@ -73,8 +73,8 @@ locales_pot := _build/gettext
 docs_dir := docs
 
 docs-gettext:
-	cd $(docs_dir) && make gettext
-	cd $(docs_dir) && sphinx-intl update -p $(locales_pot) $(addprefix -l , $(locales))
+	hatch run docs:bash -c 'cd $(docs_dir) && make gettext'
+	hatch run docs:bash -c 'cd $(docs_dir) && sphinx-intl update -p $(locales_pot) $(addprefix -l , $(locales))'
 .PHONY: docs-gettext
 
 docs-serve:

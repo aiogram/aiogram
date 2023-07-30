@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-02 15:10+0300\n"
+"POT-Creation-Date: 2023-07-30 18:31+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -47,9 +47,7 @@ msgid ""
 msgstr ""
 
 #: aiogram.client.bot.Bot:1 of
-msgid ""
-"Bases: :py:class:`~aiogram.utils.mixins.ContextInstanceMixin`\\ "
-"[:py:class:`Bot`]"
+msgid "Bases: :py:class:`object`"
 msgstr ""
 
 #: aiogram.client.bot.Bot.__init__:1 of
@@ -110,6 +108,10 @@ msgstr ""
 msgid "Generate bot context"
 msgstr ""
 
+#: aiogram.client.bot.Bot.context:3 of
+msgid "close session on exit"
+msgstr ""
+
 #: aiogram.client.bot.Bot.me:1 of
 msgid "Cached alias for getMe method"
 msgstr ""
@@ -158,3 +160,8 @@ msgstr ""
 #: aiogram.client.bot.Bot.download:6 of
 msgid "file_id or Downloadable object"
 msgstr ""
+
+#~ msgid ""
+#~ "Bases: :py:class:`~aiogram.utils.mixins.ContextInstanceMixin`\\"
+#~ " [:py:class:`Bot`]"
+#~ msgstr ""

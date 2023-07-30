@@ -5,17 +5,16 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: aiogram\n"
+"Project-Id-Version:  aiogram\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-10-01 22:51+0300\n"
+"POT-Creation-Date: 2023-07-30 18:31+0300\n"
 "PO-Revision-Date: 2022-10-13 21:22+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.10.3\n"
-"X-Generator: Poedit 3.1.1\n"
+"Generated-By: Babel 2.12.1\n"
 
 #: ../../utils/chat_action.rst:3
 msgid "Chat action sender"
@@ -27,13 +26,13 @@ msgstr "Відправник"
 
 #: aiogram.utils.chat_action.ChatActionSender:1 of
 msgid ""
-"This utility helps to automatically send chat action until long actions is "
-"done to take acknowledge bot users the bot is doing something and not "
+"This utility helps to automatically send chat action until long actions "
+"is done to take acknowledge bot users the bot is doing something and not "
 "crashed."
 msgstr ""
-"Ця утиліта допомагає автоматично надсилати дії чату, допоки виконуються тривалі дії боттом,"
-"щоб повідомити користувачів бота про те що бот щось робить і не "
-"завершив роботу аварійно."
+"Ця утиліта допомагає автоматично надсилати дії чату, допоки виконуються "
+"тривалі дії боттом,щоб повідомити користувачів бота про те що бот щось "
+"робить і не завершив роботу аварійно."
 
 #: aiogram.utils.chat_action.ChatActionSender:4 of
 msgid "Provides simply to use context manager."
@@ -42,36 +41,36 @@ msgstr "Надає простий для використання контекс
 #: aiogram.utils.chat_action.ChatActionSender:6 of
 msgid ""
 "Technically sender start background task with infinity loop which works "
-"until action will be finished and sends the `chat action <https://core."
-"telegram.org/bots/api#sendchataction>`_ every 5 seconds."
+"until action will be finished and sends the `chat action "
+"<https://core.telegram.org/bots/api#sendchataction>`_ every 5 seconds."
 msgstr ""
 "Технічно, відправник запускає фонову завдачу з нескінченним циклом, який "
-"працює до завершення дії та надсилає `дію чату <https://core.telegram.org/"
-"bots/api#sendchataction>`_  кожні 5 секунд."
+"працює до завершення дії та надсилає `дію чату "
+"<https://core.telegram.org/bots/api#sendchataction>`_  кожні 5 секунд."
 
 #: aiogram.utils.chat_action.ChatActionSender.__init__ of
 msgid "Parameters"
 msgstr "Параметри"
 
 #: aiogram.utils.chat_action.ChatActionSender.__init__:1 of
+msgid "instance of the bot"
+msgstr ""
+
+#: aiogram.utils.chat_action.ChatActionSender.__init__:2 of
 msgid "target chat id"
 msgstr "ідентифікатор цільового чату"
 
-#: aiogram.utils.chat_action.ChatActionSender.__init__:2 of
+#: aiogram.utils.chat_action.ChatActionSender.__init__:3 of
 msgid "chat action type"
 msgstr "тип дії"
 
-#: aiogram.utils.chat_action.ChatActionSender.__init__:3 of
+#: aiogram.utils.chat_action.ChatActionSender.__init__:4 of
 msgid "interval between iterations"
 msgstr "інтервал між ітераціями"
 
-#: aiogram.utils.chat_action.ChatActionSender.__init__:4 of
+#: aiogram.utils.chat_action.ChatActionSender.__init__:5 of
 msgid "sleep before first iteration"
 msgstr "затримка перед першою ітерацією"
-
-#: aiogram.utils.chat_action.ChatActionSender.__init__:5 of
-msgid "instance of the bot, can be omitted from the context"
-msgstr "екземпляр бота, необов'язковий параметр"
 
 #: aiogram.utils.chat_action.ChatActionSender.choose_sticker:1 of
 msgid "Create instance of the sender with `choose_sticker` action"
@@ -137,8 +136,8 @@ msgstr "Перед використанням слід зареєструват�
 
 #: ../../utils/chat_action.rst:37
 msgid ""
-"After this action all handlers which works longer than `initial_sleep` will "
-"produce the '`typing`' chat action."
+"After this action all handlers which works longer than `initial_sleep` "
+"will produce the '`typing`' chat action."
 msgstr ""
 "Після цього всі обробники, що працюють довше за `initial_sleep`, "
 "виконуватимуть дію '`typing`' чату"
@@ -156,3 +155,6 @@ msgstr "Зміна лише типу дії:"
 #: ../../utils/chat_action.rst:50
 msgid "Change sender configuration:"
 msgstr "Зміна конфігурації відправника:"
+
+#~ msgid "instance of the bot, can be omitted from the context"
+#~ msgstr "екземпляр бота, необов'язковий параметр"

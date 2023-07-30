@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
-# Copyright (C) 2022, aiogram Team
+# Copyright (C) 2023, aiogram Team
 # This file is distributed under the same license as the aiogram package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2022.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2023.
 #
 #, fuzzy
 msgid ""
@@ -17,28 +17,14 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.12.1\n"
 
-#: ../../install.rst:3
-msgid "Installation"
+#: ../../api/enums/encrypted_passport_element.rst:3
+msgid "EncryptedPassportElement"
 msgstr ""
 
-#: ../../install.rst:6 ../../install.rst:23
-msgid "From PyPI"
+#: aiogram.enums.encrypted_passport_element.EncryptedPassportElement:1 of
+msgid "This object represents type of encrypted passport element."
 msgstr ""
 
-#: ../../install.rst:13
-msgid "From Arch Linux Repository"
+#: aiogram.enums.encrypted_passport_element.EncryptedPassportElement:3 of
+msgid "Source: https://core.telegram.org/bots/api#encryptedpassportelement"
 msgstr ""
-
-#: ../../install.rst:20
-msgid "Development build (3.x)"
-msgstr ""
-
-#: ../../install.rst:30
-msgid "From GitHub"
-msgstr ""
-
-#~ msgid "Stable (2.x)"
-#~ msgstr ""
-
-#~ msgid "From AUR"
-#~ msgstr ""

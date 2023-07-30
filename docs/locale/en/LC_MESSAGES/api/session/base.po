@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-02 15:10+0300\n"
+"POT-Creation-Date: 2023-07-30 18:31+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -23,6 +23,14 @@ msgstr ""
 
 #: ../../api/session/base.rst:5
 msgid "Abstract session for all client sessions"
+msgstr ""
+
+#: aiogram.client.session.base.BaseSession:1 of
+msgid "This is base class for all HTTP sessions in aiogram."
+msgstr ""
+
+#: aiogram.client.session.base.BaseSession:3 of
+msgid "If you want to create your own session, you must inherit from this class."
 msgstr ""
 
 #: aiogram.client.session.base.BaseSession.check_response:1 of
