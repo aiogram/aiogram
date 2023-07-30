@@ -24,11 +24,7 @@ from aiogram.methods import (
     SendVideoNote,
     SendVoice,
 )
-from aiogram.types import (
-    Chat,
-    ChatJoinRequest,
-    User,
-)
+from aiogram.types import Chat, ChatJoinRequest, User
 
 
 class TestChatJoinRequest:

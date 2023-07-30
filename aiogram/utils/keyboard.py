@@ -236,6 +236,12 @@ class KeyboardBuilder(Generic[ButtonType]):
         return self
 
     def button(self, **kwargs: Any) -> "KeyboardBuilder[ButtonType]":
+        """
+        Add button to markup
+
+        :param kwargs:
+        :return:
+        """
         if isinstance(callback_data := kwargs.get("callback_data", None), CallbackData):
             kwargs["callback_data"] = callback_data.pack()
         button = self._button_type(**kwargs)
@@ -245,6 +251,17 @@ class KeyboardBuilder(Generic[ButtonType]):
         if self._button_type is KeyboardButton:
             return ReplyKeyboardMarkup(keyboard=self.export(), **kwargs)
         return InlineKeyboardMarkup(inline_keyboard=self.export())
+
+    def attach(self, builder: "KeyboardBuilder[ButtonType]") -> "KeyboardBuilder[ButtonType]":
+        if not isinstance(builder, KeyboardBuilder):
+            raise ValueError(f"Only KeyboardBuilder can be attached, not {type(builder).__name__}")
+        if builder._button_type is not self._button_type:
+            raise ValueError(
+                f"Only builders with same button type can be attached, "
+                f"not {self._button_type.__name__} and {builder._button_type.__name__}"
+            )
+        self._markup.extend(builder.export())
+        return self
 
 
 def repeat_last(items: Iterable[T]) -> Generator[T, None, None]:
@@ -303,6 +320,18 @@ class InlineKeyboardBuilder(KeyboardBuilder[InlineKeyboardButton]):
         """
         return InlineKeyboardBuilder(markup=self.export())
 
+    @classmethod
+    def from_markup(
+        cls: Type["InlineKeyboardBuilder"], markup: InlineKeyboardMarkup
+    ) -> "InlineKeyboardBuilder":
+        """
+        Create builder from existing markup
+
+        :param markup:
+        :return:
+        """
+        return cls(markup=markup.inline_keyboard)
+
 
 class ReplyKeyboardBuilder(KeyboardBuilder[KeyboardButton]):
     """
@@ -336,3 +365,13 @@ class ReplyKeyboardBuilder(KeyboardBuilder[KeyboardButton]):
         :return:
         """
         return ReplyKeyboardBuilder(markup=self.export())
+
+    @classmethod
+    def from_markup(cls, markup: ReplyKeyboardMarkup) -> "ReplyKeyboardBuilder":
+        """
+        Create builder from existing markup
+
+        :param markup:
+        :return:
+        """
+        return cls(markup=markup.keyboard)
