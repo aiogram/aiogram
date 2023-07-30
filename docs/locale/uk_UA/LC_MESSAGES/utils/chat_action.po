@@ -54,7 +54,7 @@ msgstr "Параметри"
 
 #: aiogram.utils.chat_action.ChatActionSender.__init__:1 of
 msgid "instance of the bot"
-msgstr ""
+msgstr "екземпляр бота, необов'язковий параметр"
 
 #: aiogram.utils.chat_action.ChatActionSender.__init__:2 of
 msgid "target chat id"
@@ -155,6 +155,3 @@ msgstr "Зміна лише типу дії:"
 #: ../../utils/chat_action.rst:50
 msgid "Change sender configuration:"
 msgstr "Зміна конфігурації відправника:"
-
-#~ msgid "instance of the bot, can be omitted from the context"
-#~ msgstr "екземпляр бота, необов'язковий параметр"
