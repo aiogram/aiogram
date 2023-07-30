@@ -1,2 +1,2 @@
-Added new shortcuts for :class:`aiogram.types.chat_member_updated.aiogramChatMemberUpdated`
+Added new shortcuts for :class:`aiogram.types.chat_member_updated.ChatMemberUpdated`
 to send message to chat that member joined/left.
