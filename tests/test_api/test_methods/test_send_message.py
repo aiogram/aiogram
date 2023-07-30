@@ -24,7 +24,6 @@ class TestSendMessage:
 
     async def test_force_reply(self):
         # https://github.com/aiogram/aiogram/issues/901
-        print("::::", SendMessage.__pydantic_core_schema__)
         method = SendMessage(text="test", chat_id=42, reply_markup=ForceReply())
         assert isinstance(method.reply_markup, ForceReply)
 

@@ -50,3 +50,4 @@ As shortcut from received object
 
 - :meth:`aiogram.types.message.Message.answer_media_group`
 - :meth:`aiogram.types.message.Message.reply_media_group`
+- :meth:`aiogram.types.chat_member_updated.ChatMemberUpdated.answer_media_group`

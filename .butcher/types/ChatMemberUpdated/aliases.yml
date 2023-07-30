@@ -1,0 +1,68 @@
+answer:
+  method: sendMessage
+  fill: &fill-answer
+    chat_id: self.chat.id
+
+answer_animation:
+  method: sendAnimation
+  fill: *fill-answer
+
+answer_audio:
+  method: sendAudio
+  fill: *fill-answer
+
+answer_contact:
+  method: sendContact
+  fill: *fill-answer
+
+answer_document:
+  method: sendDocument
+  fill: *fill-answer
+
+answer_game:
+  method: sendGame
+  fill: *fill-answer
+
+answer_invoice:
+  method: sendInvoice
+  fill: *fill-answer
+
+answer_location:
+  method: sendLocation
+  fill: *fill-answer
+
+answer_media_group:
+  method: sendMediaGroup
+  fill: *fill-answer
+
+answer_photo:
+  method: sendPhoto
+  fill: *fill-answer
+
+answer_poll:
+  method: sendPoll
+  fill: *fill-answer
+
+answer_dice:
+  method: sendDice
+  fill: *fill-answer
+
+answer_sticker:
+  method: sendSticker
+  fill: *fill-answer
+
+answer_venue:
+  method: sendVenue
+  fill: *fill-answer
+
+answer_video:
+  method: sendVideo
+  fill: *fill-answer
+
+answer_video_note:
+  method: sendVideoNote
+  fill: *fill-answer
+
+answer_voice:
+  method: sendVoice
+  fill: *fill-answer
