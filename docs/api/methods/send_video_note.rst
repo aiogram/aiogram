@@ -51,3 +51,5 @@ As shortcut from received object
 - :meth:`aiogram.types.message.Message.answer_video_note`
 - :meth:`aiogram.types.message.Message.reply_video_note`
 - :meth:`aiogram.types.chat_member_updated.ChatMemberUpdated.answer_video_note`
+- :meth:`aiogram.types.chat_join_request.ChatJoinRequest.answer_video_note`
+- :meth:`aiogram.types.chat_join_request.ChatJoinRequest.answer_video_note_pm`
