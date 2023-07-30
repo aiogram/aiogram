@@ -29,7 +29,6 @@ from aiogram.types import (
     ChatMemberUpdated,
     User,
 )
-from aiogram.types.message import Message
 
 
 class TestChatMemberUpdated:
