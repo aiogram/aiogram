@@ -1,4 +1,0 @@
-Added model validation to remove UNSET before field validation.
-This change was necessary to correctly handle parse_mode where 'UNSET' is used as a sentinel value.
-Without the removal of 'UNSET', it would create issues when passed to model initialization from Bot.method_name.
-'UNSET' was also added to typing.

@@ -1,1 +1,0 @@
-Improved docs, added basic migration guide (will be expanded later)

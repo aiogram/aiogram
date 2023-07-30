@@ -1,2 +1,0 @@
-Added new shortcuts for :class:`aiogram.types.chat_join_request.ChatJoinRequest`
-to make easier access to sending messages to users who wants to join to chat.

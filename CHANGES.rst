@@ -16,6 +16,49 @@ Changelog
 
 .. towncrier release notes start
 
+
+3.0.0b9 (2023-07-30)
+=====================
+
+Features
+--------
+
+- Added new shortcuts for :class:`aiogram.types.chat_member_updated.ChatMemberUpdated`
+  to send message to chat that member joined/left.
+  `#1234 <https://github.com/aiogram/aiogram/issues/1234>`_
+- Added new shortcuts for :class:`aiogram.types.chat_join_request.ChatJoinRequest`
+  to make easier access to sending messages to users who wants to join to chat.
+  `#1235 <https://github.com/aiogram/aiogram/issues/1235>`_
+
+
+Bugfixes
+--------
+
+- Fixed bot assignment in the :code:`Message.send_copy` shortcut
+  `#1232 <https://github.com/aiogram/aiogram/issues/1232>`_
+- Added model validation to remove UNSET before field validation.
+  This change was necessary to correctly handle parse_mode where 'UNSET' is used as a sentinel value.
+  Without the removal of 'UNSET', it would create issues when passed to model initialization from Bot.method_name.
+  'UNSET' was also added to typing.
+  `#1233 <https://github.com/aiogram/aiogram/issues/1233>`_
+- Updated pydantic to 2.1 with few bugfixes
+
+
+Improved Documentation
+----------------------
+
+- Improved docs, added basic migration guide (will be expanded later)
+  `#1143 <https://github.com/aiogram/aiogram/issues/1143>`_
+
+
+Deprecations and Removals
+-------------------------
+
+- Removed the use of the context instance (Bot.get_current) from all placements that were used previously.
+  This is to avoid the use of the context instance in the wrong place.
+  `#1230 <https://github.com/aiogram/aiogram/issues/1230>`_
+
+
 3.0.0b8 (2023-07-17)
 =====================
 

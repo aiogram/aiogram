@@ -1,1 +1,0 @@
-Fixed bot assignment in the :code:`Message.send_copy` shortcut
