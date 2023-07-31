@@ -1,5 +1,5 @@
 import asyncio
-from typing import Any, AsyncContextManager, AsyncGenerator, Dict, List
+from typing import Any, AsyncContextManager, AsyncGenerator, AsyncIterable, Dict, List
 from unittest.mock import AsyncMock, patch
 
 import aiohttp_socks
@@ -156,7 +156,7 @@ class TestAiohttpSession:
         assert fields[1][2].startswith("attach://")
         assert fields[2][0]["name"] == fields[1][2][9:]
         assert fields[2][0]["filename"] == "file.txt"
-        assert isinstance(fields[2][2], BareInputFile)
+        assert isinstance(fields[2][2], AsyncIterable)
 
     async def test_make_request(self, bot: MockedBot, aresponses: ResponsesMockServer):
         aresponses.add(

@@ -41,12 +41,8 @@ class InputFile(ABC):
         self.chunk_size = chunk_size
 
     @abstractmethod
-    async def read(self, chunk_size: int) -> AsyncGenerator[bytes, None]:  # pragma: no cover
+    async def read(self, bot: "Bot") -> AsyncGenerator[bytes, None]:  # pragma: no cover
         yield b""
-
-    async def __aiter__(self) -> AsyncIterator[bytes]:
-        async for chunk in self.read(self.chunk_size):
-            yield chunk
 
 
 class BufferedInputFile(InputFile):
@@ -84,9 +80,9 @@ class BufferedInputFile(InputFile):
             data = f.read()
         return cls(data, filename=filename, chunk_size=chunk_size)
 
-    async def read(self, chunk_size: int) -> AsyncGenerator[bytes, None]:
+    async def read(self, bot: "Bot") -> AsyncGenerator[bytes, None]:
         buffer = io.BytesIO(self.data)
-        while chunk := buffer.read(chunk_size):
+        while chunk := buffer.read(self.chunk_size):
             yield chunk
 
 
@@ -111,9 +107,9 @@ class FSInputFile(InputFile):
 
         self.path = path
 
-    async def read(self, chunk_size: int) -> AsyncGenerator[bytes, None]:
+    async def read(self, bot: "Bot") -> AsyncGenerator[bytes, None]:
         async with aiofiles.open(self.path, "rb") as f:
-            while chunk := await f.read(chunk_size):
+            while chunk := await f.read(self.chunk_size):
                 yield chunk
 
 
@@ -121,11 +117,11 @@ class URLInputFile(InputFile):
     def __init__(
         self,
         url: str,
-        bot: "Bot",
         headers: Optional[Dict[str, Any]] = None,
         filename: Optional[str] = None,
         chunk_size: int = DEFAULT_CHUNK_SIZE,
         timeout: int = 30,
+        bot: Optional["Bot"] = None,
     ):
         """
         Represents object for streaming files from internet
@@ -136,7 +132,7 @@ class URLInputFile(InputFile):
         :param chunk_size: Uploading chunk size
         :param timeout: Timeout for downloading
         :param bot: Bot instance to use HTTP session from.
-                    If not specified, will be used current bot from context.
+                    If not specified, will be used current bot
         """
         super().__init__(filename=filename, chunk_size=chunk_size)
         if headers is None:
@@ -147,8 +143,9 @@ class URLInputFile(InputFile):
         self.timeout = timeout
         self.bot = bot
 
-    async def read(self, chunk_size: int) -> AsyncGenerator[bytes, None]:
-        stream = self.bot.session.stream_content(
+    async def read(self, bot: "Bot") -> AsyncGenerator[bytes, None]:
+        bot = self.bot or bot
+        stream = bot.session.stream_content(
             url=self.url,
             headers=self.headers,
             timeout=self.timeout,
