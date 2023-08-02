@@ -516,7 +516,7 @@ class Dispatcher(Router):
                 **self.workflow_data,
                 **kwargs,
             }
-            await self.emit_startup(bot=bots[-1], **workflow_data)
+            await self.emit_startup(bots[-1], **workflow_data)
             loggers.dispatcher.info("Start polling")
             try:
                 tasks: List[asyncio.Task[Any]] = [
