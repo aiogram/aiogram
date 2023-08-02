@@ -13,6 +13,7 @@ Here is list of all available enums:
     chat_member_status
     chat_type
     content_type
+    currency
     dice_emoji
     inline_query_result_type
     input_media_type

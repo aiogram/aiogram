@@ -5,7 +5,7 @@ class Currency(str, Enum):
     """
     Currencies supported by Telegram Bot API
 
-    Info: https://core.telegram.org/bots/payments#supported-currencies
+    Source: https://core.telegram.org/bots/payments#supported-currencies
     """
 
     AED = "AED"
