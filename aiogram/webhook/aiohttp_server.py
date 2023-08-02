@@ -170,7 +170,7 @@ class BaseRequestHandler(ABC):
             payload.set_content_disposition("form-data", name=key)
 
         for key, value in files.items():
-            payload = writer.append(value)
+            payload = writer.append(value.read(bot))
             payload.set_content_disposition(
                 "form-data",
                 name=key,
