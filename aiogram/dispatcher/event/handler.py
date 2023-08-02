@@ -13,6 +13,7 @@ from aiogram.filters.base import Filter
 from aiogram.handlers import BaseHandler
 from aiogram.utils.magic_filter import MagicFilter
 from aiogram.utils.warnings import Recommendation
+from aiogram.fsm.middleware import FSMContextMiddleware
 
 CallbackType = Callable[..., Any]
 
@@ -37,6 +38,8 @@ class CallableMixin:
         }
 
     async def call(self, *args: Any, **kwargs: Any) -> Any:
+        if "FSMContextMiddleware.close" in str(self.callback):
+            args = []
         wrapped = partial(self.callback, *args, **self._prepare_kwargs(kwargs))
         if self.awaitable:
             return await wrapped()
