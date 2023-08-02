@@ -144,16 +144,16 @@ copy_to:
     from_chat_id: self.chat.id
     message_id: self.message_id
 
-edit_text:
-  method: editMessageText
-  fill: &message-target
-    chat_id: self.chat.id
-    message_id: self.message_id
-
 forward:
   method: forwardMessage
   fill:
     from_chat_id: self.chat.id
+    message_id: self.message_id
+
+edit_text:
+  method: editMessageText
+  fill: &message-target
+    chat_id: self.chat.id if self.chat else None
     message_id: self.message_id
 
 edit_media:
@@ -163,6 +163,12 @@ edit_media:
 edit_reply_markup:
   method: editMessageReplyMarkup
   fill: *message-target
+
+delete_reply_markup:
+  method: editMessageReplyMarkup
+  fill:
+    <<: *message-target
+    reply_markup: None
 
 edit_live_location:
   method: editMessageLiveLocation

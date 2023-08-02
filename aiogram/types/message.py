@@ -2721,7 +2721,7 @@ class Message(TelegramObject):
         from aiogram.methods import EditMessageText
 
         return EditMessageText(
-            chat_id=self.chat.id,
+            chat_id=self.chat.id if self.chat else None,
             message_id=self.message_id,
             text=text,
             inline_message_id=inline_message_id,
@@ -2807,7 +2807,7 @@ class Message(TelegramObject):
         from aiogram.methods import EditMessageMedia
 
         return EditMessageMedia(
-            chat_id=self.chat.id,
+            chat_id=self.chat.id if self.chat else None,
             message_id=self.message_id,
             media=media,
             inline_message_id=inline_message_id,
@@ -2842,15 +2842,45 @@ class Message(TelegramObject):
         from aiogram.methods import EditMessageReplyMarkup
 
         return EditMessageReplyMarkup(
-            chat_id=self.chat.id,
+            chat_id=self.chat.id if self.chat else None,
             message_id=self.message_id,
             inline_message_id=inline_message_id,
             reply_markup=reply_markup,
             **kwargs,
         ).as_(self._bot)
 
-    def delete_reply_markup(self) -> EditMessageReplyMarkup:
-        return self.edit_reply_markup(reply_markup=None)
+    def delete_reply_markup(
+        self,
+        inline_message_id: Optional[str] = None,
+        **kwargs: Any,
+    ) -> EditMessageReplyMarkup:
+        """
+        Shortcut for method :class:`aiogram.methods.edit_message_reply_markup.EditMessageReplyMarkup`
+        will automatically fill method attributes:
+
+        - :code:`chat_id`
+        - :code:`message_id`
+        - :code:`reply_markup`
+
+        Use this method to edit only the reply markup of messages. On success, if the edited message is not an inline message, the edited :class:`aiogram.types.message.Message` is returned, otherwise :code:`True` is returned.
+
+        Source: https://core.telegram.org/bots/api#editmessagereplymarkup
+
+        :param inline_message_id: Required if *chat_id* and *message_id* are not specified. Identifier of the inline message
+        :return: instance of method :class:`aiogram.methods.edit_message_reply_markup.EditMessageReplyMarkup`
+        """
+        # DO NOT EDIT MANUALLY!!!
+        # This method was auto-generated via `butcher`
+
+        from aiogram.methods import EditMessageReplyMarkup
+
+        return EditMessageReplyMarkup(
+            chat_id=self.chat.id if self.chat else None,
+            message_id=self.message_id,
+            reply_markup=None,
+            inline_message_id=inline_message_id,
+            **kwargs,
+        ).as_(self._bot)
 
     def edit_live_location(
         self,
@@ -2889,7 +2919,7 @@ class Message(TelegramObject):
         from aiogram.methods import EditMessageLiveLocation
 
         return EditMessageLiveLocation(
-            chat_id=self.chat.id,
+            chat_id=self.chat.id if self.chat else None,
             message_id=self.message_id,
             latitude=latitude,
             longitude=longitude,
@@ -2928,7 +2958,7 @@ class Message(TelegramObject):
         from aiogram.methods import StopMessageLiveLocation
 
         return StopMessageLiveLocation(
-            chat_id=self.chat.id,
+            chat_id=self.chat.id if self.chat else None,
             message_id=self.message_id,
             inline_message_id=inline_message_id,
             reply_markup=reply_markup,
@@ -2968,7 +2998,7 @@ class Message(TelegramObject):
         from aiogram.methods import EditMessageCaption
 
         return EditMessageCaption(
-            chat_id=self.chat.id,
+            chat_id=self.chat.id if self.chat else None,
             message_id=self.message_id,
             inline_message_id=inline_message_id,
             caption=caption,
@@ -3019,7 +3049,7 @@ class Message(TelegramObject):
         from aiogram.methods import DeleteMessage
 
         return DeleteMessage(
-            chat_id=self.chat.id,
+            chat_id=self.chat.id if self.chat else None,
             message_id=self.message_id,
             **kwargs,
         ).as_(self._bot)
@@ -3049,7 +3079,7 @@ class Message(TelegramObject):
         from aiogram.methods import PinChatMessage
 
         return PinChatMessage(
-            chat_id=self.chat.id,
+            chat_id=self.chat.id if self.chat else None,
             message_id=self.message_id,
             disable_notification=disable_notification,
             **kwargs,
@@ -3078,7 +3108,7 @@ class Message(TelegramObject):
         from aiogram.methods import UnpinChatMessage
 
         return UnpinChatMessage(
-            chat_id=self.chat.id,
+            chat_id=self.chat.id if self.chat else None,
             message_id=self.message_id,
             **kwargs,
         ).as_(self._bot)

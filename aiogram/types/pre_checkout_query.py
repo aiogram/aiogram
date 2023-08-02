@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Optional, Any
 
 from pydantic import Field
 
@@ -34,16 +34,34 @@ class PreCheckoutQuery(TelegramObject):
     order_info: Optional[OrderInfo] = None
     """*Optional*. Order information provided by the user"""
 
-    def answer(self, ok: bool, error_message: Optional[str] = None) -> AnswerPreCheckoutQuery:
+    def answer(
+        self,
+        ok: bool,
+        error_message: Optional[str] = None,
+        **kwargs: Any,
+    ) -> AnswerPreCheckoutQuery:
         """
-        :param ok:
-        :param error_message:
-        :return:
+        Shortcut for method :class:`aiogram.methods.answer_pre_checkout_query.AnswerPreCheckoutQuery`
+        will automatically fill method attributes:
+
+        - :code:`pre_checkout_query_id`
+
+        Once the user has confirmed their payment and shipping details, the Bot API sends the final confirmation in the form of an :class:`aiogram.types.update.Update` with the field *pre_checkout_query*. Use this method to respond to such pre-checkout queries. On success, :code:`True` is returned. **Note:** The Bot API must receive an answer within 10 seconds after the pre-checkout query was sent.
+
+        Source: https://core.telegram.org/bots/api#answerprecheckoutquery
+
+        :param ok: Specify :code:`True` if everything is alright (goods are available, etc.) and the bot is ready to proceed with the order. Use :code:`False` if there are any problems.
+        :param error_message: Required if *ok* is :code:`False`. Error message in human readable form that explains the reason for failure to proceed with the checkout (e.g. "Sorry, somebody just bought the last of our amazing black T-shirts while you were busy filling out your payment details. Please choose a different color or garment!"). Telegram will display this message to the user.
+        :return: instance of method :class:`aiogram.methods.answer_pre_checkout_query.AnswerPreCheckoutQuery`
         """
-        from ..methods import AnswerPreCheckoutQuery
+        # DO NOT EDIT MANUALLY!!!
+        # This method was auto-generated via `butcher`
+
+        from aiogram.methods import AnswerPreCheckoutQuery
 
         return AnswerPreCheckoutQuery(
             pre_checkout_query_id=self.id,
             ok=ok,
             error_message=error_message,
-        )
+            **kwargs,
+        ).as_(self._bot)
