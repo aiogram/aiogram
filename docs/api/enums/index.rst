@@ -15,6 +15,7 @@ Here is list of all available enums:
     chat_member_status
     chat_type
     content_type
+    currency
     dice_emoji
     encrypted_passport_element
     inline_query_result_type
