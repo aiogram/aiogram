@@ -152,42 +152,39 @@ forward:
 
 edit_text:
   method: editMessageText
-  fill: &message-target-maybe-inline
+  fill: &message-target
     chat_id: self.chat.id if self.chat else None
     message_id: self.message_id
-    inline_message_id: self.inline_message_id
 
 edit_media:
   method: editMessageMedia
-  fill: *message-target-maybe-inline
+  fill: *message-target
 
 edit_reply_markup:
   method: editMessageReplyMarkup
-  fill: *message-target-maybe-inline
+  fill: *message-target
 
 delete_reply_markup:
   method: editMessageReplyMarkup
   fill:
-    <<: *message-target-maybe-inline
+    <<: *message-target
     reply_markup: None
 
 edit_live_location:
   method: editMessageLiveLocation
-  fill: *message-target-maybe-inline
+  fill: *message-target
 
 stop_live_location:
   method: stopMessageLiveLocation
-  fill: *message-target-maybe-inline
+  fill: *message-target
 
 edit_caption:
   method: editMessageCaption
-  fill: *message-target-maybe-inline
+  fill: *message-target
 
 delete:
   method: deleteMessage
-  fill: &message-target
-    chat_id: self.chat.id if self.chat else None
-    message_id: self.message_id
+  fill: *message-target
 
 pin:
   method: pinChatMessage
