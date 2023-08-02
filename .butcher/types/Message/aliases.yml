@@ -144,41 +144,50 @@ copy_to:
     from_chat_id: self.chat.id
     message_id: self.message_id
 
-edit_text:
-  method: editMessageText
-  fill: &message-target
-    chat_id: self.chat.id
-    message_id: self.message_id
-
 forward:
   method: forwardMessage
   fill:
     from_chat_id: self.chat.id
     message_id: self.message_id
 
+edit_text:
+  method: editMessageText
+  fill: &message-target-maybe-inline
+    chat_id: self.chat.id if self.chat else None
+    message_id: self.message_id
+    inline_message_id: self.inline_message_id
+
 edit_media:
   method: editMessageMedia
-  fill: *message-target
+  fill: *message-target-maybe-inline
 
 edit_reply_markup:
   method: editMessageReplyMarkup
-  fill: *message-target
+  fill: *message-target-maybe-inline
+
+delete_reply_markup:
+  method: editMessageReplyMarkup
+  fill:
+    <<: *message-target-maybe-inline
+    reply_markup: None
 
 edit_live_location:
   method: editMessageLiveLocation
-  fill: *message-target
+  fill: *message-target-maybe-inline
 
 stop_live_location:
   method: stopMessageLiveLocation
-  fill: *message-target
+  fill: *message-target-maybe-inline
 
 edit_caption:
   method: editMessageCaption
-  fill: *message-target
+  fill: *message-target-maybe-inline
 
 delete:
   method: deleteMessage
-  fill: *message-target
+  fill: &message-target
+    chat_id: self.chat.id if self.chat else None
+    message_id: self.message_id
 
 pin:
   method: pinChatMessage

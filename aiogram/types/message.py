@@ -2689,7 +2689,6 @@ class Message(TelegramObject):
     def edit_text(
         self,
         text: str,
-        inline_message_id: Optional[str] = None,
         parse_mode: Optional[str] = UNSET_PARSE_MODE,
         entities: Optional[List[MessageEntity]] = None,
         disable_web_page_preview: Optional[bool] = UNSET_DISABLE_WEB_PAGE_PREVIEW,
@@ -2702,13 +2701,13 @@ class Message(TelegramObject):
 
         - :code:`chat_id`
         - :code:`message_id`
+        - :code:`inline_message_id`
 
         Use this method to edit text and `game <https://core.telegram.org/bots/api#games>`_ messages. On success, if the edited message is not an inline message, the edited :class:`aiogram.types.message.Message` is returned, otherwise :code:`True` is returned.
 
         Source: https://core.telegram.org/bots/api#editmessagetext
 
         :param text: New text of the message, 1-4096 characters after entities parsing
-        :param inline_message_id: Required if *chat_id* and *message_id* are not specified. Identifier of the inline message
         :param parse_mode: Mode for parsing entities in the message text. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.
         :param entities: A JSON-serialized list of special entities that appear in message text, which can be specified instead of *parse_mode*
         :param disable_web_page_preview: Disables link previews for links in this message
@@ -2721,10 +2720,10 @@ class Message(TelegramObject):
         from aiogram.methods import EditMessageText
 
         return EditMessageText(
-            chat_id=self.chat.id,
+            chat_id=self.chat.id if self.chat else None,
             message_id=self.message_id,
+            inline_message_id=self.inline_message_id,
             text=text,
-            inline_message_id=inline_message_id,
             parse_mode=parse_mode,
             entities=entities,
             disable_web_page_preview=disable_web_page_preview,
@@ -2781,7 +2780,6 @@ class Message(TelegramObject):
             InputMediaPhoto,
             InputMediaVideo,
         ],
-        inline_message_id: Optional[str] = None,
         reply_markup: Optional[InlineKeyboardMarkup] = None,
         **kwargs: Any,
     ) -> EditMessageMedia:
@@ -2791,13 +2789,13 @@ class Message(TelegramObject):
 
         - :code:`chat_id`
         - :code:`message_id`
+        - :code:`inline_message_id`
 
         Use this method to edit animation, audio, document, photo, or video messages. If a message is part of a message album, then it can be edited only to an audio for audio albums, only to a document for document albums and to a photo or a video otherwise. When an inline message is edited, a new file can't be uploaded; use a previously uploaded file via its file_id or specify a URL. On success, if the edited message is not an inline message, the edited :class:`aiogram.types.message.Message` is returned, otherwise :code:`True` is returned.
 
         Source: https://core.telegram.org/bots/api#editmessagemedia
 
         :param media: A JSON-serialized object for a new media content of the message
-        :param inline_message_id: Required if *chat_id* and *message_id* are not specified. Identifier of the inline message
         :param reply_markup: A JSON-serialized object for a new `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_.
         :return: instance of method :class:`aiogram.methods.edit_message_media.EditMessageMedia`
         """
@@ -2807,17 +2805,16 @@ class Message(TelegramObject):
         from aiogram.methods import EditMessageMedia
 
         return EditMessageMedia(
-            chat_id=self.chat.id,
+            chat_id=self.chat.id if self.chat else None,
             message_id=self.message_id,
+            inline_message_id=self.inline_message_id,
             media=media,
-            inline_message_id=inline_message_id,
             reply_markup=reply_markup,
             **kwargs,
         ).as_(self._bot)
 
     def edit_reply_markup(
         self,
-        inline_message_id: Optional[str] = None,
         reply_markup: Optional[InlineKeyboardMarkup] = None,
         **kwargs: Any,
     ) -> EditMessageReplyMarkup:
@@ -2827,12 +2824,12 @@ class Message(TelegramObject):
 
         - :code:`chat_id`
         - :code:`message_id`
+        - :code:`inline_message_id`
 
         Use this method to edit only the reply markup of messages. On success, if the edited message is not an inline message, the edited :class:`aiogram.types.message.Message` is returned, otherwise :code:`True` is returned.
 
         Source: https://core.telegram.org/bots/api#editmessagereplymarkup
 
-        :param inline_message_id: Required if *chat_id* and *message_id* are not specified. Identifier of the inline message
         :param reply_markup: A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_.
         :return: instance of method :class:`aiogram.methods.edit_message_reply_markup.EditMessageReplyMarkup`
         """
@@ -2842,21 +2839,49 @@ class Message(TelegramObject):
         from aiogram.methods import EditMessageReplyMarkup
 
         return EditMessageReplyMarkup(
-            chat_id=self.chat.id,
+            chat_id=self.chat.id if self.chat else None,
             message_id=self.message_id,
-            inline_message_id=inline_message_id,
+            inline_message_id=self.inline_message_id,
             reply_markup=reply_markup,
             **kwargs,
         ).as_(self._bot)
 
-    def delete_reply_markup(self) -> EditMessageReplyMarkup:
-        return self.edit_reply_markup(reply_markup=None)
+    def delete_reply_markup(
+        self,
+        **kwargs: Any,
+    ) -> EditMessageReplyMarkup:
+        """
+        Shortcut for method :class:`aiogram.methods.edit_message_reply_markup.EditMessageReplyMarkup`
+        will automatically fill method attributes:
+
+        - :code:`chat_id`
+        - :code:`message_id`
+        - :code:`inline_message_id`
+        - :code:`reply_markup`
+
+        Use this method to edit only the reply markup of messages. On success, if the edited message is not an inline message, the edited :class:`aiogram.types.message.Message` is returned, otherwise :code:`True` is returned.
+
+        Source: https://core.telegram.org/bots/api#editmessagereplymarkup
+
+        :return: instance of method :class:`aiogram.methods.edit_message_reply_markup.EditMessageReplyMarkup`
+        """
+        # DO NOT EDIT MANUALLY!!!
+        # This method was auto-generated via `butcher`
+
+        from aiogram.methods import EditMessageReplyMarkup
+
+        return EditMessageReplyMarkup(
+            chat_id=self.chat.id if self.chat else None,
+            message_id=self.message_id,
+            inline_message_id=self.inline_message_id,
+            reply_markup=None,
+            **kwargs,
+        ).as_(self._bot)
 
     def edit_live_location(
         self,
         latitude: float,
         longitude: float,
-        inline_message_id: Optional[str] = None,
         horizontal_accuracy: Optional[float] = None,
         heading: Optional[int] = None,
         proximity_alert_radius: Optional[int] = None,
@@ -2869,6 +2894,7 @@ class Message(TelegramObject):
 
         - :code:`chat_id`
         - :code:`message_id`
+        - :code:`inline_message_id`
 
         Use this method to edit live location messages. A location can be edited until its *live_period* expires or editing is explicitly disabled by a call to :class:`aiogram.methods.stop_message_live_location.StopMessageLiveLocation`. On success, if the edited message is not an inline message, the edited :class:`aiogram.types.message.Message` is returned, otherwise :code:`True` is returned.
 
@@ -2876,7 +2902,6 @@ class Message(TelegramObject):
 
         :param latitude: Latitude of new location
         :param longitude: Longitude of new location
-        :param inline_message_id: Required if *chat_id* and *message_id* are not specified. Identifier of the inline message
         :param horizontal_accuracy: The radius of uncertainty for the location, measured in meters; 0-1500
         :param heading: Direction in which the user is moving, in degrees. Must be between 1 and 360 if specified.
         :param proximity_alert_radius: The maximum distance for proximity alerts about approaching another chat member, in meters. Must be between 1 and 100000 if specified.
@@ -2889,11 +2914,11 @@ class Message(TelegramObject):
         from aiogram.methods import EditMessageLiveLocation
 
         return EditMessageLiveLocation(
-            chat_id=self.chat.id,
+            chat_id=self.chat.id if self.chat else None,
             message_id=self.message_id,
+            inline_message_id=self.inline_message_id,
             latitude=latitude,
             longitude=longitude,
-            inline_message_id=inline_message_id,
             horizontal_accuracy=horizontal_accuracy,
             heading=heading,
             proximity_alert_radius=proximity_alert_radius,
@@ -2903,7 +2928,6 @@ class Message(TelegramObject):
 
     def stop_live_location(
         self,
-        inline_message_id: Optional[str] = None,
         reply_markup: Optional[InlineKeyboardMarkup] = None,
         **kwargs: Any,
     ) -> StopMessageLiveLocation:
@@ -2913,12 +2937,12 @@ class Message(TelegramObject):
 
         - :code:`chat_id`
         - :code:`message_id`
+        - :code:`inline_message_id`
 
         Use this method to stop updating a live location message before *live_period* expires. On success, if the message is not an inline message, the edited :class:`aiogram.types.message.Message` is returned, otherwise :code:`True` is returned.
 
         Source: https://core.telegram.org/bots/api#stopmessagelivelocation
 
-        :param inline_message_id: Required if *chat_id* and *message_id* are not specified. Identifier of the inline message
         :param reply_markup: A JSON-serialized object for a new `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_.
         :return: instance of method :class:`aiogram.methods.stop_message_live_location.StopMessageLiveLocation`
         """
@@ -2928,16 +2952,15 @@ class Message(TelegramObject):
         from aiogram.methods import StopMessageLiveLocation
 
         return StopMessageLiveLocation(
-            chat_id=self.chat.id,
+            chat_id=self.chat.id if self.chat else None,
             message_id=self.message_id,
-            inline_message_id=inline_message_id,
+            inline_message_id=self.inline_message_id,
             reply_markup=reply_markup,
             **kwargs,
         ).as_(self._bot)
 
     def edit_caption(
         self,
-        inline_message_id: Optional[str] = None,
         caption: Optional[str] = None,
         parse_mode: Optional[str] = UNSET_PARSE_MODE,
         caption_entities: Optional[List[MessageEntity]] = None,
@@ -2950,12 +2973,12 @@ class Message(TelegramObject):
 
         - :code:`chat_id`
         - :code:`message_id`
+        - :code:`inline_message_id`
 
         Use this method to edit captions of messages. On success, if the edited message is not an inline message, the edited :class:`aiogram.types.message.Message` is returned, otherwise :code:`True` is returned.
 
         Source: https://core.telegram.org/bots/api#editmessagecaption
 
-        :param inline_message_id: Required if *chat_id* and *message_id* are not specified. Identifier of the inline message
         :param caption: New caption of the message, 0-1024 characters after entities parsing
         :param parse_mode: Mode for parsing entities in the message caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.
         :param caption_entities: A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*
@@ -2968,9 +2991,9 @@ class Message(TelegramObject):
         from aiogram.methods import EditMessageCaption
 
         return EditMessageCaption(
-            chat_id=self.chat.id,
+            chat_id=self.chat.id if self.chat else None,
             message_id=self.message_id,
-            inline_message_id=inline_message_id,
+            inline_message_id=self.inline_message_id,
             caption=caption,
             parse_mode=parse_mode,
             caption_entities=caption_entities,
@@ -3019,7 +3042,7 @@ class Message(TelegramObject):
         from aiogram.methods import DeleteMessage
 
         return DeleteMessage(
-            chat_id=self.chat.id,
+            chat_id=self.chat.id if self.chat else None,
             message_id=self.message_id,
             **kwargs,
         ).as_(self._bot)
@@ -3049,7 +3072,7 @@ class Message(TelegramObject):
         from aiogram.methods import PinChatMessage
 
         return PinChatMessage(
-            chat_id=self.chat.id,
+            chat_id=self.chat.id if self.chat else None,
             message_id=self.message_id,
             disable_notification=disable_notification,
             **kwargs,
@@ -3078,7 +3101,7 @@ class Message(TelegramObject):
         from aiogram.methods import UnpinChatMessage
 
         return UnpinChatMessage(
-            chat_id=self.chat.id,
+            chat_id=self.chat.id if self.chat else None,
             message_id=self.message_id,
             **kwargs,
         ).as_(self._bot)
