@@ -546,7 +546,7 @@ class Dispatcher(Router):
             finally:
                 loggers.dispatcher.info("Polling stopped")
                 try:
-                    await self.emit_shutdown(bot=bots[-1], **workflow_data)
+                    await self.emit_shutdown(bots[-1], **workflow_data)
                 finally:
                     if close_bot_session:
                         await asyncio.gather(*(bot.session.close() for bot in bots))
