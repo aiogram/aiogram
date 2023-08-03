@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Any, Optional
 
 from aiogram.types import TelegramObject
 
@@ -31,3 +31,36 @@ class KeyboardButtonRequestChat(TelegramObject):
     """*Optional*. A JSON-serialized object listing the required administrator rights of the bot in the chat. The rights must be a subset of *user_administrator_rights*. If not specified, no additional restrictions are applied."""
     bot_is_member: Optional[bool] = None
     """*Optional*. Pass :code:`True` to request a chat with the bot as a member. Otherwise, no additional restrictions are applied."""
+
+    if TYPE_CHECKING:
+        # DO NOT EDIT MANUALLY!!!
+        # This section was auto-generated via `butcher`
+
+        def __init__(
+            __pydantic__self__,
+            *,
+            request_id: int,
+            chat_is_channel: bool,
+            chat_is_forum: Optional[bool] = None,
+            chat_has_username: Optional[bool] = None,
+            chat_is_created: Optional[bool] = None,
+            user_administrator_rights: Optional[ChatAdministratorRights] = None,
+            bot_administrator_rights: Optional[ChatAdministratorRights] = None,
+            bot_is_member: Optional[bool] = None,
+            **__pydantic_kwargs: Any,
+        ) -> None:
+            # DO NOT EDIT MANUALLY!!!
+            # This method was auto-generated via `butcher`
+            # Is needed only for type checking and IDE support without any additional plugins
+
+            super().__init__(
+                request_id=request_id,
+                chat_is_channel=chat_is_channel,
+                chat_is_forum=chat_is_forum,
+                chat_has_username=chat_has_username,
+                chat_is_created=chat_is_created,
+                user_administrator_rights=user_administrator_rights,
+                bot_administrator_rights=bot_administrator_rights,
+                bot_is_member=bot_is_member,
+                **__pydantic_kwargs,
+            )

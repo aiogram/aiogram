@@ -19,3 +19,10 @@ class ErrorEvent(TelegramObject):
     """Received update"""
     exception: Exception
     """Exception"""
+
+    if TYPE_CHECKING:
+
+        def __init__(
+            __pydantic_self__, *, update: Update, exception: Exception, **__pydantic_kwargs
+        ) -> None:
+            super().__init__(update=update, exception=exception, **__pydantic_kwargs)

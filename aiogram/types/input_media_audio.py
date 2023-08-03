@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, List, Literal, Optional, Union
+from typing import TYPE_CHECKING, Any, List, Literal, Optional, Union
 
 from ..enums import InputMediaType
 from .base import UNSET_PARSE_MODE
@@ -36,3 +36,38 @@ class InputMediaAudio(InputMedia):
     """*Optional*. Performer of the audio"""
     title: Optional[str] = None
     """*Optional*. Title of the audio"""
+
+    if TYPE_CHECKING:
+        # DO NOT EDIT MANUALLY!!!
+        # This section was auto-generated via `butcher`
+
+        def __init__(
+            __pydantic__self__,
+            *,
+            type: Literal[InputMediaType.AUDIO] = InputMediaType.AUDIO,
+            media: Union[str, InputFile],
+            thumbnail: Optional[Union[InputFile, str]] = None,
+            caption: Optional[str] = None,
+            parse_mode: Optional[str] = UNSET_PARSE_MODE,
+            caption_entities: Optional[List[MessageEntity]] = None,
+            duration: Optional[int] = None,
+            performer: Optional[str] = None,
+            title: Optional[str] = None,
+            **__pydantic_kwargs: Any,
+        ) -> None:
+            # DO NOT EDIT MANUALLY!!!
+            # This method was auto-generated via `butcher`
+            # Is needed only for type checking and IDE support without any additional plugins
+
+            super().__init__(
+                type=type,
+                media=media,
+                thumbnail=thumbnail,
+                caption=caption,
+                parse_mode=parse_mode,
+                caption_entities=caption_entities,
+                duration=duration,
+                performer=performer,
+                title=title,
+                **__pydantic_kwargs,
+            )

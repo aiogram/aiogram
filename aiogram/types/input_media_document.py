@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, List, Literal, Optional, Union
+from typing import TYPE_CHECKING, Any, List, Literal, Optional, Union
 
 from ..enums import InputMediaType
 from .base import UNSET_PARSE_MODE
@@ -32,3 +32,34 @@ class InputMediaDocument(InputMedia):
     """*Optional*. List of special entities that appear in the caption, which can be specified instead of *parse_mode*"""
     disable_content_type_detection: Optional[bool] = None
     """*Optional*. Disables automatic server-side content type detection for files uploaded using multipart/form-data. Always :code:`True`, if the document is sent as part of an album."""
+
+    if TYPE_CHECKING:
+        # DO NOT EDIT MANUALLY!!!
+        # This section was auto-generated via `butcher`
+
+        def __init__(
+            __pydantic__self__,
+            *,
+            type: Literal[InputMediaType.DOCUMENT] = InputMediaType.DOCUMENT,
+            media: Union[str, InputFile],
+            thumbnail: Optional[Union[InputFile, str]] = None,
+            caption: Optional[str] = None,
+            parse_mode: Optional[str] = UNSET_PARSE_MODE,
+            caption_entities: Optional[List[MessageEntity]] = None,
+            disable_content_type_detection: Optional[bool] = None,
+            **__pydantic_kwargs: Any,
+        ) -> None:
+            # DO NOT EDIT MANUALLY!!!
+            # This method was auto-generated via `butcher`
+            # Is needed only for type checking and IDE support without any additional plugins
+
+            super().__init__(
+                type=type,
+                media=media,
+                thumbnail=thumbnail,
+                caption=caption,
+                parse_mode=parse_mode,
+                caption_entities=caption_entities,
+                disable_content_type_detection=disable_content_type_detection,
+                **__pydantic_kwargs,
+            )

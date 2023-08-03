@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, List, Optional, Any
+from typing import TYPE_CHECKING, Any, List, Optional
 
 from pydantic import Field
 
@@ -28,6 +28,31 @@ class ShippingQuery(TelegramObject):
     """Bot specified invoice payload"""
     shipping_address: ShippingAddress
     """User specified shipping address"""
+
+    if TYPE_CHECKING:
+        # DO NOT EDIT MANUALLY!!!
+        # This section was auto-generated via `butcher`
+
+        def __init__(
+            __pydantic__self__,
+            *,
+            id: str,
+            from_user: User,
+            invoice_payload: str,
+            shipping_address: ShippingAddress,
+            **__pydantic_kwargs: Any,
+        ) -> None:
+            # DO NOT EDIT MANUALLY!!!
+            # This method was auto-generated via `butcher`
+            # Is needed only for type checking and IDE support without any additional plugins
+
+            super().__init__(
+                id=id,
+                from_user=from_user,
+                invoice_payload=invoice_payload,
+                shipping_address=shipping_address,
+                **__pydantic_kwargs,
+            )
 
     def answer(
         self,

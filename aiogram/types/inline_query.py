@@ -53,6 +53,35 @@ class InlineQuery(TelegramObject):
     location: Optional[Location] = None
     """*Optional*. Sender location, only for bots that request user location"""
 
+    if TYPE_CHECKING:
+        # DO NOT EDIT MANUALLY!!!
+        # This section was auto-generated via `butcher`
+
+        def __init__(
+            __pydantic__self__,
+            *,
+            id: str,
+            from_user: User,
+            query: str,
+            offset: str,
+            chat_type: Optional[str] = None,
+            location: Optional[Location] = None,
+            **__pydantic_kwargs: Any,
+        ) -> None:
+            # DO NOT EDIT MANUALLY!!!
+            # This method was auto-generated via `butcher`
+            # Is needed only for type checking and IDE support without any additional plugins
+
+            super().__init__(
+                id=id,
+                from_user=from_user,
+                query=query,
+                offset=offset,
+                chat_type=chat_type,
+                location=location,
+                **__pydantic_kwargs,
+            )
+
     def answer(
         self,
         results: List[

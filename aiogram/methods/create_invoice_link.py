@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import List, Optional
+from typing import TYPE_CHECKING, Any, List, Optional
 
 from ..types import LabeledPrice
 from .base import TelegramMethod
@@ -56,3 +56,60 @@ class CreateInvoiceLink(TelegramMethod[str]):
     """Pass :code:`True` if the user's email address should be sent to the provider"""
     is_flexible: Optional[bool] = None
     """Pass :code:`True` if the final price depends on the shipping method"""
+
+    if TYPE_CHECKING:
+        # DO NOT EDIT MANUALLY!!!
+        # This section was auto-generated via `butcher`
+
+        def __init__(
+            __pydantic__self__,
+            *,
+            title: str,
+            description: str,
+            payload: str,
+            provider_token: str,
+            currency: str,
+            prices: List[LabeledPrice],
+            max_tip_amount: Optional[int] = None,
+            suggested_tip_amounts: Optional[List[int]] = None,
+            provider_data: Optional[str] = None,
+            photo_url: Optional[str] = None,
+            photo_size: Optional[int] = None,
+            photo_width: Optional[int] = None,
+            photo_height: Optional[int] = None,
+            need_name: Optional[bool] = None,
+            need_phone_number: Optional[bool] = None,
+            need_email: Optional[bool] = None,
+            need_shipping_address: Optional[bool] = None,
+            send_phone_number_to_provider: Optional[bool] = None,
+            send_email_to_provider: Optional[bool] = None,
+            is_flexible: Optional[bool] = None,
+            **__pydantic_kwargs: Any,
+        ) -> None:
+            # DO NOT EDIT MANUALLY!!!
+            # This method was auto-generated via `butcher`
+            # Is needed only for type checking and IDE support without any additional plugins
+
+            super().__init__(
+                title=title,
+                description=description,
+                payload=payload,
+                provider_token=provider_token,
+                currency=currency,
+                prices=prices,
+                max_tip_amount=max_tip_amount,
+                suggested_tip_amounts=suggested_tip_amounts,
+                provider_data=provider_data,
+                photo_url=photo_url,
+                photo_size=photo_size,
+                photo_width=photo_width,
+                photo_height=photo_height,
+                need_name=need_name,
+                need_phone_number=need_phone_number,
+                need_email=need_email,
+                need_shipping_address=need_shipping_address,
+                send_phone_number_to_provider=send_phone_number_to_provider,
+                send_email_to_provider=send_email_to_provider,
+                is_flexible=is_flexible,
+                **__pydantic_kwargs,
+            )

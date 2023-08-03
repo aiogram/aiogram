@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import List, Optional
+from typing import TYPE_CHECKING, Any, List, Optional
 
 from ..types import ShippingOption
 from .base import TelegramMethod
@@ -24,3 +24,28 @@ class AnswerShippingQuery(TelegramMethod[bool]):
     """Required if *ok* is :code:`True`. A JSON-serialized array of available shipping options."""
     error_message: Optional[str] = None
     """Required if *ok* is :code:`False`. Error message in human readable form that explains why it is impossible to complete the order (e.g. "Sorry, delivery to your desired address is unavailable'). Telegram will display this message to the user."""
+
+    if TYPE_CHECKING:
+        # DO NOT EDIT MANUALLY!!!
+        # This section was auto-generated via `butcher`
+
+        def __init__(
+            __pydantic__self__,
+            *,
+            shipping_query_id: str,
+            ok: bool,
+            shipping_options: Optional[List[ShippingOption]] = None,
+            error_message: Optional[str] = None,
+            **__pydantic_kwargs: Any,
+        ) -> None:
+            # DO NOT EDIT MANUALLY!!!
+            # This method was auto-generated via `butcher`
+            # Is needed only for type checking and IDE support without any additional plugins
+
+            super().__init__(
+                shipping_query_id=shipping_query_id,
+                ok=ok,
+                shipping_options=shipping_options,
+                error_message=error_message,
+                **__pydantic_kwargs,
+            )

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional, cast
+from typing import TYPE_CHECKING, Any, Optional, cast
 
 from ..utils.mypy_hacks import lru_cache
 from .base import TelegramObject
@@ -57,6 +57,53 @@ class Update(TelegramObject):
     """*Optional*. A chat member's status was updated in a chat. The bot must be an administrator in the chat and must explicitly specify 'chat_member' in the list of *allowed_updates* to receive these updates."""
     chat_join_request: Optional[ChatJoinRequest] = None
     """*Optional*. A request to join the chat has been sent. The bot must have the *can_invite_users* administrator right in the chat to receive these updates."""
+
+    if TYPE_CHECKING:
+        # DO NOT EDIT MANUALLY!!!
+        # This section was auto-generated via `butcher`
+
+        def __init__(
+            __pydantic__self__,
+            *,
+            update_id: int,
+            message: Optional[Message] = None,
+            edited_message: Optional[Message] = None,
+            channel_post: Optional[Message] = None,
+            edited_channel_post: Optional[Message] = None,
+            inline_query: Optional[InlineQuery] = None,
+            chosen_inline_result: Optional[ChosenInlineResult] = None,
+            callback_query: Optional[CallbackQuery] = None,
+            shipping_query: Optional[ShippingQuery] = None,
+            pre_checkout_query: Optional[PreCheckoutQuery] = None,
+            poll: Optional[Poll] = None,
+            poll_answer: Optional[PollAnswer] = None,
+            my_chat_member: Optional[ChatMemberUpdated] = None,
+            chat_member: Optional[ChatMemberUpdated] = None,
+            chat_join_request: Optional[ChatJoinRequest] = None,
+            **__pydantic_kwargs: Any,
+        ) -> None:
+            # DO NOT EDIT MANUALLY!!!
+            # This method was auto-generated via `butcher`
+            # Is needed only for type checking and IDE support without any additional plugins
+
+            super().__init__(
+                update_id=update_id,
+                message=message,
+                edited_message=edited_message,
+                channel_post=channel_post,
+                edited_channel_post=edited_channel_post,
+                inline_query=inline_query,
+                chosen_inline_result=chosen_inline_result,
+                callback_query=callback_query,
+                shipping_query=shipping_query,
+                pre_checkout_query=pre_checkout_query,
+                poll=poll,
+                poll_answer=poll_answer,
+                my_chat_member=my_chat_member,
+                chat_member=chat_member,
+                chat_join_request=chat_join_request,
+                **__pydantic_kwargs,
+            )
 
     def __hash__(self) -> int:
         return hash((type(self), self.update_id))

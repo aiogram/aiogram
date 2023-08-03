@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import datetime
-from typing import TYPE_CHECKING, List, Optional
+from typing import TYPE_CHECKING, Any, List, Optional
 
 from .base import TelegramObject
 
@@ -43,3 +43,46 @@ class Poll(TelegramObject):
     """*Optional*. Amount of time in seconds the poll will be active after creation"""
     close_date: Optional[datetime.datetime] = None
     """*Optional*. Point in time (Unix timestamp) when the poll will be automatically closed"""
+
+    if TYPE_CHECKING:
+        # DO NOT EDIT MANUALLY!!!
+        # This section was auto-generated via `butcher`
+
+        def __init__(
+            __pydantic__self__,
+            *,
+            id: str,
+            question: str,
+            options: List[PollOption],
+            total_voter_count: int,
+            is_closed: bool,
+            is_anonymous: bool,
+            type: str,
+            allows_multiple_answers: bool,
+            correct_option_id: Optional[int] = None,
+            explanation: Optional[str] = None,
+            explanation_entities: Optional[List[MessageEntity]] = None,
+            open_period: Optional[int] = None,
+            close_date: Optional[datetime.datetime] = None,
+            **__pydantic_kwargs: Any,
+        ) -> None:
+            # DO NOT EDIT MANUALLY!!!
+            # This method was auto-generated via `butcher`
+            # Is needed only for type checking and IDE support without any additional plugins
+
+            super().__init__(
+                id=id,
+                question=question,
+                options=options,
+                total_voter_count=total_voter_count,
+                is_closed=is_closed,
+                is_anonymous=is_anonymous,
+                type=type,
+                allows_multiple_answers=allows_multiple_answers,
+                correct_option_id=correct_option_id,
+                explanation=explanation,
+                explanation_entities=explanation_entities,
+                open_period=open_period,
+                close_date=close_date,
+                **__pydantic_kwargs,
+            )

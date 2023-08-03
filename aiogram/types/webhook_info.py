@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import datetime
-from typing import List, Optional
+from typing import TYPE_CHECKING, Any, List, Optional
 
 from .base import TelegramObject
 
@@ -31,3 +31,38 @@ class WebhookInfo(TelegramObject):
     """*Optional*. The maximum allowed number of simultaneous HTTPS connections to the webhook for update delivery"""
     allowed_updates: Optional[List[str]] = None
     """*Optional*. A list of update types the bot is subscribed to. Defaults to all update types except *chat_member*"""
+
+    if TYPE_CHECKING:
+        # DO NOT EDIT MANUALLY!!!
+        # This section was auto-generated via `butcher`
+
+        def __init__(
+            __pydantic__self__,
+            *,
+            url: str,
+            has_custom_certificate: bool,
+            pending_update_count: int,
+            ip_address: Optional[str] = None,
+            last_error_date: Optional[datetime.datetime] = None,
+            last_error_message: Optional[str] = None,
+            last_synchronization_error_date: Optional[datetime.datetime] = None,
+            max_connections: Optional[int] = None,
+            allowed_updates: Optional[List[str]] = None,
+            **__pydantic_kwargs: Any,
+        ) -> None:
+            # DO NOT EDIT MANUALLY!!!
+            # This method was auto-generated via `butcher`
+            # Is needed only for type checking and IDE support without any additional plugins
+
+            super().__init__(
+                url=url,
+                has_custom_certificate=has_custom_certificate,
+                pending_update_count=pending_update_count,
+                ip_address=ip_address,
+                last_error_date=last_error_date,
+                last_error_message=last_error_message,
+                last_synchronization_error_date=last_synchronization_error_date,
+                max_connections=max_connections,
+                allowed_updates=allowed_updates,
+                **__pydantic_kwargs,
+            )

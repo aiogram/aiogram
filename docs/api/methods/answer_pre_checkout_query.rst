@@ -43,3 +43,9 @@ As reply into Webhook in handler
 .. code-block:: python
 
     return AnswerPreCheckoutQuery(...)
+
+
+As shortcut from received object
+--------------------------------
+
+- :meth:`aiogram.types.pre_checkout_query.PreCheckoutQuery.answer`

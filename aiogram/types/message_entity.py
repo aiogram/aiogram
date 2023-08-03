@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Any, Optional
 
 from ..utils.text_decorations import add_surrogates, remove_surrogates
 from .base import MutableTelegramObject
@@ -30,6 +30,37 @@ class MessageEntity(MutableTelegramObject):
     """*Optional*. For 'pre' only, the programming language of the entity text"""
     custom_emoji_id: Optional[str] = None
     """*Optional*. For 'custom_emoji' only, unique identifier of the custom emoji. Use :class:`aiogram.methods.get_custom_emoji_stickers.GetCustomEmojiStickers` to get full information about the sticker"""
+
+    if TYPE_CHECKING:
+        # DO NOT EDIT MANUALLY!!!
+        # This section was auto-generated via `butcher`
+
+        def __init__(
+            __pydantic__self__,
+            *,
+            type: str,
+            offset: int,
+            length: int,
+            url: Optional[str] = None,
+            user: Optional[User] = None,
+            language: Optional[str] = None,
+            custom_emoji_id: Optional[str] = None,
+            **__pydantic_kwargs: Any,
+        ) -> None:
+            # DO NOT EDIT MANUALLY!!!
+            # This method was auto-generated via `butcher`
+            # Is needed only for type checking and IDE support without any additional plugins
+
+            super().__init__(
+                type=type,
+                offset=offset,
+                length=length,
+                url=url,
+                user=user,
+                language=language,
+                custom_emoji_id=custom_emoji_id,
+                **__pydantic_kwargs,
+            )
 
     def extract_from(self, text: str) -> str:
         return remove_surrogates(

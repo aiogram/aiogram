@@ -106,6 +106,79 @@ class Chat(TelegramObject):
     location: Optional[ChatLocation] = None
     """*Optional*. For supergroups, the location to which the supergroup is connected. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
 
+    if TYPE_CHECKING:
+        # DO NOT EDIT MANUALLY!!!
+        # This section was auto-generated via `butcher`
+
+        def __init__(
+            __pydantic__self__,
+            *,
+            id: int,
+            type: str,
+            title: Optional[str] = None,
+            username: Optional[str] = None,
+            first_name: Optional[str] = None,
+            last_name: Optional[str] = None,
+            is_forum: Optional[bool] = None,
+            photo: Optional[ChatPhoto] = None,
+            active_usernames: Optional[List[str]] = None,
+            emoji_status_custom_emoji_id: Optional[str] = None,
+            bio: Optional[str] = None,
+            has_private_forwards: Optional[bool] = None,
+            has_restricted_voice_and_video_messages: Optional[bool] = None,
+            join_to_send_messages: Optional[bool] = None,
+            join_by_request: Optional[bool] = None,
+            description: Optional[str] = None,
+            invite_link: Optional[str] = None,
+            pinned_message: Optional[Message] = None,
+            permissions: Optional[ChatPermissions] = None,
+            slow_mode_delay: Optional[int] = None,
+            message_auto_delete_time: Optional[int] = None,
+            has_aggressive_anti_spam_enabled: Optional[bool] = None,
+            has_hidden_members: Optional[bool] = None,
+            has_protected_content: Optional[bool] = None,
+            sticker_set_name: Optional[str] = None,
+            can_set_sticker_set: Optional[bool] = None,
+            linked_chat_id: Optional[int] = None,
+            location: Optional[ChatLocation] = None,
+            **__pydantic_kwargs: Any,
+        ) -> None:
+            # DO NOT EDIT MANUALLY!!!
+            # This method was auto-generated via `butcher`
+            # Is needed only for type checking and IDE support without any additional plugins
+
+            super().__init__(
+                id=id,
+                type=type,
+                title=title,
+                username=username,
+                first_name=first_name,
+                last_name=last_name,
+                is_forum=is_forum,
+                photo=photo,
+                active_usernames=active_usernames,
+                emoji_status_custom_emoji_id=emoji_status_custom_emoji_id,
+                bio=bio,
+                has_private_forwards=has_private_forwards,
+                has_restricted_voice_and_video_messages=has_restricted_voice_and_video_messages,
+                join_to_send_messages=join_to_send_messages,
+                join_by_request=join_by_request,
+                description=description,
+                invite_link=invite_link,
+                pinned_message=pinned_message,
+                permissions=permissions,
+                slow_mode_delay=slow_mode_delay,
+                message_auto_delete_time=message_auto_delete_time,
+                has_aggressive_anti_spam_enabled=has_aggressive_anti_spam_enabled,
+                has_hidden_members=has_hidden_members,
+                has_protected_content=has_protected_content,
+                sticker_set_name=sticker_set_name,
+                can_set_sticker_set=can_set_sticker_set,
+                linked_chat_id=linked_chat_id,
+                location=location,
+                **__pydantic_kwargs,
+            )
+
     @property
     def shifted_id(self) -> int:
         """

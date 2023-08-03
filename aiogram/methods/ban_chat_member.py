@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import datetime
-from typing import Optional, Union
+from typing import TYPE_CHECKING, Any, Optional, Union
 
 from .base import TelegramMethod
 
@@ -24,3 +24,28 @@ class BanChatMember(TelegramMethod[bool]):
     """Date when the user will be unbanned, unix time. If user is banned for more than 366 days or less than 30 seconds from the current time they are considered to be banned forever. Applied for supergroups and channels only."""
     revoke_messages: Optional[bool] = None
     """Pass :code:`True` to delete all messages from the chat for the user that is being removed. If :code:`False`, the user will be able to see messages in the group that were sent before the user was removed. Always :code:`True` for supergroups and channels."""
+
+    if TYPE_CHECKING:
+        # DO NOT EDIT MANUALLY!!!
+        # This section was auto-generated via `butcher`
+
+        def __init__(
+            __pydantic__self__,
+            *,
+            chat_id: Union[int, str],
+            user_id: int,
+            until_date: Optional[Union[datetime.datetime, datetime.timedelta, int]] = None,
+            revoke_messages: Optional[bool] = None,
+            **__pydantic_kwargs: Any,
+        ) -> None:
+            # DO NOT EDIT MANUALLY!!!
+            # This method was auto-generated via `butcher`
+            # Is needed only for type checking and IDE support without any additional plugins
+
+            super().__init__(
+                chat_id=chat_id,
+                user_id=user_id,
+                until_date=until_date,
+                revoke_messages=revoke_messages,
+                **__pydantic_kwargs,
+            )

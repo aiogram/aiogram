@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import List, Optional, Union
+from typing import TYPE_CHECKING, Any, List, Optional, Union
 
 from pydantic import Field
 
@@ -87,3 +87,59 @@ class AnswerInlineQuery(TelegramMethod[bool]):
 
 .. deprecated:: API:6.7
    https://core.telegram.org/bots/api-changelog#april-21-2023"""
+
+    if TYPE_CHECKING:
+        # DO NOT EDIT MANUALLY!!!
+        # This section was auto-generated via `butcher`
+
+        def __init__(
+            __pydantic__self__,
+            *,
+            inline_query_id: str,
+            results: List[
+                Union[
+                    InlineQueryResultCachedAudio,
+                    InlineQueryResultCachedDocument,
+                    InlineQueryResultCachedGif,
+                    InlineQueryResultCachedMpeg4Gif,
+                    InlineQueryResultCachedPhoto,
+                    InlineQueryResultCachedSticker,
+                    InlineQueryResultCachedVideo,
+                    InlineQueryResultCachedVoice,
+                    InlineQueryResultArticle,
+                    InlineQueryResultAudio,
+                    InlineQueryResultContact,
+                    InlineQueryResultGame,
+                    InlineQueryResultDocument,
+                    InlineQueryResultGif,
+                    InlineQueryResultLocation,
+                    InlineQueryResultMpeg4Gif,
+                    InlineQueryResultPhoto,
+                    InlineQueryResultVenue,
+                    InlineQueryResultVideo,
+                    InlineQueryResultVoice,
+                ]
+            ],
+            cache_time: Optional[int] = None,
+            is_personal: Optional[bool] = None,
+            next_offset: Optional[str] = None,
+            button: Optional[InlineQueryResultsButton] = None,
+            switch_pm_parameter: Optional[str] = None,
+            switch_pm_text: Optional[str] = None,
+            **__pydantic_kwargs: Any,
+        ) -> None:
+            # DO NOT EDIT MANUALLY!!!
+            # This method was auto-generated via `butcher`
+            # Is needed only for type checking and IDE support without any additional plugins
+
+            super().__init__(
+                inline_query_id=inline_query_id,
+                results=results,
+                cache_time=cache_time,
+                is_personal=is_personal,
+                next_offset=next_offset,
+                button=button,
+                switch_pm_parameter=switch_pm_parameter,
+                switch_pm_text=switch_pm_text,
+                **__pydantic_kwargs,
+            )

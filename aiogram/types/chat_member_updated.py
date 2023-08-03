@@ -90,6 +90,51 @@ class ChatMemberUpdated(TelegramObject):
     via_chat_folder_invite_link: Optional[bool] = None
     """*Optional*. True, if the user joined the chat via a chat folder invite link"""
 
+    if TYPE_CHECKING:
+        # DO NOT EDIT MANUALLY!!!
+        # This section was auto-generated via `butcher`
+
+        def __init__(
+            __pydantic__self__,
+            *,
+            chat: Chat,
+            from_user: User,
+            date: datetime.datetime,
+            old_chat_member: Union[
+                ChatMemberOwner,
+                ChatMemberAdministrator,
+                ChatMemberMember,
+                ChatMemberRestricted,
+                ChatMemberLeft,
+                ChatMemberBanned,
+            ],
+            new_chat_member: Union[
+                ChatMemberOwner,
+                ChatMemberAdministrator,
+                ChatMemberMember,
+                ChatMemberRestricted,
+                ChatMemberLeft,
+                ChatMemberBanned,
+            ],
+            invite_link: Optional[ChatInviteLink] = None,
+            via_chat_folder_invite_link: Optional[bool] = None,
+            **__pydantic_kwargs: Any,
+        ) -> None:
+            # DO NOT EDIT MANUALLY!!!
+            # This method was auto-generated via `butcher`
+            # Is needed only for type checking and IDE support without any additional plugins
+
+            super().__init__(
+                chat=chat,
+                from_user=from_user,
+                date=date,
+                old_chat_member=old_chat_member,
+                new_chat_member=new_chat_member,
+                invite_link=invite_link,
+                via_chat_folder_invite_link=via_chat_folder_invite_link,
+                **__pydantic_kwargs,
+            )
+
     def answer(
         self,
         text: str,

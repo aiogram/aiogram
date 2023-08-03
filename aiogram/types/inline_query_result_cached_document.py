@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, List, Literal, Optional, Union
+from typing import TYPE_CHECKING, Any, List, Literal, Optional, Union
 
 from ..enums import InlineQueryResultType
 from .base import UNSET_PARSE_MODE
@@ -52,3 +52,48 @@ class InlineQueryResultCachedDocument(InlineQueryResult):
         ]
     ] = None
     """*Optional*. Content of the message to be sent instead of the file"""
+
+    if TYPE_CHECKING:
+        # DO NOT EDIT MANUALLY!!!
+        # This section was auto-generated via `butcher`
+
+        def __init__(
+            __pydantic__self__,
+            *,
+            type: Literal[InlineQueryResultType.DOCUMENT] = InlineQueryResultType.DOCUMENT,
+            id: str,
+            title: str,
+            document_file_id: str,
+            description: Optional[str] = None,
+            caption: Optional[str] = None,
+            parse_mode: Optional[str] = UNSET_PARSE_MODE,
+            caption_entities: Optional[List[MessageEntity]] = None,
+            reply_markup: Optional[InlineKeyboardMarkup] = None,
+            input_message_content: Optional[
+                Union[
+                    InputTextMessageContent,
+                    InputLocationMessageContent,
+                    InputVenueMessageContent,
+                    InputContactMessageContent,
+                    InputInvoiceMessageContent,
+                ]
+            ] = None,
+            **__pydantic_kwargs: Any,
+        ) -> None:
+            # DO NOT EDIT MANUALLY!!!
+            # This method was auto-generated via `butcher`
+            # Is needed only for type checking and IDE support without any additional plugins
+
+            super().__init__(
+                type=type,
+                id=id,
+                title=title,
+                document_file_id=document_file_id,
+                description=description,
+                caption=caption,
+                parse_mode=parse_mode,
+                caption_entities=caption_entities,
+                reply_markup=reply_markup,
+                input_message_content=input_message_content,
+                **__pydantic_kwargs,
+            )

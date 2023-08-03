@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, List, Literal, Optional, Union
+from typing import TYPE_CHECKING, Any, List, Literal, Optional, Union
 
 from ..enums import InlineQueryResultType
 from .base import UNSET_PARSE_MODE
@@ -60,3 +60,56 @@ class InlineQueryResultDocument(InlineQueryResult):
     """*Optional*. Thumbnail width"""
     thumbnail_height: Optional[int] = None
     """*Optional*. Thumbnail height"""
+
+    if TYPE_CHECKING:
+        # DO NOT EDIT MANUALLY!!!
+        # This section was auto-generated via `butcher`
+
+        def __init__(
+            __pydantic__self__,
+            *,
+            type: Literal[InlineQueryResultType.DOCUMENT] = InlineQueryResultType.DOCUMENT,
+            id: str,
+            title: str,
+            document_url: str,
+            mime_type: str,
+            caption: Optional[str] = None,
+            parse_mode: Optional[str] = UNSET_PARSE_MODE,
+            caption_entities: Optional[List[MessageEntity]] = None,
+            description: Optional[str] = None,
+            reply_markup: Optional[InlineKeyboardMarkup] = None,
+            input_message_content: Optional[
+                Union[
+                    InputTextMessageContent,
+                    InputLocationMessageContent,
+                    InputVenueMessageContent,
+                    InputContactMessageContent,
+                    InputInvoiceMessageContent,
+                ]
+            ] = None,
+            thumbnail_url: Optional[str] = None,
+            thumbnail_width: Optional[int] = None,
+            thumbnail_height: Optional[int] = None,
+            **__pydantic_kwargs: Any,
+        ) -> None:
+            # DO NOT EDIT MANUALLY!!!
+            # This method was auto-generated via `butcher`
+            # Is needed only for type checking and IDE support without any additional plugins
+
+            super().__init__(
+                type=type,
+                id=id,
+                title=title,
+                document_url=document_url,
+                mime_type=mime_type,
+                caption=caption,
+                parse_mode=parse_mode,
+                caption_entities=caption_entities,
+                description=description,
+                reply_markup=reply_markup,
+                input_message_content=input_message_content,
+                thumbnail_url=thumbnail_url,
+                thumbnail_width=thumbnail_width,
+                thumbnail_height=thumbnail_height,
+                **__pydantic_kwargs,
+            )

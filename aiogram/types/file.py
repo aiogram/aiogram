@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Optional
+from typing import TYPE_CHECKING, Any, Optional
 
 from .base import TelegramObject
 
@@ -22,3 +22,28 @@ class File(TelegramObject):
     """*Optional*. File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value."""
     file_path: Optional[str] = None
     """*Optional*. File path. Use :code:`https://api.telegram.org/file/bot<token>/<file_path>` to get the file."""
+
+    if TYPE_CHECKING:
+        # DO NOT EDIT MANUALLY!!!
+        # This section was auto-generated via `butcher`
+
+        def __init__(
+            __pydantic__self__,
+            *,
+            file_id: str,
+            file_unique_id: str,
+            file_size: Optional[int] = None,
+            file_path: Optional[str] = None,
+            **__pydantic_kwargs: Any,
+        ) -> None:
+            # DO NOT EDIT MANUALLY!!!
+            # This method was auto-generated via `butcher`
+            # Is needed only for type checking and IDE support without any additional plugins
+
+            super().__init__(
+                file_id=file_id,
+                file_unique_id=file_unique_id,
+                file_size=file_size,
+                file_path=file_path,
+                **__pydantic_kwargs,
+            )

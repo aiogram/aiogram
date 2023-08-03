@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Literal, Optional
+from typing import TYPE_CHECKING, Any, Literal, Optional
 
 from .base import MutableTelegramObject
 
@@ -16,3 +16,22 @@ class ReplyKeyboardRemove(MutableTelegramObject):
     """Requests clients to remove the custom keyboard (user will not be able to summon this keyboard; if you want to hide the keyboard from sight but keep it accessible, use *one_time_keyboard* in :class:`aiogram.types.reply_keyboard_markup.ReplyKeyboardMarkup`)"""
     selective: Optional[bool] = None
     """*Optional*. Use this parameter if you want to remove the keyboard for specific users only. Targets: 1) users that are @mentioned in the *text* of the :class:`aiogram.types.message.Message` object; 2) if the bot's message is a reply (has *reply_to_message_id*), sender of the original message."""
+
+    if TYPE_CHECKING:
+        # DO NOT EDIT MANUALLY!!!
+        # This section was auto-generated via `butcher`
+
+        def __init__(
+            __pydantic__self__,
+            *,
+            remove_keyboard: Literal[True] = True,
+            selective: Optional[bool] = None,
+            **__pydantic_kwargs: Any,
+        ) -> None:
+            # DO NOT EDIT MANUALLY!!!
+            # This method was auto-generated via `butcher`
+            # Is needed only for type checking and IDE support without any additional plugins
+
+            super().__init__(
+                remove_keyboard=remove_keyboard, selective=selective, **__pydantic_kwargs
+            )
