@@ -98,6 +98,7 @@ class Text(Iterable[NodeType]):
         return text, entities
 
     def _render_entity(self, *, offset: int, length: int) -> MessageEntity:
+        assert self.type is not None, "Node without type can't be rendered as entity"
         return MessageEntity(type=self.type, offset=offset, length=length, **self._params)
 
     def as_kwargs(

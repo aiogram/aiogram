@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Any, Optional
 
 from .base import MutableTelegramObject
 
@@ -38,3 +38,40 @@ class InlineKeyboardButton(MutableTelegramObject):
     """*Optional*. Description of the game that will be launched when the user presses the button."""
     pay: Optional[bool] = None
     """*Optional*. Specify :code:`True`, to send a `Pay button <https://core.telegram.org/bots/api#payments>`_."""
+
+    if TYPE_CHECKING:
+        # DO NOT EDIT MANUALLY!!!
+        # This section was auto-generated via `butcher`
+
+        def __init__(
+            __pydantic__self__,
+            *,
+            text: str,
+            url: Optional[str] = None,
+            callback_data: Optional[str] = None,
+            web_app: Optional[WebAppInfo] = None,
+            login_url: Optional[LoginUrl] = None,
+            switch_inline_query: Optional[str] = None,
+            switch_inline_query_current_chat: Optional[str] = None,
+            switch_inline_query_chosen_chat: Optional[SwitchInlineQueryChosenChat] = None,
+            callback_game: Optional[CallbackGame] = None,
+            pay: Optional[bool] = None,
+            **__pydantic_kwargs: Any,
+        ) -> None:
+            # DO NOT EDIT MANUALLY!!!
+            # This method was auto-generated via `butcher`
+            # Is needed only for type checking and IDE support without any additional plugins
+
+            super().__init__(
+                text=text,
+                url=url,
+                callback_data=callback_data,
+                web_app=web_app,
+                login_url=login_url,
+                switch_inline_query=switch_inline_query,
+                switch_inline_query_current_chat=switch_inline_query_current_chat,
+                switch_inline_query_chosen_chat=switch_inline_query_chosen_chat,
+                callback_game=callback_game,
+                pay=pay,
+                **__pydantic_kwargs,
+            )

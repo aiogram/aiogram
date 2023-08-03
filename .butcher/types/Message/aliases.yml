@@ -1,195 +1,242 @@
 answer:
   method: sendMessage
+  code: &assert-chat |
+    assert self.chat is not None, "This method can be used only if chat is present in the message."
   fill: &fill-answer
     chat_id: self.chat.id
     message_thread_id: self.message_thread_id if self.is_topic_message else None
 
 reply:
   method: sendMessage
+  code: *assert-chat
   fill: &fill-reply
     <<: *fill-answer
     reply_to_message_id: self.message_id
 
 answer_animation:
   method: sendAnimation
+  code: *assert-chat
   fill: *fill-answer
 
 reply_animation:
   method: sendAnimation
+  code: *assert-chat
   fill: *fill-reply
 
 answer_audio:
   method: sendAudio
+  code: *assert-chat
   fill: *fill-answer
 
 reply_audio:
   method: sendAudio
+  code: *assert-chat
   fill: *fill-reply
 
 answer_contact:
   method: sendContact
+  code: *assert-chat
   fill: *fill-answer
 
 reply_contact:
   method: sendContact
+  code: *assert-chat
   fill: *fill-reply
 
 answer_document:
   method: sendDocument
+  code: *assert-chat
   fill: *fill-answer
 
 reply_document:
   method: sendDocument
+  code: *assert-chat
   fill: *fill-reply
 
 answer_game:
   method: sendGame
+  code: *assert-chat
   fill: *fill-answer
 
 reply_game:
   method: sendGame
+  code: *assert-chat
   fill: *fill-reply
 
 answer_invoice:
   method: sendInvoice
+  code: *assert-chat
   fill: *fill-answer
 
 reply_invoice:
   method: sendInvoice
+  code: *assert-chat
   fill: *fill-reply
 
 answer_location:
   method: sendLocation
+  code: *assert-chat
   fill: *fill-answer
 
 reply_location:
   method: sendLocation
+  code: *assert-chat
   fill: *fill-reply
 
 answer_media_group:
   method: sendMediaGroup
+  code: *assert-chat
   fill: *fill-answer
 
 reply_media_group:
   method: sendMediaGroup
+  code: *assert-chat
   fill: *fill-reply
 
 answer_photo:
   method: sendPhoto
+  code: *assert-chat
   fill: *fill-answer
 
 reply_photo:
   method: sendPhoto
+  code: *assert-chat
   fill: *fill-reply
 
 answer_poll:
   method: sendPoll
+  code: *assert-chat
   fill: *fill-answer
 
 reply_poll:
   method: sendPoll
+  code: *assert-chat
   fill: *fill-reply
 
 answer_dice:
   method: sendDice
+  code: *assert-chat
   fill: *fill-answer
 
 reply_dice:
   method: sendDice
+  code: *assert-chat
   fill: *fill-reply
 
 answer_sticker:
   method: sendSticker
+  code: *assert-chat
   fill: *fill-answer
 
 reply_sticker:
   method: sendSticker
+  code: *assert-chat
   fill: *fill-reply
 
 answer_venue:
   method: sendVenue
+  code: *assert-chat
   fill: *fill-answer
 
 reply_venue:
   method: sendVenue
+  code: *assert-chat
   fill: *fill-reply
 
 answer_video:
   method: sendVideo
+  code: *assert-chat
   fill: *fill-answer
 
 reply_video:
   method: sendVideo
+  code: *assert-chat
   fill: *fill-reply
 
 answer_video_note:
   method: sendVideoNote
+  code: *assert-chat
   fill: *fill-answer
 
 reply_video_note:
   method: sendVideoNote
+  code: *assert-chat
   fill: *fill-reply
 
 answer_voice:
   method: sendVoice
+  code: *assert-chat
   fill: *fill-answer
 
 reply_voice:
   method: sendVoice
+  code: *assert-chat
   fill: *fill-reply
 
 copy_to:
   method: copyMessage
+  code: *assert-chat
   fill:
     from_chat_id: self.chat.id
     message_id: self.message_id
 
 forward:
   method: forwardMessage
+  code: *assert-chat
   fill:
     from_chat_id: self.chat.id
     message_id: self.message_id
 
 edit_text:
   method: editMessageText
+  code: *assert-chat
   fill: &message-target
-    chat_id: self.chat.id if self.chat else None
+    chat_id: self.chat.id
     message_id: self.message_id
 
 edit_media:
   method: editMessageMedia
   fill: *message-target
+  code: *assert-chat
 
 edit_reply_markup:
   method: editMessageReplyMarkup
+  code: *assert-chat
   fill: *message-target
 
 delete_reply_markup:
   method: editMessageReplyMarkup
+  code: *assert-chat
   fill:
     <<: *message-target
     reply_markup: None
 
 edit_live_location:
   method: editMessageLiveLocation
+  code: *assert-chat
   fill: *message-target
 
 stop_live_location:
   method: stopMessageLiveLocation
+  code: *assert-chat
   fill: *message-target
 
 edit_caption:
   method: editMessageCaption
+  code: *assert-chat
   fill: *message-target
 
 delete:
   method: deleteMessage
+  code: *assert-chat
   fill: *message-target
 
 pin:
   method: pinChatMessage
+  code: *assert-chat
   fill: *message-target
 
 unpin:
   method: unpinChatMessage
+  code: *assert-chat
   fill: *message-target

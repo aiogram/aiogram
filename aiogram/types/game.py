@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, List, Optional
+from typing import TYPE_CHECKING, Any, List, Optional
 
 from .base import TelegramObject
 
@@ -29,3 +29,32 @@ class Game(TelegramObject):
     """*Optional*. Special entities that appear in *text*, such as usernames, URLs, bot commands, etc."""
     animation: Optional[Animation] = None
     """*Optional*. Animation that will be displayed in the game message in chats. Upload via `BotFather <https://t.me/botfather>`_"""
+
+    if TYPE_CHECKING:
+        # DO NOT EDIT MANUALLY!!!
+        # This section was auto-generated via `butcher`
+
+        def __init__(
+            __pydantic__self__,
+            *,
+            title: str,
+            description: str,
+            photo: List[PhotoSize],
+            text: Optional[str] = None,
+            text_entities: Optional[List[MessageEntity]] = None,
+            animation: Optional[Animation] = None,
+            **__pydantic_kwargs: Any,
+        ) -> None:
+            # DO NOT EDIT MANUALLY!!!
+            # This method was auto-generated via `butcher`
+            # Is needed only for type checking and IDE support without any additional plugins
+
+            super().__init__(
+                title=title,
+                description=description,
+                photo=photo,
+                text=text,
+                text_entities=text_entities,
+                animation=animation,
+                **__pydantic_kwargs,
+            )

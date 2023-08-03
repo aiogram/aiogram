@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Any, Optional
 
 from pydantic import Field
 
@@ -29,3 +29,30 @@ class ChosenInlineResult(TelegramObject):
     """*Optional*. Sender location, only for bots that require user location"""
     inline_message_id: Optional[str] = None
     """*Optional*. Identifier of the sent inline message. Available only if there is an `inline keyboard <https://core.telegram.org/bots/api#inlinekeyboardmarkup>`_ attached to the message. Will be also received in `callback queries <https://core.telegram.org/bots/api#callbackquery>`_ and can be used to `edit <https://core.telegram.org/bots/api#updating-messages>`_ the message."""
+
+    if TYPE_CHECKING:
+        # DO NOT EDIT MANUALLY!!!
+        # This section was auto-generated via `butcher`
+
+        def __init__(
+            __pydantic__self__,
+            *,
+            result_id: str,
+            from_user: User,
+            query: str,
+            location: Optional[Location] = None,
+            inline_message_id: Optional[str] = None,
+            **__pydantic_kwargs: Any,
+        ) -> None:
+            # DO NOT EDIT MANUALLY!!!
+            # This method was auto-generated via `butcher`
+            # Is needed only for type checking and IDE support without any additional plugins
+
+            super().__init__(
+                result_id=result_id,
+                from_user=from_user,
+                query=query,
+                location=location,
+                inline_message_id=inline_message_id,
+                **__pydantic_kwargs,
+            )

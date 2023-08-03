@@ -36,6 +36,37 @@ class CallbackQuery(TelegramObject):
     game_short_name: Optional[str] = None
     """*Optional*. Short name of a `Game <https://core.telegram.org/bots/api#games>`_ to be returned, serves as the unique identifier for the game"""
 
+    if TYPE_CHECKING:
+        # DO NOT EDIT MANUALLY!!!
+        # This section was auto-generated via `butcher`
+
+        def __init__(
+            __pydantic__self__,
+            *,
+            id: str,
+            from_user: User,
+            chat_instance: str,
+            message: Optional[Message] = None,
+            inline_message_id: Optional[str] = None,
+            data: Optional[str] = None,
+            game_short_name: Optional[str] = None,
+            **__pydantic_kwargs: Any,
+        ) -> None:
+            # DO NOT EDIT MANUALLY!!!
+            # This method was auto-generated via `butcher`
+            # Is needed only for type checking and IDE support without any additional plugins
+
+            super().__init__(
+                id=id,
+                from_user=from_user,
+                chat_instance=chat_instance,
+                message=message,
+                inline_message_id=inline_message_id,
+                data=data,
+                game_short_name=game_short_name,
+                **__pydantic_kwargs,
+            )
+
     def answer(
         self,
         text: Optional[str] = None,

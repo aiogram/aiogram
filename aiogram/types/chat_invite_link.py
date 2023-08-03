@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import datetime
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Any, Optional
 
 from .base import TelegramObject
 
@@ -34,3 +34,38 @@ class ChatInviteLink(TelegramObject):
     """*Optional*. The maximum number of users that can be members of the chat simultaneously after joining the chat via this invite link; 1-99999"""
     pending_join_request_count: Optional[int] = None
     """*Optional*. Number of pending join requests created using this link"""
+
+    if TYPE_CHECKING:
+        # DO NOT EDIT MANUALLY!!!
+        # This section was auto-generated via `butcher`
+
+        def __init__(
+            __pydantic__self__,
+            *,
+            invite_link: str,
+            creator: User,
+            creates_join_request: bool,
+            is_primary: bool,
+            is_revoked: bool,
+            name: Optional[str] = None,
+            expire_date: Optional[datetime.datetime] = None,
+            member_limit: Optional[int] = None,
+            pending_join_request_count: Optional[int] = None,
+            **__pydantic_kwargs: Any,
+        ) -> None:
+            # DO NOT EDIT MANUALLY!!!
+            # This method was auto-generated via `butcher`
+            # Is needed only for type checking and IDE support without any additional plugins
+
+            super().__init__(
+                invite_link=invite_link,
+                creator=creator,
+                creates_join_request=creates_join_request,
+                is_primary=is_primary,
+                is_revoked=is_revoked,
+                name=name,
+                expire_date=expire_date,
+                member_limit=member_limit,
+                pending_join_request_count=pending_join_request_count,
+                **__pydantic_kwargs,
+            )

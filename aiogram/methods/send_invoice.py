@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import List, Optional, Union
+from typing import TYPE_CHECKING, Any, List, Optional, Union
 
 from ..types import InlineKeyboardMarkup, LabeledPrice, Message
 from ..types.base import UNSET_PROTECT_CONTENT
@@ -73,3 +73,76 @@ class SendInvoice(TelegramMethod[Message]):
     """Pass :code:`True` if the message should be sent even if the specified replied-to message is not found"""
     reply_markup: Optional[InlineKeyboardMarkup] = None
     """A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_. If empty, one 'Pay :code:`total price`' button will be shown. If not empty, the first button must be a Pay button."""
+
+    if TYPE_CHECKING:
+        # DO NOT EDIT MANUALLY!!!
+        # This section was auto-generated via `butcher`
+
+        def __init__(
+            __pydantic__self__,
+            *,
+            chat_id: Union[int, str],
+            title: str,
+            description: str,
+            payload: str,
+            provider_token: str,
+            currency: str,
+            prices: List[LabeledPrice],
+            message_thread_id: Optional[int] = None,
+            max_tip_amount: Optional[int] = None,
+            suggested_tip_amounts: Optional[List[int]] = None,
+            start_parameter: Optional[str] = None,
+            provider_data: Optional[str] = None,
+            photo_url: Optional[str] = None,
+            photo_size: Optional[int] = None,
+            photo_width: Optional[int] = None,
+            photo_height: Optional[int] = None,
+            need_name: Optional[bool] = None,
+            need_phone_number: Optional[bool] = None,
+            need_email: Optional[bool] = None,
+            need_shipping_address: Optional[bool] = None,
+            send_phone_number_to_provider: Optional[bool] = None,
+            send_email_to_provider: Optional[bool] = None,
+            is_flexible: Optional[bool] = None,
+            disable_notification: Optional[bool] = None,
+            protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
+            reply_to_message_id: Optional[int] = None,
+            allow_sending_without_reply: Optional[bool] = None,
+            reply_markup: Optional[InlineKeyboardMarkup] = None,
+            **__pydantic_kwargs: Any,
+        ) -> None:
+            # DO NOT EDIT MANUALLY!!!
+            # This method was auto-generated via `butcher`
+            # Is needed only for type checking and IDE support without any additional plugins
+
+            super().__init__(
+                chat_id=chat_id,
+                title=title,
+                description=description,
+                payload=payload,
+                provider_token=provider_token,
+                currency=currency,
+                prices=prices,
+                message_thread_id=message_thread_id,
+                max_tip_amount=max_tip_amount,
+                suggested_tip_amounts=suggested_tip_amounts,
+                start_parameter=start_parameter,
+                provider_data=provider_data,
+                photo_url=photo_url,
+                photo_size=photo_size,
+                photo_width=photo_width,
+                photo_height=photo_height,
+                need_name=need_name,
+                need_phone_number=need_phone_number,
+                need_email=need_email,
+                need_shipping_address=need_shipping_address,
+                send_phone_number_to_provider=send_phone_number_to_provider,
+                send_email_to_provider=send_email_to_provider,
+                is_flexible=is_flexible,
+                disable_notification=disable_notification,
+                protect_content=protect_content,
+                reply_to_message_id=reply_to_message_id,
+                allow_sending_without_reply=allow_sending_without_reply,
+                reply_markup=reply_markup,
+                **__pydantic_kwargs,
+            )

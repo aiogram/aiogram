@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Optional, Union
+from typing import TYPE_CHECKING, Any, Optional, Union
 
 from .base import TelegramMethod
 
@@ -19,3 +19,20 @@ class UnpinChatMessage(TelegramMethod[bool]):
     """Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)"""
     message_id: Optional[int] = None
     """Identifier of a message to unpin. If not specified, the most recent pinned message (by sending date) will be unpinned."""
+
+    if TYPE_CHECKING:
+        # DO NOT EDIT MANUALLY!!!
+        # This section was auto-generated via `butcher`
+
+        def __init__(
+            __pydantic__self__,
+            *,
+            chat_id: Union[int, str],
+            message_id: Optional[int] = None,
+            **__pydantic_kwargs: Any,
+        ) -> None:
+            # DO NOT EDIT MANUALLY!!!
+            # This method was auto-generated via `butcher`
+            # Is needed only for type checking and IDE support without any additional plugins
+
+            super().__init__(chat_id=chat_id, message_id=message_id, **__pydantic_kwargs)

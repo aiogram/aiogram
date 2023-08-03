@@ -70,6 +70,35 @@ class ChatJoinRequest(TelegramObject):
     invite_link: Optional[ChatInviteLink] = None
     """*Optional*. Chat invite link that was used by the user to send the join request"""
 
+    if TYPE_CHECKING:
+        # DO NOT EDIT MANUALLY!!!
+        # This section was auto-generated via `butcher`
+
+        def __init__(
+            __pydantic__self__,
+            *,
+            chat: Chat,
+            from_user: User,
+            user_chat_id: int,
+            date: datetime.datetime,
+            bio: Optional[str] = None,
+            invite_link: Optional[ChatInviteLink] = None,
+            **__pydantic_kwargs: Any,
+        ) -> None:
+            # DO NOT EDIT MANUALLY!!!
+            # This method was auto-generated via `butcher`
+            # Is needed only for type checking and IDE support without any additional plugins
+
+            super().__init__(
+                chat=chat,
+                from_user=from_user,
+                user_chat_id=user_chat_id,
+                date=date,
+                bio=bio,
+                invite_link=invite_link,
+                **__pydantic_kwargs,
+            )
+
     def approve(
         self,
         **kwargs: Any,

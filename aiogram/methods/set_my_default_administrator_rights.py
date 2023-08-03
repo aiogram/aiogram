@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Optional
+from typing import TYPE_CHECKING, Any, Optional
 
 from ..types import ChatAdministratorRights
 from .base import TelegramMethod
@@ -20,3 +20,20 @@ class SetMyDefaultAdministratorRights(TelegramMethod[bool]):
     """A JSON-serialized object describing new default administrator rights. If not specified, the default administrator rights will be cleared."""
     for_channels: Optional[bool] = None
     """Pass :code:`True` to change the default administrator rights of the bot in channels. Otherwise, the default administrator rights of the bot for groups and supergroups will be changed."""
+
+    if TYPE_CHECKING:
+        # DO NOT EDIT MANUALLY!!!
+        # This section was auto-generated via `butcher`
+
+        def __init__(
+            __pydantic__self__,
+            *,
+            rights: Optional[ChatAdministratorRights] = None,
+            for_channels: Optional[bool] = None,
+            **__pydantic_kwargs: Any,
+        ) -> None:
+            # DO NOT EDIT MANUALLY!!!
+            # This method was auto-generated via `butcher`
+            # Is needed only for type checking and IDE support without any additional plugins
+
+            super().__init__(rights=rights, for_channels=for_channels, **__pydantic_kwargs)

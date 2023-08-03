@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, List, Optional
+from typing import TYPE_CHECKING, Any, List, Optional
 
 from .base import TelegramObject
 
@@ -30,3 +30,34 @@ class StickerSet(TelegramObject):
     """List of all set stickers"""
     thumbnail: Optional[PhotoSize] = None
     """*Optional*. Sticker set thumbnail in the .WEBP, .TGS, or .WEBM format"""
+
+    if TYPE_CHECKING:
+        # DO NOT EDIT MANUALLY!!!
+        # This section was auto-generated via `butcher`
+
+        def __init__(
+            __pydantic__self__,
+            *,
+            name: str,
+            title: str,
+            sticker_type: str,
+            is_animated: bool,
+            is_video: bool,
+            stickers: List[Sticker],
+            thumbnail: Optional[PhotoSize] = None,
+            **__pydantic_kwargs: Any,
+        ) -> None:
+            # DO NOT EDIT MANUALLY!!!
+            # This method was auto-generated via `butcher`
+            # Is needed only for type checking and IDE support without any additional plugins
+
+            super().__init__(
+                name=name,
+                title=title,
+                sticker_type=sticker_type,
+                is_animated=is_animated,
+                is_video=is_video,
+                stickers=stickers,
+                thumbnail=thumbnail,
+                **__pydantic_kwargs,
+            )

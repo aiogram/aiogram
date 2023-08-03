@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Optional
+from typing import TYPE_CHECKING, Any, Optional
 
 from ..types import UserProfilePhotos
 from .base import TelegramMethod
@@ -22,3 +22,21 @@ class GetUserProfilePhotos(TelegramMethod[UserProfilePhotos]):
     """Sequential number of the first photo to be returned. By default, all photos are returned."""
     limit: Optional[int] = None
     """Limits the number of photos to be retrieved. Values between 1-100 are accepted. Defaults to 100."""
+
+    if TYPE_CHECKING:
+        # DO NOT EDIT MANUALLY!!!
+        # This section was auto-generated via `butcher`
+
+        def __init__(
+            __pydantic__self__,
+            *,
+            user_id: int,
+            offset: Optional[int] = None,
+            limit: Optional[int] = None,
+            **__pydantic_kwargs: Any,
+        ) -> None:
+            # DO NOT EDIT MANUALLY!!!
+            # This method was auto-generated via `butcher`
+            # Is needed only for type checking and IDE support without any additional plugins
+
+            super().__init__(user_id=user_id, offset=offset, limit=limit, **__pydantic_kwargs)

@@ -49,6 +49,53 @@ class Sticker(TelegramObject):
     file_size: Optional[int] = None
     """*Optional*. File size in bytes"""
 
+    if TYPE_CHECKING:
+        # DO NOT EDIT MANUALLY!!!
+        # This section was auto-generated via `butcher`
+
+        def __init__(
+            __pydantic__self__,
+            *,
+            file_id: str,
+            file_unique_id: str,
+            type: str,
+            width: int,
+            height: int,
+            is_animated: bool,
+            is_video: bool,
+            thumbnail: Optional[PhotoSize] = None,
+            emoji: Optional[str] = None,
+            set_name: Optional[str] = None,
+            premium_animation: Optional[File] = None,
+            mask_position: Optional[MaskPosition] = None,
+            custom_emoji_id: Optional[str] = None,
+            needs_repainting: Optional[bool] = None,
+            file_size: Optional[int] = None,
+            **__pydantic_kwargs: Any,
+        ) -> None:
+            # DO NOT EDIT MANUALLY!!!
+            # This method was auto-generated via `butcher`
+            # Is needed only for type checking and IDE support without any additional plugins
+
+            super().__init__(
+                file_id=file_id,
+                file_unique_id=file_unique_id,
+                type=type,
+                width=width,
+                height=height,
+                is_animated=is_animated,
+                is_video=is_video,
+                thumbnail=thumbnail,
+                emoji=emoji,
+                set_name=set_name,
+                premium_animation=premium_animation,
+                mask_position=mask_position,
+                custom_emoji_id=custom_emoji_id,
+                needs_repainting=needs_repainting,
+                file_size=file_size,
+                **__pydantic_kwargs,
+            )
+
     def set_position_in_set(
         self,
         position: int,

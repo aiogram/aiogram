@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Literal, Optional
+from typing import TYPE_CHECKING, Any, Literal, Optional
 
 from ..enums import InlineQueryResultType
 from .inline_query_result import InlineQueryResult
@@ -25,3 +25,28 @@ class InlineQueryResultGame(InlineQueryResult):
     """Short name of the game"""
     reply_markup: Optional[InlineKeyboardMarkup] = None
     """*Optional*. `Inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_ attached to the message"""
+
+    if TYPE_CHECKING:
+        # DO NOT EDIT MANUALLY!!!
+        # This section was auto-generated via `butcher`
+
+        def __init__(
+            __pydantic__self__,
+            *,
+            type: Literal[InlineQueryResultType.GAME] = InlineQueryResultType.GAME,
+            id: str,
+            game_short_name: str,
+            reply_markup: Optional[InlineKeyboardMarkup] = None,
+            **__pydantic_kwargs: Any,
+        ) -> None:
+            # DO NOT EDIT MANUALLY!!!
+            # This method was auto-generated via `butcher`
+            # Is needed only for type checking and IDE support without any additional plugins
+
+            super().__init__(
+                type=type,
+                id=id,
+                game_short_name=game_short_name,
+                reply_markup=reply_markup,
+                **__pydantic_kwargs,
+            )

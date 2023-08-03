@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, List, Literal, Optional, Union
+from typing import TYPE_CHECKING, Any, List, Literal, Optional, Union
 
 from ..enums import InputMediaType
 from .base import UNSET_PARSE_MODE
@@ -38,3 +38,40 @@ class InputMediaAnimation(InputMedia):
     """*Optional*. Animation duration in seconds"""
     has_spoiler: Optional[bool] = None
     """*Optional*. Pass :code:`True` if the animation needs to be covered with a spoiler animation"""
+
+    if TYPE_CHECKING:
+        # DO NOT EDIT MANUALLY!!!
+        # This section was auto-generated via `butcher`
+
+        def __init__(
+            __pydantic__self__,
+            *,
+            type: Literal[InputMediaType.ANIMATION] = InputMediaType.ANIMATION,
+            media: Union[str, InputFile],
+            thumbnail: Optional[Union[InputFile, str]] = None,
+            caption: Optional[str] = None,
+            parse_mode: Optional[str] = UNSET_PARSE_MODE,
+            caption_entities: Optional[List[MessageEntity]] = None,
+            width: Optional[int] = None,
+            height: Optional[int] = None,
+            duration: Optional[int] = None,
+            has_spoiler: Optional[bool] = None,
+            **__pydantic_kwargs: Any,
+        ) -> None:
+            # DO NOT EDIT MANUALLY!!!
+            # This method was auto-generated via `butcher`
+            # Is needed only for type checking and IDE support without any additional plugins
+
+            super().__init__(
+                type=type,
+                media=media,
+                thumbnail=thumbnail,
+                caption=caption,
+                parse_mode=parse_mode,
+                caption_entities=caption_entities,
+                width=width,
+                height=height,
+                duration=duration,
+                has_spoiler=has_spoiler,
+                **__pydantic_kwargs,
+            )

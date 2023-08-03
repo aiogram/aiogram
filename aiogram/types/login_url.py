@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Optional
+from typing import TYPE_CHECKING, Any, Optional
 
 from .base import TelegramObject
 
@@ -23,3 +23,28 @@ class LoginUrl(TelegramObject):
     """*Optional*. Username of a bot, which will be used for user authorization. See `Setting up a bot <https://core.telegram.org/widgets/login#setting-up-a-bot>`_ for more details. If not specified, the current bot's username will be assumed. The *url*'s domain must be the same as the domain linked with the bot. See `Linking your domain to the bot <https://core.telegram.org/widgets/login#linking-your-domain-to-the-bot>`_ for more details."""
     request_write_access: Optional[bool] = None
     """*Optional*. Pass :code:`True` to request the permission for your bot to send messages to the user."""
+
+    if TYPE_CHECKING:
+        # DO NOT EDIT MANUALLY!!!
+        # This section was auto-generated via `butcher`
+
+        def __init__(
+            __pydantic__self__,
+            *,
+            url: str,
+            forward_text: Optional[str] = None,
+            bot_username: Optional[str] = None,
+            request_write_access: Optional[bool] = None,
+            **__pydantic_kwargs: Any,
+        ) -> None:
+            # DO NOT EDIT MANUALLY!!!
+            # This method was auto-generated via `butcher`
+            # Is needed only for type checking and IDE support without any additional plugins
+
+            super().__init__(
+                url=url,
+                forward_text=forward_text,
+                bot_username=bot_username,
+                request_write_access=request_write_access,
+                **__pydantic_kwargs,
+            )

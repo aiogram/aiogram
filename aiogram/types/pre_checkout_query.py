@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional, Any
+from typing import TYPE_CHECKING, Any, Optional
 
 from pydantic import Field
 
@@ -33,6 +33,37 @@ class PreCheckoutQuery(TelegramObject):
     """*Optional*. Identifier of the shipping option chosen by the user"""
     order_info: Optional[OrderInfo] = None
     """*Optional*. Order information provided by the user"""
+
+    if TYPE_CHECKING:
+        # DO NOT EDIT MANUALLY!!!
+        # This section was auto-generated via `butcher`
+
+        def __init__(
+            __pydantic__self__,
+            *,
+            id: str,
+            from_user: User,
+            currency: str,
+            total_amount: int,
+            invoice_payload: str,
+            shipping_option_id: Optional[str] = None,
+            order_info: Optional[OrderInfo] = None,
+            **__pydantic_kwargs: Any,
+        ) -> None:
+            # DO NOT EDIT MANUALLY!!!
+            # This method was auto-generated via `butcher`
+            # Is needed only for type checking and IDE support without any additional plugins
+
+            super().__init__(
+                id=id,
+                from_user=from_user,
+                currency=currency,
+                total_amount=total_amount,
+                invoice_payload=invoice_payload,
+                shipping_option_id=shipping_option_id,
+                order_info=order_info,
+                **__pydantic_kwargs,
+            )
 
     def answer(
         self,

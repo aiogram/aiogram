@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Optional
+from typing import TYPE_CHECKING, Any, Optional
 
 from .input_message_content import InputMessageContent
 
@@ -28,3 +28,36 @@ class InputVenueMessageContent(InputMessageContent):
     """*Optional*. Google Places identifier of the venue"""
     google_place_type: Optional[str] = None
     """*Optional*. Google Places type of the venue. (See `supported types <https://developers.google.com/places/web-service/supported_types>`_.)"""
+
+    if TYPE_CHECKING:
+        # DO NOT EDIT MANUALLY!!!
+        # This section was auto-generated via `butcher`
+
+        def __init__(
+            __pydantic__self__,
+            *,
+            latitude: float,
+            longitude: float,
+            title: str,
+            address: str,
+            foursquare_id: Optional[str] = None,
+            foursquare_type: Optional[str] = None,
+            google_place_id: Optional[str] = None,
+            google_place_type: Optional[str] = None,
+            **__pydantic_kwargs: Any,
+        ) -> None:
+            # DO NOT EDIT MANUALLY!!!
+            # This method was auto-generated via `butcher`
+            # Is needed only for type checking and IDE support without any additional plugins
+
+            super().__init__(
+                latitude=latitude,
+                longitude=longitude,
+                title=title,
+                address=address,
+                foursquare_id=foursquare_id,
+                foursquare_type=foursquare_type,
+                google_place_id=google_place_id,
+                google_place_type=google_place_type,
+                **__pydantic_kwargs,
+            )

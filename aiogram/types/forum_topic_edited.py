@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import TYPE_CHECKING, Any, Optional
 
 from aiogram.types import TelegramObject
 
@@ -14,3 +14,22 @@ class ForumTopicEdited(TelegramObject):
     """*Optional*. New name of the topic, if it was edited"""
     icon_custom_emoji_id: Optional[str] = None
     """*Optional*. New identifier of the custom emoji shown as the topic icon, if it was edited; an empty string if the icon was removed"""
+
+    if TYPE_CHECKING:
+        # DO NOT EDIT MANUALLY!!!
+        # This section was auto-generated via `butcher`
+
+        def __init__(
+            __pydantic__self__,
+            *,
+            name: Optional[str] = None,
+            icon_custom_emoji_id: Optional[str] = None,
+            **__pydantic_kwargs: Any,
+        ) -> None:
+            # DO NOT EDIT MANUALLY!!!
+            # This method was auto-generated via `butcher`
+            # Is needed only for type checking and IDE support without any additional plugins
+
+            super().__init__(
+                name=name, icon_custom_emoji_id=icon_custom_emoji_id, **__pydantic_kwargs
+            )
