@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from abc import ABC
 from copy import deepcopy
 from itertools import chain
 from itertools import cycle as repeat_all
@@ -14,6 +15,7 @@ from typing import (
     Type,
     TypeVar,
     Union,
+    cast,
     no_type_check,
 )
 
@@ -35,7 +37,7 @@ MIN_WIDTH = 1
 MAX_BUTTONS = 100
 
 
-class KeyboardBuilder(Generic[ButtonType]):
+class KeyboardBuilder(Generic[ButtonType], ABC):
     """
     Generic keyboard builder that helps to adjust your markup with defined shape of lines.
 
@@ -243,8 +245,10 @@ class KeyboardBuilder(Generic[ButtonType]):
 
     def as_markup(self, **kwargs: Any) -> Union[InlineKeyboardMarkup, ReplyKeyboardMarkup]:
         if self._button_type is KeyboardButton:
-            return ReplyKeyboardMarkup(keyboard=self.export(), **kwargs)
-        return InlineKeyboardMarkup(inline_keyboard=self.export())
+            keyboard = cast(List[List[KeyboardButton]], self.export())  # type: ignore
+            return ReplyKeyboardMarkup(keyboard=keyboard, **kwargs)
+        inline_keyboard = cast(List[List[InlineKeyboardButton]], self.export())  # type: ignore
+        return InlineKeyboardMarkup(inline_keyboard=inline_keyboard)
 
 
 def repeat_last(items: Iterable[T]) -> Generator[T, None, None]:

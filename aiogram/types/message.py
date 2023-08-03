@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import datetime
-from typing import TYPE_CHECKING, Any, List, Optional, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 
 from pydantic import Field
 
@@ -559,6 +559,10 @@ class Message(TelegramObject):
 
         from aiogram.methods import SendAnimation
 
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
+
         return SendAnimation(
             chat_id=self.chat.id,
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
@@ -631,6 +635,10 @@ class Message(TelegramObject):
 
         from aiogram.methods import SendAnimation
 
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
+
         return SendAnimation(
             chat_id=self.chat.id,
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
@@ -700,6 +708,10 @@ class Message(TelegramObject):
         # This method was auto-generated via `butcher`
 
         from aiogram.methods import SendAudio
+
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
 
         return SendAudio(
             chat_id=self.chat.id,
@@ -771,6 +783,10 @@ class Message(TelegramObject):
 
         from aiogram.methods import SendAudio
 
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
+
         return SendAudio(
             chat_id=self.chat.id,
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
@@ -831,6 +847,10 @@ class Message(TelegramObject):
 
         from aiogram.methods import SendContact
 
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
+
         return SendContact(
             chat_id=self.chat.id,
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
@@ -887,6 +907,10 @@ class Message(TelegramObject):
         # This method was auto-generated via `butcher`
 
         from aiogram.methods import SendContact
+
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
 
         return SendContact(
             chat_id=self.chat.id,
@@ -947,6 +971,10 @@ class Message(TelegramObject):
         # This method was auto-generated via `butcher`
 
         from aiogram.methods import SendDocument
+
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
 
         return SendDocument(
             chat_id=self.chat.id,
@@ -1011,6 +1039,10 @@ class Message(TelegramObject):
 
         from aiogram.methods import SendDocument
 
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
+
         return SendDocument(
             chat_id=self.chat.id,
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
@@ -1061,6 +1093,10 @@ class Message(TelegramObject):
 
         from aiogram.methods import SendGame
 
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
+
         return SendGame(
             chat_id=self.chat.id,
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
@@ -1106,6 +1142,10 @@ class Message(TelegramObject):
         # This method was auto-generated via `butcher`
 
         from aiogram.methods import SendGame
+
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
 
         return SendGame(
             chat_id=self.chat.id,
@@ -1191,6 +1231,10 @@ class Message(TelegramObject):
         # This method was auto-generated via `butcher`
 
         from aiogram.methods import SendInvoice
+
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
 
         return SendInvoice(
             chat_id=self.chat.id,
@@ -1298,6 +1342,10 @@ class Message(TelegramObject):
 
         from aiogram.methods import SendInvoice
 
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
+
         return SendInvoice(
             chat_id=self.chat.id,
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
@@ -1375,6 +1423,10 @@ class Message(TelegramObject):
 
         from aiogram.methods import SendLocation
 
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
+
         return SendLocation(
             chat_id=self.chat.id,
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
@@ -1438,6 +1490,10 @@ class Message(TelegramObject):
 
         from aiogram.methods import SendLocation
 
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
+
         return SendLocation(
             chat_id=self.chat.id,
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
@@ -1486,6 +1542,10 @@ class Message(TelegramObject):
 
         from aiogram.methods import SendMediaGroup
 
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
+
         return SendMediaGroup(
             chat_id=self.chat.id,
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
@@ -1528,6 +1588,10 @@ class Message(TelegramObject):
         # This method was auto-generated via `butcher`
 
         from aiogram.methods import SendMediaGroup
+
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
 
         return SendMediaGroup(
             chat_id=self.chat.id,
@@ -1580,6 +1644,10 @@ class Message(TelegramObject):
         # This method was auto-generated via `butcher`
 
         from aiogram.methods import SendMessage
+
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
 
         return SendMessage(
             chat_id=self.chat.id,
@@ -1638,6 +1706,10 @@ class Message(TelegramObject):
 
         from aiogram.methods import SendMessage
 
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
+
         return SendMessage(
             chat_id=self.chat.id,
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
@@ -1695,6 +1767,10 @@ class Message(TelegramObject):
         # This method was auto-generated via `butcher`
 
         from aiogram.methods import SendPhoto
+
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
 
         return SendPhoto(
             chat_id=self.chat.id,
@@ -1755,6 +1831,10 @@ class Message(TelegramObject):
         # This method was auto-generated via `butcher`
 
         from aiogram.methods import SendPhoto
+
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
 
         return SendPhoto(
             chat_id=self.chat.id,
@@ -1828,6 +1908,10 @@ class Message(TelegramObject):
         # This method was auto-generated via `butcher`
 
         from aiogram.methods import SendPoll
+
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
 
         return SendPoll(
             chat_id=self.chat.id,
@@ -1910,6 +1994,10 @@ class Message(TelegramObject):
 
         from aiogram.methods import SendPoll
 
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
+
         return SendPoll(
             chat_id=self.chat.id,
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
@@ -1968,6 +2056,10 @@ class Message(TelegramObject):
 
         from aiogram.methods import SendDice
 
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
+
         return SendDice(
             chat_id=self.chat.id,
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
@@ -2015,6 +2107,10 @@ class Message(TelegramObject):
         # This method was auto-generated via `butcher`
 
         from aiogram.methods import SendDice
+
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
 
         return SendDice(
             chat_id=self.chat.id,
@@ -2064,6 +2160,10 @@ class Message(TelegramObject):
         # This method was auto-generated via `butcher`
 
         from aiogram.methods import SendSticker
+
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
 
         return SendSticker(
             chat_id=self.chat.id,
@@ -2115,6 +2215,10 @@ class Message(TelegramObject):
         # This method was auto-generated via `butcher`
 
         from aiogram.methods import SendSticker
+
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
 
         return SendSticker(
             chat_id=self.chat.id,
@@ -2177,6 +2281,10 @@ class Message(TelegramObject):
         # This method was auto-generated via `butcher`
 
         from aiogram.methods import SendVenue
+
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
 
         return SendVenue(
             chat_id=self.chat.id,
@@ -2246,6 +2354,10 @@ class Message(TelegramObject):
         # This method was auto-generated via `butcher`
 
         from aiogram.methods import SendVenue
+
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
 
         return SendVenue(
             chat_id=self.chat.id,
@@ -2318,6 +2430,10 @@ class Message(TelegramObject):
         # This method was auto-generated via `butcher`
 
         from aiogram.methods import SendVideo
+
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
 
         return SendVideo(
             chat_id=self.chat.id,
@@ -2394,6 +2510,10 @@ class Message(TelegramObject):
 
         from aiogram.methods import SendVideo
 
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
+
         return SendVideo(
             chat_id=self.chat.id,
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
@@ -2456,6 +2576,10 @@ class Message(TelegramObject):
 
         from aiogram.methods import SendVideoNote
 
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
+
         return SendVideoNote(
             chat_id=self.chat.id,
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
@@ -2512,6 +2636,10 @@ class Message(TelegramObject):
         # This method was auto-generated via `butcher`
 
         from aiogram.methods import SendVideoNote
+
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
 
         return SendVideoNote(
             chat_id=self.chat.id,
@@ -2570,6 +2698,10 @@ class Message(TelegramObject):
         # This method was auto-generated via `butcher`
 
         from aiogram.methods import SendVoice
+
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
 
         return SendVoice(
             chat_id=self.chat.id,
@@ -2631,6 +2763,10 @@ class Message(TelegramObject):
 
         from aiogram.methods import SendVoice
 
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
+
         return SendVoice(
             chat_id=self.chat.id,
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
@@ -2672,14 +2808,14 @@ class Message(TelegramObject):
         SendVoice,
     ]:
         """
-        Send copy of message.
+        Send copy of a message.
 
         Is similar to :meth:`aiogram.client.bot.Bot.copy_message`
         but returning the sent message instead of :class:`aiogram.types.message_id.MessageId`
 
         .. note::
 
-            This method don't use the API method named `copyMessage` and
+            This method doesn't use the API method named `copyMessage` and
             historically implemented before the similar method is added to API
 
         :param chat_id:
@@ -2707,7 +2843,7 @@ class Message(TelegramObject):
             SendVoice,
         )
 
-        kwargs = {
+        kwargs: Dict[str, Any] = {
             "chat_id": chat_id,
             "reply_markup": reply_markup or self.reply_markup,
             "disable_notification": disable_notification,
@@ -2715,38 +2851,48 @@ class Message(TelegramObject):
             "message_thread_id": message_thread_id,
             "allow_sending_without_reply": allow_sending_without_reply,
         }
-        text = self.text or self.caption
-        entities = self.entities or self.caption_entities
 
         if self.text:
-            return SendMessage(text=text, entities=entities, **kwargs).as_(self._bot)
+            return SendMessage(text=self.text, entities=self.entities, **kwargs).as_(self._bot)
         if self.audio:
             return SendAudio(
                 audio=self.audio.file_id,
-                caption=text,
+                caption=self.caption,
                 title=self.audio.title,
                 performer=self.audio.performer,
                 duration=self.audio.duration,
-                caption_entities=entities,
+                caption_entities=self.caption_entities,
                 **kwargs,
             ).as_(self._bot)
         if self.animation:
             return SendAnimation(
-                animation=self.animation.file_id, caption=text, caption_entities=entities, **kwargs
+                animation=self.animation.file_id,
+                caption=self.caption,
+                caption_entities=self.caption_entities,
+                **kwargs,
             ).as_(self._bot)
         if self.document:
             return SendDocument(
-                document=self.document.file_id, caption=text, caption_entities=entities, **kwargs
+                document=self.document.file_id,
+                caption=self.caption,
+                caption_entities=self.caption_entities,
+                **kwargs,
             ).as_(self._bot)
         if self.photo:
             return SendPhoto(
-                photo=self.photo[-1].file_id, caption=text, caption_entities=entities, **kwargs
+                photo=self.photo[-1].file_id,
+                caption=self.caption,
+                caption_entities=self.caption_entities,
+                **kwargs,
             ).as_(self._bot)
         if self.sticker:
             return SendSticker(sticker=self.sticker.file_id, **kwargs)
         if self.video:
             return SendVideo(
-                video=self.video.file_id, caption=text, caption_entities=entities, **kwargs
+                video=self.video.file_id,
+                caption=self.caption,
+                caption_entities=self.caption_entities,
+                **kwargs,
             ).as_(self._bot)
         if self.video_note:
             return SendVideoNote(video_note=self.video_note.file_id, **kwargs).as_(self._bot)
@@ -2829,6 +2975,10 @@ class Message(TelegramObject):
 
         from aiogram.methods import CopyMessage
 
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
+
         return CopyMessage(
             from_chat_id=self.chat.id,
             message_id=self.message_id,
@@ -2879,8 +3029,12 @@ class Message(TelegramObject):
 
         from aiogram.methods import EditMessageText
 
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
+
         return EditMessageText(
-            chat_id=self.chat.id if self.chat else None,
+            chat_id=self.chat.id,
             message_id=self.message_id,
             text=text,
             inline_message_id=inline_message_id,
@@ -2965,8 +3119,12 @@ class Message(TelegramObject):
 
         from aiogram.methods import EditMessageMedia
 
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
+
         return EditMessageMedia(
-            chat_id=self.chat.id if self.chat else None,
+            chat_id=self.chat.id,
             message_id=self.message_id,
             media=media,
             inline_message_id=inline_message_id,
@@ -3000,8 +3158,12 @@ class Message(TelegramObject):
 
         from aiogram.methods import EditMessageReplyMarkup
 
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
+
         return EditMessageReplyMarkup(
-            chat_id=self.chat.id if self.chat else None,
+            chat_id=self.chat.id,
             message_id=self.message_id,
             inline_message_id=inline_message_id,
             reply_markup=reply_markup,
@@ -3033,8 +3195,12 @@ class Message(TelegramObject):
 
         from aiogram.methods import EditMessageReplyMarkup
 
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
+
         return EditMessageReplyMarkup(
-            chat_id=self.chat.id if self.chat else None,
+            chat_id=self.chat.id,
             message_id=self.message_id,
             reply_markup=None,
             inline_message_id=inline_message_id,
@@ -3077,8 +3243,12 @@ class Message(TelegramObject):
 
         from aiogram.methods import EditMessageLiveLocation
 
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
+
         return EditMessageLiveLocation(
-            chat_id=self.chat.id if self.chat else None,
+            chat_id=self.chat.id,
             message_id=self.message_id,
             latitude=latitude,
             longitude=longitude,
@@ -3116,8 +3286,12 @@ class Message(TelegramObject):
 
         from aiogram.methods import StopMessageLiveLocation
 
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
+
         return StopMessageLiveLocation(
-            chat_id=self.chat.id if self.chat else None,
+            chat_id=self.chat.id,
             message_id=self.message_id,
             inline_message_id=inline_message_id,
             reply_markup=reply_markup,
@@ -3156,8 +3330,12 @@ class Message(TelegramObject):
 
         from aiogram.methods import EditMessageCaption
 
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
+
         return EditMessageCaption(
-            chat_id=self.chat.id if self.chat else None,
+            chat_id=self.chat.id,
             message_id=self.message_id,
             inline_message_id=inline_message_id,
             caption=caption,
@@ -3207,8 +3385,12 @@ class Message(TelegramObject):
 
         from aiogram.methods import DeleteMessage
 
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
+
         return DeleteMessage(
-            chat_id=self.chat.id if self.chat else None,
+            chat_id=self.chat.id,
             message_id=self.message_id,
             **kwargs,
         ).as_(self._bot)
@@ -3237,8 +3419,12 @@ class Message(TelegramObject):
 
         from aiogram.methods import PinChatMessage
 
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
+
         return PinChatMessage(
-            chat_id=self.chat.id if self.chat else None,
+            chat_id=self.chat.id,
             message_id=self.message_id,
             disable_notification=disable_notification,
             **kwargs,
@@ -3266,8 +3452,12 @@ class Message(TelegramObject):
 
         from aiogram.methods import UnpinChatMessage
 
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
+
         return UnpinChatMessage(
-            chat_id=self.chat.id if self.chat else None,
+            chat_id=self.chat.id,
             message_id=self.message_id,
             **kwargs,
         ).as_(self._bot)
