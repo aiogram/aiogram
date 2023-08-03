@@ -3075,6 +3075,10 @@ class Message(TelegramObject):
 
         from aiogram.methods import ForwardMessage
 
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
+
         return ForwardMessage(
             from_chat_id=self.chat.id,
             message_id=self.message_id,
