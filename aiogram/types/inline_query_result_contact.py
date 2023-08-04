@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Literal, Optional, Union
+from typing import TYPE_CHECKING, Any, Literal, Optional, Union
 
 from ..enums import InlineQueryResultType
 from .inline_query_result import InlineQueryResult
@@ -52,3 +52,50 @@ class InlineQueryResultContact(InlineQueryResult):
     """*Optional*. Thumbnail width"""
     thumbnail_height: Optional[int] = None
     """*Optional*. Thumbnail height"""
+
+    if TYPE_CHECKING:
+        # DO NOT EDIT MANUALLY!!!
+        # This section was auto-generated via `butcher`
+
+        def __init__(
+            __pydantic__self__,
+            *,
+            type: Literal[InlineQueryResultType.CONTACT] = InlineQueryResultType.CONTACT,
+            id: str,
+            phone_number: str,
+            first_name: str,
+            last_name: Optional[str] = None,
+            vcard: Optional[str] = None,
+            reply_markup: Optional[InlineKeyboardMarkup] = None,
+            input_message_content: Optional[
+                Union[
+                    InputTextMessageContent,
+                    InputLocationMessageContent,
+                    InputVenueMessageContent,
+                    InputContactMessageContent,
+                    InputInvoiceMessageContent,
+                ]
+            ] = None,
+            thumbnail_url: Optional[str] = None,
+            thumbnail_width: Optional[int] = None,
+            thumbnail_height: Optional[int] = None,
+            **__pydantic_kwargs: Any,
+        ) -> None:
+            # DO NOT EDIT MANUALLY!!!
+            # This method was auto-generated via `butcher`
+            # Is needed only for type checking and IDE support without any additional plugins
+
+            super().__init__(
+                type=type,
+                id=id,
+                phone_number=phone_number,
+                first_name=first_name,
+                last_name=last_name,
+                vcard=vcard,
+                reply_markup=reply_markup,
+                input_message_content=input_message_content,
+                thumbnail_url=thumbnail_url,
+                thumbnail_width=thumbnail_width,
+                thumbnail_height=thumbnail_height,
+                **__pydantic_kwargs,
+            )

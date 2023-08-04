@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, List, Optional
+from typing import TYPE_CHECKING, Any, List, Optional
 
 from .base import MutableTelegramObject
 
@@ -27,3 +27,32 @@ class ReplyKeyboardMarkup(MutableTelegramObject):
     """*Optional*. The placeholder to be shown in the input field when the keyboard is active; 1-64 characters"""
     selective: Optional[bool] = None
     """*Optional*. Use this parameter if you want to show the keyboard to specific users only. Targets: 1) users that are @mentioned in the *text* of the :class:`aiogram.types.message.Message` object; 2) if the bot's message is a reply (has *reply_to_message_id*), sender of the original message."""
+
+    if TYPE_CHECKING:
+        # DO NOT EDIT MANUALLY!!!
+        # This section was auto-generated via `butcher`
+
+        def __init__(
+            __pydantic__self__,
+            *,
+            keyboard: List[List[KeyboardButton]],
+            is_persistent: Optional[bool] = None,
+            resize_keyboard: Optional[bool] = None,
+            one_time_keyboard: Optional[bool] = None,
+            input_field_placeholder: Optional[str] = None,
+            selective: Optional[bool] = None,
+            **__pydantic_kwargs: Any,
+        ) -> None:
+            # DO NOT EDIT MANUALLY!!!
+            # This method was auto-generated via `butcher`
+            # Is needed only for type checking and IDE support without any additional plugins
+
+            super().__init__(
+                keyboard=keyboard,
+                is_persistent=is_persistent,
+                resize_keyboard=resize_keyboard,
+                one_time_keyboard=one_time_keyboard,
+                input_field_placeholder=input_field_placeholder,
+                selective=selective,
+                **__pydantic_kwargs,
+            )

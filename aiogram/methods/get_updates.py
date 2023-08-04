@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import List, Optional
+from typing import TYPE_CHECKING, Any, List, Optional
 
 from ..types import Update
 from .base import TelegramMethod
@@ -30,3 +30,28 @@ class GetUpdates(TelegramMethod[List[Update]]):
     """Timeout in seconds for long polling. Defaults to 0, i.e. usual short polling. Should be positive, short polling should be used for testing purposes only."""
     allowed_updates: Optional[List[str]] = None
     """A JSON-serialized list of the update types you want your bot to receive. For example, specify ['message', 'edited_channel_post', 'callback_query'] to only receive updates of these types. See :class:`aiogram.types.update.Update` for a complete list of available update types. Specify an empty list to receive all update types except *chat_member* (default). If not specified, the previous setting will be used."""
+
+    if TYPE_CHECKING:
+        # DO NOT EDIT MANUALLY!!!
+        # This section was auto-generated via `butcher`
+
+        def __init__(
+            __pydantic__self__,
+            *,
+            offset: Optional[int] = None,
+            limit: Optional[int] = None,
+            timeout: Optional[int] = None,
+            allowed_updates: Optional[List[str]] = None,
+            **__pydantic_kwargs: Any,
+        ) -> None:
+            # DO NOT EDIT MANUALLY!!!
+            # This method was auto-generated via `butcher`
+            # Is needed only for type checking and IDE support without any additional plugins
+
+            super().__init__(
+                offset=offset,
+                limit=limit,
+                timeout=timeout,
+                allowed_updates=allowed_updates,
+                **__pydantic_kwargs,
+            )

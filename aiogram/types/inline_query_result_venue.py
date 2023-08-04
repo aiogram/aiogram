@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Literal, Optional, Union
+from typing import TYPE_CHECKING, Any, Literal, Optional, Union
 
 from ..enums import InlineQueryResultType
 from .inline_query_result import InlineQueryResult
@@ -60,3 +60,58 @@ class InlineQueryResultVenue(InlineQueryResult):
     """*Optional*. Thumbnail width"""
     thumbnail_height: Optional[int] = None
     """*Optional*. Thumbnail height"""
+
+    if TYPE_CHECKING:
+        # DO NOT EDIT MANUALLY!!!
+        # This section was auto-generated via `butcher`
+
+        def __init__(
+            __pydantic__self__,
+            *,
+            type: Literal[InlineQueryResultType.VENUE] = InlineQueryResultType.VENUE,
+            id: str,
+            latitude: float,
+            longitude: float,
+            title: str,
+            address: str,
+            foursquare_id: Optional[str] = None,
+            foursquare_type: Optional[str] = None,
+            google_place_id: Optional[str] = None,
+            google_place_type: Optional[str] = None,
+            reply_markup: Optional[InlineKeyboardMarkup] = None,
+            input_message_content: Optional[
+                Union[
+                    InputTextMessageContent,
+                    InputLocationMessageContent,
+                    InputVenueMessageContent,
+                    InputContactMessageContent,
+                    InputInvoiceMessageContent,
+                ]
+            ] = None,
+            thumbnail_url: Optional[str] = None,
+            thumbnail_width: Optional[int] = None,
+            thumbnail_height: Optional[int] = None,
+            **__pydantic_kwargs: Any,
+        ) -> None:
+            # DO NOT EDIT MANUALLY!!!
+            # This method was auto-generated via `butcher`
+            # Is needed only for type checking and IDE support without any additional plugins
+
+            super().__init__(
+                type=type,
+                id=id,
+                latitude=latitude,
+                longitude=longitude,
+                title=title,
+                address=address,
+                foursquare_id=foursquare_id,
+                foursquare_type=foursquare_type,
+                google_place_id=google_place_id,
+                google_place_type=google_place_type,
+                reply_markup=reply_markup,
+                input_message_content=input_message_content,
+                thumbnail_url=thumbnail_url,
+                thumbnail_width=thumbnail_width,
+                thumbnail_height=thumbnail_height,
+                **__pydantic_kwargs,
+            )

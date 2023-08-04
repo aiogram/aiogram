@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Union
+from typing import TYPE_CHECKING, Any, Union
 
 from ..types import (
     InlineQueryResultArticle,
@@ -63,3 +63,41 @@ class AnswerWebAppQuery(TelegramMethod[SentWebAppMessage]):
         InlineQueryResultVoice,
     ]
     """A JSON-serialized object describing the message to be sent"""
+
+    if TYPE_CHECKING:
+        # DO NOT EDIT MANUALLY!!!
+        # This section was auto-generated via `butcher`
+
+        def __init__(
+            __pydantic__self__,
+            *,
+            web_app_query_id: str,
+            result: Union[
+                InlineQueryResultCachedAudio,
+                InlineQueryResultCachedDocument,
+                InlineQueryResultCachedGif,
+                InlineQueryResultCachedMpeg4Gif,
+                InlineQueryResultCachedPhoto,
+                InlineQueryResultCachedSticker,
+                InlineQueryResultCachedVideo,
+                InlineQueryResultCachedVoice,
+                InlineQueryResultArticle,
+                InlineQueryResultAudio,
+                InlineQueryResultContact,
+                InlineQueryResultGame,
+                InlineQueryResultDocument,
+                InlineQueryResultGif,
+                InlineQueryResultLocation,
+                InlineQueryResultMpeg4Gif,
+                InlineQueryResultPhoto,
+                InlineQueryResultVenue,
+                InlineQueryResultVideo,
+                InlineQueryResultVoice,
+            ],
+            **__pydantic_kwargs: Any,
+        ) -> None:
+            # DO NOT EDIT MANUALLY!!!
+            # This method was auto-generated via `butcher`
+            # Is needed only for type checking and IDE support without any additional plugins
+
+            super().__init__(web_app_query_id=web_app_query_id, result=result, **__pydantic_kwargs)

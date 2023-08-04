@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Any, Optional
 
 from .base import MutableTelegramObject
 
@@ -39,3 +39,34 @@ class KeyboardButton(MutableTelegramObject):
     """*Optional*. If specified, the user will be asked to create a poll and send it to the bot when the button is pressed. Available in private chats only."""
     web_app: Optional[WebAppInfo] = None
     """*Optional*. If specified, the described `Web App <https://core.telegram.org/bots/webapps>`_ will be launched when the button is pressed. The Web App will be able to send a 'web_app_data' service message. Available in private chats only."""
+
+    if TYPE_CHECKING:
+        # DO NOT EDIT MANUALLY!!!
+        # This section was auto-generated via `butcher`
+
+        def __init__(
+            __pydantic__self__,
+            *,
+            text: str,
+            request_user: Optional[KeyboardButtonRequestUser] = None,
+            request_chat: Optional[KeyboardButtonRequestChat] = None,
+            request_contact: Optional[bool] = None,
+            request_location: Optional[bool] = None,
+            request_poll: Optional[KeyboardButtonPollType] = None,
+            web_app: Optional[WebAppInfo] = None,
+            **__pydantic_kwargs: Any,
+        ) -> None:
+            # DO NOT EDIT MANUALLY!!!
+            # This method was auto-generated via `butcher`
+            # Is needed only for type checking and IDE support without any additional plugins
+
+            super().__init__(
+                text=text,
+                request_user=request_user,
+                request_chat=request_chat,
+                request_contact=request_contact,
+                request_location=request_location,
+                request_poll=request_poll,
+                web_app=web_app,
+                **__pydantic_kwargs,
+            )

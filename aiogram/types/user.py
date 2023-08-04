@@ -40,6 +40,45 @@ class User(TelegramObject):
     supports_inline_queries: Optional[bool] = None
     """*Optional*. :code:`True`, if the bot supports inline queries. Returned only in :class:`aiogram.methods.get_me.GetMe`."""
 
+    if TYPE_CHECKING:
+        # DO NOT EDIT MANUALLY!!!
+        # This section was auto-generated via `butcher`
+
+        def __init__(
+            __pydantic__self__,
+            *,
+            id: int,
+            is_bot: bool,
+            first_name: str,
+            last_name: Optional[str] = None,
+            username: Optional[str] = None,
+            language_code: Optional[str] = None,
+            is_premium: Optional[bool] = None,
+            added_to_attachment_menu: Optional[bool] = None,
+            can_join_groups: Optional[bool] = None,
+            can_read_all_group_messages: Optional[bool] = None,
+            supports_inline_queries: Optional[bool] = None,
+            **__pydantic_kwargs: Any,
+        ) -> None:
+            # DO NOT EDIT MANUALLY!!!
+            # This method was auto-generated via `butcher`
+            # Is needed only for type checking and IDE support without any additional plugins
+
+            super().__init__(
+                id=id,
+                is_bot=is_bot,
+                first_name=first_name,
+                last_name=last_name,
+                username=username,
+                language_code=language_code,
+                is_premium=is_premium,
+                added_to_attachment_menu=added_to_attachment_menu,
+                can_join_groups=can_join_groups,
+                can_read_all_group_messages=can_read_all_group_messages,
+                supports_inline_queries=supports_inline_queries,
+                **__pydantic_kwargs,
+            )
+
     @property
     def full_name(self) -> str:
         if self.last_name:

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, List, Literal, Optional, Union
+from typing import TYPE_CHECKING, Any, List, Literal, Optional, Union
 
 from ..enums import InputMediaType
 from .base import UNSET_PARSE_MODE
@@ -30,3 +30,32 @@ class InputMediaPhoto(InputMedia):
     """*Optional*. List of special entities that appear in the caption, which can be specified instead of *parse_mode*"""
     has_spoiler: Optional[bool] = None
     """*Optional*. Pass :code:`True` if the photo needs to be covered with a spoiler animation"""
+
+    if TYPE_CHECKING:
+        # DO NOT EDIT MANUALLY!!!
+        # This section was auto-generated via `butcher`
+
+        def __init__(
+            __pydantic__self__,
+            *,
+            type: Literal[InputMediaType.PHOTO] = InputMediaType.PHOTO,
+            media: Union[str, InputFile],
+            caption: Optional[str] = None,
+            parse_mode: Optional[str] = UNSET_PARSE_MODE,
+            caption_entities: Optional[List[MessageEntity]] = None,
+            has_spoiler: Optional[bool] = None,
+            **__pydantic_kwargs: Any,
+        ) -> None:
+            # DO NOT EDIT MANUALLY!!!
+            # This method was auto-generated via `butcher`
+            # Is needed only for type checking and IDE support without any additional plugins
+
+            super().__init__(
+                type=type,
+                media=media,
+                caption=caption,
+                parse_mode=parse_mode,
+                caption_entities=caption_entities,
+                has_spoiler=has_spoiler,
+                **__pydantic_kwargs,
+            )

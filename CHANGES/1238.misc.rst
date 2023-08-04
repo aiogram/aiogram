@@ -1,0 +1,3 @@
+Reworked InputFile reading, removed :code:`__aiter__` method, added `bot: Bot` argument to
+the :code:`.read(...)` method, so, from now URLInputFile can be used without specifying
+bot instance.

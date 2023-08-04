@@ -6,6 +6,7 @@ from typing import (
     TYPE_CHECKING,
     Any,
     AsyncGenerator,
+    AsyncIterator,
     Dict,
     Iterable,
     List,
@@ -147,7 +148,11 @@ class AiohttpSession(BaseSession):
                 continue
             form.add_field(key, value)
         for key, value in files.items():
-            form.add_field(key, value, filename=value.filename or key)
+            form.add_field(
+                key,
+                value.read(bot),
+                filename=value.filename or key,
+            )
         return form
 
     async def make_request(

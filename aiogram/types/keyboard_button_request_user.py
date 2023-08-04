@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import TYPE_CHECKING, Any, Optional
 
 from aiogram.types import TelegramObject
 
@@ -16,3 +16,26 @@ class KeyboardButtonRequestUser(TelegramObject):
     """*Optional*. Pass :code:`True` to request a bot, pass :code:`False` to request a regular user. If not specified, no additional restrictions are applied."""
     user_is_premium: Optional[bool] = None
     """*Optional*. Pass :code:`True` to request a premium user, pass :code:`False` to request a non-premium user. If not specified, no additional restrictions are applied."""
+
+    if TYPE_CHECKING:
+        # DO NOT EDIT MANUALLY!!!
+        # This section was auto-generated via `butcher`
+
+        def __init__(
+            __pydantic__self__,
+            *,
+            request_id: int,
+            user_is_bot: Optional[bool] = None,
+            user_is_premium: Optional[bool] = None,
+            **__pydantic_kwargs: Any,
+        ) -> None:
+            # DO NOT EDIT MANUALLY!!!
+            # This method was auto-generated via `butcher`
+            # Is needed only for type checking and IDE support without any additional plugins
+
+            super().__init__(
+                request_id=request_id,
+                user_is_bot=user_is_bot,
+                user_is_premium=user_is_premium,
+                **__pydantic_kwargs,
+            )

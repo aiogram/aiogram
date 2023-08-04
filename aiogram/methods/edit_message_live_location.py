@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Optional, Union
+from typing import TYPE_CHECKING, Any, Optional, Union
 
 from ..types import InlineKeyboardMarkup, Message
 from .base import TelegramMethod
@@ -34,3 +34,38 @@ class EditMessageLiveLocation(TelegramMethod[Union[Message, bool]]):
     """The maximum distance for proximity alerts about approaching another chat member, in meters. Must be between 1 and 100000 if specified."""
     reply_markup: Optional[InlineKeyboardMarkup] = None
     """A JSON-serialized object for a new `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_."""
+
+    if TYPE_CHECKING:
+        # DO NOT EDIT MANUALLY!!!
+        # This section was auto-generated via `butcher`
+
+        def __init__(
+            __pydantic__self__,
+            *,
+            latitude: float,
+            longitude: float,
+            chat_id: Optional[Union[int, str]] = None,
+            message_id: Optional[int] = None,
+            inline_message_id: Optional[str] = None,
+            horizontal_accuracy: Optional[float] = None,
+            heading: Optional[int] = None,
+            proximity_alert_radius: Optional[int] = None,
+            reply_markup: Optional[InlineKeyboardMarkup] = None,
+            **__pydantic_kwargs: Any,
+        ) -> None:
+            # DO NOT EDIT MANUALLY!!!
+            # This method was auto-generated via `butcher`
+            # Is needed only for type checking and IDE support without any additional plugins
+
+            super().__init__(
+                latitude=latitude,
+                longitude=longitude,
+                chat_id=chat_id,
+                message_id=message_id,
+                inline_message_id=inline_message_id,
+                horizontal_accuracy=horizontal_accuracy,
+                heading=heading,
+                proximity_alert_radius=proximity_alert_radius,
+                reply_markup=reply_markup,
+                **__pydantic_kwargs,
+            )

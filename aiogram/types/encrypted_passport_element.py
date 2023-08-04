@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, List, Optional
+from typing import TYPE_CHECKING, Any, List, Optional
 
 from .base import TelegramObject
 
@@ -35,3 +35,40 @@ class EncryptedPassportElement(TelegramObject):
     """*Optional*. Encrypted file with the selfie of the user holding a document, provided by the user; available for 'passport', 'driver_license', 'identity_card' and 'internal_passport'. The file can be decrypted and verified using the accompanying :class:`aiogram.types.encrypted_credentials.EncryptedCredentials`."""
     translation: Optional[List[PassportFile]] = None
     """*Optional*. Array of encrypted files with translated versions of documents provided by the user. Available if requested for 'passport', 'driver_license', 'identity_card', 'internal_passport', 'utility_bill', 'bank_statement', 'rental_agreement', 'passport_registration' and 'temporary_registration' types. Files can be decrypted and verified using the accompanying :class:`aiogram.types.encrypted_credentials.EncryptedCredentials`."""
+
+    if TYPE_CHECKING:
+        # DO NOT EDIT MANUALLY!!!
+        # This section was auto-generated via `butcher`
+
+        def __init__(
+            __pydantic__self__,
+            *,
+            type: str,
+            hash: str,
+            data: Optional[str] = None,
+            phone_number: Optional[str] = None,
+            email: Optional[str] = None,
+            files: Optional[List[PassportFile]] = None,
+            front_side: Optional[PassportFile] = None,
+            reverse_side: Optional[PassportFile] = None,
+            selfie: Optional[PassportFile] = None,
+            translation: Optional[List[PassportFile]] = None,
+            **__pydantic_kwargs: Any,
+        ) -> None:
+            # DO NOT EDIT MANUALLY!!!
+            # This method was auto-generated via `butcher`
+            # Is needed only for type checking and IDE support without any additional plugins
+
+            super().__init__(
+                type=type,
+                hash=hash,
+                data=data,
+                phone_number=phone_number,
+                email=email,
+                files=files,
+                front_side=front_side,
+                reverse_side=reverse_side,
+                selfie=selfie,
+                translation=translation,
+                **__pydantic_kwargs,
+            )

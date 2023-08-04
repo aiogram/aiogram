@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Optional, Union
+from typing import TYPE_CHECKING, Any, Optional, Union
 
 from .base import TelegramMethod
 
@@ -21,3 +21,26 @@ class UnbanChatMember(TelegramMethod[bool]):
     """Unique identifier of the target user"""
     only_if_banned: Optional[bool] = None
     """Do nothing if the user is not banned"""
+
+    if TYPE_CHECKING:
+        # DO NOT EDIT MANUALLY!!!
+        # This section was auto-generated via `butcher`
+
+        def __init__(
+            __pydantic__self__,
+            *,
+            chat_id: Union[int, str],
+            user_id: int,
+            only_if_banned: Optional[bool] = None,
+            **__pydantic_kwargs: Any,
+        ) -> None:
+            # DO NOT EDIT MANUALLY!!!
+            # This method was auto-generated via `butcher`
+            # Is needed only for type checking and IDE support without any additional plugins
+
+            super().__init__(
+                chat_id=chat_id,
+                user_id=user_id,
+                only_if_banned=only_if_banned,
+                **__pydantic_kwargs,
+            )

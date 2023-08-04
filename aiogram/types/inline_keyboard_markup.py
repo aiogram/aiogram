@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, List
+from typing import TYPE_CHECKING, Any, List
 
 from .base import MutableTelegramObject
 
@@ -18,3 +18,19 @@ class InlineKeyboardMarkup(MutableTelegramObject):
 
     inline_keyboard: List[List[InlineKeyboardButton]]
     """Array of button rows, each represented by an Array of :class:`aiogram.types.inline_keyboard_button.InlineKeyboardButton` objects"""
+
+    if TYPE_CHECKING:
+        # DO NOT EDIT MANUALLY!!!
+        # This section was auto-generated via `butcher`
+
+        def __init__(
+            __pydantic__self__,
+            *,
+            inline_keyboard: List[List[InlineKeyboardButton]],
+            **__pydantic_kwargs: Any,
+        ) -> None:
+            # DO NOT EDIT MANUALLY!!!
+            # This method was auto-generated via `butcher`
+            # Is needed only for type checking and IDE support without any additional plugins
+
+            super().__init__(inline_keyboard=inline_keyboard, **__pydantic_kwargs)

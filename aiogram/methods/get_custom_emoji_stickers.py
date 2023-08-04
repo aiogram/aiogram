@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import List
+from typing import TYPE_CHECKING, Any, List
 
 from ..types import Sticker
 from .base import TelegramMethod
@@ -18,3 +18,16 @@ class GetCustomEmojiStickers(TelegramMethod[List[Sticker]]):
 
     custom_emoji_ids: List[str]
     """List of custom emoji identifiers. At most 200 custom emoji identifiers can be specified."""
+
+    if TYPE_CHECKING:
+        # DO NOT EDIT MANUALLY!!!
+        # This section was auto-generated via `butcher`
+
+        def __init__(
+            __pydantic__self__, *, custom_emoji_ids: List[str], **__pydantic_kwargs: Any
+        ) -> None:
+            # DO NOT EDIT MANUALLY!!!
+            # This method was auto-generated via `butcher`
+            # Is needed only for type checking and IDE support without any additional plugins
+
+            super().__init__(custom_emoji_ids=custom_emoji_ids, **__pydantic_kwargs)

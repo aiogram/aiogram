@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, List
+from typing import TYPE_CHECKING, Any, List
 
 from .base import TelegramObject
 
@@ -19,3 +19,20 @@ class UserProfilePhotos(TelegramObject):
     """Total number of profile pictures the target user has"""
     photos: List[List[PhotoSize]]
     """Requested profile pictures (in up to 4 sizes each)"""
+
+    if TYPE_CHECKING:
+        # DO NOT EDIT MANUALLY!!!
+        # This section was auto-generated via `butcher`
+
+        def __init__(
+            __pydantic__self__,
+            *,
+            total_count: int,
+            photos: List[List[PhotoSize]],
+            **__pydantic_kwargs: Any,
+        ) -> None:
+            # DO NOT EDIT MANUALLY!!!
+            # This method was auto-generated via `butcher`
+            # Is needed only for type checking and IDE support without any additional plugins
+
+            super().__init__(total_count=total_count, photos=photos, **__pydantic_kwargs)
