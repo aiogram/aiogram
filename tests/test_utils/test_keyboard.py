@@ -228,3 +228,75 @@ class TestKeyboardBuilder:
     )
     def test_as_markup(self, builder, expected):
         assert isinstance(builder.as_markup(), expected)
+
+    @pytest.mark.parametrize(
+        "markup,builder_type",
+        [
+            [
+                ReplyKeyboardMarkup(
+                    keyboard=[
+                        [KeyboardButton(text="test-1"), KeyboardButton(text="test-2")],
+                        [KeyboardButton(text="test-3")],
+                    ]
+                ),
+                ReplyKeyboardBuilder,
+            ],
+            [
+                InlineKeyboardMarkup(
+                    inline_keyboard=[
+                        [InlineKeyboardButton(text="test-1"), InlineKeyboardButton(text="test-2")],
+                        [InlineKeyboardButton(text="test-3")],
+                    ]
+                ),
+                InlineKeyboardBuilder,
+            ],
+        ],
+    )
+    def test_from_markup(self, markup, builder_type):
+        builder = builder_type.from_markup(markup)
+        assert len(builder.export()) == 2
+        assert len(list(builder.buttons)) == 3
+
+    def test_attach(self):
+        builder = ReplyKeyboardBuilder(
+            markup=[
+                [
+                    KeyboardButton(text="test1"),
+                    KeyboardButton(text="test2"),
+                    KeyboardButton(text="test3"),
+                ]
+            ]
+        )
+        builder.adjust(2)
+        builder.attach(ReplyKeyboardBuilder(markup=[[KeyboardButton(text="test2")]]))
+        markup = builder.export()
+        assert len(markup) == 3
+        assert len(markup[0]) == 2
+        assert len(markup[1]) == 1
+        assert len(markup[2]) == 1
+
+    def test_attach_invalid_button_type(self):
+        builder = ReplyKeyboardBuilder(
+            markup=[
+                [
+                    KeyboardButton(text="test1"),
+                    KeyboardButton(text="test2"),
+                    KeyboardButton(text="test3"),
+                ]
+            ]
+        )
+        with pytest.raises(ValueError):
+            builder.attach(InlineKeyboardBuilder(markup=[[InlineKeyboardButton(text="test2")]]))
+
+    def test_attach_not_builder(self):
+        builder = ReplyKeyboardBuilder(
+            markup=[
+                [
+                    KeyboardButton(text="test1"),
+                    KeyboardButton(text="test2"),
+                    KeyboardButton(text="test3"),
+                ]
+            ]
+        )
+        with pytest.raises(ValueError):
+            builder.attach(KeyboardButton(text="test2"))
