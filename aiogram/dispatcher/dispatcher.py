@@ -516,6 +516,9 @@ class Dispatcher(Router):
                 **self.workflow_data,
                 **kwargs,
             }
+            if "bot" in workflow_data:
+                workflow_data.pop("bot")
+
             await self.emit_startup(bot=bots[-1], **workflow_data)
             loggers.dispatcher.info("Start polling")
             try:

@@ -675,6 +675,7 @@ class TestDispatcher:
 
     async def test_start_polling(self, bot: MockedBot):
         dispatcher = Dispatcher()
+        dispatcher.workflow_data["bot"] = 42
         with pytest.raises(
             ValueError, match="At least one bot instance is required to start polling"
         ):
@@ -708,6 +709,8 @@ class TestDispatcher:
             mocked_emit_startup.assert_awaited()
             mocked_process_update.assert_awaited()
             mocked_emit_shutdown.assert_awaited()
+            assert dispatcher.workflow_data["bot"] == 42
+            assert mocked_emit_shutdown.call_args.kwargs["bot"] == bot
 
     async def test_stop_polling(self):
         dispatcher = Dispatcher()
