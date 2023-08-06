@@ -8,14 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-03-11 01:52+0200\n"
+"POT-Creation-Date: 2023-08-06 16:52+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.11.0\n"
+"Generated-By: Babel 2.12.1\n"
 
 #: ../../api/types/message.rst:3
 msgid "Message"
@@ -437,6 +437,7 @@ msgstr ""
 #: aiogram.types.message.Message.answer_video_note:4
 #: aiogram.types.message.Message.answer_voice:4
 #: aiogram.types.message.Message.delete:4
+#: aiogram.types.message.Message.delete_reply_markup:4
 #: aiogram.types.message.Message.edit_caption:4
 #: aiogram.types.message.Message.edit_live_location:4
 #: aiogram.types.message.Message.edit_media:4
@@ -554,6 +555,7 @@ msgstr ""
 #: aiogram.types.message.Message.answer_video_note
 #: aiogram.types.message.Message.answer_voice
 #: aiogram.types.message.Message.copy_to
+#: aiogram.types.message.Message.delete_reply_markup
 #: aiogram.types.message.Message.edit_caption
 #: aiogram.types.message.Message.edit_live_location
 #: aiogram.types.message.Message.edit_media
@@ -836,6 +838,7 @@ msgstr ""
 #: aiogram.types.message.Message.answer_video_note
 #: aiogram.types.message.Message.answer_voice
 #: aiogram.types.message.Message.copy_to aiogram.types.message.Message.delete
+#: aiogram.types.message.Message.delete_reply_markup
 #: aiogram.types.message.Message.edit_caption
 #: aiogram.types.message.Message.edit_live_location
 #: aiogram.types.message.Message.edit_media
@@ -1941,7 +1944,7 @@ msgid "instance of method :class:`aiogram.methods.send_voice.SendVoice`"
 msgstr ""
 
 #: aiogram.types.message.Message.send_copy:1 of
-msgid "Send copy of message."
+msgid "Send copy of a message."
 msgstr ""
 
 #: aiogram.types.message.Message.send_copy:3 of
@@ -1952,8 +1955,8 @@ msgstr ""
 
 #: aiogram.types.message.Message.send_copy:8 of
 msgid ""
-"This method don't use the API method named `copyMessage` and historically"
-" implemented before the similar method is added to API"
+"This method doesn't use the API method named `copyMessage` and "
+"historically implemented before the similar method is added to API"
 msgstr ""
 
 #: aiogram.types.message.Message.copy_to:1 of
@@ -1969,6 +1972,7 @@ msgstr ""
 
 #: aiogram.types.message.Message.copy_to:5
 #: aiogram.types.message.Message.delete:5
+#: aiogram.types.message.Message.delete_reply_markup:5
 #: aiogram.types.message.Message.edit_caption:5
 #: aiogram.types.message.Message.edit_live_location:5
 #: aiogram.types.message.Message.edit_media:5
@@ -2057,6 +2061,7 @@ msgstr ""
 msgid "New text of the message, 1-4096 characters after entities parsing"
 msgstr ""
 
+#: aiogram.types.message.Message.delete_reply_markup:12
 #: aiogram.types.message.Message.edit_caption:11
 #: aiogram.types.message.Message.edit_live_location:13
 #: aiogram.types.message.Message.edit_media:12
@@ -2149,6 +2154,7 @@ msgid ""
 ":class:`aiogram.methods.edit_message_media.EditMessageMedia`"
 msgstr ""
 
+#: aiogram.types.message.Message.delete_reply_markup:1
 #: aiogram.types.message.Message.edit_reply_markup:1 of
 msgid ""
 "Shortcut for method "
@@ -2156,6 +2162,7 @@ msgid ""
 " will automatically fill method attributes:"
 msgstr ""
 
+#: aiogram.types.message.Message.delete_reply_markup:8
 #: aiogram.types.message.Message.edit_reply_markup:7 of
 msgid ""
 "Use this method to edit only the reply markup of messages. On success, if"
@@ -2164,14 +2171,20 @@ msgid ""
 ":code:`True` is returned."
 msgstr ""
 
+#: aiogram.types.message.Message.delete_reply_markup:10
 #: aiogram.types.message.Message.edit_reply_markup:9 of
 msgid "Source: https://core.telegram.org/bots/api#editmessagereplymarkup"
 msgstr ""
 
+#: aiogram.types.message.Message.delete_reply_markup:13
 #: aiogram.types.message.Message.edit_reply_markup:13 of
 msgid ""
 "instance of method "
 ":class:`aiogram.methods.edit_message_reply_markup.EditMessageReplyMarkup`"
+msgstr ""
+
+#: aiogram.types.message.Message.delete_reply_markup:6 of
+msgid ":code:`reply_markup`"
 msgstr ""
 
 #: aiogram.types.message.Message.edit_live_location:1 of
@@ -2561,4 +2574,14 @@ msgstr ""
 #~ "upload a new one using multipart"
 #~ "/form-data. :ref:`More information on "
 #~ "Sending Files » <sending-files>`"
+#~ msgstr ""
+
+#~ msgid "Send copy of message."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "This method don't use the API "
+#~ "method named `copyMessage` and historically"
+#~ " implemented before the similar method "
+#~ "is added to API"
 #~ msgstr ""

@@ -2,6 +2,7 @@ import asyncio
 import logging
 
 from aiogram import Bot, Dispatcher, Router, types
+from aiogram.enums import ParseMode
 from aiogram.filters import Command
 from aiogram.types import Message
 
@@ -12,10 +13,10 @@ TOKEN = "42:TOKEN"
 router = Router()
 
 
-@router.message(Command(commands=["start"]))
+@router.message(Command("start"))
 async def command_start_handler(message: Message) -> None:
     """
-    This handler receive messages with `/start` command
+    This handler receives messages with `/start` command
     """
     # Most event objects have aliases for API methods that can be called in events' context
     # For example if you want to answer to incoming message you can use `message.answer(...)` alias
@@ -28,12 +29,12 @@ async def command_start_handler(message: Message) -> None:
 @router.message()
 async def echo_handler(message: types.Message) -> None:
     """
-    Handler will forward received message back to the sender
+    Handler will forward receive a message back to the sender
 
-    By default, message handler will handle all message types (like text, photo, sticker and etc.)
+    By default, message handler will handle all message types (like a text, photo, sticker etc.)
     """
     try:
-        # Send copy of the received message
+        # Send a copy of the received message
         await message.send_copy(chat_id=message.chat.id)
     except TypeError:
         # But not all the types is supported to be copied so need to handle it
@@ -47,7 +48,7 @@ async def main() -> None:
     dp.include_router(router)
 
     # Initialize Bot instance with a default parse mode which will be passed to all API calls
-    bot = Bot(TOKEN, parse_mode="HTML")
+    bot = Bot(TOKEN, parse_mode=ParseMode.HTML)
     # And the run events dispatching
     await dp.start_polling(bot)
 
