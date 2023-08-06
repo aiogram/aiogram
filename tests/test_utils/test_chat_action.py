@@ -54,7 +54,11 @@ class TestChatActionSender:
             ):
                 await asyncio.sleep(0.1)
                 assert mocked_send_chat_action.await_count > 1
-                mocked_send_chat_action.assert_awaited_with(action="typing", chat_id=42)
+                mocked_send_chat_action.assert_awaited_with(
+                    action="typing",
+                    chat_id=42,
+                    message_thread_id=None,
+                )
 
     async def test_contextmanager(self, bot: MockedBot):
         sender: ChatActionSender = ChatActionSender.typing(bot=bot, chat_id=42)
