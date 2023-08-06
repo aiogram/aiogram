@@ -16,6 +16,63 @@ Changelog
 
 .. towncrier release notes start
 
+3.0.0rc1 (2023-08-06)
+======================
+
+Features
+--------
+
+- Added Currency enum.
+  You can use it like this:
+
+  .. code-block:: python
+
+      from aiogram.enum import Currency
+
+      await bot.send_invoice(
+          ...,
+          currency=Currency.USD,
+          ...
+      )
+  `#1194 <https://github.com/aiogram/aiogram/issues/1194>`_
+- Updated keyboard builders with new methods for integrating buttons and keyboard creation more seamlessly.
+  Added functionality to create buttons from existing markup and attach another builder.
+  This improvement aims to make the keyboard building process more user-friendly and flexible.
+  `#1236 <https://github.com/aiogram/aiogram/issues/1236>`_
+- Added support for message_thread_id in ChatActionSender
+  `#1249 <https://github.com/aiogram/aiogram/issues/1249>`_
+
+
+Bugfixes
+--------
+
+- Fixed polling startup when "bot" key is passed manually into dispatcher workflow data
+  `#1242 <https://github.com/aiogram/aiogram/issues/1242>`_
+- Added codegen configuration for lost shortcuts:
+
+  - ShippingQuery.answer
+  - PreCheckoutQuery.answer
+  - Message.delete_reply_markup
+  `#1244 <https://github.com/aiogram/aiogram/issues/1244>`_
+
+
+Improved Documentation
+----------------------
+
+- Added documentation for webhook and polling modes.
+  `#1241 <https://github.com/aiogram/aiogram/issues/1241>`_
+
+
+Misc
+----
+
+- Reworked InputFile reading, removed :code:`__aiter__` method, added `bot: Bot` argument to
+  the :code:`.read(...)` method, so, from now URLInputFile can be used without specifying
+  bot instance.
+  `#1238 <https://github.com/aiogram/aiogram/issues/1238>`_
+- Code-generated :code:`__init__` typehints in types and methods to make IDE happy without additional pydantic plugin
+  `#1245 <https://github.com/aiogram/aiogram/issues/1245>`_
+
 
 3.0.0b9 (2023-07-30)
 =====================

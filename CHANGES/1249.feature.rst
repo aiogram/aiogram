@@ -1,1 +1,0 @@
-Added support for message_thread_id in ChatActionSender

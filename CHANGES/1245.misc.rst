@@ -1,1 +1,0 @@
-Code-generated :code:`__init__` typehints in types and methods to make IDE happy without additional pydantic plugin

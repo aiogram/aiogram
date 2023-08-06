@@ -1,1 +1,0 @@
-Fixed polling startup when "bot" key is passed manually into dispatcher workflow data

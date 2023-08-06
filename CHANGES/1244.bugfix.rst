@@ -1,5 +1,0 @@
-Added codegen configuration for lost shortcuts:
-
-- ShippingQuery.answer
-- PreCheckoutQuery.answer
-- Message.delete_reply_markup

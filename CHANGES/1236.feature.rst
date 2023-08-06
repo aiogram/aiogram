@@ -1,3 +1,0 @@
-Updated keyboard builders with new methods for integrating buttons and keyboard creation more seamlessly.
-Added functionality to create buttons from existing markup and attach another builder.
-This improvement aims to make the keyboard building process more user-friendly and flexible.
