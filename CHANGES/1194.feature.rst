@@ -3,9 +3,9 @@ You can use it like this:
 
 .. code-block:: python
 
-    from aiogram import Bot
     from aiogram.enum import Currency
-    await Bot.send_invoice(
+
+    await bot.send_invoice(
         ...,
         currency=Currency.USD,
         ...
