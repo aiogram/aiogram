@@ -1,0 +1,1 @@
+Added documentation for webhook and polling modes.
