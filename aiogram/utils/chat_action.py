@@ -33,6 +33,7 @@ class ChatActionSender:
         *,
         bot: Bot,
         chat_id: Union[str, int],
+        message_thread_id: Optional[int] = None,
         action: str = "typing",
         interval: float = DEFAULT_INTERVAL,
         initial_sleep: float = DEFAULT_INITIAL_SLEEP,
@@ -45,6 +46,7 @@ class ChatActionSender:
         :param initial_sleep: sleep before first iteration
         """
         self.chat_id = chat_id
+        self.message_thread_id = message_thread_id
         self.action = action
         self.interval = interval
         self.initial_sleep = initial_sleep
@@ -82,7 +84,11 @@ class ChatActionSender:
                     self.bot.id,
                     counter,
                 )
-                await self.bot.send_chat_action(chat_id=self.chat_id, action=self.action)
+                await self.bot.send_chat_action(
+                    chat_id=self.chat_id,
+                    action=self.action,
+                    message_thread_id=self.message_thread_id,
+                )
                 counter += 1
 
                 interval = self.interval - (time.monotonic() - start)
@@ -341,5 +347,10 @@ class ChatActionMiddleware(BaseMiddleware):
             kwargs["action"] = "typing"
         else:
             kwargs["action"] = chat_action
+        kwargs["message_thread_id"] = (
+            event.message_thread_id
+            if isinstance(event, Message) and event.is_topic_message
+            else None
+        )
         async with ChatActionSender(bot=bot, chat_id=event.chat.id, **kwargs):
             return await handler(event, data)
