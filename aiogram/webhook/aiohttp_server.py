@@ -18,11 +18,11 @@ from aiogram.webhook.security import IPFilter
 
 def setup_application(app: Application, dispatcher: Dispatcher, /, **kwargs: Any) -> None:
     """
-    This function helps to configure startup-shutdown process
+    This function helps to configure a startup-shutdown process
 
-    :param app:
-    :param dispatcher:
-    :param kwargs:
+    :param app: aiohttp application
+    :param dispatcher: aiogram dispatcher
+    :param kwargs: additional data
     :return:
     """
     workflow_data = {
@@ -81,11 +81,6 @@ def ip_filter_middleware(
 
 
 class BaseRequestHandler(ABC):
-    """
-    Base handler that helps to handle incoming request from aiohttp
-    and propagate it to the Dispatcher
-    """
-
     def __init__(
         self,
         dispatcher: Dispatcher,
@@ -93,9 +88,12 @@ class BaseRequestHandler(ABC):
         **data: Any,
     ) -> None:
         """
+        Base handler that helps to handle incoming request from aiohttp
+        and propagate it to the Dispatcher
+
         :param dispatcher: instance of :class:`aiogram.dispatcher.dispatcher.Dispatcher`
-        :param handle_in_background: immediately respond to the Telegram instead of
-            waiting end of handler process
+        :param handle_in_background: immediately responds to the Telegram instead of
+            a waiting end of a handler process
         """
         self.dispatcher = dispatcher
         self.handle_in_background = handle_in_background
@@ -199,10 +197,6 @@ class BaseRequestHandler(ABC):
 
 
 class SimpleRequestHandler(BaseRequestHandler):
-    """
-    Handler for single Bot instance
-    """
-
     def __init__(
         self,
         dispatcher: Dispatcher,
@@ -212,9 +206,11 @@ class SimpleRequestHandler(BaseRequestHandler):
         **data: Any,
     ) -> None:
         """
+        Handler for single Bot instance
+
         :param dispatcher: instance of :class:`aiogram.dispatcher.dispatcher.Dispatcher`
-        :param handle_in_background: immediately respond to the Telegram instead of
-            waiting end of handler process
+        :param handle_in_background: immediately responds to the Telegram instead of
+            a waiting end of handler process
         :param bot: instance of :class:`aiogram.client.bot.Bot`
         """
         super().__init__(dispatcher=dispatcher, handle_in_background=handle_in_background, **data)
@@ -237,11 +233,6 @@ class SimpleRequestHandler(BaseRequestHandler):
 
 
 class TokenBasedRequestHandler(BaseRequestHandler):
-    """
-    Handler that supports multiple bots, the context will be resolved
-    from path variable 'bot_token'
-    """
-
     def __init__(
         self,
         dispatcher: Dispatcher,
@@ -250,9 +241,17 @@ class TokenBasedRequestHandler(BaseRequestHandler):
         **data: Any,
     ) -> None:
         """
+        Handler that supports multiple bots the context will be resolved
+        from path variable 'bot_token'
+
+        .. note::
+
+            This handler is not recommended in due to token is available in URL
+            and can be logged by reverse proxy server or other middleware.
+
         :param dispatcher: instance of :class:`aiogram.dispatcher.dispatcher.Dispatcher`
-        :param handle_in_background: immediately respond to the Telegram instead of
-            waiting end of handler process
+        :param handle_in_background: immediately responds to the Telegram instead of
+            a waiting end of handler process
         :param bot_settings: kwargs that will be passed to new Bot instance
         """
         super().__init__(dispatcher=dispatcher, handle_in_background=handle_in_background, **data)
@@ -282,7 +281,7 @@ class TokenBasedRequestHandler(BaseRequestHandler):
 
     async def resolve_bot(self, request: web.Request) -> Bot:
         """
-        Get bot token from path and create or get from cache Bot instance
+        Get bot token from a path and create or get from cache Bot instance
 
         :param request:
         :return:

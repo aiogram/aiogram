@@ -19,10 +19,10 @@ logging.basicConfig(level=logging.INFO)
 router = Router()
 
 
-@router.message(Command(commands=["start"]))
+@router.message(Command("start"))
 async def command_start_handler(message: Message) -> None:
     """
-    This handler receive messages with `/start` command
+    This handler receives messages with `/start` command
     """
 
     await message.answer(
