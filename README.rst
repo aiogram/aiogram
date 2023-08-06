@@ -1,9 +1,6 @@
-####################
-aiogram |beta badge|
-####################
-
-.. danger::
-    This version is still in development!
+#######################
+aiogram |version badge|
+#######################
 
 .. image:: https://img.shields.io/pypi/l/aiogram.svg?style=flat-square
     :target: https://opensource.org/licenses/MIT
@@ -49,14 +46,6 @@ Documentation:
  - 🇺🇦 `Ukrainian <https://docs.aiogram.dev/uk_UA/dev-3.x/>`_
 
 
-.. danger::
-
-    **Breaking News:**
-
-    *aiogram* 3.0 has breaking changes.
-
-    It breaks backward compatibility by introducing new breaking changes!
-
 Features
 ========
 
@@ -91,5 +80,5 @@ Features
     - 🇧🇷 `@aiogram_br <https://t.me/aiogram_br>`_
 
 
-.. |beta badge| image:: https://img.shields.io/badge/-beta-orange
-  :alt: Beta badge
+.. |version badge| image:: https://img.shields.io/badge/-release%20candidate-yellow
+  :alt: Release Candidate badge
