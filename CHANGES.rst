@@ -27,7 +27,7 @@ Features
 
   .. code-block:: python
 
-      from aiogram.enum import Currency
+      from aiogram.enums import Currency
 
       await bot.send_invoice(
           ...,
