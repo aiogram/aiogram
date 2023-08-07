@@ -40,6 +40,7 @@ Dispatcher
   from now if you want to get current bot instance inside handlers or filters you should
   accept the argument :code:`bot: Bot` and use it instead of :code:`Bot.get_current()`
   Inside middlewares it can be accessed via :code:`data["bot"]`.
+- Now to skip pending updates, you should call the :class:`aiogram.methods.delete_webhook.DeleteWebhook` method directly instead of passing :code:`skip_updates=True` to start polling method.
 
 
 Filtering events
