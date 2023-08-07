@@ -29,6 +29,7 @@ body:
   - type: input
     attributes:
       label: Python version
+      description: (`python --version` inside your virtualenv)
       placeholder: e.g. 3.10.1
     validations:
       required: true
@@ -36,6 +37,7 @@ body:
   - type: input
     attributes:
       label: aiogram version
+      description: (`pip show aiogram` inside your virtualenv)
       placeholder: e.g. 2.21 or 3.0b3
     validations:
       required: true

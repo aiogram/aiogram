@@ -6,9 +6,10 @@ body:
   - type: dropdown
     attributes:
       label: aiogram version
+      description: (`pip show aiogram` inside your virtualenv)
       options:
-        - 2.x
         - 3.x
+        - 2.x
         - both
         - n/a
     validations:
