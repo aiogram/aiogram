@@ -496,7 +496,7 @@ class Message(TelegramObject):
             return ContentType.USER_SHARED
         if self.chat_shared:
             return ContentType.CHAT_SHARED
-        
+
         return ContentType.UNKNOWN
 
     def _unparse_entities(self, text_decoration: TextDecoration) -> str:
