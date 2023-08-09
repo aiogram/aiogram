@@ -1,0 +1,1 @@
+Fix missing message content types
