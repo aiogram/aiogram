@@ -6,6 +6,7 @@ from finite_state_machine import form_router
 
 from aiogram import Bot, Dispatcher, F, Router
 from aiogram.client.session.aiohttp import AiohttpSession
+from aiogram.enums import ParseMode
 from aiogram.exceptions import TelegramUnauthorizedError
 from aiogram.filters import Command, CommandObject
 from aiogram.fsm.storage.redis import DefaultKeyBuilder, RedisStorage
@@ -57,7 +58,7 @@ async def on_startup(dispatcher: Dispatcher, bot: Bot):
 
 def main():
     session = AiohttpSession()
-    bot_settings = {"session": session, "parse_mode": "HTML"}
+    bot_settings = {"session": session, "parse_mode": ParseMode.HTML}
     bot = Bot(token=MAIN_BOT_TOKEN, **bot_settings)
     storage = RedisStorage.from_url(REDIS_DSN, key_builder=DefaultKeyBuilder(with_bot_id=True))
 

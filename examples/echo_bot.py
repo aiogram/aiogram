@@ -1,10 +1,12 @@
 import asyncio
 import logging
+import sys
 
 from aiogram import Bot, Dispatcher, Router, types
 from aiogram.enums import ParseMode
-from aiogram.filters import Command
+from aiogram.filters import CommandStart
 from aiogram.types import Message
+from aiogram.utils.markdown import hbold
 
 # Bot token can be obtained via https://t.me/BotFather
 TOKEN = "42:TOKEN"
@@ -13,7 +15,7 @@ TOKEN = "42:TOKEN"
 router = Router()
 
 
-@router.message(Command("start"))
+@router.message(CommandStart())
 async def command_start_handler(message: Message) -> None:
     """
     This handler receives messages with `/start` command
@@ -23,7 +25,7 @@ async def command_start_handler(message: Message) -> None:
     # and the target chat will be passed to :ref:`aiogram.methods.send_message.SendMessage`
     # method automatically or call API method directly via
     # Bot instance: `bot.send_message(chat_id=message.chat.id, ...)`
-    await message.answer(f"Hello, <b>{message.from_user.full_name}!</b>")
+    await message.answer(f"Hello, {hbold(message.from_user.full_name)}!")
 
 
 @router.message()
@@ -54,5 +56,8 @@ async def main() -> None:
 
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO)
-    asyncio.run(main())
+    logging.basicConfig(level=logging.INFO, stream=sys.stdout)
+    try:
+        asyncio.run(main())
+    except (KeyboardInterrupt, SystemExit):
+        logging.info("Bot stopped!")

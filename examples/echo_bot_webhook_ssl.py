@@ -8,8 +8,9 @@ from aiohttp import web
 
 from aiogram import Bot, Dispatcher, Router, types
 from aiogram.enums import ParseMode
-from aiogram.filters import Command
+from aiogram.filters import CommandStart
 from aiogram.types import FSInputFile, Message
+from aiogram.utils.markdown import hbold
 from aiogram.webhook.aiohttp_server import SimpleRequestHandler, setup_application
 
 # Bot token can be obtained via https://t.me/BotFather
@@ -37,7 +38,7 @@ WEBHOOK_SSL_PRIV = "/path/to/private.key"
 router = Router()
 
 
-@router.message(Command("start"))
+@router.message(CommandStart())
 async def command_start_handler(message: Message) -> None:
     """
     This handler receives messages with `/start` command
@@ -47,7 +48,7 @@ async def command_start_handler(message: Message) -> None:
     # and the target chat will be passed to :ref:`aiogram.methods.send_message.SendMessage`
     # method automatically or call API method directly via
     # Bot instance: `bot.send_message(chat_id=message.chat.id, ...)`
-    await message.answer(f"Hello, <b>{message.from_user.full_name}!</b>")
+    await message.answer(f"Hello, {hbold(message.from_user.full_name)}!")
 
 
 @router.message()

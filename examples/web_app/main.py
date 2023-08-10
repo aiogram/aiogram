@@ -1,4 +1,5 @@
 import logging
+import sys
 from os import getenv
 
 from aiohttp.web import run_app
@@ -45,5 +46,5 @@ def main():
 
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO)
+    logging.basicConfig(level=logging.INFO, stream=sys.stdout)
     main()
