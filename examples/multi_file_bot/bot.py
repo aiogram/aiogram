@@ -16,7 +16,6 @@ async def main() -> None:
     dp.include_routers(
         handlers.start.start_router,
         handlers.echo.echo_router,
-
     )
 
     # Initialize Bot instance with a default parse mode which will be passed to all API calls

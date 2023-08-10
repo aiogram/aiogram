@@ -5,6 +5,7 @@ from aiogram.types import Message
 # For each module with handlers we can create a separate router.
 echo_router = Router()
 
+
 @echo_router.message()
 async def echo_handler(message: Message) -> None:
     """
