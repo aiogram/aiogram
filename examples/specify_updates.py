@@ -15,6 +15,9 @@ from aiogram.types import (
 from aiogram.utils.markdown import hbold, hcode
 
 TOKEN = "42:TOKEN"
+# However, is recommended to get the token from environment variable:
+# TOKEN = getenv("BOT_TOKEN")
+
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)

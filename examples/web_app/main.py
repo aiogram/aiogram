@@ -11,7 +11,10 @@ from aiogram import Bot, Dispatcher
 from aiogram.types import MenuButtonWebApp, WebAppInfo
 from aiogram.webhook.aiohttp_server import SimpleRequestHandler, setup_application
 
-TELEGRAM_TOKEN = getenv("TELEGRAM_TOKEN")
+TOKEN = "42:TOKEN"
+# However, is recommended to get the token from environment variable:
+# TOKEN = getenv("BOT_TOKEN")
+
 APP_BASE_URL = getenv("APP_BASE_URL")
 
 
@@ -23,7 +26,7 @@ async def on_startup(bot: Bot, base_url: str):
 
 
 def main():
-    bot = Bot(token=TELEGRAM_TOKEN, parse_mode="HTML")
+    bot = Bot(token=TOKEN, parse_mode="HTML")
     dispatcher = Dispatcher()
     dispatcher["base_url"] = APP_BASE_URL
     dispatcher.startup.register(on_startup)

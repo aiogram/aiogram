@@ -15,6 +15,9 @@ from aiogram.webhook.aiohttp_server import SimpleRequestHandler, setup_applicati
 
 # Bot token can be obtained via https://t.me/BotFather
 TOKEN = "42:TOKEN"
+# However, is recommended to get the token from environment variable:
+# TOKEN = getenv("BOT_TOKEN")
+
 
 # Webserver settings
 # bind localhost only to prevent any external access

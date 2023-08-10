@@ -10,6 +10,8 @@ from aiogram.utils.markdown import hbold
 
 # Bot token can be obtained via https://t.me/BotFather
 TOKEN = "42:TOKEN"
+# However, is recommended to get the token from environment variable:
+# TOKEN = getenv("BOT_TOKEN")
 
 # All handlers should be attached to the Router (or Dispatcher)
 router = Router()

@@ -21,7 +21,10 @@ from aiogram.webhook.aiohttp_server import (
 main_router = Router()
 
 BASE_URL = getenv("BASE_URL", "https://example.com")
-MAIN_BOT_TOKEN = getenv("TELEGRAM_TOKEN")
+MAIN_BOT_TOKEN = "42:TOKEN"
+# However, is recommended to get the token from environment variable:
+# MAIN_BOT_TOKEN = getenv("BOT_TOKEN")
+
 
 WEB_SERVER_HOST = "127.0.0.1"
 WEB_SERVER_PORT = 8080

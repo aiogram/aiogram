@@ -16,6 +16,11 @@ from aiogram.types import (
     ReplyKeyboardRemove,
 )
 
+TOKEN = "42:TOKEN"
+# However, is recommended to get the token from environment variable:
+# TOKEN = getenv("BOT_TOKEN")
+
+
 form_router = Router()
 
 
@@ -122,7 +127,7 @@ async def show_summary(message: Message, data: Dict[str, Any], positive: bool = 
 
 
 async def main():
-    bot = Bot(token=getenv("TELEGRAM_TOKEN"), parse_mode=ParseMode.HTML)
+    bot = Bot(token=TOKEN, parse_mode=ParseMode.HTML)
     dp = Dispatcher()
     dp.include_router(form_router)
 
