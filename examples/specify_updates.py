@@ -17,7 +17,6 @@ from aiogram.utils.markdown import hbold, hcode
 
 TOKEN = getenv("BOT_TOKEN")
 
-
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 

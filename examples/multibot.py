@@ -23,7 +23,6 @@ main_router = Router()
 BASE_URL = getenv("BASE_URL", "https://example.com")
 MAIN_BOT_TOKEN = getenv("BOT_TOKEN")
 
-
 WEB_SERVER_HOST = "127.0.0.1"
 WEB_SERVER_PORT = 8080
 MAIN_BOT_PATH = "/webhook/main"
