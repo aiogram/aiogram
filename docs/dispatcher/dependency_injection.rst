@@ -1,12 +1,12 @@
-######
+####################
 Dependency injection
-######
+####################
 
 Dependency injection is a programming technique that makes a class independent of its dependencies. It achieves that by decoupling the usage of an object from its creation. This helps you to follow `SOLID's <https://en.wikipedia.org/wiki/SOLID>`_ dependency inversion and single responsibility principles.
 
 
 How it works in aiogram
-======
+=======================
 For each update :class:`Dispatcher` passes handling context data. Filters and middleware can also make changes to the context.
 
 To access contextual data you should specify corresponding keyword parameter in handler or filter. For example, to get :class:`FSMContext` we do it like that:
@@ -20,7 +20,7 @@ To access contextual data you should specify corresponding keyword parameter in 
 
 
 Injecting own dependencies
-======
+==========================
 
 Aiogram provides several ways to complement / modify contextual data.
 

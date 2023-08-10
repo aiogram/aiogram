@@ -16,17 +16,17 @@ class HelloFilter(Filter):
         self,
         message: Message,
         event_from_user: User
-        # as I said previously, filters also can accept keyword parameters like in handlers
+        # Filters also can accept keyword parameters like in handlers
     ) -> Union[bool, Dict[str, Any]]:
         if message.text.casefold() == "hello":
-            # returning a dictionary that will update the context data
+            # Returning a dictionary that will update the context data
             return {"name": event_from_user.mention_html(name=self.name)}
         return False
 
 
-@router.message(HelloFilter(name=None))
+@router.message(HelloFilter())
 async def my_handler(
-    message: Message, name: str  # and now we can accept "name" as named parameter
+    message: Message, name: str  # Now we can accept "name" as named parameter
 ) -> Any:
     return message.answer(
         "Hello, {name}!".format(name=name)
