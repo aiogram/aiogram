@@ -2,17 +2,20 @@
 This example shows how to use webhook on behind of any reverse proxy (nginx, traefik, ingress etc.)
 """
 import logging
+import sys
+from os import getenv
 
 from aiohttp import web
 
 from aiogram import Bot, Dispatcher, Router, types
 from aiogram.enums import ParseMode
-from aiogram.filters import Command
+from aiogram.filters import CommandStart
 from aiogram.types import Message
+from aiogram.utils.markdown import hbold
 from aiogram.webhook.aiohttp_server import SimpleRequestHandler, setup_application
 
 # Bot token can be obtained via https://t.me/BotFather
-TOKEN = "42:TOKEN"
+TOKEN = getenv("BOT_TOKEN")
 
 # Webserver settings
 # bind localhost only to prevent any external access
@@ -32,7 +35,7 @@ BASE_WEBHOOK_URL = "https://aiogram.dev/"
 router = Router()
 
 
-@router.message(Command(commands=["start"]))
+@router.message(CommandStart())
 async def command_start_handler(message: Message) -> None:
     """
     This handler receives messages with `/start` command
@@ -42,7 +45,7 @@ async def command_start_handler(message: Message) -> None:
     # and the target chat will be passed to :ref:`aiogram.methods.send_message.SendMessage`
     # method automatically or call API method directly via
     # Bot instance: `bot.send_message(chat_id=message.chat.id, ...)`
-    await message.answer(f"Hello, <b>{message.from_user.full_name}!</b>")
+    await message.answer(f"Hello, {hbold(message.from_user.full_name)}!")
 
 
 @router.message()
@@ -63,7 +66,7 @@ async def echo_handler(message: types.Message) -> None:
 async def on_startup(bot: Bot) -> None:
     # If you have a self-signed SSL certificate, then you will need to send a public
     # certificate to Telegram
-    await bot.set_webhook(f"{BASE_WEBHOOK_URL}{WEBHOOK_PATH}")
+    await bot.set_webhook(f"{BASE_WEBHOOK_URL}{WEBHOOK_PATH}", secret_token=WEBHOOK_SECRET)
 
 
 def main() -> None:
@@ -100,5 +103,5 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO)
+    logging.basicConfig(level=logging.INFO, stream=sys.stdout)
     main()
