@@ -1,14 +1,16 @@
+import logging
+import sys
 from os import getenv
 from typing import Any, Dict, Union
 
 from aiohttp import web
-from finite_state_machine import form_router
 
 from aiogram import Bot, Dispatcher, F, Router
 from aiogram.client.session.aiohttp import AiohttpSession
+from aiogram.enums import ParseMode
 from aiogram.exceptions import TelegramUnauthorizedError
 from aiogram.filters import Command, CommandObject
-from aiogram.fsm.storage.redis import DefaultKeyBuilder, RedisStorage
+from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.types import Message
 from aiogram.utils.token import TokenValidationError, validate_token
 from aiogram.webhook.aiohttp_server import (
@@ -16,11 +18,12 @@ from aiogram.webhook.aiohttp_server import (
     TokenBasedRequestHandler,
     setup_application,
 )
+from finite_state_machine import form_router
 
 main_router = Router()
 
 BASE_URL = getenv("BASE_URL", "https://example.com")
-MAIN_BOT_TOKEN = getenv("TELEGRAM_TOKEN")
+MAIN_BOT_TOKEN = getenv("BOT_TOKEN")
 
 WEB_SERVER_HOST = "127.0.0.1"
 WEB_SERVER_PORT = 8080
@@ -56,10 +59,13 @@ async def on_startup(dispatcher: Dispatcher, bot: Bot):
 
 
 def main():
+    logging.basicConfig(level=logging.INFO, stream=sys.stdout)
     session = AiohttpSession()
-    bot_settings = {"session": session, "parse_mode": "HTML"}
+    bot_settings = {"session": session, "parse_mode": ParseMode.HTML}
     bot = Bot(token=MAIN_BOT_TOKEN, **bot_settings)
-    storage = RedisStorage.from_url(REDIS_DSN, key_builder=DefaultKeyBuilder(with_bot_id=True))
+    storage = MemoryStorage()
+    # In order to use RedisStorage you need to use Key Builder with bot ID:
+    # storage = RedisStorage.from_url(REDIS_DSN, key_builder=DefaultKeyBuilder(with_bot_id=True))
 
     main_dispatcher = Dispatcher(storage=storage)
     main_dispatcher.include_router(main_router)

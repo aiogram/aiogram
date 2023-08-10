@@ -5,7 +5,8 @@ from os import getenv
 from typing import Any, Dict
 
 from aiogram import Bot, Dispatcher, F, Router, html
-from aiogram.filters import Command
+from aiogram.enums import ParseMode
+from aiogram.filters import Command, CommandStart
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.types import (
@@ -14,6 +15,8 @@ from aiogram.types import (
     ReplyKeyboardMarkup,
     ReplyKeyboardRemove,
 )
+
+TOKEN = getenv("BOT_TOKEN")
 
 form_router = Router()
 
@@ -24,7 +27,7 @@ class Form(StatesGroup):
     language = State()
 
 
-@form_router.message(Command("start"))
+@form_router.message(CommandStart())
 async def command_start(message: Message, state: FSMContext) -> None:
     await state.set_state(Form.name)
     await message.answer(
@@ -91,7 +94,7 @@ async def process_like_write_bots(message: Message, state: FSMContext) -> None:
 
 
 @form_router.message(Form.like_bots)
-async def process_unknown_write_bots(message: Message, state: FSMContext) -> None:
+async def process_unknown_write_bots(message: Message) -> None:
     await message.reply("I don't understand you :(")
 
 
@@ -99,12 +102,12 @@ async def process_unknown_write_bots(message: Message, state: FSMContext) -> Non
 async def process_language(message: Message, state: FSMContext) -> None:
     data = await state.update_data(language=message.text)
     await state.clear()
-    text = (
-        "Thank for all! Python is in my hearth!\nSee you soon."
-        if message.text.casefold() == "python"
-        else "Thank for information!\nSee you soon."
-    )
-    await message.answer(text)
+
+    if message.text.casefold() == "python":
+        await message.reply(
+            "Python, you say? That's the language that makes my circuits light up! 😉"
+        )
+
     await show_summary(message=message, data=data)
 
 
@@ -121,7 +124,7 @@ async def show_summary(message: Message, data: Dict[str, Any], positive: bool = 
 
 
 async def main():
-    bot = Bot(token=getenv("TELEGRAM_TOKEN"), parse_mode="HTML")
+    bot = Bot(token=TOKEN, parse_mode=ParseMode.HTML)
     dp = Dispatcher()
     dp.include_router(form_router)
 
@@ -130,4 +133,7 @@ async def main():
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, stream=sys.stdout)
-    asyncio.run(main())
+    try:
+        asyncio.run(main())
+    except (KeyboardInterrupt, SystemExit):
+        logging.info("Bot stopped!")
