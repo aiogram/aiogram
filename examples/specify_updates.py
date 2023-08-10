@@ -1,6 +1,7 @@
 import asyncio
 import logging
 import sys
+from os import getenv
 
 from aiogram import Bot, Dispatcher, Router
 from aiogram.enums import ParseMode
@@ -14,9 +15,7 @@ from aiogram.types import (
 )
 from aiogram.utils.markdown import hbold, hcode
 
-TOKEN = "42:TOKEN"
-# However, is recommended to get the token from environment variable:
-# TOKEN = getenv("BOT_TOKEN")
+TOKEN = getenv("BOT_TOKEN")
 
 
 logger = logging.getLogger(__name__)

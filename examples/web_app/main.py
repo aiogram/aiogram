@@ -11,9 +11,7 @@ from aiogram import Bot, Dispatcher
 from aiogram.types import MenuButtonWebApp, WebAppInfo
 from aiogram.webhook.aiohttp_server import SimpleRequestHandler, setup_application
 
-TOKEN = "42:TOKEN"
-# However, is recommended to get the token from environment variable:
-# TOKEN = getenv("BOT_TOKEN")
+TOKEN = getenv("BOT_TOKEN")
 
 APP_BASE_URL = getenv("APP_BASE_URL")
 

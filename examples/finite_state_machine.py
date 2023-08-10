@@ -16,9 +16,7 @@ from aiogram.types import (
     ReplyKeyboardRemove,
 )
 
-TOKEN = "42:TOKEN"
-# However, is recommended to get the token from environment variable:
-# TOKEN = getenv("BOT_TOKEN")
+TOKEN = getenv("BOT_TOKEN")
 
 
 form_router = Router()

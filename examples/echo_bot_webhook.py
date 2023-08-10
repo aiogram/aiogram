@@ -3,6 +3,7 @@ This example shows how to use webhook on behind of any reverse proxy (nginx, tra
 """
 import logging
 import sys
+from os import getenv
 
 from aiohttp import web
 
@@ -14,9 +15,7 @@ from aiogram.utils.markdown import hbold
 from aiogram.webhook.aiohttp_server import SimpleRequestHandler, setup_application
 
 # Bot token can be obtained via https://t.me/BotFather
-TOKEN = "42:TOKEN"
-# However, is recommended to get the token from environment variable:
-# TOKEN = getenv("BOT_TOKEN")
+TOKEN = getenv("BOT_TOKEN")
 
 
 # Webserver settings
