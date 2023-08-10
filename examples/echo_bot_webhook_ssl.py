@@ -3,6 +3,7 @@ This example shows how to use webhook with SSL certificate.
 """
 import logging
 import ssl
+import sys
 from os import getenv
 
 from aiohttp import web
@@ -75,6 +76,7 @@ async def on_startup(bot: Bot) -> None:
     await bot.set_webhook(
         f"{BASE_WEBHOOK_URL}{WEBHOOK_PATH}",
         certificate=FSInputFile(WEBHOOK_SSL_CERT),
+        secret_token=WEBHOOK_SECRET,
     )
 
 
@@ -116,5 +118,5 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO)
+    logging.basicConfig(level=logging.INFO, stream=sys.stdout)
     main()
