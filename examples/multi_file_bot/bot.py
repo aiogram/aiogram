@@ -1,21 +1,24 @@
 import asyncio
 import logging
+from os import getenv
+
+from handlers.echo import echo_router
+from handlers.start import start_router
 
 from aiogram import Bot, Dispatcher
 from aiogram.enums import ParseMode
-from examples.multi_file_bot import handlers
 
 # Bot token can be obtained via https://t.me/BotFather
-TOKEN = "42:TOKEN"
+TOKEN = getenv("BOT_TOKEN")
 
 
 async def main() -> None:
     # Dispatcher is a root router
     dp = Dispatcher()
-    # Register all the routers from handlers package (make sure they are imported into handlers/__init__.py)
+    # Register all the routers from handlers package
     dp.include_routers(
-        handlers.start.start_router,
-        handlers.echo.echo_router,
+        start_router,
+        echo_router,
     )
 
     # Initialize Bot instance with a default parse mode which will be passed to all API calls
