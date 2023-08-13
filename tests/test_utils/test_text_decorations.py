@@ -113,6 +113,14 @@ class TestTextDecoration:
     ):
         assert decorator.apply_entity(entity, "test") == result
 
+    def test_unknown_apply_entity(self):
+        assert (
+            html_decoration.apply_entity(
+                MessageEntity(type="unknown", offset=0, length=5), "<test>"
+            )
+            == "&lt;test&gt;"
+        )
+
     @pytest.mark.parametrize(
         "decorator,before,after",
         [
