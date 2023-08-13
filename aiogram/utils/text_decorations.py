@@ -43,8 +43,11 @@ class TextDecoration(ABC):
             MessageEntityType.URL,
             MessageEntityType.MENTION,
             MessageEntityType.PHONE_NUMBER,
+            MessageEntityType.HASHTAG,
+            MessageEntityType.CASHTAG,
+            MessageEntityType.EMAIL,
         }:
-            # This entities should not be changed
+            # These entities should not be changed
             return text
         if entity.type in {
             MessageEntityType.BOLD,
@@ -71,6 +74,8 @@ class TextDecoration(ABC):
         if entity.type == MessageEntityType.CUSTOM_EMOJI:
             return self.custom_emoji(value=text, custom_emoji_id=cast(str, entity.custom_emoji_id))
 
+        # This case is not possible because of `if` above, but if any new entity is added to
+        # API it will be here too
         return self.quote(text)
 
     def unparse(self, text: str, entities: Optional[List[MessageEntity]] = None) -> str:
