@@ -34,3 +34,4 @@ So, you can use both of them with *aiogram*.
     errors
     long_polling
     webhook
+    dependency_injection
