@@ -1,0 +1,1 @@
+Supplemented "Finite State Machine" section in Migration FAQ

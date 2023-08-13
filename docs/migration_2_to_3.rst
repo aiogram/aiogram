@@ -112,6 +112,13 @@ Finite State machine
 - State filter will no more added to all handlers, you will need to specify state if you want
 - Added possibility to change FSM strategy, for example if you want to control state
   for each user in chat topics instead of user in chat you can specify it in the Dispatcher.
+- Now :class:`aiogram.fsm.state.State` and :class:`aiogram.fsm.state.StateGroup` don't have helper
+  methods like :code:`.set()`, :code:`.next()`, etc.
+
+  Instead of this you should set states by passing them directly to
+  :class:`aiogram.fsm.context.FSMContext` (:ref:`Read more » <Finite State Machine>`)
+- State proxy is deprecated, you should update the state data by calling
+  :code:`state.set_data(...)` and :code:`state.get_data()` respectively.
 
 
 Sending Files
