@@ -1,1 +1,0 @@
-Refactored examples code to use aiogram enumerations and enhanced chat messages with markdown beautifications for a more user-friendly display.
