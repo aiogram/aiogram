@@ -243,6 +243,33 @@ class TestTextDecoration:
                 [MessageEntity(type="bold", offset=0, length=8, url=None, user=None)],
                 "<b>👋🏾 Hi!</b>",
             ],
+            [
+                html_decoration,
+                "#test",
+                [
+                    MessageEntity(type="hashtag", offset=0, length=5),
+                    MessageEntity(type="bold", offset=0, length=5),
+                ],
+                "<b>#test</b>",
+            ],
+            [
+                html_decoration,
+                "$TEST",
+                [
+                    MessageEntity(type="cashtag", offset=0, length=5),
+                    MessageEntity(type="bold", offset=0, length=5),
+                ],
+                "<b>$TEST</b>",
+            ],
+            [
+                html_decoration,
+                "test@example.com",
+                [
+                    MessageEntity(type="email", offset=0, length=16),
+                    MessageEntity(type="bold", offset=0, length=16),
+                ],
+                "<b>test@example.com</b>",
+            ],
         ],
     )
     def test_unparse(

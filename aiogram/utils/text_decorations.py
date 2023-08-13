@@ -43,8 +43,11 @@ class TextDecoration(ABC):
             MessageEntityType.URL,
             MessageEntityType.MENTION,
             MessageEntityType.PHONE_NUMBER,
+            MessageEntityType.HASHTAG,
+            MessageEntityType.CASHTAG,
+            MessageEntityType.EMAIL,
         }:
-            # This entities should not be changed
+            # These entities should not be changed
             return text
         if entity.type in {
             MessageEntityType.BOLD,
