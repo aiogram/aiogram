@@ -492,6 +492,10 @@ class Message(TelegramObject):
             return ContentType.VIDEO_CHAT_PARTICIPANTS_INVITED
         if self.web_app_data:
             return ContentType.WEB_APP_DATA
+        if self.user_shared:
+            return ContentType.USER_SHARED
+        if self.chat_shared:
+            return ContentType.CHAT_SHARED
 
         return ContentType.UNKNOWN
 

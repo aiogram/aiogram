@@ -38,6 +38,7 @@ from aiogram.types import (
     Animation,
     Audio,
     Chat,
+    ChatShared,
     Contact,
     Dice,
     Document,
@@ -62,6 +63,7 @@ from aiogram.types import (
     Sticker,
     SuccessfulPayment,
     User,
+    UserShared,
     Venue,
     Video,
     VideoChatEnded,
@@ -439,6 +441,20 @@ TEST_FORUM_TOPIC_REOPENED = Message(
     from_user=User(id=42, is_bot=False, first_name="Test"),
     forum_topic_reopened=ForumTopicReopened(),
 )
+TEST_USER_SHARED = Message(
+    message_id=42,
+    date=datetime.datetime.now(),
+    chat=Chat(id=42, type="private"),
+    from_user=User(id=42, is_bot=False, first_name="Test"),
+    user_shared=UserShared(request_id=42, user_id=42),
+)
+TEST_CHAT_SHARED = Message(
+    message_id=42,
+    date=datetime.datetime.now(),
+    chat=Chat(id=42, type="private"),
+    from_user=User(id=42, is_bot=False, first_name="Test"),
+    chat_shared=ChatShared(request_id=42, chat_id=42),
+)
 TEST_MESSAGE_UNKNOWN = Message(
     message_id=42,
     date=datetime.datetime.now(),
@@ -498,6 +514,8 @@ class TestMessage:
             [TEST_FORUM_TOPIC_EDITED, ContentType.FORUM_TOPIC_EDITED],
             [TEST_FORUM_TOPIC_CLOSED, ContentType.FORUM_TOPIC_CLOSED],
             [TEST_FORUM_TOPIC_REOPENED, ContentType.FORUM_TOPIC_REOPENED],
+            [TEST_USER_SHARED, ContentType.USER_SHARED],
+            [TEST_CHAT_SHARED, ContentType.CHAT_SHARED],
             [TEST_MESSAGE_UNKNOWN, ContentType.UNKNOWN],
         ],
     )
@@ -642,6 +660,8 @@ class TestMessage:
             [TEST_MESSAGE_VIDEO_CHAT_ENDED, None],
             [TEST_MESSAGE_VIDEO_CHAT_PARTICIPANTS_INVITED, None],
             [TEST_MESSAGE_DICE, SendDice],
+            [TEST_USER_SHARED, None],
+            [TEST_CHAT_SHARED, None],
             [TEST_MESSAGE_UNKNOWN, None],
         ],
     )
