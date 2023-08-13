@@ -72,8 +72,8 @@ deep_dark_router = Router()
 async def my_chat_member_change(chat_member: ChatMemberUpdated, bot: Bot) -> None:
     await bot.send_message(
         chat_member.chat.id,
-        "This Bot`s status was changed from "
-        + f"{hbold(chat_member.old_chat_member.status)} to {hbold(chat_member.new_chat_member.status)}",
+        f"This Bot`s status was changed from {hbold(chat_member.old_chat_member.status)} "
+        f"to {hbold(chat_member.new_chat_member.status)}",
     )
 
 
