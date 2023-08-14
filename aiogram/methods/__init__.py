@@ -110,6 +110,7 @@ from .unban_chat_sender_chat import UnbanChatSenderChat
 from .unhide_general_forum_topic import UnhideGeneralForumTopic
 from .unpin_all_chat_messages import UnpinAllChatMessages
 from .unpin_all_forum_topic_messages import UnpinAllForumTopicMessages
+from .unpin_all_general_forum_topic_messages import UnpinAllGeneralForumTopicMessages
 from .unpin_chat_message import UnpinChatMessage
 from .upload_sticker_file import UploadStickerFile
 
@@ -228,6 +229,7 @@ __all__ = (
     "UnhideGeneralForumTopic",
     "UnpinAllChatMessages",
     "UnpinAllForumTopicMessages",
+    "UnpinAllGeneralForumTopicMessages",
     "UnpinChatMessage",
     "UploadStickerFile",
 )

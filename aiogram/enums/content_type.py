@@ -55,3 +55,4 @@ class ContentType(str, Enum):
     VIDEO_CHAT_ENDED = "video_chat_ended"
     VIDEO_CHAT_PARTICIPANTS_INVITED = "video_chat_participants_invited"
     WEB_APP_DATA = "web_app_data"
+    STORY = "story"

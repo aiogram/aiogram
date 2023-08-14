@@ -73,6 +73,7 @@ from aiogram.types import (
     VideoNote,
     Voice,
     WebAppData,
+    Story,
 )
 from aiogram.types.message import ContentType, Message
 
@@ -455,6 +456,15 @@ TEST_CHAT_SHARED = Message(
     from_user=User(id=42, is_bot=False, first_name="Test"),
     chat_shared=ChatShared(request_id=42, chat_id=42),
 )
+TEST_MESSAGE_STORY = Message(
+    message_id=42,
+    date=datetime.datetime.now(),
+    chat=Chat(id=42, type="private"),
+    from_user=User(id=42, is_bot=False, first_name="Test"),
+    story=Story(),
+    forward_signature="Test",
+    forward_date=datetime.datetime.now(),
+)
 TEST_MESSAGE_UNKNOWN = Message(
     message_id=42,
     date=datetime.datetime.now(),
@@ -516,6 +526,7 @@ class TestMessage:
             [TEST_FORUM_TOPIC_REOPENED, ContentType.FORUM_TOPIC_REOPENED],
             [TEST_USER_SHARED, ContentType.USER_SHARED],
             [TEST_CHAT_SHARED, ContentType.CHAT_SHARED],
+            [TEST_MESSAGE_STORY, ContentType.STORY],
             [TEST_MESSAGE_UNKNOWN, ContentType.UNKNOWN],
         ],
     )

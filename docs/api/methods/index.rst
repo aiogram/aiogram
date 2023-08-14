@@ -165,6 +165,14 @@ Updating messages
     stop_message_live_location
     stop_poll
 
+Upcoming update
+===============
+
+.. toctree::
+    :maxdepth: 1
+
+    unpin_all_general_forum_topic_messages
+
 Inline mode
 ===========
 

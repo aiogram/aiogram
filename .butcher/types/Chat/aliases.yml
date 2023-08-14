@@ -106,3 +106,7 @@ delete_photo:
 set_photo:
   method: setChatPhoto
   fill: *self
+
+unpin_all_general_forum_topic_messages:
+  method: unpinAllGeneralForumTopicMessages
+  fill: *self

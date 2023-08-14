@@ -34,6 +34,7 @@ if TYPE_CHECKING:
         UnbanChatSenderChat,
         UnpinAllChatMessages,
         UnpinChatMessage,
+        UnpinAllGeneralForumTopicMessages,
     )
     from .chat_location import ChatLocation
     from .chat_permissions import ChatPermissions
@@ -105,6 +106,8 @@ class Chat(TelegramObject):
     """*Optional*. Unique identifier for the linked chat, i.e. the discussion group identifier for a channel and vice versa; for supergroups and channel chats. This identifier may be greater than 32 bits and some programming languages may have difficulty/silent defects in interpreting it. But it is smaller than 52 bits, so a signed 64 bit integer or double-precision float type are safe for storing this identifier. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
     location: Optional[ChatLocation] = None
     """*Optional*. For supergroups, the location to which the supergroup is connected. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
+    emoji_status_expiration_date: Optional[int] = None
+    """*Optional*. Expiration date of the emoji status of the other party in a private chat, if any. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!
@@ -141,6 +144,7 @@ class Chat(TelegramObject):
             can_set_sticker_set: Optional[bool] = None,
             linked_chat_id: Optional[int] = None,
             location: Optional[ChatLocation] = None,
+            emoji_status_expiration_date: Optional[int] = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!
@@ -176,6 +180,7 @@ class Chat(TelegramObject):
                 can_set_sticker_set=can_set_sticker_set,
                 linked_chat_id=linked_chat_id,
                 location=location,
+                emoji_status_expiration_date=emoji_status_expiration_date,
                 **__pydantic_kwargs,
             )
 
@@ -1080,5 +1085,31 @@ class Chat(TelegramObject):
         return SetChatPhoto(
             chat_id=self.id,
             photo=photo,
+            **kwargs,
+        ).as_(self._bot)
+
+    def unpin_all_general_forum_topic_messages(
+        self,
+        **kwargs: Any,
+    ) -> UnpinAllGeneralForumTopicMessages:
+        """
+        Shortcut for method :class:`aiogram.methods.unpin_all_general_forum_topic_messages.UnpinAllGeneralForumTopicMessages`
+        will automatically fill method attributes:
+
+        - :code:`chat_id`
+
+        Use this method to clear the list of pinned messages in a General forum topic. The bot must be an administrator in the chat for this to work and must have the *can_pin_messages* administrator right in the supergroup. Returns :code:`True` on success.
+
+        Source: https://core.telegram.org/bots/api#unpinallgeneralforumtopicmessages
+
+        :return: instance of method :class:`aiogram.methods.unpin_all_general_forum_topic_messages.UnpinAllGeneralForumTopicMessages`
+        """
+        # DO NOT EDIT MANUALLY!!!
+        # This method was auto-generated via `butcher`
+
+        from aiogram.methods import UnpinAllGeneralForumTopicMessages
+
+        return UnpinAllGeneralForumTopicMessages(
+            chat_id=self.id,
             **kwargs,
         ).as_(self._bot)

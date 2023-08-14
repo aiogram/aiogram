@@ -204,3 +204,11 @@ Games
     callback_game
     game
     game_high_score
+
+Upcoming update
+===============
+
+.. toctree::
+    :maxdepth: 1
+
+    story

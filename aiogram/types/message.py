@@ -84,6 +84,7 @@ if TYPE_CHECKING:
     from .reply_keyboard_markup import ReplyKeyboardMarkup
     from .reply_keyboard_remove import ReplyKeyboardRemove
     from .sticker import Sticker
+    from .story import Story
     from .successful_payment import SuccessfulPayment
     from .user import User
     from .user_shared import UserShared
@@ -128,7 +129,7 @@ class Message(TelegramObject):
     """*Optional*. For forwarded messages that were originally sent in channels or by an anonymous chat administrator, signature of the message sender if present"""
     forward_sender_name: Optional[str] = None
     """*Optional*. Sender's name for messages forwarded from users who disallow adding a link to their account in forwarded messages"""
-    forward_date: Optional[int] = None
+    forward_date: Optional[datetime.datetime] = None
     """*Optional*. For forwarded messages, date the original message was sent in Unix time"""
     is_topic_message: Optional[bool] = None
     """*Optional*. :code:`True`, if the message is sent to a forum topic"""
@@ -248,6 +249,8 @@ class Message(TelegramObject):
     """*Optional*. Service message: data sent by a Web App"""
     reply_markup: Optional[InlineKeyboardMarkup] = None
     """*Optional*. Inline keyboard attached to the message. :code:`login_url` buttons are represented as ordinary :code:`url` buttons."""
+    story: Optional[Story] = None
+    """*Optional*. Message is a forwarded story"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!
@@ -267,7 +270,7 @@ class Message(TelegramObject):
             forward_from_message_id: Optional[int] = None,
             forward_signature: Optional[str] = None,
             forward_sender_name: Optional[str] = None,
-            forward_date: Optional[int] = None,
+            forward_date: Optional[datetime.datetime] = None,
             is_topic_message: Optional[bool] = None,
             is_automatic_forward: Optional[bool] = None,
             reply_to_message: Optional[Message] = None,
@@ -327,6 +330,7 @@ class Message(TelegramObject):
             video_chat_participants_invited: Optional[VideoChatParticipantsInvited] = None,
             web_app_data: Optional[WebAppData] = None,
             reply_markup: Optional[InlineKeyboardMarkup] = None,
+            story: Optional[Story] = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!
@@ -405,6 +409,7 @@ class Message(TelegramObject):
                 video_chat_participants_invited=video_chat_participants_invited,
                 web_app_data=web_app_data,
                 reply_markup=reply_markup,
+                story=story,
                 **__pydantic_kwargs,
             )
 
@@ -496,6 +501,8 @@ class Message(TelegramObject):
             return ContentType.USER_SHARED
         if self.chat_shared:
             return ContentType.CHAT_SHARED
+        if self.story:
+            return ContentType.STORY
 
         return ContentType.UNKNOWN
 
