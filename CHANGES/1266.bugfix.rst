@@ -1,0 +1,2 @@
+Moved global filters check placement into router to add chance to pass context from global filters
+into handlers in the same way as it possible in other places

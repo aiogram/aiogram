@@ -101,17 +101,14 @@ class TelegramEventObserver:
         )
         return wrapped_outer(event, data)
 
+    def check_root_filters(self, event: TelegramObject, **kwargs: Any) -> Any:
+        return self._handler.check(event, **kwargs)
+
     async def trigger(self, event: TelegramObject, **kwargs: Any) -> Any:
         """
         Propagate event to handlers and stops propagation on first match.
-        Handler will be called when all its filters is pass.
+        Handler will be called when all its filters are pass.
         """
-        # Check globally defined filters before any other handler will be checked
-        result, data = await self._handler.check(event, **kwargs)
-        if not result:
-            return REJECTED
-        kwargs.update(data)
-
         for handler in self.handlers:
             result, data = await handler.check(event, **kwargs)
             if result:

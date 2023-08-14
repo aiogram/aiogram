@@ -4,7 +4,6 @@ from aiogram import Router
 from aiogram.filters import Filter
 from aiogram.types import Message, User
 
-
 router = Router(name=__name__)
 
 
@@ -28,6 +27,4 @@ class HelloFilter(Filter):
 async def my_handler(
     message: Message, name: str  # Now we can accept "name" as named parameter
 ) -> Any:
-    return message.answer(
-        "Hello, {name}!".format(name=name)
-    )
+    return message.answer("Hello, {name}!".format(name=name))

@@ -125,8 +125,17 @@ class Router:
     ) -> Any:
         response = UNHANDLED
         if observer:
+            # Check globally defined filters before any other handler will be checked.
+            # This check is placed here instead of `trigger` method to add possibility
+            # to pass context to handlers from global filters.
+            result, data = await observer.check_root_filters(event, **kwargs)
+            if not result:
+                return UNHANDLED
+            kwargs.update(data)
+
             response = await observer.trigger(event, **kwargs)
-            if response is REJECTED:
+            if response is REJECTED:  # pragma: no cover
+                # Possible only if some handler returns REJECTED
                 return UNHANDLED
             if response is not UNHANDLED:
                 return response
