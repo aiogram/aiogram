@@ -63,7 +63,7 @@ Also if you want to use translated string in keyword- or magic- filters you will
     from aiogram import F
     from aiogram.utils.i18n import lazy_gettext as __
 
-    @router.message(F.text.lower() == __("My menu entry"))
+    @router.message(F.text == __("My menu entry"))
     ...
 
 
