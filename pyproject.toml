@@ -64,6 +64,9 @@ proxy = [
 i18n = [
     "Babel~=2.12.1",
 ]
+cli = [
+    "aiogram-cli~=1.0",
+]
 test = [
     "pytest~=7.4.0",
     "pytest-html~=3.2.0",
@@ -114,6 +117,7 @@ features = [
     "redis",
     "proxy",
     "i18n",
+    "cli",
 ]
 post-install-commands = [
     "pre-commit install",
@@ -133,6 +137,7 @@ features = [
     "proxy",
     "i18n",
     "docs",
+    "cli",
 ]
 [tool.hatch.envs.docs.scripts]
 serve = "sphinx-autobuild --watch aiogram/ --watch CHANGELOG.rst --watch README.rst docs/ docs/_build/ {args}"
@@ -146,9 +151,10 @@ features = [
     "proxy",
     "i18n",
     "test",
+    "cli",
 ]
 extra-dependencies = [
-    "butcher @ git+https://github.com/aiogram/butcher.git@v0.1.22"
+    "butcher @ git+https://github.com/aiogram/butcher.git@v0.1.22",
 ]
 
 [tool.hatch.envs.dev.scripts]
@@ -165,6 +171,7 @@ features = [
     "proxy",
     "i18n",
     "test",
+    "cli",
 ]
 
 [tool.hatch.envs.test.scripts]
