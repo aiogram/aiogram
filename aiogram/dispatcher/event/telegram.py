@@ -40,7 +40,6 @@ class TelegramEventObserver:
         Register filter for all handlers of this event observer
 
         :param filters: positional filters
-        :param bound_filters: keyword filters
         """
         if self._handler.filters is None:
             self._handler.filters = []
