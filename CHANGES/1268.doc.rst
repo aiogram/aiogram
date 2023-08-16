@@ -1,0 +1,2 @@
+Removed extra param in docstring of TelegramEventObserver's filter method
+and fixed typo in I18n documentation.
