@@ -264,7 +264,8 @@ class Dispatcher(Router):
             warnings.warn(
                 "Detected unknown update type.\n"
                 "Seems like Telegram Bot API was updated and you have "
-                "installed not latest version of aiogram framework",
+                "installed not latest version of aiogram framework"
+                f"\nUpdate: {update.model_dump_json(exclude_unset=True)}",
                 RuntimeWarning,
             )
             raise SkipHandler() from e
