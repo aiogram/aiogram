@@ -35,13 +35,13 @@ be able to install packages into that isolated environment.
 Activate the environment
 ------------------------
 
-Linux/ macOS:
+Linux / macOS:
 
 .. code-block:: bash
 
     source .venv/bin/activate
 
-Windows PoweShell
+Windows PowerShell
 
 .. code-block:: powershell
 
@@ -50,7 +50,7 @@ Windows PoweShell
 To check it worked, use described command, it should show the :code:`pip` location inside
 the isolated environment
 
-Linux, macOS:
+Linux / macOS:
 
 .. code-block::
 
@@ -62,7 +62,7 @@ Windows PowerShell
 
     Get-Command pip
 
-Also make you shure you have the latest pip version in your virtual environment to avoid
+Also make sure you have the latest pip version in your virtual environment to avoid
 errors on next steps:
 
 .. code-block::
@@ -75,13 +75,13 @@ Setup project
 
 After activating the environment install `aiogram` from sources and their dependencies.
 
-For Linux and MacOS:
+Linux / macOS:
 
 .. code-block:: bash
 
     pip install -e ."[dev,test,docs,fast,redis,proxy,i18n]"
 
-For Windows:
+Windows:
 
 .. code-block:: bash
 
