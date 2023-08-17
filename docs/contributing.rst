@@ -73,11 +73,19 @@ errors on next steps:
 Setup project
 -------------
 
-After activating the environment install `aiogram` from sources and their dependencies:
+After activating the environment install `aiogram` from sources and their dependencies.
+
+For Linux and MacOS:
 
 .. code-block:: bash
 
     pip install -e ."[dev,test,docs,fast,redis,proxy,i18n]"
+
+For Windows:
+
+.. code-block:: bash
+
+    pip install -e .[dev,test,docs,fast,redis,proxy,i18n]
 
 It will install :code:`aiogram` in editable mode into your virtual environment and all dependencies.
 
