@@ -41,26 +41,25 @@ Linux / macOS:
 
     source .venv/bin/activate
 
+Windows cmd
+
+.. code-block:: text
+
+    .\.venv\Scripts\activate
+
 Windows PowerShell
 
 .. code-block:: powershell
 
-    .\.venv\Scripts\Activate.ps1
+    .\.venv\Scripts\activate.ps1
 
-To check it worked, use described command, it should show the :code:`pip` location inside
-the isolated environment
-
-Linux / macOS:
+To check it worked, use described command, it should show the :code:`pip` version and location
+inside the isolated environment
 
 .. code-block::
 
-    which pip
+    pip -V
 
-Windows PowerShell
-
-.. code-block::
-
-    Get-Command pip
 
 Also make sure you have the latest pip version in your virtual environment to avoid
 errors on next steps:
