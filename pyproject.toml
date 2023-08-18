@@ -42,7 +42,7 @@ classifiers = [
 dependencies = [
     "magic-filter~=1.0",
     "aiohttp~=3.8.5",
-    "pydantic~=2.1.1",
+    "pydantic>=2.1.1,<3",
     "aiofiles~=23.1.0",
     "certifi>=2023.7.22",
 ]
