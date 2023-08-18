@@ -1,1 +1,0 @@
-Fixed missing message content types (:code:`ContentType.USER_SHARED`, :code:`ContentType.CHAT_SHARED`)

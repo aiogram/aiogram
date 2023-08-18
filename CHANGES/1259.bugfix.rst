@@ -1,1 +1,0 @@
-Fixed nested hashtag, cashtag and email message entities not being parsed correctly when these entities are inside another entity.

@@ -16,6 +16,51 @@ Changelog
 
 .. towncrier release notes start
 
+3.0.0rc2 (2023-08-18)
+======================
+
+Bugfixes
+--------
+
+- Fixed missing message content types (:code:`ContentType.USER_SHARED`, :code:`ContentType.CHAT_SHARED`)
+  `#1252 <https://github.com/aiogram/aiogram/issues/1252>`_
+- Fixed nested hashtag, cashtag and email message entities not being parsed correctly when these entities are inside another entity.
+  `#1259 <https://github.com/aiogram/aiogram/issues/1259>`_
+- Moved global filters check placement into router to add chance to pass context from global filters
+  into handlers in the same way as it possible in other places
+  `#1266 <https://github.com/aiogram/aiogram/issues/1266>`_
+
+
+Improved Documentation
+----------------------
+
+- Added error handling example `examples/error_handling.py`
+  `#1099 <https://github.com/aiogram/aiogram/issues/1099>`_
+- Added a few words about skipping pending updates
+  `#1251 <https://github.com/aiogram/aiogram/issues/1251>`_
+- Added a section on Dependency Injection technology
+  `#1253 <https://github.com/aiogram/aiogram/issues/1253>`_
+- This update includes the addition of a multi-file bot example to the repository.
+  `#1254 <https://github.com/aiogram/aiogram/issues/1254>`_
+- Refactored examples code to use aiogram enumerations and enhanced chat messages with markdown
+  beautification's for a more user-friendly display.
+  `#1256 <https://github.com/aiogram/aiogram/issues/1256>`_
+- Supplemented "Finite State Machine" section in Migration FAQ
+  `#1264 <https://github.com/aiogram/aiogram/issues/1264>`_
+- Removed extra param in docstring of TelegramEventObserver's filter method
+  and fixed typo in I18n documentation.
+  `#1268 <https://github.com/aiogram/aiogram/issues/1268>`_
+
+
+Misc
+----
+
+- Enhanced the warning message in dispatcher to include a JSON dump of the update when update type is not known.
+  `#1269 <https://github.com/aiogram/aiogram/issues/1269>`_
+- Added support for `Bot API 6.8 <https://core.telegram.org/bots/api-changelog#august-18-2023>`_
+  `#1275 <https://github.com/aiogram/aiogram/issues/1275>`_
+
+
 3.0.0rc1 (2023-08-06)
 ======================
 
