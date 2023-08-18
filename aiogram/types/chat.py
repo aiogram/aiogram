@@ -70,6 +70,8 @@ class Chat(TelegramObject):
     """*Optional*. If non-empty, the list of all `active chat usernames <https://telegram.org/blog/topics-in-groups-collectible-usernames#collectible-usernames>`_; for private chats, supergroups and channels. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
     emoji_status_custom_emoji_id: Optional[str] = None
     """*Optional*. Custom emoji identifier of emoji status of the other party in a private chat. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
+    emoji_status_expiration_date: Optional[datetime.datetime] = None
+    """*Optional*. Expiration date of the emoji status of the other party in a private chat, if any. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
     bio: Optional[str] = None
     """*Optional*. Bio of the other party in a private chat. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
     has_private_forwards: Optional[bool] = None
@@ -106,8 +108,6 @@ class Chat(TelegramObject):
     """*Optional*. Unique identifier for the linked chat, i.e. the discussion group identifier for a channel and vice versa; for supergroups and channel chats. This identifier may be greater than 32 bits and some programming languages may have difficulty/silent defects in interpreting it. But it is smaller than 52 bits, so a signed 64 bit integer or double-precision float type are safe for storing this identifier. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
     location: Optional[ChatLocation] = None
     """*Optional*. For supergroups, the location to which the supergroup is connected. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
-    emoji_status_expiration_date: Optional[int] = None
-    """*Optional*. Expiration date of the emoji status of the other party in a private chat, if any. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!
@@ -126,6 +126,7 @@ class Chat(TelegramObject):
             photo: Optional[ChatPhoto] = None,
             active_usernames: Optional[List[str]] = None,
             emoji_status_custom_emoji_id: Optional[str] = None,
+            emoji_status_expiration_date: Optional[datetime.datetime] = None,
             bio: Optional[str] = None,
             has_private_forwards: Optional[bool] = None,
             has_restricted_voice_and_video_messages: Optional[bool] = None,
@@ -144,7 +145,6 @@ class Chat(TelegramObject):
             can_set_sticker_set: Optional[bool] = None,
             linked_chat_id: Optional[int] = None,
             location: Optional[ChatLocation] = None,
-            emoji_status_expiration_date: Optional[int] = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!
@@ -162,6 +162,7 @@ class Chat(TelegramObject):
                 photo=photo,
                 active_usernames=active_usernames,
                 emoji_status_custom_emoji_id=emoji_status_custom_emoji_id,
+                emoji_status_expiration_date=emoji_status_expiration_date,
                 bio=bio,
                 has_private_forwards=has_private_forwards,
                 has_restricted_voice_and_video_messages=has_restricted_voice_and_video_messages,
@@ -180,7 +181,6 @@ class Chat(TelegramObject):
                 can_set_sticker_set=can_set_sticker_set,
                 linked_chat_id=linked_chat_id,
                 location=location,
-                emoji_status_expiration_date=emoji_status_expiration_date,
                 **__pydantic_kwargs,
             )
 

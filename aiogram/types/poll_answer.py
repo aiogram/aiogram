@@ -20,10 +20,10 @@ class PollAnswer(TelegramObject):
     """Unique poll identifier"""
     option_ids: List[int]
     """0-based identifiers of chosen answer options. May be empty if the vote was retracted."""
-    user: Optional[User] = None
-    """*Optional*. The user that changed the answer to the poll, if the voter isn't anonymous"""
     voter_chat: Optional[Chat] = None
     """*Optional*. The chat that changed the answer to the poll, if the voter is anonymous"""
+    user: Optional[User] = None
+    """*Optional*. The user that changed the answer to the poll, if the voter isn't anonymous"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!
@@ -34,8 +34,8 @@ class PollAnswer(TelegramObject):
             *,
             poll_id: str,
             option_ids: List[int],
-            user: Optional[User] = None,
             voter_chat: Optional[Chat] = None,
+            user: Optional[User] = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!
@@ -45,7 +45,7 @@ class PollAnswer(TelegramObject):
             super().__init__(
                 poll_id=poll_id,
                 option_ids=option_ids,
-                user=user,
                 voter_chat=voter_chat,
+                user=user,
                 **__pydantic_kwargs,
             )

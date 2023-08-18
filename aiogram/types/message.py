@@ -161,6 +161,8 @@ class Message(TelegramObject):
     """*Optional*. Message is a photo, available sizes of the photo"""
     sticker: Optional[Sticker] = None
     """*Optional*. Message is a sticker, information about the sticker"""
+    story: Optional[Story] = None
+    """*Optional*. Message is a forwarded story"""
     video: Optional[Video] = None
     """*Optional*. Message is a video, information about the video"""
     video_note: Optional[VideoNote] = None
@@ -249,8 +251,6 @@ class Message(TelegramObject):
     """*Optional*. Service message: data sent by a Web App"""
     reply_markup: Optional[InlineKeyboardMarkup] = None
     """*Optional*. Inline keyboard attached to the message. :code:`login_url` buttons are represented as ordinary :code:`url` buttons."""
-    story: Optional[Story] = None
-    """*Optional*. Message is a forwarded story"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!
@@ -286,6 +286,7 @@ class Message(TelegramObject):
             document: Optional[Document] = None,
             photo: Optional[List[PhotoSize]] = None,
             sticker: Optional[Sticker] = None,
+            story: Optional[Story] = None,
             video: Optional[Video] = None,
             video_note: Optional[VideoNote] = None,
             voice: Optional[Voice] = None,
@@ -330,7 +331,6 @@ class Message(TelegramObject):
             video_chat_participants_invited: Optional[VideoChatParticipantsInvited] = None,
             web_app_data: Optional[WebAppData] = None,
             reply_markup: Optional[InlineKeyboardMarkup] = None,
-            story: Optional[Story] = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!
@@ -365,6 +365,7 @@ class Message(TelegramObject):
                 document=document,
                 photo=photo,
                 sticker=sticker,
+                story=story,
                 video=video,
                 video_note=video_note,
                 voice=voice,
@@ -409,7 +410,6 @@ class Message(TelegramObject):
                 video_chat_participants_invited=video_chat_participants_invited,
                 web_app_data=web_app_data,
                 reply_markup=reply_markup,
-                story=story,
                 **__pydantic_kwargs,
             )
 

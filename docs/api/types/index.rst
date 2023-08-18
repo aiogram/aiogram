@@ -123,6 +123,7 @@ Available types
     reply_keyboard_markup
     reply_keyboard_remove
     response_parameters
+    story
     switch_inline_query_chosen_chat
     user
     user_profile_photos
@@ -204,11 +205,3 @@ Games
     callback_game
     game
     game_high_score
-
-Upcoming update
-===============
-
-.. toctree::
-    :maxdepth: 1
-
-    story

@@ -20,6 +20,14 @@
         "required": true
       },
       {
+        "type": "Chat",
+        "description": "The chat that changed the answer to the poll, if the voter is anonymous",
+        "html_description": "<td><em>Optional</em>. The chat that changed the answer to the poll, if the voter is anonymous</td>",
+        "rst_description": "*Optional*. The chat that changed the answer to the poll, if the voter is anonymous\n",
+        "name": "voter_chat",
+        "required": false
+      },
+      {
         "type": "User",
         "description": "The user that changed the answer to the poll, if the voter isn't anonymous",
         "html_description": "<td><em>Optional</em>. The user that changed the answer to the poll, if the voter isn't anonymous</td>",
@@ -34,14 +42,6 @@
         "rst_description": "0-based identifiers of chosen answer options. May be empty if the vote was retracted.\n",
         "name": "option_ids",
         "required": true
-      },
-      {
-        "type": "Chat",
-        "description": "The chat that changed the answer to the poll, if the voter is anonymous",
-        "html_description": "<td><em>Optional</em>. The chat that changed the answer to the poll, if the voter is anonymous</td>",
-        "rst_description": "*Optional*. The chat that changed the answer to the poll, if the voter is anonymous\n",
-        "name": "voter_chat",
-        "required": false
       }
     ],
     "category": "types"

@@ -1,7 +1,7 @@
 {
   "api": {
-    "version": "6.7",
-    "release_date": "2023-04-21"
+    "version": "6.8",
+    "release_date": "2023-08-18"
   },
   "items": [
     {
@@ -548,6 +548,14 @@
               "required": false
             },
             {
+              "type": "Integer",
+              "description": "Expiration date of the emoji status of the other party in a private chat, if any. Returned only in getChat.",
+              "html_description": "<td><em>Optional</em>. Expiration date of the emoji status of the other party in a private chat, if any. Returned only in <a href=\"#getchat\">getChat</a>.</td>",
+              "rst_description": "*Optional*. Expiration date of the emoji status of the other party in a private chat, if any. Returned only in :class:`aiogram.methods.get_chat.GetChat`.\n",
+              "name": "emoji_status_expiration_date",
+              "required": false
+            },
+            {
               "type": "String",
               "description": "Bio of the other party in a private chat. Returned only in getChat.",
               "html_description": "<td><em>Optional</em>. Bio of the other party in a private chat. Returned only in <a href=\"#getchat\">getChat</a>.</td>",
@@ -689,14 +697,6 @@
               "html_description": "<td><em>Optional</em>. For supergroups, the location to which the supergroup is connected. Returned only in <a href=\"#getchat\">getChat</a>.</td>",
               "rst_description": "*Optional*. For supergroups, the location to which the supergroup is connected. Returned only in :class:`aiogram.methods.get_chat.GetChat`.\n",
               "name": "location",
-              "required": false
-            },
-            {
-              "type": "Integer",
-              "description": "Expiration date of the emoji status of the other party in a private chat, if any. Returned only in getChat.",
-              "html_description": "<td><em>Optional</em>. Expiration date of the emoji status of the other party in a private chat, if any. Returned only in <a href=\"#getchat\">getChat</a>.</td>",
-              "rst_description": "*Optional*. Expiration date of the emoji status of the other party in a private chat, if any. Returned only in :class:`aiogram.methods.get_chat.GetChat`.\n",
-              "name": "emoji_status_expiration_date",
               "required": false
             }
           ],
@@ -923,6 +923,14 @@
               "html_description": "<td><em>Optional</em>. Message is a sticker, information about the sticker</td>",
               "rst_description": "*Optional*. Message is a sticker, information about the sticker\n",
               "name": "sticker",
+              "required": false
+            },
+            {
+              "type": "Story",
+              "description": "Message is a forwarded story",
+              "html_description": "<td><em>Optional</em>. Message is a forwarded story</td>",
+              "rst_description": "*Optional*. Message is a forwarded story\n",
+              "name": "story",
               "required": false
             },
             {
@@ -1275,14 +1283,6 @@
               "html_description": "<td><em>Optional</em>. Inline keyboard attached to the message. <code>login_url</code> buttons are represented as ordinary <code>url</code> buttons.</td>",
               "rst_description": "*Optional*. Inline keyboard attached to the message. :code:`login_url` buttons are represented as ordinary :code:`url` buttons.\n",
               "name": "reply_markup",
-              "required": false
-            },
-            {
-              "type": "Story",
-              "description": "Message is a forwarded story",
-              "html_description": "<td><em>Optional</em>. Message is a forwarded story</td>",
-              "rst_description": "*Optional*. Message is a forwarded story\n",
-              "name": "story",
               "required": false
             }
           ],
@@ -1645,6 +1645,15 @@
           "category": "types"
         },
         {
+          "anchor": "story",
+          "name": "Story",
+          "description": "This object represents a message about a forwarded story in the chat. Currently holds no information.",
+          "html_description": "<p>This object represents a message about a forwarded story in the chat. Currently holds no information.</p>",
+          "rst_description": "This object represents a message about a forwarded story in the chat. Currently holds no information.",
+          "annotations": [],
+          "category": "types"
+        },
+        {
           "anchor": "video",
           "name": "Video",
           "description": "This object represents a video file.",
@@ -1952,6 +1961,14 @@
               "required": true
             },
             {
+              "type": "Chat",
+              "description": "The chat that changed the answer to the poll, if the voter is anonymous",
+              "html_description": "<td><em>Optional</em>. The chat that changed the answer to the poll, if the voter is anonymous</td>",
+              "rst_description": "*Optional*. The chat that changed the answer to the poll, if the voter is anonymous\n",
+              "name": "voter_chat",
+              "required": false
+            },
+            {
               "type": "User",
               "description": "The user that changed the answer to the poll, if the voter isn't anonymous",
               "html_description": "<td><em>Optional</em>. The user that changed the answer to the poll, if the voter isn't anonymous</td>",
@@ -1966,14 +1983,6 @@
               "rst_description": "0-based identifiers of chosen answer options. May be empty if the vote was retracted.\n",
               "name": "option_ids",
               "required": true
-            },
-            {
-              "type": "Chat",
-              "description": "The chat that changed the answer to the poll, if the voter is anonymous",
-              "html_description": "<td><em>Optional</em>. The chat that changed the answer to the poll, if the voter is anonymous</td>",
-              "rst_description": "*Optional*. The chat that changed the answer to the poll, if the voter is anonymous\n",
-              "name": "voter_chat",
-              "required": false
             }
           ],
           "category": "types"
@@ -7970,6 +7979,24 @@
           "category": "methods"
         },
         {
+          "anchor": "unpinallgeneralforumtopicmessages",
+          "name": "unpinAllGeneralForumTopicMessages",
+          "description": "Use this method to clear the list of pinned messages in a General forum topic. The bot must be an administrator in the chat for this to work and must have the can_pin_messages administrator right in the supergroup. Returns True on success.",
+          "html_description": "<p>Use this method to clear the list of pinned messages in a General forum topic. The bot must be an administrator in the chat for this to work and must have the <em>can_pin_messages</em> administrator right in the supergroup. Returns <em>True</em> on success.</p>",
+          "rst_description": "Use this method to clear the list of pinned messages in a General forum topic. The bot must be an administrator in the chat for this to work and must have the *can_pin_messages* administrator right in the supergroup. Returns :code:`True` on success.",
+          "annotations": [
+            {
+              "type": "Integer or String",
+              "required": true,
+              "description": "Unique identifier for the target chat or username of the target supergroup (in the format @supergroupusername)",
+              "html_description": "<td>Unique identifier for the target chat or username of the target supergroup (in the format <code>@supergroupusername</code>)</td>",
+              "rst_description": "Unique identifier for the target chat or username of the target supergroup (in the format :code:`@supergroupusername`)\n",
+              "name": "chat_id"
+            }
+          ],
+          "category": "methods"
+        },
+        {
           "anchor": "answercallbackquery",
           "name": "answerCallbackQuery",
           "description": "Use this method to send answers to callback queries sent from inline keyboards. The answer will be displayed to the user as a notification at the top of the chat screen or as an alert. On success, True is returned.\nAlternatively, the user can be redirected to the specified Game URL. For this option to work, you must first create a game for your bot via @BotFather and accept the terms. Otherwise, you may use links like t.me/your_bot?start=XXXX that open your bot with a parameter.",
@@ -13879,39 +13906,6 @@
         }
       ],
       "description": "Your bot can offer users HTML5 games to play solo or to compete against each other in groups and one-on-one chats. Create games via @BotFather using the /newgame command. Please note that this kind of power requires responsibility: you will need to accept the terms for each game that your bots will be offering.\n - Games are a new type of content on Telegram, represented by the Game and InlineQueryResultGame objects.\n - Once you've created a game via BotFather, you can send games to chats as regular messages using the sendGame method, or use inline mode with InlineQueryResultGame.\n - If you send the game message without any buttons, it will automatically have a 'Play GameName' button. When this button is pressed, your bot gets a CallbackQuery with the game_short_name of the requested game. You provide the correct URL for this particular user and the app opens the game in the in-app browser.\n - You can manually add multiple buttons to your game message. Please note that the first button in the first row must always launch the game, using the field callback_game in InlineKeyboardButton. You can add extra buttons according to taste: e.g., for a description of the rules, or to open the game's official community.\n - To make your game more attractive, you can upload a GIF animation that demostrates the game to the users via BotFather (see Lumberjack for example).\n - A game message will also display high scores for the current chat. Use setGameScore to post high scores to the chat with the game, add the edit_message parameter to automatically update the message with the current scoreboard.\n - Use getGameHighScores to get data for in-game high score tables.\n - You can also add an extra sharing button for users to share their best score to different chats.\n - For examples of what can be done using this new stuff, check the @gamebot and @gamee bots."
-    },
-    {
-      "title": "Upcoming update",
-      "anchor": "upcoming-update",
-      "children": [
-        {
-          "anchor": "story",
-          "name": "Story",
-          "description": "This object represents a message about a forwarded story in the chat. Currently holds no information.",
-          "html_description": "<p>This object represents a message about a forwarded story in the chat. Currently holds no information.</p>",
-          "rst_description": "This object represents a message about a forwarded story in the chat. Currently holds no information.",
-          "annotations": [],
-          "category": "types"
-        },
-        {
-          "anchor": "unpinallgeneralforumtopicmessages",
-          "name": "unpinAllGeneralForumTopicMessages",
-          "description": "Use this method to clear the list of pinned messages in a General forum topic. The bot must be an administrator in the chat for this to work and must have the can_pin_messages administrator right in the supergroup. Returns True on success.",
-          "html_description": "<p>Use this method to clear the list of pinned messages in a General forum topic. The bot must be an administrator in the chat for this to work and must have the <em>can_pin_messages</em> administrator right in the supergroup. Returns <em>True</em> on success.</p>",
-          "rst_description": "Use this method to clear the list of pinned messages in a General forum topic. The bot must be an administrator in the chat for this to work and must have the *can_pin_messages* administrator right in the supergroup. Returns :code:`True` on success.",
-          "annotations": [
-            {
-              "type": "Integer or String",
-              "required": true,
-              "description": "Unique identifier for the target chat or username of the target supergroup (in the format @supergroupusername)",
-              "html_description": "<td>Unique identifier for the target chat or username of the target supergroup (in the format <code>@supergroupusername</code>)</td>",
-              "rst_description": "Unique identifier for the target chat or username of the target supergroup (in the format :code:`@supergroupusername`)\n",
-              "name": "chat_id"
-            }
-          ],
-          "category": "methods"
-        }
-      ]
     }
   ]
 }
