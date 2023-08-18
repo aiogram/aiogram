@@ -84,6 +84,7 @@ if TYPE_CHECKING:
     from .reply_keyboard_markup import ReplyKeyboardMarkup
     from .reply_keyboard_remove import ReplyKeyboardRemove
     from .sticker import Sticker
+    from .story import Story
     from .successful_payment import SuccessfulPayment
     from .user import User
     from .user_shared import UserShared
@@ -128,7 +129,7 @@ class Message(TelegramObject):
     """*Optional*. For forwarded messages that were originally sent in channels or by an anonymous chat administrator, signature of the message sender if present"""
     forward_sender_name: Optional[str] = None
     """*Optional*. Sender's name for messages forwarded from users who disallow adding a link to their account in forwarded messages"""
-    forward_date: Optional[int] = None
+    forward_date: Optional[datetime.datetime] = None
     """*Optional*. For forwarded messages, date the original message was sent in Unix time"""
     is_topic_message: Optional[bool] = None
     """*Optional*. :code:`True`, if the message is sent to a forum topic"""
@@ -160,6 +161,8 @@ class Message(TelegramObject):
     """*Optional*. Message is a photo, available sizes of the photo"""
     sticker: Optional[Sticker] = None
     """*Optional*. Message is a sticker, information about the sticker"""
+    story: Optional[Story] = None
+    """*Optional*. Message is a forwarded story"""
     video: Optional[Video] = None
     """*Optional*. Message is a video, information about the video"""
     video_note: Optional[VideoNote] = None
@@ -267,7 +270,7 @@ class Message(TelegramObject):
             forward_from_message_id: Optional[int] = None,
             forward_signature: Optional[str] = None,
             forward_sender_name: Optional[str] = None,
-            forward_date: Optional[int] = None,
+            forward_date: Optional[datetime.datetime] = None,
             is_topic_message: Optional[bool] = None,
             is_automatic_forward: Optional[bool] = None,
             reply_to_message: Optional[Message] = None,
@@ -283,6 +286,7 @@ class Message(TelegramObject):
             document: Optional[Document] = None,
             photo: Optional[List[PhotoSize]] = None,
             sticker: Optional[Sticker] = None,
+            story: Optional[Story] = None,
             video: Optional[Video] = None,
             video_note: Optional[VideoNote] = None,
             voice: Optional[Voice] = None,
@@ -361,6 +365,7 @@ class Message(TelegramObject):
                 document=document,
                 photo=photo,
                 sticker=sticker,
+                story=story,
                 video=video,
                 video_note=video_note,
                 voice=voice,
@@ -496,6 +501,8 @@ class Message(TelegramObject):
             return ContentType.USER_SHARED
         if self.chat_shared:
             return ContentType.CHAT_SHARED
+        if self.story:
+            return ContentType.STORY
 
         return ContentType.UNKNOWN
 

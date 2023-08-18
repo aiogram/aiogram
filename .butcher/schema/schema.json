@@ -1,7 +1,7 @@
 {
   "api": {
-    "version": "6.7",
-    "release_date": "2023-04-21"
+    "version": "6.8",
+    "release_date": "2023-08-18"
   },
   "items": [
     {
@@ -548,6 +548,14 @@
               "required": false
             },
             {
+              "type": "Integer",
+              "description": "Expiration date of the emoji status of the other party in a private chat, if any. Returned only in getChat.",
+              "html_description": "<td><em>Optional</em>. Expiration date of the emoji status of the other party in a private chat, if any. Returned only in <a href=\"#getchat\">getChat</a>.</td>",
+              "rst_description": "*Optional*. Expiration date of the emoji status of the other party in a private chat, if any. Returned only in :class:`aiogram.methods.get_chat.GetChat`.\n",
+              "name": "emoji_status_expiration_date",
+              "required": false
+            },
+            {
               "type": "String",
               "description": "Bio of the other party in a private chat. Returned only in getChat.",
               "html_description": "<td><em>Optional</em>. Bio of the other party in a private chat. Returned only in <a href=\"#getchat\">getChat</a>.</td>",
@@ -915,6 +923,14 @@
               "html_description": "<td><em>Optional</em>. Message is a sticker, information about the sticker</td>",
               "rst_description": "*Optional*. Message is a sticker, information about the sticker\n",
               "name": "sticker",
+              "required": false
+            },
+            {
+              "type": "Story",
+              "description": "Message is a forwarded story",
+              "html_description": "<td><em>Optional</em>. Message is a forwarded story</td>",
+              "rst_description": "*Optional*. Message is a forwarded story\n",
+              "name": "story",
               "required": false
             },
             {
@@ -1629,6 +1645,15 @@
           "category": "types"
         },
         {
+          "anchor": "story",
+          "name": "Story",
+          "description": "This object represents a message about a forwarded story in the chat. Currently holds no information.",
+          "html_description": "<p>This object represents a message about a forwarded story in the chat. Currently holds no information.</p>",
+          "rst_description": "This object represents a message about a forwarded story in the chat. Currently holds no information.",
+          "annotations": [],
+          "category": "types"
+        },
+        {
           "anchor": "video",
           "name": "Video",
           "description": "This object represents a video file.",
@@ -1936,18 +1961,26 @@
               "required": true
             },
             {
+              "type": "Chat",
+              "description": "The chat that changed the answer to the poll, if the voter is anonymous",
+              "html_description": "<td><em>Optional</em>. The chat that changed the answer to the poll, if the voter is anonymous</td>",
+              "rst_description": "*Optional*. The chat that changed the answer to the poll, if the voter is anonymous\n",
+              "name": "voter_chat",
+              "required": false
+            },
+            {
               "type": "User",
-              "description": "The user, who changed the answer to the poll",
-              "html_description": "<td>The user, who changed the answer to the poll</td>",
-              "rst_description": "The user, who changed the answer to the poll\n",
+              "description": "The user that changed the answer to the poll, if the voter isn't anonymous",
+              "html_description": "<td><em>Optional</em>. The user that changed the answer to the poll, if the voter isn't anonymous</td>",
+              "rst_description": "*Optional*. The user that changed the answer to the poll, if the voter isn't anonymous\n",
               "name": "user",
-              "required": true
+              "required": false
             },
             {
               "type": "Array of Integer",
-              "description": "0-based identifiers of answer options, chosen by the user. May be empty if the user retracted their vote.",
-              "html_description": "<td>0-based identifiers of answer options, chosen by the user. May be empty if the user retracted their vote.</td>",
-              "rst_description": "0-based identifiers of answer options, chosen by the user. May be empty if the user retracted their vote.\n",
+              "description": "0-based identifiers of chosen answer options. May be empty if the vote was retracted.",
+              "html_description": "<td>0-based identifiers of chosen answer options. May be empty if the vote was retracted.</td>",
+              "rst_description": "0-based identifiers of chosen answer options. May be empty if the vote was retracted.\n",
               "name": "option_ids",
               "required": true
             }
@@ -7933,6 +7966,24 @@
           "description": "Use this method to unhide the 'General' topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the can_manage_topics administrator rights. Returns True on success.",
           "html_description": "<p>Use this method to unhide the 'General' topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the <em>can_manage_topics</em> administrator rights. Returns <em>True</em> on success.</p>",
           "rst_description": "Use this method to unhide the 'General' topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the *can_manage_topics* administrator rights. Returns :code:`True` on success.",
+          "annotations": [
+            {
+              "type": "Integer or String",
+              "required": true,
+              "description": "Unique identifier for the target chat or username of the target supergroup (in the format @supergroupusername)",
+              "html_description": "<td>Unique identifier for the target chat or username of the target supergroup (in the format <code>@supergroupusername</code>)</td>",
+              "rst_description": "Unique identifier for the target chat or username of the target supergroup (in the format :code:`@supergroupusername`)\n",
+              "name": "chat_id"
+            }
+          ],
+          "category": "methods"
+        },
+        {
+          "anchor": "unpinallgeneralforumtopicmessages",
+          "name": "unpinAllGeneralForumTopicMessages",
+          "description": "Use this method to clear the list of pinned messages in a General forum topic. The bot must be an administrator in the chat for this to work and must have the can_pin_messages administrator right in the supergroup. Returns True on success.",
+          "html_description": "<p>Use this method to clear the list of pinned messages in a General forum topic. The bot must be an administrator in the chat for this to work and must have the <em>can_pin_messages</em> administrator right in the supergroup. Returns <em>True</em> on success.</p>",
+          "rst_description": "Use this method to clear the list of pinned messages in a General forum topic. The bot must be an administrator in the chat for this to work and must have the *can_pin_messages* administrator right in the supergroup. Returns :code:`True` on success.",
           "annotations": [
             {
               "type": "Integer or String",

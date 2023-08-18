@@ -134,6 +134,7 @@ from ..methods import (
     UnhideGeneralForumTopic,
     UnpinAllChatMessages,
     UnpinAllForumTopicMessages,
+    UnpinAllGeneralForumTopicMessages,
     UnpinChatMessage,
     UploadStickerFile,
 )
@@ -4084,5 +4085,25 @@ class Bot:
         call = SetMyName(
             name=name,
             language_code=language_code,
+        )
+        return await self(call, request_timeout=request_timeout)
+
+    async def unpin_all_general_forum_topic_messages(
+        self,
+        chat_id: Union[int, str],
+        request_timeout: Optional[int] = None,
+    ) -> bool:
+        """
+        Use this method to clear the list of pinned messages in a General forum topic. The bot must be an administrator in the chat for this to work and must have the *can_pin_messages* administrator right in the supergroup. Returns :code:`True` on success.
+
+        Source: https://core.telegram.org/bots/api#unpinallgeneralforumtopicmessages
+
+        :param chat_id: Unique identifier for the target chat or username of the target supergroup (in the format :code:`@supergroupusername`)
+        :param request_timeout: Request timeout
+        :return: Returns :code:`True` on success.
+        """
+
+        call = UnpinAllGeneralForumTopicMessages(
+            chat_id=chat_id,
         )
         return await self(call, request_timeout=request_timeout)

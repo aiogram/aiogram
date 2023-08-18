@@ -86,6 +86,7 @@ Available methods
     unhide_general_forum_topic
     unpin_all_chat_messages
     unpin_all_forum_topic_messages
+    unpin_all_general_forum_topic_messages
     unpin_chat_message
 
 Payments

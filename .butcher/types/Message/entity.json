@@ -228,6 +228,14 @@
         "required": false
       },
       {
+        "type": "Story",
+        "description": "Message is a forwarded story",
+        "html_description": "<td><em>Optional</em>. Message is a forwarded story</td>",
+        "rst_description": "*Optional*. Message is a forwarded story\n",
+        "name": "story",
+        "required": false
+      },
+      {
         "type": "Video",
         "description": "Message is a video, information about the video",
         "html_description": "<td><em>Optional</em>. Message is a video, information about the video</td>",

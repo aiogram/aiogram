@@ -3,3 +3,7 @@ annotations:
     parsed_type:
       type: std
       name: datetime.datetime
+  forward_date:
+    parsed_type:
+      type: std
+      name: datetime.datetime

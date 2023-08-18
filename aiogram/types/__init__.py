@@ -140,6 +140,7 @@ from .shipping_option import ShippingOption
 from .shipping_query import ShippingQuery
 from .sticker import Sticker
 from .sticker_set import StickerSet
+from .story import Story
 from .successful_payment import SuccessfulPayment
 from .switch_inline_query_chosen_chat import SwitchInlineQueryChosenChat
 from .update import Update
@@ -298,6 +299,7 @@ __all__ = (
     "ShippingQuery",
     "Sticker",
     "StickerSet",
+    "Story",
     "SuccessfulPayment",
     "SwitchInlineQueryChosenChat",
     "TelegramObject",

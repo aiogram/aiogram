@@ -34,6 +34,7 @@ if TYPE_CHECKING:
         UnbanChatSenderChat,
         UnpinAllChatMessages,
         UnpinChatMessage,
+        UnpinAllGeneralForumTopicMessages,
     )
     from .chat_location import ChatLocation
     from .chat_permissions import ChatPermissions
@@ -69,6 +70,8 @@ class Chat(TelegramObject):
     """*Optional*. If non-empty, the list of all `active chat usernames <https://telegram.org/blog/topics-in-groups-collectible-usernames#collectible-usernames>`_; for private chats, supergroups and channels. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
     emoji_status_custom_emoji_id: Optional[str] = None
     """*Optional*. Custom emoji identifier of emoji status of the other party in a private chat. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
+    emoji_status_expiration_date: Optional[datetime.datetime] = None
+    """*Optional*. Expiration date of the emoji status of the other party in a private chat, if any. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
     bio: Optional[str] = None
     """*Optional*. Bio of the other party in a private chat. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
     has_private_forwards: Optional[bool] = None
@@ -123,6 +126,7 @@ class Chat(TelegramObject):
             photo: Optional[ChatPhoto] = None,
             active_usernames: Optional[List[str]] = None,
             emoji_status_custom_emoji_id: Optional[str] = None,
+            emoji_status_expiration_date: Optional[datetime.datetime] = None,
             bio: Optional[str] = None,
             has_private_forwards: Optional[bool] = None,
             has_restricted_voice_and_video_messages: Optional[bool] = None,
@@ -158,6 +162,7 @@ class Chat(TelegramObject):
                 photo=photo,
                 active_usernames=active_usernames,
                 emoji_status_custom_emoji_id=emoji_status_custom_emoji_id,
+                emoji_status_expiration_date=emoji_status_expiration_date,
                 bio=bio,
                 has_private_forwards=has_private_forwards,
                 has_restricted_voice_and_video_messages=has_restricted_voice_and_video_messages,
@@ -1080,5 +1085,31 @@ class Chat(TelegramObject):
         return SetChatPhoto(
             chat_id=self.id,
             photo=photo,
+            **kwargs,
+        ).as_(self._bot)
+
+    def unpin_all_general_forum_topic_messages(
+        self,
+        **kwargs: Any,
+    ) -> UnpinAllGeneralForumTopicMessages:
+        """
+        Shortcut for method :class:`aiogram.methods.unpin_all_general_forum_topic_messages.UnpinAllGeneralForumTopicMessages`
+        will automatically fill method attributes:
+
+        - :code:`chat_id`
+
+        Use this method to clear the list of pinned messages in a General forum topic. The bot must be an administrator in the chat for this to work and must have the *can_pin_messages* administrator right in the supergroup. Returns :code:`True` on success.
+
+        Source: https://core.telegram.org/bots/api#unpinallgeneralforumtopicmessages
+
+        :return: instance of method :class:`aiogram.methods.unpin_all_general_forum_topic_messages.UnpinAllGeneralForumTopicMessages`
+        """
+        # DO NOT EDIT MANUALLY!!!
+        # This method was auto-generated via `butcher`
+
+        from aiogram.methods import UnpinAllGeneralForumTopicMessages
+
+        return UnpinAllGeneralForumTopicMessages(
+            chat_id=self.id,
             **kwargs,
         ).as_(self._bot)
