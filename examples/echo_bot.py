@@ -13,10 +13,10 @@ from aiogram.utils.markdown import hbold
 TOKEN = getenv("BOT_TOKEN")
 
 # All handlers should be attached to the Router (or Dispatcher)
-router = Router()
+dp = Dispatcher()
 
 
-@router.message(CommandStart())
+@dp.message(CommandStart())
 async def command_start_handler(message: Message) -> None:
     """
     This handler receives messages with `/start` command
@@ -29,7 +29,7 @@ async def command_start_handler(message: Message) -> None:
     await message.answer(f"Hello, {hbold(message.from_user.full_name)}!")
 
 
-@router.message()
+@dp.message()
 async def echo_handler(message: types.Message) -> None:
     """
     Handler will forward receive a message back to the sender
@@ -45,11 +45,6 @@ async def echo_handler(message: types.Message) -> None:
 
 
 async def main() -> None:
-    # Dispatcher is a root router
-    dp = Dispatcher()
-    # ... and all other routers should be attached to Dispatcher
-    dp.include_router(router)
-
     # Initialize Bot instance with a default parse mode which will be passed to all API calls
     bot = Bot(TOKEN, parse_mode=ParseMode.HTML)
     # And the run events dispatching
@@ -58,7 +53,4 @@ async def main() -> None:
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, stream=sys.stdout)
-    try:
-        asyncio.run(main())
-    except (KeyboardInterrupt, SystemExit):
-        logging.info("Bot stopped!")
+    asyncio.run(main())
