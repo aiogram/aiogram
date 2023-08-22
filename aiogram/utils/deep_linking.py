@@ -64,7 +64,7 @@ from aiogram.utils.payload import encode_payload, decode_payload
 if TYPE_CHECKING:
     from aiogram import Bot
 
-BAD_PATTERN = re.compile(r"[^_A-z0-9-]")
+BAD_PATTERN = re.compile(r"[^A-z0-9-]")
 
 
 async def create_start_link(
