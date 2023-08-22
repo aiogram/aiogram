@@ -71,7 +71,7 @@ async def create_start_link(
     bot: Bot,
     payload: str,
     encode: bool = False,
-    encoder: Optional[Callable[[bytes], bytes]] | None = None,
+    encoder: Optional[Callable[[bytes], bytes]] = None,
 ) -> str:
     """
     Create 'start' deep link with your payload.
@@ -99,7 +99,7 @@ async def create_startgroup_link(
     bot: Bot,
     payload: str,
     encode: bool = False,
-    encoder: Optional[Callable[[bytes], bytes]] | None = None,
+    encoder: Optional[Callable[[bytes], bytes]] = None,
 ) -> str:
     """
     Create 'startgroup' deep link with your payload.
@@ -128,7 +128,7 @@ def create_deep_link(
     link_type: Literal["start", "startgroup"],
     payload: str,
     encode: bool = False,
-    encoder: Optional[Callable[[bytes], bytes]] | None = None,
+    encoder: Optional[Callable[[bytes], bytes]] = None,
 ) -> str:
     """
     Create deep link.
