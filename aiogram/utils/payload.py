@@ -11,7 +11,7 @@ Basic encode example:
 
         encoded = encode_payload("foo")
 
-        # result: 'Zm9v'
+        # result: "Zm9v"
 
 Basic decode it back example:
 
@@ -21,7 +21,7 @@ Basic decode it back example:
 
         encoded = "Zm9v"
         decoded = decode_payload(encoded)
-        # result: '"foo"'
+        # result: "foo"
 
 Encoding and decoding with your own methods:
 
