@@ -61,11 +61,11 @@ Encoding and decoding with your own methods:
 
 """
 from base64 import urlsafe_b64decode, urlsafe_b64encode
-from typing import AnyStr, Callable, Optional
+from typing import Callable, Optional
 
 
 def encode_payload(
-    payload: AnyStr,
+    payload: str,
     encoder: Optional[Callable[[bytes], bytes]] = None,
 ) -> str:
     """Encode payload with encoder.
@@ -75,12 +75,11 @@ def encode_payload(
     if not isinstance(payload, str):
         payload = str(payload)
 
-    payload = payload.encode("utf-8")
-
+    payload_bytes = payload.encode("utf-8")
     if encoder is not None:
-        payload = encoder(payload)
+        payload_bytes = encoder(payload_bytes)
 
-    return _encode_b64(payload)
+    return _encode_b64(payload_bytes)
 
 
 def decode_payload(
