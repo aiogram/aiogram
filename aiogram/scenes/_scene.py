@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import inspect
 from collections import defaultdict
+from dataclasses import dataclass
 from enum import Enum, auto
 from typing import TYPE_CHECKING, Any, ClassVar, Dict, List, Tuple, Type, Union, Optional
 
@@ -136,6 +137,14 @@ class HandlerContainer:
         self.action_container = ActionContainer(name, filters, action, scene)
 
 
+@dataclass(slots=True)
+class SceneConfig:
+    name: str
+    filters: Dict[str, List[CallbackType]]
+    handlers: List[HandlerContainer]
+    actions: Dict[SceneAction, Dict[str, CallableObject]]
+
+
 class _SceneMeta(type):
     def __new__(
         mcs,
@@ -146,37 +155,34 @@ class _SceneMeta(type):
     ) -> _SceneMeta:
         state_name = kwargs.pop("state", f"{namespace['__module__']}:{name}")
 
-        aiogram_filters: defaultdict[str, List[CallbackType]] = defaultdict(list)
-        aiogram_handlers: list[HandlerContainer] = []
-        aiogram_actions: defaultdict[SceneAction, Dict[str, CallableObject]] = defaultdict(dict)
+        filters: defaultdict[str, List[CallbackType]] = defaultdict(list)
+        handlers: list[HandlerContainer] = []
+        actions: defaultdict[SceneAction, Dict[str, CallableObject]] = defaultdict(dict)
 
         for base in bases:
-            if parent_aiogram_filters := getattr(base, "__aiogram_filters__", None):
-                aiogram_filters.update(parent_aiogram_filters)
-            if parent_aiogram_handlers := getattr(base, "__aiogram_handlers__", None):
-                aiogram_handlers.extend(parent_aiogram_handlers)
-            if parent_aiogram_actions := getattr(base, "__aiogram_actions__", None):
-                for action, handlers in parent_aiogram_actions.items():
-                    aiogram_actions[action].update(handlers)
+            if not isinstance(base, Scene):
+                continue
+            parent_scene_config = base.__scene_config__
+
+            filters.update(parent_scene_config.filters)
+            handlers.extend(parent_scene_config.handlers)
+            for action, action_handlers in parent_scene_config.actions.items():
+                actions[action].update(action_handlers)
 
         for name, value in namespace.items():
-            if handlers := getattr(value, "__aiogram_handler__", None):
-                aiogram_handlers.extend(handlers)
+            if scene_handlers := getattr(value, "__aiogram_handler__", None):
+                handlers.extend(scene_handlers)
             elif isinstance(value, ActionContainer):
-                aiogram_handlers.append(
-                    HandlerContainer(name, value.execute, value.filters, value.action)
-                )
+                handlers.append(HandlerContainer(name, value.execute, value.filters, value.action))
             elif hasattr(value, "__aiogram_action__"):
-                for action, handlers in value.__aiogram_action__.items():
-                    aiogram_actions[action].update(handlers)
+                for action, action_handlers in value.__aiogram_action__.items():
+                    actions[action].update(action_handlers)
 
-        namespace.update(
-            {
-                "__aiogram_scene_name__": state_name,
-                "__aiogram_filters__": aiogram_filters,
-                "__aiogram_handlers__": aiogram_handlers,
-                "__aiogram_actions__": aiogram_actions,
-            }
+        namespace["__scene_config__"] = SceneConfig(
+            name=state_name,
+            filters=dict(filters),
+            handlers=handlers,
+            actions=dict(actions),
         )
         return super().__new__(mcs, name, bases, namespace, **kwargs)
 
@@ -225,10 +231,7 @@ class SceneHandlerWrapper:
 
 
 class Scene(metaclass=_SceneMeta):
-    __aiogram_scene_name__: ClassVar[str]
-    __aiogram_filters__: ClassVar[Dict[str, List[CallbackType]]]
-    __aiogram_handlers__: ClassVar[List[HandlerContainer]]
-    __aiogram_actions__: ClassVar[Dict[SceneAction, Dict[str, CallableObject]]]
+    __scene_config__: ClassVar[SceneConfig]
 
     def __init__(
         self,
@@ -246,14 +249,16 @@ class Scene(metaclass=_SceneMeta):
 
     @classmethod
     def as_router(cls) -> Router:
-        router = Router(name=cls.__aiogram_scene_name__)
+        scene_config = cls.__scene_config__
+
+        router = Router(name=scene_config.name)
         used_observers = set()
 
-        for observer, filters in cls.__aiogram_filters__.items():
+        for observer, filters in scene_config.filters.items():
             router.observers[observer].filter(*filters)
             used_observers.add(observer)
 
-        for handler in cls.__aiogram_handlers__:
+        for handler in scene_config.handlers:
             router.observers[handler.name].register(
                 SceneHandlerWrapper(
                     cls,
@@ -265,7 +270,7 @@ class Scene(metaclass=_SceneMeta):
             used_observers.add(handler.name)
 
         for observer in used_observers:
-            router.observers[observer].filter(StateFilter(cls.__aiogram_scene_name__))
+            router.observers[observer].filter(StateFilter(scene_config.name))
 
         return router
 
@@ -277,9 +282,9 @@ class Scene(metaclass=_SceneMeta):
         return enter_to_scene_handler
 
     async def enter(self, **kwargs: Any) -> None:
-        loggers.scene.debug("Entering scene %r", self.__aiogram_scene_name__)
+        loggers.scene.debug("Entering scene %r", self.__scene_config__.name)
         state = await self.context.get_state()
-        await self.context.set_state(self.__aiogram_scene_name__)
+        await self.context.set_state(self.__scene_config__.name)
         try:
             if not await self._on_action(SceneAction.enter, **kwargs):
                 loggers.scene.error(
@@ -290,7 +295,7 @@ class Scene(metaclass=_SceneMeta):
             raise e
 
     async def leave(self, **kwargs: Any) -> None:
-        loggers.scene.debug("Leaving scene %r", self.__aiogram_scene_name__)
+        loggers.scene.debug("Leaving scene %r", self.__scene_config__.name)
         state = await self.context.get_state()
         await self.context.set_state(None)
         try:
@@ -300,7 +305,7 @@ class Scene(metaclass=_SceneMeta):
             raise e
 
     async def exit(self, **kwargs: Any) -> None:
-        loggers.scene.debug("Exiting scene %r", self.__aiogram_scene_name__)
+        loggers.scene.debug("Exiting scene %r", self.__scene_config__.name)
         state = await self.context.get_state()
         await self.context.set_state(None)
         try:
@@ -310,7 +315,7 @@ class Scene(metaclass=_SceneMeta):
             raise e
 
     async def back(self, **kwargs: Any) -> None:
-        loggers.scene.debug("Back to previous scene from scene %s", self.__aiogram_scene_name__)
+        loggers.scene.debug("Back to previous scene from scene %s", self.__scene_config__.name)
         await self.manager.back(**kwargs)
 
     async def replay(self, event: TelegramObject) -> None:
@@ -320,11 +325,11 @@ class Scene(metaclass=_SceneMeta):
         await self.manager.enter(scene)
 
     async def _on_action(self, action: SceneAction, **kwargs: Any) -> bool:
-        loggers.scene.debug("Call action %r in scene %r", action.name, self.__aiogram_scene_name__)
-        action_config = self.__aiogram_actions__.get(action, {})
+        loggers.scene.debug("Call action %r in scene %r", action.name, self.__scene_config__.name)
+        action_config = self.__scene_config__.actions.get(action, {})
         if not action_config:
             loggers.scene.debug(
-                "Action %r not found in scene %r", action.name, self.__aiogram_scene_name__
+                "Action %r not found in scene %r", action.name, self.__scene_config__.name
             )
             return False
 
@@ -334,7 +339,7 @@ class Scene(metaclass=_SceneMeta):
                 "Action %r for event %r not found in scene %r",
                 action.name,
                 event_type,
-                self.__aiogram_scene_name__,
+                self.__scene_config__.name,
             )
             return False
         await action_config[event_type].call(self, self.event, **{**self.data, **kwargs})

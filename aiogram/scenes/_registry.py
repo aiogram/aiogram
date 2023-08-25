@@ -42,16 +42,16 @@ class SceneRegistry:
             router = self.router
 
         for scene in scenes:
-            if scene.__aiogram_scene_name__ in self._scenes:
-                raise ValueError(f"Scene {scene.__aiogram_scene_name__} already exists")
+            if scene.__scene_config__.name in self._scenes:
+                raise ValueError(f"Scene {scene.__scene_config__.name} already exists")
 
-            self._scenes[scene.__aiogram_scene_name__] = scene
+            self._scenes[scene.__scene_config__.name] = scene
 
             router.include_router(scene.as_router())
 
     def get(self, scene: Union[Type[Scene], str]) -> Type[Scene]:
         if inspect.isclass(scene) and issubclass(scene, Scene):
-            target = scene.__aiogram_scene_name__
+            target = scene.__scene_config__.name
             check_class = True
         else:
             target = scene
