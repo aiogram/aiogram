@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, Union, Type, Optional
 
 from aiogram.fsm.context import FSMContext
 from aiogram.types import TelegramObject, Update
@@ -11,7 +11,7 @@ if TYPE_CHECKING:
     from ._scene import Scene
 
 
-class SceneManager:
+class Wizard:
     def __init__(
         self,
         registry: SceneRegistry,
@@ -28,23 +28,23 @@ class SceneManager:
 
         self._history = HistoryManager(self.context)
 
-    async def _get_scene(self, scene_type: type[Scene] | str) -> Scene:
+    async def _get_scene(self, scene_type: Union[Scene, str]) -> Scene:
         scene_type = self.registry.get(scene_type)
         return scene_type(
-            manager=self,
+            wizard=self,
             update=self.update,
             event=self.event,
             context=self.context,
             data=self.data,
         )
 
-    async def _get_active_scene(self) -> Scene | None:
+    async def _get_active_scene(self) -> Optional[Scene, None]:
         state = await self.context.get_state()
         if state is None:
             return None
         return await self._get_scene(state)
 
-    async def enter(self, scene_type: type[Scene] | str, **kwargs: Any) -> None:
+    async def enter(self, scene_type: Union[Type[Scene], str], **kwargs: Any) -> None:
         active_scene = await self._get_active_scene()
         if active_scene is not None:
             await active_scene.leave(**kwargs)

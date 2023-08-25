@@ -3,11 +3,11 @@ from __future__ import annotations
 import inspect
 from typing import Any, Dict, Optional, Type, Union
 
-from aiogram import Dispatcher, Router
+from aiogram import Router
 
 from ..dispatcher.event.bases import NextMiddlewareType
 from ..types import TelegramObject
-from ._manager import SceneManager
+from ._wizard import Wizard
 from ._scene import Scene
 
 
@@ -22,28 +22,13 @@ class SceneRegistry:
 
         self._scenes: Dict[str, Type[Scene]] = {}
 
-    async def _error_middleware(
-        self,
-        handler: NextMiddlewareType[TelegramObject],
-        event: TelegramObject,
-        data: Dict[str, Any],
-    ) -> Any:
-        data["scenes"] = SceneManager(
-            registry=self,
-            update=event.update,
-            event=event,
-            context=data["state"],
-            data=data,
-        )
-        return await handler(event, data)
-
     async def _middleware(
         self,
         handler: NextMiddlewareType[TelegramObject],
         event: TelegramObject,
         data: Dict[str, Any],
     ) -> Any:
-        data["scenes"] = SceneManager(
+        data["wizard"] = Wizard(
             registry=self,
             update=data["event_update"],
             event=event,

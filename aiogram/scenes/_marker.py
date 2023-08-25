@@ -1,17 +1,9 @@
 from __future__ import annotations
 
-import inspect
-from collections import defaultdict
-from enum import Enum, auto
-from typing import TYPE_CHECKING, Dict, Tuple, Type, Union, Optional
+from typing import Union, Optional
 
-from typing_extensions import Self
-
-from aiogram.dispatcher.event.handler import CallableObject, CallbackType
-from aiogram.types import TelegramObject
-
-if TYPE_CHECKING:
-    from ._scene import Scene
+from aiogram.dispatcher.event.handler import CallbackType
+from ._scene import Scene, ObserverDecorator, SceneAction
 
 
 class ObserverMarker:
@@ -21,10 +13,32 @@ class ObserverMarker:
     def __call__(
         self,
         *filters: CallbackType,
+        goto: Optional[Union[Scene, str]] = None,
+        exit_: bool = False,
+        leave: bool = False,
+        back: bool = False,
     ) -> ObserverDecorator:
+        # Check that only one action is specified
+        if sum((goto is not None, exit_, leave, back)) > 1:
+            raise ValueError("Only one action is allowed")
+
+        scene = None
+        action_after = None
+        if goto is not None:
+            action_after = SceneAction.enter
+            scene = goto
+        elif exit_:
+            action_after = SceneAction.exit
+        elif leave:
+            action_after = SceneAction.leave
+        elif back:
+            action_after = SceneAction.back
+
         return ObserverDecorator(
             self.name,
             filters,
+            action_after=action_after,
+            scene=scene,
         )
 
     def enter(self, *filters: CallbackType) -> ObserverDecorator:
@@ -38,118 +52,6 @@ class ObserverMarker:
 
     def back(self) -> ObserverDecorator:
         return ObserverDecorator(self.name, (), action=SceneAction.back)
-
-
-class ObserverDecorator:
-    def __init__(
-        self,
-        name: str,
-        filters: tuple[CallbackType, ...],
-        action: SceneAction | None = None,
-    ) -> None:
-        self.name = name
-        self.filters = filters
-        self.action = action
-
-    def _wrap_class(self, target: Type[Scene]) -> None:
-        from ._scene import Scene
-
-        if not issubclass(target, Scene):
-            raise TypeError("Only subclass of Scene is allowed")
-        if self.action is not None:
-            raise TypeError("This action is not allowed for class")
-
-        filters = getattr(target, "__aiogram_filters__", None)
-        if filters is None:
-            filters = defaultdict(list)
-            setattr(target, "__aiogram_filters__", filters)
-        filters[self.name].extend(self.filters)
-
-    def _wrap_filter(self, target: Type[Scene] | CallbackType) -> None:
-        setattr(target, "__aiogram_handler__", True)
-
-        filters = getattr(target, "__aiogram_filters__", None)
-        if filters is None:
-            filters = defaultdict(list)
-            setattr(target, "__aiogram_filters__", filters)
-        filters[self.name].extend(self.filters)
-
-    def _wrap_action(self, target: Type[Scene] | CallbackType) -> None:
-        action = getattr(target, "__aiogram_action__", None)
-        if action is None:
-            action = defaultdict(dict)
-            setattr(target, "__aiogram_action__", action)
-        action[self.action][self.name] = CallableObject(target)
-
-    def __call__(self, target: Type[Scene] | CallbackType) -> Type[Scene] | CallbackType:
-        if inspect.isclass(target):
-            self._wrap_class(target)
-        elif inspect.isfunction(target):
-            if self.action is None:
-                self._wrap_filter(target)
-            else:
-                self._wrap_action(target)
-        return target
-
-    def leave(self) -> ActionContainer:
-        return ActionContainer(self.name, self.filters, SceneAction.leave)
-
-    def enter(self, target: Type[Scene]) -> ActionContainer:
-        return ActionContainer(self.name, self.filters, SceneAction.enter, target)
-
-    def exit(self) -> ActionContainer:
-        return ActionContainer(self.name, self.filters, SceneAction.exit)
-
-    def back(self) -> ActionContainer:
-        return ActionContainer(self.name, self.filters, SceneAction.back)
-
-
-class SceneAction(Enum):
-    enter = auto()
-    leave = auto()
-    exit = auto()
-    back = auto()
-
-
-class ActionContainer:
-    def __init__(
-        self,
-        name: str,
-        filters: Tuple[CallbackType, ...],
-        action: SceneAction,
-        target: Type[Scene] | None = None,
-    ) -> None:
-        self.name = name
-        self.filters = filters
-        self.action = action
-        self.target = target
-
-    async def __call__(
-        self,
-        scene: Scene,
-        event: TelegramObject,
-    ) -> None:
-        if self.action == SceneAction.enter and self.target is not None:
-            await scene.goto(self.target)
-        elif self.action == SceneAction.leave:
-            await scene.leave()
-        elif self.action == SceneAction.exit:
-            await scene.exit()
-        elif self.action == SceneAction.back:
-            await scene.back()
-
-    @property
-    def __aiogram_filters__(self) -> Dict[str, Tuple[CallbackType, ...]]:
-        return {self.name: self.filters}
-
-    def __await__(self) -> Self:
-        return self
-
-
-class ControlActionContainer:
-    def __init__(self, name: str, action: SceneAction) -> None:
-        self.name = name
-        self.action = action
 
 
 class OnMarker:
