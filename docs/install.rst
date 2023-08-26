@@ -24,7 +24,7 @@ From PyPI
 
 .. code-block:: bash
 
-    pip install -U --pre aiogram
+    pip install -U aiogram
 
 From GitHub
 -----------

@@ -1,3 +1,5 @@
+.. _Filtering events:
+
 ================
 Filtering events
 ================

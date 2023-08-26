@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-30 18:31+0300\n"
+"POT-Creation-Date: 2023-08-26 23:17+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -99,17 +99,24 @@ msgid ""
 "accessed via :code:`data[\"bot\"]`."
 msgstr ""
 
-#: ../../migration_2_to_3.rst:46
+#: ../../migration_2_to_3.rst:43
+msgid ""
+"Now to skip pending updates, you should call the "
+":class:`aiogram.methods.delete_webhook.DeleteWebhook` method directly "
+"instead of passing :code:`skip_updates=True` to start polling method."
+msgstr ""
+
+#: ../../migration_2_to_3.rst:47
 msgid "Filtering events"
 msgstr ""
 
-#: ../../migration_2_to_3.rst:48
+#: ../../migration_2_to_3.rst:49
 msgid ""
 "Keyword filters can no more be used, use filters explicitly. (`Read more "
 "» <https://github.com/aiogram/aiogram/issues/942>`_)"
 msgstr ""
 
-#: ../../migration_2_to_3.rst:49
+#: ../../migration_2_to_3.rst:50
 msgid ""
 "In due to keyword filters was removed all enabled by default filters "
 "(state and content_type now is not enabled), so you should specify them "
@@ -118,19 +125,19 @@ msgid ""
 "use :code:`@router.message(F.photo)`"
 msgstr ""
 
-#: ../../migration_2_to_3.rst:53
+#: ../../migration_2_to_3.rst:54
 msgid ""
 "Most of common filters is replaced by \"magic filter\". (:ref:`Read more "
 "» <magic-filters>`)"
 msgstr ""
 
-#: ../../migration_2_to_3.rst:54
+#: ../../migration_2_to_3.rst:55
 msgid ""
 "Now by default message handler receives any content type, if you want "
 "specific one just add the filters (Magic or any other)"
 msgstr ""
 
-#: ../../migration_2_to_3.rst:56
+#: ../../migration_2_to_3.rst:57
 msgid ""
 "State filter now is not enabled by default, that's mean if you using "
 ":code:`state=\"*\"` in v2 then you should not pass any state filter in "
@@ -138,38 +145,38 @@ msgid ""
 "specify the state."
 msgstr ""
 
-#: ../../migration_2_to_3.rst:59
+#: ../../migration_2_to_3.rst:60
 msgid ""
 "Added possibility to register per-router global filters, that helps to "
 "reduces the number of repetitions in the code and makes easily way to "
 "control for what each router will be used."
 msgstr ""
 
-#: ../../migration_2_to_3.rst:65
+#: ../../migration_2_to_3.rst:66
 msgid "Bot API"
 msgstr ""
 
-#: ../../migration_2_to_3.rst:67
+#: ../../migration_2_to_3.rst:68
 msgid ""
 "Now all API methods is classes with validation (via `pydantic "
 "<https://docs.pydantic.dev/>`_) (all API calls is also available as "
 "methods in the Bot class)."
 msgstr ""
 
-#: ../../migration_2_to_3.rst:69
+#: ../../migration_2_to_3.rst:70
 msgid ""
 "Added more pre-defined Enums and moved into `aiogram.enums` sub-package. "
 "For example chat type enum now is :class:`aiogram.enums.ChatType` instead"
 " of :class:`aiogram.types.chat.ChatType`. (:ref:`Read more » <enums>`)"
 msgstr ""
 
-#: ../../migration_2_to_3.rst:72
+#: ../../migration_2_to_3.rst:73
 msgid ""
 "Separated HTTP client session into container that can be reused between "
 "different Bot instances in the application."
 msgstr ""
 
-#: ../../migration_2_to_3.rst:74
+#: ../../migration_2_to_3.rst:75
 msgid ""
 "API Exceptions is no more classified by specific message in due to "
 "Telegram has no documented error codes. But all errors is classified by "
@@ -179,17 +186,17 @@ msgid ""
 "types>`)"
 msgstr ""
 
-#: ../../migration_2_to_3.rst:81
+#: ../../migration_2_to_3.rst:82
 msgid "Middlewares"
 msgstr ""
 
-#: ../../migration_2_to_3.rst:83
+#: ../../migration_2_to_3.rst:84
 msgid ""
 "Middlewares can now control a execution context, e.g. using context "
 "managers (:ref:`Read more » <middlewares>`)"
 msgstr ""
 
-#: ../../migration_2_to_3.rst:84
+#: ../../migration_2_to_3.rst:85
 msgid ""
 "All contextual data now is shared between middlewares, filters and "
 "handlers to end-to-end use. For example now you can easily pass some data"
@@ -197,75 +204,102 @@ msgid ""
 "same way as in the handlers via keyword arguments."
 msgstr ""
 
-#: ../../migration_2_to_3.rst:87
+#: ../../migration_2_to_3.rst:88
 msgid ""
 "Added mechanism named **flags**, that helps to customize handler behavior"
 " in conjunction with middlewares. (:ref:`Read more » <flags>`)"
 msgstr ""
 
-#: ../../migration_2_to_3.rst:92
+#: ../../migration_2_to_3.rst:93
 msgid "Keyboard Markup"
 msgstr ""
 
-#: ../../migration_2_to_3.rst:94
+#: ../../migration_2_to_3.rst:95
 msgid ""
 "Now :class:`aiogram.types.inline_keyboard_markup.InlineKeyboardMarkup` "
 "and :class:`aiogram.types.reply_keyboard_markup.ReplyKeyboardMarkup` has "
 "no methods to extend it, instead you have to use markup builders "
 ":class:`aiogram.utils.keyboard.ReplyKeyboardBuilder` and "
 ":class:`aiogram.utils.keyboard.KeyboardBuilder` respectively (:ref:`Read "
-"more » <keyboard-builder>`)"
+"more » <Keyboard builder>`)"
 msgstr ""
 
-#: ../../migration_2_to_3.rst:102
+#: ../../migration_2_to_3.rst:103
 msgid "Callbacks data"
 msgstr ""
 
-#: ../../migration_2_to_3.rst:104
+#: ../../migration_2_to_3.rst:105
 msgid ""
 "Callback data factory now is strictly typed via `pydantic "
-"<https://docs.pydantic.dev/>`_ models (:ref:`Read more » <callback-data-"
+"<https://docs.pydantic.dev/>`_ models (:ref:`Read more » <Callback data "
 "factory>`)"
 msgstr ""
 
-#: ../../migration_2_to_3.rst:109
+#: ../../migration_2_to_3.rst:110
 msgid "Finite State machine"
 msgstr ""
 
-#: ../../migration_2_to_3.rst:111
+#: ../../migration_2_to_3.rst:112
 msgid ""
 "State filter will no more added to all handlers, you will need to specify"
 " state if you want"
 msgstr ""
 
-#: ../../migration_2_to_3.rst:112
+#: ../../migration_2_to_3.rst:113
 msgid ""
 "Added possibility to change FSM strategy, for example if you want to "
 "control state for each user in chat topics instead of user in chat you "
 "can specify it in the Dispatcher."
 msgstr ""
 
-#: ../../migration_2_to_3.rst:117
+#: ../../migration_2_to_3.rst:115
+msgid ""
+"Now :class:`aiogram.fsm.state.State` and "
+":class:`aiogram.fsm.state.StateGroup` don't have helper methods like "
+":code:`.set()`, :code:`.next()`, etc."
+msgstr ""
+
+#: ../../migration_2_to_3.rst:118
+msgid ""
+"Instead of this you should set states by passing them directly to "
+":class:`aiogram.fsm.context.FSMContext` (:ref:`Read more » <Finite State "
+"Machine>`)"
+msgstr ""
+
+#: ../../migration_2_to_3.rst:120
+msgid ""
+"State proxy is deprecated, you should update the state data by calling "
+":code:`state.set_data(...)` and :code:`state.get_data()` respectively."
+msgstr ""
+
+#: ../../migration_2_to_3.rst:125
 msgid "Sending Files"
 msgstr ""
 
-#: ../../migration_2_to_3.rst:119
+#: ../../migration_2_to_3.rst:127
 msgid ""
 "From now you should wrap sending files into InputFile object before send "
 "instead of passing IO object directly to the API method. (:ref:`Read more"
 " » <sending-files>`)"
 msgstr ""
 
-#: ../../migration_2_to_3.rst:124
+#: ../../migration_2_to_3.rst:132
 msgid "Webhook"
 msgstr ""
 
-#: ../../migration_2_to_3.rst:126
+#: ../../migration_2_to_3.rst:134
 msgid "Simplified aiohttp web app configuration"
 msgstr ""
 
-#: ../../migration_2_to_3.rst:127
+#: ../../migration_2_to_3.rst:135
 msgid ""
 "By default added possibility to upload files when you use reply into "
 "webhook"
 msgstr ""
+
+#~ msgid ""
+#~ "Callback data factory now is strictly"
+#~ " typed via `pydantic "
+#~ "<https://docs.pydantic.dev/>`_ models (:ref:`Read "
+#~ "more » <callback-data-factory>`)"
+#~ msgstr ""
