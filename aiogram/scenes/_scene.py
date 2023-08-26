@@ -11,6 +11,7 @@ from typing_extensions import Self
 from aiogram import Dispatcher, Router, loggers
 from aiogram.dispatcher.event.bases import NextMiddlewareType
 from aiogram.dispatcher.event.handler import CallableObject, CallbackType
+from aiogram.exceptions import SceneException
 from aiogram.filters import StateFilter
 from aiogram.fsm.context import FSMContext
 from aiogram.scenes._history import HistoryManager
@@ -341,7 +342,7 @@ class SceneWizard:
 
     async def _on_action(self, action: SceneAction, **kwargs: Any) -> bool:
         if not self.scene:
-            raise ValueError("Scene is not initialized")
+            raise SceneException("Scene is not initialized")
 
         loggers.scene.debug("Call action %r in scene %r", action.name, self.scene_config.state)
         action_config = self.scene_config.actions.get(action, {})
@@ -387,7 +388,7 @@ class ScenesManager:
         update_type: str,
         event: TelegramObject,
         state: FSMContext,
-        data: dict[str, Any],
+        data: Dict[str, Any],
     ) -> None:
         self.registry = registry
         self.update_type = update_type
@@ -412,7 +413,10 @@ class ScenesManager:
 
     async def _get_active_scene(self) -> Optional[Scene]:
         state = await self.state.get_state()
-        return await self._get_scene(state)
+        try:
+            return await self._get_scene(state)
+        except SceneException:
+            return None
 
     async def enter(
         self,
@@ -420,24 +424,22 @@ class ScenesManager:
         _check_active: bool = True,
         **kwargs: Any,
     ) -> None:
-        scene = await self._get_scene(scene_type)
-
         if _check_active:
             active_scene = await self._get_active_scene()
             if active_scene is not None:
                 await active_scene.wizard.exit(**kwargs)
 
-        if not scene:
-            loggers.scene.debug("Reset state")
+        try:
+            scene = await self._get_scene(scene_type)
+        except SceneException:
+            if scene_type is not None:
+                raise
             await self.state.set_state(None)
         else:
             await scene.wizard.enter(**kwargs)
 
     async def close(self, **kwargs: Any) -> None:
-        try:
-            scene = await self._get_active_scene()
-        except ValueError:
-            return
+        scene = await self._get_active_scene()
         if not scene:
             return
         await scene.wizard.exit(**kwargs)
@@ -501,7 +503,9 @@ class SceneRegistry:
 
         for scene in scenes:
             if scene.__scene_config__.state in self._scenes:
-                raise ValueError(f"Scene {scene.__scene_config__.state} already exists")
+                raise SceneException(
+                    f"Scene with state {scene.__scene_config__.state!r} already exists"
+                )
 
             self._scenes[scene.__scene_config__.state] = scene
 
@@ -511,12 +515,12 @@ class SceneRegistry:
         if inspect.isclass(scene) and issubclass(scene, Scene):
             scene = scene.__scene_config__.state
         if scene is not None and not isinstance(scene, str):
-            raise TypeError("Scene must be a subclass of Scene or a string")
+            raise SceneException("Scene must be a subclass of Scene or a string")
 
         try:
             return self._scenes[scene]
         except KeyError:
-            raise ValueError(f"Scene {scene!r} is not registered")
+            raise SceneException(f"Scene {scene!r} is not registered")
 
 
 @dataclass
