@@ -48,7 +48,7 @@ def italic(*content: Any, sep: str = " ") -> str:
     :param sep:
     :return:
     """
-    return markdown_decoration.italic(value=html_decoration.quote(_join(*content, sep=sep)))
+    return markdown_decoration.italic(value=markdown_decoration.quote(_join(*content, sep=sep)))
 
 
 def hitalic(*content: Any, sep: str = " ") -> str:
