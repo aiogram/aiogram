@@ -2864,7 +2864,11 @@ class Message(TelegramObject):
         }
 
         if self.text:
-            return SendMessage(text=self.text, entities=self.entities, **kwargs).as_(self._bot)
+            return SendMessage(
+                text=self.text,
+                entities=self.entities,
+                **kwargs,
+            ).as_(self._bot)
         if self.audio:
             return SendAudio(
                 audio=self.audio.file_id,
@@ -2897,7 +2901,10 @@ class Message(TelegramObject):
                 **kwargs,
             ).as_(self._bot)
         if self.sticker:
-            return SendSticker(sticker=self.sticker.file_id, **kwargs)
+            return SendSticker(
+                sticker=self.sticker.file_id,
+                **kwargs,
+            ).as_(self._bot)
         if self.video:
             return SendVideo(
                 video=self.video.file_id,
@@ -2906,9 +2913,15 @@ class Message(TelegramObject):
                 **kwargs,
             ).as_(self._bot)
         if self.video_note:
-            return SendVideoNote(video_note=self.video_note.file_id, **kwargs).as_(self._bot)
+            return SendVideoNote(
+                video_note=self.video_note.file_id,
+                **kwargs,
+            ).as_(self._bot)
         if self.voice:
-            return SendVoice(voice=self.voice.file_id, **kwargs).as_(self._bot)
+            return SendVoice(
+                voice=self.voice.file_id,
+                **kwargs,
+            ).as_(self._bot)
         if self.contact:
             return SendContact(
                 phone_number=self.contact.phone_number,
@@ -2929,7 +2942,9 @@ class Message(TelegramObject):
             ).as_(self._bot)
         if self.location:
             return SendLocation(
-                latitude=self.location.latitude, longitude=self.location.longitude, **kwargs
+                latitude=self.location.latitude,
+                longitude=self.location.longitude,
+                **kwargs,
             ).as_(self._bot)
         if self.poll:
             return SendPoll(
@@ -2938,7 +2953,9 @@ class Message(TelegramObject):
                 **kwargs,
             ).as_(self._bot)
         if self.dice:  # Dice value can't be controlled
-            return SendDice(**kwargs).as_(self._bot)
+            return SendDice(
+                **kwargs,
+            ).as_(self._bot)
 
         raise TypeError("This type of message can't be copied.")
 
