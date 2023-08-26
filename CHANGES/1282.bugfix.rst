@@ -1,0 +1,1 @@
+Italic markdown from utils now uses correct decorators
