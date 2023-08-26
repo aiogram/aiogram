@@ -4,22 +4,11 @@ import inspect
 from collections import defaultdict
 from dataclasses import dataclass
 from enum import Enum, auto
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    ClassVar,
-    Dict,
-    List,
-    Optional,
-    Tuple,
-    Type,
-    Union,
-    cast,
-)
+from typing import Any, ClassVar, Dict, List, Optional, Tuple, Type, Union
 
 from typing_extensions import Self
 
-from aiogram import Router, loggers
+from aiogram import Dispatcher, Router, loggers
 from aiogram.dispatcher.event.bases import NextMiddlewareType
 from aiogram.dispatcher.event.handler import CallableObject, CallbackType
 from aiogram.filters import StateFilter
@@ -325,24 +314,23 @@ class SceneWizard:
         await self.state.set_state(self.scene_config.state)
         await self._on_action(SceneAction.enter, **kwargs)
 
-    async def leave(self, **kwargs: Any) -> None:
+    async def leave(self, _with_history: bool = True, **kwargs: Any) -> None:
         loggers.scene.debug("Leaving scene %r", self.scene_config.state)
-        await self.manager.history.snapshot()
+        if _with_history:
+            await self.manager.history.snapshot()
         await self._on_action(SceneAction.leave, **kwargs)
 
     async def exit(self, **kwargs: Any) -> None:
         loggers.scene.debug("Exiting scene %r", self.scene_config.state)
-        await self.state.set_state(None)
         await self.manager.history.clear()
         await self._on_action(SceneAction.exit, **kwargs)
-        await self.manager.enter(None, _check_active=False, _with_history=False, **kwargs)
+        await self.manager.enter(None, _check_active=False, **kwargs)
 
     async def back(self, **kwargs: Any) -> None:
         loggers.scene.debug("Back to previous scene from scene %s", self.scene_config.state)
-        await self.leave()
-        await self.manager.history.rollback()
+        await self.leave(_with_history=False, **kwargs)
         new_scene = await self.manager.history.rollback()
-        await self.manager.enter(new_scene, _check_active=False, _with_history=False, **kwargs)
+        await self.manager.enter(new_scene, _check_active=False, **kwargs)
 
     async def replay(self, event: TelegramObject) -> None:
         await self._on_action(SceneAction.enter, event=event)
@@ -430,16 +418,20 @@ class ScenesManager:
         self,
         scene_type: Optional[Union[Type[Scene], str]],
         _check_active: bool = True,
-        _with_history: bool = True,
         **kwargs: Any,
     ) -> None:
         scene = await self._get_scene(scene_type)
+
         if _check_active:
             active_scene = await self._get_active_scene()
             if active_scene is not None:
                 await active_scene.wizard.exit(**kwargs)
 
-        await scene.wizard.enter(_with_history=_with_history, **kwargs)
+        if not scene:
+            loggers.scene.debug("Reset state")
+            await self.state.set_state(None)
+        else:
+            await scene.wizard.enter(**kwargs)
 
     async def close(self, **kwargs: Any) -> None:
         try:
@@ -454,13 +446,38 @@ class ScenesManager:
 class SceneRegistry:
     def __init__(self, router: Router) -> None:
         self.router = router
+        self._scenes: Dict[Optional[str], Type[Scene]] = {}
+
+        self._setup_middleware(router)
+
+    def _setup_middleware(self, router: Router) -> None:
+        if isinstance(router, Dispatcher):
+            # Small optimization for Dispatcher
+            # - we don't need to set up middleware for all observers
+            router.update.outer_middleware(self._update_middleware)
+            return
 
         for observer in router.observers.values():
             if observer.event_name in {"update", "error"}:
                 continue
             observer.outer_middleware(self._middleware)
 
-        self._scenes: Dict[Optional[str], Type[Scene]] = {}
+    async def _update_middleware(
+        self,
+        handler: NextMiddlewareType[TelegramObject],
+        event: TelegramObject,
+        data: Dict[str, Any],
+    ) -> Any:
+        assert isinstance(event, Update), "Event must be an Update instance"
+
+        data["scenes"] = ScenesManager(
+            registry=self,
+            update_type=event.event_type,
+            event=event.event,
+            state=data["state"],
+            data=data,
+        )
+        return await handler(event, data)
 
     async def _middleware(
         self,
@@ -497,11 +514,9 @@ class SceneRegistry:
             raise TypeError("Scene must be a subclass of Scene or a string")
 
         try:
-            result = self._scenes[scene]
+            return self._scenes[scene]
         except KeyError:
             raise ValueError(f"Scene {scene!r} is not registered")
-
-        return result
 
 
 @dataclass

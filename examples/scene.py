@@ -37,11 +37,7 @@ class CancellableScene(Scene):
 
     @on.message(F.text.casefold() == BUTTON_BACK.text.casefold(), after=After.back())
     async def handle_back(self, message: Message):
-        await message.answer("Back.", reply_markup=ReplyKeyboardRemove())
-
-    @on.message.exit()
-    async def on_exit(self, message: Message):
-        await self.wizard.clear_data()
+        await message.answer("Back.")
 
 
 class LanguageScene(CancellableScene, state="language"):
@@ -99,10 +95,7 @@ class LikeBotsScene(CancellableScene, state="like_bots"):
 
     @on.message(F.text.casefold() == "yes", after=After.goto(LanguageScene))
     async def process_like_write_bots(self, message: Message):
-        await message.reply(
-            "Cool! I'm too!",
-            reply_markup=ReplyKeyboardRemove(),
-        )
+        await message.reply("Cool! I'm too!")
 
     @on.message(F.text.casefold() == "no", after=After.exit())
     async def process_dont_like_write_bots(self, message: Message):
@@ -135,10 +128,9 @@ class NameScene(CancellableScene, state="name"):
 
     @on.message.leave()  # Marker for handler that should be called when a user leaves the scene.
     async def on_leave(self, message: Message):
-        await message.answer(
-            f"Nice to meet you, {html.quote(message.text)}!",
-            reply_markup=ReplyKeyboardRemove(),
-        )
+        data: FSMData = await self.wizard.get_data()
+        name = data.get("name", "Anonymous")
+        await message.answer(f"Nice to meet you, {html.quote(name)}!")
 
     @on.message(after=After.goto(LikeBotsScene))
     async def input_name(self, message: Message):
