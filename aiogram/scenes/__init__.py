@@ -2,14 +2,13 @@ from __future__ import annotations
 
 __all__ = [
     "Scene",
+    "ScenesManager",
     "SceneRegistry",
-    "Wizard",
+    "OnMarker",
+    "After",
     "on",
 ]
 
-from ._wizard import Wizard
-from ._marker import OnMarker
-from ._registry import SceneRegistry
-from ._scene import Scene
+from ._scene import After, OnMarker, Scene, SceneRegistry, ScenesManager
 
 on = OnMarker()
