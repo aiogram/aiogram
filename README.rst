@@ -1,6 +1,6 @@
-#######################
-aiogram |version badge|
-#######################
+#######
+aiogram
+#######
 
 .. image:: https://img.shields.io/pypi/l/aiogram.svg?style=flat-square
     :target: https://opensource.org/licenses/MIT
@@ -78,7 +78,3 @@ Features
     - 🇮🇷 `@aiogram_fa <https://t.me/aiogram_fa>`_
     - 🇮🇹 `@aiogram_it <https://t.me/aiogram_it>`_
     - 🇧🇷 `@aiogram_br <https://t.me/aiogram_br>`_
-
-
-.. |version badge| image:: https://img.shields.io/badge/-release%20candidate-yellow
-  :alt: Release Candidate badge
