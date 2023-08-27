@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import datetime
 from typing import TYPE_CHECKING, Any, Literal
 
 from ..enums import ChatMemberStatus
