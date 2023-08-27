@@ -4,6 +4,7 @@ import datetime
 from typing import TYPE_CHECKING, Any, List, Optional, Union
 
 from .base import TelegramObject
+from .custom import DateTime
 
 if TYPE_CHECKING:
     from ..methods import (
@@ -70,7 +71,7 @@ class Chat(TelegramObject):
     """*Optional*. If non-empty, the list of all `active chat usernames <https://telegram.org/blog/topics-in-groups-collectible-usernames#collectible-usernames>`_; for private chats, supergroups and channels. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
     emoji_status_custom_emoji_id: Optional[str] = None
     """*Optional*. Custom emoji identifier of emoji status of the other party in a private chat. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
-    emoji_status_expiration_date: Optional[datetime.datetime] = None
+    emoji_status_expiration_date: Optional[DateTime] = None
     """*Optional*. Expiration date of the emoji status of the other party in a private chat, if any. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
     bio: Optional[str] = None
     """*Optional*. Bio of the other party in a private chat. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
@@ -126,7 +127,7 @@ class Chat(TelegramObject):
             photo: Optional[ChatPhoto] = None,
             active_usernames: Optional[List[str]] = None,
             emoji_status_custom_emoji_id: Optional[str] = None,
-            emoji_status_expiration_date: Optional[datetime.datetime] = None,
+            emoji_status_expiration_date: Optional[DateTime] = None,
             bio: Optional[str] = None,
             has_private_forwards: Optional[bool] = None,
             has_restricted_voice_and_video_messages: Optional[bool] = None,

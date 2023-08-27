@@ -45,6 +45,7 @@ dependencies = [
     "pydantic>=2.1.1,<3",
     "aiofiles~=23.1.0",
     "certifi>=2023.7.22",
+    "typing-extensions~=4.7.1",
 ]
 dynamic = ["version"]
 
@@ -102,7 +103,6 @@ dev = [
     "pre-commit~=3.3.3",
     "towncrier~=23.6.0",
     "packaging~=23.0",
-    "typing-extensions~=4.7.1",
 ]
 
 [project.urls]

@@ -2,5 +2,5 @@ annotations:
   last_error_date: &date
     parsed_type:
       type: std
-      name: datetime.datetime
+      name: DateTime
   last_synchronization_error_date: *date

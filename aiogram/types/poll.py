@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-import datetime
 from typing import TYPE_CHECKING, Any, List, Optional
 
 from .base import TelegramObject
+from .custom import DateTime
 
 if TYPE_CHECKING:
     from .message_entity import MessageEntity
@@ -41,7 +41,7 @@ class Poll(TelegramObject):
     """*Optional*. Special entities like usernames, URLs, bot commands, etc. that appear in the *explanation*"""
     open_period: Optional[int] = None
     """*Optional*. Amount of time in seconds the poll will be active after creation"""
-    close_date: Optional[datetime.datetime] = None
+    close_date: Optional[DateTime] = None
     """*Optional*. Point in time (Unix timestamp) when the poll will be automatically closed"""
 
     if TYPE_CHECKING:
@@ -63,7 +63,7 @@ class Poll(TelegramObject):
             explanation: Optional[str] = None,
             explanation_entities: Optional[List[MessageEntity]] = None,
             open_period: Optional[int] = None,
-            close_date: Optional[datetime.datetime] = None,
+            close_date: Optional[DateTime] = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!
