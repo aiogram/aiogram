@@ -2,4 +2,4 @@ annotations:
   start_date:
     parsed_type:
       type: std
-      name: datetime.datetime
+      name: DateTime

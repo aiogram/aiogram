@@ -1,7 +1,7 @@
-import datetime
-from typing import Annotated
+from datetime import datetime
 
 from pydantic import PlainSerializer
+from typing_extensions import Annotated
 
 # Make datetime compatible with Telegram Bot API (unixtime)
 DateTime = Annotated[
@@ -12,6 +12,3 @@ DateTime = Annotated[
         when_used="json-unless-none",
     ),
 ]
-
-# Make string compatible with custom lazy proxy
-# String = Union[str, LazyProxy]

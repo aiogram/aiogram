@@ -18,6 +18,7 @@ from .base import (
     UNSET_PROTECT_CONTENT,
     TelegramObject,
 )
+from .custom import DateTime
 
 if TYPE_CHECKING:
     from ..methods import (
@@ -109,7 +110,7 @@ class Message(TelegramObject):
 
     message_id: int
     """Unique message identifier inside this chat"""
-    date: datetime.datetime
+    date: DateTime
     """Date the message was sent in Unix time"""
     chat: Chat
     """Conversation the message belongs to"""
@@ -129,7 +130,7 @@ class Message(TelegramObject):
     """*Optional*. For forwarded messages that were originally sent in channels or by an anonymous chat administrator, signature of the message sender if present"""
     forward_sender_name: Optional[str] = None
     """*Optional*. Sender's name for messages forwarded from users who disallow adding a link to their account in forwarded messages"""
-    forward_date: Optional[datetime.datetime] = None
+    forward_date: Optional[DateTime] = None
     """*Optional*. For forwarded messages, date the original message was sent in Unix time"""
     is_topic_message: Optional[bool] = None
     """*Optional*. :code:`True`, if the message is sent to a forum topic"""
@@ -260,7 +261,7 @@ class Message(TelegramObject):
             __pydantic__self__,
             *,
             message_id: int,
-            date: datetime.datetime,
+            date: DateTime,
             chat: Chat,
             message_thread_id: Optional[int] = None,
             from_user: Optional[User] = None,
@@ -270,7 +271,7 @@ class Message(TelegramObject):
             forward_from_message_id: Optional[int] = None,
             forward_signature: Optional[str] = None,
             forward_sender_name: Optional[str] = None,
-            forward_date: Optional[datetime.datetime] = None,
+            forward_date: Optional[DateTime] = None,
             is_topic_message: Optional[bool] = None,
             is_automatic_forward: Optional[bool] = None,
             reply_to_message: Optional[Message] = None,
