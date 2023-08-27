@@ -1,0 +1,1 @@
+Fixed magic :code:`.as_(...)` operation for values that can be interpreted as `False` (e.g. `0`).

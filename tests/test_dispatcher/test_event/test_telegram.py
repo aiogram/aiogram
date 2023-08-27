@@ -5,14 +5,13 @@ from typing import Any, Dict, NoReturn, Optional, Union
 import pytest
 from pydantic import BaseModel
 
-from aiogram.dispatcher.event.bases import SkipHandler, UNHANDLED
+from aiogram.dispatcher.event.bases import UNHANDLED, SkipHandler
 from aiogram.dispatcher.event.handler import HandlerObject
 from aiogram.dispatcher.event.telegram import TelegramEventObserver
 from aiogram.dispatcher.router import Router
 from aiogram.exceptions import UnsupportedKeywordArgument
 from aiogram.filters import Filter
 from aiogram.types import Chat, Message, User
-
 
 # TODO: Test middlewares in routers tree
 

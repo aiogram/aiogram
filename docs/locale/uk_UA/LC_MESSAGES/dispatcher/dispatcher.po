@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  aiogram\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-30 18:31+0300\n"
+"POT-Creation-Date: 2023-08-26 23:17+0300\n"
 "PO-Revision-Date: 2022-12-10 19:44+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -38,12 +38,13 @@ msgstr ""
 "обробників, фільтрів і т.п. ви можете знайти на наступних сторінках:"
 
 #: ../../dispatcher/dispatcher.rst:9
-msgid "`Router <router.html>`__"
+#, fuzzy
+msgid ":ref:`Router <Router>`"
 msgstr "`Router <router.html>`__"
 
 #: ../../dispatcher/dispatcher.rst:10
-msgid "`Observer <observer.html>`__"
-msgstr "`Observer <observer.html>`__"
+msgid ":ref:`Filtering events`"
+msgstr ""
 
 #: aiogram.dispatcher.dispatcher.Dispatcher:1
 #: aiogram.dispatcher.dispatcher.Dispatcher.__init__:1 of
@@ -186,3 +187,6 @@ msgstr ""
 
 #~ msgid "Poling timeout"
 #~ msgstr "Час очікування на відповідь"
+
+#~ msgid "`Observer <observer.html>`__"
+#~ msgstr "`Observer <observer.html>`__"

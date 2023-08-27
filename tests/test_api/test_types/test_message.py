@@ -61,6 +61,7 @@ from aiogram.types import (
     PollOption,
     ProximityAlertTriggered,
     Sticker,
+    Story,
     SuccessfulPayment,
     User,
     UserShared,
@@ -73,7 +74,6 @@ from aiogram.types import (
     VideoNote,
     Voice,
     WebAppData,
-    Story,
 )
 from aiogram.types.message import ContentType, Message
 

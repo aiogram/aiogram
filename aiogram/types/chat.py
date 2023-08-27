@@ -33,8 +33,8 @@ if TYPE_CHECKING:
         UnbanChatMember,
         UnbanChatSenderChat,
         UnpinAllChatMessages,
-        UnpinChatMessage,
         UnpinAllGeneralForumTopicMessages,
+        UnpinChatMessage,
     )
     from .chat_location import ChatLocation
     from .chat_permissions import ChatPermissions
