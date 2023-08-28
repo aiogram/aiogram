@@ -20,6 +20,9 @@ class TestTelegramMethodRemoveUnset:
         validated = TelegramMethod.remove_unset(values)
         assert set(validated.keys()) == names
 
+    def test_remove_unset_non_dict(self):
+        assert TelegramMethod.remove_unset("") == ""
+
 
 class TestTelegramMethodCall:
     async def test_async_emit_unsuccessful(self, bot: MockedBot):
