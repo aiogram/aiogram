@@ -61,6 +61,8 @@ class TelegramMethod(BotContextController, BaseModel, Generic[TelegramType], ABC
         but UNSET might be passing to a model initialization from `Bot.method_name`,
         so we must take care of it and remove it before fields validation.
         """
+        if not isinstance(values, dict):
+            return values
         return {k: v for k, v in values.items() if not isinstance(v, UNSET_TYPE)}
 
     if TYPE_CHECKING:
