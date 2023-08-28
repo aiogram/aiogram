@@ -4,14 +4,14 @@ Dispatcher
 
 Dispatcher is root :obj:`Router` and in code Dispatcher can be used directly for routing updates or attach another routers into dispatcher.
 
-Here is only listed base information about Dispatcher. All about writing handlers, filters and etc. you can found in next pages:
+Here is only listed base information about Dispatcher. All about writing handlers, filters and etc. you can find in next pages:
 
 - :ref:`Router <Router>`
 - :ref:`Filtering events`
 
 
 .. autoclass:: aiogram.dispatcher.dispatcher.Dispatcher
-    :members: __init__, feed_update, feed_raw_update, feed_webhook_update, start_polling, run_polling
+    :members: __init__, feed_update, feed_raw_update, feed_webhook_update, start_polling, run_polling, stop_polling
 
 
 Simple usage

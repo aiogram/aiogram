@@ -649,6 +649,7 @@ class TestMessage:
             [TEST_MESSAGE_CONTACT, SendContact],
             [TEST_MESSAGE_VENUE, SendVenue],
             [TEST_MESSAGE_LOCATION, SendLocation],
+            [TEST_MESSAGE_STORY, ForwardMessage],
             [TEST_MESSAGE_NEW_CHAT_MEMBERS, None],
             [TEST_MESSAGE_LEFT_CHAT_MEMBER, None],
             [TEST_MESSAGE_INVOICE, None],

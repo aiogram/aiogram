@@ -2804,6 +2804,7 @@ class Message(TelegramObject):
         allow_sending_without_reply: Optional[bool] = None,
         message_thread_id: Optional[int] = None,
     ) -> Union[
+        ForwardMessage,
         SendAnimation,
         SendAudio,
         SendContact,
@@ -2839,6 +2840,7 @@ class Message(TelegramObject):
         :return:
         """
         from ..methods import (
+            ForwardMessage,
             SendAnimation,
             SendAudio,
             SendContact,
@@ -2955,6 +2957,12 @@ class Message(TelegramObject):
             ).as_(self._bot)
         if self.dice:  # Dice value can't be controlled
             return SendDice(
+                **kwargs,
+            ).as_(self._bot)
+        if self.story:
+            return ForwardMessage(
+                from_chat_id=self.chat.id,
+                message_id=self.message_id,
                 **kwargs,
             ).as_(self._bot)
 
