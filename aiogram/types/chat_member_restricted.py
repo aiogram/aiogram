@@ -1,10 +1,10 @@
 from __future__ import annotations
 
-import datetime
 from typing import TYPE_CHECKING, Any, Literal
 
 from ..enums import ChatMemberStatus
 from .chat_member import ChatMember
+from .custom import DateTime
 
 if TYPE_CHECKING:
     from .user import User
@@ -51,7 +51,7 @@ class ChatMemberRestricted(ChatMember):
     """:code:`True`, if the user is allowed to pin messages"""
     can_manage_topics: bool
     """:code:`True`, if the user is allowed to create forum topics"""
-    until_date: datetime.datetime
+    until_date: DateTime
     """Date when restrictions will be lifted for this user; unix time. If 0, then the user is restricted forever"""
 
     if TYPE_CHECKING:
@@ -78,7 +78,7 @@ class ChatMemberRestricted(ChatMember):
             can_invite_users: bool,
             can_pin_messages: bool,
             can_manage_topics: bool,
-            until_date: datetime.datetime,
+            until_date: DateTime,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

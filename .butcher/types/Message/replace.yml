@@ -2,8 +2,8 @@ annotations:
   date:
     parsed_type:
       type: std
-      name: datetime.datetime
+      name: DateTime
   forward_date:
     parsed_type:
       type: std
-      name: datetime.datetime
+      name: DateTime

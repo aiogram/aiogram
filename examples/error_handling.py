@@ -3,7 +3,12 @@ import html
 import logging
 
 from aiogram import Bot, Dispatcher, types
-from aiogram.filters import Command, CommandObject, ExceptionMessageFilter, ExceptionTypeFilter
+from aiogram.filters import (
+    Command,
+    CommandObject,
+    ExceptionMessageFilter,
+    ExceptionTypeFilter,
+)
 from aiogram.types import ErrorEvent
 
 TOKEN = "42:TOKEN"

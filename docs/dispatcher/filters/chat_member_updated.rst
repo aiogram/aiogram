@@ -2,6 +2,27 @@
 ChatMemberUpdated
 =================
 
+Usage
+=====
+
+Handle user leave or join events
+
+.. code-block:: python
+
+    from aiogram.filters import IS_MEMBER, IS_NOT_MEMBER
+
+    @router.chat_member(ChatMemberUpdatedFilter(IS_MEMBER >> IS_NOT_MEMBER))
+    async def on_user_leave(event: ChatMemberUpdated): ...
+
+    @router.chat_member(ChatMemberUpdatedFilter(IS_NOT_MEMBER >> IS_MEMBER))
+    async def on_user_join(event: ChatMemberUpdated): ...
+
+Or construct your own terms via using pre-defined set of statuses and transitions.
+
+
+Explanation
+===========
+
 .. autoclass:: aiogram.filters.chat_member_updated.ChatMemberUpdatedFilter
     :members:
     :member-order: bysource
@@ -77,22 +98,6 @@ will produce swap of old and new statuses.
     Note that if you define the status unions (via :code:`|`) you will need to add brackets for the statement
     before use shift operator in due to operator priorities.
 
-Usage
-=====
-
-Handle user leave or join events
-
-.. code-block:: python
-
-    from aiogram.filters import IS_MEMBER, IS_NOT_MEMBER
-
-    @router.chat_member(ChatMemberUpdatedFilter(IS_MEMBER >> IS_NOT_MEMBER))
-    async def on_user_leave(event: ChatMemberUpdated): ...
-
-    @router.chat_member(ChatMemberUpdatedFilter(IS_NOT_MEMBER >> IS_MEMBER))
-    async def on_user_join(event: ChatMemberUpdated): ...
-
-Or construct your own terms via using pre-defined set of statuses and transitions.
 
 Allowed handlers
 ================

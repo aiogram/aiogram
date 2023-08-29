@@ -26,12 +26,12 @@ So, you can use both of them with *aiogram*.
 
     router
     dispatcher
-    class_based_handlers/index
+    dependency_injection
     filters/index
-    middlewares
-    finite_state_machine/index
-    flags
-    errors
     long_polling
     webhook
-    dependency_injection
+    finite_state_machine/index
+    middlewares
+    errors
+    flags
+    class_based_handlers/index

@@ -37,6 +37,7 @@ from .chat_photo import ChatPhoto
 from .chat_shared import ChatShared
 from .chosen_inline_result import ChosenInlineResult
 from .contact import Contact
+from .custom import DateTime
 from .dice import Dice
 from .document import Document
 from .downloadable import Downloadable
@@ -197,6 +198,7 @@ __all__ = (
     "ChosenInlineResult",
     "Contact",
     "ContentType",
+    "DateTime",
     "Dice",
     "Document",
     "Downloadable",

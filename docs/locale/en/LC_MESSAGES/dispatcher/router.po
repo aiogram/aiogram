@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-30 18:31+0300\n"
+"POT-Creation-Date: 2023-08-26 23:17+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,8 +17,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.12.1\n"
 
-#: ../../dispatcher/router.rst:3
+#: ../../dispatcher/router.rst:5
 msgid "Router"
+msgstr ""
+
+#: ../../dispatcher/router.rst:7
+msgid "Usage:"
 msgstr ""
 
 #: aiogram.dispatcher.router.Router:1 of
@@ -86,11 +90,11 @@ msgstr ""
 msgid "set of registered names"
 msgstr ""
 
-#: ../../dispatcher/router.rst:13
+#: ../../dispatcher/router.rst:29
 msgid "Event observers"
 msgstr ""
 
-#: ../../dispatcher/router.rst:17
+#: ../../dispatcher/router.rst:33
 msgid ""
 "All handlers always should be asynchronous. The name of the handler "
 "function is not important. The event argument name is also not important "
@@ -98,145 +102,145 @@ msgid ""
 " to function can not accept two arguments with the same name."
 msgstr ""
 
-#: ../../dispatcher/router.rst:20
+#: ../../dispatcher/router.rst:36
 msgid ""
 "Here is the list of available observers and examples of how to register "
 "handlers"
 msgstr ""
 
-#: ../../dispatcher/router.rst:22
+#: ../../dispatcher/router.rst:38
 msgid ""
 "In these examples only decorator-style registering handlers are used, but"
 " if you don't like @decorators just use :obj:`<event type>.register(...)`"
 " method instead."
 msgstr ""
 
-#: ../../dispatcher/router.rst:25
+#: ../../dispatcher/router.rst:41
 msgid "Message"
 msgstr ""
 
-#: ../../dispatcher/router.rst:30
+#: ../../dispatcher/router.rst:46
 msgid "Be attentive with filtering this event"
 msgstr ""
 
-#: ../../dispatcher/router.rst:32
+#: ../../dispatcher/router.rst:48
 msgid ""
 "You should expect that this event can be with different sets of "
 "attributes in different cases"
 msgstr ""
 
-#: ../../dispatcher/router.rst:34
+#: ../../dispatcher/router.rst:50
 msgid ""
 "(For example text, sticker and document are always of different content "
 "types of message)"
 msgstr ""
 
-#: ../../dispatcher/router.rst:36
+#: ../../dispatcher/router.rst:52
 msgid ""
 "Recommended way to check field availability before usage, for example via"
 " :ref:`magic filter <magic-filters>`: :code:`F.text` to handle text, "
 ":code:`F.sticker` to handle stickers only and etc."
 msgstr ""
 
-#: ../../dispatcher/router.rst:47
+#: ../../dispatcher/router.rst:63
 msgid "Edited message"
 msgstr ""
 
-#: ../../dispatcher/router.rst:55
+#: ../../dispatcher/router.rst:71
 msgid "Channel post"
 msgstr ""
 
-#: ../../dispatcher/router.rst:63
+#: ../../dispatcher/router.rst:79
 msgid "Edited channel post"
 msgstr ""
 
-#: ../../dispatcher/router.rst:72
+#: ../../dispatcher/router.rst:88
 msgid "Inline query"
 msgstr ""
 
-#: ../../dispatcher/router.rst:80
+#: ../../dispatcher/router.rst:96
 msgid "Chosen inline query"
 msgstr ""
 
-#: ../../dispatcher/router.rst:88
+#: ../../dispatcher/router.rst:104
 msgid "Callback query"
 msgstr ""
 
-#: ../../dispatcher/router.rst:96
+#: ../../dispatcher/router.rst:112
 msgid "Shipping query"
 msgstr ""
 
-#: ../../dispatcher/router.rst:104
+#: ../../dispatcher/router.rst:120
 msgid "Pre checkout query"
 msgstr ""
 
-#: ../../dispatcher/router.rst:112
+#: ../../dispatcher/router.rst:128
 msgid "Poll"
 msgstr ""
 
-#: ../../dispatcher/router.rst:120
+#: ../../dispatcher/router.rst:136
 msgid "Poll answer"
 msgstr ""
 
-#: ../../dispatcher/router.rst:128
+#: ../../dispatcher/router.rst:144
 msgid "Errors"
 msgstr ""
 
-#: ../../dispatcher/router.rst:135
+#: ../../dispatcher/router.rst:151
 msgid ""
 "Is useful for handling errors from other handlers, error event described "
 ":ref:`here <error-event>`"
 msgstr ""
 
-#: ../../dispatcher/router.rst:142
+#: ../../dispatcher/router.rst:158
 msgid "Nested routers"
 msgstr ""
 
-#: ../../dispatcher/router.rst:147
+#: ../../dispatcher/router.rst:163
 msgid ""
 "Routers by the way can be nested to an another routers with some "
 "limitations:"
 msgstr ""
 
-#: ../../dispatcher/router.rst:147
+#: ../../dispatcher/router.rst:163
 msgid ""
 "1. Router **CAN NOT** include itself 1. Routers **CAN NOT** be used for "
 "circular including (router 1 include router 2, router 2 include router 3,"
 " router 3 include router 1)"
 msgstr ""
 
-#: ../../dispatcher/router.rst:151
+#: ../../dispatcher/router.rst:167
 msgid "Example:"
 msgstr ""
 
-#: ../../dispatcher/router.rst:153
+#: ../../dispatcher/router.rst:169
 msgid "module_1.py"
 msgstr ""
 
-#: ../../dispatcher/router.rst:163
+#: ../../dispatcher/router.rst:179
 msgid "module_2.py"
 msgstr ""
 
-#: ../../dispatcher/router.rst:175
+#: ../../dispatcher/router.rst:191
 msgid "Update"
 msgstr ""
 
-#: ../../dispatcher/router.rst:184
+#: ../../dispatcher/router.rst:200
 msgid "The only root Router (Dispatcher) can handle this type of event."
 msgstr ""
 
-#: ../../dispatcher/router.rst:188
+#: ../../dispatcher/router.rst:204
 msgid ""
 "Dispatcher already has default handler for this event type, so you can "
 "use it for handling all updates that are not handled by any other "
 "handlers."
 msgstr ""
 
-#: ../../dispatcher/router.rst:191
+#: ../../dispatcher/router.rst:207
 msgid "How it works?"
 msgstr ""
 
-#: ../../dispatcher/router.rst:193
+#: ../../dispatcher/router.rst:209
 msgid ""
 "For example, dispatcher has 2 routers, the last router also has one "
 "nested router:"
@@ -246,7 +250,7 @@ msgstr ""
 msgid "Nested routers example"
 msgstr ""
 
-#: ../../dispatcher/router.rst:198
+#: ../../dispatcher/router.rst:214
 msgid "In this case update propagation flow will have form:"
 msgstr ""
 

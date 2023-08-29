@@ -1,0 +1,1 @@
+Fixed :code:`Message.send_copy` method, which was not working properly with stories, so not you can copy stories too (forwards messages).

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-30 18:31+0300\n"
+"POT-Creation-Date: 2023-08-26 23:17+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -34,11 +34,11 @@ msgid ""
 msgstr ""
 
 #: ../../dispatcher/dispatcher.rst:9
-msgid "`Router <router.html>`__"
+msgid ":ref:`Router <Router>`"
 msgstr ""
 
 #: ../../dispatcher/dispatcher.rst:10
-msgid "`Observer <observer.html>`__"
+msgid ":ref:`Filtering events`"
 msgstr ""
 
 #: aiogram.dispatcher.dispatcher.Dispatcher:1
@@ -175,4 +175,10 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Poling timeout"
+#~ msgstr ""
+
+#~ msgid "`Router <router.html>`__"
+#~ msgstr ""
+
+#~ msgid "`Observer <observer.html>`__"
 #~ msgstr ""

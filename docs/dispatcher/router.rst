@@ -1,6 +1,22 @@
+.. _Router:
+
 ######
 Router
 ######
+
+Usage:
+
+.. code-block:: python
+
+    from aiogram import Router
+    from aiogram.types import Message
+
+    my_router = Router(name=__name__)
+
+    @my_router.message()
+    async def message_handler(message: Message) -> Any:
+        await message.answer('Hello from my router!')
+
 
 .. autoclass:: aiogram.dispatcher.router.Router
     :members: __init__, include_router, include_routers, resolve_used_update_types

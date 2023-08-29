@@ -11,6 +11,7 @@ from .base import (
     UNSET_PROTECT_CONTENT,
     TelegramObject,
 )
+from .custom import DateTime
 
 if TYPE_CHECKING:
     from ..methods import (
@@ -65,7 +66,7 @@ class ChatMemberUpdated(TelegramObject):
     """Chat the user belongs to"""
     from_user: User = Field(..., alias="from")
     """Performer of the action, which resulted in the change"""
-    date: datetime.datetime
+    date: DateTime
     """Date the change was done in Unix time"""
     old_chat_member: Union[
         ChatMemberOwner,
@@ -99,7 +100,7 @@ class ChatMemberUpdated(TelegramObject):
             *,
             chat: Chat,
             from_user: User,
-            date: datetime.datetime,
+            date: DateTime,
             old_chat_member: Union[
                 ChatMemberOwner,
                 ChatMemberAdministrator,

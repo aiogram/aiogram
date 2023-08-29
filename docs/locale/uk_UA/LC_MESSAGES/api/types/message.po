@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-06 16:52+0300\n"
+"POT-Creation-Date: 2023-08-26 23:17+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -171,6 +171,10 @@ msgstr ""
 
 #: ../../docstring aiogram.types.message.Message.sticker:1 of
 msgid "*Optional*. Message is a sticker, information about the sticker"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.story:1 of
+msgid "*Optional*. Message is a forwarded story"
 msgstr ""
 
 #: ../../docstring aiogram.types.message.Message.video:1 of

@@ -1,0 +1,1 @@
+Fixed method :code:`Message.send_copy` for stickers.

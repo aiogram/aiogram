@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Iterable
 
 from magic_filter import MagicFilter as _MagicFilter
 from magic_filter import MagicT as _MagicT
@@ -12,7 +12,7 @@ class AsFilterResultOperation(BaseOperation):
         self.name = name
 
     def resolve(self, value: Any, initial_value: Any) -> Any:
-        if not value:
+        if value is None or (isinstance(value, Iterable) and not value):
             return None
         return {self.name: value}
 

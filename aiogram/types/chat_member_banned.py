@@ -1,10 +1,10 @@
 from __future__ import annotations
 
-import datetime
 from typing import TYPE_CHECKING, Any, Literal
 
 from ..enums import ChatMemberStatus
 from .chat_member import ChatMember
+from .custom import DateTime
 
 if TYPE_CHECKING:
     from .user import User
@@ -21,7 +21,7 @@ class ChatMemberBanned(ChatMember):
     """The member's status in the chat, always 'kicked'"""
     user: User
     """Information about the user"""
-    until_date: datetime.datetime
+    until_date: DateTime
     """Date when restrictions will be lifted for this user; unix time. If 0, then the user is banned forever"""
 
     if TYPE_CHECKING:
@@ -33,7 +33,7 @@ class ChatMemberBanned(ChatMember):
             *,
             status: Literal[ChatMemberStatus.KICKED] = ChatMemberStatus.KICKED,
             user: User,
-            until_date: datetime.datetime,
+            until_date: DateTime,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

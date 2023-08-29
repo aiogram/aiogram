@@ -96,14 +96,14 @@ Keyboard Markup
   and :class:`aiogram.types.reply_keyboard_markup.ReplyKeyboardMarkup` has no methods to extend it,
   instead you have to use markup builders :class:`aiogram.utils.keyboard.ReplyKeyboardBuilder`
   and :class:`aiogram.utils.keyboard.KeyboardBuilder` respectively
-  (:ref:`Read more » <keyboard-builder>`)
+  (:ref:`Read more » <Keyboard builder>`)
 
 
 Callbacks data
 ==============
 
 - Callback data factory now is strictly typed via `pydantic <https://docs.pydantic.dev/>`_ models
-  (:ref:`Read more » <callback-data-factory>`)
+  (:ref:`Read more » <Callback data factory>`)
 
 
 Finite State machine
