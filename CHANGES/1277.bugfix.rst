@@ -1,2 +1,0 @@
-Replaced :code:`datetime.datetime` with `DateTime` type wrapper across types to make dumped JSONs object
-more compatible with data that is sent by Telegram.
