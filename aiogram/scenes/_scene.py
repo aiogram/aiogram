@@ -243,6 +243,13 @@ class SceneHandlerWrapper:
     def __await__(self) -> Self:
         return self
 
+    def __str__(self) -> str:
+        result = f"SceneHandlerWrapper({self.handler.callback}"
+        if self.after:
+            result += f", after={self.after}"
+        result += ")"
+        return result
+
 
 class Scene(metaclass=_SceneMeta):
     __scene_config__: ClassVar[SceneConfig]
@@ -279,7 +286,10 @@ class Scene(metaclass=_SceneMeta):
 
     @classmethod
     def as_router(cls) -> Router:
-        router = Router(name=cls.__scene_config__.state)
+        name = (
+            f"Scene '{cls.__module__}.{cls.__qualname__}' for state {cls.__scene_config__.state!r}"
+        )
+        router = Router(name=name)
         cls.add_to_router(router)
         return router
 
