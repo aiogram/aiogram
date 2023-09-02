@@ -3,7 +3,7 @@ from unittest.mock import sentinel
 import pytest
 
 from aiogram.methods import GetMe, TelegramMethod
-from aiogram.types import User, TelegramObject
+from aiogram.types import TelegramObject, User
 from tests.mocked_bot import MockedBot
 
 

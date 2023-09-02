@@ -16,6 +16,27 @@ Changelog
 
 .. towncrier release notes start
 
+3.0.0 (2023-09-01)
+===================
+
+Bugfixes
+--------
+
+- Replaced :code:`datetime.datetime` with `DateTime` type wrapper across types to make dumped JSONs object
+  more compatible with data that is sent by Telegram.
+  `#1277 <https://github.com/aiogram/aiogram/issues/1277>`_
+- Fixed magic :code:`.as_(...)` operation for values that can be interpreted as `False` (e.g. `0`).
+  `#1281 <https://github.com/aiogram/aiogram/issues/1281>`_
+- Italic markdown from utils now uses correct decorators
+  `#1282 <https://github.com/aiogram/aiogram/issues/1282>`_
+- Fixed method :code:`Message.send_copy` for stickers.
+  `#1284 <https://github.com/aiogram/aiogram/issues/1284>`_
+- Fixed :code:`Message.send_copy` method, which was not working properly with stories, so not you can copy stories too (forwards messages).
+  `#1286 <https://github.com/aiogram/aiogram/issues/1286>`_
+- Fixed error overlapping when validation error is caused by remove_unset root validator in base types and methods.
+  `#1290 <https://github.com/aiogram/aiogram/issues/1290>`_
+
+
 3.0.0rc2 (2023-08-18)
 ======================
 
