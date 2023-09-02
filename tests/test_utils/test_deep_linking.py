@@ -3,9 +3,8 @@ import pytest
 from aiogram.utils.deep_linking import (
     create_start_link,
     create_startgroup_link,
-    decode_payload,
-    encode_payload,
 )
+from aiogram.utils.payload import decode_payload, encode_payload
 from tests.mocked_bot import MockedBot
 
 PAYLOADS = [
@@ -50,6 +49,33 @@ class TestDeepLinking:
         encoded = encode_payload(payload)
         decoded = decode_payload(encoded)
         assert decoded == str(payload)
+
+    async def test_custom_encode_decode(self, payload: str):
+        from Cryptodome.Cipher import AES
+        from Cryptodome.Util.Padding import pad, unpad
+
+        class Cryptor:
+            def __init__(self, key: str):
+                self.key = key.encode("utf-8")
+                self.mode = AES.MODE_ECB  # never use ECB in strong systems obviously
+                self.size = 32
+
+            @property
+            def cipher(self):
+                return AES.new(self.key, self.mode)
+
+            def encrypt(self, data: bytes) -> bytes:
+                return self.cipher.encrypt(pad(data, self.size))
+
+            def decrypt(self, data: bytes) -> bytes:
+                decrypted_data = self.cipher.decrypt(data)
+                return unpad(decrypted_data, self.size)
+
+        cryptor = Cryptor("abcdefghijklmnop")
+        encoded_payload = encode_payload(payload, encoder=cryptor.encrypt)
+        decoded_payload = decode_payload(encoded_payload, decoder=cryptor.decrypt)
+
+        assert decoded_payload == str(payload)
 
     async def test_get_start_link_with_encoding(self, bot: MockedBot, wrong_payload: str):
         # define link

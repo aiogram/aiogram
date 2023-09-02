@@ -16,7 +16,7 @@ Basic link example:
     .. code-block:: python
 
         from aiogram.utils.deep_linking import create_start_link
-        
+
         link = await create_start_link(bot, 'foo')
 
         # result: 'https://t.me/MyBot?start=foo'
@@ -46,19 +46,33 @@ Decode it back example:
 """
 from __future__ import annotations
 
+__all__ = [
+    "create_start_link",
+    "create_startgroup_link",
+    "create_deep_link",
+    "create_telegram_link",
+    "encode_payload",
+    "decode_payload",
+]
+
 import re
-from base64 import urlsafe_b64decode, urlsafe_b64encode
-from typing import TYPE_CHECKING, Literal, cast
+from typing import Callable, Literal, Optional, TYPE_CHECKING, cast
 
 from aiogram.utils.link import create_telegram_link
+from aiogram.utils.payload import encode_payload, decode_payload
 
 if TYPE_CHECKING:
     from aiogram import Bot
 
-BAD_PATTERN = re.compile(r"[^_A-z0-9-]")
+BAD_PATTERN = re.compile(r"[^A-z0-9-]")
 
 
-async def create_start_link(bot: Bot, payload: str, encode: bool = False) -> str:
+async def create_start_link(
+    bot: Bot,
+    payload: str,
+    encode: bool = False,
+    encoder: Optional[Callable[[bytes], bytes]] = None,
+) -> str:
     """
     Create 'start' deep link with your payload.
 
@@ -67,16 +81,26 @@ async def create_start_link(bot: Bot, payload: str, encode: bool = False) -> str
 
     :param bot: bot instance
     :param payload: args passed with /start
-    :param encode: encode payload with base64url
+    :param encode: encode payload with base64url or custom encoder
+    :param encoder: custom encoder callable
     :return: link
     """
     username = (await bot.me()).username
     return create_deep_link(
-        username=cast(str, username), link_type="start", payload=payload, encode=encode
+        username=cast(str, username),
+        link_type="start",
+        payload=payload,
+        encode=encode,
+        encoder=encoder,
     )
 
 
-async def create_startgroup_link(bot: Bot, payload: str, encode: bool = False) -> str:
+async def create_startgroup_link(
+    bot: Bot,
+    payload: str,
+    encode: bool = False,
+    encoder: Optional[Callable[[bytes], bytes]] = None,
+) -> str:
     """
     Create 'startgroup' deep link with your payload.
 
@@ -85,17 +109,26 @@ async def create_startgroup_link(bot: Bot, payload: str, encode: bool = False) -
 
     :param bot: bot instance
     :param payload: args passed with /start
-    :param encode: encode payload with base64url
+    :param encode: encode payload with base64url or custom encoder
+    :param encoder: custom encoder callable
     :return: link
     """
     username = (await bot.me()).username
     return create_deep_link(
-        username=cast(str, username), link_type="startgroup", payload=payload, encode=encode
+        username=cast(str, username),
+        link_type="startgroup",
+        payload=payload,
+        encode=encode,
+        encoder=encoder,
     )
 
 
 def create_deep_link(
-    username: str, link_type: Literal["start", "startgroup"], payload: str, encode: bool = False
+    username: str,
+    link_type: Literal["start", "startgroup"],
+    payload: str,
+    encode: bool = False,
+    encoder: Optional[Callable[[bytes], bytes]] = None,
 ) -> str:
     """
     Create deep link.
@@ -103,14 +136,15 @@ def create_deep_link(
     :param username:
     :param link_type: `start` or `startgroup`
     :param payload: any string-convertible data
-    :param encode: pass True to encode the payload
+    :param encode: encode payload with base64url or custom encoder
+    :param encoder: custom encoder callable
     :return: deeplink
     """
     if not isinstance(payload, str):
         payload = str(payload)
 
-    if encode:
-        payload = encode_payload(payload)
+    if encode or encoder:
+        payload = encode_payload(payload, encoder=encoder)
 
     if re.search(BAD_PATTERN, payload):
         raise ValueError(
@@ -122,18 +156,3 @@ def create_deep_link(
         raise ValueError("Payload must be up to 64 characters long.")
 
     return create_telegram_link(username, **{cast(str, link_type): payload})
-
-
-def encode_payload(payload: str) -> str:
-    """Encode payload with URL-safe base64url."""
-    payload = str(payload)
-    bytes_payload: bytes = urlsafe_b64encode(payload.encode())
-    str_payload = bytes_payload.decode()
-    return str_payload.replace("=", "")
-
-
-def decode_payload(payload: str) -> str:
-    """Decode payload with URL-safe base64url."""
-    payload += "=" * (4 - len(payload) % 4)
-    result: bytes = urlsafe_b64decode(payload)
-    return result.decode()
