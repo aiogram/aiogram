@@ -137,7 +137,12 @@ class NameScene(CancellableScene, state="name"):
         await self.wizard.update_data(name=message.text)
 
 
-class DefaultScene(Scene):
+class DefaultScene(
+    Scene,
+    reset_data_on_enter=True,  # Reset state data
+    reset_history_on_enter=True,  # Reset history
+    callback_query_without_state=True,  # Handle callback queries even if user in any scene
+):
     """
     Default scene for the bot.
 

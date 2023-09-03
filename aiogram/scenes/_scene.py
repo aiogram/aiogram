@@ -139,6 +139,9 @@ class SceneConfig:
     filters: Dict[str, List[CallbackType]]
     handlers: List[HandlerContainer]
     actions: Dict[SceneAction, Dict[str, CallableObject]]
+    reset_data_on_enter: Optional[bool] = None
+    reset_history_on_enter: Optional[bool] = None
+    callback_query_without_state: Optional[bool] = None
 
 
 async def _empty_handler(*args: Any, **kwargs: Any) -> None:
@@ -158,6 +161,10 @@ class _SceneMeta(type):
         handlers: list[HandlerContainer] = []
         actions: defaultdict[SceneAction, Dict[str, CallableObject]] = defaultdict(dict)
 
+        reset_data_on_enter = kwargs.pop("reset_data_on_enter", None)
+        reset_history_on_enter = kwargs.pop("reset_history_on_enter", None)
+        callback_query_without_state = kwargs.pop("callback_query_without_state", None)
+
         for base in bases:
             if not issubclass(base, Scene):
                 continue
@@ -167,6 +174,13 @@ class _SceneMeta(type):
             handlers.extend(parent_scene_config.handlers)
             for action, action_handlers in parent_scene_config.actions.items():
                 actions[action].update(action_handlers)
+
+            if reset_data_on_enter is None:
+                reset_data_on_enter = parent_scene_config.reset_data_on_enter
+            if reset_history_on_enter is None:
+                reset_history_on_enter = parent_scene_config.reset_history_on_enter
+            if callback_query_without_state is None:
+                callback_query_without_state = parent_scene_config.callback_query_without_state
 
         for name, value in namespace.items():
             if scene_handlers := getattr(value, "__aiogram_handler__", None):
@@ -189,6 +203,9 @@ class _SceneMeta(type):
             filters=dict(filters),
             handlers=handlers,
             actions=dict(actions),
+            reset_data_on_enter=reset_data_on_enter,
+            reset_history_on_enter=reset_history_on_enter,
+            callback_query_without_state=callback_query_without_state,
         )
         return super().__new__(mcs, name, bases, namespace, **kwargs)
 
@@ -266,9 +283,9 @@ class Scene(metaclass=_SceneMeta):
         scene_config = cls.__scene_config__
         used_observers = set()
 
-        for observer, filters in scene_config.filters.items():
-            router.observers[observer].filter(*filters)
-            used_observers.add(observer)
+        for observer_name, filters in scene_config.filters.items():
+            router.observers[observer_name].filter(*filters)
+            used_observers.add(observer_name)
 
         for handler in scene_config.handlers:
             router.observers[handler.name].register(
@@ -281,8 +298,10 @@ class Scene(metaclass=_SceneMeta):
             )
             used_observers.add(handler.name)
 
-        for observer in used_observers:
-            router.observers[observer].filter(StateFilter(scene_config.state))
+        for observer_name in used_observers:
+            if scene_config.callback_query_without_state and observer_name == "callback_query":
+                continue
+            router.observers[observer_name].filter(StateFilter(scene_config.state))
 
     @classmethod
     def as_router(cls) -> Router:
@@ -320,8 +339,12 @@ class SceneWizard:
 
         self.scene: Optional[Scene] = None
 
-    async def enter(self, _with_history: bool = False, **kwargs: Any) -> None:
+    async def enter(self, **kwargs: Any) -> None:
         loggers.scene.debug("Entering scene %r", self.scene_config.state)
+        if self.scene_config.reset_data_on_enter:
+            await self.state.set_data({})
+        if self.scene_config.reset_history_on_enter:
+            await self.manager.history.clear()
         await self.state.set_state(self.scene_config.state)
         await self._on_action(SceneAction.enter, **kwargs)
 
