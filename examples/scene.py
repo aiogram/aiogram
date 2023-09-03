@@ -163,6 +163,7 @@ class DefaultScene(
     @on.callback_query(F.data == "start", after=After.goto(NameScene))
     async def demo_callback(self, callback_query: CallbackQuery):
         await callback_query.answer(cache_time=0)
+        await callback_query.message.delete_reply_markup()
 
     @on.message.enter()  # Marker for handler that should be called when user enters the scene.
     @on.message()
