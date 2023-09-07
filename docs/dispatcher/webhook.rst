@@ -18,7 +18,7 @@ Before start i'll recommend you to read `official Telegram's documentation about
 After you read it, you can start to read this section.
 
 Generally to use webhook with aiogram you should use any async web framework.
-Buy out of the box aiogram has an aiohttp integration, so we'll use it.
+By out of the box aiogram has an aiohttp integration, so we'll use it.
 
 .. note::
 
