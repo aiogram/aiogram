@@ -15,13 +15,13 @@ If you specify errors handler for dispatcher - it will be used for all handlers 
 
 .. code-block:: python
 
-    @router.error(ExceptionTypeFilter(MyCustomException), F.update.message.as_("message"))
+    @router.errors(ExceptionTypeFilter(MyCustomException), F.update.message.as_("message"))
     async def handle_my_custom_exception(event: ErrorEvent, message: Message):
         # do something with error
         await message.answer("Oops, something went wrong!")
 
 
-    @router.error()
+    @router.errors()
     async def error_handler(event: ErrorEvent):
         logger.critical("Critical error caused by %s", event.exception, exc_info=True)
         # do something with error
