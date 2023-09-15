@@ -34,7 +34,7 @@ Dispatcher
 - With routes, you can easily modularize your code and potentially share these modules between projects.
 - Removed the **_handler** suffix from all event handler decorators and registering methods.
   (:ref:`Read more » <Event observers>`)
-- The Executor has been entirely removed; you can now use the Dispatcher directly to start polling or handle webhooks.
+- The Executor has been entirely removed; you can now use the Dispatcher directly to start poll the API or handle webhooks from it.
 - The throttling method has been completely removed; you can now use middlewares to control 
   the execution context and implement any throttling mechanism you desire.
 - Removed global context variables from the API types, Bot and Dispatcher object,
