@@ -54,7 +54,7 @@ Filtering events
   You must specify them explicitly if you wish to use them.
   For example instead of using :code:`@dp.message_handler(content_types=ContentType.PHOTO)`
   you should use :code:`@router.message(F.photo)`
-- Most common filters have been replaced by the "magic filter." (:ref:`Read more » <magic-filters>`)
+- Most common filters have been replaced with the "magic filter." (:ref:`Read more » <magic-filters>`)
 - By default, the message handler now receives any content type. 
   If you want a specific one, simply add the appropriate filters (Magic or any other).
 - The state filter is no longer enabled by default. This means that if you used :code:`state="*"` 
