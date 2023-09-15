@@ -141,7 +141,7 @@ Webhook
 =======
 
 - The aiohttp web app configuration has been simplified.
-- By default, the ability to upload files has been added when you use the reply function in a webhook.
+- By default, the ability to upload files has been added when you `make requests in response to updates <https://core.telegram.org/bots/faq#how-can-i-make-requests-in-response-to-updates>`_ (available for webhook only).
 
 
 Telegram API Server
