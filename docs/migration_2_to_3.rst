@@ -34,7 +34,7 @@ Dispatcher
 - With routes, you can easily modularize your code and potentially share these modules between projects.
 - Removed the **_handler** suffix from all event handler decorators and registering methods.
   (:ref:`Read more » <Event observers>`)
-- The Executor has been entirely removed; you can now use the Dispatcher directly to start polling or handle webhooks.
+- The Executor has been entirely removed; you can now use the Dispatcher directly to start poll the API or handle webhooks from it.
 - The throttling method has been completely removed; you can now use middlewares to control 
   the execution context and implement any throttling mechanism you desire.
 - Removed global context variables from the API types, Bot and Dispatcher object,
@@ -54,7 +54,7 @@ Filtering events
   You must specify them explicitly if you wish to use them.
   For example instead of using :code:`@dp.message_handler(content_types=ContentType.PHOTO)`
   you should use :code:`@router.message(F.photo)`
-- Most common filters have been replaced by the "magic filter." (:ref:`Read more » <magic-filters>`)
+- Most common filters have been replaced with the "magic filter." (:ref:`Read more » <magic-filters>`)
 - By default, the message handler now receives any content type. 
   If you want a specific one, simply add the appropriate filters (Magic or any other).
 - The state filter is no longer enabled by default. This means that if you used :code:`state="*"` 
@@ -141,7 +141,7 @@ Webhook
 =======
 
 - The aiohttp web app configuration has been simplified.
-- By default, the ability to upload files has been added when you use the reply function in a webhook.
+- By default, the ability to upload files has been added when you `make requests in response to updates <https://core.telegram.org/bots/faq#how-can-i-make-requests-in-response-to-updates>`_ (available for webhook only).
 
 
 Telegram API Server
