@@ -481,10 +481,8 @@ class TestDispatcher:
 
     async def test_listen_unknown_update(self):
         dp = Dispatcher()
-        with (
-            pytest.raises(SkipHandler),
-            pytest.warns(RuntimeWarning, match="Detected unknown update type") as record,
-        ):
+        pattern = "Detected unknown update type"
+        with pytest.raises(SkipHandler), pytest.warns(RuntimeWarning, match=pattern) as record:
             await dp._listen_update(Update(update_id=42))
             if not record:
                 pytest.fail("Expected 'Detected unknown update type' warning.")
