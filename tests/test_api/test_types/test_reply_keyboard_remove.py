@@ -1,3 +1,5 @@
+from typing import Dict
+
 import pytest
 
 from aiogram.types import ReplyKeyboardRemove
@@ -17,5 +19,5 @@ class TestReplyKeyboardRemove:
         "kwargs,expected",
         [[{}, True], [{"remove_keyboard": True}, True]],
     )
-    def test_remove_keyboard_values(self, kwargs: dict[str, bool], expected: bool):
+    def test_remove_keyboard_values(self, kwargs: Dict[str, bool], expected: bool):
         assert ReplyKeyboardRemove(**kwargs).remove_keyboard is expected
