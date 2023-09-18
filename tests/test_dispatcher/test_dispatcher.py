@@ -187,7 +187,7 @@ class TestDispatcher:
     async def test_process_update_empty(self, bot: MockedBot):
         dispatcher = Dispatcher()
 
-        with pytest.warns(RuntimeWarning, match="Detected unknown update type"):
+        with pytest.warns(RuntimeWarning, match="Detected unknown update type") as record:
             result = await dispatcher._process_update(bot=bot, update=Update(update_id=42))
             assert not result
 
