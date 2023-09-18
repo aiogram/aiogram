@@ -1,9 +1,6 @@
 import pytest
 
-from aiogram.utils.deep_linking import (
-    create_start_link,
-    create_startgroup_link,
-)
+from aiogram.utils.deep_linking import create_start_link, create_startgroup_link
 from aiogram.utils.payload import decode_payload, encode_payload
 from tests.mocked_bot import MockedBot
 
