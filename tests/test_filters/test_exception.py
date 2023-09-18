@@ -72,4 +72,5 @@ class TestDispatchException:
         async def handler0(event):
             return "Handled"
 
-        assert await dp.feed_update(bot, Update(update_id=0)) == "Handled"
+        with pytest.warns(RuntimeWarning, match="Detected unknown update type"):
+            assert await dp.feed_update(bot, Update(update_id=0)) == "Handled"
