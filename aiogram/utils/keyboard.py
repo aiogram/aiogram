@@ -28,6 +28,8 @@ from aiogram.types import (
     KeyboardButtonPollType,
     LoginUrl,
     ReplyKeyboardMarkup,
+    SwitchInlineQueryChosenChat,
+    WebAppInfo,
 )
 
 ButtonType = TypeVar("ButtonType", InlineKeyboardButton, KeyboardButton)
@@ -299,10 +301,12 @@ class InlineKeyboardBuilder(KeyboardBuilder[InlineKeyboardButton]):
             *,
             text: str,
             url: Optional[str] = None,
-            login_url: Optional[LoginUrl] = None,
             callback_data: Optional[Union[str, CallbackData]] = None,
+            web_app: Optional[WebAppInfo] = None,
+            login_url: Optional[LoginUrl] = None,
             switch_inline_query: Optional[str] = None,
             switch_inline_query_current_chat: Optional[str] = None,
+            switch_inline_query_chosen_chat: Optional[SwitchInlineQueryChosenChat] = None,
             callback_game: Optional[CallbackGame] = None,
             pay: Optional[bool] = None,
             **kwargs: Any,
@@ -349,9 +353,12 @@ class ReplyKeyboardBuilder(KeyboardBuilder[KeyboardButton]):
             self,
             *,
             text: str,
+            request_user: Optional[bool] = None,
+            request_chat: Optional[bool] = None,
             request_contact: Optional[bool] = None,
             request_location: Optional[bool] = None,
             request_poll: Optional[KeyboardButtonPollType] = None,
+            web_app: Optional[WebAppInfo] = None,
             **kwargs: Any,
         ) -> "KeyboardBuilder[KeyboardButton]":
             ...
