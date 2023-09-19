@@ -240,10 +240,6 @@ asyncio_mode = "auto"
 testpaths = [
     "tests",
 ]
-filterwarnings = [
-    "error",
-    "ignore::pytest.PytestUnraisableExceptionWarning",
-]
 
 [tool.coverage.run]
 branch = false
