@@ -56,10 +56,10 @@ __all__ = [
 ]
 
 import re
-from typing import Callable, Literal, Optional, TYPE_CHECKING, cast
+from typing import TYPE_CHECKING, Callable, Literal, Optional, cast
 
 from aiogram.utils.link import create_telegram_link
-from aiogram.utils.payload import encode_payload, decode_payload
+from aiogram.utils.payload import decode_payload, encode_payload
 
 if TYPE_CHECKING:
     from aiogram import Bot
