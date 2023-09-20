@@ -139,6 +139,10 @@ class AiohttpSession(BaseSession):
         if self._session is not None and not self._session.closed:
             await self._session.close()
 
+            # Wait 250 ms for the underlying SSL connections to close
+            # https://docs.aiohttp.org/en/stable/client_advanced.html#graceful-shutdown
+            await asyncio.sleep(0.25)
+
     def build_form_data(self, bot: Bot, method: TelegramMethod[TelegramType]) -> FormData:
         form = FormData(quote_fields=False)
         files: Dict[str, InputFile] = {}

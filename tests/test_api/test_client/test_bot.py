@@ -31,27 +31,26 @@ class TestBot:
         assert bot != "42:TEST"
 
     async def test_emit(self):
-        bot = Bot("42:TEST")
+        async with Bot("42:TEST").context() as bot:
+            method = GetMe()
 
-        method = GetMe()
-
-        with patch(
-            "aiogram.client.session.aiohttp.AiohttpSession.make_request",
-            new_callable=AsyncMock,
-        ) as mocked_make_request:
-            await bot(method)
-            mocked_make_request.assert_awaited_with(bot, method, timeout=None)
+            with patch(
+                "aiogram.client.session.aiohttp.AiohttpSession.make_request",
+                new_callable=AsyncMock,
+            ) as mocked_make_request:
+                await bot(method)
+                mocked_make_request.assert_awaited_with(bot, method, timeout=None)
 
     async def test_close(self):
-        session = AiohttpSession()
-        bot = Bot("42:TEST", session=session)
-        await session.create_session()
+        async with AiohttpSession() as session:
+            bot = Bot("42:TEST", session=session)
+            await session.create_session()
 
-        with patch(
-            "aiogram.client.session.aiohttp.AiohttpSession.close", new_callable=AsyncMock
-        ) as mocked_close:
-            await bot.session.close()
-            mocked_close.assert_awaited()
+            with patch(
+                "aiogram.client.session.aiohttp.AiohttpSession.close", new_callable=AsyncMock
+            ) as mocked_close:
+                await bot.session.close()
+                mocked_close.assert_awaited()
 
     @pytest.mark.parametrize("close", [True, False])
     async def test_context_manager(self, close: bool):
@@ -64,10 +63,14 @@ class TestBot:
                 mocked_close.assert_awaited()
             else:
                 mocked_close.assert_not_awaited()
+                await bot.session.close()
 
     async def test_download_file(self, aresponses: ResponsesMockServer):
         aresponses.add(
-            aresponses.ANY, aresponses.ANY, "get", aresponses.Response(status=200, body=b"\f" * 10)
+            aresponses.ANY,
+            aresponses.ANY,
+            "get",
+            aresponses.Response(status=200, body=b"\f" * 10),
         )
 
         # https://github.com/Tinche/aiofiles#writing-tests-for-aiofiles
@@ -77,37 +80,42 @@ class TestBot:
 
         mock_file = MagicMock()
 
-        bot = Bot("42:TEST")
-        with patch("aiofiles.threadpool.sync_open", return_value=mock_file):
-            await bot.download_file("TEST", "file.png")
-            mock_file.write.assert_called_once_with(b"\f" * 10)
+        async with Bot("42:TEST").context() as bot:
+            with patch("aiofiles.threadpool.sync_open", return_value=mock_file):
+                await bot.download_file("TEST", "file.png")
+                mock_file.write.assert_called_once_with(b"\f" * 10)
 
     async def test_download_file_default_destination(self, aresponses: ResponsesMockServer):
-        bot = Bot("42:TEST")
+        async with Bot("42:TEST").context() as bot:
+            aresponses.add(
+                aresponses.ANY,
+                aresponses.ANY,
+                "get",
+                aresponses.Response(status=200, body=b"\f" * 10),
+            )
 
-        aresponses.add(
-            aresponses.ANY, aresponses.ANY, "get", aresponses.Response(status=200, body=b"\f" * 10)
-        )
+            result = await bot.download_file("TEST")
 
-        result = await bot.download_file("TEST")
-
-        assert isinstance(result, io.BytesIO)
-        assert result.read() == b"\f" * 10
+            assert isinstance(result, io.BytesIO)
+            assert result.read() == b"\f" * 10
 
     async def test_download_file_custom_destination(self, aresponses: ResponsesMockServer):
-        bot = Bot("42:TEST")
+        async with Bot("42:TEST").context() as bot:
 
-        aresponses.add(
-            aresponses.ANY, aresponses.ANY, "get", aresponses.Response(status=200, body=b"\f" * 10)
-        )
+            aresponses.add(
+                aresponses.ANY,
+                aresponses.ANY,
+                "get",
+                aresponses.Response(status=200, body=b"\f" * 10),
+            )
 
-        custom = io.BytesIO()
+            custom = io.BytesIO()
 
-        result = await bot.download_file("TEST", custom)
+            result = await bot.download_file("TEST", custom)
 
-        assert isinstance(result, io.BytesIO)
-        assert result is custom
-        assert result.read() == b"\f" * 10
+            assert isinstance(result, io.BytesIO)
+            assert result is custom
+            assert result.read() == b"\f" * 10
 
     async def test_download(self, bot: MockedBot, aresponses: ResponsesMockServer):
         bot.add_result_for(
