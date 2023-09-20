@@ -24,4 +24,4 @@ class TestIsolations:
         storage_key: StorageKey,
     ):
         async with isolation.lock(key=storage_key):
-            assert True, "You are kidding me?"
+            assert True, "Are you kidding me?"
