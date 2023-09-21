@@ -78,6 +78,17 @@ class Command(Filter):
                 " or their Iterable"
             )
 
+        prefixes = []
+        for char in prefix:
+            if char not in prefixes:
+                prefixes.append(char)
+
+        operations = {
+            BotCommand: lambda cmd, prefix: cmd.command.lstrip(prefix),
+            re.Pattern: lambda cmd, prefix: re.compile(cmd.pattern.lstrip(prefix)),
+            str: lambda cmd, prefix: cmd.lstrip(prefix),
+        }
+
         items = []
         for command in (*values, *commands):
             if isinstance(command, BotCommand):
@@ -89,6 +100,9 @@ class Command(Filter):
                 )
             if ignore_case and isinstance(command, str):
                 command = command.casefold()
+            for individual_prefix in prefixes:
+                if isinstance(command, (str, BotCommand, re.Pattern)):
+                    command = operations[type(command)](command, individual_prefix)
             items.append(command)
 
         if not items:

@@ -38,11 +38,11 @@ class TestCommandFilter:
     @pytest.mark.parametrize(
         "commands,checklist",
         [
-            [("Test1", "tEst2", "teSt3"), ("test1", "test2", "test3")],
+            [("/Test1", "tEst2", "teSt3"), ("test1", "test2", "test3")],
             [("12TeSt", "3t4Est", "5TE6sT"), ("12test", "3t4est", "5te6st")],
-            [[BotCommand(command="Test", description="Test1")], ("test",)],
+            [[BotCommand(command="/Test", description="Test1")], ("test",)],
             [[BotCommand(command="tEsT", description="Test2")], ("test",)],
-            [(re.compile(r"test(\d+)"), "TeSt"), (re.compile(r"test(\d+)"), "test")],
+            [(re.compile(r"/test(\d+)"), "TeSt"), (re.compile(r"test(\d+)"), "test")],
         ],
     )
     def test_init_casefold(self, commands, checklist):
