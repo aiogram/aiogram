@@ -34,8 +34,10 @@ class FSMContextMiddleware(BaseMiddleware):
         context = self.resolve_event_context(bot, data)
         data["fsm_storage"] = self.storage
         if context:
-            data.update({"state": context, "raw_state": await context.get_state()})
+            # Bugfix: https://github.com/aiogram/aiogram/issues/1317
+            # State should be loaded after lock is acquired
             async with self.events_isolation.lock(key=context.key):
+                data.update({"state": context, "raw_state": await context.get_state()})
                 return await handler(event, data)
         return await handler(event, data)
 
