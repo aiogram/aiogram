@@ -1167,9 +1167,9 @@
             },
             {
               "type": "WriteAccessAllowed",
-              "description": "Service message: the user allowed the bot added to the attachment menu to write messages",
-              "html_description": "<td><em>Optional</em>. Service message: the user allowed the bot added to the attachment menu to write messages</td>",
-              "rst_description": "*Optional*. Service message: the user allowed the bot added to the attachment menu to write messages\n",
+              "description": "Service message: the user allowed the bot to write messages after adding it to the attachment or side menu, launching a Web App from a link, or accepting an explicit request from a Web App sent by the method requestWriteAccess",
+              "html_description": "<td><em>Optional</em>. Service message: the user allowed the bot to write messages after adding it to the attachment or side menu, launching a Web App from a link, or accepting an explicit request from a Web App sent by the method <a href=\"/bots/webapps#initializing-mini-apps\">requestWriteAccess</a></td>",
+              "rst_description": "*Optional*. Service message: the user allowed the bot to write messages after adding it to the attachment or side menu, launching a Web App from a link, or accepting an explicit request from a Web App sent by the method `requestWriteAccess <https://core.telegram.org/bots/webapps#initializing-mini-apps>`_\n",
               "name": "write_access_allowed",
               "required": false
             },
@@ -2460,10 +2460,26 @@
           "annotations": [
             {
               "type": "String",
-              "description": "Name of the Web App which was launched from a link",
-              "html_description": "<td><em>Optional</em>. Name of the Web App which was launched from a link</td>",
-              "rst_description": "*Optional*. Name of the Web App which was launched from a link\n",
+              "description": "Name of the Web App, if the access was granted when the Web App was launched from a link",
+              "html_description": "<td><em>Optional</em>. Name of the Web App, if the access was granted when the Web App was launched from a link</td>",
+              "rst_description": "*Optional*. Name of the Web App, if the access was granted when the Web App was launched from a link\n",
               "name": "web_app_name",
+              "required": false
+            },
+            {
+              "type": "Boolean",
+              "description": "True, if the access was granted when the bot was added to the attachment or side menu",
+              "html_description": "<td><em>Optional</em>. True, if the access was granted when the bot was added to the attachment or side menu</td>",
+              "rst_description": "*Optional*. True, if the access was granted when the bot was added to the attachment or side menu\n",
+              "name": "from_attachment_menu",
+              "required": false
+            },
+            {
+              "type": "Boolean",
+              "description": "True, if the access was granted after the user accepted an explicit request from a Web App sent by the method requestWriteAccess",
+              "html_description": "<td><em>Optional</em>. True, if the access was granted after the user accepted an explicit request from a Web App sent by the method <a href=\"/bots/webapps#initializing-mini-apps\">requestWriteAccess</a></td>",
+              "rst_description": "*Optional*. True, if the access was granted after the user accepted an explicit request from a Web App sent by the method `requestWriteAccess <https://core.telegram.org/bots/webapps#initializing-mini-apps>`_\n",
+              "name": "from_request",
               "required": false
             }
           ],
@@ -3335,9 +3351,9 @@
             },
             {
               "type": "Boolean",
-              "description": "True, if the administrator can access the chat event log, chat statistics, message statistics in channels, see channel members, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege",
-              "html_description": "<td><em>True</em>, if the administrator can access the chat event log, chat statistics, message statistics in channels, see channel members, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege</td>",
-              "rst_description": ":code:`True`, if the administrator can access the chat event log, chat statistics, message statistics in channels, see channel members, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege\n",
+              "description": "True, if the administrator can access the chat event log, chat statistics, boost list in channels, message statistics in channels, see channel members, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege",
+              "html_description": "<td><em>True</em>, if the administrator can access the chat event log, chat statistics, boost list in channels, message statistics in channels, see channel members, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege</td>",
+              "rst_description": ":code:`True`, if the administrator can access the chat event log, chat statistics, boost list in channels, message statistics in channels, see channel members, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege\n",
               "name": "can_manage_chat",
               "required": true
             },
@@ -3391,9 +3407,9 @@
             },
             {
               "type": "Boolean",
-              "description": "True, if the administrator can post in the channel; channels only",
-              "html_description": "<td><em>Optional</em>. <em>True</em>, if the administrator can post in the channel; channels only</td>",
-              "rst_description": "*Optional*. :code:`True`, if the administrator can post in the channel; channels only\n",
+              "description": "True, if the administrator can post messages in the channel; channels only",
+              "html_description": "<td><em>Optional</em>. <em>True</em>, if the administrator can post messages in the channel; channels only</td>",
+              "rst_description": "*Optional*. :code:`True`, if the administrator can post messages in the channel; channels only\n",
               "name": "can_post_messages",
               "required": false
             },
@@ -3419,6 +3435,30 @@
               "html_description": "<td><em>Optional</em>. <em>True</em>, if the user is allowed to create, rename, close, and reopen forum topics; supergroups only</td>",
               "rst_description": "*Optional*. :code:`True`, if the user is allowed to create, rename, close, and reopen forum topics; supergroups only\n",
               "name": "can_manage_topics",
+              "required": false
+            },
+            {
+              "type": "Boolean",
+              "description": "True, if the administrator can delete stories posted by other users",
+              "html_description": "<td><em>Optional</em>. <em>True</em>, if the administrator can delete stories posted by other users</td>",
+              "rst_description": "*Optional*. :code:`True`, if the administrator can delete stories posted by other users\n",
+              "name": "can_delete_stories",
+              "required": false
+            },
+            {
+              "type": "Boolean",
+              "description": "True, if the administrator can post stories in the channel; channels only",
+              "html_description": "<td><em>Optional</em>. <em>True</em>, if the administrator can post stories in the channel; channels only</td>",
+              "rst_description": "*Optional*. :code:`True`, if the administrator can post stories in the channel; channels only\n",
+              "name": "can_post_stories",
+              "required": false
+            },
+            {
+              "type": "Boolean",
+              "description": "True, if the administrator can edit stories posted by other users; channels only",
+              "html_description": "<td><em>Optional</em>. <em>True</em>, if the administrator can edit stories posted by other users; channels only</td>",
+              "rst_description": "*Optional*. :code:`True`, if the administrator can edit stories posted by other users; channels only\n",
+              "name": "can_edit_stories",
               "required": false
             }
           ],
@@ -3516,9 +3556,9 @@
             },
             {
               "type": "Boolean",
-              "description": "True, if the administrator can access the chat event log, chat statistics, message statistics in channels, see channel members, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege",
-              "html_description": "<td><em>True</em>, if the administrator can access the chat event log, chat statistics, message statistics in channels, see channel members, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege</td>",
-              "rst_description": ":code:`True`, if the administrator can access the chat event log, chat statistics, message statistics in channels, see channel members, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege\n",
+              "description": "True, if the administrator can access the chat event log, chat statistics, boost list in channels, message statistics in channels, see channel members, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege",
+              "html_description": "<td><em>True</em>, if the administrator can access the chat event log, chat statistics, boost list in channels, message statistics in channels, see channel members, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege</td>",
+              "rst_description": ":code:`True`, if the administrator can access the chat event log, chat statistics, boost list in channels, message statistics in channels, see channel members, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege\n",
               "name": "can_manage_chat",
               "required": true
             },
@@ -3572,9 +3612,9 @@
             },
             {
               "type": "Boolean",
-              "description": "True, if the administrator can post in the channel; channels only",
-              "html_description": "<td><em>Optional</em>. <em>True</em>, if the administrator can post in the channel; channels only</td>",
-              "rst_description": "*Optional*. :code:`True`, if the administrator can post in the channel; channels only\n",
+              "description": "True, if the administrator can post messages in the channel; channels only",
+              "html_description": "<td><em>Optional</em>. <em>True</em>, if the administrator can post messages in the channel; channels only</td>",
+              "rst_description": "*Optional*. :code:`True`, if the administrator can post messages in the channel; channels only\n",
               "name": "can_post_messages",
               "required": false
             },
@@ -3608,6 +3648,30 @@
               "html_description": "<td><em>Optional</em>. Custom title for this user</td>",
               "rst_description": "*Optional*. Custom title for this user\n",
               "name": "custom_title",
+              "required": false
+            },
+            {
+              "type": "Boolean",
+              "description": "True, if the administrator can delete stories posted by other users",
+              "html_description": "<td><em>Optional</em>. <em>True</em>, if the administrator can delete stories posted by other users</td>",
+              "rst_description": "*Optional*. :code:`True`, if the administrator can delete stories posted by other users\n",
+              "name": "can_delete_stories",
+              "required": false
+            },
+            {
+              "type": "Boolean",
+              "description": "True, if the administrator can post stories in the channel; channels only",
+              "html_description": "<td><em>Optional</em>. <em>True</em>, if the administrator can post stories in the channel; channels only</td>",
+              "rst_description": "*Optional*. :code:`True`, if the administrator can post stories in the channel; channels only\n",
+              "name": "can_post_stories",
+              "required": false
+            },
+            {
+              "type": "Boolean",
+              "description": "True, if the administrator can edit stories posted by other users; channels only",
+              "html_description": "<td><em>Optional</em>. <em>True</em>, if the administrator can edit stories posted by other users; channels only</td>",
+              "rst_description": "*Optional*. :code:`True`, if the administrator can edit stories posted by other users; channels only\n",
+              "name": "can_edit_stories",
               "required": false
             }
           ],
