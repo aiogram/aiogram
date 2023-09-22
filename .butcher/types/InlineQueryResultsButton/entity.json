@@ -22,8 +22,8 @@
       {
         "type": "WebAppInfo",
         "description": "Description of the Web App that will be launched when the user presses the button. The Web App will be able to switch back to the inline mode using the method switchInlineQuery inside the Web App.",
-        "html_description": "<td><em>Optional</em>. Description of the <a href=\"/bots/webapps\">Web App</a> that will be launched when the user presses the button. The Web App will be able to switch back to the inline mode using the method <a href=\"/bots/webapps#initializing-web-apps\">switchInlineQuery</a> inside the Web App.</td>",
-        "rst_description": "*Optional*. Description of the `Web App <https://core.telegram.org/bots/webapps>`_ that will be launched when the user presses the button. The Web App will be able to switch back to the inline mode using the method `switchInlineQuery <https://core.telegram.org/bots/webapps#initializing-web-apps>`_ inside the Web App.\n",
+        "html_description": "<td><em>Optional</em>. Description of the <a href=\"/bots/webapps\">Web App</a> that will be launched when the user presses the button. The Web App will be able to switch back to the inline mode using the method <a href=\"/bots/webapps#initializing-mini-apps\">switchInlineQuery</a> inside the Web App.</td>",
+        "rst_description": "*Optional*. Description of the `Web App <https://core.telegram.org/bots/webapps>`_ that will be launched when the user presses the button. The Web App will be able to switch back to the inline mode using the method `switchInlineQuery <https://core.telegram.org/bots/webapps#initializing-mini-apps>`_ inside the Web App.\n",
         "name": "web_app",
         "required": false
       },

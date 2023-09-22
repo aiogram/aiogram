@@ -223,7 +223,7 @@ class Message(TelegramObject):
     connected_website: Optional[str] = None
     """*Optional*. The domain name of the website on which the user has logged in. `More about Telegram Login » <https://core.telegram.org/widgets/login>`_"""
     write_access_allowed: Optional[WriteAccessAllowed] = None
-    """*Optional*. Service message: the user allowed the bot added to the attachment menu to write messages"""
+    """*Optional*. Service message: the user allowed the bot to write messages after adding it to the attachment or side menu, launching a Web App from a link, or accepting an explicit request from a Web App sent by the method `requestWriteAccess <https://core.telegram.org/bots/webapps#initializing-mini-apps>`_"""
     passport_data: Optional[PassportData] = None
     """*Optional*. Telegram Passport data"""
     proximity_alert_triggered: Optional[ProximityAlertTriggered] = None
