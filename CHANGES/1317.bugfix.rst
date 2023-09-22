@@ -1,1 +1,0 @@
-Fixed priority of events isolation, now user state will be loaded only after lock is acquired
