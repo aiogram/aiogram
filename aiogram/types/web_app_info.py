@@ -13,7 +13,7 @@ class WebAppInfo(TelegramObject):
     """
 
     url: str
-    """An HTTPS URL of a Web App to be opened with additional data as specified in `Initializing Web Apps <https://core.telegram.org/bots/webapps#initializing-web-apps>`_"""
+    """An HTTPS URL of a Web App to be opened with additional data as specified in `Initializing Web Apps <https://core.telegram.org/bots/webapps#initializing-mini-apps>`_"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!

@@ -101,22 +101,6 @@
       },
       {
         "type": "Boolean",
-        "description": "True, if the user is allowed to create, rename, close, and reopen forum topics; supergroups only",
-        "html_description": "<td><em>Optional</em>. <em>True</em>, if the user is allowed to create, rename, close, and reopen forum topics; supergroups only</td>",
-        "rst_description": "*Optional*. :code:`True`, if the user is allowed to create, rename, close, and reopen forum topics; supergroups only\n",
-        "name": "can_manage_topics",
-        "required": false
-      },
-      {
-        "type": "Boolean",
-        "description": "True, if the administrator can delete stories posted by other users",
-        "html_description": "<td><em>Optional</em>. <em>True</em>, if the administrator can delete stories posted by other users</td>",
-        "rst_description": "*Optional*. :code:`True`, if the administrator can delete stories posted by other users\n",
-        "name": "can_delete_stories",
-        "required": false
-      },
-      {
-        "type": "Boolean",
         "description": "True, if the administrator can post stories in the channel; channels only",
         "html_description": "<td><em>Optional</em>. <em>True</em>, if the administrator can post stories in the channel; channels only</td>",
         "rst_description": "*Optional*. :code:`True`, if the administrator can post stories in the channel; channels only\n",
@@ -129,6 +113,22 @@
         "html_description": "<td><em>Optional</em>. <em>True</em>, if the administrator can edit stories posted by other users; channels only</td>",
         "rst_description": "*Optional*. :code:`True`, if the administrator can edit stories posted by other users; channels only\n",
         "name": "can_edit_stories",
+        "required": false
+      },
+      {
+        "type": "Boolean",
+        "description": "True, if the administrator can delete stories posted by other users",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the administrator can delete stories posted by other users</td>",
+        "rst_description": "*Optional*. :code:`True`, if the administrator can delete stories posted by other users\n",
+        "name": "can_delete_stories",
+        "required": false
+      },
+      {
+        "type": "Boolean",
+        "description": "True, if the user is allowed to create, rename, close, and reopen forum topics; supergroups only",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the user is allowed to create, rename, close, and reopen forum topics; supergroups only</td>",
+        "rst_description": "*Optional*. :code:`True`, if the user is allowed to create, rename, close, and reopen forum topics; supergroups only\n",
+        "name": "can_manage_topics",
         "required": false
       }
     ],

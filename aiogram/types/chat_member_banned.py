@@ -22,7 +22,7 @@ class ChatMemberBanned(ChatMember):
     user: User
     """Information about the user"""
     until_date: DateTime
-    """Date when restrictions will be lifted for this user; unix time. If 0, then the user is banned forever"""
+    """Date when restrictions will be lifted for this user; Unix time. If 0, then the user is banned forever"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!

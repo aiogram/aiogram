@@ -93,9 +93,9 @@
       },
       {
         "type": "Integer",
-        "description": "Expiration date of the emoji status of the other party in a private chat, if any. Returned only in getChat.",
-        "html_description": "<td><em>Optional</em>. Expiration date of the emoji status of the other party in a private chat, if any. Returned only in <a href=\"#getchat\">getChat</a>.</td>",
-        "rst_description": "*Optional*. Expiration date of the emoji status of the other party in a private chat, if any. Returned only in :class:`aiogram.methods.get_chat.GetChat`.\n",
+        "description": "Expiration date of the emoji status of the other party in a private chat in Unix time, if any. Returned only in getChat.",
+        "html_description": "<td><em>Optional</em>. Expiration date of the emoji status of the other party in a private chat in Unix time, if any. Returned only in <a href=\"#getchat\">getChat</a>.</td>",
+        "rst_description": "*Optional*. Expiration date of the emoji status of the other party in a private chat in Unix time, if any. Returned only in :class:`aiogram.methods.get_chat.GetChat`.\n",
         "name": "emoji_status_expiration_date",
         "required": false
       },
