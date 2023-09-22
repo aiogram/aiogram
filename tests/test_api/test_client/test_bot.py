@@ -101,7 +101,6 @@ class TestBot:
 
     async def test_download_file_custom_destination(self, aresponses: ResponsesMockServer):
         async with Bot("42:TEST").context() as bot:
-
             aresponses.add(
                 aresponses.ANY,
                 aresponses.ANY,

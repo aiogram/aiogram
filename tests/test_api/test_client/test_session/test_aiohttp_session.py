@@ -12,7 +12,7 @@ from aiogram.client.session import aiohttp
 from aiogram.client.session.aiohttp import AiohttpSession
 from aiogram.exceptions import TelegramNetworkError
 from aiogram.methods import TelegramMethod
-from aiogram.types import InputFile, UNSET_PARSE_MODE
+from aiogram.types import UNSET_PARSE_MODE, InputFile
 from tests.mocked_bot import MockedBot
 
 
