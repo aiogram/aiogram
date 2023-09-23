@@ -185,8 +185,10 @@ class TestFSMI18nMiddleware:
         }
         result = await middleware(next_call, Update(update_id=42), data)
         assert result == "test"
+
         await middleware.set_locale(state, "uk")
         assert i18n.current_locale == "uk"
+
         result = await middleware(next_call, Update(update_id=42), data)
         assert result == "тест"
 
