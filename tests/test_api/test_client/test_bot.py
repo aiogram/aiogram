@@ -88,10 +88,8 @@ class TestBot:
 
     async def test_download_file(self, aresponses: ResponsesMockServer):
         aresponses.add(
-            aresponses.ANY,
-            aresponses.ANY,
-            "get",
-            aresponses.Response(status=200, body=b"\f" * 10),
+            method_pattern="get",
+            response=aresponses.Response(status=200, body=b"\f" * 10),
         )
 
         # https://github.com/Tinche/aiofiles#writing-tests-for-aiofiles
@@ -112,12 +110,9 @@ class TestBot:
         aresponses: ResponsesMockServer,
     ):
         aresponses.add(
-            aresponses.ANY,
-            aresponses.ANY,
-            "get",
-            aresponses.Response(status=200, body=b"\f" * 10),
+            method_pattern="get",
+            response=aresponses.Response(status=200, body=b"\f" * 10),
         )
-
         result = await bot.download_file("TEST")
 
         assert isinstance(result, io.BytesIO)
@@ -129,12 +124,9 @@ class TestBot:
         aresponses: ResponsesMockServer,
     ):
         aresponses.add(
-            aresponses.ANY,
-            aresponses.ANY,
-            "get",
-            aresponses.Response(status=200, body=b"\f" * 10),
+            method_pattern="get",
+            response=aresponses.Response(status=200, body=b"\f" * 10),
         )
-
         custom = io.BytesIO()
 
         result = await bot.download_file("TEST", custom)
