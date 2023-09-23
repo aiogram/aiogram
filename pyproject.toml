@@ -76,10 +76,10 @@ test = [
     "pytest-mock~=3.11.0",
     "pytest-mypy~=0.10.0",
     "pytest-cov~=4.1.0",
-    "pytest-aiohttp~=1.0.5",
-    "aresponses~=2.1.0",
+    "pytest-aiohttp~=1.0.4",
+    "aresponses~=2.1.6",
     "pytz~=2023.3",
-    "pycryptodomex~=3.19.0",
+    "pycryptodomex~=3.19",
 ]
 docs = [
     "Sphinx~=7.1.1",
