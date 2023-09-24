@@ -46,7 +46,7 @@ msgstr ""
 #: ../../dispatcher/webhook.rst:20
 msgid ""
 "Generally to use webhook with aiogram you should use any async web "
-"framework. Buy out of the box aiogram has an aiohttp integration, so "
+"framework. By out of the box aiogram has an aiohttp integration, so "
 "we'll use it."
 msgstr ""
 

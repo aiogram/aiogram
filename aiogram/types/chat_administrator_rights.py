@@ -18,7 +18,7 @@ class ChatAdministratorRights(TelegramObject):
     is_anonymous: bool
     """:code:`True`, if the user's presence in the chat is hidden"""
     can_manage_chat: bool
-    """:code:`True`, if the administrator can access the chat event log, chat statistics, message statistics in channels, see channel members, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege"""
+    """:code:`True`, if the administrator can access the chat event log, chat statistics, boost list in channels, message statistics in channels, see channel members, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege"""
     can_delete_messages: bool
     """:code:`True`, if the administrator can delete messages of other users"""
     can_manage_video_chats: bool
@@ -32,11 +32,17 @@ class ChatAdministratorRights(TelegramObject):
     can_invite_users: bool
     """:code:`True`, if the user is allowed to invite new users to the chat"""
     can_post_messages: Optional[bool] = None
-    """*Optional*. :code:`True`, if the administrator can post in the channel; channels only"""
+    """*Optional*. :code:`True`, if the administrator can post messages in the channel; channels only"""
     can_edit_messages: Optional[bool] = None
     """*Optional*. :code:`True`, if the administrator can edit messages of other users and can pin messages; channels only"""
     can_pin_messages: Optional[bool] = None
     """*Optional*. :code:`True`, if the user is allowed to pin messages; groups and supergroups only"""
+    can_post_stories: Optional[bool] = None
+    """*Optional*. :code:`True`, if the administrator can post stories in the channel; channels only"""
+    can_edit_stories: Optional[bool] = None
+    """*Optional*. :code:`True`, if the administrator can edit stories posted by other users; channels only"""
+    can_delete_stories: Optional[bool] = None
+    """*Optional*. :code:`True`, if the administrator can delete stories posted by other users"""
     can_manage_topics: Optional[bool] = None
     """*Optional*. :code:`True`, if the user is allowed to create, rename, close, and reopen forum topics; supergroups only"""
 
@@ -58,6 +64,9 @@ class ChatAdministratorRights(TelegramObject):
             can_post_messages: Optional[bool] = None,
             can_edit_messages: Optional[bool] = None,
             can_pin_messages: Optional[bool] = None,
+            can_post_stories: Optional[bool] = None,
+            can_edit_stories: Optional[bool] = None,
+            can_delete_stories: Optional[bool] = None,
             can_manage_topics: Optional[bool] = None,
             **__pydantic_kwargs: Any,
         ) -> None:
@@ -77,6 +86,9 @@ class ChatAdministratorRights(TelegramObject):
                 can_post_messages=can_post_messages,
                 can_edit_messages=can_edit_messages,
                 can_pin_messages=can_pin_messages,
+                can_post_stories=can_post_stories,
+                can_edit_stories=can_edit_stories,
+                can_delete_stories=can_delete_stories,
                 can_manage_topics=can_manage_topics,
                 **__pydantic_kwargs,
             )

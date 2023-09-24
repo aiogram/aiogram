@@ -133,3 +133,10 @@ Webhook
 
 - Simplified aiohttp web app configuration
 - By default added possibility to upload files when you use reply into webhook
+
+
+Telegram API Server
+===================
+
+- `server` param was moved from `Bot` instance to `api` in `BaseSession`.
+- `aiogram.bot.api.TELEGRAM_PRODUCTION` was moved to `aiogram.client.telegram.PRODUCTION`.

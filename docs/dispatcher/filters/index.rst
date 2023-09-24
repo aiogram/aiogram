@@ -6,8 +6,9 @@ Filtering events
 
 Filters is needed for routing updates to the specific handler.
 Searching of handler is always stops on first match set of filters are pass.
+By default, all handlers has empty set of filters, so all updates will be passed to first handler that has empty set of filters.
 
-*aiogram* has some builtin useful filters.
+*aiogram* has some builtin useful filters or you can write own filters.
 
 Builtin filters
 ===============

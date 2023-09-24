@@ -16,6 +16,29 @@ Changelog
 
 .. towncrier release notes start
 
+3.1.0 (2023-09-22)
+===================
+
+Features
+--------
+
+- Added support for custom encoders/decoders for payload (and also for deep-linking).
+  `#1262 <https://github.com/aiogram/aiogram/issues/1262>`_
+- Added :class:`aiogram.utils.input_media.MediaGroupBuilder` for media group construction.
+  `#1293 <https://github.com/aiogram/aiogram/issues/1293>`_
+- Added full support of `Bot API 6.9 <https://core.telegram.org/bots/api-changelog#september-22-2023>`_
+  `#1319 <https://github.com/aiogram/aiogram/issues/1319>`_
+
+
+Bugfixes
+--------
+
+- Added actual param hints for `InlineKeyboardBuilder` and `ReplyKeyboardBuilder`.
+  `#1303 <https://github.com/aiogram/aiogram/issues/1303>`_
+- Fixed priority of events isolation, now user state will be loaded only after lock is acquired
+  `#1317 <https://github.com/aiogram/aiogram/issues/1317>`_
+
+
 3.0.0 (2023-09-01)
 ===================
 

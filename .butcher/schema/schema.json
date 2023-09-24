@@ -1,7 +1,7 @@
 {
   "api": {
-    "version": "6.8",
-    "release_date": "2023-08-18"
+    "version": "6.9",
+    "release_date": "2023-09-22"
   },
   "items": [
     {
@@ -549,9 +549,9 @@
             },
             {
               "type": "Integer",
-              "description": "Expiration date of the emoji status of the other party in a private chat, if any. Returned only in getChat.",
-              "html_description": "<td><em>Optional</em>. Expiration date of the emoji status of the other party in a private chat, if any. Returned only in <a href=\"#getchat\">getChat</a>.</td>",
-              "rst_description": "*Optional*. Expiration date of the emoji status of the other party in a private chat, if any. Returned only in :class:`aiogram.methods.get_chat.GetChat`.\n",
+              "description": "Expiration date of the emoji status of the other party in a private chat in Unix time, if any. Returned only in getChat.",
+              "html_description": "<td><em>Optional</em>. Expiration date of the emoji status of the other party in a private chat in Unix time, if any. Returned only in <a href=\"#getchat\">getChat</a>.</td>",
+              "rst_description": "*Optional*. Expiration date of the emoji status of the other party in a private chat in Unix time, if any. Returned only in :class:`aiogram.methods.get_chat.GetChat`.\n",
               "name": "emoji_status_expiration_date",
               "required": false
             },
@@ -1167,9 +1167,9 @@
             },
             {
               "type": "WriteAccessAllowed",
-              "description": "Service message: the user allowed the bot added to the attachment menu to write messages",
-              "html_description": "<td><em>Optional</em>. Service message: the user allowed the bot added to the attachment menu to write messages</td>",
-              "rst_description": "*Optional*. Service message: the user allowed the bot added to the attachment menu to write messages\n",
+              "description": "Service message: the user allowed the bot to write messages after adding it to the attachment or side menu, launching a Web App from a link, or accepting an explicit request from a Web App sent by the method requestWriteAccess",
+              "html_description": "<td><em>Optional</em>. Service message: the user allowed the bot to write messages after adding it to the attachment or side menu, launching a Web App from a link, or accepting an explicit request from a Web App sent by the method <a href=\"/bots/webapps#initializing-mini-apps\">requestWriteAccess</a></td>",
+              "rst_description": "*Optional*. Service message: the user allowed the bot to write messages after adding it to the attachment or side menu, launching a Web App from a link, or accepting an explicit request from a Web App sent by the method `requestWriteAccess <https://core.telegram.org/bots/webapps#initializing-mini-apps>`_\n",
               "name": "write_access_allowed",
               "required": false
             },
@@ -2454,16 +2454,32 @@
         {
           "anchor": "writeaccessallowed",
           "name": "WriteAccessAllowed",
-          "description": "This object represents a service message about a user allowing a bot to write messages after adding the bot to the attachment menu or launching a Web App from a link.",
-          "html_description": "<p>This object represents a service message about a user allowing a bot to write messages after adding the bot to the attachment menu or launching a Web App from a link.</p>",
-          "rst_description": "This object represents a service message about a user allowing a bot to write messages after adding the bot to the attachment menu or launching a Web App from a link.",
+          "description": "This object represents a service message about a user allowing a bot to write messages after adding it to the attachment menu, launching a Web App from a link, or accepting an explicit request from a Web App sent by the method requestWriteAccess.",
+          "html_description": "<p>This object represents a service message about a user allowing a bot to write messages after adding it to the attachment menu, launching a Web App from a link, or accepting an explicit request from a Web App sent by the method <a href=\"/bots/webapps#initializing-mini-apps\">requestWriteAccess</a>.</p>",
+          "rst_description": "This object represents a service message about a user allowing a bot to write messages after adding it to the attachment menu, launching a Web App from a link, or accepting an explicit request from a Web App sent by the method `requestWriteAccess <https://core.telegram.org/bots/webapps#initializing-mini-apps>`_.",
           "annotations": [
             {
+              "type": "Boolean",
+              "description": "True, if the access was granted after the user accepted an explicit request from a Web App sent by the method requestWriteAccess",
+              "html_description": "<td><em>Optional</em>. True, if the access was granted after the user accepted an explicit request from a Web App sent by the method <a href=\"/bots/webapps#initializing-mini-apps\">requestWriteAccess</a></td>",
+              "rst_description": "*Optional*. True, if the access was granted after the user accepted an explicit request from a Web App sent by the method `requestWriteAccess <https://core.telegram.org/bots/webapps#initializing-mini-apps>`_\n",
+              "name": "from_request",
+              "required": false
+            },
+            {
               "type": "String",
-              "description": "Name of the Web App which was launched from a link",
-              "html_description": "<td><em>Optional</em>. Name of the Web App which was launched from a link</td>",
-              "rst_description": "*Optional*. Name of the Web App which was launched from a link\n",
+              "description": "Name of the Web App, if the access was granted when the Web App was launched from a link",
+              "html_description": "<td><em>Optional</em>. Name of the Web App, if the access was granted when the Web App was launched from a link</td>",
+              "rst_description": "*Optional*. Name of the Web App, if the access was granted when the Web App was launched from a link\n",
               "name": "web_app_name",
+              "required": false
+            },
+            {
+              "type": "Boolean",
+              "description": "True, if the access was granted when the bot was added to the attachment or side menu",
+              "html_description": "<td><em>Optional</em>. True, if the access was granted when the bot was added to the attachment or side menu</td>",
+              "rst_description": "*Optional*. True, if the access was granted when the bot was added to the attachment or side menu\n",
+              "name": "from_attachment_menu",
               "required": false
             }
           ],
@@ -2610,8 +2626,8 @@
             {
               "type": "String",
               "description": "An HTTPS URL of a Web App to be opened with additional data as specified in Initializing Web Apps",
-              "html_description": "<td>An HTTPS URL of a Web App to be opened with additional data as specified in <a href=\"/bots/webapps#initializing-web-apps\">Initializing Web Apps</a></td>",
-              "rst_description": "An HTTPS URL of a Web App to be opened with additional data as specified in `Initializing Web Apps <https://core.telegram.org/bots/webapps#initializing-web-apps>`_\n",
+              "html_description": "<td>An HTTPS URL of a Web App to be opened with additional data as specified in <a href=\"/bots/webapps#initializing-mini-apps\">Initializing Web Apps</a></td>",
+              "rst_description": "An HTTPS URL of a Web App to be opened with additional data as specified in `Initializing Web Apps <https://core.telegram.org/bots/webapps#initializing-mini-apps>`_\n",
               "name": "url",
               "required": true
             }
@@ -3335,9 +3351,9 @@
             },
             {
               "type": "Boolean",
-              "description": "True, if the administrator can access the chat event log, chat statistics, message statistics in channels, see channel members, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege",
-              "html_description": "<td><em>True</em>, if the administrator can access the chat event log, chat statistics, message statistics in channels, see channel members, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege</td>",
-              "rst_description": ":code:`True`, if the administrator can access the chat event log, chat statistics, message statistics in channels, see channel members, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege\n",
+              "description": "True, if the administrator can access the chat event log, chat statistics, boost list in channels, message statistics in channels, see channel members, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege",
+              "html_description": "<td><em>True</em>, if the administrator can access the chat event log, chat statistics, boost list in channels, message statistics in channels, see channel members, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege</td>",
+              "rst_description": ":code:`True`, if the administrator can access the chat event log, chat statistics, boost list in channels, message statistics in channels, see channel members, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege\n",
               "name": "can_manage_chat",
               "required": true
             },
@@ -3391,9 +3407,9 @@
             },
             {
               "type": "Boolean",
-              "description": "True, if the administrator can post in the channel; channels only",
-              "html_description": "<td><em>Optional</em>. <em>True</em>, if the administrator can post in the channel; channels only</td>",
-              "rst_description": "*Optional*. :code:`True`, if the administrator can post in the channel; channels only\n",
+              "description": "True, if the administrator can post messages in the channel; channels only",
+              "html_description": "<td><em>Optional</em>. <em>True</em>, if the administrator can post messages in the channel; channels only</td>",
+              "rst_description": "*Optional*. :code:`True`, if the administrator can post messages in the channel; channels only\n",
               "name": "can_post_messages",
               "required": false
             },
@@ -3411,6 +3427,30 @@
               "html_description": "<td><em>Optional</em>. <em>True</em>, if the user is allowed to pin messages; groups and supergroups only</td>",
               "rst_description": "*Optional*. :code:`True`, if the user is allowed to pin messages; groups and supergroups only\n",
               "name": "can_pin_messages",
+              "required": false
+            },
+            {
+              "type": "Boolean",
+              "description": "True, if the administrator can post stories in the channel; channels only",
+              "html_description": "<td><em>Optional</em>. <em>True</em>, if the administrator can post stories in the channel; channels only</td>",
+              "rst_description": "*Optional*. :code:`True`, if the administrator can post stories in the channel; channels only\n",
+              "name": "can_post_stories",
+              "required": false
+            },
+            {
+              "type": "Boolean",
+              "description": "True, if the administrator can edit stories posted by other users; channels only",
+              "html_description": "<td><em>Optional</em>. <em>True</em>, if the administrator can edit stories posted by other users; channels only</td>",
+              "rst_description": "*Optional*. :code:`True`, if the administrator can edit stories posted by other users; channels only\n",
+              "name": "can_edit_stories",
+              "required": false
+            },
+            {
+              "type": "Boolean",
+              "description": "True, if the administrator can delete stories posted by other users",
+              "html_description": "<td><em>Optional</em>. <em>True</em>, if the administrator can delete stories posted by other users</td>",
+              "rst_description": "*Optional*. :code:`True`, if the administrator can delete stories posted by other users\n",
+              "name": "can_delete_stories",
               "required": false
             },
             {
@@ -3516,9 +3556,9 @@
             },
             {
               "type": "Boolean",
-              "description": "True, if the administrator can access the chat event log, chat statistics, message statistics in channels, see channel members, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege",
-              "html_description": "<td><em>True</em>, if the administrator can access the chat event log, chat statistics, message statistics in channels, see channel members, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege</td>",
-              "rst_description": ":code:`True`, if the administrator can access the chat event log, chat statistics, message statistics in channels, see channel members, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege\n",
+              "description": "True, if the administrator can access the chat event log, chat statistics, boost list in channels, message statistics in channels, see channel members, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege",
+              "html_description": "<td><em>True</em>, if the administrator can access the chat event log, chat statistics, boost list in channels, message statistics in channels, see channel members, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege</td>",
+              "rst_description": ":code:`True`, if the administrator can access the chat event log, chat statistics, boost list in channels, message statistics in channels, see channel members, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege\n",
               "name": "can_manage_chat",
               "required": true
             },
@@ -3572,9 +3612,9 @@
             },
             {
               "type": "Boolean",
-              "description": "True, if the administrator can post in the channel; channels only",
-              "html_description": "<td><em>Optional</em>. <em>True</em>, if the administrator can post in the channel; channels only</td>",
-              "rst_description": "*Optional*. :code:`True`, if the administrator can post in the channel; channels only\n",
+              "description": "True, if the administrator can post messages in the channel; channels only",
+              "html_description": "<td><em>Optional</em>. <em>True</em>, if the administrator can post messages in the channel; channels only</td>",
+              "rst_description": "*Optional*. :code:`True`, if the administrator can post messages in the channel; channels only\n",
               "name": "can_post_messages",
               "required": false
             },
@@ -3592,6 +3632,30 @@
               "html_description": "<td><em>Optional</em>. <em>True</em>, if the user is allowed to pin messages; groups and supergroups only</td>",
               "rst_description": "*Optional*. :code:`True`, if the user is allowed to pin messages; groups and supergroups only\n",
               "name": "can_pin_messages",
+              "required": false
+            },
+            {
+              "type": "Boolean",
+              "description": "True, if the administrator can post stories in the channel; channels only",
+              "html_description": "<td><em>Optional</em>. <em>True</em>, if the administrator can post stories in the channel; channels only</td>",
+              "rst_description": "*Optional*. :code:`True`, if the administrator can post stories in the channel; channels only\n",
+              "name": "can_post_stories",
+              "required": false
+            },
+            {
+              "type": "Boolean",
+              "description": "True, if the administrator can edit stories posted by other users; channels only",
+              "html_description": "<td><em>Optional</em>. <em>True</em>, if the administrator can edit stories posted by other users; channels only</td>",
+              "rst_description": "*Optional*. :code:`True`, if the administrator can edit stories posted by other users; channels only\n",
+              "name": "can_edit_stories",
+              "required": false
+            },
+            {
+              "type": "Boolean",
+              "description": "True, if the administrator can delete stories posted by other users",
+              "html_description": "<td><em>Optional</em>. <em>True</em>, if the administrator can delete stories posted by other users</td>",
+              "rst_description": "*Optional*. :code:`True`, if the administrator can delete stories posted by other users\n",
+              "name": "can_delete_stories",
               "required": false
             },
             {
@@ -3784,9 +3848,9 @@
             },
             {
               "type": "Integer",
-              "description": "Date when restrictions will be lifted for this user; unix time. If 0, then the user is restricted forever",
-              "html_description": "<td>Date when restrictions will be lifted for this user; unix time. If 0, then the user is restricted forever</td>",
-              "rst_description": "Date when restrictions will be lifted for this user; unix time. If 0, then the user is restricted forever\n",
+              "description": "Date when restrictions will be lifted for this user; Unix time. If 0, then the user is restricted forever",
+              "html_description": "<td>Date when restrictions will be lifted for this user; Unix time. If 0, then the user is restricted forever</td>",
+              "rst_description": "Date when restrictions will be lifted for this user; Unix time. If 0, then the user is restricted forever\n",
               "name": "until_date",
               "required": true
             }
@@ -3844,9 +3908,9 @@
             },
             {
               "type": "Integer",
-              "description": "Date when restrictions will be lifted for this user; unix time. If 0, then the user is banned forever",
-              "html_description": "<td>Date when restrictions will be lifted for this user; unix time. If 0, then the user is banned forever</td>",
-              "rst_description": "Date when restrictions will be lifted for this user; unix time. If 0, then the user is banned forever\n",
+              "description": "Date when restrictions will be lifted for this user; Unix time. If 0, then the user is banned forever",
+              "html_description": "<td>Date when restrictions will be lifted for this user; Unix time. If 0, then the user is banned forever</td>",
+              "rst_description": "Date when restrictions will be lifted for this user; Unix time. If 0, then the user is banned forever\n",
               "name": "until_date",
               "required": true
             }
@@ -6821,9 +6885,9 @@
             {
               "type": "Integer",
               "required": false,
-              "description": "Date when the user will be unbanned, unix time. If user is banned for more than 366 days or less than 30 seconds from the current time they are considered to be banned forever. Applied for supergroups and channels only.",
-              "html_description": "<td>Date when the user will be unbanned, unix time. If user is banned for more than 366 days or less than 30 seconds from the current time they are considered to be banned forever. Applied for supergroups and channels only.</td>",
-              "rst_description": "Date when the user will be unbanned, unix time. If user is banned for more than 366 days or less than 30 seconds from the current time they are considered to be banned forever. Applied for supergroups and channels only.\n",
+              "description": "Date when the user will be unbanned; Unix time. If user is banned for more than 366 days or less than 30 seconds from the current time they are considered to be banned forever. Applied for supergroups and channels only.",
+              "html_description": "<td>Date when the user will be unbanned; Unix time. If user is banned for more than 366 days or less than 30 seconds from the current time they are considered to be banned forever. Applied for supergroups and channels only.</td>",
+              "rst_description": "Date when the user will be unbanned; Unix time. If user is banned for more than 366 days or less than 30 seconds from the current time they are considered to be banned forever. Applied for supergroups and channels only.\n",
               "name": "until_date"
             },
             {
@@ -6913,9 +6977,9 @@
             {
               "type": "Integer",
               "required": false,
-              "description": "Date when restrictions will be lifted for the user, unix time. If user is restricted for more than 366 days or less than 30 seconds from the current time, they are considered to be restricted forever",
-              "html_description": "<td>Date when restrictions will be lifted for the user, unix time. If user is restricted for more than 366 days or less than 30 seconds from the current time, they are considered to be restricted forever</td>",
-              "rst_description": "Date when restrictions will be lifted for the user, unix time. If user is restricted for more than 366 days or less than 30 seconds from the current time, they are considered to be restricted forever\n",
+              "description": "Date when restrictions will be lifted for the user; Unix time. If user is restricted for more than 366 days or less than 30 seconds from the current time, they are considered to be restricted forever",
+              "html_description": "<td>Date when restrictions will be lifted for the user; Unix time. If user is restricted for more than 366 days or less than 30 seconds from the current time, they are considered to be restricted forever</td>",
+              "rst_description": "Date when restrictions will be lifted for the user; Unix time. If user is restricted for more than 366 days or less than 30 seconds from the current time, they are considered to be restricted forever\n",
               "name": "until_date"
             }
           ],
@@ -9681,8 +9745,8 @@
             {
               "type": "WebAppInfo",
               "description": "Description of the Web App that will be launched when the user presses the button. The Web App will be able to switch back to the inline mode using the method switchInlineQuery inside the Web App.",
-              "html_description": "<td><em>Optional</em>. Description of the <a href=\"/bots/webapps\">Web App</a> that will be launched when the user presses the button. The Web App will be able to switch back to the inline mode using the method <a href=\"/bots/webapps#initializing-web-apps\">switchInlineQuery</a> inside the Web App.</td>",
-              "rst_description": "*Optional*. Description of the `Web App <https://core.telegram.org/bots/webapps>`_ that will be launched when the user presses the button. The Web App will be able to switch back to the inline mode using the method `switchInlineQuery <https://core.telegram.org/bots/webapps#initializing-web-apps>`_ inside the Web App.\n",
+              "html_description": "<td><em>Optional</em>. Description of the <a href=\"/bots/webapps\">Web App</a> that will be launched when the user presses the button. The Web App will be able to switch back to the inline mode using the method <a href=\"/bots/webapps#initializing-mini-apps\">switchInlineQuery</a> inside the Web App.</td>",
+              "rst_description": "*Optional*. Description of the `Web App <https://core.telegram.org/bots/webapps>`_ that will be launched when the user presses the button. The Web App will be able to switch back to the inline mode using the method `switchInlineQuery <https://core.telegram.org/bots/webapps#initializing-mini-apps>`_ inside the Web App.\n",
               "name": "web_app",
               "required": false
             },

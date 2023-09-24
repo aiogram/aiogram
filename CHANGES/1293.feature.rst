@@ -1,1 +1,0 @@
-Added :class:`aiogram.utils.input_media.MediaGroupBuilder` for media group construction.

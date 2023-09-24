@@ -59,7 +59,7 @@ async def handle_invalid_exceptions(event: ErrorEvent) -> None:
     logger.error("Error `Invalid` caught: %r while processing %r", event.exception, event.update)
 
 
-@dp.message(Command(commands=["age"]))
+@dp.message(Command("age"))
 async def handle_set_age(message: types.Message, command: CommandObject) -> None:
     """
     This handler receives only messages with `/age` command.
@@ -83,7 +83,7 @@ async def handle_set_age(message: types.Message, command: CommandObject) -> None
     await message.reply(text=f"Your age is {age}")
 
 
-@dp.message(Command(commands=["name"]))
+@dp.message(Command("name"))
 async def handle_set_name(message: types.Message, command: CommandObject) -> None:
     """
     This handler receives only messages with `/name` command.

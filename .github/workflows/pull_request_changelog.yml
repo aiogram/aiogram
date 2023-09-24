@@ -57,7 +57,7 @@ jobs:
 
             For example, you can run `towncrier create <issue>.<type>` to create a file in the change directory and then write a description on that file.
 
-            Read more at [Towncrier docs](https://towncrier.readthedocs.io/en/latest/quickstart.html#creating-news-fragments)
+            Read more at [Towncrier docs](https://towncrier.readthedocs.io/en/latest/tutorial.html#creating-news-fragments)
 
       - name: Changelog found
         if: "success()"
