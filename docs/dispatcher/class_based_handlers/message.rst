@@ -21,7 +21,7 @@ Simple usage
 Extension
 =========
 
-This base handler is subclass of [BaseHandler](basics.md#basehandler) with some extensions:
+This base handler is subclass of :ref:`BaseHandler <cbh-base-handler>` with some extensions:
 
 - :code:`self.chat` is alias for :code:`self.event.chat`
 - :code:`self.from_user` is alias for :code:`self.event.from_user`
