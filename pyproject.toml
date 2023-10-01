@@ -40,12 +40,12 @@ classifiers = [
     "Topic :: Communications :: Chat",
 ]
 dependencies = [
-    "magic-filter~=1.0.11",
+    "magic-filter>=1.0.12,<1.1",
     "aiohttp~=3.8.5",
-    "pydantic>=2.1.1,<2.4",
-    "aiofiles~=23.1.0",
+    "pydantic>=2.4.1,<2.5",
+    "aiofiles~=23.2.1",
     "certifi>=2023.7.22",
-    "typing-extensions~=4.7.1",
+    "typing-extensions~=4.8.0",
 ]
 dynamic = ["version"]
 
@@ -55,55 +55,55 @@ path = "aiogram/__meta__.py"
 [project.optional-dependencies]
 fast = [
     "uvloop>=0.17.0; (sys_platform == 'darwin' or sys_platform == 'linux') and platform_python_implementation != 'PyPy'",
+    "aiodns>=3.0.0",
 ]
 redis = [
-    "redis~=4.6.0",
+    "redis[hiredis]~=5.0.1",
 ]
 proxy = [
-    "aiohttp-socks~=0.8.0",
+    "aiohttp-socks~=0.8.3",
 ]
 i18n = [
     "Babel~=2.12.1",
 ]
 cli = [
-    "aiogram-cli~=1.0",
+    "aiogram-cli~=1.0.3",
 ]
 test = [
-    "pytest~=7.4.0",
-    "pytest-html~=4.0.0",
-    "pytest-asyncio~=0.21.0",
+    "pytest~=7.4.2",
+    "pytest-html~=4.0.2",
+    "pytest-asyncio~=0.21.1",
     "pytest-lazy-fixture~=0.6.3",
     "pytest-mock~=3.11.0",
-    "pytest-mypy~=0.10.0",
+    "pytest-mypy~=0.10.3",
     "pytest-cov~=4.1.0",
-    "pytest-aiohttp~=1.0.4",
+    "pytest-aiohttp~=1.0.5",
     "aresponses~=2.1.6",
     "pytz~=2023.3",
-    "pycryptodomex~=3.19",
+    "pycryptodomex~=3.19.0",
 ]
 docs = [
-    "Sphinx~=7.1.1",
-    "sphinx-intl~=2.0.1",
+    "Sphinx~=7.2.6",
+    "sphinx-intl~=2.1.0",
     "sphinx-autobuild~=2021.3.14",
     "sphinx-copybutton~=0.5.2",
-    "furo~=2023.7.26",
+    "furo~=2023.9.10",
     "Sphinx-Substitution-Extensions~=2022.2.16",
     "towncrier~=23.6.0",
-    "pygments~=2.15.1",
-    "pymdown-extensions~=10.1",
+    "pygments~=2.16.1",
+    "pymdown-extensions~=10.3",
     "markdown-include~=0.8.1",
-    "Pygments~=2.15.1",
+    "Pygments~=2.16.1",
     "sphinxcontrib-towncrier~=0.3.2a0",
 ]
 dev = [
-    "black~=23.7.0",
-    "isort~=5.11",
-    "ruff~=0.0.280",
-    "mypy~=1.4.1",
+    "black~=23.9.1",
+    "isort~=5.12.0",
+    "ruff~=0.0.291",
+    "mypy~=1.5.1",
     "toml~=0.10.2",
-    "pre-commit~=3.3.3",
-    "towncrier~=23.6.0",
-    "packaging~=23.0",
+    "pre-commit~=3.4.0",
+    "packaging~=23.1",
 ]
 
 [project.urls]
@@ -154,9 +154,6 @@ features = [
     "test",
     "cli",
 ]
-#extra-dependencies = [
-#    "butcher @ git+https://github.com/aiogram/butcher.git@v0.1.22",
-#]
 
 [tool.hatch.envs.dev.scripts]
 update = [
