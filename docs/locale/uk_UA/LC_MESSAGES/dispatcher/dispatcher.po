@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  aiogram\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-26 23:17+0300\n"
+"POT-Creation-Date: 2023-09-14 17:21+0300\n"
 "PO-Revision-Date: 2022-12-10 19:44+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -30,9 +30,10 @@ msgstr ""
 "інших маршрутизаторів до диспетчера."
 
 #: ../../dispatcher/dispatcher.rst:7
+#, fuzzy
 msgid ""
 "Here is only listed base information about Dispatcher. All about writing "
-"handlers, filters and etc. you can found in next pages:"
+"handlers, filters and etc. you can find in next pages:"
 msgstr ""
 "Тут наведена лише базова інформація про диспетчер. Усе про написання "
 "обробників, фільтрів і т.п. ви можете знайти на наступних сторінках:"
@@ -142,7 +143,8 @@ msgid "contextual data"
 msgstr "контекстні дані"
 
 #: aiogram.dispatcher.dispatcher.Dispatcher.run_polling
-#: aiogram.dispatcher.dispatcher.Dispatcher.start_polling of
+#: aiogram.dispatcher.dispatcher.Dispatcher.start_polling
+#: aiogram.dispatcher.dispatcher.Dispatcher.stop_polling of
 msgid "Returns"
 msgstr "Повертає"
 
@@ -159,6 +161,10 @@ msgstr "Екземпляри ботів"
 msgid ""
 "List of the update types you want your bot to receive By default, all "
 "used update types are enabled (resolved from handlers)"
+msgstr ""
+
+#: aiogram.dispatcher.dispatcher.Dispatcher.stop_polling:1 of
+msgid "Execute this method if you want to stop polling programmatically"
 msgstr ""
 
 #: ../../dispatcher/dispatcher.rst:18
@@ -190,3 +196,4 @@ msgstr ""
 
 #~ msgid "`Observer <observer.html>`__"
 #~ msgstr "`Observer <observer.html>`__"
+

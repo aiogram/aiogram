@@ -6,16 +6,17 @@ Migration FAQ (2.x -> 3.0)
 
     This guide is still in progress.
 
-This version introduces much many breaking changes and architectural improvements,
-helping to reduce global variables count in your code, provides useful mechanisms
-to separate your code to modules or just make sharable modules via packages on the PyPi,
-makes middlewares and filters more controllable and others.
+This version introduces numerous breaking changes and architectural improvements. 
+It helps reduce the count of global variables in your code, provides useful mechanisms 
+to modularize your code, and enables the creation of shareable modules via packages on PyPI. 
+It also makes middlewares and filters more controllable, among other improvements.
 
-On this page you can read about points that changed corresponding to last stable 2.x version.
+
+On this page, you can read about the changes made in relation to the last stable 2.x version.
 
 .. note::
 
-    This page is most like a detailed changelog than a migration guide,
+    This page more closely resembles a detailed changelog than a migration guide, 
     but it will be updated in the future.
 
     Feel free to contribute to this page, if you find something that is not mentioned here.
@@ -24,68 +25,74 @@ On this page you can read about points that changed corresponding to last stable
 Dispatcher
 ==========
 
-- :class:`Dispatcher` class no longer accepts the `Bot` instance into the initializer,
-  it should be passed to dispatcher only for starting polling or handling event from webhook.
-  Also this way adds possibility to use multiple bot instances at the same time ("multibot")
+- The :class:`Dispatcher` class no longer accepts a `Bot` instance in its initializer. 
+  Instead, the `Bot` instance should be passed to the dispatcher only for starting polling 
+  or handling events from webhooks. This approach also allows for the use of multiple bot 
+  instances simultaneously ("multibot").
 - :class:`Dispatcher` now can be extended with another Dispatcher-like
   thing named :class:`Router` (:ref:`Read more » <Nested routers>`).
-  With routes you can easily separate your code to multiple modules
-  and may be share this modules between projects.
+- With routes, you can easily modularize your code and potentially share these modules between projects.
 - Removed the **_handler** suffix from all event handler decorators and registering methods.
   (:ref:`Read more » <Event observers>`)
-- Executor entirely removed, now you can use Dispatcher directly to start polling or webhook.
-- Throttling method is completely removed, now you can use middlewares to control
-  the execution context and use any throttling mechanism you want.
+- The Executor has been entirely removed; you can now use the Dispatcher directly to start poll the API or handle webhooks from it.
+- The throttling method has been completely removed; you can now use middlewares to control 
+  the execution context and implement any throttling mechanism you desire.
 - Removed global context variables from the API types, Bot and Dispatcher object,
-  from now if you want to get current bot instance inside handlers or filters you should
-  accept the argument :code:`bot: Bot` and use it instead of :code:`Bot.get_current()`
-  Inside middlewares it can be accessed via :code:`data["bot"]`.
-- Now to skip pending updates, you should call the :class:`aiogram.methods.delete_webhook.DeleteWebhook` method directly instead of passing :code:`skip_updates=True` to start polling method.
+  From now on, if you want to access the current bot instance within handlers or filters, 
+  you should accept the argument :code:`bot: Bot` and use it instead of :code:`Bot.get_current()`. 
+  In middlewares, it can be accessed via :code:`data["bot"]`.
+- To skip pending updates, you should now call the :class:`aiogram.methods.delete_webhook.DeleteWebhook` method directly, rather than passing :code:`skip_updates=True` to the start polling method.
+
 
 
 Filtering events
 ================
 
-- Keyword filters can no more be used, use filters explicitly. (`Read more » <https://github.com/aiogram/aiogram/issues/942>`_)
-- In due to keyword filters was removed all enabled by default filters (state and content_type now is not enabled),
-  so you should specify them explicitly if you want to use.
+- Keyword filters can no longer be used; use filters explicitly. (`Read more » <https://github.com/aiogram/aiogram/issues/942>`_)
+- Due to the removal of keyword filters, all previously enabled-by-default filters 
+  (such as state and content_type) are now disabled. 
+  You must specify them explicitly if you wish to use them.
   For example instead of using :code:`@dp.message_handler(content_types=ContentType.PHOTO)`
   you should use :code:`@router.message(F.photo)`
-- Most of common filters is replaced by "magic filter". (:ref:`Read more » <magic-filters>`)
-- Now by default message handler receives any content type,
-  if you want specific one just add the filters (Magic or any other)
-- State filter now is not enabled by default, that's mean if you using :code:`state="*"` in v2
-  then you should not pass any state filter in v3, and vice versa,
-  if the state in v2 is not specified now you should specify the state.
-- Added possibility to register per-router global filters, that helps to reduces
-  the number of repetitions in the code and makes easily way to control
-  for what each router will be used.
+- Most common filters have been replaced with the "magic filter." (:ref:`Read more » <magic-filters>`)
+- By default, the message handler now receives any content type. 
+  If you want a specific one, simply add the appropriate filters (Magic or any other).
+- The state filter is no longer enabled by default. This means that if you used :code:`state="*"` 
+  in v2, you should not pass any state filter in v3. 
+  Conversely, if the state was not specified in v2, you will now need to specify it in v3.
+- Added the possibility to register global filters for each router, which helps to reduce code 
+  repetition and provides an easier way to control the purpose of each router.
+
 
 
 Bot API
 =======
 
-- Now all API methods is classes with validation (via `pydantic <https://docs.pydantic.dev/>`_)
-  (all API calls is also available as methods in the Bot class).
-- Added more pre-defined Enums and moved into `aiogram.enums` sub-package. For example chat type enum now is
-  :class:`aiogram.enums.ChatType` instead of :class:`aiogram.types.chat.ChatType`.
-  (:ref:`Read more » <enums>`)
-- Separated HTTP client session into container that can be reused between different
-  Bot instances in the application.
-- API Exceptions is no more classified by specific message in due to Telegram has no documented error codes.
-  But all errors is classified by HTTP status code and for each method only one case can be caused with the same code,
-  so in most cases you should check that only error type (by status-code) without checking error message.
-  (:ref:`Read more » <error-types>`)
+- All API methods are now classes with validation, implemented via 
+  `pydantic <https://docs.pydantic.dev/>`. 
+  These API calls are also available as methods in the Bot class.
+- More pre-defined Enums have been added and moved to the `aiogram.enums` sub-package. 
+  For example, the chat type enum is now :class:`aiogram.enums.ChatType` instead of :class:`aiogram.types.chat.ChatType`.
+- The HTTP client session has been separated into a container that can be reused 
+  across different Bot instances within the application.
+- API Exceptions are no longer classified by specific messages, 
+  as Telegram has no documented error codes. 
+  However, all errors are classified by HTTP status codes, and for each method, 
+  only one type of error can be associated with a given code. 
+  Therefore, in most cases, you should check only the error type (by status code) 
+  without inspecting the error message.
+
 
 
 Middlewares
 ===========
 
-- Middlewares can now control a execution context, e.g. using context managers (:ref:`Read more » <middlewares>`)
-- All contextual data now is shared between middlewares, filters and handlers to end-to-end use.
+- Middlewares can now control an execution context, e.g., using context managers. 
+  (:ref:`Read more » <middlewares>`)
+- All contextual data is now shared end-to-end between middlewares, filters, and handlers.
   For example now you can easily pass some data into context inside middleware and
   get it in the filters layer as the same way as in the handlers via keyword arguments.
-- Added mechanism named **flags**, that helps to customize handler behavior
+- Added a mechanism named **flags** that helps customize handler behavior 
   in conjunction with middlewares. (:ref:`Read more » <flags>`)
 
 
@@ -93,7 +100,7 @@ Keyboard Markup
 ===============
 
 - Now :class:`aiogram.types.inline_keyboard_markup.InlineKeyboardMarkup`
-  and :class:`aiogram.types.reply_keyboard_markup.ReplyKeyboardMarkup` has no methods to extend it,
+  and :class:`aiogram.types.reply_keyboard_markup.ReplyKeyboardMarkup` no longer have methods for extension,
   instead you have to use markup builders :class:`aiogram.utils.keyboard.ReplyKeyboardBuilder`
   and :class:`aiogram.utils.keyboard.KeyboardBuilder` respectively
   (:ref:`Read more » <Keyboard builder>`)
@@ -102,41 +109,43 @@ Keyboard Markup
 Callbacks data
 ==============
 
-- Callback data factory now is strictly typed via `pydantic <https://docs.pydantic.dev/>`_ models
+- The callback data factory is now strictly typed using `pydantic <https://docs.pydantic.dev/>`_ models.
   (:ref:`Read more » <Callback data factory>`)
 
 
 Finite State machine
 ====================
 
-- State filter will no more added to all handlers, you will need to specify state if you want
-- Added possibility to change FSM strategy, for example if you want to control state
-  for each user in chat topics instead of user in chat you can specify it in the Dispatcher.
+- State filters will no longer be automatically added to all handlers; 
+  you will need to specify the state if you want to use it.
+- Added the possibility to change the FSM strategy. For example, 
+  if you want to control the state for each user based on chat topics rather than 
+  the user in a chat, you can specify this in the Dispatcher.
 - Now :class:`aiogram.fsm.state.State` and :class:`aiogram.fsm.state.StateGroup` don't have helper
   methods like :code:`.set()`, :code:`.next()`, etc.
 
-  Instead of this you should set states by passing them directly to
+- Instead, you should set states by passing them directly to
   :class:`aiogram.fsm.context.FSMContext` (:ref:`Read more » <Finite State Machine>`)
-- State proxy is deprecated, you should update the state data by calling
+- The state proxy is deprecated; you should update the state data by calling 
   :code:`state.set_data(...)` and :code:`state.get_data()` respectively.
 
 
 Sending Files
 =============
 
-- From now you should wrap sending files into InputFile object before send instead of passing
-  IO object directly to the API method. (:ref:`Read more » <sending-files>`)
+- From now on, you should wrap files in an InputFile object before sending them, 
+  instead of passing the IO object directly to the API method. (:ref:`Read more » <sending-files>`)
 
 
 Webhook
 =======
 
-- Simplified aiohttp web app configuration
-- By default added possibility to upload files when you use reply into webhook
+- The aiohttp web app configuration has been simplified.
+- By default, the ability to upload files has been added when you `make requests in response to updates <https://core.telegram.org/bots/faq#how-can-i-make-requests-in-response-to-updates>`_ (available for webhook only).
 
 
 Telegram API Server
 ===================
 
-- `server` param was moved from `Bot` instance to `api` in `BaseSession`.
-- `aiogram.bot.api.TELEGRAM_PRODUCTION` was moved to `aiogram.client.telegram.PRODUCTION`.
+- The `server` parameter has been moved from the `Bot` instance to `api` in `BaseSession`.
+- The constant `aiogram.bot.api.TELEGRAM_PRODUCTION` has been moved to `aiogram.client.telegram.PRODUCTION`.

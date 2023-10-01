@@ -5,100 +5,103 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: aiogram\n"
+"Project-Id-Version:  aiogram\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-10-18 01:50+0300\n"
+"POT-Creation-Date: 2023-09-14 17:21+0300\n"
 "PO-Revision-Date: 2022-10-25 15:53+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.10.3\n"
-"X-Generator: Poedit 3.1.1\n"
+"Generated-By: Babel 2.12.1\n"
 
-#: ../../dispatcher/filters/index.rst:3
+#: ../../dispatcher/filters/index.rst:5
 msgid "Filtering events"
 msgstr "Фільтрування подій"
 
-#: ../../dispatcher/filters/index.rst:5
+#: ../../dispatcher/filters/index.rst:7
+#, fuzzy
 msgid ""
-"Filters is needed for routing updates to the specific handler. Searching of "
-"handler is always stops on first match set of filters are pass."
+"Filters is needed for routing updates to the specific handler. Searching "
+"of handler is always stops on first match set of filters are pass. By "
+"default, all handlers has empty set of filters, so all updates will be "
+"passed to first handler that has empty set of filters."
 msgstr ""
 "Фільтри потрібні для маршрутизації оновлень до конкретного обробника "
-"(handler) . Пошук обробника (handler) завжди зупиняється після першого збігу "
-"набору фільтрів."
-
-#: ../../dispatcher/filters/index.rst:8
-msgid "*aiogram* has some builtin useful filters."
-msgstr "*aiogram* має декілька вбудованих корисних фільтрів."
+"(handler) . Пошук обробника (handler) завжди зупиняється після першого "
+"збігу набору фільтрів."
 
 #: ../../dispatcher/filters/index.rst:11
+#, fuzzy
+msgid "*aiogram* has some builtin useful filters or you can write own filters."
+msgstr "*aiogram* має декілька вбудованих корисних фільтрів."
+
+#: ../../dispatcher/filters/index.rst:14
 msgid "Builtin filters"
 msgstr "Вбудовані фільтри"
 
-#: ../../dispatcher/filters/index.rst:13
+#: ../../dispatcher/filters/index.rst:16
 msgid "Here is list of builtin filters:"
 msgstr "Ось список вбудованих фільтрів:"
 
-#: ../../dispatcher/filters/index.rst:27
+#: ../../dispatcher/filters/index.rst:29
 msgid "Writing own filters"
 msgstr "Написання власних фільтрів"
 
-#: ../../dispatcher/filters/index.rst:29
+#: ../../dispatcher/filters/index.rst:31
 msgid "Filters can be:"
 msgstr "Фільтри бувають:"
 
-#: ../../dispatcher/filters/index.rst:31
+#: ../../dispatcher/filters/index.rst:33
 msgid "Asynchronous function (:code:`async def my_filter(*args, **kwargs): pass`)"
 msgstr "Асинхронною функцією (:code:`async def my_filter(*args, **kwargs): pass`)"
 
-#: ../../dispatcher/filters/index.rst:32
+#: ../../dispatcher/filters/index.rst:34
 msgid "Synchronous function (:code:`def my_filter(*args, **kwargs): pass`)"
 msgstr "Синхронною функцією (:code:`def my_filter(*args, **kwargs): pass`)"
 
-#: ../../dispatcher/filters/index.rst:33
+#: ../../dispatcher/filters/index.rst:35
 msgid "Anonymous function (:code:`lambda event: True`)"
 msgstr "Анонімною функцією (:code:`lambda event: True`)"
 
-#: ../../dispatcher/filters/index.rst:34
+#: ../../dispatcher/filters/index.rst:36
 msgid "Any awaitable object"
 msgstr ""
 "Будь-яким очікуваним об'єктом (awaitable object, об'єкт, який може бути "
 "використаний в :code:`await` виразі)"
 
-#: ../../dispatcher/filters/index.rst:35
+#: ../../dispatcher/filters/index.rst:37
 msgid "Subclass of :class:`aiogram.filters.base.Filter`"
 msgstr "Підкласом :class:`aiogram.filters.base.Filter`"
 
-#: ../../dispatcher/filters/index.rst:36
+#: ../../dispatcher/filters/index.rst:38
 msgid "Instances of :ref:`MagicFilter <magic-filters>`"
 msgstr "Екземпляром  :ref:`MagicFilter <magic-filters>`"
 
-#: ../../dispatcher/filters/index.rst:38
+#: ../../dispatcher/filters/index.rst:40
 msgid ""
-"and should return bool or dict. If the dictionary is passed as result of filter "
-"- resulted data will be propagated to the next filters and handler as keywords "
-"arguments."
+"and should return bool or dict. If the dictionary is passed as result of "
+"filter - resulted data will be propagated to the next filters and handler"
+" as keywords arguments."
 msgstr ""
-"і має повертати bool або dict. Якщо словник передається як результат фільтра, "
-"отримані дані будуть передані до наступних фільтрів і обробника як аргументи "
-"ключових слів."
+"і має повертати bool або dict. Якщо словник передається як результат "
+"фільтра, отримані дані будуть передані до наступних фільтрів і обробника "
+"як аргументи ключових слів."
 
-#: ../../dispatcher/filters/index.rst:43
+#: ../../dispatcher/filters/index.rst:45
 msgid "Base class for own filters"
 msgstr "Базовий клас для власних фільтрів"
 
 #: aiogram.filters.base.Filter:1 of
 msgid ""
-"If you want to register own filters like builtin filters you will need to write "
-"subclass of this class with overriding the :code:`__call__` method and adding "
-"filter attributes."
+"If you want to register own filters like builtin filters you will need to"
+" write subclass of this class with overriding the :code:`__call__` method"
+" and adding filter attributes."
 msgstr ""
-"Якщо Ви хочете зареєструвати власні фільтри, як вбудовані фільтри, Вам потрібно "
-"буде написати підклас цього класу з заміною методу :code:`__call__` і "
-"додаванням атрибутів фільтра."
+"Якщо Ви хочете зареєструвати власні фільтри, як вбудовані фільтри, Вам "
+"потрібно буде написати підклас цього класу з заміною методу "
+":code:`__call__` і додаванням атрибутів фільтра."
 
 #: aiogram.filters.base.Filter.__call__:1 of
 msgid "This method should be overridden."
@@ -118,72 +121,78 @@ msgstr ":class:`bool` or :class:`Dict[str, Any]`"
 
 #: aiogram.filters.base.Filter.update_handler_flags:1 of
 msgid ""
-"Also if you want to extend handler flags with using this filter you should "
-"implement this method"
+"Also if you want to extend handler flags with using this filter you "
+"should implement this method"
 msgstr ""
-"Крім того, якщо ви хочете розширити маркери обробника (handler) за допомогою "
-"цього фільтра, вам слід реалізувати цей метод"
+"Крім того, якщо ви хочете розширити маркери обробника (handler) за "
+"допомогою цього фільтра, вам слід реалізувати цей метод"
 
 #: aiogram.filters.base.Filter.update_handler_flags of
 msgid "Parameters"
 msgstr "Параметри"
 
-#: aiogram.filters.base.Filter.update_handler_flags:3 of
+#: aiogram.filters.base.Filter.update_handler_flags:4 of
 msgid "existing flags, can be updated directly"
 msgstr "існуючі маркери, можна оновити безпосередньо"
 
-#: ../../dispatcher/filters/index.rst:51
+#: ../../dispatcher/filters/index.rst:53
 msgid "Own filter example"
 msgstr "Приклад власного фільтра"
 
-#: ../../dispatcher/filters/index.rst:53
+#: ../../dispatcher/filters/index.rst:55
 msgid "For example if you need to make simple text filter:"
 msgstr "Наприклад, якщо Вам потрібно створити простий текстовий фільтр:"
 
-#: ../../dispatcher/filters/index.rst:60
+#: ../../dispatcher/filters/index.rst:62
 msgid "Combining Filters"
 msgstr "Комбінування фільтрів"
 
-#: ../../dispatcher/filters/index.rst:62
+#: ../../dispatcher/filters/index.rst:64
 msgid "In general, all filters can be combined in two ways"
 msgstr "Взагалом, усі фільтри можна комбінувати двома способами"
 
-#: ../../dispatcher/filters/index.rst:66
+#: ../../dispatcher/filters/index.rst:68
 msgid "Recommended way"
 msgstr "Рекомендований спосіб"
 
-#: ../../dispatcher/filters/index.rst:68
+#: ../../dispatcher/filters/index.rst:70
 msgid ""
-"If you specify multiple filters in a row, it will be checked with an \"and\" "
-"condition:"
+"If you specify multiple filters in a row, it will be checked with an "
+"\"and\" condition:"
 msgstr ""
-"Якщо Ви вкажете кілька фільтрів поспіль, це буде перевірено умовою \"and\" :"
+"Якщо Ви вкажете кілька фільтрів поспіль, це буде перевірено умовою "
+"\"and\" :"
 
-#: ../../dispatcher/filters/index.rst:75
+#: ../../dispatcher/filters/index.rst:77
 msgid ""
-"Also, if you want to use two alternative ways to run the same handler (\"or\" "
-"condition) you can register the handler twice or more times as you like"
+"Also, if you want to use two alternative ways to run the same handler "
+"(\"or\" condition) you can register the handler twice or more times as "
+"you like"
 msgstr ""
-"Крім того, якщо ви хочете використовувати два альтернативні способи запуску "
-"одного обробника (умова \"or\"), ви можете зареєструвати обробник двічі або "
-"більше разів, як вам подобається"
+"Крім того, якщо ви хочете використовувати два альтернативні способи "
+"запуску одного обробника (умова \"or\"), ви можете зареєструвати обробник"
+" двічі або більше разів, як вам подобається"
 
-#: ../../dispatcher/filters/index.rst:84
+#: ../../dispatcher/filters/index.rst:86
 msgid ""
-"Also sometimes you will need to invert the filter result, for example you have "
-"an *IsAdmin* filter and you want to check if the user is not an admin"
+"Also sometimes you will need to invert the filter result, for example you"
+" have an *IsAdmin* filter and you want to check if the user is not an "
+"admin"
 msgstr ""
-"Також іноді Вам потрібно буде інвертувати результат фільтра, наприклад, у вас є "
-"фільтр *IsAdmin* і ви хочете перевірити, чи користувач не є адміністратором"
+"Також іноді Вам потрібно буде інвертувати результат фільтра, наприклад, у"
+" вас є фільтр *IsAdmin* і ви хочете перевірити, чи користувач не є "
+"адміністратором"
 
-#: ../../dispatcher/filters/index.rst:93
+#: ../../dispatcher/filters/index.rst:95
 msgid "Another possible way"
 msgstr "Інший можливий спосіб"
 
-#: ../../dispatcher/filters/index.rst:95
+#: ../../dispatcher/filters/index.rst:97
 msgid ""
-"An alternative way is to combine using special functions (:func:`and_f`, :func:"
-"`or_f`, :func:`invert_f` from :code:`aiogram.filters` module):"
+"An alternative way is to combine using special functions (:func:`and_f`, "
+":func:`or_f`, :func:`invert_f` from :code:`aiogram.filters` module):"
 msgstr ""
-"Альтернативним способом є об’єднання за допомогою спеціальних функцій (:func:"
-"`and_f`, :func:`or_f`, :func:`invert_f` з модуля :code:`aiogram.filters`):"
+"Альтернативним способом є об’єднання за допомогою спеціальних функцій "
+"(:func:`and_f`, :func:`or_f`, :func:`invert_f` з модуля "
+":code:`aiogram.filters`):"
+
