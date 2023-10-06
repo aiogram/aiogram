@@ -88,6 +88,7 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
         self._polling = False
         self._closed = True
         self._dispatcher_close_waiter = None
+        self._polling_tasks = set()
 
         self._setup_filters()
 
@@ -395,7 +396,9 @@ class Dispatcher(DataMixin, ContextInstanceMixin):
                     log.debug(f"Received {len(updates)} updates.")
                     offset = updates[-1].update_id + 1
 
-                    asyncio.create_task(self._process_polling_updates(updates, fast))
+                    polling_task = asyncio.create_task(self._process_polling_updates(updates, fast))
+                    self._polling_tasks.add(polling_task)
+                    polling_task.add_done_callback(self._polling_tasks.discard)
 
                 if relax:
                     await asyncio.sleep(relax)
