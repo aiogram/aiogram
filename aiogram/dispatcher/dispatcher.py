@@ -95,6 +95,7 @@ class Dispatcher(Router):
         self._running_lock = Lock()
         self._stop_signal: Optional[Event] = None
         self._stopped_signal: Optional[Event] = None
+        self._handle_update_tasks = set()
 
     def __getitem__(self, item: str) -> Any:
         return self.workflow_data[item]
@@ -349,7 +350,9 @@ class Dispatcher(Router):
             ):
                 handle_update = self._process_update(bot=bot, update=update, **kwargs)
                 if handle_as_tasks:
-                    asyncio.create_task(handle_update)
+                    handle_update_task = asyncio.create_task(handle_update)
+                    self._handle_update_tasks.add(handle_update_task)
+                    handle_update_task.add_done_callback(self._handle_update_tasks.discard)
                 else:
                     await handle_update
         finally:
