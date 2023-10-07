@@ -5,7 +5,7 @@ from typing import TypedDict
 
 from aiogram import Bot, Dispatcher, F, html
 from aiogram.filters import Command
-from aiogram.scenes import After, Scene, SceneRegistry, on
+from aiogram.fsm.scene import After, Scene, SceneRegistry, on
 from aiogram.types import (
     CallbackQuery,
     InlineKeyboardButton,

@@ -31,9 +31,7 @@ Download file by `file_path` to destination.
 If you want to automatically create destination (:obj:`io.BytesIO`) use default
 value of destination and handle result of this method.
 
-.. autoclass:: aiogram.client.bot.Bot
-    :members: download_file
-    :exclude-members: __init__
+.. automethod:: aiogram.client.bot.Bot.download_file
 
 There are two options where you can download the file: to **disk** or to **binary I/O object**.
 
@@ -81,9 +79,7 @@ Download file by `file_id` or `Downloadable` object to destination.
 If you want to automatically create destination (:obj:`io.BytesIO`) use default
 value of destination and handle result of this method.
 
-.. autoclass:: aiogram.client.bot.Bot
-    :members: download
-    :exclude-members: __init__
+.. automethod:: aiogram.client.bot.Bot.download
 
 It differs from `download_file <#download-file>`__ **only** in that it accepts `file_id`
 or an `Downloadable` object (object that contains the `file_id` attribute) instead of `file_path`.
