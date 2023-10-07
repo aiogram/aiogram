@@ -175,7 +175,7 @@ class TestConstI18nMiddleware:
 
 
 class TestFSMI18nMiddleware:
-    async def test_middleware(self, i18n: I18n, bot: MockedBot, extra):
+    async def test_middleware(self, i18n: I18n, bot: MockedBot):
         middleware = FSMI18nMiddleware(i18n=i18n)
         storage = MemoryStorage()
         state = FSMContext(storage=storage, key=StorageKey(user_id=42, chat_id=42, bot_id=bot.id))
@@ -185,12 +185,14 @@ class TestFSMI18nMiddleware:
         }
         result = await middleware(next_call, Update(update_id=42), data)
         assert result == "test"
+
         await middleware.set_locale(state, "uk")
         assert i18n.current_locale == "uk"
+
         result = await middleware(next_call, Update(update_id=42), data)
         assert result == "тест"
 
-    async def test_without_state(self, i18n: I18n, bot: MockedBot, extra):
+    async def test_without_state(self, i18n: I18n, bot: MockedBot):
         middleware = FSMI18nMiddleware(i18n=i18n)
         data = {
             "event_from_user": User(id=42, is_bot=False, language_code="it", first_name="Test"),
@@ -198,7 +200,3 @@ class TestFSMI18nMiddleware:
         result = await middleware(next_call, Update(update_id=42), data)
         assert i18n.current_locale == "en"
         assert result == "test"
-
-        assert i18n.current_locale == "en"
-        result = await middleware(next_call, Update(update_id=42), data)
-        assert i18n.current_locale == "en"

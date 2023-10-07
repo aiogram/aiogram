@@ -138,7 +138,7 @@ class RedisStorage(BaseStorage):
         return RedisEventIsolation(redis=self.redis, key_builder=self.key_builder, **kwargs)
 
     async def close(self) -> None:
-        await self.redis.close()
+        await self.redis.aclose(close_connection_pool=True)
 
     async def set_state(
         self,

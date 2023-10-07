@@ -18,10 +18,11 @@ def create_storage_key(bot: MockedBot):
     ],
 )
 class TestIsolations:
+    @pytest.mark.filterwarnings("ignore::ResourceWarning")
     async def test_lock(
         self,
         isolation: BaseEventIsolation,
         storage_key: StorageKey,
     ):
         async with isolation.lock(key=storage_key):
-            assert True, "You are kidding me?"
+            assert True, "Are you kidding me?"

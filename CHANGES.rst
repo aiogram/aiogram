@@ -16,6 +16,16 @@ Changelog
 
 .. towncrier release notes start
 
+3.1.1 (2023-09-25)
+===================
+
+Bugfixes
+--------
+
+- Fixed `pydantic` version <2.4, since 2.4 has breaking changes.
+  `#1322 <https://github.com/aiogram/aiogram/issues/1322>`_
+
+
 3.1.0 (2023-09-22)
 ===================
 

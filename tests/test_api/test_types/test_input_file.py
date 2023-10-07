@@ -68,15 +68,18 @@ class TestInputFile:
 
     async def test_url_input_file(self, aresponses: ResponsesMockServer):
         aresponses.add(
-            aresponses.ANY, aresponses.ANY, "get", aresponses.Response(status=200, body=b"\f" * 10)
+            aresponses.ANY,
+            aresponses.ANY,
+            "get",
+            aresponses.Response(status=200, body=b"\f" * 10),
         )
-        bot = Bot(token="42:TEST")
-        file = URLInputFile("https://test.org/", chunk_size=1)
+        async with Bot(token="42:TEST").context() as bot:
+            file = URLInputFile("https://test.org/", chunk_size=1)
 
-        size = 0
-        async for chunk in file.read(bot):
-            assert chunk == b"\f"
-            chunk_size = len(chunk)
-            assert chunk_size == 1
-            size += chunk_size
-        assert size == 10
+            size = 0
+            async for chunk in file.read(bot):
+                assert chunk == b"\f"
+                chunk_size = len(chunk)
+                assert chunk_size == 1
+                size += chunk_size
+            assert size == 10
