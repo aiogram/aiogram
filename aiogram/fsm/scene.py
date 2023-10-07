@@ -212,12 +212,19 @@ class HandlerContainer:
 @dataclass()
 class SceneConfig:
     state: Optional[str]
+    """Scene state"""
     filters: Dict[str, List[CallbackType]]
+    """Global scene filters"""
     handlers: List[HandlerContainer]
+    """Scene handlers"""
     actions: Dict[SceneAction, Dict[str, CallableObject]]
+    """Scene actions"""
     reset_data_on_enter: Optional[bool] = None
+    """Reset scene data on enter"""
     reset_history_on_enter: Optional[bool] = None
+    """Reset scene history on enter"""
     callback_query_without_state: Optional[bool] = None
+    """Allow callback query without state"""
 
 
 async def _empty_handler(*args: Any, **kwargs: Any) -> None:
@@ -424,6 +431,19 @@ class Scene:
 
 
 class SceneWizard:
+    """
+    A class that represents a wizard for managing scenes in a Telegram bot.
+
+    Instance of this class is passed to each scene as a parameter.
+    So, you can use it to transition between scenes, get and set data, etc.
+
+    .. note::
+
+        This class is not meant to be used directly. Instead, it should be used
+        as a parameter in the scene constructor.
+
+    """
+
     def __init__(
         self,
         scene_config: SceneConfig,
@@ -433,6 +453,16 @@ class SceneWizard:
         event: TelegramObject,
         data: Dict[str, Any],
     ):
+        """
+        A class that represents a wizard for managing scenes in a Telegram bot.
+
+        :param scene_config: The configuration of the scene.
+        :param manager: The scene manager.
+        :param state: The FSMContext object for storing the state of the scene.
+        :param update_type: The type of the update event.
+        :param event: The TelegramObject represents the event.
+        :param data: Additional data for the scene.
+        """
         self.scene_config = scene_config
         self.manager = manager
         self.state = state
@@ -443,6 +473,14 @@ class SceneWizard:
         self.scene: Optional[Scene] = None
 
     async def enter(self, **kwargs: Any) -> None:
+        """
+        Enter method is used to transition into a scene in the SceneWizard class.
+        It sets the state, clears data and history if specified,
+        and triggers entering event of the scene.
+
+        :param kwargs: Additional keyword arguments.
+        :return: None
+        """
         loggers.scene.debug("Entering scene %r", self.scene_config.state)
         if self.scene_config.reset_data_on_enter:
             await self.state.set_data({})
@@ -452,27 +490,65 @@ class SceneWizard:
         await self._on_action(SceneAction.enter, **kwargs)
 
     async def leave(self, _with_history: bool = True, **kwargs: Any) -> None:
+        """
+        Leaves the current scene.
+        This method is used to exit a scene and transition to the next scene.
+
+        :param _with_history: Whether to include history in the snapshot. Defaults to True.
+        :param kwargs: Additional keyword arguments.
+        :return: None
+
+        """
         loggers.scene.debug("Leaving scene %r", self.scene_config.state)
         if _with_history:
             await self.manager.history.snapshot()
         await self._on_action(SceneAction.leave, **kwargs)
 
     async def exit(self, **kwargs: Any) -> None:
+        """
+        Exit the current scene and enter the default scene/state.
+
+        :param kwargs: Additional keyword arguments.
+        :return: None
+        """
         loggers.scene.debug("Exiting scene %r", self.scene_config.state)
         await self.manager.history.clear()
         await self._on_action(SceneAction.exit, **kwargs)
         await self.manager.enter(None, _check_active=False, **kwargs)
 
     async def back(self, **kwargs: Any) -> None:
+        """
+        This method is used to go back to the previous scene.
+
+        :param kwargs: Keyword arguments that can be passed to the method.
+        :return: None
+        """
         loggers.scene.debug("Back to previous scene from scene %s", self.scene_config.state)
         await self.leave(_with_history=False, **kwargs)
         new_scene = await self.manager.history.rollback()
         await self.manager.enter(new_scene, _check_active=False, **kwargs)
 
     async def retake(self, **kwargs: Any) -> None:
+        """
+        This method allows to re-enter the current scene.
+
+        :param kwargs: Additional keyword arguments to pass to the scene.
+        :return: None
+        """
         await self.goto(self.scene_config.state, **kwargs)
 
     async def goto(self, scene: Union[Type[Scene], str], **kwargs: Any) -> None:
+        """
+        The `goto` method transitions to a new scene.
+        It first calls the `leave` method to perform any necessary cleanup
+        in the current scene, then calls the `enter` event to enter the specified scene.
+
+        :param scene: The scene to transition to. Can be either a `Scene` instance
+            or a string representing the scene.
+        :param kwargs: Additional keyword arguments to pass to the `enter`
+            method of the scene manager.
+        :return: None
+        """
         await self.leave(**kwargs)
         await self.manager.enter(scene, _check_active=False, **kwargs)
 
@@ -502,23 +578,51 @@ class SceneWizard:
         return True
 
     async def set_data(self, data: Dict[str, Any]) -> None:
+        """
+        Sets custom data in the current state.
+
+        :param data: A dictionary containing the custom data to be set in the current state.
+        :return: None
+        """
         await self.state.set_data(data=data)
 
     async def get_data(self) -> Dict[str, Any]:
+        """
+        This method returns the data stored in the current state.
+
+        :return: A dictionary containing the data stored in the scene state.
+        """
         return await self.state.get_data()
 
     async def update_data(
         self, data: Optional[Dict[str, Any]] = None, **kwargs: Any
     ) -> Dict[str, Any]:
+        """
+        This method updates the data stored in the current state
+
+        :param data: Optional dictionary of data to update.
+        :param kwargs: Additional key-value pairs of data to update.
+        :return: Dictionary of updated data
+        """
         if data:
             kwargs.update(data)
         return await self.state.update_data(data=kwargs)
 
     async def clear_data(self) -> None:
+        """
+        Clears the data.
+
+        :return: None
+        """
         await self.set_data({})
 
 
 class ScenesManager:
+    """
+    The ScenesManager class is responsible for managing scenes in an application.
+    It provides methods for entering and exiting scenes, as well as retrieving the active scene.
+    """
+
     def __init__(
         self,
         registry: SceneRegistry,
@@ -561,6 +665,15 @@ class ScenesManager:
         _check_active: bool = True,
         **kwargs: Any,
     ) -> None:
+        """
+        Enters the specified scene.
+
+        :param scene_type: Optional Type[Scene] or str representing the scene type to enter.
+        :param _check_active: Optional bool indicating whether to check if
+            there is an active scene to exit before entering the new scene. Defaults to True.
+        :param kwargs: Additional keyword arguments to pass to the scene's wizard.enter() method.
+        :return: None
+        """
         if _check_active:
             active_scene = await self._get_active_scene()
             if active_scene is not None:
@@ -576,6 +689,12 @@ class ScenesManager:
             await scene.wizard.enter(**kwargs)
 
     async def close(self, **kwargs: Any) -> None:
+        """
+        Close method is used to exit the currently active scene in the ScenesManager.
+
+        :param kwargs: Additional keyword arguments passed to the scene's exit method.
+        :return: None
+        """
         scene = await self._get_active_scene()
         if not scene:
             return
@@ -583,7 +702,16 @@ class ScenesManager:
 
 
 class SceneRegistry:
+    """
+    A class that represents a registry for scenes in a Telegram bot.
+    """
+
     def __init__(self, router: Router) -> None:
+        """
+        Initialize a new instance of the SceneRegistry class.
+
+        :param router: The router instance used for scene registration.
+        """
         self.router = router
         self._scenes: Dict[Optional[str], Type[Scene]] = {}
 
@@ -635,6 +763,22 @@ class SceneRegistry:
         return await handler(event, data)
 
     def add(self, *scenes: Type[Scene], router: Optional[Router] = None) -> None:
+        """
+        This method adds the specified scenes to the router.
+        If a router is not provided, it uses the default router stored
+        in the SceneRegistry instance.
+        The scenes are included in the router by calling the `as_router()`
+        method on each scene and passing the router as a parameter to this method.
+
+        If a scene with the same state already exists in the registry, a SceneException is raised.
+
+        :param scenes: A variable length parameter that accepts one or more types of scenes.
+            These scenes are instances of the Scene class.
+        :param router: An optional parameter that specifies the router
+            to which the scenes should be added. If not provided, the scenes will be
+            added to the default router stored in the SceneRegistry instance.
+        :return: None
+        """
         if router is None:
             router = self.router
 
@@ -649,6 +793,20 @@ class SceneRegistry:
             router.include_router(scene.as_router())
 
     def get(self, scene: Optional[Union[Type[Scene], str]]) -> Type[Scene]:
+        """
+        This method returns the registered Scene object for the specified scene.
+        The scene parameter can be either a Scene object or a string representing
+        the name of the scene. If a Scene object is provided, the state attribute
+        of the SceneConfig object associated with the Scene object will be used as the scene name.
+        If None or an invalid type is provided, a SceneException will be raised.
+
+        If the specified scene is not registered in the SceneRegistry object,
+        a SceneException will be raised.
+
+        :param scene: A Scene object or a string representing the name of the scene.
+        :return: The registered Scene object corresponding to the given scene parameter.
+
+        """
         if inspect.isclass(scene) and issubclass(scene, Scene):
             scene = scene.__scene_config__.state
         if scene is not None and not isinstance(scene, str):
@@ -708,7 +866,8 @@ class ObserverMarker:
 
 class OnMarker:
     """
-    The `_On` class is used as a marker class to define different types of events in the Scenes.
+    The `OnMarker` class is used as a marker class to define different
+    types of events in the Scenes.
 
     Attributes:
 
