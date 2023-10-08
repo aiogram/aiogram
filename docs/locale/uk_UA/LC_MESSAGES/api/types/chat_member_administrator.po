@@ -8,14 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-02-12 00:22+0200\n"
+"POT-Creation-Date: 2023-10-08 19:04+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.9.1\n"
+"Generated-By: Babel 2.12.1\n"
 
 #: ../../api/types/chat_member_administrator.rst:3
 msgid "ChatMemberAdministrator"
@@ -61,9 +61,9 @@ msgstr ""
 #: of
 msgid ""
 ":code:`True`, if the administrator can access the chat event log, chat "
-"statistics, message statistics in channels, see channel members, see "
-"anonymous administrators in supergroups and ignore slow mode. Implied by "
-"any other administrator privilege"
+"statistics, boost list in channels, message statistics in channels, see "
+"channel members, see anonymous administrators in supergroups and ignore "
+"slow mode. Implied by any other administrator privilege"
 msgstr ""
 
 #: ../../docstring
@@ -112,8 +112,8 @@ msgstr ""
 #: aiogram.types.chat_member_administrator.ChatMemberAdministrator.can_post_messages:1
 #: of
 msgid ""
-"*Optional*. :code:`True`, if the administrator can post in the channel; "
-"channels only"
+"*Optional*. :code:`True`, if the administrator can post messages in the "
+"channel; channels only"
 msgstr ""
 
 #: ../../docstring
@@ -130,6 +130,30 @@ msgstr ""
 msgid ""
 "*Optional*. :code:`True`, if the user is allowed to pin messages; groups "
 "and supergroups only"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.chat_member_administrator.ChatMemberAdministrator.can_post_stories:1
+#: of
+msgid ""
+"*Optional*. :code:`True`, if the administrator can post stories in the "
+"channel; channels only"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.chat_member_administrator.ChatMemberAdministrator.can_edit_stories:1
+#: of
+msgid ""
+"*Optional*. :code:`True`, if the administrator can edit stories posted by"
+" other users; channels only"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.chat_member_administrator.ChatMemberAdministrator.can_delete_stories:1
+#: of
+msgid ""
+"*Optional*. :code:`True`, if the administrator can delete stories posted "
+"by other users"
 msgstr ""
 
 #: ../../docstring
@@ -156,3 +180,18 @@ msgstr ""
 #~ "the user)"
 #~ msgstr ""
 
+#~ msgid ""
+#~ ":code:`True`, if the administrator can "
+#~ "access the chat event log, chat "
+#~ "statistics, message statistics in channels,"
+#~ " see channel members, see anonymous "
+#~ "administrators in supergroups and ignore "
+#~ "slow mode. Implied by any other "
+#~ "administrator privilege"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "*Optional*. :code:`True`, if the administrator"
+#~ " can post in the channel; channels"
+#~ " only"
+#~ msgstr ""
