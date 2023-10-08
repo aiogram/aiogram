@@ -160,8 +160,3 @@ msgstr ""
 #: aiogram.client.bot.Bot.download:6 of
 msgid "file_id or Downloadable object"
 msgstr ""
-
-#~ msgid ""
-#~ "Bases: :py:class:`~aiogram.utils.mixins.ContextInstanceMixin`\\"
-#~ " [:py:class:`Bot`]"
-#~ msgstr ""

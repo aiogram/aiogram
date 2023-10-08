@@ -214,30 +214,3 @@ msgstr "Приклад використання"
 #: ../../index.rst:9
 msgid "Contents"
 msgstr "Зміст"
-
-#~ msgid "[Telegram] aiogram live"
-#~ msgstr ""
-
-#~ msgid "aiogram |beta badge|"
-#~ msgstr ""
-
-#~ msgid "Beta badge"
-#~ msgstr ""
-
-#~ msgid "This version is still in development!"
-#~ msgstr "Ще в розробці!"
-
-#~ msgid "**Breaking News:**"
-#~ msgstr "**Важливі новини**"
-
-#~ msgid "*aiogram* 3.0 has breaking changes."
-#~ msgstr "*aiogram* 3.0 має зміни, що ламають зворотну сумісність."
-
-#~ msgid "It breaks backward compatibility by introducing new breaking changes!"
-#~ msgstr "Порушує зворотну сумісність, вводячи нові критичні зміни!"
-
-#~ msgid ""
-#~ "Uses powerful `magic filters "
-#~ "<https://docs.aiogram.dev/en/dev-3.x/dispatcher/filters/magic_filters.html"
-#~ "#magic-filters>`"
-#~ msgstr ""
