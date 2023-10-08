@@ -2803,6 +2803,7 @@ class Message(TelegramObject):
         reply_markup: Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, None] = None,
         allow_sending_without_reply: Optional[bool] = None,
         message_thread_id: Optional[int] = None,
+        parse_mode: Optional[str] = None,
     ) -> Union[
         ForwardMessage,
         SendAnimation,
@@ -2837,6 +2838,7 @@ class Message(TelegramObject):
         :param reply_markup:
         :param allow_sending_without_reply:
         :param message_thread_id:
+        :param parse_mode:
         :return:
         """
         from ..methods import (
@@ -2864,6 +2866,9 @@ class Message(TelegramObject):
             "reply_to_message_id": reply_to_message_id,
             "message_thread_id": message_thread_id,
             "allow_sending_without_reply": allow_sending_without_reply,
+            # when sending a copy, we don't need any parse mode
+            # because all entities are already prepared
+            "parse_mode": parse_mode,
         }
 
         if self.text:
