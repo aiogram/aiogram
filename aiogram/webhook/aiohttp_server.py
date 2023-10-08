@@ -2,7 +2,7 @@ import asyncio
 import secrets
 from abc import ABC, abstractmethod
 from asyncio import Transport
-from typing import Any, Awaitable, Callable, Dict, Optional, Tuple, cast
+from typing import Any, Awaitable, Callable, Dict, Optional, Set, Tuple, cast
 
 from aiohttp import MultipartWriter, web
 from aiohttp.abc import Application
@@ -98,7 +98,7 @@ class BaseRequestHandler(ABC):
         self.dispatcher = dispatcher
         self.handle_in_background = handle_in_background
         self.data = data
-        self._background_feed_update_tasks = set()
+        self._background_feed_update_tasks: Set[asyncio.Task[Any]] = set()
 
     def register(self, app: Application, /, path: str, **kwargs: Any) -> None:
         """
