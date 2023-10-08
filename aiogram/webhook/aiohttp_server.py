@@ -2,7 +2,7 @@ import asyncio
 import secrets
 from abc import ABC, abstractmethod
 from asyncio import Transport
-from typing import Any, Awaitable, Callable, Dict, Optional, Tuple, cast
+from typing import Any, Awaitable, Callable, Dict, Optional, Set, Tuple, cast
 
 from aiohttp import MultipartWriter, web
 from aiohttp.abc import Application
@@ -98,6 +98,7 @@ class BaseRequestHandler(ABC):
         self.dispatcher = dispatcher
         self.handle_in_background = handle_in_background
         self.data = data
+        self._background_feed_update_tasks: Set[asyncio.Task[Any]] = set()
 
     def register(self, app: Application, /, path: str, **kwargs: Any) -> None:
         """
@@ -139,11 +140,13 @@ class BaseRequestHandler(ABC):
             await self.dispatcher.silent_call_request(bot=bot, result=result)
 
     async def _handle_request_background(self, bot: Bot, request: web.Request) -> web.Response:
-        asyncio.create_task(
+        feed_update_task = asyncio.create_task(
             self._background_feed_update(
                 bot=bot, update=await request.json(loads=bot.session.json_loads)
             )
         )
+        self._background_feed_update_tasks.add(feed_update_task)
+        feed_update_task.add_done_callback(self._background_feed_update_tasks.discard)
         return web.json_response({}, dumps=bot.session.json_dumps)
 
     def _build_response_writer(
