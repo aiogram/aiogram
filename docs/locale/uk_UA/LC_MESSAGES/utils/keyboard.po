@@ -177,6 +177,3 @@ msgstr "Додавання нової кнопки до розмітки"
 #: ../../utils/keyboard.rst:90
 msgid "Construct an ReplyKeyboardMarkup"
 msgstr "Створення ReplyKeyboardMarkup"
-
-#~ msgid "Base builder"
-#~ msgstr "Базовий конструктор"

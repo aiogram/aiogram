@@ -190,10 +190,3 @@ msgid ""
 msgstr ""
 "Усі оновлення можна передати диспетчеру через "
 ":obj:`Dispatcher.feed_update(bot=..., update=...)` method:"
-
-#~ msgid "Poling timeout"
-#~ msgstr "Час очікування на відповідь"
-
-#~ msgid "`Observer <observer.html>`__"
-#~ msgstr "`Observer <observer.html>`__"
-

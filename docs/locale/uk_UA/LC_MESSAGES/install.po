@@ -38,9 +38,3 @@ msgstr "Бета-версія (3.х)"
 #: ../../install.rst:30
 msgid "From GitHub"
 msgstr "З GitHub"
-
-#~ msgid "Stable (2.x)"
-#~ msgstr "Стабільна версія (2.x)"
-
-#~ msgid "From AUR"
-#~ msgstr "З AUR"

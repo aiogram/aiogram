@@ -24,6 +24,3 @@ msgstr ""
 #: ../../api/enums/index.rst:5
 msgid "Here is list of all available enums:"
 msgstr "Ось список усіх доступних переліків:"
-
-#~ msgid "Types"
-#~ msgstr ""

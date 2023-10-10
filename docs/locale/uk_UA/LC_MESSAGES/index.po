@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-26 23:17+0300\n"
+"POT-Creation-Date: 2023-10-08 19:04+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -109,7 +109,7 @@ msgstr "Працює з `PyPy <https://www.pypy.org/>`_"
 #: ../../../README.rst:55
 #, fuzzy
 msgid ""
-"Supports `Telegram Bot API 6.8 <https://core.telegram.org/bots/api>`_ and"
+"Supports `Telegram Bot API 6.9 <https://core.telegram.org/bots/api>`_ and"
 " gets fast updates to the latest versions of the Bot API"
 msgstr ""
 "Підтримує `Telegram Bot API 6.3 <https://core.telegram.org/bots/api>`_ та"
@@ -214,30 +214,3 @@ msgstr "Приклад використання"
 #: ../../index.rst:9
 msgid "Contents"
 msgstr "Зміст"
-
-#~ msgid "[Telegram] aiogram live"
-#~ msgstr ""
-
-#~ msgid "aiogram |beta badge|"
-#~ msgstr ""
-
-#~ msgid "Beta badge"
-#~ msgstr ""
-
-#~ msgid "This version is still in development!"
-#~ msgstr "Ще в розробці!"
-
-#~ msgid "**Breaking News:**"
-#~ msgstr "**Важливі новини**"
-
-#~ msgid "*aiogram* 3.0 has breaking changes."
-#~ msgstr "*aiogram* 3.0 має зміни, що ламають зворотну сумісність."
-
-#~ msgid "It breaks backward compatibility by introducing new breaking changes!"
-#~ msgstr "Порушує зворотну сумісність, вводячи нові критичні зміни!"
-
-#~ msgid ""
-#~ "Uses powerful `magic filters "
-#~ "<https://docs.aiogram.dev/en/dev-3.x/dispatcher/filters/magic_filters.html"
-#~ "#magic-filters>`"
-#~ msgstr ""

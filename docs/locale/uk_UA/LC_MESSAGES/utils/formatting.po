@@ -441,9 +441,3 @@ msgid ""
 "with type "
 ":obj:`aiogram.enums.message_entity_type.MessageEntityType.CUSTOM_EMOJI`"
 msgstr ""
-
-#~ msgid "line marker, by default is :code:`- `"
-#~ msgstr ""
-
-#~ msgid "number format, by default :code:`{}. `"
-#~ msgstr ""

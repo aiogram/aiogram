@@ -67,7 +67,7 @@ test-coverage-view:
 # Docs
 # =================================================================================================
 
-locales := en uk_UA
+locales := uk_UA
 locale_targets := $(addprefix docs-serve-, $(locales))
 locales_pot := _build/gettext
 docs_dir := docs
@@ -78,8 +78,7 @@ docs-gettext:
 .PHONY: docs-gettext
 
 docs-serve:
-	#rm -rf docs/_build
-	sphinx-autobuild --watch aiogram/ --watch CHANGELOG.rst --watch README.rst docs/ docs/_build/ $(OPTS)
+	hatch run docs:sphinx-autobuild --watch aiogram/ --watch CHANGELOG.rst --watch README.rst docs/ docs/_build/ $(OPTS)
 .PHONY: docs-serve
 
 $(locale_targets): docs-serve-%:

@@ -284,12 +284,3 @@ msgstr "Приклад вкладених маршрутизаторів"
 #: ../../dispatcher/router.rst:214
 msgid "In this case update propagation flow will have form:"
 msgstr "У цьому випадку потік розповсюдження оновлення матиме вигляд:"
-
-#~ msgid ""
-#~ "By default Router already has an "
-#~ "update handler which route all event "
-#~ "types to another observers."
-#~ msgstr ""
-#~ "За замовчуванням маршрутизатор уже має "
-#~ "обробник подій, який направляє всі типи"
-#~ " подій іншим обсерверам."
