@@ -252,6 +252,7 @@ class QuizScene(Scene, state="quiz"):
 quiz_router = Router(name=__name__)
 # Add handler that initializes the scene
 quiz_router.message.register(QuizScene.as_handler(), Command("quiz"))
+quiz_router.include_scene(QuizScene)
 
 
 @quiz_router.message(Command("start"))
@@ -275,7 +276,7 @@ def create_dispatcher():
     # ... and then register a scene in the registry
     # by default, Scene will be mounted to the router that passed to the SceneRegistry,
     # but you can specify the router explicitly using the `router` argument
-    scene_registry.add(QuizScene, router=quiz_router)
+    scene_registry.add(QuizScene)
 
     return dispatcher
 

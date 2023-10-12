@@ -1,11 +1,14 @@
 from __future__ import annotations
 
-from typing import Any, Dict, Final, Generator, List, Optional, Set
+from typing import Any, Dict, Final, Generator, List, Optional, Set, Type, TYPE_CHECKING
 
-from ..types import TelegramObject
 from .event.bases import REJECTED, UNHANDLED
 from .event.event import EventObserver
 from .event.telegram import TelegramEventObserver
+from ..types import TelegramObject
+
+if TYPE_CHECKING:
+    from ..fsm.scene import Scene
 
 INTERNAL_UPDATE_TYPES: Final[frozenset[str]] = frozenset({"update", "error"})
 
@@ -217,6 +220,29 @@ class Router:
             )
         router.parent_router = self
         return router
+
+    def include_scenes(self, *scenes: Type[Scene], name: Optional[str] = None) -> None:
+        """
+        Include multiple scenes to this router as sub-routers
+
+        :param scenes: scene instances
+        :param name: optional name for router
+        :return:
+        """
+        if not scenes:
+            raise ValueError("At least one scene must be provided")
+        for scene in scenes:
+            self.include_scene(scene, name=name)
+
+    def include_scene(self, scene: Type[Scene], name: Optional[str] = None) -> None:
+        """
+        Include a scene to this router as sub-router
+
+        :param scene: scene instance
+        :param name: optional name for router
+        :return:
+        """
+        self.include_router(scene.as_router(name=name))
 
     async def emit_startup(self, *args: Any, **kwargs: Any) -> None:
         """
