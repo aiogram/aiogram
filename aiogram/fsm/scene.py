@@ -689,7 +689,7 @@ class SceneRegistry:
     A class that represents a registry for scenes in a Telegram bot.
     """
 
-    def __init__(self, router: Router, register_on_add: bool = False) -> None:
+    def __init__(self, router: Router, register_on_add: bool = True) -> None:
         """
         Initialize a new instance of the SceneRegistry class.
 
