@@ -1,0 +1,5 @@
+The new FSM strategy CHAT_TOPIC, which sets the state for the entire topic in the chat, also works in private messages and regular groups without topics.
+Aiogram did not have an FSM strategy that would set state only for a specific topic in the chat. This strategy is quite reasonable and it has many applications.
+The work of state in private messages remains unchanged
+The work of state in groups / super groups without topics, state will be established for all groups
+The work of state in groups /super groups with topics, State will be established only for one topic, other topics will not have a state until it is installed, state can be set separately for each topic, and state_data will be separate in all topics where state is installed.
