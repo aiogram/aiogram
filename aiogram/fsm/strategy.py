@@ -14,7 +14,7 @@ def apply_strategy(
     chat_id: int,
     user_id: int,
     thread_id: Optional[int] = None,
-) -> Tuple[int, int, Optional[int]]:
+) -> Tuple[int, Optional[int], Optional[int]]:
     if strategy == FSMStrategy.CHAT:
         return chat_id, chat_id, None
     if strategy == FSMStrategy.GLOBAL_USER:
