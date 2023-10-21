@@ -9,6 +9,7 @@ class FSMStrategy(Enum):
     USER_IN_TOPIC = auto()
     CHAT_TOPIC = auto()
 
+
 def apply_strategy(
     strategy: FSMStrategy,
     chat_id: int,
