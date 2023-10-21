@@ -64,7 +64,7 @@ proxy = [
     "aiohttp-socks~=0.8.3",
 ]
 i18n = [
-    "Babel~=2.12.1",
+    "Babel~=2.13.0",
 ]
 cli = [
     "aiogram-cli~=1.0.3",
@@ -74,7 +74,7 @@ test = [
     "pytest-html~=4.0.2",
     "pytest-asyncio~=0.21.1",
     "pytest-lazy-fixture~=0.6.3",
-    "pytest-mock~=3.11.0",
+    "pytest-mock~=3.12.0",
     "pytest-mypy~=0.10.3",
     "pytest-cov~=4.1.0",
     "pytest-aiohttp~=1.0.5",
@@ -97,12 +97,12 @@ docs = [
     "sphinxcontrib-towncrier~=0.3.2a0",
 ]
 dev = [
-    "black~=23.9.1",
+    "black~=23.10.0",
     "isort~=5.12.0",
-    "ruff~=0.0.291",
-    "mypy~=1.5.1",
+    "ruff~=0.1.1",
+    "mypy~=1.6.1",
     "toml~=0.10.2",
-    "pre-commit~=3.4.0",
+    "pre-commit~=3.5.0",
     "packaging~=23.1",
 ]
 
