@@ -89,6 +89,8 @@ class Command(Filter):
                 )
             if ignore_case and isinstance(command, str):
                 command = command.casefold()
+                for individual_prefix in prefix:
+                    command = command.lstrip(individual_prefix)
             items.append(command)
 
         if not items:
@@ -168,6 +170,9 @@ class Command(Filter):
                     return replace(command, regexp_match=result)
 
             command_name = command.command
+            for individual_prefix in self.prefix:
+                command_name = command.command.replace(individual_prefix, '', 1)
+
             if self.ignore_case:
                 command_name = command_name.casefold()
 
