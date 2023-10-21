@@ -1,13 +1,12 @@
 version: 2
 
-python:
-  version: "3.8"
-  install:
-    - method: pip
-      path: .
-      extra_requirements:
-        - docs
-        - redis
+build:
+  os: ubuntu-22.04
+  tools:
+    python: "3.11"
+  jobs:
+    post_install:
+      - pip install .[docs,redis]
 
 sphinx:
   configuration: docs/conf.py
