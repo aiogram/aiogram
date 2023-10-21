@@ -14,7 +14,7 @@ DEFAULT_DESTINY = "default"
 class StorageKey:
     bot_id: int
     chat_id: int
-    user_id:  int
+    user_id: int
     thread_id: Optional[int] = None
     destiny: str = DEFAULT_DESTINY
 
