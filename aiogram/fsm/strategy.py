@@ -12,7 +12,7 @@ class FSMStrategy(Enum):
 def apply_strategy(
     strategy: FSMStrategy,
     chat_id: int,
-    user_id: int,
+    user_id: Optional[int] = None,
     thread_id: Optional[int] = None,
 ) -> Tuple[int, Optional[int], Optional[int]]:
     if strategy == FSMStrategy.CHAT:
