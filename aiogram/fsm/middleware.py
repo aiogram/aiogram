@@ -91,7 +91,7 @@ class FSMContextMiddleware(BaseMiddleware):
         self,
         bot: Bot,
         chat_id: int,
-        user_id: int,
+        user_id: Optional[int] = None,
         thread_id: Optional[int] = None,
         destiny: str = DEFAULT_DESTINY,
     ) -> FSMContext:
