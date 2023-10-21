@@ -74,7 +74,7 @@ jobs:
       - name: Lint code
         if: "env.IS_PYPY == 'false'"
         run: |
-          ruff --format=github aiogram examples
+          ruff --output-format=github aiogram examples
           mypy aiogram
           black --check --diff aiogram tests
 
