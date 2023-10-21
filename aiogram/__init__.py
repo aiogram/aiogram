@@ -16,7 +16,7 @@ from .utils.text_decorations import markdown_decoration as md
 with suppress(ImportError):
     import uvloop as _uvloop
 
-    _uvloop.install()  # type: ignore[attr-defined]
+    _uvloop.install()  # type: ignore[attr-defined,unused-ignore]
 
 F = MagicFilter()
 flags = FlagGenerator()
