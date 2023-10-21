@@ -12,9 +12,9 @@ class FSMStrategy(Enum):
 def apply_strategy(
     strategy: FSMStrategy,
     chat_id: int,
-    user_id: Optional[int] = None,
+    user_id: int,
     thread_id: Optional[int] = None,
-) -> Tuple[int, Optional[int], Optional[int]]:
+) -> Tuple[int, int, Optional[int]]:
     if strategy == FSMStrategy.CHAT:
         return chat_id, chat_id, None
     if strategy == FSMStrategy.GLOBAL_USER:
@@ -22,5 +22,6 @@ def apply_strategy(
     if strategy == FSMStrategy.USER_IN_TOPIC:
         return chat_id, user_id, thread_id
     if strategy == FSMStrategy.CHAT_TOPIC:
-        return chat_id, None, thread_id
+        return chat_id, chat_id, thread_id
+
     return chat_id, user_id, None
