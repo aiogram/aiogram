@@ -9,7 +9,7 @@ message: >-
 type: software
 authors:
   - given-names: Oleksandr
-    family-names: O
+    family-names: Onufriichuk
     email: im@aiogram.dev
 repository-code: 'https://github.com/aiogram/aiogram'
 url: 'https://aiogram.dev'
