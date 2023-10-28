@@ -97,7 +97,7 @@ When you use nginx as reverse proxy, you should set `proxy_pass` to your aiohttp
 Without reverse proxy (not recommended)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-In case you want can't use reverse proxy, you can use aiohttp's ssl context.
+In case without using reverse proxy, you can use aiohttp's ssl context.
 
 Also this example contains usage with self-signed certificate.
 
