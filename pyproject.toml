@@ -45,7 +45,7 @@ dependencies = [
     "pydantic>=2.4.1,<2.5",
     "aiofiles~=23.2.1",
     "certifi>=2023.7.22",
-    "typing-extensions~=4.8.0",
+    "typing-extensions>=4.7.0,<=5.0",
 ]
 dynamic = ["version"]
 
