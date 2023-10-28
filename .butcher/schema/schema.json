@@ -121,9 +121,9 @@
             },
             {
               "type": "ChatMemberUpdated",
-              "description": "A chat member's status was updated in a chat. The bot must be an administrator in the chat and must explicitly specify 'chat_member' in the list of allowed_updates to receive these updates.",
-              "html_description": "<td><em>Optional</em>. A chat member's status was updated in a chat. The bot must be an administrator in the chat and must explicitly specify &#8220;chat_member&#8221; in the list of <em>allowed_updates</em> to receive these updates.</td>",
-              "rst_description": "*Optional*. A chat member's status was updated in a chat. The bot must be an administrator in the chat and must explicitly specify 'chat_member' in the list of *allowed_updates* to receive these updates.\n",
+              "description": "A chat member's status was updated in a chat. The bot must be an administrator in the chat and must explicitly specify \"chat_member\" in the list of allowed_updates to receive these updates.",
+              "html_description": "<td><em>Optional</em>. A chat member's status was updated in a chat. The bot must be an administrator in the chat and must explicitly specify <code>\"chat_member\"</code> in the list of <em>allowed_updates</em> to receive these updates.</td>",
+              "rst_description": "*Optional*. A chat member's status was updated in a chat. The bot must be an administrator in the chat and must explicitly specify :code:`\"chat_member\"` in the list of *allowed_updates* to receive these updates.\n",
               "name": "chat_member",
               "required": false
             },
@@ -172,9 +172,9 @@
             {
               "type": "Array of String",
               "required": false,
-              "description": "A JSON-serialized list of the update types you want your bot to receive. For example, specify ['message', 'edited_channel_post', 'callback_query'] to only receive updates of these types. See Update for a complete list of available update types. Specify an empty list to receive all update types except chat_member (default). If not specified, the previous setting will be used.\n\nPlease note that this parameter doesn't affect updates created before the call to the getUpdates, so unwanted updates may be received for a short period of time.",
-              "html_description": "<td>A JSON-serialized list of the update types you want your bot to receive. For example, specify [&#8220;message&#8221;, &#8220;edited_channel_post&#8221;, &#8220;callback_query&#8221;] to only receive updates of these types. See <a href=\"#update\">Update</a> for a complete list of available update types. Specify an empty list to receive all update types except <em>chat_member</em> (default). If not specified, the previous setting will be used.<br/>\n<br/>\nPlease note that this parameter doesn't affect updates created before the call to the getUpdates, so unwanted updates may be received for a short period of time.</td>",
-              "rst_description": "A JSON-serialized list of the update types you want your bot to receive. For example, specify ['message', 'edited_channel_post', 'callback_query'] to only receive updates of these types. See :class:`aiogram.types.update.Update` for a complete list of available update types. Specify an empty list to receive all update types except *chat_member* (default). If not specified, the previous setting will be used.\n\n\n\nPlease note that this parameter doesn't affect updates created before the call to the getUpdates, so unwanted updates may be received for a short period of time.\n",
+              "description": "A JSON-serialized list of the update types you want your bot to receive. For example, specify [\"message\", \"edited_channel_post\", \"callback_query\"] to only receive updates of these types. See Update for a complete list of available update types. Specify an empty list to receive all update types except chat_member (default). If not specified, the previous setting will be used.\n\nPlease note that this parameter doesn't affect updates created before the call to the getUpdates, so unwanted updates may be received for a short period of time.",
+              "html_description": "<td>A JSON-serialized list of the update types you want your bot to receive. For example, specify <code>[\"message\", \"edited_channel_post\", \"callback_query\"]</code> to only receive updates of these types. See <a href=\"#update\">Update</a> for a complete list of available update types. Specify an empty list to receive all update types except <em>chat_member</em> (default). If not specified, the previous setting will be used.<br/>\n<br/>\nPlease note that this parameter doesn't affect updates created before the call to the getUpdates, so unwanted updates may be received for a short period of time.</td>",
+              "rst_description": "A JSON-serialized list of the update types you want your bot to receive. For example, specify :code:`[\"message\", \"edited_channel_post\", \"callback_query\"]` to only receive updates of these types. See :class:`aiogram.types.update.Update` for a complete list of available update types. Specify an empty list to receive all update types except *chat_member* (default). If not specified, the previous setting will be used.\n\n\n\nPlease note that this parameter doesn't affect updates created before the call to the getUpdates, so unwanted updates may be received for a short period of time.\n",
               "name": "allowed_updates"
             }
           ],
@@ -222,9 +222,9 @@
             {
               "type": "Array of String",
               "required": false,
-              "description": "A JSON-serialized list of the update types you want your bot to receive. For example, specify ['message', 'edited_channel_post', 'callback_query'] to only receive updates of these types. See Update for a complete list of available update types. Specify an empty list to receive all update types except chat_member (default). If not specified, the previous setting will be used.\nPlease note that this parameter doesn't affect updates created before the call to the setWebhook, so unwanted updates may be received for a short period of time.",
-              "html_description": "<td>A JSON-serialized list of the update types you want your bot to receive. For example, specify [&#8220;message&#8221;, &#8220;edited_channel_post&#8221;, &#8220;callback_query&#8221;] to only receive updates of these types. See <a href=\"#update\">Update</a> for a complete list of available update types. Specify an empty list to receive all update types except <em>chat_member</em> (default). If not specified, the previous setting will be used.<br/>\nPlease note that this parameter doesn't affect updates created before the call to the setWebhook, so unwanted updates may be received for a short period of time.</td>",
-              "rst_description": "A JSON-serialized list of the update types you want your bot to receive. For example, specify ['message', 'edited_channel_post', 'callback_query'] to only receive updates of these types. See :class:`aiogram.types.update.Update` for a complete list of available update types. Specify an empty list to receive all update types except *chat_member* (default). If not specified, the previous setting will be used.\n\nPlease note that this parameter doesn't affect updates created before the call to the setWebhook, so unwanted updates may be received for a short period of time.\n",
+              "description": "A JSON-serialized list of the update types you want your bot to receive. For example, specify [\"message\", \"edited_channel_post\", \"callback_query\"] to only receive updates of these types. See Update for a complete list of available update types. Specify an empty list to receive all update types except chat_member (default). If not specified, the previous setting will be used.\nPlease note that this parameter doesn't affect updates created before the call to the setWebhook, so unwanted updates may be received for a short period of time.",
+              "html_description": "<td>A JSON-serialized list of the update types you want your bot to receive. For example, specify <code>[\"message\", \"edited_channel_post\", \"callback_query\"]</code> to only receive updates of these types. See <a href=\"#update\">Update</a> for a complete list of available update types. Specify an empty list to receive all update types except <em>chat_member</em> (default). If not specified, the previous setting will be used.<br/>\nPlease note that this parameter doesn't affect updates created before the call to the setWebhook, so unwanted updates may be received for a short period of time.</td>",
+              "rst_description": "A JSON-serialized list of the update types you want your bot to receive. For example, specify :code:`[\"message\", \"edited_channel_post\", \"callback_query\"]` to only receive updates of these types. See :class:`aiogram.types.update.Update` for a complete list of available update types. Specify an empty list to receive all update types except *chat_member* (default). If not specified, the previous setting will be used.\n\nPlease note that this parameter doesn't affect updates created before the call to the setWebhook, so unwanted updates may be received for a short period of time.\n",
               "name": "allowed_updates"
             },
             {
@@ -3351,9 +3351,9 @@
             },
             {
               "type": "Boolean",
-              "description": "True, if the administrator can access the chat event log, chat statistics, boost list in channels, message statistics in channels, see channel members, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege",
-              "html_description": "<td><em>True</em>, if the administrator can access the chat event log, chat statistics, boost list in channels, message statistics in channels, see channel members, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege</td>",
-              "rst_description": ":code:`True`, if the administrator can access the chat event log, chat statistics, boost list in channels, message statistics in channels, see channel members, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege\n",
+              "description": "True, if the administrator can access the chat event log, boost list in channels, see channel members, report spam messages, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege",
+              "html_description": "<td><em>True</em>, if the administrator can access the chat event log, boost list in channels, see channel members, report spam messages, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege</td>",
+              "rst_description": ":code:`True`, if the administrator can access the chat event log, boost list in channels, see channel members, report spam messages, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege\n",
               "name": "can_manage_chat",
               "required": true
             },
@@ -3375,9 +3375,9 @@
             },
             {
               "type": "Boolean",
-              "description": "True, if the administrator can restrict, ban or unban chat members",
-              "html_description": "<td><em>True</em>, if the administrator can restrict, ban or unban chat members</td>",
-              "rst_description": ":code:`True`, if the administrator can restrict, ban or unban chat members\n",
+              "description": "True, if the administrator can restrict, ban or unban chat members, or access supergroup statistics",
+              "html_description": "<td><em>True</em>, if the administrator can restrict, ban or unban chat members, or access supergroup statistics</td>",
+              "rst_description": ":code:`True`, if the administrator can restrict, ban or unban chat members, or access supergroup statistics\n",
               "name": "can_restrict_members",
               "required": true
             },
@@ -3407,9 +3407,9 @@
             },
             {
               "type": "Boolean",
-              "description": "True, if the administrator can post messages in the channel; channels only",
-              "html_description": "<td><em>Optional</em>. <em>True</em>, if the administrator can post messages in the channel; channels only</td>",
-              "rst_description": "*Optional*. :code:`True`, if the administrator can post messages in the channel; channels only\n",
+              "description": "True, if the administrator can post messages in the channel, or access channel statistics; channels only",
+              "html_description": "<td><em>Optional</em>. <em>True</em>, if the administrator can post messages in the channel, or access channel statistics; channels only</td>",
+              "rst_description": "*Optional*. :code:`True`, if the administrator can post messages in the channel, or access channel statistics; channels only\n",
               "name": "can_post_messages",
               "required": false
             },
@@ -3447,9 +3447,9 @@
             },
             {
               "type": "Boolean",
-              "description": "True, if the administrator can delete stories posted by other users",
-              "html_description": "<td><em>Optional</em>. <em>True</em>, if the administrator can delete stories posted by other users</td>",
-              "rst_description": "*Optional*. :code:`True`, if the administrator can delete stories posted by other users\n",
+              "description": "True, if the administrator can delete stories posted by other users; channels only",
+              "html_description": "<td><em>Optional</em>. <em>True</em>, if the administrator can delete stories posted by other users; channels only</td>",
+              "rst_description": "*Optional*. :code:`True`, if the administrator can delete stories posted by other users; channels only\n",
               "name": "can_delete_stories",
               "required": false
             },
@@ -3556,9 +3556,9 @@
             },
             {
               "type": "Boolean",
-              "description": "True, if the administrator can access the chat event log, chat statistics, boost list in channels, message statistics in channels, see channel members, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege",
-              "html_description": "<td><em>True</em>, if the administrator can access the chat event log, chat statistics, boost list in channels, message statistics in channels, see channel members, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege</td>",
-              "rst_description": ":code:`True`, if the administrator can access the chat event log, chat statistics, boost list in channels, message statistics in channels, see channel members, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege\n",
+              "description": "True, if the administrator can access the chat event log, boost list in channels, see channel members, report spam messages, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege",
+              "html_description": "<td><em>True</em>, if the administrator can access the chat event log, boost list in channels, see channel members, report spam messages, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege</td>",
+              "rst_description": ":code:`True`, if the administrator can access the chat event log, boost list in channels, see channel members, report spam messages, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege\n",
               "name": "can_manage_chat",
               "required": true
             },
@@ -3580,9 +3580,9 @@
             },
             {
               "type": "Boolean",
-              "description": "True, if the administrator can restrict, ban or unban chat members",
-              "html_description": "<td><em>True</em>, if the administrator can restrict, ban or unban chat members</td>",
-              "rst_description": ":code:`True`, if the administrator can restrict, ban or unban chat members\n",
+              "description": "True, if the administrator can restrict, ban or unban chat members, or access supergroup statistics",
+              "html_description": "<td><em>True</em>, if the administrator can restrict, ban or unban chat members, or access supergroup statistics</td>",
+              "rst_description": ":code:`True`, if the administrator can restrict, ban or unban chat members, or access supergroup statistics\n",
               "name": "can_restrict_members",
               "required": true
             },
@@ -3612,9 +3612,9 @@
             },
             {
               "type": "Boolean",
-              "description": "True, if the administrator can post messages in the channel; channels only",
-              "html_description": "<td><em>Optional</em>. <em>True</em>, if the administrator can post messages in the channel; channels only</td>",
-              "rst_description": "*Optional*. :code:`True`, if the administrator can post messages in the channel; channels only\n",
+              "description": "True, if the administrator can post messages in the channel, or access channel statistics; channels only",
+              "html_description": "<td><em>Optional</em>. <em>True</em>, if the administrator can post messages in the channel, or access channel statistics; channels only</td>",
+              "rst_description": "*Optional*. :code:`True`, if the administrator can post messages in the channel, or access channel statistics; channels only\n",
               "name": "can_post_messages",
               "required": false
             },
@@ -3652,9 +3652,9 @@
             },
             {
               "type": "Boolean",
-              "description": "True, if the administrator can delete stories posted by other users",
-              "html_description": "<td><em>Optional</em>. <em>True</em>, if the administrator can delete stories posted by other users</td>",
-              "rst_description": "*Optional*. :code:`True`, if the administrator can delete stories posted by other users\n",
+              "description": "True, if the administrator can delete stories posted by other users; channels only",
+              "html_description": "<td><em>Optional</em>. <em>True</em>, if the administrator can delete stories posted by other users; channels only</td>",
+              "rst_description": "*Optional*. :code:`True`, if the administrator can delete stories posted by other users; channels only\n",
               "name": "can_delete_stories",
               "required": false
             },
@@ -4008,9 +4008,9 @@
             },
             {
               "type": "Integer",
-              "description": "Identifier of a private chat with the user who sent the join request. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier. The bot can use this identifier for 24 hours to send messages until the join request is processed, assuming no other administrator contacted the user.",
-              "html_description": "<td>Identifier of a private chat with the user who sent the join request. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier. The bot can use this identifier for 24 hours to send messages until the join request is processed, assuming no other administrator contacted the user.</td>",
-              "rst_description": "Identifier of a private chat with the user who sent the join request. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier. The bot can use this identifier for 24 hours to send messages until the join request is processed, assuming no other administrator contacted the user.\n",
+              "description": "Identifier of a private chat with the user who sent the join request. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier. The bot can use this identifier for 5 minutes to send messages until the join request is processed, assuming no other administrator contacted the user.",
+              "html_description": "<td>Identifier of a private chat with the user who sent the join request. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier. The bot can use this identifier for 5 minutes to send messages until the join request is processed, assuming no other administrator contacted the user.</td>",
+              "rst_description": "Identifier of a private chat with the user who sent the join request. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier. The bot can use this identifier for 5 minutes to send messages until the join request is processed, assuming no other administrator contacted the user.\n",
               "name": "user_chat_id",
               "required": true
             },
@@ -7019,26 +7019,10 @@
             {
               "type": "Boolean",
               "required": false,
-              "description": "Pass True if the administrator can access the chat event log, chat statistics, message statistics in channels, see channel members, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege",
-              "html_description": "<td>Pass <em>True</em> if the administrator can access the chat event log, chat statistics, message statistics in channels, see channel members, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege</td>",
-              "rst_description": "Pass :code:`True` if the administrator can access the chat event log, chat statistics, message statistics in channels, see channel members, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege\n",
+              "description": "Pass True if the administrator can access the chat event log, boost list in channels, see channel members, report spam messages, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege",
+              "html_description": "<td>Pass <em>True</em> if the administrator can access the chat event log, boost list in channels, see channel members, report spam messages, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege</td>",
+              "rst_description": "Pass :code:`True` if the administrator can access the chat event log, boost list in channels, see channel members, report spam messages, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege\n",
               "name": "can_manage_chat"
-            },
-            {
-              "type": "Boolean",
-              "required": false,
-              "description": "Pass True if the administrator can create channel posts, channels only",
-              "html_description": "<td>Pass <em>True</em> if the administrator can create channel posts, channels only</td>",
-              "rst_description": "Pass :code:`True` if the administrator can create channel posts, channels only\n",
-              "name": "can_post_messages"
-            },
-            {
-              "type": "Boolean",
-              "required": false,
-              "description": "Pass True if the administrator can edit messages of other users and can pin messages, channels only",
-              "html_description": "<td>Pass <em>True</em> if the administrator can edit messages of other users and can pin messages, channels only</td>",
-              "rst_description": "Pass :code:`True` if the administrator can edit messages of other users and can pin messages, channels only\n",
-              "name": "can_edit_messages"
             },
             {
               "type": "Boolean",
@@ -7059,9 +7043,9 @@
             {
               "type": "Boolean",
               "required": false,
-              "description": "Pass True if the administrator can restrict, ban or unban chat members",
-              "html_description": "<td>Pass <em>True</em> if the administrator can restrict, ban or unban chat members</td>",
-              "rst_description": "Pass :code:`True` if the administrator can restrict, ban or unban chat members\n",
+              "description": "Pass True if the administrator can restrict, ban or unban chat members, or access supergroup statistics",
+              "html_description": "<td>Pass <em>True</em> if the administrator can restrict, ban or unban chat members, or access supergroup statistics</td>",
+              "rst_description": "Pass :code:`True` if the administrator can restrict, ban or unban chat members, or access supergroup statistics\n",
               "name": "can_restrict_members"
             },
             {
@@ -7091,10 +7075,50 @@
             {
               "type": "Boolean",
               "required": false,
+              "description": "Pass True if the administrator can post messages in the channel, or access channel statistics; channels only",
+              "html_description": "<td>Pass <em>True</em> if the administrator can post messages in the channel, or access channel statistics; channels only</td>",
+              "rst_description": "Pass :code:`True` if the administrator can post messages in the channel, or access channel statistics; channels only\n",
+              "name": "can_post_messages"
+            },
+            {
+              "type": "Boolean",
+              "required": false,
+              "description": "Pass True if the administrator can edit messages of other users and can pin messages; channels only",
+              "html_description": "<td>Pass <em>True</em> if the administrator can edit messages of other users and can pin messages; channels only</td>",
+              "rst_description": "Pass :code:`True` if the administrator can edit messages of other users and can pin messages; channels only\n",
+              "name": "can_edit_messages"
+            },
+            {
+              "type": "Boolean",
+              "required": false,
               "description": "Pass True if the administrator can pin messages, supergroups only",
               "html_description": "<td>Pass <em>True</em> if the administrator can pin messages, supergroups only</td>",
               "rst_description": "Pass :code:`True` if the administrator can pin messages, supergroups only\n",
               "name": "can_pin_messages"
+            },
+            {
+              "type": "Boolean",
+              "required": false,
+              "description": "Pass True if the administrator can post stories in the channel; channels only",
+              "html_description": "<td>Pass <em>True</em> if the administrator can post stories in the channel; channels only</td>",
+              "rst_description": "Pass :code:`True` if the administrator can post stories in the channel; channels only\n",
+              "name": "can_post_stories"
+            },
+            {
+              "type": "Boolean",
+              "required": false,
+              "description": "Pass True if the administrator can edit stories posted by other users; channels only",
+              "html_description": "<td>Pass <em>True</em> if the administrator can edit stories posted by other users; channels only</td>",
+              "rst_description": "Pass :code:`True` if the administrator can edit stories posted by other users; channels only\n",
+              "name": "can_edit_stories"
+            },
+            {
+              "type": "Boolean",
+              "required": false,
+              "description": "Pass True if the administrator can delete stories posted by other users; channels only",
+              "html_description": "<td>Pass <em>True</em> if the administrator can delete stories posted by other users; channels only</td>",
+              "rst_description": "Pass :code:`True` if the administrator can delete stories posted by other users; channels only\n",
+              "name": "can_delete_stories"
             },
             {
               "type": "Boolean",

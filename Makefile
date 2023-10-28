@@ -119,3 +119,16 @@ release:
 	git add .
 	git commit -m "Release $(shell poetry version -s)"
 	git tag v$(shell hatch version -s)
+
+
+butcher_version := 0.1.23
+
+butcher-install:
+	pip install -U git+ssh://git@github.com/aiogram/butcher.git@v$(butcher_version)
+.PHONY: butcher-install
+
+butcher:
+	butcher parse
+	butcher refresh
+	butcher apply all
+.PHONY: butcher
