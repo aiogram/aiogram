@@ -1,6 +1,9 @@
 import pytest
+import sys
 
 from aiogram.fsm.state import State, StatesGroup, any_state
+
+PY312_OR_GREATER = sys.version_info >= (3, 12)
 
 
 class TestState:
@@ -72,10 +75,20 @@ class TestState:
         assert state(None, check) is result
 
     def test_state_in_unknown_class(self):
-        with pytest.raises(RuntimeError):
+        if PY312_OR_GREATER:
+            # Python 3.12+ does not wrap __set_name__ exceptions with RuntimeError anymore as part
+            # of PEP 678. See "Other Language Changes" in the changelogs:
+            # https://docs.python.org/3/whatsnew/3.12.html
+            with pytest.raises(ValueError):
 
-            class MyClass:
-                state1 = State()
+                class MyClass:
+                    state1 = State()
+
+        else:
+            with pytest.raises(RuntimeError):
+
+                class MyClass:
+                    state1 = State()
 
 
 class TestStatesGroup:
