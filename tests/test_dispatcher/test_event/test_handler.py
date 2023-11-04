@@ -1,5 +1,5 @@
 import functools
-from typing import Any, Dict, Union, Callable
+from typing import Any, Dict, Union, Callable, Set
 
 import pytest
 from magic_filter import F as A
@@ -61,7 +61,7 @@ class TestCallableMixin:
             pytest.param(SyncCallable(), {"self", "foo", "bar", "baz"}),
         ],
     )
-    def test_init_args_spec(self, callback: Callable, args: set[str]):
+    def test_init_args_spec(self, callback: Callable, args: Set[str]):
         obj = CallableMixin(callback)
         assert set(obj.params) == args
 

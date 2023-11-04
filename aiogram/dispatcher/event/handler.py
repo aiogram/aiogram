@@ -4,7 +4,7 @@ import inspect
 import warnings
 from dataclasses import dataclass, field
 from functools import partial
-from typing import Any, Callable, Dict, List, Optional, Tuple
+from typing import Any, Callable, Dict, List, Optional, Tuple, Set
 
 from magic_filter.magic import MagicFilter as OriginalMagicFilter
 
@@ -21,7 +21,7 @@ CallbackType = Callable[..., Any]
 class CallableMixin:
     callback: CallbackType
     awaitable: bool = field(init=False)
-    params: set[str] = field(init=False)
+    params: Set[str] = field(init=False)
     varkw: bool = field(init=False)
 
     def __post_init__(self) -> None:
