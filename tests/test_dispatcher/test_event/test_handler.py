@@ -125,10 +125,7 @@ class TestCallableMixin:
         ],
     )
     def test_prepare_kwargs(
-        self,
-        callback: Callable,
-        kwargs: Dict[str, Any],
-        result: Dict[str, Any]
+        self, callback: Callable, kwargs: Dict[str, Any], result: Dict[str, Any]
     ):
         obj = CallableMixin(callback)
         assert obj._prepare_kwargs(kwargs) == result

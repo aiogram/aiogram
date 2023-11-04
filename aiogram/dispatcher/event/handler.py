@@ -35,9 +35,7 @@ class CallableMixin:
         if self.varkw:
             return kwargs
 
-        return {
-            k: kwargs[k] for k in self.params if k in kwargs
-        }
+        return {k: kwargs[k] for k in self.params if k in kwargs}
 
     async def call(self, *args: Any, **kwargs: Any) -> Any:
         wrapped = partial(self.callback, *args, **self._prepare_kwargs(kwargs))
