@@ -126,6 +126,8 @@ class ObserverDecorator:
         )
 
     def _wrap_action(self, target: CallbackType) -> None:
+        assert self.action is not None, "Scene action is not specified"
+
         action = getattr(target, "__aiogram_action__", None)
         if action is None:
             action = defaultdict(dict)
