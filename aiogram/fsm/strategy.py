@@ -7,6 +7,7 @@ class FSMStrategy(Enum):
     CHAT = auto()
     GLOBAL_USER = auto()
     USER_IN_TOPIC = auto()
+    CHAT_TOPIC = auto()
 
 
 def apply_strategy(
@@ -21,4 +22,7 @@ def apply_strategy(
         return user_id, user_id, None
     if strategy == FSMStrategy.USER_IN_TOPIC:
         return chat_id, user_id, thread_id
+    if strategy == FSMStrategy.CHAT_TOPIC:
+        return chat_id, chat_id, thread_id
+
     return chat_id, user_id, None

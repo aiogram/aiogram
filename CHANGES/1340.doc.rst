@@ -1,0 +1,1 @@
+Minor typo correction, specifically in module naming + some grammar.

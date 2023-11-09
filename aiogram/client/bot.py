@@ -1849,7 +1849,7 @@ class Bot:
         :param offset: Identifier of the first update to be returned. Must be greater by one than the highest among the identifiers of previously received updates. By default, updates starting with the earliest unconfirmed update are returned. An update is considered confirmed as soon as :class:`aiogram.methods.get_updates.GetUpdates` is called with an *offset* higher than its *update_id*. The negative offset can be specified to retrieve updates starting from *-offset* update from the end of the updates queue. All previous updates will be forgotten.
         :param limit: Limits the number of updates to be retrieved. Values between 1-100 are accepted. Defaults to 100.
         :param timeout: Timeout in seconds for long polling. Defaults to 0, i.e. usual short polling. Should be positive, short polling should be used for testing purposes only.
-        :param allowed_updates: A JSON-serialized list of the update types you want your bot to receive. For example, specify ['message', 'edited_channel_post', 'callback_query'] to only receive updates of these types. See :class:`aiogram.types.update.Update` for a complete list of available update types. Specify an empty list to receive all update types except *chat_member* (default). If not specified, the previous setting will be used.
+        :param allowed_updates: A JSON-serialized list of the update types you want your bot to receive. For example, specify :code:`["message", "edited_channel_post", "callback_query"]` to only receive updates of these types. See :class:`aiogram.types.update.Update` for a complete list of available update types. Specify an empty list to receive all update types except *chat_member* (default). If not specified, the previous setting will be used.
         :param request_timeout: Request timeout
         :return: Returns an Array of :class:`aiogram.types.update.Update` objects.
         """
@@ -1972,15 +1972,18 @@ class Bot:
         user_id: int,
         is_anonymous: Optional[bool] = None,
         can_manage_chat: Optional[bool] = None,
-        can_post_messages: Optional[bool] = None,
-        can_edit_messages: Optional[bool] = None,
         can_delete_messages: Optional[bool] = None,
         can_manage_video_chats: Optional[bool] = None,
         can_restrict_members: Optional[bool] = None,
         can_promote_members: Optional[bool] = None,
         can_change_info: Optional[bool] = None,
         can_invite_users: Optional[bool] = None,
+        can_post_messages: Optional[bool] = None,
+        can_edit_messages: Optional[bool] = None,
         can_pin_messages: Optional[bool] = None,
+        can_post_stories: Optional[bool] = None,
+        can_edit_stories: Optional[bool] = None,
+        can_delete_stories: Optional[bool] = None,
         can_manage_topics: Optional[bool] = None,
         request_timeout: Optional[int] = None,
     ) -> bool:
@@ -1992,16 +1995,19 @@ class Bot:
         :param chat_id: Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
         :param user_id: Unique identifier of the target user
         :param is_anonymous: Pass :code:`True` if the administrator's presence in the chat is hidden
-        :param can_manage_chat: Pass :code:`True` if the administrator can access the chat event log, chat statistics, message statistics in channels, see channel members, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege
-        :param can_post_messages: Pass :code:`True` if the administrator can create channel posts, channels only
-        :param can_edit_messages: Pass :code:`True` if the administrator can edit messages of other users and can pin messages, channels only
+        :param can_manage_chat: Pass :code:`True` if the administrator can access the chat event log, boost list in channels, see channel members, report spam messages, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege
         :param can_delete_messages: Pass :code:`True` if the administrator can delete messages of other users
         :param can_manage_video_chats: Pass :code:`True` if the administrator can manage video chats
-        :param can_restrict_members: Pass :code:`True` if the administrator can restrict, ban or unban chat members
+        :param can_restrict_members: Pass :code:`True` if the administrator can restrict, ban or unban chat members, or access supergroup statistics
         :param can_promote_members: Pass :code:`True` if the administrator can add new administrators with a subset of their own privileges or demote administrators that they have promoted, directly or indirectly (promoted by administrators that were appointed by him)
         :param can_change_info: Pass :code:`True` if the administrator can change chat title, photo and other settings
         :param can_invite_users: Pass :code:`True` if the administrator can invite new users to the chat
+        :param can_post_messages: Pass :code:`True` if the administrator can post messages in the channel, or access channel statistics; channels only
+        :param can_edit_messages: Pass :code:`True` if the administrator can edit messages of other users and can pin messages; channels only
         :param can_pin_messages: Pass :code:`True` if the administrator can pin messages, supergroups only
+        :param can_post_stories: Pass :code:`True` if the administrator can post stories in the channel; channels only
+        :param can_edit_stories: Pass :code:`True` if the administrator can edit stories posted by other users; channels only
+        :param can_delete_stories: Pass :code:`True` if the administrator can delete stories posted by other users; channels only
         :param can_manage_topics: Pass :code:`True` if the user is allowed to create, rename, close, and reopen forum topics, supergroups only
         :param request_timeout: Request timeout
         :return: Returns :code:`True` on success.
@@ -2012,15 +2018,18 @@ class Bot:
             user_id=user_id,
             is_anonymous=is_anonymous,
             can_manage_chat=can_manage_chat,
-            can_post_messages=can_post_messages,
-            can_edit_messages=can_edit_messages,
             can_delete_messages=can_delete_messages,
             can_manage_video_chats=can_manage_video_chats,
             can_restrict_members=can_restrict_members,
             can_promote_members=can_promote_members,
             can_change_info=can_change_info,
             can_invite_users=can_invite_users,
+            can_post_messages=can_post_messages,
+            can_edit_messages=can_edit_messages,
             can_pin_messages=can_pin_messages,
+            can_post_stories=can_post_stories,
+            can_edit_stories=can_edit_stories,
+            can_delete_stories=can_delete_stories,
             can_manage_topics=can_manage_topics,
         )
         return await self(call, request_timeout=request_timeout)
@@ -3481,7 +3490,7 @@ class Bot:
         :param certificate: Upload your public key certificate so that the root certificate in use can be checked. See our `self-signed guide <https://core.telegram.org/bots/self-signed>`_ for details.
         :param ip_address: The fixed IP address which will be used to send webhook requests instead of the IP address resolved through DNS
         :param max_connections: The maximum allowed number of simultaneous HTTPS connections to the webhook for update delivery, 1-100. Defaults to *40*. Use lower values to limit the load on your bot's server, and higher values to increase your bot's throughput.
-        :param allowed_updates: A JSON-serialized list of the update types you want your bot to receive. For example, specify ['message', 'edited_channel_post', 'callback_query'] to only receive updates of these types. See :class:`aiogram.types.update.Update` for a complete list of available update types. Specify an empty list to receive all update types except *chat_member* (default). If not specified, the previous setting will be used.
+        :param allowed_updates: A JSON-serialized list of the update types you want your bot to receive. For example, specify :code:`["message", "edited_channel_post", "callback_query"]` to only receive updates of these types. See :class:`aiogram.types.update.Update` for a complete list of available update types. Specify an empty list to receive all update types except *chat_member* (default). If not specified, the previous setting will be used.
         :param drop_pending_updates: Pass :code:`True` to drop all pending updates
         :param secret_token: A secret token to be sent in a header 'X-Telegram-Bot-Api-Secret-Token' in every webhook request, 1-256 characters. Only characters :code:`A-Z`, :code:`a-z`, :code:`0-9`, :code:`_` and :code:`-` are allowed. The header is useful to ensure that the request comes from a webhook set by you.
         :param request_timeout: Request timeout

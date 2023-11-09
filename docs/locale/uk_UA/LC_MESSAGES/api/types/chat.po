@@ -8,14 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-08 19:04+0300\n"
+"POT-Creation-Date: 2023-10-29 02:16+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.12.1\n"
+"Generated-By: Babel 2.13.1\n"
 
 #: ../../api/types/chat.rst:3
 msgid "Chat"
@@ -997,38 +997,26 @@ msgstr ""
 #: aiogram.types.chat.Chat.promote:12 of
 msgid ""
 "Pass :code:`True` if the administrator can access the chat event log, "
-"chat statistics, message statistics in channels, see channel members, see"
-" anonymous administrators in supergroups and ignore slow mode. Implied by"
-" any other administrator privilege"
+"boost list in channels, see channel members, report spam messages, see "
+"anonymous administrators in supergroups and ignore slow mode. Implied by "
+"any other administrator privilege"
 msgstr ""
 
 #: aiogram.types.chat.Chat.promote:13 of
-msgid ""
-"Pass :code:`True` if the administrator can create channel posts, channels"
-" only"
-msgstr ""
-
-#: aiogram.types.chat.Chat.promote:14 of
-msgid ""
-"Pass :code:`True` if the administrator can edit messages of other users "
-"and can pin messages, channels only"
-msgstr ""
-
-#: aiogram.types.chat.Chat.promote:15 of
 msgid "Pass :code:`True` if the administrator can delete messages of other users"
 msgstr ""
 
-#: aiogram.types.chat.Chat.promote:16 of
+#: aiogram.types.chat.Chat.promote:14 of
 msgid "Pass :code:`True` if the administrator can manage video chats"
 msgstr ""
 
-#: aiogram.types.chat.Chat.promote:17 of
+#: aiogram.types.chat.Chat.promote:15 of
 msgid ""
 "Pass :code:`True` if the administrator can restrict, ban or unban chat "
-"members"
+"members, or access supergroup statistics"
 msgstr ""
 
-#: aiogram.types.chat.Chat.promote:18 of
+#: aiogram.types.chat.Chat.promote:16 of
 msgid ""
 "Pass :code:`True` if the administrator can add new administrators with a "
 "subset of their own privileges or demote administrators that they have "
@@ -1036,14 +1024,26 @@ msgid ""
 "appointed by him)"
 msgstr ""
 
-#: aiogram.types.chat.Chat.promote:19 of
+#: aiogram.types.chat.Chat.promote:17 of
 msgid ""
 "Pass :code:`True` if the administrator can change chat title, photo and "
 "other settings"
 msgstr ""
 
-#: aiogram.types.chat.Chat.promote:20 of
+#: aiogram.types.chat.Chat.promote:18 of
 msgid "Pass :code:`True` if the administrator can invite new users to the chat"
+msgstr ""
+
+#: aiogram.types.chat.Chat.promote:19 of
+msgid ""
+"Pass :code:`True` if the administrator can post messages in the channel, "
+"or access channel statistics; channels only"
+msgstr ""
+
+#: aiogram.types.chat.Chat.promote:20 of
+msgid ""
+"Pass :code:`True` if the administrator can edit messages of other users "
+"and can pin messages; channels only"
 msgstr ""
 
 #: aiogram.types.chat.Chat.promote:21 of
@@ -1052,11 +1052,29 @@ msgstr ""
 
 #: aiogram.types.chat.Chat.promote:22 of
 msgid ""
+"Pass :code:`True` if the administrator can post stories in the channel; "
+"channels only"
+msgstr ""
+
+#: aiogram.types.chat.Chat.promote:23 of
+msgid ""
+"Pass :code:`True` if the administrator can edit stories posted by other "
+"users; channels only"
+msgstr ""
+
+#: aiogram.types.chat.Chat.promote:24 of
+msgid ""
+"Pass :code:`True` if the administrator can delete stories posted by other"
+" users; channels only"
+msgstr ""
+
+#: aiogram.types.chat.Chat.promote:25 of
+msgid ""
 "Pass :code:`True` if the user is allowed to create, rename, close, and "
 "reopen forum topics, supergroups only"
 msgstr ""
 
-#: aiogram.types.chat.Chat.promote:23 of
+#: aiogram.types.chat.Chat.promote:26 of
 msgid ""
 "instance of method "
 ":class:`aiogram.methods.promote_chat_member.PromoteChatMember`"
@@ -1349,4 +1367,31 @@ msgstr ""
 #~ "current time they are considered to "
 #~ "be banned forever. Applied for "
 #~ "supergroups and channels only."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Pass :code:`True` if the administrator "
+#~ "can access the chat event log, "
+#~ "chat statistics, message statistics in "
+#~ "channels, see channel members, see "
+#~ "anonymous administrators in supergroups and"
+#~ " ignore slow mode. Implied by any "
+#~ "other administrator privilege"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Pass :code:`True` if the administrator "
+#~ "can create channel posts, channels only"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Pass :code:`True` if the administrator "
+#~ "can edit messages of other users "
+#~ "and can pin messages, channels only"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Pass :code:`True` if the administrator "
+#~ "can restrict, ban or unban chat "
+#~ "members"
 #~ msgstr ""

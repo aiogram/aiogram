@@ -8,21 +8,37 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-08 19:04+0300\n"
+"POT-Creation-Date: 2023-10-29 02:16+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.12.1\n"
+"Generated-By: Babel 2.13.1\n"
 
 #: ../../../CHANGES.rst:3
 msgid "Changelog"
 msgstr ""
 
 #: ../../[towncrier-fragments]:2
-msgid "\\ |release| [UNRELEASED DRAFT] (2023-10-08)"
+msgid "\\ |release| [UNRELEASED DRAFT] (2023-10-29)"
+msgstr ""
+
+#: ../../../CHANGES.rst:33 ../../../CHANGES.rst:122 ../../../CHANGES.rst:180
+#: ../../../CHANGES.rst:222 ../../../CHANGES.rst:385 ../../../CHANGES.rst:485
+#: ../../../CHANGES.rst:545 ../../../CHANGES.rst:596 ../../../CHANGES.rst:669
+#: ../../../CHANGES.rst:710 ../../../CHANGES.rst:748 ../../../CHANGES.rst:796
+#: ../../../CHANGES.rst:872 ../../../CHANGES.rst:905 ../../../CHANGES.rst:936
+#: ../../[towncrier-fragments]:5
+msgid "Features"
+msgstr ""
+
+#: ../../[towncrier-fragments]:7
+msgid ""
+"The new FSM strategy CHAT_TOPIC, which sets the state for the entire "
+"topic in the chat, also works in private messages and regular groups "
+"without topics. `#1343 <https://github.com/aiogram/aiogram/issues/1343>`_"
 msgstr ""
 
 #: ../../../CHANGES.rst:23 ../../../CHANGES.rst:44 ../../../CHANGES.rst:56
@@ -31,11 +47,11 @@ msgstr ""
 #: ../../../CHANGES.rst:559 ../../../CHANGES.rst:620 ../../../CHANGES.rst:678
 #: ../../../CHANGES.rst:724 ../../../CHANGES.rst:772 ../../../CHANGES.rst:828
 #: ../../../CHANGES.rst:913 ../../../CHANGES.rst:945
-#: ../../[towncrier-fragments]:5
+#: ../../[towncrier-fragments]:12
 msgid "Bugfixes"
 msgstr ""
 
-#: ../../[towncrier-fragments]:7
+#: ../../[towncrier-fragments]:14
 msgid ""
 "Fixed ``parse_mode`` in ``send_copy`` helper. Disable by default. `#1332 "
 "<https://github.com/aiogram/aiogram/issues/1332>`_"
@@ -43,15 +59,28 @@ msgstr ""
 
 #: ../../../CHANGES.rst:89 ../../../CHANGES.rst:159 ../../../CHANGES.rst:204
 #: ../../../CHANGES.rst:289 ../../../CHANGES.rst:522 ../../../CHANGES.rst:572
-#: ../../../CHANGES.rst:952 ../../[towncrier-fragments]:12
+#: ../../../CHANGES.rst:952 ../../[towncrier-fragments]:19
 msgid "Improved Documentation"
 msgstr ""
 
-#: ../../[towncrier-fragments]:14
+#: ../../[towncrier-fragments]:21
 msgid ""
 "Corrected grammatical errors, improved sentence structures, translation "
 "for migration 2.x-3.x `#1302 "
 "<https://github.com/aiogram/aiogram/issues/1302>`_"
+msgstr ""
+
+#: ../../[towncrier-fragments]:23
+msgid ""
+"Minor typo correction, specifically in module naming + some grammar. "
+"`#1340 <https://github.com/aiogram/aiogram/issues/1340>`_"
+msgstr ""
+
+#: ../../[towncrier-fragments]:25
+msgid ""
+"Added `CITATION.cff` file for automatic academic citation generation. Now"
+" you can copy citation from the GitHub page and paste it into your paper."
+" `#1351 <https://github.com/aiogram/aiogram/issues/1351>`_"
 msgstr ""
 
 #: ../../../CHANGES.rst:110 ../../../CHANGES.rst:166 ../../../CHANGES.rst:305
@@ -59,41 +88,48 @@ msgstr ""
 #: ../../../CHANGES.rst:637 ../../../CHANGES.rst:691 ../../../CHANGES.rst:733
 #: ../../../CHANGES.rst:779 ../../../CHANGES.rst:839 ../../../CHANGES.rst:860
 #: ../../../CHANGES.rst:883 ../../../CHANGES.rst:920 ../../../CHANGES.rst:959
-#: ../../[towncrier-fragments]:19
+#: ../../[towncrier-fragments]:31
 msgid "Misc"
 msgstr ""
 
-#: ../../[towncrier-fragments]:21
+#: ../../[towncrier-fragments]:33
 msgid "Updated dependencies, bumped minimum required version:"
 msgstr ""
 
-#: ../../[towncrier-fragments]:23
+#: ../../[towncrier-fragments]:35
 msgid ":code:`magic-filter` - fixed `.resolve` operation"
 msgstr ""
 
-#: ../../[towncrier-fragments]:24
+#: ../../[towncrier-fragments]:36
 msgid ":code:`pydantic` - fixed compatibility (broken in 2.4)"
 msgstr ""
 
-#: ../../[towncrier-fragments]:25
+#: ../../[towncrier-fragments]:37
 msgid ""
 ":code:`aiodns` - added new dependency to the :code:`fast` extras "
 "(:code:`pip install aiogram[fast]`)"
 msgstr ""
 
-#: ../../[towncrier-fragments]:26
+#: ../../[towncrier-fragments]:38
 msgid "*others...*"
 msgstr ""
 
-#: ../../[towncrier-fragments]:27
+#: ../../[towncrier-fragments]:39
 msgid "`#1327 <https://github.com/aiogram/aiogram/issues/1327>`_"
 msgstr ""
 
-#: ../../[towncrier-fragments]:28
+#: ../../[towncrier-fragments]:40
 msgid ""
 "Prevent update handling task pointers from being garbage collected, "
 "backport from 2.x `#1331 "
 "<https://github.com/aiogram/aiogram/issues/1331>`_"
+msgstr ""
+
+#: ../../[towncrier-fragments]:42
+msgid ""
+"Updated :code:`typing-extensions` package version range in dependencies "
+"to fix compatibility with :code:`FastAPI` `#1347 "
+"<https://github.com/aiogram/aiogram/issues/1347>`_"
 msgstr ""
 
 #: ../../../CHANGES.rst:20
@@ -108,14 +144,6 @@ msgstr ""
 
 #: ../../../CHANGES.rst:30
 msgid "3.1.0 (2023-09-22)"
-msgstr ""
-
-#: ../../../CHANGES.rst:33 ../../../CHANGES.rst:122 ../../../CHANGES.rst:180
-#: ../../../CHANGES.rst:222 ../../../CHANGES.rst:385 ../../../CHANGES.rst:485
-#: ../../../CHANGES.rst:545 ../../../CHANGES.rst:596 ../../../CHANGES.rst:669
-#: ../../../CHANGES.rst:710 ../../../CHANGES.rst:748 ../../../CHANGES.rst:796
-#: ../../../CHANGES.rst:872 ../../../CHANGES.rst:905 ../../../CHANGES.rst:936
-msgid "Features"
 msgstr ""
 
 #: ../../../CHANGES.rst:35
@@ -3171,3 +3199,6 @@ msgstr ""
 #: ../../../HISTORY.rst:497
 msgid "0.1 (2017-06-03)"
 msgstr ""
+
+#~ msgid "\\ |release| [UNRELEASED DRAFT] (2023-10-08)"
+#~ msgstr ""
