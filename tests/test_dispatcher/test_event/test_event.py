@@ -46,7 +46,7 @@ class TestEventObserver:
         assert observer.handlers[2].awaitable
 
         with patch(
-            "aiogram.dispatcher.event.handler.CallableMixin.call",
+            "aiogram.dispatcher.event.handler.CallableObject.call",
             new_callable=AsyncMock,
         ) as mocked_my_handler:
             results = await observer.trigger("test")
