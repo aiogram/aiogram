@@ -17,6 +17,7 @@ from aiogram.dispatcher.router import Router
 from aiogram.exceptions import SceneException
 from aiogram.filters import StateFilter
 from aiogram.fsm.context import FSMContext
+from aiogram.fsm.state import State
 from aiogram.fsm.storage.memory import MemoryStorageRecord
 from aiogram.types import TelegramObject, Update
 
@@ -401,7 +402,7 @@ class Scene:
         return router
 
     @classmethod
-    def as_handler(cls) -> CallbackType:
+    def as_handler(cls, **kwargs: Any) -> CallbackType:
         """
         Create an entry point handler for the scene, can be used to simplify the handler
         that starts the scene.
@@ -410,7 +411,7 @@ class Scene:
         """
 
         async def enter_to_scene_handler(event: TelegramObject, scenes: ScenesManager) -> None:
-            await scenes.enter(cls)
+            await scenes.enter(cls, **kwargs)
 
         return enter_to_scene_handler
 
@@ -809,6 +810,8 @@ class SceneRegistry:
         """
         if inspect.isclass(scene) and issubclass(scene, Scene):
             scene = scene.__scene_config__.state
+        if isinstance(scene, State):
+            scene = scene.state
         if scene is not None and not isinstance(scene, str):
             raise SceneException("Scene must be a subclass of Scene or a string")
 
