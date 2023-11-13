@@ -109,7 +109,7 @@ class TelegramEventObserver:
         Handler will be called when all its filters are pass.
         """
         for handler in self.handlers:
-            kwargs['handler'] = handler
+            kwargs["handler"] = handler
             result, data = await handler.check(event, **kwargs)
             if result:
                 kwargs.update(data)
