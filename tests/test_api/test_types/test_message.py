@@ -36,6 +36,7 @@ from aiogram.methods import (
     UnpinChatMessage,
 )
 from aiogram.types import (
+    UNSET_PARSE_MODE,
     Animation,
     Audio,
     Chat,
@@ -75,7 +76,6 @@ from aiogram.types import (
     VideoNote,
     Voice,
     WebAppData,
-    UNSET_PARSE_MODE,
 )
 from aiogram.types.message import ContentType, Message
 
