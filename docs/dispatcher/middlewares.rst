@@ -59,7 +59,8 @@ Examples
 
 .. danger::
 
-    Middleware should always call :code:`await handler(event, data)` to propagate event for next middleware/handler
+    Middleware should always call :code:`await handler(event, data)` to propagate event for next middleware/handler.
+    If you want to stop processing event in middleware you should not call :code:`await handler(event, data)`.
 
 
 Class-based
