@@ -53,7 +53,7 @@ Class based session middleware
 
 .. note::
 
-    this middlewware is already implemented inside aiogram, so, if you want to use it you can
+    this middleware is already implemented inside aiogram, so, if you want to use it you can
     just import it :code:`from aiogram.client.session.middlewares.request_logging import RequestLogging`
 
 
