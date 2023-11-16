@@ -237,9 +237,9 @@ asyncio_mode = "auto"
 testpaths = [
     "tests",
 ]
-#filterwarnings = [
-#    "error",
-#]
+filterwarnings = [
+    "error",
+]
 
 [tool.coverage.run]
 branch = false
