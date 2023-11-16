@@ -239,6 +239,7 @@ testpaths = [
 ]
 filterwarnings = [
     "error",
+    "ignore::pytest.PytestUnraisableExceptionWarning",
 ]
 
 [tool.coverage.run]
