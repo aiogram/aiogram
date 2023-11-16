@@ -1,6 +1,11 @@
+import inspect
+from datetime import datetime
+from unittest.mock import AsyncMock, ANY, patch
+
 import pytest
 
 from aiogram import F
+from aiogram.fsm.context import FSMContext
 from aiogram.fsm.scene import (
     on,
     ObserverMarker,
@@ -8,7 +13,13 @@ from aiogram.fsm.scene import (
     After,
     SceneAction,
     _empty_handler,
+    SceneWizard,
+    ActionContainer,
+    SceneHandlerWrapper,
+    Scene,
+    ScenesManager,
 )
+from aiogram.types import TelegramObject, Update, Message, Chat
 
 
 class TestOnMarker:
@@ -148,3 +159,167 @@ class TestObserverDecorator:
         assert len(wrapped.__aiogram_action__) == 1
         assert SceneAction.enter in wrapped.__aiogram_action__
         assert "test" in wrapped.__aiogram_action__[SceneAction.enter]
+
+    def test_observer_decorator_leave(self):
+        observer_decorator = ObserverDecorator("Test Name", (F.text,))
+        action_container = observer_decorator.leave()
+        assert isinstance(action_container, ActionContainer)
+        assert action_container.name == "Test Name"
+        assert action_container.filters == (F.text,)
+        assert action_container.action == SceneAction.leave
+
+    def test_observer_decorator_enter(self):
+        observer_decorator = ObserverDecorator("test", (F.text,))
+        target = "mock_target"
+        action_container = observer_decorator.enter(target)
+        assert isinstance(action_container, ActionContainer)
+        assert action_container.name == "test"
+        assert action_container.filters == (F.text,)
+        assert action_container.action == SceneAction.enter
+        assert action_container.target == target
+
+    def test_observer_decorator_exit(self):
+        observer_decorator = ObserverDecorator("test", (F.text,))
+        action_container = observer_decorator.exit()
+        assert isinstance(action_container, ActionContainer)
+        assert action_container.name == "test"
+        assert action_container.filters == (F.text,)
+        assert action_container.action == SceneAction.exit
+
+    def test_observer_decorator_back(self):
+        observer_decorator = ObserverDecorator("test", (F.text,))
+        action_container = observer_decorator.back()
+        assert isinstance(action_container, ActionContainer)
+        assert action_container.name == "test"
+        assert action_container.filters == (F.text,)
+        assert action_container.action == SceneAction.back
+
+
+class TestActionContainer:
+    async def test_action_container_execute_enter(self):
+        wizard_mock = AsyncMock(spec=SceneWizard)
+
+        action_container = ActionContainer(
+            "Test Name", (F.text,), SceneAction.enter, "Test Target"
+        )
+        await action_container.execute(wizard_mock)
+
+        wizard_mock.goto.assert_called_once_with("Test Target")
+
+    async def test_action_container_execute_leave(self):
+        wizard_mock = AsyncMock(spec=SceneWizard)
+
+        action_container = ActionContainer("Test Name", (F.text,), SceneAction.leave)
+        await action_container.execute(wizard_mock)
+
+        wizard_mock.leave.assert_called_once()
+
+    async def test_action_container_execute_exit(self):
+        wizard_mock = AsyncMock(spec=SceneWizard)
+
+        action_container = ActionContainer("Test Name", (F.text,), SceneAction.exit)
+        await action_container.execute(wizard_mock)
+
+        wizard_mock.exit.assert_called_once()
+
+    async def test_action_container_execute_back(self):
+        wizard_mock = AsyncMock(spec=SceneWizard)
+
+        action_container = ActionContainer("Test Name", (F.text,), SceneAction.back)
+        await action_container.execute(wizard_mock)
+
+        wizard_mock.back.assert_called_once()
+
+
+class TestSceneHandlerWrapper:
+    async def test_scene_handler_wrapper_call(self):
+        class MyScene(Scene):
+            pass
+
+        # Mock objects
+        handler_mock = AsyncMock()
+        state_mock = AsyncMock(spec=FSMContext)
+        scenes_mock = AsyncMock(spec=ScenesManager)
+        event_update_mock = Update(
+            update_id=42,
+            message=Message(
+                message_id=42,
+                text="test",
+                date=datetime.now(),
+                chat=Chat(
+                    type="private",
+                    id=42,
+                ),
+            ),
+        )
+        kwargs = {"state": state_mock, "scenes": scenes_mock, "event_update": event_update_mock}
+
+        scene_handler_wrapper = SceneHandlerWrapper(MyScene, handler_mock)
+        result = await scene_handler_wrapper(event_update_mock, **kwargs)
+
+        # Check whether handler is called with correct arguments
+        handler_mock.assert_called_once_with(ANY, event_update_mock, **kwargs)
+
+        # Check whether result is correct
+        assert result == handler_mock.return_value
+
+    async def test_scene_handler_wrapper_call_with_after(self):
+        class MyScene(Scene):
+            pass
+
+        # Mock objects
+        handler_mock = AsyncMock()
+        state_mock = AsyncMock(spec=FSMContext)
+        scenes_mock = AsyncMock(spec=ScenesManager)
+        event_update_mock = Update(
+            update_id=42,
+            message=Message(
+                message_id=42,
+                text="test",
+                date=datetime.now(),
+                chat=Chat(
+                    type="private",
+                    id=42,
+                ),
+            ),
+        )
+        kwargs = {"state": state_mock, "scenes": scenes_mock, "event_update": event_update_mock}
+
+        scene_handler_wrapper = SceneHandlerWrapper(MyScene, handler_mock, after=After.exit())
+
+        with patch(
+            "aiogram.fsm.scene.ActionContainer.execute", new_callable=AsyncMock
+        ) as after_mock:
+            result = await scene_handler_wrapper(event_update_mock, **kwargs)
+
+            # Check whether handler is called with correct arguments
+            handler_mock.assert_called_once_with(ANY, event_update_mock, **kwargs)
+
+            # Check whether after_mock is called
+            after_mock.assert_called_once_with(ANY)
+
+            # Check whether result is correct
+            assert result == handler_mock.return_value
+
+    def test_scene_handler_wrapper_str(self):
+        # Mock objects
+        scene_mock = AsyncMock(spec=Scene)
+        handler_mock = AsyncMock()
+        after_mock = AsyncMock()  # Implement this according to your After type
+
+        scene_handler_wrapper = SceneHandlerWrapper(scene_mock, handler_mock, after=after_mock)
+        result = str(scene_handler_wrapper)
+
+        assert result == f"SceneHandlerWrapper({handler_mock}, after={after_mock})"
+
+    def test_await(self):
+        class MyScene(Scene):
+            pass
+
+        handler_mock = AsyncMock()
+        scene_handler_wrapper = SceneHandlerWrapper(MyScene, handler_mock)
+
+        assert inspect.isawaitable(scene_handler_wrapper)
+
+        assert hasattr(scene_handler_wrapper, "__await__")
+        assert scene_handler_wrapper.__await__() is scene_handler_wrapper
