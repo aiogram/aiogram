@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-29 02:16+0300\n"
+"POT-Creation-Date: 2023-11-16 02:34+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,7 +22,7 @@ msgid "Changelog"
 msgstr ""
 
 #: ../../[towncrier-fragments]:2
-msgid "\\ |release| [UNRELEASED DRAFT] (2023-10-29)"
+msgid "\\ |release| [UNRELEASED DRAFT] (2023-11-16)"
 msgstr ""
 
 #: ../../../CHANGES.rst:33 ../../../CHANGES.rst:122 ../../../CHANGES.rst:180
@@ -57,30 +57,42 @@ msgid ""
 "<https://github.com/aiogram/aiogram/issues/1332>`_"
 msgstr ""
 
+#: ../../[towncrier-fragments]:16
+msgid ""
+"Added current handler to filters, so that flags can be retrieved from it."
+" `#1360 <https://github.com/aiogram/aiogram/issues/1360>`_"
+msgstr ""
+
 #: ../../../CHANGES.rst:89 ../../../CHANGES.rst:159 ../../../CHANGES.rst:204
 #: ../../../CHANGES.rst:289 ../../../CHANGES.rst:522 ../../../CHANGES.rst:572
-#: ../../../CHANGES.rst:952 ../../[towncrier-fragments]:19
+#: ../../../CHANGES.rst:952 ../../[towncrier-fragments]:21
 msgid "Improved Documentation"
 msgstr ""
 
-#: ../../[towncrier-fragments]:21
+#: ../../[towncrier-fragments]:23
 msgid ""
 "Corrected grammatical errors, improved sentence structures, translation "
 "for migration 2.x-3.x `#1302 "
 "<https://github.com/aiogram/aiogram/issues/1302>`_"
 msgstr ""
 
-#: ../../[towncrier-fragments]:23
+#: ../../[towncrier-fragments]:25
 msgid ""
 "Minor typo correction, specifically in module naming + some grammar. "
 "`#1340 <https://github.com/aiogram/aiogram/issues/1340>`_"
 msgstr ""
 
-#: ../../[towncrier-fragments]:25
+#: ../../[towncrier-fragments]:27
 msgid ""
 "Added `CITATION.cff` file for automatic academic citation generation. Now"
 " you can copy citation from the GitHub page and paste it into your paper."
 " `#1351 <https://github.com/aiogram/aiogram/issues/1351>`_"
+msgstr ""
+
+#: ../../[towncrier-fragments]:30
+msgid ""
+"Minor typo correction in middleware docs. `#1353 "
+"<https://github.com/aiogram/aiogram/issues/1353>`_"
 msgstr ""
 
 #: ../../../CHANGES.rst:110 ../../../CHANGES.rst:166 ../../../CHANGES.rst:305
@@ -88,48 +100,68 @@ msgstr ""
 #: ../../../CHANGES.rst:637 ../../../CHANGES.rst:691 ../../../CHANGES.rst:733
 #: ../../../CHANGES.rst:779 ../../../CHANGES.rst:839 ../../../CHANGES.rst:860
 #: ../../../CHANGES.rst:883 ../../../CHANGES.rst:920 ../../../CHANGES.rst:959
-#: ../../[towncrier-fragments]:31
+#: ../../[towncrier-fragments]:35
 msgid "Misc"
 msgstr ""
 
-#: ../../[towncrier-fragments]:33
+#: ../../[towncrier-fragments]:37
+msgid ""
+"Fixed ResourceWarning in the tests, reworked :code:`RedisEventsIsolation`"
+" fixture to use Redis connection from :code:`RedisStorage` `#1320 "
+"<https://github.com/aiogram/aiogram/issues/1320>`_"
+msgstr ""
+
+#: ../../[towncrier-fragments]:39
 msgid "Updated dependencies, bumped minimum required version:"
 msgstr ""
 
-#: ../../[towncrier-fragments]:35
+#: ../../[towncrier-fragments]:41
 msgid ":code:`magic-filter` - fixed `.resolve` operation"
 msgstr ""
 
-#: ../../[towncrier-fragments]:36
+#: ../../[towncrier-fragments]:42
 msgid ":code:`pydantic` - fixed compatibility (broken in 2.4)"
 msgstr ""
 
-#: ../../[towncrier-fragments]:37
+#: ../../[towncrier-fragments]:43
 msgid ""
 ":code:`aiodns` - added new dependency to the :code:`fast` extras "
 "(:code:`pip install aiogram[fast]`)"
 msgstr ""
 
-#: ../../[towncrier-fragments]:38
+#: ../../[towncrier-fragments]:44
 msgid "*others...*"
 msgstr ""
 
-#: ../../[towncrier-fragments]:39
+#: ../../[towncrier-fragments]:45
 msgid "`#1327 <https://github.com/aiogram/aiogram/issues/1327>`_"
 msgstr ""
 
-#: ../../[towncrier-fragments]:40
+#: ../../[towncrier-fragments]:46
 msgid ""
 "Prevent update handling task pointers from being garbage collected, "
 "backport from 2.x `#1331 "
 "<https://github.com/aiogram/aiogram/issues/1331>`_"
 msgstr ""
 
-#: ../../[towncrier-fragments]:42
+#: ../../[towncrier-fragments]:48
 msgid ""
 "Updated :code:`typing-extensions` package version range in dependencies "
 "to fix compatibility with :code:`FastAPI` `#1347 "
 "<https://github.com/aiogram/aiogram/issues/1347>`_"
+msgstr ""
+
+#: ../../[towncrier-fragments]:50
+msgid ""
+"Speeded up CallableMixin processing by caching references to nested "
+"objects and simplifying kwargs assembly. `#1357 "
+"<https://github.com/aiogram/aiogram/issues/1357>`_"
+msgstr ""
+
+#: ../../[towncrier-fragments]:52
+msgid ""
+"Added pydantic v2.5 support. `#1361 "
+"<https://github.com/aiogram/aiogram/issues/1361>`_"
 msgstr ""
 
 #: ../../../CHANGES.rst:20
@@ -3201,4 +3233,7 @@ msgid "0.1 (2017-06-03)"
 msgstr ""
 
 #~ msgid "\\ |release| [UNRELEASED DRAFT] (2023-10-08)"
+#~ msgstr ""
+
+#~ msgid "\\ |release| [UNRELEASED DRAFT] (2023-10-29)"
 #~ msgstr ""

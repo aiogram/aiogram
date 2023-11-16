@@ -96,6 +96,8 @@ class TestAiohttpSession:
             await session.close()
             mocked_close.assert_called_once()
 
+        await session.close()
+
     def test_build_form_data_with_data_only(self, bot: MockedBot):
         class TestMethod(TelegramMethod[bool]):
             __api_method__ = "test"
