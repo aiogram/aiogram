@@ -521,6 +521,7 @@ class SceneWizard:
         :param kwargs: Additional keyword arguments to pass to the scene.
         :return: None
         """
+        assert self.scene_config.state is not None, "Scene state is not specified"
         await self.goto(self.scene_config.state, **kwargs)
 
     async def goto(self, scene: Union[Type[Scene], str], **kwargs: Any) -> None:

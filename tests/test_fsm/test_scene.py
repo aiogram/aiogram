@@ -1,25 +1,25 @@
 import inspect
 from datetime import datetime
-from unittest.mock import AsyncMock, ANY, patch
+from unittest.mock import ANY, AsyncMock, patch
 
 import pytest
 
 from aiogram import F
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.scene import (
-    on,
-    ObserverMarker,
-    ObserverDecorator,
-    After,
-    SceneAction,
-    _empty_handler,
-    SceneWizard,
     ActionContainer,
-    SceneHandlerWrapper,
+    After,
+    ObserverDecorator,
+    ObserverMarker,
     Scene,
+    SceneAction,
+    SceneHandlerWrapper,
     ScenesManager,
+    SceneWizard,
+    _empty_handler,
+    on,
 )
-from aiogram.types import TelegramObject, Update, Message, Chat
+from aiogram.types import Chat, Message, TelegramObject, Update
 
 
 class TestOnMarker:

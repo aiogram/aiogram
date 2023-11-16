@@ -2,10 +2,10 @@ from __future__ import annotations
 
 from typing import Any, Dict, Final, Generator, List, Optional, Set
 
+from ..types import TelegramObject
 from .event.bases import REJECTED, UNHANDLED
 from .event.event import EventObserver
 from .event.telegram import TelegramEventObserver
-from ..types import TelegramObject
 
 INTERNAL_UPDATE_TYPES: Final[frozenset[str]] = frozenset({"update", "error"})
 
