@@ -32,3 +32,4 @@ msgstr ""
 #: ../../docstring aiogram.types.bot_name.BotName.name:1 of
 msgid "The bot's name"
 msgstr ""
+

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  aiogram\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-02 15:10+0300\n"
+"POT-Creation-Date: 2023-06-01 20:49+0300\n"
 "PO-Revision-Date: 2022-10-20 22:00+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -220,3 +220,4 @@ msgstr "Закриття сховища (підключення до бази д
 
 #~ msgid "instance of the current bot"
 #~ msgstr "екземпляр поточного бота"
+

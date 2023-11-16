@@ -52,6 +52,12 @@ So... Now you can use this class to generate any callbacks with defined structur
         ...
         print("bar =", callback_data.bar)
 
+.. important::
+
+    You can accept :code:`callback_data` as another argument to the handler, and it will be unpacked to instance of :code:`MyCallback` class.
+    **The unpacking is performed only if the handler is decorated with** :code:`MyCallback.filter(...)`.
+
+
 Also can be used in :doc:`Keyboard builder </utils/keyboard>`:
 
 .. code-block:: python

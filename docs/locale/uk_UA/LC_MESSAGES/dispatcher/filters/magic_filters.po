@@ -19,7 +19,7 @@ msgstr ""
 
 #: ../../dispatcher/filters/magic_filters.rst:5
 msgid "Magic filters"
-msgstr "✨ Магічні 🔮 фільтри ✨"
+msgstr "✨ Магічні фільтри"
 
 #: ../../dispatcher/filters/magic_filters.rst:9
 msgid "This page still in progress. Has many incorrectly worded sentences."

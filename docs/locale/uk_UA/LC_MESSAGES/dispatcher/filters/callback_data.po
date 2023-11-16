@@ -5,17 +5,16 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: aiogram\n"
+"Project-Id-Version:  aiogram\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-10-01 22:51+0300\n"
+"POT-Creation-Date: 2023-06-01 20:53+0300\n"
 "PO-Revision-Date: 2022-10-25 18:31+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.10.3\n"
-"X-Generator: Poedit 3.1.1\n"
+"Generated-By: Babel 2.12.1\n"
 
 #: ../../dispatcher/filters/callback_data.rst:3
 msgid "Callback Data Factory & Filter"
@@ -28,16 +27,17 @@ msgstr "Базовий клас для обгортки мітки зворот�
 #: aiogram.filters.callback_data.CallbackData:3 of
 msgid "This class should be used as super-class of user-defined callbacks."
 msgstr ""
-"Цей клас слід використовувати як супер-клас зворотних викликів, визначених "
-"користувачем."
+"Цей клас слід використовувати як супер-клас зворотних викликів, "
+"визначених користувачем."
 
 #: aiogram.filters.callback_data.CallbackData:5 of
 msgid ""
-"The class-keyword :code:`prefix` is required to define prefix and also the "
-"argument :code:`sep` can be passed to define separator (default is :code:`:`)."
+"The class-keyword :code:`prefix` is required to define prefix and also "
+"the argument :code:`sep` can be passed to define separator (default is "
+":code:`:`)."
 msgstr ""
-"Ключове слово класу :code:`prefix` потрібне для визначення префікса, а також "
-"аргумент :code:`sep` можна передати для визначення роздільника (за "
+"Ключове слово класу :code:`prefix` потрібне для визначення префікса, а "
+"також аргумент :code:`sep` можна передати для визначення роздільника (за "
 "замовчуванням це :code:`:`)."
 
 #: aiogram.filters.callback_data.CallbackData.pack:1 of
@@ -94,8 +94,8 @@ msgstr "Створення підкласу :code:`CallbackData`:"
 #: ../../dispatcher/filters/callback_data.rst:21
 msgid "After that you can generate any callback based on this class, for example:"
 msgstr ""
-"Після цього ви можете створити будь-який зворотній виклик на основі цього "
-"класу, наприклад:"
+"Після цього ви можете створити будь-який зворотній виклик на основі цього"
+" класу, наприклад:"
 
 #: ../../dispatcher/filters/callback_data.rst:29
 msgid ""
@@ -109,63 +109,75 @@ msgstr ""
 msgid "... and handle by specific rules"
 msgstr "... і обробляти за певними правилами"
 
-#: ../../dispatcher/filters/callback_data.rst:52
-msgid "Also can be used in :doc:`Keyboard builder </utils/keyboard>`:"
+#: ../../dispatcher/filters/callback_data.rst:54
+msgid ""
+"You can accept :code:`callback_data` as another argument to the handler, "
+"and it will be unpacked to instance of :code:`MyCallback` class. **The "
+"unpacking is performed only if the handler is decorated with** "
+":code:`MyCallback.filter(...)`."
 msgstr ""
+"Ви можете приймати :code:`callback_data` як додатковий аргумент до обробника, "
+"і він буде розпакований до екземпляру класу :code:`MyCallback`. **Розпакування "
+"виконується тільки якщо обробник декорований** :code:`MyCallback.filter(...)`."
 
-#: ../../dispatcher/filters/callback_data.rst:63
+#: ../../dispatcher/filters/callback_data.rst:58
+msgid "Also can be used in :doc:`Keyboard builder </utils/keyboard>`:"
+msgstr "Також може бути використаний в :doc:`Конструкторі клавіатури </utils/keyboard>`:"
+
+#: ../../dispatcher/filters/callback_data.rst:69
 msgid "Another abstract example:"
 msgstr "Ще один абстрактний приклад:"
 
-#: ../../dispatcher/filters/callback_data.rst:101
+#: ../../dispatcher/filters/callback_data.rst:107
 msgid "Known limitations"
 msgstr "Відомі обмеження"
 
-#: ../../dispatcher/filters/callback_data.rst:103
+#: ../../dispatcher/filters/callback_data.rst:109
 msgid "Allowed types and their subclasses:"
 msgstr "Дозволені типи та їх підкласи:"
 
-#: ../../dispatcher/filters/callback_data.rst:105
+#: ../../dispatcher/filters/callback_data.rst:111
 msgid ":code:`str`"
 msgstr ":code:`str`"
 
-#: ../../dispatcher/filters/callback_data.rst:106
+#: ../../dispatcher/filters/callback_data.rst:112
 msgid ":code:`int`"
 msgstr ":code:`int`"
 
-#: ../../dispatcher/filters/callback_data.rst:107
+#: ../../dispatcher/filters/callback_data.rst:113
 msgid ":code:`bool`"
 msgstr ":code:`bool`"
 
-#: ../../dispatcher/filters/callback_data.rst:108
+#: ../../dispatcher/filters/callback_data.rst:114
 msgid ":code:`float`"
 msgstr ":code:`float`"
 
-#: ../../dispatcher/filters/callback_data.rst:109
+#: ../../dispatcher/filters/callback_data.rst:115
 msgid ":code:`Decimal`  (:code:`from decimal import Decimal`)"
 msgstr ":code:`Decimal`  (:code:`from decimal import Decimal`)"
 
-#: ../../dispatcher/filters/callback_data.rst:110
+#: ../../dispatcher/filters/callback_data.rst:116
 msgid ":code:`Fraction`  (:code:`from fractions import Fraction`)"
 msgstr ":code:`Fraction`  (:code:`from fractions import Fraction`)"
 
-#: ../../dispatcher/filters/callback_data.rst:111
+#: ../../dispatcher/filters/callback_data.rst:117
 msgid ":code:`UUID` (:code:`from uuid import UUID`)"
 msgstr ":code:`UUID` (:code:`from uuid import UUID`)"
 
-#: ../../dispatcher/filters/callback_data.rst:112
+#: ../../dispatcher/filters/callback_data.rst:118
 msgid ":code:`Enum` (:code:`from enum import Enum`, only for string enums)"
 msgstr ":code:`Enum` (:code:`from enum import Enum`, лише для переліків рядків)"
 
-#: ../../dispatcher/filters/callback_data.rst:113
+#: ../../dispatcher/filters/callback_data.rst:119
 msgid ":code:`IntEnum` (:code:`from enum import IntEnum`, only for int enums)"
 msgstr ""
-":code:`IntEnum` (:code:`from enum import IntEnum`, тільки для переліків int)"
+":code:`IntEnum` (:code:`from enum import IntEnum`, тільки для переліків "
+"int)"
 
-#: ../../dispatcher/filters/callback_data.rst:118
+#: ../../dispatcher/filters/callback_data.rst:124
 msgid ""
-"Note that the integer Enum's should be always is subclasses of :code:`IntEnum` "
-"in due to parsing issues."
+"Note that the integer Enum's should be always is subclasses of "
+":code:`IntEnum` in due to parsing issues."
 msgstr ""
-"Зауважте, що ціле число Enum завжди має бути підкласом :code:`IntEnum` через "
-"проблеми з синтаксичним аналізом."
+"Зауважте, що ціле число Enum завжди має бути підкласом :code:`IntEnum` "
+"через проблеми з синтаксичним аналізом."

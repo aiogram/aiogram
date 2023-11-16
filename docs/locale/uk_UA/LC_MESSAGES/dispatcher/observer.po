@@ -18,7 +18,7 @@ msgstr ""
 
 #: ../../dispatcher/observer.rst:3
 msgid "Observer"
-msgstr "Обсервер"
+msgstr "Обсервер (спостерігач)"
 
 #: ../../dispatcher/observer.rst:5
 msgid ""
@@ -48,7 +48,7 @@ msgstr "EventObserver"
 
 #: aiogram.dispatcher.event.event.EventObserver:1 of
 msgid "Simple events observer"
-msgstr "Простий обсервер(спостерігач) подій"
+msgstr "Простий обсервер (спостерігач) подій"
 
 #: aiogram.dispatcher.event.event.EventObserver:3 of
 msgid ""
@@ -60,11 +60,11 @@ msgstr ""
 
 #: aiogram.dispatcher.event.event.EventObserver:5 of
 msgid "Handlers can be registered via decorator or method"
-msgstr "Обробники(Handler) можна зареєструвати за допомогою декоратора або методу"
+msgstr "Обробники (Handler) можна зареєструвати за допомогою декоратора або методу"
 
 #: aiogram.dispatcher.event.event.EventObserver.register:1 of
 msgid "Register callback with filters"
-msgstr "Реєстрація обробника(callback) з фільтрами"
+msgstr "Реєстрація обробника (callback) з фільтрами"
 
 #: aiogram.dispatcher.event.event.EventObserver.trigger:1 of
 msgid ""
@@ -77,7 +77,7 @@ msgstr ""
 #: aiogram.dispatcher.event.event.EventObserver.__call__:1
 #: aiogram.dispatcher.event.telegram.TelegramEventObserver.__call__:1 of
 msgid "Decorator for registering event handlers"
-msgstr "Декоратор для реєстрації обробника подій(handler)"
+msgstr "Декоратор для реєстрації обробника подій (handler)"
 
 #: ../../dispatcher/observer.rst:22
 msgid "TelegramEventObserver"

@@ -160,3 +160,4 @@ msgstr ""
 #: aiogram.client.bot.Bot.download:6 of
 msgid "file_id or Downloadable object"
 msgstr ""
+

@@ -18,7 +18,7 @@ msgstr ""
 
 #: ../../dispatcher/router.rst:5
 msgid "Router"
-msgstr "Маршрутизатор"
+msgstr "Маршрутизатор (Router)"
 
 #: ../../dispatcher/router.rst:7
 #, fuzzy
@@ -130,7 +130,19 @@ msgstr ""
 "декоратора, але якщо вам не подобаються @decorators, просто "
 "використовуйте :obj:`<event type>.register(...)` method instead."
 
-#: ../../dispatcher/router.rst:41
+#: ../../dispatcher/router.rst:23
+msgid "Update"
+msgstr "Оновлення (Update)"
+
+#: ../../dispatcher/router.rst:32
+msgid ""
+"By default Router already has an update handler which route all event "
+"types to another observers."
+msgstr ""
+"За замовчуванням маршрутизатор уже має обробник подій, який направляє "
+"всі типи подій іншим обсерверам."
+
+#: ../../dispatcher/router.rst:36
 msgid "Message"
 msgstr "Повідомлення"
 

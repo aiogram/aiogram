@@ -24,6 +24,7 @@ msgstr ""
 #: aiogram.types.write_access_allowed.WriteAccessAllowed:1 of
 msgid ""
 "This object represents a service message about a user allowing a bot to "
+
 "write messages after adding it to the attachment menu, launching a Web "
 "App from a link, or accepting an explicit request from a Web App sent by "
 "the method `requestWriteAccess <https://core.telegram.org/bots/webapps"
@@ -55,6 +56,7 @@ msgstr ""
 msgid ""
 "*Optional*. True, if the access was granted when the bot was added to the"
 " attachment or side menu"
+
 msgstr ""
 
 #~ msgid ""
@@ -65,13 +67,3 @@ msgstr ""
 #~ "information."
 #~ msgstr ""
 
-#~ msgid ""
-#~ "This object represents a service message"
-#~ " about a user allowing a bot to"
-#~ " write messages after adding the bot"
-#~ " to the attachment menu or launching"
-#~ " a Web App from a link."
-#~ msgstr ""
-
-#~ msgid "*Optional*. Name of the Web App which was launched from a link"
-#~ msgstr ""

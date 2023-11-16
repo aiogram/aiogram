@@ -64,3 +64,4 @@ msgstr ""
 #: of
 msgid "*Optional*. True, if channel chats can be chosen"
 msgstr ""
+

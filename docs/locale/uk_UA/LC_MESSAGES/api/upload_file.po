@@ -180,3 +180,4 @@ msgstr ""
 "`обмеження на завантаження <https://core.telegram.org/bots/api#sending-"
 "files> `_ за URL-адресою, ви можете використовувати "
 ":obj:`aiogram.types.input_file.URLInputFile`."
+

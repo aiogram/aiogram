@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-02 15:10+0300\n"
+"POT-Creation-Date: 2023-06-01 20:49+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -66,3 +66,4 @@ msgstr ""
 #: ../../api/methods/get_my_name.rst:33
 msgid "With specific bot"
 msgstr ""
+

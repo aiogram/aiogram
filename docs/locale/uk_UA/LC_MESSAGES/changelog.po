@@ -51,7 +51,7 @@ msgstr ""
 msgid "Bugfixes"
 msgstr ""
 
-#: ../../[towncrier-fragments]:14
+#: ../../[towncrier-fragments]:97
 msgid ""
 "Fixed ``parse_mode`` in ``send_copy`` helper. Disable by default. `#1332 "
 "<https://github.com/aiogram/aiogram/issues/1332>`_"
@@ -598,8 +598,17 @@ msgstr ""
 #: ../../../CHANGES.rst:311
 msgid ""
 "Note that this issue has breaking changes described in in the Bot API "
-"changelog, this changes is not breaking in the API but breaking inside "
-"aiogram because Beta stage is not finished."
+"changelog,"
+msgstr ""
+
+#: ../../[towncrier-fragments]:107
+msgid ""
+"this changes is not breaking in the API but breaking inside aiogram "
+"because"
+msgstr ""
+
+#: ../../[towncrier-fragments]:109
+msgid "Beta stage is not finished."
 msgstr ""
 
 #: ../../../CHANGES.rst:314
@@ -3202,3 +3211,16 @@ msgstr ""
 
 #~ msgid "\\ |release| [UNRELEASED DRAFT] (2023-10-08)"
 #~ msgstr ""
+
+#~ msgid "\\ |release| [UNRELEASED DRAFT] (2023-03-11)"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Note that this issue has breaking "
+#~ "changes described in in the Bot "
+#~ "API changelog, this changes is not "
+#~ "breaking in the API but breaking "
+#~ "inside aiogram because Beta stage is "
+#~ "not finished."
+#~ msgstr ""
+
