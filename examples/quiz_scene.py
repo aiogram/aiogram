@@ -166,11 +166,13 @@ class QuizScene(Scene, state="quiz"):
             is_correct = answer == quiz.correct_answer
             if is_correct:
                 correct += 1
+                icon = "✅"
             else:
                 incorrect += 1
+                icon = "❌"
             if answer is None:
                 answer = "no answer"
-            user_answers.append(f"{quiz.text} ({'✅' if is_correct else '❌'} {html.quote(answer)})")
+            user_answers.append(f"{quiz.text} ({icon} {html.quote(answer)})")
 
         content = as_list(
             as_section(

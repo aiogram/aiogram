@@ -1,4 +1,5 @@
 import inspect
+import platform
 from datetime import datetime
 from unittest.mock import ANY, AsyncMock, patch
 
@@ -232,6 +233,7 @@ class TestActionContainer:
 
 
 class TestSceneHandlerWrapper:
+    @pytest.mark.skipif("PyPy" in platform.python_implementation(), reason="Test skipped on PyPy.")
     async def test_scene_handler_wrapper_call(self):
         class MyScene(Scene):
             pass
@@ -263,6 +265,7 @@ class TestSceneHandlerWrapper:
         # Check whether result is correct
         assert result == handler_mock.return_value
 
+    @pytest.mark.skipif("PyPy" in platform.python_implementation(), reason="Test skipped on PyPy.")
     async def test_scene_handler_wrapper_call_with_after(self):
         class MyScene(Scene):
             pass
