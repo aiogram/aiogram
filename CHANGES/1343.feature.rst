@@ -1,1 +1,1 @@
-The new FSM strategy CHAT_TOPIC, which sets the state for the entire topic in the chat, also works in private messages and regular groups without topics.
+Added the new FSM strategy :code:`CHAT_TOPIC`, which sets the state for the entire topic in the chat, also works in private messages and regular groups without topics.

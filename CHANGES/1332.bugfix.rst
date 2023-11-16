@@ -1,1 +1,1 @@
- Fixed ``parse_mode`` in ``send_copy`` helper. Disable by default.
+ Fixed :code:`parse_mode` argument in the in :code:`Message.send_copy` shortcut. Disable by default.
