@@ -1,1 +1,1 @@
-Added current handler to filters, so that flags can be retrieved from it.
+Added ability to get handler flags from filters.
