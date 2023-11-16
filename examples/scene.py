@@ -165,7 +165,7 @@ class DefaultScene(
         await callback_query.answer(cache_time=0)
         await callback_query.message.delete_reply_markup()
 
-    @on.message.enter()  # Marker for handler that should be called when user enters the scene.
+    @on.message.enter()  # Mark that this handler should be called when a user enters the scene.
     @on.message()
     async def default_handler(self, message: Message):
         await message.answer(
