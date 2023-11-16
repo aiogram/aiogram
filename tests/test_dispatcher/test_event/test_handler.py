@@ -1,5 +1,5 @@
 import functools
-from typing import Any, Dict, Union, Callable, Set
+from typing import Any, Callable, Dict, Set, Union
 
 import pytest
 from magic_filter import F as A

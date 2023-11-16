@@ -4,7 +4,7 @@ import inspect
 import warnings
 from dataclasses import dataclass, field
 from functools import partial
-from typing import Any, Callable, Dict, List, Optional, Tuple, Set
+from typing import Any, Callable, Dict, List, Optional, Set, Tuple
 
 from magic_filter.magic import MagicFilter as OriginalMagicFilter
 
