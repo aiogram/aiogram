@@ -134,7 +134,7 @@ class TestObserverDecorator:
         assert len(wrapped2.__aiogram_handler__) == 2
 
     def test_wrap_action(self):
-        decorator = ObserverDecorator("test", F.test)
+        decorator = ObserverDecorator("test", F.test, action=SceneAction.enter)
 
         def handler():
             pass
@@ -146,5 +146,5 @@ class TestObserverDecorator:
 
         assert isinstance(wrapped.__aiogram_action__, dict)
         assert len(wrapped.__aiogram_action__) == 1
-        assert "test" in wrapped.__aiogram_action__
-        assert wrapped.__aiogram_action__["test"]
+        assert SceneAction.enter in wrapped.__aiogram_action__
+        assert "test" in wrapped.__aiogram_action__[SceneAction.enter]
