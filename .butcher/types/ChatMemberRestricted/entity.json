@@ -149,9 +149,9 @@
       },
       {
         "type": "Integer",
-        "description": "Date when restrictions will be lifted for this user; unix time. If 0, then the user is restricted forever",
-        "html_description": "<td>Date when restrictions will be lifted for this user; unix time. If 0, then the user is restricted forever</td>",
-        "rst_description": "Date when restrictions will be lifted for this user; unix time. If 0, then the user is restricted forever\n",
+        "description": "Date when restrictions will be lifted for this user; Unix time. If 0, then the user is restricted forever",
+        "html_description": "<td>Date when restrictions will be lifted for this user; Unix time. If 0, then the user is restricted forever</td>",
+        "rst_description": "Date when restrictions will be lifted for this user; Unix time. If 0, then the user is restricted forever\n",
         "name": "until_date",
         "required": true
       }

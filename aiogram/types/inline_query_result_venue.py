@@ -1,15 +1,17 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional
-
-from pydantic import Field
+from typing import TYPE_CHECKING, Any, Literal, Optional, Union
 
 from ..enums import InlineQueryResultType
 from .inline_query_result import InlineQueryResult
 
 if TYPE_CHECKING:
     from .inline_keyboard_markup import InlineKeyboardMarkup
-    from .input_message_content import InputMessageContent
+    from .input_contact_message_content import InputContactMessageContent
+    from .input_invoice_message_content import InputInvoiceMessageContent
+    from .input_location_message_content import InputLocationMessageContent
+    from .input_text_message_content import InputTextMessageContent
+    from .input_venue_message_content import InputVenueMessageContent
 
 
 class InlineQueryResultVenue(InlineQueryResult):
@@ -20,7 +22,7 @@ class InlineQueryResultVenue(InlineQueryResult):
     Source: https://core.telegram.org/bots/api#inlinequeryresultvenue
     """
 
-    type: str = Field(InlineQueryResultType.VENUE, const=True)
+    type: Literal[InlineQueryResultType.VENUE] = InlineQueryResultType.VENUE
     """Type of the result, must be *venue*"""
     id: str
     """Unique identifier for this result, 1-64 Bytes"""
@@ -42,7 +44,15 @@ class InlineQueryResultVenue(InlineQueryResult):
     """*Optional*. Google Places type of the venue. (See `supported types <https://developers.google.com/places/web-service/supported_types>`_.)"""
     reply_markup: Optional[InlineKeyboardMarkup] = None
     """*Optional*. `Inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_ attached to the message"""
-    input_message_content: Optional[InputMessageContent] = None
+    input_message_content: Optional[
+        Union[
+            InputTextMessageContent,
+            InputLocationMessageContent,
+            InputVenueMessageContent,
+            InputContactMessageContent,
+            InputInvoiceMessageContent,
+        ]
+    ] = None
     """*Optional*. Content of the message to be sent instead of the venue"""
     thumbnail_url: Optional[str] = None
     """*Optional*. Url of the thumbnail for the result"""
@@ -50,3 +60,58 @@ class InlineQueryResultVenue(InlineQueryResult):
     """*Optional*. Thumbnail width"""
     thumbnail_height: Optional[int] = None
     """*Optional*. Thumbnail height"""
+
+    if TYPE_CHECKING:
+        # DO NOT EDIT MANUALLY!!!
+        # This section was auto-generated via `butcher`
+
+        def __init__(
+            __pydantic__self__,
+            *,
+            type: Literal[InlineQueryResultType.VENUE] = InlineQueryResultType.VENUE,
+            id: str,
+            latitude: float,
+            longitude: float,
+            title: str,
+            address: str,
+            foursquare_id: Optional[str] = None,
+            foursquare_type: Optional[str] = None,
+            google_place_id: Optional[str] = None,
+            google_place_type: Optional[str] = None,
+            reply_markup: Optional[InlineKeyboardMarkup] = None,
+            input_message_content: Optional[
+                Union[
+                    InputTextMessageContent,
+                    InputLocationMessageContent,
+                    InputVenueMessageContent,
+                    InputContactMessageContent,
+                    InputInvoiceMessageContent,
+                ]
+            ] = None,
+            thumbnail_url: Optional[str] = None,
+            thumbnail_width: Optional[int] = None,
+            thumbnail_height: Optional[int] = None,
+            **__pydantic_kwargs: Any,
+        ) -> None:
+            # DO NOT EDIT MANUALLY!!!
+            # This method was auto-generated via `butcher`
+            # Is needed only for type checking and IDE support without any additional plugins
+
+            super().__init__(
+                type=type,
+                id=id,
+                latitude=latitude,
+                longitude=longitude,
+                title=title,
+                address=address,
+                foursquare_id=foursquare_id,
+                foursquare_type=foursquare_type,
+                google_place_id=google_place_id,
+                google_place_type=google_place_type,
+                reply_markup=reply_markup,
+                input_message_content=input_message_content,
+                thumbnail_url=thumbnail_url,
+                thumbnail_width=thumbnail_width,
+                thumbnail_height=thumbnail_height,
+                **__pydantic_kwargs,
+            )

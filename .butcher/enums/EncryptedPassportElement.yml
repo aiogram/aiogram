@@ -1,0 +1,10 @@
+name: EncryptedPassportElement
+description: |
+  This object represents type of encrypted passport element.
+
+  Source: https://core.telegram.org/bots/api#encryptedpassportelement
+parse:
+  entity: EncryptedPassportElement
+  category: types
+  attribute: type
+  regexp: "'([a-z_]+)'"

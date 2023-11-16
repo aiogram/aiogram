@@ -14,6 +14,7 @@ class ContentType(str, Enum):
     DOCUMENT = "document"
     PHOTO = "photo"
     STICKER = "sticker"
+    STORY = "story"
     VIDEO = "video"
     VIDEO_NOTE = "video_note"
     VOICE = "voice"

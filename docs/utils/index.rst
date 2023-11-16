@@ -9,3 +9,5 @@ Utils
     chat_action
     web_app
     callback_answer
+    formatting
+    media_group

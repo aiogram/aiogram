@@ -123,6 +123,7 @@ Available types
     reply_keyboard_markup
     reply_keyboard_remove
     response_parameters
+    story
     switch_inline_query_chosen_chat
     user
     user_profile_photos

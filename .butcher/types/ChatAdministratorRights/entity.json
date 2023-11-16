@@ -21,9 +21,9 @@
       },
       {
         "type": "Boolean",
-        "description": "True, if the administrator can access the chat event log, chat statistics, message statistics in channels, see channel members, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege",
-        "html_description": "<td><em>True</em>, if the administrator can access the chat event log, chat statistics, message statistics in channels, see channel members, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege</td>",
-        "rst_description": ":code:`True`, if the administrator can access the chat event log, chat statistics, message statistics in channels, see channel members, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege\n",
+        "description": "True, if the administrator can access the chat event log, boost list in channels, see channel members, report spam messages, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege",
+        "html_description": "<td><em>True</em>, if the administrator can access the chat event log, boost list in channels, see channel members, report spam messages, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege</td>",
+        "rst_description": ":code:`True`, if the administrator can access the chat event log, boost list in channels, see channel members, report spam messages, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege\n",
         "name": "can_manage_chat",
         "required": true
       },
@@ -45,9 +45,9 @@
       },
       {
         "type": "Boolean",
-        "description": "True, if the administrator can restrict, ban or unban chat members",
-        "html_description": "<td><em>True</em>, if the administrator can restrict, ban or unban chat members</td>",
-        "rst_description": ":code:`True`, if the administrator can restrict, ban or unban chat members\n",
+        "description": "True, if the administrator can restrict, ban or unban chat members, or access supergroup statistics",
+        "html_description": "<td><em>True</em>, if the administrator can restrict, ban or unban chat members, or access supergroup statistics</td>",
+        "rst_description": ":code:`True`, if the administrator can restrict, ban or unban chat members, or access supergroup statistics\n",
         "name": "can_restrict_members",
         "required": true
       },
@@ -77,9 +77,9 @@
       },
       {
         "type": "Boolean",
-        "description": "True, if the administrator can post in the channel; channels only",
-        "html_description": "<td><em>Optional</em>. <em>True</em>, if the administrator can post in the channel; channels only</td>",
-        "rst_description": "*Optional*. :code:`True`, if the administrator can post in the channel; channels only\n",
+        "description": "True, if the administrator can post messages in the channel, or access channel statistics; channels only",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the administrator can post messages in the channel, or access channel statistics; channels only</td>",
+        "rst_description": "*Optional*. :code:`True`, if the administrator can post messages in the channel, or access channel statistics; channels only\n",
         "name": "can_post_messages",
         "required": false
       },
@@ -97,6 +97,30 @@
         "html_description": "<td><em>Optional</em>. <em>True</em>, if the user is allowed to pin messages; groups and supergroups only</td>",
         "rst_description": "*Optional*. :code:`True`, if the user is allowed to pin messages; groups and supergroups only\n",
         "name": "can_pin_messages",
+        "required": false
+      },
+      {
+        "type": "Boolean",
+        "description": "True, if the administrator can post stories in the channel; channels only",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the administrator can post stories in the channel; channels only</td>",
+        "rst_description": "*Optional*. :code:`True`, if the administrator can post stories in the channel; channels only\n",
+        "name": "can_post_stories",
+        "required": false
+      },
+      {
+        "type": "Boolean",
+        "description": "True, if the administrator can edit stories posted by other users; channels only",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the administrator can edit stories posted by other users; channels only</td>",
+        "rst_description": "*Optional*. :code:`True`, if the administrator can edit stories posted by other users; channels only\n",
+        "name": "can_edit_stories",
+        "required": false
+      },
+      {
+        "type": "Boolean",
+        "description": "True, if the administrator can delete stories posted by other users; channels only",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the administrator can delete stories posted by other users; channels only</td>",
+        "rst_description": "*Optional*. :code:`True`, if the administrator can delete stories posted by other users; channels only\n",
+        "name": "can_delete_stories",
         "required": false
       },
       {

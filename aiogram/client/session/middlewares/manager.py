@@ -1,68 +1,48 @@
 from __future__ import annotations
 
 from functools import partial
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    Awaitable,
-    Callable,
-    List,
-    Optional,
-    Sequence,
-    Union,
-    overload,
-)
+from typing import Any, Callable, List, Optional, Sequence, Union, cast, overload
 
 from aiogram.client.session.middlewares.base import (
     NextRequestMiddlewareType,
     RequestMiddlewareType,
 )
-from aiogram.methods import Response
-from aiogram.methods.base import TelegramMethod, TelegramType
-from aiogram.types import TelegramObject
-
-if TYPE_CHECKING:
-    from aiogram import Bot
+from aiogram.methods.base import TelegramType
 
 
-class RequestMiddlewareManager(Sequence[RequestMiddlewareType[TelegramObject]]):
+class RequestMiddlewareManager(Sequence[RequestMiddlewareType]):
     def __init__(self) -> None:
-        self._middlewares: List[RequestMiddlewareType[TelegramObject]] = []
+        self._middlewares: List[RequestMiddlewareType] = []
 
     def register(
         self,
-        middleware: RequestMiddlewareType[TelegramObject],
-    ) -> RequestMiddlewareType[TelegramObject]:
+        middleware: RequestMiddlewareType,
+    ) -> RequestMiddlewareType:
         self._middlewares.append(middleware)
         return middleware
 
-    def unregister(self, middleware: RequestMiddlewareType[TelegramObject]) -> None:
+    def unregister(self, middleware: RequestMiddlewareType) -> None:
         self._middlewares.remove(middleware)
 
     def __call__(
         self,
-        middleware: Optional[RequestMiddlewareType[TelegramObject]] = None,
-    ) -> Union[
-        Callable[[RequestMiddlewareType[TelegramObject]], RequestMiddlewareType[TelegramObject]],
-        RequestMiddlewareType[TelegramObject],
-    ]:
+        middleware: Optional[RequestMiddlewareType] = None,
+    ) -> Union[Callable[[RequestMiddlewareType], RequestMiddlewareType], RequestMiddlewareType,]:
         if middleware is None:
             return self.register
         return self.register(middleware)
 
     @overload
-    def __getitem__(self, item: int) -> RequestMiddlewareType[TelegramObject]:
+    def __getitem__(self, item: int) -> RequestMiddlewareType:
         pass
 
     @overload
-    def __getitem__(self, item: slice) -> Sequence[RequestMiddlewareType[TelegramObject]]:
+    def __getitem__(self, item: slice) -> Sequence[RequestMiddlewareType]:
         pass
 
     def __getitem__(
         self, item: Union[int, slice]
-    ) -> Union[
-        RequestMiddlewareType[TelegramObject], Sequence[RequestMiddlewareType[TelegramObject]]
-    ]:
+    ) -> Union[RequestMiddlewareType, Sequence[RequestMiddlewareType]]:
         return self._middlewares[item]
 
     def __len__(self) -> int:
@@ -70,10 +50,10 @@ class RequestMiddlewareManager(Sequence[RequestMiddlewareType[TelegramObject]]):
 
     def wrap_middlewares(
         self,
-        callback: Callable[[Bot, TelegramMethod[TelegramType]], Awaitable[Response[TelegramType]]],
+        callback: NextRequestMiddlewareType[TelegramType],
         **kwargs: Any,
     ) -> NextRequestMiddlewareType[TelegramType]:
         middleware = partial(callback, **kwargs)
         for m in reversed(self._middlewares):
-            middleware = partial(m, middleware)  # type: ignore
-        return middleware
+            middleware = partial(m, middleware)
+        return cast(NextRequestMiddlewareType[TelegramType], middleware)

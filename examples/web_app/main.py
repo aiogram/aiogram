@@ -1,4 +1,5 @@
 import logging
+import sys
 from os import getenv
 
 from aiohttp.web import run_app
@@ -10,7 +11,8 @@ from aiogram import Bot, Dispatcher
 from aiogram.types import MenuButtonWebApp, WebAppInfo
 from aiogram.webhook.aiohttp_server import SimpleRequestHandler, setup_application
 
-TELEGRAM_TOKEN = getenv("TELEGRAM_TOKEN")
+TOKEN = getenv("BOT_TOKEN")
+
 APP_BASE_URL = getenv("APP_BASE_URL")
 
 
@@ -22,7 +24,7 @@ async def on_startup(bot: Bot, base_url: str):
 
 
 def main():
-    bot = Bot(token=TELEGRAM_TOKEN, parse_mode="HTML")
+    bot = Bot(token=TOKEN, parse_mode="HTML")
     dispatcher = Dispatcher()
     dispatcher["base_url"] = APP_BASE_URL
     dispatcher.startup.register(on_startup)
@@ -45,5 +47,5 @@ def main():
 
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO)
+    logging.basicConfig(level=logging.INFO, stream=sys.stdout)
     main()

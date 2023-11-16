@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  aiogram\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-06-01 20:49+0300\n"
+"POT-Creation-Date: 2023-09-14 17:21+0300\n"
 "PO-Revision-Date: 2022-12-10 19:44+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -30,20 +30,22 @@ msgstr ""
 "інших маршрутизаторів до диспетчера."
 
 #: ../../dispatcher/dispatcher.rst:7
+#, fuzzy
 msgid ""
 "Here is only listed base information about Dispatcher. All about writing "
-"handlers, filters and etc. you can found in next pages:"
+"handlers, filters and etc. you can find in next pages:"
 msgstr ""
 "Тут наведена лише базова інформація про диспетчер. Усе про написання "
 "обробників, фільтрів і т.п. ви можете знайти на наступних сторінках:"
 
 #: ../../dispatcher/dispatcher.rst:9
-msgid "`Router <router.html>`__"
+#, fuzzy
+msgid ":ref:`Router <Router>`"
 msgstr "`Router <router.html>`__"
 
 #: ../../dispatcher/dispatcher.rst:10
-msgid "`Observer <observer.html>`__"
-msgstr "`Observer <observer.html>`__"
+msgid ":ref:`Filtering events`"
+msgstr ""
 
 #: aiogram.dispatcher.dispatcher.Dispatcher:1
 #: aiogram.dispatcher.dispatcher.Dispatcher.__init__:1 of
@@ -101,8 +103,7 @@ msgstr ""
 msgid "Run many bots with polling"
 msgstr "Запуск кількох ботів з опитуванням"
 
-#: aiogram.dispatcher.dispatcher.Dispatcher.run_polling:3
-#: aiogram.dispatcher.dispatcher.Dispatcher.start_polling:3 of
+#: aiogram.dispatcher.dispatcher.Dispatcher.run_polling:3 of
 #, fuzzy
 msgid "Bot instances (one or mre)"
 msgstr "Екземпляри ботів"
@@ -122,32 +123,28 @@ msgstr "Запуск обробки без очікування результа
 msgid "backoff-retry config"
 msgstr ""
 
-#: aiogram.dispatcher.dispatcher.Dispatcher.run_polling:7
-#: aiogram.dispatcher.dispatcher.Dispatcher.start_polling:7 of
+#: aiogram.dispatcher.dispatcher.Dispatcher.run_polling:7 of
 msgid "List of the update types you want your bot to receive"
 msgstr "Список типів подій, які має опрацьовувати ваш бот"
 
-#: aiogram.dispatcher.dispatcher.Dispatcher.run_polling:8 of
-msgid "auto resolve update types from handlers"
-msgstr ""
-
-#: aiogram.dispatcher.dispatcher.Dispatcher.run_polling:9
+#: aiogram.dispatcher.dispatcher.Dispatcher.run_polling:8
 #: aiogram.dispatcher.dispatcher.Dispatcher.start_polling:9 of
 msgid "handle signals (SIGINT/SIGTERM)"
 msgstr ""
 
-#: aiogram.dispatcher.dispatcher.Dispatcher.run_polling:10
+#: aiogram.dispatcher.dispatcher.Dispatcher.run_polling:9
 #: aiogram.dispatcher.dispatcher.Dispatcher.start_polling:10 of
 msgid "close bot sessions on shutdown"
 msgstr ""
 
-#: aiogram.dispatcher.dispatcher.Dispatcher.run_polling:11
+#: aiogram.dispatcher.dispatcher.Dispatcher.run_polling:10
 #: aiogram.dispatcher.dispatcher.Dispatcher.start_polling:11 of
 msgid "contextual data"
 msgstr "контекстні дані"
 
 #: aiogram.dispatcher.dispatcher.Dispatcher.run_polling
-#: aiogram.dispatcher.dispatcher.Dispatcher.start_polling of
+#: aiogram.dispatcher.dispatcher.Dispatcher.start_polling
+#: aiogram.dispatcher.dispatcher.Dispatcher.stop_polling of
 msgid "Returns"
 msgstr "Повертає"
 
@@ -155,8 +152,18 @@ msgstr "Повертає"
 msgid "Polling runner"
 msgstr "Запуск кількох ботів з опитуванням (асинхронно)"
 
-#: aiogram.dispatcher.dispatcher.Dispatcher.start_polling:8 of
-msgid "automatically resolve used update types in handlers"
+#: aiogram.dispatcher.dispatcher.Dispatcher.start_polling:3 of
+msgid "Bot instances (one or more)"
+msgstr "Екземпляри ботів"
+
+#: aiogram.dispatcher.dispatcher.Dispatcher.start_polling:7 of
+msgid ""
+"List of the update types you want your bot to receive By default, all "
+"used update types are enabled (resolved from handlers)"
+msgstr ""
+
+#: aiogram.dispatcher.dispatcher.Dispatcher.stop_polling:1 of
+msgid "Execute this method if you want to stop polling programmatically"
 msgstr ""
 
 #: ../../dispatcher/dispatcher.rst:18
@@ -182,7 +189,4 @@ msgid ""
 msgstr ""
 "Усі оновлення можна передати диспетчеру через "
 ":obj:`Dispatcher.feed_update(bot=..., update=...)` method:"
-
-#~ msgid "Poling timeout"
-#~ msgstr "Час очікування на відповідь"
 

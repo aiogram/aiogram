@@ -1,15 +1,17 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional
-
-from pydantic import Field
+from typing import TYPE_CHECKING, Any, Literal, Optional, Union
 
 from ..enums import InlineQueryResultType
 from .inline_query_result import InlineQueryResult
 
 if TYPE_CHECKING:
     from .inline_keyboard_markup import InlineKeyboardMarkup
-    from .input_message_content import InputMessageContent
+    from .input_contact_message_content import InputContactMessageContent
+    from .input_invoice_message_content import InputInvoiceMessageContent
+    from .input_location_message_content import InputLocationMessageContent
+    from .input_text_message_content import InputTextMessageContent
+    from .input_venue_message_content import InputVenueMessageContent
 
 
 class InlineQueryResultLocation(InlineQueryResult):
@@ -20,7 +22,7 @@ class InlineQueryResultLocation(InlineQueryResult):
     Source: https://core.telegram.org/bots/api#inlinequeryresultlocation
     """
 
-    type: str = Field(InlineQueryResultType.LOCATION, const=True)
+    type: Literal[InlineQueryResultType.LOCATION] = InlineQueryResultType.LOCATION
     """Type of the result, must be *location*"""
     id: str
     """Unique identifier for this result, 1-64 Bytes"""
@@ -40,7 +42,15 @@ class InlineQueryResultLocation(InlineQueryResult):
     """*Optional*. For live locations, a maximum distance for proximity alerts about approaching another chat member, in meters. Must be between 1 and 100000 if specified."""
     reply_markup: Optional[InlineKeyboardMarkup] = None
     """*Optional*. `Inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_ attached to the message"""
-    input_message_content: Optional[InputMessageContent] = None
+    input_message_content: Optional[
+        Union[
+            InputTextMessageContent,
+            InputLocationMessageContent,
+            InputVenueMessageContent,
+            InputContactMessageContent,
+            InputInvoiceMessageContent,
+        ]
+    ] = None
     """*Optional*. Content of the message to be sent instead of the location"""
     thumbnail_url: Optional[str] = None
     """*Optional*. Url of the thumbnail for the result"""
@@ -48,3 +58,56 @@ class InlineQueryResultLocation(InlineQueryResult):
     """*Optional*. Thumbnail width"""
     thumbnail_height: Optional[int] = None
     """*Optional*. Thumbnail height"""
+
+    if TYPE_CHECKING:
+        # DO NOT EDIT MANUALLY!!!
+        # This section was auto-generated via `butcher`
+
+        def __init__(
+            __pydantic__self__,
+            *,
+            type: Literal[InlineQueryResultType.LOCATION] = InlineQueryResultType.LOCATION,
+            id: str,
+            latitude: float,
+            longitude: float,
+            title: str,
+            horizontal_accuracy: Optional[float] = None,
+            live_period: Optional[int] = None,
+            heading: Optional[int] = None,
+            proximity_alert_radius: Optional[int] = None,
+            reply_markup: Optional[InlineKeyboardMarkup] = None,
+            input_message_content: Optional[
+                Union[
+                    InputTextMessageContent,
+                    InputLocationMessageContent,
+                    InputVenueMessageContent,
+                    InputContactMessageContent,
+                    InputInvoiceMessageContent,
+                ]
+            ] = None,
+            thumbnail_url: Optional[str] = None,
+            thumbnail_width: Optional[int] = None,
+            thumbnail_height: Optional[int] = None,
+            **__pydantic_kwargs: Any,
+        ) -> None:
+            # DO NOT EDIT MANUALLY!!!
+            # This method was auto-generated via `butcher`
+            # Is needed only for type checking and IDE support without any additional plugins
+
+            super().__init__(
+                type=type,
+                id=id,
+                latitude=latitude,
+                longitude=longitude,
+                title=title,
+                horizontal_accuracy=horizontal_accuracy,
+                live_period=live_period,
+                heading=heading,
+                proximity_alert_radius=proximity_alert_radius,
+                reply_markup=reply_markup,
+                input_message_content=input_message_content,
+                thumbnail_url=thumbnail_url,
+                thumbnail_width=thumbnail_width,
+                thumbnail_height=thumbnail_height,
+                **__pydantic_kwargs,
+            )

@@ -53,7 +53,7 @@ class Router:
         self.chat_member = TelegramEventObserver(router=self, event_name="chat_member")
         self.chat_join_request = TelegramEventObserver(router=self, event_name="chat_join_request")
 
-        self.errors = TelegramEventObserver(router=self, event_name="error")
+        self.errors = self.error = TelegramEventObserver(router=self, event_name="error")
 
         self.startup = EventObserver()
         self.shutdown = EventObserver()
@@ -125,8 +125,17 @@ class Router:
     ) -> Any:
         response = UNHANDLED
         if observer:
+            # Check globally defined filters before any other handler will be checked.
+            # This check is placed here instead of `trigger` method to add possibility
+            # to pass context to handlers from global filters.
+            result, data = await observer.check_root_filters(event, **kwargs)
+            if not result:
+                return UNHANDLED
+            kwargs.update(data)
+
             response = await observer.trigger(event, **kwargs)
-            if response is REJECTED:
+            if response is REJECTED:  # pragma: no cover
+                # Possible only if some handler returns REJECTED
                 return UNHANDLED
             if response is not UNHANDLED:
                 return response
@@ -184,6 +193,12 @@ class Router:
         router.sub_routers.append(self)
 
     def include_routers(self, *routers: Router) -> None:
+        """
+        Attach multiple routers.
+
+        :param routers:
+        :return:
+        """
         if not routers:
             raise ValueError("At least one router must be provided")
         for router in routers:

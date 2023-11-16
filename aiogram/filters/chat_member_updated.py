@@ -74,9 +74,12 @@ class _MemberStatusMarker:
         return hash((self.name, self.is_member))
 
     def check(self, *, member: ChatMember) -> bool:
-        if self.is_member is not None and member.is_member != self.is_member:
+        # Not all member types have `is_member` attribute
+        is_member = getattr(member, "is_member", None)
+        status = getattr(member, "status", None)
+        if self.is_member is not None and is_member != self.is_member:
             return False
-        return self.name == member.status
+        return self.name == status
 
 
 class _MemberStatusGroupMarker:

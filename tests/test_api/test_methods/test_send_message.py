@@ -1,7 +1,7 @@
 import datetime
 
 from aiogram.methods import Request, SendMessage
-from aiogram.types import Chat, ForceReply, Message
+from aiogram.types import Chat, ForceReply, Message, ReplyKeyboardRemove
 from tests.mocked_bot import MockedBot
 
 
@@ -26,3 +26,8 @@ class TestSendMessage:
         # https://github.com/aiogram/aiogram/issues/901
         method = SendMessage(text="test", chat_id=42, reply_markup=ForceReply())
         assert isinstance(method.reply_markup, ForceReply)
+
+    async def test_reply_keyboard_remove(self):
+        # https://github.com/aiogram/aiogram/issues/901
+        method = SendMessage(text="test", chat_id=42, reply_markup=ReplyKeyboardRemove())
+        assert isinstance(method.reply_markup, ReplyKeyboardRemove)

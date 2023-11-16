@@ -113,6 +113,14 @@ class TestTextDecoration:
     ):
         assert decorator.apply_entity(entity, "test") == result
 
+    def test_unknown_apply_entity(self):
+        assert (
+            html_decoration.apply_entity(
+                MessageEntity(type="unknown", offset=0, length=5), "<test>"
+            )
+            == "&lt;test&gt;"
+        )
+
     @pytest.mark.parametrize(
         "decorator,before,after",
         [
@@ -242,6 +250,33 @@ class TestTextDecoration:
                 "👋🏾 Hi!",
                 [MessageEntity(type="bold", offset=0, length=8, url=None, user=None)],
                 "<b>👋🏾 Hi!</b>",
+            ],
+            [
+                html_decoration,
+                "#test",
+                [
+                    MessageEntity(type="hashtag", offset=0, length=5),
+                    MessageEntity(type="bold", offset=0, length=5),
+                ],
+                "<b>#test</b>",
+            ],
+            [
+                html_decoration,
+                "$TEST",
+                [
+                    MessageEntity(type="cashtag", offset=0, length=5),
+                    MessageEntity(type="bold", offset=0, length=5),
+                ],
+                "<b>$TEST</b>",
+            ],
+            [
+                html_decoration,
+                "test@example.com",
+                [
+                    MessageEntity(type="email", offset=0, length=16),
+                    MessageEntity(type="bold", offset=0, length=16),
+                ],
+                "<b>test@example.com</b>",
             ],
         ],
     )

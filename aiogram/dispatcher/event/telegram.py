@@ -40,7 +40,6 @@ class TelegramEventObserver:
         Register filter for all handlers of this event observer
 
         :param filters: positional filters
-        :param bound_filters: keyword filters
         """
         if self._handler.filters is None:
             self._handler.filters = []
@@ -101,21 +100,19 @@ class TelegramEventObserver:
         )
         return wrapped_outer(event, data)
 
+    def check_root_filters(self, event: TelegramObject, **kwargs: Any) -> Any:
+        return self._handler.check(event, **kwargs)
+
     async def trigger(self, event: TelegramObject, **kwargs: Any) -> Any:
         """
         Propagate event to handlers and stops propagation on first match.
-        Handler will be called when all its filters is pass.
+        Handler will be called when all its filters are pass.
         """
-        # Check globally defined filters before any other handler will be checked
-        result, data = await self._handler.check(event, **kwargs)
-        if not result:
-            return REJECTED
-        kwargs.update(data)
-
         for handler in self.handlers:
+            kwargs["handler"] = handler
             result, data = await handler.check(event, **kwargs)
             if result:
-                kwargs.update(data, handler=handler)
+                kwargs.update(data)
                 try:
                     wrapped_inner = self.outer_middleware.wrap_middlewares(
                         self._resolve_middlewares(),

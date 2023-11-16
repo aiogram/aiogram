@@ -13,9 +13,9 @@ from tests.mocked_bot import MockedBot
 
 
 class TestChatActionSender:
-    async def test_wait(self, bot: Bot, loop: asyncio.BaseEventLoop):
+    async def test_wait(self, bot: Bot, event_loop: asyncio.BaseEventLoop):
         sender = ChatActionSender.typing(bot=bot, chat_id=42)
-        loop.call_soon(sender._close_event.set)
+        event_loop.call_soon(sender._close_event.set)
         start = time.monotonic()
         await sender._wait(1)
         assert time.monotonic() - start < 1
@@ -36,10 +36,9 @@ class TestChatActionSender:
             "upload_video_note",
         ],
     )
-    @pytest.mark.parametrize("pass_bot", [True, False])
-    async def test_factory(self, action: str, bot: MockedBot, pass_bot: bool):
+    async def test_factory(self, action: str, bot: MockedBot):
         sender_factory = getattr(ChatActionSender, action)
-        sender = sender_factory(chat_id=42, bot=bot if pass_bot else None)
+        sender = sender_factory(chat_id=42, bot=bot)
         assert isinstance(sender, ChatActionSender)
         assert sender.action == action
         assert sender.chat_id == 42
@@ -55,7 +54,11 @@ class TestChatActionSender:
             ):
                 await asyncio.sleep(0.1)
                 assert mocked_send_chat_action.await_count > 1
-                mocked_send_chat_action.assert_awaited_with(action="typing", chat_id=42)
+                mocked_send_chat_action.assert_awaited_with(
+                    action="typing",
+                    chat_id=42,
+                    message_thread_id=None,
+                )
 
     async def test_contextmanager(self, bot: MockedBot):
         sender: ChatActionSender = ChatActionSender.typing(bot=bot, chat_id=42)

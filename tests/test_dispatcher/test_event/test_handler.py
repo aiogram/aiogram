@@ -1,5 +1,5 @@
 import functools
-from typing import Any, Dict, Union
+from typing import Any, Dict, Union, Callable, Set
 
 import pytest
 from magic_filter import F as A
@@ -61,9 +61,9 @@ class TestCallableMixin:
             pytest.param(SyncCallable(), {"self", "foo", "bar", "baz"}),
         ],
     )
-    def test_init_args_spec(self, callback, args):
+    def test_init_args_spec(self, callback: Callable, args: Set[str]):
         obj = CallableMixin(callback)
-        assert set(obj.spec.args) == args
+        assert set(obj.params) == args
 
     def test_init_decorated(self):
         def decorator(func):
@@ -85,9 +85,9 @@ class TestCallableMixin:
         obj1 = CallableMixin(callback1)
         obj2 = CallableMixin(callback2)
 
-        assert set(obj1.spec.args) == {"foo", "bar", "baz"}
+        assert set(obj1.params) == {"foo", "bar", "baz"}
         assert obj1.callback == callback1
-        assert set(obj2.spec.args) == {"foo", "bar", "baz"}
+        assert set(obj2.params) == {"foo", "bar", "baz"}
         assert obj2.callback == callback2
 
     @pytest.mark.parametrize(
@@ -124,7 +124,9 @@ class TestCallableMixin:
             ),
         ],
     )
-    def test_prepare_kwargs(self, callback, kwargs, result):
+    def test_prepare_kwargs(
+        self, callback: Callable, kwargs: Dict[str, Any], result: Dict[str, Any]
+    ):
         obj = CallableMixin(callback)
         assert obj._prepare_kwargs(kwargs) == result
 

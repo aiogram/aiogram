@@ -1,19 +1,14 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
-from aiogram.types.base import MutableTelegramObject
+from aiogram.types.base import TelegramObject
 
 if TYPE_CHECKING:
     from .update import Update
 
 
-class _ErrorEvent(MutableTelegramObject):
-    class Config:
-        arbitrary_types_allowed = True
-
-
-class ErrorEvent(_ErrorEvent):
+class ErrorEvent(TelegramObject):
     """
     Internal event, should be used to receive errors while processing Updates from Telegram
 
@@ -24,3 +19,10 @@ class ErrorEvent(_ErrorEvent):
     """Received update"""
     exception: Exception
     """Exception"""
+
+    if TYPE_CHECKING:
+
+        def __init__(
+            __pydantic_self__, *, update: Update, exception: Exception, **__pydantic_kwargs: Any
+        ) -> None:
+            super().__init__(update=update, exception=exception, **__pydantic_kwargs)

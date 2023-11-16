@@ -217,6 +217,3 @@ msgstr ""
 #: ../../api/download_file.rst:93
 msgid "Example:"
 msgstr "Приклад:"
-
-#~ msgid "Bot class"
-#~ msgstr "Bot class"

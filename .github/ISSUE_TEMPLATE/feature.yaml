@@ -1,0 +1,56 @@
+name: Feature request
+description: Report features you would like to see or improve in the framework.
+labels:
+  - enhancement
+body:
+  - type: dropdown
+    attributes:
+      label: aiogram version
+      description: (`pip show aiogram` inside your virtualenv)
+      options:
+        - 3.x
+        - 2.x
+        - both
+        - n/a
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Problem
+      description: Is your feature request related to a specific problem? If not, please describe the general idea of your request.
+      placeholder: e.g. I want to send a photo to a user by url.
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Possible solution
+      description: Describe the solution you would like to see in the framework.
+      placeholder: e.g. Add a method to send a photo to a user by url.
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Alternatives
+      description: What other solutions do you have in mind?
+      placeholder: e.g. I'm sending a text message with photo url.
+
+  - type: textarea
+    attributes:
+      label: Code example
+      description: A small code example that demonstrates the behavior you would like to see.
+      placeholder: |
+        await bot.send_photo(user_id, photo_url)
+        ...
+      render: python3
+
+  - type: textarea
+    attributes:
+      label: Additional information
+      description: Any additional information you would like to provide.
+      placeholder: |
+        E.g. this method should also cache images to speed up further sending.
+
+        You can also attach additional pictures or other files.

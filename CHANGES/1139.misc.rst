@@ -1,7 +1,0 @@
-Added full support of `Bot API 6.6 <https://core.telegram.org/bots/api-changelog#march-9-2023>`_
-
-.. danger::
-
-    Note that this issue has breaking changes described in in the Bot API changelog,
-    this changes is not breaking in the API but breaking inside aiogram because
-    Beta stage is not finished.

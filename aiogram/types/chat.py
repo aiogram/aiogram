@@ -4,6 +4,7 @@ import datetime
 from typing import TYPE_CHECKING, Any, List, Optional, Union
 
 from .base import TelegramObject
+from .custom import DateTime
 
 if TYPE_CHECKING:
     from ..methods import (
@@ -33,6 +34,7 @@ if TYPE_CHECKING:
         UnbanChatMember,
         UnbanChatSenderChat,
         UnpinAllChatMessages,
+        UnpinAllGeneralForumTopicMessages,
         UnpinChatMessage,
     )
     from .chat_location import ChatLocation
@@ -69,6 +71,8 @@ class Chat(TelegramObject):
     """*Optional*. If non-empty, the list of all `active chat usernames <https://telegram.org/blog/topics-in-groups-collectible-usernames#collectible-usernames>`_; for private chats, supergroups and channels. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
     emoji_status_custom_emoji_id: Optional[str] = None
     """*Optional*. Custom emoji identifier of emoji status of the other party in a private chat. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
+    emoji_status_expiration_date: Optional[DateTime] = None
+    """*Optional*. Expiration date of the emoji status of the other party in a private chat in Unix time, if any. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
     bio: Optional[str] = None
     """*Optional*. Bio of the other party in a private chat. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
     has_private_forwards: Optional[bool] = None
@@ -105,6 +109,81 @@ class Chat(TelegramObject):
     """*Optional*. Unique identifier for the linked chat, i.e. the discussion group identifier for a channel and vice versa; for supergroups and channel chats. This identifier may be greater than 32 bits and some programming languages may have difficulty/silent defects in interpreting it. But it is smaller than 52 bits, so a signed 64 bit integer or double-precision float type are safe for storing this identifier. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
     location: Optional[ChatLocation] = None
     """*Optional*. For supergroups, the location to which the supergroup is connected. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
+
+    if TYPE_CHECKING:
+        # DO NOT EDIT MANUALLY!!!
+        # This section was auto-generated via `butcher`
+
+        def __init__(
+            __pydantic__self__,
+            *,
+            id: int,
+            type: str,
+            title: Optional[str] = None,
+            username: Optional[str] = None,
+            first_name: Optional[str] = None,
+            last_name: Optional[str] = None,
+            is_forum: Optional[bool] = None,
+            photo: Optional[ChatPhoto] = None,
+            active_usernames: Optional[List[str]] = None,
+            emoji_status_custom_emoji_id: Optional[str] = None,
+            emoji_status_expiration_date: Optional[DateTime] = None,
+            bio: Optional[str] = None,
+            has_private_forwards: Optional[bool] = None,
+            has_restricted_voice_and_video_messages: Optional[bool] = None,
+            join_to_send_messages: Optional[bool] = None,
+            join_by_request: Optional[bool] = None,
+            description: Optional[str] = None,
+            invite_link: Optional[str] = None,
+            pinned_message: Optional[Message] = None,
+            permissions: Optional[ChatPermissions] = None,
+            slow_mode_delay: Optional[int] = None,
+            message_auto_delete_time: Optional[int] = None,
+            has_aggressive_anti_spam_enabled: Optional[bool] = None,
+            has_hidden_members: Optional[bool] = None,
+            has_protected_content: Optional[bool] = None,
+            sticker_set_name: Optional[str] = None,
+            can_set_sticker_set: Optional[bool] = None,
+            linked_chat_id: Optional[int] = None,
+            location: Optional[ChatLocation] = None,
+            **__pydantic_kwargs: Any,
+        ) -> None:
+            # DO NOT EDIT MANUALLY!!!
+            # This method was auto-generated via `butcher`
+            # Is needed only for type checking and IDE support without any additional plugins
+
+            super().__init__(
+                id=id,
+                type=type,
+                title=title,
+                username=username,
+                first_name=first_name,
+                last_name=last_name,
+                is_forum=is_forum,
+                photo=photo,
+                active_usernames=active_usernames,
+                emoji_status_custom_emoji_id=emoji_status_custom_emoji_id,
+                emoji_status_expiration_date=emoji_status_expiration_date,
+                bio=bio,
+                has_private_forwards=has_private_forwards,
+                has_restricted_voice_and_video_messages=has_restricted_voice_and_video_messages,
+                join_to_send_messages=join_to_send_messages,
+                join_by_request=join_by_request,
+                description=description,
+                invite_link=invite_link,
+                pinned_message=pinned_message,
+                permissions=permissions,
+                slow_mode_delay=slow_mode_delay,
+                message_auto_delete_time=message_auto_delete_time,
+                has_aggressive_anti_spam_enabled=has_aggressive_anti_spam_enabled,
+                has_hidden_members=has_hidden_members,
+                has_protected_content=has_protected_content,
+                sticker_set_name=sticker_set_name,
+                can_set_sticker_set=can_set_sticker_set,
+                linked_chat_id=linked_chat_id,
+                location=location,
+                **__pydantic_kwargs,
+            )
 
     @property
     def shifted_id(self) -> int:
@@ -164,7 +243,7 @@ class Chat(TelegramObject):
             chat_id=self.id,
             sender_chat_id=sender_chat_id,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def unban_sender_chat(
         self,
@@ -193,7 +272,7 @@ class Chat(TelegramObject):
             chat_id=self.id,
             sender_chat_id=sender_chat_id,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def get_administrators(
         self,
@@ -219,7 +298,7 @@ class Chat(TelegramObject):
         return GetChatAdministrators(
             chat_id=self.id,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def delete_message(
         self,
@@ -266,7 +345,7 @@ class Chat(TelegramObject):
             chat_id=self.id,
             message_id=message_id,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def revoke_invite_link(
         self,
@@ -295,7 +374,7 @@ class Chat(TelegramObject):
             chat_id=self.id,
             invite_link=invite_link,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def edit_invite_link(
         self,
@@ -336,7 +415,7 @@ class Chat(TelegramObject):
             member_limit=member_limit,
             creates_join_request=creates_join_request,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def create_invite_link(
         self,
@@ -374,7 +453,7 @@ class Chat(TelegramObject):
             member_limit=member_limit,
             creates_join_request=creates_join_request,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def export_invite_link(
         self,
@@ -402,7 +481,7 @@ class Chat(TelegramObject):
         return ExportChatInviteLink(
             chat_id=self.id,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def do(
         self,
@@ -438,7 +517,7 @@ class Chat(TelegramObject):
             action=action,
             message_thread_id=message_thread_id,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def delete_sticker_set(
         self,
@@ -464,7 +543,7 @@ class Chat(TelegramObject):
         return DeleteChatStickerSet(
             chat_id=self.id,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def set_sticker_set(
         self,
@@ -493,7 +572,7 @@ class Chat(TelegramObject):
             chat_id=self.id,
             sticker_set_name=sticker_set_name,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def get_member(
         self,
@@ -522,7 +601,7 @@ class Chat(TelegramObject):
             chat_id=self.id,
             user_id=user_id,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def get_member_count(
         self,
@@ -548,7 +627,7 @@ class Chat(TelegramObject):
         return GetChatMemberCount(
             chat_id=self.id,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def leave(
         self,
@@ -574,7 +653,7 @@ class Chat(TelegramObject):
         return LeaveChat(
             chat_id=self.id,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def unpin_all_messages(
         self,
@@ -600,7 +679,7 @@ class Chat(TelegramObject):
         return UnpinAllChatMessages(
             chat_id=self.id,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def unpin_message(
         self,
@@ -629,7 +708,7 @@ class Chat(TelegramObject):
             chat_id=self.id,
             message_id=message_id,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def pin_message(
         self,
@@ -661,7 +740,7 @@ class Chat(TelegramObject):
             message_id=message_id,
             disable_notification=disable_notification,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def set_administrator_custom_title(
         self,
@@ -693,7 +772,7 @@ class Chat(TelegramObject):
             user_id=user_id,
             custom_title=custom_title,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def set_permissions(
         self,
@@ -725,22 +804,25 @@ class Chat(TelegramObject):
             permissions=permissions,
             use_independent_chat_permissions=use_independent_chat_permissions,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def promote(
         self,
         user_id: int,
         is_anonymous: Optional[bool] = None,
         can_manage_chat: Optional[bool] = None,
-        can_post_messages: Optional[bool] = None,
-        can_edit_messages: Optional[bool] = None,
         can_delete_messages: Optional[bool] = None,
         can_manage_video_chats: Optional[bool] = None,
         can_restrict_members: Optional[bool] = None,
         can_promote_members: Optional[bool] = None,
         can_change_info: Optional[bool] = None,
         can_invite_users: Optional[bool] = None,
+        can_post_messages: Optional[bool] = None,
+        can_edit_messages: Optional[bool] = None,
         can_pin_messages: Optional[bool] = None,
+        can_post_stories: Optional[bool] = None,
+        can_edit_stories: Optional[bool] = None,
+        can_delete_stories: Optional[bool] = None,
         can_manage_topics: Optional[bool] = None,
         **kwargs: Any,
     ) -> PromoteChatMember:
@@ -756,16 +838,19 @@ class Chat(TelegramObject):
 
         :param user_id: Unique identifier of the target user
         :param is_anonymous: Pass :code:`True` if the administrator's presence in the chat is hidden
-        :param can_manage_chat: Pass :code:`True` if the administrator can access the chat event log, chat statistics, message statistics in channels, see channel members, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege
-        :param can_post_messages: Pass :code:`True` if the administrator can create channel posts, channels only
-        :param can_edit_messages: Pass :code:`True` if the administrator can edit messages of other users and can pin messages, channels only
+        :param can_manage_chat: Pass :code:`True` if the administrator can access the chat event log, boost list in channels, see channel members, report spam messages, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege
         :param can_delete_messages: Pass :code:`True` if the administrator can delete messages of other users
         :param can_manage_video_chats: Pass :code:`True` if the administrator can manage video chats
-        :param can_restrict_members: Pass :code:`True` if the administrator can restrict, ban or unban chat members
+        :param can_restrict_members: Pass :code:`True` if the administrator can restrict, ban or unban chat members, or access supergroup statistics
         :param can_promote_members: Pass :code:`True` if the administrator can add new administrators with a subset of their own privileges or demote administrators that they have promoted, directly or indirectly (promoted by administrators that were appointed by him)
         :param can_change_info: Pass :code:`True` if the administrator can change chat title, photo and other settings
         :param can_invite_users: Pass :code:`True` if the administrator can invite new users to the chat
+        :param can_post_messages: Pass :code:`True` if the administrator can post messages in the channel, or access channel statistics; channels only
+        :param can_edit_messages: Pass :code:`True` if the administrator can edit messages of other users and can pin messages; channels only
         :param can_pin_messages: Pass :code:`True` if the administrator can pin messages, supergroups only
+        :param can_post_stories: Pass :code:`True` if the administrator can post stories in the channel; channels only
+        :param can_edit_stories: Pass :code:`True` if the administrator can edit stories posted by other users; channels only
+        :param can_delete_stories: Pass :code:`True` if the administrator can delete stories posted by other users; channels only
         :param can_manage_topics: Pass :code:`True` if the user is allowed to create, rename, close, and reopen forum topics, supergroups only
         :return: instance of method :class:`aiogram.methods.promote_chat_member.PromoteChatMember`
         """
@@ -779,18 +864,21 @@ class Chat(TelegramObject):
             user_id=user_id,
             is_anonymous=is_anonymous,
             can_manage_chat=can_manage_chat,
-            can_post_messages=can_post_messages,
-            can_edit_messages=can_edit_messages,
             can_delete_messages=can_delete_messages,
             can_manage_video_chats=can_manage_video_chats,
             can_restrict_members=can_restrict_members,
             can_promote_members=can_promote_members,
             can_change_info=can_change_info,
             can_invite_users=can_invite_users,
+            can_post_messages=can_post_messages,
+            can_edit_messages=can_edit_messages,
             can_pin_messages=can_pin_messages,
+            can_post_stories=can_post_stories,
+            can_edit_stories=can_edit_stories,
+            can_delete_stories=can_delete_stories,
             can_manage_topics=can_manage_topics,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def restrict(
         self,
@@ -813,7 +901,7 @@ class Chat(TelegramObject):
         :param user_id: Unique identifier of the target user
         :param permissions: A JSON-serialized object for new user permissions
         :param use_independent_chat_permissions: Pass :code:`True` if chat permissions are set independently. Otherwise, the *can_send_other_messages* and *can_add_web_page_previews* permissions will imply the *can_send_messages*, *can_send_audios*, *can_send_documents*, *can_send_photos*, *can_send_videos*, *can_send_video_notes*, and *can_send_voice_notes* permissions; the *can_send_polls* permission will imply the *can_send_messages* permission.
-        :param until_date: Date when restrictions will be lifted for the user, unix time. If user is restricted for more than 366 days or less than 30 seconds from the current time, they are considered to be restricted forever
+        :param until_date: Date when restrictions will be lifted for the user; Unix time. If user is restricted for more than 366 days or less than 30 seconds from the current time, they are considered to be restricted forever
         :return: instance of method :class:`aiogram.methods.restrict_chat_member.RestrictChatMember`
         """
         # DO NOT EDIT MANUALLY!!!
@@ -828,7 +916,7 @@ class Chat(TelegramObject):
             use_independent_chat_permissions=use_independent_chat_permissions,
             until_date=until_date,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def unban(
         self,
@@ -860,7 +948,7 @@ class Chat(TelegramObject):
             user_id=user_id,
             only_if_banned=only_if_banned,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def ban(
         self,
@@ -880,7 +968,7 @@ class Chat(TelegramObject):
         Source: https://core.telegram.org/bots/api#banchatmember
 
         :param user_id: Unique identifier of the target user
-        :param until_date: Date when the user will be unbanned, unix time. If user is banned for more than 366 days or less than 30 seconds from the current time they are considered to be banned forever. Applied for supergroups and channels only.
+        :param until_date: Date when the user will be unbanned; Unix time. If user is banned for more than 366 days or less than 30 seconds from the current time they are considered to be banned forever. Applied for supergroups and channels only.
         :param revoke_messages: Pass :code:`True` to delete all messages from the chat for the user that is being removed. If :code:`False`, the user will be able to see messages in the group that were sent before the user was removed. Always :code:`True` for supergroups and channels.
         :return: instance of method :class:`aiogram.methods.ban_chat_member.BanChatMember`
         """
@@ -895,7 +983,7 @@ class Chat(TelegramObject):
             until_date=until_date,
             revoke_messages=revoke_messages,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def set_description(
         self,
@@ -924,7 +1012,7 @@ class Chat(TelegramObject):
             chat_id=self.id,
             description=description,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def set_title(
         self,
@@ -953,7 +1041,7 @@ class Chat(TelegramObject):
             chat_id=self.id,
             title=title,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def delete_photo(
         self,
@@ -979,7 +1067,7 @@ class Chat(TelegramObject):
         return DeleteChatPhoto(
             chat_id=self.id,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def set_photo(
         self,
@@ -1008,4 +1096,30 @@ class Chat(TelegramObject):
             chat_id=self.id,
             photo=photo,
             **kwargs,
-        )
+        ).as_(self._bot)
+
+    def unpin_all_general_forum_topic_messages(
+        self,
+        **kwargs: Any,
+    ) -> UnpinAllGeneralForumTopicMessages:
+        """
+        Shortcut for method :class:`aiogram.methods.unpin_all_general_forum_topic_messages.UnpinAllGeneralForumTopicMessages`
+        will automatically fill method attributes:
+
+        - :code:`chat_id`
+
+        Use this method to clear the list of pinned messages in a General forum topic. The bot must be an administrator in the chat for this to work and must have the *can_pin_messages* administrator right in the supergroup. Returns :code:`True` on success.
+
+        Source: https://core.telegram.org/bots/api#unpinallgeneralforumtopicmessages
+
+        :return: instance of method :class:`aiogram.methods.unpin_all_general_forum_topic_messages.UnpinAllGeneralForumTopicMessages`
+        """
+        # DO NOT EDIT MANUALLY!!!
+        # This method was auto-generated via `butcher`
+
+        from aiogram.methods import UnpinAllGeneralForumTopicMessages
+
+        return UnpinAllGeneralForumTopicMessages(
+            chat_id=self.id,
+            **kwargs,
+        ).as_(self._bot)

@@ -55,9 +55,13 @@ jobs:
 
             You need to add a brief description of the changes to the `CHANGES` directory.
 
-            For example, you can run `towncrier create <issue>.<type>` to create a file in the change directory and then write a description on that file.
+            Changes file should be named like `<issue or PR number>.<category>.rst`,
+            example `1234.bugfix.rst` where `1234` is the PR or issue number and `bugfix` is the category.
 
-            Read more at [Towncrier docs](https://towncrier.readthedocs.io/en/latest/quickstart.html#creating-news-fragments)
+            The content of the file should be a brief description of the changes in
+            the PR in the format of a description of what has been done.
+
+            Possible categories are: `feature`, `bugfix`, `doc`, `removal` and `misc`.
 
       - name: Changelog found
         if: "success()"

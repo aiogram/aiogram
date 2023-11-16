@@ -82,10 +82,3 @@ msgstr ""
 #: ../../api/methods/stop_poll.rst:40
 msgid "As reply into Webhook in handler"
 msgstr ""
-
-#~ msgid ""
-#~ "A JSON-serialized object for a new"
-#~ " message `inline keyboard "
-#~ "<https://core.telegram.org/bots#inline-keyboards-and-"
-#~ "on-the-fly-updating>`_."
-#~ msgstr ""

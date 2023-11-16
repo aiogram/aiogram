@@ -20,18 +20,26 @@
         "required": true
       },
       {
+        "type": "Chat",
+        "description": "The chat that changed the answer to the poll, if the voter is anonymous",
+        "html_description": "<td><em>Optional</em>. The chat that changed the answer to the poll, if the voter is anonymous</td>",
+        "rst_description": "*Optional*. The chat that changed the answer to the poll, if the voter is anonymous\n",
+        "name": "voter_chat",
+        "required": false
+      },
+      {
         "type": "User",
-        "description": "The user, who changed the answer to the poll",
-        "html_description": "<td>The user, who changed the answer to the poll</td>",
-        "rst_description": "The user, who changed the answer to the poll\n",
+        "description": "The user that changed the answer to the poll, if the voter isn't anonymous",
+        "html_description": "<td><em>Optional</em>. The user that changed the answer to the poll, if the voter isn't anonymous</td>",
+        "rst_description": "*Optional*. The user that changed the answer to the poll, if the voter isn't anonymous\n",
         "name": "user",
-        "required": true
+        "required": false
       },
       {
         "type": "Array of Integer",
-        "description": "0-based identifiers of answer options, chosen by the user. May be empty if the user retracted their vote.",
-        "html_description": "<td>0-based identifiers of answer options, chosen by the user. May be empty if the user retracted their vote.</td>",
-        "rst_description": "0-based identifiers of answer options, chosen by the user. May be empty if the user retracted their vote.\n",
+        "description": "0-based identifiers of chosen answer options. May be empty if the vote was retracted.",
+        "html_description": "<td>0-based identifiers of chosen answer options. May be empty if the vote was retracted.</td>",
+        "rst_description": "0-based identifiers of chosen answer options. May be empty if the vote was retracted.\n",
         "name": "option_ids",
         "required": true
       }

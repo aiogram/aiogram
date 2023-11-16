@@ -6,6 +6,7 @@ from typing import (
     TYPE_CHECKING,
     Any,
     AsyncGenerator,
+    AsyncIterator,
     Dict,
     Iterable,
     List,
@@ -18,7 +19,10 @@ from typing import (
 
 import certifi
 from aiohttp import BasicAuth, ClientError, ClientSession, FormData, TCPConnector
+from aiohttp.hdrs import USER_AGENT
+from aiohttp.http import SERVER_SOFTWARE
 
+from aiogram.__meta__ import __version__
 from aiogram.methods import TelegramMethod
 
 from ...exceptions import TelegramNetworkError
@@ -121,7 +125,12 @@ class AiohttpSession(BaseSession):
             await self.close()
 
         if self._session is None or self._session.closed:
-            self._session = ClientSession(connector=self._connector_type(**self._connector_init))
+            self._session = ClientSession(
+                connector=self._connector_type(**self._connector_init),
+                headers={
+                    USER_AGENT: f"{SERVER_SOFTWARE} aiogram/{__version__}",
+                },
+            )
             self._should_reset_connector = False
 
         return self._session
@@ -130,16 +139,24 @@ class AiohttpSession(BaseSession):
         if self._session is not None and not self._session.closed:
             await self._session.close()
 
+            # Wait 250 ms for the underlying SSL connections to close
+            # https://docs.aiohttp.org/en/stable/client_advanced.html#graceful-shutdown
+            await asyncio.sleep(0.25)
+
     def build_form_data(self, bot: Bot, method: TelegramMethod[TelegramType]) -> FormData:
         form = FormData(quote_fields=False)
         files: Dict[str, InputFile] = {}
-        for key, value in method.dict().items():
+        for key, value in method.model_dump(warnings=False).items():
             value = self.prepare_value(value, bot=bot, files=files)
             if not value:
                 continue
             form.add_field(key, value)
         for key, value in files.items():
-            form.add_field(key, value, filename=value.filename or key)
+            form.add_field(
+                key,
+                value.read(bot),
+                filename=value.filename or key,
+            )
         return form
 
     async def make_request(
@@ -159,15 +176,27 @@ class AiohttpSession(BaseSession):
             raise TelegramNetworkError(method=method, message="Request timeout error")
         except ClientError as e:
             raise TelegramNetworkError(method=method, message=f"{type(e).__name__}: {e}")
-        response = self.check_response(method=method, status_code=resp.status, content=raw_result)
+        response = self.check_response(
+            bot=bot, method=method, status_code=resp.status, content=raw_result
+        )
         return cast(TelegramType, response.result)
 
     async def stream_content(
-        self, url: str, timeout: int, chunk_size: int, raise_for_status: bool
+        self,
+        url: str,
+        headers: Optional[Dict[str, Any]] = None,
+        timeout: int = 30,
+        chunk_size: int = 65536,
+        raise_for_status: bool = True,
     ) -> AsyncGenerator[bytes, None]:
+        if headers is None:
+            headers = {}
+
         session = await self.create_session()
 
-        async with session.get(url, timeout=timeout, raise_for_status=raise_for_status) as resp:
+        async with session.get(
+            url, timeout=timeout, headers=headers, raise_for_status=raise_for_status
+        ) as resp:
             async for chunk in resp.content.iter_chunked(chunk_size):
                 yield chunk
 

@@ -4,9 +4,12 @@ import io
 import os
 from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import AsyncGenerator, AsyncIterator, Iterator, Optional, Union
+from typing import TYPE_CHECKING, Any, AsyncGenerator, Dict, Optional, Union
 
 import aiofiles
+
+if TYPE_CHECKING:
+    from aiogram.client.bot import Bot
 
 DEFAULT_CHUNK_SIZE = 64 * 1024  # 64 kb
 
@@ -29,17 +32,9 @@ class InputFile(ABC):
         self.filename = filename
         self.chunk_size = chunk_size
 
-    @classmethod
-    def __get_validators__(cls) -> Iterator[None]:
-        yield None
-
     @abstractmethod
-    async def read(self, chunk_size: int) -> AsyncGenerator[bytes, None]:  # pragma: no cover
+    async def read(self, bot: "Bot") -> AsyncGenerator[bytes, None]:  # pragma: no cover
         yield b""
-
-    async def __aiter__(self) -> AsyncIterator[bytes]:
-        async for chunk in self.read(self.chunk_size):
-            yield chunk
 
 
 class BufferedInputFile(InputFile):
@@ -77,9 +72,9 @@ class BufferedInputFile(InputFile):
             data = f.read()
         return cls(data, filename=filename, chunk_size=chunk_size)
 
-    async def read(self, chunk_size: int) -> AsyncGenerator[bytes, None]:
+    async def read(self, bot: "Bot") -> AsyncGenerator[bytes, None]:
         buffer = io.BytesIO(self.data)
-        while chunk := buffer.read(chunk_size):
+        while chunk := buffer.read(self.chunk_size):
             yield chunk
 
 
@@ -104,9 +99,9 @@ class FSInputFile(InputFile):
 
         self.path = path
 
-    async def read(self, chunk_size: int) -> AsyncGenerator[bytes, None]:
+    async def read(self, bot: "Bot") -> AsyncGenerator[bytes, None]:
         async with aiofiles.open(self.path, "rb") as f:
-            while chunk := await f.read(chunk_size):
+            while chunk := await f.read(self.chunk_size):
                 yield chunk
 
 
@@ -114,28 +109,37 @@ class URLInputFile(InputFile):
     def __init__(
         self,
         url: str,
+        headers: Optional[Dict[str, Any]] = None,
         filename: Optional[str] = None,
         chunk_size: int = DEFAULT_CHUNK_SIZE,
         timeout: int = 30,
+        bot: Optional["Bot"] = None,
     ):
         """
         Represents object for streaming files from internet
 
         :param url: URL in internet
+        :param headers: HTTP Headers
         :param filename: Filename to be propagated to telegram.
         :param chunk_size: Uploading chunk size
+        :param timeout: Timeout for downloading
+        :param bot: Bot instance to use HTTP session from.
+                    If not specified, will be used current bot
         """
         super().__init__(filename=filename, chunk_size=chunk_size)
+        if headers is None:
+            headers = {}
 
         self.url = url
+        self.headers = headers
         self.timeout = timeout
+        self.bot = bot
 
-    async def read(self, chunk_size: int) -> AsyncGenerator[bytes, None]:
-        from aiogram.client.bot import Bot
-
-        bot = Bot.get_current(no_error=False)
+    async def read(self, bot: "Bot") -> AsyncGenerator[bytes, None]:
+        bot = self.bot or bot
         stream = bot.session.stream_content(
             url=self.url,
+            headers=self.headers,
             timeout=self.timeout,
             chunk_size=self.chunk_size,
             raise_for_status=True,

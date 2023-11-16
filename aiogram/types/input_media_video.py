@@ -1,8 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, List, Optional, Union
-
-from pydantic import Field
+from typing import TYPE_CHECKING, Any, List, Literal, Optional, Union
 
 from ..enums import InputMediaType
 from .base import UNSET_PARSE_MODE
@@ -20,7 +18,7 @@ class InputMediaVideo(InputMedia):
     Source: https://core.telegram.org/bots/api#inputmediavideo
     """
 
-    type: str = Field(InputMediaType.VIDEO, const=True)
+    type: Literal[InputMediaType.VIDEO] = InputMediaType.VIDEO
     """Type of the result, must be *video*"""
     media: Union[str, InputFile]
     """File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass 'attach://<file_attach_name>' to upload a new one using multipart/form-data under <file_attach_name> name. :ref:`More information on Sending Files » <sending-files>`"""
@@ -42,3 +40,42 @@ class InputMediaVideo(InputMedia):
     """*Optional*. Pass :code:`True` if the uploaded video is suitable for streaming"""
     has_spoiler: Optional[bool] = None
     """*Optional*. Pass :code:`True` if the video needs to be covered with a spoiler animation"""
+
+    if TYPE_CHECKING:
+        # DO NOT EDIT MANUALLY!!!
+        # This section was auto-generated via `butcher`
+
+        def __init__(
+            __pydantic__self__,
+            *,
+            type: Literal[InputMediaType.VIDEO] = InputMediaType.VIDEO,
+            media: Union[str, InputFile],
+            thumbnail: Optional[Union[InputFile, str]] = None,
+            caption: Optional[str] = None,
+            parse_mode: Optional[str] = UNSET_PARSE_MODE,
+            caption_entities: Optional[List[MessageEntity]] = None,
+            width: Optional[int] = None,
+            height: Optional[int] = None,
+            duration: Optional[int] = None,
+            supports_streaming: Optional[bool] = None,
+            has_spoiler: Optional[bool] = None,
+            **__pydantic_kwargs: Any,
+        ) -> None:
+            # DO NOT EDIT MANUALLY!!!
+            # This method was auto-generated via `butcher`
+            # Is needed only for type checking and IDE support without any additional plugins
+
+            super().__init__(
+                type=type,
+                media=media,
+                thumbnail=thumbnail,
+                caption=caption,
+                parse_mode=parse_mode,
+                caption_entities=caption_entities,
+                width=width,
+                height=height,
+                duration=duration,
+                supports_streaming=supports_streaming,
+                has_spoiler=has_spoiler,
+                **__pydantic_kwargs,
+            )

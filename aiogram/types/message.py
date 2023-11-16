@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import datetime
-from typing import TYPE_CHECKING, Any, List, Optional, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 
 from pydantic import Field
 
@@ -18,6 +18,7 @@ from .base import (
     UNSET_PROTECT_CONTENT,
     TelegramObject,
 )
+from .custom import DateTime
 
 if TYPE_CHECKING:
     from ..methods import (
@@ -67,7 +68,7 @@ if TYPE_CHECKING:
     from .general_forum_topic_unhidden import GeneralForumTopicUnhidden
     from .inline_keyboard_markup import InlineKeyboardMarkup
     from .input_file import InputFile
-    from .input_media import InputMedia
+    from .input_media_animation import InputMediaAnimation
     from .input_media_audio import InputMediaAudio
     from .input_media_document import InputMediaDocument
     from .input_media_photo import InputMediaPhoto
@@ -84,6 +85,7 @@ if TYPE_CHECKING:
     from .reply_keyboard_markup import ReplyKeyboardMarkup
     from .reply_keyboard_remove import ReplyKeyboardRemove
     from .sticker import Sticker
+    from .story import Story
     from .successful_payment import SuccessfulPayment
     from .user import User
     from .user_shared import UserShared
@@ -108,7 +110,7 @@ class Message(TelegramObject):
 
     message_id: int
     """Unique message identifier inside this chat"""
-    date: datetime.datetime
+    date: DateTime
     """Date the message was sent in Unix time"""
     chat: Chat
     """Conversation the message belongs to"""
@@ -128,7 +130,7 @@ class Message(TelegramObject):
     """*Optional*. For forwarded messages that were originally sent in channels or by an anonymous chat administrator, signature of the message sender if present"""
     forward_sender_name: Optional[str] = None
     """*Optional*. Sender's name for messages forwarded from users who disallow adding a link to their account in forwarded messages"""
-    forward_date: Optional[int] = None
+    forward_date: Optional[DateTime] = None
     """*Optional*. For forwarded messages, date the original message was sent in Unix time"""
     is_topic_message: Optional[bool] = None
     """*Optional*. :code:`True`, if the message is sent to a forum topic"""
@@ -160,6 +162,8 @@ class Message(TelegramObject):
     """*Optional*. Message is a photo, available sizes of the photo"""
     sticker: Optional[Sticker] = None
     """*Optional*. Message is a sticker, information about the sticker"""
+    story: Optional[Story] = None
+    """*Optional*. Message is a forwarded story"""
     video: Optional[Video] = None
     """*Optional*. Message is a video, information about the video"""
     video_note: Optional[VideoNote] = None
@@ -219,7 +223,7 @@ class Message(TelegramObject):
     connected_website: Optional[str] = None
     """*Optional*. The domain name of the website on which the user has logged in. `More about Telegram Login » <https://core.telegram.org/widgets/login>`_"""
     write_access_allowed: Optional[WriteAccessAllowed] = None
-    """*Optional*. Service message: the user allowed the bot added to the attachment menu to write messages"""
+    """*Optional*. Service message: the user allowed the bot to write messages after adding it to the attachment or side menu, launching a Web App from a link, or accepting an explicit request from a Web App sent by the method `requestWriteAccess <https://core.telegram.org/bots/webapps#initializing-mini-apps>`_"""
     passport_data: Optional[PassportData] = None
     """*Optional*. Telegram Passport data"""
     proximity_alert_triggered: Optional[ProximityAlertTriggered] = None
@@ -248,6 +252,167 @@ class Message(TelegramObject):
     """*Optional*. Service message: data sent by a Web App"""
     reply_markup: Optional[InlineKeyboardMarkup] = None
     """*Optional*. Inline keyboard attached to the message. :code:`login_url` buttons are represented as ordinary :code:`url` buttons."""
+
+    if TYPE_CHECKING:
+        # DO NOT EDIT MANUALLY!!!
+        # This section was auto-generated via `butcher`
+
+        def __init__(
+            __pydantic__self__,
+            *,
+            message_id: int,
+            date: DateTime,
+            chat: Chat,
+            message_thread_id: Optional[int] = None,
+            from_user: Optional[User] = None,
+            sender_chat: Optional[Chat] = None,
+            forward_from: Optional[User] = None,
+            forward_from_chat: Optional[Chat] = None,
+            forward_from_message_id: Optional[int] = None,
+            forward_signature: Optional[str] = None,
+            forward_sender_name: Optional[str] = None,
+            forward_date: Optional[DateTime] = None,
+            is_topic_message: Optional[bool] = None,
+            is_automatic_forward: Optional[bool] = None,
+            reply_to_message: Optional[Message] = None,
+            via_bot: Optional[User] = None,
+            edit_date: Optional[int] = None,
+            has_protected_content: Optional[bool] = None,
+            media_group_id: Optional[str] = None,
+            author_signature: Optional[str] = None,
+            text: Optional[str] = None,
+            entities: Optional[List[MessageEntity]] = None,
+            animation: Optional[Animation] = None,
+            audio: Optional[Audio] = None,
+            document: Optional[Document] = None,
+            photo: Optional[List[PhotoSize]] = None,
+            sticker: Optional[Sticker] = None,
+            story: Optional[Story] = None,
+            video: Optional[Video] = None,
+            video_note: Optional[VideoNote] = None,
+            voice: Optional[Voice] = None,
+            caption: Optional[str] = None,
+            caption_entities: Optional[List[MessageEntity]] = None,
+            has_media_spoiler: Optional[bool] = None,
+            contact: Optional[Contact] = None,
+            dice: Optional[Dice] = None,
+            game: Optional[Game] = None,
+            poll: Optional[Poll] = None,
+            venue: Optional[Venue] = None,
+            location: Optional[Location] = None,
+            new_chat_members: Optional[List[User]] = None,
+            left_chat_member: Optional[User] = None,
+            new_chat_title: Optional[str] = None,
+            new_chat_photo: Optional[List[PhotoSize]] = None,
+            delete_chat_photo: Optional[bool] = None,
+            group_chat_created: Optional[bool] = None,
+            supergroup_chat_created: Optional[bool] = None,
+            channel_chat_created: Optional[bool] = None,
+            message_auto_delete_timer_changed: Optional[MessageAutoDeleteTimerChanged] = None,
+            migrate_to_chat_id: Optional[int] = None,
+            migrate_from_chat_id: Optional[int] = None,
+            pinned_message: Optional[Message] = None,
+            invoice: Optional[Invoice] = None,
+            successful_payment: Optional[SuccessfulPayment] = None,
+            user_shared: Optional[UserShared] = None,
+            chat_shared: Optional[ChatShared] = None,
+            connected_website: Optional[str] = None,
+            write_access_allowed: Optional[WriteAccessAllowed] = None,
+            passport_data: Optional[PassportData] = None,
+            proximity_alert_triggered: Optional[ProximityAlertTriggered] = None,
+            forum_topic_created: Optional[ForumTopicCreated] = None,
+            forum_topic_edited: Optional[ForumTopicEdited] = None,
+            forum_topic_closed: Optional[ForumTopicClosed] = None,
+            forum_topic_reopened: Optional[ForumTopicReopened] = None,
+            general_forum_topic_hidden: Optional[GeneralForumTopicHidden] = None,
+            general_forum_topic_unhidden: Optional[GeneralForumTopicUnhidden] = None,
+            video_chat_scheduled: Optional[VideoChatScheduled] = None,
+            video_chat_started: Optional[VideoChatStarted] = None,
+            video_chat_ended: Optional[VideoChatEnded] = None,
+            video_chat_participants_invited: Optional[VideoChatParticipantsInvited] = None,
+            web_app_data: Optional[WebAppData] = None,
+            reply_markup: Optional[InlineKeyboardMarkup] = None,
+            **__pydantic_kwargs: Any,
+        ) -> None:
+            # DO NOT EDIT MANUALLY!!!
+            # This method was auto-generated via `butcher`
+            # Is needed only for type checking and IDE support without any additional plugins
+
+            super().__init__(
+                message_id=message_id,
+                date=date,
+                chat=chat,
+                message_thread_id=message_thread_id,
+                from_user=from_user,
+                sender_chat=sender_chat,
+                forward_from=forward_from,
+                forward_from_chat=forward_from_chat,
+                forward_from_message_id=forward_from_message_id,
+                forward_signature=forward_signature,
+                forward_sender_name=forward_sender_name,
+                forward_date=forward_date,
+                is_topic_message=is_topic_message,
+                is_automatic_forward=is_automatic_forward,
+                reply_to_message=reply_to_message,
+                via_bot=via_bot,
+                edit_date=edit_date,
+                has_protected_content=has_protected_content,
+                media_group_id=media_group_id,
+                author_signature=author_signature,
+                text=text,
+                entities=entities,
+                animation=animation,
+                audio=audio,
+                document=document,
+                photo=photo,
+                sticker=sticker,
+                story=story,
+                video=video,
+                video_note=video_note,
+                voice=voice,
+                caption=caption,
+                caption_entities=caption_entities,
+                has_media_spoiler=has_media_spoiler,
+                contact=contact,
+                dice=dice,
+                game=game,
+                poll=poll,
+                venue=venue,
+                location=location,
+                new_chat_members=new_chat_members,
+                left_chat_member=left_chat_member,
+                new_chat_title=new_chat_title,
+                new_chat_photo=new_chat_photo,
+                delete_chat_photo=delete_chat_photo,
+                group_chat_created=group_chat_created,
+                supergroup_chat_created=supergroup_chat_created,
+                channel_chat_created=channel_chat_created,
+                message_auto_delete_timer_changed=message_auto_delete_timer_changed,
+                migrate_to_chat_id=migrate_to_chat_id,
+                migrate_from_chat_id=migrate_from_chat_id,
+                pinned_message=pinned_message,
+                invoice=invoice,
+                successful_payment=successful_payment,
+                user_shared=user_shared,
+                chat_shared=chat_shared,
+                connected_website=connected_website,
+                write_access_allowed=write_access_allowed,
+                passport_data=passport_data,
+                proximity_alert_triggered=proximity_alert_triggered,
+                forum_topic_created=forum_topic_created,
+                forum_topic_edited=forum_topic_edited,
+                forum_topic_closed=forum_topic_closed,
+                forum_topic_reopened=forum_topic_reopened,
+                general_forum_topic_hidden=general_forum_topic_hidden,
+                general_forum_topic_unhidden=general_forum_topic_unhidden,
+                video_chat_scheduled=video_chat_scheduled,
+                video_chat_started=video_chat_started,
+                video_chat_ended=video_chat_ended,
+                video_chat_participants_invited=video_chat_participants_invited,
+                web_app_data=web_app_data,
+                reply_markup=reply_markup,
+                **__pydantic_kwargs,
+            )
 
     @property
     def content_type(self) -> str:
@@ -333,6 +498,12 @@ class Message(TelegramObject):
             return ContentType.VIDEO_CHAT_PARTICIPANTS_INVITED
         if self.web_app_data:
             return ContentType.WEB_APP_DATA
+        if self.user_shared:
+            return ContentType.USER_SHARED
+        if self.chat_shared:
+            return ContentType.CHAT_SHARED
+        if self.story:
+            return ContentType.STORY
 
         return ContentType.UNKNOWN
 
@@ -400,6 +571,10 @@ class Message(TelegramObject):
 
         from aiogram.methods import SendAnimation
 
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
+
         return SendAnimation(
             chat_id=self.chat.id,
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
@@ -418,7 +593,7 @@ class Message(TelegramObject):
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def answer_animation(
         self,
@@ -472,6 +647,10 @@ class Message(TelegramObject):
 
         from aiogram.methods import SendAnimation
 
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
+
         return SendAnimation(
             chat_id=self.chat.id,
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
@@ -490,7 +669,7 @@ class Message(TelegramObject):
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def reply_audio(
         self,
@@ -542,6 +721,10 @@ class Message(TelegramObject):
 
         from aiogram.methods import SendAudio
 
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
+
         return SendAudio(
             chat_id=self.chat.id,
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
@@ -559,7 +742,7 @@ class Message(TelegramObject):
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def answer_audio(
         self,
@@ -612,6 +795,10 @@ class Message(TelegramObject):
 
         from aiogram.methods import SendAudio
 
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
+
         return SendAudio(
             chat_id=self.chat.id,
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
@@ -629,7 +816,7 @@ class Message(TelegramObject):
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def reply_contact(
         self,
@@ -672,6 +859,10 @@ class Message(TelegramObject):
 
         from aiogram.methods import SendContact
 
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
+
         return SendContact(
             chat_id=self.chat.id,
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
@@ -685,7 +876,7 @@ class Message(TelegramObject):
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def answer_contact(
         self,
@@ -729,6 +920,10 @@ class Message(TelegramObject):
 
         from aiogram.methods import SendContact
 
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
+
         return SendContact(
             chat_id=self.chat.id,
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
@@ -742,7 +937,7 @@ class Message(TelegramObject):
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def reply_document(
         self,
@@ -789,6 +984,10 @@ class Message(TelegramObject):
 
         from aiogram.methods import SendDocument
 
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
+
         return SendDocument(
             chat_id=self.chat.id,
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
@@ -804,7 +1003,7 @@ class Message(TelegramObject):
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def answer_document(
         self,
@@ -852,6 +1051,10 @@ class Message(TelegramObject):
 
         from aiogram.methods import SendDocument
 
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
+
         return SendDocument(
             chat_id=self.chat.id,
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
@@ -867,7 +1070,7 @@ class Message(TelegramObject):
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def reply_game(
         self,
@@ -902,6 +1105,10 @@ class Message(TelegramObject):
 
         from aiogram.methods import SendGame
 
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
+
         return SendGame(
             chat_id=self.chat.id,
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
@@ -912,7 +1119,7 @@ class Message(TelegramObject):
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def answer_game(
         self,
@@ -948,6 +1155,10 @@ class Message(TelegramObject):
 
         from aiogram.methods import SendGame
 
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
+
         return SendGame(
             chat_id=self.chat.id,
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
@@ -958,7 +1169,7 @@ class Message(TelegramObject):
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def reply_invoice(
         self,
@@ -1033,6 +1244,10 @@ class Message(TelegramObject):
 
         from aiogram.methods import SendInvoice
 
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
+
         return SendInvoice(
             chat_id=self.chat.id,
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
@@ -1063,7 +1278,7 @@ class Message(TelegramObject):
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def answer_invoice(
         self,
@@ -1139,6 +1354,10 @@ class Message(TelegramObject):
 
         from aiogram.methods import SendInvoice
 
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
+
         return SendInvoice(
             chat_id=self.chat.id,
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
@@ -1169,7 +1388,7 @@ class Message(TelegramObject):
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def reply_location(
         self,
@@ -1216,6 +1435,10 @@ class Message(TelegramObject):
 
         from aiogram.methods import SendLocation
 
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
+
         return SendLocation(
             chat_id=self.chat.id,
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
@@ -1231,7 +1454,7 @@ class Message(TelegramObject):
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def answer_location(
         self,
@@ -1279,6 +1502,10 @@ class Message(TelegramObject):
 
         from aiogram.methods import SendLocation
 
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
+
         return SendLocation(
             chat_id=self.chat.id,
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
@@ -1294,7 +1521,7 @@ class Message(TelegramObject):
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def reply_media_group(
         self,
@@ -1327,6 +1554,10 @@ class Message(TelegramObject):
 
         from aiogram.methods import SendMediaGroup
 
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
+
         return SendMediaGroup(
             chat_id=self.chat.id,
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
@@ -1336,7 +1567,7 @@ class Message(TelegramObject):
             protect_content=protect_content,
             allow_sending_without_reply=allow_sending_without_reply,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def answer_media_group(
         self,
@@ -1370,6 +1601,10 @@ class Message(TelegramObject):
 
         from aiogram.methods import SendMediaGroup
 
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
+
         return SendMediaGroup(
             chat_id=self.chat.id,
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
@@ -1379,7 +1614,7 @@ class Message(TelegramObject):
             reply_to_message_id=reply_to_message_id,
             allow_sending_without_reply=allow_sending_without_reply,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def reply(
         self,
@@ -1422,6 +1657,10 @@ class Message(TelegramObject):
 
         from aiogram.methods import SendMessage
 
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
+
         return SendMessage(
             chat_id=self.chat.id,
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
@@ -1435,7 +1674,7 @@ class Message(TelegramObject):
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def answer(
         self,
@@ -1479,6 +1718,10 @@ class Message(TelegramObject):
 
         from aiogram.methods import SendMessage
 
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
+
         return SendMessage(
             chat_id=self.chat.id,
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
@@ -1492,7 +1735,7 @@ class Message(TelegramObject):
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def reply_photo(
         self,
@@ -1537,6 +1780,10 @@ class Message(TelegramObject):
 
         from aiogram.methods import SendPhoto
 
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
+
         return SendPhoto(
             chat_id=self.chat.id,
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
@@ -1551,7 +1798,7 @@ class Message(TelegramObject):
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def answer_photo(
         self,
@@ -1597,6 +1844,10 @@ class Message(TelegramObject):
 
         from aiogram.methods import SendPhoto
 
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
+
         return SendPhoto(
             chat_id=self.chat.id,
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
@@ -1611,7 +1862,7 @@ class Message(TelegramObject):
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def reply_poll(
         self,
@@ -1670,6 +1921,10 @@ class Message(TelegramObject):
 
         from aiogram.methods import SendPoll
 
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
+
         return SendPoll(
             chat_id=self.chat.id,
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
@@ -1691,7 +1946,7 @@ class Message(TelegramObject):
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def answer_poll(
         self,
@@ -1751,6 +2006,10 @@ class Message(TelegramObject):
 
         from aiogram.methods import SendPoll
 
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
+
         return SendPoll(
             chat_id=self.chat.id,
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
@@ -1772,7 +2031,7 @@ class Message(TelegramObject):
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def reply_dice(
         self,
@@ -1809,6 +2068,10 @@ class Message(TelegramObject):
 
         from aiogram.methods import SendDice
 
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
+
         return SendDice(
             chat_id=self.chat.id,
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
@@ -1819,7 +2082,7 @@ class Message(TelegramObject):
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def answer_dice(
         self,
@@ -1857,6 +2120,10 @@ class Message(TelegramObject):
 
         from aiogram.methods import SendDice
 
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
+
         return SendDice(
             chat_id=self.chat.id,
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
@@ -1867,7 +2134,7 @@ class Message(TelegramObject):
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def reply_sticker(
         self,
@@ -1906,6 +2173,10 @@ class Message(TelegramObject):
 
         from aiogram.methods import SendSticker
 
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
+
         return SendSticker(
             chat_id=self.chat.id,
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
@@ -1917,7 +2188,7 @@ class Message(TelegramObject):
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def answer_sticker(
         self,
@@ -1957,6 +2228,10 @@ class Message(TelegramObject):
 
         from aiogram.methods import SendSticker
 
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
+
         return SendSticker(
             chat_id=self.chat.id,
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
@@ -1968,7 +2243,7 @@ class Message(TelegramObject):
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def reply_venue(
         self,
@@ -2019,6 +2294,10 @@ class Message(TelegramObject):
 
         from aiogram.methods import SendVenue
 
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
+
         return SendVenue(
             chat_id=self.chat.id,
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
@@ -2036,7 +2315,7 @@ class Message(TelegramObject):
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def answer_venue(
         self,
@@ -2088,6 +2367,10 @@ class Message(TelegramObject):
 
         from aiogram.methods import SendVenue
 
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
+
         return SendVenue(
             chat_id=self.chat.id,
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
@@ -2105,7 +2388,7 @@ class Message(TelegramObject):
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def reply_video(
         self,
@@ -2160,6 +2443,10 @@ class Message(TelegramObject):
 
         from aiogram.methods import SendVideo
 
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
+
         return SendVideo(
             chat_id=self.chat.id,
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
@@ -2179,7 +2466,7 @@ class Message(TelegramObject):
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def answer_video(
         self,
@@ -2235,6 +2522,10 @@ class Message(TelegramObject):
 
         from aiogram.methods import SendVideo
 
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
+
         return SendVideo(
             chat_id=self.chat.id,
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
@@ -2254,7 +2545,7 @@ class Message(TelegramObject):
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def reply_video_note(
         self,
@@ -2297,6 +2588,10 @@ class Message(TelegramObject):
 
         from aiogram.methods import SendVideoNote
 
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
+
         return SendVideoNote(
             chat_id=self.chat.id,
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
@@ -2310,7 +2605,7 @@ class Message(TelegramObject):
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def answer_video_note(
         self,
@@ -2354,6 +2649,10 @@ class Message(TelegramObject):
 
         from aiogram.methods import SendVideoNote
 
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
+
         return SendVideoNote(
             chat_id=self.chat.id,
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
@@ -2367,7 +2666,7 @@ class Message(TelegramObject):
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def reply_voice(
         self,
@@ -2412,6 +2711,10 @@ class Message(TelegramObject):
 
         from aiogram.methods import SendVoice
 
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
+
         return SendVoice(
             chat_id=self.chat.id,
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
@@ -2426,7 +2729,7 @@ class Message(TelegramObject):
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def answer_voice(
         self,
@@ -2472,6 +2775,10 @@ class Message(TelegramObject):
 
         from aiogram.methods import SendVoice
 
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
+
         return SendVoice(
             chat_id=self.chat.id,
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
@@ -2486,7 +2793,7 @@ class Message(TelegramObject):
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def send_copy(  # noqa: C901
         self: Message,
@@ -2496,7 +2803,9 @@ class Message(TelegramObject):
         reply_markup: Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, None] = None,
         allow_sending_without_reply: Optional[bool] = None,
         message_thread_id: Optional[int] = None,
+        parse_mode: Optional[str] = None,
     ) -> Union[
+        ForwardMessage,
         SendAnimation,
         SendAudio,
         SendContact,
@@ -2513,14 +2822,14 @@ class Message(TelegramObject):
         SendVoice,
     ]:
         """
-        Send copy of message.
+        Send copy of a message.
 
         Is similar to :meth:`aiogram.client.bot.Bot.copy_message`
         but returning the sent message instead of :class:`aiogram.types.message_id.MessageId`
 
         .. note::
 
-            This method don't use the API method named `copyMessage` and
+            This method doesn't use the API method named `copyMessage` and
             historically implemented before the similar method is added to API
 
         :param chat_id:
@@ -2529,9 +2838,11 @@ class Message(TelegramObject):
         :param reply_markup:
         :param allow_sending_without_reply:
         :param message_thread_id:
+        :param parse_mode:
         :return:
         """
         from ..methods import (
+            ForwardMessage,
             SendAnimation,
             SendAudio,
             SendContact,
@@ -2548,51 +2859,77 @@ class Message(TelegramObject):
             SendVoice,
         )
 
-        kwargs = {
+        kwargs: Dict[str, Any] = {
             "chat_id": chat_id,
             "reply_markup": reply_markup or self.reply_markup,
             "disable_notification": disable_notification,
             "reply_to_message_id": reply_to_message_id,
             "message_thread_id": message_thread_id,
             "allow_sending_without_reply": allow_sending_without_reply,
+            # when sending a copy, we don't need any parse mode
+            # because all entities are already prepared
+            "parse_mode": parse_mode,
         }
-        text = self.text or self.caption
-        entities = self.entities or self.caption_entities
 
         if self.text:
-            return SendMessage(text=text, entities=entities, **kwargs)
+            return SendMessage(
+                text=self.text,
+                entities=self.entities,
+                **kwargs,
+            ).as_(self._bot)
         if self.audio:
             return SendAudio(
                 audio=self.audio.file_id,
-                caption=text,
+                caption=self.caption,
                 title=self.audio.title,
                 performer=self.audio.performer,
                 duration=self.audio.duration,
-                caption_entities=entities,
+                caption_entities=self.caption_entities,
                 **kwargs,
-            )
+            ).as_(self._bot)
         if self.animation:
             return SendAnimation(
-                animation=self.animation.file_id, caption=text, caption_entities=entities, **kwargs
-            )
+                animation=self.animation.file_id,
+                caption=self.caption,
+                caption_entities=self.caption_entities,
+                **kwargs,
+            ).as_(self._bot)
         if self.document:
             return SendDocument(
-                document=self.document.file_id, caption=text, caption_entities=entities, **kwargs
-            )
+                document=self.document.file_id,
+                caption=self.caption,
+                caption_entities=self.caption_entities,
+                **kwargs,
+            ).as_(self._bot)
         if self.photo:
             return SendPhoto(
-                photo=self.photo[-1].file_id, caption=text, caption_entities=entities, **kwargs
-            )
+                photo=self.photo[-1].file_id,
+                caption=self.caption,
+                caption_entities=self.caption_entities,
+                **kwargs,
+            ).as_(self._bot)
         if self.sticker:
-            return SendSticker(sticker=self.sticker.file_id, **kwargs)
+            return SendSticker(
+                sticker=self.sticker.file_id,
+                **kwargs,
+            ).as_(self._bot)
         if self.video:
             return SendVideo(
-                video=self.video.file_id, caption=text, caption_entities=entities, **kwargs
-            )
+                video=self.video.file_id,
+                caption=self.caption,
+                caption_entities=self.caption_entities,
+                **kwargs,
+            ).as_(self._bot)
         if self.video_note:
-            return SendVideoNote(video_note=self.video_note.file_id, **kwargs)
+            return SendVideoNote(
+                video_note=self.video_note.file_id,
+                **kwargs,
+            ).as_(self._bot)
         if self.voice:
-            return SendVoice(voice=self.voice.file_id, **kwargs)
+            return SendVoice(
+                voice=self.voice.file_id,
+                **kwargs,
+            ).as_(self._bot)
         if self.contact:
             return SendContact(
                 phone_number=self.contact.phone_number,
@@ -2600,7 +2937,7 @@ class Message(TelegramObject):
                 last_name=self.contact.last_name,
                 vcard=self.contact.vcard,
                 **kwargs,
-            )
+            ).as_(self._bot)
         if self.venue:
             return SendVenue(
                 latitude=self.venue.location.latitude,
@@ -2610,19 +2947,29 @@ class Message(TelegramObject):
                 foursquare_id=self.venue.foursquare_id,
                 foursquare_type=self.venue.foursquare_type,
                 **kwargs,
-            )
+            ).as_(self._bot)
         if self.location:
             return SendLocation(
-                latitude=self.location.latitude, longitude=self.location.longitude, **kwargs
-            )
+                latitude=self.location.latitude,
+                longitude=self.location.longitude,
+                **kwargs,
+            ).as_(self._bot)
         if self.poll:
             return SendPoll(
                 question=self.poll.question,
                 options=[option.text for option in self.poll.options],
                 **kwargs,
-            )
+            ).as_(self._bot)
         if self.dice:  # Dice value can't be controlled
-            return SendDice(**kwargs)
+            return SendDice(
+                **kwargs,
+            ).as_(self._bot)
+        if self.story:
+            return ForwardMessage(
+                from_chat_id=self.chat.id,
+                message_id=self.message_id,
+                **kwargs,
+            ).as_(self._bot)
 
         raise TypeError("This type of message can't be copied.")
 
@@ -2670,6 +3017,10 @@ class Message(TelegramObject):
 
         from aiogram.methods import CopyMessage
 
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
+
         return CopyMessage(
             from_chat_id=self.chat.id,
             message_id=self.message_id,
@@ -2684,7 +3035,7 @@ class Message(TelegramObject):
             allow_sending_without_reply=allow_sending_without_reply,
             reply_markup=reply_markup,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def edit_text(
         self,
@@ -2720,6 +3071,10 @@ class Message(TelegramObject):
 
         from aiogram.methods import EditMessageText
 
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
+
         return EditMessageText(
             chat_id=self.chat.id,
             message_id=self.message_id,
@@ -2730,7 +3085,7 @@ class Message(TelegramObject):
             disable_web_page_preview=disable_web_page_preview,
             reply_markup=reply_markup,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def forward(
         self,
@@ -2762,6 +3117,10 @@ class Message(TelegramObject):
 
         from aiogram.methods import ForwardMessage
 
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
+
         return ForwardMessage(
             from_chat_id=self.chat.id,
             message_id=self.message_id,
@@ -2770,11 +3129,17 @@ class Message(TelegramObject):
             disable_notification=disable_notification,
             protect_content=protect_content,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def edit_media(
         self,
-        media: InputMedia,
+        media: Union[
+            InputMediaAnimation,
+            InputMediaDocument,
+            InputMediaAudio,
+            InputMediaPhoto,
+            InputMediaVideo,
+        ],
         inline_message_id: Optional[str] = None,
         reply_markup: Optional[InlineKeyboardMarkup] = None,
         **kwargs: Any,
@@ -2800,6 +3165,10 @@ class Message(TelegramObject):
 
         from aiogram.methods import EditMessageMedia
 
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
+
         return EditMessageMedia(
             chat_id=self.chat.id,
             message_id=self.message_id,
@@ -2807,7 +3176,7 @@ class Message(TelegramObject):
             inline_message_id=inline_message_id,
             reply_markup=reply_markup,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def edit_reply_markup(
         self,
@@ -2835,16 +3204,54 @@ class Message(TelegramObject):
 
         from aiogram.methods import EditMessageReplyMarkup
 
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
+
         return EditMessageReplyMarkup(
             chat_id=self.chat.id,
             message_id=self.message_id,
             inline_message_id=inline_message_id,
             reply_markup=reply_markup,
             **kwargs,
-        )
+        ).as_(self._bot)
 
-    def delete_reply_markup(self) -> EditMessageReplyMarkup:
-        return self.edit_reply_markup(reply_markup=None)
+    def delete_reply_markup(
+        self,
+        inline_message_id: Optional[str] = None,
+        **kwargs: Any,
+    ) -> EditMessageReplyMarkup:
+        """
+        Shortcut for method :class:`aiogram.methods.edit_message_reply_markup.EditMessageReplyMarkup`
+        will automatically fill method attributes:
+
+        - :code:`chat_id`
+        - :code:`message_id`
+        - :code:`reply_markup`
+
+        Use this method to edit only the reply markup of messages. On success, if the edited message is not an inline message, the edited :class:`aiogram.types.message.Message` is returned, otherwise :code:`True` is returned.
+
+        Source: https://core.telegram.org/bots/api#editmessagereplymarkup
+
+        :param inline_message_id: Required if *chat_id* and *message_id* are not specified. Identifier of the inline message
+        :return: instance of method :class:`aiogram.methods.edit_message_reply_markup.EditMessageReplyMarkup`
+        """
+        # DO NOT EDIT MANUALLY!!!
+        # This method was auto-generated via `butcher`
+
+        from aiogram.methods import EditMessageReplyMarkup
+
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
+
+        return EditMessageReplyMarkup(
+            chat_id=self.chat.id,
+            message_id=self.message_id,
+            reply_markup=None,
+            inline_message_id=inline_message_id,
+            **kwargs,
+        ).as_(self._bot)
 
     def edit_live_location(
         self,
@@ -2882,6 +3289,10 @@ class Message(TelegramObject):
 
         from aiogram.methods import EditMessageLiveLocation
 
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
+
         return EditMessageLiveLocation(
             chat_id=self.chat.id,
             message_id=self.message_id,
@@ -2893,7 +3304,7 @@ class Message(TelegramObject):
             proximity_alert_radius=proximity_alert_radius,
             reply_markup=reply_markup,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def stop_live_location(
         self,
@@ -2921,13 +3332,17 @@ class Message(TelegramObject):
 
         from aiogram.methods import StopMessageLiveLocation
 
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
+
         return StopMessageLiveLocation(
             chat_id=self.chat.id,
             message_id=self.message_id,
             inline_message_id=inline_message_id,
             reply_markup=reply_markup,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def edit_caption(
         self,
@@ -2961,6 +3376,10 @@ class Message(TelegramObject):
 
         from aiogram.methods import EditMessageCaption
 
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
+
         return EditMessageCaption(
             chat_id=self.chat.id,
             message_id=self.message_id,
@@ -2970,7 +3389,7 @@ class Message(TelegramObject):
             caption_entities=caption_entities,
             reply_markup=reply_markup,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def delete(
         self,
@@ -3012,11 +3431,15 @@ class Message(TelegramObject):
 
         from aiogram.methods import DeleteMessage
 
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
+
         return DeleteMessage(
             chat_id=self.chat.id,
             message_id=self.message_id,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def pin(
         self,
@@ -3042,12 +3465,16 @@ class Message(TelegramObject):
 
         from aiogram.methods import PinChatMessage
 
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
+
         return PinChatMessage(
             chat_id=self.chat.id,
             message_id=self.message_id,
             disable_notification=disable_notification,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def unpin(
         self,
@@ -3071,11 +3498,15 @@ class Message(TelegramObject):
 
         from aiogram.methods import UnpinChatMessage
 
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
+
         return UnpinChatMessage(
             chat_id=self.chat.id,
             message_id=self.message_id,
             **kwargs,
-        )
+        ).as_(self._bot)
 
     def get_url(self, force_private: bool = False) -> Optional[str]:
         """

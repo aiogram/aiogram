@@ -28,7 +28,6 @@ extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.ifconfig",
     "sphinx.ext.intersphinx",
-    "sphinx-prompt",
     "sphinx_substitution_extensions",
     "sphinx_copybutton",
     "sphinxcontrib.towncrier.ext",
@@ -67,6 +66,6 @@ texinfo_documents = [
 
 # add_module_names = False
 
-towncrier_draft_autoversion_mode = 'draft'
+towncrier_draft_autoversion_mode = "draft"
 towncrier_draft_include_empty = False
 towncrier_draft_working_directory = Path(__file__).parent.parent

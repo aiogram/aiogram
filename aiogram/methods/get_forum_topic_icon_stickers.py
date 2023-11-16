@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, List
+from typing import List
 
 from ..types import Sticker
 from .base import TelegramMethod

@@ -1,3 +1,5 @@
+.. _Callback data factory:
+
 ==============================
 Callback Data Factory & Filter
 ==============================
@@ -6,6 +8,7 @@ Callback Data Factory & Filter
     :members:
     :member-order: bysource
     :undoc-members: False
+    :exclude-members: model_config,model_fields
 
 Usage
 =====

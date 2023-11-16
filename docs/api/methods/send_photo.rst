@@ -8,6 +8,7 @@ Returns: :obj:`Message`
     :members:
     :member-order: bysource
     :undoc-members: True
+    :exclude-members: model_config,model_fields
 
 
 Usage
@@ -49,3 +50,6 @@ As shortcut from received object
 
 - :meth:`aiogram.types.message.Message.answer_photo`
 - :meth:`aiogram.types.message.Message.reply_photo`
+- :meth:`aiogram.types.chat_member_updated.ChatMemberUpdated.answer_photo`
+- :meth:`aiogram.types.chat_join_request.ChatJoinRequest.answer_photo`
+- :meth:`aiogram.types.chat_join_request.ChatJoinRequest.answer_photo_pm`

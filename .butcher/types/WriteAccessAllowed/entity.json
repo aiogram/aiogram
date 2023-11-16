@@ -7,16 +7,32 @@
   "object": {
     "anchor": "writeaccessallowed",
     "name": "WriteAccessAllowed",
-    "description": "This object represents a service message about a user allowing a bot to write messages after adding the bot to the attachment menu or launching a Web App from a link.",
-    "html_description": "<p>This object represents a service message about a user allowing a bot to write messages after adding the bot to the attachment menu or launching a Web App from a link.</p>",
-    "rst_description": "This object represents a service message about a user allowing a bot to write messages after adding the bot to the attachment menu or launching a Web App from a link.",
+    "description": "This object represents a service message about a user allowing a bot to write messages after adding it to the attachment menu, launching a Web App from a link, or accepting an explicit request from a Web App sent by the method requestWriteAccess.",
+    "html_description": "<p>This object represents a service message about a user allowing a bot to write messages after adding it to the attachment menu, launching a Web App from a link, or accepting an explicit request from a Web App sent by the method <a href=\"/bots/webapps#initializing-mini-apps\">requestWriteAccess</a>.</p>",
+    "rst_description": "This object represents a service message about a user allowing a bot to write messages after adding it to the attachment menu, launching a Web App from a link, or accepting an explicit request from a Web App sent by the method `requestWriteAccess <https://core.telegram.org/bots/webapps#initializing-mini-apps>`_.",
     "annotations": [
       {
+        "type": "Boolean",
+        "description": "True, if the access was granted after the user accepted an explicit request from a Web App sent by the method requestWriteAccess",
+        "html_description": "<td><em>Optional</em>. True, if the access was granted after the user accepted an explicit request from a Web App sent by the method <a href=\"/bots/webapps#initializing-mini-apps\">requestWriteAccess</a></td>",
+        "rst_description": "*Optional*. True, if the access was granted after the user accepted an explicit request from a Web App sent by the method `requestWriteAccess <https://core.telegram.org/bots/webapps#initializing-mini-apps>`_\n",
+        "name": "from_request",
+        "required": false
+      },
+      {
         "type": "String",
-        "description": "Name of the Web App which was launched from a link",
-        "html_description": "<td><em>Optional</em>. Name of the Web App which was launched from a link</td>",
-        "rst_description": "*Optional*. Name of the Web App which was launched from a link\n",
+        "description": "Name of the Web App, if the access was granted when the Web App was launched from a link",
+        "html_description": "<td><em>Optional</em>. Name of the Web App, if the access was granted when the Web App was launched from a link</td>",
+        "rst_description": "*Optional*. Name of the Web App, if the access was granted when the Web App was launched from a link\n",
         "name": "web_app_name",
+        "required": false
+      },
+      {
+        "type": "Boolean",
+        "description": "True, if the access was granted when the bot was added to the attachment or side menu",
+        "html_description": "<td><em>Optional</em>. True, if the access was granted when the bot was added to the attachment or side menu</td>",
+        "rst_description": "*Optional*. True, if the access was granted when the bot was added to the attachment or side menu\n",
+        "name": "from_attachment_menu",
         "required": false
       }
     ],

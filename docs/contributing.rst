@@ -35,34 +35,33 @@ be able to install packages into that isolated environment.
 Activate the environment
 ------------------------
 
-Linux/ macOS:
+Linux / macOS:
 
 .. code-block:: bash
 
     source .venv/bin/activate
 
-Windows PoweShell
+Windows cmd
 
-.. code-block:: powershell
+.. code-block:: text
 
-    .\.venv\Scripts\Activate.ps1
-
-To check it worked, use described command, it should show the :code:`pip` location inside
-the isolated environment
-
-Linux, macOS:
-
-.. code-block::
-
-    which pip
+    .\.venv\Scripts\activate
 
 Windows PowerShell
 
+.. code-block:: powershell
+
+    .\.venv\Scripts\activate.ps1
+
+To check it worked, use described command, it should show the :code:`pip` version and location
+inside the isolated environment
+
 .. code-block::
 
-    Get-Command pip
+    pip -V
 
-Also make you shure you have the latest pip version in your virtual environment to avoid
+
+Also make sure you have the latest pip version in your virtual environment to avoid
 errors on next steps:
 
 .. code-block::
@@ -73,7 +72,15 @@ errors on next steps:
 Setup project
 -------------
 
-After activating the environment install `aiogram` from sources and their dependencies:
+After activating the environment install `aiogram` from sources and their dependencies.
+
+Linux / macOS:
+
+.. code-block:: bash
+
+    pip install -e ."[dev,test,docs,fast,redis,proxy,i18n]"
+
+Windows:
 
 .. code-block:: bash
 
@@ -209,5 +216,4 @@ it is my personal initiative (`@JRootJunior <https://t.me/JRootJunior>`_) and
 I am engaged in the development of the project in my free time.
 
 So, if you want to financially support the project, or, for example, give me a pizza or a beer,
-you can do it on `OpenCollective <https://opencollective.com/aiogram>`_
-or `Patreon <https://www.patreon.com/aiogram>`_.
+you can do it on `OpenCollective <https://opencollective.com/aiogram>`_.

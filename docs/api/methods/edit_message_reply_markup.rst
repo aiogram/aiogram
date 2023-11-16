@@ -8,6 +8,7 @@ Returns: :obj:`Union[Message, bool]`
     :members:
     :member-order: bysource
     :undoc-members: True
+    :exclude-members: model_config,model_fields
 
 
 Usage
@@ -48,3 +49,4 @@ As shortcut from received object
 --------------------------------
 
 - :meth:`aiogram.types.message.Message.edit_reply_markup`
+- :meth:`aiogram.types.message.Message.delete_reply_markup`

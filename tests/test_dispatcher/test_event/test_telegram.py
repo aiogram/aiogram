@@ -5,7 +5,7 @@ from typing import Any, Dict, NoReturn, Optional, Union
 import pytest
 from pydantic import BaseModel
 
-from aiogram.dispatcher.event.bases import REJECTED, SkipHandler
+from aiogram.dispatcher.event.bases import UNHANDLED, SkipHandler
 from aiogram.dispatcher.event.handler import HandlerObject
 from aiogram.dispatcher.event.telegram import TelegramEventObserver
 from aiogram.dispatcher.router import Router
@@ -220,8 +220,8 @@ class TestTelegramEventObserver:
         r1.message.register(handler)
         r2.message.register(handler)
 
-        assert await r1.message.trigger(None) is REJECTED
-        assert await r2.message.trigger(None) is None
+        assert await r1.propagate_event("message", None) is UNHANDLED
+        assert await r2.propagate_event("message", None) is None
 
     async def test_global_filter_in_nested_router(self):
         r1 = Router()
@@ -234,4 +234,4 @@ class TestTelegramEventObserver:
         r1.message.filter(lambda evt: False)
         r2.message.register(handler)
 
-        assert await r1.message.trigger(None) is REJECTED
+        assert await r1.message.trigger(None) is UNHANDLED

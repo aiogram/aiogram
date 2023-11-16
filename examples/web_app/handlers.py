@@ -11,7 +11,7 @@ from aiogram.types import (
 my_router = Router()
 
 
-@my_router.message(Command(commands=["start"]))
+@my_router.message(Command("start"))
 async def command_start(message: Message, bot: Bot, base_url: str):
     await bot.set_chat_menu_button(
         chat_id=message.chat.id,
@@ -20,7 +20,7 @@ async def command_start(message: Message, bot: Bot, base_url: str):
     await message.answer("""Hi!\nSend me any type of message to start.\nOr just send /webview""")
 
 
-@my_router.message(Command(commands=["webview"]))
+@my_router.message(Command("webview"))
 async def command_webview(message: Message, base_url: str):
     await message.answer(
         "Good. Now you can try to send it via Webview",

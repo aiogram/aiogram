@@ -187,8 +187,9 @@ class TestDispatcher:
     async def test_process_update_empty(self, bot: MockedBot):
         dispatcher = Dispatcher()
 
-        result = await dispatcher._process_update(bot=bot, update=Update(update_id=42))
-        assert not result
+        with pytest.warns(RuntimeWarning, match="Detected unknown update type") as record:
+            result = await dispatcher._process_update(bot=bot, update=Update(update_id=42))
+            assert not result
 
     async def test_process_update_handled(self, bot: MockedBot):
         dispatcher = Dispatcher()
@@ -197,7 +198,8 @@ class TestDispatcher:
         async def update_handler(update: Update):
             pass
 
-        assert await dispatcher._process_update(bot=bot, update=Update(update_id=42))
+        with pytest.warns(RuntimeWarning, match="Detected unknown update type"):
+            assert await dispatcher._process_update(bot=bot, update=Update(update_id=42))
 
     @pytest.mark.parametrize(
         "event_type,update,has_chat,has_user",
@@ -460,7 +462,9 @@ class TestDispatcher:
 
         @observer()
         async def my_handler(event: Any, **kwargs: Any):
-            assert event == getattr(update, event_type)
+            assert event.model_dump(exclude_defaults=True) == getattr(
+                update, event_type
+            ).model_dump(exclude_defaults=True)
             if has_chat:
                 assert kwargs["event_chat"]
             if has_user:
@@ -469,15 +473,19 @@ class TestDispatcher:
 
         result = await router.feed_update(bot, update, test="PASS")
         assert isinstance(result, dict)
-        assert result["event_update"] == update
+        assert result["event_update"].model_dump(exclude_defaults=True) == update.model_dump(
+            exclude_defaults=True
+        )
         assert result["event_router"] == router
         assert result["test"] == "PASS"
 
     async def test_listen_unknown_update(self):
         dp = Dispatcher()
-
-        with pytest.raises(SkipHandler):
+        pattern = "Detected unknown update type"
+        with pytest.raises(SkipHandler), pytest.warns(RuntimeWarning, match=pattern) as record:
             await dp._listen_update(Update(update_id=42))
+            if not record:
+                pytest.fail("Expected 'Detected unknown update type' warning.")
 
     async def test_listen_unhandled_update(self):
         dp = Dispatcher()
@@ -532,7 +540,9 @@ class TestDispatcher:
         )
         result = await dp.feed_update(bot, update, test="PASS")
         assert isinstance(result, dict)
-        assert result["event_update"] == update
+        assert result["event_update"].model_dump(exclude_defaults=True) == update.model_dump(
+            exclude_defaults=True
+        )
         assert result["event_router"] == router1
         assert result["test"] == "PASS"
 
@@ -602,7 +612,9 @@ class TestDispatcher:
         async def update_handler(update: Update):
             raise Exception("Kaboom!")
 
-        assert await dispatcher._process_update(bot=bot, update=Update(update_id=42))
+        with pytest.warns(RuntimeWarning, match="Detected unknown update type"):
+            assert await dispatcher._process_update(bot=bot, update=Update(update_id=42))
+
         log_records = [rec.message for rec in caplog.records]
         assert len(log_records) == 1
         assert "Cause exception while process update" in log_records[0]
@@ -669,6 +681,7 @@ class TestDispatcher:
 
     async def test_start_polling(self, bot: MockedBot):
         dispatcher = Dispatcher()
+        dispatcher.workflow_data["bot"] = 42
         with pytest.raises(
             ValueError, match="At least one bot instance is required to start polling"
         ):
@@ -702,6 +715,8 @@ class TestDispatcher:
             mocked_emit_startup.assert_awaited()
             mocked_process_update.assert_awaited()
             mocked_emit_shutdown.assert_awaited()
+            assert dispatcher.workflow_data["bot"] == 42
+            assert mocked_emit_shutdown.call_args.kwargs["bot"] == bot
 
     async def test_stop_polling(self):
         dispatcher = Dispatcher()
@@ -825,12 +840,17 @@ class TestDispatcher:
         dispatcher = Dispatcher()
         dispatcher.message.register(invalid_message_handler)
 
-        response = await dispatcher.feed_webhook_update(bot, RAW_UPDATE, _timeout=0.1)
-        assert response is None
-        await asyncio.sleep(0.5)
+        pattern = r"Detected slow response into webhook"
+        with pytest.warns(RuntimeWarning, match=pattern) as record:
+            response = await dispatcher.feed_webhook_update(bot, RAW_UPDATE, _timeout=0.1)
+            assert response is None
+            await asyncio.sleep(0.5)
 
-        log_records = [rec.message for rec in caplog.records]
-        assert "Cause exception while process update" in log_records[0]
+            log_records = [rec.message for rec in caplog.records]
+            assert "Cause exception while process update" in log_records[0]
+
+            if not record:
+                pytest.fail("Expected 'Detected slow response into webhook' warning.")
 
     def test_specify_updates_calculation(self):
         def simple_msg_handler() -> None:

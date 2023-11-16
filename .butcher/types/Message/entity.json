@@ -228,6 +228,14 @@
         "required": false
       },
       {
+        "type": "Story",
+        "description": "Message is a forwarded story",
+        "html_description": "<td><em>Optional</em>. Message is a forwarded story</td>",
+        "rst_description": "*Optional*. Message is a forwarded story\n",
+        "name": "story",
+        "required": false
+      },
+      {
         "type": "Video",
         "description": "Message is a video, information about the video",
         "html_description": "<td><em>Optional</em>. Message is a video, information about the video</td>",
@@ -461,9 +469,9 @@
       },
       {
         "type": "WriteAccessAllowed",
-        "description": "Service message: the user allowed the bot added to the attachment menu to write messages",
-        "html_description": "<td><em>Optional</em>. Service message: the user allowed the bot added to the attachment menu to write messages</td>",
-        "rst_description": "*Optional*. Service message: the user allowed the bot added to the attachment menu to write messages\n",
+        "description": "Service message: the user allowed the bot to write messages after adding it to the attachment or side menu, launching a Web App from a link, or accepting an explicit request from a Web App sent by the method requestWriteAccess",
+        "html_description": "<td><em>Optional</em>. Service message: the user allowed the bot to write messages after adding it to the attachment or side menu, launching a Web App from a link, or accepting an explicit request from a Web App sent by the method <a href=\"/bots/webapps#initializing-mini-apps\">requestWriteAccess</a></td>",
+        "rst_description": "*Optional*. Service message: the user allowed the bot to write messages after adding it to the attachment or side menu, launching a Web App from a link, or accepting an explicit request from a Web App sent by the method `requestWriteAccess <https://core.telegram.org/bots/webapps#initializing-mini-apps>`_\n",
         "name": "write_access_allowed",
         "required": false
       },

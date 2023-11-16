@@ -207,3 +207,9 @@ class TestChat:
     ):
         chat = Chat(id=42, first_name=first, last_name=last, title=title, type=chat_type)
         assert chat.full_name == result
+
+    def test_unpin_all_general_forum_topic_messages(self):
+        chat = Chat(id=-42, type="supergroup")
+
+        method = chat.unpin_all_general_forum_topic_messages()
+        assert method.chat_id == chat.id

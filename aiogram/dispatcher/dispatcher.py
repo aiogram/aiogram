@@ -6,7 +6,7 @@ import signal
 import warnings
 from asyncio import CancelledError, Event, Future, Lock
 from contextlib import suppress
-from typing import Any, AsyncGenerator, Dict, List, Optional, Union
+from typing import Any, AsyncGenerator, Dict, List, Optional, Set, Union
 
 from .. import loggers
 from ..client.bot import Bot
@@ -18,6 +18,7 @@ from ..fsm.strategy import FSMStrategy
 from ..methods import GetUpdates, TelegramMethod
 from ..methods.base import TelegramType
 from ..types import Update, User
+from ..types.base import UNSET, UNSET_TYPE
 from ..types.update import UpdateTypeLookupError
 from ..utils.backoff import Backoff, BackoffConfig
 from .event.bases import UNHANDLED, SkipHandler
@@ -94,6 +95,7 @@ class Dispatcher(Router):
         self._running_lock = Lock()
         self._stop_signal: Optional[Event] = None
         self._stopped_signal: Optional[Event] = None
+        self._handle_update_tasks: Set[asyncio.Task[Any]] = set()
 
     def __getitem__(self, item: str) -> Any:
         return self.workflow_data[item]
@@ -142,7 +144,16 @@ class Dispatcher(Router):
         handled = False
         start_time = loop.time()
 
-        token = Bot.set_current(bot)
+        if update.bot != bot:
+            # Re-mounting update to the current bot instance for making possible to
+            # use it in shortcuts.
+            # Here is update is re-created because we need to propagate context to
+            # all nested objects and attributes of the Update, but it
+            # is impossible without roundtrip to JSON :(
+            # The preferred way is that pass already mounted Bot instance to this update
+            # before call feed_update method
+            update = Update.model_validate(update.model_dump(), context={"bot": bot})
+
         try:
             response = await self.update.wrap_outer_middleware(
                 self.update.trigger,
@@ -165,7 +176,6 @@ class Dispatcher(Router):
                 duration,
                 bot.id,
             )
-            Bot.reset_current(token)
 
     async def feed_raw_update(self, bot: Bot, update: Dict[str, Any], **kwargs: Any) -> Any:
         """
@@ -175,7 +185,7 @@ class Dispatcher(Router):
         :param update:
         :param kwargs:
         """
-        parsed_update = Update(**update)
+        parsed_update = Update.model_validate(update, context={"bot": bot})
         return await self.feed_update(bot=bot, update=parsed_update, **kwargs)
 
     @classmethod
@@ -255,7 +265,8 @@ class Dispatcher(Router):
             warnings.warn(
                 "Detected unknown update type.\n"
                 "Seems like Telegram Bot API was updated and you have "
-                "installed not latest version of aiogram framework",
+                "installed not latest version of aiogram framework"
+                f"\nUpdate: {update.model_dump_json(exclude_unset=True)}",
                 RuntimeWarning,
             )
             raise SkipHandler() from e
@@ -339,7 +350,9 @@ class Dispatcher(Router):
             ):
                 handle_update = self._process_update(bot=bot, update=update, **kwargs)
                 if handle_as_tasks:
-                    asyncio.create_task(handle_update)
+                    handle_update_task = asyncio.create_task(handle_update)
+                    self._handle_update_tasks.add(handle_update_task)
+                    handle_update_task.add_done_callback(self._handle_update_tasks.discard)
                 else:
                     await handle_update
         finally:
@@ -367,7 +380,7 @@ class Dispatcher(Router):
         self, bot: Bot, update: Union[Update, Dict[str, Any]], _timeout: float = 55, **kwargs: Any
     ) -> Optional[TelegramMethod[TelegramType]]:
         if not isinstance(update, Update):  # Allow to use raw updates
-            update = Update(**update)
+            update = Update.model_validate(update, context={"bot": bot})
 
         ctx = contextvars.copy_context()
         loop = asyncio.get_running_loop()
@@ -450,7 +463,7 @@ class Dispatcher(Router):
         polling_timeout: int = 10,
         handle_as_tasks: bool = True,
         backoff_config: BackoffConfig = DEFAULT_BACKOFF_CONFIG,
-        allowed_updates: Optional[List[str]] = None,
+        allowed_updates: Optional[Union[List[str], UNSET_TYPE]] = UNSET,
         handle_signals: bool = True,
         close_bot_session: bool = True,
         **kwargs: Any,
@@ -458,11 +471,12 @@ class Dispatcher(Router):
         """
         Polling runner
 
-        :param bots: Bot instances (one or mre)
+        :param bots: Bot instances (one or more)
         :param polling_timeout: Long-polling wait time
         :param handle_as_tasks: Run task for each event and no wait result
         :param backoff_config: backoff-retry config
         :param allowed_updates: List of the update types you want your bot to receive
+               By default, all used update types are enabled (resolved from handlers)
         :param handle_signals: handle signals (SIGINT/SIGTERM)
         :param close_bot_session: close bot sessions on shutdown
         :param kwargs: contextual data
@@ -482,6 +496,9 @@ class Dispatcher(Router):
             if self._stopped_signal is None:
                 self._stopped_signal = Event()
 
+            if allowed_updates is UNSET:
+                allowed_updates = self.resolve_used_update_types()
+
             self._stop_signal.clear()
             self._stopped_signal.clear()
 
@@ -500,11 +517,13 @@ class Dispatcher(Router):
             workflow_data = {
                 "dispatcher": self,
                 "bots": bots,
-                "bot": bots[-1],
-                **kwargs,
                 **self.workflow_data,
+                **kwargs,
             }
-            await self.emit_startup(**workflow_data)
+            if "bot" in workflow_data:
+                workflow_data.pop("bot")
+
+            await self.emit_startup(bot=bots[-1], **workflow_data)
             loggers.dispatcher.info("Start polling")
             try:
                 tasks: List[asyncio.Task[Any]] = [
@@ -515,7 +534,7 @@ class Dispatcher(Router):
                             polling_timeout=polling_timeout,
                             backoff_config=backoff_config,
                             allowed_updates=allowed_updates,
-                            **kwargs,
+                            **workflow_data,
                         )
                     )
                     for bot in bots
@@ -534,7 +553,7 @@ class Dispatcher(Router):
             finally:
                 loggers.dispatcher.info("Polling stopped")
                 try:
-                    await self.emit_shutdown(**workflow_data)
+                    await self.emit_shutdown(bot=bots[-1], **workflow_data)
                 finally:
                     if close_bot_session:
                         await asyncio.gather(*(bot.session.close() for bot in bots))
@@ -546,7 +565,7 @@ class Dispatcher(Router):
         polling_timeout: int = 10,
         handle_as_tasks: bool = True,
         backoff_config: BackoffConfig = DEFAULT_BACKOFF_CONFIG,
-        allowed_updates: Optional[List[str]] = None,
+        allowed_updates: Optional[Union[List[str], UNSET_TYPE]] = UNSET,
         handle_signals: bool = True,
         close_bot_session: bool = True,
         **kwargs: Any,

@@ -2,7 +2,7 @@ import asyncio
 import secrets
 from abc import ABC, abstractmethod
 from asyncio import Transport
-from typing import Any, Awaitable, Callable, Dict, Optional, Tuple, cast
+from typing import Any, Awaitable, Callable, Dict, Optional, Set, Tuple, cast
 
 from aiohttp import MultipartWriter, web
 from aiohttp.abc import Application
@@ -18,18 +18,18 @@ from aiogram.webhook.security import IPFilter
 
 def setup_application(app: Application, dispatcher: Dispatcher, /, **kwargs: Any) -> None:
     """
-    This function helps to configure startup-shutdown process
+    This function helps to configure a startup-shutdown process
 
-    :param app:
-    :param dispatcher:
-    :param kwargs:
+    :param app: aiohttp application
+    :param dispatcher: aiogram dispatcher
+    :param kwargs: additional data
     :return:
     """
     workflow_data = {
         "app": app,
         "dispatcher": dispatcher,
-        **kwargs,
         **dispatcher.workflow_data,
+        **kwargs,
     }
 
     async def on_startup(*a: Any, **kw: Any) -> None:  # pragma: no cover
@@ -81,11 +81,6 @@ def ip_filter_middleware(
 
 
 class BaseRequestHandler(ABC):
-    """
-    Base handler that helps to handle incoming request from aiohttp
-    and propagate it to the Dispatcher
-    """
-
     def __init__(
         self,
         dispatcher: Dispatcher,
@@ -93,13 +88,17 @@ class BaseRequestHandler(ABC):
         **data: Any,
     ) -> None:
         """
+        Base handler that helps to handle incoming request from aiohttp
+        and propagate it to the Dispatcher
+
         :param dispatcher: instance of :class:`aiogram.dispatcher.dispatcher.Dispatcher`
-        :param handle_in_background: immediately respond to the Telegram instead of
-            waiting end of handler process
+        :param handle_in_background: immediately responds to the Telegram instead of
+            a waiting end of a handler process
         """
         self.dispatcher = dispatcher
         self.handle_in_background = handle_in_background
         self.data = data
+        self._background_feed_update_tasks: Set[asyncio.Task[Any]] = set()
 
     def register(self, app: Application, /, path: str, **kwargs: Any) -> None:
         """
@@ -131,17 +130,23 @@ class BaseRequestHandler(ABC):
         """
         pass
 
+    @abstractmethod
+    def verify_secret(self, telegram_secret_token: str, bot: Bot) -> bool:
+        pass
+
     async def _background_feed_update(self, bot: Bot, update: Dict[str, Any]) -> None:
         result = await self.dispatcher.feed_raw_update(bot=bot, update=update, **self.data)
         if isinstance(result, TelegramMethod):
             await self.dispatcher.silent_call_request(bot=bot, result=result)
 
     async def _handle_request_background(self, bot: Bot, request: web.Request) -> web.Response:
-        asyncio.create_task(
+        feed_update_task = asyncio.create_task(
             self._background_feed_update(
                 bot=bot, update=await request.json(loads=bot.session.json_loads)
             )
         )
+        self._background_feed_update_tasks.add(feed_update_task)
+        feed_update_task.add_done_callback(self._background_feed_update_tasks.discard)
         return web.json_response({}, dumps=bot.session.json_dumps)
 
     def _build_response_writer(
@@ -158,7 +163,7 @@ class BaseRequestHandler(ABC):
         payload.set_content_disposition("form-data", name="method")
 
         files: Dict[str, InputFile] = {}
-        for key, value in result.dict().items():
+        for key, value in result.model_dump(warnings=False).items():
             value = bot.session.prepare_value(value, bot=bot, files=files)
             if not value:
                 continue
@@ -166,7 +171,7 @@ class BaseRequestHandler(ABC):
             payload.set_content_disposition("form-data", name=key)
 
         for key, value in files.items():
-            payload = writer.append(value)
+            payload = writer.append(value.read(bot))
             payload.set_content_disposition(
                 "form-data",
                 name=key,
@@ -185,6 +190,8 @@ class BaseRequestHandler(ABC):
 
     async def handle(self, request: web.Request) -> web.Response:
         bot = await self.resolve_bot(request)
+        if not self.verify_secret(request.headers.get("X-Telegram-Bot-Api-Secret-Token", ""), bot):
+            return web.Response(body="Unauthorized", status=401)
         if self.handle_in_background:
             return await self._handle_request_background(bot=bot, request=request)
         return await self._handle_request(bot=bot, request=request)
@@ -193,21 +200,30 @@ class BaseRequestHandler(ABC):
 
 
 class SimpleRequestHandler(BaseRequestHandler):
-    """
-    Handler for single Bot instance
-    """
-
     def __init__(
-        self, dispatcher: Dispatcher, bot: Bot, handle_in_background: bool = True, **data: Any
+        self,
+        dispatcher: Dispatcher,
+        bot: Bot,
+        handle_in_background: bool = True,
+        secret_token: Optional[str] = None,
+        **data: Any,
     ) -> None:
         """
+        Handler for single Bot instance
+
         :param dispatcher: instance of :class:`aiogram.dispatcher.dispatcher.Dispatcher`
-        :param handle_in_background: immediately respond to the Telegram instead of
-            waiting end of handler process
+        :param handle_in_background: immediately responds to the Telegram instead of
+            a waiting end of handler process
         :param bot: instance of :class:`aiogram.client.bot.Bot`
         """
         super().__init__(dispatcher=dispatcher, handle_in_background=handle_in_background, **data)
         self.bot = bot
+        self.secret_token = secret_token
+
+    def verify_secret(self, telegram_secret_token: str, bot: Bot) -> bool:
+        if self.secret_token:
+            return secrets.compare_digest(telegram_secret_token, self.secret_token)
+        return True
 
     async def close(self) -> None:
         """
@@ -220,11 +236,6 @@ class SimpleRequestHandler(BaseRequestHandler):
 
 
 class TokenBasedRequestHandler(BaseRequestHandler):
-    """
-    Handler that supports multiple bots, the context will be resolved
-    from path variable 'bot_token'
-    """
-
     def __init__(
         self,
         dispatcher: Dispatcher,
@@ -233,9 +244,17 @@ class TokenBasedRequestHandler(BaseRequestHandler):
         **data: Any,
     ) -> None:
         """
+        Handler that supports multiple bots the context will be resolved
+        from path variable 'bot_token'
+
+        .. note::
+
+            This handler is not recommended in due to token is available in URL
+            and can be logged by reverse proxy server or other middleware.
+
         :param dispatcher: instance of :class:`aiogram.dispatcher.dispatcher.Dispatcher`
-        :param handle_in_background: immediately respond to the Telegram instead of
-            waiting end of handler process
+        :param handle_in_background: immediately responds to the Telegram instead of
+            a waiting end of handler process
         :param bot_settings: kwargs that will be passed to new Bot instance
         """
         super().__init__(dispatcher=dispatcher, handle_in_background=handle_in_background, **data)
@@ -243,6 +262,9 @@ class TokenBasedRequestHandler(BaseRequestHandler):
             bot_settings = {}
         self.bot_settings = bot_settings
         self.bots: Dict[str, Bot] = {}
+
+    def verify_secret(self, telegram_secret_token: str, bot: Bot) -> bool:
+        return True
 
     async def close(self) -> None:
         for bot in self.bots.values():
@@ -262,7 +284,7 @@ class TokenBasedRequestHandler(BaseRequestHandler):
 
     async def resolve_bot(self, request: web.Request) -> Bot:
         """
-        Get bot token from path and create or get from cache Bot instance
+        Get bot token from a path and create or get from cache Bot instance
 
         :param request:
         :return:

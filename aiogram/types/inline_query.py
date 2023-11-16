@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, List, Optional
+from typing import TYPE_CHECKING, Any, List, Optional, Union
 
 from pydantic import Field
 
@@ -8,7 +8,26 @@ from .base import TelegramObject
 
 if TYPE_CHECKING:
     from ..methods import AnswerInlineQuery
-    from .inline_query_result import InlineQueryResult
+    from .inline_query_result_article import InlineQueryResultArticle
+    from .inline_query_result_audio import InlineQueryResultAudio
+    from .inline_query_result_cached_audio import InlineQueryResultCachedAudio
+    from .inline_query_result_cached_document import InlineQueryResultCachedDocument
+    from .inline_query_result_cached_gif import InlineQueryResultCachedGif
+    from .inline_query_result_cached_mpeg4_gif import InlineQueryResultCachedMpeg4Gif
+    from .inline_query_result_cached_photo import InlineQueryResultCachedPhoto
+    from .inline_query_result_cached_sticker import InlineQueryResultCachedSticker
+    from .inline_query_result_cached_video import InlineQueryResultCachedVideo
+    from .inline_query_result_cached_voice import InlineQueryResultCachedVoice
+    from .inline_query_result_contact import InlineQueryResultContact
+    from .inline_query_result_document import InlineQueryResultDocument
+    from .inline_query_result_game import InlineQueryResultGame
+    from .inline_query_result_gif import InlineQueryResultGif
+    from .inline_query_result_location import InlineQueryResultLocation
+    from .inline_query_result_mpeg4_gif import InlineQueryResultMpeg4Gif
+    from .inline_query_result_photo import InlineQueryResultPhoto
+    from .inline_query_result_venue import InlineQueryResultVenue
+    from .inline_query_result_video import InlineQueryResultVideo
+    from .inline_query_result_voice import InlineQueryResultVoice
     from .inline_query_results_button import InlineQueryResultsButton
     from .location import Location
     from .user import User
@@ -34,9 +53,61 @@ class InlineQuery(TelegramObject):
     location: Optional[Location] = None
     """*Optional*. Sender location, only for bots that request user location"""
 
+    if TYPE_CHECKING:
+        # DO NOT EDIT MANUALLY!!!
+        # This section was auto-generated via `butcher`
+
+        def __init__(
+            __pydantic__self__,
+            *,
+            id: str,
+            from_user: User,
+            query: str,
+            offset: str,
+            chat_type: Optional[str] = None,
+            location: Optional[Location] = None,
+            **__pydantic_kwargs: Any,
+        ) -> None:
+            # DO NOT EDIT MANUALLY!!!
+            # This method was auto-generated via `butcher`
+            # Is needed only for type checking and IDE support without any additional plugins
+
+            super().__init__(
+                id=id,
+                from_user=from_user,
+                query=query,
+                offset=offset,
+                chat_type=chat_type,
+                location=location,
+                **__pydantic_kwargs,
+            )
+
     def answer(
         self,
-        results: List[InlineQueryResult],
+        results: List[
+            Union[
+                InlineQueryResultCachedAudio,
+                InlineQueryResultCachedDocument,
+                InlineQueryResultCachedGif,
+                InlineQueryResultCachedMpeg4Gif,
+                InlineQueryResultCachedPhoto,
+                InlineQueryResultCachedSticker,
+                InlineQueryResultCachedVideo,
+                InlineQueryResultCachedVoice,
+                InlineQueryResultArticle,
+                InlineQueryResultAudio,
+                InlineQueryResultContact,
+                InlineQueryResultGame,
+                InlineQueryResultDocument,
+                InlineQueryResultGif,
+                InlineQueryResultLocation,
+                InlineQueryResultMpeg4Gif,
+                InlineQueryResultPhoto,
+                InlineQueryResultVenue,
+                InlineQueryResultVideo,
+                InlineQueryResultVoice,
+            ]
+        ],
         cache_time: Optional[int] = None,
         is_personal: Optional[bool] = None,
         next_offset: Optional[str] = None,
@@ -81,4 +152,4 @@ class InlineQuery(TelegramObject):
             switch_pm_parameter=switch_pm_parameter,
             switch_pm_text=switch_pm_text,
             **kwargs,
-        )
+        ).as_(self._bot)

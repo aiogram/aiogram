@@ -15,13 +15,23 @@ With dispatcher you can do:
 Dispatcher is also separated into two entities - Router and Dispatcher.
 Dispatcher is subclass of router and should be always is root router.
 
+Telegram supports two ways of receiving updates:
+
+- :ref:`Webhook <webhook>` - you should configure your web server to receive updates from Telegram;
+- :ref:`Long polling <long-polling>` - you should request updates from Telegram.
+
+So, you can use both of them with *aiogram*.
+
 .. toctree::
 
-    observer
     router
     dispatcher
-    class_based_handlers/index
+    dependency_injection
     filters/index
-    middlewares
+    long_polling
+    webhook
     finite_state_machine/index
+    middlewares
+    errors
     flags
+    class_based_handlers/index

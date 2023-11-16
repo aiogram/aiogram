@@ -2,19 +2,6 @@
 Command
 =======
 
-.. autoclass:: aiogram.filters.command.Command
-    :members: __init__
-    :member-order: bysource
-    :undoc-members: False
-
-When filter is passed the :class:`aiogram.filters.command.CommandObject` will be passed to the handler argument :code:`command`
-
-.. autoclass:: aiogram.filters.command.CommandObject
-    :members:
-    :member-order: bysource
-    :undoc-members: False
-
-
 Usage
 =====
 
@@ -27,6 +14,19 @@ Usage
 .. warning::
 
     Command cannot include spaces or any whitespace
+
+
+.. autoclass:: aiogram.filters.command.Command
+    :members: __init__
+    :member-order: bysource
+    :undoc-members: False
+
+When filter is passed the :class:`aiogram.filters.command.CommandObject` will be passed to the handler argument :code:`command`
+
+.. autoclass:: aiogram.filters.command.CommandObject
+    :members:
+    :member-order: bysource
+    :undoc-members: False
 
 Allowed handlers
 ================

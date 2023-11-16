@@ -3,6 +3,7 @@ from typing import Any, Dict, Optional, Type, Union
 
 import pytest
 
+from aiogram.enums import ParseMode
 from aiogram.methods import (
     CopyMessage,
     DeleteMessage,
@@ -35,9 +36,11 @@ from aiogram.methods import (
     UnpinChatMessage,
 )
 from aiogram.types import (
+    UNSET_PARSE_MODE,
     Animation,
     Audio,
     Chat,
+    ChatShared,
     Contact,
     Dice,
     Document,
@@ -60,8 +63,10 @@ from aiogram.types import (
     PollOption,
     ProximityAlertTriggered,
     Sticker,
+    Story,
     SuccessfulPayment,
     User,
+    UserShared,
     Venue,
     Video,
     VideoChatEnded,
@@ -439,6 +444,29 @@ TEST_FORUM_TOPIC_REOPENED = Message(
     from_user=User(id=42, is_bot=False, first_name="Test"),
     forum_topic_reopened=ForumTopicReopened(),
 )
+TEST_USER_SHARED = Message(
+    message_id=42,
+    date=datetime.datetime.now(),
+    chat=Chat(id=42, type="private"),
+    from_user=User(id=42, is_bot=False, first_name="Test"),
+    user_shared=UserShared(request_id=42, user_id=42),
+)
+TEST_CHAT_SHARED = Message(
+    message_id=42,
+    date=datetime.datetime.now(),
+    chat=Chat(id=42, type="private"),
+    from_user=User(id=42, is_bot=False, first_name="Test"),
+    chat_shared=ChatShared(request_id=42, chat_id=42),
+)
+TEST_MESSAGE_STORY = Message(
+    message_id=42,
+    date=datetime.datetime.now(),
+    chat=Chat(id=42, type="private"),
+    from_user=User(id=42, is_bot=False, first_name="Test"),
+    story=Story(),
+    forward_signature="Test",
+    forward_date=datetime.datetime.now(),
+)
 TEST_MESSAGE_UNKNOWN = Message(
     message_id=42,
     date=datetime.datetime.now(),
@@ -498,6 +526,9 @@ class TestMessage:
             [TEST_FORUM_TOPIC_EDITED, ContentType.FORUM_TOPIC_EDITED],
             [TEST_FORUM_TOPIC_CLOSED, ContentType.FORUM_TOPIC_CLOSED],
             [TEST_FORUM_TOPIC_REOPENED, ContentType.FORUM_TOPIC_REOPENED],
+            [TEST_USER_SHARED, ContentType.USER_SHARED],
+            [TEST_CHAT_SHARED, ContentType.CHAT_SHARED],
+            [TEST_MESSAGE_STORY, ContentType.STORY],
             [TEST_MESSAGE_UNKNOWN, ContentType.UNKNOWN],
         ],
     )
@@ -620,6 +651,7 @@ class TestMessage:
             [TEST_MESSAGE_CONTACT, SendContact],
             [TEST_MESSAGE_VENUE, SendVenue],
             [TEST_MESSAGE_LOCATION, SendLocation],
+            [TEST_MESSAGE_STORY, ForwardMessage],
             [TEST_MESSAGE_NEW_CHAT_MEMBERS, None],
             [TEST_MESSAGE_LEFT_CHAT_MEMBER, None],
             [TEST_MESSAGE_INVOICE, None],
@@ -642,6 +674,8 @@ class TestMessage:
             [TEST_MESSAGE_VIDEO_CHAT_ENDED, None],
             [TEST_MESSAGE_VIDEO_CHAT_PARTICIPANTS_INVITED, None],
             [TEST_MESSAGE_DICE, SendDice],
+            [TEST_USER_SHARED, None],
+            [TEST_CHAT_SHARED, None],
             [TEST_MESSAGE_UNKNOWN, None],
         ],
     )
@@ -656,9 +690,43 @@ class TestMessage:
             return
 
         method = message.send_copy(chat_id=42)
-        if method:
-            assert isinstance(method, expected_method)
+        assert isinstance(method, expected_method)
+        if hasattr(method, "parse_mode"):
+            # default parse mode in send_copy
+            assert method.parse_mode is None
         # TODO: Check additional fields
+
+    @pytest.mark.parametrize(
+        "custom_parse_mode",
+        [
+            UNSET_PARSE_MODE,
+            *list(ParseMode),
+        ],
+    )
+    @pytest.mark.parametrize(
+        "message,expected_method",
+        [
+            [TEST_MESSAGE_TEXT, SendMessage],
+            [TEST_MESSAGE_AUDIO, SendAudio],
+            [TEST_MESSAGE_ANIMATION, SendAnimation],
+            [TEST_MESSAGE_DOCUMENT, SendDocument],
+            [TEST_MESSAGE_PHOTO, SendPhoto],
+            [TEST_MESSAGE_VIDEO, SendVideo],
+            [TEST_MESSAGE_VOICE, SendVoice],
+        ],
+    )
+    def test_send_copy_custom_parse_mode(
+        self,
+        message: Message,
+        expected_method: Optional[Type[TelegramMethod]],
+        custom_parse_mode: Optional[str],
+    ):
+        method = message.send_copy(
+            chat_id=42,
+            parse_mode=custom_parse_mode,
+        )
+        assert isinstance(method, expected_method)
+        assert method.parse_mode == custom_parse_mode
 
     def test_edit_text(self):
         message = Message(

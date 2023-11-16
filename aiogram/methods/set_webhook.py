@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, List, Optional
+from typing import TYPE_CHECKING, Any, List, Optional
 
 from ..types import InputFile
 from .base import TelegramMethod
@@ -35,8 +35,39 @@ class SetWebhook(TelegramMethod[bool]):
     max_connections: Optional[int] = None
     """The maximum allowed number of simultaneous HTTPS connections to the webhook for update delivery, 1-100. Defaults to *40*. Use lower values to limit the load on your bot's server, and higher values to increase your bot's throughput."""
     allowed_updates: Optional[List[str]] = None
-    """A JSON-serialized list of the update types you want your bot to receive. For example, specify ['message', 'edited_channel_post', 'callback_query'] to only receive updates of these types. See :class:`aiogram.types.update.Update` for a complete list of available update types. Specify an empty list to receive all update types except *chat_member* (default). If not specified, the previous setting will be used."""
+    """A JSON-serialized list of the update types you want your bot to receive. For example, specify :code:`["message", "edited_channel_post", "callback_query"]` to only receive updates of these types. See :class:`aiogram.types.update.Update` for a complete list of available update types. Specify an empty list to receive all update types except *chat_member* (default). If not specified, the previous setting will be used."""
     drop_pending_updates: Optional[bool] = None
     """Pass :code:`True` to drop all pending updates"""
     secret_token: Optional[str] = None
     """A secret token to be sent in a header 'X-Telegram-Bot-Api-Secret-Token' in every webhook request, 1-256 characters. Only characters :code:`A-Z`, :code:`a-z`, :code:`0-9`, :code:`_` and :code:`-` are allowed. The header is useful to ensure that the request comes from a webhook set by you."""
+
+    if TYPE_CHECKING:
+        # DO NOT EDIT MANUALLY!!!
+        # This section was auto-generated via `butcher`
+
+        def __init__(
+            __pydantic__self__,
+            *,
+            url: str,
+            certificate: Optional[InputFile] = None,
+            ip_address: Optional[str] = None,
+            max_connections: Optional[int] = None,
+            allowed_updates: Optional[List[str]] = None,
+            drop_pending_updates: Optional[bool] = None,
+            secret_token: Optional[str] = None,
+            **__pydantic_kwargs: Any,
+        ) -> None:
+            # DO NOT EDIT MANUALLY!!!
+            # This method was auto-generated via `butcher`
+            # Is needed only for type checking and IDE support without any additional plugins
+
+            super().__init__(
+                url=url,
+                certificate=certificate,
+                ip_address=ip_address,
+                max_connections=max_connections,
+                allowed_updates=allowed_updates,
+                drop_pending_updates=drop_pending_updates,
+                secret_token=secret_token,
+                **__pydantic_kwargs,
+            )

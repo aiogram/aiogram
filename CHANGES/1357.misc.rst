@@ -1,0 +1,1 @@
+Speeded up CallableMixin processing by caching references to nested objects and simplifying kwargs assembly.

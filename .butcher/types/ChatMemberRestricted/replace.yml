@@ -1,7 +1,5 @@
-bases:
-  - ChatMember
 annotations:
   until_date:
     parsed_type:
       type: std
-      name: datetime.datetime
+      name: DateTime

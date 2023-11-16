@@ -24,7 +24,7 @@ keywords = [
 ]
 classifiers = [
     "License :: OSI Approved :: MIT License",
-    "Development Status :: 4 - Beta",
+    "Development Status :: 5 - Production/Stable",
     "Environment :: Console",
     "Framework :: AsyncIO",
     "Typing :: Typed",
@@ -40,67 +40,70 @@ classifiers = [
     "Topic :: Communications :: Chat",
 ]
 dependencies = [
-    "magic-filter~=1.0.9",
-    "aiohttp~=3.8.4",
-    "pydantic~=1.10.7",
-    "aiofiles~=23.1.0",
-    "certifi>=2022.9.24",
+    "magic-filter>=1.0.12,<1.1",
+    "aiohttp~=3.8.5",
+    "pydantic>=2.4.1,<2.6",
+    "aiofiles~=23.2.1",
+    "certifi>=2023.7.22",
+    "typing-extensions>=4.7.0,<=5.0",
 ]
 dynamic = ["version"]
 
 [tool.hatch.version]
-path = "aiogram/__init__.py"
+path = "aiogram/__meta__.py"
 
 [project.optional-dependencies]
 fast = [
     "uvloop>=0.17.0; (sys_platform == 'darwin' or sys_platform == 'linux') and platform_python_implementation != 'PyPy'",
+    "aiodns>=3.0.0",
 ]
 redis = [
-    "redis~=4.5.4",
+    "redis[hiredis]~=5.0.1",
 ]
 proxy = [
-    "aiohttp-socks~=0.8.0",
+    "aiohttp-socks~=0.8.3",
 ]
 i18n = [
-    "Babel~=2.12.1",
+    "Babel~=2.13.0",
+]
+cli = [
+    "aiogram-cli~=1.0.3",
 ]
 test = [
-    "pytest~=7.3.1",
-    "pytest-html~=3.2.0",
-    "pytest-asyncio~=0.21.0",
+    "pytest~=7.4.2",
+    "pytest-html~=4.0.2",
+    "pytest-asyncio~=0.21.1",
     "pytest-lazy-fixture~=0.6.3",
-    "pytest-mock~=3.10.0",
-    "pytest-mypy~=0.10.0",
-    "pytest-cov~=4.0.0",
-    "pytest-aiohttp~=1.0.4",
+    "pytest-mock~=3.12.0",
+    "pytest-mypy~=0.10.3",
+    "pytest-cov~=4.1.0",
+    "pytest-aiohttp~=1.0.5",
     "aresponses~=2.1.6",
-    "pytz~=2022.7.1"
+    "pytz~=2023.3",
+    "pycryptodomex~=3.19.0",
 ]
 docs = [
-    "Sphinx~=5.2.3",
-    "sphinx-intl~=2.0.1",
+    "Sphinx~=7.2.6",
+    "sphinx-intl~=2.1.0",
     "sphinx-autobuild~=2021.3.14",
-    "sphinx-copybutton~=0.5.0",
-    "furo~=2022.9.29",
-    "sphinx-prompt~=1.5.0",
+    "sphinx-copybutton~=0.5.2",
+    "furo~=2023.9.10",
     "Sphinx-Substitution-Extensions~=2022.2.16",
-    "towncrier~=22.8.0",
-    "pygments~=2.4",
-    "pymdown-extensions~=9.6",
-    "markdown-include~=0.7.0",
-    "Pygments~=2.13.0",
-    "sphinxcontrib-towncrier~=0.3.1a3",
+    "towncrier~=23.6.0",
+    "pygments~=2.16.1",
+    "pymdown-extensions~=10.3",
+    "markdown-include~=0.8.1",
+    "Pygments~=2.16.1",
+    "sphinxcontrib-towncrier~=0.3.2a0",
 ]
 dev = [
-    "black~=23.3.0",
-    "isort~=5.11",
-    "ruff~=0.0.262",
-    "mypy~=1.2.0",
+    "black~=23.10.0",
+    "isort~=5.12.0",
+    "ruff~=0.1.1",
+    "mypy~=1.6.1",
     "toml~=0.10.2",
-    "pre-commit~=3.2.2",
-    "towncrier~=22.12.0",
-    "packaging~=23.0",
-    "typing-extensions~=4.5.0",
+    "pre-commit~=3.5.0",
+    "packaging~=23.1",
 ]
 
 [project.urls]
@@ -115,6 +118,7 @@ features = [
     "redis",
     "proxy",
     "i18n",
+    "cli",
 ]
 post-install-commands = [
     "pre-commit install",
@@ -134,6 +138,7 @@ features = [
     "proxy",
     "i18n",
     "docs",
+    "cli",
 ]
 [tool.hatch.envs.docs.scripts]
 serve = "sphinx-autobuild --watch aiogram/ --watch CHANGELOG.rst --watch README.rst docs/ docs/_build/ {args}"
@@ -147,9 +152,7 @@ features = [
     "proxy",
     "i18n",
     "test",
-]
-extra-dependencies = [
-    "butcher @ git+https://github.com/aiogram/butcher.git@v0.1.14"
+    "cli",
 ]
 
 [tool.hatch.envs.dev.scripts]
@@ -166,6 +169,7 @@ features = [
     "proxy",
     "i18n",
     "test",
+    "cli",
 ]
 
 [tool.hatch.envs.test.scripts]
@@ -233,6 +237,9 @@ asyncio_mode = "auto"
 testpaths = [
     "tests",
 ]
+#filterwarnings = [
+#    "error",
+#]
 
 [tool.coverage.run]
 branch = false

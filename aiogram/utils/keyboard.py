@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from abc import ABC
 from copy import deepcopy
 from itertools import chain
 from itertools import cycle as repeat_all
@@ -14,6 +15,7 @@ from typing import (
     Type,
     TypeVar,
     Union,
+    cast,
     no_type_check,
 )
 
@@ -26,6 +28,8 @@ from aiogram.types import (
     KeyboardButtonPollType,
     LoginUrl,
     ReplyKeyboardMarkup,
+    SwitchInlineQueryChosenChat,
+    WebAppInfo,
 )
 
 ButtonType = TypeVar("ButtonType", InlineKeyboardButton, KeyboardButton)
@@ -35,7 +39,7 @@ MIN_WIDTH = 1
 MAX_BUTTONS = 100
 
 
-class KeyboardBuilder(Generic[ButtonType]):
+class KeyboardBuilder(Generic[ButtonType], ABC):
     """
     Generic keyboard builder that helps to adjust your markup with defined shape of lines.
 
@@ -236,6 +240,12 @@ class KeyboardBuilder(Generic[ButtonType]):
         return self
 
     def button(self, **kwargs: Any) -> "KeyboardBuilder[ButtonType]":
+        """
+        Add button to markup
+
+        :param kwargs:
+        :return:
+        """
         if isinstance(callback_data := kwargs.get("callback_data", None), CallbackData):
             kwargs["callback_data"] = callback_data.pack()
         button = self._button_type(**kwargs)
@@ -243,8 +253,21 @@ class KeyboardBuilder(Generic[ButtonType]):
 
     def as_markup(self, **kwargs: Any) -> Union[InlineKeyboardMarkup, ReplyKeyboardMarkup]:
         if self._button_type is KeyboardButton:
-            return ReplyKeyboardMarkup(keyboard=self.export(), **kwargs)
-        return InlineKeyboardMarkup(inline_keyboard=self.export())
+            keyboard = cast(List[List[KeyboardButton]], self.export())  # type: ignore
+            return ReplyKeyboardMarkup(keyboard=keyboard, **kwargs)
+        inline_keyboard = cast(List[List[InlineKeyboardButton]], self.export())  # type: ignore
+        return InlineKeyboardMarkup(inline_keyboard=inline_keyboard)
+
+    def attach(self, builder: "KeyboardBuilder[ButtonType]") -> "KeyboardBuilder[ButtonType]":
+        if not isinstance(builder, KeyboardBuilder):
+            raise ValueError(f"Only KeyboardBuilder can be attached, not {type(builder).__name__}")
+        if builder._button_type is not self._button_type:
+            raise ValueError(
+                f"Only builders with same button type can be attached, "
+                f"not {self._button_type.__name__} and {builder._button_type.__name__}"
+            )
+        self._markup.extend(builder.export())
+        return self
 
 
 def repeat_last(items: Iterable[T]) -> Generator[T, None, None]:
@@ -278,10 +301,12 @@ class InlineKeyboardBuilder(KeyboardBuilder[InlineKeyboardButton]):
             *,
             text: str,
             url: Optional[str] = None,
-            login_url: Optional[LoginUrl] = None,
             callback_data: Optional[Union[str, CallbackData]] = None,
+            web_app: Optional[WebAppInfo] = None,
+            login_url: Optional[LoginUrl] = None,
             switch_inline_query: Optional[str] = None,
             switch_inline_query_current_chat: Optional[str] = None,
+            switch_inline_query_chosen_chat: Optional[SwitchInlineQueryChosenChat] = None,
             callback_game: Optional[CallbackGame] = None,
             pay: Optional[bool] = None,
             **kwargs: Any,
@@ -303,6 +328,18 @@ class InlineKeyboardBuilder(KeyboardBuilder[InlineKeyboardButton]):
         """
         return InlineKeyboardBuilder(markup=self.export())
 
+    @classmethod
+    def from_markup(
+        cls: Type["InlineKeyboardBuilder"], markup: InlineKeyboardMarkup
+    ) -> "InlineKeyboardBuilder":
+        """
+        Create builder from existing markup
+
+        :param markup:
+        :return:
+        """
+        return cls(markup=markup.inline_keyboard)
+
 
 class ReplyKeyboardBuilder(KeyboardBuilder[KeyboardButton]):
     """
@@ -316,9 +353,12 @@ class ReplyKeyboardBuilder(KeyboardBuilder[KeyboardButton]):
             self,
             *,
             text: str,
+            request_user: Optional[bool] = None,
+            request_chat: Optional[bool] = None,
             request_contact: Optional[bool] = None,
             request_location: Optional[bool] = None,
             request_poll: Optional[KeyboardButtonPollType] = None,
+            web_app: Optional[WebAppInfo] = None,
             **kwargs: Any,
         ) -> "KeyboardBuilder[KeyboardButton]":
             ...
@@ -336,3 +376,13 @@ class ReplyKeyboardBuilder(KeyboardBuilder[KeyboardButton]):
         :return:
         """
         return ReplyKeyboardBuilder(markup=self.export())
+
+    @classmethod
+    def from_markup(cls, markup: ReplyKeyboardMarkup) -> "ReplyKeyboardBuilder":
+        """
+        Create builder from existing markup
+
+        :param markup:
+        :return:
+        """
+        return cls(markup=markup.keyboard)

@@ -4,7 +4,7 @@ import pytest
 from _pytest.config import UsageError
 from redis.asyncio.connection import parse_url as parse_redis_url
 
-from aiogram import Bot, Dispatcher
+from aiogram import Dispatcher
 from aiogram.fsm.storage.memory import (
     DisabledEventIsolation,
     MemoryStorage,
@@ -38,7 +38,7 @@ def pytest_collection_modifyitems(config, items):
         raise UsageError(f"Invalid redis URI {redis_uri!r}: {e}")
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture()
 def redis_server(request):
     redis_uri = request.config.getoption("--redis")
     return redis_uri
@@ -73,20 +73,9 @@ async def memory_storage():
 
 @pytest.fixture()
 @pytest.mark.redis
-async def redis_isolation(redis_server):
-    if not redis_server:
-        pytest.skip("Redis is not available here")
-    isolation = RedisEventIsolation.from_url(redis_server)
-    try:
-        await isolation.redis.info()
-    except ConnectionError as e:
-        pytest.skip(str(e))
-    try:
-        yield isolation
-    finally:
-        conn = await isolation.redis
-        await conn.flushdb()
-        await isolation.close()
+async def redis_isolation(redis_storage):
+    isolation = redis_storage.create_isolation()
+    return isolation
 
 
 @pytest.fixture()
@@ -109,12 +98,7 @@ async def disabled_isolation():
 
 @pytest.fixture()
 def bot():
-    bot = MockedBot()
-    token = Bot.set_current(bot)
-    try:
-        yield bot
-    finally:
-        Bot.reset_current(token)
+    return MockedBot()
 
 
 @pytest.fixture()

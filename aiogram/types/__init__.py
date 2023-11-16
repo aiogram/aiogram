@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import List, Literal, Optional, Union
 
 from .animation import Animation
 from .audio import Audio
@@ -37,6 +37,7 @@ from .chat_photo import ChatPhoto
 from .chat_shared import ChatShared
 from .chosen_inline_result import ChosenInlineResult
 from .contact import Contact
+from .custom import DateTime
 from .dice import Dice
 from .document import Document
 from .downloadable import Downloadable
@@ -140,6 +141,7 @@ from .shipping_option import ShippingOption
 from .shipping_query import ShippingQuery
 from .sticker import Sticker
 from .sticker_set import StickerSet
+from .story import Story
 from .successful_payment import SuccessfulPayment
 from .switch_inline_query_chosen_chat import SwitchInlineQueryChosenChat
 from .update import Update
@@ -196,6 +198,7 @@ __all__ = (
     "ChosenInlineResult",
     "Contact",
     "ContentType",
+    "DateTime",
     "Dice",
     "Document",
     "Downloadable",
@@ -298,6 +301,7 @@ __all__ = (
     "ShippingQuery",
     "Sticker",
     "StickerSet",
+    "Story",
     "SuccessfulPayment",
     "SwitchInlineQueryChosenChat",
     "TelegramObject",
@@ -324,11 +328,16 @@ __all__ = (
 # Load typing forward refs for every TelegramObject
 for _entity_name in __all__:
     _entity = globals()[_entity_name]
-    if not hasattr(_entity, "update_forward_refs"):
+    if not hasattr(_entity, "model_rebuild"):
         continue
-    _entity.update_forward_refs(
-        **{k: v for k, v in globals().items() if k in __all__},
-        **{"Optional": Optional},
+    _entity.model_rebuild(
+        _types_namespace={
+            "List": List,
+            "Optional": Optional,
+            "Union": Union,
+            "Literal": Literal,
+            **{k: v for k, v in globals().items() if k in __all__},
+        }
     )
 
 del _entity

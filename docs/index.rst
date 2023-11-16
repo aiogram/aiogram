@@ -12,6 +12,7 @@ Contents
     :maxdepth: 3
 
     install
+    migration_2_to_3
     api/index
     dispatcher/index
     utils/index

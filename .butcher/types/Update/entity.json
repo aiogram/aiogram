@@ -117,9 +117,9 @@
       },
       {
         "type": "ChatMemberUpdated",
-        "description": "A chat member's status was updated in a chat. The bot must be an administrator in the chat and must explicitly specify 'chat_member' in the list of allowed_updates to receive these updates.",
-        "html_description": "<td><em>Optional</em>. A chat member's status was updated in a chat. The bot must be an administrator in the chat and must explicitly specify &#8220;chat_member&#8221; in the list of <em>allowed_updates</em> to receive these updates.</td>",
-        "rst_description": "*Optional*. A chat member's status was updated in a chat. The bot must be an administrator in the chat and must explicitly specify 'chat_member' in the list of *allowed_updates* to receive these updates.\n",
+        "description": "A chat member's status was updated in a chat. The bot must be an administrator in the chat and must explicitly specify \"chat_member\" in the list of allowed_updates to receive these updates.",
+        "html_description": "<td><em>Optional</em>. A chat member's status was updated in a chat. The bot must be an administrator in the chat and must explicitly specify <code>\"chat_member\"</code> in the list of <em>allowed_updates</em> to receive these updates.</td>",
+        "rst_description": "*Optional*. A chat member's status was updated in a chat. The bot must be an administrator in the chat and must explicitly specify :code:`\"chat_member\"` in the list of *allowed_updates* to receive these updates.\n",
         "name": "chat_member",
         "required": false
       },

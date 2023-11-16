@@ -8,14 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-02-12 00:22+0200\n"
+"POT-Creation-Date: 2023-10-29 02:16+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.9.1\n"
+"Generated-By: Babel 2.13.1\n"
 
 #: ../../api/types/chat.rst:3
 msgid "Chat"
@@ -85,6 +85,13 @@ msgstr ""
 msgid ""
 "*Optional*. Custom emoji identifier of emoji status of the other party in"
 " a private chat. Returned only in "
+":class:`aiogram.methods.get_chat.GetChat`."
+msgstr ""
+
+#: ../../docstring aiogram.types.chat.Chat.emoji_status_expiration_date:1 of
+msgid ""
+"*Optional*. Expiration date of the emoji status of the other party in a "
+"private chat in Unix time, if any. Returned only in "
 ":class:`aiogram.methods.get_chat.GetChat`."
 msgstr ""
 
@@ -264,6 +271,7 @@ msgstr ""
 #: aiogram.types.chat.Chat.set_sticker_set:4
 #: aiogram.types.chat.Chat.set_title:4 aiogram.types.chat.Chat.unban:4
 #: aiogram.types.chat.Chat.unban_sender_chat:4
+#: aiogram.types.chat.Chat.unpin_all_general_forum_topic_messages:4
 #: aiogram.types.chat.Chat.unpin_all_messages:4
 #: aiogram.types.chat.Chat.unpin_message:4 of
 msgid ":code:`chat_id`"
@@ -320,6 +328,7 @@ msgstr ""
 #: aiogram.types.chat.Chat.set_permissions aiogram.types.chat.Chat.set_photo
 #: aiogram.types.chat.Chat.set_sticker_set aiogram.types.chat.Chat.set_title
 #: aiogram.types.chat.Chat.unban aiogram.types.chat.Chat.unban_sender_chat
+#: aiogram.types.chat.Chat.unpin_all_general_forum_topic_messages
 #: aiogram.types.chat.Chat.unpin_all_messages
 #: aiogram.types.chat.Chat.unpin_message of
 msgid "Returns"
@@ -988,38 +997,26 @@ msgstr ""
 #: aiogram.types.chat.Chat.promote:12 of
 msgid ""
 "Pass :code:`True` if the administrator can access the chat event log, "
-"chat statistics, message statistics in channels, see channel members, see"
-" anonymous administrators in supergroups and ignore slow mode. Implied by"
-" any other administrator privilege"
+"boost list in channels, see channel members, report spam messages, see "
+"anonymous administrators in supergroups and ignore slow mode. Implied by "
+"any other administrator privilege"
 msgstr ""
 
 #: aiogram.types.chat.Chat.promote:13 of
-msgid ""
-"Pass :code:`True` if the administrator can create channel posts, channels"
-" only"
-msgstr ""
-
-#: aiogram.types.chat.Chat.promote:14 of
-msgid ""
-"Pass :code:`True` if the administrator can edit messages of other users "
-"and can pin messages, channels only"
-msgstr ""
-
-#: aiogram.types.chat.Chat.promote:15 of
 msgid "Pass :code:`True` if the administrator can delete messages of other users"
 msgstr ""
 
-#: aiogram.types.chat.Chat.promote:16 of
+#: aiogram.types.chat.Chat.promote:14 of
 msgid "Pass :code:`True` if the administrator can manage video chats"
 msgstr ""
 
-#: aiogram.types.chat.Chat.promote:17 of
+#: aiogram.types.chat.Chat.promote:15 of
 msgid ""
 "Pass :code:`True` if the administrator can restrict, ban or unban chat "
-"members"
+"members, or access supergroup statistics"
 msgstr ""
 
-#: aiogram.types.chat.Chat.promote:18 of
+#: aiogram.types.chat.Chat.promote:16 of
 msgid ""
 "Pass :code:`True` if the administrator can add new administrators with a "
 "subset of their own privileges or demote administrators that they have "
@@ -1027,14 +1024,26 @@ msgid ""
 "appointed by him)"
 msgstr ""
 
-#: aiogram.types.chat.Chat.promote:19 of
+#: aiogram.types.chat.Chat.promote:17 of
 msgid ""
 "Pass :code:`True` if the administrator can change chat title, photo and "
 "other settings"
 msgstr ""
 
-#: aiogram.types.chat.Chat.promote:20 of
+#: aiogram.types.chat.Chat.promote:18 of
 msgid "Pass :code:`True` if the administrator can invite new users to the chat"
+msgstr ""
+
+#: aiogram.types.chat.Chat.promote:19 of
+msgid ""
+"Pass :code:`True` if the administrator can post messages in the channel, "
+"or access channel statistics; channels only"
+msgstr ""
+
+#: aiogram.types.chat.Chat.promote:20 of
+msgid ""
+"Pass :code:`True` if the administrator can edit messages of other users "
+"and can pin messages; channels only"
 msgstr ""
 
 #: aiogram.types.chat.Chat.promote:21 of
@@ -1043,11 +1052,29 @@ msgstr ""
 
 #: aiogram.types.chat.Chat.promote:22 of
 msgid ""
+"Pass :code:`True` if the administrator can post stories in the channel; "
+"channels only"
+msgstr ""
+
+#: aiogram.types.chat.Chat.promote:23 of
+msgid ""
+"Pass :code:`True` if the administrator can edit stories posted by other "
+"users; channels only"
+msgstr ""
+
+#: aiogram.types.chat.Chat.promote:24 of
+msgid ""
+"Pass :code:`True` if the administrator can delete stories posted by other"
+" users; channels only"
+msgstr ""
+
+#: aiogram.types.chat.Chat.promote:25 of
+msgid ""
 "Pass :code:`True` if the user is allowed to create, rename, close, and "
 "reopen forum topics, supergroups only"
 msgstr ""
 
-#: aiogram.types.chat.Chat.promote:23 of
+#: aiogram.types.chat.Chat.promote:26 of
 msgid ""
 "instance of method "
 ":class:`aiogram.methods.promote_chat_member.PromoteChatMember`"
@@ -1078,7 +1105,7 @@ msgstr ""
 
 #: aiogram.types.chat.Chat.restrict:13 of
 msgid ""
-"Date when restrictions will be lifted for the user, unix time. If user is"
+"Date when restrictions will be lifted for the user; Unix time. If user is"
 " restricted for more than 366 days or less than 30 seconds from the "
 "current time, they are considered to be restricted forever"
 msgstr ""
@@ -1145,7 +1172,7 @@ msgstr ""
 
 #: aiogram.types.chat.Chat.ban:11 of
 msgid ""
-"Date when the user will be unbanned, unix time. If user is banned for "
+"Date when the user will be unbanned; Unix time. If user is banned for "
 "more than 366 days or less than 30 seconds from the current time they are"
 " considered to be banned forever. Applied for supergroups and channels "
 "only."
@@ -1269,6 +1296,33 @@ msgstr ""
 msgid "instance of method :class:`aiogram.methods.set_chat_photo.SetChatPhoto`"
 msgstr ""
 
+#: aiogram.types.chat.Chat.unpin_all_general_forum_topic_messages:1 of
+msgid ""
+"Shortcut for method "
+":class:`aiogram.methods.unpin_all_general_forum_topic_messages.UnpinAllGeneralForumTopicMessages`"
+" will automatically fill method attributes:"
+msgstr ""
+
+#: aiogram.types.chat.Chat.unpin_all_general_forum_topic_messages:6 of
+msgid ""
+"Use this method to clear the list of pinned messages in a General forum "
+"topic. The bot must be an administrator in the chat for this to work and "
+"must have the *can_pin_messages* administrator right in the supergroup. "
+"Returns :code:`True` on success."
+msgstr ""
+
+#: aiogram.types.chat.Chat.unpin_all_general_forum_topic_messages:8 of
+msgid ""
+"Source: "
+"https://core.telegram.org/bots/api#unpinallgeneralforumtopicmessages"
+msgstr ""
+
+#: aiogram.types.chat.Chat.unpin_all_general_forum_topic_messages:10 of
+msgid ""
+"instance of method "
+":class:`aiogram.methods.unpin_all_general_forum_topic_messages.UnpinAllGeneralForumTopicMessages`"
+msgstr ""
+
 #~ msgid ""
 #~ "Use this method to get information "
 #~ "about a member of a chat. The "
@@ -1289,3 +1343,55 @@ msgstr ""
 #~ " him)"
 #~ msgstr ""
 
+#~ msgid ""
+#~ "*Optional*. Expiration date of the emoji"
+#~ " status of the other party in a"
+#~ " private chat, if any. Returned only"
+#~ " in :class:`aiogram.methods.get_chat.GetChat`."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Date when restrictions will be lifted"
+#~ " for the user, unix time. If "
+#~ "user is restricted for more than "
+#~ "366 days or less than 30 seconds"
+#~ " from the current time, they are "
+#~ "considered to be restricted forever"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Date when the user will be "
+#~ "unbanned, unix time. If user is "
+#~ "banned for more than 366 days or"
+#~ " less than 30 seconds from the "
+#~ "current time they are considered to "
+#~ "be banned forever. Applied for "
+#~ "supergroups and channels only."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Pass :code:`True` if the administrator "
+#~ "can access the chat event log, "
+#~ "chat statistics, message statistics in "
+#~ "channels, see channel members, see "
+#~ "anonymous administrators in supergroups and"
+#~ " ignore slow mode. Implied by any "
+#~ "other administrator privilege"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Pass :code:`True` if the administrator "
+#~ "can create channel posts, channels only"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Pass :code:`True` if the administrator "
+#~ "can edit messages of other users "
+#~ "and can pin messages, channels only"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Pass :code:`True` if the administrator "
+#~ "can restrict, ban or unban chat "
+#~ "members"
+#~ msgstr ""

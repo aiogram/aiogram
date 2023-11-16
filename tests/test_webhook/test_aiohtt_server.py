@@ -189,8 +189,24 @@ class TestSimpleRequestHandler:
         result = await resp.json()
         assert not result
 
+    async def test_verify_secret(self, bot: MockedBot, aiohttp_client):
+        app = Application()
+        dp = Dispatcher()
+        handler = SimpleRequestHandler(
+            dispatcher=dp, bot=bot, handle_in_background=False, secret_token="vasya228"
+        )
+        handler.register(app, path="/webhook")
+        client: TestClient = await aiohttp_client(app)
+        resp = await self.make_reqest(client=client)
+        assert resp.status == 401
+
 
 class TestTokenBasedRequestHandler:
+    async def test_verify_secret(self, bot: MockedBot):
+        dispatcher = Dispatcher()
+        handler = TokenBasedRequestHandler(dispatcher=dispatcher)
+        assert handler.verify_secret("petro328", bot)
+
     async def test_register(self):
         dispatcher = Dispatcher()
         app = Application()
