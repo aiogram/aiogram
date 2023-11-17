@@ -263,7 +263,7 @@ class TestSceneHandlerWrapper:
         handler_mock.assert_called_once_with(ANY, event_update_mock, **kwargs)
 
         # Check whether result is correct
-        assert result == handler_mock.return_value
+        assert result == 42
 
     # @pytest.mark.skipif("PyPy" in platform.python_implementation(), reason="Test skipped on PyPy.")
     async def test_scene_handler_wrapper_call_with_after(self):
@@ -302,7 +302,7 @@ class TestSceneHandlerWrapper:
             after_mock.assert_called_once_with(ANY)
 
             # Check whether result is correct
-            assert result == handler_mock.return_value
+            assert result == 42
 
     def test_scene_handler_wrapper_str(self):
         # Mock objects
