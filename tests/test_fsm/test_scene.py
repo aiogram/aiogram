@@ -299,21 +299,26 @@ class TestSceneHandlerWrapper:
             assert result == 42
 
     def test_scene_handler_wrapper_str(self):
-        # Mock objects
-        scene_mock = AsyncMock(spec=Scene)
-        handler_mock = AsyncMock()
-        after_mock = AsyncMock()  # Implement this according to your After type
+        class MyScene(Scene):
+            pass
 
-        scene_handler_wrapper = SceneHandlerWrapper(scene_mock, handler_mock, after=after_mock)
+        async def handler_mock(*args, **kwargs):
+            pass
+
+        after = After.back()
+
+        scene_handler_wrapper = SceneHandlerWrapper(MyScene, handler_mock, after=after)
         result = str(scene_handler_wrapper)
 
-        assert result == f"SceneHandlerWrapper({handler_mock}, after={after_mock})"
+        assert result == f"SceneHandlerWrapper({MyScene}, {handler_mock}, after={after})"
 
     def test_await(self):
         class MyScene(Scene):
             pass
 
-        handler_mock = AsyncMock()
+        async def handler_mock(*args, **kwargs):
+            pass
+
         scene_handler_wrapper = SceneHandlerWrapper(MyScene, handler_mock)
 
         assert inspect.isawaitable(scene_handler_wrapper)

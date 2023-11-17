@@ -269,7 +269,7 @@ class SceneHandlerWrapper:
         return self
 
     def __str__(self) -> str:
-        result = f"SceneHandlerWrapper({self.handler.callback}"
+        result = f"SceneHandlerWrapper({self.scene}, {self.handler.callback}"
         if self.after:
             result += f", after={self.after}"
         result += ")"
