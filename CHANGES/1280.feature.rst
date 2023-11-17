@@ -1,0 +1,1 @@
+Introduced Scenes feature that helps you to simplify user interactions using Finite State Machines.
