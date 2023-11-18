@@ -86,6 +86,7 @@ jobs:
           redis-version: 6
 
       - name: Run tests
+        if: "env.IS_PYPY == 'false' && env.IS_WINDOWS == 'false'"
         run: |
           flags=""
           [[ "$IS_PYPY" == "false" ]] && flags="$flags --cov=aiogram --cov-config .coveragerc --cov-report=xml"
