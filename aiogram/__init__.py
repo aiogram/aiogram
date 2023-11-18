@@ -15,8 +15,10 @@ from .utils.text_decorations import markdown_decoration as md
 
 with suppress(ImportError):
     import uvloop as _uvloop
+    import asyncio
 
-    _uvloop.install()  # type: ignore[attr-defined,unused-ignore]
+    asyncio.set_event_loop_policy(_uvloop.EventLoopPolicy())
+
 
 F = MagicFilter()
 flags = FlagGenerator()
