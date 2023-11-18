@@ -1,11 +1,11 @@
-name: Tests
+name: PyPy Tests
 
 on:
   push:
     branches:
       - dev-3.x
     paths:
-      - ".github/workflows/tests.yml"
+      - ".github/workflows/pypy-tests.yml"
       - "aiogram/**"
       - "tests/**"
       - "codecov.yaml"
@@ -14,7 +14,7 @@ on:
     branches:
       - dev-3.x
     paths:
-      - ".github/workflows/tests.yml"
+      - ".github/workflows/pypy-tests.yml"
       - "aiogram/**"
       - "tests/**"
       - "pyproject.toml"
@@ -27,13 +27,10 @@ jobs:
         os:
           - ubuntu-latest
           - macos-latest
-          - windows-latest
+          # - windows-latest
         python-version:
-          - '3.8'
-          - '3.9'
-          - '3.10'
-          - '3.11'
-          - '3.12'
+          - 'pypy3.8'
+          - 'pypy3.9'
 
     defaults:
       # Windows sucks. Force use bash instead of PowerShell
@@ -41,11 +38,6 @@ jobs:
         shell: bash
 
     runs-on: ${{ matrix.os }}
-
-    env:
-      # Windows has some limitations:
-      # – Redis is not supported on GitHub Windows runners;
-      IS_WINDOWS: ${{ startswith(matrix.os, 'windows') }}
 
     steps:
       - name: Checkout code
@@ -62,29 +54,12 @@ jobs:
         run: |
           pip install -e .[dev,test,redis,proxy,i18n,fast]
 
-      - name: Lint code
-        run: |
-          ruff --output-format=github aiogram examples
-          mypy aiogram
-          black --check --diff aiogram tests
-
       - name: Setup redis
-        if: ${{ env.IS_WINDOWS == 'false' }}
         uses: shogo82148/actions-setup-redis@v1
         with:
           redis-version: 6
 
       - name: Run tests
         run: |
-          flags="$flags --cov=aiogram --cov-config .coveragerc --cov-report=xml"
-          [[ "$IS_WINDOWS" == "false" ]] && flags="$flags --redis redis://localhost:6379/0"
+          flags=""
           pytest $flags
-
-      - name: Upload coverage data
-        uses: codecov/codecov-action@v3
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          files: coverage.xml
-          flags: unittests
-          name: py-${{ matrix.python-version }}-${{ matrix.os }}
-          fail_ci_if_error: true
