@@ -43,7 +43,7 @@ class ChatActionSender:
         :param chat_id: target chat id
         :param action: chat action type
         :param interval: interval between iterations
-        :param initial_sleep: sleep before first iteration
+        :param initial_sleep: sleep before first sending of the action
         """
         self.chat_id = chat_id
         self.message_thread_id = message_thread_id

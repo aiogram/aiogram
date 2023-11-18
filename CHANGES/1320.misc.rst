@@ -1,0 +1,1 @@
+Fixed ResourceWarning in the tests, reworked :code:`RedisEventsIsolation` fixture to use Redis connection from :code:`RedisStorage`
