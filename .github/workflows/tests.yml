@@ -20,7 +20,7 @@ on:
       - "pyproject.toml"
 
 jobs:
-  build:
+  tests:
     strategy:
       fail-fast: false
       matrix:
@@ -33,8 +33,7 @@ jobs:
           - '3.9'
           - '3.10'
           - '3.11'
-          - 'pypy3.8'
-          - 'pypy3.9'
+          - '3.12'
 
     defaults:
       # Windows sucks. Force use bash instead of PowerShell
@@ -44,21 +43,13 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     env:
-      # We disable some features for PyPy by this environment variable such as:
-      # – Installation of `fast` extras: `uvloop` on PyPy is useless and may be even slower
-      # than the default loop;
-      # – Coverage reports: code introspection disables any optimizations, so tests with
-      # coverage enabled are very slow on PyPy.
-      # More: https://www.pypy.org/performance.html
-      IS_PYPY: ${{ startswith(matrix.python-version, 'pypy') }}
-      # Windows has also some limitations:
+      # Windows has some limitations:
       # – Redis is not supported on GitHub Windows runners;
-      # – Poetry installer doesn't work on Windows with PyPy.
       IS_WINDOWS: ${{ startswith(matrix.os, 'windows') }}
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Python ${{ matrix.python-version }} on ${{ matrix.os }}
         uses: actions/setup-python@v4
@@ -72,7 +63,6 @@ jobs:
           pip install -e .[dev,test,redis,proxy,i18n,fast]
 
       - name: Lint code
-        if: "env.IS_PYPY == 'false'"
         run: |
           ruff --output-format=github aiogram examples
           mypy aiogram
@@ -86,13 +76,11 @@ jobs:
 
       - name: Run tests
         run: |
-          flags=""
-          [[ "$IS_PYPY" == "false" ]] && flags="$flags --cov=aiogram --cov-config .coveragerc --cov-report=xml"
+          flags="$flags --cov=aiogram --cov-config .coveragerc --cov-report=xml"
           [[ "$IS_WINDOWS" == "false" ]] && flags="$flags --redis redis://localhost:6379/0"
           pytest $flags
 
       - name: Upload coverage data
-        if: "env.IS_PYPY == 'false'"
         uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
@@ -100,3 +88,47 @@ jobs:
           flags: unittests
           name: py-${{ matrix.python-version }}-${{ matrix.os }}
           fail_ci_if_error: true
+
+  pypy-tests:
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+          - macos-latest
+          # - windows-latest
+        python-version:
+          - 'pypy3.8'
+          - 'pypy3.9'
+
+    defaults:
+      # Windows sucks. Force use bash instead of PowerShell
+      run:
+        shell: bash
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }} on ${{ matrix.os }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: "pip"
+          cache-dependency-path: pyproject.toml
+
+      - name: Install project dependencies
+        run: |
+          pip install -e .[dev,test,redis,proxy,i18n,fast]
+
+      - name: Setup redis
+        uses: shogo82148/actions-setup-redis@v1
+        with:
+          redis-version: 6
+
+      - name: Run tests
+        run: |
+          flags=""
+          pytest $flags

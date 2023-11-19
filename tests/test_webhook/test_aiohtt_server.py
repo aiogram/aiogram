@@ -181,10 +181,20 @@ class TestSimpleRequestHandler:
             "aiogram.dispatcher.dispatcher.Dispatcher.silent_call_request",
             new_callable=AsyncMock,
         ) as mocked_silent_call_request:
+            method_called_event = asyncio.Event()
+            mocked_silent_call_request.side_effect = (
+                lambda *args, **kwargs: method_called_event.set()
+            )
+
             handler_event.clear()
             resp = await self.make_reqest(client=client)
             assert resp.status == 200
             await asyncio.wait_for(handler_event.wait(), timeout=1)
+            await asyncio.wait_for(method_called_event.wait(), timeout=1)
+            # Python 3.12 had some changes to asyncio which make it quite a bit faster. But
+            # probably because of that the assert_awaited call is consistently scheduled before the
+            # silent_call_request call - failing the test. So we wait for the method to be called
+            # before asserting if it has been awaited.
             mocked_silent_call_request.assert_awaited()
         result = await resp.json()
         assert not result

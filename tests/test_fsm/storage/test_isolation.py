@@ -53,7 +53,7 @@ class TestRedisEventIsolation:
             assert isolation.redis is not None
             assert isolation.key_builder is not None
 
-            assert pool.called_once_with("redis://localhost:6379/0")
+            pool.assert_called_once_with("redis://localhost:6379/0")
 
     async def test_close(self):
         isolation = RedisEventIsolation(redis=AsyncMock())

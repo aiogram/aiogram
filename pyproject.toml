@@ -34,6 +34,7 @@ classifiers = [
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: Implementation :: PyPy",
     "Topic :: Software Development :: Libraries :: Application Frameworks",
     "Topic :: Software Development :: Libraries :: Python Modules",
@@ -41,7 +42,7 @@ classifiers = [
 ]
 dependencies = [
     "magic-filter>=1.0.12,<1.1",
-    "aiohttp~=3.8.5",
+    "aiohttp~=3.9.0",
     "pydantic>=2.4.1,<2.6",
     "aiofiles~=23.2.1",
     "certifi>=2023.7.22",
@@ -144,7 +145,7 @@ features = [
 serve = "sphinx-autobuild --watch aiogram/ --watch CHANGELOG.rst --watch README.rst docs/ docs/_build/ {args}"
 
 [tool.hatch.envs.dev]
-python = "3.11"
+python = "3.12"
 features = [
     "dev",
     "fast",
@@ -185,7 +186,7 @@ view-cov = "google-chrome-stable reports/py{matrix:python}/coverage/index.html"
 
 
 [[tool.hatch.envs.test.matrix]]
-python = ["38", "39", "310", "311"]
+python = ["38", "39", "310", "311", "312"]
 
 [tool.ruff]
 line-length = 99
