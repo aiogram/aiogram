@@ -24,8 +24,8 @@ from aiogram.fsm.scene import (
     on,
 )
 from aiogram.fsm.state import State, StatesGroup
-from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.fsm.storage.base import StorageKey
+from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.types import Chat, Message, TelegramObject, Update
 from tests.mocked_bot import MockedBot
 
@@ -335,7 +335,6 @@ class TestSceneHandlerWrapper:
 
 
 class TestScenesManager:
-    @pytest.mark.asyncio
     async def test_scenes_manager_get_scene(self, bot: MockedBot):
         class MyScene(Scene):
             pass
@@ -360,8 +359,10 @@ class TestScenesManager:
                     ),
                 ),
             ),
-            state=FSMContext(storage=MemoryStorage(), key=StorageKey(chat_id=-42, user_id=42, bot_id=bot.id)),
-            data={}
+            state=FSMContext(
+                storage=MemoryStorage(), key=StorageKey(chat_id=-42, user_id=42, bot_id=bot.id)
+            ),
+            data={},
         )
 
         scene = await scenes_manager._get_scene(MyScene)
@@ -372,7 +373,6 @@ class TestScenesManager:
         assert scene.wizard.update_type == "message"
         assert scene.wizard.data == {}
 
-    @pytest.mark.asyncio
     async def test_scenes_manager_get_active_scene(self, bot: MockedBot):
         class TestScene(Scene):
             pass
@@ -383,19 +383,26 @@ class TestScenesManager:
         registry = SceneRegistry(Router())
         registry.add(TestScene, TestScene2)
 
-        manager = ScenesManager(registry, update_type="message", event=Update(
-            update_id=42,
-            message=Message(
-                message_id=42,
-                text="test",
-                date=datetime.now(),
-                chat=Chat(
-                    type="private",
-                    id=42,
+        manager = ScenesManager(
+            registry,
+            update_type="message",
+            event=Update(
+                update_id=42,
+                message=Message(
+                    message_id=42,
+                    text="test",
+                    date=datetime.now(),
+                    chat=Chat(
+                        type="private",
+                        id=42,
+                    ),
                 ),
             ),
-        ), state=FSMContext(storage=MemoryStorage(),
-                            key=StorageKey(chat_id=-42, user_id=42, bot_id=bot.id)), data={})
+            state=FSMContext(
+                storage=MemoryStorage(), key=StorageKey(chat_id=-42, user_id=42, bot_id=bot.id)
+            ),
+            data={},
+        )
 
         scene = await manager._get_active_scene()
         assert isinstance(scene, TestScene)
@@ -404,71 +411,88 @@ class TestScenesManager:
         scene = await manager._get_active_scene()
         assert isinstance(scene, TestScene2)
 
-    @pytest.mark.asyncio
     async def test_scenes_manager_get_active_scene_with_scene_exception(self, bot: MockedBot):
         registry = SceneRegistry(Router())
 
-        manager = ScenesManager(registry, update_type="message", event=Update(
-            update_id=42,
-            message=Message(
-                message_id=42,
-                text="test",
-                date=datetime.now(),
-                chat=Chat(
-                    type="private",
-                    id=42,
+        manager = ScenesManager(
+            registry,
+            update_type="message",
+            event=Update(
+                update_id=42,
+                message=Message(
+                    message_id=42,
+                    text="test",
+                    date=datetime.now(),
+                    chat=Chat(
+                        type="private",
+                        id=42,
+                    ),
                 ),
             ),
-        ), state=FSMContext(storage=MemoryStorage(),
-                            key=StorageKey(chat_id=-42, user_id=42, bot_id=bot.id)), data={})
+            state=FSMContext(
+                storage=MemoryStorage(), key=StorageKey(chat_id=-42, user_id=42, bot_id=bot.id)
+            ),
+            data={},
+        )
 
         scene = await manager._get_active_scene()
 
         assert scene is None
 
-    @pytest.mark.asyncio
     async def test_scenes_manager_enter_with_scene_type_none(self, bot: MockedBot):
         registry = SceneRegistry(Router())
 
-        manager = ScenesManager(registry, update_type="message", event=Update(
-            update_id=42,
-            message=Message(
-                message_id=42,
-                text="test",
-                date=datetime.now(),
-                chat=Chat(
-                    type="private",
-                    id=42,
+        manager = ScenesManager(
+            registry,
+            update_type="message",
+            event=Update(
+                update_id=42,
+                message=Message(
+                    message_id=42,
+                    text="test",
+                    date=datetime.now(),
+                    chat=Chat(
+                        type="private",
+                        id=42,
+                    ),
                 ),
             ),
-        ), state=FSMContext(storage=MemoryStorage(),
-                            key=StorageKey(chat_id=-42, user_id=42, bot_id=bot.id)), data={})
+            state=FSMContext(
+                storage=MemoryStorage(), key=StorageKey(chat_id=-42, user_id=42, bot_id=bot.id)
+            ),
+            data={},
+        )
 
         assert await manager.enter(None) is None
 
-    @pytest.mark.asyncio
     async def test_scenes_manager_enter_with_scene_exception(self, bot: MockedBot):
         registry = SceneRegistry(Router())
 
-        manager = ScenesManager(registry, update_type="message", event=Update(
-            update_id=42,
-            message=Message(
-                message_id=42,
-                text="test",
-                date=datetime.now(),
-                chat=Chat(
-                    type="private",
-                    id=42,
+        manager = ScenesManager(
+            registry,
+            update_type="message",
+            event=Update(
+                update_id=42,
+                message=Message(
+                    message_id=42,
+                    text="test",
+                    date=datetime.now(),
+                    chat=Chat(
+                        type="private",
+                        id=42,
+                    ),
                 ),
             ),
-        ), state=FSMContext(storage=MemoryStorage(),
-                            key=StorageKey(chat_id=-42, user_id=42, bot_id=bot.id)), data={})
+            state=FSMContext(
+                storage=MemoryStorage(), key=StorageKey(chat_id=-42, user_id=42, bot_id=bot.id)
+            ),
+            data={},
+        )
 
         scene = "invalid_scene"
         with pytest.raises(SceneException, match=f"Scene {scene!r} is not registered"):
             await manager.enter(scene)
 
-    @pytest.mark.asyncio
     async def test_scenes_manager_close_if_active_scene(self, bot: MockedBot):
         class TestScene(Scene):
             pass
@@ -476,28 +500,39 @@ class TestScenesManager:
         registry = SceneRegistry(Router())
         registry.add(TestScene)
 
-        manager = ScenesManager(registry, update_type="message", event=Update(
-            update_id=42,
-            message=Message(
-                message_id=42,
-                text="test",
-                date=datetime.now(),
-                chat=Chat(
-                    type="private",
-                    id=42,
+        manager = ScenesManager(
+            registry,
+            update_type="message",
+            event=Update(
+                update_id=42,
+                message=Message(
+                    message_id=42,
+                    text="test",
+                    date=datetime.now(),
+                    chat=Chat(
+                        type="private",
+                        id=42,
+                    ),
                 ),
             ),
-        ), state=FSMContext(storage=MemoryStorage(),
-                            key=StorageKey(chat_id=-42, user_id=42, bot_id=bot.id)), data={})
-
-        manager._get_active_scene = AsyncMock(return_value=TestScene(SceneWizard(
-            scene_config=TestScene.__scene_config__,
-            manager=manager,
-            state=manager.state,
-            update_type="message",
-            event=manager.event,
+            state=FSMContext(
+                storage=MemoryStorage(), key=StorageKey(chat_id=-42, user_id=42, bot_id=bot.id)
+            ),
             data={},
-        )))
+        )
+
+        manager._get_active_scene = AsyncMock(
+            return_value=TestScene(
+                SceneWizard(
+                    scene_config=TestScene.__scene_config__,
+                    manager=manager,
+                    state=manager.state,
+                    update_type="message",
+                    event=manager.event,
+                    data={},
+                )
+            )
+        )
         manager._get_active_scene.return_value.wizard.exit = AsyncMock()
 
         await manager.close()
@@ -505,23 +540,29 @@ class TestScenesManager:
         manager._get_active_scene.assert_called_once()
         manager._get_active_scene.return_value.wizard.exit.assert_called_once()
 
-    @pytest.mark.asyncio
     async def test_scenes_manager_close_if_no_active_scene(self, bot: MockedBot):
         registry = SceneRegistry(Router())
 
-        manager = ScenesManager(registry, update_type="message", event=Update(
-            update_id=42,
-            message=Message(
-                message_id=42,
-                text="test",
-                date=datetime.now(),
-                chat=Chat(
-                    type="private",
-                    id=42,
+        manager = ScenesManager(
+            registry,
+            update_type="message",
+            event=Update(
+                update_id=42,
+                message=Message(
+                    message_id=42,
+                    text="test",
+                    date=datetime.now(),
+                    chat=Chat(
+                        type="private",
+                        id=42,
+                    ),
                 ),
             ),
-        ), state=FSMContext(storage=MemoryStorage(),
-                            key=StorageKey(chat_id=-42, user_id=42, bot_id=bot.id)), data={})
+            state=FSMContext(
+                storage=MemoryStorage(), key=StorageKey(chat_id=-42, user_id=42, bot_id=bot.id)
+            ),
+            data={},
+        )
 
         manager._get_active_scene = AsyncMock(return_value=None)
 
@@ -711,19 +752,24 @@ class TestSceneRegistry:
                 continue
             assert registry._middleware in observer.outer_middleware
 
-    @pytest.mark.asyncio
     async def test_scene_registry_update_middleware(self, bot: MockedBot):
         router = Router()
         registry = SceneRegistry(router)
         handler = AsyncMock(spec=NextMiddlewareType)
-        event = Update(update_id=42, message=Message(
-            message_id=42,
-            text="test",
-            date=datetime.now(),
-            chat=Chat(id=42, type="private"),
-        ))
-        data = {"state": FSMContext(storage=MemoryStorage(),
-                                    key=StorageKey(chat_id=-42, user_id=42, bot_id=bot.id))}
+        event = Update(
+            update_id=42,
+            message=Message(
+                message_id=42,
+                text="test",
+                date=datetime.now(),
+                chat=Chat(id=42, type="private"),
+            ),
+        )
+        data = {
+            "state": FSMContext(
+                storage=MemoryStorage(), key=StorageKey(chat_id=-42, user_id=42, bot_id=bot.id)
+            )
+        }
 
         result = await registry._update_middleware(handler, event, data)
 
@@ -732,7 +778,6 @@ class TestSceneRegistry:
         handler.assert_called_once_with(event, data)
         assert result == handler.return_value
 
-    @pytest.mark.asyncio
     async def test_scene_registry_update_middleware_not_update(self, bot: MockedBot):
         router = Router()
         registry = SceneRegistry(router)
@@ -743,26 +788,34 @@ class TestSceneRegistry:
             date=datetime.now(),
             chat=Chat(id=42, type="private"),
         )
-        data = {"state": FSMContext(storage=MemoryStorage(),
-                                    key=StorageKey(chat_id=-42, user_id=42, bot_id=bot.id))}
+        data = {
+            "state": FSMContext(
+                storage=MemoryStorage(), key=StorageKey(chat_id=-42, user_id=42, bot_id=bot.id)
+            )
+        }
 
         with pytest.raises(AssertionError, match="Event must be an Update instance"):
             await registry._update_middleware(handler, event, data)
 
-    @pytest.mark.asyncio
     async def test_scene_registry_middleware(self, bot: MockedBot):
         router = Router()
         registry = SceneRegistry(router)
         handler = AsyncMock(spec=NextMiddlewareType)
-        event = Update(update_id=42, message=Message(
-            message_id=42,
-            text="test",
-            date=datetime.now(),
-            chat=Chat(id=42, type="private"),
-        ))
-        data = {"state": FSMContext(storage=MemoryStorage(),
-                                    key=StorageKey(chat_id=-42, user_id=42, bot_id=bot.id)),
-                "event_update": event}
+        event = Update(
+            update_id=42,
+            message=Message(
+                message_id=42,
+                text="test",
+                date=datetime.now(),
+                chat=Chat(id=42, type="private"),
+            ),
+        )
+        data = {
+            "state": FSMContext(
+                storage=MemoryStorage(), key=StorageKey(chat_id=-42, user_id=42, bot_id=bot.id)
+            ),
+            "event_update": event,
+        }
 
         result = await registry._middleware(handler, event, data)
 
