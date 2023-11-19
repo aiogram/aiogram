@@ -334,6 +334,204 @@ class TestSceneHandlerWrapper:
         assert scene_handler_wrapper.__await__() is scene_handler_wrapper
 
 
+class TestScenesManager:
+    @pytest.mark.asyncio
+    async def test_scenes_manager_get_scene(self, bot: MockedBot):
+        class MyScene(Scene):
+            pass
+
+        router = Router()
+
+        registry = SceneRegistry(router)
+        registry.add(MyScene)
+
+        scenes_manager = ScenesManager(
+            registry=registry,
+            update_type="message",
+            event=Update(
+                update_id=42,
+                message=Message(
+                    message_id=42,
+                    text="test",
+                    date=datetime.now(),
+                    chat=Chat(
+                        type="private",
+                        id=42,
+                    ),
+                ),
+            ),
+            state=FSMContext(storage=MemoryStorage(), key=StorageKey(chat_id=-42, user_id=42, bot_id=bot.id)),
+            data={}
+        )
+
+        scene = await scenes_manager._get_scene(MyScene)
+        assert isinstance(scene, MyScene)
+        assert isinstance(scene.wizard, SceneWizard)
+        assert scene.wizard.scene_config == MyScene.__scene_config__
+        assert scene.wizard.manager == scenes_manager
+        assert scene.wizard.update_type == "message"
+        assert scene.wizard.data == {}
+
+    @pytest.mark.asyncio
+    async def test_scenes_manager_get_active_scene(self, bot: MockedBot):
+        class TestScene(Scene):
+            pass
+
+        class TestScene2(Scene, state="test_state2"):
+            pass
+
+        registry = SceneRegistry(Router())
+        registry.add(TestScene, TestScene2)
+
+        manager = ScenesManager(registry, update_type="message", event=Update(
+            update_id=42,
+            message=Message(
+                message_id=42,
+                text="test",
+                date=datetime.now(),
+                chat=Chat(
+                    type="private",
+                    id=42,
+                ),
+            ),
+        ), state=FSMContext(storage=MemoryStorage(),
+                            key=StorageKey(chat_id=-42, user_id=42, bot_id=bot.id)), data={})
+
+        scene = await manager._get_active_scene()
+        assert isinstance(scene, TestScene)
+
+        await manager.enter(TestScene2)
+        scene = await manager._get_active_scene()
+        assert isinstance(scene, TestScene2)
+
+    @pytest.mark.asyncio
+    async def test_scenes_manager_get_active_scene_with_scene_exception(self, bot: MockedBot):
+        registry = SceneRegistry(Router())
+
+        manager = ScenesManager(registry, update_type="message", event=Update(
+            update_id=42,
+            message=Message(
+                message_id=42,
+                text="test",
+                date=datetime.now(),
+                chat=Chat(
+                    type="private",
+                    id=42,
+                ),
+            ),
+        ), state=FSMContext(storage=MemoryStorage(),
+                            key=StorageKey(chat_id=-42, user_id=42, bot_id=bot.id)), data={})
+
+        scene = await manager._get_active_scene()
+
+        assert scene is None
+
+    @pytest.mark.asyncio
+    async def test_scenes_manager_enter_with_scene_type_none(self, bot: MockedBot):
+        registry = SceneRegistry(Router())
+
+        manager = ScenesManager(registry, update_type="message", event=Update(
+            update_id=42,
+            message=Message(
+                message_id=42,
+                text="test",
+                date=datetime.now(),
+                chat=Chat(
+                    type="private",
+                    id=42,
+                ),
+            ),
+        ), state=FSMContext(storage=MemoryStorage(),
+                            key=StorageKey(chat_id=-42, user_id=42, bot_id=bot.id)), data={})
+
+        assert await manager.enter(None) is None
+
+    @pytest.mark.asyncio
+    async def test_scenes_manager_enter_with_scene_exception(self, bot: MockedBot):
+        registry = SceneRegistry(Router())
+
+        manager = ScenesManager(registry, update_type="message", event=Update(
+            update_id=42,
+            message=Message(
+                message_id=42,
+                text="test",
+                date=datetime.now(),
+                chat=Chat(
+                    type="private",
+                    id=42,
+                ),
+            ),
+        ), state=FSMContext(storage=MemoryStorage(),
+                            key=StorageKey(chat_id=-42, user_id=42, bot_id=bot.id)), data={})
+
+        scene = "invalid_scene"
+        with pytest.raises(SceneException, match=f"Scene {scene!r} is not registered"):
+            await manager.enter(scene)
+
+    @pytest.mark.asyncio
+    async def test_scenes_manager_close_if_active_scene(self, bot: MockedBot):
+        class TestScene(Scene):
+            pass
+
+        registry = SceneRegistry(Router())
+        registry.add(TestScene)
+
+        manager = ScenesManager(registry, update_type="message", event=Update(
+            update_id=42,
+            message=Message(
+                message_id=42,
+                text="test",
+                date=datetime.now(),
+                chat=Chat(
+                    type="private",
+                    id=42,
+                ),
+            ),
+        ), state=FSMContext(storage=MemoryStorage(),
+                            key=StorageKey(chat_id=-42, user_id=42, bot_id=bot.id)), data={})
+
+        manager._get_active_scene = AsyncMock(return_value=TestScene(SceneWizard(
+            scene_config=TestScene.__scene_config__,
+            manager=manager,
+            state=manager.state,
+            update_type="message",
+            event=manager.event,
+            data={},
+        )))
+        manager._get_active_scene.return_value.wizard.exit = AsyncMock()
+
+        await manager.close()
+
+        manager._get_active_scene.assert_called_once()
+        manager._get_active_scene.return_value.wizard.exit.assert_called_once()
+
+    @pytest.mark.asyncio
+    async def test_scenes_manager_close_if_no_active_scene(self, bot: MockedBot):
+        registry = SceneRegistry(Router())
+
+        manager = ScenesManager(registry, update_type="message", event=Update(
+            update_id=42,
+            message=Message(
+                message_id=42,
+                text="test",
+                date=datetime.now(),
+                chat=Chat(
+                    type="private",
+                    id=42,
+                ),
+            ),
+        ), state=FSMContext(storage=MemoryStorage(),
+                            key=StorageKey(chat_id=-42, user_id=42, bot_id=bot.id)), data={})
+
+        manager._get_active_scene = AsyncMock(return_value=None)
+
+        result = await manager.close()
+
+        manager._get_active_scene.assert_called_once()
+
+        assert result is None
+
+
 class TestSceneRegistry:
     def test_scene_registry_initialization(self):
         router = Router()
