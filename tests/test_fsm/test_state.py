@@ -1,5 +1,6 @@
-import pytest
 import sys
+
+import pytest
 
 from aiogram.fsm.state import State, StatesGroup, any_state
 
