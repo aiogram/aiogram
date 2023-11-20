@@ -14,8 +14,9 @@ from .utils.text_decorations import html_decoration as html
 from .utils.text_decorations import markdown_decoration as md
 
 with suppress(ImportError):
-    import uvloop as _uvloop
     import asyncio
+
+    import uvloop as _uvloop
 
     asyncio.set_event_loop_policy(_uvloop.EventLoopPolicy())
 

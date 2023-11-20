@@ -1,7 +1,7 @@
 from decimal import Decimal
 from enum import Enum, auto
 from fractions import Fraction
-from typing import Optional
+from typing import Optional, Union
 from uuid import UUID
 
 import pytest
@@ -146,6 +146,22 @@ class TestCallbackData:
 
         assert MyCallback3.unpack("test3:experiment:42") == MyCallback3(bar=42)
         assert MyCallback3.unpack("test3:spam:42") == MyCallback3(foo="spam", bar=42)
+
+    @pytest.mark.parametrize(
+        "hint",
+        [
+            Union[int, None],
+            Optional[int],
+        ],
+    )
+    def test_unpack_optional_wo_default(self, hint):
+        """Test CallbackData without default optional."""
+
+        class TgData(CallbackData, prefix="tg"):
+            chat_id: int
+            thread_id: hint
+
+        assert TgData.unpack("tg:123:") == TgData(chat_id=123, thread_id=None)
 
     def test_build_filter(self):
         filter_object = MyCallback.filter(F.foo == "test")
