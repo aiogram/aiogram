@@ -1,3 +1,4 @@
+import sys
 from decimal import Decimal
 from enum import Enum, auto
 from fractions import Fraction
@@ -160,6 +161,16 @@ class TestCallbackData:
         class TgData(CallbackData, prefix="tg"):
             chat_id: int
             thread_id: hint
+
+        assert TgData.unpack("tg:123:") == TgData(chat_id=123, thread_id=None)
+
+    @pytest.mark.skipif(sys.version_info < (3, 10), reason="UnionType is added in Python 3.10")
+    def test_unpack_optional_wo_default_union_type(self):
+        """Test CallbackData without default optional."""
+
+        class TgData(CallbackData, prefix="tg"):
+            chat_id: int
+            thread_id: int | None
 
         assert TgData.unpack("tg:123:") == TgData(chat_id=123, thread_id=None)
 

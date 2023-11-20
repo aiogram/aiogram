@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import sys
+import types
 import typing
 from decimal import Decimal
 from enum import Enum
@@ -27,6 +29,11 @@ from aiogram.types import CallbackQuery
 T = TypeVar("T", bound="CallbackData")
 
 MAX_CALLBACK_LENGTH: int = 64
+
+
+_UNION_TYPES = {typing.Union}
+if sys.version_info >= (3, 10):  # pragma: no cover
+    _UNION_TYPES.add(types.UnionType)
 
 
 class CallbackDataException(Exception):
@@ -195,6 +202,6 @@ def _check_field_is_nullable(field: FieldInfo) -> bool:
     if not field.is_required():
         return True
 
-    return typing.get_origin(field.annotation) is typing.Union and type(None) in typing.get_args(
+    return typing.get_origin(field.annotation) in _UNION_TYPES and type(None) in typing.get_args(
         field.annotation
     )
