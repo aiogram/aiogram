@@ -147,6 +147,15 @@ class TestCallbackData:
         assert MyCallback3.unpack("test3:experiment:42") == MyCallback3(bar=42)
         assert MyCallback3.unpack("test3:spam:42") == MyCallback3(foo="spam", bar=42)
 
+    def test_unpack_optional_wo_default(self):
+        """Test CallbackData without default optional."""
+
+        class TgData(CallbackData, prefix="tg"):
+            chat_id: int
+            thread_id: Optional[int]
+
+        assert TgData.unpack("tg:123:") == TgData(chat_id=123, thread_id=None)
+
     def test_build_filter(self):
         filter_object = MyCallback.filter(F.foo == "test")
         assert isinstance(filter_object.rule, MagicFilter)

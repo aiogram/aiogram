@@ -120,9 +120,8 @@ class CallbackData(BaseModel):
             raise ValueError(f"Bad prefix ({prefix!r} != {cls.__prefix__!r})")
         payload = {}
         for k, v in zip(names, parts):  # type: str, Optional[str]
-            if field := cls.model_fields.get(k):
-                if v == "" and not field.is_required():
-                    v = None
+            if v == "":
+                v = None
             payload[k] = v
         return cls(**payload)
 
