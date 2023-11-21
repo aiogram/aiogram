@@ -341,11 +341,11 @@ class TestSceneHandlerWrapper:
 class TestScene:
     def test_scene_subclass_initialisation(self):
         class ParentScene(Scene):
-            @ObserverDecorator("message", (F.text,))
+            @on.message(F.text)
             def parent_handler(self, *args, **kwargs):
                 pass
 
-            @ObserverDecorator("message", (F.text,), action=SceneAction.enter)
+            @on.message.enter(F.text)
             def parent_action(self, *args, **kwargs):
                 pass
 
@@ -356,11 +356,15 @@ class TestScene:
             reset_history_on_enter=True,
             callback_query_without_state=True,
         ):
-            @ObserverDecorator("message", (F.text,))
+            general_handler = on.message(
+                F.text.casefold() == "test", after=After.goto("sub_state")
+            )
+
+            @on.message(F.text)
             def sub_handler(self, *args, **kwargs):
                 pass
 
-            @ObserverDecorator("message", (F.text,), action=SceneAction.exit)
+            @on.message.exit()
             def sub_action(self, *args, **kwargs):
                 pass
 
@@ -372,12 +376,16 @@ class TestScene:
         assert SubScene.__scene_config__.callback_query_without_state is True
 
         # Assert handlers are correctly set
-        assert len(SubScene.__scene_config__.handlers) == 2
+        assert len(SubScene.__scene_config__.handlers) == 3
 
         for handler in SubScene.__scene_config__.handlers:
             assert isinstance(handler, HandlerContainer)
             assert handler.name == "message"
-            assert handler.handler in (ParentScene.parent_handler, SubScene.sub_handler)
+            assert handler.handler in (
+                ParentScene.parent_handler,
+                SubScene.sub_handler,
+                _empty_handler,
+            )
             assert handler.filters == (F.text,)
 
         # Assert actions are correctly set
@@ -411,7 +419,7 @@ class TestScene:
 
     def test_scene_add_to_router(self):
         class MyScene(Scene):
-            @ObserverDecorator("message", (F.text,))
+            @on.message(F.text)
             def test_handler(self, *args, **kwargs):
                 pass
 
@@ -422,7 +430,7 @@ class TestScene:
 
     def test_scene_add_to_router_scene_with_callback_query_without_state(self):
         class MyScene(Scene, callback_query_without_state=True):
-            @ObserverDecorator("callback_query", (F.data,))
+            @on.callback_query(F.data)
             def test_handler(self, *args, **kwargs):
                 pass
 
@@ -437,7 +445,7 @@ class TestScene:
 
     def test_scene_as_handler(self):
         class MyScene(Scene):
-            @ObserverDecorator("message", (F.text,))
+            @on.message(F.text)
             def test_handler(self, *args, **kwargs):
                 pass
 
@@ -449,7 +457,7 @@ class TestScene:
 
     async def test_scene_as_handler_enter(self):
         class MyScene(Scene):
-            @ObserverDecorator("message", (F.text,))
+            @on.message.enter(F.text)
             def test_handler(self, *args, **kwargs):
                 pass
 
