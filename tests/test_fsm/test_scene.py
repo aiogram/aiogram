@@ -8,15 +8,18 @@ import pytest
 from aiogram import Dispatcher, F, Router
 from aiogram.dispatcher.event.bases import NextMiddlewareType
 from aiogram.exceptions import SceneException
+from aiogram.filters import StateFilter
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.scene import (
     ActionContainer,
     After,
+    HandlerContainer,
     HistoryManager,
     ObserverDecorator,
     ObserverMarker,
     Scene,
     SceneAction,
+    SceneConfig,
     SceneHandlerWrapper,
     SceneRegistry,
     ScenesManager,
@@ -333,6 +336,141 @@ class TestSceneHandlerWrapper:
 
         assert hasattr(scene_handler_wrapper, "__await__")
         assert scene_handler_wrapper.__await__() is scene_handler_wrapper
+
+
+class TestScene:
+    def test_scene_subclass_initialisation(self):
+        class ParentScene(Scene):
+            @ObserverDecorator("message", (F.text,))
+            def parent_handler(self, *args, **kwargs):
+                pass
+
+            @ObserverDecorator("message", (F.text,), action=SceneAction.enter)
+            def parent_action(self, *args, **kwargs):
+                pass
+
+        class SubScene(
+            ParentScene,
+            state="sub_state",
+            reset_data_on_enter=True,
+            reset_history_on_enter=True,
+            callback_query_without_state=True,
+        ):
+            @ObserverDecorator("message", (F.text,))
+            def sub_handler(self, *args, **kwargs):
+                pass
+
+            @ObserverDecorator("message", (F.text,), action=SceneAction.exit)
+            def sub_action(self, *args, **kwargs):
+                pass
+
+        # Assert __scene_config__ attributes are correctly set for SubScene
+        assert isinstance(SubScene.__scene_config__, SceneConfig)
+        assert SubScene.__scene_config__.state == "sub_state"
+        assert SubScene.__scene_config__.reset_data_on_enter is True
+        assert SubScene.__scene_config__.reset_history_on_enter is True
+        assert SubScene.__scene_config__.callback_query_without_state is True
+
+        # Assert handlers are correctly set
+        assert len(SubScene.__scene_config__.handlers) == 2
+
+        for handler in SubScene.__scene_config__.handlers:
+            assert isinstance(handler, HandlerContainer)
+            assert handler.name == "message"
+            assert handler.handler in (ParentScene.parent_handler, SubScene.sub_handler)
+            assert handler.filters == (F.text,)
+
+        # Assert actions are correctly set
+        assert len(SubScene.__scene_config__.actions) == 2
+
+        enter_action = SubScene.__scene_config__.actions[SceneAction.enter]
+        assert isinstance(enter_action, dict)
+        assert "message" in enter_action
+        assert enter_action["message"].callback == ParentScene.parent_action
+
+        exit_action = SubScene.__scene_config__.actions[SceneAction.exit]
+        assert isinstance(exit_action, dict)
+        assert "message" in exit_action
+        assert exit_action["message"].callback == SubScene.sub_action
+
+    def test_scene_subclass_initialisation_bases_is_scene_subclass(self):
+        class NotAScene:
+            pass
+
+        class MyScene(Scene, NotAScene):
+            pass
+
+        class TestClass(MyScene, NotAScene):
+            pass
+
+        assert MyScene in TestClass.__bases__
+        assert NotAScene in TestClass.__bases__
+        bases = [base for base in TestClass.__bases__ if not issubclass(base, Scene)]
+        assert Scene not in bases
+        assert NotAScene in bases
+
+    def test_scene_add_to_router(self):
+        class MyScene(Scene):
+            @ObserverDecorator("message", (F.text,))
+            def test_handler(self, *args, **kwargs):
+                pass
+
+        router = Router()
+        MyScene.add_to_router(router)
+
+        assert len(router.observers["message"].handlers) == 1
+
+    def test_scene_add_to_router_scene_with_callback_query_without_state(self):
+        class MyScene(Scene, callback_query_without_state=True):
+            @ObserverDecorator("callback_query", (F.data,))
+            def test_handler(self, *args, **kwargs):
+                pass
+
+        router = Router()
+        MyScene.add_to_router(router)
+
+        assert len(router.observers["callback_query"].handlers) == 1
+        assert (
+            StateFilter(MyScene.__scene_config__.state)
+            not in router.observers["callback_query"].handlers[0].filters
+        )
+
+    def test_scene_as_handler(self):
+        class MyScene(Scene):
+            @ObserverDecorator("message", (F.text,))
+            def test_handler(self, *args, **kwargs):
+                pass
+
+        handler = MyScene.as_handler()
+
+        router = Router()
+        router.message.register(handler)
+        assert router.observers["message"].handlers[0].callback == handler
+
+    async def test_scene_as_handler_enter(self):
+        class MyScene(Scene):
+            @ObserverDecorator("message", (F.text,))
+            def test_handler(self, *args, **kwargs):
+                pass
+
+        event = AsyncMock()
+
+        scenes = ScenesManager(
+            registry=SceneRegistry(Router()),
+            update_type="message",
+            event=event,
+            state=FSMContext(
+                storage=MemoryStorage(), key=StorageKey(bot_id=42, chat_id=-42, user_id=42)
+            ),
+            data={},
+        )
+        scenes.enter = AsyncMock()
+
+        kwargs = {"test_kwargs": "test_kwargs"}
+        handler = MyScene.as_handler(**kwargs)
+        await handler(event, scenes)
+
+        scenes.enter.assert_called_once_with(MyScene, **kwargs)
 
 
 class TestSceneWizard:
