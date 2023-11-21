@@ -38,10 +38,7 @@ class HistoryManager:
             history = history[-self._size :]
         loggers.scene.debug("Push state=%s data=%s to history", state, data)
 
-        if not history:
-            await self._history_state.set_data({})
-        else:
-            await self._history_state.update_data(history=history)
+        await self._history_state.update_data(history=history)
 
     async def pop(self) -> Optional[MemoryStorageRecord]:
         history_data = await self._history_state.get_data()
