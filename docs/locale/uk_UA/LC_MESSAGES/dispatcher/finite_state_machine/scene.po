@@ -22,7 +22,7 @@ msgstr ""
 
 #: ../../dispatcher/finite_state_machine/scene.rst:5
 msgid "Scenes Wizard"
-msgstr "Майтер сцен"
+msgstr "Майcтер сцен"
 
 #: ../../dispatcher/finite_state_machine/scene.rst:11
 msgid "This feature is experimental and may be changed in future versions."
