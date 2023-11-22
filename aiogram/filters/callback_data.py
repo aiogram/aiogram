@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+import sys
+import types
+import typing
 from decimal import Decimal
 from enum import Enum
 from fractions import Fraction
@@ -18,6 +21,7 @@ from uuid import UUID
 
 from magic_filter import MagicFilter
 from pydantic import BaseModel
+from pydantic.fields import FieldInfo
 
 from aiogram.filters.base import Filter
 from aiogram.types import CallbackQuery
@@ -25,6 +29,11 @@ from aiogram.types import CallbackQuery
 T = TypeVar("T", bound="CallbackData")
 
 MAX_CALLBACK_LENGTH: int = 64
+
+
+_UNION_TYPES = {typing.Union}
+if sys.version_info >= (3, 10):  # pragma: no cover
+    _UNION_TYPES.add(types.UnionType)
 
 
 class CallbackDataException(Exception):
@@ -121,7 +130,7 @@ class CallbackData(BaseModel):
         payload = {}
         for k, v in zip(names, parts):  # type: str, Optional[str]
             if field := cls.model_fields.get(k):
-                if v == "" and not field.is_required():
+                if v == "" and _check_field_is_nullable(field):
                     v = None
             payload[k] = v
         return cls(**payload)
@@ -180,3 +189,19 @@ class CallbackQueryFilter(Filter):
         if self.rule is None or self.rule.resolve(callback_data):
             return {"callback_data": callback_data}
         return False
+
+
+def _check_field_is_nullable(field: FieldInfo) -> bool:
+    """
+    Check if the given field is nullable.
+
+    :param field: The FieldInfo object representing the field to check.
+    :return: True if the field is nullable, False otherwise.
+
+    """
+    if not field.is_required():
+        return True
+
+    return typing.get_origin(field.annotation) in _UNION_TYPES and type(None) in typing.get_args(
+        field.annotation
+    )
