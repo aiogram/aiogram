@@ -92,7 +92,7 @@ Also we need to define a handler that helps to start the quiz game:
 .. literalinclude:: ../../../examples/quiz_scene.py
     :language: python
     :caption: Start command handler
-    :lines: 251-253
+    :lines: 260-262
 
 Once the scene is defined, we need to register it in the SceneRegistry:
 
@@ -155,7 +155,7 @@ Now we can run the bot and test the quiz game:
 .. literalinclude:: ../../../examples/quiz_scene.py
     :language: python
     :caption: Run the bot
-    :lines: 282-
+    :lines: 291-
 
 Complete them all
 

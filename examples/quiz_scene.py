@@ -260,7 +260,6 @@ class QuizScene(Scene, state="quiz"):
 quiz_router = Router(name=__name__)
 # Add handler that initializes the scene
 quiz_router.message.register(QuizScene.as_handler(), Command("quiz"))
-quiz_router.include_scene(QuizScene)
 
 
 @quiz_router.message(Command("start"))

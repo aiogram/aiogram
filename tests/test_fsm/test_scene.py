@@ -30,7 +30,7 @@ from aiogram.fsm.scene import (
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.fsm.storage.base import StorageKey
 from aiogram.fsm.storage.memory import MemoryStorage, MemoryStorageRecord
-from aiogram.types import Chat, Message, TelegramObject, Update
+from aiogram.types import Chat, Message, Update
 from tests.mocked_bot import MockedBot
 
 
