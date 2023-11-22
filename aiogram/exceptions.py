@@ -37,6 +37,12 @@ class CallbackAnswerException(AiogramError):
     """
 
 
+class SceneException(AiogramError):
+    """
+    Exception for scenes.
+    """
+
+
 class UnsupportedKeywordArgument(DetailedAiogramError):
     """
     Exception raised when a keyword argument is passed as filter.

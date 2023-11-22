@@ -18,7 +18,7 @@ CallbackType = Callable[..., Any]
 
 
 @dataclass
-class CallableMixin:
+class CallableObject:
     callback: CallbackType
     awaitable: bool = field(init=False)
     params: Set[str] = field(init=False)
@@ -49,7 +49,7 @@ class CallableMixin:
 
 
 @dataclass
-class FilterObject(CallableMixin):
+class FilterObject(CallableObject):
     magic: Optional[MagicFilter] = None
 
     def __post_init__(self) -> None:
@@ -76,7 +76,7 @@ class FilterObject(CallableMixin):
 
 
 @dataclass
-class HandlerObject(CallableMixin):
+class HandlerObject(CallableObject):
     filters: Optional[List[FilterObject]] = None
     flags: Dict[str, Any] = field(default_factory=dict)
 

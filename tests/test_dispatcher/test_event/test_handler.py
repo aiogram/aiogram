@@ -5,7 +5,7 @@ import pytest
 from magic_filter import F as A
 
 from aiogram import F
-from aiogram.dispatcher.event.handler import CallableMixin, FilterObject, HandlerObject
+from aiogram.dispatcher.event.handler import CallableObject, FilterObject, HandlerObject
 from aiogram.filters import Filter
 from aiogram.handlers import BaseHandler
 from aiogram.types import Update
@@ -38,16 +38,16 @@ class SyncCallable:
         return locals()
 
 
-class TestCallableMixin:
+class TestCallableObject:
     @pytest.mark.parametrize("callback", [callback2, TestFilter()])
     def test_init_awaitable(self, callback):
-        obj = CallableMixin(callback)
+        obj = CallableObject(callback)
         assert obj.awaitable
         assert obj.callback == callback
 
     @pytest.mark.parametrize("callback", [callback1, SyncCallable()])
     def test_init_not_awaitable(self, callback):
-        obj = CallableMixin(callback)
+        obj = CallableObject(callback)
         assert not obj.awaitable
         assert obj.callback == callback
 
@@ -62,7 +62,7 @@ class TestCallableMixin:
         ],
     )
     def test_init_args_spec(self, callback: Callable, args: Set[str]):
-        obj = CallableMixin(callback)
+        obj = CallableObject(callback)
         assert set(obj.params) == args
 
     def test_init_decorated(self):
@@ -82,8 +82,8 @@ class TestCallableMixin:
         def callback2(foo, bar, baz):
             pass
 
-        obj1 = CallableMixin(callback1)
-        obj2 = CallableMixin(callback2)
+        obj1 = CallableObject(callback1)
+        obj2 = CallableObject(callback2)
 
         assert set(obj1.params) == {"foo", "bar", "baz"}
         assert obj1.callback == callback1
@@ -127,17 +127,17 @@ class TestCallableMixin:
     def test_prepare_kwargs(
         self, callback: Callable, kwargs: Dict[str, Any], result: Dict[str, Any]
     ):
-        obj = CallableMixin(callback)
+        obj = CallableObject(callback)
         assert obj._prepare_kwargs(kwargs) == result
 
     async def test_sync_call(self):
-        obj = CallableMixin(callback1)
+        obj = CallableObject(callback1)
 
         result = await obj.call(foo=42, bar="test", baz="fuz", spam=True)
         assert result == {"foo": 42, "bar": "test", "baz": "fuz"}
 
     async def test_async_call(self):
-        obj = CallableMixin(callback2)
+        obj = CallableObject(callback2)
 
         result = await obj.call(foo=42, bar="test", baz="fuz", spam=True)
         assert result == {"foo": 42, "bar": "test", "baz": "fuz"}

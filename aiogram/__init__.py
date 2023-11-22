@@ -1,3 +1,4 @@
+import asyncio as _asyncio
 from contextlib import suppress
 
 from aiogram.dispatcher.flags import FlagGenerator
@@ -14,11 +15,9 @@ from .utils.text_decorations import html_decoration as html
 from .utils.text_decorations import markdown_decoration as md
 
 with suppress(ImportError):
-    import asyncio
-
     import uvloop as _uvloop
 
-    asyncio.set_event_loop_policy(_uvloop.EventLoopPolicy())
+    _asyncio.set_event_loop_policy(_uvloop.EventLoopPolicy())
 
 
 F = MagicFilter()
