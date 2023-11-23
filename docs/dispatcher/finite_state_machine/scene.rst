@@ -72,7 +72,7 @@ the questions and answers, in real life you would probably use a database to sto
 
 .. literalinclude:: ../../../examples/quiz_scene.py
     :language: python
-    :lines: 18-94
+    :lines: 25-101
     :caption: Questions list
 
 Then, we need to create a Scene class that will represent the quiz game scene:
