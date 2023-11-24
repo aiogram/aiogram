@@ -1,0 +1,1 @@
+Updated :code:`thumbnail` fields type to :code:`InputFile` only

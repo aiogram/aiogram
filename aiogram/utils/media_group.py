@@ -145,7 +145,7 @@ class MediaGroupBuilder:
     def add_audio(
         self,
         media: Union[str, InputFile],
-        thumbnail: Optional[Union[InputFile, str]] = None,
+        thumbnail: Optional[InputFile] = None,
         caption: Optional[str] = None,
         parse_mode: Optional[str] = UNSET_PARSE_MODE,
         caption_entities: Optional[List[MessageEntity]] = None,
@@ -234,7 +234,7 @@ class MediaGroupBuilder:
     def add_video(
         self,
         media: Union[str, InputFile],
-        thumbnail: Optional[Union[InputFile, str]] = None,
+        thumbnail: Optional[InputFile] = None,
         caption: Optional[str] = None,
         parse_mode: Optional[str] = UNSET_PARSE_MODE,
         caption_entities: Optional[List[MessageEntity]] = None,
@@ -296,7 +296,7 @@ class MediaGroupBuilder:
     def add_document(
         self,
         media: Union[str, InputFile],
-        thumbnail: Optional[Union[InputFile, str]] = None,
+        thumbnail: Optional[InputFile] = None,
         caption: Optional[str] = None,
         parse_mode: Optional[str] = UNSET_PARSE_MODE,
         caption_entities: Optional[List[MessageEntity]] = None,

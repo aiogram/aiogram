@@ -1,3 +1,9 @@
 annotations:
   protect_content:
     value: UNSET_PROTECT_CONTENT
+  thumbnail:
+    parsed_type:
+      type: entity
+      references:
+        category: types
+        name: InputFile
