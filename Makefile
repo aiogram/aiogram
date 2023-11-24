@@ -100,7 +100,7 @@ bump:
 
 .PHONY: towncrier-build
 towncrier-build:
-	towncrier build --yes
+	hatch run docs:towncrier build --yes
 
 .PHONY: towncrier-draft
 towncrier-draft:

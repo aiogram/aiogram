@@ -1,1 +1,0 @@
-Fixed a situation where a :code:`CallbackData` could not be parsed without a default value.

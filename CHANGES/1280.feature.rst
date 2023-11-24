@@ -1,2 +1,0 @@
-Introduced Scenes feature that helps you to simplify user interactions using Finite State Machines.
-Read more about 👉 :ref:`Scenes <Scenes>`.

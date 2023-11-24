@@ -1,1 +1,0 @@
-Prevent update handling task pointers from being garbage collected, backport from 2.x

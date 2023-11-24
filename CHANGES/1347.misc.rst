@@ -1,1 +1,0 @@
-Updated :code:`typing-extensions` package version range in dependencies to fix compatibility with :code:`FastAPI`

@@ -1,1 +1,0 @@
-Added :code:`pydantic` v2.5 support.

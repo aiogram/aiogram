@@ -1,6 +1,0 @@
-Updated dependencies, bumped minimum required version:
-
-- :code:`magic-filter` - fixed `.resolve` operation
-- :code:`pydantic` - fixed compatibility (broken in 2.4)
-- :code:`aiodns` - added new dependency to the :code:`fast` extras (:code:`pip install aiogram[fast]`)
-- *others...*

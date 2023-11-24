@@ -1,2 +1,0 @@
-Added `CITATION.cff` file for automatic academic citation generation.
-Now you can copy citation from the GitHub page and paste it into your paper.
