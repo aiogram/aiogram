@@ -5,44 +5,6 @@ Types
 Here is list of all available API types:
 
 
-Inline mode
-===========
-
-.. toctree::
-    :maxdepth: 1
-
-    chosen_inline_result
-    inline_query
-    inline_query_result
-    inline_query_result_article
-    inline_query_result_audio
-    inline_query_result_cached_audio
-    inline_query_result_cached_document
-    inline_query_result_cached_gif
-    inline_query_result_cached_mpeg4_gif
-    inline_query_result_cached_photo
-    inline_query_result_cached_sticker
-    inline_query_result_cached_video
-    inline_query_result_cached_voice
-    inline_query_result_contact
-    inline_query_result_document
-    inline_query_result_game
-    inline_query_result_gif
-    inline_query_result_location
-    inline_query_result_mpeg4_gif
-    inline_query_result_photo
-    inline_query_result_venue
-    inline_query_result_video
-    inline_query_result_voice
-    inline_query_results_button
-    input_contact_message_content
-    input_invoice_message_content
-    input_location_message_content
-    input_message_content
-    input_text_message_content
-    input_venue_message_content
-    sent_web_app_message
-
 Available types
 ===============
 
@@ -140,6 +102,55 @@ Available types
     web_app_info
     write_access_allowed
 
+Inline mode
+===========
+
+.. toctree::
+    :maxdepth: 1
+
+    chosen_inline_result
+    inline_query
+    inline_query_result
+    inline_query_result_article
+    inline_query_result_audio
+    inline_query_result_cached_audio
+    inline_query_result_cached_document
+    inline_query_result_cached_gif
+    inline_query_result_cached_mpeg4_gif
+    inline_query_result_cached_photo
+    inline_query_result_cached_sticker
+    inline_query_result_cached_video
+    inline_query_result_cached_voice
+    inline_query_result_contact
+    inline_query_result_document
+    inline_query_result_game
+    inline_query_result_gif
+    inline_query_result_location
+    inline_query_result_mpeg4_gif
+    inline_query_result_photo
+    inline_query_result_venue
+    inline_query_result_video
+    inline_query_result_voice
+    inline_query_results_button
+    input_contact_message_content
+    input_invoice_message_content
+    input_location_message_content
+    input_message_content
+    input_text_message_content
+    input_venue_message_content
+    sent_web_app_message
+
+Stickers
+========
+
+.. toctree::
+    :maxdepth: 1
+
+    input_sticker
+    mask_position
+    sticker
+    sticker_set
+
 Telegram Passport
 =================
 
@@ -161,26 +172,6 @@ Telegram Passport
     passport_element_error_unspecified
     passport_file
 
-Getting updates
-===============
-
-.. toctree::
-    :maxdepth: 1
-
-    update
-    webhook_info
-
-Stickers
-========
-
-.. toctree::
-    :maxdepth: 1
-
-    input_sticker
-    mask_position
-    sticker
-    sticker_set
-
 Payments
 ========
 
@@ -195,6 +186,15 @@ Payments
     shipping_option
     shipping_query
     successful_payment
+
+Getting updates
+===============
+
+.. toctree::
+    :maxdepth: 1
+
+    update
+    webhook_info
 
 Games
 =====

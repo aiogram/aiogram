@@ -5,6 +5,28 @@ Methods
 Here is list of all available API methods:
 
 
+Stickers
+========
+
+.. toctree::
+    :maxdepth: 1
+
+    add_sticker_to_set
+    create_new_sticker_set
+    delete_sticker_from_set
+    delete_sticker_set
+    get_custom_emoji_stickers
+    get_sticker_set
+    send_sticker
+    set_custom_emoji_sticker_set_thumbnail
+    set_sticker_emoji_list
+    set_sticker_keywords
+    set_sticker_mask_position
+    set_sticker_position_in_set
+    set_sticker_set_thumbnail
+    set_sticker_set_title
+    upload_sticker_file
+
 Available methods
 =================
 
@@ -89,68 +111,6 @@ Available methods
     unpin_all_general_forum_topic_messages
     unpin_chat_message
 
-Payments
-========
-
-.. toctree::
-    :maxdepth: 1
-
-    answer_pre_checkout_query
-    answer_shipping_query
-    create_invoice_link
-    send_invoice
-
-Stickers
-========
-
-.. toctree::
-    :maxdepth: 1
-
-    add_sticker_to_set
-    create_new_sticker_set
-    delete_sticker_from_set
-    delete_sticker_set
-    get_custom_emoji_stickers
-    get_sticker_set
-    send_sticker
-    set_custom_emoji_sticker_set_thumbnail
-    set_sticker_emoji_list
-    set_sticker_keywords
-    set_sticker_mask_position
-    set_sticker_position_in_set
-    set_sticker_set_thumbnail
-    set_sticker_set_title
-    upload_sticker_file
-
-Games
-=====
-
-.. toctree::
-    :maxdepth: 1
-
-    get_game_high_scores
-    send_game
-    set_game_score
-
-Getting updates
-===============
-
-.. toctree::
-    :maxdepth: 1
-
-    delete_webhook
-    get_updates
-    get_webhook_info
-    set_webhook
-
-Telegram Passport
-=================
-
-.. toctree::
-    :maxdepth: 1
-
-    set_passport_data_errors
-
 Updating messages
 =================
 
@@ -174,3 +134,43 @@ Inline mode
 
     answer_inline_query
     answer_web_app_query
+
+Games
+=====
+
+.. toctree::
+    :maxdepth: 1
+
+    get_game_high_scores
+    send_game
+    set_game_score
+
+Payments
+========
+
+.. toctree::
+    :maxdepth: 1
+
+    answer_pre_checkout_query
+    answer_shipping_query
+    create_invoice_link
+    send_invoice
+
+Getting updates
+===============
+
+.. toctree::
+    :maxdepth: 1
+
+    delete_webhook
+    get_updates
+    get_webhook_info
+    set_webhook
+
+Telegram Passport
+=================
+
+.. toctree::
+    :maxdepth: 1
+
+    set_passport_data_errors

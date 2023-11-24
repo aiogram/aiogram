@@ -50,6 +50,6 @@ As shortcut from received object
 
 - :meth:`aiogram.types.message.Message.answer_document`
 - :meth:`aiogram.types.message.Message.reply_document`
-- :meth:`aiogram.types.chat_member_updated.ChatMemberUpdated.answer_document`
 - :meth:`aiogram.types.chat_join_request.ChatJoinRequest.answer_document`
 - :meth:`aiogram.types.chat_join_request.ChatJoinRequest.answer_document_pm`
+- :meth:`aiogram.types.chat_member_updated.ChatMemberUpdated.answer_document`

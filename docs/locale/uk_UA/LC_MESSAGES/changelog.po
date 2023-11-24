@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-11-23 00:44+0200\n"
+"POT-Creation-Date: 2023-11-24 21:10+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,7 +22,7 @@ msgid "Changelog"
 msgstr ""
 
 #: ../../[towncrier-fragments]:2
-msgid "\\ |release| [UNRELEASED DRAFT] (2023-11-23)"
+msgid "\\ |release| [UNRELEASED DRAFT] (2023-11-24)"
 msgstr ""
 
 #: ../../../CHANGES.rst:33 ../../../CHANGES.rst:122 ../../../CHANGES.rst:180
@@ -184,6 +184,12 @@ msgstr ""
 msgid ""
 "Added :code:`pydantic` v2.5 support. `#1361 "
 "<https://github.com/aiogram/aiogram/issues/1361>`_"
+msgstr ""
+
+#: ../../[towncrier-fragments]:61
+msgid ""
+"Updated :code:`thumbnail` fields type to :code:`InputFile` only `#1372 "
+"<https://github.com/aiogram/aiogram/issues/1372>`_"
 msgstr ""
 
 #: ../../../CHANGES.rst:20
@@ -3253,39 +3259,3 @@ msgstr ""
 #: ../../../HISTORY.rst:497
 msgid "0.1 (2017-06-03)"
 msgstr ""
-
-#~ msgid "\\ |release| [UNRELEASED DRAFT] (2023-10-08)"
-#~ msgstr ""
-
-#~ msgid "\\ |release| [UNRELEASED DRAFT] (2023-10-29)"
-#~ msgstr ""
-
-#~ msgid "\\ |release| [UNRELEASED DRAFT] (2023-11-16)"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "The new FSM strategy CHAT_TOPIC, which"
-#~ " sets the state for the entire "
-#~ "topic in the chat, also works in"
-#~ " private messages and regular groups "
-#~ "without topics. `#1343 "
-#~ "<https://github.com/aiogram/aiogram/issues/1343>`_"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Fixed ``parse_mode`` in ``send_copy`` helper."
-#~ " Disable by default. `#1332 "
-#~ "<https://github.com/aiogram/aiogram/issues/1332>`_"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Added current handler to filters, so "
-#~ "that flags can be retrieved from "
-#~ "it. `#1360 "
-#~ "<https://github.com/aiogram/aiogram/issues/1360>`_"
-#~ msgstr ""
-
-#~ msgid ""
-#~ "Added pydantic v2.5 support. `#1361 "
-#~ "<https://github.com/aiogram/aiogram/issues/1361>`_"
-#~ msgstr ""
