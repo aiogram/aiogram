@@ -38,7 +38,7 @@ class SendVideo(TelegramMethod[Message]):
     """Video width"""
     height: Optional[int] = None
     """Video height"""
-    thumbnail: Optional[Union[InputFile, str]] = None
+    thumbnail: Optional[InputFile] = None
     """Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`"""
     caption: Optional[str] = None
     """Video caption (may also be used when resending videos by *file_id*), 0-1024 characters after entities parsing"""
@@ -76,7 +76,7 @@ class SendVideo(TelegramMethod[Message]):
             duration: Optional[int] = None,
             width: Optional[int] = None,
             height: Optional[int] = None,
-            thumbnail: Optional[Union[InputFile, str]] = None,
+            thumbnail: Optional[InputFile] = None,
             caption: Optional[str] = None,
             parse_mode: Optional[str] = UNSET_PARSE_MODE,
             caption_entities: Optional[List[MessageEntity]] = None,
