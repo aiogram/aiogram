@@ -5,20 +5,19 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: aiogram\n"
+"Project-Id-Version:  aiogram\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-11-23 00:44+0200\n"
+"POT-Creation-Date: 2023-11-24 21:53+0200\n"
 "PO-Revision-Date: 2023-11-23 01:27+0200\n"
 "Last-Translator: \n"
-"Language-Team: uk_UA <LL@li.org>\n"
 "Language: uk_UA\n"
+"Language-Team: uk_UA <LL@li.org>\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 "
-"&& (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "Generated-By: Babel 2.13.1\n"
-"X-Generator: Poedit 3.4.1\n"
 
 #: ../../dispatcher/finite_state_machine/scene.rst:5
 msgid "Scenes Wizard"
@@ -27,19 +26,20 @@ msgstr "Майcтер сцен"
 #: ../../dispatcher/finite_state_machine/scene.rst:11
 msgid "This feature is experimental and may be changed in future versions."
 msgstr ""
-"Дана фіча є експериментальною, тому у наступних оновленнях може змінюватись."
+"Дана фіча є експериментальною, тому у наступних оновленнях може "
+"змінюватись."
 
 #: ../../dispatcher/finite_state_machine/scene.rst:13
 msgid ""
 "**aiogram's** basics API is easy to use and powerful, allowing the "
-"implementation of simple interactions such as triggering a command or message "
-"for a response. However, certain tasks require a dialogue between the user and "
-"the bot. This is where Scenes come into play."
+"implementation of simple interactions such as triggering a command or "
+"message for a response. However, certain tasks require a dialogue between"
+" the user and the bot. This is where Scenes come into play."
 msgstr ""
-"Базовий інтерфейс **aiogram**-у простий та потужний у використанні, що дозволяє "
-"реалізувати прості взаємодії, такі як обробка команд або повідомлень і "
-"відповідей. Однак деякі завдання вимагають поетапного діалогу між користувачем "
-"і ботом. Ось де сцени вступають у гру."
+"Базовий інтерфейс **aiogram**-у простий та потужний у використанні, що "
+"дозволяє реалізувати прості взаємодії, такі як обробка команд або "
+"повідомлень і відповідей. Однак деякі завдання вимагають поетапного "
+"діалогу між користувачем і ботом. Ось де сцени вступають у гру."
 
 #: ../../dispatcher/finite_state_machine/scene.rst:20
 msgid "Understanding Scenes"
@@ -47,292 +47,307 @@ msgstr "Що ж таке сцени?"
 
 #: ../../dispatcher/finite_state_machine/scene.rst:22
 msgid ""
-"A Scene in **aiogram** is like an abstract, isolated namespace or room that a "
-"user can be ushered into via the code. When a user is inside a Scene, all other "
-"global commands or message handlers are isolated, and they stop responding to "
-"user actions. Scenes provide a structure for more complex interactions, "
-"effectively isolating and managing contexts for different stages of the "
-"conversation. They allow you to control and manage the flow of the conversation "
-"in a more organized manner."
+"A Scene in **aiogram** is like an abstract, isolated namespace or room "
+"that a user can be ushered into via the code. When a user is within a "
+"Scene, most other global commands or message handlers are bypassed, "
+"unless they are specifically designed to function outside of the Scenes. "
+"This helps in creating an experience of focused interactions. Scenes "
+"provide a structure for more complex interactions, effectively isolating "
+"and managing contexts for different stages of the conversation. They "
+"allow you to control and manage the flow of the conversation in a more "
+"organized manner."
 msgstr ""
-"Сцена в **aiogram** схожа на абстрактний, ізольований простір імен або кімнату, "
-"до якої користувач може потрапити за допомогою коду. Коли користувач "
-"знаходиться всередині Сцени, усі інші глобальні команди або обробники "
-"повідомлень ізольовані, і вони перестають реагувати на дії користувача. Сцени "
-"забезпечують структуру для більш складних взаємодій, ефективно ізолюючи та "
-"керуючи контекстами для різних етапів розмови. Вони дозволяють більш "
-"організовано контролювати та керувати розмовою."
+"Сцена в **aiogram** схожа на абстрактний, ізольований простір імен або "
+"кімнату, до якої користувач може потрапити за допомогою коду. Коли "
+"користувач перебуває в межах Сцени, більшість інших глобальних команд "
+"або обробників повідомлень пропускаються, якщо тільки вони не призначені "
+"для роботи поза Сценами."
+"Сцени забезпечують структуру для більш складних взаємодій, "
+"ефективно ізолюючи та керуючи контекстами для різних етапів розмови. Вони"
+" дозволяють більш організовано контролювати та керувати розмовою."
 
-#: ../../dispatcher/finite_state_machine/scene.rst:30
+#: ../../dispatcher/finite_state_machine/scene.rst:31
 msgid "Scene Lifecycle"
 msgstr "Життєвий цикл"
 
-#: ../../dispatcher/finite_state_machine/scene.rst:32
+#: ../../dispatcher/finite_state_machine/scene.rst:33
 msgid ""
-"Each Scene can be \"entered\", \"left\" of \"exited\", allowing for clear "
-"transitions between different stages of the conversation. For instance, in a "
-"multi-step form filling interaction, each step could be a Scene - the bot "
-"guides the user from one Scene to the next as they provide the required "
-"information."
+"Each Scene can be \"entered\", \"left\" of \"exited\", allowing for clear"
+" transitions between different stages of the conversation. For instance, "
+"in a multi-step form filling interaction, each step could be a Scene - "
+"the bot guides the user from one Scene to the next as they provide the "
+"required information."
 msgstr ""
-"У кожну сцену можна \"увійти\", \"покинути\" або \"вийти\", що забезпечує чіткі "
-"переходи між різними етапами розмови. Наприклад, у багатоетапній взаємодії "
-"заповнення форми кожен крок може бути сценою - бот направляє користувача від "
-"однієї сцени до наступної, коли вони надають необхідну інформацію."
+"У кожну сцену можна \"увійти\", \"покинути\" або \"вийти\", що забезпечує"
+" чіткі переходи між різними етапами розмови. Наприклад, у багатоетапній "
+"взаємодії заповнення форми кожен крок може бути сценою - бот направляє "
+"користувача від однієї сцени до наступної, коли вони надають необхідну "
+"інформацію."
 
-#: ../../dispatcher/finite_state_machine/scene.rst:38
+#: ../../dispatcher/finite_state_machine/scene.rst:39
 msgid "Scene Listeners"
 msgstr "Слухачі подій"
 
-#: ../../dispatcher/finite_state_machine/scene.rst:40
+#: ../../dispatcher/finite_state_machine/scene.rst:41
 msgid ""
-"Scenes have their own hooks which are command or message listeners that only "
-"act while the user is within the Scene. These hooks react to user actions while "
-"the user is 'inside' the Scene, providing the responses or actions appropriate "
-"for that context. When the user is ushered from one Scene to another, the "
-"actions and responses change accordingly as the user is now interacting with "
-"the set of listeners inside the new Scene. These 'Scene-specific' hooks or "
-"listeners, detached from the global listening context, allow for more "
-"streamlined and organized bot-user interactions."
+"Scenes have their own hooks which are command or message listeners that "
+"only act while the user is within the Scene. These hooks react to user "
+"actions while the user is 'inside' the Scene, providing the responses or "
+"actions appropriate for that context. When the user is ushered from one "
+"Scene to another, the actions and responses change accordingly as the "
+"user is now interacting with the set of listeners inside the new Scene. "
+"These 'Scene-specific' hooks or listeners, detached from the global "
+"listening context, allow for more streamlined and organized bot-user "
+"interactions."
 msgstr ""
-"Сцени мають власні хуки, які є слухачами команд або повідомлень, які діють лише "
-"тоді, коли користувач знаходиться всередині сцени. Ці хуки реагують на дії "
-"користувача, коли користувач перебуває «всередині» Сцени, надаючи відповіді або "
-"дії, відповідні цьому контексту. Коли користувач переходить від однієї сцени до "
-"іншої, дії та відповіді відповідно змінюються, оскільки користувач тепер "
-"взаємодіє з групою слухачів у новій сцені. Ці «специфічні для сцени» хуки або "
-"слухачі, відірвані від глобального контексту прослуховування, дозволяють більш "
-"оптимізовану та організовану взаємодію бот-користувач."
+"Сцени мають власні хуки, які є слухачами команд або повідомлень, які "
+"діють лише тоді, коли користувач знаходиться всередині сцени. Ці хуки "
+"реагують на дії користувача, коли користувач перебуває «всередині» Сцени,"
+" надаючи відповіді або дії, відповідні цьому контексту. Коли користувач "
+"переходить від однієї сцени до іншої, дії та відповіді відповідно "
+"змінюються, оскільки користувач тепер взаємодіє з групою слухачів у новій"
+" сцені. Ці «специфічні для сцени» хуки або слухачі, відірвані від "
+"глобального контексту прослуховування, дозволяють більш оптимізовану та "
+"організовану взаємодію бот-користувач."
 
-#: ../../dispatcher/finite_state_machine/scene.rst:51
+#: ../../dispatcher/finite_state_machine/scene.rst:52
 msgid "Scene Interactions"
 msgstr "Взаємодія"
 
-#: ../../dispatcher/finite_state_machine/scene.rst:53
+#: ../../dispatcher/finite_state_machine/scene.rst:54
 msgid ""
-"Each Scene is like a self-contained world, with interactions defined within the "
-"scope of that Scene. As such, only the handlers defined within the specific "
-"Scene will react to user's input during the lifecycle of that Scene."
+"Each Scene is like a self-contained world, with interactions defined "
+"within the scope of that Scene. As such, only the handlers defined within"
+" the specific Scene will react to user's input during the lifecycle of "
+"that Scene."
 msgstr ""
-"Кожна сцена схожа на самодостатній світ із взаємодіями, визначеними в межах "
-"цієї сцени. Таким чином, лише обробники, визначені в конкретній сцені, "
-"реагуватимуть на введення користувача протягом життєвого циклу цієї сцени."
+"Кожна сцена схожа на самодостатній світ із взаємодіями, визначеними в "
+"межах цієї сцени. Таким чином, лише обробники, визначені в конкретній "
+"сцені, реагуватимуть на введення користувача протягом життєвого циклу "
+"цієї сцени."
 
-#: ../../dispatcher/finite_state_machine/scene.rst:59
+#: ../../dispatcher/finite_state_machine/scene.rst:60
 msgid "Scene Benefits"
 msgstr "Переваги"
 
-#: ../../dispatcher/finite_state_machine/scene.rst:61
+#: ../../dispatcher/finite_state_machine/scene.rst:62
 msgid ""
-"Scenes can help manage more complex interaction workflows and enable more "
-"interactive and dynamic dialogs between the user and the bot. This offers great "
-"flexibility in handling multi-step interactions or conversations with the users."
+"Scenes can help manage more complex interaction workflows and enable more"
+" interactive and dynamic dialogs between the user and the bot. This "
+"offers great flexibility in handling multi-step interactions or "
+"conversations with the users."
 msgstr ""
-"Сцени можуть допомогти керувати більш складними робочими процесами взаємодії та "
-"забезпечити більш інтерактивні та динамічні діалоги між користувачем і ботом. "
-"Це забезпечує велику гнучкість у обробці багатоетапних взаємодій або розмов з "
-"користувачами."
+"Сцени можуть допомогти керувати більш складними робочими процесами "
+"взаємодії та забезпечити більш інтерактивні та динамічні діалоги між "
+"користувачем і ботом. Це забезпечує велику гнучкість у обробці "
+"багатоетапних взаємодій або розмов з користувачами."
 
-#: ../../dispatcher/finite_state_machine/scene.rst:66
+#: ../../dispatcher/finite_state_machine/scene.rst:67
 msgid "How to use Scenes"
 msgstr "Як це використовувати?"
 
-#: ../../dispatcher/finite_state_machine/scene.rst:68
+#: ../../dispatcher/finite_state_machine/scene.rst:69
 msgid ""
-"For example we have a quiz bot, which asks the user a series of questions and "
-"then displays the results."
+"For example we have a quiz bot, which asks the user a series of questions"
+" and then displays the results."
 msgstr ""
-"Наприклад, у нас є тестовий бот, який задає користувачеві серію запитань, а "
-"потім відображає результати - назвемо його гра-вікторина."
+"Наприклад, у нас є тестовий бот, який задає користувачеві серію запитань,"
+" а потім відображає результати - назвемо його гра-вікторина."
 
-#: ../../dispatcher/finite_state_machine/scene.rst:70
+#: ../../dispatcher/finite_state_machine/scene.rst:71
 msgid ""
-"Lets start with the data models, in this example simple data models are used to "
-"represent the questions and answers, in real life you would probably use a "
-"database to store the data."
+"Lets start with the data models, in this example simple data models are "
+"used to represent the questions and answers, in real life you would "
+"probably use a database to store the data."
 msgstr ""
-"Почнемо з моделей даних. У цьому прикладі прості моделі даних використовуються "
-"для представлення запитань і відповідей, у реальному житті ви, ймовірно, "
-"використовували б базу даних для зберігання даних."
+"Почнемо з моделей даних. У цьому прикладі прості моделі даних "
+"використовуються для представлення запитань і відповідей, у реальному "
+"житті ви, ймовірно, використовували б базу даних для зберігання даних."
 
-#: ../../dispatcher/finite_state_machine/scene.rst:73
+#: ../../dispatcher/finite_state_machine/scene.rst:74
 msgid "Questions list"
 msgstr "Запитання"
 
-#: ../../dispatcher/finite_state_machine/scene.rst:78
+#: ../../dispatcher/finite_state_machine/scene.rst:79
 msgid ""
-"Then, we need to create a Scene class that will represent the quiz game scene:"
+"Then, we need to create a Scene class that will represent the quiz game "
+"scene:"
 msgstr ""
-"Потім нам потрібно створити клас Scene, який представлятиме сцену вікторини:"
+"Потім нам потрібно створити клас Scene, який представлятиме сцену "
+"вікторини:"
 
-#: ../../dispatcher/finite_state_machine/scene.rst:82
+#: ../../dispatcher/finite_state_machine/scene.rst:83
 msgid ""
-"Keyword argument passed into class definition describes the scene name - is the "
-"same as state of the scene."
+"Keyword argument passed into class definition describes the scene name - "
+"is the same as state of the scene."
 msgstr ""
-"Іменований аргумент, переданий у визначення класу, описує ім'я сцени - те саме, "
-"що стан сцени."
+"Іменований аргумент, переданий у визначення класу, описує ім'я сцени - те"
+" саме, що стан сцени."
 
-#: ../../dispatcher/finite_state_machine/scene.rst:84
+#: ../../dispatcher/finite_state_machine/scene.rst:85
 msgid "Quiz Scene"
 msgstr "Сцена вікторини"
 
-#: ../../dispatcher/finite_state_machine/scene.rst:92
+#: ../../dispatcher/finite_state_machine/scene.rst:93
 msgid "Also we need to define a handler that helps to start the quiz game:"
 msgstr "Також нам потрібно визначити обробник, який допоможе запустити вікторину:"
 
-#: ../../dispatcher/finite_state_machine/scene.rst:94
+#: ../../dispatcher/finite_state_machine/scene.rst:95
 msgid "Start command handler"
 msgstr "Обробник для запуску вікторини"
 
-#: ../../dispatcher/finite_state_machine/scene.rst:99
+#: ../../dispatcher/finite_state_machine/scene.rst:100
 msgid "Once the scene is defined, we need to register it in the SceneRegistry:"
 msgstr "Після визначення сцени нам потрібно зареєструвати її в SceneRegistry:"
 
-#: ../../dispatcher/finite_state_machine/scene.rst:101
+#: ../../dispatcher/finite_state_machine/scene.rst:102
 msgid "Registering the scene"
 msgstr "Реєстрація сцени"
 
-#: ../../dispatcher/finite_state_machine/scene.rst:106
+#: ../../dispatcher/finite_state_machine/scene.rst:107
 msgid ""
-"So, now we can implement the quiz game logic, each question is sent to the user "
-"one by one, and the user's answer is checked at the end of all questions."
+"So, now we can implement the quiz game logic, each question is sent to "
+"the user one by one, and the user's answer is checked at the end of all "
+"questions."
 msgstr ""
 "Отже, тепер ми можемо реалізувати логіку гри-вікторини, кожне запитання "
-"надсилається користувачеві одне за одним, а відповідь користувача перевіряється "
-"в кінці всіх запитань."
+"надсилається користувачеві одне за одним, а відповідь користувача "
+"перевіряється в кінці всіх запитань."
 
-#: ../../dispatcher/finite_state_machine/scene.rst:109
+#: ../../dispatcher/finite_state_machine/scene.rst:110
 msgid "Now we need to write an entry point for the question handler:"
 msgstr "Тепер нам потрібно написати точку входу для обробника запитань:"
 
-#: ../../dispatcher/finite_state_machine/scene.rst:111
+#: ../../dispatcher/finite_state_machine/scene.rst:112
 msgid "Question handler entry point"
 msgstr "Точка входу обробника запитань"
 
-#: ../../dispatcher/finite_state_machine/scene.rst:117
+#: ../../dispatcher/finite_state_machine/scene.rst:118
 msgid ""
-"Once scene is entered, we should expect the user's answer, so we need to write "
-"a handler for it, this handler should expect the text message, save the answer "
-"and retake the question handler for the next question:"
+"Once scene is entered, we should expect the user's answer, so we need to "
+"write a handler for it, this handler should expect the text message, save"
+" the answer and retake the question handler for the next question:"
 msgstr ""
-"Після входу в сцену ми маємо очікувати відповіді користувача, тому нам потрібно "
-"написати для неї обробник, цей обробник має очікувати текстове повідомлення, "
-"зберегти відповідь і повторно виконати обробник запитання для наступного "
-"запитання:"
+"Після входу в сцену ми маємо очікувати відповіді користувача, тому нам "
+"потрібно написати для неї обробник, цей обробник має очікувати текстове "
+"повідомлення, зберегти відповідь і повторно виконати обробник запитання "
+"для наступного запитання:"
 
-#: ../../dispatcher/finite_state_machine/scene.rst:121
+#: ../../dispatcher/finite_state_machine/scene.rst:122
 msgid "Answer handler"
 msgstr "Обробник відповідей"
 
-#: ../../dispatcher/finite_state_machine/scene.rst:126
+#: ../../dispatcher/finite_state_machine/scene.rst:127
 msgid ""
-"When user answer with unknown message, we should expect the text message again:"
+"When user answer with unknown message, we should expect the text message "
+"again:"
 msgstr ""
-"Коли користувач відповідає невідомим повідомленням, ми повинні знову очікувати "
-"текстове повідомлення:"
+"Коли користувач відповідає невідомим повідомленням, ми повинні знову "
+"очікувати текстове повідомлення:"
 
-#: ../../dispatcher/finite_state_machine/scene.rst:128
+#: ../../dispatcher/finite_state_machine/scene.rst:129
 msgid "Unknown message handler"
 msgstr "Невідомий обробник повідомлень"
 
-#: ../../dispatcher/finite_state_machine/scene.rst:133
+#: ../../dispatcher/finite_state_machine/scene.rst:134
 msgid ""
-"When all questions are answered, we should show the results to the user, as you "
-"can see in the code below, we use `await self.wizard.exit()` to exit from the "
-"scene when questions list is over in the `QuizScene.on_enter` handler."
+"When all questions are answered, we should show the results to the user, "
+"as you can see in the code below, we use `await self.wizard.exit()` to "
+"exit from the scene when questions list is over in the "
+"`QuizScene.on_enter` handler."
 msgstr ""
-"Після відповіді на всі запитання ми маємо показати результати користувачеві, як "
-"ви можете бачити в коді нижче, ми використовуємо `await self.wizard.exit()`, "
-"щоб вийти зі сцени, коли список запитань у `QuizScene» закінчено .on_enter` "
-"обробник."
+"Після відповіді на всі запитання ми маємо показати результати "
+"користувачеві, як ви можете бачити в коді нижче, ми використовуємо `await"
+" self.wizard.exit()`, щоб вийти зі сцени, коли список запитань у "
+"`QuizScene» закінчено .on_enter` обробник."
 
-#: ../../dispatcher/finite_state_machine/scene.rst:136
+#: ../../dispatcher/finite_state_machine/scene.rst:137
 msgid ""
-"Thats means that we need to write an exit handler to show the results to the "
-"user:"
+"Thats means that we need to write an exit handler to show the results to "
+"the user:"
 msgstr ""
-"Це означає, що нам потрібно написати обробник виходу, щоб показати результати "
-"користувачеві:"
+"Це означає, що нам потрібно написати обробник виходу, щоб показати "
+"результати користувачеві:"
 
-#: ../../dispatcher/finite_state_machine/scene.rst:138
+#: ../../dispatcher/finite_state_machine/scene.rst:139
 msgid "Show results handler"
 msgstr "Обробник показу результатів"
 
-#: ../../dispatcher/finite_state_machine/scene.rst:143
+#: ../../dispatcher/finite_state_machine/scene.rst:144
 msgid ""
-"Also we can implement a actions to exit from the quiz game or go back to the "
-"previous question:"
+"Also we can implement a actions to exit from the quiz game or go back to "
+"the previous question:"
 msgstr ""
 "Також ми можемо виконати дії для виходу з вікторини або повернення до "
 "попереднього запитання:"
 
-#: ../../dispatcher/finite_state_machine/scene.rst:145
+#: ../../dispatcher/finite_state_machine/scene.rst:146
 msgid "Exit handler"
 msgstr "Обробник виходу"
 
-#: ../../dispatcher/finite_state_machine/scene.rst:150
+#: ../../dispatcher/finite_state_machine/scene.rst:151
 msgid "Back handler"
 msgstr "Обробник дії \"повернутись\""
 
-#: ../../dispatcher/finite_state_machine/scene.rst:155
+#: ../../dispatcher/finite_state_machine/scene.rst:156
 msgid "Now we can run the bot and test the quiz game:"
 msgstr "Тепер ми можемо запустити бота і протестувати гру-вікторину:"
 
-#: ../../dispatcher/finite_state_machine/scene.rst:157
+#: ../../dispatcher/finite_state_machine/scene.rst:158
 msgid "Run the bot"
 msgstr "Запустіть бота"
 
-#: ../../dispatcher/finite_state_machine/scene.rst:162
+#: ../../dispatcher/finite_state_machine/scene.rst:163
 msgid "Complete them all"
 msgstr "Зберемо все разом"
 
-#: ../../dispatcher/finite_state_machine/scene.rst:164
+#: ../../dispatcher/finite_state_machine/scene.rst:165
 msgid "Quiz Example"
 msgstr "Приклад вікторини"
 
-#: ../../dispatcher/finite_state_machine/scene.rst:170
+#: ../../dispatcher/finite_state_machine/scene.rst:171
 msgid "Components"
 msgstr "Компоненти"
 
-#: ../../dispatcher/finite_state_machine/scene.rst:172
+#: ../../dispatcher/finite_state_machine/scene.rst:173
 msgid ":class:`aiogram.fsm.scene.Scene` - represents a scene, contains handlers"
 msgstr ":class:`aiogram.fsm.scene.Scene` - представляє сцену, містить обробники"
 
-#: ../../dispatcher/finite_state_machine/scene.rst:173
-msgid ""
-":class:`aiogram.fsm.scene.SceneRegistry` - container for all scenes in the bot, "
-"used to register scenes and resolve them by name"
-msgstr ""
-":class:`aiogram.fsm.scene.SceneRegistry` - контейнер для всіх сцен у боті, "
-"використовується для реєстрації сцен та їх вирішення за назвою"
-
 #: ../../dispatcher/finite_state_machine/scene.rst:174
 msgid ""
-":class:`aiogram.fsm.scene.ScenesManager` - manages scenes for each user, used "
-"to enter, leave and resolve current scene for user"
+":class:`aiogram.fsm.scene.SceneRegistry` - container for all scenes in "
+"the bot, used to register scenes and resolve them by name"
 msgstr ""
-":class:`aiogram.fsm.scene.ScenesManager` - керує сценами для кожного "
-"користувача, використовується для входу, виходу та вирішення поточної сцени для "
-"користувача"
+":class:`aiogram.fsm.scene.SceneRegistry` - контейнер для всіх сцен у "
+"боті, використовується для реєстрації сцен та їх вирішення за назвою"
 
 #: ../../dispatcher/finite_state_machine/scene.rst:175
 msgid ""
-":class:`aiogram.fsm.scene.SceneConfig` - scene configuration, used to configure "
-"scene"
+":class:`aiogram.fsm.scene.ScenesManager` - manages scenes for each user, "
+"used to enter, leave and resolve current scene for user"
 msgstr ""
-":class:`aiogram.fsm.scene.SceneConfig` - конфігурація сцени, використовується "
-"для налаштування сцени"
+":class:`aiogram.fsm.scene.ScenesManager` - керує сценами для кожного "
+"користувача, використовується для входу, виходу та вирішення поточної "
+"сцени для користувача"
 
 #: ../../dispatcher/finite_state_machine/scene.rst:176
 msgid ""
-":class:`aiogram.fsm.scene.SceneWizard` - scene wizard, used to interact with "
-"user in scene from active scene handler"
+":class:`aiogram.fsm.scene.SceneConfig` - scene configuration, used to "
+"configure scene"
 msgstr ""
-":class:`aiogram.fsm.scene.SceneWizard` - майстер сцени, який використовується "
-"для взаємодії з користувачем у сцені з активного обробника сцени"
+":class:`aiogram.fsm.scene.SceneConfig` - конфігурація сцени, "
+"використовується для налаштування сцени"
 
 #: ../../dispatcher/finite_state_machine/scene.rst:177
+msgid ""
+":class:`aiogram.fsm.scene.SceneWizard` - scene wizard, used to interact "
+"with user in scene from active scene handler"
+msgstr ""
+":class:`aiogram.fsm.scene.SceneWizard` - майстер сцени, який "
+"використовується для взаємодії з користувачем у сцені з активного "
+"обробника сцени"
+
+#: ../../dispatcher/finite_state_machine/scene.rst:178
 msgid "Markers - marker for scene handlers, used to mark scene handlers"
 msgstr ""
 "Markers - маркер для обробників сцен, використовується для позначення "
@@ -344,27 +359,27 @@ msgstr "Представляє крок в діалозі."
 
 #: aiogram.fsm.scene.Scene:3 of
 msgid ""
-"A scene is a specific state in a conversation where certain actions can take "
-"place."
+"A scene is a specific state in a conversation where certain actions can "
+"take place."
 msgstr "Сцена — це певний стан розмови, де можуть відбуватися певні дії."
 
 #: aiogram.fsm.scene.Scene:5 of
 msgid ""
-"Each scene has a set of filters that determine when it should be triggered, and "
-"a set of handlers that define the actions to be executed when the scene is "
-"active."
+"Each scene has a set of filters that determine when it should be "
+"triggered, and a set of handlers that define the actions to be executed "
+"when the scene is active."
 msgstr ""
-"Кожна сцена має набір фільтрів, які визначають, коли вона має бути запущена, і "
-"набір обробників, які визначають дії, які мають виконуватися, коли сцена "
-"активна."
+"Кожна сцена має набір фільтрів, які визначають, коли вона має бути "
+"запущена, і набір обробників, які визначають дії, які мають виконуватися,"
+" коли сцена активна."
 
 #: aiogram.fsm.scene.Scene:9 of
 msgid ""
-"This class is not meant to be used directly. Instead, it should be subclassed "
-"to define custom scenes."
+"This class is not meant to be used directly. Instead, it should be "
+"subclassed to define custom scenes."
 msgstr ""
-"Цей клас не призначений для безпосереднього використання. Замість цього слід "
-"створити підкласи для визначення власних сцен."
+"Цей клас не призначений для безпосереднього використання. Замість цього "
+"слід створити підкласи для визначення власних сцен."
 
 #: aiogram.fsm.scene.Scene.add_to_router:1 of
 msgid "Adds the scene to the given router."
@@ -376,8 +391,9 @@ msgstr "Додає сцену до заданого маршрутизатора
 #: aiogram.fsm.scene.SceneWizard.exit aiogram.fsm.scene.SceneWizard.goto
 #: aiogram.fsm.scene.SceneWizard.leave aiogram.fsm.scene.SceneWizard.retake
 #: aiogram.fsm.scene.SceneWizard.set_data
-#: aiogram.fsm.scene.SceneWizard.update_data aiogram.fsm.scene.ScenesManager.close
-#: aiogram.fsm.scene.ScenesManager.enter of
+#: aiogram.fsm.scene.SceneWizard.update_data
+#: aiogram.fsm.scene.ScenesManager.close aiogram.fsm.scene.ScenesManager.enter
+#: of
 msgid "Parameters"
 msgstr "Параметри"
 
@@ -388,8 +404,9 @@ msgstr "Параметри"
 #: aiogram.fsm.scene.SceneWizard.exit aiogram.fsm.scene.SceneWizard.get_data
 #: aiogram.fsm.scene.SceneWizard.goto aiogram.fsm.scene.SceneWizard.leave
 #: aiogram.fsm.scene.SceneWizard.retake aiogram.fsm.scene.SceneWizard.set_data
-#: aiogram.fsm.scene.SceneWizard.update_data aiogram.fsm.scene.ScenesManager.close
-#: aiogram.fsm.scene.ScenesManager.enter of
+#: aiogram.fsm.scene.SceneWizard.update_data
+#: aiogram.fsm.scene.ScenesManager.close aiogram.fsm.scene.ScenesManager.enter
+#: of
 msgid "Returns"
 msgstr "Повертає"
 
@@ -415,76 +432,82 @@ msgstr "Клас, який представляє реєстр для сцен."
 
 #: aiogram.fsm.scene.SceneRegistry.add:1 of
 msgid ""
-"This method adds the specified scenes to the registry and optionally registers "
-"it to the router."
+"This method adds the specified scenes to the registry and optionally "
+"registers it to the router."
 msgstr ""
 "Цей метод додає вказані сцени до реєстру та додатково реєструє їх на "
 "маршрутизаторі."
 
 #: aiogram.fsm.scene.SceneRegistry.add:4 of
 msgid ""
-"If a scene with the same state already exists in the registry, a SceneException "
-"is raised."
+"If a scene with the same state already exists in the registry, a "
+"SceneException is raised."
 msgstr ""
-"Якщо сцена з таким самим станом уже існує в реєстрі, виникає SceneException."
+"Якщо сцена з таким самим станом уже існує в реєстрі, виникає "
+"SceneException."
 
 #: aiogram.fsm.scene.SceneRegistry.add:8 of
 msgid ""
 "If the router is not specified, the scenes will not be registered to the "
-"router. You will need to include the scenes manually to the router or use the "
-"register method."
+"router. You will need to include the scenes manually to the router or use"
+" the register method."
 msgstr ""
 "If the router is not specified, the scenes will not be registered to the "
-"router. You will need to include the scenes manually to the router or use the "
-"register method."
+"router. You will need to include the scenes manually to the router or use"
+" the register method."
 
 #: aiogram.fsm.scene.SceneRegistry.add:11 of
 msgid ""
-"A variable length parameter that accepts one or more types of scenes. These "
-"scenes are instances of the Scene class."
+"A variable length parameter that accepts one or more types of scenes. "
+"These scenes are instances of the Scene class."
 msgstr ""
-"Параметр змінної довжини, який приймає один або кілька типів сцен. Ці сцени є "
-"екземплярами класу Scene."
+"Параметр змінної довжини, який приймає один або кілька типів сцен. Ці "
+"сцени є екземплярами класу Scene."
 
 #: aiogram.fsm.scene.SceneRegistry.add:13 of
 msgid ""
-"An optional parameter that specifies the router to which the scenes should be "
-"added."
+"An optional parameter that specifies the router to which the scenes "
+"should be added."
 msgstr ""
-"Додатковий параметр, який визначає маршрутизатор, до якого слід додати сцени."
+"Додатковий параметр, який визначає маршрутизатор, до якого слід додати "
+"сцени."
 
 #: aiogram.fsm.scene.SceneRegistry.add:15
-#: aiogram.fsm.scene.SceneRegistry.register:4 aiogram.fsm.scene.SceneWizard.back:4
+#: aiogram.fsm.scene.SceneRegistry.register:4
+#: aiogram.fsm.scene.SceneWizard.back:4
 #: aiogram.fsm.scene.SceneWizard.clear_data:3
 #: aiogram.fsm.scene.SceneWizard.enter:6 aiogram.fsm.scene.SceneWizard.exit:4
 #: aiogram.fsm.scene.SceneWizard.goto:9 aiogram.fsm.scene.SceneWizard.leave:6
-#: aiogram.fsm.scene.SceneWizard.retake:4 aiogram.fsm.scene.SceneWizard.set_data:4
-#: aiogram.fsm.scene.ScenesManager.close:4 aiogram.fsm.scene.ScenesManager.enter:7
-#: of
+#: aiogram.fsm.scene.SceneWizard.retake:4
+#: aiogram.fsm.scene.SceneWizard.set_data:4
+#: aiogram.fsm.scene.ScenesManager.close:4
+#: aiogram.fsm.scene.ScenesManager.enter:7 of
 msgid "None"
 msgstr ""
 
 #: aiogram.fsm.scene.SceneRegistry.get:1 of
 msgid ""
-"This method returns the registered Scene object for the specified scene. The "
-"scene parameter can be either a Scene object or a string representing the name "
-"of the scene. If a Scene object is provided, the state attribute of the "
-"SceneConfig object associated with the Scene object will be used as the scene "
-"name. If None or an invalid type is provided, a SceneException will be raised."
+"This method returns the registered Scene object for the specified scene. "
+"The scene parameter can be either a Scene object or a string representing"
+" the name of the scene. If a Scene object is provided, the state "
+"attribute of the SceneConfig object associated with the Scene object will"
+" be used as the scene name. If None or an invalid type is provided, a "
+"SceneException will be raised."
 msgstr ""
-"Цей метод повертає зареєстрований об’єкт Scene для вказаної сцени. Параметром "
-"сцени може бути або об’єкт Scene, або рядок, що представляє назву сцени. Якщо "
-"надається об’єкт Scene, атрибут стану об’єкта SceneConfig, пов’язаного з "
-"об’єктом Scene, використовуватиметься як ім’я сцени. Якщо вказано None або "
-"недійсний тип, буде викликано SceneException."
+"Цей метод повертає зареєстрований об’єкт Scene для вказаної сцени. "
+"Параметром сцени може бути або об’єкт Scene, або рядок, що представляє "
+"назву сцени. Якщо надається об’єкт Scene, атрибут стану об’єкта "
+"SceneConfig, пов’язаного з об’єктом Scene, використовуватиметься як ім’я "
+"сцени. Якщо вказано None або недійсний тип, буде викликано "
+"SceneException."
 
 #: aiogram.fsm.scene.SceneRegistry.get:7 of
 msgid ""
 "If the specified scene is not registered in the SceneRegistry object, a "
 "SceneException will be raised."
 msgstr ""
-"Якщо вказану сцену не зареєстровано в об’єкті SceneRegistry, буде породжено "
-"помилку SceneException."
+"Якщо вказану сцену не зареєстровано в об’єкті SceneRegistry, буде "
+"породжено помилку SceneException."
 
 #: aiogram.fsm.scene.SceneRegistry.get:10 of
 msgid "A Scene object or a string representing the name of the scene."
@@ -504,16 +527,17 @@ msgstr "Один або кілька класів сцен для реєстра
 
 #: aiogram.fsm.scene.ScenesManager:1 of
 msgid ""
-"The ScenesManager class is responsible for managing scenes in an application. "
-"It provides methods for entering and exiting scenes, as well as retrieving the "
-"active scene."
+"The ScenesManager class is responsible for managing scenes in an "
+"application. It provides methods for entering and exiting scenes, as well"
+" as retrieving the active scene."
 msgstr ""
-"Клас ScenesManager відповідає за керування сценами в програмі. Він надає методи "
-"входу та виходу зі сцен, а також відновлення активної сцени."
+"Клас ScenesManager відповідає за керування сценами в програмі. Він надає "
+"методи входу та виходу зі сцен, а також відновлення активної сцени."
 
 #: aiogram.fsm.scene.ScenesManager.close:1 of
 msgid ""
-"Close method is used to exit the currently active scene in the ScenesManager."
+"Close method is used to exit the currently active scene in the "
+"ScenesManager."
 msgstr ""
 "Метод Close використовується для виходу з поточної активної сцени в "
 "ScenesManager."
@@ -529,15 +553,17 @@ msgstr "Виходить на вказану сцену."
 #: aiogram.fsm.scene.ScenesManager.enter:3 of
 msgid "Optional Type[Scene] or str representing the scene type to enter."
 msgstr ""
-"Додатково Type[Scene] або str, що представляє тип сцени, який потрібно ввести."
+"Додатково Type[Scene] або str, що представляє тип сцени, який потрібно "
+"ввести."
 
 #: aiogram.fsm.scene.ScenesManager.enter:4 of
 msgid ""
-"Optional bool indicating whether to check if there is an active scene to exit "
-"before entering the new scene. Defaults to True."
+"Optional bool indicating whether to check if there is an active scene to "
+"exit before entering the new scene. Defaults to True."
 msgstr ""
-"Необов’язковий параметр, що вказує, чи перевіряти наявність активної сцени для "
-"виходу перед входом у нову сцену. За замовчуванням значення True."
+"Необов’язковий параметр, що вказує, чи перевіряти наявність активної "
+"сцени для виходу перед входом у нову сцену. За замовчуванням значення "
+"True."
 
 #: aiogram.fsm.scene.ScenesManager.enter:6 of
 msgid "Additional keyword arguments to pass to the scene's wizard.enter() method."
@@ -547,7 +573,8 @@ msgstr "Додаткові іменовані аргументи для пере
 msgid "Scene actions"
 msgstr "Дії сцени"
 
-#: ../../docstring aiogram.fsm.scene.SceneConfig.callback_query_without_state:1 of
+#: ../../docstring aiogram.fsm.scene.SceneConfig.callback_query_without_state:1
+#: of
 msgid "Allow callback query without state"
 msgstr "Створювати обробники кнопок без перевірки стану поточної сцени"
 
@@ -573,20 +600,20 @@ msgstr "Клас, який представляє майстер сцен."
 
 #: aiogram.fsm.scene.SceneWizard:3 of
 msgid ""
-"Instance of this class is passed to each scene as a parameter. So, you can use "
-"it to transition between scenes, get and set data, etc."
+"Instance of this class is passed to each scene as a parameter. So, you "
+"can use it to transition between scenes, get and set data, etc."
 msgstr ""
-"Екземпляр цього класу передається кожній сцені як параметр. Отже, ви можете "
-"використовувати його для переходу між сценами, отримання та встановлення даних "
-"тощо."
+"Екземпляр цього класу передається кожній сцені як параметр. Отже, ви "
+"можете використовувати його для переходу між сценами, отримання та "
+"встановлення даних тощо."
 
 #: aiogram.fsm.scene.SceneWizard:8 of
 msgid ""
-"This class is not meant to be used directly. Instead, it should be used as a "
-"parameter in the scene constructor."
+"This class is not meant to be used directly. Instead, it should be used "
+"as a parameter in the scene constructor."
 msgstr ""
-"Цей клас не призначений для безпосереднього використання. Натомість його слід "
-"використовувати як параметр у конструкторі сцени."
+"Цей клас не призначений для безпосереднього використання. Натомість його "
+"слід використовувати як параметр у конструкторі сцени."
 
 #: aiogram.fsm.scene.SceneWizard.back:1 of
 msgid "This method is used to go back to the previous scene."
@@ -602,13 +629,13 @@ msgstr "Очищає дані."
 
 #: aiogram.fsm.scene.SceneWizard.enter:1 of
 msgid ""
-"Enter method is used to transition into a scene in the SceneWizard class. It "
-"sets the state, clears data and history if specified, and triggers entering "
-"event of the scene."
+"Enter method is used to transition into a scene in the SceneWizard class."
+" It sets the state, clears data and history if specified, and triggers "
+"entering event of the scene."
 msgstr ""
-"Метод Enter використовується для переходу в сцену в класі SceneWizard. Він "
-"встановлює стан, очищає дані та історію, якщо вказано, і запускає введення "
-"події сцени."
+"Метод Enter використовується для переходу в сцену в класі SceneWizard. "
+"Він встановлює стан, очищає дані та історію, якщо вказано, і запускає "
+"введення події сцени."
 
 #: aiogram.fsm.scene.SceneWizard.enter:5 aiogram.fsm.scene.SceneWizard.exit:3
 #: aiogram.fsm.scene.SceneWizard.leave:5 of
@@ -629,31 +656,32 @@ msgstr "Словник, що містить дані, що зберігають�
 
 #: aiogram.fsm.scene.SceneWizard.goto:1 of
 msgid ""
-"The `goto` method transitions to a new scene. It first calls the `leave` method "
-"to perform any necessary cleanup in the current scene, then calls the `enter` "
-"event to enter the specified scene."
+"The `goto` method transitions to a new scene. It first calls the `leave` "
+"method to perform any necessary cleanup in the current scene, then calls "
+"the `enter` event to enter the specified scene."
 msgstr ""
-"Метод `goto` переходить до нової сцени. Спочатку він викликає метод `leave`, "
-"щоб виконати будь-яке необхідне очищення в поточній сцені, а потім викликає "
-"подію `enter`, щоб увійти до вказаної сцени."
+"Метод `goto` переходить до нової сцени. Спочатку він викликає метод "
+"`leave`, щоб виконати будь-яке необхідне очищення в поточній сцені, а "
+"потім викликає подію `enter`, щоб увійти до вказаної сцени."
 
 #: aiogram.fsm.scene.SceneWizard.goto:5 of
 msgid ""
 "The scene to transition to. Can be either a `Scene` instance or a string "
 "representing the scene."
 msgstr ""
-"Сцена для переходу. Може бути екземпляром `Scene` або рядком, що представляє "
-"сцену."
+"Сцена для переходу. Може бути екземпляром `Scene` або рядком, що "
+"представляє сцену."
 
 #: aiogram.fsm.scene.SceneWizard.goto:7 of
 msgid ""
-"Additional keyword arguments to pass to the `enter` method of the scene manager."
+"Additional keyword arguments to pass to the `enter` method of the scene "
+"manager."
 msgstr "Додаткові іменовані аргументи для точки входу до `enter` менеджера сцен."
 
 #: aiogram.fsm.scene.SceneWizard.leave:1 of
 msgid ""
-"Leaves the current scene. This method is used to exit a scene and transition to "
-"the next scene."
+"Leaves the current scene. This method is used to exit a scene and "
+"transition to the next scene."
 msgstr ""
 "Залишає поточну сцену. Цей метод використовується для виходу зі сцени та "
 "переходу до наступної сцени."
@@ -677,7 +705,8 @@ msgstr "Встановлює настроювані дані в поточний
 #: aiogram.fsm.scene.SceneWizard.set_data:3 of
 msgid "A dictionary containing the custom data to be set in the current state."
 msgstr ""
-"Словник, що містить настроювані дані, які потрібно встановити в поточному стані."
+"Словник, що містить настроювані дані, які потрібно встановити в поточному"
+" стані."
 
 #: aiogram.fsm.scene.SceneWizard.update_data:1 of
 msgid "This method updates the data stored in the current state"
@@ -695,119 +724,120 @@ msgstr "Додаткові пари ключ-значення даних для 
 msgid "Dictionary of updated data"
 msgstr "Словник оновлених даних"
 
-#: ../../dispatcher/finite_state_machine/scene.rst:196
+#: ../../dispatcher/finite_state_machine/scene.rst:197
 msgid "Markers"
 msgstr "Маркери"
 
-#: ../../dispatcher/finite_state_machine/scene.rst:198
+#: ../../dispatcher/finite_state_machine/scene.rst:199
 msgid ""
-"Markers are similar to the Router event registering mechanism, but they are "
-"used to mark scene handlers in the Scene class."
+"Markers are similar to the Router event registering mechanism, but they "
+"are used to mark scene handlers in the Scene class."
 msgstr ""
-"Маркери подібні до механізму реєстрації подій Router, але вони використовуються "
-"для позначення обробників сцени в класі Scene."
+"Маркери подібні до механізму реєстрації подій Router, але вони "
+"використовуються для позначення обробників сцени в класі Scene."
 
-#: ../../dispatcher/finite_state_machine/scene.rst:201
+#: ../../dispatcher/finite_state_machine/scene.rst:202
 msgid ""
-"It can be imported from :code:`from aiogram.fsm.scene import on` and should be "
-"used as decorator."
+"It can be imported from :code:`from aiogram.fsm.scene import on` and "
+"should be used as decorator."
 msgstr ""
 "Його можна імпортувати з :code:`from aiogram.fsm.scene import on` і слід "
 "використовувати як декоратор."
 
-#: ../../dispatcher/finite_state_machine/scene.rst:203
+#: ../../dispatcher/finite_state_machine/scene.rst:204
 msgid "Allowed event types:"
 msgstr "Дозволені типи подій:"
 
-#: ../../dispatcher/finite_state_machine/scene.rst:205
+#: ../../dispatcher/finite_state_machine/scene.rst:206
 msgid "message"
 msgstr ""
 
-#: ../../dispatcher/finite_state_machine/scene.rst:206
+#: ../../dispatcher/finite_state_machine/scene.rst:207
 msgid "edited_message"
 msgstr ""
 
-#: ../../dispatcher/finite_state_machine/scene.rst:207
+#: ../../dispatcher/finite_state_machine/scene.rst:208
 msgid "channel_post"
 msgstr ""
 
-#: ../../dispatcher/finite_state_machine/scene.rst:208
+#: ../../dispatcher/finite_state_machine/scene.rst:209
 msgid "edited_channel_post"
 msgstr ""
 
-#: ../../dispatcher/finite_state_machine/scene.rst:209
+#: ../../dispatcher/finite_state_machine/scene.rst:210
 msgid "inline_query"
 msgstr ""
 
-#: ../../dispatcher/finite_state_machine/scene.rst:210
+#: ../../dispatcher/finite_state_machine/scene.rst:211
 msgid "chosen_inline_result"
 msgstr ""
 
-#: ../../dispatcher/finite_state_machine/scene.rst:211
+#: ../../dispatcher/finite_state_machine/scene.rst:212
 msgid "callback_query"
 msgstr ""
 
-#: ../../dispatcher/finite_state_machine/scene.rst:212
+#: ../../dispatcher/finite_state_machine/scene.rst:213
 msgid "shipping_query"
 msgstr ""
 
-#: ../../dispatcher/finite_state_machine/scene.rst:213
+#: ../../dispatcher/finite_state_machine/scene.rst:214
 msgid "pre_checkout_query"
 msgstr ""
 
-#: ../../dispatcher/finite_state_machine/scene.rst:214
+#: ../../dispatcher/finite_state_machine/scene.rst:215
 msgid "poll"
 msgstr ""
 
-#: ../../dispatcher/finite_state_machine/scene.rst:215
+#: ../../dispatcher/finite_state_machine/scene.rst:216
 msgid "poll_answer"
 msgstr ""
 
-#: ../../dispatcher/finite_state_machine/scene.rst:216
+#: ../../dispatcher/finite_state_machine/scene.rst:217
 msgid "my_chat_member"
 msgstr ""
 
-#: ../../dispatcher/finite_state_machine/scene.rst:217
+#: ../../dispatcher/finite_state_machine/scene.rst:218
 msgid "chat_member"
 msgstr ""
 
-#: ../../dispatcher/finite_state_machine/scene.rst:218
+#: ../../dispatcher/finite_state_machine/scene.rst:219
 msgid "chat_join_request"
 msgstr ""
 
-#: ../../dispatcher/finite_state_machine/scene.rst:220
+#: ../../dispatcher/finite_state_machine/scene.rst:221
 msgid "Each event type can be filtered in the same way as in the Router."
 msgstr "Кожен тип події можна відфільтрувати так само, як і в маршрутизаторі."
 
-#: ../../dispatcher/finite_state_machine/scene.rst:222
+#: ../../dispatcher/finite_state_machine/scene.rst:223
 msgid ""
-"Also each event type can be marked as scene entry point, exit point or leave "
-"point."
+"Also each event type can be marked as scene entry point, exit point or "
+"leave point."
 msgstr ""
-"Також кожен тип події можна позначити як точку входу в сцену, точку виходу або "
-"точку переходу."
+"Також кожен тип події можна позначити як точку входу в сцену, точку "
+"виходу або точку переходу."
 
-#: ../../dispatcher/finite_state_machine/scene.rst:224
+#: ../../dispatcher/finite_state_machine/scene.rst:225
 msgid ""
-"If you want to mark the scene can be entered from message or inline query, you "
-"should use :code:`on.message` or :code:`on.inline_query` marker:"
+"If you want to mark the scene can be entered from message or inline "
+"query, you should use :code:`on.message` or :code:`on.inline_query` "
+"marker:"
 msgstr ""
-"Якщо ви хочете позначити, що до сцени можна потрапити з повідомлення або ін-"
-"лайн кнопки, вам слід використовувати маркер :code:`on.message` або :code:`on."
-"inline_query`:"
+"Якщо ви хочете позначити, що до сцени можна потрапити з повідомлення або "
+"ін-лайн кнопки, вам слід використовувати маркер :code:`on.message` або "
+":code:`on.inline_query`:"
 
-#: ../../dispatcher/finite_state_machine/scene.rst:239
+#: ../../dispatcher/finite_state_machine/scene.rst:240
 msgid "Scene has only tree points for transitions:"
 msgstr "Сцени мають три точки для переходів:"
 
-#: ../../dispatcher/finite_state_machine/scene.rst:241
+#: ../../dispatcher/finite_state_machine/scene.rst:242
 msgid "enter point - when user enters to the scene"
 msgstr "Точка входу - коли користувач входить до сцени"
 
-#: ../../dispatcher/finite_state_machine/scene.rst:242
+#: ../../dispatcher/finite_state_machine/scene.rst:243
 msgid "leave point - when user leaves the scene and the enter another scene"
 msgstr "Точка переходу - коли користувач переходить до іншої сцени"
 
-#: ../../dispatcher/finite_state_machine/scene.rst:243
+#: ../../dispatcher/finite_state_machine/scene.rst:244
 msgid "exit point - when user exits from the scene"
 msgstr "Точка виходу - коли користувач завершує сцену"

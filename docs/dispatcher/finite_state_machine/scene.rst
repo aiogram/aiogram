@@ -20,8 +20,9 @@ Understanding Scenes
 ====================
 
 A Scene in **aiogram** is like an abstract, isolated namespace or room that a user can be
-ushered into via the code. When a user is inside a Scene, all other global commands or
-message handlers are isolated, and they stop responding to user actions.
+ushered into via the code. When a user is within a Scene, most other global commands or
+message handlers are bypassed, unless they are specifically designed to function outside of the Scenes.
+This helps in creating an experience of focused interactions.
 Scenes provide a structure for more complex interactions,
 effectively isolating and managing contexts for different stages of the conversation.
 They allow you to control and manage the flow of the conversation in a more organized manner.

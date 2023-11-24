@@ -1,0 +1,107 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2023, aiogram Team
+# This file is distributed under the same license as the aiogram package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2023.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: aiogram \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-11-24 21:51+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: uk_UA\n"
+"Language-Team: uk_UA <LL@li.org>\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.13.1\n"
+
+#: ../../utils/deep_linking.rst:3
+msgid "Deep Linking"
+msgstr ""
+
+#: ../../utils/deep_linking.rst:5
+msgid ""
+"Telegram bots have a deep linking mechanism, that allows for passing "
+"additional parameters to the bot on startup. It could be a command that "
+"launches the bot — or an auth token to connect the user's Telegram "
+"account to their account on some external service."
+msgstr ""
+
+#: ../../utils/deep_linking.rst:10
+msgid ""
+"You can read detailed description in the source: "
+"https://core.telegram.org/bots#deep-linking"
+msgstr ""
+
+#: ../../utils/deep_linking.rst:13
+msgid "We have added some utils to get deep links more handy."
+msgstr ""
+
+#: ../../utils/deep_linking.rst:16
+msgid "Examples"
+msgstr ""
+
+#: ../../utils/deep_linking.rst:19
+msgid "Basic link example"
+msgstr ""
+
+#: ../../utils/deep_linking.rst:30
+msgid "Encoded link"
+msgstr ""
+
+#: ../../utils/deep_linking.rst:40
+msgid "Decode it back"
+msgstr ""
+
+#: ../../utils/deep_linking.rst:56
+msgid "References"
+msgstr ""
+
+#: aiogram.utils.deep_linking.create_start_link:1 of
+msgid "Create 'start' deep link with your payload."
+msgstr ""
+
+#: aiogram.utils.deep_linking.create_start_link:4 of
+msgid "If you need to encode payload or pass special characters -"
+msgstr ""
+
+#: aiogram.utils.deep_linking.create_start_link:4 of
+msgid "set encode as True"
+msgstr ""
+
+#: aiogram.utils.deep_linking.create_start_link of
+msgid "Parameters"
+msgstr ""
+
+#: aiogram.utils.deep_linking.create_start_link:6 of
+msgid "bot instance"
+msgstr ""
+
+#: aiogram.utils.deep_linking.create_start_link:7 of
+msgid "args passed with /start"
+msgstr ""
+
+#: aiogram.utils.deep_linking.create_start_link:8 of
+msgid "encode payload with base64url or custom encoder"
+msgstr ""
+
+#: aiogram.utils.deep_linking.create_start_link:9 of
+msgid "custom encoder callable"
+msgstr ""
+
+#: aiogram.utils.deep_linking.create_start_link of
+msgid "Returns"
+msgstr ""
+
+#: aiogram.utils.deep_linking.create_start_link:10 of
+msgid "link"
+msgstr ""
+
+#: aiogram.utils.payload.decode_payload:1 of
+msgid "Decode URL-safe base64url payload with decoder."
+msgstr ""
