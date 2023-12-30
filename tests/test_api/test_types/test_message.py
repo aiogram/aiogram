@@ -31,6 +31,7 @@ from aiogram.methods import (
     SendVideo,
     SendVideoNote,
     SendVoice,
+    SetMessageReaction,
     StopMessageLiveLocation,
     TelegramMethod,
     UnpinChatMessage,
@@ -62,6 +63,7 @@ from aiogram.types import (
     Poll,
     PollOption,
     ProximityAlertTriggered,
+    ReactionTypeCustomEmoji,
     Sticker,
     Story,
     SuccessfulPayment,
@@ -860,6 +862,20 @@ class TestMessage:
         method = message.unpin()
         assert isinstance(method, UnpinChatMessage)
         assert method.chat_id == message.chat.id
+
+    def test_react(self):
+        message = Message(
+            message_id=777,
+            chat=Chat(id=-42, type="channel"),
+            date=datetime.datetime.now(),
+        )
+        emoji_reaction = ReactionTypeCustomEmoji(custom_emoji_id="qwerty")
+        method = message.react(
+            reaction=[emoji_reaction],
+        )
+        assert isinstance(method, SetMessageReaction)
+        assert method.chat_id == message.chat.id
+        assert method.reaction == [emoji_reaction]
 
     @pytest.mark.parametrize(
         "text,entities,mode,expected_value",
