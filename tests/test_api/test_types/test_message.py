@@ -476,63 +476,81 @@ TEST_MESSAGE_UNKNOWN = Message(
     from_user=User(id=42, is_bot=False, first_name="Test"),
 )
 
+MESSAGES_AND_CONTENT_TYPES = [
+    [TEST_MESSAGE_TEXT, ContentType.TEXT],
+    [TEST_MESSAGE_AUDIO, ContentType.AUDIO],
+    [TEST_MESSAGE_ANIMATION, ContentType.ANIMATION],
+    [TEST_MESSAGE_DOCUMENT, ContentType.DOCUMENT],
+    [TEST_MESSAGE_GAME, ContentType.GAME],
+    [TEST_MESSAGE_PHOTO, ContentType.PHOTO],
+    [TEST_MESSAGE_STICKER, ContentType.STICKER],
+    [TEST_MESSAGE_VIDEO, ContentType.VIDEO],
+    [TEST_MESSAGE_VIDEO_NOTE, ContentType.VIDEO_NOTE],
+    [TEST_MESSAGE_VOICE, ContentType.VOICE],
+    [TEST_MESSAGE_CONTACT, ContentType.CONTACT],
+    [TEST_MESSAGE_VENUE, ContentType.VENUE],
+    [TEST_MESSAGE_LOCATION, ContentType.LOCATION],
+    [TEST_MESSAGE_NEW_CHAT_MEMBERS, ContentType.NEW_CHAT_MEMBERS],
+    [TEST_MESSAGE_LEFT_CHAT_MEMBER, ContentType.LEFT_CHAT_MEMBER],
+    [TEST_MESSAGE_INVOICE, ContentType.INVOICE],
+    [TEST_MESSAGE_SUCCESSFUL_PAYMENT, ContentType.SUCCESSFUL_PAYMENT],
+    [TEST_MESSAGE_CONNECTED_WEBSITE, ContentType.CONNECTED_WEBSITE],
+    [TEST_MESSAGE_MIGRATE_FROM_CHAT_ID, ContentType.MIGRATE_FROM_CHAT_ID],
+    [TEST_MESSAGE_MIGRATE_TO_CHAT_ID, ContentType.MIGRATE_TO_CHAT_ID],
+    [TEST_MESSAGE_PINNED_MESSAGE, ContentType.PINNED_MESSAGE],
+    [TEST_MESSAGE_NEW_CHAT_TITLE, ContentType.NEW_CHAT_TITLE],
+    [TEST_MESSAGE_NEW_CHAT_PHOTO, ContentType.NEW_CHAT_PHOTO],
+    [TEST_MESSAGE_DELETE_CHAT_PHOTO, ContentType.DELETE_CHAT_PHOTO],
+    [TEST_MESSAGE_GROUP_CHAT_CREATED, ContentType.GROUP_CHAT_CREATED],
+    [TEST_MESSAGE_SUPERGROUP_CHAT_CREATED, ContentType.SUPERGROUP_CHAT_CREATED],
+    [TEST_MESSAGE_CHANNEL_CHAT_CREATED, ContentType.CHANNEL_CHAT_CREATED],
+    [TEST_MESSAGE_PASSPORT_DATA, ContentType.PASSPORT_DATA],
+    [TEST_MESSAGE_PROXIMITY_ALERT_TRIGGERED, ContentType.PROXIMITY_ALERT_TRIGGERED],
+    [TEST_MESSAGE_POLL, ContentType.POLL],
+    [
+        TEST_MESSAGE_MESSAGE_AUTO_DELETE_TIMER_CHANGED,
+        ContentType.MESSAGE_AUTO_DELETE_TIMER_CHANGED,
+    ],
+    [TEST_MESSAGE_VIDEO_CHAT_SCHEDULED, ContentType.VIDEO_CHAT_SCHEDULED],
+    [TEST_MESSAGE_VIDEO_CHAT_STARTED, ContentType.VIDEO_CHAT_STARTED],
+    [TEST_MESSAGE_VIDEO_CHAT_ENDED, ContentType.VIDEO_CHAT_ENDED],
+    [
+        TEST_MESSAGE_VIDEO_CHAT_PARTICIPANTS_INVITED,
+        ContentType.VIDEO_CHAT_PARTICIPANTS_INVITED,
+    ],
+    [TEST_MESSAGE_DICE, ContentType.DICE],
+    [TEST_MESSAGE_WEB_APP_DATA, ContentType.WEB_APP_DATA],
+    [TEST_FORUM_TOPIC_CREATED, ContentType.FORUM_TOPIC_CREATED],
+    [TEST_FORUM_TOPIC_EDITED, ContentType.FORUM_TOPIC_EDITED],
+    [TEST_FORUM_TOPIC_CLOSED, ContentType.FORUM_TOPIC_CLOSED],
+    [TEST_FORUM_TOPIC_REOPENED, ContentType.FORUM_TOPIC_REOPENED],
+    [TEST_USER_SHARED, ContentType.USER_SHARED],
+    [TEST_CHAT_SHARED, ContentType.CHAT_SHARED],
+    [TEST_MESSAGE_STORY, ContentType.STORY],
+    [TEST_MESSAGE_UNKNOWN, ContentType.UNKNOWN],
+]
+
+
+def test_all_known_content_type_have_example_messages():
+    """
+    Test if all ContentType options have example messages.
+
+    On new Bot API updates new ContentType entries are created.
+    TestMessage.test_content_type checks what content type is returned.
+    Make sure MESSAGES_AND_CONTENT_TYPES has examples
+    for all the ContentType entries, fail otherwise.
+    """
+    content_types_w_example_messages = {t[1] for t in MESSAGES_AND_CONTENT_TYPES}
+    # content_types_w_example_messages.remove(ContentType.UNKNOWN)
+    known_content_types = {t for t in ContentType}
+    known_content_types.remove(ContentType.ANY)
+    assert content_types_w_example_messages == known_content_types
+
 
 class TestMessage:
     @pytest.mark.parametrize(
         "message,content_type",
-        [
-            [TEST_MESSAGE_TEXT, ContentType.TEXT],
-            [TEST_MESSAGE_AUDIO, ContentType.AUDIO],
-            [TEST_MESSAGE_ANIMATION, ContentType.ANIMATION],
-            [TEST_MESSAGE_DOCUMENT, ContentType.DOCUMENT],
-            [TEST_MESSAGE_GAME, ContentType.GAME],
-            [TEST_MESSAGE_PHOTO, ContentType.PHOTO],
-            [TEST_MESSAGE_STICKER, ContentType.STICKER],
-            [TEST_MESSAGE_VIDEO, ContentType.VIDEO],
-            [TEST_MESSAGE_VIDEO_NOTE, ContentType.VIDEO_NOTE],
-            [TEST_MESSAGE_VOICE, ContentType.VOICE],
-            [TEST_MESSAGE_CONTACT, ContentType.CONTACT],
-            [TEST_MESSAGE_VENUE, ContentType.VENUE],
-            [TEST_MESSAGE_LOCATION, ContentType.LOCATION],
-            [TEST_MESSAGE_NEW_CHAT_MEMBERS, ContentType.NEW_CHAT_MEMBERS],
-            [TEST_MESSAGE_LEFT_CHAT_MEMBER, ContentType.LEFT_CHAT_MEMBER],
-            [TEST_MESSAGE_INVOICE, ContentType.INVOICE],
-            [TEST_MESSAGE_SUCCESSFUL_PAYMENT, ContentType.SUCCESSFUL_PAYMENT],
-            [TEST_MESSAGE_CONNECTED_WEBSITE, ContentType.CONNECTED_WEBSITE],
-            [TEST_MESSAGE_MIGRATE_FROM_CHAT_ID, ContentType.MIGRATE_FROM_CHAT_ID],
-            [TEST_MESSAGE_MIGRATE_TO_CHAT_ID, ContentType.MIGRATE_TO_CHAT_ID],
-            [TEST_MESSAGE_PINNED_MESSAGE, ContentType.PINNED_MESSAGE],
-            [TEST_MESSAGE_NEW_CHAT_TITLE, ContentType.NEW_CHAT_TITLE],
-            [TEST_MESSAGE_NEW_CHAT_PHOTO, ContentType.NEW_CHAT_PHOTO],
-            [TEST_MESSAGE_DELETE_CHAT_PHOTO, ContentType.DELETE_CHAT_PHOTO],
-            [TEST_MESSAGE_GROUP_CHAT_CREATED, ContentType.GROUP_CHAT_CREATED],
-            [TEST_MESSAGE_SUPERGROUP_CHAT_CREATED, ContentType.SUPERGROUP_CHAT_CREATED],
-            [TEST_MESSAGE_CHANNEL_CHAT_CREATED, ContentType.CHANNEL_CHAT_CREATED],
-            [TEST_MESSAGE_PASSPORT_DATA, ContentType.PASSPORT_DATA],
-            [TEST_MESSAGE_PROXIMITY_ALERT_TRIGGERED, ContentType.PROXIMITY_ALERT_TRIGGERED],
-            [TEST_MESSAGE_POLL, ContentType.POLL],
-            [
-                TEST_MESSAGE_MESSAGE_AUTO_DELETE_TIMER_CHANGED,
-                ContentType.MESSAGE_AUTO_DELETE_TIMER_CHANGED,
-            ],
-            [TEST_MESSAGE_VIDEO_CHAT_SCHEDULED, ContentType.VIDEO_CHAT_SCHEDULED],
-            [TEST_MESSAGE_VIDEO_CHAT_STARTED, ContentType.VIDEO_CHAT_STARTED],
-            [TEST_MESSAGE_VIDEO_CHAT_ENDED, ContentType.VIDEO_CHAT_ENDED],
-            [
-                TEST_MESSAGE_VIDEO_CHAT_PARTICIPANTS_INVITED,
-                ContentType.VIDEO_CHAT_PARTICIPANTS_INVITED,
-            ],
-            [TEST_MESSAGE_DICE, ContentType.DICE],
-            [TEST_MESSAGE_WEB_APP_DATA, ContentType.WEB_APP_DATA],
-            [TEST_FORUM_TOPIC_CREATED, ContentType.FORUM_TOPIC_CREATED],
-            [TEST_FORUM_TOPIC_EDITED, ContentType.FORUM_TOPIC_EDITED],
-            [TEST_FORUM_TOPIC_CLOSED, ContentType.FORUM_TOPIC_CLOSED],
-            [TEST_FORUM_TOPIC_REOPENED, ContentType.FORUM_TOPIC_REOPENED],
-            [TEST_USER_SHARED, ContentType.USER_SHARED],
-            [TEST_CHAT_SHARED, ContentType.CHAT_SHARED],
-            [TEST_MESSAGE_STORY, ContentType.STORY],
-            [TEST_MESSAGE_UNKNOWN, ContentType.UNKNOWN],
-        ],
+        MESSAGES_AND_CONTENT_TYPES,
     )
     def test_content_type(self, message: Message, content_type: str):
         assert message.content_type == content_type
