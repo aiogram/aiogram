@@ -24,6 +24,7 @@ from aiogram.types import (
     ChosenInlineResult,
     InlineQuery,
     Message,
+    MessageReactionUpdated,
     Poll,
     PollAnswer,
     PollOption,
@@ -32,6 +33,7 @@ from aiogram.types import (
     ShippingQuery,
     Update,
     User,
+    ReactionTypeCustomEmoji,
 )
 from aiogram.types.error_event import ErrorEvent
 from tests.mocked_bot import MockedBot
@@ -442,6 +444,22 @@ class TestDispatcher:
                         from_user=User(id=42, is_bot=False, first_name="Test"),
                         user_chat_id=42,
                         date=datetime.datetime.now(),
+                    ),
+                ),
+                True,
+                True,
+            ),
+            pytest.param(
+                "message_reaction",
+                Update(
+                    update_id=42,
+                    message_reaction=MessageReactionUpdated(
+                        chat=Chat(id=-42, type="channel"),
+                        message_id=12345,
+                        user=User(id=42, is_bot=False, first_name="Test"),
+                        date=datetime.datetime.now(),
+                        old_reaction=[],
+                        new_reaction=[ReactionTypeCustomEmoji(custom_emoji="qwerty")],
                     ),
                 ),
                 True,
