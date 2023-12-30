@@ -114,7 +114,7 @@ class TestTextDecoration:
             [
                 markdown_decoration,
                 MessageEntity(type="blockquote", offset=0, length=5),
-                "> test",
+                ">test",
             ],
         ],
     )
