@@ -465,7 +465,7 @@ class TestDispatcher:
                         user=User(id=42, is_bot=False, first_name="Test"),
                         date=datetime.datetime.now(),
                         old_reaction=[],
-                        new_reaction=[ReactionTypeCustomEmoji(custom_emoji="qwerty")],
+                        new_reaction=[ReactionTypeCustomEmoji(custom_emoji_id="qwerty")],
                     ),
                 ),
                 True,
@@ -481,7 +481,7 @@ class TestDispatcher:
                         date=datetime.datetime.now(),
                         reactions=[
                             ReactionCount(
-                                type=ReactionTypeCustomEmoji(custom_emoji="qwerty"),
+                                type=ReactionTypeCustomEmoji(custom_emoji_id="qwerty"),
                                 total_count=123,
                             ),
                         ],
