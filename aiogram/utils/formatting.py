@@ -431,6 +431,17 @@ class CustomEmoji(Text):
         super().__init__(*body, custom_emoji_id=custom_emoji_id, **params)
 
 
+class BlockQuote(Text):
+    """
+    Block quote element.
+
+    Will be wrapped into :obj:`aiogram.types.message_entity.MessageEntity`
+    with type :obj:`aiogram.enums.message_entity_type.MessageEntityType.BLOCKQUOTE`
+    """
+
+    type = MessageEntityType.BLOCKQUOTE
+
+
 NODE_TYPES: Dict[Optional[str], Type[Text]] = {
     Text.type: Text,
     HashTag.type: HashTag,
@@ -448,6 +459,8 @@ NODE_TYPES: Dict[Optional[str], Type[Text]] = {
     Pre.type: Pre,
     TextLink.type: TextLink,
     TextMention.type: TextMention,
+    CustomEmoji.type: CustomEmoji,
+    BlockQuote.type: BlockQuote,
 }
 
 

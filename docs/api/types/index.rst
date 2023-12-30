@@ -28,6 +28,13 @@ Available types
     callback_query
     chat
     chat_administrator_rights
+    chat_boost
+    chat_boost_removed
+    chat_boost_source
+    chat_boost_source_gift_code
+    chat_boost_source_giveaway
+    chat_boost_source_premium
+    chat_boost_updated
     chat_invite_link
     chat_join_request
     chat_location
@@ -45,6 +52,7 @@ Available types
     contact
     dice
     document
+    external_reply_info
     file
     force_reply
     forum_topic
@@ -54,6 +62,11 @@ Available types
     forum_topic_reopened
     general_forum_topic_hidden
     general_forum_topic_unhidden
+    giveaway
+    giveaway_completed
+    giveaway_created
+    giveaway_winners
+    inaccessible_message
     inline_keyboard_button
     inline_keyboard_markup
     input_file
@@ -67,8 +80,11 @@ Available types
     keyboard_button_poll_type
     keyboard_button_request_chat
     keyboard_button_request_user
+    keyboard_button_request_users
+    link_preview_options
     location
     login_url
+    maybe_inaccessible_message
     menu_button
     menu_button_commands
     menu_button_default
@@ -77,19 +93,34 @@ Available types
     message_auto_delete_timer_changed
     message_entity
     message_id
+    message_origin
+    message_origin_channel
+    message_origin_chat
+    message_origin_hidden_user
+    message_origin_user
+    message_reaction_count_updated
+    message_reaction_updated
     photo_size
     poll
     poll_answer
     poll_option
     proximity_alert_triggered
+    reaction_count
+    reaction_type
+    reaction_type_custom_emoji
+    reaction_type_emoji
     reply_keyboard_markup
     reply_keyboard_remove
+    reply_parameters
     response_parameters
     story
     switch_inline_query_chosen_chat
+    text_quote
     user
+    user_chat_boosts
     user_profile_photos
     user_shared
+    users_shared
     venue
     video
     video_chat_ended

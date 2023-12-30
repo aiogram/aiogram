@@ -31,3 +31,7 @@ extract:
     - caption
     - caption_entities
     - reply_to_message
+    - quote
+    - forward_origin
+    - external_reply
+    - link_preview_options

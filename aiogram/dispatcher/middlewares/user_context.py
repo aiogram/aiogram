@@ -1,7 +1,7 @@
 from typing import Any, Awaitable, Callable, Dict, Optional, Tuple
 
 from aiogram.dispatcher.middlewares.base import BaseMiddleware
-from aiogram.types import Chat, TelegramObject, Update, User
+from aiogram.types import Chat, InaccessibleMessage, TelegramObject, Update, User
 
 EVENT_FROM_USER_KEY = "event_from_user"
 EVENT_CHAT_KEY = "event_chat"
@@ -61,7 +61,8 @@ class UserContextMiddleware(BaseMiddleware):
                     event.callback_query.message.chat,
                     event.callback_query.from_user,
                     event.callback_query.message.message_thread_id
-                    if event.callback_query.message.is_topic_message
+                    if not isinstance(event.callback_query.message, InaccessibleMessage)
+                    and event.callback_query.message.is_topic_message
                     else None,
                 )
             return None, event.callback_query.from_user, None
@@ -77,4 +78,12 @@ class UserContextMiddleware(BaseMiddleware):
             return event.chat_member.chat, event.chat_member.from_user, None
         if event.chat_join_request:
             return event.chat_join_request.chat, event.chat_join_request.from_user, None
+        if event.message_reaction:
+            return event.message_reaction.chat, event.message_reaction.user, None
+        if event.message_reaction_count:
+            return event.message_reaction_count.chat, None, None
+        if event.chat_boost:
+            return event.chat_boost.chat, None, None
+        if event.removed_chat_boost:
+            return event.removed_chat_boost.chat, None, None
         return None, None, None

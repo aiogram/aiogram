@@ -1,0 +1,41 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "messageoriginhiddenuser",
+    "name": "MessageOriginHiddenUser",
+    "description": "The message was originally sent by an unknown user.",
+    "html_description": "<p>The message was originally sent by an unknown user.</p>",
+    "rst_description": "The message was originally sent by an unknown user.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Type of the message origin, always 'hidden_user'",
+        "html_description": "<td>Type of the message origin, always &#8220;hidden_user&#8221;</td>",
+        "rst_description": "Type of the message origin, always 'hidden_user'\n",
+        "name": "type",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "Date the message was sent originally in Unix time",
+        "html_description": "<td>Date the message was sent originally in Unix time</td>",
+        "rst_description": "Date the message was sent originally in Unix time\n",
+        "name": "date",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Name of the user that sent the message originally",
+        "html_description": "<td>Name of the user that sent the message originally</td>",
+        "rst_description": "Name of the user that sent the message originally\n",
+        "name": "sender_user_name",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "chatboostsource",
+    "name": "ChatBoostSource",
+    "description": "This object describes the source of a chat boost. It can be one of\n - ChatBoostSourcePremium\n - ChatBoostSourceGiftCode\n - ChatBoostSourceGiveaway",
+    "html_description": "<p>This object describes the source of a chat boost. It can be one of</p><ul>\n<li><a href=\"#chatboostsourcepremium\">ChatBoostSourcePremium</a></li>\n<li><a href=\"#chatboostsourcegiftcode\">ChatBoostSourceGiftCode</a></li>\n<li><a href=\"#chatboostsourcegiveaway\">ChatBoostSourceGiveaway</a></li>\n</ul>",
+    "rst_description": "This object describes the source of a chat boost. It can be one of\n\n - :class:`aiogram.types.chat_boost_source_premium.ChatBoostSourcePremium`\n - :class:`aiogram.types.chat_boost_source_gift_code.ChatBoostSourceGiftCode`\n - :class:`aiogram.types.chat_boost_source_giveaway.ChatBoostSourceGiveaway`",
+    "annotations": [],
+    "category": "types"
+  }
+}

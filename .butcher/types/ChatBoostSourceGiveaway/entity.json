@@ -1,0 +1,49 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "chatboostsourcegiveaway",
+    "name": "ChatBoostSourceGiveaway",
+    "description": "The boost was obtained by the creation of a Telegram Premium giveaway. This boosts the chat 4 times for the duration of the corresponding Telegram Premium subscription.",
+    "html_description": "<p>The boost was obtained by the creation of a Telegram Premium giveaway. This boosts the chat 4 times for the duration of the corresponding Telegram Premium subscription.</p>",
+    "rst_description": "The boost was obtained by the creation of a Telegram Premium giveaway. This boosts the chat 4 times for the duration of the corresponding Telegram Premium subscription.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Source of the boost, always 'giveaway'",
+        "html_description": "<td>Source of the boost, always &#8220;giveaway&#8221;</td>",
+        "rst_description": "Source of the boost, always 'giveaway'\n",
+        "name": "source",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "Identifier of a message in the chat with the giveaway; the message could have been deleted already. May be 0 if the message isn't sent yet.",
+        "html_description": "<td>Identifier of a message in the chat with the giveaway; the message could have been deleted already. May be 0 if the message isn't sent yet.</td>",
+        "rst_description": "Identifier of a message in the chat with the giveaway; the message could have been deleted already. May be 0 if the message isn't sent yet.\n",
+        "name": "giveaway_message_id",
+        "required": true
+      },
+      {
+        "type": "User",
+        "description": "User that won the prize in the giveaway if any",
+        "html_description": "<td><em>Optional</em>. User that won the prize in the giveaway if any</td>",
+        "rst_description": "*Optional*. User that won the prize in the giveaway if any\n",
+        "name": "user",
+        "required": false
+      },
+      {
+        "type": "True",
+        "description": "True, if the giveaway was completed, but there was no user to win the prize",
+        "html_description": "<td><em>Optional</em>. True, if the giveaway was completed, but there was no user to win the prize</td>",
+        "rst_description": "*Optional*. True, if the giveaway was completed, but there was no user to win the prize\n",
+        "name": "is_unclaimed",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

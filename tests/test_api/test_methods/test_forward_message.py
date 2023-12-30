@@ -20,4 +20,5 @@ class TestForwardMessage:
 
         response: Message = await bot.forward_message(chat_id=42, from_chat_id=42, message_id=42)
         request = bot.get_request()
+        assert request
         assert response == prepare_result.result

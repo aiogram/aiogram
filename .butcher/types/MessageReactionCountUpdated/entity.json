@@ -1,0 +1,49 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "messagereactioncountupdated",
+    "name": "MessageReactionCountUpdated",
+    "description": "This object represents reaction changes on a message with anonymous reactions.",
+    "html_description": "<p>This object represents reaction changes on a message with anonymous reactions.</p>",
+    "rst_description": "This object represents reaction changes on a message with anonymous reactions.",
+    "annotations": [
+      {
+        "type": "Chat",
+        "description": "The chat containing the message",
+        "html_description": "<td>The chat containing the message</td>",
+        "rst_description": "The chat containing the message\n",
+        "name": "chat",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "Unique message identifier inside the chat",
+        "html_description": "<td>Unique message identifier inside the chat</td>",
+        "rst_description": "Unique message identifier inside the chat\n",
+        "name": "message_id",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "Date of the change in Unix time",
+        "html_description": "<td>Date of the change in Unix time</td>",
+        "rst_description": "Date of the change in Unix time\n",
+        "name": "date",
+        "required": true
+      },
+      {
+        "type": "Array of ReactionCount",
+        "description": "List of reactions that are present on the message",
+        "html_description": "<td>List of reactions that are present on the message</td>",
+        "rst_description": "List of reactions that are present on the message\n",
+        "name": "reactions",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

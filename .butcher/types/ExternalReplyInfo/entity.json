@@ -1,0 +1,201 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "externalreplyinfo",
+    "name": "ExternalReplyInfo",
+    "description": "This object contains information about a message that is being replied to, which may come from another chat or forum topic.",
+    "html_description": "<p>This object contains information about a message that is being replied to, which may come from another chat or forum topic.</p>",
+    "rst_description": "This object contains information about a message that is being replied to, which may come from another chat or forum topic.",
+    "annotations": [
+      {
+        "type": "MessageOrigin",
+        "description": "Origin of the message replied to by the given message",
+        "html_description": "<td>Origin of the message replied to by the given message</td>",
+        "rst_description": "Origin of the message replied to by the given message\n",
+        "name": "origin",
+        "required": true
+      },
+      {
+        "type": "Chat",
+        "description": "Chat the original message belongs to. Available only if the chat is a supergroup or a channel.",
+        "html_description": "<td><em>Optional</em>. Chat the original message belongs to. Available only if the chat is a supergroup or a channel.</td>",
+        "rst_description": "*Optional*. Chat the original message belongs to. Available only if the chat is a supergroup or a channel.\n",
+        "name": "chat",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "Unique message identifier inside the original chat. Available only if the original chat is a supergroup or a channel.",
+        "html_description": "<td><em>Optional</em>. Unique message identifier inside the original chat. Available only if the original chat is a supergroup or a channel.</td>",
+        "rst_description": "*Optional*. Unique message identifier inside the original chat. Available only if the original chat is a supergroup or a channel.\n",
+        "name": "message_id",
+        "required": false
+      },
+      {
+        "type": "LinkPreviewOptions",
+        "description": "Options used for link preview generation for the original message, if it is a text message",
+        "html_description": "<td><em>Optional</em>. Options used for link preview generation for the original message, if it is a text message</td>",
+        "rst_description": "*Optional*. Options used for link preview generation for the original message, if it is a text message\n",
+        "name": "link_preview_options",
+        "required": false
+      },
+      {
+        "type": "Animation",
+        "description": "Message is an animation, information about the animation",
+        "html_description": "<td><em>Optional</em>. Message is an animation, information about the animation</td>",
+        "rst_description": "*Optional*. Message is an animation, information about the animation\n",
+        "name": "animation",
+        "required": false
+      },
+      {
+        "type": "Audio",
+        "description": "Message is an audio file, information about the file",
+        "html_description": "<td><em>Optional</em>. Message is an audio file, information about the file</td>",
+        "rst_description": "*Optional*. Message is an audio file, information about the file\n",
+        "name": "audio",
+        "required": false
+      },
+      {
+        "type": "Document",
+        "description": "Message is a general file, information about the file",
+        "html_description": "<td><em>Optional</em>. Message is a general file, information about the file</td>",
+        "rst_description": "*Optional*. Message is a general file, information about the file\n",
+        "name": "document",
+        "required": false
+      },
+      {
+        "type": "Array of PhotoSize",
+        "description": "Message is a photo, available sizes of the photo",
+        "html_description": "<td><em>Optional</em>. Message is a photo, available sizes of the photo</td>",
+        "rst_description": "*Optional*. Message is a photo, available sizes of the photo\n",
+        "name": "photo",
+        "required": false
+      },
+      {
+        "type": "Sticker",
+        "description": "Message is a sticker, information about the sticker",
+        "html_description": "<td><em>Optional</em>. Message is a sticker, information about the sticker</td>",
+        "rst_description": "*Optional*. Message is a sticker, information about the sticker\n",
+        "name": "sticker",
+        "required": false
+      },
+      {
+        "type": "Story",
+        "description": "Message is a forwarded story",
+        "html_description": "<td><em>Optional</em>. Message is a forwarded story</td>",
+        "rst_description": "*Optional*. Message is a forwarded story\n",
+        "name": "story",
+        "required": false
+      },
+      {
+        "type": "Video",
+        "description": "Message is a video, information about the video",
+        "html_description": "<td><em>Optional</em>. Message is a video, information about the video</td>",
+        "rst_description": "*Optional*. Message is a video, information about the video\n",
+        "name": "video",
+        "required": false
+      },
+      {
+        "type": "VideoNote",
+        "description": "Message is a video note, information about the video message",
+        "html_description": "<td><em>Optional</em>. Message is a <a href=\"https://telegram.org/blog/video-messages-and-telescope\">video note</a>, information about the video message</td>",
+        "rst_description": "*Optional*. Message is a `video note <https://telegram.org/blog/video-messages-and-telescope>`_, information about the video message\n",
+        "name": "video_note",
+        "required": false
+      },
+      {
+        "type": "Voice",
+        "description": "Message is a voice message, information about the file",
+        "html_description": "<td><em>Optional</em>. Message is a voice message, information about the file</td>",
+        "rst_description": "*Optional*. Message is a voice message, information about the file\n",
+        "name": "voice",
+        "required": false
+      },
+      {
+        "type": "True",
+        "description": "True, if the message media is covered by a spoiler animation",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the message media is covered by a spoiler animation</td>",
+        "rst_description": "*Optional*. :code:`True`, if the message media is covered by a spoiler animation\n",
+        "name": "has_media_spoiler",
+        "required": false
+      },
+      {
+        "type": "Contact",
+        "description": "Message is a shared contact, information about the contact",
+        "html_description": "<td><em>Optional</em>. Message is a shared contact, information about the contact</td>",
+        "rst_description": "*Optional*. Message is a shared contact, information about the contact\n",
+        "name": "contact",
+        "required": false
+      },
+      {
+        "type": "Dice",
+        "description": "Message is a dice with random value",
+        "html_description": "<td><em>Optional</em>. Message is a dice with random value</td>",
+        "rst_description": "*Optional*. Message is a dice with random value\n",
+        "name": "dice",
+        "required": false
+      },
+      {
+        "type": "Game",
+        "description": "Message is a game, information about the game.",
+        "html_description": "<td><em>Optional</em>. Message is a game, information about the game. <a href=\"#games\">More about games &#187;</a></td>",
+        "rst_description": "*Optional*. Message is a game, information about the game. `More about games » <https://core.telegram.org/bots/api#games>`_\n",
+        "name": "game",
+        "required": false
+      },
+      {
+        "type": "Giveaway",
+        "description": "Message is a scheduled giveaway, information about the giveaway",
+        "html_description": "<td><em>Optional</em>. Message is a scheduled giveaway, information about the giveaway</td>",
+        "rst_description": "*Optional*. Message is a scheduled giveaway, information about the giveaway\n",
+        "name": "giveaway",
+        "required": false
+      },
+      {
+        "type": "GiveawayWinners",
+        "description": "A giveaway with public winners was completed",
+        "html_description": "<td><em>Optional</em>. A giveaway with public winners was completed</td>",
+        "rst_description": "*Optional*. A giveaway with public winners was completed\n",
+        "name": "giveaway_winners",
+        "required": false
+      },
+      {
+        "type": "Invoice",
+        "description": "Message is an invoice for a payment, information about the invoice.",
+        "html_description": "<td><em>Optional</em>. Message is an invoice for a <a href=\"#payments\">payment</a>, information about the invoice. <a href=\"#payments\">More about payments &#187;</a></td>",
+        "rst_description": "*Optional*. Message is an invoice for a `payment <https://core.telegram.org/bots/api#payments>`_, information about the invoice. `More about payments » <https://core.telegram.org/bots/api#payments>`_\n",
+        "name": "invoice",
+        "required": false
+      },
+      {
+        "type": "Location",
+        "description": "Message is a shared location, information about the location",
+        "html_description": "<td><em>Optional</em>. Message is a shared location, information about the location</td>",
+        "rst_description": "*Optional*. Message is a shared location, information about the location\n",
+        "name": "location",
+        "required": false
+      },
+      {
+        "type": "Poll",
+        "description": "Message is a native poll, information about the poll",
+        "html_description": "<td><em>Optional</em>. Message is a native poll, information about the poll</td>",
+        "rst_description": "*Optional*. Message is a native poll, information about the poll\n",
+        "name": "poll",
+        "required": false
+      },
+      {
+        "type": "Venue",
+        "description": "Message is a venue, information about the venue",
+        "html_description": "<td><em>Optional</em>. Message is a venue, information about the venue</td>",
+        "rst_description": "*Optional*. Message is a venue, information about the venue\n",
+        "name": "venue",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

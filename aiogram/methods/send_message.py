@@ -2,14 +2,18 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, List, Optional, Union
 
+from pydantic import Field
+
 from ..types import (
     UNSET_PARSE_MODE,
     ForceReply,
     InlineKeyboardMarkup,
+    LinkPreviewOptions,
     Message,
     MessageEntity,
     ReplyKeyboardMarkup,
     ReplyKeyboardRemove,
+    ReplyParameters,
 )
 from ..types.base import UNSET_DISABLE_WEB_PAGE_PREVIEW, UNSET_PROTECT_CONTENT
 from .base import TelegramMethod
@@ -35,20 +39,37 @@ class SendMessage(TelegramMethod[Message]):
     """Mode for parsing entities in the message text. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details."""
     entities: Optional[List[MessageEntity]] = None
     """A JSON-serialized list of special entities that appear in message text, which can be specified instead of *parse_mode*"""
-    disable_web_page_preview: Optional[bool] = UNSET_DISABLE_WEB_PAGE_PREVIEW
-    """Disables link previews for links in this message"""
+    link_preview_options: Optional[LinkPreviewOptions] = None
+    """Link preview generation options for the message"""
     disable_notification: Optional[bool] = None
     """Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound."""
     protect_content: Optional[bool] = UNSET_PROTECT_CONTENT
     """Protects the contents of the sent message from forwarding and saving"""
-    reply_to_message_id: Optional[int] = None
-    """If the message is a reply, ID of the original message"""
-    allow_sending_without_reply: Optional[bool] = None
-    """Pass :code:`True` if the message should be sent even if the specified replied-to message is not found"""
+    reply_parameters: Optional[ReplyParameters] = None
+    """Description of the message to reply to"""
     reply_markup: Optional[
         Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
     ] = None
     """Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user."""
+    allow_sending_without_reply: Optional[bool] = Field(
+        None, json_schema_extra={"deprecated": True}
+    )
+    """Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
+
+.. deprecated:: API:7.0
+   https://core.telegram.org/bots/api-changelog#december-29-2023"""
+    disable_web_page_preview: Optional[bool] = Field(
+        UNSET_DISABLE_WEB_PAGE_PREVIEW, json_schema_extra={"deprecated": True}
+    )
+    """Disables link previews for links in this message
+
+.. deprecated:: API:7.0
+   https://core.telegram.org/bots/api-changelog#december-29-2023"""
+    reply_to_message_id: Optional[int] = Field(None, json_schema_extra={"deprecated": True})
+    """If the message is a reply, ID of the original message
+
+.. deprecated:: API:7.0
+   https://core.telegram.org/bots/api-changelog#december-29-2023"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!
@@ -62,14 +83,16 @@ class SendMessage(TelegramMethod[Message]):
             message_thread_id: Optional[int] = None,
             parse_mode: Optional[str] = UNSET_PARSE_MODE,
             entities: Optional[List[MessageEntity]] = None,
-            disable_web_page_preview: Optional[bool] = UNSET_DISABLE_WEB_PAGE_PREVIEW,
+            link_preview_options: Optional[LinkPreviewOptions] = None,
             disable_notification: Optional[bool] = None,
             protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
-            reply_to_message_id: Optional[int] = None,
-            allow_sending_without_reply: Optional[bool] = None,
+            reply_parameters: Optional[ReplyParameters] = None,
             reply_markup: Optional[
                 Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
             ] = None,
+            allow_sending_without_reply: Optional[bool] = None,
+            disable_web_page_preview: Optional[bool] = UNSET_DISABLE_WEB_PAGE_PREVIEW,
+            reply_to_message_id: Optional[int] = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!
@@ -82,11 +105,13 @@ class SendMessage(TelegramMethod[Message]):
                 message_thread_id=message_thread_id,
                 parse_mode=parse_mode,
                 entities=entities,
-                disable_web_page_preview=disable_web_page_preview,
+                link_preview_options=link_preview_options,
                 disable_notification=disable_notification,
                 protect_content=protect_content,
-                reply_to_message_id=reply_to_message_id,
-                allow_sending_without_reply=allow_sending_without_reply,
+                reply_parameters=reply_parameters,
                 reply_markup=reply_markup,
+                allow_sending_without_reply=allow_sending_without_reply,
+                disable_web_page_preview=disable_web_page_preview,
+                reply_to_message_id=reply_to_message_id,
                 **__pydantic_kwargs,
             )

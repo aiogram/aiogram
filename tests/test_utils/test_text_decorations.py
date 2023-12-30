@@ -66,6 +66,11 @@ class TestTextDecoration:
                 MessageEntity(type="text_link", offset=0, length=5, url="https://aiogram.dev"),
                 '<a href="https://aiogram.dev">test</a>',
             ],
+            [
+                html_decoration,
+                MessageEntity(type="blockquote", offset=0, length=5),
+                "<blockquote>test</blockquote>",
+            ],
             [markdown_decoration, MessageEntity(type="bold", offset=0, length=5), "*test*"],
             [markdown_decoration, MessageEntity(type="italic", offset=0, length=5), "_\rtest_\r"],
             [markdown_decoration, MessageEntity(type="code", offset=0, length=5), "`test`"],
@@ -105,6 +110,11 @@ class TestTextDecoration:
                     user=User(id=42, first_name="Test", is_bot=False),
                 ),
                 "[test](tg://user?id=42)",
+            ],
+            [
+                markdown_decoration,
+                MessageEntity(type="blockquote", offset=0, length=5),
+                ">test",
             ],
         ],
     )

@@ -52,6 +52,14 @@ class Router:
         self.my_chat_member = TelegramEventObserver(router=self, event_name="my_chat_member")
         self.chat_member = TelegramEventObserver(router=self, event_name="chat_member")
         self.chat_join_request = TelegramEventObserver(router=self, event_name="chat_join_request")
+        self.message_reaction = TelegramEventObserver(router=self, event_name="message_reaction")
+        self.message_reaction_count = TelegramEventObserver(
+            router=self, event_name="message_reaction_count"
+        )
+        self.chat_boost = TelegramEventObserver(router=self, event_name="chat_boost")
+        self.removed_chat_boost = TelegramEventObserver(
+            router=self, event_name="removed_chat_boost"
+        )
 
         self.errors = self.error = TelegramEventObserver(router=self, event_name="error")
 
@@ -73,6 +81,10 @@ class Router:
             "my_chat_member": self.my_chat_member,
             "chat_member": self.chat_member,
             "chat_join_request": self.chat_join_request,
+            "message_reaction": self.message_reaction,
+            "message_reaction_count": self.message_reaction_count,
+            "chat_boost": self.chat_boost,
+            "removed_chat_boost": self.removed_chat_boost,
             "error": self.errors,
         }
 

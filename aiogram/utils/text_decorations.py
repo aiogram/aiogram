@@ -56,6 +56,7 @@ class TextDecoration(ABC):
             MessageEntityType.UNDERLINE,
             MessageEntityType.STRIKETHROUGH,
             MessageEntityType.SPOILER,
+            MessageEntityType.BLOCKQUOTE,
         }:
             return cast(str, getattr(self, entity.type)(value=text))
         if entity.type == MessageEntityType.PRE:
@@ -167,6 +168,10 @@ class TextDecoration(ABC):
     def custom_emoji(self, value: str, custom_emoji_id: str) -> str:
         pass
 
+    @abstractmethod
+    def blockquote(self, value: str) -> str:
+        pass
+
 
 class HtmlDecoration(TextDecoration):
     BOLD_TAG = "b"
@@ -175,6 +180,7 @@ class HtmlDecoration(TextDecoration):
     STRIKETHROUGH_TAG = "s"
     SPOILER_TAG = "tg-spoiler"
     EMOJI_TAG = "tg-emoji"
+    BLOCKQUOTE_TAG = "blockquote"
 
     def link(self, value: str, link: str) -> str:
         return f'<a href="{link}">{value}</a>'
@@ -208,6 +214,9 @@ class HtmlDecoration(TextDecoration):
 
     def custom_emoji(self, value: str, custom_emoji_id: str) -> str:
         return f'<{self.EMOJI_TAG} emoji-id="{custom_emoji_id}">{value}</tg-emoji>'
+
+    def blockquote(self, value: str) -> str:
+        return f"<{self.BLOCKQUOTE_TAG}>{value}</{self.BLOCKQUOTE_TAG}>"
 
 
 class MarkdownDecoration(TextDecoration):
@@ -245,6 +254,9 @@ class MarkdownDecoration(TextDecoration):
 
     def custom_emoji(self, value: str, custom_emoji_id: str) -> str:
         return self.link(value=value, link=f"tg://emoji?id={custom_emoji_id}")
+
+    def blockquote(self, value: str) -> str:
+        return "\n".join(f">{line}" for line in value.splitlines())
 
 
 html_decoration = HtmlDecoration()

@@ -60,12 +60,12 @@
         "name": "entities"
       },
       {
-        "type": "Boolean",
+        "type": "LinkPreviewOptions",
         "required": false,
-        "description": "Disables link previews for links in this message",
-        "html_description": "<td>Disables link previews for links in this message</td>",
-        "rst_description": "Disables link previews for links in this message\n",
-        "name": "disable_web_page_preview"
+        "description": "Link preview generation options for the message",
+        "html_description": "<td>Link preview generation options for the message</td>",
+        "rst_description": "Link preview generation options for the message\n",
+        "name": "link_preview_options"
       },
       {
         "type": "InlineKeyboardMarkup",
@@ -74,6 +74,18 @@
         "html_description": "<td>A JSON-serialized object for an <a href=\"/bots/features#inline-keyboards\">inline keyboard</a>.</td>",
         "rst_description": "A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_.\n",
         "name": "reply_markup"
+      },
+      {
+        "type": "Boolean",
+        "required": false,
+        "description": "Disables link previews for links in this message",
+        "html_description": "<td>Disables link previews for links in this message</td>",
+        "rst_description": "Disables link previews for links in this message\n",
+        "name": "disable_web_page_preview",
+        "deprecated": {
+          "version": "7.0",
+          "release_date": "2023-12-29"
+        }
       }
     ],
     "category": "methods"

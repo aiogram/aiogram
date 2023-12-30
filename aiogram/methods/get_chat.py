@@ -8,7 +8,7 @@ from .base import TelegramMethod
 
 class GetChat(TelegramMethod[Chat]):
     """
-    Use this method to get up to date information about the chat (current name of the user for one-on-one conversations, current username of a user, group or channel, etc.). Returns a :class:`aiogram.types.chat.Chat` object on success.
+    Use this method to get up to date information about the chat. Returns a :class:`aiogram.types.chat.Chat` object on success.
 
     Source: https://core.telegram.org/bots/api#getchat
     """

@@ -1,5 +1,5 @@
 from aiogram.methods import AnswerCallbackQuery
-from aiogram.types import CallbackQuery, User
+from aiogram.types import CallbackQuery, InaccessibleMessage, Message, User
 
 
 class TestCallbackQuery:
@@ -17,3 +17,34 @@ class TestCallbackQuery:
 
         for key, value in kwargs.items():
             assert getattr(api_method, key) == value
+
+    def test_parse_message(self):
+        data = {
+            "id": "id",
+            "from": {"id": 42, "is_bot": False, "first_name": "name"},
+            "message": {
+                "message_id": 123,
+                "date": 1234567890,
+                "chat": {"id": 42, "type": "private"},
+            },
+            "chat_instance": "chat",
+            "data": "data",
+        }
+        callback_query = CallbackQuery.model_validate(data)
+        assert isinstance(callback_query.message, Message)
+
+    def test_parse_inaccessible_message(self):
+        data = {
+            "id": "id",
+            "from": {"id": 42, "is_bot": False, "first_name": "name"},
+            "message": {
+                "message_id": 123,
+                "date": 0,
+                "chat": {"id": 42, "type": "private"},
+            },
+            "chat_instance": "chat",
+            "data": "data",
+        }
+        callback_query = CallbackQuery.model_validate(data)
+
+        assert isinstance(callback_query.message, InaccessibleMessage)

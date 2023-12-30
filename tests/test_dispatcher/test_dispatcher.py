@@ -18,16 +18,24 @@ from aiogram.methods import GetMe, GetUpdates, SendMessage, TelegramMethod
 from aiogram.types import (
     CallbackQuery,
     Chat,
+    ChatBoost,
+    ChatBoostRemoved,
+    ChatBoostSourceGiveaway,
+    ChatBoostUpdated,
     ChatJoinRequest,
     ChatMemberMember,
     ChatMemberUpdated,
     ChosenInlineResult,
     InlineQuery,
     Message,
+    MessageReactionCountUpdated,
+    MessageReactionUpdated,
     Poll,
     PollAnswer,
     PollOption,
     PreCheckoutQuery,
+    ReactionCount,
+    ReactionTypeCustomEmoji,
     ShippingAddress,
     ShippingQuery,
     Update,
@@ -446,6 +454,76 @@ class TestDispatcher:
                 ),
                 True,
                 True,
+            ),
+            pytest.param(
+                "message_reaction",
+                Update(
+                    update_id=42,
+                    message_reaction=MessageReactionUpdated(
+                        chat=Chat(id=-42, type="channel"),
+                        message_id=12345,
+                        user=User(id=42, is_bot=False, first_name="Test"),
+                        date=datetime.datetime.now(),
+                        old_reaction=[],
+                        new_reaction=[ReactionTypeCustomEmoji(custom_emoji_id="qwerty")],
+                    ),
+                ),
+                True,
+                True,
+            ),
+            pytest.param(
+                "message_reaction_count",
+                Update(
+                    update_id=42,
+                    message_reaction_count=MessageReactionCountUpdated(
+                        chat=Chat(id=-42, type="channel"),
+                        message_id=12345,
+                        date=datetime.datetime.now(),
+                        reactions=[
+                            ReactionCount(
+                                type=ReactionTypeCustomEmoji(custom_emoji_id="qwerty"),
+                                total_count=123,
+                            ),
+                        ],
+                    ),
+                ),
+                True,
+                False,
+            ),
+            pytest.param(
+                "chat_boost",
+                Update(
+                    update_id=42,
+                    chat_boost=ChatBoostUpdated(
+                        chat=Chat(id=-42, type="channel"),
+                        boost=ChatBoost(
+                            boost_id="qwerty",
+                            add_date=datetime.datetime.now(),
+                            expiration_date=datetime.datetime.now(),
+                            source=ChatBoostSourceGiveaway(
+                                giveaway_message_id=77,
+                            ),
+                        ),
+                    ),
+                ),
+                True,
+                False,
+            ),
+            pytest.param(
+                "removed_chat_boost",
+                Update(
+                    update_id=42,
+                    removed_chat_boost=ChatBoostRemoved(
+                        chat=Chat(id=-42, type="channel"),
+                        boost_id="qwerty",
+                        remove_date=datetime.datetime.now(),
+                        source=ChatBoostSourceGiveaway(
+                            giveaway_message_id=77,
+                        ),
+                    ),
+                ),
+                True,
+                False,
             ),
         ],
     )

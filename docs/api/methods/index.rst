@@ -41,6 +41,7 @@ Available methods
     close_forum_topic
     close_general_forum_topic
     copy_message
+    copy_messages
     create_chat_invite_link
     create_forum_topic
     decline_chat_join_request
@@ -53,6 +54,7 @@ Available methods
     edit_general_forum_topic
     export_chat_invite_link
     forward_message
+    forward_messages
     get_chat
     get_chat_administrators
     get_chat_member
@@ -66,6 +68,7 @@ Available methods
     get_my_description
     get_my_name
     get_my_short_description
+    get_user_chat_boosts
     get_user_profile_photos
     hide_general_forum_topic
     leave_chat
@@ -98,6 +101,7 @@ Available methods
     set_chat_photo
     set_chat_sticker_set
     set_chat_title
+    set_message_reaction
     set_my_commands
     set_my_default_administrator_rights
     set_my_description
@@ -118,6 +122,7 @@ Updating messages
     :maxdepth: 1
 
     delete_message
+    delete_messages
     edit_message_caption
     edit_message_live_location
     edit_message_media

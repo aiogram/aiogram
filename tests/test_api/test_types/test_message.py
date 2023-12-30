@@ -31,6 +31,7 @@ from aiogram.methods import (
     SendVideo,
     SendVideoNote,
     SendVoice,
+    SetMessageReaction,
     StopMessageLiveLocation,
     TelegramMethod,
     UnpinChatMessage,
@@ -50,6 +51,12 @@ from aiogram.types import (
     ForumTopicEdited,
     ForumTopicReopened,
     Game,
+    GeneralForumTopicHidden,
+    GeneralForumTopicUnhidden,
+    Giveaway,
+    GiveawayCompleted,
+    GiveawayCreated,
+    GiveawayWinners,
     InlineKeyboardButton,
     InlineKeyboardMarkup,
     InputMediaPhoto,
@@ -62,11 +69,13 @@ from aiogram.types import (
     Poll,
     PollOption,
     ProximityAlertTriggered,
+    ReactionTypeCustomEmoji,
     Sticker,
     Story,
     SuccessfulPayment,
     User,
     UserShared,
+    UsersShared,
     Venue,
     Video,
     VideoChatEnded,
@@ -76,6 +85,7 @@ from aiogram.types import (
     VideoNote,
     Voice,
     WebAppData,
+    WriteAccessAllowed,
 )
 from aiogram.types.message import ContentType, Message
 
@@ -444,12 +454,22 @@ TEST_FORUM_TOPIC_REOPENED = Message(
     from_user=User(id=42, is_bot=False, first_name="Test"),
     forum_topic_reopened=ForumTopicReopened(),
 )
-TEST_USER_SHARED = Message(
+TEST_MESSAGE_USER_SHARED = Message(
     message_id=42,
     date=datetime.datetime.now(),
     chat=Chat(id=42, type="private"),
     from_user=User(id=42, is_bot=False, first_name="Test"),
     user_shared=UserShared(request_id=42, user_id=42),
+)
+TEST_MESSAGE_USERS_SHARED = Message(
+    message_id=42,
+    date=datetime.datetime.now(),
+    chat=Chat(id=42, type="private"),
+    from_user=None,
+    users_shared=UsersShared(
+        request_id=0,
+        user_ids=[1, 2],
+    ),
 )
 TEST_CHAT_SHARED = Message(
     message_id=42,
@@ -467,6 +487,73 @@ TEST_MESSAGE_STORY = Message(
     forward_signature="Test",
     forward_date=datetime.datetime.now(),
 )
+
+TEST_MESSAGE_GIVEAWAY = Message(
+    message_id=42,
+    date=datetime.datetime.now(),
+    chat=Chat(id=42, type="private"),
+    from_user=None,
+    giveaway=Giveaway(
+        chats=[Chat(id=42, type="private")],
+        winners_selection_date=datetime.datetime.now() + datetime.timedelta(days=7),
+        winner_count=10,
+    ),
+)
+TEST_MESSAGE_GIVEAWAY_CREATED = Message(
+    message_id=42,
+    date=datetime.datetime.now(),
+    chat=Chat(id=42, type="private"),
+    from_user=None,
+    giveaway_created=GiveawayCreated(),
+)
+TEST_MESSAGE_GIVEAWAY_WINNERS = Message(
+    message_id=42,
+    date=datetime.datetime.now(),
+    chat=Chat(id=42, type="private"),
+    from_user=None,
+    giveaway_winners=GiveawayWinners(
+        chat=Chat(id=77, type="private"),
+        giveaway_message_id=123,
+        winners_selection_date=datetime.datetime.now(),
+        winner_count=1,
+        winners=[User(id=42, is_bot=False, first_name="Test")],
+    ),
+)
+TEST_MESSAGE_GIVEAWAY_COMPLETED = Message(
+    message_id=42,
+    date=datetime.datetime.now(),
+    chat=Chat(id=42, type="private"),
+    from_user=None,
+    giveaway_completed=GiveawayCompleted(winner_count=10),
+)
+TEST_MESSAGE_HAS_MEDIA_SPOILER = Message(
+    message_id=42,
+    date=datetime.datetime.now(),
+    chat=Chat(id=42, type="private"),
+    from_user=None,
+    has_media_spoiler=True,
+)
+TEST_MESSAGE_GENERAL_FORUM_TOPIC_HIDDEN = Message(
+    message_id=42,
+    date=datetime.datetime.now(),
+    chat=Chat(id=42, type="private"),
+    from_user=None,
+    general_forum_topic_hidden=GeneralForumTopicHidden(),
+)
+TEST_MESSAGE_GENERAL_FORUM_TOPIC_UNHIDDEN = Message(
+    message_id=42,
+    date=datetime.datetime.now(),
+    chat=Chat(id=42, type="private"),
+    from_user=None,
+    general_forum_topic_unhidden=GeneralForumTopicUnhidden(),
+)
+TEST_MESSAGE_WRITE_ACCESS_ALLOWED = Message(
+    message_id=42,
+    date=datetime.datetime.now(),
+    chat=Chat(id=42, type="private"),
+    from_user=None,
+    write_access_allowed=WriteAccessAllowed(),
+)
 TEST_MESSAGE_UNKNOWN = Message(
     message_id=42,
     date=datetime.datetime.now(),
@@ -474,63 +561,161 @@ TEST_MESSAGE_UNKNOWN = Message(
     from_user=User(id=42, is_bot=False, first_name="Test"),
 )
 
+MESSAGES_AND_CONTENT_TYPES = [
+    [TEST_MESSAGE_TEXT, ContentType.TEXT],
+    [TEST_MESSAGE_AUDIO, ContentType.AUDIO],
+    [TEST_MESSAGE_ANIMATION, ContentType.ANIMATION],
+    [TEST_MESSAGE_DOCUMENT, ContentType.DOCUMENT],
+    [TEST_MESSAGE_GAME, ContentType.GAME],
+    [TEST_MESSAGE_PHOTO, ContentType.PHOTO],
+    [TEST_MESSAGE_STICKER, ContentType.STICKER],
+    [TEST_MESSAGE_VIDEO, ContentType.VIDEO],
+    [TEST_MESSAGE_VIDEO_NOTE, ContentType.VIDEO_NOTE],
+    [TEST_MESSAGE_VOICE, ContentType.VOICE],
+    [TEST_MESSAGE_CONTACT, ContentType.CONTACT],
+    [TEST_MESSAGE_VENUE, ContentType.VENUE],
+    [TEST_MESSAGE_LOCATION, ContentType.LOCATION],
+    [TEST_MESSAGE_NEW_CHAT_MEMBERS, ContentType.NEW_CHAT_MEMBERS],
+    [TEST_MESSAGE_LEFT_CHAT_MEMBER, ContentType.LEFT_CHAT_MEMBER],
+    [TEST_MESSAGE_INVOICE, ContentType.INVOICE],
+    [TEST_MESSAGE_SUCCESSFUL_PAYMENT, ContentType.SUCCESSFUL_PAYMENT],
+    [TEST_MESSAGE_CONNECTED_WEBSITE, ContentType.CONNECTED_WEBSITE],
+    [TEST_MESSAGE_MIGRATE_FROM_CHAT_ID, ContentType.MIGRATE_FROM_CHAT_ID],
+    [TEST_MESSAGE_MIGRATE_TO_CHAT_ID, ContentType.MIGRATE_TO_CHAT_ID],
+    [TEST_MESSAGE_PINNED_MESSAGE, ContentType.PINNED_MESSAGE],
+    [TEST_MESSAGE_NEW_CHAT_TITLE, ContentType.NEW_CHAT_TITLE],
+    [TEST_MESSAGE_NEW_CHAT_PHOTO, ContentType.NEW_CHAT_PHOTO],
+    [TEST_MESSAGE_DELETE_CHAT_PHOTO, ContentType.DELETE_CHAT_PHOTO],
+    [TEST_MESSAGE_GROUP_CHAT_CREATED, ContentType.GROUP_CHAT_CREATED],
+    [TEST_MESSAGE_SUPERGROUP_CHAT_CREATED, ContentType.SUPERGROUP_CHAT_CREATED],
+    [TEST_MESSAGE_CHANNEL_CHAT_CREATED, ContentType.CHANNEL_CHAT_CREATED],
+    [TEST_MESSAGE_PASSPORT_DATA, ContentType.PASSPORT_DATA],
+    [TEST_MESSAGE_PROXIMITY_ALERT_TRIGGERED, ContentType.PROXIMITY_ALERT_TRIGGERED],
+    [TEST_MESSAGE_POLL, ContentType.POLL],
+    [
+        TEST_MESSAGE_MESSAGE_AUTO_DELETE_TIMER_CHANGED,
+        ContentType.MESSAGE_AUTO_DELETE_TIMER_CHANGED,
+    ],
+    [TEST_MESSAGE_VIDEO_CHAT_SCHEDULED, ContentType.VIDEO_CHAT_SCHEDULED],
+    [TEST_MESSAGE_VIDEO_CHAT_STARTED, ContentType.VIDEO_CHAT_STARTED],
+    [TEST_MESSAGE_VIDEO_CHAT_ENDED, ContentType.VIDEO_CHAT_ENDED],
+    [
+        TEST_MESSAGE_VIDEO_CHAT_PARTICIPANTS_INVITED,
+        ContentType.VIDEO_CHAT_PARTICIPANTS_INVITED,
+    ],
+    [TEST_MESSAGE_DICE, ContentType.DICE],
+    [TEST_MESSAGE_WEB_APP_DATA, ContentType.WEB_APP_DATA],
+    [TEST_FORUM_TOPIC_CREATED, ContentType.FORUM_TOPIC_CREATED],
+    [TEST_FORUM_TOPIC_EDITED, ContentType.FORUM_TOPIC_EDITED],
+    [TEST_FORUM_TOPIC_CLOSED, ContentType.FORUM_TOPIC_CLOSED],
+    [TEST_FORUM_TOPIC_REOPENED, ContentType.FORUM_TOPIC_REOPENED],
+    [TEST_MESSAGE_USER_SHARED, ContentType.USER_SHARED],
+    [TEST_MESSAGE_USERS_SHARED, ContentType.USERS_SHARED],
+    [TEST_CHAT_SHARED, ContentType.CHAT_SHARED],
+    [TEST_MESSAGE_STORY, ContentType.STORY],
+    [TEST_MESSAGE_GIVEAWAY, ContentType.GIVEAWAY],
+    [TEST_MESSAGE_GIVEAWAY_CREATED, ContentType.GIVEAWAY_CREATED],
+    [TEST_MESSAGE_GIVEAWAY_WINNERS, ContentType.GIVEAWAY_WINNERS],
+    [TEST_MESSAGE_GIVEAWAY_COMPLETED, ContentType.GIVEAWAY_COMPLETED],
+    [TEST_MESSAGE_HAS_MEDIA_SPOILER, ContentType.HAS_MEDIA_SPOILER],
+    [TEST_MESSAGE_GENERAL_FORUM_TOPIC_HIDDEN, ContentType.GENERAL_FORUM_TOPIC_HIDDEN],
+    [TEST_MESSAGE_GENERAL_FORUM_TOPIC_UNHIDDEN, ContentType.GENERAL_FORUM_TOPIC_UNHIDDEN],
+    [TEST_MESSAGE_WRITE_ACCESS_ALLOWED, ContentType.WRITE_ACCESS_ALLOWED],
+    [TEST_MESSAGE_UNKNOWN, ContentType.UNKNOWN],
+]
+
+
+MESSAGES_AND_COPY_METHODS = [
+    [TEST_MESSAGE_TEXT, SendMessage],
+    [TEST_MESSAGE_AUDIO, SendAudio],
+    [TEST_MESSAGE_ANIMATION, SendAnimation],
+    [TEST_MESSAGE_DOCUMENT, SendDocument],
+    [TEST_MESSAGE_GAME, None],
+    [TEST_MESSAGE_PHOTO, SendPhoto],
+    [TEST_MESSAGE_STICKER, SendSticker],
+    [TEST_MESSAGE_VIDEO, SendVideo],
+    [TEST_MESSAGE_VIDEO_NOTE, SendVideoNote],
+    [TEST_MESSAGE_VOICE, SendVoice],
+    [TEST_MESSAGE_CONTACT, SendContact],
+    [TEST_MESSAGE_VENUE, SendVenue],
+    [TEST_MESSAGE_LOCATION, SendLocation],
+    [TEST_MESSAGE_STORY, ForwardMessage],
+    [TEST_MESSAGE_NEW_CHAT_MEMBERS, None],
+    [TEST_MESSAGE_LEFT_CHAT_MEMBER, None],
+    [TEST_MESSAGE_INVOICE, None],
+    [TEST_MESSAGE_SUCCESSFUL_PAYMENT, None],
+    [TEST_MESSAGE_CONNECTED_WEBSITE, None],
+    [TEST_MESSAGE_MIGRATE_FROM_CHAT_ID, None],
+    [TEST_MESSAGE_MIGRATE_TO_CHAT_ID, None],
+    [TEST_MESSAGE_PINNED_MESSAGE, None],
+    [TEST_MESSAGE_NEW_CHAT_TITLE, None],
+    [TEST_MESSAGE_NEW_CHAT_PHOTO, None],
+    [TEST_MESSAGE_DELETE_CHAT_PHOTO, None],
+    [TEST_MESSAGE_GROUP_CHAT_CREATED, None],
+    [TEST_MESSAGE_SUPERGROUP_CHAT_CREATED, None],
+    [TEST_MESSAGE_CHANNEL_CHAT_CREATED, None],
+    [TEST_MESSAGE_PASSPORT_DATA, None],
+    [TEST_MESSAGE_PROXIMITY_ALERT_TRIGGERED, None],
+    [TEST_MESSAGE_POLL, SendPoll],
+    [TEST_MESSAGE_MESSAGE_AUTO_DELETE_TIMER_CHANGED, None],
+    [TEST_MESSAGE_VIDEO_CHAT_STARTED, None],
+    [TEST_MESSAGE_VIDEO_CHAT_ENDED, None],
+    [TEST_MESSAGE_VIDEO_CHAT_PARTICIPANTS_INVITED, None],
+    [TEST_MESSAGE_DICE, SendDice],
+    [TEST_MESSAGE_USER_SHARED, None],
+    [TEST_CHAT_SHARED, None],
+    [TEST_MESSAGE_GIVEAWAY_COMPLETED, None],
+    [TEST_MESSAGE_HAS_MEDIA_SPOILER, None],
+    [TEST_MESSAGE_WEB_APP_DATA, None],
+    [TEST_FORUM_TOPIC_CREATED, None],
+    [TEST_FORUM_TOPIC_EDITED, None],
+    [TEST_FORUM_TOPIC_CLOSED, None],
+    [TEST_FORUM_TOPIC_REOPENED, None],
+    [TEST_MESSAGE_GENERAL_FORUM_TOPIC_HIDDEN, None],
+    [TEST_MESSAGE_GENERAL_FORUM_TOPIC_UNHIDDEN, None],
+    [TEST_MESSAGE_GIVEAWAY_CREATED, None],
+    [TEST_MESSAGE_USERS_SHARED, None],
+    [TEST_MESSAGE_VIDEO_CHAT_SCHEDULED, None],
+    [TEST_MESSAGE_WRITE_ACCESS_ALLOWED, None],
+    [TEST_MESSAGE_GIVEAWAY, None],
+    [TEST_MESSAGE_GIVEAWAY_WINNERS, None],
+    [TEST_MESSAGE_UNKNOWN, None],
+]
+
+
+class TestAllMessageTypesTested:
+    @pytest.fixture(scope="function")
+    def known_content_types(self):
+        content_types = {t for t in ContentType}
+        content_types.remove(ContentType.ANY)
+        return content_types
+
+    def test_for_content_type_tests(self, known_content_types):
+        """
+        Test if all ContentType options have example messages.
+
+        On new Bot API updates new ContentType entries are created.
+        TestMessage.test_content_type checks what content type is returned.
+        Make sure MESSAGES_AND_CONTENT_TYPES has examples
+        for all the ContentType entries, fail otherwise.
+        """
+        content_types_w_example_messages = {t[1] for t in MESSAGES_AND_CONTENT_TYPES}
+        assert content_types_w_example_messages == known_content_types
+
+    def test_for_copy_methods(self, known_content_types):
+        """
+        Test if all known message types are checked for copy_message.
+
+        Also relies on the previous test (both should be green)
+        """
+        checked_content_types = {m[0].content_type for m in MESSAGES_AND_COPY_METHODS}
+        assert checked_content_types == known_content_types
+
 
 class TestMessage:
     @pytest.mark.parametrize(
         "message,content_type",
-        [
-            [TEST_MESSAGE_TEXT, ContentType.TEXT],
-            [TEST_MESSAGE_AUDIO, ContentType.AUDIO],
-            [TEST_MESSAGE_ANIMATION, ContentType.ANIMATION],
-            [TEST_MESSAGE_DOCUMENT, ContentType.DOCUMENT],
-            [TEST_MESSAGE_GAME, ContentType.GAME],
-            [TEST_MESSAGE_PHOTO, ContentType.PHOTO],
-            [TEST_MESSAGE_STICKER, ContentType.STICKER],
-            [TEST_MESSAGE_VIDEO, ContentType.VIDEO],
-            [TEST_MESSAGE_VIDEO_NOTE, ContentType.VIDEO_NOTE],
-            [TEST_MESSAGE_VOICE, ContentType.VOICE],
-            [TEST_MESSAGE_CONTACT, ContentType.CONTACT],
-            [TEST_MESSAGE_VENUE, ContentType.VENUE],
-            [TEST_MESSAGE_LOCATION, ContentType.LOCATION],
-            [TEST_MESSAGE_NEW_CHAT_MEMBERS, ContentType.NEW_CHAT_MEMBERS],
-            [TEST_MESSAGE_LEFT_CHAT_MEMBER, ContentType.LEFT_CHAT_MEMBER],
-            [TEST_MESSAGE_INVOICE, ContentType.INVOICE],
-            [TEST_MESSAGE_SUCCESSFUL_PAYMENT, ContentType.SUCCESSFUL_PAYMENT],
-            [TEST_MESSAGE_CONNECTED_WEBSITE, ContentType.CONNECTED_WEBSITE],
-            [TEST_MESSAGE_MIGRATE_FROM_CHAT_ID, ContentType.MIGRATE_FROM_CHAT_ID],
-            [TEST_MESSAGE_MIGRATE_TO_CHAT_ID, ContentType.MIGRATE_TO_CHAT_ID],
-            [TEST_MESSAGE_PINNED_MESSAGE, ContentType.PINNED_MESSAGE],
-            [TEST_MESSAGE_NEW_CHAT_TITLE, ContentType.NEW_CHAT_TITLE],
-            [TEST_MESSAGE_NEW_CHAT_PHOTO, ContentType.NEW_CHAT_PHOTO],
-            [TEST_MESSAGE_DELETE_CHAT_PHOTO, ContentType.DELETE_CHAT_PHOTO],
-            [TEST_MESSAGE_GROUP_CHAT_CREATED, ContentType.GROUP_CHAT_CREATED],
-            [TEST_MESSAGE_SUPERGROUP_CHAT_CREATED, ContentType.SUPERGROUP_CHAT_CREATED],
-            [TEST_MESSAGE_CHANNEL_CHAT_CREATED, ContentType.CHANNEL_CHAT_CREATED],
-            [TEST_MESSAGE_PASSPORT_DATA, ContentType.PASSPORT_DATA],
-            [TEST_MESSAGE_PROXIMITY_ALERT_TRIGGERED, ContentType.PROXIMITY_ALERT_TRIGGERED],
-            [TEST_MESSAGE_POLL, ContentType.POLL],
-            [
-                TEST_MESSAGE_MESSAGE_AUTO_DELETE_TIMER_CHANGED,
-                ContentType.MESSAGE_AUTO_DELETE_TIMER_CHANGED,
-            ],
-            [TEST_MESSAGE_VIDEO_CHAT_SCHEDULED, ContentType.VIDEO_CHAT_SCHEDULED],
-            [TEST_MESSAGE_VIDEO_CHAT_STARTED, ContentType.VIDEO_CHAT_STARTED],
-            [TEST_MESSAGE_VIDEO_CHAT_ENDED, ContentType.VIDEO_CHAT_ENDED],
-            [
-                TEST_MESSAGE_VIDEO_CHAT_PARTICIPANTS_INVITED,
-                ContentType.VIDEO_CHAT_PARTICIPANTS_INVITED,
-            ],
-            [TEST_MESSAGE_DICE, ContentType.DICE],
-            [TEST_MESSAGE_WEB_APP_DATA, ContentType.WEB_APP_DATA],
-            [TEST_FORUM_TOPIC_CREATED, ContentType.FORUM_TOPIC_CREATED],
-            [TEST_FORUM_TOPIC_EDITED, ContentType.FORUM_TOPIC_EDITED],
-            [TEST_FORUM_TOPIC_CLOSED, ContentType.FORUM_TOPIC_CLOSED],
-            [TEST_FORUM_TOPIC_REOPENED, ContentType.FORUM_TOPIC_REOPENED],
-            [TEST_USER_SHARED, ContentType.USER_SHARED],
-            [TEST_CHAT_SHARED, ContentType.CHAT_SHARED],
-            [TEST_MESSAGE_STORY, ContentType.STORY],
-            [TEST_MESSAGE_UNKNOWN, ContentType.UNKNOWN],
-        ],
+        MESSAGES_AND_CONTENT_TYPES,
     )
     def test_content_type(self, message: Message, content_type: str):
         assert message.content_type == content_type
@@ -637,47 +822,7 @@ class TestMessage:
 
     @pytest.mark.parametrize(
         "message,expected_method",
-        [
-            [TEST_MESSAGE_TEXT, SendMessage],
-            [TEST_MESSAGE_AUDIO, SendAudio],
-            [TEST_MESSAGE_ANIMATION, SendAnimation],
-            [TEST_MESSAGE_DOCUMENT, SendDocument],
-            [TEST_MESSAGE_GAME, None],
-            [TEST_MESSAGE_PHOTO, SendPhoto],
-            [TEST_MESSAGE_STICKER, SendSticker],
-            [TEST_MESSAGE_VIDEO, SendVideo],
-            [TEST_MESSAGE_VIDEO_NOTE, SendVideoNote],
-            [TEST_MESSAGE_VOICE, SendVoice],
-            [TEST_MESSAGE_CONTACT, SendContact],
-            [TEST_MESSAGE_VENUE, SendVenue],
-            [TEST_MESSAGE_LOCATION, SendLocation],
-            [TEST_MESSAGE_STORY, ForwardMessage],
-            [TEST_MESSAGE_NEW_CHAT_MEMBERS, None],
-            [TEST_MESSAGE_LEFT_CHAT_MEMBER, None],
-            [TEST_MESSAGE_INVOICE, None],
-            [TEST_MESSAGE_SUCCESSFUL_PAYMENT, None],
-            [TEST_MESSAGE_CONNECTED_WEBSITE, None],
-            [TEST_MESSAGE_MIGRATE_FROM_CHAT_ID, None],
-            [TEST_MESSAGE_MIGRATE_TO_CHAT_ID, None],
-            [TEST_MESSAGE_PINNED_MESSAGE, None],
-            [TEST_MESSAGE_NEW_CHAT_TITLE, None],
-            [TEST_MESSAGE_NEW_CHAT_PHOTO, None],
-            [TEST_MESSAGE_DELETE_CHAT_PHOTO, None],
-            [TEST_MESSAGE_GROUP_CHAT_CREATED, None],
-            [TEST_MESSAGE_SUPERGROUP_CHAT_CREATED, None],
-            [TEST_MESSAGE_CHANNEL_CHAT_CREATED, None],
-            [TEST_MESSAGE_PASSPORT_DATA, None],
-            [TEST_MESSAGE_PROXIMITY_ALERT_TRIGGERED, None],
-            [TEST_MESSAGE_POLL, SendPoll],
-            [TEST_MESSAGE_MESSAGE_AUTO_DELETE_TIMER_CHANGED, None],
-            [TEST_MESSAGE_VIDEO_CHAT_STARTED, None],
-            [TEST_MESSAGE_VIDEO_CHAT_ENDED, None],
-            [TEST_MESSAGE_VIDEO_CHAT_PARTICIPANTS_INVITED, None],
-            [TEST_MESSAGE_DICE, SendDice],
-            [TEST_USER_SHARED, None],
-            [TEST_CHAT_SHARED, None],
-            [TEST_MESSAGE_UNKNOWN, None],
-        ],
+        MESSAGES_AND_COPY_METHODS,
     )
     def test_send_copy(
         self,
@@ -860,6 +1005,20 @@ class TestMessage:
         method = message.unpin()
         assert isinstance(method, UnpinChatMessage)
         assert method.chat_id == message.chat.id
+
+    def test_react(self):
+        message = Message(
+            message_id=777,
+            chat=Chat(id=-42, type="channel"),
+            date=datetime.datetime.now(),
+        )
+        emoji_reaction = ReactionTypeCustomEmoji(custom_emoji_id="qwerty")
+        method = message.react(
+            reaction=[emoji_reaction],
+        )
+        assert isinstance(method, SetMessageReaction)
+        assert method.chat_id == message.chat.id
+        assert method.reaction == [emoji_reaction]
 
     @pytest.mark.parametrize(
         "text,entities,mode,expected_value",

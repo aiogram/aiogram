@@ -37,9 +37,9 @@
       },
       {
         "type": "Boolean",
-        "description": "True, if the user is allowed to send text messages, contacts, invoices, locations and venues",
-        "html_description": "<td><em>True</em>, if the user is allowed to send text messages, contacts, invoices, locations and venues</td>",
-        "rst_description": ":code:`True`, if the user is allowed to send text messages, contacts, invoices, locations and venues\n",
+        "description": "True, if the user is allowed to send text messages, contacts, giveaways, giveaway winners, invoices, locations and venues",
+        "html_description": "<td><em>True</em>, if the user is allowed to send text messages, contacts, giveaways, giveaway winners, invoices, locations and venues</td>",
+        "rst_description": ":code:`True`, if the user is allowed to send text messages, contacts, giveaways, giveaway winners, invoices, locations and venues\n",
         "name": "can_send_messages",
         "required": true
       },

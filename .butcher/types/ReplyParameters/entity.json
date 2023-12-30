@@ -1,0 +1,73 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "replyparameters",
+    "name": "ReplyParameters",
+    "description": "Describes reply parameters for the message that is being sent.",
+    "html_description": "<p>Describes reply parameters for the message that is being sent.</p>",
+    "rst_description": "Describes reply parameters for the message that is being sent.",
+    "annotations": [
+      {
+        "type": "Integer",
+        "description": "Identifier of the message that will be replied to in the current chat, or in the chat chat_id if it is specified",
+        "html_description": "<td>Identifier of the message that will be replied to in the current chat, or in the chat <em>chat_id</em> if it is specified</td>",
+        "rst_description": "Identifier of the message that will be replied to in the current chat, or in the chat *chat_id* if it is specified\n",
+        "name": "message_id",
+        "required": true
+      },
+      {
+        "type": "Integer or String",
+        "description": "If the message to be replied to is from a different chat, unique identifier for the chat or username of the channel (in the format @channelusername)",
+        "html_description": "<td><em>Optional</em>. If the message to be replied to is from a different chat, unique identifier for the chat or username of the channel (in the format <code>@channelusername</code>)</td>",
+        "rst_description": "*Optional*. If the message to be replied to is from a different chat, unique identifier for the chat or username of the channel (in the format :code:`@channelusername`)\n",
+        "name": "chat_id",
+        "required": false
+      },
+      {
+        "type": "Boolean",
+        "description": "Pass True if the message should be sent even if the specified message to be replied to is not found; can be used only for replies in the same chat and forum topic.",
+        "html_description": "<td><em>Optional</em>. Pass <em>True</em> if the message should be sent even if the specified message to be replied to is not found; can be used only for replies in the same chat and forum topic.</td>",
+        "rst_description": "*Optional*. Pass :code:`True` if the message should be sent even if the specified message to be replied to is not found; can be used only for replies in the same chat and forum topic.\n",
+        "name": "allow_sending_without_reply",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "Quoted part of the message to be replied to; 0-1024 characters after entities parsing. The quote must be an exact substring of the message to be replied to, including bold, italic, underline, strikethrough, spoiler, and custom_emoji entities. The message will fail to send if the quote isn't found in the original message.",
+        "html_description": "<td><em>Optional</em>. Quoted part of the message to be replied to; 0-1024 characters after entities parsing. The quote must be an exact substring of the message to be replied to, including <em>bold</em>, <em>italic</em>, <em>underline</em>, <em>strikethrough</em>, <em>spoiler</em>, and <em>custom_emoji</em> entities. The message will fail to send if the quote isn't found in the original message.</td>",
+        "rst_description": "*Optional*. Quoted part of the message to be replied to; 0-1024 characters after entities parsing. The quote must be an exact substring of the message to be replied to, including *bold*, *italic*, *underline*, *strikethrough*, *spoiler*, and *custom_emoji* entities. The message will fail to send if the quote isn't found in the original message.\n",
+        "name": "quote",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "Mode for parsing entities in the quote. See formatting options for more details.",
+        "html_description": "<td><em>Optional</em>. Mode for parsing entities in the quote. See <a href=\"#formatting-options\">formatting options</a> for more details.</td>",
+        "rst_description": "*Optional*. Mode for parsing entities in the quote. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.\n",
+        "name": "quote_parse_mode",
+        "required": false
+      },
+      {
+        "type": "Array of MessageEntity",
+        "description": "A JSON-serialized list of special entities that appear in the quote. It can be specified instead of quote_parse_mode.",
+        "html_description": "<td><em>Optional</em>. A JSON-serialized list of special entities that appear in the quote. It can be specified instead of <em>quote_parse_mode</em>.</td>",
+        "rst_description": "*Optional*. A JSON-serialized list of special entities that appear in the quote. It can be specified instead of *quote_parse_mode*.\n",
+        "name": "quote_entities",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "Position of the quote in the original message in UTF-16 code units",
+        "html_description": "<td><em>Optional</em>. Position of the quote in the original message in UTF-16 code units</td>",
+        "rst_description": "*Optional*. Position of the quote in the original message in UTF-16 code units\n",
+        "name": "quote_position",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

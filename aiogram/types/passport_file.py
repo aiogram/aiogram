@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any
 
 from .base import TelegramObject
+from .custom import DateTime
 
 
 class PassportFile(TelegramObject):
@@ -18,7 +19,7 @@ class PassportFile(TelegramObject):
     """Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file."""
     file_size: int
     """File size in bytes"""
-    file_date: int
+    file_date: DateTime
     """Unix time when the file was uploaded"""
 
     if TYPE_CHECKING:
@@ -31,7 +32,7 @@ class PassportFile(TelegramObject):
             file_id: str,
             file_unique_id: str,
             file_size: int,
-            file_date: int,
+            file_date: DateTime,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

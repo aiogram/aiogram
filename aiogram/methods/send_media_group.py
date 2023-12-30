@@ -2,12 +2,15 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, List, Optional, Union
 
+from pydantic import Field
+
 from ..types import (
     InputMediaAudio,
     InputMediaDocument,
     InputMediaPhoto,
     InputMediaVideo,
     Message,
+    ReplyParameters,
 )
 from ..types.base import UNSET_PROTECT_CONTENT
 from .base import TelegramMethod
@@ -33,10 +36,20 @@ class SendMediaGroup(TelegramMethod[List[Message]]):
     """Sends messages `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound."""
     protect_content: Optional[bool] = UNSET_PROTECT_CONTENT
     """Protects the contents of the sent messages from forwarding and saving"""
-    reply_to_message_id: Optional[int] = None
-    """If the messages are a reply, ID of the original message"""
-    allow_sending_without_reply: Optional[bool] = None
-    """Pass :code:`True` if the message should be sent even if the specified replied-to message is not found"""
+    reply_parameters: Optional[ReplyParameters] = None
+    """Description of the message to reply to"""
+    allow_sending_without_reply: Optional[bool] = Field(
+        None, json_schema_extra={"deprecated": True}
+    )
+    """Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
+
+.. deprecated:: API:7.0
+   https://core.telegram.org/bots/api-changelog#december-29-2023"""
+    reply_to_message_id: Optional[int] = Field(None, json_schema_extra={"deprecated": True})
+    """If the messages are a reply, ID of the original message
+
+.. deprecated:: API:7.0
+   https://core.telegram.org/bots/api-changelog#december-29-2023"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!
@@ -52,8 +65,9 @@ class SendMediaGroup(TelegramMethod[List[Message]]):
             message_thread_id: Optional[int] = None,
             disable_notification: Optional[bool] = None,
             protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
-            reply_to_message_id: Optional[int] = None,
+            reply_parameters: Optional[ReplyParameters] = None,
             allow_sending_without_reply: Optional[bool] = None,
+            reply_to_message_id: Optional[int] = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!
@@ -66,7 +80,8 @@ class SendMediaGroup(TelegramMethod[List[Message]]):
                 message_thread_id=message_thread_id,
                 disable_notification=disable_notification,
                 protect_content=protect_content,
-                reply_to_message_id=reply_to_message_id,
+                reply_parameters=reply_parameters,
                 allow_sending_without_reply=allow_sending_without_reply,
+                reply_to_message_id=reply_to_message_id,
                 **__pydantic_kwargs,
             )

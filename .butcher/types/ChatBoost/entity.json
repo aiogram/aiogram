@@ -1,0 +1,49 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "chatboost",
+    "name": "ChatBoost",
+    "description": "This object contains information about a chat boost.",
+    "html_description": "<p>This object contains information about a chat boost.</p>",
+    "rst_description": "This object contains information about a chat boost.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Unique identifier of the boost",
+        "html_description": "<td>Unique identifier of the boost</td>",
+        "rst_description": "Unique identifier of the boost\n",
+        "name": "boost_id",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "Point in time (Unix timestamp) when the chat was boosted",
+        "html_description": "<td>Point in time (Unix timestamp) when the chat was boosted</td>",
+        "rst_description": "Point in time (Unix timestamp) when the chat was boosted\n",
+        "name": "add_date",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "Point in time (Unix timestamp) when the boost will automatically expire, unless the booster's Telegram Premium subscription is prolonged",
+        "html_description": "<td>Point in time (Unix timestamp) when the boost will automatically expire, unless the booster's Telegram Premium subscription is prolonged</td>",
+        "rst_description": "Point in time (Unix timestamp) when the boost will automatically expire, unless the booster's Telegram Premium subscription is prolonged\n",
+        "name": "expiration_date",
+        "required": true
+      },
+      {
+        "type": "ChatBoostSource",
+        "description": "Source of the added boost",
+        "html_description": "<td>Source of the added boost</td>",
+        "rst_description": "Source of the added boost\n",
+        "name": "source",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

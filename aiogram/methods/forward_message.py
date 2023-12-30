@@ -9,7 +9,7 @@ from .base import TelegramMethod
 
 class ForwardMessage(TelegramMethod[Message]):
     """
-    Use this method to forward messages of any kind. Service messages can't be forwarded. On success, the sent :class:`aiogram.types.message.Message` is returned.
+    Use this method to forward messages of any kind. Service messages and messages with protected content can't be forwarded. On success, the sent :class:`aiogram.types.message.Message` is returned.
 
     Source: https://core.telegram.org/bots/api#forwardmessage
     """

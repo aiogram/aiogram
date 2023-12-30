@@ -1,0 +1,41 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "messageoriginuser",
+    "name": "MessageOriginUser",
+    "description": "The message was originally sent by a known user.",
+    "html_description": "<p>The message was originally sent by a known user.</p>",
+    "rst_description": "The message was originally sent by a known user.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Type of the message origin, always 'user'",
+        "html_description": "<td>Type of the message origin, always &#8220;user&#8221;</td>",
+        "rst_description": "Type of the message origin, always 'user'\n",
+        "name": "type",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "Date the message was sent originally in Unix time",
+        "html_description": "<td>Date the message was sent originally in Unix time</td>",
+        "rst_description": "Date the message was sent originally in Unix time\n",
+        "name": "date",
+        "required": true
+      },
+      {
+        "type": "User",
+        "description": "User that sent the message originally",
+        "html_description": "<td>User that sent the message originally</td>",
+        "rst_description": "User that sent the message originally\n",
+        "name": "sender_user",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

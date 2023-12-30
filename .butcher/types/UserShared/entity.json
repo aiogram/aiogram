@@ -1,5 +1,10 @@
 {
-  "meta": {},
+  "meta": {
+    "deprecated": {
+      "version": "7.0",
+      "release_date": "2023-12-29"
+    }
+  },
   "group": {
     "title": "Available types",
     "anchor": "available-types"

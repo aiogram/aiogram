@@ -12,6 +12,7 @@ from .close import Close
 from .close_forum_topic import CloseForumTopic
 from .close_general_forum_topic import CloseGeneralForumTopic
 from .copy_message import CopyMessage
+from .copy_messages import CopyMessages
 from .create_chat_invite_link import CreateChatInviteLink
 from .create_forum_topic import CreateForumTopic
 from .create_invoice_link import CreateInvoiceLink
@@ -21,6 +22,7 @@ from .delete_chat_photo import DeleteChatPhoto
 from .delete_chat_sticker_set import DeleteChatStickerSet
 from .delete_forum_topic import DeleteForumTopic
 from .delete_message import DeleteMessage
+from .delete_messages import DeleteMessages
 from .delete_my_commands import DeleteMyCommands
 from .delete_sticker_from_set import DeleteStickerFromSet
 from .delete_sticker_set import DeleteStickerSet
@@ -35,6 +37,7 @@ from .edit_message_reply_markup import EditMessageReplyMarkup
 from .edit_message_text import EditMessageText
 from .export_chat_invite_link import ExportChatInviteLink
 from .forward_message import ForwardMessage
+from .forward_messages import ForwardMessages
 from .get_chat import GetChat
 from .get_chat_administrators import GetChatAdministrators
 from .get_chat_member import GetChatMember
@@ -52,6 +55,7 @@ from .get_my_name import GetMyName
 from .get_my_short_description import GetMyShortDescription
 from .get_sticker_set import GetStickerSet
 from .get_updates import GetUpdates
+from .get_user_chat_boosts import GetUserChatBoosts
 from .get_user_profile_photos import GetUserProfilePhotos
 from .get_webhook_info import GetWebhookInfo
 from .hide_general_forum_topic import HideGeneralForumTopic
@@ -90,6 +94,7 @@ from .set_chat_sticker_set import SetChatStickerSet
 from .set_chat_title import SetChatTitle
 from .set_custom_emoji_sticker_set_thumbnail import SetCustomEmojiStickerSetThumbnail
 from .set_game_score import SetGameScore
+from .set_message_reaction import SetMessageReaction
 from .set_my_commands import SetMyCommands
 from .set_my_default_administrator_rights import SetMyDefaultAdministratorRights
 from .set_my_description import SetMyDescription
@@ -128,6 +133,7 @@ __all__ = (
     "CloseForumTopic",
     "CloseGeneralForumTopic",
     "CopyMessage",
+    "CopyMessages",
     "CreateChatInviteLink",
     "CreateForumTopic",
     "CreateInvoiceLink",
@@ -137,6 +143,7 @@ __all__ = (
     "DeleteChatStickerSet",
     "DeleteForumTopic",
     "DeleteMessage",
+    "DeleteMessages",
     "DeleteMyCommands",
     "DeleteStickerFromSet",
     "DeleteStickerSet",
@@ -151,6 +158,7 @@ __all__ = (
     "EditMessageText",
     "ExportChatInviteLink",
     "ForwardMessage",
+    "ForwardMessages",
     "GetChat",
     "GetChatAdministrators",
     "GetChatMember",
@@ -168,6 +176,7 @@ __all__ = (
     "GetMyShortDescription",
     "GetStickerSet",
     "GetUpdates",
+    "GetUserChatBoosts",
     "GetUserProfilePhotos",
     "GetWebhookInfo",
     "HideGeneralForumTopic",
@@ -208,6 +217,7 @@ __all__ = (
     "SetChatTitle",
     "SetCustomEmojiStickerSetThumbnail",
     "SetGameScore",
+    "SetMessageReaction",
     "SetMyCommands",
     "SetMyDefaultAdministratorRights",
     "SetMyDescription",

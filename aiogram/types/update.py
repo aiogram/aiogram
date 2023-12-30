@@ -7,11 +7,15 @@ from .base import TelegramObject
 
 if TYPE_CHECKING:
     from .callback_query import CallbackQuery
+    from .chat_boost_removed import ChatBoostRemoved
+    from .chat_boost_updated import ChatBoostUpdated
     from .chat_join_request import ChatJoinRequest
     from .chat_member_updated import ChatMemberUpdated
     from .chosen_inline_result import ChosenInlineResult
     from .inline_query import InlineQuery
     from .message import Message
+    from .message_reaction_count_updated import MessageReactionCountUpdated
+    from .message_reaction_updated import MessageReactionUpdated
     from .poll import Poll
     from .poll_answer import PollAnswer
     from .pre_checkout_query import PreCheckoutQuery
@@ -37,6 +41,10 @@ class Update(TelegramObject):
     """*Optional*. New incoming channel post of any kind - text, photo, sticker, etc."""
     edited_channel_post: Optional[Message] = None
     """*Optional*. New version of a channel post that is known to the bot and was edited"""
+    message_reaction: Optional[MessageReactionUpdated] = None
+    """*Optional*. A reaction to a message was changed by a user. The bot must be an administrator in the chat and must explicitly specify :code:`"message_reaction"` in the list of *allowed_updates* to receive these updates. The update isn't received for reactions set by bots."""
+    message_reaction_count: Optional[MessageReactionCountUpdated] = None
+    """*Optional*. Reactions to a message with anonymous reactions were changed. The bot must be an administrator in the chat and must explicitly specify :code:`"message_reaction_count"` in the list of *allowed_updates* to receive these updates."""
     inline_query: Optional[InlineQuery] = None
     """*Optional*. New incoming `inline <https://core.telegram.org/bots/api#inline-mode>`_ query"""
     chosen_inline_result: Optional[ChosenInlineResult] = None
@@ -57,6 +65,10 @@ class Update(TelegramObject):
     """*Optional*. A chat member's status was updated in a chat. The bot must be an administrator in the chat and must explicitly specify :code:`"chat_member"` in the list of *allowed_updates* to receive these updates."""
     chat_join_request: Optional[ChatJoinRequest] = None
     """*Optional*. A request to join the chat has been sent. The bot must have the *can_invite_users* administrator right in the chat to receive these updates."""
+    chat_boost: Optional[ChatBoostUpdated] = None
+    """*Optional*. A chat boost was added or changed. The bot must be an administrator in the chat to receive these updates."""
+    removed_chat_boost: Optional[ChatBoostRemoved] = None
+    """*Optional*. A boost was removed from a chat. The bot must be an administrator in the chat to receive these updates."""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!
@@ -70,6 +82,8 @@ class Update(TelegramObject):
             edited_message: Optional[Message] = None,
             channel_post: Optional[Message] = None,
             edited_channel_post: Optional[Message] = None,
+            message_reaction: Optional[MessageReactionUpdated] = None,
+            message_reaction_count: Optional[MessageReactionCountUpdated] = None,
             inline_query: Optional[InlineQuery] = None,
             chosen_inline_result: Optional[ChosenInlineResult] = None,
             callback_query: Optional[CallbackQuery] = None,
@@ -80,6 +94,8 @@ class Update(TelegramObject):
             my_chat_member: Optional[ChatMemberUpdated] = None,
             chat_member: Optional[ChatMemberUpdated] = None,
             chat_join_request: Optional[ChatJoinRequest] = None,
+            chat_boost: Optional[ChatBoostUpdated] = None,
+            removed_chat_boost: Optional[ChatBoostRemoved] = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!
@@ -92,6 +108,8 @@ class Update(TelegramObject):
                 edited_message=edited_message,
                 channel_post=channel_post,
                 edited_channel_post=edited_channel_post,
+                message_reaction=message_reaction,
+                message_reaction_count=message_reaction_count,
                 inline_query=inline_query,
                 chosen_inline_result=chosen_inline_result,
                 callback_query=callback_query,
@@ -102,6 +120,8 @@ class Update(TelegramObject):
                 my_chat_member=my_chat_member,
                 chat_member=chat_member,
                 chat_join_request=chat_join_request,
+                chat_boost=chat_boost,
+                removed_chat_boost=removed_chat_boost,
                 **__pydantic_kwargs,
             )
 
@@ -145,6 +165,14 @@ class Update(TelegramObject):
             return "chat_member"
         if self.chat_join_request:
             return "chat_join_request"
+        if self.message_reaction:
+            return "message_reaction"
+        if self.message_reaction_count:
+            return "message_reaction_count"
+        if self.chat_boost:
+            return "chat_boost"
+        if self.removed_chat_boost:
+            return "removed_chat_boost"
 
         raise UpdateTypeLookupError("Update does not contain any known event type.")
 

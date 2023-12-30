@@ -45,66 +45,26 @@
       },
       {
         "type": "Integer",
-        "description": "Date the message was sent in Unix time",
-        "html_description": "<td>Date the message was sent in Unix time</td>",
-        "rst_description": "Date the message was sent in Unix time\n",
+        "description": "Date the message was sent in Unix time. It is always a positive number, representing a valid date.",
+        "html_description": "<td>Date the message was sent in Unix time. It is always a positive number, representing a valid date.</td>",
+        "rst_description": "Date the message was sent in Unix time. It is always a positive number, representing a valid date.\n",
         "name": "date",
         "required": true
       },
       {
         "type": "Chat",
-        "description": "Conversation the message belongs to",
-        "html_description": "<td>Conversation the message belongs to</td>",
-        "rst_description": "Conversation the message belongs to\n",
+        "description": "Chat the message belongs to",
+        "html_description": "<td>Chat the message belongs to</td>",
+        "rst_description": "Chat the message belongs to\n",
         "name": "chat",
         "required": true
       },
       {
-        "type": "User",
-        "description": "For forwarded messages, sender of the original message",
-        "html_description": "<td><em>Optional</em>. For forwarded messages, sender of the original message</td>",
-        "rst_description": "*Optional*. For forwarded messages, sender of the original message\n",
-        "name": "forward_from",
-        "required": false
-      },
-      {
-        "type": "Chat",
-        "description": "For messages forwarded from channels or from anonymous administrators, information about the original sender chat",
-        "html_description": "<td><em>Optional</em>. For messages forwarded from channels or from anonymous administrators, information about the original sender chat</td>",
-        "rst_description": "*Optional*. For messages forwarded from channels or from anonymous administrators, information about the original sender chat\n",
-        "name": "forward_from_chat",
-        "required": false
-      },
-      {
-        "type": "Integer",
-        "description": "For messages forwarded from channels, identifier of the original message in the channel",
-        "html_description": "<td><em>Optional</em>. For messages forwarded from channels, identifier of the original message in the channel</td>",
-        "rst_description": "*Optional*. For messages forwarded from channels, identifier of the original message in the channel\n",
-        "name": "forward_from_message_id",
-        "required": false
-      },
-      {
-        "type": "String",
-        "description": "For forwarded messages that were originally sent in channels or by an anonymous chat administrator, signature of the message sender if present",
-        "html_description": "<td><em>Optional</em>. For forwarded messages that were originally sent in channels or by an anonymous chat administrator, signature of the message sender if present</td>",
-        "rst_description": "*Optional*. For forwarded messages that were originally sent in channels or by an anonymous chat administrator, signature of the message sender if present\n",
-        "name": "forward_signature",
-        "required": false
-      },
-      {
-        "type": "String",
-        "description": "Sender's name for messages forwarded from users who disallow adding a link to their account in forwarded messages",
-        "html_description": "<td><em>Optional</em>. Sender's name for messages forwarded from users who disallow adding a link to their account in forwarded messages</td>",
-        "rst_description": "*Optional*. Sender's name for messages forwarded from users who disallow adding a link to their account in forwarded messages\n",
-        "name": "forward_sender_name",
-        "required": false
-      },
-      {
-        "type": "Integer",
-        "description": "For forwarded messages, date the original message was sent in Unix time",
-        "html_description": "<td><em>Optional</em>. For forwarded messages, date the original message was sent in Unix time</td>",
-        "rst_description": "*Optional*. For forwarded messages, date the original message was sent in Unix time\n",
-        "name": "forward_date",
+        "type": "MessageOrigin",
+        "description": "Information about the original message for forwarded messages",
+        "html_description": "<td><em>Optional</em>. Information about the original message for forwarded messages</td>",
+        "rst_description": "*Optional*. Information about the original message for forwarded messages\n",
+        "name": "forward_origin",
         "required": false
       },
       {
@@ -125,10 +85,26 @@
       },
       {
         "type": "Message",
-        "description": "For replies, the original message. Note that the Message object in this field will not contain further reply_to_message fields even if it itself is a reply.",
-        "html_description": "<td><em>Optional</em>. For replies, the original message. Note that the Message object in this field will not contain further <em>reply_to_message</em> fields even if it itself is a reply.</td>",
-        "rst_description": "*Optional*. For replies, the original message. Note that the Message object in this field will not contain further *reply_to_message* fields even if it itself is a reply.\n",
+        "description": "For replies in the same chat and message thread, the original message. Note that the Message object in this field will not contain further reply_to_message fields even if it itself is a reply.",
+        "html_description": "<td><em>Optional</em>. For replies in the same chat and message thread, the original message. Note that the Message object in this field will not contain further <em>reply_to_message</em> fields even if it itself is a reply.</td>",
+        "rst_description": "*Optional*. For replies in the same chat and message thread, the original message. Note that the Message object in this field will not contain further *reply_to_message* fields even if it itself is a reply.\n",
         "name": "reply_to_message",
+        "required": false
+      },
+      {
+        "type": "ExternalReplyInfo",
+        "description": "Information about the message that is being replied to, which may come from another chat or forum topic",
+        "html_description": "<td><em>Optional</em>. Information about the message that is being replied to, which may come from another chat or forum topic</td>",
+        "rst_description": "*Optional*. Information about the message that is being replied to, which may come from another chat or forum topic\n",
+        "name": "external_reply",
+        "required": false
+      },
+      {
+        "type": "TextQuote",
+        "description": "For replies that quote part of the original message, the quoted part of the message",
+        "html_description": "<td><em>Optional</em>. For replies that quote part of the original message, the quoted part of the message</td>",
+        "rst_description": "*Optional*. For replies that quote part of the original message, the quoted part of the message\n",
+        "name": "quote",
         "required": false
       },
       {
@@ -185,6 +161,14 @@
         "html_description": "<td><em>Optional</em>. For text messages, special entities like usernames, URLs, bot commands, etc. that appear in the text</td>",
         "rst_description": "*Optional*. For text messages, special entities like usernames, URLs, bot commands, etc. that appear in the text\n",
         "name": "entities",
+        "required": false
+      },
+      {
+        "type": "LinkPreviewOptions",
+        "description": "Options used for link preview generation for the message, if it is a text message and link preview options were changed",
+        "html_description": "<td><em>Optional</em>. Options used for link preview generation for the message, if it is a text message and link preview options were changed</td>",
+        "rst_description": "*Optional*. Options used for link preview generation for the message, if it is a text message and link preview options were changed\n",
+        "name": "link_preview_options",
         "required": false
       },
       {
@@ -420,10 +404,10 @@
         "required": false
       },
       {
-        "type": "Message",
-        "description": "Specified message was pinned. Note that the Message object in this field will not contain further reply_to_message fields even if it is itself a reply.",
-        "html_description": "<td><em>Optional</em>. Specified message was pinned. Note that the Message object in this field will not contain further <em>reply_to_message</em> fields even if it is itself a reply.</td>",
-        "rst_description": "*Optional*. Specified message was pinned. Note that the Message object in this field will not contain further *reply_to_message* fields even if it is itself a reply.\n",
+        "type": "MaybeInaccessibleMessage",
+        "description": "Specified message was pinned. Note that the Message object in this field will not contain further reply_to_message fields even if it itself is a reply.",
+        "html_description": "<td><em>Optional</em>. Specified message was pinned. Note that the Message object in this field will not contain further <em>reply_to_message</em> fields even if it itself is a reply.</td>",
+        "rst_description": "*Optional*. Specified message was pinned. Note that the Message object in this field will not contain further *reply_to_message* fields even if it itself is a reply.\n",
         "name": "pinned_message",
         "required": false
       },
@@ -444,11 +428,11 @@
         "required": false
       },
       {
-        "type": "UserShared",
-        "description": "Service message: a user was shared with the bot",
-        "html_description": "<td><em>Optional</em>. Service message: a user was shared with the bot</td>",
-        "rst_description": "*Optional*. Service message: a user was shared with the bot\n",
-        "name": "user_shared",
+        "type": "UsersShared",
+        "description": "Service message: users were shared with the bot",
+        "html_description": "<td><em>Optional</em>. Service message: users were shared with the bot</td>",
+        "rst_description": "*Optional*. Service message: users were shared with the bot\n",
+        "name": "users_shared",
         "required": false
       },
       {
@@ -540,6 +524,38 @@
         "required": false
       },
       {
+        "type": "GiveawayCreated",
+        "description": "Service message: a scheduled giveaway was created",
+        "html_description": "<td><em>Optional</em>. Service message: a scheduled giveaway was created</td>",
+        "rst_description": "*Optional*. Service message: a scheduled giveaway was created\n",
+        "name": "giveaway_created",
+        "required": false
+      },
+      {
+        "type": "Giveaway",
+        "description": "The message is a scheduled giveaway message",
+        "html_description": "<td><em>Optional</em>. The message is a scheduled giveaway message</td>",
+        "rst_description": "*Optional*. The message is a scheduled giveaway message\n",
+        "name": "giveaway",
+        "required": false
+      },
+      {
+        "type": "GiveawayWinners",
+        "description": "A giveaway with public winners was completed",
+        "html_description": "<td><em>Optional</em>. A giveaway with public winners was completed</td>",
+        "rst_description": "*Optional*. A giveaway with public winners was completed\n",
+        "name": "giveaway_winners",
+        "required": false
+      },
+      {
+        "type": "GiveawayCompleted",
+        "description": "Service message: a giveaway without public winners was completed",
+        "html_description": "<td><em>Optional</em>. Service message: a giveaway without public winners was completed</td>",
+        "rst_description": "*Optional*. Service message: a giveaway without public winners was completed\n",
+        "name": "giveaway_completed",
+        "required": false
+      },
+      {
         "type": "VideoChatScheduled",
         "description": "Service message: video chat scheduled",
         "html_description": "<td><em>Optional</em>. Service message: video chat scheduled</td>",
@@ -586,6 +602,90 @@
         "rst_description": "*Optional*. Inline keyboard attached to the message. :code:`login_url` buttons are represented as ordinary :code:`url` buttons.\n",
         "name": "reply_markup",
         "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "For forwarded messages, date the original message was sent in Unix time",
+        "html_description": "<td><em>Optional</em>. For forwarded messages, date the original message was sent in Unix time</td>",
+        "rst_description": "*Optional*. For forwarded messages, date the original message was sent in Unix time\n",
+        "name": "forward_date",
+        "required": false,
+        "deprecated": {
+          "version": "7.0",
+          "release_date": "2023-12-29"
+        }
+      },
+      {
+        "type": "User",
+        "description": "For forwarded messages, sender of the original message",
+        "html_description": "<td><em>Optional</em>. For forwarded messages, sender of the original message</td>",
+        "rst_description": "*Optional*. For forwarded messages, sender of the original message\n",
+        "name": "forward_from",
+        "required": false,
+        "deprecated": {
+          "version": "7.0",
+          "release_date": "2023-12-29"
+        }
+      },
+      {
+        "type": "Chat",
+        "description": "For messages forwarded from channels or from anonymous administrators, information about the original sender chat",
+        "html_description": "<td><em>Optional</em>. For messages forwarded from channels or from anonymous administrators, information about the original sender chat</td>",
+        "rst_description": "*Optional*. For messages forwarded from channels or from anonymous administrators, information about the original sender chat\n",
+        "name": "forward_from_chat",
+        "required": false,
+        "deprecated": {
+          "version": "7.0",
+          "release_date": "2023-12-29"
+        }
+      },
+      {
+        "type": "Integer",
+        "description": "For messages forwarded from channels, identifier of the original message in the channel",
+        "html_description": "<td><em>Optional</em>. For messages forwarded from channels, identifier of the original message in the channel</td>",
+        "rst_description": "*Optional*. For messages forwarded from channels, identifier of the original message in the channel\n",
+        "name": "forward_from_message_id",
+        "required": false,
+        "deprecated": {
+          "version": "7.0",
+          "release_date": "2023-12-29"
+        }
+      },
+      {
+        "type": "String",
+        "description": "Sender's name for messages forwarded from users who disallow adding a link to their account in forwarded messages",
+        "html_description": "<td><em>Optional</em>. Sender's name for messages forwarded from users who disallow adding a link to their account in forwarded messages</td>",
+        "rst_description": "*Optional*. Sender's name for messages forwarded from users who disallow adding a link to their account in forwarded messages\n",
+        "name": "forward_sender_name",
+        "required": false,
+        "deprecated": {
+          "version": "7.0",
+          "release_date": "2023-12-29"
+        }
+      },
+      {
+        "type": "String",
+        "description": "For forwarded messages that were originally sent in channels or by an anonymous chat administrator, signature of the message sender if present",
+        "html_description": "<td><em>Optional</em>. For forwarded messages that were originally sent in channels or by an anonymous chat administrator, signature of the message sender if present</td>",
+        "rst_description": "*Optional*. For forwarded messages that were originally sent in channels or by an anonymous chat administrator, signature of the message sender if present\n",
+        "name": "forward_signature",
+        "required": false,
+        "deprecated": {
+          "version": "7.0",
+          "release_date": "2023-12-29"
+        }
+      },
+      {
+        "type": "UserShared",
+        "description": "Service message: a user was shared with the bot",
+        "html_description": "<td><em>Optional</em>. Service message: a user was shared with the bot</td>",
+        "rst_description": "*Optional*. Service message: a user was shared with the bot\n",
+        "name": "user_shared",
+        "required": false,
+        "deprecated": {
+          "version": "7.0",
+          "release_date": "2023-12-29"
+        }
       }
     ],
     "category": "types"

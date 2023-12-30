@@ -1,0 +1,49 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available methods",
+    "anchor": "available-methods"
+  },
+  "object": {
+    "anchor": "setmessagereaction",
+    "name": "setMessageReaction",
+    "description": "Use this method to change the chosen reactions on a message. Service messages can't be reacted to. Automatically forwarded messages from a channel to its discussion group have the same available reactions as messages in the channel. In albums, bots must react to the first message. Returns True on success.",
+    "html_description": "<p>Use this method to change the chosen reactions on a message. Service messages can't be reacted to. Automatically forwarded messages from a channel to its discussion group have the same available reactions as messages in the channel. In albums, bots must react to the first message. Returns <em>True</em> on success.</p>",
+    "rst_description": "Use this method to change the chosen reactions on a message. Service messages can't be reacted to. Automatically forwarded messages from a channel to its discussion group have the same available reactions as messages in the channel. In albums, bots must react to the first message. Returns :code:`True` on success.",
+    "annotations": [
+      {
+        "type": "Integer or String",
+        "required": true,
+        "description": "Unique identifier for the target chat or username of the target channel (in the format @channelusername)",
+        "html_description": "<td>Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)</td>",
+        "rst_description": "Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)\n",
+        "name": "chat_id"
+      },
+      {
+        "type": "Integer",
+        "required": true,
+        "description": "Identifier of the target message",
+        "html_description": "<td>Identifier of the target message</td>",
+        "rst_description": "Identifier of the target message\n",
+        "name": "message_id"
+      },
+      {
+        "type": "Array of ReactionType",
+        "required": false,
+        "description": "New list of reaction types to set on the message. Currently, as non-premium users, bots can set up to one reaction per message. A custom emoji reaction can be used if it is either already present on the message or explicitly allowed by chat administrators.",
+        "html_description": "<td>New list of reaction types to set on the message. Currently, as non-premium users, bots can set up to one reaction per message. A custom emoji reaction can be used if it is either already present on the message or explicitly allowed by chat administrators.</td>",
+        "rst_description": "New list of reaction types to set on the message. Currently, as non-premium users, bots can set up to one reaction per message. A custom emoji reaction can be used if it is either already present on the message or explicitly allowed by chat administrators.\n",
+        "name": "reaction"
+      },
+      {
+        "type": "Boolean",
+        "required": false,
+        "description": "Pass True to set the reaction with a big animation",
+        "html_description": "<td>Pass <em>True</em> to set the reaction with a big animation</td>",
+        "rst_description": "Pass :code:`True` to set the reaction with a big animation\n",
+        "name": "is_big"
+      }
+    ],
+    "category": "methods"
+  }
+}
