@@ -18,11 +18,11 @@ from aiogram.methods import GetMe, GetUpdates, SendMessage, TelegramMethod
 from aiogram.types import (
     CallbackQuery,
     Chat,
-    ChatJoinRequest,
     ChatBoost,
     ChatBoostRemoved,
     ChatBoostSourceGiveaway,
     ChatBoostUpdated,
+    ChatJoinRequest,
     ChatMemberMember,
     ChatMemberUpdated,
     ChosenInlineResult,
@@ -34,12 +34,12 @@ from aiogram.types import (
     PollAnswer,
     PollOption,
     PreCheckoutQuery,
+    ReactionCount,
+    ReactionTypeCustomEmoji,
     ShippingAddress,
     ShippingQuery,
     Update,
     User,
-    ReactionCount,
-    ReactionTypeCustomEmoji,
 )
 from aiogram.types.error_event import ErrorEvent
 from tests.mocked_bot import MockedBot

@@ -3,8 +3,10 @@ from typing import Any, Callable, Optional, Tuple
 import pytest
 
 from aiogram.utils.markdown import (
+    blockquote,
     bold,
     code,
+    hblockquote,
     hbold,
     hcode,
     hide_link,
@@ -19,8 +21,6 @@ from aiogram.utils.markdown import (
     strikethrough,
     text,
     underline,
-    blockquote,
-    hblockquote,
 )
 
 

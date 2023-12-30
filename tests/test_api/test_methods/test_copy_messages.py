@@ -1,4 +1,5 @@
 from random import randint
+
 from aiogram.methods import CopyMessages
 from aiogram.types import MessageId
 from tests.mocked_bot import MockedBot
