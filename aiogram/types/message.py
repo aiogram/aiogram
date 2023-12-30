@@ -583,6 +583,8 @@ class Message(MaybeInaccessibleMessage):
             return ContentType.GIVEAWAY
         if self.giveaway_completed:
             return ContentType.GIVEAWAY_COMPLETED
+        if self.giveaway_winners:
+            return ContentType.GIVEAWAY_WINNERS
         if self.video_chat_scheduled:
             return ContentType.VIDEO_CHAT_SCHEDULED
         if self.video_chat_started:
@@ -599,6 +601,10 @@ class Message(MaybeInaccessibleMessage):
             return ContentType.CHAT_SHARED
         if self.story:
             return ContentType.STORY
+        if self.has_media_spoiler:
+            return ContentType.HAS_MEDIA_SPOILER
+        if self.write_access_allowed:
+            return ContentType.WRITE_ACCESS_ALLOWED
 
         return ContentType.UNKNOWN
 
