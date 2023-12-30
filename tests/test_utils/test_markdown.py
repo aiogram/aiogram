@@ -19,6 +19,8 @@ from aiogram.utils.markdown import (
     strikethrough,
     text,
     underline,
+    blockquote,
+    hblockquote,
 )
 
 
@@ -54,6 +56,22 @@ class TestMarkdown:
                 None,
                 '<a href="https://aiogram.dev">&#8203;</a>',
             ],
+            [blockquote, ("spam", "eggs"), " ", ">spam eggs"],
+            pytest.param(
+                blockquote,
+                ("spam", "eggs"),
+                "\n",
+                ">spam\n>eggs",
+                id="Markdown V2 blockquote multiline",
+            ),
+            [hblockquote, ("spam", "eggs"), " ", "<blockquote>spam eggs</blockquote>"],
+            pytest.param(
+                hblockquote,
+                ("spam", "eggs"),
+                "\n",
+                "<blockquote>spam\neggs</blockquote>",
+                id="HTML blockquote multiline",
+            ),
         ],
     )
     def test_formatter(
