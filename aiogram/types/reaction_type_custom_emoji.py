@@ -13,7 +13,7 @@ class ReactionTypeCustomEmoji(ReactionType):
 
     type: Literal[ReactionTypeType.CUSTOM_EMOJI] = ReactionTypeType.CUSTOM_EMOJI
     """Type of the reaction, always 'custom_emoji'"""
-    custom_emoji: str
+    custom_emoji_id: str
     """Custom emoji identifier"""
 
     if TYPE_CHECKING:
@@ -24,11 +24,11 @@ class ReactionTypeCustomEmoji(ReactionType):
             __pydantic__self__,
             *,
             type: Literal[ReactionTypeType.CUSTOM_EMOJI] = ReactionTypeType.CUSTOM_EMOJI,
-            custom_emoji: str,
+            custom_emoji_id: str,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!
             # This method was auto-generated via `butcher`
             # Is needed only for type checking and IDE support without any additional plugins
 
-            super().__init__(type=type, custom_emoji=custom_emoji, **__pydantic_kwargs)
+            super().__init__(type=type, custom_emoji_id=custom_emoji_id, **__pydantic_kwargs)

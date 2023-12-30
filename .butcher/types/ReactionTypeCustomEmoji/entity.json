@@ -24,7 +24,7 @@
         "description": "Custom emoji identifier",
         "html_description": "<td>Custom emoji identifier</td>",
         "rst_description": "Custom emoji identifier\n",
-        "name": "custom_emoji",
+        "name": "custom_emoji_id",
         "required": true
       }
     ],
