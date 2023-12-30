@@ -36,12 +36,24 @@
         "required": false
       },
       {
+        "type": "LinkPreviewOptions",
+        "description": "Link preview generation options for the message",
+        "html_description": "<td><em>Optional</em>. Link preview generation options for the message</td>",
+        "rst_description": "*Optional*. Link preview generation options for the message\n",
+        "name": "link_preview_options",
+        "required": false
+      },
+      {
         "type": "Boolean",
         "description": "Disables link previews for links in the sent message",
         "html_description": "<td><em>Optional</em>. Disables link previews for links in the sent message</td>",
         "rst_description": "*Optional*. Disables link previews for links in the sent message\n",
         "name": "disable_web_page_preview",
-        "required": false
+        "required": false,
+        "deprecated": {
+          "version": "7.0",
+          "release_date": "2023-12-29"
+        }
       }
     ],
     "category": "types"

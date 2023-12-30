@@ -12,6 +12,7 @@ Here is list of all available enums:
 
     bot_command_scope_type
     chat_action
+    chat_boost_source_type
     chat_member_status
     chat_type
     content_type
@@ -23,9 +24,11 @@ Here is list of all available enums:
     mask_position_point
     menu_button_type
     message_entity_type
+    message_origin_type
     parse_mode
     passport_element_error_type
     poll_type
+    reaction_type_type
     sticker_format
     sticker_type
     topic_icon_color

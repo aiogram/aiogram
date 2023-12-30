@@ -21,6 +21,13 @@ from .callback_game import CallbackGame
 from .callback_query import CallbackQuery
 from .chat import Chat
 from .chat_administrator_rights import ChatAdministratorRights
+from .chat_boost import ChatBoost
+from .chat_boost_removed import ChatBoostRemoved
+from .chat_boost_source import ChatBoostSource
+from .chat_boost_source_gift_code import ChatBoostSourceGiftCode
+from .chat_boost_source_giveaway import ChatBoostSourceGiveaway
+from .chat_boost_source_premium import ChatBoostSourcePremium
+from .chat_boost_updated import ChatBoostUpdated
 from .chat_invite_link import ChatInviteLink
 from .chat_join_request import ChatJoinRequest
 from .chat_location import ChatLocation
@@ -44,6 +51,7 @@ from .downloadable import Downloadable
 from .encrypted_credentials import EncryptedCredentials
 from .encrypted_passport_element import EncryptedPassportElement
 from .error_event import ErrorEvent
+from .external_reply_info import ExternalReplyInfo
 from .file import File
 from .force_reply import ForceReply
 from .forum_topic import ForumTopic
@@ -55,6 +63,11 @@ from .game import Game
 from .game_high_score import GameHighScore
 from .general_forum_topic_hidden import GeneralForumTopicHidden
 from .general_forum_topic_unhidden import GeneralForumTopicUnhidden
+from .giveaway import Giveaway
+from .giveaway_completed import GiveawayCompleted
+from .giveaway_created import GiveawayCreated
+from .giveaway_winners import GiveawayWinners
+from .inaccessible_message import InaccessibleMessage
 from .inline_keyboard_button import InlineKeyboardButton
 from .inline_keyboard_markup import InlineKeyboardMarkup
 from .inline_query import InlineQuery
@@ -99,10 +112,13 @@ from .keyboard_button import KeyboardButton
 from .keyboard_button_poll_type import KeyboardButtonPollType
 from .keyboard_button_request_chat import KeyboardButtonRequestChat
 from .keyboard_button_request_user import KeyboardButtonRequestUser
+from .keyboard_button_request_users import KeyboardButtonRequestUsers
 from .labeled_price import LabeledPrice
+from .link_preview_options import LinkPreviewOptions
 from .location import Location
 from .login_url import LoginUrl
 from .mask_position import MaskPosition
+from .maybe_inaccessible_message import MaybeInaccessibleMessage
 from .menu_button import MenuButton
 from .menu_button_commands import MenuButtonCommands
 from .menu_button_default import MenuButtonDefault
@@ -111,6 +127,13 @@ from .message import ContentType, Message
 from .message_auto_delete_timer_changed import MessageAutoDeleteTimerChanged
 from .message_entity import MessageEntity
 from .message_id import MessageId
+from .message_origin import MessageOrigin
+from .message_origin_channel import MessageOriginChannel
+from .message_origin_chat import MessageOriginChat
+from .message_origin_hidden_user import MessageOriginHiddenUser
+from .message_origin_user import MessageOriginUser
+from .message_reaction_count_updated import MessageReactionCountUpdated
+from .message_reaction_updated import MessageReactionUpdated
 from .order_info import OrderInfo
 from .passport_data import PassportData
 from .passport_element_error import PassportElementError
@@ -132,8 +155,13 @@ from .poll_answer import PollAnswer
 from .poll_option import PollOption
 from .pre_checkout_query import PreCheckoutQuery
 from .proximity_alert_triggered import ProximityAlertTriggered
+from .reaction_count import ReactionCount
+from .reaction_type import ReactionType
+from .reaction_type_custom_emoji import ReactionTypeCustomEmoji
+from .reaction_type_emoji import ReactionTypeEmoji
 from .reply_keyboard_markup import ReplyKeyboardMarkup
 from .reply_keyboard_remove import ReplyKeyboardRemove
+from .reply_parameters import ReplyParameters
 from .response_parameters import ResponseParameters
 from .sent_web_app_message import SentWebAppMessage
 from .shipping_address import ShippingAddress
@@ -144,10 +172,13 @@ from .sticker_set import StickerSet
 from .story import Story
 from .successful_payment import SuccessfulPayment
 from .switch_inline_query_chosen_chat import SwitchInlineQueryChosenChat
+from .text_quote import TextQuote
 from .update import Update
 from .user import User
+from .user_chat_boosts import UserChatBoosts
 from .user_profile_photos import UserProfilePhotos
 from .user_shared import UserShared
+from .users_shared import UsersShared
 from .venue import Venue
 from .video import Video
 from .video_chat_ended import VideoChatEnded
@@ -181,6 +212,13 @@ __all__ = (
     "CallbackQuery",
     "Chat",
     "ChatAdministratorRights",
+    "ChatBoost",
+    "ChatBoostRemoved",
+    "ChatBoostSource",
+    "ChatBoostSourceGiftCode",
+    "ChatBoostSourceGiveaway",
+    "ChatBoostSourcePremium",
+    "ChatBoostUpdated",
     "ChatInviteLink",
     "ChatJoinRequest",
     "ChatLocation",
@@ -205,6 +243,7 @@ __all__ = (
     "EncryptedCredentials",
     "EncryptedPassportElement",
     "ErrorEvent",
+    "ExternalReplyInfo",
     "FSInputFile",
     "File",
     "ForceReply",
@@ -217,6 +256,11 @@ __all__ = (
     "GameHighScore",
     "GeneralForumTopicHidden",
     "GeneralForumTopicUnhidden",
+    "Giveaway",
+    "GiveawayCompleted",
+    "GiveawayCreated",
+    "GiveawayWinners",
+    "InaccessibleMessage",
     "InlineKeyboardButton",
     "InlineKeyboardMarkup",
     "InlineQuery",
@@ -261,10 +305,13 @@ __all__ = (
     "KeyboardButtonPollType",
     "KeyboardButtonRequestChat",
     "KeyboardButtonRequestUser",
+    "KeyboardButtonRequestUsers",
     "LabeledPrice",
+    "LinkPreviewOptions",
     "Location",
     "LoginUrl",
     "MaskPosition",
+    "MaybeInaccessibleMessage",
     "MenuButton",
     "MenuButtonCommands",
     "MenuButtonDefault",
@@ -273,6 +320,13 @@ __all__ = (
     "MessageAutoDeleteTimerChanged",
     "MessageEntity",
     "MessageId",
+    "MessageOrigin",
+    "MessageOriginChannel",
+    "MessageOriginChat",
+    "MessageOriginHiddenUser",
+    "MessageOriginUser",
+    "MessageReactionCountUpdated",
+    "MessageReactionUpdated",
     "OrderInfo",
     "PassportData",
     "PassportElementError",
@@ -292,8 +346,13 @@ __all__ = (
     "PollOption",
     "PreCheckoutQuery",
     "ProximityAlertTriggered",
+    "ReactionCount",
+    "ReactionType",
+    "ReactionTypeCustomEmoji",
+    "ReactionTypeEmoji",
     "ReplyKeyboardMarkup",
     "ReplyKeyboardRemove",
+    "ReplyParameters",
     "ResponseParameters",
     "SentWebAppMessage",
     "ShippingAddress",
@@ -305,12 +364,15 @@ __all__ = (
     "SuccessfulPayment",
     "SwitchInlineQueryChosenChat",
     "TelegramObject",
+    "TextQuote",
     "UNSET_PARSE_MODE",
     "URLInputFile",
     "Update",
     "User",
+    "UserChatBoosts",
     "UserProfilePhotos",
     "UserShared",
+    "UsersShared",
     "Venue",
     "Video",
     "VideoChatEnded",

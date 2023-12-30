@@ -52,12 +52,12 @@
         "name": "protect_content"
       },
       {
-        "type": "Integer",
+        "type": "ReplyParameters",
         "required": false,
-        "description": "If the messages are a reply, ID of the original message",
-        "html_description": "<td>If the messages are a reply, ID of the original message</td>",
-        "rst_description": "If the messages are a reply, ID of the original message\n",
-        "name": "reply_to_message_id"
+        "description": "Description of the message to reply to",
+        "html_description": "<td>Description of the message to reply to</td>",
+        "rst_description": "Description of the message to reply to\n",
+        "name": "reply_parameters"
       },
       {
         "type": "Boolean",
@@ -65,7 +65,23 @@
         "description": "Pass True if the message should be sent even if the specified replied-to message is not found",
         "html_description": "<td>Pass <em>True</em> if the message should be sent even if the specified replied-to message is not found</td>",
         "rst_description": "Pass :code:`True` if the message should be sent even if the specified replied-to message is not found\n",
-        "name": "allow_sending_without_reply"
+        "name": "allow_sending_without_reply",
+        "deprecated": {
+          "version": "7.0",
+          "release_date": "2023-12-29"
+        }
+      },
+      {
+        "type": "Integer",
+        "required": false,
+        "description": "If the messages are a reply, ID of the original message",
+        "html_description": "<td>If the messages are a reply, ID of the original message</td>",
+        "rst_description": "If the messages are a reply, ID of the original message\n",
+        "name": "reply_to_message_id",
+        "deprecated": {
+          "version": "7.0",
+          "release_date": "2023-12-29"
+        }
       }
     ],
     "category": "methods"

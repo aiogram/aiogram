@@ -42,6 +42,8 @@ if TYPE_CHECKING:
     from .chat_photo import ChatPhoto
     from .input_file import InputFile
     from .message import Message
+    from .reaction_type_custom_emoji import ReactionTypeCustomEmoji
+    from .reaction_type_emoji import ReactionTypeEmoji
 
 
 class Chat(TelegramObject):
@@ -69,10 +71,20 @@ class Chat(TelegramObject):
     """*Optional*. Chat photo. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
     active_usernames: Optional[List[str]] = None
     """*Optional*. If non-empty, the list of all `active chat usernames <https://telegram.org/blog/topics-in-groups-collectible-usernames#collectible-usernames>`_; for private chats, supergroups and channels. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
+    available_reactions: Optional[List[Union[ReactionTypeEmoji, ReactionTypeCustomEmoji]]] = None
+    """*Optional*. List of available reactions allowed in the chat. If omitted, then all `emoji reactions <https://core.telegram.org/bots/api#reactiontypeemoji>`_ are allowed. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
+    accent_color_id: Optional[int] = None
+    """*Optional*. Identifier of the accent color for the chat name and backgrounds of the chat photo, reply header, and link preview. See `accent colors <https://core.telegram.org/bots/api#accent-colors>`_ for more details. Returned only in :class:`aiogram.methods.get_chat.GetChat`. Always returned in :class:`aiogram.methods.get_chat.GetChat`."""
+    background_custom_emoji_id: Optional[str] = None
+    """*Optional*. Custom emoji identifier of emoji chosen by the chat for the reply header and link preview background. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
+    profile_accent_color_id: Optional[int] = None
+    """*Optional*. Identifier of the accent color for the chat's profile background. See `profile accent colors <https://core.telegram.org/bots/api#profile-accent-colors>`_ for more details. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
+    profile_background_custom_emoji_id: Optional[str] = None
+    """*Optional*. Custom emoji identifier of the emoji chosen by the chat for its profile background. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
     emoji_status_custom_emoji_id: Optional[str] = None
-    """*Optional*. Custom emoji identifier of emoji status of the other party in a private chat. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
+    """*Optional*. Custom emoji identifier of the emoji status of the chat or the other party in a private chat. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
     emoji_status_expiration_date: Optional[DateTime] = None
-    """*Optional*. Expiration date of the emoji status of the other party in a private chat in Unix time, if any. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
+    """*Optional*. Expiration date of the emoji status of the chat or the other party in a private chat, in Unix time, if any. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
     bio: Optional[str] = None
     """*Optional*. Bio of the other party in a private chat. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
     has_private_forwards: Optional[bool] = None
@@ -101,6 +113,8 @@ class Chat(TelegramObject):
     """*Optional*. :code:`True`, if non-administrators can only get the list of bots and administrators in the chat. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
     has_protected_content: Optional[bool] = None
     """*Optional*. :code:`True`, if messages from the chat can't be forwarded to other chats. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
+    has_visible_history: Optional[bool] = None
+    """*Optional*. :code:`True`, if new chat members will have access to old messages; available only to chat administrators. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
     sticker_set_name: Optional[str] = None
     """*Optional*. For supergroups, name of group sticker set. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
     can_set_sticker_set: Optional[bool] = None
@@ -126,6 +140,13 @@ class Chat(TelegramObject):
             is_forum: Optional[bool] = None,
             photo: Optional[ChatPhoto] = None,
             active_usernames: Optional[List[str]] = None,
+            available_reactions: Optional[
+                List[Union[ReactionTypeEmoji, ReactionTypeCustomEmoji]]
+            ] = None,
+            accent_color_id: Optional[int] = None,
+            background_custom_emoji_id: Optional[str] = None,
+            profile_accent_color_id: Optional[int] = None,
+            profile_background_custom_emoji_id: Optional[str] = None,
             emoji_status_custom_emoji_id: Optional[str] = None,
             emoji_status_expiration_date: Optional[DateTime] = None,
             bio: Optional[str] = None,
@@ -142,6 +163,7 @@ class Chat(TelegramObject):
             has_aggressive_anti_spam_enabled: Optional[bool] = None,
             has_hidden_members: Optional[bool] = None,
             has_protected_content: Optional[bool] = None,
+            has_visible_history: Optional[bool] = None,
             sticker_set_name: Optional[str] = None,
             can_set_sticker_set: Optional[bool] = None,
             linked_chat_id: Optional[int] = None,
@@ -162,6 +184,11 @@ class Chat(TelegramObject):
                 is_forum=is_forum,
                 photo=photo,
                 active_usernames=active_usernames,
+                available_reactions=available_reactions,
+                accent_color_id=accent_color_id,
+                background_custom_emoji_id=background_custom_emoji_id,
+                profile_accent_color_id=profile_accent_color_id,
+                profile_background_custom_emoji_id=profile_background_custom_emoji_id,
                 emoji_status_custom_emoji_id=emoji_status_custom_emoji_id,
                 emoji_status_expiration_date=emoji_status_expiration_date,
                 bio=bio,
@@ -178,6 +205,7 @@ class Chat(TelegramObject):
                 has_aggressive_anti_spam_enabled=has_aggressive_anti_spam_enabled,
                 has_hidden_members=has_hidden_members,
                 has_protected_content=has_protected_content,
+                has_visible_history=has_visible_history,
                 sticker_set_name=sticker_set_name,
                 can_set_sticker_set=can_set_sticker_set,
                 linked_chat_id=linked_chat_id,

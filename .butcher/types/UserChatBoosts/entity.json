@@ -1,0 +1,25 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "userchatboosts",
+    "name": "UserChatBoosts",
+    "description": "This object represents a list of boosts added to a chat by a user.",
+    "html_description": "<p>This object represents a list of boosts added to a chat by a user.</p>",
+    "rst_description": "This object represents a list of boosts added to a chat by a user.",
+    "annotations": [
+      {
+        "type": "Array of ChatBoost",
+        "description": "The list of boosts added to the chat by the user",
+        "html_description": "<td>The list of boosts added to the chat by the user</td>",
+        "rst_description": "The list of boosts added to the chat by the user\n",
+        "name": "boosts",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

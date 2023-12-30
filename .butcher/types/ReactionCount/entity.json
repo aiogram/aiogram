@@ -1,0 +1,33 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "reactioncount",
+    "name": "ReactionCount",
+    "description": "Represents a reaction added to a message along with the number of times it was added.",
+    "html_description": "<p>Represents a reaction added to a message along with the number of times it was added.</p>",
+    "rst_description": "Represents a reaction added to a message along with the number of times it was added.",
+    "annotations": [
+      {
+        "type": "ReactionType",
+        "description": "Type of the reaction",
+        "html_description": "<td>Type of the reaction</td>",
+        "rst_description": "Type of the reaction\n",
+        "name": "type",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "Number of times the reaction was added",
+        "html_description": "<td>Number of times the reaction was added</td>",
+        "rst_description": "Number of times the reaction was added\n",
+        "name": "total_count",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

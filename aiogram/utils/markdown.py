@@ -174,6 +174,30 @@ def hlink(title: str, url: str) -> str:
     return html_decoration.link(value=html_decoration.quote(title), link=url)
 
 
+def blockquote(*content: Any, sep: str = "\n") -> str:
+    """
+    Make blockquote (Markdown)
+
+    :param content:
+    :param sep:
+    :return:
+    """
+    return markdown_decoration.blockquote(
+        value=markdown_decoration.quote(_join(*content, sep=sep))
+    )
+
+
+def hblockquote(*content: Any, sep: str = "\n") -> str:
+    """
+    Make blockquote (HTML)
+
+    :param content:
+    :param sep:
+    :return:
+    """
+    return html_decoration.blockquote(value=html_decoration.quote(_join(*content, sep=sep)))
+
+
 def hide_link(url: str) -> str:
     """
     Hide URL (HTML only)

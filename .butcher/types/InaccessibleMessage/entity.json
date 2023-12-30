@@ -1,0 +1,41 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "inaccessiblemessage",
+    "name": "InaccessibleMessage",
+    "description": "This object describes a message that was deleted or is otherwise inaccessible to the bot.",
+    "html_description": "<p>This object describes a message that was deleted or is otherwise inaccessible to the bot.</p>",
+    "rst_description": "This object describes a message that was deleted or is otherwise inaccessible to the bot.",
+    "annotations": [
+      {
+        "type": "Chat",
+        "description": "Chat the message belonged to",
+        "html_description": "<td>Chat the message belonged to</td>",
+        "rst_description": "Chat the message belonged to\n",
+        "name": "chat",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "Unique message identifier inside the chat",
+        "html_description": "<td>Unique message identifier inside the chat</td>",
+        "rst_description": "Unique message identifier inside the chat\n",
+        "name": "message_id",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "Always 0. The field can be used to differentiate regular and inaccessible messages.",
+        "html_description": "<td>Always 0. The field can be used to differentiate regular and inaccessible messages.</td>",
+        "rst_description": "Always 0. The field can be used to differentiate regular and inaccessible messages.\n",
+        "name": "date",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

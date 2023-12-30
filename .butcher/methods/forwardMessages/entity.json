@@ -1,0 +1,65 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available methods",
+    "anchor": "available-methods"
+  },
+  "object": {
+    "anchor": "forwardmessages",
+    "name": "forwardMessages",
+    "description": "Use this method to forward multiple messages of any kind. If some of the specified messages can't be found or forwarded, they are skipped. Service messages and messages with protected content can't be forwarded. Album grouping is kept for forwarded messages. On success, an array of MessageId of the sent messages is returned.",
+    "html_description": "<p>Use this method to forward multiple messages of any kind. If some of the specified messages can't be found or forwarded, they are skipped. Service messages and messages with protected content can't be forwarded. Album grouping is kept for forwarded messages. On success, an array of <a href=\"#messageid\">MessageId</a> of the sent messages is returned.</p>",
+    "rst_description": "Use this method to forward multiple messages of any kind. If some of the specified messages can't be found or forwarded, they are skipped. Service messages and messages with protected content can't be forwarded. Album grouping is kept for forwarded messages. On success, an array of :class:`aiogram.types.message_id.MessageId` of the sent messages is returned.",
+    "annotations": [
+      {
+        "type": "Integer or String",
+        "required": true,
+        "description": "Unique identifier for the target chat or username of the target channel (in the format @channelusername)",
+        "html_description": "<td>Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)</td>",
+        "rst_description": "Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)\n",
+        "name": "chat_id"
+      },
+      {
+        "type": "Integer",
+        "required": false,
+        "description": "Unique identifier for the target message thread (topic) of the forum; for forum supergroups only",
+        "html_description": "<td>Unique identifier for the target message thread (topic) of the forum; for forum supergroups only</td>",
+        "rst_description": "Unique identifier for the target message thread (topic) of the forum; for forum supergroups only\n",
+        "name": "message_thread_id"
+      },
+      {
+        "type": "Integer or String",
+        "required": true,
+        "description": "Unique identifier for the chat where the original messages were sent (or channel username in the format @channelusername)",
+        "html_description": "<td>Unique identifier for the chat where the original messages were sent (or channel username in the format <code>@channelusername</code>)</td>",
+        "rst_description": "Unique identifier for the chat where the original messages were sent (or channel username in the format :code:`@channelusername`)\n",
+        "name": "from_chat_id"
+      },
+      {
+        "type": "Array of Integer",
+        "required": true,
+        "description": "Identifiers of 1-100 messages in the chat from_chat_id to forward. The identifiers must be specified in a strictly increasing order.",
+        "html_description": "<td>Identifiers of 1-100 messages in the chat <em>from_chat_id</em> to forward. The identifiers must be specified in a strictly increasing order.</td>",
+        "rst_description": "Identifiers of 1-100 messages in the chat *from_chat_id* to forward. The identifiers must be specified in a strictly increasing order.\n",
+        "name": "message_ids"
+      },
+      {
+        "type": "Boolean",
+        "required": false,
+        "description": "Sends the messages silently. Users will receive a notification with no sound.",
+        "html_description": "<td>Sends the messages <a href=\"https://telegram.org/blog/channels-2-0#silent-messages\">silently</a>. Users will receive a notification with no sound.</td>",
+        "rst_description": "Sends the messages `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.\n",
+        "name": "disable_notification"
+      },
+      {
+        "type": "Boolean",
+        "required": false,
+        "description": "Protects the contents of the forwarded messages from forwarding and saving",
+        "html_description": "<td>Protects the contents of the forwarded messages from forwarding and saving</td>",
+        "rst_description": "Protects the contents of the forwarded messages from forwarding and saving\n",
+        "name": "protect_content"
+      }
+    ],
+    "category": "methods"
+  }
+}

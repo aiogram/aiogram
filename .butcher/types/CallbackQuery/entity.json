@@ -28,10 +28,10 @@
         "required": true
       },
       {
-        "type": "Message",
-        "description": "Message with the callback button that originated the query. Note that message content and message date will not be available if the message is too old",
-        "html_description": "<td><em>Optional</em>. Message with the callback button that originated the query. Note that message content and message date will not be available if the message is too old</td>",
-        "rst_description": "*Optional*. Message with the callback button that originated the query. Note that message content and message date will not be available if the message is too old\n",
+        "type": "MaybeInaccessibleMessage",
+        "description": "Message sent by the bot with the callback button that originated the query",
+        "html_description": "<td><em>Optional</em>. Message sent by the bot with the callback button that originated the query</td>",
+        "rst_description": "*Optional*. Message sent by the bot with the callback button that originated the query\n",
         "name": "message",
         "required": false
       },

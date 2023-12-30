@@ -240,3 +240,8 @@ unpin:
   method: unpinChatMessage
   code: *assert-chat
   fill: *message-target
+
+react:
+  method: setMessageReaction
+  code: *assert-chat
+  fill: *message-target

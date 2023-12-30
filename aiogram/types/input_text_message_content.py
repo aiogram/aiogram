@@ -2,10 +2,13 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, List, Optional
 
+from pydantic import Field
+
 from .base import UNSET_DISABLE_WEB_PAGE_PREVIEW, UNSET_PARSE_MODE
 from .input_message_content import InputMessageContent
 
 if TYPE_CHECKING:
+    from .link_preview_options import LinkPreviewOptions
     from .message_entity import MessageEntity
 
 
@@ -22,8 +25,15 @@ class InputTextMessageContent(InputMessageContent):
     """*Optional*. Mode for parsing entities in the message text. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details."""
     entities: Optional[List[MessageEntity]] = None
     """*Optional*. List of special entities that appear in message text, which can be specified instead of *parse_mode*"""
-    disable_web_page_preview: Optional[bool] = UNSET_DISABLE_WEB_PAGE_PREVIEW
-    """*Optional*. Disables link previews for links in the sent message"""
+    link_preview_options: Optional[LinkPreviewOptions] = None
+    """*Optional*. Link preview generation options for the message"""
+    disable_web_page_preview: Optional[bool] = Field(
+        UNSET_DISABLE_WEB_PAGE_PREVIEW, json_schema_extra={"deprecated": True}
+    )
+    """*Optional*. Disables link previews for links in the sent message
+
+.. deprecated:: API:7.0
+   https://core.telegram.org/bots/api-changelog#december-29-2023"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!
@@ -35,6 +45,7 @@ class InputTextMessageContent(InputMessageContent):
             message_text: str,
             parse_mode: Optional[str] = UNSET_PARSE_MODE,
             entities: Optional[List[MessageEntity]] = None,
+            link_preview_options: Optional[LinkPreviewOptions] = None,
             disable_web_page_preview: Optional[bool] = UNSET_DISABLE_WEB_PAGE_PREVIEW,
             **__pydantic_kwargs: Any,
         ) -> None:
@@ -46,6 +57,7 @@ class InputTextMessageContent(InputMessageContent):
                 message_text=message_text,
                 parse_mode=parse_mode,
                 entities=entities,
+                link_preview_options=link_preview_options,
                 disable_web_page_preview=disable_web_page_preview,
                 **__pydantic_kwargs,
             )

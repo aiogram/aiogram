@@ -7,6 +7,9 @@ class UserShared(TelegramObject):
     """
     This object contains information about the user whose identifier was shared with the bot using a :class:`aiogram.types.keyboard_button_request_user.KeyboardButtonRequestUser` button.
 
+    .. deprecated:: API:7.0
+       https://core.telegram.org/bots/api-changelog#december-29-2023
+
     Source: https://core.telegram.org/bots/api#usershared
     """
 

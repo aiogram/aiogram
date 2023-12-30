@@ -1,0 +1,33 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available methods",
+    "anchor": "available-methods"
+  },
+  "object": {
+    "anchor": "getuserchatboosts",
+    "name": "getUserChatBoosts",
+    "description": "Use this method to get the list of boosts added to a chat by a user. Requires administrator rights in the chat. Returns a UserChatBoosts object.",
+    "html_description": "<p>Use this method to get the list of boosts added to a chat by a user. Requires administrator rights in the chat. Returns a <a href=\"#userchatboosts\">UserChatBoosts</a> object.</p>",
+    "rst_description": "Use this method to get the list of boosts added to a chat by a user. Requires administrator rights in the chat. Returns a :class:`aiogram.types.user_chat_boosts.UserChatBoosts` object.",
+    "annotations": [
+      {
+        "type": "Integer or String",
+        "required": true,
+        "description": "Unique identifier for the chat or username of the channel (in the format @channelusername)",
+        "html_description": "<td>Unique identifier for the chat or username of the channel (in the format <code>@channelusername</code>)</td>",
+        "rst_description": "Unique identifier for the chat or username of the channel (in the format :code:`@channelusername`)\n",
+        "name": "chat_id"
+      },
+      {
+        "type": "Integer",
+        "required": true,
+        "description": "Unique identifier of the target user",
+        "html_description": "<td>Unique identifier of the target user</td>",
+        "rst_description": "Unique identifier of the target user\n",
+        "name": "user_id"
+      }
+    ],
+    "category": "methods"
+  }
+}

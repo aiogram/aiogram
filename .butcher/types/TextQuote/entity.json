@@ -1,0 +1,49 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "textquote",
+    "name": "TextQuote",
+    "description": "This object contains information about the quoted part of a message that is replied to by the given message.",
+    "html_description": "<p>This object contains information about the quoted part of a message that is replied to by the given message.</p>",
+    "rst_description": "This object contains information about the quoted part of a message that is replied to by the given message.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Text of the quoted part of a message that is replied to by the given message",
+        "html_description": "<td>Text of the quoted part of a message that is replied to by the given message</td>",
+        "rst_description": "Text of the quoted part of a message that is replied to by the given message\n",
+        "name": "text",
+        "required": true
+      },
+      {
+        "type": "Array of MessageEntity",
+        "description": "Special entities that appear in the quote. Currently, only bold, italic, underline, strikethrough, spoiler, and custom_emoji entities are kept in quotes.",
+        "html_description": "<td><em>Optional</em>. Special entities that appear in the quote. Currently, only <em>bold</em>, <em>italic</em>, <em>underline</em>, <em>strikethrough</em>, <em>spoiler</em>, and <em>custom_emoji</em> entities are kept in quotes.</td>",
+        "rst_description": "*Optional*. Special entities that appear in the quote. Currently, only *bold*, *italic*, *underline*, *strikethrough*, *spoiler*, and *custom_emoji* entities are kept in quotes.\n",
+        "name": "entities",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "Approximate quote position in the original message in UTF-16 code units as specified by the sender",
+        "html_description": "<td>Approximate quote position in the original message in UTF-16 code units as specified by the sender</td>",
+        "rst_description": "Approximate quote position in the original message in UTF-16 code units as specified by the sender\n",
+        "name": "position",
+        "required": true
+      },
+      {
+        "type": "True",
+        "description": "True, if the quote was chosen manually by the message sender. Otherwise, the quote was added automatically by the server.",
+        "html_description": "<td><em>Optional</em>. True, if the quote was chosen manually by the message sender. Otherwise, the quote was added automatically by the server.</td>",
+        "rst_description": "*Optional*. True, if the quote was chosen manually by the message sender. Otherwise, the quote was added automatically by the server.\n",
+        "name": "is_manual",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

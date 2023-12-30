@@ -13,7 +13,7 @@ class ChatPermissions(MutableTelegramObject):
     """
 
     can_send_messages: Optional[bool] = None
-    """*Optional*. :code:`True`, if the user is allowed to send text messages, contacts, invoices, locations and venues"""
+    """*Optional*. :code:`True`, if the user is allowed to send text messages, contacts, giveaways, giveaway winners, invoices, locations and venues"""
     can_send_audios: Optional[bool] = None
     """*Optional*. :code:`True`, if the user is allowed to send audios"""
     can_send_documents: Optional[bool] = None

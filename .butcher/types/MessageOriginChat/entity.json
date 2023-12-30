@@ -1,0 +1,49 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "messageoriginchat",
+    "name": "MessageOriginChat",
+    "description": "The message was originally sent on behalf of a chat to a group chat.",
+    "html_description": "<p>The message was originally sent on behalf of a chat to a group chat.</p>",
+    "rst_description": "The message was originally sent on behalf of a chat to a group chat.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Type of the message origin, always 'chat'",
+        "html_description": "<td>Type of the message origin, always &#8220;chat&#8221;</td>",
+        "rst_description": "Type of the message origin, always 'chat'\n",
+        "name": "type",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "Date the message was sent originally in Unix time",
+        "html_description": "<td>Date the message was sent originally in Unix time</td>",
+        "rst_description": "Date the message was sent originally in Unix time\n",
+        "name": "date",
+        "required": true
+      },
+      {
+        "type": "Chat",
+        "description": "Chat that sent the message originally",
+        "html_description": "<td>Chat that sent the message originally</td>",
+        "rst_description": "Chat that sent the message originally\n",
+        "name": "sender_chat",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "For messages originally sent by an anonymous chat administrator, original message author signature",
+        "html_description": "<td><em>Optional</em>. For messages originally sent by an anonymous chat administrator, original message author signature</td>",
+        "rst_description": "*Optional*. For messages originally sent by an anonymous chat administrator, original message author signature\n",
+        "name": "author_signature",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

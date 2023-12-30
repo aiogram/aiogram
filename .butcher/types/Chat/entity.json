@@ -84,18 +84,58 @@
         "required": false
       },
       {
+        "type": "Array of ReactionType",
+        "description": "List of available reactions allowed in the chat. If omitted, then all emoji reactions are allowed. Returned only in getChat.",
+        "html_description": "<td><em>Optional</em>. List of available reactions allowed in the chat. If omitted, then all <a href=\"#reactiontypeemoji\">emoji reactions</a> are allowed. Returned only in <a href=\"#getchat\">getChat</a>.</td>",
+        "rst_description": "*Optional*. List of available reactions allowed in the chat. If omitted, then all `emoji reactions <https://core.telegram.org/bots/api#reactiontypeemoji>`_ are allowed. Returned only in :class:`aiogram.methods.get_chat.GetChat`.\n",
+        "name": "available_reactions",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "Identifier of the accent color for the chat name and backgrounds of the chat photo, reply header, and link preview. See accent colors for more details. Returned only in getChat. Always returned in getChat.",
+        "html_description": "<td><em>Optional</em>. Identifier of the accent color for the chat name and backgrounds of the chat photo, reply header, and link preview. See <a href=\"#accent-colors\">accent colors</a> for more details. Returned only in <a href=\"#getchat\">getChat</a>. Always returned in <a href=\"#getchat\">getChat</a>.</td>",
+        "rst_description": "*Optional*. Identifier of the accent color for the chat name and backgrounds of the chat photo, reply header, and link preview. See `accent colors <https://core.telegram.org/bots/api#accent-colors>`_ for more details. Returned only in :class:`aiogram.methods.get_chat.GetChat`. Always returned in :class:`aiogram.methods.get_chat.GetChat`.\n",
+        "name": "accent_color_id",
+        "required": false
+      },
+      {
         "type": "String",
-        "description": "Custom emoji identifier of emoji status of the other party in a private chat. Returned only in getChat.",
-        "html_description": "<td><em>Optional</em>. Custom emoji identifier of emoji status of the other party in a private chat. Returned only in <a href=\"#getchat\">getChat</a>.</td>",
-        "rst_description": "*Optional*. Custom emoji identifier of emoji status of the other party in a private chat. Returned only in :class:`aiogram.methods.get_chat.GetChat`.\n",
+        "description": "Custom emoji identifier of emoji chosen by the chat for the reply header and link preview background. Returned only in getChat.",
+        "html_description": "<td><em>Optional</em>. Custom emoji identifier of emoji chosen by the chat for the reply header and link preview background. Returned only in <a href=\"#getchat\">getChat</a>.</td>",
+        "rst_description": "*Optional*. Custom emoji identifier of emoji chosen by the chat for the reply header and link preview background. Returned only in :class:`aiogram.methods.get_chat.GetChat`.\n",
+        "name": "background_custom_emoji_id",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "Identifier of the accent color for the chat's profile background. See profile accent colors for more details. Returned only in getChat.",
+        "html_description": "<td><em>Optional</em>. Identifier of the accent color for the chat's profile background. See <a href=\"#profile-accent-colors\">profile accent colors</a> for more details. Returned only in <a href=\"#getchat\">getChat</a>.</td>",
+        "rst_description": "*Optional*. Identifier of the accent color for the chat's profile background. See `profile accent colors <https://core.telegram.org/bots/api#profile-accent-colors>`_ for more details. Returned only in :class:`aiogram.methods.get_chat.GetChat`.\n",
+        "name": "profile_accent_color_id",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "Custom emoji identifier of the emoji chosen by the chat for its profile background. Returned only in getChat.",
+        "html_description": "<td><em>Optional</em>. Custom emoji identifier of the emoji chosen by the chat for its profile background. Returned only in <a href=\"#getchat\">getChat</a>.</td>",
+        "rst_description": "*Optional*. Custom emoji identifier of the emoji chosen by the chat for its profile background. Returned only in :class:`aiogram.methods.get_chat.GetChat`.\n",
+        "name": "profile_background_custom_emoji_id",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "Custom emoji identifier of the emoji status of the chat or the other party in a private chat. Returned only in getChat.",
+        "html_description": "<td><em>Optional</em>. Custom emoji identifier of the emoji status of the chat or the other party in a private chat. Returned only in <a href=\"#getchat\">getChat</a>.</td>",
+        "rst_description": "*Optional*. Custom emoji identifier of the emoji status of the chat or the other party in a private chat. Returned only in :class:`aiogram.methods.get_chat.GetChat`.\n",
         "name": "emoji_status_custom_emoji_id",
         "required": false
       },
       {
         "type": "Integer",
-        "description": "Expiration date of the emoji status of the other party in a private chat in Unix time, if any. Returned only in getChat.",
-        "html_description": "<td><em>Optional</em>. Expiration date of the emoji status of the other party in a private chat in Unix time, if any. Returned only in <a href=\"#getchat\">getChat</a>.</td>",
-        "rst_description": "*Optional*. Expiration date of the emoji status of the other party in a private chat in Unix time, if any. Returned only in :class:`aiogram.methods.get_chat.GetChat`.\n",
+        "description": "Expiration date of the emoji status of the chat or the other party in a private chat, in Unix time, if any. Returned only in getChat.",
+        "html_description": "<td><em>Optional</em>. Expiration date of the emoji status of the chat or the other party in a private chat, in Unix time, if any. Returned only in <a href=\"#getchat\">getChat</a>.</td>",
+        "rst_description": "*Optional*. Expiration date of the emoji status of the chat or the other party in a private chat, in Unix time, if any. Returned only in :class:`aiogram.methods.get_chat.GetChat`.\n",
         "name": "emoji_status_expiration_date",
         "required": false
       },
@@ -209,6 +249,14 @@
         "html_description": "<td><em>Optional</em>. <em>True</em>, if messages from the chat can't be forwarded to other chats. Returned only in <a href=\"#getchat\">getChat</a>.</td>",
         "rst_description": "*Optional*. :code:`True`, if messages from the chat can't be forwarded to other chats. Returned only in :class:`aiogram.methods.get_chat.GetChat`.\n",
         "name": "has_protected_content",
+        "required": false
+      },
+      {
+        "type": "True",
+        "description": "True, if new chat members will have access to old messages; available only to chat administrators. Returned only in getChat.",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if new chat members will have access to old messages; available only to chat administrators. Returned only in <a href=\"#getchat\">getChat</a>.</td>",
+        "rst_description": "*Optional*. :code:`True`, if new chat members will have access to old messages; available only to chat administrators. Returned only in :class:`aiogram.methods.get_chat.GetChat`.\n",
+        "name": "has_visible_history",
         "required": false
       },
       {

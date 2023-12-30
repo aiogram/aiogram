@@ -2,12 +2,15 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Optional
 
+from pydantic import Field
+
 from .base import MutableTelegramObject
 
 if TYPE_CHECKING:
     from .keyboard_button_poll_type import KeyboardButtonPollType
     from .keyboard_button_request_chat import KeyboardButtonRequestChat
     from .keyboard_button_request_user import KeyboardButtonRequestUser
+    from .keyboard_button_request_users import KeyboardButtonRequestUsers
     from .web_app_info import WebAppInfo
 
 
@@ -27,8 +30,8 @@ class KeyboardButton(MutableTelegramObject):
 
     text: str
     """Text of the button. If none of the optional fields are used, it will be sent as a message when the button is pressed"""
-    request_user: Optional[KeyboardButtonRequestUser] = None
-    """*Optional.* If specified, pressing the button will open a list of suitable users. Tapping on any user will send their identifier to the bot in a 'user_shared' service message. Available in private chats only."""
+    request_users: Optional[KeyboardButtonRequestUsers] = None
+    """*Optional.* If specified, pressing the button will open a list of suitable users. Identifiers of selected users will be sent to the bot in a 'users_shared' service message. Available in private chats only."""
     request_chat: Optional[KeyboardButtonRequestChat] = None
     """*Optional.* If specified, pressing the button will open a list of suitable chats. Tapping on a chat will send its identifier to the bot in a 'chat_shared' service message. Available in private chats only."""
     request_contact: Optional[bool] = None
@@ -39,6 +42,13 @@ class KeyboardButton(MutableTelegramObject):
     """*Optional*. If specified, the user will be asked to create a poll and send it to the bot when the button is pressed. Available in private chats only."""
     web_app: Optional[WebAppInfo] = None
     """*Optional*. If specified, the described `Web App <https://core.telegram.org/bots/webapps>`_ will be launched when the button is pressed. The Web App will be able to send a 'web_app_data' service message. Available in private chats only."""
+    request_user: Optional[KeyboardButtonRequestUser] = Field(
+        None, json_schema_extra={"deprecated": True}
+    )
+    """*Optional.* If specified, pressing the button will open a list of suitable users. Tapping on any user will send their identifier to the bot in a 'user_shared' service message. Available in private chats only.
+
+.. deprecated:: API:7.0
+   https://core.telegram.org/bots/api-changelog#december-29-2023"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!
@@ -48,12 +58,13 @@ class KeyboardButton(MutableTelegramObject):
             __pydantic__self__,
             *,
             text: str,
-            request_user: Optional[KeyboardButtonRequestUser] = None,
+            request_users: Optional[KeyboardButtonRequestUsers] = None,
             request_chat: Optional[KeyboardButtonRequestChat] = None,
             request_contact: Optional[bool] = None,
             request_location: Optional[bool] = None,
             request_poll: Optional[KeyboardButtonPollType] = None,
             web_app: Optional[WebAppInfo] = None,
+            request_user: Optional[KeyboardButtonRequestUser] = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!
@@ -62,11 +73,12 @@ class KeyboardButton(MutableTelegramObject):
 
             super().__init__(
                 text=text,
-                request_user=request_user,
+                request_users=request_users,
                 request_chat=request_chat,
                 request_contact=request_contact,
                 request_location=request_location,
                 request_poll=request_poll,
                 web_app=web_app,
+                request_user=request_user,
                 **__pydantic_kwargs,
             )

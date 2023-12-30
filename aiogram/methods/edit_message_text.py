@@ -2,7 +2,15 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, List, Optional, Union
 
-from ..types import UNSET_PARSE_MODE, InlineKeyboardMarkup, Message, MessageEntity
+from pydantic import Field
+
+from ..types import (
+    UNSET_PARSE_MODE,
+    InlineKeyboardMarkup,
+    LinkPreviewOptions,
+    Message,
+    MessageEntity,
+)
 from ..types.base import UNSET_DISABLE_WEB_PAGE_PREVIEW
 from .base import TelegramMethod
 
@@ -29,10 +37,17 @@ class EditMessageText(TelegramMethod[Union[Message, bool]]):
     """Mode for parsing entities in the message text. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details."""
     entities: Optional[List[MessageEntity]] = None
     """A JSON-serialized list of special entities that appear in message text, which can be specified instead of *parse_mode*"""
-    disable_web_page_preview: Optional[bool] = UNSET_DISABLE_WEB_PAGE_PREVIEW
-    """Disables link previews for links in this message"""
+    link_preview_options: Optional[LinkPreviewOptions] = None
+    """Link preview generation options for the message"""
     reply_markup: Optional[InlineKeyboardMarkup] = None
     """A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_."""
+    disable_web_page_preview: Optional[bool] = Field(
+        UNSET_DISABLE_WEB_PAGE_PREVIEW, json_schema_extra={"deprecated": True}
+    )
+    """Disables link previews for links in this message
+
+.. deprecated:: API:7.0
+   https://core.telegram.org/bots/api-changelog#december-29-2023"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!
@@ -47,8 +62,9 @@ class EditMessageText(TelegramMethod[Union[Message, bool]]):
             inline_message_id: Optional[str] = None,
             parse_mode: Optional[str] = UNSET_PARSE_MODE,
             entities: Optional[List[MessageEntity]] = None,
-            disable_web_page_preview: Optional[bool] = UNSET_DISABLE_WEB_PAGE_PREVIEW,
+            link_preview_options: Optional[LinkPreviewOptions] = None,
             reply_markup: Optional[InlineKeyboardMarkup] = None,
+            disable_web_page_preview: Optional[bool] = UNSET_DISABLE_WEB_PAGE_PREVIEW,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!
@@ -62,7 +78,8 @@ class EditMessageText(TelegramMethod[Union[Message, bool]]):
                 inline_message_id=inline_message_id,
                 parse_mode=parse_mode,
                 entities=entities,
-                disable_web_page_preview=disable_web_page_preview,
+                link_preview_options=link_preview_options,
                 reply_markup=reply_markup,
+                disable_web_page_preview=disable_web_page_preview,
                 **__pydantic_kwargs,
             )

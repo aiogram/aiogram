@@ -20,11 +20,11 @@
         "required": true
       },
       {
-        "type": "KeyboardButtonRequestUser",
-        "description": "If specified, pressing the button will open a list of suitable users. Tapping on any user will send their identifier to the bot in a 'user_shared' service message. Available in private chats only.",
-        "html_description": "<td><em>Optional.</em> If specified, pressing the button will open a list of suitable users. Tapping on any user will send their identifier to the bot in a &#8220;user_shared&#8221; service message. Available in private chats only.</td>",
-        "rst_description": "*Optional.* If specified, pressing the button will open a list of suitable users. Tapping on any user will send their identifier to the bot in a 'user_shared' service message. Available in private chats only.\n",
-        "name": "request_user",
+        "type": "KeyboardButtonRequestUsers",
+        "description": "If specified, pressing the button will open a list of suitable users. Identifiers of selected users will be sent to the bot in a 'users_shared' service message. Available in private chats only.",
+        "html_description": "<td><em>Optional.</em> If specified, pressing the button will open a list of suitable users. Identifiers of selected users will be sent to the bot in a &#8220;users_shared&#8221; service message. Available in private chats only.</td>",
+        "rst_description": "*Optional.* If specified, pressing the button will open a list of suitable users. Identifiers of selected users will be sent to the bot in a 'users_shared' service message. Available in private chats only.\n",
+        "name": "request_users",
         "required": false
       },
       {
@@ -66,6 +66,18 @@
         "rst_description": "*Optional*. If specified, the described `Web App <https://core.telegram.org/bots/webapps>`_ will be launched when the button is pressed. The Web App will be able to send a 'web_app_data' service message. Available in private chats only.\n",
         "name": "web_app",
         "required": false
+      },
+      {
+        "type": "KeyboardButtonRequestUser",
+        "description": "If specified, pressing the button will open a list of suitable users. Tapping on any user will send their identifier to the bot in a 'user_shared' service message. Available in private chats only.",
+        "html_description": "<td><em>Optional.</em> If specified, pressing the button will open a list of suitable users. Tapping on any user will send their identifier to the bot in a &#8220;user_shared&#8221; service message. Available in private chats only.</td>",
+        "rst_description": "*Optional.* If specified, pressing the button will open a list of suitable users. Tapping on any user will send their identifier to the bot in a 'user_shared' service message. Available in private chats only.\n",
+        "name": "request_user",
+        "required": false,
+        "deprecated": {
+          "version": "7.0",
+          "release_date": "2023-12-29"
+        }
       }
     ],
     "category": "types"

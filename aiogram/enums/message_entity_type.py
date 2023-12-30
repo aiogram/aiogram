@@ -20,6 +20,7 @@ class MessageEntityType(str, Enum):
     UNDERLINE = "underline"
     STRIKETHROUGH = "strikethrough"
     SPOILER = "spoiler"
+    BLOCKQUOTE = "blockquote"
     CODE = "code"
     PRE = "pre"
     TEXT_LINK = "text_link"

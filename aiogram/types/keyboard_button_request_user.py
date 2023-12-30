@@ -7,6 +7,9 @@ class KeyboardButtonRequestUser(TelegramObject):
     """
     This object defines the criteria used to request a suitable user. The identifier of the selected user will be shared with the bot when the corresponding button is pressed. `More about requesting users » <https://core.telegram.org/bots/features#chat-and-user-selection>`_
 
+    .. deprecated:: API:7.0
+       https://core.telegram.org/bots/api-changelog#december-29-2023
+
     Source: https://core.telegram.org/bots/api#keyboardbuttonrequestuser
     """
 

@@ -2,7 +2,7 @@ from abc import ABC
 from typing import Optional
 
 from aiogram.handlers import BaseHandler
-from aiogram.types import CallbackQuery, Message, User
+from aiogram.types import CallbackQuery, MaybeInaccessibleMessage, Message, User
 
 
 class CallbackQueryHandler(BaseHandler[CallbackQuery], ABC):
@@ -29,7 +29,7 @@ class CallbackQueryHandler(BaseHandler[CallbackQuery], ABC):
         return self.event.from_user
 
     @property
-    def message(self) -> Optional[Message]:
+    def message(self) -> Optional[MaybeInaccessibleMessage]:
         """
         Is alias for `event.message`
         """

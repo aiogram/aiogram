@@ -1,0 +1,33 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "chatboostsourcegiftcode",
+    "name": "ChatBoostSourceGiftCode",
+    "description": "The boost was obtained by the creation of Telegram Premium gift codes to boost a chat. Each such code boosts the chat 4 times for the duration of the corresponding Telegram Premium subscription.",
+    "html_description": "<p>The boost was obtained by the creation of Telegram Premium gift codes to boost a chat. Each such code boosts the chat 4 times for the duration of the corresponding Telegram Premium subscription.</p>",
+    "rst_description": "The boost was obtained by the creation of Telegram Premium gift codes to boost a chat. Each such code boosts the chat 4 times for the duration of the corresponding Telegram Premium subscription.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Source of the boost, always 'gift_code'",
+        "html_description": "<td>Source of the boost, always &#8220;gift_code&#8221;</td>",
+        "rst_description": "Source of the boost, always 'gift_code'\n",
+        "name": "source",
+        "required": true
+      },
+      {
+        "type": "User",
+        "description": "User for which the gift code was created",
+        "html_description": "<td>User for which the gift code was created</td>",
+        "rst_description": "User for which the gift code was created\n",
+        "name": "user",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}
