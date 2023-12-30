@@ -20,6 +20,7 @@ from aiogram.types import (
     Chat,
     ChatJoinRequest,
     ChatBoost,
+    ChatBoostRemoved,
     ChatBoostSourceGiveaway,
     ChatBoostUpdated,
     ChatMemberMember,
@@ -502,6 +503,22 @@ class TestDispatcher:
                             source=ChatBoostSourceGiveaway(
                                 giveaway_message_id=77,
                             ),
+                        ),
+                    ),
+                ),
+                True,
+                False,
+            ),
+            pytest.param(
+                "removed_chat_boost",
+                Update(
+                    update_id=42,
+                    removed_chat_boost=ChatBoostRemoved(
+                        chat=Chat(id=-42, type="channel"),
+                        boost_id="qwerty",
+                        remove_date=datetime.datetime.now(),
+                        source=ChatBoostSourceGiveaway(
+                            giveaway_message_id=77,
                         ),
                     ),
                 ),
