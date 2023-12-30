@@ -24,6 +24,7 @@ from aiogram.types import (
     ChosenInlineResult,
     InlineQuery,
     Message,
+    MessageReactionCountUpdated,
     MessageReactionUpdated,
     Poll,
     PollAnswer,
@@ -33,6 +34,7 @@ from aiogram.types import (
     ShippingQuery,
     Update,
     User,
+    ReactionCount,
     ReactionTypeCustomEmoji,
 )
 from aiogram.types.error_event import ErrorEvent
@@ -464,6 +466,25 @@ class TestDispatcher:
                 ),
                 True,
                 True,
+            ),
+            pytest.param(
+                "message_reaction_count",
+                Update(
+                    update_id=42,
+                    message_reaction_count=MessageReactionCountUpdated(
+                        chat=Chat(id=-42, type="channel"),
+                        message_id=12345,
+                        date=datetime.datetime.now(),
+                        reactions=[
+                            ReactionCount(
+                                type=ReactionTypeCustomEmoji(custom_emoji="qwerty"),
+                                total_count=123,
+                            ),
+                        ],
+                    ),
+                ),
+                True,
+                False,
             ),
         ],
     )
