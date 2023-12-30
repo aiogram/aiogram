@@ -17,7 +17,7 @@ class TestSetMessageReaction:
             chat_id=randint(200, 300),
             message_id=randint(100, 200),
             reaction=[
-                ReactionTypeCustomEmoji(custom_emoji="qwerty"),
+                ReactionTypeCustomEmoji(custom_emoji_id="qwerty"),
             ],
         )
         request = bot.get_request()
