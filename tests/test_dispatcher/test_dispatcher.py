@@ -19,6 +19,9 @@ from aiogram.types import (
     CallbackQuery,
     Chat,
     ChatJoinRequest,
+    ChatBoost,
+    ChatBoostSourceGiveaway,
+    ChatBoostUpdated,
     ChatMemberMember,
     ChatMemberUpdated,
     ChosenInlineResult,
@@ -481,6 +484,25 @@ class TestDispatcher:
                                 total_count=123,
                             ),
                         ],
+                    ),
+                ),
+                True,
+                False,
+            ),
+            pytest.param(
+                "chat_boost",
+                Update(
+                    update_id=42,
+                    chat_boost=ChatBoostUpdated(
+                        chat=Chat(id=-42, type="channel"),
+                        boost=ChatBoost(
+                            boost_id="qwerty",
+                            add_date=datetime.datetime.now(),
+                            expiration_date=datetime.datetime.now(),
+                            source=ChatBoostSourceGiveaway(
+                                giveaway_message_id=77,
+                            ),
+                        ),
                     ),
                 ),
                 True,
