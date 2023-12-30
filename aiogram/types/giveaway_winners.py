@@ -6,6 +6,7 @@ from .base import TelegramObject
 
 if TYPE_CHECKING:
     from .chat import Chat
+    from .custom import DateTime
     from .user import User
 
 
@@ -20,7 +21,7 @@ class GiveawayWinners(TelegramObject):
     """The chat that created the giveaway"""
     giveaway_message_id: int
     """Identifier of the messsage with the giveaway in the chat"""
-    winners_selection_date: int
+    winners_selection_date: DateTime
     """Point in time (Unix timestamp) when winners of the giveaway were selected"""
     winner_count: int
     """Total number of winners in the giveaway"""
@@ -48,7 +49,7 @@ class GiveawayWinners(TelegramObject):
             *,
             chat: Chat,
             giveaway_message_id: int,
-            winners_selection_date: int,
+            winners_selection_date: DateTime,
             winner_count: int,
             winners: List[User],
             additional_chat_count: Optional[int] = None,

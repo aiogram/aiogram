@@ -6,6 +6,7 @@ from .base import TelegramObject
 
 if TYPE_CHECKING:
     from .chat import Chat
+    from .custom import DateTime
 
 
 class Giveaway(TelegramObject):
@@ -17,7 +18,7 @@ class Giveaway(TelegramObject):
 
     chats: List[Chat]
     """The list of chats which the user must join to participate in the giveaway"""
-    winners_selection_date: int
+    winners_selection_date: DateTime
     """Point in time (Unix timestamp) when winners of the giveaway will be selected"""
     winner_count: int
     """The number of users which are supposed to be selected as winners of the giveaway"""
@@ -40,7 +41,7 @@ class Giveaway(TelegramObject):
             __pydantic__self__,
             *,
             chats: List[Chat],
-            winners_selection_date: int,
+            winners_selection_date: DateTime,
             winner_count: int,
             only_new_members: Optional[bool] = None,
             has_public_winners: Optional[bool] = None,
