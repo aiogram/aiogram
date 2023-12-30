@@ -51,6 +51,12 @@ from aiogram.types import (
     ForumTopicEdited,
     ForumTopicReopened,
     Game,
+    GeneralForumTopicHidden,
+    GeneralForumTopicUnhidden,
+    Giveaway,
+    GiveawayCompleted,
+    GiveawayCreated,
+    GiveawayWinners,
     InlineKeyboardButton,
     InlineKeyboardMarkup,
     InputMediaPhoto,
@@ -69,6 +75,7 @@ from aiogram.types import (
     SuccessfulPayment,
     User,
     UserShared,
+    UsersShared,
     Venue,
     Video,
     VideoChatEnded,
@@ -78,6 +85,7 @@ from aiogram.types import (
     VideoNote,
     Voice,
     WebAppData,
+    WriteAccessAllowed,
 )
 from aiogram.types.message import ContentType, Message
 
@@ -446,12 +454,22 @@ TEST_FORUM_TOPIC_REOPENED = Message(
     from_user=User(id=42, is_bot=False, first_name="Test"),
     forum_topic_reopened=ForumTopicReopened(),
 )
-TEST_USER_SHARED = Message(
+TEST_MESSAGE_USER_SHARED = Message(
     message_id=42,
     date=datetime.datetime.now(),
     chat=Chat(id=42, type="private"),
     from_user=User(id=42, is_bot=False, first_name="Test"),
     user_shared=UserShared(request_id=42, user_id=42),
+)
+TEST_MESSAGE_USERS_SHARED = Message(
+    message_id=42,
+    date=datetime.datetime.now(),
+    chat=Chat(id=42, type="private"),
+    from_user=None,
+    users_shared=UsersShared(
+        request_id=0,
+        user_ids=[1, 2],
+    ),
 )
 TEST_CHAT_SHARED = Message(
     message_id=42,
@@ -468,6 +486,73 @@ TEST_MESSAGE_STORY = Message(
     story=Story(),
     forward_signature="Test",
     forward_date=datetime.datetime.now(),
+)
+
+TEST_MESSAGE_GIVEAWAY = Message(
+    message_id=42,
+    date=datetime.datetime.now(),
+    chat=Chat(id=42, type="private"),
+    from_user=None,
+    giveaway=Giveaway(
+        chats=[Chat(id=42, type="private")],
+        winners_selection_date=datetime.datetime.now() + datetime.timedelta(days=7),
+        winner_count=10,
+    ),
+)
+TEST_MESSAGE_GIVEAWAY_CREATED = Message(
+    message_id=42,
+    date=datetime.datetime.now(),
+    chat=Chat(id=42, type="private"),
+    from_user=None,
+    giveaway_created=GiveawayCreated(),
+)
+TEST_MESSAGE_GIVEAWAY_WINNERS = Message(
+    message_id=42,
+    date=datetime.datetime.now(),
+    chat=Chat(id=42, type="private"),
+    from_user=None,
+    giveaway_winners=GiveawayWinners(
+        chat=Chat(id=77, type="private"),
+        giveaway_message_id=123,
+        winners_selection_date=datetime.datetime.now(),
+        winner_count=1,
+        winners=[User(id=42, is_bot=False, first_name="Test")],
+    ),
+)
+TEST_MESSAGE_GIVEAWAY_COMPLETED = Message(
+    message_id=42,
+    date=datetime.datetime.now(),
+    chat=Chat(id=42, type="private"),
+    from_user=None,
+    giveaway_completed=GiveawayCompleted(winner_count=10),
+)
+TEST_MESSAGE_HAS_MEDIA_SPOILER = Message(
+    message_id=42,
+    date=datetime.datetime.now(),
+    chat=Chat(id=42, type="private"),
+    from_user=None,
+    has_media_spoiler=True,
+)
+TEST_MESSAGE_GENERAL_FORUM_TOPIC_HIDDEN = Message(
+    message_id=42,
+    date=datetime.datetime.now(),
+    chat=Chat(id=42, type="private"),
+    from_user=None,
+    general_forum_topic_hidden=GeneralForumTopicHidden(),
+)
+TEST_MESSAGE_GENERAL_FORUM_TOPIC_UNHIDDEN = Message(
+    message_id=42,
+    date=datetime.datetime.now(),
+    chat=Chat(id=42, type="private"),
+    from_user=None,
+    general_forum_topic_unhidden=GeneralForumTopicUnhidden(),
+)
+TEST_MESSAGE_WRITE_ACCESS_ALLOWED = Message(
+    message_id=42,
+    date=datetime.datetime.now(),
+    chat=Chat(id=42, type="private"),
+    from_user=None,
+    write_access_allowed=WriteAccessAllowed(),
 )
 TEST_MESSAGE_UNKNOWN = Message(
     message_id=42,
@@ -524,27 +609,107 @@ MESSAGES_AND_CONTENT_TYPES = [
     [TEST_FORUM_TOPIC_EDITED, ContentType.FORUM_TOPIC_EDITED],
     [TEST_FORUM_TOPIC_CLOSED, ContentType.FORUM_TOPIC_CLOSED],
     [TEST_FORUM_TOPIC_REOPENED, ContentType.FORUM_TOPIC_REOPENED],
-    [TEST_USER_SHARED, ContentType.USER_SHARED],
+    [TEST_MESSAGE_USER_SHARED, ContentType.USER_SHARED],
+    [TEST_MESSAGE_USERS_SHARED, ContentType.USERS_SHARED],
     [TEST_CHAT_SHARED, ContentType.CHAT_SHARED],
     [TEST_MESSAGE_STORY, ContentType.STORY],
+    [TEST_MESSAGE_GIVEAWAY, ContentType.GIVEAWAY],
+    [TEST_MESSAGE_GIVEAWAY_CREATED, ContentType.GIVEAWAY_CREATED],
+    [TEST_MESSAGE_GIVEAWAY_WINNERS, ContentType.GIVEAWAY_WINNERS],
+    [TEST_MESSAGE_GIVEAWAY_COMPLETED, ContentType.GIVEAWAY_COMPLETED],
+    [TEST_MESSAGE_HAS_MEDIA_SPOILER, ContentType.HAS_MEDIA_SPOILER],
+    [TEST_MESSAGE_GENERAL_FORUM_TOPIC_HIDDEN, ContentType.GENERAL_FORUM_TOPIC_HIDDEN],
+    [TEST_MESSAGE_GENERAL_FORUM_TOPIC_UNHIDDEN, ContentType.GENERAL_FORUM_TOPIC_UNHIDDEN],
+    [TEST_MESSAGE_WRITE_ACCESS_ALLOWED, ContentType.WRITE_ACCESS_ALLOWED],
     [TEST_MESSAGE_UNKNOWN, ContentType.UNKNOWN],
 ]
 
 
-def test_all_known_content_type_have_example_messages():
-    """
-    Test if all ContentType options have example messages.
+MESSAGES_AND_COPY_METHODS = [
+    [TEST_MESSAGE_TEXT, SendMessage],
+    [TEST_MESSAGE_AUDIO, SendAudio],
+    [TEST_MESSAGE_ANIMATION, SendAnimation],
+    [TEST_MESSAGE_DOCUMENT, SendDocument],
+    [TEST_MESSAGE_GAME, None],
+    [TEST_MESSAGE_PHOTO, SendPhoto],
+    [TEST_MESSAGE_STICKER, SendSticker],
+    [TEST_MESSAGE_VIDEO, SendVideo],
+    [TEST_MESSAGE_VIDEO_NOTE, SendVideoNote],
+    [TEST_MESSAGE_VOICE, SendVoice],
+    [TEST_MESSAGE_CONTACT, SendContact],
+    [TEST_MESSAGE_VENUE, SendVenue],
+    [TEST_MESSAGE_LOCATION, SendLocation],
+    [TEST_MESSAGE_STORY, ForwardMessage],
+    [TEST_MESSAGE_NEW_CHAT_MEMBERS, None],
+    [TEST_MESSAGE_LEFT_CHAT_MEMBER, None],
+    [TEST_MESSAGE_INVOICE, None],
+    [TEST_MESSAGE_SUCCESSFUL_PAYMENT, None],
+    [TEST_MESSAGE_CONNECTED_WEBSITE, None],
+    [TEST_MESSAGE_MIGRATE_FROM_CHAT_ID, None],
+    [TEST_MESSAGE_MIGRATE_TO_CHAT_ID, None],
+    [TEST_MESSAGE_PINNED_MESSAGE, None],
+    [TEST_MESSAGE_NEW_CHAT_TITLE, None],
+    [TEST_MESSAGE_NEW_CHAT_PHOTO, None],
+    [TEST_MESSAGE_DELETE_CHAT_PHOTO, None],
+    [TEST_MESSAGE_GROUP_CHAT_CREATED, None],
+    [TEST_MESSAGE_SUPERGROUP_CHAT_CREATED, None],
+    [TEST_MESSAGE_CHANNEL_CHAT_CREATED, None],
+    [TEST_MESSAGE_PASSPORT_DATA, None],
+    [TEST_MESSAGE_PROXIMITY_ALERT_TRIGGERED, None],
+    [TEST_MESSAGE_POLL, SendPoll],
+    [TEST_MESSAGE_MESSAGE_AUTO_DELETE_TIMER_CHANGED, None],
+    [TEST_MESSAGE_VIDEO_CHAT_STARTED, None],
+    [TEST_MESSAGE_VIDEO_CHAT_ENDED, None],
+    [TEST_MESSAGE_VIDEO_CHAT_PARTICIPANTS_INVITED, None],
+    [TEST_MESSAGE_DICE, SendDice],
+    [TEST_MESSAGE_USER_SHARED, None],
+    [TEST_CHAT_SHARED, None],
+    [TEST_MESSAGE_GIVEAWAY_COMPLETED, None],
+    [TEST_MESSAGE_HAS_MEDIA_SPOILER, None],
+    [TEST_MESSAGE_WEB_APP_DATA, None],
+    [TEST_FORUM_TOPIC_CREATED, None],
+    [TEST_FORUM_TOPIC_EDITED, None],
+    [TEST_FORUM_TOPIC_CLOSED, None],
+    [TEST_FORUM_TOPIC_REOPENED, None],
+    [TEST_MESSAGE_GENERAL_FORUM_TOPIC_HIDDEN, None],
+    [TEST_MESSAGE_GENERAL_FORUM_TOPIC_UNHIDDEN, None],
+    [TEST_MESSAGE_GIVEAWAY_CREATED, None],
+    [TEST_MESSAGE_USERS_SHARED, None],
+    [TEST_MESSAGE_VIDEO_CHAT_SCHEDULED, None],
+    [TEST_MESSAGE_WRITE_ACCESS_ALLOWED, None],
+    [TEST_MESSAGE_GIVEAWAY, None],
+    [TEST_MESSAGE_GIVEAWAY_WINNERS, None],
+    [TEST_MESSAGE_UNKNOWN, None],
+]
 
-    On new Bot API updates new ContentType entries are created.
-    TestMessage.test_content_type checks what content type is returned.
-    Make sure MESSAGES_AND_CONTENT_TYPES has examples
-    for all the ContentType entries, fail otherwise.
-    """
-    content_types_w_example_messages = {t[1] for t in MESSAGES_AND_CONTENT_TYPES}
-    # content_types_w_example_messages.remove(ContentType.UNKNOWN)
-    known_content_types = {t for t in ContentType}
-    known_content_types.remove(ContentType.ANY)
-    assert content_types_w_example_messages == known_content_types
+
+class TestAllMessageTypesTested:
+    @pytest.fixture(scope="function")
+    def known_content_types(self):
+        content_types = {t for t in ContentType}
+        content_types.remove(ContentType.ANY)
+        return content_types
+
+    def test_for_content_type_tests(self, known_content_types):
+        """
+        Test if all ContentType options have example messages.
+
+        On new Bot API updates new ContentType entries are created.
+        TestMessage.test_content_type checks what content type is returned.
+        Make sure MESSAGES_AND_CONTENT_TYPES has examples
+        for all the ContentType entries, fail otherwise.
+        """
+        content_types_w_example_messages = {t[1] for t in MESSAGES_AND_CONTENT_TYPES}
+        assert content_types_w_example_messages == known_content_types
+
+    def test_for_copy_methods(self, known_content_types):
+        """
+        Test if all known message types are checked for copy_message.
+
+        Also relies on the previous test (both should be green)
+        """
+        checked_content_types = {m[0].content_type for m in MESSAGES_AND_COPY_METHODS}
+        assert checked_content_types == known_content_types
 
 
 class TestMessage:
@@ -657,47 +822,7 @@ class TestMessage:
 
     @pytest.mark.parametrize(
         "message,expected_method",
-        [
-            [TEST_MESSAGE_TEXT, SendMessage],
-            [TEST_MESSAGE_AUDIO, SendAudio],
-            [TEST_MESSAGE_ANIMATION, SendAnimation],
-            [TEST_MESSAGE_DOCUMENT, SendDocument],
-            [TEST_MESSAGE_GAME, None],
-            [TEST_MESSAGE_PHOTO, SendPhoto],
-            [TEST_MESSAGE_STICKER, SendSticker],
-            [TEST_MESSAGE_VIDEO, SendVideo],
-            [TEST_MESSAGE_VIDEO_NOTE, SendVideoNote],
-            [TEST_MESSAGE_VOICE, SendVoice],
-            [TEST_MESSAGE_CONTACT, SendContact],
-            [TEST_MESSAGE_VENUE, SendVenue],
-            [TEST_MESSAGE_LOCATION, SendLocation],
-            [TEST_MESSAGE_STORY, ForwardMessage],
-            [TEST_MESSAGE_NEW_CHAT_MEMBERS, None],
-            [TEST_MESSAGE_LEFT_CHAT_MEMBER, None],
-            [TEST_MESSAGE_INVOICE, None],
-            [TEST_MESSAGE_SUCCESSFUL_PAYMENT, None],
-            [TEST_MESSAGE_CONNECTED_WEBSITE, None],
-            [TEST_MESSAGE_MIGRATE_FROM_CHAT_ID, None],
-            [TEST_MESSAGE_MIGRATE_TO_CHAT_ID, None],
-            [TEST_MESSAGE_PINNED_MESSAGE, None],
-            [TEST_MESSAGE_NEW_CHAT_TITLE, None],
-            [TEST_MESSAGE_NEW_CHAT_PHOTO, None],
-            [TEST_MESSAGE_DELETE_CHAT_PHOTO, None],
-            [TEST_MESSAGE_GROUP_CHAT_CREATED, None],
-            [TEST_MESSAGE_SUPERGROUP_CHAT_CREATED, None],
-            [TEST_MESSAGE_CHANNEL_CHAT_CREATED, None],
-            [TEST_MESSAGE_PASSPORT_DATA, None],
-            [TEST_MESSAGE_PROXIMITY_ALERT_TRIGGERED, None],
-            [TEST_MESSAGE_POLL, SendPoll],
-            [TEST_MESSAGE_MESSAGE_AUTO_DELETE_TIMER_CHANGED, None],
-            [TEST_MESSAGE_VIDEO_CHAT_STARTED, None],
-            [TEST_MESSAGE_VIDEO_CHAT_ENDED, None],
-            [TEST_MESSAGE_VIDEO_CHAT_PARTICIPANTS_INVITED, None],
-            [TEST_MESSAGE_DICE, SendDice],
-            [TEST_USER_SHARED, None],
-            [TEST_CHAT_SHARED, None],
-            [TEST_MESSAGE_UNKNOWN, None],
-        ],
+        MESSAGES_AND_COPY_METHODS,
     )
     def test_send_copy(
         self,
