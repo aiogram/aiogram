@@ -56,6 +56,7 @@ class TextDecoration(ABC):
             MessageEntityType.UNDERLINE,
             MessageEntityType.STRIKETHROUGH,
             MessageEntityType.SPOILER,
+            MessageEntityType.BLOCKQUOTE,
         }:
             return cast(str, getattr(self, entity.type)(value=text))
         if entity.type == MessageEntityType.PRE:
