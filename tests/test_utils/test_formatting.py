@@ -268,7 +268,7 @@ class TestNode:
         assert (
             node.as_pretty_string(indent=True)
             == """Strikethrough(
-    Text(
+    CustomEmoji(
         'X',
         custom_emoji_id='42'
     )
