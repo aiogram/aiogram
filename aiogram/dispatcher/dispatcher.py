@@ -514,16 +514,11 @@ class Dispatcher(Router):
                         signal.SIGINT, self._signal_stop_polling, signal.SIGINT
                     )
 
-            workflow_data = {
-                "dispatcher": self,
-                "bots": bots,
-                **self.workflow_data,
-                **kwargs,
-            }
-            if "bot" in workflow_data:
-                workflow_data.pop("bot")
+            self.workflow_data.update({"dispatcher": self, "bots": bots, **kwargs})
+            if "bot" in self.workflow_data:
+                self.workflow_data.pop("bot")
 
-            await self.emit_startup(bot=bots[-1], **workflow_data)
+            await self.emit_startup(bot=bots[-1], **self.workflow_data)
             loggers.dispatcher.info("Start polling")
             try:
                 tasks: List[asyncio.Task[Any]] = [
@@ -534,7 +529,7 @@ class Dispatcher(Router):
                             polling_timeout=polling_timeout,
                             backoff_config=backoff_config,
                             allowed_updates=allowed_updates,
-                            **workflow_data,
+                            **self.workflow_data,
                         )
                     )
                     for bot in bots
@@ -553,7 +548,7 @@ class Dispatcher(Router):
             finally:
                 loggers.dispatcher.info("Polling stopped")
                 try:
-                    await self.emit_shutdown(bot=bots[-1], **workflow_data)
+                    await self.emit_shutdown(bot=bots[-1], **self.workflow_data)
                 finally:
                     if close_bot_session:
                         await asyncio.gather(*(bot.session.close() for bot in bots))
