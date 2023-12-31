@@ -16,6 +16,26 @@ Changelog
 
 .. towncrier release notes start
 
+3.3.0 (2023-12-31)
+===================
+
+Features
+--------
+
+- Added full support of `Bot API 7.0 <https://core.telegram.org/bots/api-changelog#december-29-2023>`_
+
+  - Reactions
+  - Replies 2.0
+  - Link Preview Customization
+  - Block Quotation
+  - Multiple Message Actions
+  - Requests for multiple users
+  - Chat Boosts
+  - Giveaway
+  - Other changes
+  `#1387 <https://github.com/aiogram/aiogram/issues/1387>`_
+
+
 3.2.0 (2023-11-24)
 ===================
 
