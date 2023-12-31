@@ -140,13 +140,77 @@ Poll answer
     @router.poll_answer()
     async def poll_answer_handler(poll_answer: types.PollAnswer) -> Any: pass
 
+
+My chat member
+--------------
+
+.. code-block:: python
+
+    @router.my_chat_member()
+    async def my_chat_member_handler(my_chat_member: types.ChatMemberUpdated) -> Any: pass
+
+
+Chat member
+-----------
+
+.. code-block:: python
+
+    @router.chat_member()
+    async def chat_member_handler(chat_member: types.ChatMemberUpdated) -> Any: pass
+
+
+Chat join request
+-----------------
+
+.. code-block:: python
+
+    @router.chat_join_request()
+    async def chat_join_request_handler(chat_join_request: types.ChatJoinRequest) -> Any: pass
+
+
+Message reaction
+----------------
+
+.. code-block:: python
+
+    @router.message_reaction()
+    async def message_reaction_handler(message_reaction: types.MessageReactionUpdated) -> Any: pass
+
+
+Message reaction count
+----------------------
+
+.. code-block:: python
+
+    @router.message_reaction_count()
+    async def message_reaction_count_handler(message_reaction_count: types.MessageReactionCountUpdated) -> Any: pass
+
+
+Chat boost
+----------
+
+.. code-block:: python
+
+    @router.chat_boost()
+    async def chat_boost_handler(chat_boost: types.ChatBoostUpdated) -> Any: pass
+
+
+Remove chat boost
+-----------------
+
+.. code-block:: python
+
+    @router.removed_chat_boost()
+    async def removed_chat_boost_handler(removed_chat_boost: types.ChatBoostRemoved) -> Any: pass
+
+
 Errors
 ------
 
 .. code-block:: python
 
     @router.errors()
-    async def error_handler(exception: ErrorEvent) -> Any: pass
+    async def error_handler(exception: types.ErrorEvent) -> Any: pass
 
 Is useful for handling errors from other handlers, error event described :ref:`here <error-event>`
 
@@ -168,7 +232,7 @@ Example:
 
 .. code-block:: python
     :caption: module_1.py
-    :name: module_1
+:name: module_1
 
     router2 = Router()
 
@@ -178,7 +242,7 @@ Example:
 
 .. code-block:: python
     :caption: module_2.py
-    :name: module_2
+:name: module_2
 
     from module_2 import router2
 
