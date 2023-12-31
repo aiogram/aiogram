@@ -6,7 +6,7 @@ from .base import TelegramMethod
 
 class SetMessageReaction(TelegramMethod[bool]):
     """
-    Use this method to change the chosen reactions on a message. Service messages can't be reacted to. Automatically forwarded messages from a channel to its discussion group have the same available reactions as messages in the channel. In albums, bots must react to the first message. Returns :code:`True` on success.
+    Use this method to change the chosen reactions on a message. Service messages can't be reacted to. Automatically forwarded messages from a channel to its discussion group have the same available reactions as messages in the channel. Returns :code:`True` on success.
 
     Source: https://core.telegram.org/bots/api#setmessagereaction
     """
@@ -17,7 +17,7 @@ class SetMessageReaction(TelegramMethod[bool]):
     chat_id: Union[int, str]
     """Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)"""
     message_id: int
-    """Identifier of the target message"""
+    """Identifier of the target message. If the message belongs to a media group, the reaction is set to the first non-deleted message in the group instead."""
     reaction: Optional[List[Union[ReactionTypeEmoji, ReactionTypeCustomEmoji]]] = None
     """New list of reaction types to set on the message. Currently, as non-premium users, bots can set up to one reaction per message. A custom emoji reaction can be used if it is either already present on the message or explicitly allowed by chat administrators."""
     is_big: Optional[bool] = None

@@ -3756,7 +3756,7 @@ class Message(MaybeInaccessibleMessage):
         - :code:`chat_id`
         - :code:`message_id`
 
-        Use this method to change the chosen reactions on a message. Service messages can't be reacted to. Automatically forwarded messages from a channel to its discussion group have the same available reactions as messages in the channel. In albums, bots must react to the first message. Returns :code:`True` on success.
+        Use this method to change the chosen reactions on a message. Service messages can't be reacted to. Automatically forwarded messages from a channel to its discussion group have the same available reactions as messages in the channel. Returns :code:`True` on success.
 
         Source: https://core.telegram.org/bots/api#setmessagereaction
 

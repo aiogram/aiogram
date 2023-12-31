@@ -7,9 +7,9 @@
   "object": {
     "anchor": "setmessagereaction",
     "name": "setMessageReaction",
-    "description": "Use this method to change the chosen reactions on a message. Service messages can't be reacted to. Automatically forwarded messages from a channel to its discussion group have the same available reactions as messages in the channel. In albums, bots must react to the first message. Returns True on success.",
-    "html_description": "<p>Use this method to change the chosen reactions on a message. Service messages can't be reacted to. Automatically forwarded messages from a channel to its discussion group have the same available reactions as messages in the channel. In albums, bots must react to the first message. Returns <em>True</em> on success.</p>",
-    "rst_description": "Use this method to change the chosen reactions on a message. Service messages can't be reacted to. Automatically forwarded messages from a channel to its discussion group have the same available reactions as messages in the channel. In albums, bots must react to the first message. Returns :code:`True` on success.",
+    "description": "Use this method to change the chosen reactions on a message. Service messages can't be reacted to. Automatically forwarded messages from a channel to its discussion group have the same available reactions as messages in the channel. Returns True on success.",
+    "html_description": "<p>Use this method to change the chosen reactions on a message. Service messages can't be reacted to. Automatically forwarded messages from a channel to its discussion group have the same available reactions as messages in the channel. Returns <em>True</em> on success.</p>",
+    "rst_description": "Use this method to change the chosen reactions on a message. Service messages can't be reacted to. Automatically forwarded messages from a channel to its discussion group have the same available reactions as messages in the channel. Returns :code:`True` on success.",
     "annotations": [
       {
         "type": "Integer or String",
@@ -22,9 +22,9 @@
       {
         "type": "Integer",
         "required": true,
-        "description": "Identifier of the target message",
-        "html_description": "<td>Identifier of the target message</td>",
-        "rst_description": "Identifier of the target message\n",
+        "description": "Identifier of the target message. If the message belongs to a media group, the reaction is set to the first non-deleted message in the group instead.",
+        "html_description": "<td>Identifier of the target message. If the message belongs to a media group, the reaction is set to the first non-deleted message in the group instead.</td>",
+        "rst_description": "Identifier of the target message. If the message belongs to a media group, the reaction is set to the first non-deleted message in the group instead.\n",
         "name": "message_id"
       },
       {
