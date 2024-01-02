@@ -7,6 +7,7 @@ import pytest
 from pytz import utc
 
 from aiogram import Bot
+from aiogram.client.default import Default, DefaultBotProperties
 from aiogram.client.session.base import BaseSession, TelegramType
 from aiogram.client.telegram import PRODUCTION, TelegramAPIServer
 from aiogram.enums import ChatType, ParseMode, TopicIconColor
@@ -125,15 +126,18 @@ class TestBaseSession:
 
     def test_prepare_value_defaults_replace(self):
         bot = MockedBot(
-            parse_mode=ParseMode.HTML,
-            protect_content=True,
-            disable_web_page_preview=True,
+            default=DefaultBotProperties(
+                parse_mode=ParseMode.HTML,
+                protect_content=True,
+                link_preview_is_disabled=True,
+            )
         )
-        assert bot.session.prepare_value(UNSET_PARSE_MODE, bot=bot, files={}) == "HTML"
+        assert bot.session.prepare_value(Default("parse_mode"), bot=bot, files={}) == "HTML"
         assert (
-            bot.session.prepare_value(UNSET_DISABLE_WEB_PAGE_PREVIEW, bot=bot, files={}) == "true"
+            bot.session.prepare_value(Default("link_preview_is_disabled"), bot=bot, files={})
+            == "true"
         )
-        assert bot.session.prepare_value(UNSET_PROTECT_CONTENT, bot=bot, files={}) == "true"
+        assert bot.session.prepare_value(Default("protect_content"), bot=bot, files={}) == "true"
 
     def test_prepare_value_defaults_unset(self):
         bot = MockedBot()

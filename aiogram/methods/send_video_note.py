@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING, Any, Optional, Union
 
 from pydantic import Field
 
+from ..client.default import Default
 from ..types import (
     ForceReply,
     InlineKeyboardMarkup,
@@ -13,7 +14,6 @@ from ..types import (
     ReplyKeyboardRemove,
     ReplyParameters,
 )
-from ..types.base import UNSET_PROTECT_CONTENT
 from .base import TelegramMethod
 
 
@@ -41,7 +41,7 @@ class SendVideoNote(TelegramMethod[Message]):
     """Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`"""
     disable_notification: Optional[bool] = None
     """Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound."""
-    protect_content: Optional[bool] = UNSET_PROTECT_CONTENT
+    protect_content: Optional[Union[bool, Default]] = Default("protect_content")
     """Protects the contents of the sent message from forwarding and saving"""
     reply_parameters: Optional[ReplyParameters] = None
     """Description of the message to reply to"""
@@ -76,7 +76,7 @@ class SendVideoNote(TelegramMethod[Message]):
             length: Optional[int] = None,
             thumbnail: Optional[InputFile] = None,
             disable_notification: Optional[bool] = None,
-            protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
+            protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
             reply_parameters: Optional[ReplyParameters] = None,
             reply_markup: Optional[
                 Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]

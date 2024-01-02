@@ -1,5 +1,5 @@
 import asyncio
-from typing import Any, AsyncContextManager, AsyncGenerator, AsyncIterable, Dict, List
+from typing import Any, AsyncContextManager, AsyncGenerator, AsyncIterable, Dict, List, Union
 from unittest.mock import AsyncMock, patch
 
 import aiohttp_socks
@@ -8,6 +8,7 @@ from aiohttp import ClientError
 from aresponses import ResponsesMockServer
 
 from aiogram import Bot
+from aiogram.client.default import Default
 from aiogram.client.session import aiohttp
 from aiogram.client.session.aiohttp import AiohttpSession
 from aiogram.exceptions import TelegramNetworkError
@@ -106,7 +107,7 @@ class TestAiohttpSession:
             str_: str
             int_: int
             bool_: bool
-            unset_: str = UNSET_PARSE_MODE
+            unset_: Union[str, Default] = Default("parse_mode")
             null_: None
             list_: List[str]
             dict_: Dict[str, Any]
@@ -118,7 +119,7 @@ class TestAiohttpSession:
                 str_="value",
                 int_=42,
                 bool_=True,
-                unset_=UNSET_PARSE_MODE,
+                unset_=Default("parse_mode"),
                 null_=None,
                 list_=["foo"],
                 dict_={"bar": "baz"},

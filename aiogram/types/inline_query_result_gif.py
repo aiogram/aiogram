@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, List, Literal, Optional, Union
 
+from ..client.default import Default
 from ..enums import InlineQueryResultType
 from .base import UNSET_PARSE_MODE
 from .inline_query_result import InlineQueryResult
@@ -43,7 +44,7 @@ class InlineQueryResultGif(InlineQueryResult):
     """*Optional*. Title for the result"""
     caption: Optional[str] = None
     """*Optional*. Caption of the GIF file to be sent, 0-1024 characters after entities parsing"""
-    parse_mode: Optional[str] = UNSET_PARSE_MODE
+    parse_mode: Optional[Union[str, Default]] = Default("parse_mode")
     """*Optional*. Mode for parsing entities in the caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details."""
     caption_entities: Optional[List[MessageEntity]] = None
     """*Optional*. List of special entities that appear in the caption, which can be specified instead of *parse_mode*"""
@@ -77,7 +78,7 @@ class InlineQueryResultGif(InlineQueryResult):
             thumbnail_mime_type: Optional[str] = None,
             title: Optional[str] = None,
             caption: Optional[str] = None,
-            parse_mode: Optional[str] = UNSET_PARSE_MODE,
+            parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
             caption_entities: Optional[List[MessageEntity]] = None,
             reply_markup: Optional[InlineKeyboardMarkup] = None,
             input_message_content: Optional[

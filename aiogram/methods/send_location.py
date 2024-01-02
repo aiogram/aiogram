@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING, Any, Optional, Union
 
 from pydantic import Field
 
+from ..client.default import Default
 from ..types import (
     ForceReply,
     InlineKeyboardMarkup,
@@ -12,7 +13,6 @@ from ..types import (
     ReplyKeyboardRemove,
     ReplyParameters,
 )
-from ..types.base import UNSET_PROTECT_CONTENT
 from .base import TelegramMethod
 
 
@@ -44,7 +44,7 @@ class SendLocation(TelegramMethod[Message]):
     """For live locations, a maximum distance for proximity alerts about approaching another chat member, in meters. Must be between 1 and 100000 if specified."""
     disable_notification: Optional[bool] = None
     """Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound."""
-    protect_content: Optional[bool] = UNSET_PROTECT_CONTENT
+    protect_content: Optional[Union[bool, Default]] = Default("protect_content")
     """Protects the contents of the sent message from forwarding and saving"""
     reply_parameters: Optional[ReplyParameters] = None
     """Description of the message to reply to"""
@@ -81,7 +81,7 @@ class SendLocation(TelegramMethod[Message]):
             heading: Optional[int] = None,
             proximity_alert_radius: Optional[int] = None,
             disable_notification: Optional[bool] = None,
-            protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
+            protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
             reply_parameters: Optional[ReplyParameters] = None,
             reply_markup: Optional[
                 Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]

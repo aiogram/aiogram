@@ -12,6 +12,7 @@ from aiogram.client.session.aiohttp import AiohttpSession
 from aiogram.client.telegram import TelegramAPIServer
 from aiogram.methods import GetFile, GetMe
 from aiogram.types import File, PhotoSize
+from tests.deprecated import check_deprecated
 from tests.mocked_bot import MockedBot
 
 
@@ -40,6 +41,13 @@ class TestBot:
         bot = Bot("42:TEST")
         assert isinstance(bot.session, AiohttpSession)
         assert bot.id == 42
+
+    def test_init_default(self):
+        with check_deprecated(
+            max_version="3.5.0",
+            exception=TypeError,
+        ):
+            bot = Bot(token="42:Test", parse_mode="HTML")
 
     def test_hashable(self):
         bot = Bot("42:TEST")

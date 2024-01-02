@@ -1,0 +1,4 @@
+is_disabled: link_preview_is_disabled
+prefer_small_media: link_preview_prefer_small_media
+prefer_large_media: link_preview_prefer_large_media
+show_above_text: link_preview_show_above_text

@@ -4,8 +4,8 @@ from typing import TYPE_CHECKING, Any, List, Optional, Union
 
 from pydantic import Field
 
+from ..client.default import Default
 from ..types import InlineKeyboardMarkup, LabeledPrice, Message, ReplyParameters
-from ..types.base import UNSET_PROTECT_CONTENT
 from .base import TelegramMethod
 
 
@@ -67,7 +67,7 @@ class SendInvoice(TelegramMethod[Message]):
     """Pass :code:`True` if the final price depends on the shipping method"""
     disable_notification: Optional[bool] = None
     """Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound."""
-    protect_content: Optional[bool] = UNSET_PROTECT_CONTENT
+    protect_content: Optional[Union[bool, Default]] = Default("protect_content")
     """Protects the contents of the sent message from forwarding and saving"""
     reply_parameters: Optional[ReplyParameters] = None
     """Description of the message to reply to"""
@@ -117,7 +117,7 @@ class SendInvoice(TelegramMethod[Message]):
             send_email_to_provider: Optional[bool] = None,
             is_flexible: Optional[bool] = None,
             disable_notification: Optional[bool] = None,
-            protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
+            protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
             reply_parameters: Optional[ReplyParameters] = None,
             reply_markup: Optional[InlineKeyboardMarkup] = None,
             allow_sending_without_reply: Optional[bool] = None,

@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING, Any, List, Optional, Union
 
 from pydantic import Field
 
+from ..client.default import Default
 from ..types import (
     UNSET_PARSE_MODE,
     ForceReply,
@@ -15,7 +16,6 @@ from ..types import (
     ReplyKeyboardRemove,
     ReplyParameters,
 )
-from ..types.base import UNSET_PROTECT_CONTENT
 from .base import TelegramMethod
 
 
@@ -39,7 +39,7 @@ class SendDocument(TelegramMethod[Message]):
     """Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`"""
     caption: Optional[str] = None
     """Document caption (may also be used when resending documents by *file_id*), 0-1024 characters after entities parsing"""
-    parse_mode: Optional[str] = UNSET_PARSE_MODE
+    parse_mode: Optional[Union[str, Default]] = Default("parse_mode")
     """Mode for parsing entities in the document caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details."""
     caption_entities: Optional[List[MessageEntity]] = None
     """A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*"""
@@ -47,7 +47,7 @@ class SendDocument(TelegramMethod[Message]):
     """Disables automatic server-side content type detection for files uploaded using multipart/form-data"""
     disable_notification: Optional[bool] = None
     """Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound."""
-    protect_content: Optional[bool] = UNSET_PROTECT_CONTENT
+    protect_content: Optional[Union[bool, Default]] = Default("protect_content")
     """Protects the contents of the sent message from forwarding and saving"""
     reply_parameters: Optional[ReplyParameters] = None
     """Description of the message to reply to"""
@@ -80,11 +80,11 @@ class SendDocument(TelegramMethod[Message]):
             message_thread_id: Optional[int] = None,
             thumbnail: Optional[InputFile] = None,
             caption: Optional[str] = None,
-            parse_mode: Optional[str] = UNSET_PARSE_MODE,
+            parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
             caption_entities: Optional[List[MessageEntity]] = None,
             disable_content_type_detection: Optional[bool] = None,
             disable_notification: Optional[bool] = None,
-            protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
+            protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
             reply_parameters: Optional[ReplyParameters] = None,
             reply_markup: Optional[
                 Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
