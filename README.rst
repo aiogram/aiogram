@@ -41,7 +41,8 @@ aiogram
 
 Make your bots faster and more powerful!
 
-Documentation:
+Documentation
+========
  - 🇺🇸 `English <https://docs.aiogram.dev/en/dev-3.x/>`_
  - 🇺🇦 `Ukrainian <https://docs.aiogram.dev/uk_UA/dev-3.x/>`_
 
@@ -62,12 +63,15 @@ Features
 - Integrated I18n/L10n support with GNU Gettext (or Fluent)
 
 
-.. warning::
+Warning
+~~~~~~~
 
     It is strongly advised that you have prior experience working
     with `asyncio <https://docs.python.org/3/library/asyncio.html>`_
     before beginning to use **aiogram**.
 
+Community
+========
     If you have any questions, you can visit our community chats on Telegram:
 
     - 🇺🇸 `@aiogram <https://t.me/aiogram>`_
