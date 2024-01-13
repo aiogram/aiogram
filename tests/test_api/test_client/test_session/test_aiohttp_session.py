@@ -1,5 +1,13 @@
 import asyncio
-from typing import Any, AsyncContextManager, AsyncGenerator, AsyncIterable, Dict, List, Union
+from typing import (
+    Any,
+    AsyncContextManager,
+    AsyncGenerator,
+    AsyncIterable,
+    Dict,
+    List,
+    Union,
+)
 from unittest.mock import AsyncMock, patch
 
 import aiohttp_socks

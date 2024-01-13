@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import sys
 from dataclasses import dataclass
-from typing import Any, Optional, TYPE_CHECKING, Dict
+from typing import TYPE_CHECKING, Any, Dict, Optional
 
 if TYPE_CHECKING:
     from aiogram.types import LinkPreviewOptions
@@ -41,25 +41,36 @@ class DefaultBotProperties:
     """
 
     parse_mode: Optional[str] = None
+    """Default parse mode for messages."""
     disable_notification: Optional[bool] = None
+    """Sends the message silently. Users will receive a notification with no sound."""
     protect_content: Optional[bool] = None
+    """Protects content from copying."""
     allow_sending_without_reply: Optional[bool] = None
+    """Allows to send messages without reply."""
 
     link_preview: Optional[LinkPreviewOptions] = None
+    """Link preview settings."""
     link_preview_is_disabled: Optional[bool] = None
+    """Disables link preview."""
     link_preview_prefer_small_media: Optional[bool] = None
+    """Prefer small media in link preview."""
     link_preview_prefer_large_media: Optional[bool] = None
+    """Prefer large media in link preview."""
     link_preview_show_above_text: Optional[bool] = None
+    """Show link preview above text."""
 
     def __post_init__(self) -> None:
-        if any(
+        has_any_link_preview_option = any(
             (
                 self.link_preview_is_disabled,
                 self.link_preview_prefer_small_media,
                 self.link_preview_prefer_large_media,
                 self.link_preview_show_above_text,
             )
-        ):
+        )
+
+        if has_any_link_preview_option and self.link_preview is None:
             from ..types import LinkPreviewOptions
 
             self.link_preview = LinkPreviewOptions(

@@ -4,7 +4,6 @@ from typing import TYPE_CHECKING, Any, List, Optional, Union
 
 from pydantic import Field
 
-from .base import TelegramMethod
 from ..client.default import Default
 from ..types import (
     ForceReply,
@@ -16,6 +15,7 @@ from ..types import (
     ReplyKeyboardRemove,
     ReplyParameters,
 )
+from .base import TelegramMethod
 
 
 class SendMessage(TelegramMethod[Message]):
