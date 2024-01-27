@@ -141,7 +141,7 @@ class KeyboardBuilder(Generic[ButtonType], ABC):
         if not isinstance(size, int):
             raise ValueError("Only int sizes are allowed")
         if size not in range(self.min_width, self.max_width + 1):
-            raise ValueError(f"Row size {size} are not allowed")
+            raise ValueError(f"Row size {size} is not allowed, range: [{self.min_width}, {self.max_width}]")
         return size
 
     def export(self) -> List[List[ButtonType]]:
