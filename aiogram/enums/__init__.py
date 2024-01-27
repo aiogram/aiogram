@@ -9,6 +9,7 @@ from .dice_emoji import DiceEmoji
 from .encrypted_passport_element import EncryptedPassportElement
 from .inline_query_result_type import InlineQueryResultType
 from .input_media_type import InputMediaType
+from .keyboard_button_poll_type_type import KeyboardButtonPollTypeType
 from .mask_position_point import MaskPositionPoint
 from .menu_button_type import MenuButtonType
 from .message_entity_type import MessageEntityType
@@ -34,6 +35,7 @@ __all__ = (
     "EncryptedPassportElement",
     "InlineQueryResultType",
     "InputMediaType",
+    "KeyboardButtonPollTypeType",
     "MaskPositionPoint",
     "MenuButtonType",
     "MessageEntityType",
