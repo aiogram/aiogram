@@ -106,7 +106,7 @@ class KeyboardBuilder(Generic[ButtonType], ABC):
                 f"not type {type(row).__name__}"
             )
         if len(row) > self.max_width:
-            raise ValueError(f"Row {row!r} is too long (MAX_WIDTH={self.max_width})")
+            raise ValueError(f"Row {row!r} is too long (max width: {self.max_width})")
         self._validate_buttons(*row)
         return True
 
@@ -143,14 +143,6 @@ class KeyboardBuilder(Generic[ButtonType], ABC):
         if size not in range(self.min_width, self.max_width + 1):
             raise ValueError(f"Row size {size} are not allowed")
         return size
-
-    def copy(self: "KeyboardBuilder[ButtonType]") -> "KeyboardBuilder[ButtonType]":
-        """
-        Make full copy of current builder with markup
-
-        :return:
-        """
-        return self.__class__(self._button_type, markup=self.export())
 
     def export(self) -> List[List[ButtonType]]:
         """

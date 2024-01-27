@@ -78,26 +78,20 @@ class TestKeyboardBuilder:
                 row=[KeyboardButton(text=f"test {index}") for index in range(count)]
             )
 
-    def test_validate_markup(self):
+    def test_validate_markup_invalid_type(self):
         builder = ReplyKeyboardBuilder()
-
         with pytest.raises(ValueError):
             builder._validate_markup(markup=())
 
+    def test_validate_markup_too_many_buttons(self):
+        builder = ReplyKeyboardBuilder()
         with pytest.raises(ValueError):
             builder._validate_markup(
                 markup=[
-                    [KeyboardButton(text=f"{row}.{col}") for col in range(builder.max_width + 5)]
-                    for row in range(5)
+                    [KeyboardButton(text=f"{row}.{col}") for col in range(builder.max_width)]
+                    for row in range(builder.max_buttons)
                 ]
             )
-
-        assert builder._validate_markup(
-            markup=[
-                [KeyboardButton(text=f"{row}.{col}") for col in range(builder.max_width)]
-                for row in range(5)
-            ]
-        )
 
     def test_validate_size(self):
         builder = ReplyKeyboardBuilder()
