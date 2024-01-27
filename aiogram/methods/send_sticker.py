@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING, Any, Optional, Union
 
 from pydantic import Field
 
+from ..client.default import Default
 from ..types import (
     ForceReply,
     InlineKeyboardMarkup,
@@ -13,7 +14,6 @@ from ..types import (
     ReplyKeyboardRemove,
     ReplyParameters,
 )
-from ..types.base import UNSET_PROTECT_CONTENT
 from .base import TelegramMethod
 
 
@@ -37,7 +37,7 @@ class SendSticker(TelegramMethod[Message]):
     """Emoji associated with the sticker; only for just uploaded stickers"""
     disable_notification: Optional[bool] = None
     """Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound."""
-    protect_content: Optional[bool] = UNSET_PROTECT_CONTENT
+    protect_content: Optional[Union[bool, Default]] = Default("protect_content")
     """Protects the contents of the sent message from forwarding and saving"""
     reply_parameters: Optional[ReplyParameters] = None
     """Description of the message to reply to"""
@@ -70,7 +70,7 @@ class SendSticker(TelegramMethod[Message]):
             message_thread_id: Optional[int] = None,
             emoji: Optional[str] = None,
             disable_notification: Optional[bool] = None,
-            protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
+            protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
             reply_parameters: Optional[ReplyParameters] = None,
             reply_markup: Optional[
                 Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]

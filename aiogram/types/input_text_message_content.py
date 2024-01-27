@@ -1,10 +1,10 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, List, Optional
+from typing import TYPE_CHECKING, Any, List, Optional, Union
 
 from pydantic import Field
 
-from .base import UNSET_DISABLE_WEB_PAGE_PREVIEW, UNSET_PARSE_MODE
+from ..client.default import Default
 from .input_message_content import InputMessageContent
 
 if TYPE_CHECKING:
@@ -21,14 +21,14 @@ class InputTextMessageContent(InputMessageContent):
 
     message_text: str
     """Text of the message to be sent, 1-4096 characters"""
-    parse_mode: Optional[str] = UNSET_PARSE_MODE
+    parse_mode: Optional[Union[str, Default]] = Default("parse_mode")
     """*Optional*. Mode for parsing entities in the message text. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details."""
     entities: Optional[List[MessageEntity]] = None
     """*Optional*. List of special entities that appear in message text, which can be specified instead of *parse_mode*"""
     link_preview_options: Optional[LinkPreviewOptions] = None
     """*Optional*. Link preview generation options for the message"""
-    disable_web_page_preview: Optional[bool] = Field(
-        UNSET_DISABLE_WEB_PAGE_PREVIEW, json_schema_extra={"deprecated": True}
+    disable_web_page_preview: Optional[Union[bool, Default]] = Field(
+        Default("disable_web_page_preview"), json_schema_extra={"deprecated": True}
     )
     """*Optional*. Disables link previews for links in the sent message
 
@@ -43,10 +43,12 @@ class InputTextMessageContent(InputMessageContent):
             __pydantic__self__,
             *,
             message_text: str,
-            parse_mode: Optional[str] = UNSET_PARSE_MODE,
+            parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
             entities: Optional[List[MessageEntity]] = None,
             link_preview_options: Optional[LinkPreviewOptions] = None,
-            disable_web_page_preview: Optional[bool] = UNSET_DISABLE_WEB_PAGE_PREVIEW,
+            disable_web_page_preview: Optional[Union[bool, Default]] = Default(
+                "disable_web_page_preview"
+            ),
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

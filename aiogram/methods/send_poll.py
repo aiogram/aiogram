@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING, Any, List, Optional, Union
 
 from pydantic import Field
 
+from ..client.default import Default
 from ..types import (
     UNSET_PARSE_MODE,
     ForceReply,
@@ -15,7 +16,6 @@ from ..types import (
     ReplyKeyboardRemove,
     ReplyParameters,
 )
-from ..types.base import UNSET_PROTECT_CONTENT
 from .base import TelegramMethod
 
 
@@ -47,7 +47,7 @@ class SendPoll(TelegramMethod[Message]):
     """0-based identifier of the correct answer option, required for polls in quiz mode"""
     explanation: Optional[str] = None
     """Text that is shown when a user chooses an incorrect answer or taps on the lamp icon in a quiz-style poll, 0-200 characters with at most 2 line feeds after entities parsing"""
-    explanation_parse_mode: Optional[str] = UNSET_PARSE_MODE
+    explanation_parse_mode: Optional[Union[str, Default]] = Default("parse_mode")
     """Mode for parsing entities in the explanation. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details."""
     explanation_entities: Optional[List[MessageEntity]] = None
     """A JSON-serialized list of special entities that appear in the poll explanation, which can be specified instead of *parse_mode*"""
@@ -59,7 +59,7 @@ class SendPoll(TelegramMethod[Message]):
     """Pass :code:`True` if the poll needs to be immediately closed. This can be useful for poll preview."""
     disable_notification: Optional[bool] = None
     """Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound."""
-    protect_content: Optional[bool] = UNSET_PROTECT_CONTENT
+    protect_content: Optional[Union[bool, Default]] = Default("protect_content")
     """Protects the contents of the sent message from forwarding and saving"""
     reply_parameters: Optional[ReplyParameters] = None
     """Description of the message to reply to"""
@@ -96,13 +96,13 @@ class SendPoll(TelegramMethod[Message]):
             allows_multiple_answers: Optional[bool] = None,
             correct_option_id: Optional[int] = None,
             explanation: Optional[str] = None,
-            explanation_parse_mode: Optional[str] = UNSET_PARSE_MODE,
+            explanation_parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
             explanation_entities: Optional[List[MessageEntity]] = None,
             open_period: Optional[int] = None,
             close_date: Optional[Union[datetime.datetime, datetime.timedelta, int]] = None,
             is_closed: Optional[bool] = None,
             disable_notification: Optional[bool] = None,
-            protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
+            protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
             reply_parameters: Optional[ReplyParameters] = None,
             reply_markup: Optional[
                 Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]

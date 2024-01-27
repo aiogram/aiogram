@@ -38,8 +38,8 @@ from aiogram.exceptions import (
 
 from ...methods import Response, TelegramMethod
 from ...methods.base import TelegramType
-from ...types import UNSET_PARSE_MODE, InputFile
-from ...types.base import UNSET_DISABLE_WEB_PAGE_PREVIEW, UNSET_PROTECT_CONTENT
+from ...types import InputFile
+from ..default import Default
 from ..telegram import PRODUCTION, TelegramAPIServer
 from .middlewares.manager import RequestMiddlewareManager
 
@@ -191,18 +191,9 @@ class BaseSession(abc.ABC):
             return None
         if isinstance(value, str):
             return value
-        if value is UNSET_PARSE_MODE:
-            return self.prepare_value(
-                bot.parse_mode, bot=bot, files=files, _dumps_json=_dumps_json
-            )
-        if value is UNSET_DISABLE_WEB_PAGE_PREVIEW:
-            return self.prepare_value(
-                bot.disable_web_page_preview, bot=bot, files=files, _dumps_json=_dumps_json
-            )
-        if value is UNSET_PROTECT_CONTENT:
-            return self.prepare_value(
-                bot.protect_content, bot=bot, files=files, _dumps_json=_dumps_json
-            )
+        if isinstance(value, Default):
+            default_value = bot.default[value.name]
+            return self.prepare_value(default_value, bot=bot, files=files, _dumps_json=_dumps_json)
         if isinstance(value, InputFile):
             key = secrets.token_urlsafe(10)
             files[key] = value

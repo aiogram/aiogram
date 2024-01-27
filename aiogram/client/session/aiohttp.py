@@ -6,7 +6,6 @@ from typing import (
     TYPE_CHECKING,
     Any,
     AsyncGenerator,
-    AsyncIterator,
     Dict,
     Iterable,
     List,

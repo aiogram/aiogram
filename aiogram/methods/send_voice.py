@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING, Any, List, Optional, Union
 
 from pydantic import Field
 
+from ..client.default import Default
 from ..types import (
     UNSET_PARSE_MODE,
     ForceReply,
@@ -15,7 +16,6 @@ from ..types import (
     ReplyKeyboardRemove,
     ReplyParameters,
 )
-from ..types.base import UNSET_PROTECT_CONTENT
 from .base import TelegramMethod
 
 
@@ -37,7 +37,7 @@ class SendVoice(TelegramMethod[Message]):
     """Unique identifier for the target message thread (topic) of the forum; for forum supergroups only"""
     caption: Optional[str] = None
     """Voice message caption, 0-1024 characters after entities parsing"""
-    parse_mode: Optional[str] = UNSET_PARSE_MODE
+    parse_mode: Optional[Union[str, Default]] = Default("parse_mode")
     """Mode for parsing entities in the voice message caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details."""
     caption_entities: Optional[List[MessageEntity]] = None
     """A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*"""
@@ -45,7 +45,7 @@ class SendVoice(TelegramMethod[Message]):
     """Duration of the voice message in seconds"""
     disable_notification: Optional[bool] = None
     """Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound."""
-    protect_content: Optional[bool] = UNSET_PROTECT_CONTENT
+    protect_content: Optional[Union[bool, Default]] = Default("protect_content")
     """Protects the contents of the sent message from forwarding and saving"""
     reply_parameters: Optional[ReplyParameters] = None
     """Description of the message to reply to"""
@@ -77,11 +77,11 @@ class SendVoice(TelegramMethod[Message]):
             voice: Union[InputFile, str],
             message_thread_id: Optional[int] = None,
             caption: Optional[str] = None,
-            parse_mode: Optional[str] = UNSET_PARSE_MODE,
+            parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
             caption_entities: Optional[List[MessageEntity]] = None,
             duration: Optional[int] = None,
             disable_notification: Optional[bool] = None,
-            protect_content: Optional[bool] = UNSET_PROTECT_CONTENT,
+            protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
             reply_parameters: Optional[ReplyParameters] = None,
             reply_markup: Optional[
                 Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
