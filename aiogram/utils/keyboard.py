@@ -16,7 +16,6 @@ from typing import (
     TypeVar,
     Union,
     cast,
-    no_type_check,
 )
 
 from aiogram.filters.callback_data import CallbackData
@@ -26,6 +25,8 @@ from aiogram.types import (
     InlineKeyboardMarkup,
     KeyboardButton,
     KeyboardButtonPollType,
+    KeyboardButtonRequestChat,
+    KeyboardButtonRequestUsers,
     LoginUrl,
     ReplyKeyboardMarkup,
     SwitchInlineQueryChosenChat,
@@ -34,9 +35,6 @@ from aiogram.types import (
 
 ButtonType = TypeVar("ButtonType", InlineKeyboardButton, KeyboardButton)
 T = TypeVar("T")
-MAX_WIDTH = 8
-MIN_WIDTH = 1
-MAX_BUTTONS = 100
 
 
 class KeyboardBuilder(Generic[ButtonType], ABC):
@@ -45,6 +43,10 @@ class KeyboardBuilder(Generic[ButtonType], ABC):
 
     Works both of InlineKeyboardMarkup and ReplyKeyboardMarkup.
     """
+
+    max_width: int = 0
+    min_width: int = 0
+    max_buttons: int = 0
 
     def __init__(
         self, button_type: Type[ButtonType], markup: Optional[List[List[ButtonType]]] = None
@@ -103,8 +105,8 @@ class KeyboardBuilder(Generic[ButtonType], ABC):
                 f"Row {row!r} should be type 'List[{self._button_type.__name__}]' "
                 f"not type {type(row).__name__}"
             )
-        if len(row) > MAX_WIDTH:
-            raise ValueError(f"Row {row!r} is too long (MAX_WIDTH={MAX_WIDTH})")
+        if len(row) > self.max_width:
+            raise ValueError(f"Row {row!r} is too long (max width: {self.max_width})")
         self._validate_buttons(*row)
         return True
 
@@ -125,8 +127,8 @@ class KeyboardBuilder(Generic[ButtonType], ABC):
         for row in markup:
             self._validate_row(row)
             count += len(row)
-        if count > MAX_BUTTONS:
-            raise ValueError(f"Too much buttons detected Max allowed count - {MAX_BUTTONS}")
+        if count > self.max_buttons:
+            raise ValueError(f"Too much buttons detected Max allowed count - {self.max_buttons}")
         return True
 
     def _validate_size(self, size: Any) -> int:
@@ -138,17 +140,11 @@ class KeyboardBuilder(Generic[ButtonType], ABC):
         """
         if not isinstance(size, int):
             raise ValueError("Only int sizes are allowed")
-        if size not in range(MIN_WIDTH, MAX_WIDTH + 1):
-            raise ValueError(f"Row size {size} are not allowed")
+        if size not in range(self.min_width, self.max_width + 1):
+            raise ValueError(
+                f"Row size {size} is not allowed, range: [{self.min_width}, {self.max_width}]"
+            )
         return size
-
-    def copy(self: "KeyboardBuilder[ButtonType]") -> "KeyboardBuilder[ButtonType]":
-        """
-        Make full copy of current builder with markup
-
-        :return:
-        """
-        return self.__class__(self._button_type, markup=self.export())
 
     def export(self) -> List[List[ButtonType]]:
         """
@@ -175,21 +171,23 @@ class KeyboardBuilder(Generic[ButtonType], ABC):
         markup = self.export()
 
         # Try to add new buttons to the end of last row if it possible
-        if markup and len(markup[-1]) < MAX_WIDTH:
+        if markup and len(markup[-1]) < self.max_width:
             last_row = markup[-1]
-            pos = MAX_WIDTH - len(last_row)
+            pos = self.max_width - len(last_row)
             head, buttons = buttons[:pos], buttons[pos:]
             last_row.extend(head)
 
         # Separate buttons to exclusive rows with max possible row width
         while buttons:
-            row, buttons = buttons[:MAX_WIDTH], buttons[MAX_WIDTH:]
+            row, buttons = buttons[: self.max_width], buttons[self.max_width :]
             markup.append(list(row))
 
         self._markup = markup
         return self
 
-    def row(self, *buttons: ButtonType, width: int = MAX_WIDTH) -> "KeyboardBuilder[ButtonType]":
+    def row(
+        self, *buttons: ButtonType, width: Optional[int] = None
+    ) -> "KeyboardBuilder[ButtonType]":
         """
         Add row to markup
 
@@ -199,6 +197,9 @@ class KeyboardBuilder(Generic[ButtonType], ABC):
         :param width:
         :return:
         """
+        if width is None:
+            width = self.max_width
+
         self._validate_size(width)
         self._validate_buttons(*buttons)
         self._markup.extend(
@@ -220,7 +221,7 @@ class KeyboardBuilder(Generic[ButtonType], ABC):
         :return:
         """
         if not sizes:
-            sizes = (MAX_WIDTH,)
+            sizes = (self.max_width,)
 
         validated_sizes = map(self._validate_size, sizes)
         sizes_iter = repeat_all(validated_sizes) if repeat else repeat_last(validated_sizes)
@@ -239,7 +240,7 @@ class KeyboardBuilder(Generic[ButtonType], ABC):
         self._markup = markup
         return self
 
-    def button(self, **kwargs: Any) -> "KeyboardBuilder[ButtonType]":
+    def _button(self, **kwargs: Any) -> "KeyboardBuilder[ButtonType]":
         """
         Add button to markup
 
@@ -293,25 +294,40 @@ class InlineKeyboardBuilder(KeyboardBuilder[InlineKeyboardButton]):
     Inline keyboard builder inherits all methods from generic builder
     """
 
-    if TYPE_CHECKING:
+    max_width: int = 8
+    min_width: int = 1
+    max_buttons: int = 100
 
-        @no_type_check
-        def button(
-            self,
-            *,
-            text: str,
-            url: Optional[str] = None,
-            callback_data: Optional[Union[str, CallbackData]] = None,
-            web_app: Optional[WebAppInfo] = None,
-            login_url: Optional[LoginUrl] = None,
-            switch_inline_query: Optional[str] = None,
-            switch_inline_query_current_chat: Optional[str] = None,
-            switch_inline_query_chosen_chat: Optional[SwitchInlineQueryChosenChat] = None,
-            callback_game: Optional[CallbackGame] = None,
-            pay: Optional[bool] = None,
-            **kwargs: Any,
-        ) -> "KeyboardBuilder[InlineKeyboardButton]":
-            ...
+    def button(
+        self,
+        *,
+        text: str,
+        url: Optional[str] = None,
+        callback_data: Optional[Union[str, CallbackData]] = None,
+        web_app: Optional[WebAppInfo] = None,
+        login_url: Optional[LoginUrl] = None,
+        switch_inline_query: Optional[str] = None,
+        switch_inline_query_current_chat: Optional[str] = None,
+        switch_inline_query_chosen_chat: Optional[SwitchInlineQueryChosenChat] = None,
+        callback_game: Optional[CallbackGame] = None,
+        pay: Optional[bool] = None,
+        **kwargs: Any,
+    ) -> "KeyboardBuilder[InlineKeyboardButton]":
+        return self._button(
+            text=text,
+            url=url,
+            callback_data=callback_data,
+            web_app=web_app,
+            login_url=login_url,
+            switch_inline_query=switch_inline_query,
+            switch_inline_query_current_chat=switch_inline_query_current_chat,
+            switch_inline_query_chosen_chat=switch_inline_query_chosen_chat,
+            callback_game=callback_game,
+            pay=pay,
+            **kwargs,
+        )
+
+    if TYPE_CHECKING:
 
         def as_markup(self, **kwargs: Any) -> InlineKeyboardMarkup:
             """Construct an InlineKeyboardMarkup"""
@@ -346,22 +362,34 @@ class ReplyKeyboardBuilder(KeyboardBuilder[KeyboardButton]):
     Reply keyboard builder inherits all methods from generic builder
     """
 
-    if TYPE_CHECKING:
+    max_width: int = 10
+    min_width: int = 1
+    max_buttons: int = 300
 
-        @no_type_check
-        def button(
-            self,
-            *,
-            text: str,
-            request_user: Optional[bool] = None,
-            request_chat: Optional[bool] = None,
-            request_contact: Optional[bool] = None,
-            request_location: Optional[bool] = None,
-            request_poll: Optional[KeyboardButtonPollType] = None,
-            web_app: Optional[WebAppInfo] = None,
-            **kwargs: Any,
-        ) -> "KeyboardBuilder[KeyboardButton]":
-            ...
+    def button(
+        self,
+        *,
+        text: str,
+        request_users: Optional[KeyboardButtonRequestUsers] = None,
+        request_chat: Optional[KeyboardButtonRequestChat] = None,
+        request_contact: Optional[bool] = None,
+        request_location: Optional[bool] = None,
+        request_poll: Optional[KeyboardButtonPollType] = None,
+        web_app: Optional[WebAppInfo] = None,
+        **kwargs: Any,
+    ) -> "KeyboardBuilder[KeyboardButton]":
+        return self._button(
+            text=text,
+            request_users=request_users,
+            request_chat=request_chat,
+            request_contact=request_contact,
+            request_location=request_location,
+            request_poll=request_poll,
+            web_app=web_app,
+            **kwargs,
+        )
+
+    if TYPE_CHECKING:
 
         def as_markup(self, **kwargs: Any) -> ReplyKeyboardMarkup:
             ...
