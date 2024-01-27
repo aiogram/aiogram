@@ -61,15 +61,19 @@ class TestKeyboardBuilder:
 
         with pytest.raises(ValueError):
             assert builder._validate_row(
-                row=(KeyboardButton(text=f"test {index}") for index in range(10))
+                row=(
+                    KeyboardButton(text=f"test {index}") for index in range(builder.max_width + 5)
+                )
             )
 
         with pytest.raises(ValueError):
             assert builder._validate_row(
-                row=[KeyboardButton(text=f"test {index}") for index in range(10)]
+                row=[
+                    KeyboardButton(text=f"test {index}") for index in range(builder.max_width + 5)
+                ]
             )
 
-        for count in range(9):
+        for count in range(11):
             assert builder._validate_row(
                 row=[KeyboardButton(text=f"test {index}") for index in range(count)]
             )
@@ -83,12 +87,16 @@ class TestKeyboardBuilder:
         with pytest.raises(ValueError):
             builder._validate_markup(
                 markup=[
-                    [KeyboardButton(text=f"{row}.{col}") for col in range(8)] for row in range(15)
+                    [KeyboardButton(text=f"{row}.{col}") for col in range(builder.max_width + 5)]
+                    for row in range(5)
                 ]
             )
 
         assert builder._validate_markup(
-            markup=[[KeyboardButton(text=f"{row}.{col}") for col in range(8)] for row in range(8)]
+            markup=[
+                [KeyboardButton(text=f"{row}.{col}") for col in range(builder.max_width)]
+                for row in range(5)
+            ]
         )
 
     def test_validate_size(self):
@@ -102,7 +110,7 @@ class TestKeyboardBuilder:
             builder._validate_size(0)
 
         with pytest.raises(ValueError):
-            builder._validate_size(10)
+            builder._validate_size(builder.max_width + 5)
         for size in range(1, 9):
             builder._validate_size(size)
 
@@ -126,12 +134,6 @@ class TestKeyboardBuilder:
                 InlineKeyboardBuilder(markup=[[InlineKeyboardButton(text="test")]]),
                 InlineKeyboardButton(text="test2"),
             ],
-            [
-                KeyboardBuilder(
-                    button_type=InlineKeyboardButton, markup=[[InlineKeyboardButton(text="test")]]
-                ),
-                InlineKeyboardButton(text="test2"),
-            ],
         ],
     )
     def test_copy(self, builder, button):
@@ -153,7 +155,14 @@ class TestKeyboardBuilder:
 
     @pytest.mark.parametrize(
         "count,rows,last_columns",
-        [[0, 0, 0], [3, 1, 3], [8, 1, 8], [9, 2, 1], [16, 2, 8], [19, 3, 3]],
+        [
+            [0, 0, 0],
+            [3, 1, 3],
+            [8, 1, 8],
+            [12, 2, 2],
+            [16, 2, 6],
+            [22, 3, 2],
+        ],
     )
     def test_add(self, count: int, rows: int, last_columns: int):
         builder = ReplyKeyboardBuilder()
@@ -182,8 +191,8 @@ class TestKeyboardBuilder:
             [0, False, [2], []],
             [1, False, [2], [1]],
             [3, False, [2], [2, 1]],
-            [10, False, [], [8, 2]],
             [10, False, [3, 2, 1], [3, 2, 1, 1, 1, 1, 1]],
+            [12, False, [], [10, 2]],
             [12, True, [3, 2, 1], [3, 2, 1, 3, 2, 1]],
         ],
     )
