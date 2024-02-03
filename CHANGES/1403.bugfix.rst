@@ -1,0 +1,1 @@
+Add new :code:`reply_parameters` param to :code:`message.send_copy` because it hasn't been added there
