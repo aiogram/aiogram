@@ -8,7 +8,7 @@ launches the bot — or an auth token to connect the user's Telegram
 account to their account on some external service.
 
 You can read detailed description in the source:
-https://core.telegram.org/bots#deep-linking
+https://core.telegram.org/bots/features#deep-linking
 
 We have added some utils to get deep links more handy.
 
