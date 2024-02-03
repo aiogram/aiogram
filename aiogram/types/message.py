@@ -3013,6 +3013,7 @@ class Message(MaybeInaccessibleMessage):
         chat_id: Union[str, int],
         disable_notification: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
+        reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, None] = None,
         allow_sending_without_reply: Optional[bool] = None,
         message_thread_id: Optional[int] = None,
@@ -3048,6 +3049,7 @@ class Message(MaybeInaccessibleMessage):
         :param chat_id:
         :param disable_notification:
         :param reply_to_message_id:
+        :param reply_parameters:
         :param reply_markup:
         :param allow_sending_without_reply:
         :param message_thread_id:
@@ -3077,6 +3079,7 @@ class Message(MaybeInaccessibleMessage):
             "reply_markup": reply_markup or self.reply_markup,
             "disable_notification": disable_notification,
             "reply_to_message_id": reply_to_message_id,
+            "reply_parameters": reply_parameters,
             "message_thread_id": message_thread_id,
             "allow_sending_without_reply": allow_sending_without_reply,
             # when sending a copy, we don't need any parse mode
