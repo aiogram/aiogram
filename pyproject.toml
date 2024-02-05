@@ -61,6 +61,9 @@ fast = [
 redis = [
     "redis[hiredis]~=5.0.1",
 ]
+mongo = [
+    "motor>=3.3.2"
+]
 proxy = [
     "aiohttp-socks~=0.8.3",
 ]
@@ -117,6 +120,7 @@ features = [
     "dev",
     "fast",
     "redis",
+    "mongo",
     "proxy",
     "i18n",
     "cli",
@@ -136,6 +140,7 @@ lint = "ruff aiogram"
 features = [
     "fast",
     "redis",
+    "mongo",
     "proxy",
     "i18n",
     "docs",
@@ -167,6 +172,7 @@ update = [
 features = [
     "fast",
     "redis",
+    "mongo",
     "proxy",
     "i18n",
     "test",
