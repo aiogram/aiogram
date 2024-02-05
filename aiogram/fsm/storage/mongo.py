@@ -5,9 +5,15 @@ from aiogram.fsm.storage.base import BaseStorage
 from aiogram.fsm.storage.base import StateType
 from aiogram.fsm.storage.base import StorageKey
 
-from motor.motor_asyncio import AsyncIOMotorClient
-from motor.motor_asyncio import AsyncIOMotorDatabase
-from motor.motor_asyncio import AsyncIOMotorCollection
+try:
+    from motor.motor_asyncio import AsyncIOMotorClient
+    from motor.motor_asyncio import AsyncIOMotorDatabase
+    from motor.motor_asyncio import AsyncIOMotorCollection
+except ImportError:
+    raise ModuleNotFoundError(
+        "You do not have the `motor` module installed to work with MongoDB. Install it with `pip install aiogram[mongo]`"
+    )
+
 
 AIOGRAM_DATABASE_NAME: str = "aiogram-storage"
 MONGODB_STATES_COLLECTION: str = "states"
