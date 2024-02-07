@@ -1,0 +1,1 @@
+Add notion "Working with plural forms" in documentation Utils -> Translation
