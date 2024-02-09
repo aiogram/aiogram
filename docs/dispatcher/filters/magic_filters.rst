@@ -53,6 +53,7 @@ Equals
 
     F.text == 'hello'  # lambda message: message.text == 'hello'
     F.from_user.id == 42  # lambda message: message.from_user.id == 42
+    F.text != 'spam'  # lambda message: message.text != 'spam'
 
 Is one of
 ---------
@@ -104,7 +105,7 @@ Any of available operation can be inverted by bitwise inversion - :code:`~`
 
 .. code-block:: python
 
-    ~(F.text == 'spam')  # lambda message: message.text != 'spam'
+    ~F.text  # lambda message: not message.text
     ~F.text.startswith('spam')  # lambda message: not message.text.startswith('spam')
 
 Combining
