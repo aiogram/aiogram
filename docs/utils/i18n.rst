@@ -76,6 +76,28 @@ Also if you want to use translated string in keyword- or magic- filters you will
 
     Lazy gettext can't be used as value for API methods or any Telegram Object (like :class:`aiogram.types.inline_keyboard_button.InlineKeyboardButton` or etc.)
 
+**Working with plural forms**
+
+The `gettext` from `aiogram.utils.i18n` is the one alias for two functions _gettext_ and _ngettext_
+of `GNU gettext Python module <https://docs.python.org/3/library/gettext.html>`_. Therefore, the wrapper for message
+strings is the same `_()`. You need to pass three parameters to the function:
+a singular string, a plural string, and a value.
+
+.. code-block:: python
+    :emphasize-lines: 6, 10
+    from aiogram import html
+    from aiogram.utils.i18n import gettext as _
+
+    async def my_handler(message: Message) -> None:
+        try:
+            n = int(message.text)
+        except ValueError:
+            n = 1
+        await message.answer(
+            _("You ordered {n} piece.", "You ordered {n} pieces.",n).format(n)
+            )
+        )
+
 Configuring engine
 ==================
 
@@ -136,13 +158,25 @@ Step 1 Extract messages
 Here is :code:`--input-dirs=.` - path to code and the :code:`locales/messages.pot`
 is template where messages will be extracted and `messages` is translation domain.
 
+**Working with plural forms**
+
+Extracting with Pybabel all strings options:
+
+- :code:`-k _:1,1t -k _:1,2` - for both singular and plural
+- :code:`-k __` - for lazy strings
+
+.. code-block:: bash
+
+    pybabel extract -k _:1,1t -k _:1,2 -k __ --input-dirs=. -o locales/messages.pot
+
 .. note::
 
     Some useful options:
 
-    - Extract texts with pluralization support :code:`-k __:1,2`
     - Add comments for translators, you can use another tag if you want (TR) :code:`--add-comments=NOTE`
+    - Contact email for bugreport :code:`--msgid-bugs-address=EMAIL`
     - Disable comments with string location in code :code:`--no-location`
+    - Copyrights :code:`--copyright-holder=AUTHOR`
     - Set project name :code:`--project=MySuperBot`
     - Set version :code:`--version=2.2`
 
