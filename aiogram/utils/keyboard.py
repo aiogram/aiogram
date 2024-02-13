@@ -312,19 +312,22 @@ class InlineKeyboardBuilder(KeyboardBuilder[InlineKeyboardButton]):
         callback_game: Optional[CallbackGame] = None,
         pay: Optional[bool] = None,
         **kwargs: Any,
-    ) -> "KeyboardBuilder[InlineKeyboardButton]":
-        return self._button(
-            text=text,
-            url=url,
-            callback_data=callback_data,
-            web_app=web_app,
-            login_url=login_url,
-            switch_inline_query=switch_inline_query,
-            switch_inline_query_current_chat=switch_inline_query_current_chat,
-            switch_inline_query_chosen_chat=switch_inline_query_chosen_chat,
-            callback_game=callback_game,
-            pay=pay,
-            **kwargs,
+    ) -> "InlineKeyboardBuilder":
+        return cast(
+            InlineKeyboardBuilder,
+            self._button(
+                text=text,
+                url=url,
+                callback_data=callback_data,
+                web_app=web_app,
+                login_url=login_url,
+                switch_inline_query=switch_inline_query,
+                switch_inline_query_current_chat=switch_inline_query_current_chat,
+                switch_inline_query_chosen_chat=switch_inline_query_chosen_chat,
+                callback_game=callback_game,
+                pay=pay,
+                **kwargs,
+            ),
         )
 
     if TYPE_CHECKING:
@@ -377,16 +380,19 @@ class ReplyKeyboardBuilder(KeyboardBuilder[KeyboardButton]):
         request_poll: Optional[KeyboardButtonPollType] = None,
         web_app: Optional[WebAppInfo] = None,
         **kwargs: Any,
-    ) -> "KeyboardBuilder[KeyboardButton]":
-        return self._button(
-            text=text,
-            request_users=request_users,
-            request_chat=request_chat,
-            request_contact=request_contact,
-            request_location=request_location,
-            request_poll=request_poll,
-            web_app=web_app,
-            **kwargs,
+    ) -> "ReplyKeyboardBuilder":
+        return cast(
+            ReplyKeyboardBuilder,
+            self._button(
+                text=text,
+                request_users=request_users,
+                request_chat=request_chat,
+                request_contact=request_contact,
+                request_location=request_location,
+                request_poll=request_poll,
+                web_app=web_app,
+                **kwargs,
+            ),
         )
 
     if TYPE_CHECKING:
