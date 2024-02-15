@@ -1,1 +1,5 @@
 Reworked bot-wide globals like :code:`parse_mode`, :code:`disable_web_page_preview`, and others to be more flexible.
+
+.. warning::
+
+    Note that the old way of setting these global bot properties is now deprecated and will be removed in the next major release.
