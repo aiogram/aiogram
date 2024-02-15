@@ -49,6 +49,30 @@ class TestBot:
         ):
             bot = Bot(token="42:Test", parse_mode="HTML")
 
+    def test_deprecated_parse_mode(self):
+        with check_deprecated(
+            max_version="3.5.0",
+            exception=AttributeError,
+        ):
+            bot = Bot(token="42:Test", parse_mode="HTML")
+            assert bot.parse_mode == "HTML"
+
+    def test_disable_web_page_preview(self):
+        with check_deprecated(
+            max_version="3.5.0",
+            exception=TypeError,
+        ):
+            bot = Bot(token="42:Test", disable_web_page_preview=True)
+            assert bot.disable_web_page_preview is True
+
+    def test_deprecated_protect_content(self):
+        with check_deprecated(
+            max_version="3.5.0",
+            exception=AttributeError,
+        ):
+            bot = Bot(token="42:Test", protect_content=True)
+            assert bot.protect_content is True
+
     def test_hashable(self):
         bot = Bot("42:TEST")
         assert hash(bot) == hash("42:TEST")

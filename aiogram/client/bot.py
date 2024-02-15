@@ -298,6 +298,36 @@ class Bot:
         self._me: Optional[User] = None
 
     @property
+    def parse_mode(self) -> Optional[str]:
+        warnings.warn(
+            "Accessing `parse_mode` from Bot instance is deprecated. This attribute will be removed in 3.5.0 version\n"
+            "Use `bot.default.parse_mode` instead.",
+            category=DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.default.parse_mode
+
+    @property
+    def disable_web_page_preview(self) -> Optional[bool]:
+        warnings.warn(
+            "Accessing `disable_web_page_preview` from Bot instance is deprecated. This attribute will be removed in 3.5.0 version\n"
+            "Use `bot.default.link_preview_is_disabled` instead.",
+            category=DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.default.link_preview_is_disabled
+
+    @property
+    def protect_content(self) -> Optional[bool]:
+        warnings.warn(
+            "Accessing `protect_content` from Bot instance is deprecated. This attribute will be removed in 3.5.0 version\n"
+            "Use `bot.default.protect_content` instead.",
+            category=DeprecationWarning,
+            stacklevel=2,
+        )
+        return self.default.protect_content
+
+    @property
     def token(self) -> str:
         return self.__token
 
