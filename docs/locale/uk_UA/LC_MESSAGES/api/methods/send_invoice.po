@@ -8,14 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-30 18:31+0300\n"
+"POT-Creation-Date: 2024-02-16 01:15+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.12.1\n"
+"Generated-By: Babel 2.13.1\n"
 
 #: ../../api/methods/send_invoice.rst:3
 msgid "sendInvoice"
@@ -190,9 +190,17 @@ msgstr ""
 msgid "Protects the contents of the sent message from forwarding and saving"
 msgstr ""
 
-#: ../../docstring
-#: aiogram.methods.send_invoice.SendInvoice.reply_to_message_id:1 of
-msgid "If the message is a reply, ID of the original message"
+#: ../../docstring aiogram.methods.send_invoice.SendInvoice.reply_parameters:1
+#: of
+msgid "Description of the message to reply to"
+msgstr ""
+
+#: ../../docstring aiogram.methods.send_invoice.SendInvoice.reply_markup:1 of
+msgid ""
+"A JSON-serialized object for an `inline keyboard "
+"<https://core.telegram.org/bots/features#inline-keyboards>`_. If empty, "
+"one 'Pay :code:`total price`' button will be shown. If not empty, the "
+"first button must be a Pay button."
 msgstr ""
 
 #: ../../docstring
@@ -202,12 +210,15 @@ msgid ""
 "replied-to message is not found"
 msgstr ""
 
-#: ../../docstring aiogram.methods.send_invoice.SendInvoice.reply_markup:1 of
-msgid ""
-"A JSON-serialized object for an `inline keyboard "
-"<https://core.telegram.org/bots/features#inline-keyboards>`_. If empty, "
-"one 'Pay :code:`total price`' button will be shown. If not empty, the "
-"first button must be a Pay button."
+#: ../../docstring
+#: aiogram.methods.send_invoice.SendInvoice.allow_sending_without_reply:3
+#: aiogram.methods.send_invoice.SendInvoice.reply_to_message_id:3 of
+msgid "https://core.telegram.org/bots/api-changelog#december-29-2023"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.send_invoice.SendInvoice.reply_to_message_id:1 of
+msgid "If the message is a reply, ID of the original message"
 msgstr ""
 
 #: ../../api/methods/send_invoice.rst:15
@@ -255,15 +266,15 @@ msgid ":meth:`aiogram.types.message.Message.reply_invoice`"
 msgstr ""
 
 #: ../../api/methods/send_invoice.rst:53
-msgid ":meth:`aiogram.types.chat_member_updated.ChatMemberUpdated.answer_invoice`"
-msgstr ""
-
-#: ../../api/methods/send_invoice.rst:54
 msgid ":meth:`aiogram.types.chat_join_request.ChatJoinRequest.answer_invoice`"
 msgstr ""
 
-#: ../../api/methods/send_invoice.rst:55
+#: ../../api/methods/send_invoice.rst:54
 msgid ":meth:`aiogram.types.chat_join_request.ChatJoinRequest.answer_invoice_pm`"
+msgstr ""
+
+#: ../../api/methods/send_invoice.rst:55
+msgid ":meth:`aiogram.types.chat_member_updated.ChatMemberUpdated.answer_invoice`"
 msgstr ""
 
 #~ msgid ""

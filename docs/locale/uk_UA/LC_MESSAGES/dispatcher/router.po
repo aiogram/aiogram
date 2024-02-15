@@ -7,14 +7,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  aiogram\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-26 23:17+0300\n"
+"POT-Creation-Date: 2024-02-16 01:15+0200\n"
 "PO-Revision-Date: 2022-12-10 20:41+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.12.1\n"
+"Generated-By: Babel 2.13.1\n"
 
 #: ../../dispatcher/router.rst:5
 msgid "Router"
@@ -203,22 +203,52 @@ msgstr "Опитування"
 msgid "Poll answer"
 msgstr "Відповідь на опитування"
 
-#: ../../dispatcher/router.rst:144
+#: ../../dispatcher/router.rst:145
+msgid "My chat member"
+msgstr ""
+
+#: ../../dispatcher/router.rst:154
+msgid "Chat member"
+msgstr ""
+
+#: ../../dispatcher/router.rst:163
+msgid "Chat join request"
+msgstr ""
+
+#: ../../dispatcher/router.rst:172
+#, fuzzy
+msgid "Message reaction"
+msgstr "Повідомлення"
+
+#: ../../dispatcher/router.rst:181
+msgid "Message reaction count"
+msgstr ""
+
+#: ../../dispatcher/router.rst:190
+#, fuzzy
+msgid "Chat boost"
+msgstr "Пост на каналі"
+
+#: ../../dispatcher/router.rst:199
+msgid "Remove chat boost"
+msgstr ""
+
+#: ../../dispatcher/router.rst:208
 msgid "Errors"
 msgstr "Помилки"
 
-#: ../../dispatcher/router.rst:151
+#: ../../dispatcher/router.rst:215
 #, fuzzy
 msgid ""
 "Is useful for handling errors from other handlers, error event described "
 ":ref:`here <error-event>`"
 msgstr "Корисно для обробки помилок інших обробників"
 
-#: ../../dispatcher/router.rst:158
+#: ../../dispatcher/router.rst:222
 msgid "Nested routers"
 msgstr "Вкладені маршрутизатори"
 
-#: ../../dispatcher/router.rst:163
+#: ../../dispatcher/router.rst:227
 msgid ""
 "Routers by the way can be nested to an another routers with some "
 "limitations:"
@@ -226,7 +256,7 @@ msgstr ""
 "До речі, маршрутизатори можуть бути вкладеними в інші маршрутизатори з "
 "деякими обмеженнями:"
 
-#: ../../dispatcher/router.rst:163
+#: ../../dispatcher/router.rst:227
 msgid ""
 "1. Router **CAN NOT** include itself 1. Routers **CAN NOT** be used for "
 "circular including (router 1 include router 2, router 2 include router 3,"
@@ -237,39 +267,69 @@ msgstr ""
 "(маршрутизатор 1 включає маршрутизатор 2, маршрутизатор 2 включає "
 "маршрутизатор 3, маршрутизатор 3 включає маршрутизатор 1)"
 
-#: ../../dispatcher/router.rst:167
+#: ../../dispatcher/router.rst:231
 msgid "Example:"
 msgstr "Приклад:"
 
-#: ../../dispatcher/router.rst:169
+#: ../../dispatcher/router.rst:233
 #, fuzzy
 msgid "module_1.py"
 msgstr "module_2.py"
 
-#: ../../dispatcher/router.rst:179
+#: ../../dispatcher/router.rst
+msgid "name"
+msgstr ""
+
+#: ../../dispatcher/router.rst:235
+#, fuzzy
+msgid "module_1"
+msgstr "module_2.py"
+
+#: ../../dispatcher/router.rst:237
+msgid "router2 = Router()"
+msgstr ""
+
+#: ../../dispatcher/router.rst:239
+msgid "@router2.message() ..."
+msgstr ""
+
+#: ../../dispatcher/router.rst:243
 msgid "module_2.py"
 msgstr "module_2.py"
 
-#: ../../dispatcher/router.rst:191
+#: ../../dispatcher/router.rst:245
+#, fuzzy
+msgid "module_2"
+msgstr "module_2.py"
+
+#: ../../dispatcher/router.rst:247
+msgid "from module_2 import router2"
+msgstr ""
+
+#: ../../dispatcher/router.rst:250
+msgid "router1 = Router() router1.include_router(router2)"
+msgstr ""
+
+#: ../../dispatcher/router.rst:255
 msgid "Update"
 msgstr "Оновлення"
 
-#: ../../dispatcher/router.rst:200
+#: ../../dispatcher/router.rst:264
 msgid "The only root Router (Dispatcher) can handle this type of event."
 msgstr ""
 
-#: ../../dispatcher/router.rst:204
+#: ../../dispatcher/router.rst:268
 msgid ""
 "Dispatcher already has default handler for this event type, so you can "
 "use it for handling all updates that are not handled by any other "
 "handlers."
 msgstr ""
 
-#: ../../dispatcher/router.rst:207
+#: ../../dispatcher/router.rst:271
 msgid "How it works?"
 msgstr "Як це працює?"
 
-#: ../../dispatcher/router.rst:209
+#: ../../dispatcher/router.rst:273
 msgid ""
 "For example, dispatcher has 2 routers, the last router also has one "
 "nested router:"
@@ -281,6 +341,6 @@ msgstr ""
 msgid "Nested routers example"
 msgstr "Приклад вкладених маршрутизаторів"
 
-#: ../../dispatcher/router.rst:214
+#: ../../dispatcher/router.rst:278
 msgid "In this case update propagation flow will have form:"
 msgstr "У цьому випадку потік розповсюдження оновлення матиме вигляд:"

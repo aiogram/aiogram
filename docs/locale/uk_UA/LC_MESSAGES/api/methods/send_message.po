@@ -8,14 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-30 18:31+0300\n"
+"POT-Creation-Date: 2024-02-16 01:15+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.12.1\n"
+"Generated-By: Babel 2.13.1\n"
 
 #: ../../api/methods/send_message.rst:3
 msgid "sendMessage"
@@ -66,8 +66,8 @@ msgid ""
 msgstr ""
 
 #: ../../docstring
-#: aiogram.methods.send_message.SendMessage.disable_web_page_preview:1 of
-msgid "Disables link previews for links in this message"
+#: aiogram.methods.send_message.SendMessage.link_preview_options:1 of
+msgid "Link preview generation options for the message"
 msgstr ""
 
 #: ../../docstring
@@ -82,16 +82,9 @@ msgstr ""
 msgid "Protects the contents of the sent message from forwarding and saving"
 msgstr ""
 
-#: ../../docstring
-#: aiogram.methods.send_message.SendMessage.reply_to_message_id:1 of
-msgid "If the message is a reply, ID of the original message"
-msgstr ""
-
-#: ../../docstring
-#: aiogram.methods.send_message.SendMessage.allow_sending_without_reply:1 of
-msgid ""
-"Pass :code:`True` if the message should be sent even if the specified "
-"replied-to message is not found"
+#: ../../docstring aiogram.methods.send_message.SendMessage.reply_parameters:1
+#: of
+msgid "Description of the message to reply to"
 msgstr ""
 
 #: ../../docstring aiogram.methods.send_message.SendMessage.reply_markup:1 of
@@ -101,6 +94,30 @@ msgid ""
 "`custom reply keyboard "
 "<https://core.telegram.org/bots/features#keyboards>`_, instructions to "
 "remove reply keyboard or to force a reply from the user."
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.send_message.SendMessage.allow_sending_without_reply:1 of
+msgid ""
+"Pass :code:`True` if the message should be sent even if the specified "
+"replied-to message is not found"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.send_message.SendMessage.allow_sending_without_reply:3
+#: aiogram.methods.send_message.SendMessage.disable_web_page_preview:3
+#: aiogram.methods.send_message.SendMessage.reply_to_message_id:3 of
+msgid "https://core.telegram.org/bots/api-changelog#december-29-2023"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.send_message.SendMessage.disable_web_page_preview:1 of
+msgid "Disables link previews for links in this message"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.send_message.SendMessage.reply_to_message_id:1 of
+msgid "If the message is a reply, ID of the original message"
 msgstr ""
 
 #: ../../api/methods/send_message.rst:15
@@ -148,15 +165,15 @@ msgid ":meth:`aiogram.types.message.Message.reply`"
 msgstr ""
 
 #: ../../api/methods/send_message.rst:53
-msgid ":meth:`aiogram.types.chat_member_updated.ChatMemberUpdated.answer`"
-msgstr ""
-
-#: ../../api/methods/send_message.rst:54
 msgid ":meth:`aiogram.types.chat_join_request.ChatJoinRequest.answer`"
 msgstr ""
 
-#: ../../api/methods/send_message.rst:55
+#: ../../api/methods/send_message.rst:54
 msgid ":meth:`aiogram.types.chat_join_request.ChatJoinRequest.answer_pm`"
+msgstr ""
+
+#: ../../api/methods/send_message.rst:55
+msgid ":meth:`aiogram.types.chat_member_updated.ChatMemberUpdated.answer`"
 msgstr ""
 
 #~ msgid ""

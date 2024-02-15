@@ -8,14 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-02 15:10+0300\n"
+"POT-Creation-Date: 2024-02-16 01:15+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.12.1\n"
+"Generated-By: Babel 2.13.1\n"
 
 #: ../../api/types/keyboard_button_request_user.rst:3
 msgid "KeyboardButtonRequestUser"
@@ -30,6 +30,10 @@ msgid ""
 msgstr ""
 
 #: aiogram.types.keyboard_button_request_user.KeyboardButtonRequestUser:3 of
+msgid "https://core.telegram.org/bots/api-changelog#december-29-2023"
+msgstr ""
+
+#: aiogram.types.keyboard_button_request_user.KeyboardButtonRequestUser:6 of
 msgid "Source: https://core.telegram.org/bots/api#keyboardbuttonrequestuser"
 msgstr ""
 

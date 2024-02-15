@@ -8,14 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-30 18:31+0300\n"
+"POT-Creation-Date: 2024-02-16 01:15+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.12.1\n"
+"Generated-By: Babel 2.13.1\n"
 
 #: ../../api/types/chat_member_updated.rst:3
 msgid "ChatMemberUpdated"
@@ -165,7 +165,7 @@ msgid ""
 msgstr ""
 
 #: aiogram.types.chat_member_updated.ChatMemberUpdated.answer:14 of
-msgid "Disables link previews for links in this message"
+msgid "Link preview generation options for the message"
 msgstr ""
 
 #: aiogram.types.chat_member_updated.ChatMemberUpdated.answer:15
@@ -216,6 +216,7 @@ msgstr ""
 #: aiogram.types.chat_member_updated.ChatMemberUpdated.answer_game:14
 #: aiogram.types.chat_member_updated.ChatMemberUpdated.answer_invoice:34
 #: aiogram.types.chat_member_updated.ChatMemberUpdated.answer_location:19
+#: aiogram.types.chat_member_updated.ChatMemberUpdated.answer_media_group:14
 #: aiogram.types.chat_member_updated.ChatMemberUpdated.answer_photo:18
 #: aiogram.types.chat_member_updated.ChatMemberUpdated.answer_poll:25
 #: aiogram.types.chat_member_updated.ChatMemberUpdated.answer_sticker:15
@@ -223,7 +224,7 @@ msgstr ""
 #: aiogram.types.chat_member_updated.ChatMemberUpdated.answer_video:23
 #: aiogram.types.chat_member_updated.ChatMemberUpdated.answer_video_note:17
 #: aiogram.types.chat_member_updated.ChatMemberUpdated.answer_voice:18 of
-msgid "If the message is a reply, ID of the original message"
+msgid "Description of the message to reply to"
 msgstr ""
 
 #: aiogram.types.chat_member_updated.ChatMemberUpdated.answer:18
@@ -232,10 +233,7 @@ msgstr ""
 #: aiogram.types.chat_member_updated.ChatMemberUpdated.answer_contact:18
 #: aiogram.types.chat_member_updated.ChatMemberUpdated.answer_dice:15
 #: aiogram.types.chat_member_updated.ChatMemberUpdated.answer_document:20
-#: aiogram.types.chat_member_updated.ChatMemberUpdated.answer_game:15
-#: aiogram.types.chat_member_updated.ChatMemberUpdated.answer_invoice:35
 #: aiogram.types.chat_member_updated.ChatMemberUpdated.answer_location:20
-#: aiogram.types.chat_member_updated.ChatMemberUpdated.answer_media_group:15
 #: aiogram.types.chat_member_updated.ChatMemberUpdated.answer_photo:19
 #: aiogram.types.chat_member_updated.ChatMemberUpdated.answer_poll:26
 #: aiogram.types.chat_member_updated.ChatMemberUpdated.answer_sticker:16
@@ -244,8 +242,11 @@ msgstr ""
 #: aiogram.types.chat_member_updated.ChatMemberUpdated.answer_video_note:18
 #: aiogram.types.chat_member_updated.ChatMemberUpdated.answer_voice:19 of
 msgid ""
-"Pass :code:`True` if the message should be sent even if the specified "
-"replied-to message is not found"
+"Additional interface options. A JSON-serialized object for an `inline "
+"keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, "
+"`custom reply keyboard "
+"<https://core.telegram.org/bots/features#keyboards>`_, instructions to "
+"remove reply keyboard or to force a reply from the user."
 msgstr ""
 
 #: aiogram.types.chat_member_updated.ChatMemberUpdated.answer:19
@@ -254,7 +255,10 @@ msgstr ""
 #: aiogram.types.chat_member_updated.ChatMemberUpdated.answer_contact:19
 #: aiogram.types.chat_member_updated.ChatMemberUpdated.answer_dice:16
 #: aiogram.types.chat_member_updated.ChatMemberUpdated.answer_document:21
+#: aiogram.types.chat_member_updated.ChatMemberUpdated.answer_game:16
+#: aiogram.types.chat_member_updated.ChatMemberUpdated.answer_invoice:36
 #: aiogram.types.chat_member_updated.ChatMemberUpdated.answer_location:21
+#: aiogram.types.chat_member_updated.ChatMemberUpdated.answer_media_group:15
 #: aiogram.types.chat_member_updated.ChatMemberUpdated.answer_photo:20
 #: aiogram.types.chat_member_updated.ChatMemberUpdated.answer_poll:27
 #: aiogram.types.chat_member_updated.ChatMemberUpdated.answer_sticker:17
@@ -263,11 +267,31 @@ msgstr ""
 #: aiogram.types.chat_member_updated.ChatMemberUpdated.answer_video_note:19
 #: aiogram.types.chat_member_updated.ChatMemberUpdated.answer_voice:20 of
 msgid ""
-"Additional interface options. A JSON-serialized object for an `inline "
-"keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, "
-"`custom reply keyboard "
-"<https://core.telegram.org/bots/features#keyboards>`_, instructions to "
-"remove reply keyboard or to force a reply from the user."
+"Pass :code:`True` if the message should be sent even if the specified "
+"replied-to message is not found"
+msgstr ""
+
+#: aiogram.types.chat_member_updated.ChatMemberUpdated.answer:20 of
+msgid "Disables link previews for links in this message"
+msgstr ""
+
+#: aiogram.types.chat_member_updated.ChatMemberUpdated.answer:21
+#: aiogram.types.chat_member_updated.ChatMemberUpdated.answer_animation:25
+#: aiogram.types.chat_member_updated.ChatMemberUpdated.answer_audio:25
+#: aiogram.types.chat_member_updated.ChatMemberUpdated.answer_contact:20
+#: aiogram.types.chat_member_updated.ChatMemberUpdated.answer_dice:17
+#: aiogram.types.chat_member_updated.ChatMemberUpdated.answer_document:22
+#: aiogram.types.chat_member_updated.ChatMemberUpdated.answer_game:17
+#: aiogram.types.chat_member_updated.ChatMemberUpdated.answer_invoice:37
+#: aiogram.types.chat_member_updated.ChatMemberUpdated.answer_location:22
+#: aiogram.types.chat_member_updated.ChatMemberUpdated.answer_photo:21
+#: aiogram.types.chat_member_updated.ChatMemberUpdated.answer_poll:28
+#: aiogram.types.chat_member_updated.ChatMemberUpdated.answer_sticker:18
+#: aiogram.types.chat_member_updated.ChatMemberUpdated.answer_venue:24
+#: aiogram.types.chat_member_updated.ChatMemberUpdated.answer_video:26
+#: aiogram.types.chat_member_updated.ChatMemberUpdated.answer_video_note:20
+#: aiogram.types.chat_member_updated.ChatMemberUpdated.answer_voice:21 of
+msgid "If the message is a reply, ID of the original message"
 msgstr ""
 
 #: aiogram.types.chat_member_updated.ChatMemberUpdated.answer
@@ -290,7 +314,7 @@ msgstr ""
 msgid "Returns"
 msgstr ""
 
-#: aiogram.types.chat_member_updated.ChatMemberUpdated.answer:20 of
+#: aiogram.types.chat_member_updated.ChatMemberUpdated.answer:22 of
 msgid "instance of method :class:`aiogram.methods.send_message.SendMessage`"
 msgstr ""
 
@@ -380,7 +404,7 @@ msgid ""
 "animation"
 msgstr ""
 
-#: aiogram.types.chat_member_updated.ChatMemberUpdated.answer_animation:25 of
+#: aiogram.types.chat_member_updated.ChatMemberUpdated.answer_animation:26 of
 msgid "instance of method :class:`aiogram.methods.send_animation.SendAnimation`"
 msgstr ""
 
@@ -436,7 +460,7 @@ msgstr ""
 msgid "Track name"
 msgstr ""
 
-#: aiogram.types.chat_member_updated.ChatMemberUpdated.answer_audio:25 of
+#: aiogram.types.chat_member_updated.ChatMemberUpdated.answer_audio:26 of
 msgid "instance of method :class:`aiogram.methods.send_audio.SendAudio`"
 msgstr ""
 
@@ -474,7 +498,7 @@ msgid ""
 "<https://en.wikipedia.org/wiki/VCard>`_, 0-2048 bytes"
 msgstr ""
 
-#: aiogram.types.chat_member_updated.ChatMemberUpdated.answer_contact:20 of
+#: aiogram.types.chat_member_updated.ChatMemberUpdated.answer_contact:21 of
 msgid "instance of method :class:`aiogram.methods.send_contact.SendContact`"
 msgstr ""
 
@@ -523,7 +547,7 @@ msgid ""
 "using multipart/form-data"
 msgstr ""
 
-#: aiogram.types.chat_member_updated.ChatMemberUpdated.answer_document:22 of
+#: aiogram.types.chat_member_updated.ChatMemberUpdated.answer_document:23 of
 msgid "instance of method :class:`aiogram.methods.send_document.SendDocument`"
 msgstr ""
 
@@ -549,7 +573,7 @@ msgid ""
 " up your games via `@BotFather <https://t.me/botfather>`_."
 msgstr ""
 
-#: aiogram.types.chat_member_updated.ChatMemberUpdated.answer_game:16 of
+#: aiogram.types.chat_member_updated.ChatMemberUpdated.answer_game:15 of
 msgid ""
 "A JSON-serialized object for an `inline keyboard "
 "<https://core.telegram.org/bots/features#inline-keyboards>`_. If empty, "
@@ -557,7 +581,7 @@ msgid ""
 "button must launch the game."
 msgstr ""
 
-#: aiogram.types.chat_member_updated.ChatMemberUpdated.answer_game:17 of
+#: aiogram.types.chat_member_updated.ChatMemberUpdated.answer_game:18 of
 msgid "instance of method :class:`aiogram.methods.send_game.SendGame`"
 msgstr ""
 
@@ -701,7 +725,7 @@ msgstr ""
 msgid "Pass :code:`True` if the final price depends on the shipping method"
 msgstr ""
 
-#: aiogram.types.chat_member_updated.ChatMemberUpdated.answer_invoice:36 of
+#: aiogram.types.chat_member_updated.ChatMemberUpdated.answer_invoice:35 of
 msgid ""
 "A JSON-serialized object for an `inline keyboard "
 "<https://core.telegram.org/bots/features#inline-keyboards>`_. If empty, "
@@ -709,7 +733,7 @@ msgid ""
 "first button must be a Pay button."
 msgstr ""
 
-#: aiogram.types.chat_member_updated.ChatMemberUpdated.answer_invoice:37 of
+#: aiogram.types.chat_member_updated.ChatMemberUpdated.answer_invoice:38 of
 msgid "instance of method :class:`aiogram.methods.send_invoice.SendInvoice`"
 msgstr ""
 
@@ -761,7 +785,7 @@ msgid ""
 "if specified."
 msgstr ""
 
-#: aiogram.types.chat_member_updated.ChatMemberUpdated.answer_location:22 of
+#: aiogram.types.chat_member_updated.ChatMemberUpdated.answer_location:23 of
 msgid "instance of method :class:`aiogram.methods.send_location.SendLocation`"
 msgstr ""
 
@@ -801,11 +825,11 @@ msgstr ""
 msgid "Protects the contents of the sent messages from forwarding and saving"
 msgstr ""
 
-#: aiogram.types.chat_member_updated.ChatMemberUpdated.answer_media_group:14 of
+#: aiogram.types.chat_member_updated.ChatMemberUpdated.answer_media_group:16 of
 msgid "If the messages are a reply, ID of the original message"
 msgstr ""
 
-#: aiogram.types.chat_member_updated.ChatMemberUpdated.answer_media_group:16 of
+#: aiogram.types.chat_member_updated.ChatMemberUpdated.answer_media_group:17 of
 msgid ""
 "instance of method "
 ":class:`aiogram.methods.send_media_group.SendMediaGroup`"
@@ -857,7 +881,7 @@ msgid ""
 "animation"
 msgstr ""
 
-#: aiogram.types.chat_member_updated.ChatMemberUpdated.answer_photo:21 of
+#: aiogram.types.chat_member_updated.ChatMemberUpdated.answer_photo:22 of
 msgid "instance of method :class:`aiogram.methods.send_photo.SendPhoto`"
 msgstr ""
 
@@ -946,7 +970,7 @@ msgid ""
 " useful for poll preview."
 msgstr ""
 
-#: aiogram.types.chat_member_updated.ChatMemberUpdated.answer_poll:28 of
+#: aiogram.types.chat_member_updated.ChatMemberUpdated.answer_poll:29 of
 msgid "instance of method :class:`aiogram.methods.send_poll.SendPoll`"
 msgstr ""
 
@@ -979,7 +1003,7 @@ msgstr ""
 msgid "Protects the contents of the sent message from forwarding"
 msgstr ""
 
-#: aiogram.types.chat_member_updated.ChatMemberUpdated.answer_dice:17 of
+#: aiogram.types.chat_member_updated.ChatMemberUpdated.answer_dice:18 of
 msgid "instance of method :class:`aiogram.methods.send_dice.SendDice`"
 msgstr ""
 
@@ -1016,7 +1040,7 @@ msgstr ""
 msgid "Emoji associated with the sticker; only for just uploaded stickers"
 msgstr ""
 
-#: aiogram.types.chat_member_updated.ChatMemberUpdated.answer_sticker:18 of
+#: aiogram.types.chat_member_updated.ChatMemberUpdated.answer_sticker:19 of
 msgid "instance of method :class:`aiogram.methods.send_sticker.SendSticker`"
 msgstr ""
 
@@ -1073,7 +1097,7 @@ msgid ""
 "<https://developers.google.com/places/web-service/supported_types>`_.)"
 msgstr ""
 
-#: aiogram.types.chat_member_updated.ChatMemberUpdated.answer_venue:24 of
+#: aiogram.types.chat_member_updated.ChatMemberUpdated.answer_venue:25 of
 msgid "instance of method :class:`aiogram.methods.send_venue.SendVenue`"
 msgstr ""
 
@@ -1142,7 +1166,7 @@ msgstr ""
 msgid "Pass :code:`True` if the uploaded video is suitable for streaming"
 msgstr ""
 
-#: aiogram.types.chat_member_updated.ChatMemberUpdated.answer_video:26 of
+#: aiogram.types.chat_member_updated.ChatMemberUpdated.answer_video:27 of
 msgid "instance of method :class:`aiogram.methods.send_video.SendVideo`"
 msgstr ""
 
@@ -1177,7 +1201,7 @@ msgstr ""
 msgid "Video width and height, i.e. diameter of the video message"
 msgstr ""
 
-#: aiogram.types.chat_member_updated.ChatMemberUpdated.answer_video_note:20 of
+#: aiogram.types.chat_member_updated.ChatMemberUpdated.answer_video_note:21 of
 msgid "instance of method :class:`aiogram.methods.send_video_note.SendVideoNote`"
 msgstr ""
 
@@ -1227,6 +1251,6 @@ msgstr ""
 msgid "Duration of the voice message in seconds"
 msgstr ""
 
-#: aiogram.types.chat_member_updated.ChatMemberUpdated.answer_voice:21 of
+#: aiogram.types.chat_member_updated.ChatMemberUpdated.answer_voice:22 of
 msgid "instance of method :class:`aiogram.methods.send_voice.SendVoice`"
 msgstr ""

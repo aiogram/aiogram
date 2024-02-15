@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-11-24 21:51+0200\n"
+"POT-Creation-Date: 2024-02-16 01:15+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: uk_UA\n"
@@ -35,7 +35,7 @@ msgstr ""
 #: ../../utils/deep_linking.rst:10
 msgid ""
 "You can read detailed description in the source: "
-"https://core.telegram.org/bots#deep-linking"
+"https://core.telegram.org/bots/features#deep-linking"
 msgstr ""
 
 #: ../../utils/deep_linking.rst:13
@@ -105,3 +105,9 @@ msgstr ""
 #: aiogram.utils.payload.decode_payload:1 of
 msgid "Decode URL-safe base64url payload with decoder."
 msgstr ""
+
+#~ msgid ""
+#~ "You can read detailed description in "
+#~ "the source: https://core.telegram.org/bots#deep-"
+#~ "linking"
+#~ msgstr ""
