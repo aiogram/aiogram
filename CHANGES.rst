@@ -16,6 +16,48 @@ Changelog
 
 .. towncrier release notes start
 
+3.4.0 (2024-02-16)
+===================
+
+Features
+--------
+
+- Reworked bot-wide globals like :code:`parse_mode`, :code:`disable_web_page_preview`, and others to be more flexible.
+
+  .. warning::
+
+      Note that the old way of setting these global bot properties is now deprecated and will be removed in the next major release.
+  `#1392 <https://github.com/aiogram/aiogram/issues/1392>`_
+- A new enum :code:`KeyboardButtonPollTypeType` for :code:`KeyboardButtonPollTypeType.type` field has bed added.
+  `#1398 <https://github.com/aiogram/aiogram/issues/1398>`_
+- Added full support of `Bot API 7.1 <https://core.telegram.org/bots/api-changelog#february-16-2024>`_
+
+  - Added support for the administrator rights :code:`can_post_stories`, :code:`can_edit_stories`, :code:`can_delete_stories` in supergroups.
+  - Added the class :code:`ChatBoostAdded` and the field :code:`boost_added` to the class :code:`Message` for service messages about a user boosting a chat.
+  - Added the field :code:`sender_boost_count` to the class :code:`Message`.
+  - Added the field :code:`reply_to_story` to the class :code:`Message`.
+  - Added the fields :code:`chat` and :code:`id` to the class :code:`Story`.
+  - Added the field :code:`unrestrict_boost_count` to the class :code:`Chat`.
+  - Added the field :code:`custom_emoji_sticker_set_name` to the class :code:`Chat`.
+  `#1417 <https://github.com/aiogram/aiogram/issues/1417>`_
+
+
+Bugfixes
+--------
+
+- Update KeyboardBuilder utility, fixed type-hints for button method, adjusted limits of the different markup types to real world values.
+  `#1399 <https://github.com/aiogram/aiogram/issues/1399>`_
+- Added new :code:`reply_parameters` param to :code:`message.send_copy` because it hasn't been added there
+  `#1403 <https://github.com/aiogram/aiogram/issues/1403>`_
+
+
+Improved Documentation
+----------------------
+
+- Add notion "Working with plural forms" in documentation Utils -> Translation
+  `#1395 <https://github.com/aiogram/aiogram/issues/1395>`_
+
+
 3.3.0 (2023-12-31)
 ===================
 

@@ -1,1 +1,0 @@
-A new enum :code:`KeyboardButtonPollTypeType` for :code:`KeyboardButtonPollTypeType.type` field has bed added.
