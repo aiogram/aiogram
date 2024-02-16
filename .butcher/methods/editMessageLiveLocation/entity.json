@@ -36,7 +36,7 @@
         "name": "inline_message_id"
       },
       {
-        "type": "Float number",
+        "type": "Float",
         "required": true,
         "description": "Latitude of new location",
         "html_description": "<td>Latitude of new location</td>",
@@ -44,7 +44,7 @@
         "name": "latitude"
       },
       {
-        "type": "Float number",
+        "type": "Float",
         "required": true,
         "description": "Longitude of new location",
         "html_description": "<td>Longitude of new location</td>",
@@ -52,7 +52,7 @@
         "name": "longitude"
       },
       {
-        "type": "Float number",
+        "type": "Float",
         "required": false,
         "description": "The radius of uncertainty for the location, measured in meters; 0-1500",
         "html_description": "<td>The radius of uncertainty for the location, measured in meters; 0-1500</td>",

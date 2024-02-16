@@ -25,7 +25,7 @@ class ChatMemberAdministrator(ChatMember):
     is_anonymous: bool
     """:code:`True`, if the user's presence in the chat is hidden"""
     can_manage_chat: bool
-    """:code:`True`, if the administrator can access the chat event log, boost list in channels, see channel members, report spam messages, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege"""
+    """:code:`True`, if the administrator can access the chat event log, get boost list, see hidden supergroup and channel members, report spam messages and ignore slow mode. Implied by any other administrator privilege."""
     can_delete_messages: bool
     """:code:`True`, if the administrator can delete messages of other users"""
     can_manage_video_chats: bool
@@ -38,18 +38,18 @@ class ChatMemberAdministrator(ChatMember):
     """:code:`True`, if the user is allowed to change the chat title, photo and other settings"""
     can_invite_users: bool
     """:code:`True`, if the user is allowed to invite new users to the chat"""
+    can_post_stories: bool
+    """:code:`True`, if the administrator can post stories to the chat"""
+    can_edit_stories: bool
+    """:code:`True`, if the administrator can edit stories posted by other users"""
+    can_delete_stories: bool
+    """:code:`True`, if the administrator can delete stories posted by other users"""
     can_post_messages: Optional[bool] = None
     """*Optional*. :code:`True`, if the administrator can post messages in the channel, or access channel statistics; channels only"""
     can_edit_messages: Optional[bool] = None
     """*Optional*. :code:`True`, if the administrator can edit messages of other users and can pin messages; channels only"""
     can_pin_messages: Optional[bool] = None
     """*Optional*. :code:`True`, if the user is allowed to pin messages; groups and supergroups only"""
-    can_post_stories: Optional[bool] = None
-    """*Optional*. :code:`True`, if the administrator can post stories in the channel; channels only"""
-    can_edit_stories: Optional[bool] = None
-    """*Optional*. :code:`True`, if the administrator can edit stories posted by other users; channels only"""
-    can_delete_stories: Optional[bool] = None
-    """*Optional*. :code:`True`, if the administrator can delete stories posted by other users; channels only"""
     can_manage_topics: Optional[bool] = None
     """*Optional*. :code:`True`, if the user is allowed to create, rename, close, and reopen forum topics; supergroups only"""
     custom_title: Optional[str] = None
@@ -73,12 +73,12 @@ class ChatMemberAdministrator(ChatMember):
             can_promote_members: bool,
             can_change_info: bool,
             can_invite_users: bool,
+            can_post_stories: bool,
+            can_edit_stories: bool,
+            can_delete_stories: bool,
             can_post_messages: Optional[bool] = None,
             can_edit_messages: Optional[bool] = None,
             can_pin_messages: Optional[bool] = None,
-            can_post_stories: Optional[bool] = None,
-            can_edit_stories: Optional[bool] = None,
-            can_delete_stories: Optional[bool] = None,
             can_manage_topics: Optional[bool] = None,
             custom_title: Optional[str] = None,
             **__pydantic_kwargs: Any,
@@ -99,12 +99,12 @@ class ChatMemberAdministrator(ChatMember):
                 can_promote_members=can_promote_members,
                 can_change_info=can_change_info,
                 can_invite_users=can_invite_users,
-                can_post_messages=can_post_messages,
-                can_edit_messages=can_edit_messages,
-                can_pin_messages=can_pin_messages,
                 can_post_stories=can_post_stories,
                 can_edit_stories=can_edit_stories,
                 can_delete_stories=can_delete_stories,
+                can_post_messages=can_post_messages,
+                can_edit_messages=can_edit_messages,
+                can_pin_messages=can_pin_messages,
                 can_manage_topics=can_manage_topics,
                 custom_title=custom_title,
                 **__pydantic_kwargs,

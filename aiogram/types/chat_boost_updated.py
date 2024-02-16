@@ -19,7 +19,7 @@ class ChatBoostUpdated(TelegramObject):
     chat: Chat
     """Chat which was boosted"""
     boost: ChatBoost
-    """Infomation about the chat boost"""
+    """Information about the chat boost"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!

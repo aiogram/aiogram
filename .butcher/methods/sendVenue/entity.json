@@ -28,7 +28,7 @@
         "name": "message_thread_id"
       },
       {
-        "type": "Float number",
+        "type": "Float",
         "required": true,
         "description": "Latitude of the venue",
         "html_description": "<td>Latitude of the venue</td>",
@@ -36,7 +36,7 @@
         "name": "latitude"
       },
       {
-        "type": "Float number",
+        "type": "Float",
         "required": true,
         "description": "Longitude of the venue",
         "html_description": "<td>Longitude of the venue</td>",

@@ -16,9 +16,9 @@ class LinkPreviewOptions(TelegramObject):
     url: Optional[str] = None
     """*Optional*. URL to use for the link preview. If empty, then the first URL found in the message text will be used"""
     prefer_small_media: Optional[Union[bool, Default]] = Default("link_preview_prefer_small_media")
-    """*Optional*. :code:`True`, if the media in the link preview is suppposed to be shrunk; ignored if the URL isn't explicitly specified or media size change isn't supported for the preview"""
+    """*Optional*. :code:`True`, if the media in the link preview is supposed to be shrunk; ignored if the URL isn't explicitly specified or media size change isn't supported for the preview"""
     prefer_large_media: Optional[Union[bool, Default]] = Default("link_preview_prefer_large_media")
-    """*Optional*. :code:`True`, if the media in the link preview is suppposed to be enlarged; ignored if the URL isn't explicitly specified or media size change isn't supported for the preview"""
+    """*Optional*. :code:`True`, if the media in the link preview is supposed to be enlarged; ignored if the URL isn't explicitly specified or media size change isn't supported for the preview"""
     show_above_text: Optional[Union[bool, Default]] = Default("link_preview_show_above_text")
     """*Optional*. :code:`True`, if the link preview must be shown above the message text; otherwise, the link preview will be shown below the message text"""
 

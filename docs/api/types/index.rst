@@ -29,6 +29,7 @@ Available types
     chat
     chat_administrator_rights
     chat_boost
+    chat_boost_added
     chat_boost_removed
     chat_boost_source
     chat_boost_source_gift_code

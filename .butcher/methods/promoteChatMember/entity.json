@@ -38,9 +38,9 @@
       {
         "type": "Boolean",
         "required": false,
-        "description": "Pass True if the administrator can access the chat event log, boost list in channels, see channel members, report spam messages, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege",
-        "html_description": "<td>Pass <em>True</em> if the administrator can access the chat event log, boost list in channels, see channel members, report spam messages, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege</td>",
-        "rst_description": "Pass :code:`True` if the administrator can access the chat event log, boost list in channels, see channel members, report spam messages, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege\n",
+        "description": "Pass True if the administrator can access the chat event log, get boost list, see hidden supergroup and channel members, report spam messages and ignore slow mode. Implied by any other administrator privilege.",
+        "html_description": "<td>Pass <em>True</em> if the administrator can access the chat event log, get boost list, see hidden supergroup and channel members, report spam messages and ignore slow mode. Implied by any other administrator privilege.</td>",
+        "rst_description": "Pass :code:`True` if the administrator can access the chat event log, get boost list, see hidden supergroup and channel members, report spam messages and ignore slow mode. Implied by any other administrator privilege.\n",
         "name": "can_manage_chat"
       },
       {
@@ -94,6 +94,30 @@
       {
         "type": "Boolean",
         "required": false,
+        "description": "Pass True if the administrator can post stories to the chat",
+        "html_description": "<td>Pass <em>True</em> if the administrator can post stories to the chat</td>",
+        "rst_description": "Pass :code:`True` if the administrator can post stories to the chat\n",
+        "name": "can_post_stories"
+      },
+      {
+        "type": "Boolean",
+        "required": false,
+        "description": "Pass True if the administrator can edit stories posted by other users",
+        "html_description": "<td>Pass <em>True</em> if the administrator can edit stories posted by other users</td>",
+        "rst_description": "Pass :code:`True` if the administrator can edit stories posted by other users\n",
+        "name": "can_edit_stories"
+      },
+      {
+        "type": "Boolean",
+        "required": false,
+        "description": "Pass True if the administrator can delete stories posted by other users",
+        "html_description": "<td>Pass <em>True</em> if the administrator can delete stories posted by other users</td>",
+        "rst_description": "Pass :code:`True` if the administrator can delete stories posted by other users\n",
+        "name": "can_delete_stories"
+      },
+      {
+        "type": "Boolean",
+        "required": false,
         "description": "Pass True if the administrator can post messages in the channel, or access channel statistics; channels only",
         "html_description": "<td>Pass <em>True</em> if the administrator can post messages in the channel, or access channel statistics; channels only</td>",
         "rst_description": "Pass :code:`True` if the administrator can post messages in the channel, or access channel statistics; channels only\n",
@@ -114,30 +138,6 @@
         "html_description": "<td>Pass <em>True</em> if the administrator can pin messages, supergroups only</td>",
         "rst_description": "Pass :code:`True` if the administrator can pin messages, supergroups only\n",
         "name": "can_pin_messages"
-      },
-      {
-        "type": "Boolean",
-        "required": false,
-        "description": "Pass True if the administrator can post stories in the channel; channels only",
-        "html_description": "<td>Pass <em>True</em> if the administrator can post stories in the channel; channels only</td>",
-        "rst_description": "Pass :code:`True` if the administrator can post stories in the channel; channels only\n",
-        "name": "can_post_stories"
-      },
-      {
-        "type": "Boolean",
-        "required": false,
-        "description": "Pass True if the administrator can edit stories posted by other users; channels only",
-        "html_description": "<td>Pass <em>True</em> if the administrator can edit stories posted by other users; channels only</td>",
-        "rst_description": "Pass :code:`True` if the administrator can edit stories posted by other users; channels only\n",
-        "name": "can_edit_stories"
-      },
-      {
-        "type": "Boolean",
-        "required": false,
-        "description": "Pass True if the administrator can delete stories posted by other users; channels only",
-        "html_description": "<td>Pass <em>True</em> if the administrator can delete stories posted by other users; channels only</td>",
-        "rst_description": "Pass :code:`True` if the administrator can delete stories posted by other users; channels only\n",
-        "name": "can_delete_stories"
       },
       {
         "type": "Boolean",

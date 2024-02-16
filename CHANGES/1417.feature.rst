@@ -1,0 +1,9 @@
+Added full support of `Bot API 7.1 <https://core.telegram.org/bots/api-changelog#february-16-2024>`_
+
+- Added support for the administrator rights :code:`can_post_stories`, :code:`can_edit_stories`, :code:`can_delete_stories` in supergroups.
+- Added the class :code:`ChatBoostAdded` and the field :code:`boost_added` to the class :code:`Message` for service messages about a user boosting a chat.
+- Added the field :code:`sender_boost_count` to the class :code:`Message`.
+- Added the field :code:`reply_to_story` to the class :code:`Message`.
+- Added the fields :code:`chat` and :code:`id` to the class :code:`Story`.
+- Added the field :code:`unrestrict_boost_count` to the class :code:`Chat`.
+- Added the field :code:`custom_emoji_sticker_set_name` to the class :code:`Chat`.

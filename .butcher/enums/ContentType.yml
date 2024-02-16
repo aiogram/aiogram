@@ -35,3 +35,5 @@ extract:
     - forward_origin
     - external_reply
     - link_preview_options
+    - sender_boost_count
+    - reply_to_story

@@ -24,7 +24,7 @@ class ForceReply(MutableTelegramObject):
     input_field_placeholder: Optional[str] = None
     """*Optional*. The placeholder to be shown in the input field when the reply is active; 1-64 characters"""
     selective: Optional[bool] = None
-    """*Optional*. Use this parameter if you want to force reply from specific users only. Targets: 1) users that are @mentioned in the *text* of the :class:`aiogram.types.message.Message` object; 2) if the bot's message is a reply (has *reply_to_message_id*), sender of the original message."""
+    """*Optional*. Use this parameter if you want to force reply from specific users only. Targets: 1) users that are @mentioned in the *text* of the :class:`aiogram.types.message.Message` object; 2) if the bot's message is a reply to a message in the same chat and forum topic, sender of the original message."""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!

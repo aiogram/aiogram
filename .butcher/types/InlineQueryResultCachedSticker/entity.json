@@ -7,9 +7,9 @@
   "object": {
     "anchor": "inlinequeryresultcachedsticker",
     "name": "InlineQueryResultCachedSticker",
-    "description": "Represents a link to a sticker stored on the Telegram servers. By default, this sticker will be sent by the user. Alternatively, you can use input_message_content to send a message with the specified content instead of the sticker.\nNote: This will only work in Telegram versions released after 9 April, 2016 for static stickers and after 06 July, 2019 for animated stickers. Older clients will ignore them.",
-    "html_description": "<p>Represents a link to a sticker stored on the Telegram servers. By default, this sticker will be sent by the user. Alternatively, you can use <em>input_message_content</em> to send a message with the specified content instead of the sticker.</p><p><strong>Note:</strong> This will only work in Telegram versions released after 9 April, 2016 for static stickers and after 06 July, 2019 for <a href=\"https://telegram.org/blog/animated-stickers\">animated stickers</a>. Older clients will ignore them.</p>",
-    "rst_description": "Represents a link to a sticker stored on the Telegram servers. By default, this sticker will be sent by the user. Alternatively, you can use *input_message_content* to send a message with the specified content instead of the sticker.\n**Note:** This will only work in Telegram versions released after 9 April, 2016 for static stickers and after 06 July, 2019 for `animated stickers <https://telegram.org/blog/animated-stickers>`_. Older clients will ignore them.",
+    "description": "Represents a link to a sticker stored on the Telegram servers. By default, this sticker will be sent by the user. Alternatively, you can use input_message_content to send a message with the specified content instead of the sticker.",
+    "html_description": "<p>Represents a link to a sticker stored on the Telegram servers. By default, this sticker will be sent by the user. Alternatively, you can use <em>input_message_content</em> to send a message with the specified content instead of the sticker.</p>",
+    "rst_description": "Represents a link to a sticker stored on the Telegram servers. By default, this sticker will be sent by the user. Alternatively, you can use *input_message_content* to send a message with the specified content instead of the sticker.",
     "annotations": [
       {
         "type": "String",

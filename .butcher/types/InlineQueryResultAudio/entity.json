@@ -7,9 +7,9 @@
   "object": {
     "anchor": "inlinequeryresultaudio",
     "name": "InlineQueryResultAudio",
-    "description": "Represents a link to an MP3 audio file. By default, this audio file will be sent by the user. Alternatively, you can use input_message_content to send a message with the specified content instead of the audio.\nNote: This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.",
-    "html_description": "<p>Represents a link to an MP3 audio file. By default, this audio file will be sent by the user. Alternatively, you can use <em>input_message_content</em> to send a message with the specified content instead of the audio.</p><p><strong>Note:</strong> This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.</p>",
-    "rst_description": "Represents a link to an MP3 audio file. By default, this audio file will be sent by the user. Alternatively, you can use *input_message_content* to send a message with the specified content instead of the audio.\n**Note:** This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.",
+    "description": "Represents a link to an MP3 audio file. By default, this audio file will be sent by the user. Alternatively, you can use input_message_content to send a message with the specified content instead of the audio.",
+    "html_description": "<p>Represents a link to an MP3 audio file. By default, this audio file will be sent by the user. Alternatively, you can use <em>input_message_content</em> to send a message with the specified content instead of the audio.</p>",
+    "rst_description": "Represents a link to an MP3 audio file. By default, this audio file will be sent by the user. Alternatively, you can use *input_message_content* to send a message with the specified content instead of the audio.",
     "annotations": [
       {
         "type": "String",
