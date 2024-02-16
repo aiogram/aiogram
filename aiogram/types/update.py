@@ -32,19 +32,19 @@ class Update(TelegramObject):
     """
 
     update_id: int
-    """The update's unique identifier. Update identifiers start from a certain positive number and increase sequentially. This ID becomes especially handy if you're using `webhooks <https://core.telegram.org/bots/api#setwebhook>`_, since it allows you to ignore repeated updates or to restore the correct update sequence, should they get out of order. If there are no new updates for at least a week, then identifier of the next update will be chosen randomly instead of sequentially."""
+    """The update's unique identifier. Update identifiers start from a certain positive number and increase sequentially. This identifier becomes especially handy if you're using `webhooks <https://core.telegram.org/bots/api#setwebhook>`_, since it allows you to ignore repeated updates or to restore the correct update sequence, should they get out of order. If there are no new updates for at least a week, then identifier of the next update will be chosen randomly instead of sequentially."""
     message: Optional[Message] = None
     """*Optional*. New incoming message of any kind - text, photo, sticker, etc."""
     edited_message: Optional[Message] = None
-    """*Optional*. New version of a message that is known to the bot and was edited"""
+    """*Optional*. New version of a message that is known to the bot and was edited. This update may at times be triggered by changes to message fields that are either unavailable or not actively used by your bot."""
     channel_post: Optional[Message] = None
     """*Optional*. New incoming channel post of any kind - text, photo, sticker, etc."""
     edited_channel_post: Optional[Message] = None
-    """*Optional*. New version of a channel post that is known to the bot and was edited"""
+    """*Optional*. New version of a channel post that is known to the bot and was edited. This update may at times be triggered by changes to message fields that are either unavailable or not actively used by your bot."""
     message_reaction: Optional[MessageReactionUpdated] = None
     """*Optional*. A reaction to a message was changed by a user. The bot must be an administrator in the chat and must explicitly specify :code:`"message_reaction"` in the list of *allowed_updates* to receive these updates. The update isn't received for reactions set by bots."""
     message_reaction_count: Optional[MessageReactionCountUpdated] = None
-    """*Optional*. Reactions to a message with anonymous reactions were changed. The bot must be an administrator in the chat and must explicitly specify :code:`"message_reaction_count"` in the list of *allowed_updates* to receive these updates."""
+    """*Optional*. Reactions to a message with anonymous reactions were changed. The bot must be an administrator in the chat and must explicitly specify :code:`"message_reaction_count"` in the list of *allowed_updates* to receive these updates. The updates are grouped and can be sent with delay up to a few minutes."""
     inline_query: Optional[InlineQuery] = None
     """*Optional*. New incoming `inline <https://core.telegram.org/bots/api#inline-mode>`_ query"""
     chosen_inline_result: Optional[ChosenInlineResult] = None
@@ -56,7 +56,7 @@ class Update(TelegramObject):
     pre_checkout_query: Optional[PreCheckoutQuery] = None
     """*Optional*. New incoming pre-checkout query. Contains full information about checkout"""
     poll: Optional[Poll] = None
-    """*Optional*. New poll state. Bots receive only updates about stopped polls and polls, which are sent by the bot"""
+    """*Optional*. New poll state. Bots receive only updates about manually stopped polls and polls, which are sent by the bot"""
     poll_answer: Optional[PollAnswer] = None
     """*Optional*. A user changed their answer in a non-anonymous poll. Bots receive new votes only in polls that were sent by the bot itself."""
     my_chat_member: Optional[ChatMemberUpdated] = None

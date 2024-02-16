@@ -1,0 +1,25 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "chatboostadded",
+    "name": "ChatBoostAdded",
+    "description": "This object represents a service message about a user boosting a chat.",
+    "html_description": "<p>This object represents a service message about a user boosting a chat.</p>",
+    "rst_description": "This object represents a service message about a user boosting a chat.",
+    "annotations": [
+      {
+        "type": "Integer",
+        "description": "Number of boosts added by the user",
+        "html_description": "<td>Number of boosts added by the user</td>",
+        "rst_description": "Number of boosts added by the user\n",
+        "name": "boost_count",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

@@ -51,6 +51,7 @@ if TYPE_CHECKING:
     from .animation import Animation
     from .audio import Audio
     from .chat import Chat
+    from .chat_boost_added import ChatBoostAdded
     from .chat_shared import ChatShared
     from .contact import Contact
     from .dice import Dice
@@ -133,6 +134,8 @@ class Message(MaybeInaccessibleMessage):
     """*Optional*. Sender of the message; empty for messages sent to channels. For backward compatibility, the field contains a fake sender user in non-channel chats, if the message was sent on behalf of a chat."""
     sender_chat: Optional[Chat] = None
     """*Optional*. Sender of the message, sent on behalf of a chat. For example, the channel itself for channel posts, the supergroup itself for messages from anonymous group administrators, the linked channel for messages automatically forwarded to the discussion group. For backward compatibility, the field *from* contains a fake sender user in non-channel chats, if the message was sent on behalf of a chat."""
+    sender_boost_count: Optional[int] = None
+    """*Optional*. If the sender of the message boosted the chat, the number of boosts added by the user"""
     forward_origin: Optional[
         Union[MessageOriginUser, MessageOriginHiddenUser, MessageOriginChat, MessageOriginChannel]
     ] = None
@@ -147,6 +150,8 @@ class Message(MaybeInaccessibleMessage):
     """*Optional*. Information about the message that is being replied to, which may come from another chat or forum topic"""
     quote: Optional[TextQuote] = None
     """*Optional*. For replies that quote part of the original message, the quoted part of the message"""
+    reply_to_story: Optional[Story] = None
+    """*Optional*. For replies to a story, the original story"""
     via_bot: Optional[User] = None
     """*Optional*. Bot through which the message was sent"""
     edit_date: Optional[int] = None
@@ -239,6 +244,8 @@ class Message(MaybeInaccessibleMessage):
     """*Optional*. Telegram Passport data"""
     proximity_alert_triggered: Optional[ProximityAlertTriggered] = None
     """*Optional*. Service message. A user in the chat triggered another user's proximity alert while sharing Live Location."""
+    boost_added: Optional[ChatBoostAdded] = None
+    """*Optional*. Service message: user boosted the chat"""
     forum_topic_created: Optional[ForumTopicCreated] = None
     """*Optional*. Service message: forum topic created"""
     forum_topic_edited: Optional[ForumTopicEdited] = None
@@ -320,6 +327,7 @@ class Message(MaybeInaccessibleMessage):
             message_thread_id: Optional[int] = None,
             from_user: Optional[User] = None,
             sender_chat: Optional[Chat] = None,
+            sender_boost_count: Optional[int] = None,
             forward_origin: Optional[
                 Union[
                     MessageOriginUser,
@@ -333,6 +341,7 @@ class Message(MaybeInaccessibleMessage):
             reply_to_message: Optional[Message] = None,
             external_reply: Optional[ExternalReplyInfo] = None,
             quote: Optional[TextQuote] = None,
+            reply_to_story: Optional[Story] = None,
             via_bot: Optional[User] = None,
             edit_date: Optional[int] = None,
             has_protected_content: Optional[bool] = None,
@@ -379,6 +388,7 @@ class Message(MaybeInaccessibleMessage):
             write_access_allowed: Optional[WriteAccessAllowed] = None,
             passport_data: Optional[PassportData] = None,
             proximity_alert_triggered: Optional[ProximityAlertTriggered] = None,
+            boost_added: Optional[ChatBoostAdded] = None,
             forum_topic_created: Optional[ForumTopicCreated] = None,
             forum_topic_edited: Optional[ForumTopicEdited] = None,
             forum_topic_closed: Optional[ForumTopicClosed] = None,
@@ -415,12 +425,14 @@ class Message(MaybeInaccessibleMessage):
                 message_thread_id=message_thread_id,
                 from_user=from_user,
                 sender_chat=sender_chat,
+                sender_boost_count=sender_boost_count,
                 forward_origin=forward_origin,
                 is_topic_message=is_topic_message,
                 is_automatic_forward=is_automatic_forward,
                 reply_to_message=reply_to_message,
                 external_reply=external_reply,
                 quote=quote,
+                reply_to_story=reply_to_story,
                 via_bot=via_bot,
                 edit_date=edit_date,
                 has_protected_content=has_protected_content,
@@ -467,6 +479,7 @@ class Message(MaybeInaccessibleMessage):
                 write_access_allowed=write_access_allowed,
                 passport_data=passport_data,
                 proximity_alert_triggered=proximity_alert_triggered,
+                boost_added=boost_added,
                 forum_topic_created=forum_topic_created,
                 forum_topic_edited=forum_topic_edited,
                 forum_topic_closed=forum_topic_closed,
@@ -601,6 +614,8 @@ class Message(MaybeInaccessibleMessage):
             return ContentType.HAS_MEDIA_SPOILER
         if self.write_access_allowed:
             return ContentType.WRITE_ACCESS_ALLOWED
+        if self.boost_added:
+            return ContentType.BOOST_ADDED
 
         return ContentType.UNKNOWN
 

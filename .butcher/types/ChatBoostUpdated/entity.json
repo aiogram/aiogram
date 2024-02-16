@@ -21,9 +21,9 @@
       },
       {
         "type": "ChatBoost",
-        "description": "Infomation about the chat boost",
-        "html_description": "<td>Infomation about the chat boost</td>",
-        "rst_description": "Infomation about the chat boost\n",
+        "description": "Information about the chat boost",
+        "html_description": "<td>Information about the chat boost</td>",
+        "rst_description": "Information about the chat boost\n",
         "name": "boost",
         "required": true
       }

@@ -7,9 +7,9 @@
   "object": {
     "anchor": "inlinequeryresultgame",
     "name": "InlineQueryResultGame",
-    "description": "Represents a Game.\nNote: This will only work in Telegram versions released after October 1, 2016. Older clients will not display any inline results if a game result is among them.",
-    "html_description": "<p>Represents a <a href=\"#games\">Game</a>.</p><p><strong>Note:</strong> This will only work in Telegram versions released after October 1, 2016. Older clients will not display any inline results if a game result is among them.</p>",
-    "rst_description": "Represents a `Game <https://core.telegram.org/bots/api#games>`_.\n**Note:** This will only work in Telegram versions released after October 1, 2016. Older clients will not display any inline results if a game result is among them.",
+    "description": "Represents a Game.",
+    "html_description": "<p>Represents a <a href=\"#games\">Game</a>.</p>",
+    "rst_description": "Represents a `Game <https://core.telegram.org/bots/api#games>`_.",
     "annotations": [
       {
         "type": "String",

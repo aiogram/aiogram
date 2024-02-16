@@ -28,7 +28,7 @@
         "required": true
       },
       {
-        "type": "Float number",
+        "type": "Float",
         "description": "The radius of uncertainty for the location, measured in meters; 0-1500",
         "html_description": "<td><em>Optional</em>. The radius of uncertainty for the location, measured in meters; 0-1500</td>",
         "rst_description": "*Optional*. The radius of uncertainty for the location, measured in meters; 0-1500\n",

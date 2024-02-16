@@ -21,7 +21,7 @@ class InlineKeyboardButton(MutableTelegramObject):
     text: str
     """Label text on the button"""
     url: Optional[str] = None
-    """*Optional*. HTTP or tg:// URL to be opened when the button is pressed. Links :code:`tg://user?id=<user_id>` can be used to mention a user by their ID without using a username, if this is allowed by their privacy settings."""
+    """*Optional*. HTTP or tg:// URL to be opened when the button is pressed. Links :code:`tg://user?id=<user_id>` can be used to mention a user by their identifier without using a username, if this is allowed by their privacy settings."""
     callback_data: Optional[str] = None
     """*Optional*. Data to be sent in a `callback query <https://core.telegram.org/bots/api#callbackquery>`_ to the bot when button is pressed, 1-64 bytes"""
     web_app: Optional[WebAppInfo] = None

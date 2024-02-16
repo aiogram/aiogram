@@ -22,7 +22,7 @@ class PromoteChatMember(TelegramMethod[bool]):
     is_anonymous: Optional[bool] = None
     """Pass :code:`True` if the administrator's presence in the chat is hidden"""
     can_manage_chat: Optional[bool] = None
-    """Pass :code:`True` if the administrator can access the chat event log, boost list in channels, see channel members, report spam messages, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege"""
+    """Pass :code:`True` if the administrator can access the chat event log, get boost list, see hidden supergroup and channel members, report spam messages and ignore slow mode. Implied by any other administrator privilege."""
     can_delete_messages: Optional[bool] = None
     """Pass :code:`True` if the administrator can delete messages of other users"""
     can_manage_video_chats: Optional[bool] = None
@@ -35,18 +35,18 @@ class PromoteChatMember(TelegramMethod[bool]):
     """Pass :code:`True` if the administrator can change chat title, photo and other settings"""
     can_invite_users: Optional[bool] = None
     """Pass :code:`True` if the administrator can invite new users to the chat"""
+    can_post_stories: Optional[bool] = None
+    """Pass :code:`True` if the administrator can post stories to the chat"""
+    can_edit_stories: Optional[bool] = None
+    """Pass :code:`True` if the administrator can edit stories posted by other users"""
+    can_delete_stories: Optional[bool] = None
+    """Pass :code:`True` if the administrator can delete stories posted by other users"""
     can_post_messages: Optional[bool] = None
     """Pass :code:`True` if the administrator can post messages in the channel, or access channel statistics; channels only"""
     can_edit_messages: Optional[bool] = None
     """Pass :code:`True` if the administrator can edit messages of other users and can pin messages; channels only"""
     can_pin_messages: Optional[bool] = None
     """Pass :code:`True` if the administrator can pin messages, supergroups only"""
-    can_post_stories: Optional[bool] = None
-    """Pass :code:`True` if the administrator can post stories in the channel; channels only"""
-    can_edit_stories: Optional[bool] = None
-    """Pass :code:`True` if the administrator can edit stories posted by other users; channels only"""
-    can_delete_stories: Optional[bool] = None
-    """Pass :code:`True` if the administrator can delete stories posted by other users; channels only"""
     can_manage_topics: Optional[bool] = None
     """Pass :code:`True` if the user is allowed to create, rename, close, and reopen forum topics, supergroups only"""
 
@@ -67,12 +67,12 @@ class PromoteChatMember(TelegramMethod[bool]):
             can_promote_members: Optional[bool] = None,
             can_change_info: Optional[bool] = None,
             can_invite_users: Optional[bool] = None,
-            can_post_messages: Optional[bool] = None,
-            can_edit_messages: Optional[bool] = None,
-            can_pin_messages: Optional[bool] = None,
             can_post_stories: Optional[bool] = None,
             can_edit_stories: Optional[bool] = None,
             can_delete_stories: Optional[bool] = None,
+            can_post_messages: Optional[bool] = None,
+            can_edit_messages: Optional[bool] = None,
+            can_pin_messages: Optional[bool] = None,
             can_manage_topics: Optional[bool] = None,
             **__pydantic_kwargs: Any,
         ) -> None:
@@ -91,12 +91,12 @@ class PromoteChatMember(TelegramMethod[bool]):
                 can_promote_members=can_promote_members,
                 can_change_info=can_change_info,
                 can_invite_users=can_invite_users,
-                can_post_messages=can_post_messages,
-                can_edit_messages=can_edit_messages,
-                can_pin_messages=can_pin_messages,
                 can_post_stories=can_post_stories,
                 can_edit_stories=can_edit_stories,
                 can_delete_stories=can_delete_stories,
+                can_post_messages=can_post_messages,
+                can_edit_messages=can_edit_messages,
+                can_pin_messages=can_pin_messages,
                 can_manage_topics=can_manage_topics,
                 **__pydantic_kwargs,
             )

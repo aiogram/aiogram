@@ -1,7 +1,7 @@
 {
   "api": {
-    "version": "7.0",
-    "release_date": "2023-12-29"
+    "version": "7.1",
+    "release_date": "2024-02-16"
   },
   "items": [
     {
@@ -17,9 +17,9 @@
           "annotations": [
             {
               "type": "Integer",
-              "description": "The update's unique identifier. Update identifiers start from a certain positive number and increase sequentially. This ID becomes especially handy if you're using webhooks, since it allows you to ignore repeated updates or to restore the correct update sequence, should they get out of order. If there are no new updates for at least a week, then identifier of the next update will be chosen randomly instead of sequentially.",
-              "html_description": "<td>The update's unique identifier. Update identifiers start from a certain positive number and increase sequentially. This ID becomes especially handy if you're using <a href=\"#setwebhook\">webhooks</a>, since it allows you to ignore repeated updates or to restore the correct update sequence, should they get out of order. If there are no new updates for at least a week, then identifier of the next update will be chosen randomly instead of sequentially.</td>",
-              "rst_description": "The update's unique identifier. Update identifiers start from a certain positive number and increase sequentially. This ID becomes especially handy if you're using `webhooks <https://core.telegram.org/bots/api#setwebhook>`_, since it allows you to ignore repeated updates or to restore the correct update sequence, should they get out of order. If there are no new updates for at least a week, then identifier of the next update will be chosen randomly instead of sequentially.\n",
+              "description": "The update's unique identifier. Update identifiers start from a certain positive number and increase sequentially. This identifier becomes especially handy if you're using webhooks, since it allows you to ignore repeated updates or to restore the correct update sequence, should they get out of order. If there are no new updates for at least a week, then identifier of the next update will be chosen randomly instead of sequentially.",
+              "html_description": "<td>The update's unique identifier. Update identifiers start from a certain positive number and increase sequentially. This identifier becomes especially handy if you're using <a href=\"#setwebhook\">webhooks</a>, since it allows you to ignore repeated updates or to restore the correct update sequence, should they get out of order. If there are no new updates for at least a week, then identifier of the next update will be chosen randomly instead of sequentially.</td>",
+              "rst_description": "The update's unique identifier. Update identifiers start from a certain positive number and increase sequentially. This identifier becomes especially handy if you're using `webhooks <https://core.telegram.org/bots/api#setwebhook>`_, since it allows you to ignore repeated updates or to restore the correct update sequence, should they get out of order. If there are no new updates for at least a week, then identifier of the next update will be chosen randomly instead of sequentially.\n",
               "name": "update_id",
               "required": true
             },
@@ -33,9 +33,9 @@
             },
             {
               "type": "Message",
-              "description": "New version of a message that is known to the bot and was edited",
-              "html_description": "<td><em>Optional</em>. New version of a message that is known to the bot and was edited</td>",
-              "rst_description": "*Optional*. New version of a message that is known to the bot and was edited\n",
+              "description": "New version of a message that is known to the bot and was edited. This update may at times be triggered by changes to message fields that are either unavailable or not actively used by your bot.",
+              "html_description": "<td><em>Optional</em>. New version of a message that is known to the bot and was edited. This update may at times be triggered by changes to message fields that are either unavailable or not actively used by your bot.</td>",
+              "rst_description": "*Optional*. New version of a message that is known to the bot and was edited. This update may at times be triggered by changes to message fields that are either unavailable or not actively used by your bot.\n",
               "name": "edited_message",
               "required": false
             },
@@ -49,9 +49,9 @@
             },
             {
               "type": "Message",
-              "description": "New version of a channel post that is known to the bot and was edited",
-              "html_description": "<td><em>Optional</em>. New version of a channel post that is known to the bot and was edited</td>",
-              "rst_description": "*Optional*. New version of a channel post that is known to the bot and was edited\n",
+              "description": "New version of a channel post that is known to the bot and was edited. This update may at times be triggered by changes to message fields that are either unavailable or not actively used by your bot.",
+              "html_description": "<td><em>Optional</em>. New version of a channel post that is known to the bot and was edited. This update may at times be triggered by changes to message fields that are either unavailable or not actively used by your bot.</td>",
+              "rst_description": "*Optional*. New version of a channel post that is known to the bot and was edited. This update may at times be triggered by changes to message fields that are either unavailable or not actively used by your bot.\n",
               "name": "edited_channel_post",
               "required": false
             },
@@ -65,9 +65,9 @@
             },
             {
               "type": "MessageReactionCountUpdated",
-              "description": "Reactions to a message with anonymous reactions were changed. The bot must be an administrator in the chat and must explicitly specify \"message_reaction_count\" in the list of allowed_updates to receive these updates.",
-              "html_description": "<td><em>Optional</em>. Reactions to a message with anonymous reactions were changed. The bot must be an administrator in the chat and must explicitly specify <code>\"message_reaction_count\"</code> in the list of <em>allowed_updates</em> to receive these updates.</td>",
-              "rst_description": "*Optional*. Reactions to a message with anonymous reactions were changed. The bot must be an administrator in the chat and must explicitly specify :code:`\"message_reaction_count\"` in the list of *allowed_updates* to receive these updates.\n",
+              "description": "Reactions to a message with anonymous reactions were changed. The bot must be an administrator in the chat and must explicitly specify \"message_reaction_count\" in the list of allowed_updates to receive these updates. The updates are grouped and can be sent with delay up to a few minutes.",
+              "html_description": "<td><em>Optional</em>. Reactions to a message with anonymous reactions were changed. The bot must be an administrator in the chat and must explicitly specify <code>\"message_reaction_count\"</code> in the list of <em>allowed_updates</em> to receive these updates. The updates are grouped and can be sent with delay up to a few minutes.</td>",
+              "rst_description": "*Optional*. Reactions to a message with anonymous reactions were changed. The bot must be an administrator in the chat and must explicitly specify :code:`\"message_reaction_count\"` in the list of *allowed_updates* to receive these updates. The updates are grouped and can be sent with delay up to a few minutes.\n",
               "name": "message_reaction_count",
               "required": false
             },
@@ -113,9 +113,9 @@
             },
             {
               "type": "Poll",
-              "description": "New poll state. Bots receive only updates about stopped polls and polls, which are sent by the bot",
-              "html_description": "<td><em>Optional</em>. New poll state. Bots receive only updates about stopped polls and polls, which are sent by the bot</td>",
-              "rst_description": "*Optional*. New poll state. Bots receive only updates about stopped polls and polls, which are sent by the bot\n",
+              "description": "New poll state. Bots receive only updates about manually stopped polls and polls, which are sent by the bot",
+              "html_description": "<td><em>Optional</em>. New poll state. Bots receive only updates about manually stopped polls and polls, which are sent by the bot</td>",
+              "rst_description": "*Optional*. New poll state. Bots receive only updates about manually stopped polls and polls, which are sent by the bot\n",
               "name": "poll",
               "required": false
             },
@@ -701,10 +701,18 @@
             },
             {
               "type": "Integer",
-              "description": "For supergroups, the minimum allowed delay between consecutive messages sent by each unpriviledged user; in seconds. Returned only in getChat.",
-              "html_description": "<td><em>Optional</em>. For supergroups, the minimum allowed delay between consecutive messages sent by each unpriviledged user; in seconds. Returned only in <a href=\"#getchat\">getChat</a>.</td>",
-              "rst_description": "*Optional*. For supergroups, the minimum allowed delay between consecutive messages sent by each unpriviledged user; in seconds. Returned only in :class:`aiogram.methods.get_chat.GetChat`.\n",
+              "description": "For supergroups, the minimum allowed delay between consecutive messages sent by each unprivileged user; in seconds. Returned only in getChat.",
+              "html_description": "<td><em>Optional</em>. For supergroups, the minimum allowed delay between consecutive messages sent by each unprivileged user; in seconds. Returned only in <a href=\"#getchat\">getChat</a>.</td>",
+              "rst_description": "*Optional*. For supergroups, the minimum allowed delay between consecutive messages sent by each unprivileged user; in seconds. Returned only in :class:`aiogram.methods.get_chat.GetChat`.\n",
               "name": "slow_mode_delay",
+              "required": false
+            },
+            {
+              "type": "Integer",
+              "description": "For supergroups, the minimum number of boosts that a non-administrator user needs to add in order to ignore slow mode and chat permissions. Returned only in getChat.",
+              "html_description": "<td><em>Optional</em>. For supergroups, the minimum number of boosts that a non-administrator user needs to add in order to ignore slow mode and chat permissions. Returned only in <a href=\"#getchat\">getChat</a>.</td>",
+              "rst_description": "*Optional*. For supergroups, the minimum number of boosts that a non-administrator user needs to add in order to ignore slow mode and chat permissions. Returned only in :class:`aiogram.methods.get_chat.GetChat`.\n",
+              "name": "unrestrict_boost_count",
               "required": false
             },
             {
@@ -764,6 +772,14 @@
               "required": false
             },
             {
+              "type": "String",
+              "description": "For supergroups, the name of the group's custom emoji sticker set. Custom emoji from this set can be used by all users and bots in the group. Returned only in getChat.",
+              "html_description": "<td><em>Optional</em>. For supergroups, the name of the group's custom emoji sticker set. Custom emoji from this set can be used by all users and bots in the group. Returned only in <a href=\"#getchat\">getChat</a>.</td>",
+              "rst_description": "*Optional*. For supergroups, the name of the group's custom emoji sticker set. Custom emoji from this set can be used by all users and bots in the group. Returned only in :class:`aiogram.methods.get_chat.GetChat`.\n",
+              "name": "custom_emoji_sticker_set_name",
+              "required": false
+            },
+            {
               "type": "Integer",
               "description": "Unique identifier for the linked chat, i.e. the discussion group identifier for a channel and vice versa; for supergroups and channel chats. This identifier may be greater than 32 bits and some programming languages may have difficulty/silent defects in interpreting it. But it is smaller than 52 bits, so a signed 64 bit integer or double-precision float type are safe for storing this identifier. Returned only in getChat.",
               "html_description": "<td><em>Optional</em>. Unique identifier for the linked chat, i.e. the discussion group identifier for a channel and vice versa; for supergroups and channel chats. This identifier may be greater than 32 bits and some programming languages may have difficulty/silent defects in interpreting it. But it is smaller than 52 bits, so a signed 64 bit integer or double-precision float type are safe for storing this identifier. Returned only in <a href=\"#getchat\">getChat</a>.</td>",
@@ -819,6 +835,14 @@
               "html_description": "<td><em>Optional</em>. Sender of the message, sent on behalf of a chat. For example, the channel itself for channel posts, the supergroup itself for messages from anonymous group administrators, the linked channel for messages automatically forwarded to the discussion group. For backward compatibility, the field <em>from</em> contains a fake sender user in non-channel chats, if the message was sent on behalf of a chat.</td>",
               "rst_description": "*Optional*. Sender of the message, sent on behalf of a chat. For example, the channel itself for channel posts, the supergroup itself for messages from anonymous group administrators, the linked channel for messages automatically forwarded to the discussion group. For backward compatibility, the field *from* contains a fake sender user in non-channel chats, if the message was sent on behalf of a chat.\n",
               "name": "sender_chat",
+              "required": false
+            },
+            {
+              "type": "Integer",
+              "description": "If the sender of the message boosted the chat, the number of boosts added by the user",
+              "html_description": "<td><em>Optional</em>. If the sender of the message boosted the chat, the number of boosts added by the user</td>",
+              "rst_description": "*Optional*. If the sender of the message boosted the chat, the number of boosts added by the user\n",
+              "name": "sender_boost_count",
               "required": false
             },
             {
@@ -883,6 +907,14 @@
               "html_description": "<td><em>Optional</em>. For replies that quote part of the original message, the quoted part of the message</td>",
               "rst_description": "*Optional*. For replies that quote part of the original message, the quoted part of the message\n",
               "name": "quote",
+              "required": false
+            },
+            {
+              "type": "Story",
+              "description": "For replies to a story, the original story",
+              "html_description": "<td><em>Optional</em>. For replies to a story, the original story</td>",
+              "rst_description": "*Optional*. For replies to a story, the original story\n",
+              "name": "reply_to_story",
               "required": false
             },
             {
@@ -1251,6 +1283,14 @@
               "html_description": "<td><em>Optional</em>. Service message. A user in the chat triggered another user's proximity alert while sharing Live Location.</td>",
               "rst_description": "*Optional*. Service message. A user in the chat triggered another user's proximity alert while sharing Live Location.\n",
               "name": "proximity_alert_triggered",
+              "required": false
+            },
+            {
+              "type": "ChatBoostAdded",
+              "description": "Service message: user boosted the chat",
+              "html_description": "<td><em>Optional</em>. Service message: user boosted the chat</td>",
+              "rst_description": "*Optional*. Service message: user boosted the chat\n",
+              "name": "boost_added",
               "required": false
             },
             {
@@ -2257,10 +2297,27 @@
         {
           "anchor": "story",
           "name": "Story",
-          "description": "This object represents a message about a forwarded story in the chat. Currently holds no information.",
-          "html_description": "<p>This object represents a message about a forwarded story in the chat. Currently holds no information.</p>",
-          "rst_description": "This object represents a message about a forwarded story in the chat. Currently holds no information.",
-          "annotations": [],
+          "description": "This object represents a story.",
+          "html_description": "<p>This object represents a story.</p>",
+          "rst_description": "This object represents a story.",
+          "annotations": [
+            {
+              "type": "Chat",
+              "description": "Chat that posted the story",
+              "html_description": "<td>Chat that posted the story</td>",
+              "rst_description": "Chat that posted the story\n",
+              "name": "chat",
+              "required": true
+            },
+            {
+              "type": "Integer",
+              "description": "Unique identifier for the story in the chat",
+              "html_description": "<td>Unique identifier for the story in the chat</td>",
+              "rst_description": "Unique identifier for the story in the chat\n",
+              "name": "id",
+              "required": true
+            }
+          ],
           "category": "types"
         },
         {
@@ -2735,7 +2792,7 @@
               "required": true
             },
             {
-              "type": "Float number",
+              "type": "Float",
               "description": "The radius of uncertainty for the location, measured in meters; 0-1500",
               "html_description": "<td><em>Optional</em>. The radius of uncertainty for the location, measured in meters; 0-1500</td>",
               "rst_description": "*Optional*. The radius of uncertainty for the location, measured in meters; 0-1500\n",
@@ -2908,6 +2965,24 @@
               "html_description": "<td>New auto-delete time for messages in the chat; in seconds</td>",
               "rst_description": "New auto-delete time for messages in the chat; in seconds\n",
               "name": "message_auto_delete_time",
+              "required": true
+            }
+          ],
+          "category": "types"
+        },
+        {
+          "anchor": "chatboostadded",
+          "name": "ChatBoostAdded",
+          "description": "This object represents a service message about a user boosting a chat.",
+          "html_description": "<p>This object represents a service message about a user boosting a chat.</p>",
+          "rst_description": "This object represents a service message about a user boosting a chat.",
+          "annotations": [
+            {
+              "type": "Integer",
+              "description": "Number of boosts added by the user",
+              "html_description": "<td>Number of boosts added by the user</td>",
+              "rst_description": "Number of boosts added by the user\n",
+              "name": "boost_count",
               "required": true
             }
           ],
@@ -3258,9 +3333,9 @@
             },
             {
               "type": "Integer",
-              "description": "Identifier of the messsage with the giveaway in the chat",
-              "html_description": "<td>Identifier of the messsage with the giveaway in the chat</td>",
-              "rst_description": "Identifier of the messsage with the giveaway in the chat\n",
+              "description": "Identifier of the message with the giveaway in the chat",
+              "html_description": "<td>Identifier of the message with the giveaway in the chat</td>",
+              "rst_description": "Identifier of the message with the giveaway in the chat\n",
               "name": "giveaway_message_id",
               "required": true
             },
@@ -3398,17 +3473,17 @@
             },
             {
               "type": "Boolean",
-              "description": "True, if the media in the link preview is suppposed to be shrunk; ignored if the URL isn't explicitly specified or media size change isn't supported for the preview",
-              "html_description": "<td><em>Optional</em>. <em>True</em>, if the media in the link preview is suppposed to be shrunk; ignored if the URL isn't explicitly specified or media size change isn't supported for the preview</td>",
-              "rst_description": "*Optional*. :code:`True`, if the media in the link preview is suppposed to be shrunk; ignored if the URL isn't explicitly specified or media size change isn't supported for the preview\n",
+              "description": "True, if the media in the link preview is supposed to be shrunk; ignored if the URL isn't explicitly specified or media size change isn't supported for the preview",
+              "html_description": "<td><em>Optional</em>. <em>True</em>, if the media in the link preview is supposed to be shrunk; ignored if the URL isn't explicitly specified or media size change isn't supported for the preview</td>",
+              "rst_description": "*Optional*. :code:`True`, if the media in the link preview is supposed to be shrunk; ignored if the URL isn't explicitly specified or media size change isn't supported for the preview\n",
               "name": "prefer_small_media",
               "required": false
             },
             {
               "type": "Boolean",
-              "description": "True, if the media in the link preview is suppposed to be enlarged; ignored if the URL isn't explicitly specified or media size change isn't supported for the preview",
-              "html_description": "<td><em>Optional</em>. <em>True</em>, if the media in the link preview is suppposed to be enlarged; ignored if the URL isn't explicitly specified or media size change isn't supported for the preview</td>",
-              "rst_description": "*Optional*. :code:`True`, if the media in the link preview is suppposed to be enlarged; ignored if the URL isn't explicitly specified or media size change isn't supported for the preview\n",
+              "description": "True, if the media in the link preview is supposed to be enlarged; ignored if the URL isn't explicitly specified or media size change isn't supported for the preview",
+              "html_description": "<td><em>Optional</em>. <em>True</em>, if the media in the link preview is supposed to be enlarged; ignored if the URL isn't explicitly specified or media size change isn't supported for the preview</td>",
+              "rst_description": "*Optional*. :code:`True`, if the media in the link preview is supposed to be enlarged; ignored if the URL isn't explicitly specified or media size change isn't supported for the preview\n",
               "name": "prefer_large_media",
               "required": false
             },
@@ -3558,9 +3633,9 @@
             },
             {
               "type": "Boolean",
-              "description": "Use this parameter if you want to show the keyboard to specific users only. Targets: 1) users that are @mentioned in the text of the Message object; 2) if the bot's message is a reply (has reply_to_message_id), sender of the original message.\n\nExample: A user requests to change the bot's language, bot replies to the request with a keyboard to select the new language. Other users in the group don't see the keyboard.",
-              "html_description": "<td><em>Optional</em>. Use this parameter if you want to show the keyboard to specific users only. Targets: 1) users that are @mentioned in the <em>text</em> of the <a href=\"#message\">Message</a> object; 2) if the bot's message is a reply (has <em>reply_to_message_id</em>), sender of the original message.<br/>\n<br/>\n<em>Example:</em> A user requests to change the bot's language, bot replies to the request with a keyboard to select the new language. Other users in the group don't see the keyboard.</td>",
-              "rst_description": "*Optional*. Use this parameter if you want to show the keyboard to specific users only. Targets: 1) users that are @mentioned in the *text* of the :class:`aiogram.types.message.Message` object; 2) if the bot's message is a reply (has *reply_to_message_id*), sender of the original message.\n\n\n\n*Example:* A user requests to change the bot's language, bot replies to the request with a keyboard to select the new language. Other users in the group don't see the keyboard.\n",
+              "description": "Use this parameter if you want to show the keyboard to specific users only. Targets: 1) users that are @mentioned in the text of the Message object; 2) if the bot's message is a reply to a message in the same chat and forum topic, sender of the original message.\n\nExample: A user requests to change the bot's language, bot replies to the request with a keyboard to select the new language. Other users in the group don't see the keyboard.",
+              "html_description": "<td><em>Optional</em>. Use this parameter if you want to show the keyboard to specific users only. Targets: 1) users that are @mentioned in the <em>text</em> of the <a href=\"#message\">Message</a> object; 2) if the bot's message is a reply to a message in the same chat and forum topic, sender of the original message.<br/>\n<br/>\n<em>Example:</em> A user requests to change the bot's language, bot replies to the request with a keyboard to select the new language. Other users in the group don't see the keyboard.</td>",
+              "rst_description": "*Optional*. Use this parameter if you want to show the keyboard to specific users only. Targets: 1) users that are @mentioned in the *text* of the :class:`aiogram.types.message.Message` object; 2) if the bot's message is a reply to a message in the same chat and forum topic, sender of the original message.\n\n\n\n*Example:* A user requests to change the bot's language, bot replies to the request with a keyboard to select the new language. Other users in the group don't see the keyboard.\n",
               "name": "selective",
               "required": false
             }
@@ -3570,9 +3645,9 @@
         {
           "anchor": "keyboardbutton",
           "name": "KeyboardButton",
-          "description": "This object represents one button of the reply keyboard. For simple text buttons, String can be used instead of this object to specify the button text. The optional fields web_app, request_users, request_chat, request_contact, request_location, and request_poll are mutually exclusive.\nNote: request_contact and request_location options will only work in Telegram versions released after 9 April, 2016. Older clients will display unsupported message.\nNote: request_poll option will only work in Telegram versions released after 23 January, 2020. Older clients will display unsupported message.\nNote: web_app option will only work in Telegram versions released after 16 April, 2022. Older clients will display unsupported message.\nNote: request_users and request_chat options will only work in Telegram versions released after 3 February, 2023. Older clients will display unsupported message.",
-          "html_description": "<p>This object represents one button of the reply keyboard. For simple text buttons, <em>String</em> can be used instead of this object to specify the button text. The optional fields <em>web_app</em>, <em>request_users</em>, <em>request_chat</em>, <em>request_contact</em>, <em>request_location</em>, and <em>request_poll</em> are mutually exclusive.</p><p><strong>Note:</strong> <em>request_contact</em> and <em>request_location</em> options will only work in Telegram versions released after 9 April, 2016. Older clients will display <em>unsupported message</em>.<br/>\n<strong>Note:</strong> <em>request_poll</em> option will only work in Telegram versions released after 23 January, 2020. Older clients will display <em>unsupported message</em>.<br/>\n<strong>Note:</strong> <em>web_app</em> option will only work in Telegram versions released after 16 April, 2022. Older clients will display <em>unsupported message</em>.<br/>\n<strong>Note:</strong> <em>request_users</em> and <em>request_chat</em> options will only work in Telegram versions released after 3 February, 2023. Older clients will display <em>unsupported message</em>.</p>",
-          "rst_description": "This object represents one button of the reply keyboard. For simple text buttons, *String* can be used instead of this object to specify the button text. The optional fields *web_app*, *request_users*, *request_chat*, *request_contact*, *request_location*, and *request_poll* are mutually exclusive.\n**Note:** *request_contact* and *request_location* options will only work in Telegram versions released after 9 April, 2016. Older clients will display *unsupported message*.\n\n**Note:** *request_poll* option will only work in Telegram versions released after 23 January, 2020. Older clients will display *unsupported message*.\n\n**Note:** *web_app* option will only work in Telegram versions released after 16 April, 2022. Older clients will display *unsupported message*.\n\n**Note:** *request_users* and *request_chat* options will only work in Telegram versions released after 3 February, 2023. Older clients will display *unsupported message*.",
+          "description": "This object represents one button of the reply keyboard. For simple text buttons, String can be used instead of this object to specify the button text. The optional fields web_app, request_users, request_chat, request_contact, request_location, and request_poll are mutually exclusive.\nNote: request_users and request_chat options will only work in Telegram versions released after 3 February, 2023. Older clients will display unsupported message.",
+          "html_description": "<p>This object represents one button of the reply keyboard. For simple text buttons, <em>String</em> can be used instead of this object to specify the button text. The optional fields <em>web_app</em>, <em>request_users</em>, <em>request_chat</em>, <em>request_contact</em>, <em>request_location</em>, and <em>request_poll</em> are mutually exclusive.</p><p><strong>Note:</strong> <em>request_users</em> and <em>request_chat</em> options will only work in Telegram versions released after 3 February, 2023. Older clients will display <em>unsupported message</em>.</p>",
+          "rst_description": "This object represents one button of the reply keyboard. For simple text buttons, *String* can be used instead of this object to specify the button text. The optional fields *web_app*, *request_users*, *request_chat*, *request_contact*, *request_location*, and *request_poll* are mutually exclusive.\n**Note:** *request_users* and *request_chat* options will only work in Telegram versions released after 3 February, 2023. Older clients will display *unsupported message*.",
           "annotations": [
             {
               "type": "String",
@@ -3784,9 +3859,9 @@
             },
             {
               "type": "Boolean",
-              "description": "Use this parameter if you want to remove the keyboard for specific users only. Targets: 1) users that are @mentioned in the text of the Message object; 2) if the bot's message is a reply (has reply_to_message_id), sender of the original message.\n\nExample: A user votes in a poll, bot returns confirmation message in reply to the vote and removes the keyboard for that user, while still showing the keyboard with poll options to users who haven't voted yet.",
-              "html_description": "<td><em>Optional</em>. Use this parameter if you want to remove the keyboard for specific users only. Targets: 1) users that are @mentioned in the <em>text</em> of the <a href=\"#message\">Message</a> object; 2) if the bot's message is a reply (has <em>reply_to_message_id</em>), sender of the original message.<br/>\n<br/>\n<em>Example:</em> A user votes in a poll, bot returns confirmation message in reply to the vote and removes the keyboard for that user, while still showing the keyboard with poll options to users who haven't voted yet.</td>",
-              "rst_description": "*Optional*. Use this parameter if you want to remove the keyboard for specific users only. Targets: 1) users that are @mentioned in the *text* of the :class:`aiogram.types.message.Message` object; 2) if the bot's message is a reply (has *reply_to_message_id*), sender of the original message.\n\n\n\n*Example:* A user votes in a poll, bot returns confirmation message in reply to the vote and removes the keyboard for that user, while still showing the keyboard with poll options to users who haven't voted yet.\n",
+              "description": "Use this parameter if you want to remove the keyboard for specific users only. Targets: 1) users that are @mentioned in the text of the Message object; 2) if the bot's message is a reply to a message in the same chat and forum topic, sender of the original message.\n\nExample: A user votes in a poll, bot returns confirmation message in reply to the vote and removes the keyboard for that user, while still showing the keyboard with poll options to users who haven't voted yet.",
+              "html_description": "<td><em>Optional</em>. Use this parameter if you want to remove the keyboard for specific users only. Targets: 1) users that are @mentioned in the <em>text</em> of the <a href=\"#message\">Message</a> object; 2) if the bot's message is a reply to a message in the same chat and forum topic, sender of the original message.<br/>\n<br/>\n<em>Example:</em> A user votes in a poll, bot returns confirmation message in reply to the vote and removes the keyboard for that user, while still showing the keyboard with poll options to users who haven't voted yet.</td>",
+              "rst_description": "*Optional*. Use this parameter if you want to remove the keyboard for specific users only. Targets: 1) users that are @mentioned in the *text* of the :class:`aiogram.types.message.Message` object; 2) if the bot's message is a reply to a message in the same chat and forum topic, sender of the original message.\n\n\n\n*Example:* A user votes in a poll, bot returns confirmation message in reply to the vote and removes the keyboard for that user, while still showing the keyboard with poll options to users who haven't voted yet.\n",
               "name": "selective",
               "required": false
             }
@@ -3796,9 +3871,9 @@
         {
           "anchor": "inlinekeyboardmarkup",
           "name": "InlineKeyboardMarkup",
-          "description": "This object represents an inline keyboard that appears right next to the message it belongs to.\nNote: This will only work in Telegram versions released after 9 April, 2016. Older clients will display unsupported message.",
-          "html_description": "<p>This object represents an <a href=\"/bots/features#inline-keyboards\">inline keyboard</a> that appears right next to the message it belongs to.</p><p><strong>Note:</strong> This will only work in Telegram versions released after 9 April, 2016. Older clients will display <em>unsupported message</em>.</p>",
-          "rst_description": "This object represents an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_ that appears right next to the message it belongs to.\n**Note:** This will only work in Telegram versions released after 9 April, 2016. Older clients will display *unsupported message*.",
+          "description": "This object represents an inline keyboard that appears right next to the message it belongs to.",
+          "html_description": "<p>This object represents an <a href=\"/bots/features#inline-keyboards\">inline keyboard</a> that appears right next to the message it belongs to.</p>",
+          "rst_description": "This object represents an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_ that appears right next to the message it belongs to.",
           "annotations": [
             {
               "type": "Array of Array of InlineKeyboardButton",
@@ -3828,9 +3903,9 @@
             },
             {
               "type": "String",
-              "description": "HTTP or tg:// URL to be opened when the button is pressed. Links tg://user?id=<user_id> can be used to mention a user by their ID without using a username, if this is allowed by their privacy settings.",
-              "html_description": "<td><em>Optional</em>. HTTP or tg:// URL to be opened when the button is pressed. Links <code>tg://user?id=&lt;user_id&gt;</code> can be used to mention a user by their ID without using a username, if this is allowed by their privacy settings.</td>",
-              "rst_description": "*Optional*. HTTP or tg:// URL to be opened when the button is pressed. Links :code:`tg://user?id=<user_id>` can be used to mention a user by their ID without using a username, if this is allowed by their privacy settings.\n",
+              "description": "HTTP or tg:// URL to be opened when the button is pressed. Links tg://user?id=<user_id> can be used to mention a user by their identifier without using a username, if this is allowed by their privacy settings.",
+              "html_description": "<td><em>Optional</em>. HTTP or tg:// URL to be opened when the button is pressed. Links <code>tg://user?id=&lt;user_id&gt;</code> can be used to mention a user by their identifier without using a username, if this is allowed by their privacy settings.</td>",
+              "rst_description": "*Optional*. HTTP or tg:// URL to be opened when the button is pressed. Links :code:`tg://user?id=<user_id>` can be used to mention a user by their identifier without using a username, if this is allowed by their privacy settings.\n",
               "name": "url",
               "required": false
             },
@@ -4084,9 +4159,9 @@
             },
             {
               "type": "Boolean",
-              "description": "Use this parameter if you want to force reply from specific users only. Targets: 1) users that are @mentioned in the text of the Message object; 2) if the bot's message is a reply (has reply_to_message_id), sender of the original message.",
-              "html_description": "<td><em>Optional</em>. Use this parameter if you want to force reply from specific users only. Targets: 1) users that are @mentioned in the <em>text</em> of the <a href=\"#message\">Message</a> object; 2) if the bot's message is a reply (has <em>reply_to_message_id</em>), sender of the original message.</td>",
-              "rst_description": "*Optional*. Use this parameter if you want to force reply from specific users only. Targets: 1) users that are @mentioned in the *text* of the :class:`aiogram.types.message.Message` object; 2) if the bot's message is a reply (has *reply_to_message_id*), sender of the original message.\n",
+              "description": "Use this parameter if you want to force reply from specific users only. Targets: 1) users that are @mentioned in the text of the Message object; 2) if the bot's message is a reply to a message in the same chat and forum topic, sender of the original message.",
+              "html_description": "<td><em>Optional</em>. Use this parameter if you want to force reply from specific users only. Targets: 1) users that are @mentioned in the <em>text</em> of the <a href=\"#message\">Message</a> object; 2) if the bot's message is a reply to a message in the same chat and forum topic, sender of the original message.</td>",
+              "rst_description": "*Optional*. Use this parameter if you want to force reply from specific users only. Targets: 1) users that are @mentioned in the *text* of the :class:`aiogram.types.message.Message` object; 2) if the bot's message is a reply to a message in the same chat and forum topic, sender of the original message.\n",
               "name": "selective",
               "required": false
             }
@@ -4234,9 +4309,9 @@
             },
             {
               "type": "Boolean",
-              "description": "True, if the administrator can access the chat event log, boost list in channels, see channel members, report spam messages, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege",
-              "html_description": "<td><em>True</em>, if the administrator can access the chat event log, boost list in channels, see channel members, report spam messages, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege</td>",
-              "rst_description": ":code:`True`, if the administrator can access the chat event log, boost list in channels, see channel members, report spam messages, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege\n",
+              "description": "True, if the administrator can access the chat event log, get boost list, see hidden supergroup and channel members, report spam messages and ignore slow mode. Implied by any other administrator privilege.",
+              "html_description": "<td><em>True</em>, if the administrator can access the chat event log, get boost list, see hidden supergroup and channel members, report spam messages and ignore slow mode. Implied by any other administrator privilege.</td>",
+              "rst_description": ":code:`True`, if the administrator can access the chat event log, get boost list, see hidden supergroup and channel members, report spam messages and ignore slow mode. Implied by any other administrator privilege.\n",
               "name": "can_manage_chat",
               "required": true
             },
@@ -4290,6 +4365,30 @@
             },
             {
               "type": "Boolean",
+              "description": "True, if the administrator can post stories to the chat",
+              "html_description": "<td><em>True</em>, if the administrator can post stories to the chat</td>",
+              "rst_description": ":code:`True`, if the administrator can post stories to the chat\n",
+              "name": "can_post_stories",
+              "required": true
+            },
+            {
+              "type": "Boolean",
+              "description": "True, if the administrator can edit stories posted by other users",
+              "html_description": "<td><em>True</em>, if the administrator can edit stories posted by other users</td>",
+              "rst_description": ":code:`True`, if the administrator can edit stories posted by other users\n",
+              "name": "can_edit_stories",
+              "required": true
+            },
+            {
+              "type": "Boolean",
+              "description": "True, if the administrator can delete stories posted by other users",
+              "html_description": "<td><em>True</em>, if the administrator can delete stories posted by other users</td>",
+              "rst_description": ":code:`True`, if the administrator can delete stories posted by other users\n",
+              "name": "can_delete_stories",
+              "required": true
+            },
+            {
+              "type": "Boolean",
               "description": "True, if the administrator can post messages in the channel, or access channel statistics; channels only",
               "html_description": "<td><em>Optional</em>. <em>True</em>, if the administrator can post messages in the channel, or access channel statistics; channels only</td>",
               "rst_description": "*Optional*. :code:`True`, if the administrator can post messages in the channel, or access channel statistics; channels only\n",
@@ -4310,30 +4409,6 @@
               "html_description": "<td><em>Optional</em>. <em>True</em>, if the user is allowed to pin messages; groups and supergroups only</td>",
               "rst_description": "*Optional*. :code:`True`, if the user is allowed to pin messages; groups and supergroups only\n",
               "name": "can_pin_messages",
-              "required": false
-            },
-            {
-              "type": "Boolean",
-              "description": "True, if the administrator can post stories in the channel; channels only",
-              "html_description": "<td><em>Optional</em>. <em>True</em>, if the administrator can post stories in the channel; channels only</td>",
-              "rst_description": "*Optional*. :code:`True`, if the administrator can post stories in the channel; channels only\n",
-              "name": "can_post_stories",
-              "required": false
-            },
-            {
-              "type": "Boolean",
-              "description": "True, if the administrator can edit stories posted by other users; channels only",
-              "html_description": "<td><em>Optional</em>. <em>True</em>, if the administrator can edit stories posted by other users; channels only</td>",
-              "rst_description": "*Optional*. :code:`True`, if the administrator can edit stories posted by other users; channels only\n",
-              "name": "can_edit_stories",
-              "required": false
-            },
-            {
-              "type": "Boolean",
-              "description": "True, if the administrator can delete stories posted by other users; channels only",
-              "html_description": "<td><em>Optional</em>. <em>True</em>, if the administrator can delete stories posted by other users; channels only</td>",
-              "rst_description": "*Optional*. :code:`True`, if the administrator can delete stories posted by other users; channels only\n",
-              "name": "can_delete_stories",
               "required": false
             },
             {
@@ -4505,9 +4580,9 @@
             },
             {
               "type": "Boolean",
-              "description": "True, if the administrator can access the chat event log, boost list in channels, see channel members, report spam messages, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege",
-              "html_description": "<td><em>True</em>, if the administrator can access the chat event log, boost list in channels, see channel members, report spam messages, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege</td>",
-              "rst_description": ":code:`True`, if the administrator can access the chat event log, boost list in channels, see channel members, report spam messages, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege\n",
+              "description": "True, if the administrator can access the chat event log, get boost list, see hidden supergroup and channel members, report spam messages and ignore slow mode. Implied by any other administrator privilege.",
+              "html_description": "<td><em>True</em>, if the administrator can access the chat event log, get boost list, see hidden supergroup and channel members, report spam messages and ignore slow mode. Implied by any other administrator privilege.</td>",
+              "rst_description": ":code:`True`, if the administrator can access the chat event log, get boost list, see hidden supergroup and channel members, report spam messages and ignore slow mode. Implied by any other administrator privilege.\n",
               "name": "can_manage_chat",
               "required": true
             },
@@ -4561,6 +4636,30 @@
             },
             {
               "type": "Boolean",
+              "description": "True, if the administrator can post stories to the chat",
+              "html_description": "<td><em>True</em>, if the administrator can post stories to the chat</td>",
+              "rst_description": ":code:`True`, if the administrator can post stories to the chat\n",
+              "name": "can_post_stories",
+              "required": true
+            },
+            {
+              "type": "Boolean",
+              "description": "True, if the administrator can edit stories posted by other users",
+              "html_description": "<td><em>True</em>, if the administrator can edit stories posted by other users</td>",
+              "rst_description": ":code:`True`, if the administrator can edit stories posted by other users\n",
+              "name": "can_edit_stories",
+              "required": true
+            },
+            {
+              "type": "Boolean",
+              "description": "True, if the administrator can delete stories posted by other users",
+              "html_description": "<td><em>True</em>, if the administrator can delete stories posted by other users</td>",
+              "rst_description": ":code:`True`, if the administrator can delete stories posted by other users\n",
+              "name": "can_delete_stories",
+              "required": true
+            },
+            {
+              "type": "Boolean",
               "description": "True, if the administrator can post messages in the channel, or access channel statistics; channels only",
               "html_description": "<td><em>Optional</em>. <em>True</em>, if the administrator can post messages in the channel, or access channel statistics; channels only</td>",
               "rst_description": "*Optional*. :code:`True`, if the administrator can post messages in the channel, or access channel statistics; channels only\n",
@@ -4581,30 +4680,6 @@
               "html_description": "<td><em>Optional</em>. <em>True</em>, if the user is allowed to pin messages; groups and supergroups only</td>",
               "rst_description": "*Optional*. :code:`True`, if the user is allowed to pin messages; groups and supergroups only\n",
               "name": "can_pin_messages",
-              "required": false
-            },
-            {
-              "type": "Boolean",
-              "description": "True, if the administrator can post stories in the channel; channels only",
-              "html_description": "<td><em>Optional</em>. <em>True</em>, if the administrator can post stories in the channel; channels only</td>",
-              "rst_description": "*Optional*. :code:`True`, if the administrator can post stories in the channel; channels only\n",
-              "name": "can_post_stories",
-              "required": false
-            },
-            {
-              "type": "Boolean",
-              "description": "True, if the administrator can edit stories posted by other users; channels only",
-              "html_description": "<td><em>Optional</em>. <em>True</em>, if the administrator can edit stories posted by other users; channels only</td>",
-              "rst_description": "*Optional*. :code:`True`, if the administrator can edit stories posted by other users; channels only\n",
-              "name": "can_edit_stories",
-              "required": false
-            },
-            {
-              "type": "Boolean",
-              "description": "True, if the administrator can delete stories posted by other users; channels only",
-              "html_description": "<td><em>Optional</em>. <em>True</em>, if the administrator can delete stories posted by other users; channels only</td>",
-              "rst_description": "*Optional*. :code:`True`, if the administrator can delete stories posted by other users; channels only\n",
-              "name": "can_delete_stories",
               "required": false
             },
             {
@@ -5797,9 +5872,9 @@
             },
             {
               "type": "ChatBoost",
-              "description": "Infomation about the chat boost",
-              "html_description": "<td>Infomation about the chat boost</td>",
-              "rst_description": "Infomation about the chat boost\n",
+              "description": "Information about the chat boost",
+              "html_description": "<td>Information about the chat boost</td>",
+              "rst_description": "Information about the chat boost\n",
               "name": "boost",
               "required": true
             }
@@ -7572,7 +7647,7 @@
               "name": "message_thread_id"
             },
             {
-              "type": "Float number",
+              "type": "Float",
               "required": true,
               "description": "Latitude of the location",
               "html_description": "<td>Latitude of the location</td>",
@@ -7580,7 +7655,7 @@
               "name": "latitude"
             },
             {
-              "type": "Float number",
+              "type": "Float",
               "required": true,
               "description": "Longitude of the location",
               "html_description": "<td>Longitude of the location</td>",
@@ -7588,7 +7663,7 @@
               "name": "longitude"
             },
             {
-              "type": "Float number",
+              "type": "Float",
               "required": false,
               "description": "The radius of uncertainty for the location, measured in meters; 0-1500",
               "html_description": "<td>The radius of uncertainty for the location, measured in meters; 0-1500</td>",
@@ -7678,7 +7753,7 @@
               "name": "message_thread_id"
             },
             {
-              "type": "Float number",
+              "type": "Float",
               "required": true,
               "description": "Latitude of the venue",
               "html_description": "<td>Latitude of the venue</td>",
@@ -7686,7 +7761,7 @@
               "name": "latitude"
             },
             {
-              "type": "Float number",
+              "type": "Float",
               "required": true,
               "description": "Longitude of the venue",
               "html_description": "<td>Longitude of the venue</td>",
@@ -8374,9 +8449,9 @@
             {
               "type": "Boolean",
               "required": false,
-              "description": "Pass True if the administrator can access the chat event log, boost list in channels, see channel members, report spam messages, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege",
-              "html_description": "<td>Pass <em>True</em> if the administrator can access the chat event log, boost list in channels, see channel members, report spam messages, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege</td>",
-              "rst_description": "Pass :code:`True` if the administrator can access the chat event log, boost list in channels, see channel members, report spam messages, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege\n",
+              "description": "Pass True if the administrator can access the chat event log, get boost list, see hidden supergroup and channel members, report spam messages and ignore slow mode. Implied by any other administrator privilege.",
+              "html_description": "<td>Pass <em>True</em> if the administrator can access the chat event log, get boost list, see hidden supergroup and channel members, report spam messages and ignore slow mode. Implied by any other administrator privilege.</td>",
+              "rst_description": "Pass :code:`True` if the administrator can access the chat event log, get boost list, see hidden supergroup and channel members, report spam messages and ignore slow mode. Implied by any other administrator privilege.\n",
               "name": "can_manage_chat"
             },
             {
@@ -8430,6 +8505,30 @@
             {
               "type": "Boolean",
               "required": false,
+              "description": "Pass True if the administrator can post stories to the chat",
+              "html_description": "<td>Pass <em>True</em> if the administrator can post stories to the chat</td>",
+              "rst_description": "Pass :code:`True` if the administrator can post stories to the chat\n",
+              "name": "can_post_stories"
+            },
+            {
+              "type": "Boolean",
+              "required": false,
+              "description": "Pass True if the administrator can edit stories posted by other users",
+              "html_description": "<td>Pass <em>True</em> if the administrator can edit stories posted by other users</td>",
+              "rst_description": "Pass :code:`True` if the administrator can edit stories posted by other users\n",
+              "name": "can_edit_stories"
+            },
+            {
+              "type": "Boolean",
+              "required": false,
+              "description": "Pass True if the administrator can delete stories posted by other users",
+              "html_description": "<td>Pass <em>True</em> if the administrator can delete stories posted by other users</td>",
+              "rst_description": "Pass :code:`True` if the administrator can delete stories posted by other users\n",
+              "name": "can_delete_stories"
+            },
+            {
+              "type": "Boolean",
+              "required": false,
               "description": "Pass True if the administrator can post messages in the channel, or access channel statistics; channels only",
               "html_description": "<td>Pass <em>True</em> if the administrator can post messages in the channel, or access channel statistics; channels only</td>",
               "rst_description": "Pass :code:`True` if the administrator can post messages in the channel, or access channel statistics; channels only\n",
@@ -8450,30 +8549,6 @@
               "html_description": "<td>Pass <em>True</em> if the administrator can pin messages, supergroups only</td>",
               "rst_description": "Pass :code:`True` if the administrator can pin messages, supergroups only\n",
               "name": "can_pin_messages"
-            },
-            {
-              "type": "Boolean",
-              "required": false,
-              "description": "Pass True if the administrator can post stories in the channel; channels only",
-              "html_description": "<td>Pass <em>True</em> if the administrator can post stories in the channel; channels only</td>",
-              "rst_description": "Pass :code:`True` if the administrator can post stories in the channel; channels only\n",
-              "name": "can_post_stories"
-            },
-            {
-              "type": "Boolean",
-              "required": false,
-              "description": "Pass True if the administrator can edit stories posted by other users; channels only",
-              "html_description": "<td>Pass <em>True</em> if the administrator can edit stories posted by other users; channels only</td>",
-              "rst_description": "Pass :code:`True` if the administrator can edit stories posted by other users; channels only\n",
-              "name": "can_edit_stories"
-            },
-            {
-              "type": "Boolean",
-              "required": false,
-              "description": "Pass True if the administrator can delete stories posted by other users; channels only",
-              "html_description": "<td>Pass <em>True</em> if the administrator can delete stories posted by other users; channels only</td>",
-              "rst_description": "Pass :code:`True` if the administrator can delete stories posted by other users; channels only\n",
-              "name": "can_delete_stories"
             },
             {
               "type": "Boolean",
@@ -10050,7 +10125,7 @@
               "name": "inline_message_id"
             },
             {
-              "type": "Float number",
+              "type": "Float",
               "required": true,
               "description": "Latitude of new location",
               "html_description": "<td>Latitude of new location</td>",
@@ -10058,7 +10133,7 @@
               "name": "latitude"
             },
             {
-              "type": "Float number",
+              "type": "Float",
               "required": true,
               "description": "Longitude of new location",
               "html_description": "<td>Longitude of new location</td>",
@@ -10066,7 +10141,7 @@
               "name": "longitude"
             },
             {
-              "type": "Float number",
+              "type": "Float",
               "required": false,
               "description": "The radius of uncertainty for the location, measured in meters; 0-1500",
               "html_description": "<td>The radius of uncertainty for the location, measured in meters; 0-1500</td>",
@@ -10489,7 +10564,7 @@
               "required": true
             },
             {
-              "type": "Float number",
+              "type": "Float",
               "description": "Shift by X-axis measured in widths of the mask scaled to the face size, from left to right. For example, choosing -1.0 will place mask just to the left of the default mask position.",
               "html_description": "<td>Shift by X-axis measured in widths of the mask scaled to the face size, from left to right. For example, choosing -1.0 will place mask just to the left of the default mask position.</td>",
               "rst_description": "Shift by X-axis measured in widths of the mask scaled to the face size, from left to right. For example, choosing -1.0 will place mask just to the left of the default mask position.\n",
@@ -10497,7 +10572,7 @@
               "required": true
             },
             {
-              "type": "Float number",
+              "type": "Float",
               "description": "Shift by Y-axis measured in heights of the mask scaled to the face size, from top to bottom. For example, 1.0 will place the mask just below the default mask position.",
               "html_description": "<td>Shift by Y-axis measured in heights of the mask scaled to the face size, from top to bottom. For example, 1.0 will place the mask just below the default mask position.</td>",
               "rst_description": "Shift by Y-axis measured in heights of the mask scaled to the face size, from top to bottom. For example, 1.0 will place the mask just below the default mask position.\n",
@@ -10505,7 +10580,7 @@
               "required": true
             },
             {
-              "type": "Float number",
+              "type": "Float",
               "description": "Mask scaling coefficient. For example, 2.0 means double size.",
               "html_description": "<td>Mask scaling coefficient. For example, 2.0 means double size.</td>",
               "rst_description": "Mask scaling coefficient. For example, 2.0 means double size.\n",
@@ -11782,9 +11857,9 @@
         {
           "anchor": "inlinequeryresultaudio",
           "name": "InlineQueryResultAudio",
-          "description": "Represents a link to an MP3 audio file. By default, this audio file will be sent by the user. Alternatively, you can use input_message_content to send a message with the specified content instead of the audio.\nNote: This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.",
-          "html_description": "<p>Represents a link to an MP3 audio file. By default, this audio file will be sent by the user. Alternatively, you can use <em>input_message_content</em> to send a message with the specified content instead of the audio.</p><p><strong>Note:</strong> This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.</p>",
-          "rst_description": "Represents a link to an MP3 audio file. By default, this audio file will be sent by the user. Alternatively, you can use *input_message_content* to send a message with the specified content instead of the audio.\n**Note:** This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.",
+          "description": "Represents a link to an MP3 audio file. By default, this audio file will be sent by the user. Alternatively, you can use input_message_content to send a message with the specified content instead of the audio.",
+          "html_description": "<p>Represents a link to an MP3 audio file. By default, this audio file will be sent by the user. Alternatively, you can use <em>input_message_content</em> to send a message with the specified content instead of the audio.</p>",
+          "rst_description": "Represents a link to an MP3 audio file. By default, this audio file will be sent by the user. Alternatively, you can use *input_message_content* to send a message with the specified content instead of the audio.",
           "annotations": [
             {
               "type": "String",
@@ -11880,9 +11955,9 @@
         {
           "anchor": "inlinequeryresultvoice",
           "name": "InlineQueryResultVoice",
-          "description": "Represents a link to a voice recording in an .OGG container encoded with OPUS. By default, this voice recording will be sent by the user. Alternatively, you can use input_message_content to send a message with the specified content instead of the the voice message.\nNote: This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.",
-          "html_description": "<p>Represents a link to a voice recording in an .OGG container encoded with OPUS. By default, this voice recording will be sent by the user. Alternatively, you can use <em>input_message_content</em> to send a message with the specified content instead of the the voice message.</p><p><strong>Note:</strong> This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.</p>",
-          "rst_description": "Represents a link to a voice recording in an .OGG container encoded with OPUS. By default, this voice recording will be sent by the user. Alternatively, you can use *input_message_content* to send a message with the specified content instead of the the voice message.\n**Note:** This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.",
+          "description": "Represents a link to a voice recording in an .OGG container encoded with OPUS. By default, this voice recording will be sent by the user. Alternatively, you can use input_message_content to send a message with the specified content instead of the the voice message.",
+          "html_description": "<p>Represents a link to a voice recording in an .OGG container encoded with OPUS. By default, this voice recording will be sent by the user. Alternatively, you can use <em>input_message_content</em> to send a message with the specified content instead of the the voice message.</p>",
+          "rst_description": "Represents a link to a voice recording in an .OGG container encoded with OPUS. By default, this voice recording will be sent by the user. Alternatively, you can use *input_message_content* to send a message with the specified content instead of the the voice message.",
           "annotations": [
             {
               "type": "String",
@@ -11970,9 +12045,9 @@
         {
           "anchor": "inlinequeryresultdocument",
           "name": "InlineQueryResultDocument",
-          "description": "Represents a link to a file. By default, this file will be sent by the user with an optional caption. Alternatively, you can use input_message_content to send a message with the specified content instead of the file. Currently, only .PDF and .ZIP files can be sent using this method.\nNote: This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.",
-          "html_description": "<p>Represents a link to a file. By default, this file will be sent by the user with an optional caption. Alternatively, you can use <em>input_message_content</em> to send a message with the specified content instead of the file. Currently, only <strong>.PDF</strong> and <strong>.ZIP</strong> files can be sent using this method.</p><p><strong>Note:</strong> This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.</p>",
-          "rst_description": "Represents a link to a file. By default, this file will be sent by the user with an optional caption. Alternatively, you can use *input_message_content* to send a message with the specified content instead of the file. Currently, only **.PDF** and **.ZIP** files can be sent using this method.\n**Note:** This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.",
+          "description": "Represents a link to a file. By default, this file will be sent by the user with an optional caption. Alternatively, you can use input_message_content to send a message with the specified content instead of the file. Currently, only .PDF and .ZIP files can be sent using this method.",
+          "html_description": "<p>Represents a link to a file. By default, this file will be sent by the user with an optional caption. Alternatively, you can use <em>input_message_content</em> to send a message with the specified content instead of the file. Currently, only <strong>.PDF</strong> and <strong>.ZIP</strong> files can be sent using this method.</p>",
+          "rst_description": "Represents a link to a file. By default, this file will be sent by the user with an optional caption. Alternatively, you can use *input_message_content* to send a message with the specified content instead of the file. Currently, only **.PDF** and **.ZIP** files can be sent using this method.",
           "annotations": [
             {
               "type": "String",
@@ -12092,9 +12167,9 @@
         {
           "anchor": "inlinequeryresultlocation",
           "name": "InlineQueryResultLocation",
-          "description": "Represents a location on a map. By default, the location will be sent by the user. Alternatively, you can use input_message_content to send a message with the specified content instead of the location.\nNote: This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.",
-          "html_description": "<p>Represents a location on a map. By default, the location will be sent by the user. Alternatively, you can use <em>input_message_content</em> to send a message with the specified content instead of the location.</p><p><strong>Note:</strong> This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.</p>",
-          "rst_description": "Represents a location on a map. By default, the location will be sent by the user. Alternatively, you can use *input_message_content* to send a message with the specified content instead of the location.\n**Note:** This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.",
+          "description": "Represents a location on a map. By default, the location will be sent by the user. Alternatively, you can use input_message_content to send a message with the specified content instead of the location.",
+          "html_description": "<p>Represents a location on a map. By default, the location will be sent by the user. Alternatively, you can use <em>input_message_content</em> to send a message with the specified content instead of the location.</p>",
+          "rst_description": "Represents a location on a map. By default, the location will be sent by the user. Alternatively, you can use *input_message_content* to send a message with the specified content instead of the location.",
           "annotations": [
             {
               "type": "String",
@@ -12113,7 +12188,7 @@
               "required": true
             },
             {
-              "type": "Float number",
+              "type": "Float",
               "description": "Location latitude in degrees",
               "html_description": "<td>Location latitude in degrees</td>",
               "rst_description": "Location latitude in degrees\n",
@@ -12121,7 +12196,7 @@
               "required": true
             },
             {
-              "type": "Float number",
+              "type": "Float",
               "description": "Location longitude in degrees",
               "html_description": "<td>Location longitude in degrees</td>",
               "rst_description": "Location longitude in degrees\n",
@@ -12137,7 +12212,7 @@
               "required": true
             },
             {
-              "type": "Float number",
+              "type": "Float",
               "description": "The radius of uncertainty for the location, measured in meters; 0-1500",
               "html_description": "<td><em>Optional</em>. The radius of uncertainty for the location, measured in meters; 0-1500</td>",
               "rst_description": "*Optional*. The radius of uncertainty for the location, measured in meters; 0-1500\n",
@@ -12214,9 +12289,9 @@
         {
           "anchor": "inlinequeryresultvenue",
           "name": "InlineQueryResultVenue",
-          "description": "Represents a venue. By default, the venue will be sent by the user. Alternatively, you can use input_message_content to send a message with the specified content instead of the venue.\nNote: This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.",
-          "html_description": "<p>Represents a venue. By default, the venue will be sent by the user. Alternatively, you can use <em>input_message_content</em> to send a message with the specified content instead of the venue.</p><p><strong>Note:</strong> This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.</p>",
-          "rst_description": "Represents a venue. By default, the venue will be sent by the user. Alternatively, you can use *input_message_content* to send a message with the specified content instead of the venue.\n**Note:** This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.",
+          "description": "Represents a venue. By default, the venue will be sent by the user. Alternatively, you can use input_message_content to send a message with the specified content instead of the venue.",
+          "html_description": "<p>Represents a venue. By default, the venue will be sent by the user. Alternatively, you can use <em>input_message_content</em> to send a message with the specified content instead of the venue.</p>",
+          "rst_description": "Represents a venue. By default, the venue will be sent by the user. Alternatively, you can use *input_message_content* to send a message with the specified content instead of the venue.",
           "annotations": [
             {
               "type": "String",
@@ -12344,9 +12419,9 @@
         {
           "anchor": "inlinequeryresultcontact",
           "name": "InlineQueryResultContact",
-          "description": "Represents a contact with a phone number. By default, this contact will be sent by the user. Alternatively, you can use input_message_content to send a message with the specified content instead of the contact.\nNote: This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.",
-          "html_description": "<p>Represents a contact with a phone number. By default, this contact will be sent by the user. Alternatively, you can use <em>input_message_content</em> to send a message with the specified content instead of the contact.</p><p><strong>Note:</strong> This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.</p>",
-          "rst_description": "Represents a contact with a phone number. By default, this contact will be sent by the user. Alternatively, you can use *input_message_content* to send a message with the specified content instead of the contact.\n**Note:** This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.",
+          "description": "Represents a contact with a phone number. By default, this contact will be sent by the user. Alternatively, you can use input_message_content to send a message with the specified content instead of the contact.",
+          "html_description": "<p>Represents a contact with a phone number. By default, this contact will be sent by the user. Alternatively, you can use <em>input_message_content</em> to send a message with the specified content instead of the contact.</p>",
+          "rst_description": "Represents a contact with a phone number. By default, this contact will be sent by the user. Alternatively, you can use *input_message_content* to send a message with the specified content instead of the contact.",
           "annotations": [
             {
               "type": "String",
@@ -12442,9 +12517,9 @@
         {
           "anchor": "inlinequeryresultgame",
           "name": "InlineQueryResultGame",
-          "description": "Represents a Game.\nNote: This will only work in Telegram versions released after October 1, 2016. Older clients will not display any inline results if a game result is among them.",
-          "html_description": "<p>Represents a <a href=\"#games\">Game</a>.</p><p><strong>Note:</strong> This will only work in Telegram versions released after October 1, 2016. Older clients will not display any inline results if a game result is among them.</p>",
-          "rst_description": "Represents a `Game <https://core.telegram.org/bots/api#games>`_.\n**Note:** This will only work in Telegram versions released after October 1, 2016. Older clients will not display any inline results if a game result is among them.",
+          "description": "Represents a Game.",
+          "html_description": "<p>Represents a <a href=\"#games\">Game</a>.</p>",
+          "rst_description": "Represents a `Game <https://core.telegram.org/bots/api#games>`_.",
           "annotations": [
             {
               "type": "String",
@@ -12738,9 +12813,9 @@
         {
           "anchor": "inlinequeryresultcachedsticker",
           "name": "InlineQueryResultCachedSticker",
-          "description": "Represents a link to a sticker stored on the Telegram servers. By default, this sticker will be sent by the user. Alternatively, you can use input_message_content to send a message with the specified content instead of the sticker.\nNote: This will only work in Telegram versions released after 9 April, 2016 for static stickers and after 06 July, 2019 for animated stickers. Older clients will ignore them.",
-          "html_description": "<p>Represents a link to a sticker stored on the Telegram servers. By default, this sticker will be sent by the user. Alternatively, you can use <em>input_message_content</em> to send a message with the specified content instead of the sticker.</p><p><strong>Note:</strong> This will only work in Telegram versions released after 9 April, 2016 for static stickers and after 06 July, 2019 for <a href=\"https://telegram.org/blog/animated-stickers\">animated stickers</a>. Older clients will ignore them.</p>",
-          "rst_description": "Represents a link to a sticker stored on the Telegram servers. By default, this sticker will be sent by the user. Alternatively, you can use *input_message_content* to send a message with the specified content instead of the sticker.\n**Note:** This will only work in Telegram versions released after 9 April, 2016 for static stickers and after 06 July, 2019 for `animated stickers <https://telegram.org/blog/animated-stickers>`_. Older clients will ignore them.",
+          "description": "Represents a link to a sticker stored on the Telegram servers. By default, this sticker will be sent by the user. Alternatively, you can use input_message_content to send a message with the specified content instead of the sticker.",
+          "html_description": "<p>Represents a link to a sticker stored on the Telegram servers. By default, this sticker will be sent by the user. Alternatively, you can use <em>input_message_content</em> to send a message with the specified content instead of the sticker.</p>",
+          "rst_description": "Represents a link to a sticker stored on the Telegram servers. By default, this sticker will be sent by the user. Alternatively, you can use *input_message_content* to send a message with the specified content instead of the sticker.",
           "annotations": [
             {
               "type": "String",
@@ -12788,9 +12863,9 @@
         {
           "anchor": "inlinequeryresultcacheddocument",
           "name": "InlineQueryResultCachedDocument",
-          "description": "Represents a link to a file stored on the Telegram servers. By default, this file will be sent by the user with an optional caption. Alternatively, you can use input_message_content to send a message with the specified content instead of the file.\nNote: This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.",
-          "html_description": "<p>Represents a link to a file stored on the Telegram servers. By default, this file will be sent by the user with an optional caption. Alternatively, you can use <em>input_message_content</em> to send a message with the specified content instead of the file.</p><p><strong>Note:</strong> This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.</p>",
-          "rst_description": "Represents a link to a file stored on the Telegram servers. By default, this file will be sent by the user with an optional caption. Alternatively, you can use *input_message_content* to send a message with the specified content instead of the file.\n**Note:** This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.",
+          "description": "Represents a link to a file stored on the Telegram servers. By default, this file will be sent by the user with an optional caption. Alternatively, you can use input_message_content to send a message with the specified content instead of the file.",
+          "html_description": "<p>Represents a link to a file stored on the Telegram servers. By default, this file will be sent by the user with an optional caption. Alternatively, you can use <em>input_message_content</em> to send a message with the specified content instead of the file.</p>",
+          "rst_description": "Represents a link to a file stored on the Telegram servers. By default, this file will be sent by the user with an optional caption. Alternatively, you can use *input_message_content* to send a message with the specified content instead of the file.",
           "annotations": [
             {
               "type": "String",
@@ -12968,9 +13043,9 @@
         {
           "anchor": "inlinequeryresultcachedvoice",
           "name": "InlineQueryResultCachedVoice",
-          "description": "Represents a link to a voice message stored on the Telegram servers. By default, this voice message will be sent by the user. Alternatively, you can use input_message_content to send a message with the specified content instead of the voice message.\nNote: This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.",
-          "html_description": "<p>Represents a link to a voice message stored on the Telegram servers. By default, this voice message will be sent by the user. Alternatively, you can use <em>input_message_content</em> to send a message with the specified content instead of the voice message.</p><p><strong>Note:</strong> This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.</p>",
-          "rst_description": "Represents a link to a voice message stored on the Telegram servers. By default, this voice message will be sent by the user. Alternatively, you can use *input_message_content* to send a message with the specified content instead of the voice message.\n**Note:** This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.",
+          "description": "Represents a link to a voice message stored on the Telegram servers. By default, this voice message will be sent by the user. Alternatively, you can use input_message_content to send a message with the specified content instead of the voice message.",
+          "html_description": "<p>Represents a link to a voice message stored on the Telegram servers. By default, this voice message will be sent by the user. Alternatively, you can use <em>input_message_content</em> to send a message with the specified content instead of the voice message.</p>",
+          "rst_description": "Represents a link to a voice message stored on the Telegram servers. By default, this voice message will be sent by the user. Alternatively, you can use *input_message_content* to send a message with the specified content instead of the voice message.",
           "annotations": [
             {
               "type": "String",
@@ -13050,9 +13125,9 @@
         {
           "anchor": "inlinequeryresultcachedaudio",
           "name": "InlineQueryResultCachedAudio",
-          "description": "Represents a link to an MP3 audio file stored on the Telegram servers. By default, this audio file will be sent by the user. Alternatively, you can use input_message_content to send a message with the specified content instead of the audio.\nNote: This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.",
-          "html_description": "<p>Represents a link to an MP3 audio file stored on the Telegram servers. By default, this audio file will be sent by the user. Alternatively, you can use <em>input_message_content</em> to send a message with the specified content instead of the audio.</p><p><strong>Note:</strong> This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.</p>",
-          "rst_description": "Represents a link to an MP3 audio file stored on the Telegram servers. By default, this audio file will be sent by the user. Alternatively, you can use *input_message_content* to send a message with the specified content instead of the audio.\n**Note:** This will only work in Telegram versions released after 9 April, 2016. Older clients will ignore them.",
+          "description": "Represents a link to an MP3 audio file stored on the Telegram servers. By default, this audio file will be sent by the user. Alternatively, you can use input_message_content to send a message with the specified content instead of the audio.",
+          "html_description": "<p>Represents a link to an MP3 audio file stored on the Telegram servers. By default, this audio file will be sent by the user. Alternatively, you can use <em>input_message_content</em> to send a message with the specified content instead of the audio.</p>",
+          "rst_description": "Represents a link to an MP3 audio file stored on the Telegram servers. By default, this audio file will be sent by the user. Alternatively, you can use *input_message_content* to send a message with the specified content instead of the audio.",
           "annotations": [
             {
               "type": "String",
@@ -13196,7 +13271,7 @@
               "required": true
             },
             {
-              "type": "Float number",
+              "type": "Float",
               "description": "The radius of uncertainty for the location, measured in meters; 0-1500",
               "html_description": "<td><em>Optional</em>. The radius of uncertainty for the location, measured in meters; 0-1500</td>",
               "rst_description": "*Optional*. The radius of uncertainty for the location, measured in meters; 0-1500\n",
@@ -14474,7 +14549,7 @@
           "category": "types"
         }
       ],
-      "description": "Your bot can accept payments from Telegram users. Please see the introduction to payments for more details on the process and how to set up payments for your bot. Please note that users will need Telegram v.4.0 or higher to use payments (released on May 18, 2017)."
+      "description": "Your bot can accept payments from Telegram users. Please see the introduction to payments for more details on the process and how to set up payments for your bot."
     },
     {
       "title": "Telegram Passport",

@@ -315,6 +315,9 @@ class TestChatMemberUpdatedStatusFilter:
         "can_send_polls": True,
         "can_send_other_messages": True,
         "can_add_web_page_previews": True,
+        "can_post_stories": True,
+        "can_edit_stories": True,
+        "can_delete_stories": True,
     }
 
     @pytest.mark.parametrize(

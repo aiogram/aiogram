@@ -28,7 +28,7 @@
         "name": "message_thread_id"
       },
       {
-        "type": "Float number",
+        "type": "Float",
         "required": true,
         "description": "Latitude of the location",
         "html_description": "<td>Latitude of the location</td>",
@@ -36,7 +36,7 @@
         "name": "latitude"
       },
       {
-        "type": "Float number",
+        "type": "Float",
         "required": true,
         "description": "Longitude of the location",
         "html_description": "<td>Longitude of the location</td>",
@@ -44,7 +44,7 @@
         "name": "longitude"
       },
       {
-        "type": "Float number",
+        "type": "Float",
         "required": false,
         "description": "The radius of uncertainty for the location, measured in meters; 0-1500",
         "html_description": "<td>The radius of uncertainty for the location, measured in meters; 0-1500</td>",

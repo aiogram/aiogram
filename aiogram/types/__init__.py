@@ -22,6 +22,7 @@ from .callback_query import CallbackQuery
 from .chat import Chat
 from .chat_administrator_rights import ChatAdministratorRights
 from .chat_boost import ChatBoost
+from .chat_boost_added import ChatBoostAdded
 from .chat_boost_removed import ChatBoostRemoved
 from .chat_boost_source import ChatBoostSource
 from .chat_boost_source_gift_code import ChatBoostSourceGiftCode
@@ -213,6 +214,7 @@ __all__ = (
     "Chat",
     "ChatAdministratorRights",
     "ChatBoost",
+    "ChatBoostAdded",
     "ChatBoostRemoved",
     "ChatBoostSource",
     "ChatBoostSourceGiftCode",

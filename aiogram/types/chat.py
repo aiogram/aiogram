@@ -104,7 +104,9 @@ class Chat(TelegramObject):
     permissions: Optional[ChatPermissions] = None
     """*Optional*. Default chat member permissions, for groups and supergroups. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
     slow_mode_delay: Optional[int] = None
-    """*Optional*. For supergroups, the minimum allowed delay between consecutive messages sent by each unpriviledged user; in seconds. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
+    """*Optional*. For supergroups, the minimum allowed delay between consecutive messages sent by each unprivileged user; in seconds. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
+    unrestrict_boost_count: Optional[int] = None
+    """*Optional*. For supergroups, the minimum number of boosts that a non-administrator user needs to add in order to ignore slow mode and chat permissions. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
     message_auto_delete_time: Optional[int] = None
     """*Optional*. The time after which all messages sent to the chat will be automatically deleted; in seconds. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
     has_aggressive_anti_spam_enabled: Optional[bool] = None
@@ -119,6 +121,8 @@ class Chat(TelegramObject):
     """*Optional*. For supergroups, name of group sticker set. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
     can_set_sticker_set: Optional[bool] = None
     """*Optional*. :code:`True`, if the bot can change the group sticker set. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
+    custom_emoji_sticker_set_name: Optional[str] = None
+    """*Optional*. For supergroups, the name of the group's custom emoji sticker set. Custom emoji from this set can be used by all users and bots in the group. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
     linked_chat_id: Optional[int] = None
     """*Optional*. Unique identifier for the linked chat, i.e. the discussion group identifier for a channel and vice versa; for supergroups and channel chats. This identifier may be greater than 32 bits and some programming languages may have difficulty/silent defects in interpreting it. But it is smaller than 52 bits, so a signed 64 bit integer or double-precision float type are safe for storing this identifier. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
     location: Optional[ChatLocation] = None
@@ -159,6 +163,7 @@ class Chat(TelegramObject):
             pinned_message: Optional[Message] = None,
             permissions: Optional[ChatPermissions] = None,
             slow_mode_delay: Optional[int] = None,
+            unrestrict_boost_count: Optional[int] = None,
             message_auto_delete_time: Optional[int] = None,
             has_aggressive_anti_spam_enabled: Optional[bool] = None,
             has_hidden_members: Optional[bool] = None,
@@ -166,6 +171,7 @@ class Chat(TelegramObject):
             has_visible_history: Optional[bool] = None,
             sticker_set_name: Optional[str] = None,
             can_set_sticker_set: Optional[bool] = None,
+            custom_emoji_sticker_set_name: Optional[str] = None,
             linked_chat_id: Optional[int] = None,
             location: Optional[ChatLocation] = None,
             **__pydantic_kwargs: Any,
@@ -201,6 +207,7 @@ class Chat(TelegramObject):
                 pinned_message=pinned_message,
                 permissions=permissions,
                 slow_mode_delay=slow_mode_delay,
+                unrestrict_boost_count=unrestrict_boost_count,
                 message_auto_delete_time=message_auto_delete_time,
                 has_aggressive_anti_spam_enabled=has_aggressive_anti_spam_enabled,
                 has_hidden_members=has_hidden_members,
@@ -208,6 +215,7 @@ class Chat(TelegramObject):
                 has_visible_history=has_visible_history,
                 sticker_set_name=sticker_set_name,
                 can_set_sticker_set=can_set_sticker_set,
+                custom_emoji_sticker_set_name=custom_emoji_sticker_set_name,
                 linked_chat_id=linked_chat_id,
                 location=location,
                 **__pydantic_kwargs,
@@ -845,12 +853,12 @@ class Chat(TelegramObject):
         can_promote_members: Optional[bool] = None,
         can_change_info: Optional[bool] = None,
         can_invite_users: Optional[bool] = None,
-        can_post_messages: Optional[bool] = None,
-        can_edit_messages: Optional[bool] = None,
-        can_pin_messages: Optional[bool] = None,
         can_post_stories: Optional[bool] = None,
         can_edit_stories: Optional[bool] = None,
         can_delete_stories: Optional[bool] = None,
+        can_post_messages: Optional[bool] = None,
+        can_edit_messages: Optional[bool] = None,
+        can_pin_messages: Optional[bool] = None,
         can_manage_topics: Optional[bool] = None,
         **kwargs: Any,
     ) -> PromoteChatMember:
@@ -866,19 +874,19 @@ class Chat(TelegramObject):
 
         :param user_id: Unique identifier of the target user
         :param is_anonymous: Pass :code:`True` if the administrator's presence in the chat is hidden
-        :param can_manage_chat: Pass :code:`True` if the administrator can access the chat event log, boost list in channels, see channel members, report spam messages, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege
+        :param can_manage_chat: Pass :code:`True` if the administrator can access the chat event log, get boost list, see hidden supergroup and channel members, report spam messages and ignore slow mode. Implied by any other administrator privilege.
         :param can_delete_messages: Pass :code:`True` if the administrator can delete messages of other users
         :param can_manage_video_chats: Pass :code:`True` if the administrator can manage video chats
         :param can_restrict_members: Pass :code:`True` if the administrator can restrict, ban or unban chat members, or access supergroup statistics
         :param can_promote_members: Pass :code:`True` if the administrator can add new administrators with a subset of their own privileges or demote administrators that they have promoted, directly or indirectly (promoted by administrators that were appointed by him)
         :param can_change_info: Pass :code:`True` if the administrator can change chat title, photo and other settings
         :param can_invite_users: Pass :code:`True` if the administrator can invite new users to the chat
+        :param can_post_stories: Pass :code:`True` if the administrator can post stories to the chat
+        :param can_edit_stories: Pass :code:`True` if the administrator can edit stories posted by other users
+        :param can_delete_stories: Pass :code:`True` if the administrator can delete stories posted by other users
         :param can_post_messages: Pass :code:`True` if the administrator can post messages in the channel, or access channel statistics; channels only
         :param can_edit_messages: Pass :code:`True` if the administrator can edit messages of other users and can pin messages; channels only
         :param can_pin_messages: Pass :code:`True` if the administrator can pin messages, supergroups only
-        :param can_post_stories: Pass :code:`True` if the administrator can post stories in the channel; channels only
-        :param can_edit_stories: Pass :code:`True` if the administrator can edit stories posted by other users; channels only
-        :param can_delete_stories: Pass :code:`True` if the administrator can delete stories posted by other users; channels only
         :param can_manage_topics: Pass :code:`True` if the user is allowed to create, rename, close, and reopen forum topics, supergroups only
         :return: instance of method :class:`aiogram.methods.promote_chat_member.PromoteChatMember`
         """
@@ -898,12 +906,12 @@ class Chat(TelegramObject):
             can_promote_members=can_promote_members,
             can_change_info=can_change_info,
             can_invite_users=can_invite_users,
-            can_post_messages=can_post_messages,
-            can_edit_messages=can_edit_messages,
-            can_pin_messages=can_pin_messages,
             can_post_stories=can_post_stories,
             can_edit_stories=can_edit_stories,
             can_delete_stories=can_delete_stories,
+            can_post_messages=can_post_messages,
+            can_edit_messages=can_edit_messages,
+            can_pin_messages=can_pin_messages,
             can_manage_topics=can_manage_topics,
             **kwargs,
         ).as_(self._bot)

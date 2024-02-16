@@ -21,9 +21,9 @@
       },
       {
         "type": "Integer",
-        "description": "Identifier of the messsage with the giveaway in the chat",
-        "html_description": "<td>Identifier of the messsage with the giveaway in the chat</td>",
-        "rst_description": "Identifier of the messsage with the giveaway in the chat\n",
+        "description": "Identifier of the message with the giveaway in the chat",
+        "html_description": "<td>Identifier of the message with the giveaway in the chat</td>",
+        "rst_description": "Identifier of the message with the giveaway in the chat\n",
         "name": "giveaway_message_id",
         "required": true
       },

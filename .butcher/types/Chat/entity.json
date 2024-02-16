@@ -213,10 +213,18 @@
       },
       {
         "type": "Integer",
-        "description": "For supergroups, the minimum allowed delay between consecutive messages sent by each unpriviledged user; in seconds. Returned only in getChat.",
-        "html_description": "<td><em>Optional</em>. For supergroups, the minimum allowed delay between consecutive messages sent by each unpriviledged user; in seconds. Returned only in <a href=\"#getchat\">getChat</a>.</td>",
-        "rst_description": "*Optional*. For supergroups, the minimum allowed delay between consecutive messages sent by each unpriviledged user; in seconds. Returned only in :class:`aiogram.methods.get_chat.GetChat`.\n",
+        "description": "For supergroups, the minimum allowed delay between consecutive messages sent by each unprivileged user; in seconds. Returned only in getChat.",
+        "html_description": "<td><em>Optional</em>. For supergroups, the minimum allowed delay between consecutive messages sent by each unprivileged user; in seconds. Returned only in <a href=\"#getchat\">getChat</a>.</td>",
+        "rst_description": "*Optional*. For supergroups, the minimum allowed delay between consecutive messages sent by each unprivileged user; in seconds. Returned only in :class:`aiogram.methods.get_chat.GetChat`.\n",
         "name": "slow_mode_delay",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "For supergroups, the minimum number of boosts that a non-administrator user needs to add in order to ignore slow mode and chat permissions. Returned only in getChat.",
+        "html_description": "<td><em>Optional</em>. For supergroups, the minimum number of boosts that a non-administrator user needs to add in order to ignore slow mode and chat permissions. Returned only in <a href=\"#getchat\">getChat</a>.</td>",
+        "rst_description": "*Optional*. For supergroups, the minimum number of boosts that a non-administrator user needs to add in order to ignore slow mode and chat permissions. Returned only in :class:`aiogram.methods.get_chat.GetChat`.\n",
+        "name": "unrestrict_boost_count",
         "required": false
       },
       {
@@ -273,6 +281,14 @@
         "html_description": "<td><em>Optional</em>. <em>True</em>, if the bot can change the group sticker set. Returned only in <a href=\"#getchat\">getChat</a>.</td>",
         "rst_description": "*Optional*. :code:`True`, if the bot can change the group sticker set. Returned only in :class:`aiogram.methods.get_chat.GetChat`.\n",
         "name": "can_set_sticker_set",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "For supergroups, the name of the group's custom emoji sticker set. Custom emoji from this set can be used by all users and bots in the group. Returned only in getChat.",
+        "html_description": "<td><em>Optional</em>. For supergroups, the name of the group's custom emoji sticker set. Custom emoji from this set can be used by all users and bots in the group. Returned only in <a href=\"#getchat\">getChat</a>.</td>",
+        "rst_description": "*Optional*. For supergroups, the name of the group's custom emoji sticker set. Custom emoji from this set can be used by all users and bots in the group. Returned only in :class:`aiogram.methods.get_chat.GetChat`.\n",
+        "name": "custom_emoji_sticker_set_name",
         "required": false
       },
       {

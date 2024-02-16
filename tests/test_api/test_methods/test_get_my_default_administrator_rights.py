@@ -17,6 +17,9 @@ class TestGetMyDefaultAdministratorRights:
                 can_promote_members=False,
                 can_change_info=False,
                 can_invite_users=False,
+                can_post_stories=False,
+                can_edit_stories=False,
+                can_delete_stories=False,
             ),
         )
 

@@ -2046,12 +2046,12 @@ class Bot:
         can_promote_members: Optional[bool] = None,
         can_change_info: Optional[bool] = None,
         can_invite_users: Optional[bool] = None,
-        can_post_messages: Optional[bool] = None,
-        can_edit_messages: Optional[bool] = None,
-        can_pin_messages: Optional[bool] = None,
         can_post_stories: Optional[bool] = None,
         can_edit_stories: Optional[bool] = None,
         can_delete_stories: Optional[bool] = None,
+        can_post_messages: Optional[bool] = None,
+        can_edit_messages: Optional[bool] = None,
+        can_pin_messages: Optional[bool] = None,
         can_manage_topics: Optional[bool] = None,
         request_timeout: Optional[int] = None,
     ) -> bool:
@@ -2063,19 +2063,19 @@ class Bot:
         :param chat_id: Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
         :param user_id: Unique identifier of the target user
         :param is_anonymous: Pass :code:`True` if the administrator's presence in the chat is hidden
-        :param can_manage_chat: Pass :code:`True` if the administrator can access the chat event log, boost list in channels, see channel members, report spam messages, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege
+        :param can_manage_chat: Pass :code:`True` if the administrator can access the chat event log, get boost list, see hidden supergroup and channel members, report spam messages and ignore slow mode. Implied by any other administrator privilege.
         :param can_delete_messages: Pass :code:`True` if the administrator can delete messages of other users
         :param can_manage_video_chats: Pass :code:`True` if the administrator can manage video chats
         :param can_restrict_members: Pass :code:`True` if the administrator can restrict, ban or unban chat members, or access supergroup statistics
         :param can_promote_members: Pass :code:`True` if the administrator can add new administrators with a subset of their own privileges or demote administrators that they have promoted, directly or indirectly (promoted by administrators that were appointed by him)
         :param can_change_info: Pass :code:`True` if the administrator can change chat title, photo and other settings
         :param can_invite_users: Pass :code:`True` if the administrator can invite new users to the chat
+        :param can_post_stories: Pass :code:`True` if the administrator can post stories to the chat
+        :param can_edit_stories: Pass :code:`True` if the administrator can edit stories posted by other users
+        :param can_delete_stories: Pass :code:`True` if the administrator can delete stories posted by other users
         :param can_post_messages: Pass :code:`True` if the administrator can post messages in the channel, or access channel statistics; channels only
         :param can_edit_messages: Pass :code:`True` if the administrator can edit messages of other users and can pin messages; channels only
         :param can_pin_messages: Pass :code:`True` if the administrator can pin messages, supergroups only
-        :param can_post_stories: Pass :code:`True` if the administrator can post stories in the channel; channels only
-        :param can_edit_stories: Pass :code:`True` if the administrator can edit stories posted by other users; channels only
-        :param can_delete_stories: Pass :code:`True` if the administrator can delete stories posted by other users; channels only
         :param can_manage_topics: Pass :code:`True` if the user is allowed to create, rename, close, and reopen forum topics, supergroups only
         :param request_timeout: Request timeout
         :return: Returns :code:`True` on success.
@@ -2092,12 +2092,12 @@ class Bot:
             can_promote_members=can_promote_members,
             can_change_info=can_change_info,
             can_invite_users=can_invite_users,
-            can_post_messages=can_post_messages,
-            can_edit_messages=can_edit_messages,
-            can_pin_messages=can_pin_messages,
             can_post_stories=can_post_stories,
             can_edit_stories=can_edit_stories,
             can_delete_stories=can_delete_stories,
+            can_post_messages=can_post_messages,
+            can_edit_messages=can_edit_messages,
+            can_pin_messages=can_pin_messages,
             can_manage_topics=can_manage_topics,
         )
         return await self(call, request_timeout=request_timeout)

@@ -45,6 +45,14 @@
       },
       {
         "type": "Integer",
+        "description": "If the sender of the message boosted the chat, the number of boosts added by the user",
+        "html_description": "<td><em>Optional</em>. If the sender of the message boosted the chat, the number of boosts added by the user</td>",
+        "rst_description": "*Optional*. If the sender of the message boosted the chat, the number of boosts added by the user\n",
+        "name": "sender_boost_count",
+        "required": false
+      },
+      {
+        "type": "Integer",
         "description": "Date the message was sent in Unix time. It is always a positive number, representing a valid date.",
         "html_description": "<td>Date the message was sent in Unix time. It is always a positive number, representing a valid date.</td>",
         "rst_description": "Date the message was sent in Unix time. It is always a positive number, representing a valid date.\n",
@@ -105,6 +113,14 @@
         "html_description": "<td><em>Optional</em>. For replies that quote part of the original message, the quoted part of the message</td>",
         "rst_description": "*Optional*. For replies that quote part of the original message, the quoted part of the message\n",
         "name": "quote",
+        "required": false
+      },
+      {
+        "type": "Story",
+        "description": "For replies to a story, the original story",
+        "html_description": "<td><em>Optional</em>. For replies to a story, the original story</td>",
+        "rst_description": "*Optional*. For replies to a story, the original story\n",
+        "name": "reply_to_story",
         "required": false
       },
       {
@@ -473,6 +489,14 @@
         "html_description": "<td><em>Optional</em>. Service message. A user in the chat triggered another user's proximity alert while sharing Live Location.</td>",
         "rst_description": "*Optional*. Service message. A user in the chat triggered another user's proximity alert while sharing Live Location.\n",
         "name": "proximity_alert_triggered",
+        "required": false
+      },
+      {
+        "type": "ChatBoostAdded",
+        "description": "Service message: user boosted the chat",
+        "html_description": "<td><em>Optional</em>. Service message: user boosted the chat</td>",
+        "rst_description": "*Optional*. Service message: user boosted the chat\n",
+        "name": "boost_added",
         "required": false
       },
       {

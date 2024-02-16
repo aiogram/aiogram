@@ -41,6 +41,7 @@ from aiogram.types import (
     Animation,
     Audio,
     Chat,
+    ChatBoostAdded,
     ChatShared,
     Contact,
     Dice,
@@ -483,7 +484,7 @@ TEST_MESSAGE_STORY = Message(
     date=datetime.datetime.now(),
     chat=Chat(id=42, type="private"),
     from_user=User(id=42, is_bot=False, first_name="Test"),
-    story=Story(),
+    story=Story(chat=Chat(id=42, type="private"), id=42),
     forward_signature="Test",
     forward_date=datetime.datetime.now(),
 )
@@ -554,6 +555,13 @@ TEST_MESSAGE_WRITE_ACCESS_ALLOWED = Message(
     from_user=None,
     write_access_allowed=WriteAccessAllowed(),
 )
+TEST_MESSAGE_BOOST_ADDED = Message(
+    message_id=42,
+    date=datetime.datetime.now(),
+    chat=Chat(id=42, type="private"),
+    from_user=User(id=42, is_bot=False, first_name="User"),
+    boost_added=ChatBoostAdded(boost_count=1),
+)
 TEST_MESSAGE_UNKNOWN = Message(
     message_id=42,
     date=datetime.datetime.now(),
@@ -621,6 +629,7 @@ MESSAGES_AND_CONTENT_TYPES = [
     [TEST_MESSAGE_GENERAL_FORUM_TOPIC_HIDDEN, ContentType.GENERAL_FORUM_TOPIC_HIDDEN],
     [TEST_MESSAGE_GENERAL_FORUM_TOPIC_UNHIDDEN, ContentType.GENERAL_FORUM_TOPIC_UNHIDDEN],
     [TEST_MESSAGE_WRITE_ACCESS_ALLOWED, ContentType.WRITE_ACCESS_ALLOWED],
+    [TEST_MESSAGE_BOOST_ADDED, ContentType.BOOST_ADDED],
     [TEST_MESSAGE_UNKNOWN, ContentType.UNKNOWN],
 ]
 
@@ -679,6 +688,7 @@ MESSAGES_AND_COPY_METHODS = [
     [TEST_MESSAGE_WRITE_ACCESS_ALLOWED, None],
     [TEST_MESSAGE_GIVEAWAY, None],
     [TEST_MESSAGE_GIVEAWAY_WINNERS, None],
+    [TEST_MESSAGE_BOOST_ADDED, None],
     [TEST_MESSAGE_UNKNOWN, None],
 ]
 
