@@ -16,6 +16,17 @@ Changelog
 
 .. towncrier release notes start
 
+3.4.0 (2024-02-17)
+===================
+
+Bugfixes
+--------
+
+- Fixed JSON serialization of the :code:`LinkPreviewOptions` class while it is passed
+  as bot-wide default options.
+  `#1418 <https://github.com/aiogram/aiogram/issues/1418>`_
+
+
 3.4.0 (2024-02-16)
 ===================
 
