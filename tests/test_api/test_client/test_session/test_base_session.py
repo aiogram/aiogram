@@ -26,7 +26,7 @@ from aiogram.exceptions import (
     TelegramUnauthorizedError,
 )
 from aiogram.methods import DeleteMessage, GetMe, TelegramMethod
-from aiogram.types import UNSET_PARSE_MODE, User
+from aiogram.types import UNSET_PARSE_MODE, User, LinkPreviewOptions
 from aiogram.types.base import UNSET_DISABLE_WEB_PAGE_PREVIEW, UNSET_PROTECT_CONTENT
 from tests.mocked_bot import MockedBot
 
@@ -110,6 +110,10 @@ class TestBaseSession:
                     year=2017, month=5, day=17, hour=4, minute=11, second=42, tzinfo=utc
                 ),
                 "1494994302",
+            ],
+            [
+                {"link_preview": LinkPreviewOptions(is_disabled=True)},
+                '{"link_preview": {"is_disabled": true}}',
             ],
         ],
     )

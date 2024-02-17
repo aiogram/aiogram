@@ -38,7 +38,7 @@ from aiogram.exceptions import (
 
 from ...methods import Response, TelegramMethod
 from ...methods.base import TelegramType
-from ...types import InputFile
+from ...types import InputFile, TelegramObject
 from ..default import Default
 from ..telegram import PRODUCTION, TelegramAPIServer
 from .middlewares.manager import RequestMiddlewareManager
@@ -233,7 +233,13 @@ class BaseSession(abc.ABC):
             return str(round(value.timestamp()))
         if isinstance(value, Enum):
             return self.prepare_value(value.value, bot=bot, files=files)
-
+        if isinstance(value, TelegramObject):
+            return self.prepare_value(
+                value.model_dump(warnings=False),
+                bot=bot,
+                files=files,
+                _dumps_json=_dumps_json,
+            )
         if _dumps_json:
             return self.json_dumps(value)
         return value

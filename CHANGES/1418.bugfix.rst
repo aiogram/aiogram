@@ -1,0 +1,2 @@
+Fixed JSON serialization of the :code:`LinkPreviewOptions` class while it is passed
+as bot-wide default options.
