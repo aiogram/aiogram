@@ -38,7 +38,7 @@ from aiogram.exceptions import (
 
 from ...methods import Response, TelegramMethod
 from ...methods.base import TelegramType
-from ...types import InputFile
+from ...types import InputFile, TelegramObject
 from ..default import Default
 from ..telegram import PRODUCTION, TelegramAPIServer
 from .middlewares.manager import RequestMiddlewareManager
@@ -193,6 +193,8 @@ class BaseSession(abc.ABC):
             return value
         if isinstance(value, Default):
             default_value = bot.default[value.name]
+            if isinstance(default_value, TelegramObject):
+                default_value = default_value.model_dump(warnings=False)
             return self.prepare_value(default_value, bot=bot, files=files, _dumps_json=_dumps_json)
         if isinstance(value, InputFile):
             key = secrets.token_urlsafe(10)
