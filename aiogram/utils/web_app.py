@@ -19,8 +19,8 @@ class WebAppChat(TelegramObject):
     id: int
     """Unique identifier for this chat. This number may have more than 32 significant bits
     and some programming languages may have difficulty/silent defects in interpreting it.
-    But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type
-    are safe for storing this identifier."""
+    But it has at most 52 significant bits, so a signed 64-bit integer or double-precision
+    float type are safe for storing this identifier."""
     type: str
     """Type of chat, can be either “group”, “supergroup” or “channel”"""
     title: str
@@ -84,7 +84,8 @@ class WebAppInitData(TelegramObject):
     Returned only for Web Apps launched via the attachment menu."""
     chat: Optional[WebAppChat] = None
     """An object containing data about the chat where the bot was launched via the attachment menu.
-    Returned for supergroups, channels, and group chats – only for Web Apps launched via the attachment menu."""
+    Returned for supergroups, channels, and group chats – only for Web Apps launched via the
+    attachment menu."""
     chat_type: Optional[str] = None
     """Type of the chat from which the Web App was opened.
     Can be either “sender” for a private chat with the user opening the link,
