@@ -9,6 +9,29 @@ from urllib.parse import parse_qsl
 from aiogram.types import TelegramObject
 
 
+class WebAppChat(TelegramObject):
+    """
+    This object represents a chat.
+
+    Source: https://core.telegram.org/bots/webapps#webappchat
+    """
+
+    id: int
+    """Unique identifier for this chat. This number may have more than 32 significant bits
+    and some programming languages may have difficulty/silent defects in interpreting it.
+    But it has at most 52 significant bits, so a signed 64-bit integer or double-precision
+    float type are safe for storing this identifier."""
+    type: str
+    """Type of chat, can be either “group”, “supergroup” or “channel”"""
+    title: str
+    """Title of the chat"""
+    username: Optional[str] = None
+    """Username of the chat"""
+    photo_url: Optional[str] = None
+    """URL of the chat’s photo. The photo can be in .jpeg or .svg formats.
+    Only returned for Web Apps launched from the attachment menu."""
+
+
 class WebAppUser(TelegramObject):
     """
     This object contains the data of the Web App user.
@@ -31,6 +54,12 @@ class WebAppUser(TelegramObject):
     """Username of the user or bot."""
     language_code: Optional[str] = None
     """IETF language tag of the user's language. Returns in user field only."""
+    is_premium: Optional[bool] = None
+    """True, if this user is a Telegram Premium user."""
+    added_to_attachment_menu: Optional[bool] = None
+    """True, if this user added the bot to the attachment menu."""
+    allows_write_to_pm: Optional[bool] = None
+    """True, if this user allowed the bot to message them."""
     photo_url: Optional[str] = None
     """URL of the user’s profile photo. The photo can be in .jpeg or .svg formats.
     Only returned for Web Apps launched from the attachment menu."""
@@ -53,11 +82,25 @@ class WebAppInitData(TelegramObject):
     """An object containing data about the chat partner of the current user in the chat where
     the bot was launched via the attachment menu.
     Returned only for Web Apps launched via the attachment menu."""
+    chat: Optional[WebAppChat] = None
+    """An object containing data about the chat where the bot was launched via the attachment menu.
+    Returned for supergroups, channels, and group chats – only for Web Apps launched via the
+    attachment menu."""
+    chat_type: Optional[str] = None
+    """Type of the chat from which the Web App was opened.
+    Can be either “sender” for a private chat with the user opening the link,
+    “private”, “group”, “supergroup”, or “channel”.
+    Returned only for Web Apps launched from direct links."""
+    chat_instance: Optional[str] = None
+    """Global identifier, uniquely corresponding to the chat from which the Web App was opened.
+    Returned only for Web Apps launched from a direct link."""
     start_param: Optional[str] = None
     """The value of the startattach parameter, passed via link.
     Only returned for Web Apps when launched from the attachment menu via link.
     The value of the start_param parameter will also be passed in the GET-parameter
     tgWebAppStartParam, so the Web App can load the correct interface right away."""
+    can_send_after: Optional[int] = None
+    """Time in seconds, after which a message can be sent via the answerWebAppQuery method."""
     auth_date: datetime
     """Unix time when the form was opened."""
     hash: str
