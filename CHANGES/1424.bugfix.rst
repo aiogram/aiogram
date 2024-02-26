@@ -3,3 +3,5 @@
 - **WebAppChat Class Implementation**: Introduced the `WebAppChat` class with all its fields (`id`, `type`, `title`, `username`, and `photo_url`) as specified in the Telegram API, which was previously missing from the library.
 
 - **WebAppInitData Class Fields**: Included previously omitted fields in the `WebAppInitData` class: `chat`, `chat_type`, `chat_instance`, to match the official documentation for a complete Telegram Web Apps support.
+
+- **Docs**: Updated the documentation and localisation for this changes.
