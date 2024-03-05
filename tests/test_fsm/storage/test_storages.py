@@ -11,7 +11,11 @@ def create_storage_key(bot: MockedBot):
 
 @pytest.mark.parametrize(
     "storage",
-    [pytest.lazy_fixture("redis_storage"), pytest.lazy_fixture("memory_storage")],
+    [
+        pytest.lazy_fixture("redis_storage"),
+        pytest.lazy_fixture("mongo_storage"),
+        pytest.lazy_fixture("memory_storage"),
+    ],
 )
 class TestStorages:
     async def test_set_state(self, bot: MockedBot, storage: BaseStorage, storage_key: StorageKey):
