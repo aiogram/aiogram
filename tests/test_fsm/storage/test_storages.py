@@ -43,3 +43,9 @@ class TestStorages:
             "foo": "bar",
             "baz": "spam",
         }
+
+    async def test_get_value(self, bot: MockedBot, storage: BaseStorage, storage_key: StorageKey):
+        await storage.set_data(key=storage_key, data={"hello": "world"})
+        assert await storage.get_value(key=storage_key, data_key="hello") == "world"
+        assert await storage.get_value(key=storage_key, data_key="12345") is None
+        assert await storage.get_value(key=storage_key, data_key="qwerty", default=42) == 42
