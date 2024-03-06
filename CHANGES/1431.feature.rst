@@ -1,0 +1,1 @@
+Added method :code:`get_value` for class :code:`FSMContext`
