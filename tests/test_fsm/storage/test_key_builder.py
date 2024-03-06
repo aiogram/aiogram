@@ -1,11 +1,7 @@
 import pytest
 
 from aiogram.fsm.storage.base import DEFAULT_DESTINY, StorageKey
-from aiogram.fsm.storage.redis import (
-    DefaultKeyBuilder,
-    RedisEventIsolation,
-    RedisStorage,
-)
+from aiogram.fsm.storage.redis import DefaultKeyBuilder
 
 PREFIX = "test"
 BOT_ID = 42
@@ -15,7 +11,7 @@ THREAD_ID = 3
 FIELD = "data"
 
 
-class TestRedisDefaultKeyBuilder:
+class TestDefaultKeyBuilder:
     @pytest.mark.parametrize(
         "with_bot_id,with_destiny,result",
         [
@@ -59,11 +55,3 @@ class TestRedisDefaultKeyBuilder:
             destiny=DEFAULT_DESTINY,
         )
         assert key_builder.build(key, FIELD) == f"{PREFIX}:{CHAT_ID}:{THREAD_ID}:{USER_ID}:{FIELD}"
-
-    def test_create_isolation(self):
-        fake_redis = object()
-        storage = RedisStorage(redis=fake_redis)
-        isolation = storage.create_isolation()
-        assert isinstance(isolation, RedisEventIsolation)
-        assert isolation.redis is fake_redis
-        assert isolation.key_builder is storage.key_builder
