@@ -286,7 +286,7 @@ class Bot:
         ):
             warnings.warn(
                 "Passing `parse_mode`, `disable_web_page_preview` or `protect_content` "
-                "to Bot initializer is deprecated. This arguments will be removed in 3.5.0 version\n"
+                "to Bot initializer is deprecated. This arguments will be removed in 3.7.0 version\n"
                 "Use `default=DefaultBotProperties(...)` instead.",
                 category=DeprecationWarning,
                 stacklevel=2,
