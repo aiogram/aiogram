@@ -53,3 +53,8 @@ Types
     :members:
     :member-order: bysource
     :undoc-members: True
+
+.. autoclass:: aiogram.utils.web_app.WebAppChat
+    :members:
+    :member-order: bysource
+    :undoc-members: True

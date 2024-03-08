@@ -21,6 +21,14 @@ class TestWebApp:
                 True,
             ],
             [
+                "42:TEST",
+                "auth_date=1650385342"
+                "&user=%7B%22id%22%3A+%22123456789%22%2C+%22first_name%22%3A+%22PlaceholderFirstName%22%2C+%22last_name%22%3A+%22PlaceholderLastName+%5Cud83c%5Cuddfa%5Cud83c%5Cudde6%22%2C+%22username%22%3A+%22Latand%22%2C+%22language_code%22%3A+%22en%22%2C+%22is_premium%22%3A+%22true%22%2C+%22allows_write_to_pm%22%3A+%22true%22%7D"
+                "&query_id=test"
+                "&hash=b3c8b293f14ad0f7f0abcf769aea1209a72295d30a87eb0e74df855d32e53bfe",
+                True,
+            ],
+            [
                 "42:INVALID",
                 "auth_date=1650385342"
                 "&user=%7B%22id%22%3A42%2C%22first_name%22%3A%22Test%22%7D"
