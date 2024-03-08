@@ -44,14 +44,14 @@ class TestBot:
 
     def test_init_default(self):
         with check_deprecated(
-            max_version="3.5.0",
+            max_version="3.7.0",
             exception=TypeError,
         ):
             bot = Bot(token="42:Test", parse_mode="HTML")
 
     def test_deprecated_parse_mode(self):
         with check_deprecated(
-            max_version="3.5.0",
+            max_version="3.7.0",
             exception=AttributeError,
         ):
             bot = Bot(token="42:Test", parse_mode="HTML")
@@ -59,7 +59,7 @@ class TestBot:
 
     def test_disable_web_page_preview(self):
         with check_deprecated(
-            max_version="3.5.0",
+            max_version="3.7.0",
             exception=TypeError,
         ):
             bot = Bot(token="42:Test", disable_web_page_preview=True)
@@ -67,7 +67,7 @@ class TestBot:
 
     def test_deprecated_protect_content(self):
         with check_deprecated(
-            max_version="3.5.0",
+            max_version="3.7.0",
             exception=AttributeError,
         ):
             bot = Bot(token="42:Test", protect_content=True)
