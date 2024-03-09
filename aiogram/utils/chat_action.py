@@ -41,6 +41,7 @@ class ChatActionSender:
         """
         :param bot: instance of the bot
         :param chat_id: target chat id
+        :param message_thread_id: unique identifier for the target message thread; supergroups only
         :param action: chat action type
         :param interval: interval between iterations
         :param initial_sleep: sleep before first sending of the action
@@ -136,6 +137,7 @@ class ChatActionSender:
         cls,
         chat_id: Union[int, str],
         bot: Bot,
+        message_thread_id: Optional[int] = None,
         interval: float = DEFAULT_INTERVAL,
         initial_sleep: float = DEFAULT_INITIAL_SLEEP,
     ) -> "ChatActionSender":
@@ -143,6 +145,7 @@ class ChatActionSender:
         return cls(
             bot=bot,
             chat_id=chat_id,
+            message_thread_id=message_thread_id,
             action="typing",
             interval=interval,
             initial_sleep=initial_sleep,
@@ -153,6 +156,7 @@ class ChatActionSender:
         cls,
         chat_id: Union[int, str],
         bot: Bot,
+        message_thread_id: Optional[int] = None,
         interval: float = DEFAULT_INTERVAL,
         initial_sleep: float = DEFAULT_INITIAL_SLEEP,
     ) -> "ChatActionSender":
@@ -160,6 +164,7 @@ class ChatActionSender:
         return cls(
             bot=bot,
             chat_id=chat_id,
+            message_thread_id=message_thread_id,
             action="upload_photo",
             interval=interval,
             initial_sleep=initial_sleep,
@@ -170,6 +175,7 @@ class ChatActionSender:
         cls,
         chat_id: Union[int, str],
         bot: Bot,
+        message_thread_id: Optional[int] = None,
         interval: float = DEFAULT_INTERVAL,
         initial_sleep: float = DEFAULT_INITIAL_SLEEP,
     ) -> "ChatActionSender":
@@ -177,6 +183,7 @@ class ChatActionSender:
         return cls(
             bot=bot,
             chat_id=chat_id,
+            message_thread_id=message_thread_id,
             action="record_video",
             interval=interval,
             initial_sleep=initial_sleep,
@@ -187,6 +194,7 @@ class ChatActionSender:
         cls,
         chat_id: Union[int, str],
         bot: Bot,
+        message_thread_id: Optional[int] = None,
         interval: float = DEFAULT_INTERVAL,
         initial_sleep: float = DEFAULT_INITIAL_SLEEP,
     ) -> "ChatActionSender":
@@ -194,6 +202,7 @@ class ChatActionSender:
         return cls(
             bot=bot,
             chat_id=chat_id,
+            message_thread_id=message_thread_id,
             action="upload_video",
             interval=interval,
             initial_sleep=initial_sleep,
@@ -204,6 +213,7 @@ class ChatActionSender:
         cls,
         chat_id: Union[int, str],
         bot: Bot,
+        message_thread_id: Optional[int] = None,
         interval: float = DEFAULT_INTERVAL,
         initial_sleep: float = DEFAULT_INITIAL_SLEEP,
     ) -> "ChatActionSender":
@@ -211,6 +221,7 @@ class ChatActionSender:
         return cls(
             bot=bot,
             chat_id=chat_id,
+            message_thread_id=message_thread_id,
             action="record_voice",
             interval=interval,
             initial_sleep=initial_sleep,
@@ -221,6 +232,7 @@ class ChatActionSender:
         cls,
         chat_id: Union[int, str],
         bot: Bot,
+        message_thread_id: Optional[int] = None,
         interval: float = DEFAULT_INTERVAL,
         initial_sleep: float = DEFAULT_INITIAL_SLEEP,
     ) -> "ChatActionSender":
@@ -228,6 +240,7 @@ class ChatActionSender:
         return cls(
             bot=bot,
             chat_id=chat_id,
+            message_thread_id=message_thread_id,
             action="upload_voice",
             interval=interval,
             initial_sleep=initial_sleep,
@@ -238,6 +251,7 @@ class ChatActionSender:
         cls,
         chat_id: Union[int, str],
         bot: Bot,
+        message_thread_id: Optional[int] = None,
         interval: float = DEFAULT_INTERVAL,
         initial_sleep: float = DEFAULT_INITIAL_SLEEP,
     ) -> "ChatActionSender":
@@ -245,6 +259,7 @@ class ChatActionSender:
         return cls(
             bot=bot,
             chat_id=chat_id,
+            message_thread_id=message_thread_id,
             action="upload_document",
             interval=interval,
             initial_sleep=initial_sleep,
@@ -255,6 +270,7 @@ class ChatActionSender:
         cls,
         chat_id: Union[int, str],
         bot: Bot,
+        message_thread_id: Optional[int] = None,
         interval: float = DEFAULT_INTERVAL,
         initial_sleep: float = DEFAULT_INITIAL_SLEEP,
     ) -> "ChatActionSender":
@@ -262,6 +278,7 @@ class ChatActionSender:
         return cls(
             bot=bot,
             chat_id=chat_id,
+            message_thread_id=message_thread_id,
             action="choose_sticker",
             interval=interval,
             initial_sleep=initial_sleep,
@@ -272,6 +289,7 @@ class ChatActionSender:
         cls,
         chat_id: Union[int, str],
         bot: Bot,
+        message_thread_id: Optional[int] = None,
         interval: float = DEFAULT_INTERVAL,
         initial_sleep: float = DEFAULT_INITIAL_SLEEP,
     ) -> "ChatActionSender":
@@ -279,6 +297,7 @@ class ChatActionSender:
         return cls(
             bot=bot,
             chat_id=chat_id,
+            message_thread_id=message_thread_id,
             action="find_location",
             interval=interval,
             initial_sleep=initial_sleep,
@@ -289,6 +308,7 @@ class ChatActionSender:
         cls,
         chat_id: Union[int, str],
         bot: Bot,
+        message_thread_id: Optional[int] = None,
         interval: float = DEFAULT_INTERVAL,
         initial_sleep: float = DEFAULT_INITIAL_SLEEP,
     ) -> "ChatActionSender":
@@ -296,6 +316,7 @@ class ChatActionSender:
         return cls(
             bot=bot,
             chat_id=chat_id,
+            message_thread_id=message_thread_id,
             action="record_video_note",
             interval=interval,
             initial_sleep=initial_sleep,
@@ -306,6 +327,7 @@ class ChatActionSender:
         cls,
         chat_id: Union[int, str],
         bot: Bot,
+        message_thread_id: Optional[int] = None,
         interval: float = DEFAULT_INTERVAL,
         initial_sleep: float = DEFAULT_INITIAL_SLEEP,
     ) -> "ChatActionSender":
@@ -313,6 +335,7 @@ class ChatActionSender:
         return cls(
             bot=bot,
             chat_id=chat_id,
+            message_thread_id=message_thread_id,
             action="upload_video_note",
             interval=interval,
             initial_sleep=initial_sleep,
