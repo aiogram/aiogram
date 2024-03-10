@@ -5,16 +5,18 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version:  aiogram\n"
+"Project-Id-Version: aiogram\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-30 18:31+0300\n"
-"PO-Revision-Date: 2022-10-13 22:18+0300\n"
-"Last-Translator: \n"
+"POT-Creation-Date: 2024-02-21 21:40+0200\n"
+"PO-Revision-Date: 2024-03-04 17:30+0200\n"
+"Last-Translator: Leroy-Bit\n"
 "Language-Team: \n"
+"Language: uk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.12.1\n"
+"Generated-By: Babel 2.13.1\n"
+"X-Generator: Poedit 3.4.2\n"
 
 #: ../../utils/web_app.rst:3
 msgid "WebApp"
@@ -26,17 +28,17 @@ msgid ""
 "chatbots using WebApp feature."
 msgstr ""
 "Telegram Bot API 6.0 зробив революцію у розробці чат-ботів, "
-"використовуючи особливості Веб Застосунків"
+"використовуючи особливості Веб Застосунків."
 
 #: ../../utils/web_app.rst:7
 msgid ""
-"You can read more details on it in the official `blog "
-"<https://telegram.org/blog/notifications-bots#bot-revolution>`_ and "
-"`documentation <https://core.telegram.org/bots/webapps>`_."
+"You can read more details on it in the official `blog <https://telegram."
+"org/blog/notifications-bots#bot-revolution>`_ and `documentation "
+"<https://core.telegram.org/bots/webapps>`_."
 msgstr ""
-"Ви можете прочитати більше про це в офіційному `блозі "
-"<https://telegram.org/blog/notifications-bots#bot-revolution>`_ та "
-"`документації <https://core.telegram.org/bots/webapps>`_."
+"Ви можете прочитати більше про це в офіційному `блозі <https://telegram."
+"org/blog/notifications-bots#bot-revolution>`_ та `документації <https://"
+"core.telegram.org/bots/webapps>`_."
 
 #: ../../utils/web_app.rst:10
 msgid ""
@@ -59,8 +61,8 @@ msgid ""
 msgstr ""
 "Наприклад, із фронтенду ви передасте :code:`application/x-www-form-"
 "urlencoded` в POST запиті  із полем :code:`_auth` у тілі та хочете "
-"повернути інформацію про користувача у відповідь як "
-":code:`application/json`"
+"повернути інформацію про користувача у відповідь як :code:`application/"
+"json`"
 
 #: ../../utils/web_app.rst:35
 msgid "Functions"
@@ -117,14 +119,15 @@ msgid "data from frontend to be parsed"
 msgstr "дані з frontend для аналізу"
 
 #: aiogram.utils.web_app.safe_parse_webapp_init_data:1 of
-msgid "Validate raw WebApp init data and return it as WebAppInitData object"
+msgid ""
+"Validate raw WebApp init data and return it as WebAppInitData object"
 msgstr ""
-"Перевірка необроблених даних ініціалізації Веб Застосунку і повернення їх"
-" як об’єкту WebAppInitData"
+"Перевірка необроблених даних ініціалізації Веб Застосунку і повернення "
+"їх як об’єкту WebAppInitData"
 
 #: aiogram.utils.web_app.safe_parse_webapp_init_data:3 of
 msgid "Raise :obj:`ValueError` when data is invalid"
-msgstr "Кивидає :obj:`ValueError`, коли дані недійсні"
+msgstr "Видає :obj:`ValueError`, коли дані недійсні"
 
 #: aiogram.utils.web_app.safe_parse_webapp_init_data:5 of
 msgid "bot token"
@@ -143,7 +146,7 @@ msgid ""
 "This object contains data that is transferred to the Web App when it is "
 "opened. It is empty if the Web App was launched from a keyboard button."
 msgstr ""
-"Цей об’єкт містить дані, що передаються у Веб Застосунок під час його "
+"Об’єкт, що містить дані які передаються у Веб Застосунок під час його "
 "відкриття. Він порожній, якщо Веб Застосунок було запущено за допомогою "
 "кнопки клавіатури."
 
@@ -151,32 +154,39 @@ msgstr ""
 msgid "Source: https://core.telegram.org/bots/webapps#webappinitdata"
 msgstr "Джерело: https://core.telegram.org/bots/webapps#webappinitdata"
 
-#: ../../docstring aiogram.utils.web_app.WebAppInitData.query_id:1 of
-msgid ""
-"A unique identifier for the Web App session, required for sending "
-"messages via the answerWebAppQuery method."
-msgstr ""
-"Унікальний ідентифікатор сеансу Веб Застосунку, необхідний для надсилання"
-" повідомлень через метод answerWebAppQuery."
-
-#: ../../docstring aiogram.utils.web_app.WebAppInitData.model_config:1
+#: ../../docstring aiogram.utils.web_app.WebAppChat.model_config:1
+#: aiogram.utils.web_app.WebAppInitData.model_config:1
 #: aiogram.utils.web_app.WebAppUser.model_config:1 of
 msgid ""
 "Configuration for the model, should be a dictionary conforming to "
 "[`ConfigDict`][pydantic.config.ConfigDict]."
 msgstr ""
+"Конфігурація для моделі має бути словником, що відповідає [`ConfigDict`]"
+"[pydantic.config.ConfigDict]."
 
-#: ../../docstring aiogram.utils.web_app.WebAppInitData.model_fields:1
+#: ../../docstring aiogram.utils.web_app.WebAppChat.model_fields:1
+#: aiogram.utils.web_app.WebAppInitData.model_fields:1
 #: aiogram.utils.web_app.WebAppUser.model_fields:1 of
 msgid ""
-"Metadata about the fields defined on the model, mapping of field names to"
-" [`FieldInfo`][pydantic.fields.FieldInfo]."
+"Metadata about the fields defined on the model, mapping of field names "
+"to [`FieldInfo`][pydantic.fields.FieldInfo]."
 msgstr ""
+"Метадані про поля, визначені на моделі, відображення назв полів у "
+"[`FieldInfo`][pydantic.fields.FieldInfo]."
 
-#: ../../docstring aiogram.utils.web_app.WebAppInitData.model_fields:4
+#: ../../docstring aiogram.utils.web_app.WebAppChat.model_fields:4
+#: aiogram.utils.web_app.WebAppInitData.model_fields:4
 #: aiogram.utils.web_app.WebAppUser.model_fields:4 of
 msgid "This replaces `Model.__fields__` from Pydantic V1."
+msgstr "Це замінює `Model.__fields__` з Pydantic V1."
+
+#: ../../docstring aiogram.utils.web_app.WebAppInitData.query_id:1 of
+msgid ""
+"A unique identifier for the Web App session, required for sending "
+"messages via the answerWebAppQuery method."
 msgstr ""
+"Унікальний ідентифікатор сеансу Веб Застосунку, необхідний для "
+"надсилання повідомлень через метод answerWebAppQuery."
 
 #: ../../docstring aiogram.utils.web_app.WebAppInitData.user:1 of
 msgid "An object containing data about the current user."
@@ -188,9 +198,40 @@ msgid ""
 "the chat where the bot was launched via the attachment menu. Returned "
 "only for Web Apps launched via the attachment menu."
 msgstr ""
-"Об’єкт, що містить дані про чат-партнера поточного користувача в чаті, де"
-" бот був запущений через меню вкладень. Повертається лише для Веб "
-"Застосунків, запущених через меню вкладень."
+"Об'єкт, що містить дані про співрозмовника поточного користувача в чаті, "
+"де бот був запущений через меню вкладення. Повертається тільки для веб-"
+"додатків, запущених через меню вкладень."
+
+#: ../../docstring aiogram.utils.web_app.WebAppInitData.chat:1 of
+msgid ""
+"An object containing data about the chat where the bot was launched via "
+"the attachment menu. Returned for supergroups, channels, and group chats "
+"– only for Web Apps launched via the attachment menu."
+msgstr ""
+"Об'єкт, що містить дані про чат, в якому бот був запущений через меню "
+"вкладень. Повертається для супергруп, каналів і групових чатів - тільки "
+"для веб-додатків, запущених через меню вкладень."
+
+#: ../../docstring aiogram.utils.web_app.WebAppInitData.chat_type:1 of
+msgid ""
+"Type of the chat from which the Web App was opened. Can be either "
+"“sender” for a private chat with the user opening the link, “private”, "
+"“group”, “supergroup”, or “channel”. Returned only for Web Apps launched "
+"from direct links."
+msgstr ""
+"Тип чату, з якого було відкрито веб-додаток. Може бути як \"sender\" для "
+"приватного чату з користувачем, який відкрив посилання, так і "
+"\"private\", \"group\", \"supergroup\" або \"channel\". Повертається "
+"тільки для веб-програм, запущених за прямим посиланням."
+
+#: ../../docstring aiogram.utils.web_app.WebAppInitData.chat_instance:1 of
+msgid ""
+"Global identifier, uniquely corresponding to the chat from which the Web "
+"App was opened. Returned only for Web Apps launched from a direct link."
+msgstr ""
+"Глобальний ідентифікатор, що унікальний для чату, з якого було відкрито "
+"веб-програму. Повертається тільки для веб-додатків, запущених за прямим "
+"посиланням."
 
 #: ../../docstring aiogram.utils.web_app.WebAppInitData.start_param:1 of
 msgid ""
@@ -202,9 +243,17 @@ msgid ""
 msgstr ""
 "Значення параметра startattach, передане через посилання. Повертається "
 "лише для Веб Застосунків, коли їх запускають із меню вкладень за "
-"посиланням. Значення параметра start_param також буде передано в "
-"GET-параметр tgWebAppStartParam, тому Веб Застосунок може відразу "
+"посиланням. Значення параметра start_param також буде передано в GET-"
+"параметр tgWebAppStartParam, тому Веб Застосунок може відразу "
 "завантажити правильний інтерфейс."
+
+#: ../../docstring aiogram.utils.web_app.WebAppInitData.can_send_after:1 of
+msgid ""
+"Time in seconds, after which a message can be sent via the "
+"answerWebAppQuery method."
+msgstr ""
+"Час в секундах після якого повідомлення може бути відправлене за "
+"допомогою метода answerWebAppQuery."
 
 #: ../../docstring aiogram.utils.web_app.WebAppInitData.auth_date:1 of
 msgid "Unix time when the form was opened."
@@ -220,7 +269,7 @@ msgstr ""
 
 #: aiogram.utils.web_app.WebAppUser:1 of
 msgid "This object contains the data of the Web App user."
-msgstr "Цей об’єкт містить дані користувача Веб Застосунку."
+msgstr "Об'єкт що містить дані користувача Веб Застосунку."
 
 #: aiogram.utils.web_app.WebAppUser:3 of
 msgid "Source: https://core.telegram.org/bots/webapps#webappuser"
@@ -229,20 +278,22 @@ msgstr "Джерело: https://core.telegram.org/bots/webapps#webappuser"
 #: ../../docstring aiogram.utils.web_app.WebAppUser.id:1 of
 msgid ""
 "A unique identifier for the user or bot. This number may have more than "
-"32 significant bits and some programming languages may have "
-"difficulty/silent defects in interpreting it. It has at most 52 "
-"significant bits, so a 64-bit integer or a double-precision float type is"
-" safe for storing this identifier."
+"32 significant bits and some programming languages may have difficulty/"
+"silent defects in interpreting it. It has at most 52 significant bits, "
+"so a 64-bit integer or a double-precision float type is safe for storing "
+"this identifier."
 msgstr ""
 "Унікальний ідентифікатор користувача або бота. Це число може мати більше "
-"32 значущих бітів, і деякі мови програмування можуть мати "
-"труднощі/мовчазні дефекти в його інтерпретації. Він має щонайбільше 52 "
-"значущі біти, тому 64-бітне ціле число або тип з плаваючою точністю "
-"подвійної точності є безпечним для зберігання цього ідентифікатора."
+"32 значущих бітів, і деякі мови програмування можуть мати труднощі в "
+"його інтерпретації. Він має щонайбільше 52 значущі біти, тому 64-бітне "
+"ціле число або тип з плаваючою точністю подвійної точності є безпечним "
+"для зберігання цього ідентифікатора."
 
 #: ../../docstring aiogram.utils.web_app.WebAppUser.is_bot:1 of
 msgid "True, if this user is a bot. Returns in the receiver field only."
-msgstr "Правда, якщо цей користувач бот. Повертаєтся лише в полі отримувача."
+msgstr ""
+"True, якщо цей користувач бот. Повертаєтся лише в полі "
+"отримувача(receiver)."
 
 #: ../../docstring aiogram.utils.web_app.WebAppUser.first_name:1 of
 msgid "First name of the user or bot."
@@ -257,8 +308,24 @@ msgid "Username of the user or bot."
 msgstr "Нік користувача або бота."
 
 #: ../../docstring aiogram.utils.web_app.WebAppUser.language_code:1 of
-msgid "IETF language tag of the user's language. Returns in user field only."
-msgstr "Мовний тег IETF мови користувача. Повертаєтся лише в полі користувача."
+msgid ""
+"IETF language tag of the user's language. Returns in user field only."
+msgstr ""
+"Мовний тег IETF мови користувача. Повертаєтся лише в полі "
+"користувача(user)."
+
+#: ../../docstring aiogram.utils.web_app.WebAppUser.is_premium:1 of
+msgid "True, if this user is a Telegram Premium user."
+msgstr "True, якщо цей користувач має підписку Telegram Premium."
+
+#: ../../docstring
+#: aiogram.utils.web_app.WebAppUser.added_to_attachment_menu:1 of
+msgid "True, if this user added the bot to the attachment menu."
+msgstr "True, якщо цей користувач додав бота до меню вкладень."
+
+#: ../../docstring aiogram.utils.web_app.WebAppUser.allows_write_to_pm:1 of
+msgid "True, if this user allowed the bot to message them."
+msgstr "True, якщо цей користувач дозволив надсилати йому повідомлення."
 
 #: ../../docstring aiogram.utils.web_app.WebAppUser.photo_url:1 of
 msgid ""
@@ -266,5 +333,47 @@ msgid ""
 "formats. Only returned for Web Apps launched from the attachment menu."
 msgstr ""
 "URL-адреса фотографії профілю користувача. Фотографія може бути у "
-"форматах .jpeg або .svg. Повертається лише для Веб Застосунків, запущених"
-" із меню вкладень."
+"форматах .jpeg або .svg. Повертається лише для Веб Застосунків, "
+"запущених із меню вкладень."
+
+#: aiogram.utils.web_app.WebAppChat:1 of
+msgid "This object represents a chat."
+msgstr "Об'єкт чату."
+
+#: aiogram.utils.web_app.WebAppChat:3 of
+msgid "Source: https://core.telegram.org/bots/webapps#webappchat"
+msgstr "Джерело: https://core.telegram.org/bots/webapps#webappchat"
+
+#: ../../docstring aiogram.utils.web_app.WebAppChat.id:1 of
+msgid ""
+"Unique identifier for this chat. This number may have more than 32 "
+"significant bits and some programming languages may have difficulty/"
+"silent defects in interpreting it. But it has at most 52 significant "
+"bits, so a signed 64-bit integer or double-precision float type are safe "
+"for storing this identifier."
+msgstr ""
+"Унікальний ідентифікатор цього чату. Це число може мати більше 32 "
+"значущих бітів, і деякі мови програмування можуть мати труднощі в його "
+"інтерпретації. Він має щонайбільше 52 значущі біти, тому 64-бітне ціле "
+"число або тип з плаваючою точкою подвійної точності є безпечним для "
+"зберігання цього ідентифікатора."
+
+#: ../../docstring aiogram.utils.web_app.WebAppChat.type:1 of
+msgid "Type of chat, can be either “group”, “supergroup” or “channel”"
+msgstr "Тип чату, може бути \"group\", \"supergroup\" або \"channel\""
+
+#: ../../docstring aiogram.utils.web_app.WebAppChat.title:1 of
+msgid "Title of the chat"
+msgstr "Назва чату"
+
+#: ../../docstring aiogram.utils.web_app.WebAppChat.username:1 of
+msgid "Username of the chat"
+msgstr "Нік користувача або бота"
+
+#: ../../docstring aiogram.utils.web_app.WebAppChat.photo_url:1 of
+msgid ""
+"URL of the chat’s photo. The photo can be in .jpeg or .svg formats. Only "
+"returned for Web Apps launched from the attachment menu."
+msgstr ""
+"URL-адреса фотографії чату. Фотографія може бути у форматах .jpeg або ."
+"svg. Повертається лише для Веб Застосунків, запущених із меню вкладень."

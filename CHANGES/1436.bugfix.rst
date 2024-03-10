@@ -1,0 +1,1 @@
+Fixed poll answer FSM context by handling :code:`voter_chat` for :code:`poll_answer` event
