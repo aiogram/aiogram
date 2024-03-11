@@ -1,4 +1,4 @@
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, cast
 
 from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorCollection
 
@@ -104,7 +104,7 @@ class MongoStorage(BaseStorage):
         if not document:
             return {}
         else:
-            return document  # type: ignore
+            return cast(Dict[str, Any], document)
 
     async def update_data(self, key: StorageKey, data: Dict[str, Any]) -> Dict[str, Any]:
         document_id = self._key_builder.build(key, "data")
@@ -117,4 +117,4 @@ class MongoStorage(BaseStorage):
         )
         if not update_result:
             await self._data_collection.delete_one({"_id": document_id})
-        return update_result  # type: ignore
+        return cast(Dict[str, Any], update_result)
