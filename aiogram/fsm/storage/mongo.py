@@ -84,8 +84,7 @@ class MongoStorage(BaseStorage):
         document = await self._states_collection.find_one({"_id": document_id})
         if document is None or document["state"] is None:
             return None
-        else:
-            return str(document["state"])
+        return str(document["state"])
 
     async def set_data(self, key: StorageKey, data: Dict[str, Any]) -> None:
         document_id = self._key_builder.build(key, "data")
@@ -103,8 +102,7 @@ class MongoStorage(BaseStorage):
         document = await self._data_collection.find_one({"_id": document_id}, {"_id": 0})
         if not document:
             return {}
-        else:
-            return cast(Dict[str, Any], document)
+        return cast(Dict[str, Any], document)
 
     async def update_data(self, key: StorageKey, data: Dict[str, Any]) -> Dict[str, Any]:
         document_id = self._key_builder.build(key, "data")
