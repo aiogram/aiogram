@@ -44,7 +44,7 @@ class MongoStorage(BaseStorage):
 
     @classmethod
     def from_url(
-        cls, url: str, connection_kwargs: Dict[str, Any] = {}, **kwargs: Any
+        cls, url: str, connection_kwargs: Optional[Dict[str, Any]] = None, **kwargs: Any
     ) -> "MongoStorage":
         """
         Create an instance of :class:`MongoStorage` with specifying the connection string
@@ -54,6 +54,8 @@ class MongoStorage(BaseStorage):
         :param kwargs: arguments to be passed to :class:`MongoStorage`
         :return: an instance of :class:`MongoStorage`
         """
+        if connection_kwargs is None:
+            connection_kwargs = {}
         client = AsyncIOMotorClient(url, **connection_kwargs)
         return cls(client=client, **kwargs)
 

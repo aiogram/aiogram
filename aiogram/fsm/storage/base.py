@@ -72,11 +72,11 @@ class DefaultKeyBuilder(KeyBuilder):
         if self.with_destiny:
             parts.append(key.destiny)
         elif key.destiny != DEFAULT_DESTINY:
-            raise ValueError(
+            error_message = (
                 "Default key builder is not configured to use key destiny other than the default."
-                "\n\n"
-                "Probably, you should set `with_destiny=True` in for DefaultKeyBuilder."
+                "\n\nProbably, you should set `with_destiny=True` in for DefaultKeyBuilder."
             )
+            raise ValueError(error_message)
         parts.append(part)
         return self.separator.join(parts)
 
