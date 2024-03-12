@@ -64,7 +64,7 @@ class MongoStorage(BaseStorage):
     def resolve_state(self, value: StateType) -> Optional[str]:
         if value is None:
             return None
-        elif isinstance(value, State):
+        if isinstance(value, State):
             return value.state
         return str(value)
 
