@@ -60,7 +60,7 @@ jobs:
 
       - name: Install project dependencies
         run: |
-          pip install -e .[dev,test,redis,proxy,i18n,fast]
+          pip install -e .[dev,test,redis,mongo,proxy,i18n,fast]
 
       - name: Lint code
         run: |
@@ -74,10 +74,19 @@ jobs:
         with:
           redis-version: 6
 
+      - name: Setup mongodb
+        if: ${{ env.IS_WINDOWS == 'false' }}
+        uses: supercharge/mongodb-github-action@1.10.0
+        with:
+          mongodb-version: '7.0'
+          mongodb-username: mongo
+          mongodb-password: mongo
+          mongodb-port: 27017
+
       - name: Run tests
         run: |
           flags="$flags --cov=aiogram --cov-config .coveragerc --cov-report=xml"
-          [[ "$IS_WINDOWS" == "false" ]] && flags="$flags --redis redis://localhost:6379/0"
+          [[ "$IS_WINDOWS" == "false" ]] && flags="$flags --redis redis://localhost:6379/0 --mongo mongodb://mongo:mongo@localhost:27017"
           pytest $flags
 
       - name: Upload coverage data
@@ -121,12 +130,20 @@ jobs:
 
       - name: Install project dependencies
         run: |
-          pip install -e .[dev,test,redis,proxy,i18n,fast]
+          pip install -e .[dev,test,redis,mongo,proxy,i18n,fast]
 
       - name: Setup redis
         uses: shogo82148/actions-setup-redis@v1
         with:
           redis-version: 6
+
+      - name: Setup mongodb
+        uses: supercharge/mongodb-github-action@1.10.0
+        with:
+          mongodb-version: '7.0'
+          mongodb-username: mongo
+          mongodb-password: mongo
+          mongodb-port: 27017
 
       - name: Run tests
         run: |
