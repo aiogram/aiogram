@@ -25,7 +25,7 @@ class KeyBuilder(ABC):
     @abstractmethod
     def build(self, key: StorageKey, part: Literal["data", "state", "lock"]) -> str:
         """
-        This method should be implemented in subclasses
+        Build key to be used in storage's db queries
 
         :param key: contextual key
         :param part: part of the record
