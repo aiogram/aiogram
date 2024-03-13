@@ -86,7 +86,7 @@ async def mongo_storage(mongo_server):
         pytest.skip(str(e))
     else:
         yield storage
-        await storage._client.drop_database(storage._db_name)
+        await storage._client.drop_database(storage._database)
     finally:
         await storage.close()
 

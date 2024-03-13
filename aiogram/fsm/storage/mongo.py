@@ -1,6 +1,6 @@
 from typing import Any, Dict, Optional, cast
 
-from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorCollection
+from motor.motor_asyncio import AsyncIOMotorClient
 
 from aiogram.fsm.state import State
 from aiogram.fsm.storage.base import (
@@ -33,8 +33,8 @@ class MongoStorage(BaseStorage):
         if key_builder is None:
             key_builder = DefaultKeyBuilder()
         self._client = client
-        self._db_name = db_name
-        self._collection: AsyncIOMotorCollection = self._client[db_name][collection_name]
+        self._database = self._client[db_name]
+        self._collection = self._database[collection_name]
         self._key_builder = key_builder
 
     @classmethod
