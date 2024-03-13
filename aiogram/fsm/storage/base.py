@@ -23,7 +23,11 @@ class KeyBuilder(ABC):
     """Base class for key builder."""
 
     @abstractmethod
-    def build(self, key: StorageKey, part: Literal["data", "state", "lock"]) -> str:
+    def build(
+        self,
+        key: StorageKey,
+        part: Optional[Literal["data", "state", "lock"]] = None,
+    ) -> str:
         """
         Build key to be used in storage's db queries
 
@@ -61,7 +65,11 @@ class DefaultKeyBuilder(KeyBuilder):
         self.with_bot_id = with_bot_id
         self.with_destiny = with_destiny
 
-    def build(self, key: StorageKey, part: Literal["data", "state", "lock"]) -> str:
+    def build(
+        self,
+        key: StorageKey,
+        part: Optional[Literal["data", "state", "lock"]] = None,
+    ) -> str:
         parts = [self.prefix]
         if self.with_bot_id:
             parts.append(str(key.bot_id))
@@ -77,7 +85,8 @@ class DefaultKeyBuilder(KeyBuilder):
                 "\n\nProbably, you should set `with_destiny=True` in for DefaultKeyBuilder."
             )
             raise ValueError(error_message)
-        parts.append(part)
+        if part:
+            parts.append(part)
         return self.separator.join(parts)
 
 

@@ -22,24 +22,19 @@ class MongoStorage(BaseStorage):
         client: AsyncIOMotorClient,
         key_builder: Optional[KeyBuilder] = None,
         db_name: str = "aiogram_fsm",
-        states_collection_name: str = "states",
-        data_collection_name: str = "data",
+        collection_name: str = "states_and_data",
     ) -> None:
         """
         :param client: Instance of AsyncIOMotorClient
         :param key_builder: builder that helps to convert contextual key to string
         :param db_name: name of the MongoDB database for FSM
-        :param states_collection_name: name of the collection for storing FSM states.
-        :param data_collection_name: name of the collection for storing additional data.
+        :param collection_name: name of the collection for storing FSM states and data
         """
         if key_builder is None:
             key_builder = DefaultKeyBuilder()
         self._client = client
         self._db_name = db_name
-        self._states_collection: AsyncIOMotorCollection = self._client[db_name][
-            states_collection_name
-        ]
-        self._data_collection: AsyncIOMotorCollection = self._client[db_name][data_collection_name]
+        self._collection: AsyncIOMotorCollection = self._client[db_name][collection_name]
         self._key_builder = key_builder
 
     @classmethod
@@ -71,50 +66,65 @@ class MongoStorage(BaseStorage):
         return str(value)
 
     async def set_state(self, key: StorageKey, state: StateType = None) -> None:
-        document_id = self._key_builder.build(key, "state")
+        document_id = self._key_builder.build(key)
         if state is None:
-            await self._states_collection.delete_one({"_id": document_id})
+            updated = await self._collection.find_one_and_update(
+                filter={"_id": document_id},
+                update={"$unset": {"state": 1}},
+                projection={"_id": 0},
+                return_document=True,
+            )
+            if updated == {}:
+                await self._collection.delete_one({"_id": document_id})
         else:
-            await self._states_collection.update_one(
-                {"_id": document_id},
-                {"$set": {"state": self.resolve_state(state)}},
+            await self._collection.update_one(
+                filter={"_id": document_id},
+                update={"$set": {"state": self.resolve_state(state)}},
                 upsert=True,
             )
 
     async def get_state(self, key: StorageKey) -> Optional[str]:
-        document_id = self._key_builder.build(key, "state")
-        document = await self._states_collection.find_one({"_id": document_id})
-        if document is None or document["state"] is None:
+        document_id = self._key_builder.build(key)
+        document = await self._collection.find_one({"_id": document_id})
+        if document is None or document.get("state") is None:
             return None
         return str(document["state"])
 
     async def set_data(self, key: StorageKey, data: Dict[str, Any]) -> None:
-        document_id = self._key_builder.build(key, "data")
+        document_id = self._key_builder.build(key)
         if not data:
-            await self._data_collection.delete_one({"_id": document_id})
+            updated = await self._collection.find_one_and_update(
+                filter={"_id": document_id},
+                update={"$unset": {"data": 1}},
+                projection={"_id": 0},
+                return_document=True,
+            )
+            if updated == {}:
+                await self._collection.delete_one({"_id": document_id})
         else:
-            await self._data_collection.update_one(
-                {"_id": document_id},
-                {"$set": data},
+            await self._collection.update_one(
+                filter={"_id": document_id},
+                update={"$set": {"data": data}},
                 upsert=True,
             )
 
     async def get_data(self, key: StorageKey) -> Dict[str, Any]:
-        document_id = self._key_builder.build(key, "data")
-        document = await self._data_collection.find_one({"_id": document_id}, {"_id": 0})
-        if not document:
+        document_id = self._key_builder.build(key)
+        document = await self._collection.find_one({"_id": document_id})
+        if document is None or not document.get("data"):
             return {}
-        return cast(Dict[str, Any], document)
+        return cast(Dict[str, Any], document["data"])
 
     async def update_data(self, key: StorageKey, data: Dict[str, Any]) -> Dict[str, Any]:
-        document_id = self._key_builder.build(key, "data")
-        update_result = await self._data_collection.find_one_and_update(
-            {"_id": document_id},
-            {"$set": data},
+        document_id = self._key_builder.build(key)
+        update_with = {f"data.{key}": value for key, value in data.items()}
+        update_result = await self._collection.find_one_and_update(
+            filter={"_id": document_id},
+            update={"$set": update_with},
             upsert=True,
             return_document=True,
             projection={"_id": 0},
         )
         if not update_result:
-            await self._data_collection.delete_one({"_id": document_id})
-        return cast(Dict[str, Any], update_result)
+            await self._collection.delete_one({"_id": document_id})
+        return update_result.get("data", {})
