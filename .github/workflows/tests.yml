@@ -136,19 +136,6 @@ jobs:
         run: |
           pip install -e .[dev,test,redis,mongo,proxy,i18n,fast]
 
-      - name: Setup redis
-        uses: shogo82148/actions-setup-redis@v1
-        with:
-          redis-version: 6
-
-      - name: Setup mongodb
-        uses: supercharge/mongodb-github-action@1.10.0
-        with:
-          mongodb-version: '7.0'
-          mongodb-username: mongo
-          mongodb-password: mongo
-          mongodb-port: 27017
-
       - name: Run tests
         run: |
           flags=""
