@@ -1,11 +1,9 @@
+from typing import Literal, Optional
+
 import pytest
 
 from aiogram.fsm.storage.base import DEFAULT_DESTINY, StorageKey
-from aiogram.fsm.storage.redis import (
-    DefaultKeyBuilder,
-    RedisEventIsolation,
-    RedisStorage,
-)
+from aiogram.fsm.storage.redis import DefaultKeyBuilder
 
 PREFIX = "test"
 BOT_ID = 42
@@ -15,24 +13,31 @@ THREAD_ID = 3
 FIELD = "data"
 
 
-class TestRedisDefaultKeyBuilder:
+class TestDefaultKeyBuilder:
     @pytest.mark.parametrize(
-        "with_bot_id,with_destiny,result",
+        "with_bot_id,with_destiny,field,result",
         [
-            [False, False, f"{PREFIX}:{CHAT_ID}:{USER_ID}:{FIELD}"],
-            [True, False, f"{PREFIX}:{BOT_ID}:{CHAT_ID}:{USER_ID}:{FIELD}"],
-            [True, True, f"{PREFIX}:{BOT_ID}:{CHAT_ID}:{USER_ID}:{DEFAULT_DESTINY}:{FIELD}"],
-            [False, True, f"{PREFIX}:{CHAT_ID}:{USER_ID}:{DEFAULT_DESTINY}:{FIELD}"],
+            [False, False, FIELD, f"{PREFIX}:{CHAT_ID}:{USER_ID}:{FIELD}"],
+            [True, False, FIELD, f"{PREFIX}:{BOT_ID}:{CHAT_ID}:{USER_ID}:{FIELD}"],
+            [True, True, FIELD, f"{PREFIX}:{BOT_ID}:{CHAT_ID}:{USER_ID}:{DEFAULT_DESTINY}:{FIELD}"],
+            [False, True, FIELD, f"{PREFIX}:{CHAT_ID}:{USER_ID}:{DEFAULT_DESTINY}:{FIELD}"],
+            [False, False, None, f"{PREFIX}:{CHAT_ID}:{USER_ID}"],
         ],
     )
-    async def test_generate_key(self, with_bot_id: bool, with_destiny: bool, result: str):
+    async def test_generate_key(
+        self,
+        with_bot_id: bool,
+        with_destiny: bool,
+        field: Optional[Literal["data", "state", "lock"]],
+        result: str,
+    ):
         key_builder = DefaultKeyBuilder(
             prefix=PREFIX,
             with_bot_id=with_bot_id,
             with_destiny=with_destiny,
         )
         key = StorageKey(chat_id=CHAT_ID, user_id=USER_ID, bot_id=BOT_ID, destiny=DEFAULT_DESTINY)
-        assert key_builder.build(key, FIELD) == result
+        assert key_builder.build(key, field) == result
 
     async def test_destiny_check(self):
         key_builder = DefaultKeyBuilder(
@@ -59,11 +64,3 @@ class TestRedisDefaultKeyBuilder:
             destiny=DEFAULT_DESTINY,
         )
         assert key_builder.build(key, FIELD) == f"{PREFIX}:{CHAT_ID}:{THREAD_ID}:{USER_ID}:{FIELD}"
-
-    def test_create_isolation(self):
-        fake_redis = object()
-        storage = RedisStorage(redis=fake_redis)
-        isolation = storage.create_isolation()
-        assert isinstance(isolation, RedisEventIsolation)
-        assert isolation.redis is fake_redis
-        assert isolation.key_builder is storage.key_builder

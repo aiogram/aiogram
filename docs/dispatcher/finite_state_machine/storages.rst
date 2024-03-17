@@ -19,13 +19,23 @@ RedisStorage
     :members: __init__, from_url
     :member-order: bysource
 
-Keys inside storage can be customized via key builders:
+MongoStorage
+------------
 
-.. autoclass:: aiogram.fsm.storage.redis.KeyBuilder
+.. autoclass:: aiogram.fsm.storage.mongo.MongoStorage
+    :members: __init__, from_url
+    :member-order: bysource
+
+KeyBuilder
+------------
+
+Keys inside Redis and Mongo storages can be customized via key builders:
+
+.. autoclass:: aiogram.fsm.storage.base.KeyBuilder
     :members:
     :member-order: bysource
 
-.. autoclass:: aiogram.fsm.storage.redis.DefaultKeyBuilder
+.. autoclass:: aiogram.fsm.storage.base.DefaultKeyBuilder
     :members:
     :member-order: bysource
 
