@@ -1,0 +1,1 @@
+Adding a new class :code:`aiogram.fsm.storage.MongoStorage` - MongoDB driver for aiogram's Finite State Machine. It works on the base of asynchronous :code:`motor` module to work with MongoDB.
