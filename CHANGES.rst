@@ -445,7 +445,7 @@ Misc
 
   .. danger::
 
-      Note that this issue has breaking changes described in in the Bot API changelog,
+      Note that this issue has breaking changes described in the Bot API changelog,
       this changes is not breaking in the API but breaking inside aiogram because
       Beta stage is not finished.
   `#1139 <https://github.com/aiogram/aiogram/issues/1139>`_
