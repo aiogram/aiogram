@@ -12,6 +12,14 @@
     "rst_description": "Use this method to send static .WEBP, `animated <https://telegram.org/blog/animated-stickers>`_ .TGS, or `video <https://telegram.org/blog/video-stickers-better-reactions>`_ .WEBM stickers. On success, the sent :class:`aiogram.types.message.Message` is returned.",
     "annotations": [
       {
+        "type": "String",
+        "required": false,
+        "description": "Unique identifier of the business connection on behalf of which the message will be sent",
+        "html_description": "<td>Unique identifier of the business connection on behalf of which the message will be sent</td>",
+        "rst_description": "Unique identifier of the business connection on behalf of which the message will be sent\n",
+        "name": "business_connection_id"
+      },
+      {
         "type": "Integer or String",
         "required": true,
         "description": "Unique identifier for the target chat or username of the target channel (in the format @channelusername)",
@@ -30,9 +38,9 @@
       {
         "type": "InputFile or String",
         "required": true,
-        "description": "Sticker to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a .WEBP sticker from the Internet, or upload a new .WEBP or .TGS sticker using multipart/form-data. More information on Sending Files. Video stickers can only be sent by a file_id. Animated stickers can't be sent via an HTTP URL.",
-        "html_description": "<td>Sticker to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a .WEBP sticker from the Internet, or upload a new .WEBP or .TGS sticker using multipart/form-data. <a href=\"#sending-files\">More information on Sending Files &#187;</a>. Video stickers can only be sent by a file_id. Animated stickers can't be sent via an HTTP URL.</td>",
-        "rst_description": "Sticker to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a .WEBP sticker from the Internet, or upload a new .WEBP or .TGS sticker using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`. Video stickers can only be sent by a file_id. Animated stickers can't be sent via an HTTP URL.\n",
+        "description": "Sticker to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a .WEBP sticker from the Internet, or upload a new .WEBP, .TGS, or .WEBM sticker using multipart/form-data. More information on Sending Files. Video and animated stickers can't be sent via an HTTP URL.",
+        "html_description": "<td>Sticker to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a .WEBP sticker from the Internet, or upload a new .WEBP, .TGS, or .WEBM sticker using multipart/form-data. <a href=\"#sending-files\">More information on Sending Files &#187;</a>. Video and animated stickers can't be sent via an HTTP URL.</td>",
+        "rst_description": "Sticker to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a .WEBP sticker from the Internet, or upload a new .WEBP, .TGS, or .WEBM sticker using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`. Video and animated stickers can't be sent via an HTTP URL.\n",
         "name": "sticker"
       },
       {
@@ -70,9 +78,9 @@
       {
         "type": "InlineKeyboardMarkup or ReplyKeyboardMarkup or ReplyKeyboardRemove or ForceReply",
         "required": false,
-        "description": "Additional interface options. A JSON-serialized object for an inline keyboard, custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user.",
-        "html_description": "<td>Additional interface options. A JSON-serialized object for an <a href=\"/bots/features#inline-keyboards\">inline keyboard</a>, <a href=\"/bots/features#keyboards\">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user.</td>",
-        "rst_description": "Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.\n",
+        "description": "Additional interface options. A JSON-serialized object for an inline keyboard, custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account.",
+        "html_description": "<td>Additional interface options. A JSON-serialized object for an <a href=\"/bots/features#inline-keyboards\">inline keyboard</a>, <a href=\"/bots/features#keyboards\">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account.</td>",
+        "rst_description": "Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account.\n",
         "name": "reply_markup"
       },
       {

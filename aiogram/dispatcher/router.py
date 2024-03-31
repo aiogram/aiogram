@@ -60,6 +60,16 @@ class Router:
         self.removed_chat_boost = TelegramEventObserver(
             router=self, event_name="removed_chat_boost"
         )
+        self.deleted_business_messages = TelegramEventObserver(
+            router=self, event_name="deleted_business_messages"
+        )
+        self.business_connection = TelegramEventObserver(
+            router=self, event_name="business_connection"
+        )
+        self.edited_business_message = TelegramEventObserver(
+            router=self, event_name="edited_business_message"
+        )
+        self.business_message = TelegramEventObserver(router=self, event_name="business_message")
 
         self.errors = self.error = TelegramEventObserver(router=self, event_name="error")
 
@@ -85,6 +95,10 @@ class Router:
             "message_reaction_count": self.message_reaction_count,
             "chat_boost": self.chat_boost,
             "removed_chat_boost": self.removed_chat_boost,
+            "deleted_business_messages": self.deleted_business_messages,
+            "business_connection": self.business_connection,
+            "edited_business_message": self.edited_business_message,
+            "business_message": self.business_message,
             "error": self.errors,
         }
 

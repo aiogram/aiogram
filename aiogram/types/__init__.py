@@ -3,6 +3,7 @@ from typing import List, Literal, Optional, Union
 from .animation import Animation
 from .audio import Audio
 from .base import UNSET_PARSE_MODE, TelegramObject
+from .birthdate import Birthdate
 from .bot_command import BotCommand
 from .bot_command_scope import BotCommandScope
 from .bot_command_scope_all_chat_administrators import (
@@ -17,6 +18,12 @@ from .bot_command_scope_default import BotCommandScopeDefault
 from .bot_description import BotDescription
 from .bot_name import BotName
 from .bot_short_description import BotShortDescription
+from .business_connection import BusinessConnection
+from .business_intro import BusinessIntro
+from .business_location import BusinessLocation
+from .business_messages_deleted import BusinessMessagesDeleted
+from .business_opening_hours import BusinessOpeningHours
+from .business_opening_hours_interval import BusinessOpeningHoursInterval
 from .callback_game import CallbackGame
 from .callback_query import CallbackQuery
 from .chat import Chat
@@ -165,6 +172,7 @@ from .reply_keyboard_remove import ReplyKeyboardRemove
 from .reply_parameters import ReplyParameters
 from .response_parameters import ResponseParameters
 from .sent_web_app_message import SentWebAppMessage
+from .shared_user import SharedUser
 from .shipping_address import ShippingAddress
 from .shipping_option import ShippingOption
 from .shipping_query import ShippingQuery
@@ -196,6 +204,7 @@ from .write_access_allowed import WriteAccessAllowed
 __all__ = (
     "Animation",
     "Audio",
+    "Birthdate",
     "BotCommand",
     "BotCommandScope",
     "BotCommandScopeAllChatAdministrators",
@@ -209,6 +218,12 @@ __all__ = (
     "BotName",
     "BotShortDescription",
     "BufferedInputFile",
+    "BusinessConnection",
+    "BusinessIntro",
+    "BusinessLocation",
+    "BusinessMessagesDeleted",
+    "BusinessOpeningHours",
+    "BusinessOpeningHoursInterval",
     "CallbackGame",
     "CallbackQuery",
     "Chat",
@@ -357,6 +372,7 @@ __all__ = (
     "ReplyParameters",
     "ResponseParameters",
     "SentWebAppMessage",
+    "SharedUser",
     "ShippingAddress",
     "ShippingOption",
     "ShippingQuery",

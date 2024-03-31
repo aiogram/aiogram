@@ -33,6 +33,8 @@ class SendAudio(TelegramMethod[Message]):
     """Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)"""
     audio: Union[InputFile, str]
     """Audio file to send. Pass a file_id as String to send an audio file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get an audio file from the Internet, or upload a new one using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`"""
+    business_connection_id: Optional[str] = None
+    """Unique identifier of the business connection on behalf of which the message will be sent"""
     message_thread_id: Optional[int] = None
     """Unique identifier for the target message thread (topic) of the forum; for forum supergroups only"""
     caption: Optional[str] = None
@@ -58,7 +60,7 @@ class SendAudio(TelegramMethod[Message]):
     reply_markup: Optional[
         Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
     ] = None
-    """Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user."""
+    """Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account"""
     allow_sending_without_reply: Optional[bool] = Field(
         None, json_schema_extra={"deprecated": True}
     )
@@ -81,6 +83,7 @@ class SendAudio(TelegramMethod[Message]):
             *,
             chat_id: Union[int, str],
             audio: Union[InputFile, str],
+            business_connection_id: Optional[str] = None,
             message_thread_id: Optional[int] = None,
             caption: Optional[str] = None,
             parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
@@ -106,6 +109,7 @@ class SendAudio(TelegramMethod[Message]):
             super().__init__(
                 chat_id=chat_id,
                 audio=audio,
+                business_connection_id=business_connection_id,
                 message_thread_id=message_thread_id,
                 caption=caption,
                 parse_mode=parse_mode,

@@ -62,3 +62,6 @@ class ContentType(str, Enum):
     VIDEO_CHAT_PARTICIPANTS_INVITED = "video_chat_participants_invited"
     WEB_APP_DATA = "web_app_data"
     USER_SHARED = "user_shared"
+    BUSINESS_CONNECTION_ID = "business_connection_id"
+    SENDER_BUSINESS_BOT = "sender_business_bot"
+    IS_FROM_OFFLINE = "is_from_offline"

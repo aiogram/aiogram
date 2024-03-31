@@ -37,6 +37,10 @@ if TYPE_CHECKING:
         UnpinAllGeneralForumTopicMessages,
         UnpinChatMessage,
     )
+    from .birthdate import Birthdate
+    from .business_intro import BusinessIntro
+    from .business_location import BusinessLocation
+    from .business_opening_hours import BusinessOpeningHours
     from .chat_location import ChatLocation
     from .chat_permissions import ChatPermissions
     from .chat_photo import ChatPhoto
@@ -71,6 +75,16 @@ class Chat(TelegramObject):
     """*Optional*. Chat photo. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
     active_usernames: Optional[List[str]] = None
     """*Optional*. If non-empty, the list of all `active chat usernames <https://telegram.org/blog/topics-in-groups-collectible-usernames#collectible-usernames>`_; for private chats, supergroups and channels. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
+    birthdate: Optional[Birthdate] = None
+    """*Optional*. For private chats, the date of birth of the user. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
+    business_intro: Optional[BusinessIntro] = None
+    """*Optional*. For private chats with business accounts, the intro of the business. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
+    business_location: Optional[BusinessLocation] = None
+    """*Optional*. For private chats with business accounts, the location of the business. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
+    business_opening_hours: Optional[BusinessOpeningHours] = None
+    """*Optional*. For private chats with business accounts, the opening hours of the business. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
+    personal_chat: Optional[Chat] = None
+    """*Optional*. For private chats, the personal channel of the user. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
     available_reactions: Optional[List[Union[ReactionTypeEmoji, ReactionTypeCustomEmoji]]] = None
     """*Optional*. List of available reactions allowed in the chat. If omitted, then all `emoji reactions <https://core.telegram.org/bots/api#reactiontypeemoji>`_ are allowed. Returned only in :class:`aiogram.methods.get_chat.GetChat`."""
     accent_color_id: Optional[int] = None
@@ -144,6 +158,11 @@ class Chat(TelegramObject):
             is_forum: Optional[bool] = None,
             photo: Optional[ChatPhoto] = None,
             active_usernames: Optional[List[str]] = None,
+            birthdate: Optional[Birthdate] = None,
+            business_intro: Optional[BusinessIntro] = None,
+            business_location: Optional[BusinessLocation] = None,
+            business_opening_hours: Optional[BusinessOpeningHours] = None,
+            personal_chat: Optional[Chat] = None,
             available_reactions: Optional[
                 List[Union[ReactionTypeEmoji, ReactionTypeCustomEmoji]]
             ] = None,
@@ -190,6 +209,11 @@ class Chat(TelegramObject):
                 is_forum=is_forum,
                 photo=photo,
                 active_usernames=active_usernames,
+                birthdate=birthdate,
+                business_intro=business_intro,
+                business_location=business_location,
+                business_opening_hours=business_opening_hours,
+                personal_chat=personal_chat,
                 available_reactions=available_reactions,
                 accent_color_id=accent_color_id,
                 background_custom_emoji_id=background_custom_emoji_id,
@@ -522,6 +546,7 @@ class Chat(TelegramObject):
     def do(
         self,
         action: str,
+        business_connection_id: Optional[str] = None,
         message_thread_id: Optional[int] = None,
         **kwargs: Any,
     ) -> SendChatAction:
@@ -540,7 +565,8 @@ class Chat(TelegramObject):
         Source: https://core.telegram.org/bots/api#sendchataction
 
         :param action: Type of action to broadcast. Choose one, depending on what the user is about to receive: *typing* for `text messages <https://core.telegram.org/bots/api#sendmessage>`_, *upload_photo* for `photos <https://core.telegram.org/bots/api#sendphoto>`_, *record_video* or *upload_video* for `videos <https://core.telegram.org/bots/api#sendvideo>`_, *record_voice* or *upload_voice* for `voice notes <https://core.telegram.org/bots/api#sendvoice>`_, *upload_document* for `general files <https://core.telegram.org/bots/api#senddocument>`_, *choose_sticker* for `stickers <https://core.telegram.org/bots/api#sendsticker>`_, *find_location* for `location data <https://core.telegram.org/bots/api#sendlocation>`_, *record_video_note* or *upload_video_note* for `video notes <https://core.telegram.org/bots/api#sendvideonote>`_.
-        :param message_thread_id: Unique identifier for the target message thread; supergroups only
+        :param business_connection_id: Unique identifier of the business connection on behalf of which the action will be sent
+        :param message_thread_id: Unique identifier for the target message thread; for supergroups only
         :return: instance of method :class:`aiogram.methods.send_chat_action.SendChatAction`
         """
         # DO NOT EDIT MANUALLY!!!
@@ -551,6 +577,7 @@ class Chat(TelegramObject):
         return SendChatAction(
             chat_id=self.id,
             action=action,
+            business_connection_id=business_connection_id,
             message_thread_id=message_thread_id,
             **kwargs,
         ).as_(self._bot)
@@ -884,10 +911,10 @@ class Chat(TelegramObject):
         :param can_post_stories: Pass :code:`True` if the administrator can post stories to the chat
         :param can_edit_stories: Pass :code:`True` if the administrator can edit stories posted by other users
         :param can_delete_stories: Pass :code:`True` if the administrator can delete stories posted by other users
-        :param can_post_messages: Pass :code:`True` if the administrator can post messages in the channel, or access channel statistics; channels only
-        :param can_edit_messages: Pass :code:`True` if the administrator can edit messages of other users and can pin messages; channels only
-        :param can_pin_messages: Pass :code:`True` if the administrator can pin messages, supergroups only
-        :param can_manage_topics: Pass :code:`True` if the user is allowed to create, rename, close, and reopen forum topics, supergroups only
+        :param can_post_messages: Pass :code:`True` if the administrator can post messages in the channel, or access channel statistics; for channels only
+        :param can_edit_messages: Pass :code:`True` if the administrator can edit messages of other users and can pin messages; for channels only
+        :param can_pin_messages: Pass :code:`True` if the administrator can pin messages; for supergroups only
+        :param can_manage_topics: Pass :code:`True` if the user is allowed to create, rename, close, and reopen forum topics; for supergroups only
         :return: instance of method :class:`aiogram.methods.promote_chat_member.PromoteChatMember`
         """
         # DO NOT EDIT MANUALLY!!!

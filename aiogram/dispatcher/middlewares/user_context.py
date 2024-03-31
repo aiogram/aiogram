@@ -86,4 +86,20 @@ class UserContextMiddleware(BaseMiddleware):
             return event.chat_boost.chat, None, None
         if event.removed_chat_boost:
             return event.removed_chat_boost.chat, None, None
+        if event.business_message:
+            return (
+                event.business_message.chat,
+                event.business_message.from_user,
+                event.business_message.message_thread_id
+                if event.business_message.is_topic_message
+                else None,
+            )
+        if event.edited_business_message:
+            return (
+                event.edited_business_message.chat,
+                event.edited_business_message.from_user,
+                event.edited_business_message.message_thread_id
+                if event.edited_business_message.is_topic_message
+                else None,
+            )
         return None, None, None

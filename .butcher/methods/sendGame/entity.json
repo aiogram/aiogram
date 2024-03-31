@@ -12,6 +12,14 @@
     "rst_description": "Use this method to send a game. On success, the sent :class:`aiogram.types.message.Message` is returned.",
     "annotations": [
       {
+        "type": "String",
+        "required": false,
+        "description": "Unique identifier of the business connection on behalf of which the message will be sent",
+        "html_description": "<td>Unique identifier of the business connection on behalf of which the message will be sent</td>",
+        "rst_description": "Unique identifier of the business connection on behalf of which the message will be sent\n",
+        "name": "business_connection_id"
+      },
+      {
         "type": "Integer",
         "required": true,
         "description": "Unique identifier for the target chat",
@@ -62,9 +70,9 @@
       {
         "type": "InlineKeyboardMarkup",
         "required": false,
-        "description": "A JSON-serialized object for an inline keyboard. If empty, one 'Play game_title' button will be shown. If not empty, the first button must launch the game.",
-        "html_description": "<td>A JSON-serialized object for an <a href=\"/bots/features#inline-keyboards\">inline keyboard</a>. If empty, one 'Play game_title' button will be shown. If not empty, the first button must launch the game.</td>",
-        "rst_description": "A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_. If empty, one 'Play game_title' button will be shown. If not empty, the first button must launch the game.\n",
+        "description": "A JSON-serialized object for an inline keyboard. If empty, one 'Play game_title' button will be shown. If not empty, the first button must launch the game. Not supported for messages sent on behalf of a business account.",
+        "html_description": "<td>A JSON-serialized object for an <a href=\"/bots/features#inline-keyboards\">inline keyboard</a>. If empty, one 'Play game_title' button will be shown. If not empty, the first button must launch the game. Not supported for messages sent on behalf of a business account.</td>",
+        "rst_description": "A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_. If empty, one 'Play game_title' button will be shown. If not empty, the first button must launch the game. Not supported for messages sent on behalf of a business account.\n",
         "name": "reply_markup"
       },
       {
