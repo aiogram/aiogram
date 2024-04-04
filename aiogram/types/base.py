@@ -16,6 +16,9 @@ class TelegramObject(BotContextController, BaseModel):
         populate_by_name=True,
         arbitrary_types_allowed=True,
         defer_build=True,
+        json_encoders={
+            Default: lambda obj: obj.name,
+        }
     )
 
     @model_validator(mode="before")
