@@ -1,9 +1,11 @@
+from typing import Any, Dict
 from unittest.mock import sentinel
 
 import pytest
 
-from aiogram.methods import GetMe, TelegramMethod
-from aiogram.types import TelegramObject, User
+from aiogram.client.default import Default
+from aiogram.methods import GetMe, SendMessage, TelegramMethod
+from aiogram.types import LinkPreviewOptions, TelegramObject, User
 from tests.mocked_bot import MockedBot
 
 
@@ -24,6 +26,25 @@ class TestTelegramMethodRemoveUnset:
     @pytest.mark.parametrize("obj", [TelegramMethod, TelegramObject])
     def test_remove_unset_non_dict(self, obj):
         assert obj.remove_unset("") == ""
+
+
+class TestTelegramMethodJsonSerialize:
+    @pytest.mark.parametrize(
+        "obj",
+        [
+            SendMessage(
+                chat_id=1,
+                text="test",
+            ),
+            LinkPreviewOptions(),
+        ],
+    )
+    def test_json_serialize(self, obj):
+        def has_defaults(dump: Dict[str, Any]) -> bool:
+            return any(isinstance(value, Default) for value in dump.values())
+
+        assert has_defaults(obj.model_dump())
+        assert not has_defaults(obj.model_dump(mode="json"))
 
 
 class TestTelegramMethodCall:

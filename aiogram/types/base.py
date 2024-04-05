@@ -1,10 +1,16 @@
 from typing import Any, Dict
 from unittest.mock import sentinel
 
-from pydantic import BaseModel, ConfigDict, model_validator
+from pydantic import (
+    BaseModel,
+    ConfigDict,
+    SerializerFunctionWrapHandler,
+    model_serializer,
+    model_validator,
+)
 
 from aiogram.client.context_controller import BotContextController
-from aiogram.client.default import Default
+from aiogram.client.default import Default, DefaultBotProperties
 
 
 class TelegramObject(BotContextController, BaseModel):
@@ -35,6 +41,22 @@ class TelegramObject(BotContextController, BaseModel):
         if not isinstance(values, dict):
             return values
         return {k: v for k, v in values.items() if not isinstance(v, UNSET_TYPE)}
+
+    @model_serializer(mode="wrap", when_used="json")
+    def json_serialize(self, handler: SerializerFunctionWrapHandler) -> Dict[str, Any]:
+        """
+        Replacing `Default` placeholders with actual values from bot defaults.
+        Ensures JSON serialization backward compatibility by handling non-standard objects.
+        """
+        if not isinstance(self, TelegramObject):
+            return handler(self)
+        properties = self.bot.default if self.bot else DefaultBotProperties()
+        default_fields = {
+            field: properties[value.name]
+            for field in self.model_fields.keys()
+            if isinstance(value := getattr(self, field), Default)
+        }
+        return handler(self.model_copy(update=default_fields))
 
 
 class MutableTelegramObject(TelegramObject):
