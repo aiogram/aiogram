@@ -102,6 +102,7 @@ if TYPE_CHECKING:
     from .text_quote import TextQuote
     from .user import User
     from .user_shared import UserShared
+    from .shared_user import SharedUser
     from .users_shared import UsersShared
     from .venue import Venue
     from .video import Video
@@ -238,6 +239,8 @@ class Message(MaybeInaccessibleMessage):
     """*Optional*. Message is an invoice for a `payment <https://core.telegram.org/bots/api#payments>`_, information about the invoice. `More about payments » <https://core.telegram.org/bots/api#payments>`_"""
     successful_payment: Optional[SuccessfulPayment] = None
     """*Optional*. Message is a service message about a successful payment, information about the payment. `More about payments » <https://core.telegram.org/bots/api#payments>`_"""
+    shared_user: Optional[SharedUser] = None
+    """*Optional*. A user that was shared with the bot"""
     users_shared: Optional[UsersShared] = None
     """*Optional*. Service message: users were shared with the bot"""
     chat_shared: Optional[ChatShared] = None
@@ -620,6 +623,8 @@ class Message(MaybeInaccessibleMessage):
             return ContentType.USER_SHARED
         if self.chat_shared:
             return ContentType.CHAT_SHARED
+        if self.shared_user:
+            return ContentType.SHARED_USER
         if self.story:
             return ContentType.STORY
         if self.has_media_spoiler:
@@ -628,6 +633,12 @@ class Message(MaybeInaccessibleMessage):
             return ContentType.WRITE_ACCESS_ALLOWED
         if self.boost_added:
             return ContentType.BOOST_ADDED
+        if self.business_connection_id:
+            return ContentType.BUSINESS_CONNECTION_ID
+        if self.is_from_offline:
+            return ContentType.IS_FROM_OFFLINE
+        if self.sender_business_bot:
+            return ContentType.SENDER_BUSINESS_BOT
 
         return ContentType.UNKNOWN
 
