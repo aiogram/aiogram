@@ -548,7 +548,7 @@ class TestDispatcher:
                         id="qwerty",
                         user=User(id=42, is_bot=False, first_name="Test"),
                         user_chat_id=42,
-                        date=int(time.time()),
+                        date=datetime.datetime.now(),
                         can_reply=True,
                         is_enabled=True,
                     ),
