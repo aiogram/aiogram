@@ -1,1 +1,0 @@
-Fixing tests and content types for Telegram Bot API 7.2 update

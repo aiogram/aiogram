@@ -86,6 +86,10 @@ class UserContextMiddleware(BaseMiddleware):
             return event.chat_boost.chat, None, None
         if event.removed_chat_boost:
             return event.removed_chat_boost.chat, None, None
+        if event.deleted_business_messages:
+            return event.deleted_business_messages.chat, None, None
+        if event.business_connection:
+            return None, event.business_connection.user, None
         if event.business_message:
             return (
                 event.business_message.chat,

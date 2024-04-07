@@ -11,7 +11,9 @@ class TestAddStickerToSet:
         response: bool = await bot.add_sticker_to_set(
             user_id=42,
             name="test stickers pack",
-            sticker=InputSticker(sticker="file id", format=StickerFormat.STATIC, emoji_list=[":)"]),
+            sticker=InputSticker(
+                sticker="file id", format=StickerFormat.STATIC, emoji_list=[":)"]
+            ),
         )
         request = bot.get_request()
         assert response == prepare_result.result

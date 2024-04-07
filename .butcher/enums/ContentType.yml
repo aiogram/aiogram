@@ -40,3 +40,4 @@ extract:
     - business_connection_id
     - sender_business_bot
     - is_from_offline
+    - has_media_spoiler

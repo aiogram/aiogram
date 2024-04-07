@@ -14,7 +14,9 @@ class TestCreateNewStickerSet:
             title="title",
             stickers=[
                 InputSticker(sticker="file id", format=StickerFormat.STATIC, emoji_list=[":)"]),
-                InputSticker(sticker=FSInputFile("file.png"), format=StickerFormat.STATIC, emoji_list=["=("]),
+                InputSticker(
+                    sticker=FSInputFile("file.png"), format=StickerFormat.STATIC, emoji_list=["=("]
+                ),
             ],
             sticker_format=StickerFormat.STATIC,
         )
