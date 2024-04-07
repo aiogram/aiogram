@@ -71,6 +71,7 @@ from aiogram.types import (
     PollOption,
     ProximityAlertTriggered,
     ReactionTypeCustomEmoji,
+    SharedUser,
     Sticker,
     Story,
     SuccessfulPayment,
@@ -462,6 +463,13 @@ TEST_MESSAGE_USER_SHARED = Message(
     from_user=User(id=42, is_bot=False, first_name="Test"),
     user_shared=UserShared(request_id=42, user_id=42),
 )
+TEST_MESSAGE_SHARED_USER = Message(
+    message_id=42,
+    date=datetime.datetime.now(),
+    chat=Chat(id=42, type="private"),
+    from_user=User(id=42, is_bot=False, first_name="User"),
+    shared_user=SharedUser(request_id=42, user_id=1),
+)
 TEST_MESSAGE_USERS_SHARED = Message(
     message_id=42,
     date=datetime.datetime.now(),
@@ -469,7 +477,7 @@ TEST_MESSAGE_USERS_SHARED = Message(
     from_user=None,
     users_shared=UsersShared(
         request_id=0,
-        user_ids=[1, 2],
+        users=[SharedUser(user_id=1), SharedUser(user_id=2)],
     ),
 )
 TEST_CHAT_SHARED = Message(
@@ -562,6 +570,27 @@ TEST_MESSAGE_BOOST_ADDED = Message(
     from_user=User(id=42, is_bot=False, first_name="User"),
     boost_added=ChatBoostAdded(boost_count=1),
 )
+TEST_MESSAGE_BUSINESS_CONNECTION_ID = Message(
+    message_id=42,
+    date=datetime.datetime.now(),
+    chat=Chat(id=42, type="private"),
+    from_user=User(id=42, is_bot=False, first_name="User"),
+    business_connection_id="idk"
+)
+TEST_MESSAGE_IS_FROM_OFFLINE = Message(
+    message_id=42,
+    date=datetime.datetime.now(),
+    chat=Chat(id=42, type="private"),
+    from_user=User(id=42, is_bot=False, first_name="User"),
+    is_from_offline=True
+)
+TEST_MESSAGE_SENDER_BUSINESS_BOT = Message(
+    message_id=42,
+    date=datetime.datetime.now(),
+    chat=Chat(id=42, type="private"),
+    from_user=User(id=42, is_bot=True, first_name="Bot"),
+    sender_business_bot=User(id=42, is_bot=True, first_name="Bot")
+)
 TEST_MESSAGE_UNKNOWN = Message(
     message_id=42,
     date=datetime.datetime.now(),
@@ -620,6 +649,7 @@ MESSAGES_AND_CONTENT_TYPES = [
     [TEST_MESSAGE_USER_SHARED, ContentType.USER_SHARED],
     [TEST_MESSAGE_USERS_SHARED, ContentType.USERS_SHARED],
     [TEST_CHAT_SHARED, ContentType.CHAT_SHARED],
+    [TEST_MESSAGE_SHARED_USER, ContentType.SHARED_USER],
     [TEST_MESSAGE_STORY, ContentType.STORY],
     [TEST_MESSAGE_GIVEAWAY, ContentType.GIVEAWAY],
     [TEST_MESSAGE_GIVEAWAY_CREATED, ContentType.GIVEAWAY_CREATED],
@@ -630,6 +660,9 @@ MESSAGES_AND_CONTENT_TYPES = [
     [TEST_MESSAGE_GENERAL_FORUM_TOPIC_UNHIDDEN, ContentType.GENERAL_FORUM_TOPIC_UNHIDDEN],
     [TEST_MESSAGE_WRITE_ACCESS_ALLOWED, ContentType.WRITE_ACCESS_ALLOWED],
     [TEST_MESSAGE_BOOST_ADDED, ContentType.BOOST_ADDED],
+    [TEST_MESSAGE_BUSINESS_CONNECTION_ID, ContentType.BUSINESS_CONNECTION_ID],
+    [TEST_MESSAGE_IS_FROM_OFFLINE, ContentType.IS_FROM_OFFLINE],
+    [TEST_MESSAGE_SENDER_BUSINESS_BOT, ContentType.SENDER_BUSINESS_BOT],
     [TEST_MESSAGE_UNKNOWN, ContentType.UNKNOWN],
 ]
 
@@ -673,6 +706,7 @@ MESSAGES_AND_COPY_METHODS = [
     [TEST_MESSAGE_DICE, SendDice],
     [TEST_MESSAGE_USER_SHARED, None],
     [TEST_CHAT_SHARED, None],
+    [TEST_MESSAGE_SHARED_USER, None],
     [TEST_MESSAGE_GIVEAWAY_COMPLETED, None],
     [TEST_MESSAGE_HAS_MEDIA_SPOILER, None],
     [TEST_MESSAGE_WEB_APP_DATA, None],
@@ -689,6 +723,9 @@ MESSAGES_AND_COPY_METHODS = [
     [TEST_MESSAGE_GIVEAWAY, None],
     [TEST_MESSAGE_GIVEAWAY_WINNERS, None],
     [TEST_MESSAGE_BOOST_ADDED, None],
+    [TEST_MESSAGE_BUSINESS_CONNECTION_ID, None],
+    [TEST_MESSAGE_IS_FROM_OFFLINE, None],
+    [TEST_MESSAGE_SENDER_BUSINESS_BOT, None],
     [TEST_MESSAGE_UNKNOWN, None],
 ]
 
