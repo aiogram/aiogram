@@ -1,0 +1,6 @@
+Mixed-Format Sticker Packs
+
+* Removed the fields is_animated and is_video from the class StickerSet.
+* Added the field format to the class InputSticker.
+* Removed the parameter sticker_format from the method createNewStickerSet.
+* Added the parameter format to the method setStickerSetThumbnail.

@@ -42,6 +42,14 @@
         "rst_description": "*Optional*. List of 0-20 search keywords for the sticker with total length of up to 64 characters. For 'regular' and 'custom_emoji' stickers only.\n",
         "name": "keywords",
         "required": false
+      },
+      {
+        "type": "String",
+        "description": "Format of the added sticker, must be one of “static” for a .WEBP or .PNG image, “animated” for a .TGS animation, “video” for a WEBM video",
+        "html_description": "Format of the added sticker, must be one of “static” for a <b>.WEBP</b> or <b>.PNG</b> image, “animated” for a <b>.TGS</b> animation, “video” for a <b>WEBM</b> video",
+        "rst_description": "Format of the added sticker, must be one of “static” for a **.WEBP** or **.PNG** image, “animated” for a **.TGS** animation, “video” for a **WEBM** video",
+        "name": "format",
+        "required": true
       }
     ],
     "category": "types"

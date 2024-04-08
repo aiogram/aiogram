@@ -36,22 +36,6 @@
         "required": true
       },
       {
-        "type": "Boolean",
-        "description": "True, if the sticker set contains animated stickers",
-        "html_description": "<td><em>True</em>, if the sticker set contains <a href=\"https://telegram.org/blog/animated-stickers\">animated stickers</a></td>",
-        "rst_description": ":code:`True`, if the sticker set contains `animated stickers <https://telegram.org/blog/animated-stickers>`_\n",
-        "name": "is_animated",
-        "required": true
-      },
-      {
-        "type": "Boolean",
-        "description": "True, if the sticker set contains video stickers",
-        "html_description": "<td><em>True</em>, if the sticker set contains <a href=\"https://telegram.org/blog/video-stickers-better-reactions\">video stickers</a></td>",
-        "rst_description": ":code:`True`, if the sticker set contains `video stickers <https://telegram.org/blog/video-stickers-better-reactions>`_\n",
-        "name": "is_video",
-        "required": true
-      },
-      {
         "type": "Array of Sticker",
         "description": "List of all set stickers",
         "html_description": "<td>List of all set stickers</td>",
