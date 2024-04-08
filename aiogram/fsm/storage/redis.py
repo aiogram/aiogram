@@ -53,17 +53,20 @@ class DefaultKeyBuilder(KeyBuilder):
         prefix: str = "fsm",
         separator: str = ":",
         with_bot_id: bool = False,
+        with_business_connection_id: bool = False,
         with_destiny: bool = False,
     ) -> None:
         """
         :param prefix: prefix for all records
         :param separator: separator
         :param with_bot_id: include Bot id in the key
+        :param with_business_connection_id: include business connection id
         :param with_destiny: include destiny key
         """
         self.prefix = prefix
         self.separator = separator
         self.with_bot_id = with_bot_id
+        self.with_business_connection_id = with_business_connection_id
         self.with_destiny = with_destiny
 
     def build(self, key: StorageKey, part: Literal["data", "state", "lock"]) -> str:
@@ -74,6 +77,8 @@ class DefaultKeyBuilder(KeyBuilder):
         if key.thread_id:
             parts.append(str(key.thread_id))
         parts.append(str(key.user_id))
+        if self.with_business_connection_id and key.business_connection_id:
+            parts.append(str(key.business_connection_id))
         if self.with_destiny:
             parts.append(key.destiny)
         elif key.destiny != DEFAULT_DESTINY:
