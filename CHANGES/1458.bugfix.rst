@@ -1,0 +1,2 @@
+Added missing error handling to :code:`_background_feed_update` (when in :code:`handle_in_background=True` webhook mode)
+
