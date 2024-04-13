@@ -100,6 +100,7 @@ jobs:
         python-version:
           - 'pypy3.8'
           - 'pypy3.9'
+          - 'pypy3.10'
 
     defaults:
       # Windows sucks. Force use bash instead of PowerShell
