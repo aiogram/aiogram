@@ -16,6 +16,8 @@ from aiogram.dispatcher.event.bases import UNHANDLED, SkipHandler
 from aiogram.dispatcher.router import Router
 from aiogram.methods import GetMe, GetUpdates, SendMessage, TelegramMethod
 from aiogram.types import (
+    BusinessConnection,
+    BusinessMessagesDeleted,
     CallbackQuery,
     Chat,
     ChatBoost,
@@ -524,6 +526,65 @@ class TestDispatcher:
                 ),
                 True,
                 False,
+            ),
+            pytest.param(
+                "deleted_business_messages",
+                Update(
+                    update_id=42,
+                    deleted_business_messages=BusinessMessagesDeleted(
+                        chat=Chat(id=-42, type="private"),
+                        business_connection_id="qwerty",
+                        message_ids=[1, 2, 3],
+                    ),
+                ),
+                True,
+                False,
+            ),
+            pytest.param(
+                "business_connection",
+                Update(
+                    update_id=42,
+                    business_connection=BusinessConnection(
+                        id="qwerty",
+                        user=User(id=42, is_bot=False, first_name="Test"),
+                        user_chat_id=42,
+                        date=datetime.datetime.now(),
+                        can_reply=True,
+                        is_enabled=True,
+                    ),
+                ),
+                False,
+                True,
+            ),
+            pytest.param(
+                "edited_business_message",
+                Update(
+                    update_id=42,
+                    edited_business_message=Message(
+                        message_id=42,
+                        date=datetime.datetime.now(),
+                        text="test",
+                        chat=Chat(id=42, type="private"),
+                        from_user=User(id=42, is_bot=False, first_name="Test"),
+                    ),
+                ),
+                True,
+                True,
+            ),
+            pytest.param(
+                "business_message",
+                Update(
+                    update_id=42,
+                    business_message=Message(
+                        message_id=42,
+                        date=datetime.datetime.now(),
+                        text="test",
+                        chat=Chat(id=42, type="private"),
+                        from_user=User(id=42, is_bot=False, first_name="Test"),
+                    ),
+                ),
+                True,
+                True,
             ),
         ],
     )

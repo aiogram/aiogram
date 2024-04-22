@@ -71,6 +71,7 @@ from aiogram.types import (
     PollOption,
     ProximityAlertTriggered,
     ReactionTypeCustomEmoji,
+    SharedUser,
     Sticker,
     Story,
     SuccessfulPayment,
@@ -469,7 +470,7 @@ TEST_MESSAGE_USERS_SHARED = Message(
     from_user=None,
     users_shared=UsersShared(
         request_id=0,
-        user_ids=[1, 2],
+        users=[SharedUser(user_id=1), SharedUser(user_id=2)],
     ),
 )
 TEST_CHAT_SHARED = Message(
@@ -485,8 +486,6 @@ TEST_MESSAGE_STORY = Message(
     chat=Chat(id=42, type="private"),
     from_user=User(id=42, is_bot=False, first_name="Test"),
     story=Story(chat=Chat(id=42, type="private"), id=42),
-    forward_signature="Test",
-    forward_date=datetime.datetime.now(),
 )
 
 TEST_MESSAGE_GIVEAWAY = Message(
@@ -527,13 +526,6 @@ TEST_MESSAGE_GIVEAWAY_COMPLETED = Message(
     from_user=None,
     giveaway_completed=GiveawayCompleted(winner_count=10),
 )
-TEST_MESSAGE_HAS_MEDIA_SPOILER = Message(
-    message_id=42,
-    date=datetime.datetime.now(),
-    chat=Chat(id=42, type="private"),
-    from_user=None,
-    has_media_spoiler=True,
-)
 TEST_MESSAGE_GENERAL_FORUM_TOPIC_HIDDEN = Message(
     message_id=42,
     date=datetime.datetime.now(),
@@ -552,7 +544,6 @@ TEST_MESSAGE_WRITE_ACCESS_ALLOWED = Message(
     message_id=42,
     date=datetime.datetime.now(),
     chat=Chat(id=42, type="private"),
-    from_user=None,
     write_access_allowed=WriteAccessAllowed(),
 )
 TEST_MESSAGE_BOOST_ADDED = Message(
@@ -625,7 +616,6 @@ MESSAGES_AND_CONTENT_TYPES = [
     [TEST_MESSAGE_GIVEAWAY_CREATED, ContentType.GIVEAWAY_CREATED],
     [TEST_MESSAGE_GIVEAWAY_WINNERS, ContentType.GIVEAWAY_WINNERS],
     [TEST_MESSAGE_GIVEAWAY_COMPLETED, ContentType.GIVEAWAY_COMPLETED],
-    [TEST_MESSAGE_HAS_MEDIA_SPOILER, ContentType.HAS_MEDIA_SPOILER],
     [TEST_MESSAGE_GENERAL_FORUM_TOPIC_HIDDEN, ContentType.GENERAL_FORUM_TOPIC_HIDDEN],
     [TEST_MESSAGE_GENERAL_FORUM_TOPIC_UNHIDDEN, ContentType.GENERAL_FORUM_TOPIC_UNHIDDEN],
     [TEST_MESSAGE_WRITE_ACCESS_ALLOWED, ContentType.WRITE_ACCESS_ALLOWED],
@@ -674,7 +664,6 @@ MESSAGES_AND_COPY_METHODS = [
     [TEST_MESSAGE_USER_SHARED, None],
     [TEST_CHAT_SHARED, None],
     [TEST_MESSAGE_GIVEAWAY_COMPLETED, None],
-    [TEST_MESSAGE_HAS_MEDIA_SPOILER, None],
     [TEST_MESSAGE_WEB_APP_DATA, None],
     [TEST_FORUM_TOPIC_CREATED, None],
     [TEST_FORUM_TOPIC_EDITED, None],

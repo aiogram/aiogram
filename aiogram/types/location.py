@@ -12,10 +12,10 @@ class Location(TelegramObject):
     Source: https://core.telegram.org/bots/api#location
     """
 
-    longitude: float
-    """Longitude as defined by sender"""
     latitude: float
     """Latitude as defined by sender"""
+    longitude: float
+    """Longitude as defined by sender"""
     horizontal_accuracy: Optional[float] = None
     """*Optional*. The radius of uncertainty for the location, measured in meters; 0-1500"""
     live_period: Optional[int] = None
@@ -32,8 +32,8 @@ class Location(TelegramObject):
         def __init__(
             __pydantic__self__,
             *,
-            longitude: float,
             latitude: float,
+            longitude: float,
             horizontal_accuracy: Optional[float] = None,
             live_period: Optional[int] = None,
             heading: Optional[int] = None,
@@ -45,8 +45,8 @@ class Location(TelegramObject):
             # Is needed only for type checking and IDE support without any additional plugins
 
             super().__init__(
-                longitude=longitude,
                 latitude=latitude,
+                longitude=longitude,
                 horizontal_accuracy=horizontal_accuracy,
                 live_period=live_period,
                 heading=heading,

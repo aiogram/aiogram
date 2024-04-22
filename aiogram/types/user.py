@@ -39,6 +39,8 @@ class User(TelegramObject):
     """*Optional*. :code:`True`, if `privacy mode <https://core.telegram.org/bots/features#privacy-mode>`_ is disabled for the bot. Returned only in :class:`aiogram.methods.get_me.GetMe`."""
     supports_inline_queries: Optional[bool] = None
     """*Optional*. :code:`True`, if the bot supports inline queries. Returned only in :class:`aiogram.methods.get_me.GetMe`."""
+    can_connect_to_business: Optional[bool] = None
+    """*Optional*. :code:`True`, if the bot can be connected to a Telegram Business account to receive its messages. Returned only in :class:`aiogram.methods.get_me.GetMe`."""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!
@@ -58,6 +60,7 @@ class User(TelegramObject):
             can_join_groups: Optional[bool] = None,
             can_read_all_group_messages: Optional[bool] = None,
             supports_inline_queries: Optional[bool] = None,
+            can_connect_to_business: Optional[bool] = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!
@@ -76,6 +79,7 @@ class User(TelegramObject):
                 can_join_groups=can_join_groups,
                 can_read_all_group_messages=can_read_all_group_messages,
                 supports_inline_queries=supports_inline_queries,
+                can_connect_to_business=can_connect_to_business,
                 **__pydantic_kwargs,
             )
 

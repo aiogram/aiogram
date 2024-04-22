@@ -13,18 +13,18 @@
     "annotations": [
       {
         "type": "Float",
-        "description": "Longitude as defined by sender",
-        "html_description": "<td>Longitude as defined by sender</td>",
-        "rst_description": "Longitude as defined by sender\n",
-        "name": "longitude",
-        "required": true
-      },
-      {
-        "type": "Float",
         "description": "Latitude as defined by sender",
         "html_description": "<td>Latitude as defined by sender</td>",
         "rst_description": "Latitude as defined by sender\n",
         "name": "latitude",
+        "required": true
+      },
+      {
+        "type": "Float",
+        "description": "Longitude as defined by sender",
+        "html_description": "<td>Longitude as defined by sender</td>",
+        "rst_description": "Longitude as defined by sender\n",
+        "name": "longitude",
         "required": true
       },
       {

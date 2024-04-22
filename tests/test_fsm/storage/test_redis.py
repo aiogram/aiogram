@@ -12,26 +12,62 @@ BOT_ID = 42
 CHAT_ID = -1
 USER_ID = 2
 THREAD_ID = 3
+BUSINESS_CONNECTION_ID = "4"
 FIELD = "data"
 
 
 class TestRedisDefaultKeyBuilder:
     @pytest.mark.parametrize(
-        "with_bot_id,with_destiny,result",
+        "key_builder,result",
         [
-            [False, False, f"{PREFIX}:{CHAT_ID}:{USER_ID}:{FIELD}"],
-            [True, False, f"{PREFIX}:{BOT_ID}:{CHAT_ID}:{USER_ID}:{FIELD}"],
-            [True, True, f"{PREFIX}:{BOT_ID}:{CHAT_ID}:{USER_ID}:{DEFAULT_DESTINY}:{FIELD}"],
-            [False, True, f"{PREFIX}:{CHAT_ID}:{USER_ID}:{DEFAULT_DESTINY}:{FIELD}"],
+            [
+                DefaultKeyBuilder(
+                    prefix=PREFIX,
+                    with_bot_id=True,
+                    with_destiny=True,
+                    with_business_connection_id=True,
+                ),
+                f"{PREFIX}:{BOT_ID}:{BUSINESS_CONNECTION_ID}:{CHAT_ID}:{USER_ID}:{DEFAULT_DESTINY}:{FIELD}",
+            ],
+            [
+                DefaultKeyBuilder(prefix=PREFIX, with_bot_id=True, with_destiny=True),
+                f"{PREFIX}:{BOT_ID}:{CHAT_ID}:{USER_ID}:{DEFAULT_DESTINY}:{FIELD}",
+            ],
+            [
+                DefaultKeyBuilder(
+                    prefix=PREFIX, with_bot_id=True, with_business_connection_id=True
+                ),
+                f"{PREFIX}:{BOT_ID}:{BUSINESS_CONNECTION_ID}:{CHAT_ID}:{USER_ID}:{FIELD}",
+            ],
+            [
+                DefaultKeyBuilder(prefix=PREFIX, with_bot_id=True),
+                f"{PREFIX}:{BOT_ID}:{CHAT_ID}:{USER_ID}:{FIELD}",
+            ],
+            [
+                DefaultKeyBuilder(
+                    prefix=PREFIX, with_destiny=True, with_business_connection_id=True
+                ),
+                f"{PREFIX}:{BUSINESS_CONNECTION_ID}:{CHAT_ID}:{USER_ID}:{DEFAULT_DESTINY}:{FIELD}",
+            ],
+            [
+                DefaultKeyBuilder(prefix=PREFIX, with_destiny=True),
+                f"{PREFIX}:{CHAT_ID}:{USER_ID}:{DEFAULT_DESTINY}:{FIELD}",
+            ],
+            [
+                DefaultKeyBuilder(prefix=PREFIX, with_business_connection_id=True),
+                f"{PREFIX}:{BUSINESS_CONNECTION_ID}:{CHAT_ID}:{USER_ID}:{FIELD}",
+            ],
+            [DefaultKeyBuilder(prefix=PREFIX), f"{PREFIX}:{CHAT_ID}:{USER_ID}:{FIELD}"],
         ],
     )
-    async def test_generate_key(self, with_bot_id: bool, with_destiny: bool, result: str):
-        key_builder = DefaultKeyBuilder(
-            prefix=PREFIX,
-            with_bot_id=with_bot_id,
-            with_destiny=with_destiny,
+    async def test_generate_key(self, key_builder: DefaultKeyBuilder, result: str):
+        key = StorageKey(
+            chat_id=CHAT_ID,
+            user_id=USER_ID,
+            bot_id=BOT_ID,
+            business_connection_id=BUSINESS_CONNECTION_ID,
+            destiny=DEFAULT_DESTINY,
         )
-        key = StorageKey(chat_id=CHAT_ID, user_id=USER_ID, bot_id=BOT_ID, destiny=DEFAULT_DESTINY)
         assert key_builder.build(key, FIELD) == result
 
     async def test_destiny_check(self):

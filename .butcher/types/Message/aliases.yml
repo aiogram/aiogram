@@ -5,6 +5,7 @@ answer:
   fill: &fill-answer
     chat_id: self.chat.id
     message_thread_id: self.message_thread_id if self.is_topic_message else None
+    business_connection_id: self.business_connection_id
 
 reply:
   method: sendMessage

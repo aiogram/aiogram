@@ -35,6 +35,8 @@ class SendPoll(TelegramMethod[Message]):
     """Poll question, 1-300 characters"""
     options: List[str]
     """A JSON-serialized list of answer options, 2-10 strings 1-100 characters each"""
+    business_connection_id: Optional[str] = None
+    """Unique identifier of the business connection on behalf of which the message will be sent"""
     message_thread_id: Optional[int] = None
     """Unique identifier for the target message thread (topic) of the forum; for forum supergroups only"""
     is_anonymous: Optional[bool] = None
@@ -66,7 +68,7 @@ class SendPoll(TelegramMethod[Message]):
     reply_markup: Optional[
         Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
     ] = None
-    """Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user."""
+    """Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account"""
     allow_sending_without_reply: Optional[bool] = Field(
         None, json_schema_extra={"deprecated": True}
     )
@@ -90,6 +92,7 @@ class SendPoll(TelegramMethod[Message]):
             chat_id: Union[int, str],
             question: str,
             options: List[str],
+            business_connection_id: Optional[str] = None,
             message_thread_id: Optional[int] = None,
             is_anonymous: Optional[bool] = None,
             type: Optional[str] = None,
@@ -119,6 +122,7 @@ class SendPoll(TelegramMethod[Message]):
                 chat_id=chat_id,
                 question=question,
                 options=options,
+                business_connection_id=business_connection_id,
                 message_thread_id=message_thread_id,
                 is_anonymous=is_anonymous,
                 type=type,

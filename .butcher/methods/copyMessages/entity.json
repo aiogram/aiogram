@@ -38,9 +38,9 @@
       {
         "type": "Array of Integer",
         "required": true,
-        "description": "Identifiers of 1-100 messages in the chat from_chat_id to copy. The identifiers must be specified in a strictly increasing order.",
-        "html_description": "<td>Identifiers of 1-100 messages in the chat <em>from_chat_id</em> to copy. The identifiers must be specified in a strictly increasing order.</td>",
-        "rst_description": "Identifiers of 1-100 messages in the chat *from_chat_id* to copy. The identifiers must be specified in a strictly increasing order.\n",
+        "description": "A JSON-serialized list of 1-100 identifiers of messages in the chat from_chat_id to copy. The identifiers must be specified in a strictly increasing order.",
+        "html_description": "<td>A JSON-serialized list of 1-100 identifiers of messages in the chat <em>from_chat_id</em> to copy. The identifiers must be specified in a strictly increasing order.</td>",
+        "rst_description": "A JSON-serialized list of 1-100 identifiers of messages in the chat *from_chat_id* to copy. The identifiers must be specified in a strictly increasing order.\n",
         "name": "message_ids"
       },
       {

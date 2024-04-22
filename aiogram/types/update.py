@@ -6,6 +6,8 @@ from ..utils.mypy_hacks import lru_cache
 from .base import TelegramObject
 
 if TYPE_CHECKING:
+    from .business_connection import BusinessConnection
+    from .business_messages_deleted import BusinessMessagesDeleted
     from .callback_query import CallbackQuery
     from .chat_boost_removed import ChatBoostRemoved
     from .chat_boost_updated import ChatBoostUpdated
@@ -41,6 +43,14 @@ class Update(TelegramObject):
     """*Optional*. New incoming channel post of any kind - text, photo, sticker, etc."""
     edited_channel_post: Optional[Message] = None
     """*Optional*. New version of a channel post that is known to the bot and was edited. This update may at times be triggered by changes to message fields that are either unavailable or not actively used by your bot."""
+    business_connection: Optional[BusinessConnection] = None
+    """*Optional*. The bot was connected to or disconnected from a business account, or a user edited an existing connection with the bot"""
+    business_message: Optional[Message] = None
+    """*Optional*. New non-service message from a connected business account"""
+    edited_business_message: Optional[Message] = None
+    """*Optional*. New version of a message from a connected business account"""
+    deleted_business_messages: Optional[BusinessMessagesDeleted] = None
+    """*Optional*. Messages were deleted from a connected business account"""
     message_reaction: Optional[MessageReactionUpdated] = None
     """*Optional*. A reaction to a message was changed by a user. The bot must be an administrator in the chat and must explicitly specify :code:`"message_reaction"` in the list of *allowed_updates* to receive these updates. The update isn't received for reactions set by bots."""
     message_reaction_count: Optional[MessageReactionCountUpdated] = None
@@ -82,6 +92,10 @@ class Update(TelegramObject):
             edited_message: Optional[Message] = None,
             channel_post: Optional[Message] = None,
             edited_channel_post: Optional[Message] = None,
+            business_connection: Optional[BusinessConnection] = None,
+            business_message: Optional[Message] = None,
+            edited_business_message: Optional[Message] = None,
+            deleted_business_messages: Optional[BusinessMessagesDeleted] = None,
             message_reaction: Optional[MessageReactionUpdated] = None,
             message_reaction_count: Optional[MessageReactionCountUpdated] = None,
             inline_query: Optional[InlineQuery] = None,
@@ -108,6 +122,10 @@ class Update(TelegramObject):
                 edited_message=edited_message,
                 channel_post=channel_post,
                 edited_channel_post=edited_channel_post,
+                business_connection=business_connection,
+                business_message=business_message,
+                edited_business_message=edited_business_message,
+                deleted_business_messages=deleted_business_messages,
                 message_reaction=message_reaction,
                 message_reaction_count=message_reaction_count,
                 inline_query=inline_query,
@@ -173,6 +191,14 @@ class Update(TelegramObject):
             return "chat_boost"
         if self.removed_chat_boost:
             return "removed_chat_boost"
+        if self.deleted_business_messages:
+            return "deleted_business_messages"
+        if self.business_connection:
+            return "business_connection"
+        if self.edited_business_message:
+            return "edited_business_message"
+        if self.business_message:
+            return "business_message"
 
         raise UpdateTypeLookupError("Update does not contain any known event type.")
 

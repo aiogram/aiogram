@@ -7,9 +7,9 @@
   "object": {
     "anchor": "keyboardbuttonrequestchat",
     "name": "KeyboardButtonRequestChat",
-    "description": "This object defines the criteria used to request a suitable chat. The identifier of the selected chat will be shared with the bot when the corresponding button is pressed.",
-    "html_description": "<p>This object defines the criteria used to request a suitable chat. The identifier of the selected chat will be shared with the bot when the corresponding button is pressed. <a href=\"/bots/features#chat-and-user-selection\">More about requesting chats &#187;</a></p>",
-    "rst_description": "This object defines the criteria used to request a suitable chat. The identifier of the selected chat will be shared with the bot when the corresponding button is pressed. `More about requesting chats » <https://core.telegram.org/bots/features#chat-and-user-selection>`_",
+    "description": "This object defines the criteria used to request a suitable chat. Information about the selected chat will be shared with the bot when the corresponding button is pressed. The bot will be granted requested rights in the сhat if appropriate",
+    "html_description": "<p>This object defines the criteria used to request a suitable chat. Information about the selected chat will be shared with the bot when the corresponding button is pressed. The bot will be granted requested rights in the &#1089;hat if appropriate <a href=\"/bots/features#chat-and-user-selection\">More about requesting chats &#187;</a></p>",
+    "rst_description": "This object defines the criteria used to request a suitable chat. Information about the selected chat will be shared with the bot when the corresponding button is pressed. The bot will be granted requested rights in the сhat if appropriate `More about requesting chats » <https://core.telegram.org/bots/features#chat-and-user-selection>`_",
     "annotations": [
       {
         "type": "Integer",
@@ -73,6 +73,30 @@
         "html_description": "<td><em>Optional</em>. Pass <em>True</em> to request a chat with the bot as a member. Otherwise, no additional restrictions are applied.</td>",
         "rst_description": "*Optional*. Pass :code:`True` to request a chat with the bot as a member. Otherwise, no additional restrictions are applied.\n",
         "name": "bot_is_member",
+        "required": false
+      },
+      {
+        "type": "Boolean",
+        "description": "Pass True to request the chat's title",
+        "html_description": "<td><em>Optional</em>. Pass <em>True</em> to request the chat's title</td>",
+        "rst_description": "*Optional*. Pass :code:`True` to request the chat's title\n",
+        "name": "request_title",
+        "required": false
+      },
+      {
+        "type": "Boolean",
+        "description": "Pass True to request the chat's username",
+        "html_description": "<td><em>Optional</em>. Pass <em>True</em> to request the chat's username</td>",
+        "rst_description": "*Optional*. Pass :code:`True` to request the chat's username\n",
+        "name": "request_username",
+        "required": false
+      },
+      {
+        "type": "Boolean",
+        "description": "Pass True to request the chat's photo",
+        "html_description": "<td><em>Optional</em>. Pass <em>True</em> to request the chat's photo</td>",
+        "rst_description": "*Optional*. Pass :code:`True` to request the chat's photo\n",
+        "name": "request_photo",
         "required": false
       }
     ],

@@ -125,33 +125,33 @@
       },
       {
         "type": "Boolean",
-        "description": "True, if the administrator can post messages in the channel, or access channel statistics; channels only",
-        "html_description": "<td><em>Optional</em>. <em>True</em>, if the administrator can post messages in the channel, or access channel statistics; channels only</td>",
-        "rst_description": "*Optional*. :code:`True`, if the administrator can post messages in the channel, or access channel statistics; channels only\n",
+        "description": "True, if the administrator can post messages in the channel, or access channel statistics; for channels only",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the administrator can post messages in the channel, or access channel statistics; for channels only</td>",
+        "rst_description": "*Optional*. :code:`True`, if the administrator can post messages in the channel, or access channel statistics; for channels only\n",
         "name": "can_post_messages",
         "required": false
       },
       {
         "type": "Boolean",
-        "description": "True, if the administrator can edit messages of other users and can pin messages; channels only",
-        "html_description": "<td><em>Optional</em>. <em>True</em>, if the administrator can edit messages of other users and can pin messages; channels only</td>",
-        "rst_description": "*Optional*. :code:`True`, if the administrator can edit messages of other users and can pin messages; channels only\n",
+        "description": "True, if the administrator can edit messages of other users and can pin messages; for channels only",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the administrator can edit messages of other users and can pin messages; for channels only</td>",
+        "rst_description": "*Optional*. :code:`True`, if the administrator can edit messages of other users and can pin messages; for channels only\n",
         "name": "can_edit_messages",
         "required": false
       },
       {
         "type": "Boolean",
-        "description": "True, if the user is allowed to pin messages; groups and supergroups only",
-        "html_description": "<td><em>Optional</em>. <em>True</em>, if the user is allowed to pin messages; groups and supergroups only</td>",
-        "rst_description": "*Optional*. :code:`True`, if the user is allowed to pin messages; groups and supergroups only\n",
+        "description": "True, if the user is allowed to pin messages; for groups and supergroups only",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the user is allowed to pin messages; for groups and supergroups only</td>",
+        "rst_description": "*Optional*. :code:`True`, if the user is allowed to pin messages; for groups and supergroups only\n",
         "name": "can_pin_messages",
         "required": false
       },
       {
         "type": "Boolean",
-        "description": "True, if the user is allowed to create, rename, close, and reopen forum topics; supergroups only",
-        "html_description": "<td><em>Optional</em>. <em>True</em>, if the user is allowed to create, rename, close, and reopen forum topics; supergroups only</td>",
-        "rst_description": "*Optional*. :code:`True`, if the user is allowed to create, rename, close, and reopen forum topics; supergroups only\n",
+        "description": "True, if the user is allowed to create, rename, close, and reopen forum topics; for supergroups only",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the user is allowed to create, rename, close, and reopen forum topics; for supergroups only</td>",
+        "rst_description": "*Optional*. :code:`True`, if the user is allowed to create, rename, close, and reopen forum topics; for supergroups only\n",
         "name": "can_manage_topics",
         "required": false
       },

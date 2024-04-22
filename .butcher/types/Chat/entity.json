@@ -84,6 +84,46 @@
         "required": false
       },
       {
+        "type": "Birthdate",
+        "description": "For private chats, the date of birth of the user. Returned only in getChat.",
+        "html_description": "<td><em>Optional</em>. For private chats, the date of birth of the user. Returned only in <a href=\"#getchat\">getChat</a>.</td>",
+        "rst_description": "*Optional*. For private chats, the date of birth of the user. Returned only in :class:`aiogram.methods.get_chat.GetChat`.\n",
+        "name": "birthdate",
+        "required": false
+      },
+      {
+        "type": "BusinessIntro",
+        "description": "For private chats with business accounts, the intro of the business. Returned only in getChat.",
+        "html_description": "<td><em>Optional</em>. For private chats with business accounts, the intro of the business. Returned only in <a href=\"#getchat\">getChat</a>.</td>",
+        "rst_description": "*Optional*. For private chats with business accounts, the intro of the business. Returned only in :class:`aiogram.methods.get_chat.GetChat`.\n",
+        "name": "business_intro",
+        "required": false
+      },
+      {
+        "type": "BusinessLocation",
+        "description": "For private chats with business accounts, the location of the business. Returned only in getChat.",
+        "html_description": "<td><em>Optional</em>. For private chats with business accounts, the location of the business. Returned only in <a href=\"#getchat\">getChat</a>.</td>",
+        "rst_description": "*Optional*. For private chats with business accounts, the location of the business. Returned only in :class:`aiogram.methods.get_chat.GetChat`.\n",
+        "name": "business_location",
+        "required": false
+      },
+      {
+        "type": "BusinessOpeningHours",
+        "description": "For private chats with business accounts, the opening hours of the business. Returned only in getChat.",
+        "html_description": "<td><em>Optional</em>. For private chats with business accounts, the opening hours of the business. Returned only in <a href=\"#getchat\">getChat</a>.</td>",
+        "rst_description": "*Optional*. For private chats with business accounts, the opening hours of the business. Returned only in :class:`aiogram.methods.get_chat.GetChat`.\n",
+        "name": "business_opening_hours",
+        "required": false
+      },
+      {
+        "type": "Chat",
+        "description": "For private chats, the personal channel of the user. Returned only in getChat.",
+        "html_description": "<td><em>Optional</em>. For private chats, the personal channel of the user. Returned only in <a href=\"#getchat\">getChat</a>.</td>",
+        "rst_description": "*Optional*. For private chats, the personal channel of the user. Returned only in :class:`aiogram.methods.get_chat.GetChat`.\n",
+        "name": "personal_chat",
+        "required": false
+      },
+      {
         "type": "Array of ReactionType",
         "description": "List of available reactions allowed in the chat. If omitted, then all emoji reactions are allowed. Returned only in getChat.",
         "html_description": "<td><em>Optional</em>. List of available reactions allowed in the chat. If omitted, then all <a href=\"#reactiontypeemoji\">emoji reactions</a> are allowed. Returned only in <a href=\"#getchat\">getChat</a>.</td>",

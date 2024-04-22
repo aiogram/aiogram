@@ -16,6 +16,7 @@ class StorageKey:
     chat_id: int
     user_id: int
     thread_id: Optional[int] = None
+    business_connection_id: Optional[str] = None
     destiny: str = DEFAULT_DESTINY
 
 

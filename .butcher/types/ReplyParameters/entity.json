@@ -21,17 +21,17 @@
       },
       {
         "type": "Integer or String",
-        "description": "If the message to be replied to is from a different chat, unique identifier for the chat or username of the channel (in the format @channelusername)",
-        "html_description": "<td><em>Optional</em>. If the message to be replied to is from a different chat, unique identifier for the chat or username of the channel (in the format <code>@channelusername</code>)</td>",
-        "rst_description": "*Optional*. If the message to be replied to is from a different chat, unique identifier for the chat or username of the channel (in the format :code:`@channelusername`)\n",
+        "description": "If the message to be replied to is from a different chat, unique identifier for the chat or username of the channel (in the format @channelusername). Not supported for messages sent on behalf of a business account.",
+        "html_description": "<td><em>Optional</em>. If the message to be replied to is from a different chat, unique identifier for the chat or username of the channel (in the format <code>@channelusername</code>). Not supported for messages sent on behalf of a business account.</td>",
+        "rst_description": "*Optional*. If the message to be replied to is from a different chat, unique identifier for the chat or username of the channel (in the format :code:`@channelusername`). Not supported for messages sent on behalf of a business account.\n",
         "name": "chat_id",
         "required": false
       },
       {
         "type": "Boolean",
-        "description": "Pass True if the message should be sent even if the specified message to be replied to is not found; can be used only for replies in the same chat and forum topic.",
-        "html_description": "<td><em>Optional</em>. Pass <em>True</em> if the message should be sent even if the specified message to be replied to is not found; can be used only for replies in the same chat and forum topic.</td>",
-        "rst_description": "*Optional*. Pass :code:`True` if the message should be sent even if the specified message to be replied to is not found; can be used only for replies in the same chat and forum topic.\n",
+        "description": "Pass True if the message should be sent even if the specified message to be replied to is not found. Always False for replies in another chat or forum topic. Always True for messages sent on behalf of a business account.",
+        "html_description": "<td><em>Optional</em>. Pass <em>True</em> if the message should be sent even if the specified message to be replied to is not found. Always <em>False</em> for replies in another chat or forum topic. Always <em>True</em> for messages sent on behalf of a business account.</td>",
+        "rst_description": "*Optional*. Pass :code:`True` if the message should be sent even if the specified message to be replied to is not found. Always :code:`False` for replies in another chat or forum topic. Always :code:`True` for messages sent on behalf of a business account.\n",
         "name": "allow_sending_without_reply",
         "required": false
       },

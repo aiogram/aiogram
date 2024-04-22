@@ -22,9 +22,9 @@
       {
         "type": "Array of Integer",
         "required": true,
-        "description": "Identifiers of 1-100 messages to delete. See deleteMessage for limitations on which messages can be deleted",
-        "html_description": "<td>Identifiers of 1-100 messages to delete. See <a href=\"#deletemessage\">deleteMessage</a> for limitations on which messages can be deleted</td>",
-        "rst_description": "Identifiers of 1-100 messages to delete. See :class:`aiogram.methods.delete_message.DeleteMessage` for limitations on which messages can be deleted\n",
+        "description": "A JSON-serialized list of 1-100 identifiers of messages to delete. See deleteMessage for limitations on which messages can be deleted",
+        "html_description": "<td>A JSON-serialized list of 1-100 identifiers of messages to delete. See <a href=\"#deletemessage\">deleteMessage</a> for limitations on which messages can be deleted</td>",
+        "rst_description": "A JSON-serialized list of 1-100 identifiers of messages to delete. See :class:`aiogram.methods.delete_message.DeleteMessage` for limitations on which messages can be deleted\n",
         "name": "message_ids"
       }
     ],

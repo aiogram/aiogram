@@ -52,12 +52,28 @@
         "required": false
       },
       {
+        "type": "User",
+        "description": "The bot that actually sent the message on behalf of the business account. Available only for outgoing messages sent on behalf of the connected business account.",
+        "html_description": "<td><em>Optional</em>. The bot that actually sent the message on behalf of the business account. Available only for outgoing messages sent on behalf of the connected business account.</td>",
+        "rst_description": "*Optional*. The bot that actually sent the message on behalf of the business account. Available only for outgoing messages sent on behalf of the connected business account.\n",
+        "name": "sender_business_bot",
+        "required": false
+      },
+      {
         "type": "Integer",
         "description": "Date the message was sent in Unix time. It is always a positive number, representing a valid date.",
         "html_description": "<td>Date the message was sent in Unix time. It is always a positive number, representing a valid date.</td>",
         "rst_description": "Date the message was sent in Unix time. It is always a positive number, representing a valid date.\n",
         "name": "date",
         "required": true
+      },
+      {
+        "type": "String",
+        "description": "Unique identifier of the business connection from which the message was received. If non-empty, the message belongs to a chat of the corresponding business account that is independent from any potential bot chat which might share the same identifier.",
+        "html_description": "<td><em>Optional</em>. Unique identifier of the business connection from which the message was received. If non-empty, the message belongs to a chat of the corresponding business account that is independent from any potential bot chat which might share the same identifier.</td>",
+        "rst_description": "*Optional*. Unique identifier of the business connection from which the message was received. If non-empty, the message belongs to a chat of the corresponding business account that is independent from any potential bot chat which might share the same identifier.\n",
+        "name": "business_connection_id",
+        "required": false
       },
       {
         "type": "Chat",
@@ -145,6 +161,14 @@
         "html_description": "<td><em>Optional</em>. <em>True</em>, if the message can't be forwarded</td>",
         "rst_description": "*Optional*. :code:`True`, if the message can't be forwarded\n",
         "name": "has_protected_content",
+        "required": false
+      },
+      {
+        "type": "True",
+        "description": "True, if the message was sent by an implicit action, for example, as an away or a greeting business message, or as a scheduled message",
+        "html_description": "<td><em>Optional</em>. True, if the message was sent by an implicit action, for example, as an away or a greeting business message, or as a scheduled message</td>",
+        "rst_description": "*Optional*. True, if the message was sent by an implicit action, for example, as an away or a greeting business message, or as a scheduled message\n",
+        "name": "is_from_offline",
         "required": false
       },
       {
