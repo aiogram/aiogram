@@ -5,6 +5,15 @@ Simple usage
 
 .. literalinclude:: ../examples/echo_bot.py
 
+
+Usage without dispatcher
+------------------------
+
+Just only interact with Bot API, without handling events
+
+.. literalinclude:: ../examples/without_dispatcher.py
+
+
 Contents
 ========
 
