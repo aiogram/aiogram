@@ -5,6 +5,7 @@ import io
 import pathlib
 import warnings
 from contextlib import asynccontextmanager
+from types import TracebackType
 from typing import (
     Any,
     AsyncGenerator,
@@ -12,6 +13,7 @@ from typing import (
     BinaryIO,
     List,
     Optional,
+    Type,
     TypeVar,
     Union,
     cast,
@@ -299,6 +301,17 @@ class Bot:
 
         self.__token = token
         self._me: Optional[User] = None
+
+    async def __aenter__(self) -> "Bot":
+        return self
+
+    async def __aexit__(
+        self,
+        exc_type: Optional[Type[BaseException]],
+        exc_value: Optional[BaseException],
+        traceback: Optional[TracebackType],
+    ) -> None:
+        await self.session.close()
 
     @property
     def parse_mode(self) -> Optional[str]:
