@@ -1,0 +1,1 @@
+Loosened pydantic version upper restriction from ``<2.7`` to ``<2.8``4.4
