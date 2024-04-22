@@ -44,7 +44,10 @@ class DefaultKeyBuilder(KeyBuilder):
     Simple Redis key builder with default prefix.
 
     Generates a colon-joined string with prefix, chat_id, user_id,
-    optional bot_id and optional destiny.
+    optional bot_id, business_connection_id and destiny.
+
+    Format:
+     :code:`<prefix>:<bot_id?>:<business_connection_id?>:<chat_id>:<user_id>:<destiny?>:<field>`
     """
 
     def __init__(
@@ -61,7 +64,7 @@ class DefaultKeyBuilder(KeyBuilder):
         :param separator: separator
         :param with_bot_id: include Bot id in the key
         :param with_business_connection_id: include business connection id
-        :param with_destiny: include destiny key
+        :param with_destiny: include a destiny key
         """
         self.prefix = prefix
         self.separator = separator
@@ -73,12 +76,12 @@ class DefaultKeyBuilder(KeyBuilder):
         parts = [self.prefix]
         if self.with_bot_id:
             parts.append(str(key.bot_id))
+        if self.with_business_connection_id and key.business_connection_id:
+            parts.append(str(key.business_connection_id))
         parts.append(str(key.chat_id))
         if key.thread_id:
             parts.append(str(key.thread_id))
         parts.append(str(key.user_id))
-        if self.with_business_connection_id and key.business_connection_id:
-            parts.append(str(key.business_connection_id))
         if self.with_destiny:
             parts.append(key.destiny)
         elif key.destiny != DEFAULT_DESTINY:
