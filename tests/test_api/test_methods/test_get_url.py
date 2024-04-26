@@ -26,7 +26,7 @@ class TestGetMessageUrl:
             ["supergroup", -10012345678901, None, True, "https://t.me/c/12345678901/10"],
         ],
     )
-    def test_method(
+    def test_get_url_non_topic_message(
         self,
         bot: MockedBot,
         chat_type: str,
@@ -46,5 +46,61 @@ class TestGetMessageUrl:
 
         if expected_result is None:
             assert fake_message.get_url(force_private=force_private) is None
+            assert (
+                fake_message.get_url(force_private=force_private, include_thread_id=True) is None
+            )
         else:
             assert fake_message.get_url(force_private=force_private) == expected_result
+            assert (
+                fake_message.get_url(force_private=force_private, include_thread_id=True)
+                == expected_result
+            )
+
+    @pytest.mark.parametrize(
+        "chat_type,chat_id,chat_username,force_private,include_thread_id,fake_thread_id_topic,expected_result",
+        [
+            ["supergroup", -100123456789, None, False, False, None, "https://t.me/c/123456789/10"],
+            ["supergroup", -100123456789, None, False, False, 3, "https://t.me/c/123456789/10"],
+            ["supergroup", -100123456789, None, False, True, None, "https://t.me/c/123456789/10"],
+            ["supergroup", -100123456789, None, False, True, 3, "https://t.me/c/123456789/3/10"],
+            ["supergroup", -100123456789, None, True, False, None, "https://t.me/c/123456789/10"],
+            ["supergroup", -100123456789, None, True, False, 3, "https://t.me/c/123456789/10"],
+            ["supergroup", -100123456789, None, True, True, None, "https://t.me/c/123456789/10"],
+            ["supergroup", -100123456789, None, True, True, 3, "https://t.me/c/123456789/3/10"],
+            ["supergroup", -100123456789, "name", False, False, None, "https://t.me/name/10"],
+            ["supergroup", -100123456789, "name", False, False, 3, "https://t.me/name/10"],
+            ["supergroup", -100123456789, "name", False, True, None, "https://t.me/name/10"],
+            ["supergroup", -100123456789, "name", False, True, 3, "https://t.me/name/3/10"],
+            ["supergroup", -10012345678, "name", True, False, None, "https://t.me/c/12345678/10"],
+            ["supergroup", -100123456789, "name", True, False, 3, "https://t.me/c/123456789/10"],
+            ["supergroup", -10012345678, "name", True, True, None, "https://t.me/c/12345678/10"],
+            ["supergroup", -100123456789, "name", True, True, 3, "https://t.me/c/123456789/3/10"],
+        ],
+    )
+    def test_get_url_if_topic_message(
+        self,
+        bot: MockedBot,
+        chat_type: str,
+        chat_id: int,
+        chat_username: Optional[str],
+        force_private: bool,
+        include_thread_id: bool,
+        fake_thread_id_topic: Optional[int],
+        expected_result: Optional[str],
+    ):
+        fake_message_id = 10
+        fake_chat_with_topics = Chat(
+            id=chat_id, username=chat_username, type=chat_type, is_forum=True
+        )
+        fake_message_from_topic = Message(
+            message_id=fake_message_id,
+            date=datetime.datetime.now(),
+            text="test",
+            chat=fake_chat_with_topics,
+            is_topic_message=True,
+            message_thread_id=fake_thread_id_topic,
+        )
+        actual_result = fake_message_from_topic.get_url(
+            force_private=force_private, include_thread_id=include_thread_id
+        )
+        assert actual_result == expected_result
