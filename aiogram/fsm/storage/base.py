@@ -44,10 +44,10 @@ class DefaultKeyBuilder(KeyBuilder):
     Simple key builder with default prefix.
 
     Generates a colon-joined string with prefix, chat_id, user_id,
-    optional bot_id, business_connection_id and destiny.
+    optional bot_id, business_connection_id, destiny and field.
 
     Format:
-     :code:`<prefix>:<bot_id?>:<business_connection_id?>:<chat_id>:<user_id>:<destiny?>:<field>`
+     :code:`<prefix>:<bot_id?>:<business_connection_id?>:<chat_id>:<user_id>:<destiny?>:<field?>`
     """
 
     def __init__(
