@@ -2,41 +2,81 @@ from typing import Literal, Optional
 
 import pytest
 
-from aiogram.fsm.storage.base import DEFAULT_DESTINY, StorageKey
-from aiogram.fsm.storage.redis import DefaultKeyBuilder
+from aiogram.fsm.storage.base import DEFAULT_DESTINY, DefaultKeyBuilder, StorageKey
 
 PREFIX = "test"
 BOT_ID = 42
 CHAT_ID = -1
 USER_ID = 2
 THREAD_ID = 3
+BUSINESS_CONNECTION_ID = "4"
 FIELD = "data"
 
 
 class TestDefaultKeyBuilder:
     @pytest.mark.parametrize(
-        "with_bot_id,with_destiny,field,result",
+        "key_builder,field,result",
         [
-            [False, False, FIELD, f"{PREFIX}:{CHAT_ID}:{USER_ID}:{FIELD}"],
-            [True, False, FIELD, f"{PREFIX}:{BOT_ID}:{CHAT_ID}:{USER_ID}:{FIELD}"],
-            [True, True, FIELD, f"{PREFIX}:{BOT_ID}:{CHAT_ID}:{USER_ID}:{DEFAULT_DESTINY}:{FIELD}"],
-            [False, True, FIELD, f"{PREFIX}:{CHAT_ID}:{USER_ID}:{DEFAULT_DESTINY}:{FIELD}"],
-            [False, False, None, f"{PREFIX}:{CHAT_ID}:{USER_ID}"],
+            [
+                DefaultKeyBuilder(
+                    prefix=PREFIX,
+                    with_bot_id=True,
+                    with_destiny=True,
+                    with_business_connection_id=True,
+                ),
+                FIELD,
+                f"{PREFIX}:{BOT_ID}:{BUSINESS_CONNECTION_ID}:{CHAT_ID}:{USER_ID}:{DEFAULT_DESTINY}:{FIELD}",
+            ],
+            [
+                DefaultKeyBuilder(prefix=PREFIX, with_bot_id=True, with_destiny=True),
+                None,
+                f"{PREFIX}:{BOT_ID}:{CHAT_ID}:{USER_ID}:{DEFAULT_DESTINY}",
+            ],
+            [
+                DefaultKeyBuilder(
+                    prefix=PREFIX, with_bot_id=True, with_business_connection_id=True
+                ),
+                FIELD,
+                f"{PREFIX}:{BOT_ID}:{BUSINESS_CONNECTION_ID}:{CHAT_ID}:{USER_ID}:{FIELD}",
+            ],
+            [
+                DefaultKeyBuilder(prefix=PREFIX, with_bot_id=True),
+                None,
+                f"{PREFIX}:{BOT_ID}:{CHAT_ID}:{USER_ID}",
+            ],
+            [
+                DefaultKeyBuilder(
+                    prefix=PREFIX, with_destiny=True, with_business_connection_id=True
+                ),
+                FIELD,
+                f"{PREFIX}:{BUSINESS_CONNECTION_ID}:{CHAT_ID}:{USER_ID}:{DEFAULT_DESTINY}:{FIELD}",
+            ],
+            [
+                DefaultKeyBuilder(prefix=PREFIX, with_destiny=True),
+                None,
+                f"{PREFIX}:{CHAT_ID}:{USER_ID}:{DEFAULT_DESTINY}",
+            ],
+            [
+                DefaultKeyBuilder(prefix=PREFIX, with_business_connection_id=True),
+                FIELD,
+                f"{PREFIX}:{BUSINESS_CONNECTION_ID}:{CHAT_ID}:{USER_ID}:{FIELD}",
+            ],
+            [DefaultKeyBuilder(prefix=PREFIX), None, f"{PREFIX}:{CHAT_ID}:{USER_ID}"],
         ],
     )
     async def test_generate_key(
         self,
-        with_bot_id: bool,
-        with_destiny: bool,
+        key_builder: DefaultKeyBuilder,
         field: Optional[Literal["data", "state", "lock"]],
         result: str,
     ):
-        key_builder = DefaultKeyBuilder(
-            prefix=PREFIX,
-            with_bot_id=with_bot_id,
-            with_destiny=with_destiny,
+        key = StorageKey(
+            chat_id=CHAT_ID,
+            user_id=USER_ID,
+            bot_id=BOT_ID,
+            business_connection_id=BUSINESS_CONNECTION_ID,
+            destiny=DEFAULT_DESTINY,
         )
-        key = StorageKey(chat_id=CHAT_ID, user_id=USER_ID, bot_id=BOT_ID, destiny=DEFAULT_DESTINY)
         assert key_builder.build(key, field) == result
 
     async def test_destiny_check(self):

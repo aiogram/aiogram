@@ -6,11 +6,15 @@ from pydantic import Field
 
 from ..client.default import Default
 from ..types import (
+    ForceReply,
+    InlineKeyboardMarkup,
     InputMediaAudio,
     InputMediaDocument,
     InputMediaPhoto,
     InputMediaVideo,
     Message,
+    ReplyKeyboardMarkup,
+    ReplyKeyboardRemove,
     ReplyParameters,
 )
 from .base import TelegramMethod
@@ -30,6 +34,8 @@ class SendMediaGroup(TelegramMethod[List[Message]]):
     """Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)"""
     media: List[Union[InputMediaAudio, InputMediaDocument, InputMediaPhoto, InputMediaVideo]]
     """A JSON-serialized array describing messages to be sent, must include 2-10 items"""
+    business_connection_id: Optional[str] = None
+    """Unique identifier of the business connection on behalf of which the message will be sent"""
     message_thread_id: Optional[int] = None
     """Unique identifier for the target message thread (topic) of the forum; for forum supergroups only"""
     disable_notification: Optional[bool] = None
@@ -62,6 +68,7 @@ class SendMediaGroup(TelegramMethod[List[Message]]):
             media: List[
                 Union[InputMediaAudio, InputMediaDocument, InputMediaPhoto, InputMediaVideo]
             ],
+            business_connection_id: Optional[str] = None,
             message_thread_id: Optional[int] = None,
             disable_notification: Optional[bool] = None,
             protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
@@ -77,6 +84,7 @@ class SendMediaGroup(TelegramMethod[List[Message]]):
             super().__init__(
                 chat_id=chat_id,
                 media=media,
+                business_connection_id=business_connection_id,
                 message_thread_id=message_thread_id,
                 disable_notification=disable_notification,
                 protect_content=protect_content,

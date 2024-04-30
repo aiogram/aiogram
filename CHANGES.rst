@@ -16,6 +16,61 @@ Changelog
 
 .. towncrier release notes start
 
+3.5.0 (2024-04-23)
+===================
+
+Features
+--------
+
+- Added **message_thread_id** parameter to **ChatActionSender** class methods.
+  `#1437 <https://github.com/aiogram/aiogram/issues/1437>`_
+- Added context manager interface to Bot instance, from now you can use:
+
+  .. code-block:: python
+
+      async with Bot(...) as bot:
+          ...
+
+  instead of
+
+  .. code-block:: python
+
+      async with Bot(...).context() as bot:
+          ...
+  `#1468 <https://github.com/aiogram/aiogram/issues/1468>`_
+
+
+Bugfixes
+--------
+
+- - **WebAppUser Class Fields**: Added missing `is_premium`, `added_to_attachment_menu`, and `allows_write_to_pm` fields to `WebAppUser` class to align with the Telegram API.
+
+  - **WebAppChat Class Implementation**: Introduced the `WebAppChat` class with all its fields (`id`, `type`, `title`, `username`, and `photo_url`) as specified in the Telegram API, which was previously missing from the library.
+
+  - **WebAppInitData Class Fields**: Included previously omitted fields in the `WebAppInitData` class: `chat`, `chat_type`, `chat_instance`, to match the official documentation for a complete Telegram Web Apps support.
+  `#1424 <https://github.com/aiogram/aiogram/issues/1424>`_
+- Fixed poll answer FSM context by handling :code:`voter_chat` for :code:`poll_answer` event
+  `#1436 <https://github.com/aiogram/aiogram/issues/1436>`_
+- Added missing error handling to :code:`_background_feed_update` (when in :code:`handle_in_background=True` webhook mode)
+  `#1458 <https://github.com/aiogram/aiogram/issues/1458>`_
+
+
+Improved Documentation
+----------------------
+
+- Added WebAppChat class to WebApp docs, updated uk_UA localisation of WebApp docs.
+  `#1433 <https://github.com/aiogram/aiogram/issues/1433>`_
+
+
+Misc
+----
+
+- Added full support of `Bot API 7.2 <https://core.telegram.org/bots/api-changelog#march-31-2024>`_
+  `#1444 <https://github.com/aiogram/aiogram/issues/1444>`_
+- Loosened pydantic version upper restriction from ``<2.7`` to ``<2.8``
+  `#1460 <https://github.com/aiogram/aiogram/issues/1460>`_
+
+
 3.4.1 (2024-02-17)
 ===================
 
@@ -445,7 +500,7 @@ Misc
 
   .. danger::
 
-      Note that this issue has breaking changes described in in the Bot API changelog,
+      Note that this issue has breaking changes described in the Bot API changelog,
       this changes is not breaking in the API but breaking inside aiogram because
       Beta stage is not finished.
   `#1139 <https://github.com/aiogram/aiogram/issues/1139>`_

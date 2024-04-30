@@ -1,0 +1,49 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Stickers",
+    "anchor": "stickers"
+  },
+  "object": {
+    "anchor": "replacestickerinset",
+    "name": "replaceStickerInSet",
+    "description": "Use this method to replace an existing sticker in a sticker set with a new one. The method is equivalent to calling deleteStickerFromSet, then addStickerToSet, then setStickerPositionInSet. Returns True on success.",
+    "html_description": "<p>Use this method to replace an existing sticker in a sticker set with a new one. The method is equivalent to calling <a href=\"#deletestickerfromset\">deleteStickerFromSet</a>, then <a href=\"#addstickertoset\">addStickerToSet</a>, then <a href=\"#setstickerpositioninset\">setStickerPositionInSet</a>. Returns <em>True</em> on success.</p>",
+    "rst_description": "Use this method to replace an existing sticker in a sticker set with a new one. The method is equivalent to calling :class:`aiogram.methods.delete_sticker_from_set.DeleteStickerFromSet`, then :class:`aiogram.methods.add_sticker_to_set.AddStickerToSet`, then :class:`aiogram.methods.set_sticker_position_in_set.SetStickerPositionInSet`. Returns :code:`True` on success.",
+    "annotations": [
+      {
+        "type": "Integer",
+        "required": true,
+        "description": "User identifier of the sticker set owner",
+        "html_description": "<td>User identifier of the sticker set owner</td>",
+        "rst_description": "User identifier of the sticker set owner\n",
+        "name": "user_id"
+      },
+      {
+        "type": "String",
+        "required": true,
+        "description": "Sticker set name",
+        "html_description": "<td>Sticker set name</td>",
+        "rst_description": "Sticker set name\n",
+        "name": "name"
+      },
+      {
+        "type": "String",
+        "required": true,
+        "description": "File identifier of the replaced sticker",
+        "html_description": "<td>File identifier of the replaced sticker</td>",
+        "rst_description": "File identifier of the replaced sticker\n",
+        "name": "old_sticker"
+      },
+      {
+        "type": "InputSticker",
+        "required": true,
+        "description": "A JSON-serialized object with information about the added sticker. If exactly the same sticker had already been added to the set, then the set remains unchanged.",
+        "html_description": "<td>A JSON-serialized object with information about the added sticker. If exactly the same sticker had already been added to the set, then the set remains unchanged.</td>",
+        "rst_description": "A JSON-serialized object with information about the added sticker. If exactly the same sticker had already been added to the set, then the set remains unchanged.\n",
+        "name": "sticker"
+      }
+    ],
+    "category": "methods"
+  }
+}

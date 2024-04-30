@@ -23,6 +23,8 @@ class SendGame(TelegramMethod[Message]):
     """Unique identifier for the target chat"""
     game_short_name: str
     """Short name of the game, serves as the unique identifier for the game. Set up your games via `@BotFather <https://t.me/botfather>`_."""
+    business_connection_id: Optional[str] = None
+    """Unique identifier of the business connection on behalf of which the message will be sent"""
     message_thread_id: Optional[int] = None
     """Unique identifier for the target message thread (topic) of the forum; for forum supergroups only"""
     disable_notification: Optional[bool] = None
@@ -32,7 +34,7 @@ class SendGame(TelegramMethod[Message]):
     reply_parameters: Optional[ReplyParameters] = None
     """Description of the message to reply to"""
     reply_markup: Optional[InlineKeyboardMarkup] = None
-    """A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_. If empty, one 'Play game_title' button will be shown. If not empty, the first button must launch the game."""
+    """A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_. If empty, one 'Play game_title' button will be shown. If not empty, the first button must launch the game. Not supported for messages sent on behalf of a business account."""
     allow_sending_without_reply: Optional[bool] = Field(
         None, json_schema_extra={"deprecated": True}
     )
@@ -55,6 +57,7 @@ class SendGame(TelegramMethod[Message]):
             *,
             chat_id: int,
             game_short_name: str,
+            business_connection_id: Optional[str] = None,
             message_thread_id: Optional[int] = None,
             disable_notification: Optional[bool] = None,
             protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
@@ -71,6 +74,7 @@ class SendGame(TelegramMethod[Message]):
             super().__init__(
                 chat_id=chat_id,
                 game_short_name=game_short_name,
+                business_connection_id=business_connection_id,
                 message_thread_id=message_thread_id,
                 disable_notification=disable_notification,
                 protect_content=protect_content,

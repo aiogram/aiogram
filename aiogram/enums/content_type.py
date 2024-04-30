@@ -18,7 +18,6 @@ class ContentType(str, Enum):
     VIDEO = "video"
     VIDEO_NOTE = "video_note"
     VOICE = "voice"
-    HAS_MEDIA_SPOILER = "has_media_spoiler"
     CONTACT = "contact"
     DICE = "dice"
     GAME = "game"

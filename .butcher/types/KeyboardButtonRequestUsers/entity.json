@@ -7,9 +7,9 @@
   "object": {
     "anchor": "keyboardbuttonrequestusers",
     "name": "KeyboardButtonRequestUsers",
-    "description": "This object defines the criteria used to request suitable users. The identifiers of the selected users will be shared with the bot when the corresponding button is pressed.",
-    "html_description": "<p>This object defines the criteria used to request suitable users. The identifiers of the selected users will be shared with the bot when the corresponding button is pressed. <a href=\"/bots/features#chat-and-user-selection\">More about requesting users &#187;</a></p>",
-    "rst_description": "This object defines the criteria used to request suitable users. The identifiers of the selected users will be shared with the bot when the corresponding button is pressed. `More about requesting users » <https://core.telegram.org/bots/features#chat-and-user-selection>`_",
+    "description": "This object defines the criteria used to request suitable users. Information about the selected users will be shared with the bot when the corresponding button is pressed.",
+    "html_description": "<p>This object defines the criteria used to request suitable users. Information about the selected users will be shared with the bot when the corresponding button is pressed. <a href=\"/bots/features#chat-and-user-selection\">More about requesting users &#187;</a></p>",
+    "rst_description": "This object defines the criteria used to request suitable users. Information about the selected users will be shared with the bot when the corresponding button is pressed. `More about requesting users » <https://core.telegram.org/bots/features#chat-and-user-selection>`_",
     "annotations": [
       {
         "type": "Integer",
@@ -41,6 +41,30 @@
         "html_description": "<td><em>Optional</em>. The maximum number of users to be selected; 1-10. Defaults to 1.</td>",
         "rst_description": "*Optional*. The maximum number of users to be selected; 1-10. Defaults to 1.\n",
         "name": "max_quantity",
+        "required": false
+      },
+      {
+        "type": "Boolean",
+        "description": "Pass True to request the users' first and last name",
+        "html_description": "<td><em>Optional</em>. Pass <em>True</em> to request the users' first and last name</td>",
+        "rst_description": "*Optional*. Pass :code:`True` to request the users' first and last name\n",
+        "name": "request_name",
+        "required": false
+      },
+      {
+        "type": "Boolean",
+        "description": "Pass True to request the users' username",
+        "html_description": "<td><em>Optional</em>. Pass <em>True</em> to request the users' username</td>",
+        "rst_description": "*Optional*. Pass :code:`True` to request the users' username\n",
+        "name": "request_username",
+        "required": false
+      },
+      {
+        "type": "Boolean",
+        "description": "Pass True to request the users' photo",
+        "html_description": "<td><em>Optional</em>. Pass <em>True</em> to request the users' photo</td>",
+        "rst_description": "*Optional*. Pass :code:`True` to request the users' photo\n",
+        "name": "request_photo",
         "required": false
       }
     ],

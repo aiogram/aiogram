@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, List, Optional
 
+from pydantic import Field
+
 from .base import TelegramObject
 
 if TYPE_CHECKING:
@@ -22,14 +24,20 @@ class StickerSet(TelegramObject):
     """Sticker set title"""
     sticker_type: str
     """Type of stickers in the set, currently one of 'regular', 'mask', 'custom_emoji'"""
-    is_animated: bool
-    """:code:`True`, if the sticker set contains `animated stickers <https://telegram.org/blog/animated-stickers>`_"""
-    is_video: bool
-    """:code:`True`, if the sticker set contains `video stickers <https://telegram.org/blog/video-stickers-better-reactions>`_"""
     stickers: List[Sticker]
     """List of all set stickers"""
     thumbnail: Optional[PhotoSize] = None
     """*Optional*. Sticker set thumbnail in the .WEBP, .TGS, or .WEBM format"""
+    is_animated: Optional[bool] = Field(None, json_schema_extra={"deprecated": True})
+    """:code:`True`, if the sticker set contains `animated stickers <https://telegram.org/blog/animated-stickers>`_
+
+.. deprecated:: API:7.2
+   https://core.telegram.org/bots/api-changelog#march-31-2024"""
+    is_video: Optional[bool] = Field(None, json_schema_extra={"deprecated": True})
+    """:code:`True`, if the sticker set contains `video stickers <https://telegram.org/blog/video-stickers-better-reactions>`_
+
+.. deprecated:: API:7.2
+   https://core.telegram.org/bots/api-changelog#march-31-2024"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!
@@ -41,10 +49,10 @@ class StickerSet(TelegramObject):
             name: str,
             title: str,
             sticker_type: str,
-            is_animated: bool,
-            is_video: bool,
             stickers: List[Sticker],
             thumbnail: Optional[PhotoSize] = None,
+            is_animated: Optional[bool] = None,
+            is_video: Optional[bool] = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!
@@ -55,9 +63,9 @@ class StickerSet(TelegramObject):
                 name=name,
                 title=title,
                 sticker_type=sticker_type,
-                is_animated=is_animated,
-                is_video=is_video,
                 stickers=stickers,
                 thumbnail=thumbnail,
+                is_animated=is_animated,
+                is_video=is_video,
                 **__pydantic_kwargs,
             )

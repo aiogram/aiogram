@@ -12,6 +12,14 @@
     "rst_description": "Use this method when you need to tell the user that something is happening on the bot's side. The status is set for 5 seconds or less (when a message arrives from your bot, Telegram clients clear its typing status). Returns :code:`True` on success.\n\n Example: The `ImageBot <https://t.me/imagebot>`_ needs some time to process a request and upload the image. Instead of sending a text message along the lines of 'Retrieving image, please wait…', the bot may use :class:`aiogram.methods.send_chat_action.SendChatAction` with *action* = *upload_photo*. The user will see a 'sending photo' status for the bot.\n\nWe only recommend using this method when a response from the bot will take a **noticeable** amount of time to arrive.",
     "annotations": [
       {
+        "type": "String",
+        "required": false,
+        "description": "Unique identifier of the business connection on behalf of which the action will be sent",
+        "html_description": "<td>Unique identifier of the business connection on behalf of which the action will be sent</td>",
+        "rst_description": "Unique identifier of the business connection on behalf of which the action will be sent\n",
+        "name": "business_connection_id"
+      },
+      {
         "type": "Integer or String",
         "required": true,
         "description": "Unique identifier for the target chat or username of the target channel (in the format @channelusername)",
@@ -22,9 +30,9 @@
       {
         "type": "Integer",
         "required": false,
-        "description": "Unique identifier for the target message thread; supergroups only",
-        "html_description": "<td>Unique identifier for the target message thread; supergroups only</td>",
-        "rst_description": "Unique identifier for the target message thread; supergroups only\n",
+        "description": "Unique identifier for the target message thread; for supergroups only",
+        "html_description": "<td>Unique identifier for the target message thread; for supergroups only</td>",
+        "rst_description": "Unique identifier for the target message thread; for supergroups only\n",
         "name": "message_thread_id"
       },
       {

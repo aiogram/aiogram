@@ -38,6 +38,7 @@ from .edit_message_text import EditMessageText
 from .export_chat_invite_link import ExportChatInviteLink
 from .forward_message import ForwardMessage
 from .forward_messages import ForwardMessages
+from .get_business_connection import GetBusinessConnection
 from .get_chat import GetChat
 from .get_chat_administrators import GetChatAdministrators
 from .get_chat_member import GetChatMember
@@ -65,6 +66,7 @@ from .pin_chat_message import PinChatMessage
 from .promote_chat_member import PromoteChatMember
 from .reopen_forum_topic import ReopenForumTopic
 from .reopen_general_forum_topic import ReopenGeneralForumTopic
+from .replace_sticker_in_set import ReplaceStickerInSet
 from .restrict_chat_member import RestrictChatMember
 from .revoke_chat_invite_link import RevokeChatInviteLink
 from .send_animation import SendAnimation
@@ -159,6 +161,7 @@ __all__ = (
     "ExportChatInviteLink",
     "ForwardMessage",
     "ForwardMessages",
+    "GetBusinessConnection",
     "GetChat",
     "GetChatAdministrators",
     "GetChatMember",
@@ -186,6 +189,7 @@ __all__ = (
     "PromoteChatMember",
     "ReopenForumTopic",
     "ReopenGeneralForumTopic",
+    "ReplaceStickerInSet",
     "Request",
     "Response",
     "RestrictChatMember",

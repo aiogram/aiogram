@@ -48,7 +48,6 @@ class DefaultBotProperties:
     """Protects content from copying."""
     allow_sending_without_reply: Optional[bool] = None
     """Allows to send messages without reply."""
-
     link_preview: Optional[LinkPreviewOptions] = None
     """Link preview settings."""
     link_preview_is_disabled: Optional[bool] = None

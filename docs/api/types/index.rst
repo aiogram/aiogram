@@ -13,6 +13,7 @@ Available types
 
     animation
     audio
+    birthdate
     bot_command
     bot_command_scope
     bot_command_scope_all_chat_administrators
@@ -25,6 +26,12 @@ Available types
     bot_description
     bot_name
     bot_short_description
+    business_connection
+    business_intro
+    business_location
+    business_messages_deleted
+    business_opening_hours
+    business_opening_hours_interval
     callback_query
     chat
     chat_administrator_rights
@@ -114,6 +121,7 @@ Available types
     reply_keyboard_remove
     reply_parameters
     response_parameters
+    shared_user
     story
     switch_inline_query_chosen_chat
     text_quote
