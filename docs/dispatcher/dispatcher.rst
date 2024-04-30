@@ -47,7 +47,7 @@ All updates can be propagated to the dispatcher by :obj:`Dispatcher.feed_update(
 .. code-block:: python
 
     bot = Bot(...)
-    dp = Dispathcher()
+    dp = Dispatcher()
 
     ...
 
