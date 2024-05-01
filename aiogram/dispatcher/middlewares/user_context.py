@@ -2,8 +2,14 @@ from dataclasses import dataclass
 from typing import Any, Awaitable, Callable, Dict, Optional
 
 from aiogram.dispatcher.middlewares.base import BaseMiddleware
-from aiogram.types import Chat, InaccessibleMessage, TelegramObject, Update, User
-from aiogram.types.chat_boost_source_premium import ChatBoostSourcePremium
+from aiogram.types import (
+    Chat,
+    ChatBoostSourcePremium,
+    InaccessibleMessage,
+    TelegramObject,
+    Update,
+    User,
+)
 
 EVENT_CONTEXT_KEY = "event_context"
 
