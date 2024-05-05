@@ -149,3 +149,11 @@ Telegram API Server
 
 - The `server` parameter has been moved from the `Bot` instance to `api` in `BaseSession`.
 - The constant `aiogram.bot.api.TELEGRAM_PRODUCTION` has been moved to `aiogram.client.telegram.PRODUCTION`.
+
+
+Message serialisation and deserialization 
+===========================================
+
+- Method :class:`Message.to_object()` and :class:`Message.to_json()` have been removed. :class:`Message.model_dump()` should be used 
+  instead of :class:`Message.to_object()` and :class:`Message.model_dump_json()` instead of :class:`Message.to_json` due 
+  to use of `pydantic <https://docs.pydantic.dev/>`_ models.
