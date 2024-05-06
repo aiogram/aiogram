@@ -151,9 +151,14 @@ Telegram API Server
 - The constant `aiogram.bot.api.TELEGRAM_PRODUCTION` has been moved to `aiogram.client.telegram.PRODUCTION`.
 
 
-Message serialisation and deserialization 
+Telegram objects transformation (to dict, to json, from json)
 ===========================================
 
-- Method :class:`Message.to_object()` and :class:`Message.to_json()` have been removed. :class:`Message.model_dump()` should be used 
-  instead of :class:`Message.to_object()` and :class:`Message.model_dump_json()` instead of :class:`Message.to_json` due 
-  to use of `pydantic <https://docs.pydantic.dev/>`_ models.
+- Methods :class:`TelegramObject.to_object()`, :class:`TelegramObject.to_json()` and :class:`TelegramObject.to_python()` 
+  have been removed due to the use of `pydantic <https://docs.pydantic.dev/>`_ models.
+- :class:`TelegramObject.model_validate_json()` should be used instead of :class:`TelegramObject.to_object()` 
+  (`Read more <https://docs.pydantic.dev/2.7/api/base_model/#pydantic.BaseModel.model_validate_json>`_)
+- :class:`TelegramObject.model_dump_json()` should be used instead of :class:`TelegramObject.as_json()` 
+  (`Read more <https://docs.pydantic.dev/latest/api/base_model/#pydantic.BaseModel.model_dump_json>`_)
+- :class:`TelegramObject.model_dump()` should be used instead of :class:`TelegramObject.to_python()` 
+  (`Read more <https://docs.pydantic.dev/latest/api/base_model/#pydantic.BaseModel.model_dump>`_)

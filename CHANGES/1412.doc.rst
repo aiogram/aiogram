@@ -1,1 +1,1 @@
-Added message serialisation and deserialization block in 2.x -> 3.x migration guide
+Added telegram objects transformation block in 2.x -> 3.x migration guide
