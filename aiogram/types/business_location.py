@@ -10,7 +10,7 @@ if TYPE_CHECKING:
 
 class BusinessLocation(TelegramObject):
     """
-
+    Contains information about the location of a Telegram Business account.
 
     Source: https://core.telegram.org/bots/api#businesslocation
     """

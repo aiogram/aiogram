@@ -7,9 +7,9 @@
   "object": {
     "anchor": "shareduser",
     "name": "SharedUser",
-    "description": "This object contains information about a user that was shared with the bot using a KeyboardButtonRequestUser button.",
-    "html_description": "<p>This object contains information about a user that was shared with the bot using a <a href=\"#keyboardbuttonrequestuser\">KeyboardButtonRequestUser</a> button.</p>",
-    "rst_description": "This object contains information about a user that was shared with the bot using a :class:`aiogram.types.keyboard_button_request_user.KeyboardButtonRequestUser` button.",
+    "description": "This object contains information about a user that was shared with the bot using a KeyboardButtonRequestUsers button.",
+    "html_description": "<p>This object contains information about a user that was shared with the bot using a <a href=\"#keyboardbuttonrequestusers\">KeyboardButtonRequestUsers</a> button.</p>",
+    "rst_description": "This object contains information about a user that was shared with the bot using a :class:`aiogram.types.keyboard_button_request_users.KeyboardButtonRequestUsers` button.",
     "annotations": [
       {
         "type": "Integer",

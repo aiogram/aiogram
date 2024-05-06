@@ -45,25 +45,25 @@
       },
       {
         "type": "Boolean",
-        "description": "Pass True to request the users' first and last name",
-        "html_description": "<td><em>Optional</em>. Pass <em>True</em> to request the users' first and last name</td>",
-        "rst_description": "*Optional*. Pass :code:`True` to request the users' first and last name\n",
+        "description": "Pass True to request the users' first and last names",
+        "html_description": "<td><em>Optional</em>. Pass <em>True</em> to request the users' first and last names</td>",
+        "rst_description": "*Optional*. Pass :code:`True` to request the users' first and last names\n",
         "name": "request_name",
         "required": false
       },
       {
         "type": "Boolean",
-        "description": "Pass True to request the users' username",
-        "html_description": "<td><em>Optional</em>. Pass <em>True</em> to request the users' username</td>",
-        "rst_description": "*Optional*. Pass :code:`True` to request the users' username\n",
+        "description": "Pass True to request the users' usernames",
+        "html_description": "<td><em>Optional</em>. Pass <em>True</em> to request the users' usernames</td>",
+        "rst_description": "*Optional*. Pass :code:`True` to request the users' usernames\n",
         "name": "request_username",
         "required": false
       },
       {
         "type": "Boolean",
-        "description": "Pass True to request the users' photo",
-        "html_description": "<td><em>Optional</em>. Pass <em>True</em> to request the users' photo</td>",
-        "rst_description": "*Optional*. Pass :code:`True` to request the users' photo\n",
+        "description": "Pass True to request the users' photos",
+        "html_description": "<td><em>Optional</em>. Pass <em>True</em> to request the users' photos</td>",
+        "rst_description": "*Optional*. Pass :code:`True` to request the users' photos\n",
         "name": "request_photo",
         "required": false
       }

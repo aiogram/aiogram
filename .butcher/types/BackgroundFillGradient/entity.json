@@ -1,0 +1,49 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "backgroundfillgradient",
+    "name": "BackgroundFillGradient",
+    "description": "The background is a gradient fill.",
+    "html_description": "<p>The background is a gradient fill.</p>",
+    "rst_description": "The background is a gradient fill.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Type of the background fill, always 'gradient'",
+        "html_description": "<td>Type of the background fill, always &#8220;gradient&#8221;</td>",
+        "rst_description": "Type of the background fill, always 'gradient'\n",
+        "name": "type",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "Top color of the gradient in the RGB24 format",
+        "html_description": "<td>Top color of the gradient in the RGB24 format</td>",
+        "rst_description": "Top color of the gradient in the RGB24 format\n",
+        "name": "top_color",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "Bottom color of the gradient in the RGB24 format",
+        "html_description": "<td>Bottom color of the gradient in the RGB24 format</td>",
+        "rst_description": "Bottom color of the gradient in the RGB24 format\n",
+        "name": "bottom_color",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "Clockwise rotation angle of the background fill in degrees; 0-359",
+        "html_description": "<td>Clockwise rotation angle of the background fill in degrees; 0-359</td>",
+        "rst_description": "Clockwise rotation angle of the background fill in degrees; 0-359\n",
+        "name": "rotation_angle",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

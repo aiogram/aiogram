@@ -10,7 +10,7 @@ if TYPE_CHECKING:
 
 class BusinessIntro(TelegramObject):
     """
-
+    Contains information about the start page settings of a Telegram Business account.
 
     Source: https://core.telegram.org/bots/api#businessintro
     """

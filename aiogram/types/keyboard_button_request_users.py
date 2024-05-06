@@ -19,11 +19,11 @@ class KeyboardButtonRequestUsers(TelegramObject):
     max_quantity: Optional[int] = None
     """*Optional*. The maximum number of users to be selected; 1-10. Defaults to 1."""
     request_name: Optional[bool] = None
-    """*Optional*. Pass :code:`True` to request the users' first and last name"""
+    """*Optional*. Pass :code:`True` to request the users' first and last names"""
     request_username: Optional[bool] = None
-    """*Optional*. Pass :code:`True` to request the users' username"""
+    """*Optional*. Pass :code:`True` to request the users' usernames"""
     request_photo: Optional[bool] = None
-    """*Optional*. Pass :code:`True` to request the users' photo"""
+    """*Optional*. Pass :code:`True` to request the users' photos"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!
