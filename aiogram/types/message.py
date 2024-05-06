@@ -630,6 +630,8 @@ class Message(MaybeInaccessibleMessage):
             return ContentType.STORY
         if self.write_access_allowed:
             return ContentType.WRITE_ACCESS_ALLOWED
+        if self.chat_background_set:
+            return ContentType.CHAT_BACKGROUND_SET
         if self.boost_added:
             return ContentType.BOOST_ADDED
 
