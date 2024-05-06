@@ -20,7 +20,7 @@ class BusinessMessagesDeleted(TelegramObject):
     chat: Chat
     """Information about a chat in the business account. The bot may not have access to the chat or the corresponding user."""
     message_ids: List[int]
-    """A JSON-serialized list of identifiers of deleted messages in the chat of the business account"""
+    """The list of identifiers of deleted messages in the chat of the business account"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!

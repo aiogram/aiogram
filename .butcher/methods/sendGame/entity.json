@@ -70,9 +70,9 @@
       {
         "type": "InlineKeyboardMarkup",
         "required": false,
-        "description": "A JSON-serialized object for an inline keyboard. If empty, one 'Play game_title' button will be shown. If not empty, the first button must launch the game. Not supported for messages sent on behalf of a business account.",
-        "html_description": "<td>A JSON-serialized object for an <a href=\"/bots/features#inline-keyboards\">inline keyboard</a>. If empty, one 'Play game_title' button will be shown. If not empty, the first button must launch the game. Not supported for messages sent on behalf of a business account.</td>",
-        "rst_description": "A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_. If empty, one 'Play game_title' button will be shown. If not empty, the first button must launch the game. Not supported for messages sent on behalf of a business account.\n",
+        "description": "A JSON-serialized object for an inline keyboard. If empty, one 'Play game_title' button will be shown. If not empty, the first button must launch the game.",
+        "html_description": "<td>A JSON-serialized object for an <a href=\"/bots/features#inline-keyboards\">inline keyboard</a>. If empty, one 'Play game_title' button will be shown. If not empty, the first button must launch the game.</td>",
+        "rst_description": "A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_. If empty, one 'Play game_title' button will be shown. If not empty, the first button must launch the game.\n",
         "name": "reply_markup"
       },
       {

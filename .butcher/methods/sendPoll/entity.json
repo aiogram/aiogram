@@ -44,11 +44,27 @@
         "name": "question"
       },
       {
-        "type": "Array of String",
+        "type": "String",
+        "required": false,
+        "description": "Mode for parsing entities in the question. See formatting options for more details. Currently, only custom emoji entities are allowed",
+        "html_description": "<td>Mode for parsing entities in the question. See <a href=\"#formatting-options\">formatting options</a> for more details. Currently, only custom emoji entities are allowed</td>",
+        "rst_description": "Mode for parsing entities in the question. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details. Currently, only custom emoji entities are allowed\n",
+        "name": "question_parse_mode"
+      },
+      {
+        "type": "Array of MessageEntity",
+        "required": false,
+        "description": "A JSON-serialized list of special entities that appear in the poll question. It can be specified instead of question_parse_mode",
+        "html_description": "<td>A JSON-serialized list of special entities that appear in the poll question. It can be specified instead of <em>question_parse_mode</em></td>",
+        "rst_description": "A JSON-serialized list of special entities that appear in the poll question. It can be specified instead of *question_parse_mode*\n",
+        "name": "question_entities"
+      },
+      {
+        "type": "Array of InputPollOption",
         "required": true,
-        "description": "A JSON-serialized list of answer options, 2-10 strings 1-100 characters each",
-        "html_description": "<td>A JSON-serialized list of answer options, 2-10 strings 1-100 characters each</td>",
-        "rst_description": "A JSON-serialized list of answer options, 2-10 strings 1-100 characters each\n",
+        "description": "A JSON-serialized list of 2-10 answer options",
+        "html_description": "<td>A JSON-serialized list of 2-10 answer options</td>",
+        "rst_description": "A JSON-serialized list of 2-10 answer options\n",
         "name": "options"
       },
       {
@@ -102,9 +118,9 @@
       {
         "type": "Array of MessageEntity",
         "required": false,
-        "description": "A JSON-serialized list of special entities that appear in the poll explanation, which can be specified instead of parse_mode",
-        "html_description": "<td>A JSON-serialized list of special entities that appear in the poll explanation, which can be specified instead of <em>parse_mode</em></td>",
-        "rst_description": "A JSON-serialized list of special entities that appear in the poll explanation, which can be specified instead of *parse_mode*\n",
+        "description": "A JSON-serialized list of special entities that appear in the poll explanation. It can be specified instead of explanation_parse_mode",
+        "html_description": "<td>A JSON-serialized list of special entities that appear in the poll explanation. It can be specified instead of <em>explanation_parse_mode</em></td>",
+        "rst_description": "A JSON-serialized list of special entities that appear in the poll explanation. It can be specified instead of *explanation_parse_mode*\n",
         "name": "explanation_entities"
       },
       {
@@ -158,9 +174,9 @@
       {
         "type": "InlineKeyboardMarkup or ReplyKeyboardMarkup or ReplyKeyboardRemove or ForceReply",
         "required": false,
-        "description": "Additional interface options. A JSON-serialized object for an inline keyboard, custom reply keyboard, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account",
-        "html_description": "<td>Additional interface options. A JSON-serialized object for an <a href=\"/bots/features#inline-keyboards\">inline keyboard</a>, <a href=\"/bots/features#keyboards\">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account</td>",
-        "rst_description": "Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account\n",
+        "description": "Additional interface options. A JSON-serialized object for an inline keyboard, custom reply keyboard, instructions to remove a reply keyboard or to force a reply from the user",
+        "html_description": "<td>Additional interface options. A JSON-serialized object for an <a href=\"/bots/features#inline-keyboards\">inline keyboard</a>, <a href=\"/bots/features#keyboards\">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user</td>",
+        "rst_description": "Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user\n",
         "name": "reply_markup"
       },
       {

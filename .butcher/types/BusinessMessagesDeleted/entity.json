@@ -29,9 +29,9 @@
       },
       {
         "type": "Array of Integer",
-        "description": "A JSON-serialized list of identifiers of deleted messages in the chat of the business account",
-        "html_description": "<td>A JSON-serialized list of identifiers of deleted messages in the chat of the business account</td>",
-        "rst_description": "A JSON-serialized list of identifiers of deleted messages in the chat of the business account\n",
+        "description": "The list of identifiers of deleted messages in the chat of the business account",
+        "html_description": "<td>The list of identifiers of deleted messages in the chat of the business account</td>",
+        "rst_description": "The list of identifiers of deleted messages in the chat of the business account\n",
         "name": "message_ids",
         "required": true
       }

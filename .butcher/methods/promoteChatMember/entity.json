@@ -102,9 +102,9 @@
       {
         "type": "Boolean",
         "required": false,
-        "description": "Pass True if the administrator can edit stories posted by other users",
-        "html_description": "<td>Pass <em>True</em> if the administrator can edit stories posted by other users</td>",
-        "rst_description": "Pass :code:`True` if the administrator can edit stories posted by other users\n",
+        "description": "Pass True if the administrator can edit stories posted by other users, post stories to the chat page, pin chat stories, and access the chat's story archive",
+        "html_description": "<td>Pass <em>True</em> if the administrator can edit stories posted by other users, post stories to the chat page, pin chat stories, and access the chat's story archive</td>",
+        "rst_description": "Pass :code:`True` if the administrator can edit stories posted by other users, post stories to the chat page, pin chat stories, and access the chat's story archive\n",
         "name": "can_edit_stories"
       },
       {

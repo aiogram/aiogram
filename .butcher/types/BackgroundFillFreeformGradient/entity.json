@@ -1,0 +1,33 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "backgroundfillfreeformgradient",
+    "name": "BackgroundFillFreeformGradient",
+    "description": "The background is a freeform gradient that rotates after every message in the chat.",
+    "html_description": "<p>The background is a freeform gradient that rotates after every message in the chat.</p>",
+    "rst_description": "The background is a freeform gradient that rotates after every message in the chat.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Type of the background fill, always 'freeform_gradient'",
+        "html_description": "<td>Type of the background fill, always &#8220;freeform_gradient&#8221;</td>",
+        "rst_description": "Type of the background fill, always 'freeform_gradient'\n",
+        "name": "type",
+        "required": true
+      },
+      {
+        "type": "Array of Integer",
+        "description": "A list of the 3 or 4 base colors that are used to generate the freeform gradient in the RGB24 format",
+        "html_description": "<td>A list of the 3 or 4 base colors that are used to generate the freeform gradient in the RGB24 format</td>",
+        "rst_description": "A list of the 3 or 4 base colors that are used to generate the freeform gradient in the RGB24 format\n",
+        "name": "colors",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

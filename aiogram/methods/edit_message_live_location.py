@@ -26,6 +26,8 @@ class EditMessageLiveLocation(TelegramMethod[Union[Message, bool]]):
     """Required if *inline_message_id* is not specified. Identifier of the message to edit"""
     inline_message_id: Optional[str] = None
     """Required if *chat_id* and *message_id* are not specified. Identifier of the inline message"""
+    live_period: Optional[int] = None
+    """New period in seconds during which the location can be updated, starting from the message send date. If 0x7FFFFFFF is specified, then the location can be updated forever. Otherwise, the new value must not exceed the current *live_period* by more than a day, and the live location expiration date must remain within the next 90 days. If not specified, then *live_period* remains unchanged"""
     horizontal_accuracy: Optional[float] = None
     """The radius of uncertainty for the location, measured in meters; 0-1500"""
     heading: Optional[int] = None
@@ -47,6 +49,7 @@ class EditMessageLiveLocation(TelegramMethod[Union[Message, bool]]):
             chat_id: Optional[Union[int, str]] = None,
             message_id: Optional[int] = None,
             inline_message_id: Optional[str] = None,
+            live_period: Optional[int] = None,
             horizontal_accuracy: Optional[float] = None,
             heading: Optional[int] = None,
             proximity_alert_radius: Optional[int] = None,
@@ -63,6 +66,7 @@ class EditMessageLiveLocation(TelegramMethod[Union[Message, bool]]):
                 chat_id=chat_id,
                 message_id=message_id,
                 inline_message_id=inline_message_id,
+                live_period=live_period,
                 horizontal_accuracy=horizontal_accuracy,
                 heading=heading,
                 proximity_alert_radius=proximity_alert_radius,

@@ -34,7 +34,7 @@ class ChatAdministratorRights(TelegramObject):
     can_post_stories: bool
     """:code:`True`, if the administrator can post stories to the chat"""
     can_edit_stories: bool
-    """:code:`True`, if the administrator can edit stories posted by other users"""
+    """:code:`True`, if the administrator can edit stories posted by other users, post stories to the chat page, pin chat stories, and access the chat's story archive"""
     can_delete_stories: bool
     """:code:`True`, if the administrator can delete stories posted by other users"""
     can_post_messages: Optional[bool] = None

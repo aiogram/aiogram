@@ -13,6 +13,15 @@ Available types
 
     animation
     audio
+    background_fill
+    background_fill_freeform_gradient
+    background_fill_gradient
+    background_fill_solid
+    background_type
+    background_type_chat_theme
+    background_type_fill
+    background_type_pattern
+    background_type_wallpaper
     birthdate
     bot_command
     bot_command_scope
@@ -35,6 +44,7 @@ Available types
     callback_query
     chat
     chat_administrator_rights
+    chat_background
     chat_boost
     chat_boost_added
     chat_boost_removed
@@ -43,6 +53,7 @@ Available types
     chat_boost_source_giveaway
     chat_boost_source_premium
     chat_boost_updated
+    chat_full_info
     chat_invite_link
     chat_join_request
     chat_location
@@ -84,6 +95,7 @@ Available types
     input_media_document
     input_media_photo
     input_media_video
+    input_poll_option
     keyboard_button
     keyboard_button_poll_type
     keyboard_button_request_chat

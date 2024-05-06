@@ -85,9 +85,9 @@
       },
       {
         "type": "Boolean",
-        "description": "True, if the administrator can edit stories posted by other users",
-        "html_description": "<td><em>True</em>, if the administrator can edit stories posted by other users</td>",
-        "rst_description": ":code:`True`, if the administrator can edit stories posted by other users\n",
+        "description": "True, if the administrator can edit stories posted by other users, post stories to the chat page, pin chat stories, and access the chat's story archive",
+        "html_description": "<td><em>True</em>, if the administrator can edit stories posted by other users, post stories to the chat page, pin chat stories, and access the chat's story archive</td>",
+        "rst_description": ":code:`True`, if the administrator can edit stories posted by other users, post stories to the chat page, pin chat stories, and access the chat's story archive\n",
         "name": "can_edit_stories",
         "required": true
       },

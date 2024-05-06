@@ -10,7 +10,7 @@ if TYPE_CHECKING:
 
 class BusinessOpeningHours(TelegramObject):
     """
-
+    Describes the opening hours of a business.
 
     Source: https://core.telegram.org/bots/api#businessopeninghours
     """

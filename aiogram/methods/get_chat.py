@@ -2,18 +2,18 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Union
 
-from ..types import Chat
+from ..types import ChatFullInfo
 from .base import TelegramMethod
 
 
-class GetChat(TelegramMethod[Chat]):
+class GetChat(TelegramMethod[ChatFullInfo]):
     """
-    Use this method to get up to date information about the chat. Returns a :class:`aiogram.types.chat.Chat` object on success.
+    Use this method to get up-to-date information about the chat. Returns a :class:`aiogram.types.chat_full_info.ChatFullInfo` object on success.
 
     Source: https://core.telegram.org/bots/api#getchat
     """
 
-    __returning__ = Chat
+    __returning__ = ChatFullInfo
     __api_method__ = "getChat"
 
     chat_id: Union[int, str]

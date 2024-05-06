@@ -7,9 +7,9 @@
   "object": {
     "anchor": "businessintro",
     "name": "BusinessIntro",
-    "description": "",
-    "html_description": "",
-    "rst_description": "",
+    "description": "Contains information about the start page settings of a Telegram Business account.",
+    "html_description": "<p>Contains information about the start page settings of a Telegram Business account.</p>",
+    "rst_description": "Contains information about the start page settings of a Telegram Business account.",
     "annotations": [
       {
         "type": "String",

@@ -19,7 +19,7 @@ class InputLocationMessageContent(InputMessageContent):
     horizontal_accuracy: Optional[float] = None
     """*Optional*. The radius of uncertainty for the location, measured in meters; 0-1500"""
     live_period: Optional[int] = None
-    """*Optional*. Period in seconds for which the location can be updated, should be between 60 and 86400."""
+    """*Optional*. Period in seconds during which the location can be updated, should be between 60 and 86400, or 0x7FFFFFFF for live locations that can be edited indefinitely."""
     heading: Optional[int] = None
     """*Optional*. For live locations, a direction in which the user is moving, in degrees. Must be between 1 and 360 if specified."""
     proximity_alert_radius: Optional[int] = None

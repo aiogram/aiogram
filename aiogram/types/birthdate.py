@@ -7,7 +7,7 @@ from .base import TelegramObject
 
 class Birthdate(TelegramObject):
     """
-
+    Describes the birthdate of a user.
 
     Source: https://core.telegram.org/bots/api#birthdate
     """
