@@ -149,3 +149,76 @@ Telegram API Server
 
 - The `server` parameter has been moved from the `Bot` instance to `api` in `BaseSession`.
 - The constant `aiogram.bot.api.TELEGRAM_PRODUCTION` has been moved to `aiogram.client.telegram.PRODUCTION`.
+
+
+Telegram objects transformation (to dict, to json, from json)
+=============================================================
+
+- Methods :class:`TelegramObject.to_object()`, :class:`TelegramObject.to_json()` and :class:`TelegramObject.to_python()` 
+  have been removed due to the use of `pydantic <https://docs.pydantic.dev/>`_ models.
+- :class:`TelegramObject.to_object()` should be replaced by :class:`TelegramObject.model_validate()`
+  (`Read more <https://docs.pydantic.dev/2.7/api/base_model/#pydantic.BaseModel.model_validate>`_)
+- :class:`TelegramObject.as_json()` should be replaced by  :class:`TelegramObject.model_dump_json()`
+  (`Read more <https://docs.pydantic.dev/latest/api/base_model/#pydantic.BaseModel.model_dump_json>`_)
+- :class:`TelegramObject.to_python()` should be replaced by :class:`TelegramObject.model_dump()`
+  (`Read more <https://docs.pydantic.dev/latest/api/base_model/#pydantic.BaseModel.model_dump>`_)
+
+Here are some usage examples:
+
+- Creating an object from a dictionary representation of an object
+
+.. code-block::
+
+    # Version 2.x
+    message_dict = {"id": 42, ...}
+    message_obj = Message.to_object(message_dict)
+    print(message_obj)  
+    # id=42 name='n' ...
+    print(type(message_obj))
+    # <class 'aiogram.types.message.Message'>
+    
+    # Version 3.x
+    message_dict = {"id": 42, ...}
+    message_obj = Message.model_validate(message_dict)
+    print(message_obj)  
+    # id=42 name='n' ...
+    print(type(message_obj))
+    # <class 'aiogram.types.message.Message'>
+        
+- Creating a json representation of an object
+
+.. code-block::
+
+    async def handler(message: Message) -> None:
+        # Version 2.x
+        message_json = message.as_json()
+        print(message_json)  
+        # {"id": 42, ...}
+        print(type(message_json))
+        # <class 'str'>
+        
+        # Version 3.x
+        message_json = message.model_dump_json()
+        print(message_json)  
+        # {"id": 42, ...}
+        print(type(message_json))
+        # <class 'str'>
+
+- Creating a dictionary representation of an object
+
+.. code-block::
+
+    async def handler(message: Message) -> None:
+        # Version 2.x
+        message_dict = message.to_python()
+        print(message_dict)  
+        # {"id": 42, ...}
+        print(type(message_dict))
+        # <class 'dict'>
+        
+        # Version 3.x
+        message_dict = message.model_dump()
+        print(message_dict)  
+        # {"id": 42, ...}
+        print(type(message_dict))
+        # <class 'dict'>
