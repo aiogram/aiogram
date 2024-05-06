@@ -1,1 +1,0 @@
-Added telegram objects transformation block in 2.x -> 3.x migration guide

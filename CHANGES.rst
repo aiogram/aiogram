@@ -16,6 +16,23 @@ Changelog
 
 .. towncrier release notes start
 
+3.6.0 (2024-05-06)
+===================
+
+Features
+--------
+
+- Added full support of `Bot API 7.3 <https://core.telegram.org/bots/api-changelog#may-6-2024>`_
+  `#1480 <https://github.com/aiogram/aiogram/issues/1480>`_
+
+
+Improved Documentation
+----------------------
+
+- Added telegram objects transformation block in 2.x -> 3.x migration guide
+  `#1412 <https://github.com/aiogram/aiogram/issues/1412>`_
+
+
 3.5.0 (2024-04-23)
 ===================
 
