@@ -1,0 +1,3 @@
+Added method :code:`get_value` for class :code:`FSMContext`
+
+- Added a new function :code:`get_value`, which allows retrieving the value by its name from the :code:`FSMContext`.

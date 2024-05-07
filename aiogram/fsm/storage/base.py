@@ -65,6 +65,17 @@ class BaseStorage(ABC):
         """
         pass
 
+    async def get_value(self, key: StorageKey, data_key: str, default: Any = None) -> Any:
+        """
+        Get selected value by key in current data
+
+        :param key: storage key
+        :param data_key: key of selected data
+        :return: value of current data by key
+        """
+        current_data = await self.get_data(key=key)
+        return current_data.get(data_key, default)
+
     async def update_data(self, key: StorageKey, data: Dict[str, Any]) -> Dict[str, Any]:
         """
         Update date in the storage for key (like dict.update)
