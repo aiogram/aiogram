@@ -1,7 +1,6 @@
 import json
-from abc import ABC, abstractmethod
 from contextlib import asynccontextmanager
-from typing import Any, AsyncGenerator, Callable, Dict, Literal, Optional, cast
+from typing import Any, AsyncGenerator, Callable, Dict, Optional, cast
 
 from redis.asyncio.client import Redis
 from redis.asyncio.connection import ConnectionPool
@@ -10,9 +9,10 @@ from redis.typing import ExpiryT
 
 from aiogram.fsm.state import State
 from aiogram.fsm.storage.base import (
-    DEFAULT_DESTINY,
     BaseEventIsolation,
     BaseStorage,
+    DefaultKeyBuilder,
+    KeyBuilder,
     StateType,
     StorageKey,
 )
@@ -20,79 +20,6 @@ from aiogram.fsm.storage.base import (
 DEFAULT_REDIS_LOCK_KWARGS = {"timeout": 60}
 _JsonLoads = Callable[..., Any]
 _JsonDumps = Callable[..., str]
-
-
-class KeyBuilder(ABC):
-    """
-    Base class for Redis key builder
-    """
-
-    @abstractmethod
-    def build(self, key: StorageKey, part: Literal["data", "state", "lock"]) -> str:
-        """
-        This method should be implemented in subclasses
-
-        :param key: contextual key
-        :param part: part of the record
-        :return: key to be used in Redis queries
-        """
-        pass
-
-
-class DefaultKeyBuilder(KeyBuilder):
-    """
-    Simple Redis key builder with default prefix.
-
-    Generates a colon-joined string with prefix, chat_id, user_id,
-    optional bot_id, business_connection_id and destiny.
-
-    Format:
-     :code:`<prefix>:<bot_id?>:<business_connection_id?>:<chat_id>:<user_id>:<destiny?>:<field>`
-    """
-
-    def __init__(
-        self,
-        *,
-        prefix: str = "fsm",
-        separator: str = ":",
-        with_bot_id: bool = False,
-        with_business_connection_id: bool = False,
-        with_destiny: bool = False,
-    ) -> None:
-        """
-        :param prefix: prefix for all records
-        :param separator: separator
-        :param with_bot_id: include Bot id in the key
-        :param with_business_connection_id: include business connection id
-        :param with_destiny: include a destiny key
-        """
-        self.prefix = prefix
-        self.separator = separator
-        self.with_bot_id = with_bot_id
-        self.with_business_connection_id = with_business_connection_id
-        self.with_destiny = with_destiny
-
-    def build(self, key: StorageKey, part: Literal["data", "state", "lock"]) -> str:
-        parts = [self.prefix]
-        if self.with_bot_id:
-            parts.append(str(key.bot_id))
-        if self.with_business_connection_id and key.business_connection_id:
-            parts.append(str(key.business_connection_id))
-        parts.append(str(key.chat_id))
-        if key.thread_id:
-            parts.append(str(key.thread_id))
-        parts.append(str(key.user_id))
-        if self.with_destiny:
-            parts.append(key.destiny)
-        elif key.destiny != DEFAULT_DESTINY:
-            raise ValueError(
-                "Redis key builder is not configured to use key destiny other the default.\n"
-                "\n"
-                "Probably, you should set `with_destiny=True` in for DefaultKeyBuilder.\n"
-                "E.g: `RedisStorage(redis, key_builder=DefaultKeyBuilder(with_destiny=True))`"
-            )
-        parts.append(part)
-        return self.separator.join(parts)
 
 
 class RedisStorage(BaseStorage):

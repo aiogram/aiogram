@@ -1,0 +1,1 @@
+Added new storage :code:`aiogram.fsm.storage.MongoStorage` for Finite State Machine based on Mongo DB (using :code:`motor` library)
