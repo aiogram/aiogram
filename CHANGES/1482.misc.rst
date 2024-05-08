@@ -1,0 +1,1 @@
+Enhanced code consistency and readability by refactoring imports, adjusting the base webhook URL, modifying bot instance initialization to utilize DefaultBotProperties, and updating router message handlers for improved consistency and readability.
