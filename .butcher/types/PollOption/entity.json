@@ -20,6 +20,14 @@
         "required": true
       },
       {
+        "type": "Array of MessageEntity",
+        "description": "Special entities that appear in the option text. Currently, only custom emoji entities are allowed in poll option texts",
+        "html_description": "<td><em>Optional</em>. Special entities that appear in the option <em>text</em>. Currently, only custom emoji entities are allowed in poll option texts</td>",
+        "rst_description": "*Optional*. Special entities that appear in the option *text*. Currently, only custom emoji entities are allowed in poll option texts\n",
+        "name": "text_entities",
+        "required": false
+      },
+      {
         "type": "Integer",
         "description": "Number of users that voted for this option",
         "html_description": "<td>Number of users that voted for this option</td>",

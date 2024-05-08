@@ -10,7 +10,7 @@ if TYPE_CHECKING:
 
 class SharedUser(TelegramObject):
     """
-    This object contains information about a user that was shared with the bot using a :class:`aiogram.types.keyboard_button_request_user.KeyboardButtonRequestUser` button.
+    This object contains information about a user that was shared with the bot using a :class:`aiogram.types.keyboard_button_request_users.KeyboardButtonRequestUsers` button.
 
     Source: https://core.telegram.org/bots/api#shareduser
     """

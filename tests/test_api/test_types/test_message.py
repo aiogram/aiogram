@@ -88,6 +88,9 @@ from aiogram.types import (
     Voice,
     WebAppData,
     WriteAccessAllowed,
+    ChatBackground,
+    BackgroundTypeFill,
+    BackgroundFillSolid,
 )
 from aiogram.types.message import ContentType, Message
 
@@ -553,6 +556,18 @@ TEST_MESSAGE_BOOST_ADDED = Message(
     from_user=User(id=42, is_bot=False, first_name="User"),
     boost_added=ChatBoostAdded(boost_count=1),
 )
+TEST_CHAT_BACKGROUND_SET = Message(
+    message_id=42,
+    date=datetime.datetime.now(),
+    chat=Chat(id=42, type="private"),
+    from_user=User(id=42, is_bot=False, first_name="User"),
+    chat_background_set=ChatBackground(
+        type=BackgroundTypeFill(
+            fill=BackgroundFillSolid(color=0x000000),
+            dark_theme_dimming=0,
+        )
+    ),
+)
 TEST_MESSAGE_UNKNOWN = Message(
     message_id=42,
     date=datetime.datetime.now(),
@@ -620,6 +635,7 @@ MESSAGES_AND_CONTENT_TYPES = [
     [TEST_MESSAGE_GENERAL_FORUM_TOPIC_UNHIDDEN, ContentType.GENERAL_FORUM_TOPIC_UNHIDDEN],
     [TEST_MESSAGE_WRITE_ACCESS_ALLOWED, ContentType.WRITE_ACCESS_ALLOWED],
     [TEST_MESSAGE_BOOST_ADDED, ContentType.BOOST_ADDED],
+    [TEST_CHAT_BACKGROUND_SET, ContentType.CHAT_BACKGROUND_SET],
     [TEST_MESSAGE_UNKNOWN, ContentType.UNKNOWN],
 ]
 
@@ -678,6 +694,7 @@ MESSAGES_AND_COPY_METHODS = [
     [TEST_MESSAGE_GIVEAWAY, None],
     [TEST_MESSAGE_GIVEAWAY_WINNERS, None],
     [TEST_MESSAGE_BOOST_ADDED, None],
+    [TEST_CHAT_BACKGROUND_SET, None],
     [TEST_MESSAGE_UNKNOWN, None],
 ]
 

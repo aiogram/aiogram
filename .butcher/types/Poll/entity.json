@@ -28,6 +28,14 @@
         "required": true
       },
       {
+        "type": "Array of MessageEntity",
+        "description": "Special entities that appear in the question. Currently, only custom emoji entities are allowed in poll questions",
+        "html_description": "<td><em>Optional</em>. Special entities that appear in the <em>question</em>. Currently, only custom emoji entities are allowed in poll questions</td>",
+        "rst_description": "*Optional*. Special entities that appear in the *question*. Currently, only custom emoji entities are allowed in poll questions\n",
+        "name": "question_entities",
+        "required": false
+      },
+      {
         "type": "Array of PollOption",
         "description": "List of poll options",
         "html_description": "<td>List of poll options</td>",

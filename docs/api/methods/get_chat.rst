@@ -2,7 +2,7 @@
 getChat
 #######
 
-Returns: :obj:`Chat`
+Returns: :obj:`ChatFullInfo`
 
 .. automodule:: aiogram.methods.get_chat
     :members:
@@ -19,7 +19,7 @@ As bot method
 
 .. code-block::
 
-    result: Chat = await bot.get_chat(...)
+    result: ChatFullInfo = await bot.get_chat(...)
 
 
 Method as object
@@ -35,4 +35,4 @@ With specific bot
 
 .. code-block:: python
 
-    result: Chat = await bot(GetChat(...))
+    result: ChatFullInfo = await bot(GetChat(...))

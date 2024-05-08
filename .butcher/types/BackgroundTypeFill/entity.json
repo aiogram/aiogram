@@ -1,0 +1,41 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "backgroundtypefill",
+    "name": "BackgroundTypeFill",
+    "description": "The background is automatically filled based on the selected colors.",
+    "html_description": "<p>The background is automatically filled based on the selected colors.</p>",
+    "rst_description": "The background is automatically filled based on the selected colors.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Type of the background, always 'fill'",
+        "html_description": "<td>Type of the background, always &#8220;fill&#8221;</td>",
+        "rst_description": "Type of the background, always 'fill'\n",
+        "name": "type",
+        "required": true
+      },
+      {
+        "type": "BackgroundFill",
+        "description": "The background fill",
+        "html_description": "<td>The background fill</td>",
+        "rst_description": "The background fill\n",
+        "name": "fill",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "Dimming of the background in dark themes, as a percentage; 0-100",
+        "html_description": "<td>Dimming of the background in dark themes, as a percentage; 0-100</td>",
+        "rst_description": "Dimming of the background in dark themes, as a percentage; 0-100\n",
+        "name": "dark_theme_dimming",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

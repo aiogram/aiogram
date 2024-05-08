@@ -7,9 +7,9 @@
   "object": {
     "anchor": "birthdate",
     "name": "Birthdate",
-    "description": "",
-    "html_description": "",
-    "rst_description": "",
+    "description": "Describes the birthdate of a user.",
+    "html_description": "<p>Describes the birthdate of a user.</p>",
+    "rst_description": "Describes the birthdate of a user.",
     "annotations": [
       {
         "type": "Integer",

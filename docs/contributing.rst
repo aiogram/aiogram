@@ -78,13 +78,13 @@ Linux / macOS:
 
 .. code-block:: bash
 
-    pip install -e ."[dev,test,docs,fast,redis,proxy,i18n]"
+    pip install -e ."[dev,test,docs,fast,redis,mongo,proxy,i18n]"
 
 Windows:
 
 .. code-block:: bash
 
-    pip install -e .[dev,test,docs,fast,redis,proxy,i18n]
+    pip install -e .[dev,test,docs,fast,redis,mongo,proxy,i18n]
 
 It will install :code:`aiogram` in editable mode into your virtual environment and all dependencies.
 
@@ -116,11 +116,12 @@ All changes should be tested:
 
     pytest tests
 
-Also if you are doing something with Redis-storage, you will need to test everything works with Redis:
+Also if you are doing something with Redis-storage or/and MongoDB-storage,
+you will need to test everything works with Redis or/and MongoDB:
 
 .. code-block:: bash
 
-    pytest --redis redis://<host>:<port>/<db> tests
+    pytest --redis redis://<host>:<port>/<db> --mongo mongodb://<user>:<password>@<host>:<port> tests
 
 Docs
 ----

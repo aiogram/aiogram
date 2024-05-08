@@ -7,9 +7,9 @@
   "object": {
     "anchor": "businessopeninghours",
     "name": "BusinessOpeningHours",
-    "description": "",
-    "html_description": "",
-    "rst_description": "",
+    "description": "Describes the opening hours of a business.",
+    "html_description": "<p>Describes the opening hours of a business.</p>",
+    "rst_description": "Describes the opening hours of a business.",
     "annotations": [
       {
         "type": "String",

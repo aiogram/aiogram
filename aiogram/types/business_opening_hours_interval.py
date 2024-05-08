@@ -7,7 +7,7 @@ from .base import TelegramObject
 
 class BusinessOpeningHoursInterval(TelegramObject):
     """
-
+    Describes an interval of time during which a business is open.
 
     Source: https://core.telegram.org/bots/api#businessopeninghoursinterval
     """

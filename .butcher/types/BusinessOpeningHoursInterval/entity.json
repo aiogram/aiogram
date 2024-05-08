@@ -7,9 +7,9 @@
   "object": {
     "anchor": "businessopeninghoursinterval",
     "name": "BusinessOpeningHoursInterval",
-    "description": "",
-    "html_description": "",
-    "rst_description": "",
+    "description": "Describes an interval of time during which a business is open.",
+    "html_description": "<p>Describes an interval of time during which a business is open.</p>",
+    "rst_description": "Describes an interval of time during which a business is open.",
     "annotations": [
       {
         "type": "Integer",

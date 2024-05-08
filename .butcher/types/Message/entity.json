@@ -524,6 +524,14 @@
         "required": false
       },
       {
+        "type": "ChatBackground",
+        "description": "Service message: chat background set",
+        "html_description": "<td><em>Optional</em>. Service message: chat background set</td>",
+        "rst_description": "*Optional*. Service message: chat background set\n",
+        "name": "chat_background_set",
+        "required": false
+      },
+      {
         "type": "ForumTopicCreated",
         "description": "Service message: forum topic created",
         "html_description": "<td><em>Optional</em>. Service message: forum topic created</td>",

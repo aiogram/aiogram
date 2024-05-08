@@ -10,7 +10,7 @@ if TYPE_CHECKING:
 
 class KeyboardButtonRequestChat(TelegramObject):
     """
-    This object defines the criteria used to request a suitable chat. Information about the selected chat will be shared with the bot when the corresponding button is pressed. The bot will be granted requested rights in the сhat if appropriate `More about requesting chats » <https://core.telegram.org/bots/features#chat-and-user-selection>`_
+    This object defines the criteria used to request a suitable chat. Information about the selected chat will be shared with the bot when the corresponding button is pressed. The bot will be granted requested rights in the chat if appropriate. `More about requesting chats » <https://core.telegram.org/bots/features#chat-and-user-selection>`_.
 
     Source: https://core.telegram.org/bots/api#keyboardbuttonrequestchat
     """

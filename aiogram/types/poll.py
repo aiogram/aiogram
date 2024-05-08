@@ -33,6 +33,8 @@ class Poll(TelegramObject):
     """Poll type, currently can be 'regular' or 'quiz'"""
     allows_multiple_answers: bool
     """:code:`True`, if the poll allows multiple answers"""
+    question_entities: Optional[List[MessageEntity]] = None
+    """*Optional*. Special entities that appear in the *question*. Currently, only custom emoji entities are allowed in poll questions"""
     correct_option_id: Optional[int] = None
     """*Optional*. 0-based identifier of the correct answer option. Available only for polls in the quiz mode, which are closed, or was sent (not forwarded) by the bot or to the private chat with the bot."""
     explanation: Optional[str] = None
@@ -59,6 +61,7 @@ class Poll(TelegramObject):
             is_anonymous: bool,
             type: str,
             allows_multiple_answers: bool,
+            question_entities: Optional[List[MessageEntity]] = None,
             correct_option_id: Optional[int] = None,
             explanation: Optional[str] = None,
             explanation_entities: Optional[List[MessageEntity]] = None,
@@ -79,6 +82,7 @@ class Poll(TelegramObject):
                 is_anonymous=is_anonymous,
                 type=type,
                 allows_multiple_answers=allows_multiple_answers,
+                question_entities=question_entities,
                 correct_option_id=correct_option_id,
                 explanation=explanation,
                 explanation_entities=explanation_entities,

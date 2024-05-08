@@ -11,7 +11,11 @@ def create_storage_key(bot: MockedBot):
 
 @pytest.mark.parametrize(
     "storage",
-    [pytest.lazy_fixture("redis_storage"), pytest.lazy_fixture("memory_storage")],
+    [
+        pytest.lazy_fixture("redis_storage"),
+        pytest.lazy_fixture("mongo_storage"),
+        pytest.lazy_fixture("memory_storage"),
+    ],
 )
 class TestStorages:
     async def test_set_state(self, bot: MockedBot, storage: BaseStorage, storage_key: StorageKey):
@@ -35,6 +39,8 @@ class TestStorages:
     ):
         assert await storage.get_data(key=storage_key) == {}
         assert await storage.update_data(key=storage_key, data={"foo": "bar"}) == {"foo": "bar"}
+        assert await storage.update_data(key=storage_key, data={}) == {"foo": "bar"}
+        assert await storage.get_data(key=storage_key) == {"foo": "bar"}
         assert await storage.update_data(key=storage_key, data={"baz": "spam"}) == {
             "foo": "bar",
             "baz": "spam",
@@ -42,4 +48,12 @@ class TestStorages:
         assert await storage.get_data(key=storage_key) == {
             "foo": "bar",
             "baz": "spam",
+        }
+        assert await storage.update_data(key=storage_key, data={"baz": "test"}) == {
+            "foo": "bar",
+            "baz": "test",
+        }
+        assert await storage.get_data(key=storage_key) == {
+            "foo": "bar",
+            "baz": "test",
         }

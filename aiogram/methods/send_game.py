@@ -34,7 +34,7 @@ class SendGame(TelegramMethod[Message]):
     reply_parameters: Optional[ReplyParameters] = None
     """Description of the message to reply to"""
     reply_markup: Optional[InlineKeyboardMarkup] = None
-    """A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_. If empty, one 'Play game_title' button will be shown. If not empty, the first button must launch the game. Not supported for messages sent on behalf of a business account."""
+    """A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_. If empty, one 'Play game_title' button will be shown. If not empty, the first button must launch the game."""
     allow_sending_without_reply: Optional[bool] = Field(
         None, json_schema_extra={"deprecated": True}
     )

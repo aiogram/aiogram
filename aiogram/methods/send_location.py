@@ -39,7 +39,7 @@ class SendLocation(TelegramMethod[Message]):
     horizontal_accuracy: Optional[float] = None
     """The radius of uncertainty for the location, measured in meters; 0-1500"""
     live_period: Optional[int] = None
-    """Period in seconds for which the location will be updated (see `Live Locations <https://telegram.org/blog/live-locations>`_, should be between 60 and 86400."""
+    """Period in seconds during which the location will be updated (see `Live Locations <https://telegram.org/blog/live-locations>`_, should be between 60 and 86400, or 0x7FFFFFFF for live locations that can be edited indefinitely."""
     heading: Optional[int] = None
     """For live locations, a direction in which the user is moving, in degrees. Must be between 1 and 360 if specified."""
     proximity_alert_radius: Optional[int] = None
@@ -53,7 +53,7 @@ class SendLocation(TelegramMethod[Message]):
     reply_markup: Optional[
         Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
     ] = None
-    """Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user. Not supported for messages sent on behalf of a business account"""
+    """Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user"""
     allow_sending_without_reply: Optional[bool] = Field(
         None, json_schema_extra={"deprecated": True}
     )
