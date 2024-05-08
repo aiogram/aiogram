@@ -24,20 +24,14 @@ class LinkPreviewOptions(TelegramObject):
     show_above_text: Optional[Union[bool, Default]] = Default("link_preview_show_above_text")
     """*Optional*. :code:`True`, if the link preview must be shown above the message text; otherwise, the link preview will be shown below the message text"""
 
-    @field_serializer("is_disabled", when_used="json")
-    def serialize_is_disabled(self, value):
-        return value.__str__()
-
-    @field_serializer("prefer_small_media", when_used="json")
-    def serialize_prefer_small_media(self, value):
-        return value.__str__()
-
-    @field_serializer("prefer_large_media", when_used="json")
-    def serialize_prefer_large_media(self, value):
-        return value.__str__()
-
-    @field_serializer("show_above_text", when_used="json")
-    def serialize_show_above_text(self, value):
+    @field_serializer(
+        "is_disabled",
+        "prefer_small_media",
+        "prefer_large_media",
+        "show_above_text",
+        when_used="json",
+    )
+    def serialize_fields(self, value):
         return value.__str__()
 
     if TYPE_CHECKING:
