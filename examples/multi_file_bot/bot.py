@@ -6,6 +6,7 @@ from handlers.echo import echo_router
 from handlers.start import start_router
 
 from aiogram import Bot, Dispatcher
+from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 
 # Bot token can be obtained via https://t.me/BotFather
@@ -22,7 +23,7 @@ async def main() -> None:
     )
 
     # Initialize Bot instance with a default parse mode which will be passed to all API calls
-    bot = Bot(TOKEN, parse_mode=ParseMode.HTML)
+    bot = Bot(token=TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
     # And the run events dispatching
     await dp.start_polling(bot)
 

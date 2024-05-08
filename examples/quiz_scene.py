@@ -290,7 +290,7 @@ def create_dispatcher():
 
 async def main():
     dispatcher = create_dispatcher()
-    bot = Bot(TOKEN)
+    bot = Bot(token=TOKEN)
     await dispatcher.start_polling(bot)
 
 

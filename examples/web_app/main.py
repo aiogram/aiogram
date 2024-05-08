@@ -8,6 +8,8 @@ from handlers import my_router
 from routes import check_data_handler, demo_handler, send_message_handler
 
 from aiogram import Bot, Dispatcher
+from aiogram.client.default import DefaultBotProperties
+from aiogram.enums.parse_mode import ParseMode
 from aiogram.types import MenuButtonWebApp, WebAppInfo
 from aiogram.webhook.aiohttp_server import SimpleRequestHandler, setup_application
 
@@ -24,7 +26,7 @@ async def on_startup(bot: Bot, base_url: str):
 
 
 def main():
-    bot = Bot(token=TOKEN, parse_mode="HTML")
+    bot = Bot(token=TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
     dispatcher = Dispatcher()
     dispatcher["base_url"] = APP_BASE_URL
     dispatcher.startup.register(on_startup)
