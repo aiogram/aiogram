@@ -90,7 +90,7 @@ def main() -> None:
     # Register startup hook to initialize webhook
     dp.startup.register(on_startup)
 
-    # Initialize Bot instance with a default parse mode which will be passed to all API calls
+    # Initialize Bot instance with default bot properties which will be passed to all API calls
     bot = Bot(token=TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
 
     # Create aiohttp.web.Application instance

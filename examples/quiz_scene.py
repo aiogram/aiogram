@@ -289,13 +289,13 @@ def create_dispatcher():
 
 
 async def main():
-    dispatcher = create_dispatcher()
+    dp = create_dispatcher()
     bot = Bot(token=TOKEN)
-    await dispatcher.start_polling(bot)
+    await dp.start_polling(bot)
 
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO)
-    asyncio.run(main())
     # Alternatively, you can use aiogram-cli:
     # `aiogram run polling quiz_scene:create_dispatcher --log-level info --token BOT_TOKEN`
+    logging.basicConfig(level=logging.INFO)
+    asyncio.run(main())

@@ -197,9 +197,13 @@ def create_dispatcher() -> Dispatcher:
     return dispatcher
 
 
-if __name__ == "__main__":
-    # Recommended to use CLI instead of this snippet.
-    # `aiogram run polling scene_example:create_dispatcher --token BOT_TOKEN --log-level info`
+def main() -> None:
     dp = create_dispatcher()
     bot = Bot(token=TOKEN)
     dp.run_polling(bot)
+
+
+if __name__ == "__main__":
+    # Recommended to use CLI instead of this snippet.
+    # `aiogram run polling scene_example:create_dispatcher --token BOT_TOKEN --log-level info`
+    main()
