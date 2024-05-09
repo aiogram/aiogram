@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING, Any, Optional, Union
 
-from pydantic import field_serializer
+from pydantic import field_serializer, field_validator
 
 from ..client.default import Default
 from .base import TelegramObject
@@ -31,8 +31,19 @@ class LinkPreviewOptions(TelegramObject):
         "show_above_text",
         when_used="json",
     )
-    def serialize_fields(self, value):
-        return value.__str__()
+    def serialize_fields(self, value: Default) -> str:
+        return value.name
+
+    @classmethod
+    @field_validator(
+        "is_disabled",
+        "prefer_small_media",
+        "prefer_large_media",
+        "show_above_text",
+        mode="before",
+    )
+    def deserialize_fields(cls, value: str) -> Default:
+        return Default(value)
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!
