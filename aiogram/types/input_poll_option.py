@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, List, Optional, Union
 
-from .base import TelegramObject
 from ..client.default import Default
+from .base import TelegramObject
 
 if TYPE_CHECKING:
     from .message_entity import MessageEntity

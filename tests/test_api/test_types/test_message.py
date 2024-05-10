@@ -40,7 +40,10 @@ from aiogram.types import (
     UNSET_PARSE_MODE,
     Animation,
     Audio,
+    BackgroundFillSolid,
+    BackgroundTypeFill,
     Chat,
+    ChatBackground,
     ChatBoostAdded,
     ChatShared,
     Contact,
@@ -88,9 +91,6 @@ from aiogram.types import (
     Voice,
     WebAppData,
     WriteAccessAllowed,
-    ChatBackground,
-    BackgroundTypeFill,
-    BackgroundFillSolid,
 )
 from aiogram.types.message import ContentType, Message
 

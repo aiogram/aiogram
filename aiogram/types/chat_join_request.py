@@ -10,7 +10,6 @@ from .base import TelegramObject
 from .custom import DateTime
 
 if TYPE_CHECKING:
-    from .input_poll_option import InputPollOption
     from ..methods import (
         ApproveChatJoinRequest,
         DeclineChatJoinRequest,
@@ -41,6 +40,7 @@ if TYPE_CHECKING:
     from .input_media_document import InputMediaDocument
     from .input_media_photo import InputMediaPhoto
     from .input_media_video import InputMediaVideo
+    from .input_poll_option import InputPollOption
     from .labeled_price import LabeledPrice
     from .link_preview_options import LinkPreviewOptions
     from .message_entity import MessageEntity
