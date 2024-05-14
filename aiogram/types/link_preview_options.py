@@ -31,8 +31,11 @@ class LinkPreviewOptions(TelegramObject):
         "show_above_text",
         when_used="json",
     )
-    def serialize_fields(self, value: Default) -> str:
-        return value.name
+    def serialize_fields(self, value: Union[bool, Default]) -> str:
+        if isinstance(value, bool):
+            return str(value)
+        else:
+            return value.name
 
     @classmethod
     @field_validator(
@@ -42,8 +45,13 @@ class LinkPreviewOptions(TelegramObject):
         "show_above_text",
         mode="before",
     )
-    def deserialize_fields(cls, value: str) -> Default:
-        return Default(value)
+    def deserialize_fields(cls, value: str) -> Union[bool, Default]:
+        if value == "True":
+            return True
+        elif value == "False":
+            return False
+        else:
+            return Default(value)
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!
