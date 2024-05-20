@@ -20,12 +20,12 @@ class TestTelegramMethodRemoveUnset:
     )
     @pytest.mark.parametrize("obj", [TelegramMethod, TelegramObject])
     def test_remove_unset(self, values, names, obj):
-        validated = obj.remove_unset.wrapped(values)
+        validated = obj.remove_unset(values)
         assert set(validated.keys()) == names
 
     @pytest.mark.parametrize("obj", [TelegramMethod, TelegramObject])
     def test_remove_unset_non_dict(self, obj):
-        assert obj.remove_unset.wrapped("") == ""
+        assert obj.remove_unset("") == ""
 
 
 class TestTelegramMethodModelDumpJson:

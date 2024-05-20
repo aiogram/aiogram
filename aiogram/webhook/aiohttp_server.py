@@ -8,7 +8,7 @@ from aiohttp import MultipartWriter, web
 from aiohttp.abc import Application
 from aiohttp.typedefs import Handler
 from aiohttp.web_middlewares import middleware
-from pydantic_core import from_json, to_json
+from pydantic_core import from_json
 
 from aiogram import Bot, Dispatcher, loggers
 from aiogram.client.form import extract_files, form_serialize
@@ -146,7 +146,7 @@ class BaseRequestHandler(ABC):
         )
         self._background_feed_update_tasks.add(feed_update_task)
         feed_update_task.add_done_callback(self._background_feed_update_tasks.discard)
-        return web.json_response({})  # TODO
+        return web.json_response({}, dumps=form_serialize)
 
     def _build_response_writer(
         self, bot: Bot, result: Optional[TelegramMethod[TelegramType]]
