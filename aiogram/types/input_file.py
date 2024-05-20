@@ -1,12 +1,14 @@
 from __future__ import annotations
 
 import io
-import os
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 from pathlib import Path
 from typing import TYPE_CHECKING, Any, AsyncGenerator, Dict, Optional, Union
 
 import aiofiles
+from pydantic import BaseModel, Field, model_validator
+
+from aiogram.client.context_controller import BotContextController
 
 if TYPE_CHECKING:
     from aiogram.client.bot import Bot
@@ -14,23 +16,28 @@ if TYPE_CHECKING:
 DEFAULT_CHUNK_SIZE = 64 * 1024  # 64 kb
 
 
-class InputFile(ABC):
+class InputFile(BaseModel):
     """
+    Base class for input files.
     This object represents the contents of a file to be uploaded. Must be posted using multipart/form-data in the usual way that files are uploaded via the browser.
+    Should not be used directly. Look at :class:`BufferedInputFile`, :class:`FSInputFile` :class:`URLInputFile`
 
     Source: https://core.telegram.org/bots/api#inputfile
     """
 
+    filename: Optional[str] = None
+    """Name of the given file"""
+    chunk_size: int = DEFAULT_CHUNK_SIZE
+    """Reader chunks size"""
+
     def __init__(self, filename: Optional[str] = None, chunk_size: int = DEFAULT_CHUNK_SIZE):
         """
-        Base class for input files. Should not be used directly.
-        Look at :class:`BufferedInputFile`, :class:`FSInputFile` :class:`URLInputFile`
-
-        :param filename: name of the given file
-        :param chunk_size: reader chunks size
+        Backward compatibility (positional arguments)
         """
-        self.filename = filename
-        self.chunk_size = chunk_size
+        super().__init__(
+            filename=filename,
+            chunk_size=chunk_size,
+        )
 
     @abstractmethod
     async def read(self, bot: "Bot") -> AsyncGenerator[bytes, None]:  # pragma: no cover
@@ -38,17 +45,24 @@ class InputFile(ABC):
 
 
 class BufferedInputFile(InputFile):
+    """
+    Represents object for uploading files from filesystem
+    """
+
+    data: bytes
+    """File bytes"""
+    filename: str
+    """Filename to be propagated to telegram"""
+
     def __init__(self, file: bytes, filename: str, chunk_size: int = DEFAULT_CHUNK_SIZE):
         """
-        Represents object for uploading files from filesystem
-
-        :param file: Bytes
-        :param filename: Filename to be propagated to telegram.
-        :param chunk_size: Uploading chunk size
+        Backward compatibility (positional arguments and old naming)
         """
-        super().__init__(filename=filename, chunk_size=chunk_size)
-
-        self.data = file
+        super(InputFile, self).__init__(
+            data=file,
+            filename=filename,
+            chunk_size=chunk_size,
+        )
 
     @classmethod
     def from_file(
@@ -66,11 +80,10 @@ class BufferedInputFile(InputFile):
         :param chunk_size: Uploading chunk size
         :return: instance of :obj:`BufferedInputFile`
         """
-        if filename is None:
-            filename = os.path.basename(path)
-        with open(path, "rb") as f:
-            data = f.read()
-        return cls(data, filename=filename, chunk_size=chunk_size)
+        path = Path(path)
+        filename = filename or path.name
+        file = path.read_bytes()
+        return cls(file=file, filename=filename, chunk_size=chunk_size)
 
     async def read(self, bot: "Bot") -> AsyncGenerator[bytes, None]:
         buffer = io.BytesIO(self.data)
@@ -79,6 +92,15 @@ class BufferedInputFile(InputFile):
 
 
 class FSInputFile(InputFile):
+    """
+    Represents object for uploading files from filesystem
+    """
+
+    path: Path
+    """Path to file"""
+    filename: str = ""  # set it from path after validation
+    """Filename to be propagated to telegram"""
+
     def __init__(
         self,
         path: Union[str, Path],
@@ -86,18 +108,17 @@ class FSInputFile(InputFile):
         chunk_size: int = DEFAULT_CHUNK_SIZE,
     ):
         """
-        Represents object for uploading files from filesystem
-
-        :param path: Path to file
-        :param filename: Filename to be propagated to telegram.
-            By default, will be parsed from path
-        :param chunk_size: Uploading chunk size
+        Backward compatibility (positional arguments)
         """
-        if filename is None:
-            filename = os.path.basename(path)
-        super().__init__(filename=filename, chunk_size=chunk_size)
+        super(InputFile, self).__init__(
+            path=Path(path),
+            filename=filename or "",
+            chunk_size=chunk_size,
+        )
 
-        self.path = path
+    @model_validator(mode="after")
+    def filename_from_path(self):
+        self.filename = self.filename or Path(self.path).name
 
     async def read(self, bot: "Bot") -> AsyncGenerator[bytes, None]:
         async with aiofiles.open(self.path, "rb") as f:
@@ -105,7 +126,18 @@ class FSInputFile(InputFile):
                 yield chunk
 
 
-class URLInputFile(InputFile):
+class URLInputFile(BotContextController, InputFile):
+    """
+    Represents object for streaming files from internet
+    """
+
+    url: str
+    """URL in internet"""
+    headers: Dict[str, Any] = Field(default_factory=dict)
+    """HTTP Headers"""
+    timeout: int = 30
+    """Timeout for downloading"""
+
     def __init__(
         self,
         url: str,
@@ -116,27 +148,20 @@ class URLInputFile(InputFile):
         bot: Optional["Bot"] = None,
     ):
         """
-        Represents object for streaming files from internet
-
-        :param url: URL in internet
-        :param headers: HTTP Headers
-        :param filename: Filename to be propagated to telegram.
-        :param chunk_size: Uploading chunk size
-        :param timeout: Timeout for downloading
-        :param bot: Bot instance to use HTTP session from.
-                    If not specified, will be used current bot
+        Backward compatibility (positional arguments and bot context)
         """
-        super().__init__(filename=filename, chunk_size=chunk_size)
-        if headers is None:
-            headers = {}
+        super(InputFile, self).__init__(
+            url=url,
+            headers=headers or {},
+            timeout=timeout,
+            filename=filename,
+            chunk_size=chunk_size,
+        )
 
-        self.url = url
-        self.headers = headers
-        self.timeout = timeout
-        self.bot = bot
+        self._bot = bot
 
-    async def read(self, bot: "Bot") -> AsyncGenerator[bytes, None]:
-        bot = self.bot or bot
+    async def read(self, bot: Optional["Bot"] = None) -> AsyncGenerator[bytes, None]:
+        bot = self.bot or bot  # FIXME: invalid order suspected
         stream = bot.session.stream_content(
             url=self.url,
             headers=self.headers,

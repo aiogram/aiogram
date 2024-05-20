@@ -12,18 +12,10 @@ from typing import (
     TypeVar,
 )
 
-from pydantic import (
-    BaseModel,
-    ConfigDict,
-    SerializerFunctionWrapHandler,
-    model_serializer,
-    model_validator,
-)
+from pydantic import BaseModel, ConfigDict
 
-from aiogram.client.context_controller import BotContextController
-from aiogram.client.default import Default, DefaultBotProperties
 from ..types import InputFile, ResponseParameters
-from ..types.base import UNSET_TYPE
+from ..types.base import MutableTelegramObject
 
 if TYPE_CHECKING:
     from ..client.bot import Bot
@@ -48,44 +40,7 @@ class Response(BaseModel, Generic[TelegramType]):
     parameters: Optional[ResponseParameters] = None
 
 
-class TelegramMethod(BotContextController, BaseModel, Generic[TelegramType], ABC):
-    model_config = ConfigDict(
-        extra="allow",
-        populate_by_name=True,
-        arbitrary_types_allowed=True,
-    )
-
-    @model_validator(mode="before")
-    @classmethod
-    def remove_unset(cls, values: Dict[str, Any]) -> Dict[str, Any]:
-        """
-        Remove UNSET before fields validation.
-
-        We use UNSET as a sentinel value for `parse_mode` and replace it to real value later.
-        It isn't a problem when it's just default value for a model field,
-        but UNSET might be passing to a model initialization from `Bot.method_name`,
-        so we must take care of it and remove it before fields validation.
-        """
-        if not isinstance(values, dict):
-            return values
-        return {k: v for k, v in values.items() if not isinstance(v, UNSET_TYPE)}
-
-    @model_serializer(mode="wrap", when_used="json")
-    def json_serialize(self, handler: SerializerFunctionWrapHandler) -> Dict[str, Any]:
-        """
-        Replacing `Default` placeholders with actual values from bot defaults.
-        Ensures JSON serialization backward compatibility by handling non-standard objects.
-        """
-        if not isinstance(self, TelegramMethod):
-            return handler(self)
-        properties = self.bot.default if self.bot else DefaultBotProperties()
-        default_fields = {
-            field: properties[value.name]
-            for field in self.model_fields.keys()
-            if isinstance(value := getattr(self, field), Default)
-        }
-        return handler(self.model_copy(update=default_fields))
-
+class TelegramMethod(MutableTelegramObject, Generic[TelegramType], ABC):
     if TYPE_CHECKING:
         __returning__: ClassVar[type]
         __api_method__: ClassVar[str]

@@ -21,7 +21,13 @@ from aiogram.client.session import aiohttp
 from aiogram.client.session.aiohttp import AiohttpSession
 from aiogram.exceptions import TelegramNetworkError
 from aiogram.methods import TelegramMethod
-from aiogram.types import UNSET_PARSE_MODE, InputFile
+from aiogram.types import (
+    InputFile,
+    InputMediaAudio,
+    InputMediaDocument,
+    InputMediaPhoto,
+    InputMediaVideo,
+)
 from tests.mocked_bot import MockedBot
 
 
@@ -139,27 +145,53 @@ class TestAiohttpSession:
         assert all(isinstance(field[2], str) for field in fields)
         assert "null_" not in [item[0]["name"] for item in fields]
 
+    def test_build_form_data_with_file(self, bot: Bot):
+        class TestMethod(TelegramMethod[bool]):
+            __api_method__ = "test"
+            __returning__ = bool
+
+            document: Union[InputMediaAudio, InputMediaDocument, InputMediaPhoto, InputMediaVideo]
+
+        session = AiohttpSession()
+        form = session.build_form_data(
+            bot,
+            TestMethod(document=InputMediaDocument(media=BareInputFile(filename="file.txt"))),
+        )
+
+        fields = form._fields
+        assert len(fields) == 2
+        assert fields[0][0]["name"] == "document"
+        assert fields[0][2].count("attach://") == 1
+        assert fields[1][0]["filename"] == "file.txt"
+        assert isinstance(fields[1][2], AsyncIterable)
+
     def test_build_form_data_with_files(self, bot: Bot):
         class TestMethod(TelegramMethod[bool]):
             __api_method__ = "test"
             __returning__ = bool
 
-            key: str
-            document: InputFile
+            group: List[
+                Union[InputMediaAudio, InputMediaDocument, InputMediaPhoto, InputMediaVideo]
+            ]
 
         session = AiohttpSession()
         form = session.build_form_data(
             bot,
-            TestMethod(key="value", document=BareInputFile(filename="file.txt")),
+            TestMethod(
+                group=[
+                    InputMediaDocument(media=BareInputFile(filename="file.txt")),
+                    InputMediaDocument(media=BareInputFile(filename="file2.txt")),
+                ]
+            ),
         )
 
         fields = form._fields
-
         assert len(fields) == 3
-        assert fields[1][0]["name"] == "document"
-        assert fields[1][2].startswith("attach://")
-        assert fields[2][0]["name"] == fields[1][2][9:]
-        assert fields[2][0]["filename"] == "file.txt"
+        assert fields[0][0]["name"] == "group"
+        assert fields[0][2].count("attach://") == 2
+        assert fields[1][0]["filename"] == "file.txt"
+        assert fields[2][0]["filename"] == "file2.txt"
+        assert isinstance(fields[1][2], AsyncIterable)
         assert isinstance(fields[2][2], AsyncIterable)
 
     async def test_make_request(self, bot: MockedBot, aresponses: ResponsesMockServer):

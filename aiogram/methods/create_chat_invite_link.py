@@ -3,7 +3,7 @@ from __future__ import annotations
 import datetime
 from typing import TYPE_CHECKING, Any, Optional, Union
 
-from ..types import ChatInviteLink
+from ..types import ChatInviteLink, DateTime
 from .base import TelegramMethod
 
 
@@ -21,7 +21,7 @@ class CreateChatInviteLink(TelegramMethod[ChatInviteLink]):
     """Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)"""
     name: Optional[str] = None
     """Invite link name; 0-32 characters"""
-    expire_date: Optional[Union[datetime.datetime, datetime.timedelta, int]] = None
+    expire_date: Optional[DateTime] = None
     """Point in time (Unix timestamp) when the link will expire"""
     member_limit: Optional[int] = None
     """The maximum number of users that can be members of the chat simultaneously after joining the chat via this invite link; 1-99999"""

@@ -7,7 +7,7 @@ from pydantic import Field
 
 from ..client.default import Default
 from ..types import (
-    UNSET_PARSE_MODE,
+    DateTime,
     ForceReply,
     InlineKeyboardMarkup,
     Message,
@@ -53,7 +53,7 @@ class SendPoll(TelegramMethod[Message]):
     """A JSON-serialized list of special entities that appear in the poll explanation, which can be specified instead of *parse_mode*"""
     open_period: Optional[int] = None
     """Amount of time in seconds the poll will be active after creation, 5-600. Can't be used together with *close_date*."""
-    close_date: Optional[Union[datetime.datetime, datetime.timedelta, int]] = None
+    close_date: Optional[DateTime] = None
     """Point in time (Unix timestamp) when the poll will be automatically closed. Must be at least 5 and no more than 600 seconds in the future. Can't be used together with *open_period*."""
     is_closed: Optional[bool] = None
     """Pass :code:`True` if the poll needs to be immediately closed. This can be useful for poll preview."""

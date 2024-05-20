@@ -1,10 +1,8 @@
 from __future__ import annotations
 
 import abc
-import datetime
 import json
-import secrets
-from enum import Enum
+import warnings
 from http import HTTPStatus
 from types import TracebackType
 from typing import (
@@ -18,8 +16,6 @@ from typing import (
     Type,
     cast,
 )
-
-from pydantic import ValidationError
 
 from aiogram.exceptions import (
     ClientDecodeError,
@@ -38,8 +34,6 @@ from aiogram.exceptions import (
 
 from ...methods import Response, TelegramMethod
 from ...methods.base import TelegramType
-from ...types import InputFile, TelegramObject
-from ..default import Default
 from ..telegram import PRODUCTION, TelegramAPIServer
 from .middlewares.manager import RequestMiddlewareManager
 
@@ -79,6 +73,12 @@ class BaseSession(abc.ABC):
         self.timeout = timeout
 
         self.middleware = RequestMiddlewareManager()
+        if self.json_loads != json.loads or json_dumps != json.dumps:
+            warnings.warn(
+                "Custom json de/serializers are no longer supported.\n"
+                "Using pydantic_core.to_json and pydantic_core.from_json instead.",
+                DeprecationWarning,
+            )
 
     def check_response(
         self, bot: Bot, method: TelegramMethod[TelegramType], status_code: int, content: str
@@ -87,18 +87,10 @@ class BaseSession(abc.ABC):
         Check response status
         """
         try:
-            json_data = self.json_loads(content)
-        except Exception as e:
-            # Handled error type can't be classified as specific error
-            # in due to decoder can be customized and raise any exception
-
-            raise ClientDecodeError("Failed to decode object", e, content)
-
-        try:
             response_type = Response[method.__returning__]  # type: ignore
-            response = response_type.model_validate(json_data, context={"bot": bot})
-        except ValidationError as e:
-            raise ClientDecodeError("Failed to deserialize object", e, json_data)
+            response = response_type.model_validate_json(content, context={"bot": bot})
+        except ValueError as e:
+            raise ClientDecodeError("Failed to deserialize object", e, content)
 
         if HTTPStatus.OK <= status_code <= HTTPStatus.IM_USED and response.ok:
             return response
@@ -176,73 +168,6 @@ class BaseSession(abc.ABC):
         Stream reader
         """
         yield b""
-
-    def prepare_value(
-        self,
-        value: Any,
-        bot: Bot,
-        files: Dict[str, Any],
-        _dumps_json: bool = True,
-    ) -> Any:
-        """
-        Prepare value before send
-        """
-        if value is None:
-            return None
-        if isinstance(value, str):
-            return value
-        if isinstance(value, Default):
-            default_value = bot.default[value.name]
-            return self.prepare_value(default_value, bot=bot, files=files, _dumps_json=_dumps_json)
-        if isinstance(value, InputFile):
-            key = secrets.token_urlsafe(10)
-            files[key] = value
-            return f"attach://{key}"
-        if isinstance(value, dict):
-            value = {
-                key: prepared_item
-                for key, item in value.items()
-                if (
-                    prepared_item := self.prepare_value(
-                        item, bot=bot, files=files, _dumps_json=False
-                    )
-                )
-                is not None
-            }
-            if _dumps_json:
-                return self.json_dumps(value)
-            return value
-        if isinstance(value, list):
-            value = [
-                prepared_item
-                for item in value
-                if (
-                    prepared_item := self.prepare_value(
-                        item, bot=bot, files=files, _dumps_json=False
-                    )
-                )
-                is not None
-            ]
-            if _dumps_json:
-                return self.json_dumps(value)
-            return value
-        if isinstance(value, datetime.timedelta):
-            now = datetime.datetime.now()
-            return str(round((now + value).timestamp()))
-        if isinstance(value, datetime.datetime):
-            return str(round(value.timestamp()))
-        if isinstance(value, Enum):
-            return self.prepare_value(value.value, bot=bot, files=files)
-        if isinstance(value, TelegramObject):
-            return self.prepare_value(
-                value.model_dump(warnings=False),
-                bot=bot,
-                files=files,
-                _dumps_json=_dumps_json,
-            )
-        if _dumps_json:
-            return self.json_dumps(value)
-        return value
 
     async def __call__(
         self,

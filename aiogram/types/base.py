@@ -22,9 +22,6 @@ class TelegramObject(BotContextController, BaseModel):
         populate_by_name=True,
         arbitrary_types_allowed=True,
         defer_build=True,
-        json_encoders={
-            Default: lambda obj: obj.name,
-        }
     )
 
     @model_validator(mode="before")
@@ -43,20 +40,18 @@ class TelegramObject(BotContextController, BaseModel):
         return {k: v for k, v in values.items() if not isinstance(v, UNSET_TYPE)}
 
     @model_serializer(mode="wrap", when_used="json")
-    def json_serialize(self, handler: SerializerFunctionWrapHandler) -> Dict[str, Any]:
+    def json_serialize(self, serializer: SerializerFunctionWrapHandler):
         """
         Replacing `Default` placeholders with actual values from bot defaults.
         Ensures JSON serialization backward compatibility by handling non-standard objects.
         """
-        if not isinstance(self, TelegramObject):
-            return handler(self)
-        properties = self.bot.default if self.bot else DefaultBotProperties()
-        default_fields = {
-            field: properties[value.name]
-            for field in self.model_fields.keys()
-            if isinstance(value := getattr(self, field), Default)
-        }
-        return handler(self.model_copy(update=default_fields))
+        if isinstance(self, BotContextController) and isinstance(self, BaseModel):
+            properties = self.bot.default if self.bot else DefaultBotProperties()
+            default_fields = {
+                key: properties[value.name] for key, value in self if isinstance(value, Default)
+            }
+            return serializer(self.model_copy(update=default_fields))
+        return serializer(self)
 
 
 class MutableTelegramObject(TelegramObject):

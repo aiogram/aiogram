@@ -1,5 +1,3 @@
-from typing import AsyncIterable
-
 from aresponses import ResponsesMockServer
 
 from aiogram import Bot
@@ -78,6 +76,24 @@ class TestInputFile:
 
             size = 0
             async for chunk in file.read(bot):
+                assert chunk == b"\f"
+                chunk_size = len(chunk)
+                assert chunk_size == 1
+                size += chunk_size
+            assert size == 10
+
+    async def test_url_input_file_with_default_bot(self, aresponses: ResponsesMockServer):
+        aresponses.add(
+            aresponses.ANY,
+            aresponses.ANY,
+            "get",
+            aresponses.Response(status=200, body=b"\f" * 10),
+        )
+        async with Bot(token="42:TEST").context() as bot:
+            file = URLInputFile("https://test.org/", chunk_size=1, bot=bot)
+
+            size = 0
+            async for chunk in file.read():
                 assert chunk == b"\f"
                 chunk_size = len(chunk)
                 assert chunk_size == 1

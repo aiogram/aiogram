@@ -1,6 +1,6 @@
 import datetime
 import json
-from typing import Any, AsyncContextManager, AsyncGenerator, Dict, Optional
+from typing import Any, AsyncContextManager, AsyncGenerator, Dict, Optional, Union
 from unittest.mock import AsyncMock, patch
 
 import pytest
@@ -8,6 +8,7 @@ from pytz import utc
 
 from aiogram import Bot
 from aiogram.client.default import Default, DefaultBotProperties
+from aiogram.client.form import form_serialize
 from aiogram.client.session.base import BaseSession, TelegramType
 from aiogram.client.telegram import PRODUCTION, TelegramAPIServer
 from aiogram.enums import ChatType, ParseMode, TopicIconColor
@@ -26,8 +27,18 @@ from aiogram.exceptions import (
     TelegramUnauthorizedError,
 )
 from aiogram.methods import DeleteMessage, GetMe, TelegramMethod
-from aiogram.types import UNSET_PARSE_MODE, User, LinkPreviewOptions
-from aiogram.types.base import UNSET_DISABLE_WEB_PAGE_PREVIEW, UNSET_PROTECT_CONTENT
+from aiogram.types import (
+    UNSET_PARSE_MODE,
+    DateTime,
+    InputFile,
+    LinkPreviewOptions,
+    User,
+)
+from aiogram.types.base import (
+    UNSET_DISABLE_WEB_PAGE_PREVIEW,
+    UNSET_PROTECT_CONTENT,
+    TelegramObject,
+)
 from tests.mocked_bot import MockedBot
 
 
@@ -39,7 +50,7 @@ class CustomSession(BaseSession):
         self,
         token: str,
         method: TelegramMethod[TelegramType],
-        timeout: Optional[int] = UNSET_PARSE_MODE,
+        timeout: Optional[int] = None,
     ) -> None:  # type: ignore
         assert isinstance(token, str)
         assert isinstance(method, TelegramMethod)
@@ -94,41 +105,30 @@ class TestBaseSession:
     @pytest.mark.parametrize(
         "value,result",
         [
-            [None, None],
+            [None, ...],
             ["text", "text"],
             [ChatType.PRIVATE, "private"],
             [TopicIconColor.RED, "16478047"],
             [42, "42"],
             [True, "true"],
             [["test"], '["test"]'],
-            [["test", ["test"]], '["test", ["test"]]'],
-            [[{"test": "pass", "spam": None}], '[{"test": "pass"}]'],
-            [{"test": "pass", "number": 42, "spam": None}, '{"test": "pass", "number": 42}'],
-            [{"foo": {"test": "pass", "spam": None}}, '{"foo": {"test": "pass"}}'],
+            [["test", ["test"]], '["test",["test"]]'],
+            [[{"test": "pass"}], '[{"test":"pass"}]'],
+            [{"test": "pass", "number": 42}, '{"test":"pass","number":42}'],
+            [{"foo": {"test": "pass"}}, '{"foo":{"test":"pass"}}'],
             [
                 datetime.datetime(
                     year=2017, month=5, day=17, hour=4, minute=11, second=42, tzinfo=utc
                 ),
                 "1494994302",
             ],
-            [
-                {"link_preview": LinkPreviewOptions(is_disabled=True)},
-                '{"link_preview": {"is_disabled": true}}',
-            ],
+            [LinkPreviewOptions(is_disabled=True, url=None), '{"is_disabled":true}'],
+            [Default("parse_mode"), "HTML"],
+            [Default("protect_content"), "true"],
+            [Default("link_preview_is_disabled"), "true"],
         ],
     )
-    def test_prepare_value(self, value: Any, result: str, bot: MockedBot):
-        session = CustomSession()
-
-        assert session.prepare_value(value, bot=bot, files={}) == result
-
-    def test_prepare_value_timedelta(self, bot: MockedBot):
-        session = CustomSession()
-
-        value = session.prepare_value(datetime.timedelta(minutes=2), bot=bot, files={})
-        assert isinstance(value, str)
-
-    def test_prepare_value_defaults_replace(self):
+    def test_form_serialize(self, value: Any, result: str):
         bot = MockedBot(
             default=DefaultBotProperties(
                 parse_mode=ParseMode.HTML,
@@ -136,18 +136,43 @@ class TestBaseSession:
                 link_preview_is_disabled=True,
             )
         )
-        assert bot.session.prepare_value(Default("parse_mode"), bot=bot, files={}) == "HTML"
-        assert (
-            bot.session.prepare_value(Default("link_preview_is_disabled"), bot=bot, files={})
-            == "true"
-        )
-        assert bot.session.prepare_value(Default("protect_content"), bot=bot, files={}) == "true"
 
-    def test_prepare_value_defaults_unset(self):
+        field_type = type(value)
+        if issubclass(field_type, (datetime.datetime, datetime.timedelta)):
+            field_type = DateTime
+        elif issubclass(field_type, InputFile):
+            field_type = Union[InputFile, str]
+        elif issubclass(field_type, Default):
+            field_type = Optional[Union[Any, Default]]
+
+        class TestObject(TelegramObject):
+            field: field_type
+
+        obj = TestObject.model_validate({"field": value}, context={"bot": bot})
+        serialized_obj = obj.model_dump(mode="json", exclude_none=True)
+        if value is None:
+            assert "field" not in serialized_obj
+        else:
+            value = serialized_obj["field"]
+            assert form_serialize(value) == result
+
+    @pytest.mark.parametrize(
+        "default",
+        [
+            UNSET_PARSE_MODE,
+            UNSET_DISABLE_WEB_PAGE_PREVIEW,
+            UNSET_PROTECT_CONTENT,
+        ],
+    )
+    def test_default_unset(self, default: Default):
         bot = MockedBot()
-        assert bot.session.prepare_value(UNSET_PARSE_MODE, bot=bot, files={}) is None
-        assert bot.session.prepare_value(UNSET_DISABLE_WEB_PAGE_PREVIEW, bot=bot, files={}) is None
-        assert bot.session.prepare_value(UNSET_PROTECT_CONTENT, bot=bot, files={}) is None
+
+        class TestObject(TelegramObject):
+            field: Optional[Union[Any, Default]]
+
+        obj = TestObject.model_validate({"field": default}, context={"bot": bot})
+        serialized_obj = obj.model_dump(mode="json")
+        assert serialized_obj["field"] is None
 
     @pytest.mark.parametrize(
         "status_code,content,error",
@@ -205,7 +230,7 @@ class TestBaseSession:
         bot = MockedBot()
         method = DeleteMessage(chat_id=42, message_id=42)
 
-        with pytest.raises(ClientDecodeError, match="JSONDecodeError"):
+        with pytest.raises(ClientDecodeError, match="Invalid JSON"):
             session.check_response(
                 bot=bot,
                 method=method,

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, Union
 
 from ..types import File, InputFile
 from .base import TelegramMethod
@@ -18,7 +18,7 @@ class UploadStickerFile(TelegramMethod[File]):
 
     user_id: int
     """User identifier of sticker file owner"""
-    sticker: InputFile
+    sticker: Union[InputFile, str]
     """A file with the sticker in .WEBP, .PNG, .TGS, or .WEBM format. See `https://core.telegram.org/stickers <https://core.telegram.org/stickers>`_`https://core.telegram.org/stickers <https://core.telegram.org/stickers>`_ for technical requirements. :ref:`More information on Sending Files » <sending-files>`"""
     sticker_format: str
     """Format of the sticker, must be one of 'static', 'animated', 'video'"""

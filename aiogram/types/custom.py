@@ -1,13 +1,23 @@
-from datetime import datetime
+from datetime import datetime, timedelta
+from typing import Annotated, Union
 
 from pydantic import PlainSerializer
-from typing_extensions import Annotated
 
 # Make datetime compatible with Telegram Bot API (unixtime)
+
+
+def _serialize_datetime(dt: Union[datetime, timedelta, int]) -> int:
+    if isinstance(dt, int):
+        return dt
+    if isinstance(dt, timedelta):
+        dt = datetime.now() + dt
+    return int(dt.timestamp())
+
+
 DateTime = Annotated[
-    datetime,
+    Union[datetime, timedelta, int],
     PlainSerializer(
-        func=lambda dt: int(dt.timestamp()),
+        func=_serialize_datetime,
         return_type=int,
         when_used="json-unless-none",
     ),

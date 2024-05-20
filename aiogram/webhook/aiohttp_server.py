@@ -10,9 +10,9 @@ from aiohttp.typedefs import Handler
 from aiohttp.web_middlewares import middleware
 
 from aiogram import Bot, Dispatcher, loggers
+from aiogram.client.form import extract_files, form_serialize
 from aiogram.methods import TelegramMethod
 from aiogram.methods.base import TelegramType
-from aiogram.types import InputFile
 from aiogram.webhook.security import IPFilter
 
 
@@ -141,13 +141,11 @@ class BaseRequestHandler(ABC):
 
     async def _handle_request_background(self, bot: Bot, request: web.Request) -> web.Response:
         feed_update_task = asyncio.create_task(
-            self._background_feed_update(
-                bot=bot, update=await request.json(loads=bot.session.json_loads)
-            )
+            self._background_feed_update(bot=bot, update=await request.json())
         )
         self._background_feed_update_tasks.add(feed_update_task)
         feed_update_task.add_done_callback(self._background_feed_update_tasks.discard)
-        return web.json_response({}, dumps=bot.session.json_dumps)
+        return web.json_response({})
 
     def _build_response_writer(
         self, bot: Bot, result: Optional[TelegramMethod[TelegramType]]
@@ -162,12 +160,10 @@ class BaseRequestHandler(ABC):
         payload = writer.append(result.__api_method__)
         payload.set_content_disposition("form-data", name="method")
 
-        files: Dict[str, InputFile] = {}
-        for key, value in result.model_dump(warnings=False).items():
-            value = bot.session.prepare_value(value, bot=bot, files=files)
-            if not value:
-                continue
-            payload = writer.append(value)
+        modified_result, files = extract_files(result)
+
+        for key, value in modified_result.model_dump(mode="json", exclude_none=True).items():
+            payload = writer.append(form_serialize(value))
             payload.set_content_disposition("form-data", name=key)
 
         for key, value in files.items():
@@ -183,7 +179,7 @@ class BaseRequestHandler(ABC):
     async def _handle_request(self, bot: Bot, request: web.Request) -> web.Response:
         result: Optional[TelegramMethod[Any]] = await self.dispatcher.feed_webhook_update(
             bot,
-            await request.json(loads=bot.session.json_loads),
+            await request.json(),
             **self.data,
         )
         return web.Response(body=self._build_response_writer(bot=bot, result=result))

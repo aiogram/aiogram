@@ -28,7 +28,7 @@ class CallbackQuery(TelegramObject):
     """Sender"""
     chat_instance: str
     """Global identifier, uniquely corresponding to the chat to which the message with the callback button was sent. Useful for high scores in :class:`aiogram.methods.games.Games`."""
-    message: Optional[Union[Message, InaccessibleMessage]] = None
+    message: Optional[Union[InaccessibleMessage, Message]] = None
     """*Optional*. Message sent by the bot with the callback button that originated the query"""
     inline_message_id: Optional[str] = None
     """*Optional*. Identifier of the message sent via the bot in inline mode, that originated the query."""
