@@ -8,6 +8,7 @@ from aiohttp import MultipartWriter, web
 from aiohttp.abc import Application
 from aiohttp.typedefs import Handler
 from aiohttp.web_middlewares import middleware
+from pydantic_core import from_json, to_json
 
 from aiogram import Bot, Dispatcher, loggers
 from aiogram.client.form import extract_files, form_serialize
@@ -141,11 +142,11 @@ class BaseRequestHandler(ABC):
 
     async def _handle_request_background(self, bot: Bot, request: web.Request) -> web.Response:
         feed_update_task = asyncio.create_task(
-            self._background_feed_update(bot=bot, update=await request.json())
+            self._background_feed_update(bot=bot, update=await request.json(loads=from_json))
         )
         self._background_feed_update_tasks.add(feed_update_task)
         feed_update_task.add_done_callback(self._background_feed_update_tasks.discard)
-        return web.json_response({})
+        return web.json_response({})  # TODO
 
     def _build_response_writer(
         self, bot: Bot, result: Optional[TelegramMethod[TelegramType]]

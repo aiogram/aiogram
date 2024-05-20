@@ -20,7 +20,9 @@ from typing import (
 import aiofiles
 
 from aiogram.utils.token import extract_bot_id, validate_token
-
+from .default import Default, DefaultBotProperties
+from .session.aiohttp import AiohttpSession
+from .session.base import BaseSession
 from ..methods import (
     AddStickerToSet,
     AnswerCallbackQuery,
@@ -165,7 +167,6 @@ from ..types import (
     ChatMemberOwner,
     ChatMemberRestricted,
     ChatPermissions,
-    DateTime,
     Downloadable,
     File,
     ForceReply,
@@ -234,9 +235,6 @@ from ..types import (
     UserProfilePhotos,
     WebhookInfo,
 )
-from .default import Default, DefaultBotProperties
-from .session.aiohttp import AiohttpSession
-from .session.base import BaseSession
 
 T = TypeVar("T")
 
@@ -2895,7 +2893,7 @@ class Bot:
         explanation_parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
         explanation_entities: Optional[List[MessageEntity]] = None,
         open_period: Optional[int] = None,
-        close_date: Optional[DateTime] = None,
+        close_date: Optional[Union[datetime.datetime, datetime.timedelta, int]] = None,
         is_closed: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),

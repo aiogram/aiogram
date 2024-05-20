@@ -122,7 +122,7 @@ class TestBaseSession:
                 ),
                 "1494994302",
             ],
-            [LinkPreviewOptions(is_disabled=True, url=None), '{"is_disabled":true}'],
+            [LinkPreviewOptions(is_disabled=True), '{"is_disabled":true}'],
             [Default("parse_mode"), "HTML"],
             [Default("protect_content"), "true"],
             [Default("link_preview_is_disabled"), "true"],

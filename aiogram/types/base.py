@@ -45,7 +45,7 @@ class TelegramObject(BotContextController, BaseModel):
         Replacing `Default` placeholders with actual values from bot defaults.
         Ensures JSON serialization backward compatibility by handling non-standard objects.
         """
-        if isinstance(self, BotContextController) and isinstance(self, BaseModel):
+        if isinstance(self, TelegramObject):
             properties = self.bot.default if self.bot else DefaultBotProperties()
             default_fields = {
                 key: properties[value.name] for key, value in self if isinstance(value, Default)
