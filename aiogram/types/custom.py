@@ -1,7 +1,8 @@
 from datetime import datetime, timedelta
-from typing import Annotated, Union
+from typing import Union
 
 from pydantic import PlainSerializer
+from typing_extensions import Annotated
 
 # Make datetime compatible with Telegram Bot API (unixtime)
 

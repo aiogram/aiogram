@@ -116,8 +116,8 @@ class FSInputFile(InputFile):
             chunk_size=chunk_size,
         )
 
-    @model_validator(mode="after")
-    def filename_from_path(self):
+    @model_validator(mode="after")  # type: ignore
+    def filename_from_path(self) -> None:
         self.filename = self.filename or Path(self.path).name
 
     async def read(self, bot: "Bot") -> AsyncGenerator[bytes, None]:
@@ -162,6 +162,8 @@ class URLInputFile(BotContextController, InputFile):
 
     async def read(self, bot: Optional["Bot"] = None) -> AsyncGenerator[bytes, None]:
         bot = self.bot or bot  # FIXME: invalid order suspected
+        if bot is None:
+            raise AttributeError("There is no default bot. Specify it through param")
         stream = bot.session.stream_content(
             url=self.url,
             headers=self.headers,

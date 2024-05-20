@@ -20,9 +20,7 @@ from typing import (
 import aiofiles
 
 from aiogram.utils.token import extract_bot_id, validate_token
-from .default import Default, DefaultBotProperties
-from .session.aiohttp import AiohttpSession
-from .session.base import BaseSession
+
 from ..methods import (
     AddStickerToSet,
     AnswerCallbackQuery,
@@ -235,6 +233,9 @@ from ..types import (
     UserProfilePhotos,
     WebhookInfo,
 )
+from .default import Default, DefaultBotProperties
+from .session.aiohttp import AiohttpSession
+from .session.base import BaseSession
 
 T = TypeVar("T")
 

@@ -30,7 +30,10 @@ def _extract_files(value: Any) -> Tuple[Any, Dict[str, InputFile]]:
     return value, files
 
 
-def extract_files(model: M, files: Dict[str, InputFile] = None) -> Tuple[M, Dict[str, InputFile]]:
+def extract_files(
+    model: M,
+    files: Optional[Dict[str, InputFile]] = None,
+) -> Tuple[M, Dict[str, InputFile]]:
     if files is None:
         files = {}
     update = {}
@@ -53,7 +56,7 @@ def extract_files(model: M, files: Dict[str, InputFile] = None) -> Tuple[M, Dict
     return modified_model, files
 
 
-def form_serialize(value: Any) -> Optional[str]:
+def form_serialize(value: Any) -> str:
     """
     Prepare jsonable value to send
     """

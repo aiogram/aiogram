@@ -1,4 +1,4 @@
-from typing import Any, Dict
+from typing import Any, Dict, Union
 from unittest.mock import sentinel
 
 from pydantic import (
@@ -40,7 +40,9 @@ class TelegramObject(BotContextController, BaseModel):
         return {k: v for k, v in values.items() if not isinstance(v, UNSET_TYPE)}
 
     @model_serializer(mode="wrap", when_used="json")
-    def json_serialize(self, serializer: SerializerFunctionWrapHandler):
+    def json_serialize(
+        self, serializer: SerializerFunctionWrapHandler
+    ) -> Union[Dict[str, Any], Any]:
         """
         Replacing `Default` placeholders with actual values from bot defaults.
         Ensures JSON serialization backward compatibility by handling non-standard objects.
@@ -51,7 +53,7 @@ class TelegramObject(BotContextController, BaseModel):
                 key: properties[value.name] for key, value in self if isinstance(value, Default)
             }
             return serializer(self.model_copy(update=default_fields))
-        return serializer(self)
+        return serializer(self)  # FIXME: why non-TelegramObject passed there?
 
 
 class MutableTelegramObject(TelegramObject):
