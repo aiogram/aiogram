@@ -47,13 +47,13 @@ class TelegramObject(BotContextController, BaseModel):
         Replacing `Default` placeholders with actual values from bot defaults.
         Ensures JSON serialization backward compatibility by handling non-standard objects.
         """
-        if isinstance(self, TelegramObject):
-            properties = self.bot.default if self.bot else DefaultBotProperties()
-            default_fields = {
-                key: properties[value.name] for key, value in self if isinstance(value, Default)
-            }
-            return serializer(self.model_copy(update=default_fields))
-        return serializer(self)  # FIXME: why non-TelegramObject passed there?
+        if not isinstance(self, TelegramObject):
+            return serializer(self)  # Can be passed when using Union[Any, TelegramObject]
+        properties = self.bot.default if self.bot else DefaultBotProperties()
+        default_fields = {
+            key: properties[value.name] for key, value in self if isinstance(value, Default)
+        }
+        return serializer(self.model_copy(update=default_fields))
 
 
 class MutableTelegramObject(TelegramObject):
