@@ -123,7 +123,7 @@ class AiohttpSession(BaseSession):
         if self._should_reset_connector:
             await self.close()
 
-        if self._session is None or self._session.closed:
+        if self._session is None or self._session.closed or self._session.loop.is_closed():
             self._session = ClientSession(
                 connector=self._connector_type(**self._connector_init),
                 headers={
