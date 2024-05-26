@@ -131,7 +131,7 @@ class CallbackData(BaseModel):
         for k, v in zip(names, parts):  # type: str, Optional[str]
             if field := cls.model_fields.get(k):
                 if v == "" and _check_field_is_nullable(field):
-                    v = None
+                    v = field.default
             payload[k] = v
         return cls(**payload)
 
