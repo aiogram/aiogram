@@ -295,7 +295,7 @@ class Bot:
             raise TypeError(
                 "Passing `parse_mode`, `disable_web_page_preview` or `protect_content` "
                 "to Bot initializer is not supported anymore. These arguments have been removed "
-                f"in 3.7.0 version. Use `default=DefaultBotProperties({replacement_spec})` instead."
+                f"in 3.7.0 version. Use `default=DefaultBotProperties({replacement_spec})` argument instead."
             )
 
         self.default = default
