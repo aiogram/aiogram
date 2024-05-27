@@ -3,7 +3,6 @@ from __future__ import annotations
 import datetime
 import io
 import pathlib
-import warnings
 from contextlib import asynccontextmanager
 from types import TracebackType
 from typing import (
@@ -251,10 +250,8 @@ class Bot:
         self,
         token: str,
         session: Optional[BaseSession] = None,
-        parse_mode: Optional[str] = None,
-        disable_web_page_preview: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
         default: Optional[DefaultBotProperties] = None,
+        **kwargs: Any,
     ) -> None:
         """
         Bot class
@@ -262,12 +259,6 @@ class Bot:
         :param token: Telegram Bot token `Obtained from @BotFather <https://t.me/BotFather>`_
         :param session: HTTP Client session (For example AiohttpSession).
             If not specified it will be automatically created.
-        :param parse_mode: Default parse mode.
-            If specified it will be propagated into the API methods at runtime.
-        :param disable_web_page_preview: Default disable_web_page_preview mode.
-            If specified it will be propagated into the API methods at runtime.
-        :param protect_content: Default protect_content mode.
-            If specified it will be propagated into the API methods at runtime.
         :param default: Default bot properties.
             If specified it will be propagated into the API methods at runtime.
         :raise TokenValidationError: When token has invalid format this exception will be raised
@@ -278,24 +269,33 @@ class Bot:
         if session is None:
             session = AiohttpSession()
         if default is None:
-            default = DefaultBotProperties(
-                parse_mode=parse_mode,
-                link_preview_is_disabled=disable_web_page_preview,
-                protect_content=protect_content,
-            )
+            default = DefaultBotProperties()
 
         self.session = session
+
+        # Few arguments are completely removed in 3.7.0 version
+        # Temporary solution to raise an error if user passed these arguments
+        # with explanation how to fix it
+        parse_mode = kwargs.get("parse_mode", None)
+        link_preview_is_disabled = kwargs.get("disable_web_page_preview", None)
+        protect_content = kwargs.get("protect_content", None)
         if (
             parse_mode is not None
-            or disable_web_page_preview is not None
+            or link_preview_is_disabled is not None
             or protect_content is not None
         ):
-            warnings.warn(
+            example_kwargs = {
+                "parse_mode": parse_mode,
+                "link_preview_is_disabled": link_preview_is_disabled,
+                "protect_content": protect_content,
+            }
+            replacement_spec = ", ".join(
+                f"{k}={v!r}" for k, v in example_kwargs.items() if v is not None
+            )
+            raise TypeError(
                 "Passing `parse_mode`, `disable_web_page_preview` or `protect_content` "
-                "to Bot initializer is deprecated. This arguments will be removed in 3.7.0 version\n"
-                "Use `default=DefaultBotProperties(...)` instead.",
-                category=DeprecationWarning,
-                stacklevel=2,
+                "to Bot initializer is not supported anymore. These arguments have been removed "
+                f"in 3.7.0 version. Use `default=DefaultBotProperties({replacement_spec})` argument instead."
             )
 
         self.default = default
@@ -313,36 +313,6 @@ class Bot:
         traceback: Optional[TracebackType],
     ) -> None:
         await self.session.close()
-
-    @property
-    def parse_mode(self) -> Optional[str]:
-        warnings.warn(
-            "Accessing `parse_mode` from Bot instance is deprecated. This attribute will be removed in 3.5.0 version\n"
-            "Use `bot.default.parse_mode` instead.",
-            category=DeprecationWarning,
-            stacklevel=2,
-        )
-        return self.default.parse_mode
-
-    @property
-    def disable_web_page_preview(self) -> Optional[bool]:
-        warnings.warn(
-            "Accessing `disable_web_page_preview` from Bot instance is deprecated. This attribute will be removed in 3.5.0 version\n"
-            "Use `bot.default.link_preview_is_disabled` instead.",
-            category=DeprecationWarning,
-            stacklevel=2,
-        )
-        return self.default.link_preview_is_disabled
-
-    @property
-    def protect_content(self) -> Optional[bool]:
-        warnings.warn(
-            "Accessing `protect_content` from Bot instance is deprecated. This attribute will be removed in 3.5.0 version\n"
-            "Use `bot.default.protect_content` instead.",
-            category=DeprecationWarning,
-            stacklevel=2,
-        )
-        return self.default.protect_content
 
     @property
     def token(self) -> str:
