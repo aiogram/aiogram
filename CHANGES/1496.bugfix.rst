@@ -1,1 +1,1 @@
-Fixed wrong :code:`markdownv2` custom emoji parsing in :code:`aiogram.utils.text_decorations`
+Fixed wrong :code:`MarkdownV2` custom emoji parsing in :code:`aiogram.utils.text_decorations`
