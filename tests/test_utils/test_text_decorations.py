@@ -99,7 +99,7 @@ class TestTextDecoration:
             [
                 markdown_decoration,
                 MessageEntity(type="custom_emoji", offset=0, length=5, custom_emoji_id="42"),
-                "[test](tg://emoji?id=42)",
+                "![test](tg://emoji?id=42)",
             ],
             [
                 markdown_decoration,
