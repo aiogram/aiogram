@@ -120,6 +120,7 @@ from .unpin_all_forum_topic_messages import UnpinAllForumTopicMessages
 from .unpin_all_general_forum_topic_messages import UnpinAllGeneralForumTopicMessages
 from .unpin_chat_message import UnpinChatMessage
 from .upload_sticker_file import UploadStickerFile
+from .refund_star_payment import RefundStarPayment
 
 __all__ = (
     "AddStickerToSet",
@@ -187,6 +188,7 @@ __all__ = (
     "LogOut",
     "PinChatMessage",
     "PromoteChatMember",
+    "RefundStarPayment",
     "ReopenForumTopic",
     "ReopenGeneralForumTopic",
     "ReplaceStickerInSet",

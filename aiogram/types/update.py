@@ -46,7 +46,7 @@ class Update(TelegramObject):
     business_connection: Optional[BusinessConnection] = None
     """*Optional*. The bot was connected to or disconnected from a business account, or a user edited an existing connection with the bot"""
     business_message: Optional[Message] = None
-    """*Optional*. New non-service message from a connected business account"""
+    """*Optional*. New message from a connected business account"""
     edited_business_message: Optional[Message] = None
     """*Optional*. New version of a message from a connected business account"""
     deleted_business_messages: Optional[BusinessMessagesDeleted] = None

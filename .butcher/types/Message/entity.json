@@ -212,6 +212,14 @@
         "required": false
       },
       {
+        "type": "String",
+        "description": "Unique identifier of the message effect added to the message",
+        "html_description": "<td><em>Optional</em>. Unique identifier of the message effect added to the message</td>",
+        "rst_description": "*Optional*. Unique identifier of the message effect added to the message\n",
+        "name": "effect_id",
+        "required": false
+      },
+      {
         "type": "Animation",
         "description": "Message is an animation, information about the animation. For backward compatibility, when this field is set, the document field will also be set",
         "html_description": "<td><em>Optional</em>. Message is an animation, information about the animation. For backward compatibility, when this field is set, the <em>document</em> field will also be set</td>",
@@ -297,6 +305,14 @@
         "html_description": "<td><em>Optional</em>. For messages with a caption, special entities like usernames, URLs, bot commands, etc. that appear in the caption</td>",
         "rst_description": "*Optional*. For messages with a caption, special entities like usernames, URLs, bot commands, etc. that appear in the caption\n",
         "name": "caption_entities",
+        "required": false
+      },
+      {
+        "type": "True",
+        "description": "True, if the caption must be shown above the message media",
+        "html_description": "<td><em>Optional</em>. True, if the caption must be shown above the message media</td>",
+        "rst_description": "*Optional*. True, if the caption must be shown above the message media\n",
+        "name": "show_caption_above_media",
         "required": false
       },
       {

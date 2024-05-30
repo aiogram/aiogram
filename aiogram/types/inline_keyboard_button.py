@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 
 class InlineKeyboardButton(MutableTelegramObject):
     """
-    This object represents one button of an inline keyboard. You **must** use exactly one of the optional fields.
+    This object represents one button of an inline keyboard. Exactly one of the optional fields must be used to specify type of the button.
 
     Source: https://core.telegram.org/bots/api#inlinekeyboardbutton
     """
@@ -37,7 +37,7 @@ class InlineKeyboardButton(MutableTelegramObject):
     callback_game: Optional[CallbackGame] = None
     """*Optional*. Description of the game that will be launched when the user presses the button."""
     pay: Optional[bool] = None
-    """*Optional*. Specify :code:`True`, to send a `Pay button <https://core.telegram.org/bots/api#payments>`_."""
+    """*Optional*. Specify :code:`True`, to send a `Pay button <https://core.telegram.org/bots/api#payments>`_. Substrings '⭐' and 'XTR' in the buttons's text will be replaced with a Telegram Star icon."""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!

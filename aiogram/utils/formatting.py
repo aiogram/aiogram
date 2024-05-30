@@ -442,6 +442,17 @@ class BlockQuote(Text):
     type = MessageEntityType.BLOCKQUOTE
 
 
+class ExpandableBlockQuote(Text):
+    """
+    Expandable block quote element.
+
+    Will be wrapped into :obj:`aiogram.types.message_entity.MessageEntity`
+    with type :obj:`aiogram.enums.message_entity_type.MessageEntityType.EXPANDABLE_BLOCKQUOTE`
+    """
+
+    type = MessageEntityType.EXPANDABLE_BLOCKQUOTE
+
+
 NODE_TYPES: Dict[Optional[str], Type[Text]] = {
     Text.type: Text,
     HashTag.type: HashTag,
@@ -461,6 +472,7 @@ NODE_TYPES: Dict[Optional[str], Type[Text]] = {
     TextMention.type: TextMention,
     CustomEmoji.type: CustomEmoji,
     BlockQuote.type: BlockQuote,
+    ExpandableBlockQuote.type: ExpandableBlockQuote,
 }
 
 

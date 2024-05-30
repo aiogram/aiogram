@@ -57,6 +57,7 @@ class TextDecoration(ABC):
             MessageEntityType.STRIKETHROUGH,
             MessageEntityType.SPOILER,
             MessageEntityType.BLOCKQUOTE,
+            MessageEntityType.EXPANDABLE_BLOCKQUOTE,
         }:
             return cast(str, getattr(self, entity.type)(value=text))
         if entity.type == MessageEntityType.PRE:
@@ -172,6 +173,10 @@ class TextDecoration(ABC):
     def blockquote(self, value: str) -> str:
         pass
 
+    @abstractmethod
+    def expandable_blockquote(self, value: str) -> str:
+        pass
+
 
 class HtmlDecoration(TextDecoration):
     BOLD_TAG = "b"
@@ -218,6 +223,9 @@ class HtmlDecoration(TextDecoration):
     def blockquote(self, value: str) -> str:
         return f"<{self.BLOCKQUOTE_TAG}>{value}</{self.BLOCKQUOTE_TAG}>"
 
+    def expandable_blockquote(self, value: str) -> str:
+        return f"<{self.BLOCKQUOTE_TAG} expandable>{value}</{self.BLOCKQUOTE_TAG}>"
+
 
 class MarkdownDecoration(TextDecoration):
     MARKDOWN_QUOTE_PATTERN: Pattern[str] = re.compile(r"([_*\[\]()~`>#+\-=|{}.!\\])")
@@ -257,6 +265,9 @@ class MarkdownDecoration(TextDecoration):
 
     def blockquote(self, value: str) -> str:
         return "\n".join(f">{line}" for line in value.splitlines())
+
+    def expandable_blockquote(self, value: str) -> str:
+        return "\n".join(f">{line}" for line in value.splitlines()) + "||"
 
 
 html_decoration = HtmlDecoration()

@@ -58,6 +58,8 @@ class DefaultBotProperties:
     """Prefer large media in link preview."""
     link_preview_show_above_text: Optional[bool] = None
     """Show link preview above text."""
+    show_caption_above_media: Optional[bool] = None
+    """Show caption above media."""
 
     def __post_init__(self) -> None:
         has_any_link_preview_option = any(

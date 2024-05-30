@@ -29,6 +29,8 @@ from aiogram.utils.formatting import (
     as_numbered_list,
     as_numbered_section,
     as_section,
+    BlockQuote,
+    ExpandableBlockQuote,
 )
 from aiogram.utils.text_decorations import html_decoration
 
@@ -104,6 +106,14 @@ class TestNode:
             [
                 CustomEmoji("test", custom_emoji_id="42"),
                 '<tg-emoji emoji-id="42">test</tg-emoji>',
+            ],
+            [
+                BlockQuote("test"),
+                "<blockquote>test</blockquote>",
+            ],
+            [
+                ExpandableBlockQuote("test"),
+                "<blockquote expandable>test</blockquote>",
             ],
         ],
     )

@@ -78,7 +78,7 @@ class ChatFullInfo(Chat):
     join_to_send_messages: Optional[bool] = None
     """*Optional*. :code:`True`, if users need to join the supergroup before they can send messages"""
     join_by_request: Optional[bool] = None
-    """*Optional*. :code:`True`, if all users directly joining the supergroup need to be approved by supergroup administrators"""
+    """*Optional*. :code:`True`, if all users directly joining the supergroup without using an invite link need to be approved by supergroup administrators"""
     description: Optional[str] = None
     """*Optional*. Description, for groups, supergroups and channel chats"""
     invite_link: Optional[str] = None
