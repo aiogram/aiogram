@@ -1,7 +1,7 @@
 {
   "api": {
-    "version": "7.3",
-    "release_date": "2024-05-06"
+    "version": "7.4",
+    "release_date": "2024-05-28"
   },
   "items": [
     {
@@ -65,9 +65,9 @@
             },
             {
               "type": "Message",
-              "description": "New non-service message from a connected business account",
-              "html_description": "<td><em>Optional</em>. New non-service message from a connected business account</td>",
-              "rst_description": "*Optional*. New non-service message from a connected business account\n",
+              "description": "New message from a connected business account",
+              "html_description": "<td><em>Optional</em>. New message from a connected business account</td>",
+              "rst_description": "*Optional*. New message from a connected business account\n",
               "name": "business_message",
               "required": false
             },
@@ -815,9 +815,9 @@
             },
             {
               "type": "True",
-              "description": "True, if all users directly joining the supergroup need to be approved by supergroup administrators",
-              "html_description": "<td><em>Optional</em>. <em>True</em>, if all users directly joining the supergroup need to be approved by supergroup administrators</td>",
-              "rst_description": "*Optional*. :code:`True`, if all users directly joining the supergroup need to be approved by supergroup administrators\n",
+              "description": "True, if all users directly joining the supergroup without using an invite link need to be approved by supergroup administrators",
+              "html_description": "<td><em>Optional</em>. <em>True</em>, if all users directly joining the supergroup without using an invite link need to be approved by supergroup administrators</td>",
+              "rst_description": "*Optional*. :code:`True`, if all users directly joining the supergroup without using an invite link need to be approved by supergroup administrators\n",
               "name": "join_by_request",
               "required": false
             },
@@ -1160,6 +1160,14 @@
               "required": false
             },
             {
+              "type": "String",
+              "description": "Unique identifier of the message effect added to the message",
+              "html_description": "<td><em>Optional</em>. Unique identifier of the message effect added to the message</td>",
+              "rst_description": "*Optional*. Unique identifier of the message effect added to the message\n",
+              "name": "effect_id",
+              "required": false
+            },
+            {
               "type": "Animation",
               "description": "Message is an animation, information about the animation. For backward compatibility, when this field is set, the document field will also be set",
               "html_description": "<td><em>Optional</em>. Message is an animation, information about the animation. For backward compatibility, when this field is set, the <em>document</em> field will also be set</td>",
@@ -1245,6 +1253,14 @@
               "html_description": "<td><em>Optional</em>. For messages with a caption, special entities like usernames, URLs, bot commands, etc. that appear in the caption</td>",
               "rst_description": "*Optional*. For messages with a caption, special entities like usernames, URLs, bot commands, etc. that appear in the caption\n",
               "name": "caption_entities",
+              "required": false
+            },
+            {
+              "type": "True",
+              "description": "True, if the caption must be shown above the message media",
+              "html_description": "<td><em>Optional</em>. True, if the caption must be shown above the message media</td>",
+              "rst_description": "*Optional*. True, if the caption must be shown above the message media\n",
+              "name": "show_caption_above_media",
               "required": false
             },
             {
@@ -1680,9 +1696,9 @@
           "annotations": [
             {
               "type": "String",
-              "description": "Type of the entity. Currently, can be 'mention' (@username), 'hashtag' (#hashtag), 'cashtag' ($USD), 'bot_command' (/start@jobs_bot), 'url' (https://telegram.org), 'email' (do-not-reply@telegram.org), 'phone_number' (+1-212-555-0123), 'bold' (bold text), 'italic' (italic text), 'underline' (underlined text), 'strikethrough' (strikethrough text), 'spoiler' (spoiler message), 'blockquote' (block quotation), 'code' (monowidth string), 'pre' (monowidth block), 'text_link' (for clickable text URLs), 'text_mention' (for users without usernames), 'custom_emoji' (for inline custom emoji stickers)",
-              "html_description": "<td>Type of the entity. Currently, can be &#8220;mention&#8221; (<code>@username</code>), &#8220;hashtag&#8221; (<code>#hashtag</code>), &#8220;cashtag&#8221; (<code>$USD</code>), &#8220;bot_command&#8221; (<code>/start@jobs_bot</code>), &#8220;url&#8221; (<code>https://telegram.org</code>), &#8220;email&#8221; (<code>do-not-reply@telegram.org</code>), &#8220;phone_number&#8221; (<code>+1-212-555-0123</code>), &#8220;bold&#8221; (<strong>bold text</strong>), &#8220;italic&#8221; (<em>italic text</em>), &#8220;underline&#8221; (underlined text), &#8220;strikethrough&#8221; (strikethrough text), &#8220;spoiler&#8221; (spoiler message), &#8220;blockquote&#8221; (block quotation), &#8220;code&#8221; (monowidth string), &#8220;pre&#8221; (monowidth block), &#8220;text_link&#8221; (for clickable text URLs), &#8220;text_mention&#8221; (for users <a href=\"https://telegram.org/blog/edit#new-mentions\">without usernames</a>), &#8220;custom_emoji&#8221; (for inline custom emoji stickers)</td>",
-              "rst_description": "Type of the entity. Currently, can be 'mention' (:code:`@username`), 'hashtag' (:code:`#hashtag`), 'cashtag' (:code:`$USD`), 'bot_command' (:code:`/start@jobs_bot`), 'url' (:code:`https://telegram.org`), 'email' (:code:`do-not-reply@telegram.org`), 'phone_number' (:code:`+1-212-555-0123`), 'bold' (**bold text**), 'italic' (*italic text*), 'underline' (underlined text), 'strikethrough' (strikethrough text), 'spoiler' (spoiler message), 'blockquote' (block quotation), 'code' (monowidth string), 'pre' (monowidth block), 'text_link' (for clickable text URLs), 'text_mention' (for users `without usernames <https://telegram.org/blog/edit#new-mentions>`_), 'custom_emoji' (for inline custom emoji stickers)\n",
+              "description": "Type of the entity. Currently, can be 'mention' (@username), 'hashtag' (#hashtag), 'cashtag' ($USD), 'bot_command' (/start@jobs_bot), 'url' (https://telegram.org), 'email' (do-not-reply@telegram.org), 'phone_number' (+1-212-555-0123), 'bold' (bold text), 'italic' (italic text), 'underline' (underlined text), 'strikethrough' (strikethrough text), 'spoiler' (spoiler message), 'blockquote' (block quotation), 'expandable_blockquote' (collapsed-by-default block quotation), 'code' (monowidth string), 'pre' (monowidth block), 'text_link' (for clickable text URLs), 'text_mention' (for users without usernames), 'custom_emoji' (for inline custom emoji stickers)",
+              "html_description": "<td>Type of the entity. Currently, can be &#8220;mention&#8221; (<code>@username</code>), &#8220;hashtag&#8221; (<code>#hashtag</code>), &#8220;cashtag&#8221; (<code>$USD</code>), &#8220;bot_command&#8221; (<code>/start@jobs_bot</code>), &#8220;url&#8221; (<code>https://telegram.org</code>), &#8220;email&#8221; (<code>do-not-reply@telegram.org</code>), &#8220;phone_number&#8221; (<code>+1-212-555-0123</code>), &#8220;bold&#8221; (<strong>bold text</strong>), &#8220;italic&#8221; (<em>italic text</em>), &#8220;underline&#8221; (underlined text), &#8220;strikethrough&#8221; (strikethrough text), &#8220;spoiler&#8221; (spoiler message), &#8220;blockquote&#8221; (block quotation), &#8220;expandable_blockquote&#8221; (collapsed-by-default block quotation), &#8220;code&#8221; (monowidth string), &#8220;pre&#8221; (monowidth block), &#8220;text_link&#8221; (for clickable text URLs), &#8220;text_mention&#8221; (for users <a href=\"https://telegram.org/blog/edit#new-mentions\">without usernames</a>), &#8220;custom_emoji&#8221; (for inline custom emoji stickers)</td>",
+              "rst_description": "Type of the entity. Currently, can be 'mention' (:code:`@username`), 'hashtag' (:code:`#hashtag`), 'cashtag' (:code:`$USD`), 'bot_command' (:code:`/start@jobs_bot`), 'url' (:code:`https://telegram.org`), 'email' (:code:`do-not-reply@telegram.org`), 'phone_number' (:code:`+1-212-555-0123`), 'bold' (**bold text**), 'italic' (*italic text*), 'underline' (underlined text), 'strikethrough' (strikethrough text), 'spoiler' (spoiler message), 'blockquote' (block quotation), 'expandable_blockquote' (collapsed-by-default block quotation), 'code' (monowidth string), 'pre' (monowidth block), 'text_link' (for clickable text URLs), 'text_mention' (for users `without usernames <https://telegram.org/blog/edit#new-mentions>`_), 'custom_emoji' (for inline custom emoji stickers)\n",
               "name": "type",
               "required": true
             },
@@ -4253,9 +4269,9 @@
         {
           "anchor": "keyboardbutton",
           "name": "KeyboardButton",
-          "description": "This object represents one button of the reply keyboard. For simple text buttons, String can be used instead of this object to specify the button text. The optional fields web_app, request_users, request_chat, request_contact, request_location, and request_poll are mutually exclusive.\nNote: request_users and request_chat options will only work in Telegram versions released after 3 February, 2023. Older clients will display unsupported message.",
-          "html_description": "<p>This object represents one button of the reply keyboard. For simple text buttons, <em>String</em> can be used instead of this object to specify the button text. The optional fields <em>web_app</em>, <em>request_users</em>, <em>request_chat</em>, <em>request_contact</em>, <em>request_location</em>, and <em>request_poll</em> are mutually exclusive.</p><p><strong>Note:</strong> <em>request_users</em> and <em>request_chat</em> options will only work in Telegram versions released after 3 February, 2023. Older clients will display <em>unsupported message</em>.</p>",
-          "rst_description": "This object represents one button of the reply keyboard. For simple text buttons, *String* can be used instead of this object to specify the button text. The optional fields *web_app*, *request_users*, *request_chat*, *request_contact*, *request_location*, and *request_poll* are mutually exclusive.\n**Note:** *request_users* and *request_chat* options will only work in Telegram versions released after 3 February, 2023. Older clients will display *unsupported message*.",
+          "description": "This object represents one button of the reply keyboard. At most one of the optional fields must be used to specify type of the button. For simple text buttons, String can be used instead of this object to specify the button text.\nNote: request_users and request_chat options will only work in Telegram versions released after 3 February, 2023. Older clients will display unsupported message.",
+          "html_description": "<p>This object represents one button of the reply keyboard. At most one of the optional fields must be used to specify type of the button. For simple text buttons, <em>String</em> can be used instead of this object to specify the button text.</p><p><strong>Note:</strong> <em>request_users</em> and <em>request_chat</em> options will only work in Telegram versions released after 3 February, 2023. Older clients will display <em>unsupported message</em>.</p>",
+          "rst_description": "This object represents one button of the reply keyboard. At most one of the optional fields must be used to specify type of the button. For simple text buttons, *String* can be used instead of this object to specify the button text.\n**Note:** *request_users* and *request_chat* options will only work in Telegram versions released after 3 February, 2023. Older clients will display *unsupported message*.",
           "annotations": [
             {
               "type": "String",
@@ -4545,9 +4561,9 @@
         {
           "anchor": "inlinekeyboardbutton",
           "name": "InlineKeyboardButton",
-          "description": "This object represents one button of an inline keyboard. You must use exactly one of the optional fields.",
-          "html_description": "<p>This object represents one button of an inline keyboard. You <strong>must</strong> use exactly one of the optional fields.</p>",
-          "rst_description": "This object represents one button of an inline keyboard. You **must** use exactly one of the optional fields.",
+          "description": "This object represents one button of an inline keyboard. Exactly one of the optional fields must be used to specify type of the button.",
+          "html_description": "<p>This object represents one button of an inline keyboard. Exactly one of the optional fields must be used to specify type of the button.</p>",
+          "rst_description": "This object represents one button of an inline keyboard. Exactly one of the optional fields must be used to specify type of the button.",
           "annotations": [
             {
               "type": "String",
@@ -4623,9 +4639,9 @@
             },
             {
               "type": "Boolean",
-              "description": "Specify True, to send a Pay button.\n\nNOTE: This type of button must always be the first button in the first row and can only be used in invoice messages.",
-              "html_description": "<td><em>Optional</em>. Specify <em>True</em>, to send a <a href=\"#payments\">Pay button</a>.<br/>\n<br/>\n<strong>NOTE:</strong> This type of button <strong>must</strong> always be the first button in the first row and can only be used in invoice messages.</td>",
-              "rst_description": "*Optional*. Specify :code:`True`, to send a `Pay button <https://core.telegram.org/bots/api#payments>`_.\n\n\n\n**NOTE:** This type of button **must** always be the first button in the first row and can only be used in invoice messages.\n",
+              "description": "Specify True, to send a Pay button. Substrings '' and 'XTR' in the buttons's text will be replaced with a Telegram Star icon.\n\nNOTE: This type of button must always be the first button in the first row and can only be used in invoice messages.",
+              "html_description": "<td><em>Optional</em>. Specify <em>True</em>, to send a <a href=\"#payments\">Pay button</a>. Substrings &#8220;<img class=\"emoji\" src=\"//telegram.org/img/emoji/40/E2AD90.png\" width=\"20\" height=\"20\" alt=\"&#11088;\"/>&#8221; and &#8220;XTR&#8221; in the buttons's text will be replaced with a Telegram Star icon.<br/>\n<br/>\n<strong>NOTE:</strong> This type of button <strong>must</strong> always be the first button in the first row and can only be used in invoice messages.</td>",
+              "rst_description": "*Optional*. Specify :code:`True`, to send a `Pay button <https://core.telegram.org/bots/api#payments>`_. Substrings '⭐' and 'XTR' in the buttons's text will be replaced with a Telegram Star icon.\n\n\n\n**NOTE:** This type of button **must** always be the first button in the first row and can only be used in invoice messages.\n",
               "name": "pay",
               "required": false
             }
@@ -5135,9 +5151,9 @@
             },
             {
               "type": "Boolean",
-              "description": "True, if the user joined the chat after sending a direct join request and being approved by an administrator",
-              "html_description": "<td><em>Optional</em>. True, if the user joined the chat after sending a direct join request and being approved by an administrator</td>",
-              "rst_description": "*Optional*. True, if the user joined the chat after sending a direct join request and being approved by an administrator\n",
+              "description": "True, if the user joined the chat after sending a direct join request without using an invite link and being approved by an administrator",
+              "html_description": "<td><em>Optional</em>. True, if the user joined the chat after sending a direct join request without using an invite link and being approved by an administrator</td>",
+              "rst_description": "*Optional*. True, if the user joined the chat after sending a direct join request without using an invite link and being approved by an administrator\n",
               "name": "via_join_request",
               "required": false
             },
@@ -6927,6 +6943,14 @@
             },
             {
               "type": "Boolean",
+              "description": "Pass True, if the caption must be shown above the message media",
+              "html_description": "<td><em>Optional</em>. Pass <em>True</em>, if the caption must be shown above the message media</td>",
+              "rst_description": "*Optional*. Pass :code:`True`, if the caption must be shown above the message media\n",
+              "name": "show_caption_above_media",
+              "required": false
+            },
+            {
+              "type": "Boolean",
               "description": "Pass True if the photo needs to be covered with a spoiler animation",
               "html_description": "<td><em>Optional</em>. Pass <em>True</em> if the photo needs to be covered with a spoiler animation</td>",
               "rst_description": "*Optional*. Pass :code:`True` if the photo needs to be covered with a spoiler animation\n",
@@ -6989,6 +7013,14 @@
               "html_description": "<td><em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em></td>",
               "rst_description": "*Optional*. List of special entities that appear in the caption, which can be specified instead of *parse_mode*\n",
               "name": "caption_entities",
+              "required": false
+            },
+            {
+              "type": "Boolean",
+              "description": "Pass True, if the caption must be shown above the message media",
+              "html_description": "<td><em>Optional</em>. Pass <em>True</em>, if the caption must be shown above the message media</td>",
+              "rst_description": "*Optional*. Pass :code:`True`, if the caption must be shown above the message media\n",
+              "name": "show_caption_above_media",
               "required": false
             },
             {
@@ -7087,6 +7119,14 @@
               "html_description": "<td><em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em></td>",
               "rst_description": "*Optional*. List of special entities that appear in the caption, which can be specified instead of *parse_mode*\n",
               "name": "caption_entities",
+              "required": false
+            },
+            {
+              "type": "Boolean",
+              "description": "Pass True, if the caption must be shown above the message media",
+              "html_description": "<td><em>Optional</em>. Pass <em>True</em>, if the caption must be shown above the message media</td>",
+              "rst_description": "*Optional*. Pass :code:`True`, if the caption must be shown above the message media\n",
+              "name": "show_caption_above_media",
               "required": false
             },
             {
@@ -7395,6 +7435,14 @@
               "name": "protect_content"
             },
             {
+              "type": "String",
+              "required": false,
+              "description": "Unique identifier of the message effect to be added to the message; for private chats only",
+              "html_description": "<td>Unique identifier of the message effect to be added to the message; for private chats only</td>",
+              "rst_description": "Unique identifier of the message effect to be added to the message; for private chats only\n",
+              "name": "message_effect_id"
+            },
+            {
               "type": "ReplyParameters",
               "required": false,
               "description": "Description of the message to reply to",
@@ -7595,6 +7643,14 @@
             {
               "type": "Boolean",
               "required": false,
+              "description": "Pass True, if the caption must be shown above the message media. Ignored if a new caption isn't specified.",
+              "html_description": "<td>Pass <em>True</em>, if the caption must be shown above the message media. Ignored if a new caption isn't specified.</td>",
+              "rst_description": "Pass :code:`True`, if the caption must be shown above the message media. Ignored if a new caption isn't specified.\n",
+              "name": "show_caption_above_media"
+            },
+            {
+              "type": "Boolean",
+              "required": false,
               "description": "Sends the message silently. Users will receive a notification with no sound.",
               "html_description": "<td>Sends the message <a href=\"https://telegram.org/blog/channels-2-0#silent-messages\">silently</a>. Users will receive a notification with no sound.</td>",
               "rst_description": "Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.\n",
@@ -7759,6 +7815,14 @@
             {
               "type": "Boolean",
               "required": false,
+              "description": "Pass True, if the caption must be shown above the message media",
+              "html_description": "<td>Pass <em>True</em>, if the caption must be shown above the message media</td>",
+              "rst_description": "Pass :code:`True`, if the caption must be shown above the message media\n",
+              "name": "show_caption_above_media"
+            },
+            {
+              "type": "Boolean",
+              "required": false,
               "description": "Pass True if the photo needs to be covered with a spoiler animation",
               "html_description": "<td>Pass <em>True</em> if the photo needs to be covered with a spoiler animation</td>",
               "rst_description": "Pass :code:`True` if the photo needs to be covered with a spoiler animation\n",
@@ -7779,6 +7843,14 @@
               "html_description": "<td>Protects the contents of the sent message from forwarding and saving</td>",
               "rst_description": "Protects the contents of the sent message from forwarding and saving\n",
               "name": "protect_content"
+            },
+            {
+              "type": "String",
+              "required": false,
+              "description": "Unique identifier of the message effect to be added to the message; for private chats only",
+              "html_description": "<td>Unique identifier of the message effect to be added to the message; for private chats only</td>",
+              "rst_description": "Unique identifier of the message effect to be added to the message; for private chats only\n",
+              "name": "message_effect_id"
             },
             {
               "type": "ReplyParameters",
@@ -7911,6 +7983,14 @@
               "name": "protect_content"
             },
             {
+              "type": "String",
+              "required": false,
+              "description": "Unique identifier of the message effect to be added to the message; for private chats only",
+              "html_description": "<td>Unique identifier of the message effect to be added to the message; for private chats only</td>",
+              "rst_description": "Unique identifier of the message effect to be added to the message; for private chats only\n",
+              "name": "message_effect_id"
+            },
+            {
               "type": "ReplyParameters",
               "required": false,
               "description": "Description of the message to reply to",
@@ -8023,6 +8103,14 @@
               "html_description": "<td>Protects the contents of the sent message from forwarding and saving</td>",
               "rst_description": "Protects the contents of the sent message from forwarding and saving\n",
               "name": "protect_content"
+            },
+            {
+              "type": "String",
+              "required": false,
+              "description": "Unique identifier of the message effect to be added to the message; for private chats only",
+              "html_description": "<td>Unique identifier of the message effect to be added to the message; for private chats only</td>",
+              "rst_description": "Unique identifier of the message effect to be added to the message; for private chats only\n",
+              "name": "message_effect_id"
             },
             {
               "type": "ReplyParameters",
@@ -8141,6 +8229,14 @@
             {
               "type": "Boolean",
               "required": false,
+              "description": "Pass True, if the caption must be shown above the message media",
+              "html_description": "<td>Pass <em>True</em>, if the caption must be shown above the message media</td>",
+              "rst_description": "Pass :code:`True`, if the caption must be shown above the message media\n",
+              "name": "show_caption_above_media"
+            },
+            {
+              "type": "Boolean",
+              "required": false,
               "description": "Pass True if the video needs to be covered with a spoiler animation",
               "html_description": "<td>Pass <em>True</em> if the video needs to be covered with a spoiler animation</td>",
               "rst_description": "Pass :code:`True` if the video needs to be covered with a spoiler animation\n",
@@ -8169,6 +8265,14 @@
               "html_description": "<td>Protects the contents of the sent message from forwarding and saving</td>",
               "rst_description": "Protects the contents of the sent message from forwarding and saving\n",
               "name": "protect_content"
+            },
+            {
+              "type": "String",
+              "required": false,
+              "description": "Unique identifier of the message effect to be added to the message; for private chats only",
+              "html_description": "<td>Unique identifier of the message effect to be added to the message; for private chats only</td>",
+              "rst_description": "Unique identifier of the message effect to be added to the message; for private chats only\n",
+              "name": "message_effect_id"
             },
             {
               "type": "ReplyParameters",
@@ -8287,6 +8391,14 @@
             {
               "type": "Boolean",
               "required": false,
+              "description": "Pass True, if the caption must be shown above the message media",
+              "html_description": "<td>Pass <em>True</em>, if the caption must be shown above the message media</td>",
+              "rst_description": "Pass :code:`True`, if the caption must be shown above the message media\n",
+              "name": "show_caption_above_media"
+            },
+            {
+              "type": "Boolean",
+              "required": false,
               "description": "Pass True if the animation needs to be covered with a spoiler animation",
               "html_description": "<td>Pass <em>True</em> if the animation needs to be covered with a spoiler animation</td>",
               "rst_description": "Pass :code:`True` if the animation needs to be covered with a spoiler animation\n",
@@ -8307,6 +8419,14 @@
               "html_description": "<td>Protects the contents of the sent message from forwarding and saving</td>",
               "rst_description": "Protects the contents of the sent message from forwarding and saving\n",
               "name": "protect_content"
+            },
+            {
+              "type": "String",
+              "required": false,
+              "description": "Unique identifier of the message effect to be added to the message; for private chats only",
+              "html_description": "<td>Unique identifier of the message effect to be added to the message; for private chats only</td>",
+              "rst_description": "Unique identifier of the message effect to be added to the message; for private chats only\n",
+              "name": "message_effect_id"
             },
             {
               "type": "ReplyParameters",
@@ -8415,6 +8535,14 @@
               "name": "protect_content"
             },
             {
+              "type": "String",
+              "required": false,
+              "description": "Unique identifier of the message effect to be added to the message; for private chats only",
+              "html_description": "<td>Unique identifier of the message effect to be added to the message; for private chats only</td>",
+              "rst_description": "Unique identifier of the message effect to be added to the message; for private chats only\n",
+              "name": "message_effect_id"
+            },
+            {
               "type": "ReplyParameters",
               "required": false,
               "description": "Description of the message to reply to",
@@ -8513,6 +8641,14 @@
               "name": "protect_content"
             },
             {
+              "type": "String",
+              "required": false,
+              "description": "Unique identifier of the message effect to be added to the message; for private chats only",
+              "html_description": "<td>Unique identifier of the message effect to be added to the message; for private chats only</td>",
+              "rst_description": "Unique identifier of the message effect to be added to the message; for private chats only\n",
+              "name": "message_effect_id"
+            },
+            {
               "type": "ReplyParameters",
               "required": false,
               "description": "Description of the message to reply to",
@@ -8585,6 +8721,14 @@
               "html_description": "<td>Protects the contents of the sent messages from forwarding and saving</td>",
               "rst_description": "Protects the contents of the sent messages from forwarding and saving\n",
               "name": "protect_content"
+            },
+            {
+              "type": "String",
+              "required": false,
+              "description": "Unique identifier of the message effect to be added to the message; for private chats only",
+              "html_description": "<td>Unique identifier of the message effect to be added to the message; for private chats only</td>",
+              "rst_description": "Unique identifier of the message effect to be added to the message; for private chats only\n",
+              "name": "message_effect_id"
             },
             {
               "type": "ReplyParameters",
@@ -8691,6 +8835,14 @@
               "html_description": "<td>Protects the contents of the sent message from forwarding and saving</td>",
               "rst_description": "Protects the contents of the sent message from forwarding and saving\n",
               "name": "protect_content"
+            },
+            {
+              "type": "String",
+              "required": false,
+              "description": "Unique identifier of the message effect to be added to the message; for private chats only",
+              "html_description": "<td>Unique identifier of the message effect to be added to the message; for private chats only</td>",
+              "rst_description": "Unique identifier of the message effect to be added to the message; for private chats only\n",
+              "name": "message_effect_id"
             },
             {
               "type": "ReplyParameters",
@@ -8823,6 +8975,14 @@
               "name": "protect_content"
             },
             {
+              "type": "String",
+              "required": false,
+              "description": "Unique identifier of the message effect to be added to the message; for private chats only",
+              "html_description": "<td>Unique identifier of the message effect to be added to the message; for private chats only</td>",
+              "rst_description": "Unique identifier of the message effect to be added to the message; for private chats only\n",
+              "name": "message_effect_id"
+            },
+            {
               "type": "ReplyParameters",
               "required": false,
               "description": "Description of the message to reply to",
@@ -8919,6 +9079,14 @@
               "html_description": "<td>Protects the contents of the sent message from forwarding and saving</td>",
               "rst_description": "Protects the contents of the sent message from forwarding and saving\n",
               "name": "protect_content"
+            },
+            {
+              "type": "String",
+              "required": false,
+              "description": "Unique identifier of the message effect to be added to the message; for private chats only",
+              "html_description": "<td>Unique identifier of the message effect to be added to the message; for private chats only</td>",
+              "rst_description": "Unique identifier of the message effect to be added to the message; for private chats only\n",
+              "name": "message_effect_id"
             },
             {
               "type": "ReplyParameters",
@@ -9099,6 +9267,14 @@
               "name": "protect_content"
             },
             {
+              "type": "String",
+              "required": false,
+              "description": "Unique identifier of the message effect to be added to the message; for private chats only",
+              "html_description": "<td>Unique identifier of the message effect to be added to the message; for private chats only</td>",
+              "rst_description": "Unique identifier of the message effect to be added to the message; for private chats only\n",
+              "name": "message_effect_id"
+            },
+            {
               "type": "ReplyParameters",
               "required": false,
               "description": "Description of the message to reply to",
@@ -9171,6 +9347,14 @@
               "html_description": "<td>Protects the contents of the sent message from forwarding</td>",
               "rst_description": "Protects the contents of the sent message from forwarding\n",
               "name": "protect_content"
+            },
+            {
+              "type": "String",
+              "required": false,
+              "description": "Unique identifier of the message effect to be added to the message; for private chats only",
+              "html_description": "<td>Unique identifier of the message effect to be added to the message; for private chats only</td>",
+              "rst_description": "Unique identifier of the message effect to be added to the message; for private chats only\n",
+              "name": "message_effect_id"
             },
             {
               "type": "ReplyParameters",
@@ -11089,6 +11273,14 @@
               "name": "caption_entities"
             },
             {
+              "type": "Boolean",
+              "required": false,
+              "description": "Pass True, if the caption must be shown above the message media. Supported only for animation, photo and video messages.",
+              "html_description": "<td>Pass <em>True</em>, if the caption must be shown above the message media. Supported only for animation, photo and video messages.</td>",
+              "rst_description": "Pass :code:`True`, if the caption must be shown above the message media. Supported only for animation, photo and video messages.\n",
+              "name": "show_caption_above_media"
+            },
+            {
               "type": "InlineKeyboardMarkup",
               "required": false,
               "description": "A JSON-serialized object for an inline keyboard.",
@@ -11750,6 +11942,14 @@
               "html_description": "<td>Protects the contents of the sent message from forwarding and saving</td>",
               "rst_description": "Protects the contents of the sent message from forwarding and saving\n",
               "name": "protect_content"
+            },
+            {
+              "type": "String",
+              "required": false,
+              "description": "Unique identifier of the message effect to be added to the message; for private chats only",
+              "html_description": "<td>Unique identifier of the message effect to be added to the message; for private chats only</td>",
+              "rst_description": "Unique identifier of the message effect to be added to the message; for private chats only\n",
+              "name": "message_effect_id"
             },
             {
               "type": "ReplyParameters",
@@ -12568,6 +12768,14 @@
               "required": false
             },
             {
+              "type": "Boolean",
+              "description": "Pass True, if the caption must be shown above the message media",
+              "html_description": "<td><em>Optional</em>. Pass <em>True</em>, if the caption must be shown above the message media</td>",
+              "rst_description": "*Optional*. Pass :code:`True`, if the caption must be shown above the message media\n",
+              "name": "show_caption_above_media",
+              "required": false
+            },
+            {
               "type": "InlineKeyboardMarkup",
               "description": "Inline keyboard attached to the message",
               "html_description": "<td><em>Optional</em>. <a href=\"/bots/features#inline-keyboards\">Inline keyboard</a> attached to the message</td>",
@@ -12687,6 +12895,14 @@
               "html_description": "<td><em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em></td>",
               "rst_description": "*Optional*. List of special entities that appear in the caption, which can be specified instead of *parse_mode*\n",
               "name": "caption_entities",
+              "required": false
+            },
+            {
+              "type": "Boolean",
+              "description": "Pass True, if the caption must be shown above the message media",
+              "html_description": "<td><em>Optional</em>. Pass <em>True</em>, if the caption must be shown above the message media</td>",
+              "rst_description": "*Optional*. Pass :code:`True`, if the caption must be shown above the message media\n",
+              "name": "show_caption_above_media",
               "required": false
             },
             {
@@ -12812,6 +13028,14 @@
               "required": false
             },
             {
+              "type": "Boolean",
+              "description": "Pass True, if the caption must be shown above the message media",
+              "html_description": "<td><em>Optional</em>. Pass <em>True</em>, if the caption must be shown above the message media</td>",
+              "rst_description": "*Optional*. Pass :code:`True`, if the caption must be shown above the message media\n",
+              "name": "show_caption_above_media",
+              "required": false
+            },
+            {
               "type": "InlineKeyboardMarkup",
               "description": "Inline keyboard attached to the message",
               "html_description": "<td><em>Optional</em>. <a href=\"/bots/features#inline-keyboards\">Inline keyboard</a> attached to the message</td>",
@@ -12907,6 +13131,14 @@
               "html_description": "<td><em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em></td>",
               "rst_description": "*Optional*. List of special entities that appear in the caption, which can be specified instead of *parse_mode*\n",
               "name": "caption_entities",
+              "required": false
+            },
+            {
+              "type": "Boolean",
+              "description": "Pass True, if the caption must be shown above the message media",
+              "html_description": "<td><em>Optional</em>. Pass <em>True</em>, if the caption must be shown above the message media</td>",
+              "rst_description": "*Optional*. Pass :code:`True`, if the caption must be shown above the message media\n",
+              "name": "show_caption_above_media",
               "required": false
             },
             {
@@ -13734,6 +13966,14 @@
               "required": false
             },
             {
+              "type": "Boolean",
+              "description": "Pass True, if the caption must be shown above the message media",
+              "html_description": "<td><em>Optional</em>. Pass <em>True</em>, if the caption must be shown above the message media</td>",
+              "rst_description": "*Optional*. Pass :code:`True`, if the caption must be shown above the message media\n",
+              "name": "show_caption_above_media",
+              "required": false
+            },
+            {
               "type": "InlineKeyboardMarkup",
               "description": "Inline keyboard attached to the message",
               "html_description": "<td><em>Optional</em>. <a href=\"/bots/features#inline-keyboards\">Inline keyboard</a> attached to the message</td>",
@@ -13816,6 +14056,14 @@
               "required": false
             },
             {
+              "type": "Boolean",
+              "description": "Pass True, if the caption must be shown above the message media",
+              "html_description": "<td><em>Optional</em>. Pass <em>True</em>, if the caption must be shown above the message media</td>",
+              "rst_description": "*Optional*. Pass :code:`True`, if the caption must be shown above the message media\n",
+              "name": "show_caption_above_media",
+              "required": false
+            },
+            {
               "type": "InlineKeyboardMarkup",
               "description": "Inline keyboard attached to the message",
               "html_description": "<td><em>Optional</em>. <a href=\"/bots/features#inline-keyboards\">Inline keyboard</a> attached to the message</td>",
@@ -13895,6 +14143,14 @@
               "html_description": "<td><em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em></td>",
               "rst_description": "*Optional*. List of special entities that appear in the caption, which can be specified instead of *parse_mode*\n",
               "name": "caption_entities",
+              "required": false
+            },
+            {
+              "type": "Boolean",
+              "description": "Pass True, if the caption must be shown above the message media",
+              "html_description": "<td><em>Optional</em>. Pass <em>True</em>, if the caption must be shown above the message media</td>",
+              "rst_description": "*Optional*. Pass :code:`True`, if the caption must be shown above the message media\n",
+              "name": "show_caption_above_media",
               "required": false
             },
             {
@@ -14125,6 +14381,14 @@
               "html_description": "<td><em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em></td>",
               "rst_description": "*Optional*. List of special entities that appear in the caption, which can be specified instead of *parse_mode*\n",
               "name": "caption_entities",
+              "required": false
+            },
+            {
+              "type": "Boolean",
+              "description": "Pass True, if the caption must be shown above the message media",
+              "html_description": "<td><em>Optional</em>. Pass <em>True</em>, if the caption must be shown above the message media</td>",
+              "rst_description": "*Optional*. Pass :code:`True`, if the caption must be shown above the message media\n",
+              "name": "show_caption_above_media",
               "required": false
             },
             {
@@ -14560,33 +14824,33 @@
             },
             {
               "type": "String",
-              "description": "Payment provider token, obtained via @BotFather",
-              "html_description": "<td>Payment provider token, obtained via <a href=\"https://t.me/botfather\">@BotFather</a></td>",
-              "rst_description": "Payment provider token, obtained via `@BotFather <https://t.me/botfather>`_\n",
+              "description": "Payment provider token, obtained via @BotFather. Pass an empty string for payments in Telegram Stars.",
+              "html_description": "<td><em>Optional</em>. Payment provider token, obtained via <a href=\"https://t.me/botfather\">@BotFather</a>. Pass an empty string for payments in <a href=\"https://t.me/BotNews/90\">Telegram Stars</a>.</td>",
+              "rst_description": "*Optional*. Payment provider token, obtained via `@BotFather <https://t.me/botfather>`_. Pass an empty string for payments in `Telegram Stars <https://t.me/BotNews/90>`_.\n",
               "name": "provider_token",
-              "required": true
+              "required": false
             },
             {
               "type": "String",
-              "description": "Three-letter ISO 4217 currency code, see more on currencies",
-              "html_description": "<td>Three-letter ISO 4217 currency code, see <a href=\"/bots/payments#supported-currencies\">more on currencies</a></td>",
-              "rst_description": "Three-letter ISO 4217 currency code, see `more on currencies <https://core.telegram.org/bots/payments#supported-currencies>`_\n",
+              "description": "Three-letter ISO 4217 currency code, see more on currencies. Pass 'XTR' for payments in Telegram Stars.",
+              "html_description": "<td>Three-letter ISO 4217 currency code, see <a href=\"/bots/payments#supported-currencies\">more on currencies</a>. Pass &#8220;XTR&#8221; for payments in <a href=\"https://t.me/BotNews/90\">Telegram Stars</a>.</td>",
+              "rst_description": "Three-letter ISO 4217 currency code, see `more on currencies <https://core.telegram.org/bots/payments#supported-currencies>`_. Pass 'XTR' for payments in `Telegram Stars <https://t.me/BotNews/90>`_.\n",
               "name": "currency",
               "required": true
             },
             {
               "type": "Array of LabeledPrice",
-              "description": "Price breakdown, a JSON-serialized list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.)",
-              "html_description": "<td>Price breakdown, a JSON-serialized list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.)</td>",
-              "rst_description": "Price breakdown, a JSON-serialized list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.)\n",
+              "description": "Price breakdown, a JSON-serialized list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.). Must contain exactly one item for payments in Telegram Stars.",
+              "html_description": "<td>Price breakdown, a JSON-serialized list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.). Must contain exactly one item for payments in <a href=\"https://t.me/BotNews/90\">Telegram Stars</a>.</td>",
+              "rst_description": "Price breakdown, a JSON-serialized list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.). Must contain exactly one item for payments in `Telegram Stars <https://t.me/BotNews/90>`_.\n",
               "name": "prices",
               "required": true
             },
             {
               "type": "Integer",
-              "description": "The maximum accepted amount for tips in the smallest units of the currency (integer, not float/double). For example, for a maximum tip of US$ 1.45 pass max_tip_amount = 145. See the exp parameter in currencies.json, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies). Defaults to 0",
-              "html_description": "<td><em>Optional</em>. The maximum accepted amount for tips in the <em>smallest units</em> of the currency (integer, <strong>not</strong> float/double). For example, for a maximum tip of <code>US$ 1.45</code> pass <code>max_tip_amount = 145</code>. See the <em>exp</em> parameter in <a href=\"/bots/payments/currencies.json\">currencies.json</a>, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies). Defaults to 0</td>",
-              "rst_description": "*Optional*. The maximum accepted amount for tips in the *smallest units* of the currency (integer, **not** float/double). For example, for a maximum tip of :code:`US$ 1.45` pass :code:`max_tip_amount = 145`. See the *exp* parameter in `currencies.json <https://core.telegram.org/bots/payments/currencies.json>`_, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies). Defaults to 0\n",
+              "description": "The maximum accepted amount for tips in the smallest units of the currency (integer, not float/double). For example, for a maximum tip of US$ 1.45 pass max_tip_amount = 145. See the exp parameter in currencies.json, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies). Defaults to 0. Not supported for payments in Telegram Stars.",
+              "html_description": "<td><em>Optional</em>. The maximum accepted amount for tips in the <em>smallest units</em> of the currency (integer, <strong>not</strong> float/double). For example, for a maximum tip of <code>US$ 1.45</code> pass <code>max_tip_amount = 145</code>. See the <em>exp</em> parameter in <a href=\"/bots/payments/currencies.json\">currencies.json</a>, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies). Defaults to 0. Not supported for payments in <a href=\"https://t.me/BotNews/90\">Telegram Stars</a>.</td>",
+              "rst_description": "*Optional*. The maximum accepted amount for tips in the *smallest units* of the currency (integer, **not** float/double). For example, for a maximum tip of :code:`US$ 1.45` pass :code:`max_tip_amount = 145`. See the *exp* parameter in `currencies.json <https://core.telegram.org/bots/payments/currencies.json>`_, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies). Defaults to 0. Not supported for payments in `Telegram Stars <https://t.me/BotNews/90>`_.\n",
               "name": "max_tip_amount",
               "required": false
             },
@@ -14640,57 +14904,57 @@
             },
             {
               "type": "Boolean",
-              "description": "Pass True if you require the user's full name to complete the order",
-              "html_description": "<td><em>Optional</em>. Pass <em>True</em> if you require the user's full name to complete the order</td>",
-              "rst_description": "*Optional*. Pass :code:`True` if you require the user's full name to complete the order\n",
+              "description": "Pass True if you require the user's full name to complete the order. Ignored for payments in Telegram Stars.",
+              "html_description": "<td><em>Optional</em>. Pass <em>True</em> if you require the user's full name to complete the order. Ignored for payments in <a href=\"https://t.me/BotNews/90\">Telegram Stars</a>.</td>",
+              "rst_description": "*Optional*. Pass :code:`True` if you require the user's full name to complete the order. Ignored for payments in `Telegram Stars <https://t.me/BotNews/90>`_.\n",
               "name": "need_name",
               "required": false
             },
             {
               "type": "Boolean",
-              "description": "Pass True if you require the user's phone number to complete the order",
-              "html_description": "<td><em>Optional</em>. Pass <em>True</em> if you require the user's phone number to complete the order</td>",
-              "rst_description": "*Optional*. Pass :code:`True` if you require the user's phone number to complete the order\n",
+              "description": "Pass True if you require the user's phone number to complete the order. Ignored for payments in Telegram Stars.",
+              "html_description": "<td><em>Optional</em>. Pass <em>True</em> if you require the user's phone number to complete the order. Ignored for payments in <a href=\"https://t.me/BotNews/90\">Telegram Stars</a>.</td>",
+              "rst_description": "*Optional*. Pass :code:`True` if you require the user's phone number to complete the order. Ignored for payments in `Telegram Stars <https://t.me/BotNews/90>`_.\n",
               "name": "need_phone_number",
               "required": false
             },
             {
               "type": "Boolean",
-              "description": "Pass True if you require the user's email address to complete the order",
-              "html_description": "<td><em>Optional</em>. Pass <em>True</em> if you require the user's email address to complete the order</td>",
-              "rst_description": "*Optional*. Pass :code:`True` if you require the user's email address to complete the order\n",
+              "description": "Pass True if you require the user's email address to complete the order. Ignored for payments in Telegram Stars.",
+              "html_description": "<td><em>Optional</em>. Pass <em>True</em> if you require the user's email address to complete the order. Ignored for payments in <a href=\"https://t.me/BotNews/90\">Telegram Stars</a>.</td>",
+              "rst_description": "*Optional*. Pass :code:`True` if you require the user's email address to complete the order. Ignored for payments in `Telegram Stars <https://t.me/BotNews/90>`_.\n",
               "name": "need_email",
               "required": false
             },
             {
               "type": "Boolean",
-              "description": "Pass True if you require the user's shipping address to complete the order",
-              "html_description": "<td><em>Optional</em>. Pass <em>True</em> if you require the user's shipping address to complete the order</td>",
-              "rst_description": "*Optional*. Pass :code:`True` if you require the user's shipping address to complete the order\n",
+              "description": "Pass True if you require the user's shipping address to complete the order. Ignored for payments in Telegram Stars.",
+              "html_description": "<td><em>Optional</em>. Pass <em>True</em> if you require the user's shipping address to complete the order. Ignored for payments in <a href=\"https://t.me/BotNews/90\">Telegram Stars</a>.</td>",
+              "rst_description": "*Optional*. Pass :code:`True` if you require the user's shipping address to complete the order. Ignored for payments in `Telegram Stars <https://t.me/BotNews/90>`_.\n",
               "name": "need_shipping_address",
               "required": false
             },
             {
               "type": "Boolean",
-              "description": "Pass True if the user's phone number should be sent to provider",
-              "html_description": "<td><em>Optional</em>. Pass <em>True</em> if the user's phone number should be sent to provider</td>",
-              "rst_description": "*Optional*. Pass :code:`True` if the user's phone number should be sent to provider\n",
+              "description": "Pass True if the user's phone number should be sent to the provider. Ignored for payments in Telegram Stars.",
+              "html_description": "<td><em>Optional</em>. Pass <em>True</em> if the user's phone number should be sent to the provider. Ignored for payments in <a href=\"https://t.me/BotNews/90\">Telegram Stars</a>.</td>",
+              "rst_description": "*Optional*. Pass :code:`True` if the user's phone number should be sent to the provider. Ignored for payments in `Telegram Stars <https://t.me/BotNews/90>`_.\n",
               "name": "send_phone_number_to_provider",
               "required": false
             },
             {
               "type": "Boolean",
-              "description": "Pass True if the user's email address should be sent to provider",
-              "html_description": "<td><em>Optional</em>. Pass <em>True</em> if the user's email address should be sent to provider</td>",
-              "rst_description": "*Optional*. Pass :code:`True` if the user's email address should be sent to provider\n",
+              "description": "Pass True if the user's email address should be sent to the provider. Ignored for payments in Telegram Stars.",
+              "html_description": "<td><em>Optional</em>. Pass <em>True</em> if the user's email address should be sent to the provider. Ignored for payments in <a href=\"https://t.me/BotNews/90\">Telegram Stars</a>.</td>",
+              "rst_description": "*Optional*. Pass :code:`True` if the user's email address should be sent to the provider. Ignored for payments in `Telegram Stars <https://t.me/BotNews/90>`_.\n",
               "name": "send_email_to_provider",
               "required": false
             },
             {
               "type": "Boolean",
-              "description": "Pass True if the final price depends on the shipping method",
-              "html_description": "<td><em>Optional</em>. Pass <em>True</em> if the final price depends on the shipping method</td>",
-              "rst_description": "*Optional*. Pass :code:`True` if the final price depends on the shipping method\n",
+              "description": "Pass True if the final price depends on the shipping method. Ignored for payments in Telegram Stars.",
+              "html_description": "<td><em>Optional</em>. Pass <em>True</em> if the final price depends on the shipping method. Ignored for payments in <a href=\"https://t.me/BotNews/90\">Telegram Stars</a>.</td>",
+              "rst_description": "*Optional*. Pass :code:`True` if the final price depends on the shipping method. Ignored for payments in `Telegram Stars <https://t.me/BotNews/90>`_.\n",
               "name": "is_flexible",
               "required": false
             }
@@ -14847,34 +15111,34 @@
             },
             {
               "type": "String",
-              "required": true,
-              "description": "Payment provider token, obtained via @BotFather",
-              "html_description": "<td>Payment provider token, obtained via <a href=\"https://t.me/botfather\">@BotFather</a></td>",
-              "rst_description": "Payment provider token, obtained via `@BotFather <https://t.me/botfather>`_\n",
+              "required": false,
+              "description": "Payment provider token, obtained via @BotFather. Pass an empty string for payments in Telegram Stars.",
+              "html_description": "<td>Payment provider token, obtained via <a href=\"https://t.me/botfather\">@BotFather</a>. Pass an empty string for payments in <a href=\"https://t.me/BotNews/90\">Telegram Stars</a>.</td>",
+              "rst_description": "Payment provider token, obtained via `@BotFather <https://t.me/botfather>`_. Pass an empty string for payments in `Telegram Stars <https://t.me/BotNews/90>`_.\n",
               "name": "provider_token"
             },
             {
               "type": "String",
               "required": true,
-              "description": "Three-letter ISO 4217 currency code, see more on currencies",
-              "html_description": "<td>Three-letter ISO 4217 currency code, see <a href=\"/bots/payments#supported-currencies\">more on currencies</a></td>",
-              "rst_description": "Three-letter ISO 4217 currency code, see `more on currencies <https://core.telegram.org/bots/payments#supported-currencies>`_\n",
+              "description": "Three-letter ISO 4217 currency code, see more on currencies. Pass 'XTR' for payments in Telegram Stars.",
+              "html_description": "<td>Three-letter ISO 4217 currency code, see <a href=\"/bots/payments#supported-currencies\">more on currencies</a>. Pass &#8220;XTR&#8221; for payments in <a href=\"https://t.me/BotNews/90\">Telegram Stars</a>.</td>",
+              "rst_description": "Three-letter ISO 4217 currency code, see `more on currencies <https://core.telegram.org/bots/payments#supported-currencies>`_. Pass 'XTR' for payments in `Telegram Stars <https://t.me/BotNews/90>`_.\n",
               "name": "currency"
             },
             {
               "type": "Array of LabeledPrice",
               "required": true,
-              "description": "Price breakdown, a JSON-serialized list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.)",
-              "html_description": "<td>Price breakdown, a JSON-serialized list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.)</td>",
-              "rst_description": "Price breakdown, a JSON-serialized list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.)\n",
+              "description": "Price breakdown, a JSON-serialized list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.). Must contain exactly one item for payments in Telegram Stars.",
+              "html_description": "<td>Price breakdown, a JSON-serialized list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.). Must contain exactly one item for payments in <a href=\"https://t.me/BotNews/90\">Telegram Stars</a>.</td>",
+              "rst_description": "Price breakdown, a JSON-serialized list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.). Must contain exactly one item for payments in `Telegram Stars <https://t.me/BotNews/90>`_.\n",
               "name": "prices"
             },
             {
               "type": "Integer",
               "required": false,
-              "description": "The maximum accepted amount for tips in the smallest units of the currency (integer, not float/double). For example, for a maximum tip of US$ 1.45 pass max_tip_amount = 145. See the exp parameter in currencies.json, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies). Defaults to 0",
-              "html_description": "<td>The maximum accepted amount for tips in the <em>smallest units</em> of the currency (integer, <strong>not</strong> float/double). For example, for a maximum tip of <code>US$ 1.45</code> pass <code>max_tip_amount = 145</code>. See the <em>exp</em> parameter in <a href=\"/bots/payments/currencies.json\">currencies.json</a>, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies). Defaults to 0</td>",
-              "rst_description": "The maximum accepted amount for tips in the *smallest units* of the currency (integer, **not** float/double). For example, for a maximum tip of :code:`US$ 1.45` pass :code:`max_tip_amount = 145`. See the *exp* parameter in `currencies.json <https://core.telegram.org/bots/payments/currencies.json>`_, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies). Defaults to 0\n",
+              "description": "The maximum accepted amount for tips in the smallest units of the currency (integer, not float/double). For example, for a maximum tip of US$ 1.45 pass max_tip_amount = 145. See the exp parameter in currencies.json, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies). Defaults to 0. Not supported for payments in Telegram Stars.",
+              "html_description": "<td>The maximum accepted amount for tips in the <em>smallest units</em> of the currency (integer, <strong>not</strong> float/double). For example, for a maximum tip of <code>US$ 1.45</code> pass <code>max_tip_amount = 145</code>. See the <em>exp</em> parameter in <a href=\"/bots/payments/currencies.json\">currencies.json</a>, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies). Defaults to 0. Not supported for payments in <a href=\"https://t.me/BotNews/90\">Telegram Stars</a>.</td>",
+              "rst_description": "The maximum accepted amount for tips in the *smallest units* of the currency (integer, **not** float/double). For example, for a maximum tip of :code:`US$ 1.45` pass :code:`max_tip_amount = 145`. See the *exp* parameter in `currencies.json <https://core.telegram.org/bots/payments/currencies.json>`_, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies). Defaults to 0. Not supported for payments in `Telegram Stars <https://t.me/BotNews/90>`_.\n",
               "name": "max_tip_amount"
             },
             {
@@ -14936,57 +15200,57 @@
             {
               "type": "Boolean",
               "required": false,
-              "description": "Pass True if you require the user's full name to complete the order",
-              "html_description": "<td>Pass <em>True</em> if you require the user's full name to complete the order</td>",
-              "rst_description": "Pass :code:`True` if you require the user's full name to complete the order\n",
+              "description": "Pass True if you require the user's full name to complete the order. Ignored for payments in Telegram Stars.",
+              "html_description": "<td>Pass <em>True</em> if you require the user's full name to complete the order. Ignored for payments in <a href=\"https://t.me/BotNews/90\">Telegram Stars</a>.</td>",
+              "rst_description": "Pass :code:`True` if you require the user's full name to complete the order. Ignored for payments in `Telegram Stars <https://t.me/BotNews/90>`_.\n",
               "name": "need_name"
             },
             {
               "type": "Boolean",
               "required": false,
-              "description": "Pass True if you require the user's phone number to complete the order",
-              "html_description": "<td>Pass <em>True</em> if you require the user's phone number to complete the order</td>",
-              "rst_description": "Pass :code:`True` if you require the user's phone number to complete the order\n",
+              "description": "Pass True if you require the user's phone number to complete the order. Ignored for payments in Telegram Stars.",
+              "html_description": "<td>Pass <em>True</em> if you require the user's phone number to complete the order. Ignored for payments in <a href=\"https://t.me/BotNews/90\">Telegram Stars</a>.</td>",
+              "rst_description": "Pass :code:`True` if you require the user's phone number to complete the order. Ignored for payments in `Telegram Stars <https://t.me/BotNews/90>`_.\n",
               "name": "need_phone_number"
             },
             {
               "type": "Boolean",
               "required": false,
-              "description": "Pass True if you require the user's email address to complete the order",
-              "html_description": "<td>Pass <em>True</em> if you require the user's email address to complete the order</td>",
-              "rst_description": "Pass :code:`True` if you require the user's email address to complete the order\n",
+              "description": "Pass True if you require the user's email address to complete the order. Ignored for payments in Telegram Stars.",
+              "html_description": "<td>Pass <em>True</em> if you require the user's email address to complete the order. Ignored for payments in <a href=\"https://t.me/BotNews/90\">Telegram Stars</a>.</td>",
+              "rst_description": "Pass :code:`True` if you require the user's email address to complete the order. Ignored for payments in `Telegram Stars <https://t.me/BotNews/90>`_.\n",
               "name": "need_email"
             },
             {
               "type": "Boolean",
               "required": false,
-              "description": "Pass True if you require the user's shipping address to complete the order",
-              "html_description": "<td>Pass <em>True</em> if you require the user's shipping address to complete the order</td>",
-              "rst_description": "Pass :code:`True` if you require the user's shipping address to complete the order\n",
+              "description": "Pass True if you require the user's shipping address to complete the order. Ignored for payments in Telegram Stars.",
+              "html_description": "<td>Pass <em>True</em> if you require the user's shipping address to complete the order. Ignored for payments in <a href=\"https://t.me/BotNews/90\">Telegram Stars</a>.</td>",
+              "rst_description": "Pass :code:`True` if you require the user's shipping address to complete the order. Ignored for payments in `Telegram Stars <https://t.me/BotNews/90>`_.\n",
               "name": "need_shipping_address"
             },
             {
               "type": "Boolean",
               "required": false,
-              "description": "Pass True if the user's phone number should be sent to provider",
-              "html_description": "<td>Pass <em>True</em> if the user's phone number should be sent to provider</td>",
-              "rst_description": "Pass :code:`True` if the user's phone number should be sent to provider\n",
+              "description": "Pass True if the user's phone number should be sent to the provider. Ignored for payments in Telegram Stars.",
+              "html_description": "<td>Pass <em>True</em> if the user's phone number should be sent to the provider. Ignored for payments in <a href=\"https://t.me/BotNews/90\">Telegram Stars</a>.</td>",
+              "rst_description": "Pass :code:`True` if the user's phone number should be sent to the provider. Ignored for payments in `Telegram Stars <https://t.me/BotNews/90>`_.\n",
               "name": "send_phone_number_to_provider"
             },
             {
               "type": "Boolean",
               "required": false,
-              "description": "Pass True if the user's email address should be sent to provider",
-              "html_description": "<td>Pass <em>True</em> if the user's email address should be sent to provider</td>",
-              "rst_description": "Pass :code:`True` if the user's email address should be sent to provider\n",
+              "description": "Pass True if the user's email address should be sent to the provider. Ignored for payments in Telegram Stars.",
+              "html_description": "<td>Pass <em>True</em> if the user's email address should be sent to the provider. Ignored for payments in <a href=\"https://t.me/BotNews/90\">Telegram Stars</a>.</td>",
+              "rst_description": "Pass :code:`True` if the user's email address should be sent to the provider. Ignored for payments in `Telegram Stars <https://t.me/BotNews/90>`_.\n",
               "name": "send_email_to_provider"
             },
             {
               "type": "Boolean",
               "required": false,
-              "description": "Pass True if the final price depends on the shipping method",
-              "html_description": "<td>Pass <em>True</em> if the final price depends on the shipping method</td>",
-              "rst_description": "Pass :code:`True` if the final price depends on the shipping method\n",
+              "description": "Pass True if the final price depends on the shipping method. Ignored for payments in Telegram Stars.",
+              "html_description": "<td>Pass <em>True</em> if the final price depends on the shipping method. Ignored for payments in <a href=\"https://t.me/BotNews/90\">Telegram Stars</a>.</td>",
+              "rst_description": "Pass :code:`True` if the final price depends on the shipping method. Ignored for payments in `Telegram Stars <https://t.me/BotNews/90>`_.\n",
               "name": "is_flexible"
             },
             {
@@ -15004,6 +15268,14 @@
               "html_description": "<td>Protects the contents of the sent message from forwarding and saving</td>",
               "rst_description": "Protects the contents of the sent message from forwarding and saving\n",
               "name": "protect_content"
+            },
+            {
+              "type": "String",
+              "required": false,
+              "description": "Unique identifier of the message effect to be added to the message; for private chats only",
+              "html_description": "<td>Unique identifier of the message effect to be added to the message; for private chats only</td>",
+              "rst_description": "Unique identifier of the message effect to be added to the message; for private chats only\n",
+              "name": "message_effect_id"
             },
             {
               "type": "ReplyParameters",
@@ -15057,34 +15329,34 @@
             },
             {
               "type": "String",
-              "required": true,
-              "description": "Payment provider token, obtained via BotFather",
-              "html_description": "<td>Payment provider token, obtained via <a href=\"https://t.me/botfather\">BotFather</a></td>",
-              "rst_description": "Payment provider token, obtained via `BotFather <https://t.me/botfather>`_\n",
+              "required": false,
+              "description": "Payment provider token, obtained via @BotFather. Pass an empty string for payments in Telegram Stars.",
+              "html_description": "<td>Payment provider token, obtained via <a href=\"https://t.me/botfather\">@BotFather</a>. Pass an empty string for payments in <a href=\"https://t.me/BotNews/90\">Telegram Stars</a>.</td>",
+              "rst_description": "Payment provider token, obtained via `@BotFather <https://t.me/botfather>`_. Pass an empty string for payments in `Telegram Stars <https://t.me/BotNews/90>`_.\n",
               "name": "provider_token"
             },
             {
               "type": "String",
               "required": true,
-              "description": "Three-letter ISO 4217 currency code, see more on currencies",
-              "html_description": "<td>Three-letter ISO 4217 currency code, see <a href=\"/bots/payments#supported-currencies\">more on currencies</a></td>",
-              "rst_description": "Three-letter ISO 4217 currency code, see `more on currencies <https://core.telegram.org/bots/payments#supported-currencies>`_\n",
+              "description": "Three-letter ISO 4217 currency code, see more on currencies. Pass 'XTR' for payments in Telegram Stars.",
+              "html_description": "<td>Three-letter ISO 4217 currency code, see <a href=\"/bots/payments#supported-currencies\">more on currencies</a>. Pass &#8220;XTR&#8221; for payments in <a href=\"https://t.me/BotNews/90\">Telegram Stars</a>.</td>",
+              "rst_description": "Three-letter ISO 4217 currency code, see `more on currencies <https://core.telegram.org/bots/payments#supported-currencies>`_. Pass 'XTR' for payments in `Telegram Stars <https://t.me/BotNews/90>`_.\n",
               "name": "currency"
             },
             {
               "type": "Array of LabeledPrice",
               "required": true,
-              "description": "Price breakdown, a JSON-serialized list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.)",
-              "html_description": "<td>Price breakdown, a JSON-serialized list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.)</td>",
-              "rst_description": "Price breakdown, a JSON-serialized list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.)\n",
+              "description": "Price breakdown, a JSON-serialized list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.). Must contain exactly one item for payments in Telegram Stars.",
+              "html_description": "<td>Price breakdown, a JSON-serialized list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.). Must contain exactly one item for payments in <a href=\"https://t.me/BotNews/90\">Telegram Stars</a>.</td>",
+              "rst_description": "Price breakdown, a JSON-serialized list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.). Must contain exactly one item for payments in `Telegram Stars <https://t.me/BotNews/90>`_.\n",
               "name": "prices"
             },
             {
               "type": "Integer",
               "required": false,
-              "description": "The maximum accepted amount for tips in the smallest units of the currency (integer, not float/double). For example, for a maximum tip of US$ 1.45 pass max_tip_amount = 145. See the exp parameter in currencies.json, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies). Defaults to 0",
-              "html_description": "<td>The maximum accepted amount for tips in the <em>smallest units</em> of the currency (integer, <strong>not</strong> float/double). For example, for a maximum tip of <code>US$ 1.45</code> pass <code>max_tip_amount = 145</code>. See the <em>exp</em> parameter in <a href=\"/bots/payments/currencies.json\">currencies.json</a>, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies). Defaults to 0</td>",
-              "rst_description": "The maximum accepted amount for tips in the *smallest units* of the currency (integer, **not** float/double). For example, for a maximum tip of :code:`US$ 1.45` pass :code:`max_tip_amount = 145`. See the *exp* parameter in `currencies.json <https://core.telegram.org/bots/payments/currencies.json>`_, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies). Defaults to 0\n",
+              "description": "The maximum accepted amount for tips in the smallest units of the currency (integer, not float/double). For example, for a maximum tip of US$ 1.45 pass max_tip_amount = 145. See the exp parameter in currencies.json, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies). Defaults to 0. Not supported for payments in Telegram Stars.",
+              "html_description": "<td>The maximum accepted amount for tips in the <em>smallest units</em> of the currency (integer, <strong>not</strong> float/double). For example, for a maximum tip of <code>US$ 1.45</code> pass <code>max_tip_amount = 145</code>. See the <em>exp</em> parameter in <a href=\"/bots/payments/currencies.json\">currencies.json</a>, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies). Defaults to 0. Not supported for payments in <a href=\"https://t.me/BotNews/90\">Telegram Stars</a>.</td>",
+              "rst_description": "The maximum accepted amount for tips in the *smallest units* of the currency (integer, **not** float/double). For example, for a maximum tip of :code:`US$ 1.45` pass :code:`max_tip_amount = 145`. See the *exp* parameter in `currencies.json <https://core.telegram.org/bots/payments/currencies.json>`_, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies). Defaults to 0. Not supported for payments in `Telegram Stars <https://t.me/BotNews/90>`_.\n",
               "name": "max_tip_amount"
             },
             {
@@ -15138,57 +15410,57 @@
             {
               "type": "Boolean",
               "required": false,
-              "description": "Pass True if you require the user's full name to complete the order",
-              "html_description": "<td>Pass <em>True</em> if you require the user's full name to complete the order</td>",
-              "rst_description": "Pass :code:`True` if you require the user's full name to complete the order\n",
+              "description": "Pass True if you require the user's full name to complete the order. Ignored for payments in Telegram Stars.",
+              "html_description": "<td>Pass <em>True</em> if you require the user's full name to complete the order. Ignored for payments in <a href=\"https://t.me/BotNews/90\">Telegram Stars</a>.</td>",
+              "rst_description": "Pass :code:`True` if you require the user's full name to complete the order. Ignored for payments in `Telegram Stars <https://t.me/BotNews/90>`_.\n",
               "name": "need_name"
             },
             {
               "type": "Boolean",
               "required": false,
-              "description": "Pass True if you require the user's phone number to complete the order",
-              "html_description": "<td>Pass <em>True</em> if you require the user's phone number to complete the order</td>",
-              "rst_description": "Pass :code:`True` if you require the user's phone number to complete the order\n",
+              "description": "Pass True if you require the user's phone number to complete the order. Ignored for payments in Telegram Stars.",
+              "html_description": "<td>Pass <em>True</em> if you require the user's phone number to complete the order. Ignored for payments in <a href=\"https://t.me/BotNews/90\">Telegram Stars</a>.</td>",
+              "rst_description": "Pass :code:`True` if you require the user's phone number to complete the order. Ignored for payments in `Telegram Stars <https://t.me/BotNews/90>`_.\n",
               "name": "need_phone_number"
             },
             {
               "type": "Boolean",
               "required": false,
-              "description": "Pass True if you require the user's email address to complete the order",
-              "html_description": "<td>Pass <em>True</em> if you require the user's email address to complete the order</td>",
-              "rst_description": "Pass :code:`True` if you require the user's email address to complete the order\n",
+              "description": "Pass True if you require the user's email address to complete the order. Ignored for payments in Telegram Stars.",
+              "html_description": "<td>Pass <em>True</em> if you require the user's email address to complete the order. Ignored for payments in <a href=\"https://t.me/BotNews/90\">Telegram Stars</a>.</td>",
+              "rst_description": "Pass :code:`True` if you require the user's email address to complete the order. Ignored for payments in `Telegram Stars <https://t.me/BotNews/90>`_.\n",
               "name": "need_email"
             },
             {
               "type": "Boolean",
               "required": false,
-              "description": "Pass True if you require the user's shipping address to complete the order",
-              "html_description": "<td>Pass <em>True</em> if you require the user's shipping address to complete the order</td>",
-              "rst_description": "Pass :code:`True` if you require the user's shipping address to complete the order\n",
+              "description": "Pass True if you require the user's shipping address to complete the order. Ignored for payments in Telegram Stars.",
+              "html_description": "<td>Pass <em>True</em> if you require the user's shipping address to complete the order. Ignored for payments in <a href=\"https://t.me/BotNews/90\">Telegram Stars</a>.</td>",
+              "rst_description": "Pass :code:`True` if you require the user's shipping address to complete the order. Ignored for payments in `Telegram Stars <https://t.me/BotNews/90>`_.\n",
               "name": "need_shipping_address"
             },
             {
               "type": "Boolean",
               "required": false,
-              "description": "Pass True if the user's phone number should be sent to the provider",
-              "html_description": "<td>Pass <em>True</em> if the user's phone number should be sent to the provider</td>",
-              "rst_description": "Pass :code:`True` if the user's phone number should be sent to the provider\n",
+              "description": "Pass True if the user's phone number should be sent to the provider. Ignored for payments in Telegram Stars.",
+              "html_description": "<td>Pass <em>True</em> if the user's phone number should be sent to the provider. Ignored for payments in <a href=\"https://t.me/BotNews/90\">Telegram Stars</a>.</td>",
+              "rst_description": "Pass :code:`True` if the user's phone number should be sent to the provider. Ignored for payments in `Telegram Stars <https://t.me/BotNews/90>`_.\n",
               "name": "send_phone_number_to_provider"
             },
             {
               "type": "Boolean",
               "required": false,
-              "description": "Pass True if the user's email address should be sent to the provider",
-              "html_description": "<td>Pass <em>True</em> if the user's email address should be sent to the provider</td>",
-              "rst_description": "Pass :code:`True` if the user's email address should be sent to the provider\n",
+              "description": "Pass True if the user's email address should be sent to the provider. Ignored for payments in Telegram Stars.",
+              "html_description": "<td>Pass <em>True</em> if the user's email address should be sent to the provider. Ignored for payments in <a href=\"https://t.me/BotNews/90\">Telegram Stars</a>.</td>",
+              "rst_description": "Pass :code:`True` if the user's email address should be sent to the provider. Ignored for payments in `Telegram Stars <https://t.me/BotNews/90>`_.\n",
               "name": "send_email_to_provider"
             },
             {
               "type": "Boolean",
               "required": false,
-              "description": "Pass True if the final price depends on the shipping method",
-              "html_description": "<td>Pass <em>True</em> if the final price depends on the shipping method</td>",
-              "rst_description": "Pass :code:`True` if the final price depends on the shipping method\n",
+              "description": "Pass True if the final price depends on the shipping method. Ignored for payments in Telegram Stars.",
+              "html_description": "<td>Pass <em>True</em> if the final price depends on the shipping method. Ignored for payments in <a href=\"https://t.me/BotNews/90\">Telegram Stars</a>.</td>",
+              "rst_description": "Pass :code:`True` if the final price depends on the shipping method. Ignored for payments in `Telegram Stars <https://t.me/BotNews/90>`_.\n",
               "name": "is_flexible"
             }
           ],
@@ -15271,6 +15543,32 @@
           "category": "methods"
         },
         {
+          "anchor": "refundstarpayment",
+          "name": "refundStarPayment",
+          "description": "Refunds a successful payment in Telegram Stars. Returns True on success.",
+          "html_description": "<p>Refunds a successful payment in <a href=\"https://t.me/BotNews/90\">Telegram Stars</a>. Returns <em>True</em> on success.</p>",
+          "rst_description": "Refunds a successful payment in `Telegram Stars <https://t.me/BotNews/90>`_. Returns :code:`True` on success.",
+          "annotations": [
+            {
+              "type": "Integer",
+              "required": true,
+              "description": "Identifier of the user whose payment will be refunded",
+              "html_description": "<td>Identifier of the user whose payment will be refunded</td>",
+              "rst_description": "Identifier of the user whose payment will be refunded\n",
+              "name": "user_id"
+            },
+            {
+              "type": "String",
+              "required": true,
+              "description": "Telegram payment identifier",
+              "html_description": "<td>Telegram payment identifier</td>",
+              "rst_description": "Telegram payment identifier\n",
+              "name": "telegram_payment_charge_id"
+            }
+          ],
+          "category": "methods"
+        },
+        {
           "anchor": "labeledprice",
           "name": "LabeledPrice",
           "description": "This object represents a portion of the price for goods or services.",
@@ -15329,9 +15627,9 @@
             },
             {
               "type": "String",
-              "description": "Three-letter ISO 4217 currency code",
-              "html_description": "<td>Three-letter ISO 4217 <a href=\"/bots/payments#supported-currencies\">currency</a> code</td>",
-              "rst_description": "Three-letter ISO 4217 `currency <https://core.telegram.org/bots/payments#supported-currencies>`_ code\n",
+              "description": "Three-letter ISO 4217 currency code, or 'XTR' for payments in Telegram Stars",
+              "html_description": "<td>Three-letter ISO 4217 <a href=\"/bots/payments#supported-currencies\">currency</a> code, or &#8220;XTR&#8221; for payments in <a href=\"https://t.me/BotNews/90\">Telegram Stars</a></td>",
+              "rst_description": "Three-letter ISO 4217 `currency <https://core.telegram.org/bots/payments#supported-currencies>`_ code, or 'XTR' for payments in `Telegram Stars <https://t.me/BotNews/90>`_\n",
               "name": "currency",
               "required": true
             },
@@ -15489,9 +15787,9 @@
           "annotations": [
             {
               "type": "String",
-              "description": "Three-letter ISO 4217 currency code",
-              "html_description": "<td>Three-letter ISO 4217 <a href=\"/bots/payments#supported-currencies\">currency</a> code</td>",
-              "rst_description": "Three-letter ISO 4217 `currency <https://core.telegram.org/bots/payments#supported-currencies>`_ code\n",
+              "description": "Three-letter ISO 4217 currency code, or 'XTR' for payments in Telegram Stars",
+              "html_description": "<td>Three-letter ISO 4217 <a href=\"/bots/payments#supported-currencies\">currency</a> code, or &#8220;XTR&#8221; for payments in <a href=\"https://t.me/BotNews/90\">Telegram Stars</a></td>",
+              "rst_description": "Three-letter ISO 4217 `currency <https://core.telegram.org/bots/payments#supported-currencies>`_ code, or 'XTR' for payments in `Telegram Stars <https://t.me/BotNews/90>`_\n",
               "name": "currency",
               "required": true
             },
@@ -15613,9 +15911,9 @@
             },
             {
               "type": "String",
-              "description": "Three-letter ISO 4217 currency code",
-              "html_description": "<td>Three-letter ISO 4217 <a href=\"/bots/payments#supported-currencies\">currency</a> code</td>",
-              "rst_description": "Three-letter ISO 4217 `currency <https://core.telegram.org/bots/payments#supported-currencies>`_ code\n",
+              "description": "Three-letter ISO 4217 currency code, or 'XTR' for payments in Telegram Stars",
+              "html_description": "<td>Three-letter ISO 4217 <a href=\"/bots/payments#supported-currencies\">currency</a> code, or &#8220;XTR&#8221; for payments in <a href=\"https://t.me/BotNews/90\">Telegram Stars</a></td>",
+              "rst_description": "Three-letter ISO 4217 `currency <https://core.telegram.org/bots/payments#supported-currencies>`_ code, or 'XTR' for payments in `Telegram Stars <https://t.me/BotNews/90>`_\n",
               "name": "currency",
               "required": true
             },
@@ -16335,6 +16633,14 @@
               "html_description": "<td>Protects the contents of the sent message from forwarding and saving</td>",
               "rst_description": "Protects the contents of the sent message from forwarding and saving\n",
               "name": "protect_content"
+            },
+            {
+              "type": "String",
+              "required": false,
+              "description": "Unique identifier of the message effect to be added to the message; for private chats only",
+              "html_description": "<td>Unique identifier of the message effect to be added to the message; for private chats only</td>",
+              "rst_description": "Unique identifier of the message effect to be added to the message; for private chats only\n",
+              "name": "message_effect_id"
             },
             {
               "type": "ReplyParameters",

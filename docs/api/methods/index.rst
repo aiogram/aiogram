@@ -161,6 +161,7 @@ Payments
     answer_pre_checkout_query
     answer_shipping_query
     create_invoice_link
+    refund_star_payment
     send_invoice
 
 Getting updates

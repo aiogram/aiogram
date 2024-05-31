@@ -70,6 +70,14 @@
       {
         "type": "Boolean",
         "required": false,
+        "description": "Pass True, if the caption must be shown above the message media. Ignored if a new caption isn't specified.",
+        "html_description": "<td>Pass <em>True</em>, if the caption must be shown above the message media. Ignored if a new caption isn't specified.</td>",
+        "rst_description": "Pass :code:`True`, if the caption must be shown above the message media. Ignored if a new caption isn't specified.\n",
+        "name": "show_caption_above_media"
+      },
+      {
+        "type": "Boolean",
+        "required": false,
         "description": "Sends the message silently. Users will receive a notification with no sound.",
         "html_description": "<td>Sends the message <a href=\"https://telegram.org/blog/channels-2-0#silent-messages\">silently</a>. Users will receive a notification with no sound.</td>",
         "rst_description": "Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.\n",

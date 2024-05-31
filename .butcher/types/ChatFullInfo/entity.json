@@ -221,9 +221,9 @@
       },
       {
         "type": "True",
-        "description": "True, if all users directly joining the supergroup need to be approved by supergroup administrators",
-        "html_description": "<td><em>Optional</em>. <em>True</em>, if all users directly joining the supergroup need to be approved by supergroup administrators</td>",
-        "rst_description": "*Optional*. :code:`True`, if all users directly joining the supergroup need to be approved by supergroup administrators\n",
+        "description": "True, if all users directly joining the supergroup without using an invite link need to be approved by supergroup administrators",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if all users directly joining the supergroup without using an invite link need to be approved by supergroup administrators</td>",
+        "rst_description": "*Optional*. :code:`True`, if all users directly joining the supergroup without using an invite link need to be approved by supergroup administrators\n",
         "name": "join_by_request",
         "required": false
       },

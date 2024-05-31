@@ -60,6 +60,14 @@
         "name": "protect_content"
       },
       {
+        "type": "String",
+        "required": false,
+        "description": "Unique identifier of the message effect to be added to the message; for private chats only",
+        "html_description": "<td>Unique identifier of the message effect to be added to the message; for private chats only</td>",
+        "rst_description": "Unique identifier of the message effect to be added to the message; for private chats only\n",
+        "name": "message_effect_id"
+      },
+      {
         "type": "ReplyParameters",
         "required": false,
         "description": "Description of the message to reply to",

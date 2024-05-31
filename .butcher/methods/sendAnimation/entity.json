@@ -102,6 +102,14 @@
       {
         "type": "Boolean",
         "required": false,
+        "description": "Pass True, if the caption must be shown above the message media",
+        "html_description": "<td>Pass <em>True</em>, if the caption must be shown above the message media</td>",
+        "rst_description": "Pass :code:`True`, if the caption must be shown above the message media\n",
+        "name": "show_caption_above_media"
+      },
+      {
+        "type": "Boolean",
+        "required": false,
         "description": "Pass True if the animation needs to be covered with a spoiler animation",
         "html_description": "<td>Pass <em>True</em> if the animation needs to be covered with a spoiler animation</td>",
         "rst_description": "Pass :code:`True` if the animation needs to be covered with a spoiler animation\n",
@@ -122,6 +130,14 @@
         "html_description": "<td>Protects the contents of the sent message from forwarding and saving</td>",
         "rst_description": "Protects the contents of the sent message from forwarding and saving\n",
         "name": "protect_content"
+      },
+      {
+        "type": "String",
+        "required": false,
+        "description": "Unique identifier of the message effect to be added to the message; for private chats only",
+        "html_description": "<td>Unique identifier of the message effect to be added to the message; for private chats only</td>",
+        "rst_description": "Unique identifier of the message effect to be added to the message; for private chats only\n",
+        "name": "message_effect_id"
       },
       {
         "type": "ReplyParameters",

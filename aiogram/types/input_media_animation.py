@@ -30,6 +30,8 @@ class InputMediaAnimation(InputMedia):
     """*Optional*. Mode for parsing entities in the animation caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details."""
     caption_entities: Optional[List[MessageEntity]] = None
     """*Optional*. List of special entities that appear in the caption, which can be specified instead of *parse_mode*"""
+    show_caption_above_media: Optional[Union[bool, Default]] = Default("show_caption_above_media")
+    """*Optional*. Pass :code:`True`, if the caption must be shown above the message media"""
     width: Optional[int] = None
     """*Optional*. Animation width"""
     height: Optional[int] = None
@@ -52,6 +54,9 @@ class InputMediaAnimation(InputMedia):
             caption: Optional[str] = None,
             parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
             caption_entities: Optional[List[MessageEntity]] = None,
+            show_caption_above_media: Optional[Union[bool, Default]] = Default(
+                "show_caption_above_media"
+            ),
             width: Optional[int] = None,
             height: Optional[int] = None,
             duration: Optional[int] = None,
@@ -69,6 +74,7 @@ class InputMediaAnimation(InputMedia):
                 caption=caption,
                 parse_mode=parse_mode,
                 caption_entities=caption_entities,
+                show_caption_above_media=show_caption_above_media,
                 width=width,
                 height=height,
                 duration=duration,

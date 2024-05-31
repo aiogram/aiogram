@@ -61,9 +61,9 @@
       },
       {
         "type": "Boolean",
-        "description": "True, if the user joined the chat after sending a direct join request and being approved by an administrator",
-        "html_description": "<td><em>Optional</em>. True, if the user joined the chat after sending a direct join request and being approved by an administrator</td>",
-        "rst_description": "*Optional*. True, if the user joined the chat after sending a direct join request and being approved by an administrator\n",
+        "description": "True, if the user joined the chat after sending a direct join request without using an invite link and being approved by an administrator",
+        "html_description": "<td><em>Optional</em>. True, if the user joined the chat after sending a direct join request without using an invite link and being approved by an administrator</td>",
+        "rst_description": "*Optional*. True, if the user joined the chat after sending a direct join request without using an invite link and being approved by an administrator\n",
         "name": "via_join_request",
         "required": false
       },
