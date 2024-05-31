@@ -1,2 +1,0 @@
-Removed deprecated arguments from Bot class
-:code:`parse_mode`, :code:`disable_web_page_preview`, :code:`protect_content` as previously announced in v3.4.0.
