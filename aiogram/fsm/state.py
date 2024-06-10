@@ -87,14 +87,16 @@ class StatesGroupMeta(type):
             elif inspect.isclass(arg) and issubclass(arg, StatesGroup):
                 childs.append(arg)
                 arg.__parent__ = cls
-                arg.__update_all_values__()
+                arg.__all_states_names__ = arg.__get_all_states_names__()
 
         cls.__parent__ = None
         cls.__childs__ = tuple(childs)
         cls.__states__ = tuple(states)
         cls.__state_names__ = tuple(state.state for state in states)
 
-        cls.__update_all_values__()
+        cls.__all_childs__ = cls.__get_all_childs__()
+        cls.__all_states__ = cls.__get_all_states__()
+        cls.__all_states_names__ = cls.__get_all_states_names__()
         return cls
 
     @property
@@ -102,11 +104,6 @@ class StatesGroupMeta(type):
         if cls.__parent__:
             return ".".join((cls.__parent__.__full_group_name__, cls.__name__))
         return cls.__name__
-
-    def __update_all_values__(cls) -> None:
-        cls.__all_childs__ = cls.__get_all_childs__()
-        cls.__all_states__ = cls.__get_all_states__()
-        cls.__all_states_names__ = cls.__get_all_states_names__()
 
     def __get_all_childs__(cls) -> Tuple[Type["StatesGroup"], ...]:
         result = cls.__childs__
