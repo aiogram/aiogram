@@ -21,14 +21,14 @@ class InputInvoiceMessageContent(InputMessageContent):
     """Product description, 1-255 characters"""
     payload: str
     """Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use for your internal processes."""
-    provider_token: str
-    """Payment provider token, obtained via `@BotFather <https://t.me/botfather>`_"""
     currency: str
-    """Three-letter ISO 4217 currency code, see `more on currencies <https://core.telegram.org/bots/payments#supported-currencies>`_"""
+    """Three-letter ISO 4217 currency code, see `more on currencies <https://core.telegram.org/bots/payments#supported-currencies>`_. Pass 'XTR' for payments in `Telegram Stars <https://t.me/BotNews/90>`_."""
     prices: List[LabeledPrice]
-    """Price breakdown, a JSON-serialized list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.)"""
+    """Price breakdown, a JSON-serialized list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.). Must contain exactly one item for payments in `Telegram Stars <https://t.me/BotNews/90>`_."""
+    provider_token: Optional[str] = None
+    """*Optional*. Payment provider token, obtained via `@BotFather <https://t.me/botfather>`_. Pass an empty string for payments in `Telegram Stars <https://t.me/BotNews/90>`_."""
     max_tip_amount: Optional[int] = None
-    """*Optional*. The maximum accepted amount for tips in the *smallest units* of the currency (integer, **not** float/double). For example, for a maximum tip of :code:`US$ 1.45` pass :code:`max_tip_amount = 145`. See the *exp* parameter in `currencies.json <https://core.telegram.org/bots/payments/currencies.json>`_, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies). Defaults to 0"""
+    """*Optional*. The maximum accepted amount for tips in the *smallest units* of the currency (integer, **not** float/double). For example, for a maximum tip of :code:`US$ 1.45` pass :code:`max_tip_amount = 145`. See the *exp* parameter in `currencies.json <https://core.telegram.org/bots/payments/currencies.json>`_, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies). Defaults to 0. Not supported for payments in `Telegram Stars <https://t.me/BotNews/90>`_."""
     suggested_tip_amounts: Optional[List[int]] = None
     """*Optional*. A JSON-serialized array of suggested amounts of tip in the *smallest units* of the currency (integer, **not** float/double). At most 4 suggested tip amounts can be specified. The suggested tip amounts must be positive, passed in a strictly increased order and must not exceed *max_tip_amount*."""
     provider_data: Optional[str] = None
@@ -42,19 +42,19 @@ class InputInvoiceMessageContent(InputMessageContent):
     photo_height: Optional[int] = None
     """*Optional*. Photo height"""
     need_name: Optional[bool] = None
-    """*Optional*. Pass :code:`True` if you require the user's full name to complete the order"""
+    """*Optional*. Pass :code:`True` if you require the user's full name to complete the order. Ignored for payments in `Telegram Stars <https://t.me/BotNews/90>`_."""
     need_phone_number: Optional[bool] = None
-    """*Optional*. Pass :code:`True` if you require the user's phone number to complete the order"""
+    """*Optional*. Pass :code:`True` if you require the user's phone number to complete the order. Ignored for payments in `Telegram Stars <https://t.me/BotNews/90>`_."""
     need_email: Optional[bool] = None
-    """*Optional*. Pass :code:`True` if you require the user's email address to complete the order"""
+    """*Optional*. Pass :code:`True` if you require the user's email address to complete the order. Ignored for payments in `Telegram Stars <https://t.me/BotNews/90>`_."""
     need_shipping_address: Optional[bool] = None
-    """*Optional*. Pass :code:`True` if you require the user's shipping address to complete the order"""
+    """*Optional*. Pass :code:`True` if you require the user's shipping address to complete the order. Ignored for payments in `Telegram Stars <https://t.me/BotNews/90>`_."""
     send_phone_number_to_provider: Optional[bool] = None
-    """*Optional*. Pass :code:`True` if the user's phone number should be sent to provider"""
+    """*Optional*. Pass :code:`True` if the user's phone number should be sent to the provider. Ignored for payments in `Telegram Stars <https://t.me/BotNews/90>`_."""
     send_email_to_provider: Optional[bool] = None
-    """*Optional*. Pass :code:`True` if the user's email address should be sent to provider"""
+    """*Optional*. Pass :code:`True` if the user's email address should be sent to the provider. Ignored for payments in `Telegram Stars <https://t.me/BotNews/90>`_."""
     is_flexible: Optional[bool] = None
-    """*Optional*. Pass :code:`True` if the final price depends on the shipping method"""
+    """*Optional*. Pass :code:`True` if the final price depends on the shipping method. Ignored for payments in `Telegram Stars <https://t.me/BotNews/90>`_."""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!
@@ -66,9 +66,9 @@ class InputInvoiceMessageContent(InputMessageContent):
             title: str,
             description: str,
             payload: str,
-            provider_token: str,
             currency: str,
             prices: List[LabeledPrice],
+            provider_token: Optional[str] = None,
             max_tip_amount: Optional[int] = None,
             suggested_tip_amounts: Optional[List[int]] = None,
             provider_data: Optional[str] = None,
@@ -93,9 +93,9 @@ class InputInvoiceMessageContent(InputMessageContent):
                 title=title,
                 description=description,
                 payload=payload,
-                provider_token=provider_token,
                 currency=currency,
                 prices=prices,
+                provider_token=provider_token,
                 max_tip_amount=max_tip_amount,
                 suggested_tip_amounts=suggested_tip_amounts,
                 provider_data=provider_data,

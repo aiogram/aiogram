@@ -12,9 +12,43 @@ Changelog
 
     WARNING: Don't drop the next directive!
 
-.. towncrier-draft-entries:: |release| [UNRELEASED DRAFT]
+.. towncrier-draft-entries:: [UPCOMING UPDATE]
 
 .. towncrier release notes start
+
+3.7.0 (2024-05-31)
+===================
+
+Features
+--------
+
+- Added new storage :code:`aiogram.fsm.storage.MongoStorage` for Finite State Machine based on Mongo DB (using :code:`motor` library)
+  `#1434 <https://github.com/aiogram/aiogram/issues/1434>`_
+- Added full support of `Bot API 7.4 <https://core.telegram.org/bots/api-changelog#may-28-2024>`_
+  `#1498 <https://github.com/aiogram/aiogram/issues/1498>`_
+
+
+Bugfixes
+--------
+
+- Fixed wrong :code:`MarkdownV2` custom emoji parsing in :code:`aiogram.utils.text_decorations`
+  `#1496 <https://github.com/aiogram/aiogram/issues/1496>`_
+
+
+Deprecations and Removals
+-------------------------
+
+- Removed deprecated arguments from Bot class
+  :code:`parse_mode`, :code:`disable_web_page_preview`, :code:`protect_content` as previously announced in v3.4.0.
+  `#1494 <https://github.com/aiogram/aiogram/issues/1494>`_
+
+
+Misc
+----
+
+- Improved code consistency and readability in code examples by refactoring imports, adjusting the base webhook URL, modifying bot instance initialization to utilize DefaultBotProperties, and updating router message handlers.
+  `#1482 <https://github.com/aiogram/aiogram/issues/1482>`_
+
 
 3.6.0 (2024-05-06)
 ===================

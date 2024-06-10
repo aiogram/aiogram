@@ -16,6 +16,8 @@ from aiogram.types import (
     ReplyKeyboardRemove,
 )
 
+TOKEN = getenv("BOT_TOKEN")
+
 BUTTON_CANCEL = KeyboardButton(text="❌ Cancel")
 BUTTON_BACK = KeyboardButton(text="🔙 Back")
 
@@ -195,9 +197,13 @@ def create_dispatcher() -> Dispatcher:
     return dispatcher
 
 
+def main() -> None:
+    dp = create_dispatcher()
+    bot = Bot(token=TOKEN)
+    dp.run_polling(bot)
+
+
 if __name__ == "__main__":
     # Recommended to use CLI instead of this snippet.
     # `aiogram run polling scene_example:create_dispatcher --token BOT_TOKEN --log-level info`
-    dp = create_dispatcher()
-    bot = Bot(token=getenv("TELEGRAM_TOKEN"))
-    dp.run_polling()
+    main()

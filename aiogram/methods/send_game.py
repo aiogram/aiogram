@@ -31,6 +31,8 @@ class SendGame(TelegramMethod[Message]):
     """Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound."""
     protect_content: Optional[Union[bool, Default]] = Default("protect_content")
     """Protects the contents of the sent message from forwarding and saving"""
+    message_effect_id: Optional[str] = None
+    """Unique identifier of the message effect to be added to the message; for private chats only"""
     reply_parameters: Optional[ReplyParameters] = None
     """Description of the message to reply to"""
     reply_markup: Optional[InlineKeyboardMarkup] = None
@@ -61,6 +63,7 @@ class SendGame(TelegramMethod[Message]):
             message_thread_id: Optional[int] = None,
             disable_notification: Optional[bool] = None,
             protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+            message_effect_id: Optional[str] = None,
             reply_parameters: Optional[ReplyParameters] = None,
             reply_markup: Optional[InlineKeyboardMarkup] = None,
             allow_sending_without_reply: Optional[bool] = None,
@@ -78,6 +81,7 @@ class SendGame(TelegramMethod[Message]):
                 message_thread_id=message_thread_id,
                 disable_notification=disable_notification,
                 protect_content=protect_content,
+                message_effect_id=message_effect_id,
                 reply_parameters=reply_parameters,
                 reply_markup=reply_markup,
                 allow_sending_without_reply=allow_sending_without_reply,

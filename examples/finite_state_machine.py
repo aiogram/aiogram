@@ -5,6 +5,7 @@ from os import getenv
 from typing import Any, Dict
 
 from aiogram import Bot, Dispatcher, F, Router, html
+from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 from aiogram.filters import Command, CommandStart
 from aiogram.fsm.context import FSMContext
@@ -124,10 +125,14 @@ async def show_summary(message: Message, data: Dict[str, Any], positive: bool = 
 
 
 async def main():
-    bot = Bot(token=TOKEN, parse_mode=ParseMode.HTML)
+    # Initialize Bot instance with default bot properties which will be passed to all API calls
+    bot = Bot(token=TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
+
     dp = Dispatcher()
+
     dp.include_router(form_router)
 
+    # Start event dispatching
     await dp.start_polling(bot)
 
 

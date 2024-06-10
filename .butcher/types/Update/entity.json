@@ -61,9 +61,9 @@
       },
       {
         "type": "Message",
-        "description": "New non-service message from a connected business account",
-        "html_description": "<td><em>Optional</em>. New non-service message from a connected business account</td>",
-        "rst_description": "*Optional*. New non-service message from a connected business account\n",
+        "description": "New message from a connected business account",
+        "html_description": "<td><em>Optional</em>. New message from a connected business account</td>",
+        "rst_description": "*Optional*. New message from a connected business account\n",
         "name": "business_message",
         "required": false
       },

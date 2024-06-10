@@ -48,6 +48,8 @@ class InlineQueryResultGif(InlineQueryResult):
     """*Optional*. Mode for parsing entities in the caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details."""
     caption_entities: Optional[List[MessageEntity]] = None
     """*Optional*. List of special entities that appear in the caption, which can be specified instead of *parse_mode*"""
+    show_caption_above_media: Optional[Union[bool, Default]] = Default("show_caption_above_media")
+    """*Optional*. Pass :code:`True`, if the caption must be shown above the message media"""
     reply_markup: Optional[InlineKeyboardMarkup] = None
     """*Optional*. `Inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_ attached to the message"""
     input_message_content: Optional[
@@ -80,6 +82,9 @@ class InlineQueryResultGif(InlineQueryResult):
             caption: Optional[str] = None,
             parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
             caption_entities: Optional[List[MessageEntity]] = None,
+            show_caption_above_media: Optional[Union[bool, Default]] = Default(
+                "show_caption_above_media"
+            ),
             reply_markup: Optional[InlineKeyboardMarkup] = None,
             input_message_content: Optional[
                 Union[
@@ -109,6 +114,7 @@ class InlineQueryResultGif(InlineQueryResult):
                 caption=caption,
                 parse_mode=parse_mode,
                 caption_entities=caption_entities,
+                show_caption_above_media=show_caption_above_media,
                 reply_markup=reply_markup,
                 input_message_content=input_message_content,
                 **__pydantic_kwargs,

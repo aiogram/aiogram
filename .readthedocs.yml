@@ -6,7 +6,7 @@ build:
     python: "3.11"
   jobs:
     post_install:
-      - pip install .[docs,redis]
+      - pip install .[docs,redis,mongo]
 
 sphinx:
   configuration: docs/conf.py

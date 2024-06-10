@@ -71,6 +71,11 @@ class TestTextDecoration:
                 MessageEntity(type="blockquote", offset=0, length=5),
                 "<blockquote>test</blockquote>",
             ],
+            [
+                html_decoration,
+                MessageEntity(type="expandable_blockquote", offset=0, length=5),
+                "<blockquote expandable>test</blockquote>",
+            ],
             [markdown_decoration, MessageEntity(type="bold", offset=0, length=5), "*test*"],
             [markdown_decoration, MessageEntity(type="italic", offset=0, length=5), "_\rtest_\r"],
             [markdown_decoration, MessageEntity(type="code", offset=0, length=5), "`test`"],
@@ -99,7 +104,7 @@ class TestTextDecoration:
             [
                 markdown_decoration,
                 MessageEntity(type="custom_emoji", offset=0, length=5, custom_emoji_id="42"),
-                "[test](tg://emoji?id=42)",
+                "![test](tg://emoji?id=42)",
             ],
             [
                 markdown_decoration,
@@ -115,6 +120,11 @@ class TestTextDecoration:
                 markdown_decoration,
                 MessageEntity(type="blockquote", offset=0, length=5),
                 ">test",
+            ],
+            [
+                markdown_decoration,
+                MessageEntity(type="expandable_blockquote", offset=0, length=5),
+                ">test||",
             ],
         ],
     )

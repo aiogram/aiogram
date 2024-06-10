@@ -60,6 +60,14 @@
         "required": false
       },
       {
+        "type": "Boolean",
+        "description": "Pass True, if the caption must be shown above the message media",
+        "html_description": "<td><em>Optional</em>. Pass <em>True</em>, if the caption must be shown above the message media</td>",
+        "rst_description": "*Optional*. Pass :code:`True`, if the caption must be shown above the message media\n",
+        "name": "show_caption_above_media",
+        "required": false
+      },
+      {
         "type": "Integer",
         "description": "Animation width",
         "html_description": "<td><em>Optional</em>. Animation width</td>",

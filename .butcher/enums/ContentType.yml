@@ -41,3 +41,5 @@ extract:
     - sender_business_bot
     - is_from_offline
     - has_media_spoiler
+    - effect_id
+    - show_caption_above_media
