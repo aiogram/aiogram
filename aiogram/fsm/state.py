@@ -70,6 +70,9 @@ class StatesGroupMeta(type):
     __childs__: "Tuple[Type[StatesGroup], ...]"
     __states__: Tuple[State, ...]
     __state_names__: Tuple[str, ...]
+    __all_childs__: Tuple[Type["StatesGroup"], ...]
+    __all_states__: Tuple[State, ...]
+    __all_states_names__: Tuple[str, ...]
 
     @no_type_check
     def __new__(mcs, name, bases, namespace, **kwargs):
@@ -84,12 +87,14 @@ class StatesGroupMeta(type):
             elif inspect.isclass(arg) and issubclass(arg, StatesGroup):
                 childs.append(arg)
                 arg.__parent__ = cls
+                arg.__update_all_values__()
 
         cls.__parent__ = None
         cls.__childs__ = tuple(childs)
         cls.__states__ = tuple(states)
         cls.__state_names__ = tuple(state.state for state in states)
 
+        cls.__update_all_values__()
         return cls
 
     @property
@@ -98,22 +103,24 @@ class StatesGroupMeta(type):
             return ".".join((cls.__parent__.__full_group_name__, cls.__name__))
         return cls.__name__
 
-    @property
-    def __all_childs__(cls) -> Tuple[Type["StatesGroup"], ...]:
+    def __update_all_values__(cls) -> None:
+        cls.__all_childs__ = cls.__get_all_childs__()
+        cls.__all_states__ = cls.__get_all_states__()
+        cls.__all_states_names__ = cls.__get_all_states_names__()
+
+    def __get_all_childs__(cls) -> Tuple[Type["StatesGroup"], ...]:
         result = cls.__childs__
         for child in cls.__childs__:
             result += child.__childs__
         return result
 
-    @property
-    def __all_states__(cls) -> Tuple[State, ...]:
+    def __get_all_states__(cls) -> Tuple[State, ...]:
         result = cls.__states__
         for group in cls.__childs__:
             result += group.__all_states__
         return result
 
-    @property
-    def __all_states_names__(cls) -> Tuple[str, ...]:
+    def __get_all_states_names__(cls) -> Tuple[str, ...]:
         return tuple(state.state for state in cls.__all_states__ if state.state)
 
     def __contains__(cls, item: Any) -> bool:
