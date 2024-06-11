@@ -3,12 +3,14 @@ import pytest
 from aiogram.enums import MessageEntityType
 from aiogram.types import MessageEntity, User
 from aiogram.utils.formatting import (
+    BlockQuote,
     Bold,
     BotCommand,
     CashTag,
     Code,
     CustomEmoji,
     Email,
+    ExpandableBlockQuote,
     HashTag,
     Italic,
     PhoneNumber,
@@ -29,8 +31,6 @@ from aiogram.utils.formatting import (
     as_numbered_list,
     as_numbered_section,
     as_section,
-    BlockQuote,
-    ExpandableBlockQuote,
 )
 from aiogram.utils.text_decorations import html_decoration
 
