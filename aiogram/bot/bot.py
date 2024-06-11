@@ -3673,9 +3673,9 @@ class Bot(BaseBot, DataMixin, ContextInstanceMixin):
                            title: base.String,
                            description: base.String,
                            payload: base.String,
-                           provider_token: base.String,
                            currency: base.String,
                            prices: typing.List[types.LabeledPrice],
+                           provider_token: base.String = None,
                            max_tip_amount: typing.Optional[base.Integer] = None,
                            suggested_tip_amounts: typing.Optional[
                                typing.List[base.Integer]
