@@ -76,7 +76,7 @@ class StatesGroupMeta(type):
 
     @no_type_check
     def __new__(mcs, name, bases, namespace, **kwargs):
-        cls = super(StatesGroupMeta, mcs).__new__(mcs, name, bases, namespace)
+        cls = super().__new__(mcs, name, bases, namespace)
 
         states = []
         childs = []
@@ -85,7 +85,7 @@ class StatesGroupMeta(type):
             if isinstance(arg, State):
                 states.append(arg)
             elif inspect.isclass(arg) and issubclass(arg, StatesGroup):
-                child = cls.__prepare_child(arg)
+                child = cls._prepare_child(arg)
                 childs.append(child)
 
         cls.__parent__ = None
@@ -93,13 +93,13 @@ class StatesGroupMeta(type):
         cls.__states__ = tuple(states)
         cls.__state_names__ = tuple(state.state for state in states)
 
-        cls.__all_childs__ = cls.__get_all_childs__()
-        cls.__all_states__ = cls.__get_all_states__()
+        cls.__all_childs__ = cls._get_all_childs()
+        cls.__all_states__ = cls._get_all_states()
 
         # In order to ensure performance, we calculate this parameter
         # in advance already during the production of the class.
         # Depending on the relationship, it should be recalculated
-        cls.__all_states_names__ = cls.__get_all_states_names__()
+        cls.__all_states_names__ = cls._get_all_states_names()
 
         return cls
 
@@ -120,22 +120,22 @@ class StatesGroupMeta(type):
         account the name of current parent.
         """
         child.__parent__ = cls  # type: ignore[assignment]
-        child.__all_states_names__ = child.__get_all_states_names__()
+        child.__all_states_names__ = child._get_all_states_names()
         return child
 
-    def __get_all_childs__(cls) -> Tuple[Type["StatesGroup"], ...]:
+    def _get_all_childs(cls) -> Tuple[Type["StatesGroup"], ...]:
         result = cls.__childs__
         for child in cls.__childs__:
             result += child.__childs__
         return result
 
-    def __get_all_states__(cls) -> Tuple[State, ...]:
+    def _get_all_states(cls) -> Tuple[State, ...]:
         result = cls.__states__
         for group in cls.__childs__:
             result += group.__all_states__
         return result
 
-    def __get_all_states_names__(cls) -> Tuple[str, ...]:
+    def _get_all_states_names(cls) -> Tuple[str, ...]:
         return tuple(state.state for state in cls.__all_states__ if state.state)
 
     def __contains__(cls, item: Any) -> bool:
