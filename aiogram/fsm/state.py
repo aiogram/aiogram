@@ -85,9 +85,8 @@ class StatesGroupMeta(type):
             if isinstance(arg, State):
                 states.append(arg)
             elif inspect.isclass(arg) and issubclass(arg, StatesGroup):
-                childs.append(arg)
-                arg.__parent__ = cls
-                arg.__all_states_names__ = arg.__get_all_states_names__()
+                child = cls.__prepare_child(arg)
+                childs.append(child)
 
         cls.__parent__ = None
         cls.__childs__ = tuple(childs)
@@ -96,7 +95,12 @@ class StatesGroupMeta(type):
 
         cls.__all_childs__ = cls.__get_all_childs__()
         cls.__all_states__ = cls.__get_all_states__()
+
+        # In order to ensure performance, we calculate this parameter
+        # in advance already during the production of the class.
+        # Depending on the relationship, it should be recalculated
         cls.__all_states_names__ = cls.__get_all_states_names__()
+
         return cls
 
     @property
@@ -104,6 +108,20 @@ class StatesGroupMeta(type):
         if cls.__parent__:
             return ".".join((cls.__parent__.__full_group_name__, cls.__name__))
         return cls.__name__
+
+    def __prepare_child(cls, child: Type["StatesGroup"]) -> Type["StatesGroup"]:
+        """Prepare child.
+
+        While adding `cls` for its children, we also need to recalculate
+        the parameter `__all_states_names__` for each child
+        `StatesGroup`. Since the child class appears before the
+        parent, at the time of adding the parent, the child's
+        `__all_states_names__` is already recorded without taking into
+        account the name of current parent.
+        """
+        child.__parent__ = cls  # type: ignore[assignment]
+        child.__all_states_names__ = child.__get_all_states_names__()
+        return child
 
     def __get_all_childs__(cls) -> Tuple[Type["StatesGroup"], ...]:
         result = cls.__childs__
