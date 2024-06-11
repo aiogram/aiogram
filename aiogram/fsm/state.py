@@ -109,7 +109,7 @@ class StatesGroupMeta(type):
             return ".".join((cls.__parent__.__full_group_name__, cls.__name__))
         return cls.__name__
 
-    def __prepare_child(cls, child: Type["StatesGroup"]) -> Type["StatesGroup"]:
+    def _prepare_child(cls, child: Type["StatesGroup"]) -> Type["StatesGroup"]:
         """Prepare child.
 
         While adding `cls` for its children, we also need to recalculate
