@@ -88,6 +88,7 @@ from ..methods import (
     LogOut,
     PinChatMessage,
     PromoteChatMember,
+    RefundStarPayment,
     ReopenForumTopic,
     ReopenGeneralForumTopic,
     ReplaceStickerInSet,
@@ -145,7 +146,6 @@ from ..methods import (
     UnpinAllGeneralForumTopicMessages,
     UnpinChatMessage,
     UploadStickerFile,
-    RefundStarPayment,
 )
 from ..types import (
     BotCommand,

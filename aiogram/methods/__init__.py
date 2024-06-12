@@ -64,6 +64,7 @@ from .leave_chat import LeaveChat
 from .log_out import LogOut
 from .pin_chat_message import PinChatMessage
 from .promote_chat_member import PromoteChatMember
+from .refund_star_payment import RefundStarPayment
 from .reopen_forum_topic import ReopenForumTopic
 from .reopen_general_forum_topic import ReopenGeneralForumTopic
 from .replace_sticker_in_set import ReplaceStickerInSet
@@ -120,7 +121,6 @@ from .unpin_all_forum_topic_messages import UnpinAllForumTopicMessages
 from .unpin_all_general_forum_topic_messages import UnpinAllGeneralForumTopicMessages
 from .unpin_chat_message import UnpinChatMessage
 from .upload_sticker_file import UploadStickerFile
-from .refund_star_payment import RefundStarPayment
 
 __all__ = (
     "AddStickerToSet",
