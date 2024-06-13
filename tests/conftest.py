@@ -14,7 +14,7 @@ from aiogram.fsm.storage.memory import (
     SimpleEventIsolation,
 )
 from aiogram.fsm.storage.mongo import MongoStorage
-from aiogram.fsm.storage.redis import RedisEventIsolation, RedisStorage
+from aiogram.fsm.storage.redis import RedisStorage
 from tests.mocked_bot import MockedBot
 
 DATA_DIR = Path(__file__).parent / "data"
