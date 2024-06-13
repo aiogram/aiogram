@@ -54,7 +54,7 @@ async def redis_storage(redis_server):
     try:
         await storage.redis.info()
     except ConnectionError as e:
-        pytest.skip(str(e))
+        pytest.fail(str(e))
     try:
         yield storage
     finally:
@@ -85,7 +85,7 @@ async def mongo_storage(mongo_server):
     try:
         await storage._client.server_info()
     except PyMongoError as e:
-        pytest.skip(str(e))
+        pytest.fail(str(e))
     else:
         yield storage
         await storage._client.drop_database(storage._database)
