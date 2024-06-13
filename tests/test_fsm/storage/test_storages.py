@@ -18,7 +18,7 @@ def create_storage_key(bot: MockedBot):
     ],
 )
 class TestStorages:
-    async def test_set_state(self, bot: MockedBot, storage: BaseStorage, storage_key: StorageKey):
+    async def test_set_state(self, storage: BaseStorage, storage_key: StorageKey):
         assert await storage.get_state(key=storage_key) is None
 
         await storage.set_state(key=storage_key, state="state")
@@ -26,7 +26,7 @@ class TestStorages:
         await storage.set_state(key=storage_key, state=None)
         assert await storage.get_state(key=storage_key) is None
 
-    async def test_set_data(self, bot: MockedBot, storage: BaseStorage, storage_key: StorageKey):
+    async def test_set_data(self, storage: BaseStorage, storage_key: StorageKey):
         assert await storage.get_data(key=storage_key) == {}
 
         await storage.set_data(key=storage_key, data={"foo": "bar"})
@@ -34,9 +34,7 @@ class TestStorages:
         await storage.set_data(key=storage_key, data={})
         assert await storage.get_data(key=storage_key) == {}
 
-    async def test_update_data(
-        self, bot: MockedBot, storage: BaseStorage, storage_key: StorageKey
-    ):
+    async def test_update_data(self, storage: BaseStorage, storage_key: StorageKey):
         assert await storage.get_data(key=storage_key) == {}
         assert await storage.update_data(key=storage_key, data={"foo": "bar"}) == {"foo": "bar"}
         assert await storage.update_data(key=storage_key, data={}) == {"foo": "bar"}
