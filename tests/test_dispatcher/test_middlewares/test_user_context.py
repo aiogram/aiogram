@@ -7,7 +7,15 @@ from aiogram.dispatcher.middlewares.user_context import (
     EventContext,
     UserContextMiddleware,
 )
-from aiogram.types import Chat, Update, User, ChatBoostUpdated, ChatBoost, ChatBoostSourcePremium, ChatBoostSourceGiftCode
+from aiogram.types import (
+    Chat,
+    Update,
+    User,
+    ChatBoostUpdated,
+    ChatBoost,
+    ChatBoostSourcePremium,
+    ChatBoostSourceGiftCode,
+)
 
 
 async def next_handler(*args, **kwargs):
@@ -53,7 +61,9 @@ class TestUserContextMiddleware:
         expiration_date = datetime.now()
 
         source = ChatBoostSourcePremium(user=user)
-        boost = ChatBoost(boost_id="Test", add_date=add_date, expiration_date=expiration_date, source=source)
+        boost = ChatBoost(
+            boost_id="Test", add_date=add_date, expiration_date=expiration_date, source=source
+        )
         update = Update(update_id=42, chat_boost=ChatBoostUpdated(chat=chat, boost=boost))
 
         await middleware(next_handler, update, data)
@@ -70,7 +80,9 @@ class TestUserContextMiddleware:
         data.clear()
 
         source = ChatBoostSourceGiftCode(user=user)
-        boost = ChatBoost(boost_id="Test", add_date=add_date, expiration_date=expiration_date, source=source)
+        boost = ChatBoost(
+            boost_id="Test", add_date=add_date, expiration_date=expiration_date, source=source
+        )
         update = Update(update_id=42, chat_boost=ChatBoostUpdated(chat=chat, boost=boost))
 
         await middleware(next_handler, update, data)
