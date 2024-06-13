@@ -23,8 +23,9 @@ DATA_DIR = Path(__file__).parent / "data"
 CHAT_ID = -42
 USER_ID = 42
 
-skip_message_pattern = "Need \"--{db}\" option with {db} URI to run"
+skip_message_pattern = 'Need "--{db}" option with {db} URI to run'
 invalid_uri_pattern = "Invalid {db} URI {uri!r}: {err}"
+
 
 def pytest_addoption(parser):
     parser.addoption("--redis", default=None, help="run tests which require redis connection")
@@ -51,9 +52,7 @@ async def redis_storage(redis_server):
         try:
             parse_redis_url(redis_server)
         except ValueError as e:
-            raise UsageError(
-                invalid_uri_pattern.format(db="redis", uri=redis_server, err=e)
-            )
+            raise UsageError(invalid_uri_pattern.format(db="redis", uri=redis_server, err=e))
     storage = RedisStorage.from_url(redis_server)
     try:
         await storage.redis.info()
@@ -82,9 +81,7 @@ async def mongo_storage(mongo_server):
         try:
             parse_mongo_url(mongo_server)
         except InvalidURI as e:
-            raise UsageError(
-                invalid_uri_pattern.format(db="mongo", uri=mongo_server, err=e)
-            )
+            raise UsageError(invalid_uri_pattern.format(db="mongo", uri=mongo_server, err=e))
     storage = MongoStorage.from_url(mongo_server)
     try:
         await storage._client.server_info()
