@@ -152,7 +152,7 @@ class TestCallbackData:
             foo: Optional[str] = ""
             bar: Optional[str] = None
 
-        assert MyCallback4.unpack("test4::") == MyCallback4(foo='', bar=None)
+        assert MyCallback4.unpack("test4::") == MyCallback4(foo="", bar=None)
         assert MyCallback4.unpack("test4::") == MyCallback4()
 
     @pytest.mark.parametrize(
