@@ -1,12 +1,6 @@
 import pytest
 
 from aiogram.fsm.storage.base import BaseStorage, StorageKey
-from tests.mocked_bot import MockedBot
-
-
-@pytest.fixture(name="storage_key")
-def create_storage_key(bot: MockedBot):
-    return StorageKey(chat_id=-42, user_id=42, bot_id=bot.id)
 
 
 @pytest.mark.parametrize(

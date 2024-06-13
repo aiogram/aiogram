@@ -8,6 +8,7 @@ from redis.asyncio.connection import parse_url as parse_redis_url
 from redis.exceptions import ConnectionError
 
 from aiogram import Dispatcher
+from aiogram.fsm.storage.base import StorageKey
 from aiogram.fsm.storage.memory import (
     DisabledEventIsolation,
     MemoryStorage,
@@ -18,6 +19,9 @@ from aiogram.fsm.storage.redis import RedisStorage
 from tests.mocked_bot import MockedBot
 
 DATA_DIR = Path(__file__).parent / "data"
+
+CHAT_ID = -42
+USER_ID = 42
 
 skip_message_pattern = "Need \"--{db}\" option with {db} URI to run"
 invalid_uri_pattern = "Invalid {db} URI {uri!r}: {err}"
@@ -130,6 +134,11 @@ async def disabled_isolation():
 @pytest.fixture()
 def bot():
     return MockedBot()
+
+
+@pytest.fixture(name="storage_key")
+def create_storage_key(bot: MockedBot):
+    return StorageKey(chat_id=CHAT_ID, user_id=USER_ID, bot_id=bot.id)
 
 
 @pytest.fixture()
