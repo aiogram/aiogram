@@ -19,6 +19,8 @@ from tests.mocked_bot import MockedBot
 
 DATA_DIR = Path(__file__).parent / "data"
 
+skip_message_pattern = "Need \"--{db}\" option with {db} URI to run"
+invalid_uri_pattern = "Invalid {db} URI {uri!r}: {err}"
 
 def pytest_addoption(parser):
     parser.addoption("--redis", default=None, help="run tests which require redis connection")
@@ -30,21 +32,6 @@ def pytest_configure(config):
     config.addinivalue_line("markers", "mongo: marked tests require mongo connection to run")
 
 
-def pytest_collection_modifyitems(config, items):
-    for db, parse_uri in [("redis", parse_redis_url), ("mongo", parse_mongo_url)]:
-        uri = config.getoption(f"--{db}")
-        if uri is None:
-            skip = pytest.mark.skip(reason=f"need --{db} option with {db} URI to run")
-            for item in items:
-                if db in item.keywords:
-                    item.add_marker(skip)
-        else:
-            try:
-                parse_uri(uri)
-            except (ValueError, InvalidURI) as e:
-                raise UsageError(f"Invalid {db} URI {uri!r}: {e}")
-
-
 @pytest.fixture()
 def redis_server(request):
     redis_uri = request.config.getoption("--redis")
@@ -54,8 +41,15 @@ def redis_server(request):
 @pytest.fixture()
 @pytest.mark.redis
 async def redis_storage(redis_server):
-    if not redis_server:
-        pytest.skip("Redis is not available here")
+    if redis_server is None:
+        pytest.skip(skip_message_pattern.format(db="redis"))
+    else:
+        try:
+            parse_redis_url(redis_server)
+        except ValueError as e:
+            raise UsageError(
+                invalid_uri_pattern.format(db="redis", uri=redis_server, err=e)
+            )
     storage = RedisStorage.from_url(redis_server)
     try:
         await storage.redis.info()
@@ -78,8 +72,15 @@ def mongo_server(request):
 @pytest.fixture()
 @pytest.mark.mongo
 async def mongo_storage(mongo_server):
-    if not mongo_server:
-        pytest.skip("MongoDB is not available here")
+    if mongo_server is None:
+        pytest.skip(skip_message_pattern.format(db="mongo"))
+    else:
+        try:
+            parse_mongo_url(mongo_server)
+        except InvalidURI as e:
+            raise UsageError(
+                invalid_uri_pattern.format(db="mongo", uri=mongo_server, err=e)
+            )
     storage = MongoStorage.from_url(mongo_server)
     try:
         await storage._client.server_info()
