@@ -5,6 +5,7 @@ from _pytest.config import UsageError
 from pymongo.errors import InvalidURI, PyMongoError
 from pymongo.uri_parser import parse_uri as parse_mongo_url
 from redis.asyncio.connection import parse_url as parse_redis_url
+from redis.exceptions import ConnectionError
 
 from aiogram import Dispatcher
 from aiogram.fsm.storage.memory import (
