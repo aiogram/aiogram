@@ -39,10 +39,7 @@ class MongoStorage(BaseStorage):
 
     @classmethod
     def from_url(
-        cls,
-        url: str,
-        connection_kwargs: Optional[Dict[str, Any]] = {"serverSelectionTimeoutMS": 2000},
-        **kwargs: Any,
+        cls, url: str, connection_kwargs: Optional[Dict[str, Any]] = None, **kwargs: Any
     ) -> "MongoStorage":
         """
         Create an instance of :class:`MongoStorage` with specifying the connection string
