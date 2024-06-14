@@ -24,7 +24,7 @@ from aiogram.utils.deep_linking import decode_payload
 if TYPE_CHECKING:
     from aiogram import Bot
 
-CommandPatternType = Union[str, re.Pattern, BotCommand]
+CommandPatternType = Union[str, re.Pattern[str], BotCommand]
 
 
 class CommandException(Exception):

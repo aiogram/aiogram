@@ -101,13 +101,13 @@ docs = [
     "sphinxcontrib-towncrier~=0.3.2a0",
 ]
 dev = [
-    "black~=23.10.0",
-    "isort~=5.12.0",
-    "ruff~=0.1.1",
-    "mypy~=1.6.1",
+    "black~=24.4.2",
+    "isort~=5.13.2",
+    "ruff~=0.4.9",
+    "mypy~=1.10.0",
     "toml~=0.10.2",
-    "pre-commit~=3.5.0",
-    "packaging~=23.1",
+    "pre-commit~=3.7.1",
+    "packaging~=24.1",
     "motor-types~=1.0.0b4",
 ]
 
@@ -132,10 +132,10 @@ post-install-commands = [
 
 [tool.hatch.envs.default.scripts]
 reformat = [
-    "black aiogram tests",
-    "isort aiogram tests",
+    "black aiogram tests examples",
+    "isort aiogram tests examples",
 ]
-lint = "ruff aiogram"
+lint = "ruff check aiogram tests examples"
 
 [tool.hatch.envs.docs]
 features = [
@@ -202,19 +202,6 @@ python = ["38", "39", "310", "311", "312"]
 
 [tool.ruff]
 line-length = 99
-select = [
-    # "C", # TODO: mccabe - code complecity
-    "C4",
-    "E",
-    "F",
-    "T10",
-    "T20",
-    "Q",
-    "RET",
-]
-ignore = [
-    "F401"
-]
 src = ["aiogram", "tests"]
 exclude = [
     ".git",
@@ -230,7 +217,22 @@ exclude = [
 ]
 target-version = "py310"
 
-[tool.ruff.isort]
+[tool.ruff.lint]
+select = [
+    # "C", # TODO: mccabe - code complecity
+    "C4",
+    "E",
+    "F",
+    "T10",
+    "T20",
+    "Q",
+    "RET",
+]
+ignore = [
+    "F401"
+]
+
+[tool.ruff.lint.isort]
 known-first-party = [
     "aiogram",
     "finite_state_machine",
@@ -238,7 +240,7 @@ known-first-party = [
     "routes",
 ]
 
-[tool.ruff.per-file-ignores]
+[tool.ruff.lint.per-file-ignores]
 "aiogram/client/bot.py" = ["E501"]
 "aiogram/types/*" = ["E501"]
 "aiogram/methods/*" = ["E501"]

@@ -14,7 +14,7 @@ class HelloFilter(Filter):
     async def __call__(
         self,
         message: Message,
-        event_from_user: User
+        event_from_user: User,
         # Filters also can accept keyword parameters like in handlers
     ) -> Union[bool, Dict[str, Any]]:
         if message.text.casefold() == "hello":
