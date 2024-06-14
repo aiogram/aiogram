@@ -1,5 +1,5 @@
-from pymongo.errors import PyMongoError
 import pytest
+from pymongo.errors import PyMongoError
 
 from aiogram.fsm.state import State
 from aiogram.fsm.storage.mongo import MongoStorage, StorageKey
