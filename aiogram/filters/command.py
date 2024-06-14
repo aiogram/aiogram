@@ -3,7 +3,6 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass, field, replace
 from typing import (
-    TYPE_CHECKING,
     Any,
     Dict,
     Iterable,
@@ -11,6 +10,7 @@ from typing import (
     Optional,
     Pattern,
     Sequence,
+    TYPE_CHECKING,
     Union,
     cast,
 )
@@ -24,7 +24,8 @@ from aiogram.utils.deep_linking import decode_payload
 if TYPE_CHECKING:
     from aiogram import Bot
 
-CommandPatternType = Union[str, re.Pattern[str], BotCommand]
+# TODO: rm type ignore after py3.8 support expiration or mypy bug fix
+CommandPatternType = Union[str, re.Pattern, BotCommand]  # type: ignore[type-arg]
 
 
 class CommandException(Exception):
