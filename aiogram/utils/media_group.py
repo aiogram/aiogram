@@ -359,8 +359,10 @@ class MediaGroupBuilder:
             update_first_media["parse_mode"] = None
 
         return [
-            media.model_copy(update=update_first_media)
-            if index == 0 and self.caption is not None
-            else media
+            (
+                media.model_copy(update=update_first_media)
+                if index == 0 and self.caption is not None
+                else media
+            )
             for index, media in enumerate(self._media)
         ]

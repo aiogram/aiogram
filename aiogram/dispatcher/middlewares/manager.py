@@ -61,5 +61,5 @@ class MiddlewareManager(Sequence[MiddlewareType[TelegramObject]]):
 
         middleware = handler_wrapper
         for m in reversed(middlewares):
-            middleware = functools.partial(m, middleware)
+            middleware = functools.partial(m, middleware)  # type: ignore[assignment]
         return middleware
