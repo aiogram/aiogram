@@ -82,7 +82,10 @@ async def mongo_storage(mongo_server):
             parse_mongo_url(mongo_server)
         except InvalidURI as e:
             raise UsageError(invalid_uri_pattern.format(db="mongo", uri=mongo_server, err=e))
-    storage = MongoStorage.from_url(mongo_server)
+    storage = MongoStorage.from_url(
+        url=mongo_server,
+        connection_kwargs={"serverSelectionTimeoutMS": 2000},
+    )
     try:
         await storage._client.server_info()
     except PyMongoError as e:
