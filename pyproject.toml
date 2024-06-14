@@ -106,7 +106,7 @@ dev = [
     "ruff~=0.4.9",
     "mypy~=1.10.0",
     "toml~=0.10.2",
-    "pre-commit~=3.7.1",
+    "pre-commit~=3.6",
     "packaging~=24.1",
     "motor-types~=1.0.0b4",
 ]
