@@ -23,8 +23,8 @@ DATA_DIR = Path(__file__).parent / "data"
 CHAT_ID = -42
 USER_ID = 42
 
-skip_message_pattern = 'Need "--{db}" option with {db} URI to run'
-invalid_uri_pattern = "Invalid {db} URI {uri!r}: {err}"
+SKIP_MESSAGE_PATTERN = 'Need "--{db}" option with {db} URI to run'
+INVALID_URI_PATTERN = "Invalid {db} URI {uri!r}: {err}"
 
 
 def pytest_addoption(parser):
@@ -41,7 +41,7 @@ def pytest_configure(config):
 def redis_server(request):
     redis_uri = request.config.getoption("--redis")
     if redis_uri is None:
-        pytest.skip(skip_message_pattern.format(db="redis"))
+        pytest.skip(SKIP_MESSAGE_PATTERN.format(db="redis"))
     else:
         return redis_uri
 
@@ -52,7 +52,7 @@ async def redis_storage(redis_server):
     try:
         parse_redis_url(redis_server)
     except ValueError as e:
-        raise UsageError(invalid_uri_pattern.format(db="redis", uri=redis_server, err=e))
+        raise UsageError(INVALID_URI_PATTERN.format(db="redis", uri=redis_server, err=e))
     storage = RedisStorage.from_url(redis_server)
     try:
         await storage.redis.info()
@@ -70,7 +70,7 @@ async def redis_storage(redis_server):
 def mongo_server(request):
     mongo_uri = request.config.getoption("--mongo")
     if mongo_uri is None:
-        pytest.skip(skip_message_pattern.format(db="mongo"))
+        pytest.skip(SKIP_MESSAGE_PATTERN.format(db="mongo"))
     else:
         return mongo_uri
 
@@ -81,7 +81,7 @@ async def mongo_storage(mongo_server):
     try:
         parse_mongo_url(mongo_server)
     except InvalidURI as e:
-        raise UsageError(invalid_uri_pattern.format(db="mongo", uri=mongo_server, err=e))
+        raise UsageError(INVALID_URI_PATTERN.format(db="mongo", uri=mongo_server, err=e))
     storage = MongoStorage.from_url(
         url=mongo_server,
         connection_kwargs={"serverSelectionTimeoutMS": 2000},
