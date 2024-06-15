@@ -40,19 +40,19 @@ def pytest_configure(config):
 @pytest.fixture()
 def redis_server(request):
     redis_uri = request.config.getoption("--redis")
-    return redis_uri
+    if redis_uri is None:
+        pytest.skip(skip_message_pattern.format(db="redis"))
+    else:
+        return redis_uri
 
 
 @pytest.fixture()
 @pytest.mark.redis
 async def redis_storage(redis_server):
-    if redis_server is None:
-        pytest.skip(skip_message_pattern.format(db="redis"))
-    else:
-        try:
-            parse_redis_url(redis_server)
-        except ValueError as e:
-            raise UsageError(invalid_uri_pattern.format(db="redis", uri=redis_server, err=e))
+    try:
+        parse_redis_url(redis_server)
+    except ValueError as e:
+        raise UsageError(invalid_uri_pattern.format(db="redis", uri=redis_server, err=e))
     storage = RedisStorage.from_url(redis_server)
     try:
         await storage.redis.info()
@@ -69,19 +69,19 @@ async def redis_storage(redis_server):
 @pytest.fixture()
 def mongo_server(request):
     mongo_uri = request.config.getoption("--mongo")
-    return mongo_uri
+    if mongo_uri is None:
+        pytest.skip(skip_message_pattern.format(db="mongo"))
+    else:
+        return mongo_uri
 
 
 @pytest.fixture()
 @pytest.mark.mongo
 async def mongo_storage(mongo_server):
-    if mongo_server is None:
-        pytest.skip(skip_message_pattern.format(db="mongo"))
-    else:
-        try:
-            parse_mongo_url(mongo_server)
-        except InvalidURI as e:
-            raise UsageError(invalid_uri_pattern.format(db="mongo", uri=mongo_server, err=e))
+    try:
+        parse_mongo_url(mongo_server)
+    except InvalidURI as e:
+        raise UsageError(invalid_uri_pattern.format(db="mongo", uri=mongo_server, err=e))
     storage = MongoStorage.from_url(
         url=mongo_server,
         connection_kwargs={"serverSelectionTimeoutMS": 2000},
