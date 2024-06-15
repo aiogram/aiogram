@@ -1,0 +1,1 @@
+Handle loop is closed in asgiref.sync.async_to_sync
