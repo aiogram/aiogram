@@ -3,6 +3,7 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass, field, replace
 from typing import (
+    TYPE_CHECKING,
     Any,
     Dict,
     Iterable,
@@ -10,7 +11,6 @@ from typing import (
     Optional,
     Pattern,
     Sequence,
-    TYPE_CHECKING,
     Union,
     cast,
 )
