@@ -1,0 +1,11 @@
+Fail redis and mongo tests if incorrect URI provided + some storages tests refactoring
+
+If incorrect URIs provided to "--redis" and/or "--mongo" options tests should fail with errors instead of skipping.
+Otherwise the next scenario is possible:
+  1) developer breaks RedisStorage and/or MongoStorage code
+  2) tests are run with incorrect redis and/or mongo URIsprovided by "--redis" and "--mongo" options (for example, wrong port specified)
+  3) tests pass because skipping doesn't fail tests run
+  4) developer or reviewer doesn't notice that redis and/or mongo tests were skipped
+  5) broken code gets in codebase
+
+Also some refactorings done (related with storages and storages tests).

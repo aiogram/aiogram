@@ -1,17 +1,19 @@
 import pytest
+from pymongo.errors import PyMongoError
 
 from aiogram.fsm.state import State
 from aiogram.fsm.storage.mongo import MongoStorage, StorageKey
-from tests.mocked_bot import MockedBot
+from tests.conftest import CHAT_ID, USER_ID
 
 PREFIX = "fsm"
-CHAT_ID = -42
-USER_ID = 42
 
 
-@pytest.fixture(name="storage_key")
-def create_storage_key(bot: MockedBot):
-    return StorageKey(chat_id=CHAT_ID, user_id=USER_ID, bot_id=bot.id)
+async def test_get_storage_passing_only_url(mongo_server):
+    storage = MongoStorage.from_url(url=mongo_server)
+    try:
+        await storage._client.server_info()
+    except PyMongoError as e:
+        pytest.fail(str(e))
 
 
 async def test_update_not_existing_data_with_empty_dictionary(
