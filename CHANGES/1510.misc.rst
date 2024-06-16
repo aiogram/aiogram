@@ -1,4 +1,4 @@
-Fail redis and mongo tests if incorrect URI provided + some storages tests refactoring
+[Only for contributors] Fail redis and mongo tests if incorrect URI provided + some storages tests refactoring
 
 If incorrect URIs provided to "--redis" and/or "--mongo" options tests should fail with errors instead of skipping.
 Otherwise the next scenario is possible:
