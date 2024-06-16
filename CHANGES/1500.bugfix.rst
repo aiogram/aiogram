@@ -1,0 +1,1 @@
+Increased DNS cache ttl setting to aiohttp session as a workaround for DNS resolution issues in aiohttp.
