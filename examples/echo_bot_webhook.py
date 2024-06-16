@@ -1,6 +1,7 @@
 """
 This example shows how to use webhook on behind of any reverse proxy (nginx, traefik, ingress etc.)
 """
+
 import logging
 import sys
 from os import getenv

@@ -57,17 +57,19 @@ class UserContextMiddleware(BaseMiddleware):
             return EventContext(
                 chat=event.message.chat,
                 user=event.message.from_user,
-                thread_id=event.message.message_thread_id
-                if event.message.is_topic_message
-                else None,
+                thread_id=(
+                    event.message.message_thread_id if event.message.is_topic_message else None
+                ),
             )
         if event.edited_message:
             return EventContext(
                 chat=event.edited_message.chat,
                 user=event.edited_message.from_user,
-                thread_id=event.edited_message.message_thread_id
-                if event.edited_message.is_topic_message
-                else None,
+                thread_id=(
+                    event.edited_message.message_thread_id
+                    if event.edited_message.is_topic_message
+                    else None
+                ),
             )
         if event.channel_post:
             return EventContext(chat=event.channel_post.chat)
@@ -82,10 +84,12 @@ class UserContextMiddleware(BaseMiddleware):
                 return EventContext(
                     chat=event.callback_query.message.chat,
                     user=event.callback_query.from_user,
-                    thread_id=event.callback_query.message.message_thread_id
-                    if not isinstance(event.callback_query.message, InaccessibleMessage)
-                    and event.callback_query.message.is_topic_message
-                    else None,
+                    thread_id=(
+                        event.callback_query.message.message_thread_id
+                        if not isinstance(event.callback_query.message, InaccessibleMessage)
+                        and event.callback_query.message.is_topic_message
+                        else None
+                    ),
                 )
             return EventContext(user=event.callback_query.from_user)
         if event.shipping_query:
@@ -132,18 +136,22 @@ class UserContextMiddleware(BaseMiddleware):
             return EventContext(
                 chat=event.business_message.chat,
                 user=event.business_message.from_user,
-                thread_id=event.business_message.message_thread_id
-                if event.business_message.is_topic_message
-                else None,
+                thread_id=(
+                    event.business_message.message_thread_id
+                    if event.business_message.is_topic_message
+                    else None
+                ),
                 business_connection_id=event.business_message.business_connection_id,
             )
         if event.edited_business_message:
             return EventContext(
                 chat=event.edited_business_message.chat,
                 user=event.edited_business_message.from_user,
-                thread_id=event.edited_business_message.message_thread_id
-                if event.edited_business_message.is_topic_message
-                else None,
+                thread_id=(
+                    event.edited_business_message.message_thread_id
+                    if event.edited_business_message.is_topic_message
+                    else None
+                ),
                 business_connection_id=event.edited_business_message.business_connection_id,
             )
         return EventContext()

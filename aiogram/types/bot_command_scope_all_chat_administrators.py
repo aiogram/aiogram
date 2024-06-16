@@ -13,9 +13,9 @@ class BotCommandScopeAllChatAdministrators(BotCommandScope):
     Source: https://core.telegram.org/bots/api#botcommandscopeallchatadministrators
     """
 
-    type: Literal[
+    type: Literal[BotCommandScopeType.ALL_CHAT_ADMINISTRATORS] = (
         BotCommandScopeType.ALL_CHAT_ADMINISTRATORS
-    ] = BotCommandScopeType.ALL_CHAT_ADMINISTRATORS
+    )
     """Scope type, must be *all_chat_administrators*"""
 
     if TYPE_CHECKING:

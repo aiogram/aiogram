@@ -67,7 +67,7 @@ jobs:
 
       - name: Lint code
         run: |
-          ruff --output-format=github aiogram examples
+          ruff check --output-format=github aiogram examples
           mypy aiogram
           black --check --diff aiogram tests
 

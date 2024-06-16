@@ -13,9 +13,9 @@ class BotCommandScopeChatAdministrators(BotCommandScope):
     Source: https://core.telegram.org/bots/api#botcommandscopechatadministrators
     """
 
-    type: Literal[
+    type: Literal[BotCommandScopeType.CHAT_ADMINISTRATORS] = (
         BotCommandScopeType.CHAT_ADMINISTRATORS
-    ] = BotCommandScopeType.CHAT_ADMINISTRATORS
+    )
     """Scope type, must be *chat_administrators*"""
     chat_id: Union[int, str]
     """Unique identifier for the target chat or username of the target supergroup (in the format :code:`@supergroupusername`)"""

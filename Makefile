@@ -26,6 +26,11 @@ clean:
 	rm -f .coverage
 	rm -rf {build,dist,site,.cache,.mypy_cache,.ruff_cache,reports}
 
+.PHONY: install
+install: clean
+	pip install -e ."[dev,test,docs]" -U --upgrade-strategy=eager
+	pre-commit install
+
 # =================================================================================================
 # Code quality
 # =================================================================================================
@@ -34,7 +39,7 @@ clean:
 lint:
 	isort --check-only $(code_dir)
 	black --check --diff $(code_dir)
-	ruff $(package_dir)
+	ruff check $(package_dir) $(examples_dir)
 	mypy $(package_dir)
 
 .PHONY: reformat
