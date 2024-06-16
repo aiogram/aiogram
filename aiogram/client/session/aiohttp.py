@@ -23,11 +23,10 @@ from aiohttp.http import SERVER_SOFTWARE
 
 from aiogram.__meta__ import __version__
 from aiogram.methods import TelegramMethod
-
+from .base import BaseSession
 from ...exceptions import TelegramNetworkError
 from ...methods.base import TelegramType
 from ...types import InputFile
-from .base import BaseSession
 
 if TYPE_CHECKING:
     from ..bot import Bot
@@ -86,13 +85,24 @@ def _prepare_connector(chain_or_plain: _ProxyType) -> Tuple[Type["TCPConnector"]
 
 
 class AiohttpSession(BaseSession):
-    def __init__(self, proxy: Optional[_ProxyType] = None, **kwargs: Any) -> None:
+    def __init__(
+        self, proxy: Optional[_ProxyType] = None, limit: int = 100, **kwargs: Any
+    ) -> None:
+        """
+        Client session based on aiohttp.
+
+        :param proxy: The proxy to be used for requests. Default is None.
+        :param limit: The total number of simultaneous connections. Default is 100.
+        :param kwargs: Additional keyword arguments.
+        """
         super().__init__(**kwargs)
 
         self._session: Optional[ClientSession] = None
         self._connector_type: Type[TCPConnector] = TCPConnector
         self._connector_init: Dict[str, Any] = {
             "ssl": ssl.create_default_context(cafile=certifi.where()),
+            "limit": limit,
+            "ttl_dns_cache": 3600,  # Workaround for https://github.com/aiogram/aiogram/issues/1500
         }
         self._should_reset_connector = True  # flag determines connector state
         self._proxy: Optional[_ProxyType] = None
