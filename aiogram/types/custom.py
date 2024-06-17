@@ -9,6 +9,6 @@ DateTime = Annotated[
     PlainSerializer(
         func=lambda dt: int(dt.timestamp()),
         return_type=int,
-        when_used="json-unless-none",
+        when_used="unless-none",
     ),
 ]
