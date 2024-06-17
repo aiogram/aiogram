@@ -23,10 +23,11 @@ from aiohttp.http import SERVER_SOFTWARE
 
 from aiogram.__meta__ import __version__
 from aiogram.methods import TelegramMethod
-from .base import BaseSession
+
 from ...exceptions import TelegramNetworkError
 from ...methods.base import TelegramType
 from ...types import InputFile
+from .base import BaseSession
 
 if TYPE_CHECKING:
     from ..bot import Bot
