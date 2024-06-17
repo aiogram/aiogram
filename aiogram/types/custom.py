@@ -1,15 +1,18 @@
 import sys
 from datetime import datetime
 
+from datetime import timezone
 from pydantic import PlainSerializer
 from typing_extensions import Annotated
 
 if sys.platform == "win32":  # pragma: no cover
 
     def _datetime_serializer(value: datetime) -> int:
+        tz = timezone.utc if value.tzinfo else None
+
         # https://github.com/aiogram/aiogram/issues/349
         # https://github.com/aiogram/aiogram/pull/880
-        return round((value - datetime(1970, 1, 1)).total_seconds())
+        return round((value - datetime(1970, 1, 1, tzinfo=tz)).total_seconds())
 
 else:  # pragma: no cover
 
