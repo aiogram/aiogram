@@ -12,3 +12,4 @@ Utils
     formatting
     media_group
     deep_linking
+    serialization

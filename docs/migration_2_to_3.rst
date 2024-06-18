@@ -162,14 +162,12 @@ Telegram API Server
 Telegram objects transformation (to dict, to json, from json)
 =============================================================
 
-- Methods :class:`TelegramObject.to_object()`, :class:`TelegramObject.to_json()` and :class:`TelegramObject.to_python()`
+- Methods :code:`TelegramObject.to_object()`, :code:`TelegramObject.to_json()` and :code:`TelegramObject.to_python()`
   have been removed due to the use of `pydantic <https://docs.pydantic.dev/>`_ models.
-- :class:`TelegramObject.to_object()` should be replaced by :class:`TelegramObject.model_validate()`
+- :code:`TelegramObject.to_object()` should be replaced by :code:`TelegramObject.model_validate()`
   (`Read more <https://docs.pydantic.dev/2.7/api/base_model/#pydantic.BaseModel.model_validate>`_)
-- :class:`TelegramObject.as_json()` should be replaced by  :class:`TelegramObject.model_dump_json()`
-  (`Read more <https://docs.pydantic.dev/latest/api/base_model/#pydantic.BaseModel.model_dump_json>`_)
-- :class:`TelegramObject.to_python()` should be replaced by :class:`TelegramObject.model_dump()`
-  (`Read more <https://docs.pydantic.dev/latest/api/base_model/#pydantic.BaseModel.model_dump>`_)
+- :code:`TelegramObject.as_json()` should be replaced by :func:`aiogram.utils.serialization.deserialize_telegram_object_to_python`
+- :code:`<TelegramObject>.to_python()` should be replaced by :code:`json.dumps(deserialize_telegram_object_to_python(<TelegramObject>))`
 
 Here are some usage examples:
 
@@ -206,7 +204,7 @@ Here are some usage examples:
         # <class 'str'>
 
         # Version 3.x
-        message_json = message.model_dump_json()
+        message_json = json.dumps(deserialize_telegram_object_to_python(message))
         print(message_json)
         # {"id": 42, ...}
         print(type(message_json))
@@ -225,7 +223,7 @@ Here are some usage examples:
         # <class 'dict'>
 
         # Version 3.x
-        message_dict = message.model_dump()
+        message_dict = deserialize_telegram_object_to_python(message)
         print(message_dict)
         # {"id": 42, ...}
         print(type(message_dict))
