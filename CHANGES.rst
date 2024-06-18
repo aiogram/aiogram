@@ -16,7 +16,7 @@ Changelog
 
 .. towncrier release notes start
 
-3.5.0 (2024-06-19)
+3.8.0 (2024-06-19)
 ===================
 
 Features
