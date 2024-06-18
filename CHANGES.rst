@@ -16,6 +16,76 @@ Changelog
 
 .. towncrier release notes start
 
+3.5.0 (2024-06-19)
+===================
+
+Features
+--------
+
+- Added utility to safely deserialize any Telegram object or method to a JSON-compatible object (dict).
+  (:ref:`>> Read more <serialization-tool>`)
+  `#1450 <https://github.com/aiogram/aiogram/issues/1450>`_
+- Added full support of `Bot API 7.5 <https://core.telegram.org/bots/api-changelog#june-18-2024>`_
+
+  - Added the classes :class:`aiogram.types.star_transactions.StarTransactions`,
+      :class:`aiogram.types.star_transaction.StarTransaction`,
+      :class:`aiogram.types.transaction_partner.TransactionPartner`
+      and :class:`aiogram.types.revenue_withdrawal_state.RevenueWithdrawalState`,
+      containing information about Telegram Star transactions involving the bot.
+  - Added the method :class:`aiogram.methods.get_star_transactions.GetStarTransactions`
+      that can be used to get the list of all Telegram Star transactions for the bot.
+  - Added support for callback buttons in
+      :class:`aiogram.types.inline_keyboard_markup.InlineKeyboardMarkup`
+      for messages sent on behalf of a business account.
+  - Added support for callback queries originating from a message sent
+      on behalf of a business account.
+  - Added the parameter :code:`business_connection_id` to the methods
+      :class:`aiogram.methods.edit_message_text.EditMessageText`,
+      :class:`aiogram.methods.edit_message_media.EditMessageMedia`,
+      :class:`aiogram.methods.edit_message_caption.EditMessageCaption`,
+      :class:`aiogram.methods.edit_message_live_location.EditMessageLiveLocation`,
+      :class:`aiogram.methods.stop_message_live_location.StopMessageLiveLocation`
+      and :class:`aiogram.methods.edit_message_reply_markup.EditMessageReplyMarkup`,
+      allowing the bot to edit business messages.
+  - Added the parameter :code:`business_connection_id` to the method
+      :class:`aiogram.methods.stop_poll.StopPoll`,
+      allowing the bot to stop polls it sent on behalf of a business account.
+  `#1518 <https://github.com/aiogram/aiogram/issues/1518>`_
+
+
+Bugfixes
+--------
+
+- Increased DNS cache ttl setting to aiohttp session as a workaround for DNS resolution issues in aiohttp.
+  `#1500 <https://github.com/aiogram/aiogram/issues/1500>`_
+
+
+Improved Documentation
+----------------------
+
+- Fixed MongoStorage section in the documentation by adding extra dependency to ReadTheDocs configuration.
+  `#1501 <https://github.com/aiogram/aiogram/issues/1501>`_
+- Added information about dependency changes to the :code:`2.x --> 3.x` migration guide.
+  `#1504 <https://github.com/aiogram/aiogram/issues/1504>`_
+
+
+Misc
+----
+
+- [Only for contributors] Fail redis and mongo tests if incorrect URI provided + some storages tests refactoring
+
+  If incorrect URIs provided to "--redis" and/or "--mongo" options tests should fail with errors instead of skipping.
+  Otherwise the next scenario is possible:
+    1) developer breaks RedisStorage and/or MongoStorage code
+    2) tests are run with incorrect redis and/or mongo URIsprovided by "--redis" and "--mongo" options (for example, wrong port specified)
+    3) tests pass because skipping doesn't fail tests run
+    4) developer or reviewer doesn't notice that redis and/or mongo tests were skipped
+    5) broken code gets in codebase
+
+  Also some refactorings done (related with storages and storages tests).
+  `#1510 <https://github.com/aiogram/aiogram/issues/1510>`_
+
+
 3.7.0 (2024-05-31)
 ===================
 

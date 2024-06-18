@@ -1,2 +1,0 @@
-Added utility to safely deserialize any Telegram object or method to a JSON-compatible object (dict).
-(:ref:`>> Read more <serialization-tool>`)
