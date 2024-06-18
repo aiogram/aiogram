@@ -78,6 +78,7 @@ from ..methods import (
     GetMyDescription,
     GetMyName,
     GetMyShortDescription,
+    GetStarTransactions,
     GetStickerSet,
     GetUpdates,
     GetUserChatBoosts,
@@ -231,6 +232,7 @@ from ..types import (
     ReplyParameters,
     SentWebAppMessage,
     ShippingOption,
+    StarTransactions,
     Sticker,
     StickerSet,
     Update,
@@ -1342,6 +1344,7 @@ class Bot:
 
     async def edit_message_caption(
         self,
+        business_connection_id: Optional[str] = None,
         chat_id: Optional[Union[int, str]] = None,
         message_id: Optional[int] = None,
         inline_message_id: Optional[str] = None,
@@ -1355,10 +1358,11 @@ class Bot:
         request_timeout: Optional[int] = None,
     ) -> Union[Message, bool]:
         """
-        Use this method to edit captions of messages. On success, if the edited message is not an inline message, the edited :class:`aiogram.types.message.Message` is returned, otherwise :code:`True` is returned.
+        Use this method to edit captions of messages. On success, if the edited message is not an inline message, the edited :class:`aiogram.types.message.Message` is returned, otherwise :code:`True` is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within **48 hours** from the time they were sent.
 
         Source: https://core.telegram.org/bots/api#editmessagecaption
 
+        :param business_connection_id: Unique identifier of the business connection on behalf of which the message to be edited was sent
         :param chat_id: Required if *inline_message_id* is not specified. Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
         :param message_id: Required if *inline_message_id* is not specified. Identifier of the message to edit
         :param inline_message_id: Required if *chat_id* and *message_id* are not specified. Identifier of the inline message
@@ -1368,10 +1372,11 @@ class Bot:
         :param show_caption_above_media: Pass :code:`True`, if the caption must be shown above the message media. Supported only for animation, photo and video messages.
         :param reply_markup: A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_.
         :param request_timeout: Request timeout
-        :return: On success, if the edited message is not an inline message, the edited :class:`aiogram.types.message.Message` is returned, otherwise :code:`True` is returned.
+        :return: Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within **48 hours** from the time they were sent.
         """
 
         call = EditMessageCaption(
+            business_connection_id=business_connection_id,
             chat_id=chat_id,
             message_id=message_id,
             inline_message_id=inline_message_id,
@@ -1387,6 +1392,7 @@ class Bot:
         self,
         latitude: float,
         longitude: float,
+        business_connection_id: Optional[str] = None,
         chat_id: Optional[Union[int, str]] = None,
         message_id: Optional[int] = None,
         inline_message_id: Optional[str] = None,
@@ -1404,6 +1410,7 @@ class Bot:
 
         :param latitude: Latitude of new location
         :param longitude: Longitude of new location
+        :param business_connection_id: Unique identifier of the business connection on behalf of which the message to be edited was sent
         :param chat_id: Required if *inline_message_id* is not specified. Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
         :param message_id: Required if *inline_message_id* is not specified. Identifier of the message to edit
         :param inline_message_id: Required if *chat_id* and *message_id* are not specified. Identifier of the inline message
@@ -1419,6 +1426,7 @@ class Bot:
         call = EditMessageLiveLocation(
             latitude=latitude,
             longitude=longitude,
+            business_connection_id=business_connection_id,
             chat_id=chat_id,
             message_id=message_id,
             inline_message_id=inline_message_id,
@@ -1439,6 +1447,7 @@ class Bot:
             InputMediaPhoto,
             InputMediaVideo,
         ],
+        business_connection_id: Optional[str] = None,
         chat_id: Optional[Union[int, str]] = None,
         message_id: Optional[int] = None,
         inline_message_id: Optional[str] = None,
@@ -1446,21 +1455,23 @@ class Bot:
         request_timeout: Optional[int] = None,
     ) -> Union[Message, bool]:
         """
-        Use this method to edit animation, audio, document, photo, or video messages. If a message is part of a message album, then it can be edited only to an audio for audio albums, only to a document for document albums and to a photo or a video otherwise. When an inline message is edited, a new file can't be uploaded; use a previously uploaded file via its file_id or specify a URL. On success, if the edited message is not an inline message, the edited :class:`aiogram.types.message.Message` is returned, otherwise :code:`True` is returned.
+        Use this method to edit animation, audio, document, photo, or video messages. If a message is part of a message album, then it can be edited only to an audio for audio albums, only to a document for document albums and to a photo or a video otherwise. When an inline message is edited, a new file can't be uploaded; use a previously uploaded file via its file_id or specify a URL. On success, if the edited message is not an inline message, the edited :class:`aiogram.types.message.Message` is returned, otherwise :code:`True` is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within **48 hours** from the time they were sent.
 
         Source: https://core.telegram.org/bots/api#editmessagemedia
 
         :param media: A JSON-serialized object for a new media content of the message
+        :param business_connection_id: Unique identifier of the business connection on behalf of which the message to be edited was sent
         :param chat_id: Required if *inline_message_id* is not specified. Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
         :param message_id: Required if *inline_message_id* is not specified. Identifier of the message to edit
         :param inline_message_id: Required if *chat_id* and *message_id* are not specified. Identifier of the inline message
         :param reply_markup: A JSON-serialized object for a new `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_.
         :param request_timeout: Request timeout
-        :return: On success, if the edited message is not an inline message, the edited :class:`aiogram.types.message.Message` is returned, otherwise :code:`True` is returned.
+        :return: Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within **48 hours** from the time they were sent.
         """
 
         call = EditMessageMedia(
             media=media,
+            business_connection_id=business_connection_id,
             chat_id=chat_id,
             message_id=message_id,
             inline_message_id=inline_message_id,
@@ -1470,6 +1481,7 @@ class Bot:
 
     async def edit_message_reply_markup(
         self,
+        business_connection_id: Optional[str] = None,
         chat_id: Optional[Union[int, str]] = None,
         message_id: Optional[int] = None,
         inline_message_id: Optional[str] = None,
@@ -1477,19 +1489,21 @@ class Bot:
         request_timeout: Optional[int] = None,
     ) -> Union[Message, bool]:
         """
-        Use this method to edit only the reply markup of messages. On success, if the edited message is not an inline message, the edited :class:`aiogram.types.message.Message` is returned, otherwise :code:`True` is returned.
+        Use this method to edit only the reply markup of messages. On success, if the edited message is not an inline message, the edited :class:`aiogram.types.message.Message` is returned, otherwise :code:`True` is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within **48 hours** from the time they were sent.
 
         Source: https://core.telegram.org/bots/api#editmessagereplymarkup
 
+        :param business_connection_id: Unique identifier of the business connection on behalf of which the message to be edited was sent
         :param chat_id: Required if *inline_message_id* is not specified. Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
         :param message_id: Required if *inline_message_id* is not specified. Identifier of the message to edit
         :param inline_message_id: Required if *chat_id* and *message_id* are not specified. Identifier of the inline message
         :param reply_markup: A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_.
         :param request_timeout: Request timeout
-        :return: On success, if the edited message is not an inline message, the edited :class:`aiogram.types.message.Message` is returned, otherwise :code:`True` is returned.
+        :return: Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within **48 hours** from the time they were sent.
         """
 
         call = EditMessageReplyMarkup(
+            business_connection_id=business_connection_id,
             chat_id=chat_id,
             message_id=message_id,
             inline_message_id=inline_message_id,
@@ -1500,6 +1514,7 @@ class Bot:
     async def edit_message_text(
         self,
         text: str,
+        business_connection_id: Optional[str] = None,
         chat_id: Optional[Union[int, str]] = None,
         message_id: Optional[int] = None,
         inline_message_id: Optional[str] = None,
@@ -1513,11 +1528,12 @@ class Bot:
         request_timeout: Optional[int] = None,
     ) -> Union[Message, bool]:
         """
-        Use this method to edit text and `game <https://core.telegram.org/bots/api#games>`_ messages. On success, if the edited message is not an inline message, the edited :class:`aiogram.types.message.Message` is returned, otherwise :code:`True` is returned.
+        Use this method to edit text and `game <https://core.telegram.org/bots/api#games>`_ messages. On success, if the edited message is not an inline message, the edited :class:`aiogram.types.message.Message` is returned, otherwise :code:`True` is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within **48 hours** from the time they were sent.
 
         Source: https://core.telegram.org/bots/api#editmessagetext
 
         :param text: New text of the message, 1-4096 characters after entities parsing
+        :param business_connection_id: Unique identifier of the business connection on behalf of which the message to be edited was sent
         :param chat_id: Required if *inline_message_id* is not specified. Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
         :param message_id: Required if *inline_message_id* is not specified. Identifier of the message to edit
         :param inline_message_id: Required if *chat_id* and *message_id* are not specified. Identifier of the inline message
@@ -1527,11 +1543,12 @@ class Bot:
         :param reply_markup: A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_.
         :param disable_web_page_preview: Disables link previews for links in this message
         :param request_timeout: Request timeout
-        :return: On success, if the edited message is not an inline message, the edited :class:`aiogram.types.message.Message` is returned, otherwise :code:`True` is returned.
+        :return: Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within **48 hours** from the time they were sent.
         """
 
         call = EditMessageText(
             text=text,
+            business_connection_id=business_connection_id,
             chat_id=chat_id,
             message_id=message_id,
             inline_message_id=inline_message_id,
@@ -3760,6 +3777,7 @@ class Bot:
 
     async def stop_message_live_location(
         self,
+        business_connection_id: Optional[str] = None,
         chat_id: Optional[Union[int, str]] = None,
         message_id: Optional[int] = None,
         inline_message_id: Optional[str] = None,
@@ -3771,6 +3789,7 @@ class Bot:
 
         Source: https://core.telegram.org/bots/api#stopmessagelivelocation
 
+        :param business_connection_id: Unique identifier of the business connection on behalf of which the message to be edited was sent
         :param chat_id: Required if *inline_message_id* is not specified. Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
         :param message_id: Required if *inline_message_id* is not specified. Identifier of the message with live location to stop
         :param inline_message_id: Required if *chat_id* and *message_id* are not specified. Identifier of the inline message
@@ -3780,6 +3799,7 @@ class Bot:
         """
 
         call = StopMessageLiveLocation(
+            business_connection_id=business_connection_id,
             chat_id=chat_id,
             message_id=message_id,
             inline_message_id=inline_message_id,
@@ -3791,6 +3811,7 @@ class Bot:
         self,
         chat_id: Union[int, str],
         message_id: int,
+        business_connection_id: Optional[str] = None,
         reply_markup: Optional[InlineKeyboardMarkup] = None,
         request_timeout: Optional[int] = None,
     ) -> Poll:
@@ -3801,6 +3822,7 @@ class Bot:
 
         :param chat_id: Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
         :param message_id: Identifier of the original message with the poll
+        :param business_connection_id: Unique identifier of the business connection on behalf of which the message to be edited was sent
         :param reply_markup: A JSON-serialized object for a new message `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_.
         :param request_timeout: Request timeout
         :return: On success, the stopped :class:`aiogram.types.poll.Poll` is returned.
@@ -3809,6 +3831,7 @@ class Bot:
         call = StopPoll(
             chat_id=chat_id,
             message_id=message_id,
+            business_connection_id=business_connection_id,
             reply_markup=reply_markup,
         )
         return await self(call, request_timeout=request_timeout)
@@ -4587,5 +4610,28 @@ class Bot:
         call = RefundStarPayment(
             user_id=user_id,
             telegram_payment_charge_id=telegram_payment_charge_id,
+        )
+        return await self(call, request_timeout=request_timeout)
+
+    async def get_star_transactions(
+        self,
+        offset: Optional[int] = None,
+        limit: Optional[int] = None,
+        request_timeout: Optional[int] = None,
+    ) -> StarTransactions:
+        """
+        Returns the bot's Telegram Star transactions in chronological order. On success, returns a :class:`aiogram.types.star_transactions.StarTransactions` object.
+
+        Source: https://core.telegram.org/bots/api#getstartransactions
+
+        :param offset: Number of transactions to skip in the response
+        :param limit: The maximum number of transactions to be retrieved. Values between 1-100 are accepted. Defaults to 100.
+        :param request_timeout: Request timeout
+        :return: On success, returns a :class:`aiogram.types.star_transactions.StarTransactions` object.
+        """
+
+        call = GetStarTransactions(
+            offset=offset,
+            limit=limit,
         )
         return await self(call, request_timeout=request_timeout)

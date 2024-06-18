@@ -1,0 +1,25 @@
+Added full support of `Bot API 7.5 <https://core.telegram.org/bots/api-changelog#june-18-2024>`_
+
+- Added the classes :class:`aiogram.types.star_transactions.StarTransactions`,
+    :class:`aiogram.types.star_transaction.StarTransaction`,
+    :class:`aiogram.types.transaction_partner.TransactionPartner`
+    and :class:`aiogram.types.revenue_withdrawal_state.RevenueWithdrawalState`,
+    containing information about Telegram Star transactions involving the bot.
+- Added the method :class:`aiogram.methods.get_star_transactions.GetStarTransactions`
+    that can be used to get the list of all Telegram Star transactions for the bot.
+- Added support for callback buttons in
+    :class:`aiogram.types.inline_keyboard_markup.InlineKeyboardMarkup`
+    for messages sent on behalf of a business account.
+- Added support for callback queries originating from a message sent
+    on behalf of a business account.
+- Added the parameter :code:`business_connection_id` to the methods
+    :class:`aiogram.methods.edit_message_text.EditMessageText`,
+    :class:`aiogram.methods.edit_message_media.EditMessageMedia`,
+    :class:`aiogram.methods.edit_message_caption.EditMessageCaption`,
+    :class:`aiogram.methods.edit_message_live_location.EditMessageLiveLocation`,
+    :class:`aiogram.methods.stop_message_live_location.StopMessageLiveLocation`
+    and :class:`aiogram.methods.edit_message_reply_markup.EditMessageReplyMarkup`,
+    allowing the bot to edit business messages.
+- Added the parameter :code:`business_connection_id` to the method
+    :class:`aiogram.methods.stop_poll.StopPoll`,
+    allowing the bot to stop polls it sent on behalf of a business account.

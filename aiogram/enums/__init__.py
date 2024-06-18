@@ -18,9 +18,11 @@ from .parse_mode import ParseMode
 from .passport_element_error_type import PassportElementErrorType
 from .poll_type import PollType
 from .reaction_type_type import ReactionTypeType
+from .revenue_withdrawal_state_type import RevenueWithdrawalStateType
 from .sticker_format import StickerFormat
 from .sticker_type import StickerType
 from .topic_icon_color import TopicIconColor
+from .transaction_partner_type import TransactionPartnerType
 from .update_type import UpdateType
 
 __all__ = (
@@ -44,8 +46,10 @@ __all__ = (
     "PassportElementErrorType",
     "PollType",
     "ReactionTypeType",
+    "RevenueWithdrawalStateType",
     "StickerFormat",
     "StickerType",
     "TopicIconColor",
+    "TransactionPartnerType",
     "UpdateType",
 )

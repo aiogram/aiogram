@@ -1,0 +1,25 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Payments",
+    "anchor": "payments"
+  },
+  "object": {
+    "anchor": "revenuewithdrawalstatepending",
+    "name": "RevenueWithdrawalStatePending",
+    "description": "The withdrawal is in progress.",
+    "html_description": "<p>The withdrawal is in progress.</p>",
+    "rst_description": "The withdrawal is in progress.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Type of the state, always 'pending'",
+        "html_description": "<td>Type of the state, always &#8220;pending&#8221;</td>",
+        "rst_description": "Type of the state, always 'pending'\n",
+        "name": "type",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}
