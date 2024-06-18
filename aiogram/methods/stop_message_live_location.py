@@ -16,6 +16,8 @@ class StopMessageLiveLocation(TelegramMethod[Union[Message, bool]]):
     __returning__ = Union[Message, bool]
     __api_method__ = "stopMessageLiveLocation"
 
+    business_connection_id: Optional[str] = None
+    """Unique identifier of the business connection on behalf of which the message to be edited was sent"""
     chat_id: Optional[Union[int, str]] = None
     """Required if *inline_message_id* is not specified. Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)"""
     message_id: Optional[int] = None
@@ -32,6 +34,7 @@ class StopMessageLiveLocation(TelegramMethod[Union[Message, bool]]):
         def __init__(
             __pydantic__self__,
             *,
+            business_connection_id: Optional[str] = None,
             chat_id: Optional[Union[int, str]] = None,
             message_id: Optional[int] = None,
             inline_message_id: Optional[str] = None,
@@ -43,6 +46,7 @@ class StopMessageLiveLocation(TelegramMethod[Union[Message, bool]]):
             # Is needed only for type checking and IDE support without any additional plugins
 
             super().__init__(
+                business_connection_id=business_connection_id,
                 chat_id=chat_id,
                 message_id=message_id,
                 inline_message_id=inline_message_id,

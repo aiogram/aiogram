@@ -17,7 +17,7 @@ from .base import TelegramMethod
 
 class EditMessageText(TelegramMethod[Union[Message, bool]]):
     """
-    Use this method to edit text and `game <https://core.telegram.org/bots/api#games>`_ messages. On success, if the edited message is not an inline message, the edited :class:`aiogram.types.message.Message` is returned, otherwise :code:`True` is returned.
+    Use this method to edit text and `game <https://core.telegram.org/bots/api#games>`_ messages. On success, if the edited message is not an inline message, the edited :class:`aiogram.types.message.Message` is returned, otherwise :code:`True` is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within **48 hours** from the time they were sent.
 
     Source: https://core.telegram.org/bots/api#editmessagetext
     """
@@ -27,6 +27,8 @@ class EditMessageText(TelegramMethod[Union[Message, bool]]):
 
     text: str
     """New text of the message, 1-4096 characters after entities parsing"""
+    business_connection_id: Optional[str] = None
+    """Unique identifier of the business connection on behalf of which the message to be edited was sent"""
     chat_id: Optional[Union[int, str]] = None
     """Required if *inline_message_id* is not specified. Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)"""
     message_id: Optional[int] = None
@@ -57,6 +59,7 @@ class EditMessageText(TelegramMethod[Union[Message, bool]]):
             __pydantic__self__,
             *,
             text: str,
+            business_connection_id: Optional[str] = None,
             chat_id: Optional[Union[int, str]] = None,
             message_id: Optional[int] = None,
             inline_message_id: Optional[str] = None,
@@ -75,6 +78,7 @@ class EditMessageText(TelegramMethod[Union[Message, bool]]):
 
             super().__init__(
                 text=text,
+                business_connection_id=business_connection_id,
                 chat_id=chat_id,
                 message_id=message_id,
                 inline_message_id=inline_message_id,

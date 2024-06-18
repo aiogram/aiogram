@@ -234,10 +234,20 @@ Payments
     labeled_price
     order_info
     pre_checkout_query
+    revenue_withdrawal_state
+    revenue_withdrawal_state_failed
+    revenue_withdrawal_state_pending
+    revenue_withdrawal_state_succeeded
     shipping_address
     shipping_option
     shipping_query
+    star_transaction
+    star_transactions
     successful_payment
+    transaction_partner
+    transaction_partner_fragment
+    transaction_partner_other
+    transaction_partner_user
 
 Getting updates
 ===============

@@ -54,6 +54,7 @@ from .get_my_default_administrator_rights import GetMyDefaultAdministratorRights
 from .get_my_description import GetMyDescription
 from .get_my_name import GetMyName
 from .get_my_short_description import GetMyShortDescription
+from .get_star_transactions import GetStarTransactions
 from .get_sticker_set import GetStickerSet
 from .get_updates import GetUpdates
 from .get_user_chat_boosts import GetUserChatBoosts
@@ -178,6 +179,7 @@ __all__ = (
     "GetMyDescription",
     "GetMyName",
     "GetMyShortDescription",
+    "GetStarTransactions",
     "GetStickerSet",
     "GetUpdates",
     "GetUserChatBoosts",

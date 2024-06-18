@@ -1,7 +1,7 @@
 {
   "api": {
-    "version": "7.4",
-    "release_date": "2024-05-28"
+    "version": "7.5",
+    "release_date": "2024-06-18"
   },
   "items": [
     {
@@ -4583,9 +4583,9 @@
             },
             {
               "type": "String",
-              "description": "Data to be sent in a callback query to the bot when button is pressed, 1-64 bytes. Not supported for messages sent on behalf of a Telegram Business account.",
-              "html_description": "<td><em>Optional</em>. Data to be sent in a <a href=\"#callbackquery\">callback query</a> to the bot when button is pressed, 1-64 bytes. Not supported for messages sent on behalf of a Telegram Business account.</td>",
-              "rst_description": "*Optional*. Data to be sent in a `callback query <https://core.telegram.org/bots/api#callbackquery>`_ to the bot when button is pressed, 1-64 bytes. Not supported for messages sent on behalf of a Telegram Business account.\n",
+              "description": "Data to be sent in a callback query to the bot when the button is pressed, 1-64 bytes",
+              "html_description": "<td><em>Optional</em>. Data to be sent in a <a href=\"#callbackquery\">callback query</a> to the bot when the button is pressed, 1-64 bytes</td>",
+              "rst_description": "*Optional*. Data to be sent in a `callback query <https://core.telegram.org/bots/api#callbackquery>`_ to the bot when the button is pressed, 1-64 bytes\n",
               "name": "callback_data",
               "required": false
             },
@@ -11146,10 +11146,18 @@
         {
           "anchor": "editmessagetext",
           "name": "editMessageText",
-          "description": "Use this method to edit text and game messages. On success, if the edited message is not an inline message, the edited Message is returned, otherwise True is returned.",
-          "html_description": "<p>Use this method to edit text and <a href=\"#games\">game</a> messages. On success, if the edited message is not an inline message, the edited <a href=\"#message\">Message</a> is returned, otherwise <em>True</em> is returned.</p>",
-          "rst_description": "Use this method to edit text and `game <https://core.telegram.org/bots/api#games>`_ messages. On success, if the edited message is not an inline message, the edited :class:`aiogram.types.message.Message` is returned, otherwise :code:`True` is returned.",
+          "description": "Use this method to edit text and game messages. On success, if the edited message is not an inline message, the edited Message is returned, otherwise True is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within 48 hours from the time they were sent.",
+          "html_description": "<p>Use this method to edit text and <a href=\"#games\">game</a> messages. On success, if the edited message is not an inline message, the edited <a href=\"#message\">Message</a> is returned, otherwise <em>True</em> is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within <strong>48 hours</strong> from the time they were sent.</p>",
+          "rst_description": "Use this method to edit text and `game <https://core.telegram.org/bots/api#games>`_ messages. On success, if the edited message is not an inline message, the edited :class:`aiogram.types.message.Message` is returned, otherwise :code:`True` is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within **48 hours** from the time they were sent.",
           "annotations": [
+            {
+              "type": "String",
+              "required": false,
+              "description": "Unique identifier of the business connection on behalf of which the message to be edited was sent",
+              "html_description": "<td>Unique identifier of the business connection on behalf of which the message to be edited was sent</td>",
+              "rst_description": "Unique identifier of the business connection on behalf of which the message to be edited was sent\n",
+              "name": "business_connection_id"
+            },
             {
               "type": "Integer or String",
               "required": false,
@@ -11220,10 +11228,18 @@
         {
           "anchor": "editmessagecaption",
           "name": "editMessageCaption",
-          "description": "Use this method to edit captions of messages. On success, if the edited message is not an inline message, the edited Message is returned, otherwise True is returned.",
-          "html_description": "<p>Use this method to edit captions of messages. On success, if the edited message is not an inline message, the edited <a href=\"#message\">Message</a> is returned, otherwise <em>True</em> is returned.</p>",
-          "rst_description": "Use this method to edit captions of messages. On success, if the edited message is not an inline message, the edited :class:`aiogram.types.message.Message` is returned, otherwise :code:`True` is returned.",
+          "description": "Use this method to edit captions of messages. On success, if the edited message is not an inline message, the edited Message is returned, otherwise True is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within 48 hours from the time they were sent.",
+          "html_description": "<p>Use this method to edit captions of messages. On success, if the edited message is not an inline message, the edited <a href=\"#message\">Message</a> is returned, otherwise <em>True</em> is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within <strong>48 hours</strong> from the time they were sent.</p>",
+          "rst_description": "Use this method to edit captions of messages. On success, if the edited message is not an inline message, the edited :class:`aiogram.types.message.Message` is returned, otherwise :code:`True` is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within **48 hours** from the time they were sent.",
           "annotations": [
+            {
+              "type": "String",
+              "required": false,
+              "description": "Unique identifier of the business connection on behalf of which the message to be edited was sent",
+              "html_description": "<td>Unique identifier of the business connection on behalf of which the message to be edited was sent</td>",
+              "rst_description": "Unique identifier of the business connection on behalf of which the message to be edited was sent\n",
+              "name": "business_connection_id"
+            },
             {
               "type": "Integer or String",
               "required": false,
@@ -11294,10 +11310,18 @@
         {
           "anchor": "editmessagemedia",
           "name": "editMessageMedia",
-          "description": "Use this method to edit animation, audio, document, photo, or video messages. If a message is part of a message album, then it can be edited only to an audio for audio albums, only to a document for document albums and to a photo or a video otherwise. When an inline message is edited, a new file can't be uploaded; use a previously uploaded file via its file_id or specify a URL. On success, if the edited message is not an inline message, the edited Message is returned, otherwise True is returned.",
-          "html_description": "<p>Use this method to edit animation, audio, document, photo, or video messages. If a message is part of a message album, then it can be edited only to an audio for audio albums, only to a document for document albums and to a photo or a video otherwise. When an inline message is edited, a new file can't be uploaded; use a previously uploaded file via its file_id or specify a URL. On success, if the edited message is not an inline message, the edited <a href=\"#message\">Message</a> is returned, otherwise <em>True</em> is returned.</p>",
-          "rst_description": "Use this method to edit animation, audio, document, photo, or video messages. If a message is part of a message album, then it can be edited only to an audio for audio albums, only to a document for document albums and to a photo or a video otherwise. When an inline message is edited, a new file can't be uploaded; use a previously uploaded file via its file_id or specify a URL. On success, if the edited message is not an inline message, the edited :class:`aiogram.types.message.Message` is returned, otherwise :code:`True` is returned.",
+          "description": "Use this method to edit animation, audio, document, photo, or video messages. If a message is part of a message album, then it can be edited only to an audio for audio albums, only to a document for document albums and to a photo or a video otherwise. When an inline message is edited, a new file can't be uploaded; use a previously uploaded file via its file_id or specify a URL. On success, if the edited message is not an inline message, the edited Message is returned, otherwise True is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within 48 hours from the time they were sent.",
+          "html_description": "<p>Use this method to edit animation, audio, document, photo, or video messages. If a message is part of a message album, then it can be edited only to an audio for audio albums, only to a document for document albums and to a photo or a video otherwise. When an inline message is edited, a new file can't be uploaded; use a previously uploaded file via its file_id or specify a URL. On success, if the edited message is not an inline message, the edited <a href=\"#message\">Message</a> is returned, otherwise <em>True</em> is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within <strong>48 hours</strong> from the time they were sent.</p>",
+          "rst_description": "Use this method to edit animation, audio, document, photo, or video messages. If a message is part of a message album, then it can be edited only to an audio for audio albums, only to a document for document albums and to a photo or a video otherwise. When an inline message is edited, a new file can't be uploaded; use a previously uploaded file via its file_id or specify a URL. On success, if the edited message is not an inline message, the edited :class:`aiogram.types.message.Message` is returned, otherwise :code:`True` is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within **48 hours** from the time they were sent.",
           "annotations": [
+            {
+              "type": "String",
+              "required": false,
+              "description": "Unique identifier of the business connection on behalf of which the message to be edited was sent",
+              "html_description": "<td>Unique identifier of the business connection on behalf of which the message to be edited was sent</td>",
+              "rst_description": "Unique identifier of the business connection on behalf of which the message to be edited was sent\n",
+              "name": "business_connection_id"
+            },
             {
               "type": "Integer or String",
               "required": false,
@@ -11348,6 +11372,14 @@
           "html_description": "<p>Use this method to edit live location messages. A location can be edited until its <em>live_period</em> expires or editing is explicitly disabled by a call to <a href=\"#stopmessagelivelocation\">stopMessageLiveLocation</a>. On success, if the edited message is not an inline message, the edited <a href=\"#message\">Message</a> is returned, otherwise <em>True</em> is returned.</p>",
           "rst_description": "Use this method to edit live location messages. A location can be edited until its *live_period* expires or editing is explicitly disabled by a call to :class:`aiogram.methods.stop_message_live_location.StopMessageLiveLocation`. On success, if the edited message is not an inline message, the edited :class:`aiogram.types.message.Message` is returned, otherwise :code:`True` is returned.",
           "annotations": [
+            {
+              "type": "String",
+              "required": false,
+              "description": "Unique identifier of the business connection on behalf of which the message to be edited was sent",
+              "html_description": "<td>Unique identifier of the business connection on behalf of which the message to be edited was sent</td>",
+              "rst_description": "Unique identifier of the business connection on behalf of which the message to be edited was sent\n",
+              "name": "business_connection_id"
+            },
             {
               "type": "Integer or String",
               "required": false,
@@ -11439,6 +11471,14 @@
           "rst_description": "Use this method to stop updating a live location message before *live_period* expires. On success, if the message is not an inline message, the edited :class:`aiogram.types.message.Message` is returned, otherwise :code:`True` is returned.",
           "annotations": [
             {
+              "type": "String",
+              "required": false,
+              "description": "Unique identifier of the business connection on behalf of which the message to be edited was sent",
+              "html_description": "<td>Unique identifier of the business connection on behalf of which the message to be edited was sent</td>",
+              "rst_description": "Unique identifier of the business connection on behalf of which the message to be edited was sent\n",
+              "name": "business_connection_id"
+            },
+            {
               "type": "Integer or String",
               "required": false,
               "description": "Required if inline_message_id is not specified. Unique identifier for the target chat or username of the target channel (in the format @channelusername)",
@@ -11476,10 +11516,18 @@
         {
           "anchor": "editmessagereplymarkup",
           "name": "editMessageReplyMarkup",
-          "description": "Use this method to edit only the reply markup of messages. On success, if the edited message is not an inline message, the edited Message is returned, otherwise True is returned.",
-          "html_description": "<p>Use this method to edit only the reply markup of messages. On success, if the edited message is not an inline message, the edited <a href=\"#message\">Message</a> is returned, otherwise <em>True</em> is returned.</p>",
-          "rst_description": "Use this method to edit only the reply markup of messages. On success, if the edited message is not an inline message, the edited :class:`aiogram.types.message.Message` is returned, otherwise :code:`True` is returned.",
+          "description": "Use this method to edit only the reply markup of messages. On success, if the edited message is not an inline message, the edited Message is returned, otherwise True is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within 48 hours from the time they were sent.",
+          "html_description": "<p>Use this method to edit only the reply markup of messages. On success, if the edited message is not an inline message, the edited <a href=\"#message\">Message</a> is returned, otherwise <em>True</em> is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within <strong>48 hours</strong> from the time they were sent.</p>",
+          "rst_description": "Use this method to edit only the reply markup of messages. On success, if the edited message is not an inline message, the edited :class:`aiogram.types.message.Message` is returned, otherwise :code:`True` is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within **48 hours** from the time they were sent.",
           "annotations": [
+            {
+              "type": "String",
+              "required": false,
+              "description": "Unique identifier of the business connection on behalf of which the message to be edited was sent",
+              "html_description": "<td>Unique identifier of the business connection on behalf of which the message to be edited was sent</td>",
+              "rst_description": "Unique identifier of the business connection on behalf of which the message to be edited was sent\n",
+              "name": "business_connection_id"
+            },
             {
               "type": "Integer or String",
               "required": false,
@@ -11522,6 +11570,14 @@
           "html_description": "<p>Use this method to stop a poll which was sent by the bot. On success, the stopped <a href=\"#poll\">Poll</a> is returned.</p>",
           "rst_description": "Use this method to stop a poll which was sent by the bot. On success, the stopped :class:`aiogram.types.poll.Poll` is returned.",
           "annotations": [
+            {
+              "type": "String",
+              "required": false,
+              "description": "Unique identifier of the business connection on behalf of which the message to be edited was sent",
+              "html_description": "<td>Unique identifier of the business connection on behalf of which the message to be edited was sent</td>",
+              "rst_description": "Unique identifier of the business connection on behalf of which the message to be edited was sent\n",
+              "name": "business_connection_id"
+            },
             {
               "type": "Integer or String",
               "required": true,
@@ -15543,6 +15599,32 @@
           "category": "methods"
         },
         {
+          "anchor": "getstartransactions",
+          "name": "getStarTransactions",
+          "description": "Returns the bot's Telegram Star transactions in chronological order. On success, returns a StarTransactions object.",
+          "html_description": "<p>Returns the bot's Telegram Star transactions in chronological order. On success, returns a <a href=\"#startransactions\">StarTransactions</a> object.</p>",
+          "rst_description": "Returns the bot's Telegram Star transactions in chronological order. On success, returns a :class:`aiogram.types.star_transactions.StarTransactions` object.",
+          "annotations": [
+            {
+              "type": "Integer",
+              "required": false,
+              "description": "Number of transactions to skip in the response",
+              "html_description": "<td>Number of transactions to skip in the response</td>",
+              "rst_description": "Number of transactions to skip in the response\n",
+              "name": "offset"
+            },
+            {
+              "type": "Integer",
+              "required": false,
+              "description": "The maximum number of transactions to be retrieved. Values between 1-100 are accepted. Defaults to 100.",
+              "html_description": "<td>The maximum number of transactions to be retrieved. Values between 1-100 are accepted. Defaults to 100.</td>",
+              "rst_description": "The maximum number of transactions to be retrieved. Values between 1-100 are accepted. Defaults to 100.\n",
+              "name": "limit"
+            }
+          ],
+          "category": "methods"
+        },
+        {
           "anchor": "refundstarpayment",
           "name": "refundStarPayment",
           "description": "Refunds a successful payment in Telegram Stars. Returns True on success.",
@@ -15948,6 +16030,232 @@
               "rst_description": "*Optional*. Order information provided by the user\n",
               "name": "order_info",
               "required": false
+            }
+          ],
+          "category": "types"
+        },
+        {
+          "anchor": "revenuewithdrawalstate",
+          "name": "RevenueWithdrawalState",
+          "description": "This object describes the state of a revenue withdrawal operation. Currently, it can be one of\n - RevenueWithdrawalStatePending\n - RevenueWithdrawalStateSucceeded\n - RevenueWithdrawalStateFailed",
+          "html_description": "<p>This object describes the state of a revenue withdrawal operation. Currently, it can be one of</p><ul>\n<li><a href=\"#revenuewithdrawalstatepending\">RevenueWithdrawalStatePending</a></li>\n<li><a href=\"#revenuewithdrawalstatesucceeded\">RevenueWithdrawalStateSucceeded</a></li>\n<li><a href=\"#revenuewithdrawalstatefailed\">RevenueWithdrawalStateFailed</a></li>\n</ul>",
+          "rst_description": "This object describes the state of a revenue withdrawal operation. Currently, it can be one of\n\n - :class:`aiogram.types.revenue_withdrawal_state_pending.RevenueWithdrawalStatePending`\n - :class:`aiogram.types.revenue_withdrawal_state_succeeded.RevenueWithdrawalStateSucceeded`\n - :class:`aiogram.types.revenue_withdrawal_state_failed.RevenueWithdrawalStateFailed`",
+          "annotations": [],
+          "category": "types"
+        },
+        {
+          "anchor": "revenuewithdrawalstatepending",
+          "name": "RevenueWithdrawalStatePending",
+          "description": "The withdrawal is in progress.",
+          "html_description": "<p>The withdrawal is in progress.</p>",
+          "rst_description": "The withdrawal is in progress.",
+          "annotations": [
+            {
+              "type": "String",
+              "description": "Type of the state, always 'pending'",
+              "html_description": "<td>Type of the state, always &#8220;pending&#8221;</td>",
+              "rst_description": "Type of the state, always 'pending'\n",
+              "name": "type",
+              "required": true
+            }
+          ],
+          "category": "types"
+        },
+        {
+          "anchor": "revenuewithdrawalstatesucceeded",
+          "name": "RevenueWithdrawalStateSucceeded",
+          "description": "The withdrawal succeeded.",
+          "html_description": "<p>The withdrawal succeeded.</p>",
+          "rst_description": "The withdrawal succeeded.",
+          "annotations": [
+            {
+              "type": "String",
+              "description": "Type of the state, always 'succeeded'",
+              "html_description": "<td>Type of the state, always &#8220;succeeded&#8221;</td>",
+              "rst_description": "Type of the state, always 'succeeded'\n",
+              "name": "type",
+              "required": true
+            },
+            {
+              "type": "Integer",
+              "description": "Date the withdrawal was completed in Unix time",
+              "html_description": "<td>Date the withdrawal was completed in Unix time</td>",
+              "rst_description": "Date the withdrawal was completed in Unix time\n",
+              "name": "date",
+              "required": true
+            },
+            {
+              "type": "String",
+              "description": "An HTTPS URL that can be used to see transaction details",
+              "html_description": "<td>An HTTPS URL that can be used to see transaction details</td>",
+              "rst_description": "An HTTPS URL that can be used to see transaction details\n",
+              "name": "url",
+              "required": true
+            }
+          ],
+          "category": "types"
+        },
+        {
+          "anchor": "revenuewithdrawalstatefailed",
+          "name": "RevenueWithdrawalStateFailed",
+          "description": "The withdrawal failed and the transaction was refunded.",
+          "html_description": "<p>The withdrawal failed and the transaction was refunded.</p>",
+          "rst_description": "The withdrawal failed and the transaction was refunded.",
+          "annotations": [
+            {
+              "type": "String",
+              "description": "Type of the state, always 'failed'",
+              "html_description": "<td>Type of the state, always &#8220;failed&#8221;</td>",
+              "rst_description": "Type of the state, always 'failed'\n",
+              "name": "type",
+              "required": true
+            }
+          ],
+          "category": "types"
+        },
+        {
+          "anchor": "transactionpartner",
+          "name": "TransactionPartner",
+          "description": "This object describes the source of a transaction, or its recipient for outgoing transactions. Currently, it can be one of\n - TransactionPartnerFragment\n - TransactionPartnerUser\n - TransactionPartnerOther",
+          "html_description": "<p>This object describes the source of a transaction, or its recipient for outgoing transactions. Currently, it can be one of</p><ul>\n<li><a href=\"#transactionpartnerfragment\">TransactionPartnerFragment</a></li>\n<li><a href=\"#transactionpartneruser\">TransactionPartnerUser</a></li>\n<li><a href=\"#transactionpartnerother\">TransactionPartnerOther</a></li>\n</ul>",
+          "rst_description": "This object describes the source of a transaction, or its recipient for outgoing transactions. Currently, it can be one of\n\n - :class:`aiogram.types.transaction_partner_fragment.TransactionPartnerFragment`\n - :class:`aiogram.types.transaction_partner_user.TransactionPartnerUser`\n - :class:`aiogram.types.transaction_partner_other.TransactionPartnerOther`",
+          "annotations": [],
+          "category": "types"
+        },
+        {
+          "anchor": "transactionpartnerfragment",
+          "name": "TransactionPartnerFragment",
+          "description": "Describes a withdrawal transaction with Fragment.",
+          "html_description": "<p>Describes a withdrawal transaction with Fragment.</p>",
+          "rst_description": "Describes a withdrawal transaction with Fragment.",
+          "annotations": [
+            {
+              "type": "String",
+              "description": "Type of the transaction partner, always 'fragment'",
+              "html_description": "<td>Type of the transaction partner, always &#8220;fragment&#8221;</td>",
+              "rst_description": "Type of the transaction partner, always 'fragment'\n",
+              "name": "type",
+              "required": true
+            },
+            {
+              "type": "RevenueWithdrawalState",
+              "description": "State of the transaction if the transaction is outgoing",
+              "html_description": "<td><em>Optional</em>. State of the transaction if the transaction is outgoing</td>",
+              "rst_description": "*Optional*. State of the transaction if the transaction is outgoing\n",
+              "name": "withdrawal_state",
+              "required": false
+            }
+          ],
+          "category": "types"
+        },
+        {
+          "anchor": "transactionpartneruser",
+          "name": "TransactionPartnerUser",
+          "description": "Describes a transaction with a user.",
+          "html_description": "<p>Describes a transaction with a user.</p>",
+          "rst_description": "Describes a transaction with a user.",
+          "annotations": [
+            {
+              "type": "String",
+              "description": "Type of the transaction partner, always 'user'",
+              "html_description": "<td>Type of the transaction partner, always &#8220;user&#8221;</td>",
+              "rst_description": "Type of the transaction partner, always 'user'\n",
+              "name": "type",
+              "required": true
+            },
+            {
+              "type": "User",
+              "description": "Information about the user",
+              "html_description": "<td>Information about the user</td>",
+              "rst_description": "Information about the user\n",
+              "name": "user",
+              "required": true
+            }
+          ],
+          "category": "types"
+        },
+        {
+          "anchor": "transactionpartnerother",
+          "name": "TransactionPartnerOther",
+          "description": "Describes a transaction with an unknown source or recipient.",
+          "html_description": "<p>Describes a transaction with an unknown source or recipient.</p>",
+          "rst_description": "Describes a transaction with an unknown source or recipient.",
+          "annotations": [
+            {
+              "type": "String",
+              "description": "Type of the transaction partner, always 'other'",
+              "html_description": "<td>Type of the transaction partner, always &#8220;other&#8221;</td>",
+              "rst_description": "Type of the transaction partner, always 'other'\n",
+              "name": "type",
+              "required": true
+            }
+          ],
+          "category": "types"
+        },
+        {
+          "anchor": "startransaction",
+          "name": "StarTransaction",
+          "description": "Describes a Telegram Star transaction.",
+          "html_description": "<p>Describes a Telegram Star transaction.</p>",
+          "rst_description": "Describes a Telegram Star transaction.",
+          "annotations": [
+            {
+              "type": "String",
+              "description": "Unique identifier of the transaction. Coincides with the identifer of the original transaction for refund transactions. Coincides with SuccessfulPayment.telegram_payment_charge_id for successful incoming payments from users.",
+              "html_description": "<td>Unique identifier of the transaction. Coincides with the identifer of the original transaction for refund transactions. Coincides with <em>SuccessfulPayment.telegram_payment_charge_id</em> for successful incoming payments from users.</td>",
+              "rst_description": "Unique identifier of the transaction. Coincides with the identifer of the original transaction for refund transactions. Coincides with *SuccessfulPayment.telegram_payment_charge_id* for successful incoming payments from users.\n",
+              "name": "id",
+              "required": true
+            },
+            {
+              "type": "Integer",
+              "description": "Number of Telegram Stars transferred by the transaction",
+              "html_description": "<td>Number of Telegram Stars transferred by the transaction</td>",
+              "rst_description": "Number of Telegram Stars transferred by the transaction\n",
+              "name": "amount",
+              "required": true
+            },
+            {
+              "type": "Integer",
+              "description": "Date the transaction was created in Unix time",
+              "html_description": "<td>Date the transaction was created in Unix time</td>",
+              "rst_description": "Date the transaction was created in Unix time\n",
+              "name": "date",
+              "required": true
+            },
+            {
+              "type": "TransactionPartner",
+              "description": "Source of an incoming transaction (e.g., a user purchasing goods or services, Fragment refunding a failed withdrawal). Only for incoming transactions",
+              "html_description": "<td><em>Optional</em>. Source of an incoming transaction (e.g., a user purchasing goods or services, Fragment refunding a failed withdrawal). Only for incoming transactions</td>",
+              "rst_description": "*Optional*. Source of an incoming transaction (e.g., a user purchasing goods or services, Fragment refunding a failed withdrawal). Only for incoming transactions\n",
+              "name": "source",
+              "required": false
+            },
+            {
+              "type": "TransactionPartner",
+              "description": "Receiver of an outgoing transaction (e.g., a user for a purchase refund, Fragment for a withdrawal). Only for outgoing transactions",
+              "html_description": "<td><em>Optional</em>. Receiver of an outgoing transaction (e.g., a user for a purchase refund, Fragment for a withdrawal). Only for outgoing transactions</td>",
+              "rst_description": "*Optional*. Receiver of an outgoing transaction (e.g., a user for a purchase refund, Fragment for a withdrawal). Only for outgoing transactions\n",
+              "name": "receiver",
+              "required": false
+            }
+          ],
+          "category": "types"
+        },
+        {
+          "anchor": "startransactions",
+          "name": "StarTransactions",
+          "description": "Contains a list of Telegram Star transactions.",
+          "html_description": "<p>Contains a list of Telegram Star transactions.</p>",
+          "rst_description": "Contains a list of Telegram Star transactions.",
+          "annotations": [
+            {
+              "type": "Array of StarTransaction",
+              "description": "The list of transactions",
+              "html_description": "<td>The list of transactions</td>",
+              "rst_description": "The list of transactions\n",
+              "name": "transactions",
+              "required": true
             }
           ],
           "category": "types"

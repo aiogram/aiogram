@@ -1,0 +1,16 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Payments",
+    "anchor": "payments"
+  },
+  "object": {
+    "anchor": "revenuewithdrawalstate",
+    "name": "RevenueWithdrawalState",
+    "description": "This object describes the state of a revenue withdrawal operation. Currently, it can be one of\n - RevenueWithdrawalStatePending\n - RevenueWithdrawalStateSucceeded\n - RevenueWithdrawalStateFailed",
+    "html_description": "<p>This object describes the state of a revenue withdrawal operation. Currently, it can be one of</p><ul>\n<li><a href=\"#revenuewithdrawalstatepending\">RevenueWithdrawalStatePending</a></li>\n<li><a href=\"#revenuewithdrawalstatesucceeded\">RevenueWithdrawalStateSucceeded</a></li>\n<li><a href=\"#revenuewithdrawalstatefailed\">RevenueWithdrawalStateFailed</a></li>\n</ul>",
+    "rst_description": "This object describes the state of a revenue withdrawal operation. Currently, it can be one of\n\n - :class:`aiogram.types.revenue_withdrawal_state_pending.RevenueWithdrawalStatePending`\n - :class:`aiogram.types.revenue_withdrawal_state_succeeded.RevenueWithdrawalStateSucceeded`\n - :class:`aiogram.types.revenue_withdrawal_state_failed.RevenueWithdrawalStateFailed`",
+    "annotations": [],
+    "category": "types"
+  }
+}

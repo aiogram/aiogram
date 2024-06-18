@@ -20,6 +20,8 @@ class StopPoll(TelegramMethod[Poll]):
     """Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)"""
     message_id: int
     """Identifier of the original message with the poll"""
+    business_connection_id: Optional[str] = None
+    """Unique identifier of the business connection on behalf of which the message to be edited was sent"""
     reply_markup: Optional[InlineKeyboardMarkup] = None
     """A JSON-serialized object for a new message `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_."""
 
@@ -32,6 +34,7 @@ class StopPoll(TelegramMethod[Poll]):
             *,
             chat_id: Union[int, str],
             message_id: int,
+            business_connection_id: Optional[str] = None,
             reply_markup: Optional[InlineKeyboardMarkup] = None,
             **__pydantic_kwargs: Any,
         ) -> None:
@@ -42,6 +45,7 @@ class StopPoll(TelegramMethod[Poll]):
             super().__init__(
                 chat_id=chat_id,
                 message_id=message_id,
+                business_connection_id=business_connection_id,
                 reply_markup=reply_markup,
                 **__pydantic_kwargs,
             )

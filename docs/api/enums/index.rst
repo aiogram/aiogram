@@ -30,7 +30,9 @@ Here is list of all available enums:
     passport_element_error_type
     poll_type
     reaction_type_type
+    revenue_withdrawal_state_type
     sticker_format
     sticker_type
     topic_icon_color
+    transaction_partner_type
     update_type

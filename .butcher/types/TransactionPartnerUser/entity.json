@@ -1,0 +1,33 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Payments",
+    "anchor": "payments"
+  },
+  "object": {
+    "anchor": "transactionpartneruser",
+    "name": "TransactionPartnerUser",
+    "description": "Describes a transaction with a user.",
+    "html_description": "<p>Describes a transaction with a user.</p>",
+    "rst_description": "Describes a transaction with a user.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Type of the transaction partner, always 'user'",
+        "html_description": "<td>Type of the transaction partner, always &#8220;user&#8221;</td>",
+        "rst_description": "Type of the transaction partner, always 'user'\n",
+        "name": "type",
+        "required": true
+      },
+      {
+        "type": "User",
+        "description": "Information about the user",
+        "html_description": "<td>Information about the user</td>",
+        "rst_description": "Information about the user\n",
+        "name": "user",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

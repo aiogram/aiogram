@@ -183,17 +183,27 @@ from .reply_keyboard_markup import ReplyKeyboardMarkup
 from .reply_keyboard_remove import ReplyKeyboardRemove
 from .reply_parameters import ReplyParameters
 from .response_parameters import ResponseParameters
+from .revenue_withdrawal_state import RevenueWithdrawalState
+from .revenue_withdrawal_state_failed import RevenueWithdrawalStateFailed
+from .revenue_withdrawal_state_pending import RevenueWithdrawalStatePending
+from .revenue_withdrawal_state_succeeded import RevenueWithdrawalStateSucceeded
 from .sent_web_app_message import SentWebAppMessage
 from .shared_user import SharedUser
 from .shipping_address import ShippingAddress
 from .shipping_option import ShippingOption
 from .shipping_query import ShippingQuery
+from .star_transaction import StarTransaction
+from .star_transactions import StarTransactions
 from .sticker import Sticker
 from .sticker_set import StickerSet
 from .story import Story
 from .successful_payment import SuccessfulPayment
 from .switch_inline_query_chosen_chat import SwitchInlineQueryChosenChat
 from .text_quote import TextQuote
+from .transaction_partner import TransactionPartner
+from .transaction_partner_fragment import TransactionPartnerFragment
+from .transaction_partner_other import TransactionPartnerOther
+from .transaction_partner_user import TransactionPartnerUser
 from .update import Update
 from .user import User
 from .user_chat_boosts import UserChatBoosts
@@ -395,11 +405,17 @@ __all__ = (
     "ReplyKeyboardRemove",
     "ReplyParameters",
     "ResponseParameters",
+    "RevenueWithdrawalState",
+    "RevenueWithdrawalStateFailed",
+    "RevenueWithdrawalStatePending",
+    "RevenueWithdrawalStateSucceeded",
     "SentWebAppMessage",
     "SharedUser",
     "ShippingAddress",
     "ShippingOption",
     "ShippingQuery",
+    "StarTransaction",
+    "StarTransactions",
     "Sticker",
     "StickerSet",
     "Story",
@@ -407,6 +423,10 @@ __all__ = (
     "SwitchInlineQueryChosenChat",
     "TelegramObject",
     "TextQuote",
+    "TransactionPartner",
+    "TransactionPartnerFragment",
+    "TransactionPartnerOther",
+    "TransactionPartnerUser",
     "UNSET_PARSE_MODE",
     "URLInputFile",
     "Update",
