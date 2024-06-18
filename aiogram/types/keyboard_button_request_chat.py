@@ -10,7 +10,7 @@ if TYPE_CHECKING:
 
 class KeyboardButtonRequestChat(TelegramObject):
     """
-    This object defines the criteria used to request a suitable chat. The identifier of the selected chat will be shared with the bot when the corresponding button is pressed. `More about requesting chats » <https://core.telegram.org/bots/features#chat-and-user-selection>`_
+    This object defines the criteria used to request a suitable chat. Information about the selected chat will be shared with the bot when the corresponding button is pressed. The bot will be granted requested rights in the chat if appropriate. `More about requesting chats » <https://core.telegram.org/bots/features#chat-and-user-selection>`_.
 
     Source: https://core.telegram.org/bots/api#keyboardbuttonrequestchat
     """
@@ -31,6 +31,12 @@ class KeyboardButtonRequestChat(TelegramObject):
     """*Optional*. A JSON-serialized object listing the required administrator rights of the bot in the chat. The rights must be a subset of *user_administrator_rights*. If not specified, no additional restrictions are applied."""
     bot_is_member: Optional[bool] = None
     """*Optional*. Pass :code:`True` to request a chat with the bot as a member. Otherwise, no additional restrictions are applied."""
+    request_title: Optional[bool] = None
+    """*Optional*. Pass :code:`True` to request the chat's title"""
+    request_username: Optional[bool] = None
+    """*Optional*. Pass :code:`True` to request the chat's username"""
+    request_photo: Optional[bool] = None
+    """*Optional*. Pass :code:`True` to request the chat's photo"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!
@@ -47,6 +53,9 @@ class KeyboardButtonRequestChat(TelegramObject):
             user_administrator_rights: Optional[ChatAdministratorRights] = None,
             bot_administrator_rights: Optional[ChatAdministratorRights] = None,
             bot_is_member: Optional[bool] = None,
+            request_title: Optional[bool] = None,
+            request_username: Optional[bool] = None,
+            request_photo: Optional[bool] = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!
@@ -62,5 +71,8 @@ class KeyboardButtonRequestChat(TelegramObject):
                 user_administrator_rights=user_administrator_rights,
                 bot_administrator_rights=bot_administrator_rights,
                 bot_is_member=bot_is_member,
+                request_title=request_title,
+                request_username=request_username,
+                request_photo=request_photo,
                 **__pydantic_kwargs,
             )

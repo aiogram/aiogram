@@ -45,14 +45,6 @@
       },
       {
         "type": "String",
-        "required": true,
-        "description": "Format of stickers in the set, must be one of 'static', 'animated', 'video'",
-        "html_description": "<td>Format of stickers in the set, must be one of &#8220;static&#8221;, &#8220;animated&#8221;, &#8220;video&#8221;</td>",
-        "rst_description": "Format of stickers in the set, must be one of 'static', 'animated', 'video'\n",
-        "name": "sticker_format"
-      },
-      {
-        "type": "String",
         "required": false,
         "description": "Type of stickers in the set, pass 'regular', 'mask', or 'custom_emoji'. By default, a regular sticker set is created.",
         "html_description": "<td>Type of stickers in the set, pass &#8220;regular&#8221;, &#8220;mask&#8221;, or &#8220;custom_emoji&#8221;. By default, a regular sticker set is created.</td>",
@@ -66,6 +58,18 @@
         "html_description": "<td>Pass <em>True</em> if stickers in the sticker set must be repainted to the color of text when used in messages, the accent color if used as emoji status, white on chat photos, or another appropriate color based on context; for custom emoji sticker sets only</td>",
         "rst_description": "Pass :code:`True` if stickers in the sticker set must be repainted to the color of text when used in messages, the accent color if used as emoji status, white on chat photos, or another appropriate color based on context; for custom emoji sticker sets only\n",
         "name": "needs_repainting"
+      },
+      {
+        "type": "String",
+        "required": false,
+        "description": "Format of stickers in the set, must be one of 'static', 'animated', 'video'",
+        "html_description": "<td>Format of stickers in the set, must be one of &#8220;static&#8221;, &#8220;animated&#8221;, &#8220;video&#8221;</td>",
+        "rst_description": "Format of stickers in the set, must be one of 'static', 'animated', 'video'\n",
+        "name": "sticker_format",
+        "deprecated": {
+          "version": "7.2",
+          "release_date": "2024-03-31"
+        }
       }
     ],
     "category": "methods"

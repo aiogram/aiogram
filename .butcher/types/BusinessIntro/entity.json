@@ -1,0 +1,41 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "businessintro",
+    "name": "BusinessIntro",
+    "description": "Contains information about the start page settings of a Telegram Business account.",
+    "html_description": "<p>Contains information about the start page settings of a Telegram Business account.</p>",
+    "rst_description": "Contains information about the start page settings of a Telegram Business account.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Title text of the business intro",
+        "html_description": "<td><em>Optional</em>. Title text of the business intro</td>",
+        "rst_description": "*Optional*. Title text of the business intro\n",
+        "name": "title",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "Message text of the business intro",
+        "html_description": "<td><em>Optional</em>. Message text of the business intro</td>",
+        "rst_description": "*Optional*. Message text of the business intro\n",
+        "name": "message",
+        "required": false
+      },
+      {
+        "type": "Sticker",
+        "description": "Sticker of the business intro",
+        "html_description": "<td><em>Optional</em>. Sticker of the business intro</td>",
+        "rst_description": "*Optional*. Sticker of the business intro\n",
+        "name": "sticker",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

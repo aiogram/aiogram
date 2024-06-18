@@ -34,17 +34,17 @@ class ChatAdministratorRights(TelegramObject):
     can_post_stories: bool
     """:code:`True`, if the administrator can post stories to the chat"""
     can_edit_stories: bool
-    """:code:`True`, if the administrator can edit stories posted by other users"""
+    """:code:`True`, if the administrator can edit stories posted by other users, post stories to the chat page, pin chat stories, and access the chat's story archive"""
     can_delete_stories: bool
     """:code:`True`, if the administrator can delete stories posted by other users"""
     can_post_messages: Optional[bool] = None
-    """*Optional*. :code:`True`, if the administrator can post messages in the channel, or access channel statistics; channels only"""
+    """*Optional*. :code:`True`, if the administrator can post messages in the channel, or access channel statistics; for channels only"""
     can_edit_messages: Optional[bool] = None
-    """*Optional*. :code:`True`, if the administrator can edit messages of other users and can pin messages; channels only"""
+    """*Optional*. :code:`True`, if the administrator can edit messages of other users and can pin messages; for channels only"""
     can_pin_messages: Optional[bool] = None
-    """*Optional*. :code:`True`, if the user is allowed to pin messages; groups and supergroups only"""
+    """*Optional*. :code:`True`, if the user is allowed to pin messages; for groups and supergroups only"""
     can_manage_topics: Optional[bool] = None
-    """*Optional*. :code:`True`, if the user is allowed to create, rename, close, and reopen forum topics; supergroups only"""
+    """*Optional*. :code:`True`, if the user is allowed to create, rename, close, and reopen forum topics; for supergroups only"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!

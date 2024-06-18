@@ -23,12 +23,16 @@ class SendGame(TelegramMethod[Message]):
     """Unique identifier for the target chat"""
     game_short_name: str
     """Short name of the game, serves as the unique identifier for the game. Set up your games via `@BotFather <https://t.me/botfather>`_."""
+    business_connection_id: Optional[str] = None
+    """Unique identifier of the business connection on behalf of which the message will be sent"""
     message_thread_id: Optional[int] = None
     """Unique identifier for the target message thread (topic) of the forum; for forum supergroups only"""
     disable_notification: Optional[bool] = None
     """Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound."""
     protect_content: Optional[Union[bool, Default]] = Default("protect_content")
     """Protects the contents of the sent message from forwarding and saving"""
+    message_effect_id: Optional[str] = None
+    """Unique identifier of the message effect to be added to the message; for private chats only"""
     reply_parameters: Optional[ReplyParameters] = None
     """Description of the message to reply to"""
     reply_markup: Optional[InlineKeyboardMarkup] = None
@@ -55,9 +59,11 @@ class SendGame(TelegramMethod[Message]):
             *,
             chat_id: int,
             game_short_name: str,
+            business_connection_id: Optional[str] = None,
             message_thread_id: Optional[int] = None,
             disable_notification: Optional[bool] = None,
             protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+            message_effect_id: Optional[str] = None,
             reply_parameters: Optional[ReplyParameters] = None,
             reply_markup: Optional[InlineKeyboardMarkup] = None,
             allow_sending_without_reply: Optional[bool] = None,
@@ -71,9 +77,11 @@ class SendGame(TelegramMethod[Message]):
             super().__init__(
                 chat_id=chat_id,
                 game_short_name=game_short_name,
+                business_connection_id=business_connection_id,
                 message_thread_id=message_thread_id,
                 disable_notification=disable_notification,
                 protect_content=protect_content,
+                message_effect_id=message_effect_id,
                 reply_parameters=reply_parameters,
                 reply_markup=reply_markup,
                 allow_sending_without_reply=allow_sending_without_reply,

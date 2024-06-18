@@ -52,6 +52,38 @@
         "required": false
       },
       {
+        "type": "BusinessConnection",
+        "description": "The bot was connected to or disconnected from a business account, or a user edited an existing connection with the bot",
+        "html_description": "<td><em>Optional</em>. The bot was connected to or disconnected from a business account, or a user edited an existing connection with the bot</td>",
+        "rst_description": "*Optional*. The bot was connected to or disconnected from a business account, or a user edited an existing connection with the bot\n",
+        "name": "business_connection",
+        "required": false
+      },
+      {
+        "type": "Message",
+        "description": "New message from a connected business account",
+        "html_description": "<td><em>Optional</em>. New message from a connected business account</td>",
+        "rst_description": "*Optional*. New message from a connected business account\n",
+        "name": "business_message",
+        "required": false
+      },
+      {
+        "type": "Message",
+        "description": "New version of a message from a connected business account",
+        "html_description": "<td><em>Optional</em>. New version of a message from a connected business account</td>",
+        "rst_description": "*Optional*. New version of a message from a connected business account\n",
+        "name": "edited_business_message",
+        "required": false
+      },
+      {
+        "type": "BusinessMessagesDeleted",
+        "description": "Messages were deleted from a connected business account",
+        "html_description": "<td><em>Optional</em>. Messages were deleted from a connected business account</td>",
+        "rst_description": "*Optional*. Messages were deleted from a connected business account\n",
+        "name": "deleted_business_messages",
+        "required": false
+      },
+      {
         "type": "MessageReactionUpdated",
         "description": "A reaction to a message was changed by a user. The bot must be an administrator in the chat and must explicitly specify \"message_reaction\" in the list of allowed_updates to receive these updates. The update isn't received for reactions set by bots.",
         "html_description": "<td><em>Optional</em>. A reaction to a message was changed by a user. The bot must be an administrator in the chat and must explicitly specify <code>\"message_reaction\"</code> in the list of <em>allowed_updates</em> to receive these updates. The update isn't received for reactions set by bots.</td>",

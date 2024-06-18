@@ -397,8 +397,7 @@ class ReplyKeyboardBuilder(KeyboardBuilder[KeyboardButton]):
 
     if TYPE_CHECKING:
 
-        def as_markup(self, **kwargs: Any) -> ReplyKeyboardMarkup:
-            ...
+        def as_markup(self, **kwargs: Any) -> ReplyKeyboardMarkup: ...
 
     def __init__(self, markup: Optional[List[List[KeyboardButton]]] = None) -> None:
         super().__init__(button_type=KeyboardButton, markup=markup)

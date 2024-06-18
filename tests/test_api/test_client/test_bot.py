@@ -12,8 +12,8 @@ from aiogram.client.session.aiohttp import AiohttpSession
 from aiogram.client.telegram import TelegramAPIServer
 from aiogram.methods import GetFile, GetMe
 from aiogram.types import File, PhotoSize
-from tests.deprecated import check_deprecated
 from tests.mocked_bot import MockedBot
+from tests.test_api.test_client.test_session.test_base_session import CustomSession
 
 
 @pytest.fixture()
@@ -42,36 +42,30 @@ class TestBot:
         assert isinstance(bot.session, AiohttpSession)
         assert bot.id == 42
 
-    def test_init_default(self):
-        with check_deprecated(
-            max_version="3.7.0",
-            exception=TypeError,
-        ):
-            bot = Bot(token="42:Test", parse_mode="HTML")
+    async def test_bot_context_manager_over_session(self):
+        session = CustomSession()
+        with patch(
+            "tests.test_api.test_client.test_session.test_base_session.CustomSession.close",
+            new_callable=AsyncMock,
+        ) as mocked_close:
+            async with Bot(token="42:TEST", session=session) as bot:
+                assert bot.id == 42
+                assert bot.session is session
 
-    def test_deprecated_parse_mode(self):
-        with check_deprecated(
-            max_version="3.7.0",
-            exception=AttributeError,
-        ):
-            bot = Bot(token="42:Test", parse_mode="HTML")
-            assert bot.parse_mode == "HTML"
+            mocked_close.assert_awaited_once()
 
-    def test_disable_web_page_preview(self):
-        with check_deprecated(
-            max_version="3.7.0",
-            exception=TypeError,
-        ):
-            bot = Bot(token="42:Test", disable_web_page_preview=True)
-            assert bot.disable_web_page_preview is True
-
-    def test_deprecated_protect_content(self):
-        with check_deprecated(
-            max_version="3.7.0",
-            exception=AttributeError,
-        ):
-            bot = Bot(token="42:Test", protect_content=True)
-            assert bot.protect_content is True
+    @pytest.mark.parametrize(
+        "kwargs",
+        [
+            {"parse_mode": "HTML"},
+            {"disable_web_page_preview": True},
+            {"protect_content": True},
+            {"parse_mode": True, "disable_web_page_preview": True},
+        ],
+    )
+    def test_init_default(self, kwargs):
+        with pytest.raises(TypeError):
+            Bot(token="42:Test", **kwargs)
 
     def test_hashable(self):
         bot = Bot("42:TEST")

@@ -1,6 +1,7 @@
 """
 This example shows how to use webhook with SSL certificate.
 """
+
 import logging
 import ssl
 import sys
@@ -8,7 +9,8 @@ from os import getenv
 
 from aiohttp import web
 
-from aiogram import Bot, Dispatcher, Router, types
+from aiogram import Bot, Dispatcher, Router
+from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 from aiogram.filters import CommandStart
 from aiogram.types import FSInputFile, Message
@@ -54,7 +56,7 @@ async def command_start_handler(message: Message) -> None:
 
 
 @router.message()
-async def echo_handler(message: types.Message) -> None:
+async def echo_handler(message: Message) -> None:
     """
     Handler will forward receive a message back to the sender
 
@@ -89,8 +91,8 @@ def main() -> None:
     # Register startup hook to initialize webhook
     dp.startup.register(on_startup)
 
-    # Initialize Bot instance with a default parse mode which will be passed to all API calls
-    bot = Bot(TOKEN, parse_mode=ParseMode.HTML)
+    # Initialize Bot instance with default bot properties which will be passed to all API calls
+    bot = Bot(token=TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
 
     # Create aiohttp.web.Application instance
     app = web.Application()

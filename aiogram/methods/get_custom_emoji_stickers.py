@@ -17,7 +17,7 @@ class GetCustomEmojiStickers(TelegramMethod[List[Sticker]]):
     __api_method__ = "getCustomEmojiStickers"
 
     custom_emoji_ids: List[str]
-    """List of custom emoji identifiers. At most 200 custom emoji identifiers can be specified."""
+    """A JSON-serialized list of custom emoji identifiers. At most 200 custom emoji identifiers can be specified."""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!

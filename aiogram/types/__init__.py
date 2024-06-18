@@ -2,7 +2,17 @@ from typing import List, Literal, Optional, Union
 
 from .animation import Animation
 from .audio import Audio
+from .background_fill import BackgroundFill
+from .background_fill_freeform_gradient import BackgroundFillFreeformGradient
+from .background_fill_gradient import BackgroundFillGradient
+from .background_fill_solid import BackgroundFillSolid
+from .background_type import BackgroundType
+from .background_type_chat_theme import BackgroundTypeChatTheme
+from .background_type_fill import BackgroundTypeFill
+from .background_type_pattern import BackgroundTypePattern
+from .background_type_wallpaper import BackgroundTypeWallpaper
 from .base import UNSET_PARSE_MODE, TelegramObject
+from .birthdate import Birthdate
 from .bot_command import BotCommand
 from .bot_command_scope import BotCommandScope
 from .bot_command_scope_all_chat_administrators import (
@@ -17,10 +27,17 @@ from .bot_command_scope_default import BotCommandScopeDefault
 from .bot_description import BotDescription
 from .bot_name import BotName
 from .bot_short_description import BotShortDescription
+from .business_connection import BusinessConnection
+from .business_intro import BusinessIntro
+from .business_location import BusinessLocation
+from .business_messages_deleted import BusinessMessagesDeleted
+from .business_opening_hours import BusinessOpeningHours
+from .business_opening_hours_interval import BusinessOpeningHoursInterval
 from .callback_game import CallbackGame
 from .callback_query import CallbackQuery
 from .chat import Chat
 from .chat_administrator_rights import ChatAdministratorRights
+from .chat_background import ChatBackground
 from .chat_boost import ChatBoost
 from .chat_boost_added import ChatBoostAdded
 from .chat_boost_removed import ChatBoostRemoved
@@ -29,6 +46,7 @@ from .chat_boost_source_gift_code import ChatBoostSourceGiftCode
 from .chat_boost_source_giveaway import ChatBoostSourceGiveaway
 from .chat_boost_source_premium import ChatBoostSourcePremium
 from .chat_boost_updated import ChatBoostUpdated
+from .chat_full_info import ChatFullInfo
 from .chat_invite_link import ChatInviteLink
 from .chat_join_request import ChatJoinRequest
 from .chat_location import ChatLocation
@@ -105,6 +123,7 @@ from .input_media_document import InputMediaDocument
 from .input_media_photo import InputMediaPhoto
 from .input_media_video import InputMediaVideo
 from .input_message_content import InputMessageContent
+from .input_poll_option import InputPollOption
 from .input_sticker import InputSticker
 from .input_text_message_content import InputTextMessageContent
 from .input_venue_message_content import InputVenueMessageContent
@@ -165,6 +184,7 @@ from .reply_keyboard_remove import ReplyKeyboardRemove
 from .reply_parameters import ReplyParameters
 from .response_parameters import ResponseParameters
 from .sent_web_app_message import SentWebAppMessage
+from .shared_user import SharedUser
 from .shipping_address import ShippingAddress
 from .shipping_option import ShippingOption
 from .shipping_query import ShippingQuery
@@ -196,6 +216,16 @@ from .write_access_allowed import WriteAccessAllowed
 __all__ = (
     "Animation",
     "Audio",
+    "BackgroundFill",
+    "BackgroundFillFreeformGradient",
+    "BackgroundFillGradient",
+    "BackgroundFillSolid",
+    "BackgroundType",
+    "BackgroundTypeChatTheme",
+    "BackgroundTypeFill",
+    "BackgroundTypePattern",
+    "BackgroundTypeWallpaper",
+    "Birthdate",
     "BotCommand",
     "BotCommandScope",
     "BotCommandScopeAllChatAdministrators",
@@ -209,10 +239,17 @@ __all__ = (
     "BotName",
     "BotShortDescription",
     "BufferedInputFile",
+    "BusinessConnection",
+    "BusinessIntro",
+    "BusinessLocation",
+    "BusinessMessagesDeleted",
+    "BusinessOpeningHours",
+    "BusinessOpeningHoursInterval",
     "CallbackGame",
     "CallbackQuery",
     "Chat",
     "ChatAdministratorRights",
+    "ChatBackground",
     "ChatBoost",
     "ChatBoostAdded",
     "ChatBoostRemoved",
@@ -221,6 +258,7 @@ __all__ = (
     "ChatBoostSourceGiveaway",
     "ChatBoostSourcePremium",
     "ChatBoostUpdated",
+    "ChatFullInfo",
     "ChatInviteLink",
     "ChatJoinRequest",
     "ChatLocation",
@@ -299,6 +337,7 @@ __all__ = (
     "InputMediaPhoto",
     "InputMediaVideo",
     "InputMessageContent",
+    "InputPollOption",
     "InputSticker",
     "InputTextMessageContent",
     "InputVenueMessageContent",
@@ -357,6 +396,7 @@ __all__ = (
     "ReplyParameters",
     "ResponseParameters",
     "SentWebAppMessage",
+    "SharedUser",
     "ShippingAddress",
     "ShippingOption",
     "ShippingQuery",

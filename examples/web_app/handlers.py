@@ -1,5 +1,5 @@
 from aiogram import Bot, F, Router
-from aiogram.filters import Command
+from aiogram.filters import Command, CommandStart
 from aiogram.types import (
     InlineKeyboardButton,
     InlineKeyboardMarkup,
@@ -11,7 +11,7 @@ from aiogram.types import (
 my_router = Router()
 
 
-@my_router.message(Command("start"))
+@my_router.message(CommandStart())
 async def command_start(message: Message, bot: Bot, base_url: str):
     await bot.set_chat_menu_button(
         chat_id=message.chat.id,

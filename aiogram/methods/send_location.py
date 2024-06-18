@@ -32,12 +32,14 @@ class SendLocation(TelegramMethod[Message]):
     """Latitude of the location"""
     longitude: float
     """Longitude of the location"""
+    business_connection_id: Optional[str] = None
+    """Unique identifier of the business connection on behalf of which the message will be sent"""
     message_thread_id: Optional[int] = None
     """Unique identifier for the target message thread (topic) of the forum; for forum supergroups only"""
     horizontal_accuracy: Optional[float] = None
     """The radius of uncertainty for the location, measured in meters; 0-1500"""
     live_period: Optional[int] = None
-    """Period in seconds for which the location will be updated (see `Live Locations <https://telegram.org/blog/live-locations>`_, should be between 60 and 86400."""
+    """Period in seconds during which the location will be updated (see `Live Locations <https://telegram.org/blog/live-locations>`_, should be between 60 and 86400, or 0x7FFFFFFF for live locations that can be edited indefinitely."""
     heading: Optional[int] = None
     """For live locations, a direction in which the user is moving, in degrees. Must be between 1 and 360 if specified."""
     proximity_alert_radius: Optional[int] = None
@@ -46,12 +48,14 @@ class SendLocation(TelegramMethod[Message]):
     """Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound."""
     protect_content: Optional[Union[bool, Default]] = Default("protect_content")
     """Protects the contents of the sent message from forwarding and saving"""
+    message_effect_id: Optional[str] = None
+    """Unique identifier of the message effect to be added to the message; for private chats only"""
     reply_parameters: Optional[ReplyParameters] = None
     """Description of the message to reply to"""
     reply_markup: Optional[
         Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
     ] = None
-    """Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user."""
+    """Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user"""
     allow_sending_without_reply: Optional[bool] = Field(
         None, json_schema_extra={"deprecated": True}
     )
@@ -75,6 +79,7 @@ class SendLocation(TelegramMethod[Message]):
             chat_id: Union[int, str],
             latitude: float,
             longitude: float,
+            business_connection_id: Optional[str] = None,
             message_thread_id: Optional[int] = None,
             horizontal_accuracy: Optional[float] = None,
             live_period: Optional[int] = None,
@@ -82,6 +87,7 @@ class SendLocation(TelegramMethod[Message]):
             proximity_alert_radius: Optional[int] = None,
             disable_notification: Optional[bool] = None,
             protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+            message_effect_id: Optional[str] = None,
             reply_parameters: Optional[ReplyParameters] = None,
             reply_markup: Optional[
                 Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -98,6 +104,7 @@ class SendLocation(TelegramMethod[Message]):
                 chat_id=chat_id,
                 latitude=latitude,
                 longitude=longitude,
+                business_connection_id=business_connection_id,
                 message_thread_id=message_thread_id,
                 horizontal_accuracy=horizontal_accuracy,
                 live_period=live_period,
@@ -105,6 +112,7 @@ class SendLocation(TelegramMethod[Message]):
                 proximity_alert_radius=proximity_alert_radius,
                 disable_notification=disable_notification,
                 protect_content=protect_content,
+                message_effect_id=message_effect_id,
                 reply_parameters=reply_parameters,
                 reply_markup=reply_markup,
                 allow_sending_without_reply=allow_sending_without_reply,

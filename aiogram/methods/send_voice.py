@@ -6,7 +6,6 @@ from pydantic import Field
 
 from ..client.default import Default
 from ..types import (
-    UNSET_PARSE_MODE,
     ForceReply,
     InlineKeyboardMarkup,
     InputFile,
@@ -21,7 +20,7 @@ from .base import TelegramMethod
 
 class SendVoice(TelegramMethod[Message]):
     """
-    Use this method to send audio files, if you want Telegram clients to display the file as a playable voice message. For this to work, your audio must be in an .OGG file encoded with OPUS (other formats may be sent as :class:`aiogram.types.audio.Audio` or :class:`aiogram.types.document.Document`). On success, the sent :class:`aiogram.types.message.Message` is returned. Bots can currently send voice messages of up to 50 MB in size, this limit may be changed in the future.
+    Use this method to send audio files, if you want Telegram clients to display the file as a playable voice message. For this to work, your audio must be in an .OGG file encoded with OPUS, or in .MP3 format, or in .M4A format (other formats may be sent as :class:`aiogram.types.audio.Audio` or :class:`aiogram.types.document.Document`). On success, the sent :class:`aiogram.types.message.Message` is returned. Bots can currently send voice messages of up to 50 MB in size, this limit may be changed in the future.
 
     Source: https://core.telegram.org/bots/api#sendvoice
     """
@@ -33,6 +32,8 @@ class SendVoice(TelegramMethod[Message]):
     """Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)"""
     voice: Union[InputFile, str]
     """Audio file to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`"""
+    business_connection_id: Optional[str] = None
+    """Unique identifier of the business connection on behalf of which the message will be sent"""
     message_thread_id: Optional[int] = None
     """Unique identifier for the target message thread (topic) of the forum; for forum supergroups only"""
     caption: Optional[str] = None
@@ -47,12 +48,14 @@ class SendVoice(TelegramMethod[Message]):
     """Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound."""
     protect_content: Optional[Union[bool, Default]] = Default("protect_content")
     """Protects the contents of the sent message from forwarding and saving"""
+    message_effect_id: Optional[str] = None
+    """Unique identifier of the message effect to be added to the message; for private chats only"""
     reply_parameters: Optional[ReplyParameters] = None
     """Description of the message to reply to"""
     reply_markup: Optional[
         Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
     ] = None
-    """Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user."""
+    """Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user"""
     allow_sending_without_reply: Optional[bool] = Field(
         None, json_schema_extra={"deprecated": True}
     )
@@ -75,6 +78,7 @@ class SendVoice(TelegramMethod[Message]):
             *,
             chat_id: Union[int, str],
             voice: Union[InputFile, str],
+            business_connection_id: Optional[str] = None,
             message_thread_id: Optional[int] = None,
             caption: Optional[str] = None,
             parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
@@ -82,6 +86,7 @@ class SendVoice(TelegramMethod[Message]):
             duration: Optional[int] = None,
             disable_notification: Optional[bool] = None,
             protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+            message_effect_id: Optional[str] = None,
             reply_parameters: Optional[ReplyParameters] = None,
             reply_markup: Optional[
                 Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -97,6 +102,7 @@ class SendVoice(TelegramMethod[Message]):
             super().__init__(
                 chat_id=chat_id,
                 voice=voice,
+                business_connection_id=business_connection_id,
                 message_thread_id=message_thread_id,
                 caption=caption,
                 parse_mode=parse_mode,
@@ -104,6 +110,7 @@ class SendVoice(TelegramMethod[Message]):
                 duration=duration,
                 disable_notification=disable_notification,
                 protect_content=protect_content,
+                message_effect_id=message_effect_id,
                 reply_parameters=reply_parameters,
                 reply_markup=reply_markup,
                 allow_sending_without_reply=allow_sending_without_reply,

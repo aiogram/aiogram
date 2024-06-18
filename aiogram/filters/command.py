@@ -24,7 +24,8 @@ from aiogram.utils.deep_linking import decode_payload
 if TYPE_CHECKING:
     from aiogram import Bot
 
-CommandPatternType = Union[str, re.Pattern, BotCommand]
+# TODO: rm type ignore after py3.8 support expiration or mypy bug fix
+CommandPatternType = Union[str, re.Pattern, BotCommand]  # type: ignore[type-arg]
 
 
 class CommandException(Exception):

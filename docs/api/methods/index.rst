@@ -17,6 +17,7 @@ Stickers
     delete_sticker_set
     get_custom_emoji_stickers
     get_sticker_set
+    replace_sticker_in_set
     send_sticker
     set_custom_emoji_sticker_set_thumbnail
     set_sticker_emoji_list
@@ -55,6 +56,7 @@ Available methods
     export_chat_invite_link
     forward_message
     forward_messages
+    get_business_connection
     get_chat
     get_chat_administrators
     get_chat_member
@@ -159,6 +161,7 @@ Payments
     answer_pre_checkout_query
     answer_shipping_query
     create_invoice_link
+    refund_star_payment
     send_invoice
 
 Getting updates

@@ -21,6 +21,7 @@ class MessageEntityType(str, Enum):
     STRIKETHROUGH = "strikethrough"
     SPOILER = "spoiler"
     BLOCKQUOTE = "blockquote"
+    EXPANDABLE_BLOCKQUOTE = "expandable_blockquote"
     CODE = "code"
     PRE = "pre"
     TEXT_LINK = "text_link"

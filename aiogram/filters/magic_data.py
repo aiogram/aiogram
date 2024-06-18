@@ -11,7 +11,7 @@ class MagicData(Filter):
     This filter helps to filter event with contextual data
     """
 
-    __slots__ = "magic_data"
+    __slots__ = ("magic_data",)
 
     def __init__(self, magic_data: MagicFilter) -> None:
         self.magic_data = magic_data

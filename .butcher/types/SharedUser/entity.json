@@ -1,0 +1,57 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "shareduser",
+    "name": "SharedUser",
+    "description": "This object contains information about a user that was shared with the bot using a KeyboardButtonRequestUsers button.",
+    "html_description": "<p>This object contains information about a user that was shared with the bot using a <a href=\"#keyboardbuttonrequestusers\">KeyboardButtonRequestUsers</a> button.</p>",
+    "rst_description": "This object contains information about a user that was shared with the bot using a :class:`aiogram.types.keyboard_button_request_users.KeyboardButtonRequestUsers` button.",
+    "annotations": [
+      {
+        "type": "Integer",
+        "description": "Identifier of the shared user. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so 64-bit integers or double-precision float types are safe for storing these identifiers. The bot may not have access to the user and could be unable to use this identifier, unless the user is already known to the bot by some other means.",
+        "html_description": "<td>Identifier of the shared user. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so 64-bit integers or double-precision float types are safe for storing these identifiers. The bot may not have access to the user and could be unable to use this identifier, unless the user is already known to the bot by some other means.</td>",
+        "rst_description": "Identifier of the shared user. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so 64-bit integers or double-precision float types are safe for storing these identifiers. The bot may not have access to the user and could be unable to use this identifier, unless the user is already known to the bot by some other means.\n",
+        "name": "user_id",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "First name of the user, if the name was requested by the bot",
+        "html_description": "<td><em>Optional</em>. First name of the user, if the name was requested by the bot</td>",
+        "rst_description": "*Optional*. First name of the user, if the name was requested by the bot\n",
+        "name": "first_name",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "Last name of the user, if the name was requested by the bot",
+        "html_description": "<td><em>Optional</em>. Last name of the user, if the name was requested by the bot</td>",
+        "rst_description": "*Optional*. Last name of the user, if the name was requested by the bot\n",
+        "name": "last_name",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "Username of the user, if the username was requested by the bot",
+        "html_description": "<td><em>Optional</em>. Username of the user, if the username was requested by the bot</td>",
+        "rst_description": "*Optional*. Username of the user, if the username was requested by the bot\n",
+        "name": "username",
+        "required": false
+      },
+      {
+        "type": "Array of PhotoSize",
+        "description": "Available sizes of the chat photo, if the photo was requested by the bot",
+        "html_description": "<td><em>Optional</em>. Available sizes of the chat photo, if the photo was requested by the bot</td>",
+        "rst_description": "*Optional*. Available sizes of the chat photo, if the photo was requested by the bot\n",
+        "name": "photo",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

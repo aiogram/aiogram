@@ -43,7 +43,7 @@ classifiers = [
 dependencies = [
     "magic-filter>=1.0.12,<1.1",
     "aiohttp~=3.9.0",
-    "pydantic>=2.4.1,<2.7",
+    "pydantic>=2.4.1,<2.8",
     "aiofiles~=23.2.1",
     "certifi>=2023.7.22",
     "typing-extensions>=4.7.0,<=5.0",
@@ -60,6 +60,9 @@ fast = [
 ]
 redis = [
     "redis[hiredis]~=5.0.1",
+]
+mongo = [
+    "motor~=3.3.2",
 ]
 proxy = [
     "aiohttp-socks~=0.8.3",
@@ -98,13 +101,14 @@ docs = [
     "sphinxcontrib-towncrier~=0.3.2a0",
 ]
 dev = [
-    "black~=23.10.0",
-    "isort~=5.12.0",
-    "ruff~=0.1.1",
-    "mypy~=1.6.1",
+    "black~=24.4.2",
+    "isort~=5.13.2",
+    "ruff~=0.4.9",
+    "mypy~=1.10.0",
     "toml~=0.10.2",
-    "pre-commit~=3.5.0",
-    "packaging~=23.1",
+    "pre-commit~=3.5",
+    "packaging~=24.1",
+    "motor-types~=1.0.0b4",
 ]
 
 [project.urls]
@@ -117,6 +121,7 @@ features = [
     "dev",
     "fast",
     "redis",
+    "mongo",
     "proxy",
     "i18n",
     "cli",
@@ -127,15 +132,16 @@ post-install-commands = [
 
 [tool.hatch.envs.default.scripts]
 reformat = [
-    "black aiogram tests",
-    "isort aiogram tests",
+    "black aiogram tests examples",
+    "isort aiogram tests examples",
 ]
-lint = "ruff aiogram"
+lint = "ruff check aiogram tests examples"
 
 [tool.hatch.envs.docs]
 features = [
     "fast",
     "redis",
+    "mongo",
     "proxy",
     "i18n",
     "docs",
@@ -150,6 +156,7 @@ features = [
     "dev",
     "fast",
     "redis",
+    "mongo",
     "proxy",
     "i18n",
     "test",
@@ -167,6 +174,7 @@ update = [
 features = [
     "fast",
     "redis",
+    "mongo",
     "proxy",
     "i18n",
     "test",
@@ -182,6 +190,10 @@ cov-redis = [
     "pytest --cov-config pyproject.toml --cov=aiogram --html=reports/py{matrix:python}/tests/index.html --redis {env:REDIS_DNS:'redis://localhost:6379'} {args}",
     "coverage html -d reports/py{matrix:python}/coverage",
 ]
+cov-mongo = [
+    "pytest --cov-config pyproject.toml --cov=aiogram --html=reports/py{matrix:python}/tests/index.html --mongo {env:MONGO_DNS:'mongodb://mongo:mongo@localhost:27017'} {args}",
+    "coverage html -d reports/py{matrix:python}/coverage",
+]
 view-cov = "google-chrome-stable reports/py{matrix:python}/coverage/index.html"
 
 
@@ -190,19 +202,6 @@ python = ["38", "39", "310", "311", "312"]
 
 [tool.ruff]
 line-length = 99
-select = [
-    # "C", # TODO: mccabe - code complecity
-    "C4",
-    "E",
-    "F",
-    "T10",
-    "T20",
-    "Q",
-    "RET",
-]
-ignore = [
-    "F401"
-]
 src = ["aiogram", "tests"]
 exclude = [
     ".git",
@@ -218,7 +217,22 @@ exclude = [
 ]
 target-version = "py310"
 
-[tool.ruff.isort]
+[tool.ruff.lint]
+select = [
+    # "C", # TODO: mccabe - code complecity
+    "C4",
+    "E",
+    "F",
+    "T10",
+    "T20",
+    "Q",
+    "RET",
+]
+ignore = [
+    "F401"
+]
+
+[tool.ruff.lint.isort]
 known-first-party = [
     "aiogram",
     "finite_state_machine",
@@ -226,7 +240,7 @@ known-first-party = [
     "routes",
 ]
 
-[tool.ruff.per-file-ignores]
+[tool.ruff.lint.per-file-ignores]
 "aiogram/client/bot.py" = ["E501"]
 "aiogram/types/*" = ["E501"]
 "aiogram/methods/*" = ["E501"]

@@ -26,7 +26,7 @@ from aiogram.exceptions import (
     TelegramUnauthorizedError,
 )
 from aiogram.methods import DeleteMessage, GetMe, TelegramMethod
-from aiogram.types import UNSET_PARSE_MODE, User, LinkPreviewOptions
+from aiogram.types import UNSET_PARSE_MODE, LinkPreviewOptions, User
 from aiogram.types.base import UNSET_DISABLE_WEB_PAGE_PREVIEW, UNSET_PROTECT_CONTENT
 from tests.mocked_bot import MockedBot
 

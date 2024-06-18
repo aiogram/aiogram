@@ -37,3 +37,9 @@ extract:
     - link_preview_options
     - sender_boost_count
     - reply_to_story
+    - business_connection_id
+    - sender_business_bot
+    - is_from_offline
+    - has_media_spoiler
+    - effect_id
+    - show_caption_above_media

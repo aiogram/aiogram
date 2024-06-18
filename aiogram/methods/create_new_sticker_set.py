@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, List, Optional
 
+from pydantic import Field
+
 from ..types import InputSticker
 from .base import TelegramMethod
 
@@ -24,12 +26,15 @@ class CreateNewStickerSet(TelegramMethod[bool]):
     """Sticker set title, 1-64 characters"""
     stickers: List[InputSticker]
     """A JSON-serialized list of 1-50 initial stickers to be added to the sticker set"""
-    sticker_format: str
-    """Format of stickers in the set, must be one of 'static', 'animated', 'video'"""
     sticker_type: Optional[str] = None
     """Type of stickers in the set, pass 'regular', 'mask', or 'custom_emoji'. By default, a regular sticker set is created."""
     needs_repainting: Optional[bool] = None
     """Pass :code:`True` if stickers in the sticker set must be repainted to the color of text when used in messages, the accent color if used as emoji status, white on chat photos, or another appropriate color based on context; for custom emoji sticker sets only"""
+    sticker_format: Optional[str] = Field(None, json_schema_extra={"deprecated": True})
+    """Format of stickers in the set, must be one of 'static', 'animated', 'video'
+
+.. deprecated:: API:7.2
+   https://core.telegram.org/bots/api-changelog#march-31-2024"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!
@@ -42,9 +47,9 @@ class CreateNewStickerSet(TelegramMethod[bool]):
             name: str,
             title: str,
             stickers: List[InputSticker],
-            sticker_format: str,
             sticker_type: Optional[str] = None,
             needs_repainting: Optional[bool] = None,
+            sticker_format: Optional[str] = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!
@@ -56,8 +61,8 @@ class CreateNewStickerSet(TelegramMethod[bool]):
                 name=name,
                 title=title,
                 stickers=stickers,
-                sticker_format=sticker_format,
                 sticker_type=sticker_type,
                 needs_repainting=needs_repainting,
+                sticker_format=sticker_format,
                 **__pydantic_kwargs,
             )

@@ -29,9 +29,9 @@
       },
       {
         "type": "String",
-        "description": "Three-letter ISO 4217 currency code",
-        "html_description": "<td>Three-letter ISO 4217 <a href=\"/bots/payments#supported-currencies\">currency</a> code</td>",
-        "rst_description": "Three-letter ISO 4217 `currency <https://core.telegram.org/bots/payments#supported-currencies>`_ code\n",
+        "description": "Three-letter ISO 4217 currency code, or 'XTR' for payments in Telegram Stars",
+        "html_description": "<td>Three-letter ISO 4217 <a href=\"/bots/payments#supported-currencies\">currency</a> code, or &#8220;XTR&#8221; for payments in <a href=\"https://t.me/BotNews/90\">Telegram Stars</a></td>",
+        "rst_description": "Three-letter ISO 4217 `currency <https://core.telegram.org/bots/payments#supported-currencies>`_ code, or 'XTR' for payments in `Telegram Stars <https://t.me/BotNews/90>`_\n",
         "name": "currency",
         "required": true
       },

@@ -38,17 +38,17 @@ class PromoteChatMember(TelegramMethod[bool]):
     can_post_stories: Optional[bool] = None
     """Pass :code:`True` if the administrator can post stories to the chat"""
     can_edit_stories: Optional[bool] = None
-    """Pass :code:`True` if the administrator can edit stories posted by other users"""
+    """Pass :code:`True` if the administrator can edit stories posted by other users, post stories to the chat page, pin chat stories, and access the chat's story archive"""
     can_delete_stories: Optional[bool] = None
     """Pass :code:`True` if the administrator can delete stories posted by other users"""
     can_post_messages: Optional[bool] = None
-    """Pass :code:`True` if the administrator can post messages in the channel, or access channel statistics; channels only"""
+    """Pass :code:`True` if the administrator can post messages in the channel, or access channel statistics; for channels only"""
     can_edit_messages: Optional[bool] = None
-    """Pass :code:`True` if the administrator can edit messages of other users and can pin messages; channels only"""
+    """Pass :code:`True` if the administrator can edit messages of other users and can pin messages; for channels only"""
     can_pin_messages: Optional[bool] = None
-    """Pass :code:`True` if the administrator can pin messages, supergroups only"""
+    """Pass :code:`True` if the administrator can pin messages; for supergroups only"""
     can_manage_topics: Optional[bool] = None
-    """Pass :code:`True` if the user is allowed to create, rename, close, and reopen forum topics, supergroups only"""
+    """Pass :code:`True` if the user is allowed to create, rename, close, and reopen forum topics; for supergroups only"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!

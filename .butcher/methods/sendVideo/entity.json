@@ -12,6 +12,14 @@
     "rst_description": "Use this method to send video files, Telegram clients support MPEG4 videos (other formats may be sent as :class:`aiogram.types.document.Document`). On success, the sent :class:`aiogram.types.message.Message` is returned. Bots can currently send video files of up to 50 MB in size, this limit may be changed in the future.",
     "annotations": [
       {
+        "type": "String",
+        "required": false,
+        "description": "Unique identifier of the business connection on behalf of which the message will be sent",
+        "html_description": "<td>Unique identifier of the business connection on behalf of which the message will be sent</td>",
+        "rst_description": "Unique identifier of the business connection on behalf of which the message will be sent\n",
+        "name": "business_connection_id"
+      },
+      {
         "type": "Integer or String",
         "required": true,
         "description": "Unique identifier for the target chat or username of the target channel (in the format @channelusername)",
@@ -94,6 +102,14 @@
       {
         "type": "Boolean",
         "required": false,
+        "description": "Pass True, if the caption must be shown above the message media",
+        "html_description": "<td>Pass <em>True</em>, if the caption must be shown above the message media</td>",
+        "rst_description": "Pass :code:`True`, if the caption must be shown above the message media\n",
+        "name": "show_caption_above_media"
+      },
+      {
+        "type": "Boolean",
+        "required": false,
         "description": "Pass True if the video needs to be covered with a spoiler animation",
         "html_description": "<td>Pass <em>True</em> if the video needs to be covered with a spoiler animation</td>",
         "rst_description": "Pass :code:`True` if the video needs to be covered with a spoiler animation\n",
@@ -124,6 +140,14 @@
         "name": "protect_content"
       },
       {
+        "type": "String",
+        "required": false,
+        "description": "Unique identifier of the message effect to be added to the message; for private chats only",
+        "html_description": "<td>Unique identifier of the message effect to be added to the message; for private chats only</td>",
+        "rst_description": "Unique identifier of the message effect to be added to the message; for private chats only\n",
+        "name": "message_effect_id"
+      },
+      {
         "type": "ReplyParameters",
         "required": false,
         "description": "Description of the message to reply to",
@@ -134,9 +158,9 @@
       {
         "type": "InlineKeyboardMarkup or ReplyKeyboardMarkup or ReplyKeyboardRemove or ForceReply",
         "required": false,
-        "description": "Additional interface options. A JSON-serialized object for an inline keyboard, custom reply keyboard, instructions to remove reply keyboard or to force a reply from the user.",
-        "html_description": "<td>Additional interface options. A JSON-serialized object for an <a href=\"/bots/features#inline-keyboards\">inline keyboard</a>, <a href=\"/bots/features#keyboards\">custom reply keyboard</a>, instructions to remove reply keyboard or to force a reply from the user.</td>",
-        "rst_description": "Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.\n",
+        "description": "Additional interface options. A JSON-serialized object for an inline keyboard, custom reply keyboard, instructions to remove a reply keyboard or to force a reply from the user",
+        "html_description": "<td>Additional interface options. A JSON-serialized object for an <a href=\"/bots/features#inline-keyboards\">inline keyboard</a>, <a href=\"/bots/features#keyboards\">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user</td>",
+        "rst_description": "Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user\n",
         "name": "reply_markup"
       },
       {

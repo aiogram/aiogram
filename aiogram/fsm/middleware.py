@@ -2,6 +2,7 @@ from typing import Any, Awaitable, Callable, Dict, Optional, cast
 
 from aiogram import Bot
 from aiogram.dispatcher.middlewares.base import BaseMiddleware
+from aiogram.dispatcher.middlewares.user_context import EVENT_CONTEXT_KEY, EventContext
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.storage.base import (
     DEFAULT_DESTINY,
@@ -47,16 +48,13 @@ class FSMContextMiddleware(BaseMiddleware):
         data: Dict[str, Any],
         destiny: str = DEFAULT_DESTINY,
     ) -> Optional[FSMContext]:
-        user = data.get("event_from_user")
-        chat = data.get("event_chat")
-        thread_id = data.get("event_thread_id")
-        chat_id = chat.id if chat else None
-        user_id = user.id if user else None
+        event_context: EventContext = cast(EventContext, data.get(EVENT_CONTEXT_KEY))
         return self.resolve_context(
             bot=bot,
-            chat_id=chat_id,
-            user_id=user_id,
-            thread_id=thread_id,
+            chat_id=event_context.chat_id,
+            user_id=event_context.user_id,
+            thread_id=event_context.thread_id,
+            business_connection_id=event_context.business_connection_id,
             destiny=destiny,
         )
 
@@ -66,6 +64,7 @@ class FSMContextMiddleware(BaseMiddleware):
         chat_id: Optional[int],
         user_id: Optional[int],
         thread_id: Optional[int] = None,
+        business_connection_id: Optional[str] = None,
         destiny: str = DEFAULT_DESTINY,
     ) -> Optional[FSMContext]:
         if chat_id is None:
@@ -83,6 +82,7 @@ class FSMContextMiddleware(BaseMiddleware):
                 chat_id=chat_id,
                 user_id=user_id,
                 thread_id=thread_id,
+                business_connection_id=business_connection_id,
                 destiny=destiny,
             )
         return None
@@ -93,6 +93,7 @@ class FSMContextMiddleware(BaseMiddleware):
         chat_id: int,
         user_id: int,
         thread_id: Optional[int] = None,
+        business_connection_id: Optional[str] = None,
         destiny: str = DEFAULT_DESTINY,
     ) -> FSMContext:
         return FSMContext(
@@ -102,6 +103,7 @@ class FSMContextMiddleware(BaseMiddleware):
                 chat_id=chat_id,
                 bot_id=bot.id,
                 thread_id=thread_id,
+                business_connection_id=business_connection_id,
                 destiny=destiny,
             ),
         )

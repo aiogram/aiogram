@@ -186,7 +186,7 @@ class Dispatcher(Router):
         :param kwargs:
         """
         parsed_update = Update.model_validate(update, context={"bot": bot})
-        return await self.feed_update(bot=bot, update=parsed_update, **kwargs)
+        return await self._feed_webhook_update(bot=bot, update=parsed_update, **kwargs)
 
     @classmethod
     async def _listen_updates(

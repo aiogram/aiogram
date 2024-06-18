@@ -1,0 +1,1 @@
+Added information about dependency changes to the :code:`2.x --> 3.x` migration guide.

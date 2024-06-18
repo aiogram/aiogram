@@ -52,12 +52,28 @@
         "required": false
       },
       {
+        "type": "User",
+        "description": "The bot that actually sent the message on behalf of the business account. Available only for outgoing messages sent on behalf of the connected business account.",
+        "html_description": "<td><em>Optional</em>. The bot that actually sent the message on behalf of the business account. Available only for outgoing messages sent on behalf of the connected business account.</td>",
+        "rst_description": "*Optional*. The bot that actually sent the message on behalf of the business account. Available only for outgoing messages sent on behalf of the connected business account.\n",
+        "name": "sender_business_bot",
+        "required": false
+      },
+      {
         "type": "Integer",
         "description": "Date the message was sent in Unix time. It is always a positive number, representing a valid date.",
         "html_description": "<td>Date the message was sent in Unix time. It is always a positive number, representing a valid date.</td>",
         "rst_description": "Date the message was sent in Unix time. It is always a positive number, representing a valid date.\n",
         "name": "date",
         "required": true
+      },
+      {
+        "type": "String",
+        "description": "Unique identifier of the business connection from which the message was received. If non-empty, the message belongs to a chat of the corresponding business account that is independent from any potential bot chat which might share the same identifier.",
+        "html_description": "<td><em>Optional</em>. Unique identifier of the business connection from which the message was received. If non-empty, the message belongs to a chat of the corresponding business account that is independent from any potential bot chat which might share the same identifier.</td>",
+        "rst_description": "*Optional*. Unique identifier of the business connection from which the message was received. If non-empty, the message belongs to a chat of the corresponding business account that is independent from any potential bot chat which might share the same identifier.\n",
+        "name": "business_connection_id",
+        "required": false
       },
       {
         "type": "Chat",
@@ -148,6 +164,14 @@
         "required": false
       },
       {
+        "type": "True",
+        "description": "True, if the message was sent by an implicit action, for example, as an away or a greeting business message, or as a scheduled message",
+        "html_description": "<td><em>Optional</em>. True, if the message was sent by an implicit action, for example, as an away or a greeting business message, or as a scheduled message</td>",
+        "rst_description": "*Optional*. True, if the message was sent by an implicit action, for example, as an away or a greeting business message, or as a scheduled message\n",
+        "name": "is_from_offline",
+        "required": false
+      },
+      {
         "type": "String",
         "description": "The unique identifier of a media message group this message belongs to",
         "html_description": "<td><em>Optional</em>. The unique identifier of a media message group this message belongs to</td>",
@@ -185,6 +209,14 @@
         "html_description": "<td><em>Optional</em>. Options used for link preview generation for the message, if it is a text message and link preview options were changed</td>",
         "rst_description": "*Optional*. Options used for link preview generation for the message, if it is a text message and link preview options were changed\n",
         "name": "link_preview_options",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "Unique identifier of the message effect added to the message",
+        "html_description": "<td><em>Optional</em>. Unique identifier of the message effect added to the message</td>",
+        "rst_description": "*Optional*. Unique identifier of the message effect added to the message\n",
+        "name": "effect_id",
         "required": false
       },
       {
@@ -273,6 +305,14 @@
         "html_description": "<td><em>Optional</em>. For messages with a caption, special entities like usernames, URLs, bot commands, etc. that appear in the caption</td>",
         "rst_description": "*Optional*. For messages with a caption, special entities like usernames, URLs, bot commands, etc. that appear in the caption\n",
         "name": "caption_entities",
+        "required": false
+      },
+      {
+        "type": "True",
+        "description": "True, if the caption must be shown above the message media",
+        "html_description": "<td><em>Optional</em>. True, if the caption must be shown above the message media</td>",
+        "rst_description": "*Optional*. True, if the caption must be shown above the message media\n",
+        "name": "show_caption_above_media",
         "required": false
       },
       {
@@ -497,6 +537,14 @@
         "html_description": "<td><em>Optional</em>. Service message: user boosted the chat</td>",
         "rst_description": "*Optional*. Service message: user boosted the chat\n",
         "name": "boost_added",
+        "required": false
+      },
+      {
+        "type": "ChatBackground",
+        "description": "Service message: chat background set",
+        "html_description": "<td><em>Optional</em>. Service message: chat background set</td>",
+        "rst_description": "*Optional*. Service message: chat background set\n",
+        "name": "chat_background_set",
         "required": false
       },
       {

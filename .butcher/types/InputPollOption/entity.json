@@ -1,0 +1,41 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "inputpolloption",
+    "name": "InputPollOption",
+    "description": "This object contains information about one answer option in a poll to send.",
+    "html_description": "<p>This object contains information about one answer option in a poll to send.</p>",
+    "rst_description": "This object contains information about one answer option in a poll to send.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Option text, 1-100 characters",
+        "html_description": "<td>Option text, 1-100 characters</td>",
+        "rst_description": "Option text, 1-100 characters\n",
+        "name": "text",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Mode for parsing entities in the text. See formatting options for more details. Currently, only custom emoji entities are allowed",
+        "html_description": "<td><em>Optional</em>. Mode for parsing entities in the text. See <a href=\"#formatting-options\">formatting options</a> for more details. Currently, only custom emoji entities are allowed</td>",
+        "rst_description": "*Optional*. Mode for parsing entities in the text. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details. Currently, only custom emoji entities are allowed\n",
+        "name": "text_parse_mode",
+        "required": false
+      },
+      {
+        "type": "Array of MessageEntity",
+        "description": "A JSON-serialized list of special entities that appear in the poll option text. It can be specified instead of text_parse_mode",
+        "html_description": "<td><em>Optional</em>. A JSON-serialized list of special entities that appear in the poll option text. It can be specified instead of <em>text_parse_mode</em></td>",
+        "rst_description": "*Optional*. A JSON-serialized list of special entities that appear in the poll option text. It can be specified instead of *text_parse_mode*\n",
+        "name": "text_entities",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

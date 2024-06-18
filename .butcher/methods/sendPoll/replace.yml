@@ -9,3 +9,15 @@ annotations:
           name: datetime.timedelta
         - type: std
           name: int
+  options:
+    parsed_type:
+      type: array
+      items:
+        type: union
+        items:
+          - type: entity
+            references:
+              category: types
+              name: InputPollOption
+          - type: std
+            name: str

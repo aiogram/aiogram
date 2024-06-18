@@ -7,9 +7,9 @@
   "object": {
     "anchor": "replykeyboardmarkup",
     "name": "ReplyKeyboardMarkup",
-    "description": "This object represents a custom keyboard with reply options (see Introduction to bots for details and examples).",
-    "html_description": "<p>This object represents a <a href=\"/bots/features#keyboards\">custom keyboard</a> with reply options (see <a href=\"/bots/features#keyboards\">Introduction to bots</a> for details and examples).</p>",
-    "rst_description": "This object represents a `custom keyboard <https://core.telegram.org/bots/features#keyboards>`_ with reply options (see `Introduction to bots <https://core.telegram.org/bots/features#keyboards>`_ for details and examples).",
+    "description": "This object represents a custom keyboard with reply options (see Introduction to bots for details and examples). Not supported in channels and for messages sent on behalf of a Telegram Business account.",
+    "html_description": "<p>This object represents a <a href=\"/bots/features#keyboards\">custom keyboard</a> with reply options (see <a href=\"/bots/features#keyboards\">Introduction to bots</a> for details and examples). Not supported in channels and for messages sent on behalf of a Telegram Business account.</p>",
+    "rst_description": "This object represents a `custom keyboard <https://core.telegram.org/bots/features#keyboards>`_ with reply options (see `Introduction to bots <https://core.telegram.org/bots/features#keyboards>`_ for details and examples). Not supported in channels and for messages sent on behalf of a Telegram Business account.",
     "annotations": [
       {
         "type": "Array of Array of KeyboardButton",

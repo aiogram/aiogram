@@ -60,6 +60,14 @@
         "name": "caption_entities"
       },
       {
+        "type": "Boolean",
+        "required": false,
+        "description": "Pass True, if the caption must be shown above the message media. Supported only for animation, photo and video messages.",
+        "html_description": "<td>Pass <em>True</em>, if the caption must be shown above the message media. Supported only for animation, photo and video messages.</td>",
+        "rst_description": "Pass :code:`True`, if the caption must be shown above the message media. Supported only for animation, photo and video messages.\n",
+        "name": "show_caption_above_media"
+      },
+      {
         "type": "InlineKeyboardMarkup",
         "required": false,
         "description": "A JSON-serialized object for an inline keyboard.",

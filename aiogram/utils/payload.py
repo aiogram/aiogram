@@ -60,6 +60,7 @@ Encoding and decoding with your own methods:
             # result: decoded == "foo"
 
 """
+
 from base64 import urlsafe_b64decode, urlsafe_b64encode
 from typing import Callable, Optional
 

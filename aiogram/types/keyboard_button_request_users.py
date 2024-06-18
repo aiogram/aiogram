@@ -5,7 +5,7 @@ from aiogram.types import TelegramObject
 
 class KeyboardButtonRequestUsers(TelegramObject):
     """
-    This object defines the criteria used to request suitable users. The identifiers of the selected users will be shared with the bot when the corresponding button is pressed. `More about requesting users » <https://core.telegram.org/bots/features#chat-and-user-selection>`_
+    This object defines the criteria used to request suitable users. Information about the selected users will be shared with the bot when the corresponding button is pressed. `More about requesting users » <https://core.telegram.org/bots/features#chat-and-user-selection>`_
 
     Source: https://core.telegram.org/bots/api#keyboardbuttonrequestusers
     """
@@ -18,6 +18,12 @@ class KeyboardButtonRequestUsers(TelegramObject):
     """*Optional*. Pass :code:`True` to request premium users, pass :code:`False` to request non-premium users. If not specified, no additional restrictions are applied."""
     max_quantity: Optional[int] = None
     """*Optional*. The maximum number of users to be selected; 1-10. Defaults to 1."""
+    request_name: Optional[bool] = None
+    """*Optional*. Pass :code:`True` to request the users' first and last names"""
+    request_username: Optional[bool] = None
+    """*Optional*. Pass :code:`True` to request the users' usernames"""
+    request_photo: Optional[bool] = None
+    """*Optional*. Pass :code:`True` to request the users' photos"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!
@@ -30,6 +36,9 @@ class KeyboardButtonRequestUsers(TelegramObject):
             user_is_bot: Optional[bool] = None,
             user_is_premium: Optional[bool] = None,
             max_quantity: Optional[int] = None,
+            request_name: Optional[bool] = None,
+            request_username: Optional[bool] = None,
+            request_photo: Optional[bool] = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!
@@ -41,5 +50,8 @@ class KeyboardButtonRequestUsers(TelegramObject):
                 user_is_bot=user_is_bot,
                 user_is_premium=user_is_premium,
                 max_quantity=max_quantity,
+                request_name=request_name,
+                request_username=request_username,
+                request_photo=request_photo,
                 **__pydantic_kwargs,
             )

@@ -1,0 +1,33 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "businessopeninghours",
+    "name": "BusinessOpeningHours",
+    "description": "Describes the opening hours of a business.",
+    "html_description": "<p>Describes the opening hours of a business.</p>",
+    "rst_description": "Describes the opening hours of a business.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Unique name of the time zone for which the opening hours are defined",
+        "html_description": "<td>Unique name of the time zone for which the opening hours are defined</td>",
+        "rst_description": "Unique name of the time zone for which the opening hours are defined\n",
+        "name": "time_zone_name",
+        "required": true
+      },
+      {
+        "type": "Array of BusinessOpeningHoursInterval",
+        "description": "List of time intervals describing business opening hours",
+        "html_description": "<td>List of time intervals describing business opening hours</td>",
+        "rst_description": "List of time intervals describing business opening hours\n",
+        "name": "opening_hours",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

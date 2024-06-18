@@ -1,0 +1,1 @@
+Fixed MongoStorage section in the documentation by adding extra dependency to ReadTheDocs configuration.

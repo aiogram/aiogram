@@ -3,12 +3,14 @@ import pytest
 from aiogram.enums import MessageEntityType
 from aiogram.types import MessageEntity, User
 from aiogram.utils.formatting import (
+    BlockQuote,
     Bold,
     BotCommand,
     CashTag,
     Code,
     CustomEmoji,
     Email,
+    ExpandableBlockQuote,
     HashTag,
     Italic,
     PhoneNumber,
@@ -104,6 +106,14 @@ class TestNode:
             [
                 CustomEmoji("test", custom_emoji_id="42"),
                 '<tg-emoji emoji-id="42">test</tg-emoji>',
+            ],
+            [
+                BlockQuote("test"),
+                "<blockquote>test</blockquote>",
+            ],
+            [
+                ExpandableBlockQuote("test"),
+                "<blockquote expandable>test</blockquote>",
             ],
         ],
     )

@@ -14,6 +14,7 @@ from aiogram.utils.text_decorations import (
 from ..client.default import Default
 from ..enums import ContentType
 from .custom import DateTime
+from .input_poll_option import InputPollOption
 from .maybe_inaccessible_message import MaybeInaccessibleMessage
 
 if TYPE_CHECKING:
@@ -51,6 +52,7 @@ if TYPE_CHECKING:
     from .animation import Animation
     from .audio import Audio
     from .chat import Chat
+    from .chat_background import ChatBackground
     from .chat_boost_added import ChatBoostAdded
     from .chat_shared import ChatShared
     from .contact import Contact
@@ -136,6 +138,10 @@ class Message(MaybeInaccessibleMessage):
     """*Optional*. Sender of the message, sent on behalf of a chat. For example, the channel itself for channel posts, the supergroup itself for messages from anonymous group administrators, the linked channel for messages automatically forwarded to the discussion group. For backward compatibility, the field *from* contains a fake sender user in non-channel chats, if the message was sent on behalf of a chat."""
     sender_boost_count: Optional[int] = None
     """*Optional*. If the sender of the message boosted the chat, the number of boosts added by the user"""
+    sender_business_bot: Optional[User] = None
+    """*Optional*. The bot that actually sent the message on behalf of the business account. Available only for outgoing messages sent on behalf of the connected business account."""
+    business_connection_id: Optional[str] = None
+    """*Optional*. Unique identifier of the business connection from which the message was received. If non-empty, the message belongs to a chat of the corresponding business account that is independent from any potential bot chat which might share the same identifier."""
     forward_origin: Optional[
         Union[MessageOriginUser, MessageOriginHiddenUser, MessageOriginChat, MessageOriginChannel]
     ] = None
@@ -158,6 +164,8 @@ class Message(MaybeInaccessibleMessage):
     """*Optional*. Date the message was last edited in Unix time"""
     has_protected_content: Optional[bool] = None
     """*Optional*. :code:`True`, if the message can't be forwarded"""
+    is_from_offline: Optional[bool] = None
+    """*Optional*. True, if the message was sent by an implicit action, for example, as an away or a greeting business message, or as a scheduled message"""
     media_group_id: Optional[str] = None
     """*Optional*. The unique identifier of a media message group this message belongs to"""
     author_signature: Optional[str] = None
@@ -168,6 +176,8 @@ class Message(MaybeInaccessibleMessage):
     """*Optional*. For text messages, special entities like usernames, URLs, bot commands, etc. that appear in the text"""
     link_preview_options: Optional[LinkPreviewOptions] = None
     """*Optional*. Options used for link preview generation for the message, if it is a text message and link preview options were changed"""
+    effect_id: Optional[str] = None
+    """*Optional*. Unique identifier of the message effect added to the message"""
     animation: Optional[Animation] = None
     """*Optional*. Message is an animation, information about the animation. For backward compatibility, when this field is set, the *document* field will also be set"""
     audio: Optional[Audio] = None
@@ -190,6 +200,8 @@ class Message(MaybeInaccessibleMessage):
     """*Optional*. Caption for the animation, audio, document, photo, video or voice"""
     caption_entities: Optional[List[MessageEntity]] = None
     """*Optional*. For messages with a caption, special entities like usernames, URLs, bot commands, etc. that appear in the caption"""
+    show_caption_above_media: Optional[bool] = None
+    """*Optional*. True, if the caption must be shown above the message media"""
     has_media_spoiler: Optional[bool] = None
     """*Optional*. :code:`True`, if the message media is covered by a spoiler animation"""
     contact: Optional[Contact] = None
@@ -246,6 +258,8 @@ class Message(MaybeInaccessibleMessage):
     """*Optional*. Service message. A user in the chat triggered another user's proximity alert while sharing Live Location."""
     boost_added: Optional[ChatBoostAdded] = None
     """*Optional*. Service message: user boosted the chat"""
+    chat_background_set: Optional[ChatBackground] = None
+    """*Optional*. Service message: chat background set"""
     forum_topic_created: Optional[ForumTopicCreated] = None
     """*Optional*. Service message: forum topic created"""
     forum_topic_edited: Optional[ForumTopicEdited] = None
@@ -328,6 +342,8 @@ class Message(MaybeInaccessibleMessage):
             from_user: Optional[User] = None,
             sender_chat: Optional[Chat] = None,
             sender_boost_count: Optional[int] = None,
+            sender_business_bot: Optional[User] = None,
+            business_connection_id: Optional[str] = None,
             forward_origin: Optional[
                 Union[
                     MessageOriginUser,
@@ -345,11 +361,13 @@ class Message(MaybeInaccessibleMessage):
             via_bot: Optional[User] = None,
             edit_date: Optional[int] = None,
             has_protected_content: Optional[bool] = None,
+            is_from_offline: Optional[bool] = None,
             media_group_id: Optional[str] = None,
             author_signature: Optional[str] = None,
             text: Optional[str] = None,
             entities: Optional[List[MessageEntity]] = None,
             link_preview_options: Optional[LinkPreviewOptions] = None,
+            effect_id: Optional[str] = None,
             animation: Optional[Animation] = None,
             audio: Optional[Audio] = None,
             document: Optional[Document] = None,
@@ -361,6 +379,7 @@ class Message(MaybeInaccessibleMessage):
             voice: Optional[Voice] = None,
             caption: Optional[str] = None,
             caption_entities: Optional[List[MessageEntity]] = None,
+            show_caption_above_media: Optional[bool] = None,
             has_media_spoiler: Optional[bool] = None,
             contact: Optional[Contact] = None,
             dice: Optional[Dice] = None,
@@ -389,6 +408,7 @@ class Message(MaybeInaccessibleMessage):
             passport_data: Optional[PassportData] = None,
             proximity_alert_triggered: Optional[ProximityAlertTriggered] = None,
             boost_added: Optional[ChatBoostAdded] = None,
+            chat_background_set: Optional[ChatBackground] = None,
             forum_topic_created: Optional[ForumTopicCreated] = None,
             forum_topic_edited: Optional[ForumTopicEdited] = None,
             forum_topic_closed: Optional[ForumTopicClosed] = None,
@@ -426,6 +446,8 @@ class Message(MaybeInaccessibleMessage):
                 from_user=from_user,
                 sender_chat=sender_chat,
                 sender_boost_count=sender_boost_count,
+                sender_business_bot=sender_business_bot,
+                business_connection_id=business_connection_id,
                 forward_origin=forward_origin,
                 is_topic_message=is_topic_message,
                 is_automatic_forward=is_automatic_forward,
@@ -436,11 +458,13 @@ class Message(MaybeInaccessibleMessage):
                 via_bot=via_bot,
                 edit_date=edit_date,
                 has_protected_content=has_protected_content,
+                is_from_offline=is_from_offline,
                 media_group_id=media_group_id,
                 author_signature=author_signature,
                 text=text,
                 entities=entities,
                 link_preview_options=link_preview_options,
+                effect_id=effect_id,
                 animation=animation,
                 audio=audio,
                 document=document,
@@ -452,6 +476,7 @@ class Message(MaybeInaccessibleMessage):
                 voice=voice,
                 caption=caption,
                 caption_entities=caption_entities,
+                show_caption_above_media=show_caption_above_media,
                 has_media_spoiler=has_media_spoiler,
                 contact=contact,
                 dice=dice,
@@ -480,6 +505,7 @@ class Message(MaybeInaccessibleMessage):
                 passport_data=passport_data,
                 proximity_alert_triggered=proximity_alert_triggered,
                 boost_added=boost_added,
+                chat_background_set=chat_background_set,
                 forum_topic_created=forum_topic_created,
                 forum_topic_edited=forum_topic_edited,
                 forum_topic_closed=forum_topic_closed,
@@ -610,10 +636,10 @@ class Message(MaybeInaccessibleMessage):
             return ContentType.CHAT_SHARED
         if self.story:
             return ContentType.STORY
-        if self.has_media_spoiler:
-            return ContentType.HAS_MEDIA_SPOILER
         if self.write_access_allowed:
             return ContentType.WRITE_ACCESS_ALLOWED
+        if self.chat_background_set:
+            return ContentType.CHAT_BACKGROUND_SET
         if self.boost_added:
             return ContentType.BOOST_ADDED
 
@@ -642,9 +668,13 @@ class Message(MaybeInaccessibleMessage):
         caption: Optional[str] = None,
         parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
         caption_entities: Optional[List[MessageEntity]] = None,
+        show_caption_above_media: Optional[Union[bool, Default]] = Default(
+            "show_caption_above_media"
+        ),
         has_spoiler: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -658,6 +688,7 @@ class Message(MaybeInaccessibleMessage):
 
         - :code:`chat_id`
         - :code:`message_thread_id`
+        - :code:`business_connection_id`
         - :code:`reply_to_message_id`
 
         Use this method to send animation files (GIF or H.264/MPEG-4 AVC video without sound). On success, the sent :class:`aiogram.types.message.Message` is returned. Bots can currently send animation files of up to 50 MB in size, this limit may be changed in the future.
@@ -672,11 +703,13 @@ class Message(MaybeInaccessibleMessage):
         :param caption: Animation caption (may also be used when resending animation by *file_id*), 0-1024 characters after entities parsing
         :param parse_mode: Mode for parsing entities in the animation caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.
         :param caption_entities: A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*
+        :param show_caption_above_media: Pass :code:`True`, if the caption must be shown above the message media
         :param has_spoiler: Pass :code:`True` if the animation needs to be covered with a spoiler animation
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
+        :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param reply_parameters: Description of the message to reply to
-        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
+        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :return: instance of method :class:`aiogram.methods.send_animation.SendAnimation`
         """
@@ -692,6 +725,7 @@ class Message(MaybeInaccessibleMessage):
         return SendAnimation(
             chat_id=self.chat.id,
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
+            business_connection_id=self.business_connection_id,
             reply_to_message_id=self.message_id,
             animation=animation,
             duration=duration,
@@ -701,9 +735,11 @@ class Message(MaybeInaccessibleMessage):
             caption=caption,
             parse_mode=parse_mode,
             caption_entities=caption_entities,
+            show_caption_above_media=show_caption_above_media,
             has_spoiler=has_spoiler,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            message_effect_id=message_effect_id,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -720,9 +756,13 @@ class Message(MaybeInaccessibleMessage):
         caption: Optional[str] = None,
         parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
         caption_entities: Optional[List[MessageEntity]] = None,
+        show_caption_above_media: Optional[Union[bool, Default]] = Default(
+            "show_caption_above_media"
+        ),
         has_spoiler: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -737,6 +777,7 @@ class Message(MaybeInaccessibleMessage):
 
         - :code:`chat_id`
         - :code:`message_thread_id`
+        - :code:`business_connection_id`
 
         Use this method to send animation files (GIF or H.264/MPEG-4 AVC video without sound). On success, the sent :class:`aiogram.types.message.Message` is returned. Bots can currently send animation files of up to 50 MB in size, this limit may be changed in the future.
 
@@ -750,11 +791,13 @@ class Message(MaybeInaccessibleMessage):
         :param caption: Animation caption (may also be used when resending animation by *file_id*), 0-1024 characters after entities parsing
         :param parse_mode: Mode for parsing entities in the animation caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.
         :param caption_entities: A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*
+        :param show_caption_above_media: Pass :code:`True`, if the caption must be shown above the message media
         :param has_spoiler: Pass :code:`True` if the animation needs to be covered with a spoiler animation
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
+        :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param reply_parameters: Description of the message to reply to
-        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
+        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :return: instance of method :class:`aiogram.methods.send_animation.SendAnimation`
@@ -771,6 +814,7 @@ class Message(MaybeInaccessibleMessage):
         return SendAnimation(
             chat_id=self.chat.id,
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
+            business_connection_id=self.business_connection_id,
             animation=animation,
             duration=duration,
             width=width,
@@ -779,9 +823,11 @@ class Message(MaybeInaccessibleMessage):
             caption=caption,
             parse_mode=parse_mode,
             caption_entities=caption_entities,
+            show_caption_above_media=show_caption_above_media,
             has_spoiler=has_spoiler,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            message_effect_id=message_effect_id,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -801,6 +847,7 @@ class Message(MaybeInaccessibleMessage):
         thumbnail: Optional[InputFile] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -814,6 +861,7 @@ class Message(MaybeInaccessibleMessage):
 
         - :code:`chat_id`
         - :code:`message_thread_id`
+        - :code:`business_connection_id`
         - :code:`reply_to_message_id`
 
         Use this method to send audio files, if you want Telegram clients to display them in the music player. Your audio must be in the .MP3 or .M4A format. On success, the sent :class:`aiogram.types.message.Message` is returned. Bots can currently send audio files of up to 50 MB in size, this limit may be changed in the future.
@@ -831,8 +879,9 @@ class Message(MaybeInaccessibleMessage):
         :param thumbnail: Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
+        :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param reply_parameters: Description of the message to reply to
-        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
+        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :return: instance of method :class:`aiogram.methods.send_audio.SendAudio`
         """
@@ -848,6 +897,7 @@ class Message(MaybeInaccessibleMessage):
         return SendAudio(
             chat_id=self.chat.id,
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
+            business_connection_id=self.business_connection_id,
             reply_to_message_id=self.message_id,
             audio=audio,
             caption=caption,
@@ -859,6 +909,7 @@ class Message(MaybeInaccessibleMessage):
             thumbnail=thumbnail,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            message_effect_id=message_effect_id,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -877,6 +928,7 @@ class Message(MaybeInaccessibleMessage):
         thumbnail: Optional[InputFile] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -891,6 +943,7 @@ class Message(MaybeInaccessibleMessage):
 
         - :code:`chat_id`
         - :code:`message_thread_id`
+        - :code:`business_connection_id`
 
         Use this method to send audio files, if you want Telegram clients to display them in the music player. Your audio must be in the .MP3 or .M4A format. On success, the sent :class:`aiogram.types.message.Message` is returned. Bots can currently send audio files of up to 50 MB in size, this limit may be changed in the future.
         For sending voice messages, use the :class:`aiogram.methods.send_voice.SendVoice` method instead.
@@ -907,8 +960,9 @@ class Message(MaybeInaccessibleMessage):
         :param thumbnail: Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
+        :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param reply_parameters: Description of the message to reply to
-        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
+        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :return: instance of method :class:`aiogram.methods.send_audio.SendAudio`
@@ -925,6 +979,7 @@ class Message(MaybeInaccessibleMessage):
         return SendAudio(
             chat_id=self.chat.id,
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
+            business_connection_id=self.business_connection_id,
             audio=audio,
             caption=caption,
             parse_mode=parse_mode,
@@ -935,6 +990,7 @@ class Message(MaybeInaccessibleMessage):
             thumbnail=thumbnail,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            message_effect_id=message_effect_id,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -950,6 +1006,7 @@ class Message(MaybeInaccessibleMessage):
         vcard: Optional[str] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -963,6 +1020,7 @@ class Message(MaybeInaccessibleMessage):
 
         - :code:`chat_id`
         - :code:`message_thread_id`
+        - :code:`business_connection_id`
         - :code:`reply_to_message_id`
 
         Use this method to send phone contacts. On success, the sent :class:`aiogram.types.message.Message` is returned.
@@ -975,8 +1033,9 @@ class Message(MaybeInaccessibleMessage):
         :param vcard: Additional data about the contact in the form of a `vCard <https://en.wikipedia.org/wiki/VCard>`_, 0-2048 bytes
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
+        :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param reply_parameters: Description of the message to reply to
-        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
+        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :return: instance of method :class:`aiogram.methods.send_contact.SendContact`
         """
@@ -992,6 +1051,7 @@ class Message(MaybeInaccessibleMessage):
         return SendContact(
             chat_id=self.chat.id,
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
+            business_connection_id=self.business_connection_id,
             reply_to_message_id=self.message_id,
             phone_number=phone_number,
             first_name=first_name,
@@ -999,6 +1059,7 @@ class Message(MaybeInaccessibleMessage):
             vcard=vcard,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            message_effect_id=message_effect_id,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -1013,6 +1074,7 @@ class Message(MaybeInaccessibleMessage):
         vcard: Optional[str] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -1027,6 +1089,7 @@ class Message(MaybeInaccessibleMessage):
 
         - :code:`chat_id`
         - :code:`message_thread_id`
+        - :code:`business_connection_id`
 
         Use this method to send phone contacts. On success, the sent :class:`aiogram.types.message.Message` is returned.
 
@@ -1038,8 +1101,9 @@ class Message(MaybeInaccessibleMessage):
         :param vcard: Additional data about the contact in the form of a `vCard <https://en.wikipedia.org/wiki/VCard>`_, 0-2048 bytes
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
+        :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param reply_parameters: Description of the message to reply to
-        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
+        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :return: instance of method :class:`aiogram.methods.send_contact.SendContact`
@@ -1056,12 +1120,14 @@ class Message(MaybeInaccessibleMessage):
         return SendContact(
             chat_id=self.chat.id,
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
+            business_connection_id=self.business_connection_id,
             phone_number=phone_number,
             first_name=first_name,
             last_name=last_name,
             vcard=vcard,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            message_effect_id=message_effect_id,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -1079,6 +1145,7 @@ class Message(MaybeInaccessibleMessage):
         disable_content_type_detection: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -1092,6 +1159,7 @@ class Message(MaybeInaccessibleMessage):
 
         - :code:`chat_id`
         - :code:`message_thread_id`
+        - :code:`business_connection_id`
         - :code:`reply_to_message_id`
 
         Use this method to send general files. On success, the sent :class:`aiogram.types.message.Message` is returned. Bots can currently send files of any type of up to 50 MB in size, this limit may be changed in the future.
@@ -1106,8 +1174,9 @@ class Message(MaybeInaccessibleMessage):
         :param disable_content_type_detection: Disables automatic server-side content type detection for files uploaded using multipart/form-data
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
+        :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param reply_parameters: Description of the message to reply to
-        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
+        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :return: instance of method :class:`aiogram.methods.send_document.SendDocument`
         """
@@ -1123,6 +1192,7 @@ class Message(MaybeInaccessibleMessage):
         return SendDocument(
             chat_id=self.chat.id,
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
+            business_connection_id=self.business_connection_id,
             reply_to_message_id=self.message_id,
             document=document,
             thumbnail=thumbnail,
@@ -1132,6 +1202,7 @@ class Message(MaybeInaccessibleMessage):
             disable_content_type_detection=disable_content_type_detection,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            message_effect_id=message_effect_id,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -1148,6 +1219,7 @@ class Message(MaybeInaccessibleMessage):
         disable_content_type_detection: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -1162,6 +1234,7 @@ class Message(MaybeInaccessibleMessage):
 
         - :code:`chat_id`
         - :code:`message_thread_id`
+        - :code:`business_connection_id`
 
         Use this method to send general files. On success, the sent :class:`aiogram.types.message.Message` is returned. Bots can currently send files of any type of up to 50 MB in size, this limit may be changed in the future.
 
@@ -1175,8 +1248,9 @@ class Message(MaybeInaccessibleMessage):
         :param disable_content_type_detection: Disables automatic server-side content type detection for files uploaded using multipart/form-data
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
+        :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param reply_parameters: Description of the message to reply to
-        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
+        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :return: instance of method :class:`aiogram.methods.send_document.SendDocument`
@@ -1193,6 +1267,7 @@ class Message(MaybeInaccessibleMessage):
         return SendDocument(
             chat_id=self.chat.id,
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
+            business_connection_id=self.business_connection_id,
             document=document,
             thumbnail=thumbnail,
             caption=caption,
@@ -1201,6 +1276,7 @@ class Message(MaybeInaccessibleMessage):
             disable_content_type_detection=disable_content_type_detection,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            message_effect_id=message_effect_id,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -1213,6 +1289,7 @@ class Message(MaybeInaccessibleMessage):
         game_short_name: str,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[InlineKeyboardMarkup] = None,
         allow_sending_without_reply: Optional[bool] = None,
@@ -1224,6 +1301,7 @@ class Message(MaybeInaccessibleMessage):
 
         - :code:`chat_id`
         - :code:`message_thread_id`
+        - :code:`business_connection_id`
         - :code:`reply_to_message_id`
 
         Use this method to send a game. On success, the sent :class:`aiogram.types.message.Message` is returned.
@@ -1233,6 +1311,7 @@ class Message(MaybeInaccessibleMessage):
         :param game_short_name: Short name of the game, serves as the unique identifier for the game. Set up your games via `@BotFather <https://t.me/botfather>`_.
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
+        :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param reply_parameters: Description of the message to reply to
         :param reply_markup: A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_. If empty, one 'Play game_title' button will be shown. If not empty, the first button must launch the game.
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
@@ -1250,10 +1329,12 @@ class Message(MaybeInaccessibleMessage):
         return SendGame(
             chat_id=self.chat.id,
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
+            business_connection_id=self.business_connection_id,
             reply_to_message_id=self.message_id,
             game_short_name=game_short_name,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            message_effect_id=message_effect_id,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -1265,6 +1346,7 @@ class Message(MaybeInaccessibleMessage):
         game_short_name: str,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[InlineKeyboardMarkup] = None,
         allow_sending_without_reply: Optional[bool] = None,
@@ -1277,6 +1359,7 @@ class Message(MaybeInaccessibleMessage):
 
         - :code:`chat_id`
         - :code:`message_thread_id`
+        - :code:`business_connection_id`
 
         Use this method to send a game. On success, the sent :class:`aiogram.types.message.Message` is returned.
 
@@ -1285,6 +1368,7 @@ class Message(MaybeInaccessibleMessage):
         :param game_short_name: Short name of the game, serves as the unique identifier for the game. Set up your games via `@BotFather <https://t.me/botfather>`_.
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
+        :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param reply_parameters: Description of the message to reply to
         :param reply_markup: A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_. If empty, one 'Play game_title' button will be shown. If not empty, the first button must launch the game.
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
@@ -1303,9 +1387,11 @@ class Message(MaybeInaccessibleMessage):
         return SendGame(
             chat_id=self.chat.id,
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
+            business_connection_id=self.business_connection_id,
             game_short_name=game_short_name,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            message_effect_id=message_effect_id,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -1318,9 +1404,9 @@ class Message(MaybeInaccessibleMessage):
         title: str,
         description: str,
         payload: str,
-        provider_token: str,
         currency: str,
         prices: List[LabeledPrice],
+        provider_token: Optional[str] = None,
         max_tip_amount: Optional[int] = None,
         suggested_tip_amounts: Optional[List[int]] = None,
         start_parameter: Optional[str] = None,
@@ -1338,6 +1424,7 @@ class Message(MaybeInaccessibleMessage):
         is_flexible: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[InlineKeyboardMarkup] = None,
         allow_sending_without_reply: Optional[bool] = None,
@@ -1349,6 +1436,7 @@ class Message(MaybeInaccessibleMessage):
 
         - :code:`chat_id`
         - :code:`message_thread_id`
+        - :code:`business_connection_id`
         - :code:`reply_to_message_id`
 
         Use this method to send invoices. On success, the sent :class:`aiogram.types.message.Message` is returned.
@@ -1358,10 +1446,10 @@ class Message(MaybeInaccessibleMessage):
         :param title: Product name, 1-32 characters
         :param description: Product description, 1-255 characters
         :param payload: Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use for your internal processes.
-        :param provider_token: Payment provider token, obtained via `@BotFather <https://t.me/botfather>`_
-        :param currency: Three-letter ISO 4217 currency code, see `more on currencies <https://core.telegram.org/bots/payments#supported-currencies>`_
-        :param prices: Price breakdown, a JSON-serialized list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.)
-        :param max_tip_amount: The maximum accepted amount for tips in the *smallest units* of the currency (integer, **not** float/double). For example, for a maximum tip of :code:`US$ 1.45` pass :code:`max_tip_amount = 145`. See the *exp* parameter in `currencies.json <https://core.telegram.org/bots/payments/currencies.json>`_, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies). Defaults to 0
+        :param currency: Three-letter ISO 4217 currency code, see `more on currencies <https://core.telegram.org/bots/payments#supported-currencies>`_. Pass 'XTR' for payments in `Telegram Stars <https://t.me/BotNews/90>`_.
+        :param prices: Price breakdown, a JSON-serialized list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.). Must contain exactly one item for payments in `Telegram Stars <https://t.me/BotNews/90>`_.
+        :param provider_token: Payment provider token, obtained via `@BotFather <https://t.me/botfather>`_. Pass an empty string for payments in `Telegram Stars <https://t.me/BotNews/90>`_.
+        :param max_tip_amount: The maximum accepted amount for tips in the *smallest units* of the currency (integer, **not** float/double). For example, for a maximum tip of :code:`US$ 1.45` pass :code:`max_tip_amount = 145`. See the *exp* parameter in `currencies.json <https://core.telegram.org/bots/payments/currencies.json>`_, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies). Defaults to 0. Not supported for payments in `Telegram Stars <https://t.me/BotNews/90>`_.
         :param suggested_tip_amounts: A JSON-serialized array of suggested amounts of tips in the *smallest units* of the currency (integer, **not** float/double). At most 4 suggested tip amounts can be specified. The suggested tip amounts must be positive, passed in a strictly increased order and must not exceed *max_tip_amount*.
         :param start_parameter: Unique deep-linking parameter. If left empty, **forwarded copies** of the sent message will have a *Pay* button, allowing multiple users to pay directly from the forwarded message, using the same invoice. If non-empty, forwarded copies of the sent message will have a *URL* button with a deep link to the bot (instead of a *Pay* button), with the value used as the start parameter
         :param provider_data: JSON-serialized data about the invoice, which will be shared with the payment provider. A detailed description of required fields should be provided by the payment provider.
@@ -1369,15 +1457,16 @@ class Message(MaybeInaccessibleMessage):
         :param photo_size: Photo size in bytes
         :param photo_width: Photo width
         :param photo_height: Photo height
-        :param need_name: Pass :code:`True` if you require the user's full name to complete the order
-        :param need_phone_number: Pass :code:`True` if you require the user's phone number to complete the order
-        :param need_email: Pass :code:`True` if you require the user's email address to complete the order
-        :param need_shipping_address: Pass :code:`True` if you require the user's shipping address to complete the order
-        :param send_phone_number_to_provider: Pass :code:`True` if the user's phone number should be sent to provider
-        :param send_email_to_provider: Pass :code:`True` if the user's email address should be sent to provider
-        :param is_flexible: Pass :code:`True` if the final price depends on the shipping method
+        :param need_name: Pass :code:`True` if you require the user's full name to complete the order. Ignored for payments in `Telegram Stars <https://t.me/BotNews/90>`_.
+        :param need_phone_number: Pass :code:`True` if you require the user's phone number to complete the order. Ignored for payments in `Telegram Stars <https://t.me/BotNews/90>`_.
+        :param need_email: Pass :code:`True` if you require the user's email address to complete the order. Ignored for payments in `Telegram Stars <https://t.me/BotNews/90>`_.
+        :param need_shipping_address: Pass :code:`True` if you require the user's shipping address to complete the order. Ignored for payments in `Telegram Stars <https://t.me/BotNews/90>`_.
+        :param send_phone_number_to_provider: Pass :code:`True` if the user's phone number should be sent to the provider. Ignored for payments in `Telegram Stars <https://t.me/BotNews/90>`_.
+        :param send_email_to_provider: Pass :code:`True` if the user's email address should be sent to the provider. Ignored for payments in `Telegram Stars <https://t.me/BotNews/90>`_.
+        :param is_flexible: Pass :code:`True` if the final price depends on the shipping method. Ignored for payments in `Telegram Stars <https://t.me/BotNews/90>`_.
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
+        :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param reply_parameters: Description of the message to reply to
         :param reply_markup: A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_. If empty, one 'Pay :code:`total price`' button will be shown. If not empty, the first button must be a Pay button.
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
@@ -1395,13 +1484,14 @@ class Message(MaybeInaccessibleMessage):
         return SendInvoice(
             chat_id=self.chat.id,
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
+            business_connection_id=self.business_connection_id,
             reply_to_message_id=self.message_id,
             title=title,
             description=description,
             payload=payload,
-            provider_token=provider_token,
             currency=currency,
             prices=prices,
+            provider_token=provider_token,
             max_tip_amount=max_tip_amount,
             suggested_tip_amounts=suggested_tip_amounts,
             start_parameter=start_parameter,
@@ -1419,6 +1509,7 @@ class Message(MaybeInaccessibleMessage):
             is_flexible=is_flexible,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            message_effect_id=message_effect_id,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -1430,9 +1521,9 @@ class Message(MaybeInaccessibleMessage):
         title: str,
         description: str,
         payload: str,
-        provider_token: str,
         currency: str,
         prices: List[LabeledPrice],
+        provider_token: Optional[str] = None,
         max_tip_amount: Optional[int] = None,
         suggested_tip_amounts: Optional[List[int]] = None,
         start_parameter: Optional[str] = None,
@@ -1450,6 +1541,7 @@ class Message(MaybeInaccessibleMessage):
         is_flexible: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[InlineKeyboardMarkup] = None,
         allow_sending_without_reply: Optional[bool] = None,
@@ -1462,6 +1554,7 @@ class Message(MaybeInaccessibleMessage):
 
         - :code:`chat_id`
         - :code:`message_thread_id`
+        - :code:`business_connection_id`
 
         Use this method to send invoices. On success, the sent :class:`aiogram.types.message.Message` is returned.
 
@@ -1470,10 +1563,10 @@ class Message(MaybeInaccessibleMessage):
         :param title: Product name, 1-32 characters
         :param description: Product description, 1-255 characters
         :param payload: Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use for your internal processes.
-        :param provider_token: Payment provider token, obtained via `@BotFather <https://t.me/botfather>`_
-        :param currency: Three-letter ISO 4217 currency code, see `more on currencies <https://core.telegram.org/bots/payments#supported-currencies>`_
-        :param prices: Price breakdown, a JSON-serialized list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.)
-        :param max_tip_amount: The maximum accepted amount for tips in the *smallest units* of the currency (integer, **not** float/double). For example, for a maximum tip of :code:`US$ 1.45` pass :code:`max_tip_amount = 145`. See the *exp* parameter in `currencies.json <https://core.telegram.org/bots/payments/currencies.json>`_, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies). Defaults to 0
+        :param currency: Three-letter ISO 4217 currency code, see `more on currencies <https://core.telegram.org/bots/payments#supported-currencies>`_. Pass 'XTR' for payments in `Telegram Stars <https://t.me/BotNews/90>`_.
+        :param prices: Price breakdown, a JSON-serialized list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.). Must contain exactly one item for payments in `Telegram Stars <https://t.me/BotNews/90>`_.
+        :param provider_token: Payment provider token, obtained via `@BotFather <https://t.me/botfather>`_. Pass an empty string for payments in `Telegram Stars <https://t.me/BotNews/90>`_.
+        :param max_tip_amount: The maximum accepted amount for tips in the *smallest units* of the currency (integer, **not** float/double). For example, for a maximum tip of :code:`US$ 1.45` pass :code:`max_tip_amount = 145`. See the *exp* parameter in `currencies.json <https://core.telegram.org/bots/payments/currencies.json>`_, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies). Defaults to 0. Not supported for payments in `Telegram Stars <https://t.me/BotNews/90>`_.
         :param suggested_tip_amounts: A JSON-serialized array of suggested amounts of tips in the *smallest units* of the currency (integer, **not** float/double). At most 4 suggested tip amounts can be specified. The suggested tip amounts must be positive, passed in a strictly increased order and must not exceed *max_tip_amount*.
         :param start_parameter: Unique deep-linking parameter. If left empty, **forwarded copies** of the sent message will have a *Pay* button, allowing multiple users to pay directly from the forwarded message, using the same invoice. If non-empty, forwarded copies of the sent message will have a *URL* button with a deep link to the bot (instead of a *Pay* button), with the value used as the start parameter
         :param provider_data: JSON-serialized data about the invoice, which will be shared with the payment provider. A detailed description of required fields should be provided by the payment provider.
@@ -1481,15 +1574,16 @@ class Message(MaybeInaccessibleMessage):
         :param photo_size: Photo size in bytes
         :param photo_width: Photo width
         :param photo_height: Photo height
-        :param need_name: Pass :code:`True` if you require the user's full name to complete the order
-        :param need_phone_number: Pass :code:`True` if you require the user's phone number to complete the order
-        :param need_email: Pass :code:`True` if you require the user's email address to complete the order
-        :param need_shipping_address: Pass :code:`True` if you require the user's shipping address to complete the order
-        :param send_phone_number_to_provider: Pass :code:`True` if the user's phone number should be sent to provider
-        :param send_email_to_provider: Pass :code:`True` if the user's email address should be sent to provider
-        :param is_flexible: Pass :code:`True` if the final price depends on the shipping method
+        :param need_name: Pass :code:`True` if you require the user's full name to complete the order. Ignored for payments in `Telegram Stars <https://t.me/BotNews/90>`_.
+        :param need_phone_number: Pass :code:`True` if you require the user's phone number to complete the order. Ignored for payments in `Telegram Stars <https://t.me/BotNews/90>`_.
+        :param need_email: Pass :code:`True` if you require the user's email address to complete the order. Ignored for payments in `Telegram Stars <https://t.me/BotNews/90>`_.
+        :param need_shipping_address: Pass :code:`True` if you require the user's shipping address to complete the order. Ignored for payments in `Telegram Stars <https://t.me/BotNews/90>`_.
+        :param send_phone_number_to_provider: Pass :code:`True` if the user's phone number should be sent to the provider. Ignored for payments in `Telegram Stars <https://t.me/BotNews/90>`_.
+        :param send_email_to_provider: Pass :code:`True` if the user's email address should be sent to the provider. Ignored for payments in `Telegram Stars <https://t.me/BotNews/90>`_.
+        :param is_flexible: Pass :code:`True` if the final price depends on the shipping method. Ignored for payments in `Telegram Stars <https://t.me/BotNews/90>`_.
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
+        :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param reply_parameters: Description of the message to reply to
         :param reply_markup: A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_. If empty, one 'Pay :code:`total price`' button will be shown. If not empty, the first button must be a Pay button.
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
@@ -1508,12 +1602,13 @@ class Message(MaybeInaccessibleMessage):
         return SendInvoice(
             chat_id=self.chat.id,
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
+            business_connection_id=self.business_connection_id,
             title=title,
             description=description,
             payload=payload,
-            provider_token=provider_token,
             currency=currency,
             prices=prices,
+            provider_token=provider_token,
             max_tip_amount=max_tip_amount,
             suggested_tip_amounts=suggested_tip_amounts,
             start_parameter=start_parameter,
@@ -1531,6 +1626,7 @@ class Message(MaybeInaccessibleMessage):
             is_flexible=is_flexible,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            message_effect_id=message_effect_id,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -1548,6 +1644,7 @@ class Message(MaybeInaccessibleMessage):
         proximity_alert_radius: Optional[int] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -1561,6 +1658,7 @@ class Message(MaybeInaccessibleMessage):
 
         - :code:`chat_id`
         - :code:`message_thread_id`
+        - :code:`business_connection_id`
         - :code:`reply_to_message_id`
 
         Use this method to send point on the map. On success, the sent :class:`aiogram.types.message.Message` is returned.
@@ -1570,13 +1668,14 @@ class Message(MaybeInaccessibleMessage):
         :param latitude: Latitude of the location
         :param longitude: Longitude of the location
         :param horizontal_accuracy: The radius of uncertainty for the location, measured in meters; 0-1500
-        :param live_period: Period in seconds for which the location will be updated (see `Live Locations <https://telegram.org/blog/live-locations>`_, should be between 60 and 86400.
+        :param live_period: Period in seconds during which the location will be updated (see `Live Locations <https://telegram.org/blog/live-locations>`_, should be between 60 and 86400, or 0x7FFFFFFF for live locations that can be edited indefinitely.
         :param heading: For live locations, a direction in which the user is moving, in degrees. Must be between 1 and 360 if specified.
         :param proximity_alert_radius: For live locations, a maximum distance for proximity alerts about approaching another chat member, in meters. Must be between 1 and 100000 if specified.
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
+        :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param reply_parameters: Description of the message to reply to
-        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
+        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :return: instance of method :class:`aiogram.methods.send_location.SendLocation`
         """
@@ -1592,6 +1691,7 @@ class Message(MaybeInaccessibleMessage):
         return SendLocation(
             chat_id=self.chat.id,
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
+            business_connection_id=self.business_connection_id,
             reply_to_message_id=self.message_id,
             latitude=latitude,
             longitude=longitude,
@@ -1601,6 +1701,7 @@ class Message(MaybeInaccessibleMessage):
             proximity_alert_radius=proximity_alert_radius,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            message_effect_id=message_effect_id,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -1617,6 +1718,7 @@ class Message(MaybeInaccessibleMessage):
         proximity_alert_radius: Optional[int] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -1631,6 +1733,7 @@ class Message(MaybeInaccessibleMessage):
 
         - :code:`chat_id`
         - :code:`message_thread_id`
+        - :code:`business_connection_id`
 
         Use this method to send point on the map. On success, the sent :class:`aiogram.types.message.Message` is returned.
 
@@ -1639,13 +1742,14 @@ class Message(MaybeInaccessibleMessage):
         :param latitude: Latitude of the location
         :param longitude: Longitude of the location
         :param horizontal_accuracy: The radius of uncertainty for the location, measured in meters; 0-1500
-        :param live_period: Period in seconds for which the location will be updated (see `Live Locations <https://telegram.org/blog/live-locations>`_, should be between 60 and 86400.
+        :param live_period: Period in seconds during which the location will be updated (see `Live Locations <https://telegram.org/blog/live-locations>`_, should be between 60 and 86400, or 0x7FFFFFFF for live locations that can be edited indefinitely.
         :param heading: For live locations, a direction in which the user is moving, in degrees. Must be between 1 and 360 if specified.
         :param proximity_alert_radius: For live locations, a maximum distance for proximity alerts about approaching another chat member, in meters. Must be between 1 and 100000 if specified.
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
+        :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param reply_parameters: Description of the message to reply to
-        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
+        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :return: instance of method :class:`aiogram.methods.send_location.SendLocation`
@@ -1662,6 +1766,7 @@ class Message(MaybeInaccessibleMessage):
         return SendLocation(
             chat_id=self.chat.id,
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
+            business_connection_id=self.business_connection_id,
             latitude=latitude,
             longitude=longitude,
             horizontal_accuracy=horizontal_accuracy,
@@ -1670,6 +1775,7 @@ class Message(MaybeInaccessibleMessage):
             proximity_alert_radius=proximity_alert_radius,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            message_effect_id=message_effect_id,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -1682,6 +1788,7 @@ class Message(MaybeInaccessibleMessage):
         media: List[Union[InputMediaAudio, InputMediaDocument, InputMediaPhoto, InputMediaVideo]],
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         allow_sending_without_reply: Optional[bool] = None,
         **kwargs: Any,
@@ -1692,6 +1799,7 @@ class Message(MaybeInaccessibleMessage):
 
         - :code:`chat_id`
         - :code:`message_thread_id`
+        - :code:`business_connection_id`
         - :code:`reply_to_message_id`
 
         Use this method to send a group of photos, videos, documents or audios as an album. Documents and audio files can be only grouped in an album with messages of the same type. On success, an array of `Messages <https://core.telegram.org/bots/api#message>`_ that were sent is returned.
@@ -1701,6 +1809,7 @@ class Message(MaybeInaccessibleMessage):
         :param media: A JSON-serialized array describing messages to be sent, must include 2-10 items
         :param disable_notification: Sends messages `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent messages from forwarding and saving
+        :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param reply_parameters: Description of the message to reply to
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :return: instance of method :class:`aiogram.methods.send_media_group.SendMediaGroup`
@@ -1717,10 +1826,12 @@ class Message(MaybeInaccessibleMessage):
         return SendMediaGroup(
             chat_id=self.chat.id,
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
+            business_connection_id=self.business_connection_id,
             reply_to_message_id=self.message_id,
             media=media,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            message_effect_id=message_effect_id,
             reply_parameters=reply_parameters,
             allow_sending_without_reply=allow_sending_without_reply,
             **kwargs,
@@ -1731,6 +1842,7 @@ class Message(MaybeInaccessibleMessage):
         media: List[Union[InputMediaAudio, InputMediaDocument, InputMediaPhoto, InputMediaVideo]],
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
@@ -1742,6 +1854,7 @@ class Message(MaybeInaccessibleMessage):
 
         - :code:`chat_id`
         - :code:`message_thread_id`
+        - :code:`business_connection_id`
 
         Use this method to send a group of photos, videos, documents or audios as an album. Documents and audio files can be only grouped in an album with messages of the same type. On success, an array of `Messages <https://core.telegram.org/bots/api#message>`_ that were sent is returned.
 
@@ -1750,6 +1863,7 @@ class Message(MaybeInaccessibleMessage):
         :param media: A JSON-serialized array describing messages to be sent, must include 2-10 items
         :param disable_notification: Sends messages `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent messages from forwarding and saving
+        :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param reply_parameters: Description of the message to reply to
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :param reply_to_message_id: If the messages are a reply, ID of the original message
@@ -1767,9 +1881,11 @@ class Message(MaybeInaccessibleMessage):
         return SendMediaGroup(
             chat_id=self.chat.id,
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
+            business_connection_id=self.business_connection_id,
             media=media,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            message_effect_id=message_effect_id,
             reply_parameters=reply_parameters,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_to_message_id=reply_to_message_id,
@@ -1786,6 +1902,7 @@ class Message(MaybeInaccessibleMessage):
         ),
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -1802,6 +1919,7 @@ class Message(MaybeInaccessibleMessage):
 
         - :code:`chat_id`
         - :code:`message_thread_id`
+        - :code:`business_connection_id`
         - :code:`reply_to_message_id`
 
         Use this method to send text messages. On success, the sent :class:`aiogram.types.message.Message` is returned.
@@ -1814,8 +1932,9 @@ class Message(MaybeInaccessibleMessage):
         :param link_preview_options: Link preview generation options for the message
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
+        :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param reply_parameters: Description of the message to reply to
-        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
+        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :param disable_web_page_preview: Disables link previews for links in this message
         :return: instance of method :class:`aiogram.methods.send_message.SendMessage`
@@ -1832,6 +1951,7 @@ class Message(MaybeInaccessibleMessage):
         return SendMessage(
             chat_id=self.chat.id,
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
+            business_connection_id=self.business_connection_id,
             reply_to_message_id=self.message_id,
             text=text,
             parse_mode=parse_mode,
@@ -1839,6 +1959,7 @@ class Message(MaybeInaccessibleMessage):
             link_preview_options=link_preview_options,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            message_effect_id=message_effect_id,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -1856,6 +1977,7 @@ class Message(MaybeInaccessibleMessage):
         ),
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -1873,6 +1995,7 @@ class Message(MaybeInaccessibleMessage):
 
         - :code:`chat_id`
         - :code:`message_thread_id`
+        - :code:`business_connection_id`
 
         Use this method to send text messages. On success, the sent :class:`aiogram.types.message.Message` is returned.
 
@@ -1884,8 +2007,9 @@ class Message(MaybeInaccessibleMessage):
         :param link_preview_options: Link preview generation options for the message
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
+        :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param reply_parameters: Description of the message to reply to
-        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
+        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :param disable_web_page_preview: Disables link previews for links in this message
         :param reply_to_message_id: If the message is a reply, ID of the original message
@@ -1903,12 +2027,14 @@ class Message(MaybeInaccessibleMessage):
         return SendMessage(
             chat_id=self.chat.id,
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
+            business_connection_id=self.business_connection_id,
             text=text,
             parse_mode=parse_mode,
             entities=entities,
             link_preview_options=link_preview_options,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            message_effect_id=message_effect_id,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -1923,9 +2049,13 @@ class Message(MaybeInaccessibleMessage):
         caption: Optional[str] = None,
         parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
         caption_entities: Optional[List[MessageEntity]] = None,
+        show_caption_above_media: Optional[Union[bool, Default]] = Default(
+            "show_caption_above_media"
+        ),
         has_spoiler: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -1939,6 +2069,7 @@ class Message(MaybeInaccessibleMessage):
 
         - :code:`chat_id`
         - :code:`message_thread_id`
+        - :code:`business_connection_id`
         - :code:`reply_to_message_id`
 
         Use this method to send photos. On success, the sent :class:`aiogram.types.message.Message` is returned.
@@ -1949,11 +2080,13 @@ class Message(MaybeInaccessibleMessage):
         :param caption: Photo caption (may also be used when resending photos by *file_id*), 0-1024 characters after entities parsing
         :param parse_mode: Mode for parsing entities in the photo caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.
         :param caption_entities: A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*
+        :param show_caption_above_media: Pass :code:`True`, if the caption must be shown above the message media
         :param has_spoiler: Pass :code:`True` if the photo needs to be covered with a spoiler animation
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
+        :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param reply_parameters: Description of the message to reply to
-        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
+        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :return: instance of method :class:`aiogram.methods.send_photo.SendPhoto`
         """
@@ -1969,14 +2102,17 @@ class Message(MaybeInaccessibleMessage):
         return SendPhoto(
             chat_id=self.chat.id,
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
+            business_connection_id=self.business_connection_id,
             reply_to_message_id=self.message_id,
             photo=photo,
             caption=caption,
             parse_mode=parse_mode,
             caption_entities=caption_entities,
+            show_caption_above_media=show_caption_above_media,
             has_spoiler=has_spoiler,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            message_effect_id=message_effect_id,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -1989,9 +2125,13 @@ class Message(MaybeInaccessibleMessage):
         caption: Optional[str] = None,
         parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
         caption_entities: Optional[List[MessageEntity]] = None,
+        show_caption_above_media: Optional[Union[bool, Default]] = Default(
+            "show_caption_above_media"
+        ),
         has_spoiler: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -2006,6 +2146,7 @@ class Message(MaybeInaccessibleMessage):
 
         - :code:`chat_id`
         - :code:`message_thread_id`
+        - :code:`business_connection_id`
 
         Use this method to send photos. On success, the sent :class:`aiogram.types.message.Message` is returned.
 
@@ -2015,11 +2156,13 @@ class Message(MaybeInaccessibleMessage):
         :param caption: Photo caption (may also be used when resending photos by *file_id*), 0-1024 characters after entities parsing
         :param parse_mode: Mode for parsing entities in the photo caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.
         :param caption_entities: A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*
+        :param show_caption_above_media: Pass :code:`True`, if the caption must be shown above the message media
         :param has_spoiler: Pass :code:`True` if the photo needs to be covered with a spoiler animation
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
+        :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param reply_parameters: Description of the message to reply to
-        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
+        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :return: instance of method :class:`aiogram.methods.send_photo.SendPhoto`
@@ -2036,13 +2179,16 @@ class Message(MaybeInaccessibleMessage):
         return SendPhoto(
             chat_id=self.chat.id,
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
+            business_connection_id=self.business_connection_id,
             photo=photo,
             caption=caption,
             parse_mode=parse_mode,
             caption_entities=caption_entities,
+            show_caption_above_media=show_caption_above_media,
             has_spoiler=has_spoiler,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            message_effect_id=message_effect_id,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -2053,7 +2199,9 @@ class Message(MaybeInaccessibleMessage):
     def reply_poll(
         self,
         question: str,
-        options: List[str],
+        options: List[Union[InputPollOption, str]],
+        question_parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
+        question_entities: Optional[List[MessageEntity]] = None,
         is_anonymous: Optional[bool] = None,
         type: Optional[str] = None,
         allows_multiple_answers: Optional[bool] = None,
@@ -2066,6 +2214,7 @@ class Message(MaybeInaccessibleMessage):
         is_closed: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -2079,6 +2228,7 @@ class Message(MaybeInaccessibleMessage):
 
         - :code:`chat_id`
         - :code:`message_thread_id`
+        - :code:`business_connection_id`
         - :code:`reply_to_message_id`
 
         Use this method to send a native poll. On success, the sent :class:`aiogram.types.message.Message` is returned.
@@ -2086,21 +2236,24 @@ class Message(MaybeInaccessibleMessage):
         Source: https://core.telegram.org/bots/api#sendpoll
 
         :param question: Poll question, 1-300 characters
-        :param options: A JSON-serialized list of answer options, 2-10 strings 1-100 characters each
+        :param options: A JSON-serialized list of 2-10 answer options
+        :param question_parse_mode: Mode for parsing entities in the question. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details. Currently, only custom emoji entities are allowed
+        :param question_entities: A JSON-serialized list of special entities that appear in the poll question. It can be specified instead of *question_parse_mode*
         :param is_anonymous: :code:`True`, if the poll needs to be anonymous, defaults to :code:`True`
         :param type: Poll type, 'quiz' or 'regular', defaults to 'regular'
         :param allows_multiple_answers: :code:`True`, if the poll allows multiple answers, ignored for polls in quiz mode, defaults to :code:`False`
         :param correct_option_id: 0-based identifier of the correct answer option, required for polls in quiz mode
         :param explanation: Text that is shown when a user chooses an incorrect answer or taps on the lamp icon in a quiz-style poll, 0-200 characters with at most 2 line feeds after entities parsing
         :param explanation_parse_mode: Mode for parsing entities in the explanation. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.
-        :param explanation_entities: A JSON-serialized list of special entities that appear in the poll explanation, which can be specified instead of *parse_mode*
+        :param explanation_entities: A JSON-serialized list of special entities that appear in the poll explanation. It can be specified instead of *explanation_parse_mode*
         :param open_period: Amount of time in seconds the poll will be active after creation, 5-600. Can't be used together with *close_date*.
         :param close_date: Point in time (Unix timestamp) when the poll will be automatically closed. Must be at least 5 and no more than 600 seconds in the future. Can't be used together with *open_period*.
         :param is_closed: Pass :code:`True` if the poll needs to be immediately closed. This can be useful for poll preview.
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
+        :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param reply_parameters: Description of the message to reply to
-        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
+        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :return: instance of method :class:`aiogram.methods.send_poll.SendPoll`
         """
@@ -2116,9 +2269,12 @@ class Message(MaybeInaccessibleMessage):
         return SendPoll(
             chat_id=self.chat.id,
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
+            business_connection_id=self.business_connection_id,
             reply_to_message_id=self.message_id,
             question=question,
             options=options,
+            question_parse_mode=question_parse_mode,
+            question_entities=question_entities,
             is_anonymous=is_anonymous,
             type=type,
             allows_multiple_answers=allows_multiple_answers,
@@ -2131,6 +2287,7 @@ class Message(MaybeInaccessibleMessage):
             is_closed=is_closed,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            message_effect_id=message_effect_id,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -2140,7 +2297,9 @@ class Message(MaybeInaccessibleMessage):
     def answer_poll(
         self,
         question: str,
-        options: List[str],
+        options: List[Union[InputPollOption, str]],
+        question_parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
+        question_entities: Optional[List[MessageEntity]] = None,
         is_anonymous: Optional[bool] = None,
         type: Optional[str] = None,
         allows_multiple_answers: Optional[bool] = None,
@@ -2153,6 +2312,7 @@ class Message(MaybeInaccessibleMessage):
         is_closed: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -2167,27 +2327,31 @@ class Message(MaybeInaccessibleMessage):
 
         - :code:`chat_id`
         - :code:`message_thread_id`
+        - :code:`business_connection_id`
 
         Use this method to send a native poll. On success, the sent :class:`aiogram.types.message.Message` is returned.
 
         Source: https://core.telegram.org/bots/api#sendpoll
 
         :param question: Poll question, 1-300 characters
-        :param options: A JSON-serialized list of answer options, 2-10 strings 1-100 characters each
+        :param options: A JSON-serialized list of 2-10 answer options
+        :param question_parse_mode: Mode for parsing entities in the question. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details. Currently, only custom emoji entities are allowed
+        :param question_entities: A JSON-serialized list of special entities that appear in the poll question. It can be specified instead of *question_parse_mode*
         :param is_anonymous: :code:`True`, if the poll needs to be anonymous, defaults to :code:`True`
         :param type: Poll type, 'quiz' or 'regular', defaults to 'regular'
         :param allows_multiple_answers: :code:`True`, if the poll allows multiple answers, ignored for polls in quiz mode, defaults to :code:`False`
         :param correct_option_id: 0-based identifier of the correct answer option, required for polls in quiz mode
         :param explanation: Text that is shown when a user chooses an incorrect answer or taps on the lamp icon in a quiz-style poll, 0-200 characters with at most 2 line feeds after entities parsing
         :param explanation_parse_mode: Mode for parsing entities in the explanation. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.
-        :param explanation_entities: A JSON-serialized list of special entities that appear in the poll explanation, which can be specified instead of *parse_mode*
+        :param explanation_entities: A JSON-serialized list of special entities that appear in the poll explanation. It can be specified instead of *explanation_parse_mode*
         :param open_period: Amount of time in seconds the poll will be active after creation, 5-600. Can't be used together with *close_date*.
         :param close_date: Point in time (Unix timestamp) when the poll will be automatically closed. Must be at least 5 and no more than 600 seconds in the future. Can't be used together with *open_period*.
         :param is_closed: Pass :code:`True` if the poll needs to be immediately closed. This can be useful for poll preview.
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
+        :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param reply_parameters: Description of the message to reply to
-        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
+        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :return: instance of method :class:`aiogram.methods.send_poll.SendPoll`
@@ -2204,8 +2368,11 @@ class Message(MaybeInaccessibleMessage):
         return SendPoll(
             chat_id=self.chat.id,
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
+            business_connection_id=self.business_connection_id,
             question=question,
             options=options,
+            question_parse_mode=question_parse_mode,
+            question_entities=question_entities,
             is_anonymous=is_anonymous,
             type=type,
             allows_multiple_answers=allows_multiple_answers,
@@ -2218,6 +2385,7 @@ class Message(MaybeInaccessibleMessage):
             is_closed=is_closed,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            message_effect_id=message_effect_id,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -2230,6 +2398,7 @@ class Message(MaybeInaccessibleMessage):
         emoji: Optional[str] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -2243,6 +2412,7 @@ class Message(MaybeInaccessibleMessage):
 
         - :code:`chat_id`
         - :code:`message_thread_id`
+        - :code:`business_connection_id`
         - :code:`reply_to_message_id`
 
         Use this method to send an animated emoji that will display a random value. On success, the sent :class:`aiogram.types.message.Message` is returned.
@@ -2252,8 +2422,9 @@ class Message(MaybeInaccessibleMessage):
         :param emoji: Emoji on which the dice throw animation is based. Currently, must be one of '🎲', '🎯', '🏀', '⚽', '🎳', or '🎰'. Dice can have values 1-6 for '🎲', '🎯' and '🎳', values 1-5 for '🏀' and '⚽', and values 1-64 for '🎰'. Defaults to '🎲'
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding
+        :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param reply_parameters: Description of the message to reply to
-        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
+        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :return: instance of method :class:`aiogram.methods.send_dice.SendDice`
         """
@@ -2269,10 +2440,12 @@ class Message(MaybeInaccessibleMessage):
         return SendDice(
             chat_id=self.chat.id,
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
+            business_connection_id=self.business_connection_id,
             reply_to_message_id=self.message_id,
             emoji=emoji,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            message_effect_id=message_effect_id,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -2284,6 +2457,7 @@ class Message(MaybeInaccessibleMessage):
         emoji: Optional[str] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -2298,6 +2472,7 @@ class Message(MaybeInaccessibleMessage):
 
         - :code:`chat_id`
         - :code:`message_thread_id`
+        - :code:`business_connection_id`
 
         Use this method to send an animated emoji that will display a random value. On success, the sent :class:`aiogram.types.message.Message` is returned.
 
@@ -2306,8 +2481,9 @@ class Message(MaybeInaccessibleMessage):
         :param emoji: Emoji on which the dice throw animation is based. Currently, must be one of '🎲', '🎯', '🏀', '⚽', '🎳', or '🎰'. Dice can have values 1-6 for '🎲', '🎯' and '🎳', values 1-5 for '🏀' and '⚽', and values 1-64 for '🎰'. Defaults to '🎲'
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding
+        :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param reply_parameters: Description of the message to reply to
-        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
+        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :return: instance of method :class:`aiogram.methods.send_dice.SendDice`
@@ -2324,9 +2500,11 @@ class Message(MaybeInaccessibleMessage):
         return SendDice(
             chat_id=self.chat.id,
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
+            business_connection_id=self.business_connection_id,
             emoji=emoji,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            message_effect_id=message_effect_id,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -2340,6 +2518,7 @@ class Message(MaybeInaccessibleMessage):
         emoji: Optional[str] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -2353,18 +2532,20 @@ class Message(MaybeInaccessibleMessage):
 
         - :code:`chat_id`
         - :code:`message_thread_id`
+        - :code:`business_connection_id`
         - :code:`reply_to_message_id`
 
         Use this method to send static .WEBP, `animated <https://telegram.org/blog/animated-stickers>`_ .TGS, or `video <https://telegram.org/blog/video-stickers-better-reactions>`_ .WEBM stickers. On success, the sent :class:`aiogram.types.message.Message` is returned.
 
         Source: https://core.telegram.org/bots/api#sendsticker
 
-        :param sticker: Sticker to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a .WEBP sticker from the Internet, or upload a new .WEBP or .TGS sticker using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`. Video stickers can only be sent by a file_id. Animated stickers can't be sent via an HTTP URL.
+        :param sticker: Sticker to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a .WEBP sticker from the Internet, or upload a new .WEBP, .TGS, or .WEBM sticker using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`. Video and animated stickers can't be sent via an HTTP URL.
         :param emoji: Emoji associated with the sticker; only for just uploaded stickers
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
+        :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param reply_parameters: Description of the message to reply to
-        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
+        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :return: instance of method :class:`aiogram.methods.send_sticker.SendSticker`
         """
@@ -2380,11 +2561,13 @@ class Message(MaybeInaccessibleMessage):
         return SendSticker(
             chat_id=self.chat.id,
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
+            business_connection_id=self.business_connection_id,
             reply_to_message_id=self.message_id,
             sticker=sticker,
             emoji=emoji,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            message_effect_id=message_effect_id,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -2397,6 +2580,7 @@ class Message(MaybeInaccessibleMessage):
         emoji: Optional[str] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -2411,17 +2595,19 @@ class Message(MaybeInaccessibleMessage):
 
         - :code:`chat_id`
         - :code:`message_thread_id`
+        - :code:`business_connection_id`
 
         Use this method to send static .WEBP, `animated <https://telegram.org/blog/animated-stickers>`_ .TGS, or `video <https://telegram.org/blog/video-stickers-better-reactions>`_ .WEBM stickers. On success, the sent :class:`aiogram.types.message.Message` is returned.
 
         Source: https://core.telegram.org/bots/api#sendsticker
 
-        :param sticker: Sticker to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a .WEBP sticker from the Internet, or upload a new .WEBP or .TGS sticker using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`. Video stickers can only be sent by a file_id. Animated stickers can't be sent via an HTTP URL.
+        :param sticker: Sticker to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a .WEBP sticker from the Internet, or upload a new .WEBP, .TGS, or .WEBM sticker using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`. Video and animated stickers can't be sent via an HTTP URL.
         :param emoji: Emoji associated with the sticker; only for just uploaded stickers
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
+        :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param reply_parameters: Description of the message to reply to
-        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
+        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :return: instance of method :class:`aiogram.methods.send_sticker.SendSticker`
@@ -2438,10 +2624,12 @@ class Message(MaybeInaccessibleMessage):
         return SendSticker(
             chat_id=self.chat.id,
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
+            business_connection_id=self.business_connection_id,
             sticker=sticker,
             emoji=emoji,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            message_effect_id=message_effect_id,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -2461,6 +2649,7 @@ class Message(MaybeInaccessibleMessage):
         google_place_type: Optional[str] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -2474,6 +2663,7 @@ class Message(MaybeInaccessibleMessage):
 
         - :code:`chat_id`
         - :code:`message_thread_id`
+        - :code:`business_connection_id`
         - :code:`reply_to_message_id`
 
         Use this method to send information about a venue. On success, the sent :class:`aiogram.types.message.Message` is returned.
@@ -2490,8 +2680,9 @@ class Message(MaybeInaccessibleMessage):
         :param google_place_type: Google Places type of the venue. (See `supported types <https://developers.google.com/places/web-service/supported_types>`_.)
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
+        :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param reply_parameters: Description of the message to reply to
-        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
+        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :return: instance of method :class:`aiogram.methods.send_venue.SendVenue`
         """
@@ -2507,6 +2698,7 @@ class Message(MaybeInaccessibleMessage):
         return SendVenue(
             chat_id=self.chat.id,
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
+            business_connection_id=self.business_connection_id,
             reply_to_message_id=self.message_id,
             latitude=latitude,
             longitude=longitude,
@@ -2518,6 +2710,7 @@ class Message(MaybeInaccessibleMessage):
             google_place_type=google_place_type,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            message_effect_id=message_effect_id,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -2536,6 +2729,7 @@ class Message(MaybeInaccessibleMessage):
         google_place_type: Optional[str] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -2550,6 +2744,7 @@ class Message(MaybeInaccessibleMessage):
 
         - :code:`chat_id`
         - :code:`message_thread_id`
+        - :code:`business_connection_id`
 
         Use this method to send information about a venue. On success, the sent :class:`aiogram.types.message.Message` is returned.
 
@@ -2565,8 +2760,9 @@ class Message(MaybeInaccessibleMessage):
         :param google_place_type: Google Places type of the venue. (See `supported types <https://developers.google.com/places/web-service/supported_types>`_.)
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
+        :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param reply_parameters: Description of the message to reply to
-        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
+        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :return: instance of method :class:`aiogram.methods.send_venue.SendVenue`
@@ -2583,6 +2779,7 @@ class Message(MaybeInaccessibleMessage):
         return SendVenue(
             chat_id=self.chat.id,
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
+            business_connection_id=self.business_connection_id,
             latitude=latitude,
             longitude=longitude,
             title=title,
@@ -2593,6 +2790,7 @@ class Message(MaybeInaccessibleMessage):
             google_place_type=google_place_type,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            message_effect_id=message_effect_id,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -2610,10 +2808,14 @@ class Message(MaybeInaccessibleMessage):
         caption: Optional[str] = None,
         parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
         caption_entities: Optional[List[MessageEntity]] = None,
+        show_caption_above_media: Optional[Union[bool, Default]] = Default(
+            "show_caption_above_media"
+        ),
         has_spoiler: Optional[bool] = None,
         supports_streaming: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -2627,6 +2829,7 @@ class Message(MaybeInaccessibleMessage):
 
         - :code:`chat_id`
         - :code:`message_thread_id`
+        - :code:`business_connection_id`
         - :code:`reply_to_message_id`
 
         Use this method to send video files, Telegram clients support MPEG4 videos (other formats may be sent as :class:`aiogram.types.document.Document`). On success, the sent :class:`aiogram.types.message.Message` is returned. Bots can currently send video files of up to 50 MB in size, this limit may be changed in the future.
@@ -2641,12 +2844,14 @@ class Message(MaybeInaccessibleMessage):
         :param caption: Video caption (may also be used when resending videos by *file_id*), 0-1024 characters after entities parsing
         :param parse_mode: Mode for parsing entities in the video caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.
         :param caption_entities: A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*
+        :param show_caption_above_media: Pass :code:`True`, if the caption must be shown above the message media
         :param has_spoiler: Pass :code:`True` if the video needs to be covered with a spoiler animation
         :param supports_streaming: Pass :code:`True` if the uploaded video is suitable for streaming
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
+        :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param reply_parameters: Description of the message to reply to
-        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
+        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :return: instance of method :class:`aiogram.methods.send_video.SendVideo`
         """
@@ -2662,6 +2867,7 @@ class Message(MaybeInaccessibleMessage):
         return SendVideo(
             chat_id=self.chat.id,
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
+            business_connection_id=self.business_connection_id,
             reply_to_message_id=self.message_id,
             video=video,
             duration=duration,
@@ -2671,10 +2877,12 @@ class Message(MaybeInaccessibleMessage):
             caption=caption,
             parse_mode=parse_mode,
             caption_entities=caption_entities,
+            show_caption_above_media=show_caption_above_media,
             has_spoiler=has_spoiler,
             supports_streaming=supports_streaming,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            message_effect_id=message_effect_id,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -2691,10 +2899,14 @@ class Message(MaybeInaccessibleMessage):
         caption: Optional[str] = None,
         parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
         caption_entities: Optional[List[MessageEntity]] = None,
+        show_caption_above_media: Optional[Union[bool, Default]] = Default(
+            "show_caption_above_media"
+        ),
         has_spoiler: Optional[bool] = None,
         supports_streaming: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -2709,6 +2921,7 @@ class Message(MaybeInaccessibleMessage):
 
         - :code:`chat_id`
         - :code:`message_thread_id`
+        - :code:`business_connection_id`
 
         Use this method to send video files, Telegram clients support MPEG4 videos (other formats may be sent as :class:`aiogram.types.document.Document`). On success, the sent :class:`aiogram.types.message.Message` is returned. Bots can currently send video files of up to 50 MB in size, this limit may be changed in the future.
 
@@ -2722,12 +2935,14 @@ class Message(MaybeInaccessibleMessage):
         :param caption: Video caption (may also be used when resending videos by *file_id*), 0-1024 characters after entities parsing
         :param parse_mode: Mode for parsing entities in the video caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.
         :param caption_entities: A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*
+        :param show_caption_above_media: Pass :code:`True`, if the caption must be shown above the message media
         :param has_spoiler: Pass :code:`True` if the video needs to be covered with a spoiler animation
         :param supports_streaming: Pass :code:`True` if the uploaded video is suitable for streaming
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
+        :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param reply_parameters: Description of the message to reply to
-        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
+        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :return: instance of method :class:`aiogram.methods.send_video.SendVideo`
@@ -2744,6 +2959,7 @@ class Message(MaybeInaccessibleMessage):
         return SendVideo(
             chat_id=self.chat.id,
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
+            business_connection_id=self.business_connection_id,
             video=video,
             duration=duration,
             width=width,
@@ -2752,10 +2968,12 @@ class Message(MaybeInaccessibleMessage):
             caption=caption,
             parse_mode=parse_mode,
             caption_entities=caption_entities,
+            show_caption_above_media=show_caption_above_media,
             has_spoiler=has_spoiler,
             supports_streaming=supports_streaming,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            message_effect_id=message_effect_id,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -2771,6 +2989,7 @@ class Message(MaybeInaccessibleMessage):
         thumbnail: Optional[InputFile] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -2784,6 +3003,7 @@ class Message(MaybeInaccessibleMessage):
 
         - :code:`chat_id`
         - :code:`message_thread_id`
+        - :code:`business_connection_id`
         - :code:`reply_to_message_id`
 
         As of `v.4.0 <https://telegram.org/blog/video-messages-and-telescope>`_, Telegram clients support rounded square MPEG4 videos of up to 1 minute long. Use this method to send video messages. On success, the sent :class:`aiogram.types.message.Message` is returned.
@@ -2796,8 +3016,9 @@ class Message(MaybeInaccessibleMessage):
         :param thumbnail: Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
+        :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param reply_parameters: Description of the message to reply to
-        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
+        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :return: instance of method :class:`aiogram.methods.send_video_note.SendVideoNote`
         """
@@ -2813,6 +3034,7 @@ class Message(MaybeInaccessibleMessage):
         return SendVideoNote(
             chat_id=self.chat.id,
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
+            business_connection_id=self.business_connection_id,
             reply_to_message_id=self.message_id,
             video_note=video_note,
             duration=duration,
@@ -2820,6 +3042,7 @@ class Message(MaybeInaccessibleMessage):
             thumbnail=thumbnail,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            message_effect_id=message_effect_id,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -2834,6 +3057,7 @@ class Message(MaybeInaccessibleMessage):
         thumbnail: Optional[InputFile] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -2848,6 +3072,7 @@ class Message(MaybeInaccessibleMessage):
 
         - :code:`chat_id`
         - :code:`message_thread_id`
+        - :code:`business_connection_id`
 
         As of `v.4.0 <https://telegram.org/blog/video-messages-and-telescope>`_, Telegram clients support rounded square MPEG4 videos of up to 1 minute long. Use this method to send video messages. On success, the sent :class:`aiogram.types.message.Message` is returned.
 
@@ -2859,8 +3084,9 @@ class Message(MaybeInaccessibleMessage):
         :param thumbnail: Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
+        :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param reply_parameters: Description of the message to reply to
-        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
+        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :return: instance of method :class:`aiogram.methods.send_video_note.SendVideoNote`
@@ -2877,12 +3103,14 @@ class Message(MaybeInaccessibleMessage):
         return SendVideoNote(
             chat_id=self.chat.id,
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
+            business_connection_id=self.business_connection_id,
             video_note=video_note,
             duration=duration,
             length=length,
             thumbnail=thumbnail,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            message_effect_id=message_effect_id,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -2899,6 +3127,7 @@ class Message(MaybeInaccessibleMessage):
         duration: Optional[int] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -2912,9 +3141,10 @@ class Message(MaybeInaccessibleMessage):
 
         - :code:`chat_id`
         - :code:`message_thread_id`
+        - :code:`business_connection_id`
         - :code:`reply_to_message_id`
 
-        Use this method to send audio files, if you want Telegram clients to display the file as a playable voice message. For this to work, your audio must be in an .OGG file encoded with OPUS (other formats may be sent as :class:`aiogram.types.audio.Audio` or :class:`aiogram.types.document.Document`). On success, the sent :class:`aiogram.types.message.Message` is returned. Bots can currently send voice messages of up to 50 MB in size, this limit may be changed in the future.
+        Use this method to send audio files, if you want Telegram clients to display the file as a playable voice message. For this to work, your audio must be in an .OGG file encoded with OPUS, or in .MP3 format, or in .M4A format (other formats may be sent as :class:`aiogram.types.audio.Audio` or :class:`aiogram.types.document.Document`). On success, the sent :class:`aiogram.types.message.Message` is returned. Bots can currently send voice messages of up to 50 MB in size, this limit may be changed in the future.
 
         Source: https://core.telegram.org/bots/api#sendvoice
 
@@ -2925,8 +3155,9 @@ class Message(MaybeInaccessibleMessage):
         :param duration: Duration of the voice message in seconds
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
+        :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param reply_parameters: Description of the message to reply to
-        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
+        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :return: instance of method :class:`aiogram.methods.send_voice.SendVoice`
         """
@@ -2942,6 +3173,7 @@ class Message(MaybeInaccessibleMessage):
         return SendVoice(
             chat_id=self.chat.id,
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
+            business_connection_id=self.business_connection_id,
             reply_to_message_id=self.message_id,
             voice=voice,
             caption=caption,
@@ -2950,6 +3182,7 @@ class Message(MaybeInaccessibleMessage):
             duration=duration,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            message_effect_id=message_effect_id,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -2965,6 +3198,7 @@ class Message(MaybeInaccessibleMessage):
         duration: Optional[int] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -2979,8 +3213,9 @@ class Message(MaybeInaccessibleMessage):
 
         - :code:`chat_id`
         - :code:`message_thread_id`
+        - :code:`business_connection_id`
 
-        Use this method to send audio files, if you want Telegram clients to display the file as a playable voice message. For this to work, your audio must be in an .OGG file encoded with OPUS (other formats may be sent as :class:`aiogram.types.audio.Audio` or :class:`aiogram.types.document.Document`). On success, the sent :class:`aiogram.types.message.Message` is returned. Bots can currently send voice messages of up to 50 MB in size, this limit may be changed in the future.
+        Use this method to send audio files, if you want Telegram clients to display the file as a playable voice message. For this to work, your audio must be in an .OGG file encoded with OPUS, or in .MP3 format, or in .M4A format (other formats may be sent as :class:`aiogram.types.audio.Audio` or :class:`aiogram.types.document.Document`). On success, the sent :class:`aiogram.types.message.Message` is returned. Bots can currently send voice messages of up to 50 MB in size, this limit may be changed in the future.
 
         Source: https://core.telegram.org/bots/api#sendvoice
 
@@ -2991,8 +3226,9 @@ class Message(MaybeInaccessibleMessage):
         :param duration: Duration of the voice message in seconds
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
+        :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param reply_parameters: Description of the message to reply to
-        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
+        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :return: instance of method :class:`aiogram.methods.send_voice.SendVoice`
@@ -3009,6 +3245,7 @@ class Message(MaybeInaccessibleMessage):
         return SendVoice(
             chat_id=self.chat.id,
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
+            business_connection_id=self.business_connection_id,
             voice=voice,
             caption=caption,
             parse_mode=parse_mode,
@@ -3016,6 +3253,7 @@ class Message(MaybeInaccessibleMessage):
             duration=duration,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            message_effect_id=message_effect_id,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -3032,7 +3270,9 @@ class Message(MaybeInaccessibleMessage):
         reply_markup: Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, None] = None,
         allow_sending_without_reply: Optional[bool] = None,
         message_thread_id: Optional[int] = None,
+        business_connection_id: Optional[str] = None,
         parse_mode: Optional[str] = None,
+        message_effect_id: Optional[str] = None,
     ) -> Union[
         ForwardMessage,
         SendAnimation,
@@ -3068,7 +3308,9 @@ class Message(MaybeInaccessibleMessage):
         :param reply_markup:
         :param allow_sending_without_reply:
         :param message_thread_id:
+        :param business_connection_id:
         :param parse_mode:
+        :param message_effect_id:
         :return:
         """
         from ..methods import (
@@ -3096,10 +3338,12 @@ class Message(MaybeInaccessibleMessage):
             "reply_to_message_id": reply_to_message_id,
             "reply_parameters": reply_parameters,
             "message_thread_id": message_thread_id,
+            "business_connection_id": business_connection_id,
             "allow_sending_without_reply": allow_sending_without_reply,
             # when sending a copy, we don't need any parse mode
             # because all entities are already prepared
             "parse_mode": parse_mode,
+            "message_effect_id": message_effect_id or self.effect_id,
         }
 
         if self.text:
@@ -3188,7 +3432,15 @@ class Message(MaybeInaccessibleMessage):
         if self.poll:
             return SendPoll(
                 question=self.poll.question,
-                options=[option.text for option in self.poll.options],
+                options=[
+                    InputPollOption(
+                        text=option.text,
+                        voter_count=option.voter_count,
+                        text_entities=option.text_entities,
+                        text_parse_mode=None,
+                    )
+                    for option in self.poll.options
+                ],
                 **kwargs,
             ).as_(self._bot)
         if self.dice:  # Dice value can't be controlled
@@ -3211,6 +3463,9 @@ class Message(MaybeInaccessibleMessage):
         caption: Optional[str] = None,
         parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
         caption_entities: Optional[List[MessageEntity]] = None,
+        show_caption_above_media: Optional[Union[bool, Default]] = Default(
+            "show_caption_above_media"
+        ),
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
         reply_parameters: Optional[ReplyParameters] = None,
@@ -3237,10 +3492,11 @@ class Message(MaybeInaccessibleMessage):
         :param caption: New caption for media, 0-1024 characters after entities parsing. If not specified, the original caption is kept
         :param parse_mode: Mode for parsing entities in the new caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.
         :param caption_entities: A JSON-serialized list of special entities that appear in the new caption, which can be specified instead of *parse_mode*
+        :param show_caption_above_media: Pass :code:`True`, if the caption must be shown above the message media. Ignored if a new caption isn't specified.
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param reply_parameters: Description of the message to reply to
-        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user.
+        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :return: instance of method :class:`aiogram.methods.copy_message.CopyMessage`
@@ -3262,6 +3518,7 @@ class Message(MaybeInaccessibleMessage):
             caption=caption,
             parse_mode=parse_mode,
             caption_entities=caption_entities,
+            show_caption_above_media=show_caption_above_media,
             disable_notification=disable_notification,
             protect_content=protect_content,
             reply_parameters=reply_parameters,
@@ -3497,6 +3754,7 @@ class Message(MaybeInaccessibleMessage):
         latitude: float,
         longitude: float,
         inline_message_id: Optional[str] = None,
+        live_period: Optional[int] = None,
         horizontal_accuracy: Optional[float] = None,
         heading: Optional[int] = None,
         proximity_alert_radius: Optional[int] = None,
@@ -3517,6 +3775,7 @@ class Message(MaybeInaccessibleMessage):
         :param latitude: Latitude of new location
         :param longitude: Longitude of new location
         :param inline_message_id: Required if *chat_id* and *message_id* are not specified. Identifier of the inline message
+        :param live_period: New period in seconds during which the location can be updated, starting from the message send date. If 0x7FFFFFFF is specified, then the location can be updated forever. Otherwise, the new value must not exceed the current *live_period* by more than a day, and the live location expiration date must remain within the next 90 days. If not specified, then *live_period* remains unchanged
         :param horizontal_accuracy: The radius of uncertainty for the location, measured in meters; 0-1500
         :param heading: Direction in which the user is moving, in degrees. Must be between 1 and 360 if specified.
         :param proximity_alert_radius: The maximum distance for proximity alerts about approaching another chat member, in meters. Must be between 1 and 100000 if specified.
@@ -3538,6 +3797,7 @@ class Message(MaybeInaccessibleMessage):
             latitude=latitude,
             longitude=longitude,
             inline_message_id=inline_message_id,
+            live_period=live_period,
             horizontal_accuracy=horizontal_accuracy,
             heading=heading,
             proximity_alert_radius=proximity_alert_radius,
@@ -3589,6 +3849,9 @@ class Message(MaybeInaccessibleMessage):
         caption: Optional[str] = None,
         parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
         caption_entities: Optional[List[MessageEntity]] = None,
+        show_caption_above_media: Optional[Union[bool, Default]] = Default(
+            "show_caption_above_media"
+        ),
         reply_markup: Optional[InlineKeyboardMarkup] = None,
         **kwargs: Any,
     ) -> EditMessageCaption:
@@ -3607,6 +3870,7 @@ class Message(MaybeInaccessibleMessage):
         :param caption: New caption of the message, 0-1024 characters after entities parsing
         :param parse_mode: Mode for parsing entities in the message caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.
         :param caption_entities: A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*
+        :param show_caption_above_media: Pass :code:`True`, if the caption must be shown above the message media. Supported only for animation, photo and video messages.
         :param reply_markup: A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_.
         :return: instance of method :class:`aiogram.methods.edit_message_caption.EditMessageCaption`
         """
@@ -3626,6 +3890,7 @@ class Message(MaybeInaccessibleMessage):
             caption=caption,
             parse_mode=parse_mode,
             caption_entities=caption_entities,
+            show_caption_above_media=show_caption_above_media,
             reply_markup=reply_markup,
             **kwargs,
         ).as_(self._bot)
@@ -3784,7 +4049,7 @@ class Message(MaybeInaccessibleMessage):
 
         Source: https://core.telegram.org/bots/api#setmessagereaction
 
-        :param reaction: New list of reaction types to set on the message. Currently, as non-premium users, bots can set up to one reaction per message. A custom emoji reaction can be used if it is either already present on the message or explicitly allowed by chat administrators.
+        :param reaction: A JSON-serialized list of reaction types to set on the message. Currently, as non-premium users, bots can set up to one reaction per message. A custom emoji reaction can be used if it is either already present on the message or explicitly allowed by chat administrators.
         :param is_big: Pass :code:`True` to set the reaction with a big animation
         :return: instance of method :class:`aiogram.methods.set_message_reaction.SetMessageReaction`
         """

@@ -197,3 +197,9 @@ Available elements
 
 .. autoclass:: aiogram.utils.formatting.CustomEmoji
     :show-inheritance:
+
+.. autoclass:: aiogram.utils.formatting.BlockQuote
+    :show-inheritance:
+
+.. autoclass:: aiogram.utils.formatting.ExpandableBlockQuote
+    :show-inheritance:

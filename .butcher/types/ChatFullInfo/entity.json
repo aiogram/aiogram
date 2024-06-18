@@ -1,0 +1,361 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "chatfullinfo",
+    "name": "ChatFullInfo",
+    "description": "This object contains full information about a chat.",
+    "html_description": "<p>This object contains full information about a chat.</p>",
+    "rst_description": "This object contains full information about a chat.",
+    "annotations": [
+      {
+        "type": "Integer",
+        "description": "Unique identifier for this chat. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this identifier.",
+        "html_description": "<td>Unique identifier for this chat. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this identifier.</td>",
+        "rst_description": "Unique identifier for this chat. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this identifier.\n",
+        "name": "id",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Type of the chat, can be either 'private', 'group', 'supergroup' or 'channel'",
+        "html_description": "<td>Type of the chat, can be either &#8220;private&#8221;, &#8220;group&#8221;, &#8220;supergroup&#8221; or &#8220;channel&#8221;</td>",
+        "rst_description": "Type of the chat, can be either 'private', 'group', 'supergroup' or 'channel'\n",
+        "name": "type",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Title, for supergroups, channels and group chats",
+        "html_description": "<td><em>Optional</em>. Title, for supergroups, channels and group chats</td>",
+        "rst_description": "*Optional*. Title, for supergroups, channels and group chats\n",
+        "name": "title",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "Username, for private chats, supergroups and channels if available",
+        "html_description": "<td><em>Optional</em>. Username, for private chats, supergroups and channels if available</td>",
+        "rst_description": "*Optional*. Username, for private chats, supergroups and channels if available\n",
+        "name": "username",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "First name of the other party in a private chat",
+        "html_description": "<td><em>Optional</em>. First name of the other party in a private chat</td>",
+        "rst_description": "*Optional*. First name of the other party in a private chat\n",
+        "name": "first_name",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "Last name of the other party in a private chat",
+        "html_description": "<td><em>Optional</em>. Last name of the other party in a private chat</td>",
+        "rst_description": "*Optional*. Last name of the other party in a private chat\n",
+        "name": "last_name",
+        "required": false
+      },
+      {
+        "type": "True",
+        "description": "True, if the supergroup chat is a forum (has topics enabled)",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the supergroup chat is a forum (has <a href=\"https://telegram.org/blog/topics-in-groups-collectible-usernames#topics-in-groups\">topics</a> enabled)</td>",
+        "rst_description": "*Optional*. :code:`True`, if the supergroup chat is a forum (has `topics <https://telegram.org/blog/topics-in-groups-collectible-usernames#topics-in-groups>`_ enabled)\n",
+        "name": "is_forum",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "Identifier of the accent color for the chat name and backgrounds of the chat photo, reply header, and link preview. See accent colors for more details.",
+        "html_description": "<td>Identifier of the accent color for the chat name and backgrounds of the chat photo, reply header, and link preview. See <a href=\"#accent-colors\">accent colors</a> for more details.</td>",
+        "rst_description": "Identifier of the accent color for the chat name and backgrounds of the chat photo, reply header, and link preview. See `accent colors <https://core.telegram.org/bots/api#accent-colors>`_ for more details.\n",
+        "name": "accent_color_id",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "The maximum number of reactions that can be set on a message in the chat",
+        "html_description": "<td>The maximum number of reactions that can be set on a message in the chat</td>",
+        "rst_description": "The maximum number of reactions that can be set on a message in the chat\n",
+        "name": "max_reaction_count",
+        "required": true
+      },
+      {
+        "type": "ChatPhoto",
+        "description": "Chat photo",
+        "html_description": "<td><em>Optional</em>. Chat photo</td>",
+        "rst_description": "*Optional*. Chat photo\n",
+        "name": "photo",
+        "required": false
+      },
+      {
+        "type": "Array of String",
+        "description": "If non-empty, the list of all active chat usernames; for private chats, supergroups and channels",
+        "html_description": "<td><em>Optional</em>. If non-empty, the list of all <a href=\"https://telegram.org/blog/topics-in-groups-collectible-usernames#collectible-usernames\">active chat usernames</a>; for private chats, supergroups and channels</td>",
+        "rst_description": "*Optional*. If non-empty, the list of all `active chat usernames <https://telegram.org/blog/topics-in-groups-collectible-usernames#collectible-usernames>`_; for private chats, supergroups and channels\n",
+        "name": "active_usernames",
+        "required": false
+      },
+      {
+        "type": "Birthdate",
+        "description": "For private chats, the date of birth of the user",
+        "html_description": "<td><em>Optional</em>. For private chats, the date of birth of the user</td>",
+        "rst_description": "*Optional*. For private chats, the date of birth of the user\n",
+        "name": "birthdate",
+        "required": false
+      },
+      {
+        "type": "BusinessIntro",
+        "description": "For private chats with business accounts, the intro of the business",
+        "html_description": "<td><em>Optional</em>. For private chats with business accounts, the intro of the business</td>",
+        "rst_description": "*Optional*. For private chats with business accounts, the intro of the business\n",
+        "name": "business_intro",
+        "required": false
+      },
+      {
+        "type": "BusinessLocation",
+        "description": "For private chats with business accounts, the location of the business",
+        "html_description": "<td><em>Optional</em>. For private chats with business accounts, the location of the business</td>",
+        "rst_description": "*Optional*. For private chats with business accounts, the location of the business\n",
+        "name": "business_location",
+        "required": false
+      },
+      {
+        "type": "BusinessOpeningHours",
+        "description": "For private chats with business accounts, the opening hours of the business",
+        "html_description": "<td><em>Optional</em>. For private chats with business accounts, the opening hours of the business</td>",
+        "rst_description": "*Optional*. For private chats with business accounts, the opening hours of the business\n",
+        "name": "business_opening_hours",
+        "required": false
+      },
+      {
+        "type": "Chat",
+        "description": "For private chats, the personal channel of the user",
+        "html_description": "<td><em>Optional</em>. For private chats, the personal channel of the user</td>",
+        "rst_description": "*Optional*. For private chats, the personal channel of the user\n",
+        "name": "personal_chat",
+        "required": false
+      },
+      {
+        "type": "Array of ReactionType",
+        "description": "List of available reactions allowed in the chat. If omitted, then all emoji reactions are allowed.",
+        "html_description": "<td><em>Optional</em>. List of available reactions allowed in the chat. If omitted, then all <a href=\"#reactiontypeemoji\">emoji reactions</a> are allowed.</td>",
+        "rst_description": "*Optional*. List of available reactions allowed in the chat. If omitted, then all `emoji reactions <https://core.telegram.org/bots/api#reactiontypeemoji>`_ are allowed.\n",
+        "name": "available_reactions",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "Custom emoji identifier of the emoji chosen by the chat for the reply header and link preview background",
+        "html_description": "<td><em>Optional</em>. Custom emoji identifier of the emoji chosen by the chat for the reply header and link preview background</td>",
+        "rst_description": "*Optional*. Custom emoji identifier of the emoji chosen by the chat for the reply header and link preview background\n",
+        "name": "background_custom_emoji_id",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "Identifier of the accent color for the chat's profile background. See profile accent colors for more details.",
+        "html_description": "<td><em>Optional</em>. Identifier of the accent color for the chat's profile background. See <a href=\"#profile-accent-colors\">profile accent colors</a> for more details.</td>",
+        "rst_description": "*Optional*. Identifier of the accent color for the chat's profile background. See `profile accent colors <https://core.telegram.org/bots/api#profile-accent-colors>`_ for more details.\n",
+        "name": "profile_accent_color_id",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "Custom emoji identifier of the emoji chosen by the chat for its profile background",
+        "html_description": "<td><em>Optional</em>. Custom emoji identifier of the emoji chosen by the chat for its profile background</td>",
+        "rst_description": "*Optional*. Custom emoji identifier of the emoji chosen by the chat for its profile background\n",
+        "name": "profile_background_custom_emoji_id",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "Custom emoji identifier of the emoji status of the chat or the other party in a private chat",
+        "html_description": "<td><em>Optional</em>. Custom emoji identifier of the emoji status of the chat or the other party in a private chat</td>",
+        "rst_description": "*Optional*. Custom emoji identifier of the emoji status of the chat or the other party in a private chat\n",
+        "name": "emoji_status_custom_emoji_id",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "Expiration date of the emoji status of the chat or the other party in a private chat, in Unix time, if any",
+        "html_description": "<td><em>Optional</em>. Expiration date of the emoji status of the chat or the other party in a private chat, in Unix time, if any</td>",
+        "rst_description": "*Optional*. Expiration date of the emoji status of the chat or the other party in a private chat, in Unix time, if any\n",
+        "name": "emoji_status_expiration_date",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "Bio of the other party in a private chat",
+        "html_description": "<td><em>Optional</em>. Bio of the other party in a private chat</td>",
+        "rst_description": "*Optional*. Bio of the other party in a private chat\n",
+        "name": "bio",
+        "required": false
+      },
+      {
+        "type": "True",
+        "description": "True, if privacy settings of the other party in the private chat allows to use tg://user?id=<user_id> links only in chats with the user",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if privacy settings of the other party in the private chat allows to use <code>tg://user?id=&lt;user_id&gt;</code> links only in chats with the user</td>",
+        "rst_description": "*Optional*. :code:`True`, if privacy settings of the other party in the private chat allows to use :code:`tg://user?id=<user_id>` links only in chats with the user\n",
+        "name": "has_private_forwards",
+        "required": false
+      },
+      {
+        "type": "True",
+        "description": "True, if the privacy settings of the other party restrict sending voice and video note messages in the private chat",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the privacy settings of the other party restrict sending voice and video note messages in the private chat</td>",
+        "rst_description": "*Optional*. :code:`True`, if the privacy settings of the other party restrict sending voice and video note messages in the private chat\n",
+        "name": "has_restricted_voice_and_video_messages",
+        "required": false
+      },
+      {
+        "type": "True",
+        "description": "True, if users need to join the supergroup before they can send messages",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if users need to join the supergroup before they can send messages</td>",
+        "rst_description": "*Optional*. :code:`True`, if users need to join the supergroup before they can send messages\n",
+        "name": "join_to_send_messages",
+        "required": false
+      },
+      {
+        "type": "True",
+        "description": "True, if all users directly joining the supergroup without using an invite link need to be approved by supergroup administrators",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if all users directly joining the supergroup without using an invite link need to be approved by supergroup administrators</td>",
+        "rst_description": "*Optional*. :code:`True`, if all users directly joining the supergroup without using an invite link need to be approved by supergroup administrators\n",
+        "name": "join_by_request",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "Description, for groups, supergroups and channel chats",
+        "html_description": "<td><em>Optional</em>. Description, for groups, supergroups and channel chats</td>",
+        "rst_description": "*Optional*. Description, for groups, supergroups and channel chats\n",
+        "name": "description",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "Primary invite link, for groups, supergroups and channel chats",
+        "html_description": "<td><em>Optional</em>. Primary invite link, for groups, supergroups and channel chats</td>",
+        "rst_description": "*Optional*. Primary invite link, for groups, supergroups and channel chats\n",
+        "name": "invite_link",
+        "required": false
+      },
+      {
+        "type": "Message",
+        "description": "The most recent pinned message (by sending date)",
+        "html_description": "<td><em>Optional</em>. The most recent pinned message (by sending date)</td>",
+        "rst_description": "*Optional*. The most recent pinned message (by sending date)\n",
+        "name": "pinned_message",
+        "required": false
+      },
+      {
+        "type": "ChatPermissions",
+        "description": "Default chat member permissions, for groups and supergroups",
+        "html_description": "<td><em>Optional</em>. Default chat member permissions, for groups and supergroups</td>",
+        "rst_description": "*Optional*. Default chat member permissions, for groups and supergroups\n",
+        "name": "permissions",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "For supergroups, the minimum allowed delay between consecutive messages sent by each unprivileged user; in seconds",
+        "html_description": "<td><em>Optional</em>. For supergroups, the minimum allowed delay between consecutive messages sent by each unprivileged user; in seconds</td>",
+        "rst_description": "*Optional*. For supergroups, the minimum allowed delay between consecutive messages sent by each unprivileged user; in seconds\n",
+        "name": "slow_mode_delay",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "For supergroups, the minimum number of boosts that a non-administrator user needs to add in order to ignore slow mode and chat permissions",
+        "html_description": "<td><em>Optional</em>. For supergroups, the minimum number of boosts that a non-administrator user needs to add in order to ignore slow mode and chat permissions</td>",
+        "rst_description": "*Optional*. For supergroups, the minimum number of boosts that a non-administrator user needs to add in order to ignore slow mode and chat permissions\n",
+        "name": "unrestrict_boost_count",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "The time after which all messages sent to the chat will be automatically deleted; in seconds",
+        "html_description": "<td><em>Optional</em>. The time after which all messages sent to the chat will be automatically deleted; in seconds</td>",
+        "rst_description": "*Optional*. The time after which all messages sent to the chat will be automatically deleted; in seconds\n",
+        "name": "message_auto_delete_time",
+        "required": false
+      },
+      {
+        "type": "True",
+        "description": "True, if aggressive anti-spam checks are enabled in the supergroup. The field is only available to chat administrators.",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if aggressive anti-spam checks are enabled in the supergroup. The field is only available to chat administrators.</td>",
+        "rst_description": "*Optional*. :code:`True`, if aggressive anti-spam checks are enabled in the supergroup. The field is only available to chat administrators.\n",
+        "name": "has_aggressive_anti_spam_enabled",
+        "required": false
+      },
+      {
+        "type": "True",
+        "description": "True, if non-administrators can only get the list of bots and administrators in the chat",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if non-administrators can only get the list of bots and administrators in the chat</td>",
+        "rst_description": "*Optional*. :code:`True`, if non-administrators can only get the list of bots and administrators in the chat\n",
+        "name": "has_hidden_members",
+        "required": false
+      },
+      {
+        "type": "True",
+        "description": "True, if messages from the chat can't be forwarded to other chats",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if messages from the chat can't be forwarded to other chats</td>",
+        "rst_description": "*Optional*. :code:`True`, if messages from the chat can't be forwarded to other chats\n",
+        "name": "has_protected_content",
+        "required": false
+      },
+      {
+        "type": "True",
+        "description": "True, if new chat members will have access to old messages; available only to chat administrators",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if new chat members will have access to old messages; available only to chat administrators</td>",
+        "rst_description": "*Optional*. :code:`True`, if new chat members will have access to old messages; available only to chat administrators\n",
+        "name": "has_visible_history",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "For supergroups, name of the group sticker set",
+        "html_description": "<td><em>Optional</em>. For supergroups, name of the group sticker set</td>",
+        "rst_description": "*Optional*. For supergroups, name of the group sticker set\n",
+        "name": "sticker_set_name",
+        "required": false
+      },
+      {
+        "type": "True",
+        "description": "True, if the bot can change the group sticker set",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the bot can change the group sticker set</td>",
+        "rst_description": "*Optional*. :code:`True`, if the bot can change the group sticker set\n",
+        "name": "can_set_sticker_set",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "For supergroups, the name of the group's custom emoji sticker set. Custom emoji from this set can be used by all users and bots in the group.",
+        "html_description": "<td><em>Optional</em>. For supergroups, the name of the group's custom emoji sticker set. Custom emoji from this set can be used by all users and bots in the group.</td>",
+        "rst_description": "*Optional*. For supergroups, the name of the group's custom emoji sticker set. Custom emoji from this set can be used by all users and bots in the group.\n",
+        "name": "custom_emoji_sticker_set_name",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "Unique identifier for the linked chat, i.e. the discussion group identifier for a channel and vice versa; for supergroups and channel chats. This identifier may be greater than 32 bits and some programming languages may have difficulty/silent defects in interpreting it. But it is smaller than 52 bits, so a signed 64 bit integer or double-precision float type are safe for storing this identifier.",
+        "html_description": "<td><em>Optional</em>. Unique identifier for the linked chat, i.e. the discussion group identifier for a channel and vice versa; for supergroups and channel chats. This identifier may be greater than 32 bits and some programming languages may have difficulty/silent defects in interpreting it. But it is smaller than 52 bits, so a signed 64 bit integer or double-precision float type are safe for storing this identifier.</td>",
+        "rst_description": "*Optional*. Unique identifier for the linked chat, i.e. the discussion group identifier for a channel and vice versa; for supergroups and channel chats. This identifier may be greater than 32 bits and some programming languages may have difficulty/silent defects in interpreting it. But it is smaller than 52 bits, so a signed 64 bit integer or double-precision float type are safe for storing this identifier.\n",
+        "name": "linked_chat_id",
+        "required": false
+      },
+      {
+        "type": "ChatLocation",
+        "description": "For supergroups, the location to which the supergroup is connected",
+        "html_description": "<td><em>Optional</em>. For supergroups, the location to which the supergroup is connected</td>",
+        "rst_description": "*Optional*. For supergroups, the location to which the supergroup is connected\n",
+        "name": "location",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

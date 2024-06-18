@@ -12,6 +12,14 @@
     "rst_description": "Use this method to send a group of photos, videos, documents or audios as an album. Documents and audio files can be only grouped in an album with messages of the same type. On success, an array of `Messages <https://core.telegram.org/bots/api#message>`_ that were sent is returned.",
     "annotations": [
       {
+        "type": "String",
+        "required": false,
+        "description": "Unique identifier of the business connection on behalf of which the message will be sent",
+        "html_description": "<td>Unique identifier of the business connection on behalf of which the message will be sent</td>",
+        "rst_description": "Unique identifier of the business connection on behalf of which the message will be sent\n",
+        "name": "business_connection_id"
+      },
+      {
         "type": "Integer or String",
         "required": true,
         "description": "Unique identifier for the target chat or username of the target channel (in the format @channelusername)",
@@ -50,6 +58,14 @@
         "html_description": "<td>Protects the contents of the sent messages from forwarding and saving</td>",
         "rst_description": "Protects the contents of the sent messages from forwarding and saving\n",
         "name": "protect_content"
+      },
+      {
+        "type": "String",
+        "required": false,
+        "description": "Unique identifier of the message effect to be added to the message; for private chats only",
+        "html_description": "<td>Unique identifier of the message effect to be added to the message; for private chats only</td>",
+        "rst_description": "Unique identifier of the message effect to be added to the message; for private chats only\n",
+        "name": "message_effect_id"
       },
       {
         "type": "ReplyParameters",

@@ -1,0 +1,33 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "businessopeninghoursinterval",
+    "name": "BusinessOpeningHoursInterval",
+    "description": "Describes an interval of time during which a business is open.",
+    "html_description": "<p>Describes an interval of time during which a business is open.</p>",
+    "rst_description": "Describes an interval of time during which a business is open.",
+    "annotations": [
+      {
+        "type": "Integer",
+        "description": "The minute's sequence number in a week, starting on Monday, marking the start of the time interval during which the business is open; 0 - 7 * 24 * 60",
+        "html_description": "<td>The minute's sequence number in a week, starting on Monday, marking the start of the time interval during which the business is open; 0 - 7 * 24 * 60</td>",
+        "rst_description": "The minute's sequence number in a week, starting on Monday, marking the start of the time interval during which the business is open; 0 - 7 * 24 * 60\n",
+        "name": "opening_minute",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "The minute's sequence number in a week, starting on Monday, marking the end of the time interval during which the business is open; 0 - 8 * 24 * 60",
+        "html_description": "<td>The minute's sequence number in a week, starting on Monday, marking the end of the time interval during which the business is open; 0 - 8 * 24 * 60</td>",
+        "rst_description": "The minute's sequence number in a week, starting on Monday, marking the end of the time interval during which the business is open; 0 - 8 * 24 * 60\n",
+        "name": "closing_minute",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

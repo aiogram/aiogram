@@ -12,9 +12,115 @@ Changelog
 
     WARNING: Don't drop the next directive!
 
-.. towncrier-draft-entries:: |release| [UNRELEASED DRAFT]
+.. towncrier-draft-entries:: [UPCOMING UPDATE]
 
 .. towncrier release notes start
+
+3.7.0 (2024-05-31)
+===================
+
+Features
+--------
+
+- Added new storage :code:`aiogram.fsm.storage.MongoStorage` for Finite State Machine based on Mongo DB (using :code:`motor` library)
+  `#1434 <https://github.com/aiogram/aiogram/issues/1434>`_
+- Added full support of `Bot API 7.4 <https://core.telegram.org/bots/api-changelog#may-28-2024>`_
+  `#1498 <https://github.com/aiogram/aiogram/issues/1498>`_
+
+
+Bugfixes
+--------
+
+- Fixed wrong :code:`MarkdownV2` custom emoji parsing in :code:`aiogram.utils.text_decorations`
+  `#1496 <https://github.com/aiogram/aiogram/issues/1496>`_
+
+
+Deprecations and Removals
+-------------------------
+
+- Removed deprecated arguments from Bot class
+  :code:`parse_mode`, :code:`disable_web_page_preview`, :code:`protect_content` as previously announced in v3.4.0.
+  `#1494 <https://github.com/aiogram/aiogram/issues/1494>`_
+
+
+Misc
+----
+
+- Improved code consistency and readability in code examples by refactoring imports, adjusting the base webhook URL, modifying bot instance initialization to utilize DefaultBotProperties, and updating router message handlers.
+  `#1482 <https://github.com/aiogram/aiogram/issues/1482>`_
+
+
+3.6.0 (2024-05-06)
+===================
+
+Features
+--------
+
+- Added full support of `Bot API 7.3 <https://core.telegram.org/bots/api-changelog#may-6-2024>`_
+  `#1480 <https://github.com/aiogram/aiogram/issues/1480>`_
+
+
+Improved Documentation
+----------------------
+
+- Added telegram objects transformation block in 2.x -> 3.x migration guide
+  `#1412 <https://github.com/aiogram/aiogram/issues/1412>`_
+
+
+3.5.0 (2024-04-23)
+===================
+
+Features
+--------
+
+- Added **message_thread_id** parameter to **ChatActionSender** class methods.
+  `#1437 <https://github.com/aiogram/aiogram/issues/1437>`_
+- Added context manager interface to Bot instance, from now you can use:
+
+  .. code-block:: python
+
+      async with Bot(...) as bot:
+          ...
+
+  instead of
+
+  .. code-block:: python
+
+      async with Bot(...).context() as bot:
+          ...
+  `#1468 <https://github.com/aiogram/aiogram/issues/1468>`_
+
+
+Bugfixes
+--------
+
+- - **WebAppUser Class Fields**: Added missing `is_premium`, `added_to_attachment_menu`, and `allows_write_to_pm` fields to `WebAppUser` class to align with the Telegram API.
+
+  - **WebAppChat Class Implementation**: Introduced the `WebAppChat` class with all its fields (`id`, `type`, `title`, `username`, and `photo_url`) as specified in the Telegram API, which was previously missing from the library.
+
+  - **WebAppInitData Class Fields**: Included previously omitted fields in the `WebAppInitData` class: `chat`, `chat_type`, `chat_instance`, to match the official documentation for a complete Telegram Web Apps support.
+  `#1424 <https://github.com/aiogram/aiogram/issues/1424>`_
+- Fixed poll answer FSM context by handling :code:`voter_chat` for :code:`poll_answer` event
+  `#1436 <https://github.com/aiogram/aiogram/issues/1436>`_
+- Added missing error handling to :code:`_background_feed_update` (when in :code:`handle_in_background=True` webhook mode)
+  `#1458 <https://github.com/aiogram/aiogram/issues/1458>`_
+
+
+Improved Documentation
+----------------------
+
+- Added WebAppChat class to WebApp docs, updated uk_UA localisation of WebApp docs.
+  `#1433 <https://github.com/aiogram/aiogram/issues/1433>`_
+
+
+Misc
+----
+
+- Added full support of `Bot API 7.2 <https://core.telegram.org/bots/api-changelog#march-31-2024>`_
+  `#1444 <https://github.com/aiogram/aiogram/issues/1444>`_
+- Loosened pydantic version upper restriction from ``<2.7`` to ``<2.8``
+  `#1460 <https://github.com/aiogram/aiogram/issues/1460>`_
+
 
 3.4.1 (2024-02-17)
 ===================

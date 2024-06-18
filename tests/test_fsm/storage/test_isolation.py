@@ -4,13 +4,7 @@ from unittest.mock import AsyncMock, patch
 import pytest
 
 from aiogram.fsm.storage.base import BaseEventIsolation, StorageKey
-from aiogram.fsm.storage.redis import RedisEventIsolation
-from tests.mocked_bot import MockedBot
-
-
-@pytest.fixture(name="storage_key")
-def create_storage_key(bot: MockedBot):
-    return StorageKey(chat_id=-42, user_id=42, bot_id=bot.id)
+from aiogram.fsm.storage.redis import RedisEventIsolation, RedisStorage
 
 
 @pytest.mark.parametrize(
@@ -32,6 +26,14 @@ class TestIsolations:
 
 
 class TestRedisEventIsolation:
+    def test_create_isolation(self):
+        fake_redis = object()
+        storage = RedisStorage(redis=fake_redis)
+        isolation = storage.create_isolation()
+        assert isinstance(isolation, RedisEventIsolation)
+        assert isolation.redis is fake_redis
+        assert isolation.key_builder is storage.key_builder
+
     def test_init_without_key_builder(self):
         redis = AsyncMock()
         isolation = RedisEventIsolation(redis=redis)

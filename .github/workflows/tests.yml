@@ -44,15 +44,18 @@ jobs:
 
     env:
       # Windows has some limitations:
-      # – Redis is not supported on GitHub Windows runners;
+      # – Redis and MongoDB is not supported on GitHub Windows runners;
       IS_WINDOWS: ${{ startswith(matrix.os, 'windows') }}
+      # MongoDB has some limitations:
+      # – MongoDB container action is only supported on Linux;
+      IS_UBUNTU: ${{ startswith(matrix.os, 'ubuntu') }}
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Set up Python ${{ matrix.python-version }} on ${{ matrix.os }}
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
           cache: "pip"
@@ -60,11 +63,11 @@ jobs:
 
       - name: Install project dependencies
         run: |
-          pip install -e .[dev,test,redis,proxy,i18n,fast]
+          pip install -e .[dev,test,redis,mongo,proxy,i18n,fast]
 
       - name: Lint code
         run: |
-          ruff --output-format=github aiogram examples
+          ruff check --output-format=github aiogram examples
           mypy aiogram
           black --check --diff aiogram tests
 
@@ -74,14 +77,24 @@ jobs:
         with:
           redis-version: 6
 
+      - name: Setup mongodb
+        if: ${{ env.IS_UBUNTU == 'true' }}
+        uses: supercharge/mongodb-github-action@1.10.0
+        with:
+          mongodb-version: '7.0'
+          mongodb-username: mongo
+          mongodb-password: mongo
+          mongodb-port: 27017
+
       - name: Run tests
         run: |
           flags="$flags --cov=aiogram --cov-config .coveragerc --cov-report=xml"
           [[ "$IS_WINDOWS" == "false" ]] && flags="$flags --redis redis://localhost:6379/0"
+          [[ "$IS_UBUNTU" == "true" ]] && flags="$flags --mongo mongodb://mongo:mongo@localhost:27017"
           pytest $flags
 
       - name: Upload coverage data
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: coverage.xml
@@ -100,6 +113,7 @@ jobs:
         python-version:
           - 'pypy3.8'
           - 'pypy3.9'
+          - 'pypy3.10'
 
     defaults:
       # Windows sucks. Force use bash instead of PowerShell
@@ -113,7 +127,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up Python ${{ matrix.python-version }} on ${{ matrix.os }}
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
           cache: "pip"
@@ -121,12 +135,7 @@ jobs:
 
       - name: Install project dependencies
         run: |
-          pip install -e .[dev,test,redis,proxy,i18n,fast]
-
-      - name: Setup redis
-        uses: shogo82148/actions-setup-redis@v1
-        with:
-          redis-version: 6
+          pip install -e .[dev,test,redis,mongo,proxy,i18n,fast]
 
       - name: Run tests
         run: |

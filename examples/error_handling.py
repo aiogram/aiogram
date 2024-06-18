@@ -1,8 +1,11 @@
 import asyncio
 import html
 import logging
+from os import getenv
 
 from aiogram import Bot, Dispatcher, types
+from aiogram.client.default import DefaultBotProperties
+from aiogram.enums import ParseMode
 from aiogram.filters import (
     Command,
     CommandObject,
@@ -11,7 +14,7 @@ from aiogram.filters import (
 )
 from aiogram.types import ErrorEvent
 
-TOKEN = "42:TOKEN"
+TOKEN = getenv("BOT_TOKEN")
 
 dp = Dispatcher()
 
@@ -99,8 +102,8 @@ async def handle_set_name(message: types.Message, command: CommandObject) -> Non
 
 
 async def main() -> None:
-    # Initialize Bot instance with a default parse mode which will be passed to all API calls
-    bot = Bot(TOKEN, parse_mode="HTML")
+    # Initialize Bot instance with default bot properties which will be passed to all API calls
+    bot = Bot(token=TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
     # And the run events dispatching
     await dp.start_polling(bot)
 

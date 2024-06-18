@@ -41,6 +41,8 @@ class CopyMessage(TelegramMethod[MessageId]):
     """Mode for parsing entities in the new caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details."""
     caption_entities: Optional[List[MessageEntity]] = None
     """A JSON-serialized list of special entities that appear in the new caption, which can be specified instead of *parse_mode*"""
+    show_caption_above_media: Optional[Union[bool, Default]] = Default("show_caption_above_media")
+    """Pass :code:`True`, if the caption must be shown above the message media. Ignored if a new caption isn't specified."""
     disable_notification: Optional[bool] = None
     """Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound."""
     protect_content: Optional[Union[bool, Default]] = Default("protect_content")
@@ -50,7 +52,7 @@ class CopyMessage(TelegramMethod[MessageId]):
     reply_markup: Optional[
         Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
     ] = None
-    """Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove reply keyboard or to force a reply from the user."""
+    """Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user"""
     allow_sending_without_reply: Optional[bool] = Field(
         None, json_schema_extra={"deprecated": True}
     )
@@ -78,6 +80,9 @@ class CopyMessage(TelegramMethod[MessageId]):
             caption: Optional[str] = None,
             parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
             caption_entities: Optional[List[MessageEntity]] = None,
+            show_caption_above_media: Optional[Union[bool, Default]] = Default(
+                "show_caption_above_media"
+            ),
             disable_notification: Optional[bool] = None,
             protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
             reply_parameters: Optional[ReplyParameters] = None,
@@ -100,6 +105,7 @@ class CopyMessage(TelegramMethod[MessageId]):
                 caption=caption,
                 parse_mode=parse_mode,
                 caption_entities=caption_entities,
+                show_caption_above_media=show_caption_above_media,
                 disable_notification=disable_notification,
                 protect_content=protect_content,
                 reply_parameters=reply_parameters,

@@ -53,34 +53,34 @@
       },
       {
         "type": "String",
-        "required": true,
-        "description": "Payment provider token, obtained via @BotFather",
-        "html_description": "<td>Payment provider token, obtained via <a href=\"https://t.me/botfather\">@BotFather</a></td>",
-        "rst_description": "Payment provider token, obtained via `@BotFather <https://t.me/botfather>`_\n",
+        "required": false,
+        "description": "Payment provider token, obtained via @BotFather. Pass an empty string for payments in Telegram Stars.",
+        "html_description": "<td>Payment provider token, obtained via <a href=\"https://t.me/botfather\">@BotFather</a>. Pass an empty string for payments in <a href=\"https://t.me/BotNews/90\">Telegram Stars</a>.</td>",
+        "rst_description": "Payment provider token, obtained via `@BotFather <https://t.me/botfather>`_. Pass an empty string for payments in `Telegram Stars <https://t.me/BotNews/90>`_.\n",
         "name": "provider_token"
       },
       {
         "type": "String",
         "required": true,
-        "description": "Three-letter ISO 4217 currency code, see more on currencies",
-        "html_description": "<td>Three-letter ISO 4217 currency code, see <a href=\"/bots/payments#supported-currencies\">more on currencies</a></td>",
-        "rst_description": "Three-letter ISO 4217 currency code, see `more on currencies <https://core.telegram.org/bots/payments#supported-currencies>`_\n",
+        "description": "Three-letter ISO 4217 currency code, see more on currencies. Pass 'XTR' for payments in Telegram Stars.",
+        "html_description": "<td>Three-letter ISO 4217 currency code, see <a href=\"/bots/payments#supported-currencies\">more on currencies</a>. Pass &#8220;XTR&#8221; for payments in <a href=\"https://t.me/BotNews/90\">Telegram Stars</a>.</td>",
+        "rst_description": "Three-letter ISO 4217 currency code, see `more on currencies <https://core.telegram.org/bots/payments#supported-currencies>`_. Pass 'XTR' for payments in `Telegram Stars <https://t.me/BotNews/90>`_.\n",
         "name": "currency"
       },
       {
         "type": "Array of LabeledPrice",
         "required": true,
-        "description": "Price breakdown, a JSON-serialized list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.)",
-        "html_description": "<td>Price breakdown, a JSON-serialized list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.)</td>",
-        "rst_description": "Price breakdown, a JSON-serialized list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.)\n",
+        "description": "Price breakdown, a JSON-serialized list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.). Must contain exactly one item for payments in Telegram Stars.",
+        "html_description": "<td>Price breakdown, a JSON-serialized list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.). Must contain exactly one item for payments in <a href=\"https://t.me/BotNews/90\">Telegram Stars</a>.</td>",
+        "rst_description": "Price breakdown, a JSON-serialized list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.). Must contain exactly one item for payments in `Telegram Stars <https://t.me/BotNews/90>`_.\n",
         "name": "prices"
       },
       {
         "type": "Integer",
         "required": false,
-        "description": "The maximum accepted amount for tips in the smallest units of the currency (integer, not float/double). For example, for a maximum tip of US$ 1.45 pass max_tip_amount = 145. See the exp parameter in currencies.json, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies). Defaults to 0",
-        "html_description": "<td>The maximum accepted amount for tips in the <em>smallest units</em> of the currency (integer, <strong>not</strong> float/double). For example, for a maximum tip of <code>US$ 1.45</code> pass <code>max_tip_amount = 145</code>. See the <em>exp</em> parameter in <a href=\"/bots/payments/currencies.json\">currencies.json</a>, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies). Defaults to 0</td>",
-        "rst_description": "The maximum accepted amount for tips in the *smallest units* of the currency (integer, **not** float/double). For example, for a maximum tip of :code:`US$ 1.45` pass :code:`max_tip_amount = 145`. See the *exp* parameter in `currencies.json <https://core.telegram.org/bots/payments/currencies.json>`_, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies). Defaults to 0\n",
+        "description": "The maximum accepted amount for tips in the smallest units of the currency (integer, not float/double). For example, for a maximum tip of US$ 1.45 pass max_tip_amount = 145. See the exp parameter in currencies.json, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies). Defaults to 0. Not supported for payments in Telegram Stars.",
+        "html_description": "<td>The maximum accepted amount for tips in the <em>smallest units</em> of the currency (integer, <strong>not</strong> float/double). For example, for a maximum tip of <code>US$ 1.45</code> pass <code>max_tip_amount = 145</code>. See the <em>exp</em> parameter in <a href=\"/bots/payments/currencies.json\">currencies.json</a>, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies). Defaults to 0. Not supported for payments in <a href=\"https://t.me/BotNews/90\">Telegram Stars</a>.</td>",
+        "rst_description": "The maximum accepted amount for tips in the *smallest units* of the currency (integer, **not** float/double). For example, for a maximum tip of :code:`US$ 1.45` pass :code:`max_tip_amount = 145`. See the *exp* parameter in `currencies.json <https://core.telegram.org/bots/payments/currencies.json>`_, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies). Defaults to 0. Not supported for payments in `Telegram Stars <https://t.me/BotNews/90>`_.\n",
         "name": "max_tip_amount"
       },
       {
@@ -142,57 +142,57 @@
       {
         "type": "Boolean",
         "required": false,
-        "description": "Pass True if you require the user's full name to complete the order",
-        "html_description": "<td>Pass <em>True</em> if you require the user's full name to complete the order</td>",
-        "rst_description": "Pass :code:`True` if you require the user's full name to complete the order\n",
+        "description": "Pass True if you require the user's full name to complete the order. Ignored for payments in Telegram Stars.",
+        "html_description": "<td>Pass <em>True</em> if you require the user's full name to complete the order. Ignored for payments in <a href=\"https://t.me/BotNews/90\">Telegram Stars</a>.</td>",
+        "rst_description": "Pass :code:`True` if you require the user's full name to complete the order. Ignored for payments in `Telegram Stars <https://t.me/BotNews/90>`_.\n",
         "name": "need_name"
       },
       {
         "type": "Boolean",
         "required": false,
-        "description": "Pass True if you require the user's phone number to complete the order",
-        "html_description": "<td>Pass <em>True</em> if you require the user's phone number to complete the order</td>",
-        "rst_description": "Pass :code:`True` if you require the user's phone number to complete the order\n",
+        "description": "Pass True if you require the user's phone number to complete the order. Ignored for payments in Telegram Stars.",
+        "html_description": "<td>Pass <em>True</em> if you require the user's phone number to complete the order. Ignored for payments in <a href=\"https://t.me/BotNews/90\">Telegram Stars</a>.</td>",
+        "rst_description": "Pass :code:`True` if you require the user's phone number to complete the order. Ignored for payments in `Telegram Stars <https://t.me/BotNews/90>`_.\n",
         "name": "need_phone_number"
       },
       {
         "type": "Boolean",
         "required": false,
-        "description": "Pass True if you require the user's email address to complete the order",
-        "html_description": "<td>Pass <em>True</em> if you require the user's email address to complete the order</td>",
-        "rst_description": "Pass :code:`True` if you require the user's email address to complete the order\n",
+        "description": "Pass True if you require the user's email address to complete the order. Ignored for payments in Telegram Stars.",
+        "html_description": "<td>Pass <em>True</em> if you require the user's email address to complete the order. Ignored for payments in <a href=\"https://t.me/BotNews/90\">Telegram Stars</a>.</td>",
+        "rst_description": "Pass :code:`True` if you require the user's email address to complete the order. Ignored for payments in `Telegram Stars <https://t.me/BotNews/90>`_.\n",
         "name": "need_email"
       },
       {
         "type": "Boolean",
         "required": false,
-        "description": "Pass True if you require the user's shipping address to complete the order",
-        "html_description": "<td>Pass <em>True</em> if you require the user's shipping address to complete the order</td>",
-        "rst_description": "Pass :code:`True` if you require the user's shipping address to complete the order\n",
+        "description": "Pass True if you require the user's shipping address to complete the order. Ignored for payments in Telegram Stars.",
+        "html_description": "<td>Pass <em>True</em> if you require the user's shipping address to complete the order. Ignored for payments in <a href=\"https://t.me/BotNews/90\">Telegram Stars</a>.</td>",
+        "rst_description": "Pass :code:`True` if you require the user's shipping address to complete the order. Ignored for payments in `Telegram Stars <https://t.me/BotNews/90>`_.\n",
         "name": "need_shipping_address"
       },
       {
         "type": "Boolean",
         "required": false,
-        "description": "Pass True if the user's phone number should be sent to provider",
-        "html_description": "<td>Pass <em>True</em> if the user's phone number should be sent to provider</td>",
-        "rst_description": "Pass :code:`True` if the user's phone number should be sent to provider\n",
+        "description": "Pass True if the user's phone number should be sent to the provider. Ignored for payments in Telegram Stars.",
+        "html_description": "<td>Pass <em>True</em> if the user's phone number should be sent to the provider. Ignored for payments in <a href=\"https://t.me/BotNews/90\">Telegram Stars</a>.</td>",
+        "rst_description": "Pass :code:`True` if the user's phone number should be sent to the provider. Ignored for payments in `Telegram Stars <https://t.me/BotNews/90>`_.\n",
         "name": "send_phone_number_to_provider"
       },
       {
         "type": "Boolean",
         "required": false,
-        "description": "Pass True if the user's email address should be sent to provider",
-        "html_description": "<td>Pass <em>True</em> if the user's email address should be sent to provider</td>",
-        "rst_description": "Pass :code:`True` if the user's email address should be sent to provider\n",
+        "description": "Pass True if the user's email address should be sent to the provider. Ignored for payments in Telegram Stars.",
+        "html_description": "<td>Pass <em>True</em> if the user's email address should be sent to the provider. Ignored for payments in <a href=\"https://t.me/BotNews/90\">Telegram Stars</a>.</td>",
+        "rst_description": "Pass :code:`True` if the user's email address should be sent to the provider. Ignored for payments in `Telegram Stars <https://t.me/BotNews/90>`_.\n",
         "name": "send_email_to_provider"
       },
       {
         "type": "Boolean",
         "required": false,
-        "description": "Pass True if the final price depends on the shipping method",
-        "html_description": "<td>Pass <em>True</em> if the final price depends on the shipping method</td>",
-        "rst_description": "Pass :code:`True` if the final price depends on the shipping method\n",
+        "description": "Pass True if the final price depends on the shipping method. Ignored for payments in Telegram Stars.",
+        "html_description": "<td>Pass <em>True</em> if the final price depends on the shipping method. Ignored for payments in <a href=\"https://t.me/BotNews/90\">Telegram Stars</a>.</td>",
+        "rst_description": "Pass :code:`True` if the final price depends on the shipping method. Ignored for payments in `Telegram Stars <https://t.me/BotNews/90>`_.\n",
         "name": "is_flexible"
       },
       {
@@ -210,6 +210,14 @@
         "html_description": "<td>Protects the contents of the sent message from forwarding and saving</td>",
         "rst_description": "Protects the contents of the sent message from forwarding and saving\n",
         "name": "protect_content"
+      },
+      {
+        "type": "String",
+        "required": false,
+        "description": "Unique identifier of the message effect to be added to the message; for private chats only",
+        "html_description": "<td>Unique identifier of the message effect to be added to the message; for private chats only</td>",
+        "rst_description": "Unique identifier of the message effect to be added to the message; for private chats only\n",
+        "name": "message_effect_id"
       },
       {
         "type": "ReplyParameters",
