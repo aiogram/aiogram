@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, Literal
 
 from ..enums import RevenueWithdrawalStateType
+from .custom import DateTime
 from .revenue_withdrawal_state import RevenueWithdrawalState
 
 
@@ -15,7 +16,7 @@ class RevenueWithdrawalStateSucceeded(RevenueWithdrawalState):
 
     type: Literal[RevenueWithdrawalStateType.SUCCEEDED] = RevenueWithdrawalStateType.SUCCEEDED
     """Type of the state, always 'succeeded'"""
-    date: int
+    date: DateTime
     """Date the withdrawal was completed in Unix time"""
     url: str
     """An HTTPS URL that can be used to see transaction details"""
@@ -30,7 +31,7 @@ class RevenueWithdrawalStateSucceeded(RevenueWithdrawalState):
             type: Literal[
                 RevenueWithdrawalStateType.SUCCEEDED
             ] = RevenueWithdrawalStateType.SUCCEEDED,
-            date: int,
+            date: DateTime,
             url: str,
             **__pydantic_kwargs: Any,
         ) -> None:
