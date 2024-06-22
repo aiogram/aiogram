@@ -207,12 +207,7 @@ class KeyboardBuilder(Generic[ButtonType], ABC):
         )
         return self
 
-    def _markup_constructor(
-            self,
-            sizes: list,
-            buttons: list,
-            repeat: bool
-    ) -> list:
+    def _markup_constructor(self, sizes: list, buttons: list, repeat: bool) -> list:
         """
         Constructs the keyboard according to the specified parameters.
 
@@ -254,7 +249,11 @@ class KeyboardBuilder(Generic[ButtonType], ABC):
         """
         if sizes:
             negative_sizes = [-size for size in sizes if size < 0]
-            positive_sizes = [size for size in sizes if size >= 0] if len(negative_sizes) != len(sizes) else (self.max_width,)
+            positive_sizes = (
+                [size for size in sizes if size >= 0]
+                if len(negative_sizes) != len(sizes)
+                else (self.max_width,)
+            )
         else:
             positive_sizes = (self.max_width,)
             negative_sizes = []
@@ -262,9 +261,17 @@ class KeyboardBuilder(Generic[ButtonType], ABC):
         buttons = list(self.buttons)
 
         if positive_sizes:
-            markup.extend(self._markup_constructor(positive_sizes, buttons[:-sum(negative_sizes)] if negative_sizes else buttons, repeat))
+            markup.extend(
+                self._markup_constructor(
+                    positive_sizes,
+                    buttons[: -sum(negative_sizes)] if negative_sizes else buttons,
+                    repeat,
+                )
+            )
         if negative_sizes:
-            markup.extend(self._markup_constructor(negative_sizes, buttons[-sum(negative_sizes):], repeat))
+            markup.extend(
+                self._markup_constructor(negative_sizes, buttons[-sum(negative_sizes) :], repeat)
+            )
         self._markup = markup
         return self
 
