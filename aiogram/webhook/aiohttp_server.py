@@ -14,6 +14,7 @@ from aiogram.methods import TelegramMethod
 from aiogram.methods.base import TelegramType
 from aiogram.types import InputFile
 from aiogram.webhook.security import IPFilter
+from aiogram.client.default import DefaultBotProperties
 
 
 def setup_application(app: Application, dispatcher: Dispatcher, /, **kwargs: Any) -> None:
@@ -240,7 +241,7 @@ class TokenBasedRequestHandler(BaseRequestHandler):
         self,
         dispatcher: Dispatcher,
         handle_in_background: bool = True,
-        bot_settings: Optional[Dict[str, Any]] = None,
+        bot_settings: Optional[DefaultBotProperties] = None,
         **data: Any,
     ) -> None:
         """
@@ -291,5 +292,11 @@ class TokenBasedRequestHandler(BaseRequestHandler):
         """
         token = request.match_info["bot_token"]
         if token not in self.bots:
-            self.bots[token] = Bot(token=token, **self.bot_settings)
+            if not isinstance(self.bot_settings, DefaultBotProperties):
+                raise TypeError(
+                    "Passing `parse_mode`, `disable_web_page_preview` or `protect_content` "
+                    "to Bot initializer is not supported anymore. These arguments have been removed "
+                    f"in 3.7.0 version. Use `default=DefaultBotProperties(parse_mode=...)` argument instead."
+                )
+            self.bots[token] = Bot(token=token, default=self.bot_settings)
         return self.bots[token]
