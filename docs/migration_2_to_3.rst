@@ -22,7 +22,7 @@ On this page, you can read about the changes made in relation to the last stable
     Feel free to contribute to this page, if you find something that is not mentioned here.
 
 Dependencies
-==========
+============
 
 - The dependencies required for :code:`i18n` are no longer part of the default package.
   If your application uses translation functionality, be sure to add an optional dependency:
@@ -173,7 +173,7 @@ Here are some usage examples:
 
 - Creating an object from a dictionary representation of an object
 
-.. code-block::
+  .. code-block::
 
     # Version 2.x
     message_dict = {"id": 42, ...}
@@ -182,6 +182,8 @@ Here are some usage examples:
     # id=42 name='n' ...
     print(type(message_obj))
     # <class 'aiogram.types.message.Message'>
+
+  .. code-block::
 
     # Version 3.x
     message_dict = {"id": 42, ...}
@@ -193,17 +195,20 @@ Here are some usage examples:
 
 - Creating a json representation of an object
 
-.. code-block::
+  .. code-block::
 
+    # Version 2.x
     async def handler(message: Message) -> None:
-        # Version 2.x
         message_json = message.as_json()
         print(message_json)
         # {"id": 42, ...}
         print(type(message_json))
         # <class 'str'>
 
-        # Version 3.x
+  .. code-block::
+
+    # Version 3.x
+    async def handler(message: Message) -> None:
         message_json = json.dumps(deserialize_telegram_object_to_python(message))
         print(message_json)
         # {"id": 42, ...}
@@ -212,7 +217,7 @@ Here are some usage examples:
 
 - Creating a dictionary representation of an object
 
-.. code-block::
+  .. code-block::
 
     async def handler(message: Message) -> None:
         # Version 2.x
@@ -222,9 +227,73 @@ Here are some usage examples:
         print(type(message_dict))
         # <class 'dict'>
 
+  .. code-block::
+
+    async def handler(message: Message) -> None:
         # Version 3.x
         message_dict = deserialize_telegram_object_to_python(message)
         print(message_dict)
         # {"id": 42, ...}
         print(type(message_dict))
         # <class 'dict'>
+
+
+ChatMember tools
+================
+
+- Now :class:`aiogram.types.chat_member.ChatMember` no longer contains tools to resolve an object with the appropriate status.
+
+  .. code-block::
+
+    # Version 2.x
+    from aiogram.types import ChatMember
+
+    chat_member = ChatMember.resolve(**dict_data)
+
+  .. code-block::
+
+    # Version 3.x
+    from aiogram.utils.chat_member_adapter import ChatMemberAdapter
+
+    chat_member = ChatMemberAdapter.validate_python(dict_data)
+
+
+- Now :class:`aiogram.types.chat_member.ChatMember` and all its child classes no longer
+  contain methods for checking for membership in certain logical groups.
+  As a substitute, you can create such groups yourself and check their entry using
+  the :func:`isinstance` function
+
+  .. code-block::
+
+    # Version 2.x
+    from aiogram.types import ChatMember
+
+    if chat_member.is_chat_admin():
+        print("ChatMember is chat admin")
+
+    if chat_member.is_chat_member():
+        print("ChatMember is in the chat")
+
+  .. code-block::
+
+    # Version 3.x
+    from aiogram.utils.chat_member import resolve_chat_member
+
+    ADMINS = (ChatMemberOwner, ChatMemberAdministrator)
+    MEMBERS = (
+        ChatMemberOwner,
+        ChatMemberAdministrator,
+        ChatMemberMember,
+        ChatMemberRestricted,
+    )
+
+    if isinstance(chat_member, ADMINS):
+        print("ChatMember is chat admin")
+
+    if isinstance(chat_member, MEMBERS):
+        print("ChatMember is in the chat")
+
+  .. note::
+    This way you can independently create any group that fits the logic of your application.
+
+    E.g., you can create a PUNISHED group and include banned and restricted members there
