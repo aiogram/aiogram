@@ -266,7 +266,6 @@ ChatMember tools
   .. code-block::
 
     # Version 2.x
-    from aiogram.types import ChatMember
 
     if chat_member.is_chat_admin():
         print("ChatMember is chat admin")
@@ -277,7 +276,6 @@ ChatMember tools
   .. code-block::
 
     # Version 3.x
-    from aiogram.utils.chat_member import resolve_chat_member
 
     ADMINS = (ChatMemberOwner, ChatMemberAdministrator)
     MEMBERS = (
