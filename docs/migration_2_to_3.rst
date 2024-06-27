@@ -253,15 +253,15 @@ ChatMember tools
   .. code-block::
 
     # Version 3.x
-    from aiogram.utils.chat_member_adapter import ChatMemberAdapter
+    from aiogram.utils.chat_member import ChatMemberAdapter
 
     chat_member = ChatMemberAdapter.validate_python(dict_data)
 
 
 - Now :class:`aiogram.types.chat_member.ChatMember` and all its child classes no longer
   contain methods for checking for membership in certain logical groups.
-  As a substitute, you can create such groups yourself and check their entry using
-  the :func:`isinstance` function
+  As a substitute, you can use pre-defined groups or create such groups yourself
+  and check their entry using the :func:`isinstance` function
 
   .. code-block::
 
@@ -277,13 +277,7 @@ ChatMember tools
 
     # Version 3.x
 
-    ADMINS = (ChatMemberOwner, ChatMemberAdministrator)
-    MEMBERS = (
-        ChatMemberOwner,
-        ChatMemberAdministrator,
-        ChatMemberMember,
-        ChatMemberRestricted,
-    )
+    from aiogram.utils.chat_member import ADMINS, MEMBERS
 
     if isinstance(chat_member, ADMINS):
         print("ChatMember is chat admin")
@@ -292,6 +286,6 @@ ChatMember tools
         print("ChatMember is in the chat")
 
   .. note::
-    This way you can independently create any group that fits the logic of your application.
+    You also can independently create group similar to ADMINS that fits the logic of your application.
 
-    E.g., you can create a PUNISHED group and include banned and restricted members there
+    E.g., you can create a PUNISHED group and include banned and restricted members there!

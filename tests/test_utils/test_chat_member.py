@@ -13,7 +13,7 @@ from aiogram.types import (
     ChatMemberRestricted,
     User,
 )
-from aiogram.utils.chat_member_adapter import ChatMemberAdapter
+from aiogram.utils.chat_member import ChatMemberAdapter
 
 USER = User(
     id=42,
