@@ -10,10 +10,10 @@ from aiogram.utils.text_decorations import (
     html_decoration,
     markdown_decoration,
 )
-
+from .custom import DateTime
+from .maybe_inaccessible_message import MaybeInaccessibleMessage
 from ..client.default import Default
 from ..enums import ContentType
-from .custom import DateTime
 
 if TYPE_CHECKING:
     from ..methods import (
@@ -82,7 +82,7 @@ if TYPE_CHECKING:
     from .labeled_price import LabeledPrice
     from .link_preview_options import LinkPreviewOptions
     from .location import Location
-    from .maybe_inaccessible_message import MaybeInaccessibleMessage
+
     from .message_auto_delete_timer_changed import MessageAutoDeleteTimerChanged
     from .message_entity import MessageEntity
     from .message_origin_channel import MessageOriginChannel

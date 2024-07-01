@@ -2,11 +2,11 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Optional, Union
 
-from . import TransactionPartnerTelegramAds
 from .base import TelegramObject
 from .custom import DateTime
 
 if TYPE_CHECKING:
+    from .transaction_partner_telegram_ads import TransactionPartnerTelegramAds
     from .transaction_partner_fragment import TransactionPartnerFragment
     from .transaction_partner_other import TransactionPartnerOther
     from .transaction_partner_user import TransactionPartnerUser
