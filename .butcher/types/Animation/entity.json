@@ -29,49 +29,49 @@
       },
       {
         "type": "Integer",
-        "description": "Video width as defined by sender",
-        "html_description": "<td>Video width as defined by sender</td>",
-        "rst_description": "Video width as defined by sender\n",
+        "description": "Video width as defined by the sender",
+        "html_description": "<td>Video width as defined by the sender</td>",
+        "rst_description": "Video width as defined by the sender\n",
         "name": "width",
         "required": true
       },
       {
         "type": "Integer",
-        "description": "Video height as defined by sender",
-        "html_description": "<td>Video height as defined by sender</td>",
-        "rst_description": "Video height as defined by sender\n",
+        "description": "Video height as defined by the sender",
+        "html_description": "<td>Video height as defined by the sender</td>",
+        "rst_description": "Video height as defined by the sender\n",
         "name": "height",
         "required": true
       },
       {
         "type": "Integer",
-        "description": "Duration of the video in seconds as defined by sender",
-        "html_description": "<td>Duration of the video in seconds as defined by sender</td>",
-        "rst_description": "Duration of the video in seconds as defined by sender\n",
+        "description": "Duration of the video in seconds as defined by the sender",
+        "html_description": "<td>Duration of the video in seconds as defined by the sender</td>",
+        "rst_description": "Duration of the video in seconds as defined by the sender\n",
         "name": "duration",
         "required": true
       },
       {
         "type": "PhotoSize",
-        "description": "Animation thumbnail as defined by sender",
-        "html_description": "<td><em>Optional</em>. Animation thumbnail as defined by sender</td>",
-        "rst_description": "*Optional*. Animation thumbnail as defined by sender\n",
+        "description": "Animation thumbnail as defined by the sender",
+        "html_description": "<td><em>Optional</em>. Animation thumbnail as defined by the sender</td>",
+        "rst_description": "*Optional*. Animation thumbnail as defined by the sender\n",
         "name": "thumbnail",
         "required": false
       },
       {
         "type": "String",
-        "description": "Original animation filename as defined by sender",
-        "html_description": "<td><em>Optional</em>. Original animation filename as defined by sender</td>",
-        "rst_description": "*Optional*. Original animation filename as defined by sender\n",
+        "description": "Original animation filename as defined by the sender",
+        "html_description": "<td><em>Optional</em>. Original animation filename as defined by the sender</td>",
+        "rst_description": "*Optional*. Original animation filename as defined by the sender\n",
         "name": "file_name",
         "required": false
       },
       {
         "type": "String",
-        "description": "MIME type of the file as defined by sender",
-        "html_description": "<td><em>Optional</em>. MIME type of the file as defined by sender</td>",
-        "rst_description": "*Optional*. MIME type of the file as defined by sender\n",
+        "description": "MIME type of the file as defined by the sender",
+        "html_description": "<td><em>Optional</em>. MIME type of the file as defined by the sender</td>",
+        "rst_description": "*Optional*. MIME type of the file as defined by the sender\n",
         "name": "mime_type",
         "required": false
       },

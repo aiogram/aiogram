@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING, Any, List, Optional, Union
 from .base import TelegramObject
 
 if TYPE_CHECKING:
+    from .paid_media_info import PaidMediaInfo
     from .animation import Animation
     from .audio import Audio
     from .chat import Chat
@@ -54,6 +55,8 @@ class ExternalReplyInfo(TelegramObject):
     """*Optional*. Message is an audio file, information about the file"""
     document: Optional[Document] = None
     """*Optional*. Message is a general file, information about the file"""
+    paid_media: Optional[PaidMediaInfo] = None
+    """*Optional*. Message contains paid media; information about the paid media"""
     photo: Optional[List[PhotoSize]] = None
     """*Optional*. Message is a photo, available sizes of the photo"""
     sticker: Optional[Sticker] = None
@@ -103,6 +106,7 @@ class ExternalReplyInfo(TelegramObject):
             animation: Optional[Animation] = None,
             audio: Optional[Audio] = None,
             document: Optional[Document] = None,
+            paid_media: Optional[PaidMediaInfo] = None,
             photo: Optional[List[PhotoSize]] = None,
             sticker: Optional[Sticker] = None,
             story: Optional[Story] = None,
@@ -133,6 +137,7 @@ class ExternalReplyInfo(TelegramObject):
                 animation=animation,
                 audio=audio,
                 document=document,
+                paid_media=paid_media,
                 photo=photo,
                 sticker=sticker,
                 story=story,

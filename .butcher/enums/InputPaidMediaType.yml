@@ -1,0 +1,12 @@
+name: InputPaidMediaType
+description: |
+  This object represents the type of a media in a paid message.
+
+  Source: https://core.telegram.org/bots/api#inputpaidmedia
+multi_parse:
+  format: rst
+  attribute: type
+  regexp: '\*([a-z_]+)\*'
+  entities:
+    - InputPaidMediaPhoto
+    - InputPaidMediaVideo

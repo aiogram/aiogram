@@ -123,6 +123,9 @@ from .input_media_document import InputMediaDocument
 from .input_media_photo import InputMediaPhoto
 from .input_media_video import InputMediaVideo
 from .input_message_content import InputMessageContent
+from .input_paid_media import InputPaidMedia
+from .input_paid_media_photo import InputPaidMediaPhoto
+from .input_paid_media_video import InputPaidMediaVideo
 from .input_poll_option import InputPollOption
 from .input_sticker import InputSticker
 from .input_text_message_content import InputTextMessageContent
@@ -155,6 +158,11 @@ from .message_origin_user import MessageOriginUser
 from .message_reaction_count_updated import MessageReactionCountUpdated
 from .message_reaction_updated import MessageReactionUpdated
 from .order_info import OrderInfo
+from .paid_media import PaidMedia
+from .paid_media_info import PaidMediaInfo
+from .paid_media_photo import PaidMediaPhoto
+from .paid_media_preview import PaidMediaPreview
+from .paid_media_video import PaidMediaVideo
 from .passport_data import PassportData
 from .passport_element_error import PassportElementError
 from .passport_element_error_data_field import PassportElementErrorDataField
@@ -203,6 +211,7 @@ from .text_quote import TextQuote
 from .transaction_partner import TransactionPartner
 from .transaction_partner_fragment import TransactionPartnerFragment
 from .transaction_partner_other import TransactionPartnerOther
+from .transaction_partner_telegram_ads import TransactionPartnerTelegramAds
 from .transaction_partner_user import TransactionPartnerUser
 from .update import Update
 from .user import User
@@ -347,6 +356,9 @@ __all__ = (
     "InputMediaPhoto",
     "InputMediaVideo",
     "InputMessageContent",
+    "InputPaidMedia",
+    "InputPaidMediaPhoto",
+    "InputPaidMediaVideo",
     "InputPollOption",
     "InputSticker",
     "InputTextMessageContent",
@@ -379,6 +391,11 @@ __all__ = (
     "MessageReactionCountUpdated",
     "MessageReactionUpdated",
     "OrderInfo",
+    "PaidMedia",
+    "PaidMediaInfo",
+    "PaidMediaPhoto",
+    "PaidMediaPreview",
+    "PaidMediaVideo",
     "PassportData",
     "PassportElementError",
     "PassportElementErrorDataField",
@@ -426,6 +443,7 @@ __all__ = (
     "TransactionPartner",
     "TransactionPartnerFragment",
     "TransactionPartnerOther",
+    "TransactionPartnerTelegramAds",
     "TransactionPartnerUser",
     "UNSET_PARSE_MODE",
     "URLInputFile",

@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 
 class InputPollOption(TelegramObject):
     """
-    This object contains information about one answer option in a poll to send.
+    This object contains information about one answer option in a poll to be sent.
 
     Source: https://core.telegram.org/bots/api#inputpolloption
     """

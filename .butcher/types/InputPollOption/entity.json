@@ -7,9 +7,9 @@
   "object": {
     "anchor": "inputpolloption",
     "name": "InputPollOption",
-    "description": "This object contains information about one answer option in a poll to send.",
-    "html_description": "<p>This object contains information about one answer option in a poll to send.</p>",
-    "rst_description": "This object contains information about one answer option in a poll to send.",
+    "description": "This object contains information about one answer option in a poll to be sent.",
+    "html_description": "<p>This object contains information about one answer option in a poll to be sent.</p>",
+    "rst_description": "This object contains information about one answer option in a poll to be sent.",
     "annotations": [
       {
         "type": "String",

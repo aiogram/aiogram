@@ -1,0 +1,16 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "paidmedia",
+    "name": "PaidMedia",
+    "description": "This object describes paid media. Currently, it can be one of\n - PaidMediaPreview\n - PaidMediaPhoto\n - PaidMediaVideo",
+    "html_description": "<p>This object describes paid media. Currently, it can be one of</p><ul>\n<li><a href=\"#paidmediapreview\">PaidMediaPreview</a></li>\n<li><a href=\"#paidmediaphoto\">PaidMediaPhoto</a></li>\n<li><a href=\"#paidmediavideo\">PaidMediaVideo</a></li>\n</ul>",
+    "rst_description": "This object describes paid media. Currently, it can be one of\n\n - :class:`aiogram.types.paid_media_preview.PaidMediaPreview`\n - :class:`aiogram.types.paid_media_photo.PaidMediaPhoto`\n - :class:`aiogram.types.paid_media_video.PaidMediaVideo`",
+    "annotations": [],
+    "category": "types"
+  }
+}

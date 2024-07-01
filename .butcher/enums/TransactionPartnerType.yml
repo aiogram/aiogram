@@ -10,3 +10,4 @@ multi_parse:
     - TransactionPartnerFragment
     - TransactionPartnerOther
     - TransactionPartnerUser
+    - TransactionPartnerTelegramAds

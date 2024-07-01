@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Optional, Union
 
+from . import TransactionPartnerTelegramAds
 from .base import TelegramObject
 from .custom import DateTime
 
@@ -25,11 +26,21 @@ class StarTransaction(TelegramObject):
     date: DateTime
     """Date the transaction was created in Unix time"""
     source: Optional[
-        Union[TransactionPartnerFragment, TransactionPartnerUser, TransactionPartnerOther]
+        Union[
+            TransactionPartnerUser,
+            TransactionPartnerFragment,
+            TransactionPartnerTelegramAds,
+            TransactionPartnerOther,
+        ]
     ] = None
     """*Optional*. Source of an incoming transaction (e.g., a user purchasing goods or services, Fragment refunding a failed withdrawal). Only for incoming transactions"""
     receiver: Optional[
-        Union[TransactionPartnerFragment, TransactionPartnerUser, TransactionPartnerOther]
+        Union[
+            TransactionPartnerUser,
+            TransactionPartnerFragment,
+            TransactionPartnerTelegramAds,
+            TransactionPartnerOther,
+        ]
     ] = None
     """*Optional*. Receiver of an outgoing transaction (e.g., a user for a purchase refund, Fragment for a withdrawal). Only for outgoing transactions"""
 
@@ -44,10 +55,20 @@ class StarTransaction(TelegramObject):
             amount: int,
             date: DateTime,
             source: Optional[
-                Union[TransactionPartnerFragment, TransactionPartnerUser, TransactionPartnerOther]
+                Union[
+                    TransactionPartnerUser,
+                    TransactionPartnerFragment,
+                    TransactionPartnerTelegramAds,
+                    TransactionPartnerOther,
+                ]
             ] = None,
             receiver: Optional[
-                Union[TransactionPartnerFragment, TransactionPartnerUser, TransactionPartnerOther]
+                Union[
+                    TransactionPartnerUser,
+                    TransactionPartnerFragment,
+                    TransactionPartnerTelegramAds,
+                    TransactionPartnerOther,
+                ]
             ] = None,
             **__pydantic_kwargs: Any,
         ) -> None:

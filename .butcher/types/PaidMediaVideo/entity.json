@@ -1,0 +1,33 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "paidmediavideo",
+    "name": "PaidMediaVideo",
+    "description": "The paid media is a video.",
+    "html_description": "<p>The paid media is a video.</p>",
+    "rst_description": "The paid media is a video.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Type of the paid media, always 'video'",
+        "html_description": "<td>Type of the paid media, always &#8220;video&#8221;</td>",
+        "rst_description": "Type of the paid media, always 'video'\n",
+        "name": "type",
+        "required": true
+      },
+      {
+        "type": "Video",
+        "description": "The video",
+        "html_description": "<td>The video</td>",
+        "rst_description": "The video\n",
+        "name": "video",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

@@ -14,8 +14,6 @@ from aiogram.utils.text_decorations import (
 from ..client.default import Default
 from ..enums import ContentType
 from .custom import DateTime
-from .input_poll_option import InputPollOption
-from .maybe_inaccessible_message import MaybeInaccessibleMessage
 
 if TYPE_CHECKING:
     from ..methods import (
@@ -79,16 +77,19 @@ if TYPE_CHECKING:
     from .input_media_document import InputMediaDocument
     from .input_media_photo import InputMediaPhoto
     from .input_media_video import InputMediaVideo
+    from .input_poll_option import InputPollOption
     from .invoice import Invoice
     from .labeled_price import LabeledPrice
     from .link_preview_options import LinkPreviewOptions
     from .location import Location
+    from .maybe_inaccessible_message import MaybeInaccessibleMessage
     from .message_auto_delete_timer_changed import MessageAutoDeleteTimerChanged
     from .message_entity import MessageEntity
     from .message_origin_channel import MessageOriginChannel
     from .message_origin_chat import MessageOriginChat
     from .message_origin_hidden_user import MessageOriginHiddenUser
     from .message_origin_user import MessageOriginUser
+    from .paid_media_info import PaidMediaInfo
     from .passport_data import PassportData
     from .photo_size import PhotoSize
     from .poll import Poll
@@ -184,6 +185,8 @@ class Message(MaybeInaccessibleMessage):
     """*Optional*. Message is an audio file, information about the file"""
     document: Optional[Document] = None
     """*Optional*. Message is a general file, information about the file"""
+    paid_media: Optional[PaidMediaInfo] = None
+    """*Optional*. Message contains paid media; information about the paid media"""
     photo: Optional[List[PhotoSize]] = None
     """*Optional*. Message is a photo, available sizes of the photo"""
     sticker: Optional[Sticker] = None
@@ -197,7 +200,7 @@ class Message(MaybeInaccessibleMessage):
     voice: Optional[Voice] = None
     """*Optional*. Message is a voice message, information about the file"""
     caption: Optional[str] = None
-    """*Optional*. Caption for the animation, audio, document, photo, video or voice"""
+    """*Optional*. Caption for the animation, audio, document, paid media, photo, video or voice"""
     caption_entities: Optional[List[MessageEntity]] = None
     """*Optional*. For messages with a caption, special entities like usernames, URLs, bot commands, etc. that appear in the caption"""
     show_caption_above_media: Optional[bool] = None
@@ -371,6 +374,7 @@ class Message(MaybeInaccessibleMessage):
             animation: Optional[Animation] = None,
             audio: Optional[Audio] = None,
             document: Optional[Document] = None,
+            paid_media: Optional[PaidMediaInfo] = None,
             photo: Optional[List[PhotoSize]] = None,
             sticker: Optional[Sticker] = None,
             story: Optional[Story] = None,
@@ -468,6 +472,7 @@ class Message(MaybeInaccessibleMessage):
                 animation=animation,
                 audio=audio,
                 document=document,
+                paid_media=paid_media,
                 photo=photo,
                 sticker=sticker,
                 story=story,
@@ -3483,7 +3488,7 @@ class Message(MaybeInaccessibleMessage):
         - :code:`from_chat_id`
         - :code:`message_id`
 
-        Use this method to copy messages of any kind. Service messages, giveaway messages, giveaway winners messages, and invoice messages can't be copied. A quiz :class:`aiogram.methods.poll.Poll` can be copied only if the value of the field *correct_option_id* is known to the bot. The method is analogous to the method :class:`aiogram.methods.forward_message.ForwardMessage`, but the copied message doesn't have a link to the original message. Returns the :class:`aiogram.types.message_id.MessageId` of the sent message on success.
+        Use this method to copy messages of any kind. Service messages, paid media messages, giveaway messages, giveaway winners messages, and invoice messages can't be copied. A quiz :class:`aiogram.methods.poll.Poll` can be copied only if the value of the field *correct_option_id* is known to the bot. The method is analogous to the method :class:`aiogram.methods.forward_message.ForwardMessage`, but the copied message doesn't have a link to the original message. Returns the :class:`aiogram.types.message_id.MessageId` of the sent message on success.
 
         Source: https://core.telegram.org/bots/api#copymessage
 
