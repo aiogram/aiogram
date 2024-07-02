@@ -5,7 +5,6 @@ from typing import TYPE_CHECKING, Any, List, Optional, Union
 from .base import TelegramObject
 
 if TYPE_CHECKING:
-    from .paid_media_info import PaidMediaInfo
     from .animation import Animation
     from .audio import Audio
     from .chat import Chat
@@ -22,6 +21,7 @@ if TYPE_CHECKING:
     from .message_origin_chat import MessageOriginChat
     from .message_origin_hidden_user import MessageOriginHiddenUser
     from .message_origin_user import MessageOriginUser
+    from .paid_media_info import PaidMediaInfo
     from .photo_size import PhotoSize
     from .poll import Poll
     from .sticker import Sticker

@@ -10,10 +10,11 @@ from aiogram.utils.text_decorations import (
     html_decoration,
     markdown_decoration,
 )
-from .custom import DateTime
-from .maybe_inaccessible_message import MaybeInaccessibleMessage
+
 from ..client.default import Default
 from ..enums import ContentType
+from .custom import DateTime
+from .maybe_inaccessible_message import MaybeInaccessibleMessage
 
 if TYPE_CHECKING:
     from ..methods import (
@@ -82,7 +83,6 @@ if TYPE_CHECKING:
     from .labeled_price import LabeledPrice
     from .link_preview_options import LinkPreviewOptions
     from .location import Location
-
     from .message_auto_delete_timer_changed import MessageAutoDeleteTimerChanged
     from .message_entity import MessageEntity
     from .message_origin_channel import MessageOriginChannel
@@ -595,6 +595,8 @@ class Message(MaybeInaccessibleMessage):
             return ContentType.SUPERGROUP_CHAT_CREATED
         if self.channel_chat_created:
             return ContentType.CHANNEL_CHAT_CREATED
+        if self.paid_media:
+            return ContentType.PAID_MEDIA
         if self.passport_data:
             return ContentType.PASSPORT_DATA
         if self.proximity_alert_triggered:
@@ -3435,6 +3437,8 @@ class Message(MaybeInaccessibleMessage):
                 **kwargs,
             ).as_(self._bot)
         if self.poll:
+            from .input_poll_option import InputPollOption
+
             return SendPoll(
                 question=self.poll.question,
                 options=[
