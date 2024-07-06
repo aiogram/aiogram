@@ -1,0 +1,1 @@
+Fixed event context resolving for the callback query that is coming from the business account

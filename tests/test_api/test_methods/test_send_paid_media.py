@@ -2,12 +2,12 @@ import datetime
 
 from aiogram.methods import SendPaidMedia
 from aiogram.types import (
-    Message,
     Chat,
-    PaidMediaPhoto,
-    PaidMediaInfo,
-    PhotoSize,
     InputPaidMediaPhoto,
+    Message,
+    PaidMediaInfo,
+    PaidMediaPhoto,
+    PhotoSize,
 )
 from tests.mocked_bot import MockedBot
 

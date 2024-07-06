@@ -3,8 +3,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, Literal, Union
 
 from ..enums import InputPaidMediaType
-from .input_paid_media import InputPaidMedia
 from .input_file import InputFile
+from .input_paid_media import InputPaidMedia
 
 
 class InputPaidMediaPhoto(InputPaidMedia):

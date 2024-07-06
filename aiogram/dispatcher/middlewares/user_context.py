@@ -80,14 +80,20 @@ class UserContextMiddleware(BaseMiddleware):
         if event.chosen_inline_result:
             return EventContext(user=event.chosen_inline_result.from_user)
         if event.callback_query:
-            if event.callback_query.message:
+            callback_query_message = event.callback_query.message
+            if callback_query_message:
                 return EventContext(
-                    chat=event.callback_query.message.chat,
+                    chat=callback_query_message.chat,
                     user=event.callback_query.from_user,
                     thread_id=(
-                        event.callback_query.message.message_thread_id
-                        if not isinstance(event.callback_query.message, InaccessibleMessage)
-                        and event.callback_query.message.is_topic_message
+                        callback_query_message.message_thread_id
+                        if not isinstance(callback_query_message, InaccessibleMessage)
+                        and callback_query_message.is_topic_message
+                        else None
+                    ),
+                    business_connection_id=(
+                        callback_query_message.business_connection_id
+                        if not isinstance(callback_query_message, InaccessibleMessage)
                         else None
                     ),
                 )

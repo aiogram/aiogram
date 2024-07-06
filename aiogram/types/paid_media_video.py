@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Literal
 
-from .paid_media import PaidMedia
 from ..enums import PaidMediaType
+from .paid_media import PaidMedia
 
 if TYPE_CHECKING:
     from .video import Video
