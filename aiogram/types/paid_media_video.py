@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, Literal
 
 from .paid_media import PaidMedia
+from ..enums import PaidMediaType
 
 if TYPE_CHECKING:
     from .video import Video
@@ -15,7 +16,7 @@ class PaidMediaVideo(PaidMedia):
     Source: https://core.telegram.org/bots/api#paidmediavideo
     """
 
-    type: Literal["video"] = "video"
+    type: Literal[PaidMediaType.VIDEO] = PaidMediaType.VIDEO
     """Type of the paid media, always 'video'"""
     video: Video
     """The video"""
@@ -27,7 +28,7 @@ class PaidMediaVideo(PaidMedia):
         def __init__(
             __pydantic__self__,
             *,
-            type: Literal["video"] = "video",
+            type: Literal[PaidMediaType.VIDEO] = PaidMediaType.VIDEO,
             video: Video,
             **__pydantic_kwargs: Any,
         ) -> None:

@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, Literal, Optional
 
 from .paid_media import PaidMedia
+from ..enums import PaidMediaType
 
 
 class PaidMediaPreview(PaidMedia):
@@ -12,7 +13,7 @@ class PaidMediaPreview(PaidMedia):
     Source: https://core.telegram.org/bots/api#paidmediapreview
     """
 
-    type: Literal["preview"] = "preview"
+    type: Literal[PaidMediaType.PREVIEW] = PaidMediaType.PREVIEW
     """Type of the paid media, always 'preview'"""
     width: Optional[int] = None
     """*Optional*. Media width as defined by the sender"""
@@ -28,7 +29,7 @@ class PaidMediaPreview(PaidMedia):
         def __init__(
             __pydantic__self__,
             *,
-            type: Literal["preview"] = "preview",
+            type: Literal[PaidMediaType.PREVIEW] = PaidMediaType.PREVIEW,
             width: Optional[int] = None,
             height: Optional[int] = None,
             duration: Optional[int] = None,

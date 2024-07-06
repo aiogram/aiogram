@@ -7,3 +7,7 @@ class PaidMediaType(str, Enum):
 
     Source: https://core.telegram.org/bots/api#paidmedia
     """
+
+    PHOTO = "photo"
+    PREVIEW = "preview"
+    VIDEO = "video"

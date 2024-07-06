@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, List, Literal
 
 from .paid_media import PaidMedia
+from ..enums import PaidMediaType
 
 if TYPE_CHECKING:
     from .photo_size import PhotoSize
@@ -15,7 +16,7 @@ class PaidMediaPhoto(PaidMedia):
     Source: https://core.telegram.org/bots/api#paidmediaphoto
     """
 
-    type: Literal["photo"] = "photo"
+    type: Literal[PaidMediaType.PHOTO] = PaidMediaType.PHOTO
     """Type of the paid media, always 'photo'"""
     photo: List[PhotoSize]
     """The photo"""
@@ -27,7 +28,7 @@ class PaidMediaPhoto(PaidMedia):
         def __init__(
             __pydantic__self__,
             *,
-            type: Literal["photo"] = "photo",
+            type: Literal[PaidMediaType.PHOTO] = PaidMediaType.PHOTO,
             photo: List[PhotoSize],
             **__pydantic_kwargs: Any,
         ) -> None:
