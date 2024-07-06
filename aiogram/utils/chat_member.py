@@ -24,7 +24,7 @@ ChatMemberUnion = Union[
 
 ChatMemberCollection = Tuple[Type[ChatMember], ...]
 
-ChatMemberAdapter = TypeAdapter(
+ChatMemberAdapter: TypeAdapter[ChatMemberUnion] = TypeAdapter(
     Annotated[
         ChatMemberUnion,
         Field(discriminator="status"),
