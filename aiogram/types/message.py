@@ -10,10 +10,10 @@ from aiogram.utils.text_decorations import (
     html_decoration,
     markdown_decoration,
 )
-from . import InputPaidMediaPhoto, InputPaidMediaVideo
 
 from ..client.default import Default
 from ..enums import ContentType
+from . import InputPaidMediaPhoto, InputPaidMediaVideo
 from .custom import DateTime
 from .maybe_inaccessible_message import MaybeInaccessibleMessage
 
@@ -38,6 +38,7 @@ if TYPE_CHECKING:
         SendLocation,
         SendMediaGroup,
         SendMessage,
+        SendPaidMedia,
         SendPhoto,
         SendPoll,
         SendSticker,
@@ -48,7 +49,6 @@ if TYPE_CHECKING:
         SetMessageReaction,
         StopMessageLiveLocation,
         UnpinChatMessage,
-        SendPaidMedia,
     )
     from .animation import Animation
     from .audio import Audio

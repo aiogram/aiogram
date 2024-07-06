@@ -91,7 +91,11 @@ class UserContextMiddleware(BaseMiddleware):
                         and callback_query_message.is_topic_message
                         else None
                     ),
-                    business_connection_id=callback_query_message.business_connection_id,
+                    business_connection_id=(
+                        callback_query_message.business_connection_id
+                        if not isinstance(callback_query_message, InaccessibleMessage)
+                        else None
+                    ),
                 )
             return EventContext(user=event.callback_query.from_user)
         if event.shipping_query:
