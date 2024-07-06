@@ -1,1 +1,0 @@
-Added ChatMember resolution tool and updated 2.x migration guide.

@@ -16,6 +16,54 @@ Changelog
 
 .. towncrier release notes start
 
+3.9.0 (2024-07-06)
+===================
+
+Features
+--------
+
+- Added ChatMember resolution tool and updated 2.x migration guide.
+  `#1525 <https://github.com/aiogram/aiogram/issues/1525>`_
+- Added full support of `Bot API 7.6 <https://core.telegram.org/bots/api-changelog#july-01-2024>`_
+
+  - Added the classes :class:`aiogram.types.paid_media.PaidMedia`,
+      :class:`aiogram.types.paid_media_info.PaidMediaInfo`,
+      :class:`aiogram.types.paid_media_preview.PaidMediaPreview`,
+      :class:`aiogram.types.paid_media_photo.PaidMediaPhoto`
+      and :class:`aiogram.types.paid_media_video.PaidMediaVideo`,
+      containing information about paid media.
+  - Added the method :class:`aiogram.methods.send_paid_media.SendPaidMedia`
+      and the classes :class:`aiogram.types.input_paid_media.InputPaidMedia`,
+      :class:`aiogram.types.input_paid_media_photo.InputPaidMediaPhoto`
+      and :class:`aiogram.types.input_paid_media_video.InputPaidMediaVideo`,
+      to support sending paid media.
+  - Documented that the methods :class:`aiogram.methods.copy_message.CopyMessage`
+      and :class:`aiogram.methods.copy_messages.CopyMessages` cannot be used to copy paid media.
+  - Added the field :code:`can_send_paid_media` to the class
+      :class:`aiogram.types.chat_full_info.ChatFullInfo`.
+  - Added the field :code:`paid_media` to the classes
+      :class:`aiogram.types.message.Message` and
+      :class:`aiogram.types.external_reply_info.ExternalReplyInfo`.
+  - Added the class
+      :class:`aiogram.types.transaction_partner_telegram_ads.TransactionPartnerTelegramAds`,
+      containing information about Telegram Star transactions involving the Telegram Ads Platform.
+  - Added the field :code:`invoice_payload` to the class
+      :class:`aiogram.types.transaction_partner_user.TransactionPartnerUser`,
+      containing the bot-specified invoice payload.
+  - Changed the default opening mode for Direct Link Mini Apps.
+  - Added support for launching Web Apps via t.me link in the class
+      :class:`aiogram.types.menu_button_web_app.MenuButtonWebApp`.
+  - Added the field :code:`section_separator_color` to the class :code:`ThemeParams`.
+  `#1533 <https://github.com/aiogram/aiogram/issues/1533>`_
+
+
+Bugfixes
+--------
+
+- Fixed event context resolving for the callback query that is coming from the business account
+  `#1520 <https://github.com/aiogram/aiogram/issues/1520>`_
+
+
 3.8.0 (2024-06-19)
 ===================
 
