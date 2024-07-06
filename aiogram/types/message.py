@@ -10,6 +10,7 @@ from aiogram.utils.text_decorations import (
     html_decoration,
     markdown_decoration,
 )
+from . import InputPaidMediaPhoto, InputPaidMediaVideo
 
 from ..client.default import Default
 from ..enums import ContentType
@@ -47,6 +48,7 @@ if TYPE_CHECKING:
         SetMessageReaction,
         StopMessageLiveLocation,
         UnpinChatMessage,
+        SendPaidMedia,
     )
     from .animation import Animation
     from .audio import Audio
@@ -4097,5 +4099,71 @@ class Message(MaybeInaccessibleMessage):
             message_id=self.message_id,
             reaction=reaction,
             is_big=is_big,
+            **kwargs,
+        ).as_(self._bot)
+
+    def answer_paid_media(
+        self,
+        star_count: int,
+        media: List[Union[InputPaidMediaPhoto, InputPaidMediaVideo]],
+        caption: Optional[str] = None,
+        parse_mode: Optional[str] = None,
+        caption_entities: Optional[List[MessageEntity]] = None,
+        show_caption_above_media: Optional[bool] = None,
+        disable_notification: Optional[bool] = None,
+        protect_content: Optional[bool] = None,
+        reply_parameters: Optional[ReplyParameters] = None,
+        reply_markup: Optional[
+            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
+        ] = None,
+        **kwargs: Any,
+    ) -> SendPaidMedia:
+        """
+        Shortcut for method :class:`aiogram.methods.send_paid_media.SendPaidMedia`
+        will automatically fill method attributes:
+
+        - :code:`chat_id`
+        - :code:`message_thread_id`
+        - :code:`business_connection_id`
+
+        Use this method to send paid media to channel chats. On success, the sent :class:`aiogram.types.message.Message` is returned.
+
+        Source: https://core.telegram.org/bots/api#sendpaidmedia
+
+        :param star_count: The number of Telegram Stars that must be paid to buy access to the media
+        :param media: A JSON-serialized array describing the media to be sent; up to 10 items
+        :param caption: Media caption, 0-1024 characters after entities parsing
+        :param parse_mode: Mode for parsing entities in the media caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.
+        :param caption_entities: A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*
+        :param show_caption_above_media: Pass :code:`True`, if the caption must be shown above the message media
+        :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
+        :param protect_content: Protects the contents of the sent message from forwarding and saving
+        :param reply_parameters: Description of the message to reply to
+        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
+        :return: instance of method :class:`aiogram.methods.send_paid_media.SendPaidMedia`
+        """
+        # DO NOT EDIT MANUALLY!!!
+        # This method was auto-generated via `butcher`
+
+        from aiogram.methods import SendPaidMedia
+
+        assert (
+            self.chat is not None
+        ), "This method can be used only if chat is present in the message."
+
+        return SendPaidMedia(
+            chat_id=self.chat.id,
+            message_thread_id=self.message_thread_id if self.is_topic_message else None,
+            business_connection_id=self.business_connection_id,
+            star_count=star_count,
+            media=media,
+            caption=caption,
+            parse_mode=parse_mode,
+            caption_entities=caption_entities,
+            show_caption_above_media=show_caption_above_media,
+            disable_notification=disable_notification,
+            protect_content=protect_content,
+            reply_parameters=reply_parameters,
+            reply_markup=reply_markup,
             **kwargs,
         ).as_(self._bot)

@@ -35,6 +35,7 @@ from aiogram.methods import (
     StopMessageLiveLocation,
     TelegramMethod,
     UnpinChatMessage,
+    SendPaidMedia,
 )
 from aiogram.types import (
     UNSET_PARSE_MODE,
@@ -798,6 +799,7 @@ class TestMessage:
             ["video", dict(video="video"), SendVideo],
             ["video_note", dict(video_note="video_note"), SendVideoNote],
             ["voice", dict(voice="voice"), SendVoice],
+            ["paid_media", dict(media=[], star_count=42), SendPaidMedia],
         ],
     )
     @pytest.mark.parametrize("alias_type", ["reply", "answer"])
@@ -825,9 +827,14 @@ class TestMessage:
                 SendVideo,
                 SendVideoNote,
                 SendVoice,
+                SendPaidMedia,
             ]
         ],
     ):
+        if alias_for_method == "paid_media" and alias_type == "reply":
+            # Replies should be completely reworked
+            pytest.skip("Reply alias for paid media is not implemented yet.")
+
         message = Message(
             message_id=42, chat=Chat(id=42, type="private"), date=datetime.datetime.now()
         )
@@ -840,10 +847,11 @@ class TestMessage:
         assert isinstance(api_method, method_class)
 
         assert api_method.chat_id == message.chat.id
-        if alias_type == "reply":
-            assert api_method.reply_to_message_id == message.message_id
-        else:
-            assert api_method.reply_to_message_id is None
+        if hasattr(api_method, "reply_to_message_id"):
+            if alias_type == "reply":
+                assert api_method.reply_to_message_id == message.message_id
+            else:
+                assert api_method.reply_to_message_id is None
 
         for key, value in kwargs.items():
             assert getattr(api_method, key) == value

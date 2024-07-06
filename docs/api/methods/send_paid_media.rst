@@ -43,3 +43,9 @@ As reply into Webhook in handler
 .. code-block:: python
 
     return SendPaidMedia(...)
+
+
+As shortcut from received object
+--------------------------------
+
+- :meth:`aiogram.types.message.Message.answer_paid_media`
