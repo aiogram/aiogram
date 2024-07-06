@@ -82,6 +82,7 @@ from .send_invoice import SendInvoice
 from .send_location import SendLocation
 from .send_media_group import SendMediaGroup
 from .send_message import SendMessage
+from .send_paid_media import SendPaidMedia
 from .send_photo import SendPhoto
 from .send_poll import SendPoll
 from .send_sticker import SendSticker
@@ -209,6 +210,7 @@ __all__ = (
     "SendLocation",
     "SendMediaGroup",
     "SendMessage",
+    "SendPaidMedia",
     "SendPhoto",
     "SendPoll",
     "SendSticker",

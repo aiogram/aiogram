@@ -9,11 +9,13 @@ from .dice_emoji import DiceEmoji
 from .encrypted_passport_element import EncryptedPassportElement
 from .inline_query_result_type import InlineQueryResultType
 from .input_media_type import InputMediaType
+from .input_paid_media_type import InputPaidMediaType
 from .keyboard_button_poll_type_type import KeyboardButtonPollTypeType
 from .mask_position_point import MaskPositionPoint
 from .menu_button_type import MenuButtonType
 from .message_entity_type import MessageEntityType
 from .message_origin_type import MessageOriginType
+from .paid_media_type import PaidMediaType
 from .parse_mode import ParseMode
 from .passport_element_error_type import PassportElementErrorType
 from .poll_type import PollType
@@ -37,11 +39,13 @@ __all__ = (
     "EncryptedPassportElement",
     "InlineQueryResultType",
     "InputMediaType",
+    "InputPaidMediaType",
     "KeyboardButtonPollTypeType",
     "MaskPositionPoint",
     "MenuButtonType",
     "MessageEntityType",
     "MessageOriginType",
+    "PaidMediaType",
     "ParseMode",
     "PassportElementErrorType",
     "PollType",

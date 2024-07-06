@@ -26,6 +26,14 @@
         "rst_description": "Information about the user\n",
         "name": "user",
         "required": true
+      },
+      {
+        "type": "String",
+        "description": "Bot-specified invoice payload",
+        "html_description": "<td><em>Optional</em>. Bot-specified invoice payload</td>",
+        "rst_description": "*Optional*. Bot-specified invoice payload\n",
+        "name": "invoice_payload",
+        "required": false
       }
     ],
     "category": "types"

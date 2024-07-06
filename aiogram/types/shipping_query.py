@@ -25,7 +25,7 @@ class ShippingQuery(TelegramObject):
     from_user: User = Field(..., alias="from")
     """User who sent the query"""
     invoice_payload: str
-    """Bot specified invoice payload"""
+    """Bot-specified invoice payload"""
     shipping_address: ShippingAddress
     """User specified shipping address"""
 

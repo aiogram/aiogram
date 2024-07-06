@@ -11,3 +11,4 @@ class TransactionPartnerType(str, Enum):
     FRAGMENT = "fragment"
     OTHER = "other"
     USER = "user"
+    TELEGRAM_ADS = "telegram_ads"

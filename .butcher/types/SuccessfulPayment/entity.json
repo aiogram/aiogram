@@ -29,9 +29,9 @@
       },
       {
         "type": "String",
-        "description": "Bot specified invoice payload",
-        "html_description": "<td>Bot specified invoice payload</td>",
-        "rst_description": "Bot specified invoice payload\n",
+        "description": "Bot-specified invoice payload",
+        "html_description": "<td>Bot-specified invoice payload</td>",
+        "rst_description": "Bot-specified invoice payload\n",
         "name": "invoice_payload",
         "required": true
       },

@@ -1,0 +1,16 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "inputpaidmedia",
+    "name": "InputPaidMedia",
+    "description": "This object describes the paid media to be sent. Currently, it can be one of\n - InputPaidMediaPhoto\n - InputPaidMediaVideo",
+    "html_description": "<p>This object describes the paid media to be sent. Currently, it can be one of</p><ul>\n<li><a href=\"#inputpaidmediaphoto\">InputPaidMediaPhoto</a></li>\n<li><a href=\"#inputpaidmediavideo\">InputPaidMediaVideo</a></li>\n</ul>",
+    "rst_description": "This object describes the paid media to be sent. Currently, it can be one of\n\n - :class:`aiogram.types.input_paid_media_photo.InputPaidMediaPhoto`\n - :class:`aiogram.types.input_paid_media_video.InputPaidMediaVideo`",
+    "annotations": [],
+    "category": "types"
+  }
+}

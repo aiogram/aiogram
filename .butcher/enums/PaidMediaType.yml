@@ -1,0 +1,13 @@
+name: PaidMediaType
+description: |
+  This object represents the type of a media in a paid message.
+
+  Source: https://core.telegram.org/bots/api#paidmedia
+multi_parse:
+  format: rst
+  attribute: type
+  regexp: "'([a-z]+)'"
+  entities:
+    - PaidMediaPhoto
+    - PaidMediaPreview
+    - PaidMediaVideo

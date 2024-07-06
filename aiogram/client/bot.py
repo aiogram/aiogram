@@ -106,6 +106,7 @@ from ..methods import (
     SendLocation,
     SendMediaGroup,
     SendMessage,
+    SendPaidMedia,
     SendPhoto,
     SendPoll,
     SendSticker,
@@ -204,6 +205,8 @@ from ..types import (
     InputMediaDocument,
     InputMediaPhoto,
     InputMediaVideo,
+    InputPaidMediaPhoto,
+    InputPaidMediaVideo,
     InputPollOption,
     InputSticker,
     LabeledPrice,
@@ -862,7 +865,7 @@ class Bot:
         request_timeout: Optional[int] = None,
     ) -> MessageId:
         """
-        Use this method to copy messages of any kind. Service messages, giveaway messages, giveaway winners messages, and invoice messages can't be copied. A quiz :class:`aiogram.methods.poll.Poll` can be copied only if the value of the field *correct_option_id* is known to the bot. The method is analogous to the method :class:`aiogram.methods.forward_message.ForwardMessage`, but the copied message doesn't have a link to the original message. Returns the :class:`aiogram.types.message_id.MessageId` of the sent message on success.
+        Use this method to copy messages of any kind. Service messages, paid media messages, giveaway messages, giveaway winners messages, and invoice messages can't be copied. A quiz :class:`aiogram.methods.poll.Poll` can be copied only if the value of the field *correct_option_id* is known to the bot. The method is analogous to the method :class:`aiogram.methods.forward_message.ForwardMessage`, but the copied message doesn't have a link to the original message. Returns the :class:`aiogram.types.message_id.MessageId` of the sent message on success.
 
         Source: https://core.telegram.org/bots/api#copymessage
 
@@ -4405,7 +4408,7 @@ class Bot:
         request_timeout: Optional[int] = None,
     ) -> List[MessageId]:
         """
-        Use this method to copy messages of any kind. If some of the specified messages can't be found or copied, they are skipped. Service messages, giveaway messages, giveaway winners messages, and invoice messages can't be copied. A quiz :class:`aiogram.methods.poll.Poll` can be copied only if the value of the field *correct_option_id* is known to the bot. The method is analogous to the method :class:`aiogram.methods.forward_messages.ForwardMessages`, but the copied messages don't have a link to the original message. Album grouping is kept for copied messages. On success, an array of :class:`aiogram.types.message_id.MessageId` of the sent messages is returned.
+        Use this method to copy messages of any kind. If some of the specified messages can't be found or copied, they are skipped. Service messages, paid media messages, giveaway messages, giveaway winners messages, and invoice messages can't be copied. A quiz :class:`aiogram.methods.poll.Poll` can be copied only if the value of the field *correct_option_id* is known to the bot. The method is analogous to the method :class:`aiogram.methods.forward_messages.ForwardMessages`, but the copied messages don't have a link to the original message. Album grouping is kept for copied messages. On success, an array of :class:`aiogram.types.message_id.MessageId` of the sent messages is returned.
 
         Source: https://core.telegram.org/bots/api#copymessages
 
@@ -4633,5 +4636,57 @@ class Bot:
         call = GetStarTransactions(
             offset=offset,
             limit=limit,
+        )
+        return await self(call, request_timeout=request_timeout)
+
+    async def send_paid_media(
+        self,
+        chat_id: Union[int, str],
+        star_count: int,
+        media: List[Union[InputPaidMediaPhoto, InputPaidMediaVideo]],
+        caption: Optional[str] = None,
+        parse_mode: Optional[str] = None,
+        caption_entities: Optional[List[MessageEntity]] = None,
+        show_caption_above_media: Optional[bool] = None,
+        disable_notification: Optional[bool] = None,
+        protect_content: Optional[bool] = None,
+        reply_parameters: Optional[ReplyParameters] = None,
+        reply_markup: Optional[
+            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
+        ] = None,
+        request_timeout: Optional[int] = None,
+    ) -> Message:
+        """
+        Use this method to send paid media to channel chats. On success, the sent :class:`aiogram.types.message.Message` is returned.
+
+        Source: https://core.telegram.org/bots/api#sendpaidmedia
+
+        :param chat_id: Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
+        :param star_count: The number of Telegram Stars that must be paid to buy access to the media
+        :param media: A JSON-serialized array describing the media to be sent; up to 10 items
+        :param caption: Media caption, 0-1024 characters after entities parsing
+        :param parse_mode: Mode for parsing entities in the media caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.
+        :param caption_entities: A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*
+        :param show_caption_above_media: Pass :code:`True`, if the caption must be shown above the message media
+        :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
+        :param protect_content: Protects the contents of the sent message from forwarding and saving
+        :param reply_parameters: Description of the message to reply to
+        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
+        :param request_timeout: Request timeout
+        :return: On success, the sent :class:`aiogram.types.message.Message` is returned.
+        """
+
+        call = SendPaidMedia(
+            chat_id=chat_id,
+            star_count=star_count,
+            media=media,
+            caption=caption,
+            parse_mode=parse_mode,
+            caption_entities=caption_entities,
+            show_caption_above_media=show_caption_above_media,
+            disable_notification=disable_notification,
+            protect_content=protect_content,
+            reply_parameters=reply_parameters,
+            reply_markup=reply_markup,
         )
         return await self(call, request_timeout=request_timeout)

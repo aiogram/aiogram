@@ -13,9 +13,9 @@ class Location(TelegramObject):
     """
 
     latitude: float
-    """Latitude as defined by sender"""
+    """Latitude as defined by the sender"""
     longitude: float
-    """Longitude as defined by sender"""
+    """Longitude as defined by the sender"""
     horizontal_accuracy: Optional[float] = None
     """*Optional*. The radius of uncertainty for the location, measured in meters; 0-1500"""
     live_period: Optional[int] = None
