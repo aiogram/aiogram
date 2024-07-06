@@ -1,9 +1,10 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Literal
+from typing import TYPE_CHECKING, Any, Literal, Union
 
 from ..enums import InputPaidMediaType
 from .input_paid_media import InputPaidMedia
+from .input_file import InputFile
 
 
 class InputPaidMediaPhoto(InputPaidMedia):
@@ -15,7 +16,7 @@ class InputPaidMediaPhoto(InputPaidMedia):
 
     type: Literal[InputPaidMediaType.PHOTO] = InputPaidMediaType.PHOTO
     """Type of the media, must be *photo*"""
-    media: str
+    media: Union[str, InputFile]
     """File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass 'attach://<file_attach_name>' to upload a new one using multipart/form-data under <file_attach_name> name. :ref:`More information on Sending Files » <sending-files>`"""
 
     if TYPE_CHECKING:
@@ -26,7 +27,7 @@ class InputPaidMediaPhoto(InputPaidMedia):
             __pydantic__self__,
             *,
             type: Literal[InputPaidMediaType.PHOTO] = InputPaidMediaType.PHOTO,
-            media: str,
+            media: Union[str, InputFile],
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!
