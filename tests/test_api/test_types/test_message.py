@@ -24,6 +24,7 @@ from aiogram.methods import (
     SendLocation,
     SendMediaGroup,
     SendMessage,
+    SendPaidMedia,
     SendPhoto,
     SendPoll,
     SendSticker,
@@ -35,7 +36,6 @@ from aiogram.methods import (
     StopMessageLiveLocation,
     TelegramMethod,
     UnpinChatMessage,
-    SendPaidMedia,
 )
 from aiogram.types import (
     UNSET_PARSE_MODE,
