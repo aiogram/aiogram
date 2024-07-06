@@ -260,6 +260,14 @@
         "required": false
       },
       {
+        "type": "True",
+        "description": "True, if paid media messages can be sent or forwarded to the channel chat. The field is available only for channel chats.",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if paid media messages can be sent or forwarded to the channel chat. The field is available only for channel chats.</td>",
+        "rst_description": "*Optional*. :code:`True`, if paid media messages can be sent or forwarded to the channel chat. The field is available only for channel chats.\n",
+        "name": "can_send_paid_media",
+        "required": false
+      },
+      {
         "type": "Integer",
         "description": "For supergroups, the minimum allowed delay between consecutive messages sent by each unprivileged user; in seconds",
         "html_description": "<td><em>Optional</em>. For supergroups, the minimum allowed delay between consecutive messages sent by each unprivileged user; in seconds</td>",

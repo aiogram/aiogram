@@ -87,6 +87,8 @@ class ChatFullInfo(Chat):
     """*Optional*. The most recent pinned message (by sending date)"""
     permissions: Optional[ChatPermissions] = None
     """*Optional*. Default chat member permissions, for groups and supergroups"""
+    can_send_paid_media: Optional[bool] = None
+    """*Optional*. :code:`True`, if paid media messages can be sent or forwarded to the channel chat. The field is available only for channel chats."""
     slow_mode_delay: Optional[int] = None
     """*Optional*. For supergroups, the minimum allowed delay between consecutive messages sent by each unprivileged user; in seconds"""
     unrestrict_boost_count: Optional[int] = None
@@ -152,6 +154,7 @@ class ChatFullInfo(Chat):
             invite_link: Optional[str] = None,
             pinned_message: Optional[Message] = None,
             permissions: Optional[ChatPermissions] = None,
+            can_send_paid_media: Optional[bool] = None,
             slow_mode_delay: Optional[int] = None,
             unrestrict_boost_count: Optional[int] = None,
             message_auto_delete_time: Optional[int] = None,
@@ -202,6 +205,7 @@ class ChatFullInfo(Chat):
                 invite_link=invite_link,
                 pinned_message=pinned_message,
                 permissions=permissions,
+                can_send_paid_media=can_send_paid_media,
                 slow_mode_delay=slow_mode_delay,
                 unrestrict_boost_count=unrestrict_boost_count,
                 message_auto_delete_time=message_auto_delete_time,

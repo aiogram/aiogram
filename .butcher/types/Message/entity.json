@@ -244,6 +244,14 @@
         "required": false
       },
       {
+        "type": "PaidMediaInfo",
+        "description": "Message contains paid media; information about the paid media",
+        "html_description": "<td><em>Optional</em>. Message contains paid media; information about the paid media</td>",
+        "rst_description": "*Optional*. Message contains paid media; information about the paid media\n",
+        "name": "paid_media",
+        "required": false
+      },
+      {
         "type": "Array of PhotoSize",
         "description": "Message is a photo, available sizes of the photo",
         "html_description": "<td><em>Optional</em>. Message is a photo, available sizes of the photo</td>",
@@ -293,9 +301,9 @@
       },
       {
         "type": "String",
-        "description": "Caption for the animation, audio, document, photo, video or voice",
-        "html_description": "<td><em>Optional</em>. Caption for the animation, audio, document, photo, video or voice</td>",
-        "rst_description": "*Optional*. Caption for the animation, audio, document, photo, video or voice\n",
+        "description": "Caption for the animation, audio, document, paid media, photo, video or voice",
+        "html_description": "<td><em>Optional</em>. Caption for the animation, audio, document, paid media, photo, video or voice</td>",
+        "rst_description": "*Optional*. Caption for the animation, audio, document, paid media, photo, video or voice\n",
         "name": "caption",
         "required": false
       },

@@ -1,7 +1,7 @@
 {
   "api": {
-    "version": "7.5",
-    "release_date": "2024-06-18"
+    "version": "7.6",
+    "release_date": "2024-07-01"
   },
   "items": [
     {
@@ -854,6 +854,14 @@
               "required": false
             },
             {
+              "type": "True",
+              "description": "True, if paid media messages can be sent or forwarded to the channel chat. The field is available only for channel chats.",
+              "html_description": "<td><em>Optional</em>. <em>True</em>, if paid media messages can be sent or forwarded to the channel chat. The field is available only for channel chats.</td>",
+              "rst_description": "*Optional*. :code:`True`, if paid media messages can be sent or forwarded to the channel chat. The field is available only for channel chats.\n",
+              "name": "can_send_paid_media",
+              "required": false
+            },
+            {
               "type": "Integer",
               "description": "For supergroups, the minimum allowed delay between consecutive messages sent by each unprivileged user; in seconds",
               "html_description": "<td><em>Optional</em>. For supergroups, the minimum allowed delay between consecutive messages sent by each unprivileged user; in seconds</td>",
@@ -1192,6 +1200,14 @@
               "required": false
             },
             {
+              "type": "PaidMediaInfo",
+              "description": "Message contains paid media; information about the paid media",
+              "html_description": "<td><em>Optional</em>. Message contains paid media; information about the paid media</td>",
+              "rst_description": "*Optional*. Message contains paid media; information about the paid media\n",
+              "name": "paid_media",
+              "required": false
+            },
+            {
               "type": "Array of PhotoSize",
               "description": "Message is a photo, available sizes of the photo",
               "html_description": "<td><em>Optional</em>. Message is a photo, available sizes of the photo</td>",
@@ -1241,9 +1257,9 @@
             },
             {
               "type": "String",
-              "description": "Caption for the animation, audio, document, photo, video or voice",
-              "html_description": "<td><em>Optional</em>. Caption for the animation, audio, document, photo, video or voice</td>",
-              "rst_description": "*Optional*. Caption for the animation, audio, document, photo, video or voice\n",
+              "description": "Caption for the animation, audio, document, paid media, photo, video or voice",
+              "html_description": "<td><em>Optional</em>. Caption for the animation, audio, document, paid media, photo, video or voice</td>",
+              "rst_description": "*Optional*. Caption for the animation, audio, document, paid media, photo, video or voice\n",
               "name": "caption",
               "required": false
             },
@@ -1859,6 +1875,14 @@
               "required": false
             },
             {
+              "type": "PaidMediaInfo",
+              "description": "Message contains paid media; information about the paid media",
+              "html_description": "<td><em>Optional</em>. Message contains paid media; information about the paid media</td>",
+              "rst_description": "*Optional*. Message contains paid media; information about the paid media\n",
+              "name": "paid_media",
+              "required": false
+            },
+            {
               "type": "Array of PhotoSize",
               "description": "Message is a photo, available sizes of the photo",
               "html_description": "<td><em>Optional</em>. Message is a photo, available sizes of the photo</td>",
@@ -2299,49 +2323,49 @@
             },
             {
               "type": "Integer",
-              "description": "Video width as defined by sender",
-              "html_description": "<td>Video width as defined by sender</td>",
-              "rst_description": "Video width as defined by sender\n",
+              "description": "Video width as defined by the sender",
+              "html_description": "<td>Video width as defined by the sender</td>",
+              "rst_description": "Video width as defined by the sender\n",
               "name": "width",
               "required": true
             },
             {
               "type": "Integer",
-              "description": "Video height as defined by sender",
-              "html_description": "<td>Video height as defined by sender</td>",
-              "rst_description": "Video height as defined by sender\n",
+              "description": "Video height as defined by the sender",
+              "html_description": "<td>Video height as defined by the sender</td>",
+              "rst_description": "Video height as defined by the sender\n",
               "name": "height",
               "required": true
             },
             {
               "type": "Integer",
-              "description": "Duration of the video in seconds as defined by sender",
-              "html_description": "<td>Duration of the video in seconds as defined by sender</td>",
-              "rst_description": "Duration of the video in seconds as defined by sender\n",
+              "description": "Duration of the video in seconds as defined by the sender",
+              "html_description": "<td>Duration of the video in seconds as defined by the sender</td>",
+              "rst_description": "Duration of the video in seconds as defined by the sender\n",
               "name": "duration",
               "required": true
             },
             {
               "type": "PhotoSize",
-              "description": "Animation thumbnail as defined by sender",
-              "html_description": "<td><em>Optional</em>. Animation thumbnail as defined by sender</td>",
-              "rst_description": "*Optional*. Animation thumbnail as defined by sender\n",
+              "description": "Animation thumbnail as defined by the sender",
+              "html_description": "<td><em>Optional</em>. Animation thumbnail as defined by the sender</td>",
+              "rst_description": "*Optional*. Animation thumbnail as defined by the sender\n",
               "name": "thumbnail",
               "required": false
             },
             {
               "type": "String",
-              "description": "Original animation filename as defined by sender",
-              "html_description": "<td><em>Optional</em>. Original animation filename as defined by sender</td>",
-              "rst_description": "*Optional*. Original animation filename as defined by sender\n",
+              "description": "Original animation filename as defined by the sender",
+              "html_description": "<td><em>Optional</em>. Original animation filename as defined by the sender</td>",
+              "rst_description": "*Optional*. Original animation filename as defined by the sender\n",
               "name": "file_name",
               "required": false
             },
             {
               "type": "String",
-              "description": "MIME type of the file as defined by sender",
-              "html_description": "<td><em>Optional</em>. MIME type of the file as defined by sender</td>",
-              "rst_description": "*Optional*. MIME type of the file as defined by sender\n",
+              "description": "MIME type of the file as defined by the sender",
+              "html_description": "<td><em>Optional</em>. MIME type of the file as defined by the sender</td>",
+              "rst_description": "*Optional*. MIME type of the file as defined by the sender\n",
               "name": "mime_type",
               "required": false
             },
@@ -2381,41 +2405,41 @@
             },
             {
               "type": "Integer",
-              "description": "Duration of the audio in seconds as defined by sender",
-              "html_description": "<td>Duration of the audio in seconds as defined by sender</td>",
-              "rst_description": "Duration of the audio in seconds as defined by sender\n",
+              "description": "Duration of the audio in seconds as defined by the sender",
+              "html_description": "<td>Duration of the audio in seconds as defined by the sender</td>",
+              "rst_description": "Duration of the audio in seconds as defined by the sender\n",
               "name": "duration",
               "required": true
             },
             {
               "type": "String",
-              "description": "Performer of the audio as defined by sender or by audio tags",
-              "html_description": "<td><em>Optional</em>. Performer of the audio as defined by sender or by audio tags</td>",
-              "rst_description": "*Optional*. Performer of the audio as defined by sender or by audio tags\n",
+              "description": "Performer of the audio as defined by the sender or by audio tags",
+              "html_description": "<td><em>Optional</em>. Performer of the audio as defined by the sender or by audio tags</td>",
+              "rst_description": "*Optional*. Performer of the audio as defined by the sender or by audio tags\n",
               "name": "performer",
               "required": false
             },
             {
               "type": "String",
-              "description": "Title of the audio as defined by sender or by audio tags",
-              "html_description": "<td><em>Optional</em>. Title of the audio as defined by sender or by audio tags</td>",
-              "rst_description": "*Optional*. Title of the audio as defined by sender or by audio tags\n",
+              "description": "Title of the audio as defined by the sender or by audio tags",
+              "html_description": "<td><em>Optional</em>. Title of the audio as defined by the sender or by audio tags</td>",
+              "rst_description": "*Optional*. Title of the audio as defined by the sender or by audio tags\n",
               "name": "title",
               "required": false
             },
             {
               "type": "String",
-              "description": "Original filename as defined by sender",
-              "html_description": "<td><em>Optional</em>. Original filename as defined by sender</td>",
-              "rst_description": "*Optional*. Original filename as defined by sender\n",
+              "description": "Original filename as defined by the sender",
+              "html_description": "<td><em>Optional</em>. Original filename as defined by the sender</td>",
+              "rst_description": "*Optional*. Original filename as defined by the sender\n",
               "name": "file_name",
               "required": false
             },
             {
               "type": "String",
-              "description": "MIME type of the file as defined by sender",
-              "html_description": "<td><em>Optional</em>. MIME type of the file as defined by sender</td>",
-              "rst_description": "*Optional*. MIME type of the file as defined by sender\n",
+              "description": "MIME type of the file as defined by the sender",
+              "html_description": "<td><em>Optional</em>. MIME type of the file as defined by the sender</td>",
+              "rst_description": "*Optional*. MIME type of the file as defined by the sender\n",
               "name": "mime_type",
               "required": false
             },
@@ -2463,25 +2487,25 @@
             },
             {
               "type": "PhotoSize",
-              "description": "Document thumbnail as defined by sender",
-              "html_description": "<td><em>Optional</em>. Document thumbnail as defined by sender</td>",
-              "rst_description": "*Optional*. Document thumbnail as defined by sender\n",
+              "description": "Document thumbnail as defined by the sender",
+              "html_description": "<td><em>Optional</em>. Document thumbnail as defined by the sender</td>",
+              "rst_description": "*Optional*. Document thumbnail as defined by the sender\n",
               "name": "thumbnail",
               "required": false
             },
             {
               "type": "String",
-              "description": "Original filename as defined by sender",
-              "html_description": "<td><em>Optional</em>. Original filename as defined by sender</td>",
-              "rst_description": "*Optional*. Original filename as defined by sender\n",
+              "description": "Original filename as defined by the sender",
+              "html_description": "<td><em>Optional</em>. Original filename as defined by the sender</td>",
+              "rst_description": "*Optional*. Original filename as defined by the sender\n",
               "name": "file_name",
               "required": false
             },
             {
               "type": "String",
-              "description": "MIME type of the file as defined by sender",
-              "html_description": "<td><em>Optional</em>. MIME type of the file as defined by sender</td>",
-              "rst_description": "*Optional*. MIME type of the file as defined by sender\n",
+              "description": "MIME type of the file as defined by the sender",
+              "html_description": "<td><em>Optional</em>. MIME type of the file as defined by the sender</td>",
+              "rst_description": "*Optional*. MIME type of the file as defined by the sender\n",
               "name": "mime_type",
               "required": false
             },
@@ -2547,25 +2571,25 @@
             },
             {
               "type": "Integer",
-              "description": "Video width as defined by sender",
-              "html_description": "<td>Video width as defined by sender</td>",
-              "rst_description": "Video width as defined by sender\n",
+              "description": "Video width as defined by the sender",
+              "html_description": "<td>Video width as defined by the sender</td>",
+              "rst_description": "Video width as defined by the sender\n",
               "name": "width",
               "required": true
             },
             {
               "type": "Integer",
-              "description": "Video height as defined by sender",
-              "html_description": "<td>Video height as defined by sender</td>",
-              "rst_description": "Video height as defined by sender\n",
+              "description": "Video height as defined by the sender",
+              "html_description": "<td>Video height as defined by the sender</td>",
+              "rst_description": "Video height as defined by the sender\n",
               "name": "height",
               "required": true
             },
             {
               "type": "Integer",
-              "description": "Duration of the video in seconds as defined by sender",
-              "html_description": "<td>Duration of the video in seconds as defined by sender</td>",
-              "rst_description": "Duration of the video in seconds as defined by sender\n",
+              "description": "Duration of the video in seconds as defined by the sender",
+              "html_description": "<td>Duration of the video in seconds as defined by the sender</td>",
+              "rst_description": "Duration of the video in seconds as defined by the sender\n",
               "name": "duration",
               "required": true
             },
@@ -2579,17 +2603,17 @@
             },
             {
               "type": "String",
-              "description": "Original filename as defined by sender",
-              "html_description": "<td><em>Optional</em>. Original filename as defined by sender</td>",
-              "rst_description": "*Optional*. Original filename as defined by sender\n",
+              "description": "Original filename as defined by the sender",
+              "html_description": "<td><em>Optional</em>. Original filename as defined by the sender</td>",
+              "rst_description": "*Optional*. Original filename as defined by the sender\n",
               "name": "file_name",
               "required": false
             },
             {
               "type": "String",
-              "description": "MIME type of the file as defined by sender",
-              "html_description": "<td><em>Optional</em>. MIME type of the file as defined by sender</td>",
-              "rst_description": "*Optional*. MIME type of the file as defined by sender\n",
+              "description": "MIME type of the file as defined by the sender",
+              "html_description": "<td><em>Optional</em>. MIME type of the file as defined by the sender</td>",
+              "rst_description": "*Optional*. MIME type of the file as defined by the sender\n",
               "name": "mime_type",
               "required": false
             },
@@ -2629,17 +2653,17 @@
             },
             {
               "type": "Integer",
-              "description": "Video width and height (diameter of the video message) as defined by sender",
-              "html_description": "<td>Video width and height (diameter of the video message) as defined by sender</td>",
-              "rst_description": "Video width and height (diameter of the video message) as defined by sender\n",
+              "description": "Video width and height (diameter of the video message) as defined by the sender",
+              "html_description": "<td>Video width and height (diameter of the video message) as defined by the sender</td>",
+              "rst_description": "Video width and height (diameter of the video message) as defined by the sender\n",
               "name": "length",
               "required": true
             },
             {
               "type": "Integer",
-              "description": "Duration of the video in seconds as defined by sender",
-              "html_description": "<td>Duration of the video in seconds as defined by sender</td>",
-              "rst_description": "Duration of the video in seconds as defined by sender\n",
+              "description": "Duration of the video in seconds as defined by the sender",
+              "html_description": "<td>Duration of the video in seconds as defined by the sender</td>",
+              "rst_description": "Duration of the video in seconds as defined by the sender\n",
               "name": "duration",
               "required": true
             },
@@ -2687,17 +2711,17 @@
             },
             {
               "type": "Integer",
-              "description": "Duration of the audio in seconds as defined by sender",
-              "html_description": "<td>Duration of the audio in seconds as defined by sender</td>",
-              "rst_description": "Duration of the audio in seconds as defined by sender\n",
+              "description": "Duration of the audio in seconds as defined by the sender",
+              "html_description": "<td>Duration of the audio in seconds as defined by the sender</td>",
+              "rst_description": "Duration of the audio in seconds as defined by the sender\n",
               "name": "duration",
               "required": true
             },
             {
               "type": "String",
-              "description": "MIME type of the file as defined by sender",
-              "html_description": "<td><em>Optional</em>. MIME type of the file as defined by sender</td>",
-              "rst_description": "*Optional*. MIME type of the file as defined by sender\n",
+              "description": "MIME type of the file as defined by the sender",
+              "html_description": "<td><em>Optional</em>. MIME type of the file as defined by the sender</td>",
+              "rst_description": "*Optional*. MIME type of the file as defined by the sender\n",
               "name": "mime_type",
               "required": false
             },
@@ -2708,6 +2732,135 @@
               "rst_description": "*Optional*. File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value.\n",
               "name": "file_size",
               "required": false
+            }
+          ],
+          "category": "types"
+        },
+        {
+          "anchor": "paidmediainfo",
+          "name": "PaidMediaInfo",
+          "description": "Describes the paid media added to a message.",
+          "html_description": "<p>Describes the paid media added to a message.</p>",
+          "rst_description": "Describes the paid media added to a message.",
+          "annotations": [
+            {
+              "type": "Integer",
+              "description": "The number of Telegram Stars that must be paid to buy access to the media",
+              "html_description": "<td>The number of Telegram Stars that must be paid to buy access to the media</td>",
+              "rst_description": "The number of Telegram Stars that must be paid to buy access to the media\n",
+              "name": "star_count",
+              "required": true
+            },
+            {
+              "type": "Array of PaidMedia",
+              "description": "Information about the paid media",
+              "html_description": "<td>Information about the paid media</td>",
+              "rst_description": "Information about the paid media\n",
+              "name": "paid_media",
+              "required": true
+            }
+          ],
+          "category": "types"
+        },
+        {
+          "anchor": "paidmedia",
+          "name": "PaidMedia",
+          "description": "This object describes paid media. Currently, it can be one of\n - PaidMediaPreview\n - PaidMediaPhoto\n - PaidMediaVideo",
+          "html_description": "<p>This object describes paid media. Currently, it can be one of</p><ul>\n<li><a href=\"#paidmediapreview\">PaidMediaPreview</a></li>\n<li><a href=\"#paidmediaphoto\">PaidMediaPhoto</a></li>\n<li><a href=\"#paidmediavideo\">PaidMediaVideo</a></li>\n</ul>",
+          "rst_description": "This object describes paid media. Currently, it can be one of\n\n - :class:`aiogram.types.paid_media_preview.PaidMediaPreview`\n - :class:`aiogram.types.paid_media_photo.PaidMediaPhoto`\n - :class:`aiogram.types.paid_media_video.PaidMediaVideo`",
+          "annotations": [],
+          "category": "types"
+        },
+        {
+          "anchor": "paidmediapreview",
+          "name": "PaidMediaPreview",
+          "description": "The paid media isn't available before the payment.",
+          "html_description": "<p>The paid media isn't available before the payment.</p>",
+          "rst_description": "The paid media isn't available before the payment.",
+          "annotations": [
+            {
+              "type": "String",
+              "description": "Type of the paid media, always 'preview'",
+              "html_description": "<td>Type of the paid media, always &#8220;preview&#8221;</td>",
+              "rst_description": "Type of the paid media, always 'preview'\n",
+              "name": "type",
+              "required": true
+            },
+            {
+              "type": "Integer",
+              "description": "Media width as defined by the sender",
+              "html_description": "<td><em>Optional</em>. Media width as defined by the sender</td>",
+              "rst_description": "*Optional*. Media width as defined by the sender\n",
+              "name": "width",
+              "required": false
+            },
+            {
+              "type": "Integer",
+              "description": "Media height as defined by the sender",
+              "html_description": "<td><em>Optional</em>. Media height as defined by the sender</td>",
+              "rst_description": "*Optional*. Media height as defined by the sender\n",
+              "name": "height",
+              "required": false
+            },
+            {
+              "type": "Integer",
+              "description": "Duration of the media in seconds as defined by the sender",
+              "html_description": "<td><em>Optional</em>. Duration of the media in seconds as defined by the sender</td>",
+              "rst_description": "*Optional*. Duration of the media in seconds as defined by the sender\n",
+              "name": "duration",
+              "required": false
+            }
+          ],
+          "category": "types"
+        },
+        {
+          "anchor": "paidmediaphoto",
+          "name": "PaidMediaPhoto",
+          "description": "The paid media is a photo.",
+          "html_description": "<p>The paid media is a photo.</p>",
+          "rst_description": "The paid media is a photo.",
+          "annotations": [
+            {
+              "type": "String",
+              "description": "Type of the paid media, always 'photo'",
+              "html_description": "<td>Type of the paid media, always &#8220;photo&#8221;</td>",
+              "rst_description": "Type of the paid media, always 'photo'\n",
+              "name": "type",
+              "required": true
+            },
+            {
+              "type": "Array of PhotoSize",
+              "description": "The photo",
+              "html_description": "<td>The photo</td>",
+              "rst_description": "The photo\n",
+              "name": "photo",
+              "required": true
+            }
+          ],
+          "category": "types"
+        },
+        {
+          "anchor": "paidmediavideo",
+          "name": "PaidMediaVideo",
+          "description": "The paid media is a video.",
+          "html_description": "<p>The paid media is a video.</p>",
+          "rst_description": "The paid media is a video.",
+          "annotations": [
+            {
+              "type": "String",
+              "description": "Type of the paid media, always 'video'",
+              "html_description": "<td>Type of the paid media, always &#8220;video&#8221;</td>",
+              "rst_description": "Type of the paid media, always 'video'\n",
+              "name": "type",
+              "required": true
+            },
+            {
+              "type": "Video",
+              "description": "The video",
+              "html_description": "<td>The video</td>",
+              "rst_description": "The video\n",
+              "name": "video",
+              "required": true
             }
           ],
           "category": "types"
@@ -2825,9 +2978,9 @@
         {
           "anchor": "inputpolloption",
           "name": "InputPollOption",
-          "description": "This object contains information about one answer option in a poll to send.",
-          "html_description": "<p>This object contains information about one answer option in a poll to send.</p>",
-          "rst_description": "This object contains information about one answer option in a poll to send.",
+          "description": "This object contains information about one answer option in a poll to be sent.",
+          "html_description": "<p>This object contains information about one answer option in a poll to be sent.</p>",
+          "rst_description": "This object contains information about one answer option in a poll to be sent.",
           "annotations": [
             {
               "type": "String",
@@ -3029,17 +3182,17 @@
           "annotations": [
             {
               "type": "Float",
-              "description": "Latitude as defined by sender",
-              "html_description": "<td>Latitude as defined by sender</td>",
-              "rst_description": "Latitude as defined by sender\n",
+              "description": "Latitude as defined by the sender",
+              "html_description": "<td>Latitude as defined by the sender</td>",
+              "rst_description": "Latitude as defined by the sender\n",
               "name": "latitude",
               "required": true
             },
             {
               "type": "Float",
-              "description": "Longitude as defined by sender",
-              "html_description": "<td>Longitude as defined by sender</td>",
-              "rst_description": "Longitude as defined by sender\n",
+              "description": "Longitude as defined by the sender",
+              "html_description": "<td>Longitude as defined by the sender</td>",
+              "rst_description": "Longitude as defined by the sender\n",
               "name": "longitude",
               "required": true
             },
@@ -6509,9 +6662,9 @@
             },
             {
               "type": "WebAppInfo",
-              "description": "Description of the Web App that will be launched when the user presses the button. The Web App will be able to send an arbitrary message on behalf of the user using the method answerWebAppQuery.",
-              "html_description": "<td>Description of the Web App that will be launched when the user presses the button. The Web App will be able to send an arbitrary message on behalf of the user using the method <a href=\"#answerwebappquery\">answerWebAppQuery</a>.</td>",
-              "rst_description": "Description of the Web App that will be launched when the user presses the button. The Web App will be able to send an arbitrary message on behalf of the user using the method :class:`aiogram.methods.answer_web_app_query.AnswerWebAppQuery`.\n",
+              "description": "Description of the Web App that will be launched when the user presses the button. The Web App will be able to send an arbitrary message on behalf of the user using the method answerWebAppQuery. Alternatively, a t.me link to a Web App of the bot can be specified in the object instead of the Web App's URL, in which case the Web App will be opened as if the user pressed the link.",
+              "html_description": "<td>Description of the Web App that will be launched when the user presses the button. The Web App will be able to send an arbitrary message on behalf of the user using the method <a href=\"#answerwebappquery\">answerWebAppQuery</a>. Alternatively, a <code>t.me</code> link to a Web App of the bot can be specified in the object instead of the Web App's URL, in which case the Web App will be opened as if the user pressed the link.</td>",
+              "rst_description": "Description of the Web App that will be launched when the user presses the button. The Web App will be able to send an arbitrary message on behalf of the user using the method :class:`aiogram.methods.answer_web_app_query.AnswerWebAppQuery`. Alternatively, a :code:`t.me` link to a Web App of the bot can be specified in the object instead of the Web App's URL, in which case the Web App will be opened as if the user pressed the link.\n",
               "name": "web_app",
               "required": true
             }
@@ -7320,6 +7473,107 @@
           "rst_description": "This object represents the contents of a file to be uploaded. Must be posted using multipart/form-data in the usual way that files are uploaded via the browser.",
           "annotations": [],
           "category": "types"
+        },
+        {
+          "anchor": "inputpaidmedia",
+          "name": "InputPaidMedia",
+          "description": "This object describes the paid media to be sent. Currently, it can be one of\n - InputPaidMediaPhoto\n - InputPaidMediaVideo",
+          "html_description": "<p>This object describes the paid media to be sent. Currently, it can be one of</p><ul>\n<li><a href=\"#inputpaidmediaphoto\">InputPaidMediaPhoto</a></li>\n<li><a href=\"#inputpaidmediavideo\">InputPaidMediaVideo</a></li>\n</ul>",
+          "rst_description": "This object describes the paid media to be sent. Currently, it can be one of\n\n - :class:`aiogram.types.input_paid_media_photo.InputPaidMediaPhoto`\n - :class:`aiogram.types.input_paid_media_video.InputPaidMediaVideo`",
+          "annotations": [],
+          "category": "types"
+        },
+        {
+          "anchor": "inputpaidmediaphoto",
+          "name": "InputPaidMediaPhoto",
+          "description": "The paid media to send is a photo.",
+          "html_description": "<p>The paid media to send is a photo.</p>",
+          "rst_description": "The paid media to send is a photo.",
+          "annotations": [
+            {
+              "type": "String",
+              "description": "Type of the media, must be photo",
+              "html_description": "<td>Type of the media, must be <em>photo</em></td>",
+              "rst_description": "Type of the media, must be *photo*\n",
+              "name": "type",
+              "required": true
+            },
+            {
+              "type": "String",
+              "description": "File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass 'attach://<file_attach_name>' to upload a new one using multipart/form-data under <file_attach_name> name. More information on Sending Files",
+              "html_description": "<td>File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass &#8220;attach://&lt;file_attach_name&gt;&#8221; to upload a new one using multipart/form-data under &lt;file_attach_name&gt; name. <a href=\"#sending-files\">More information on Sending Files &#187;</a></td>",
+              "rst_description": "File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass 'attach://<file_attach_name>' to upload a new one using multipart/form-data under <file_attach_name> name. :ref:`More information on Sending Files » <sending-files>`\n",
+              "name": "media",
+              "required": true
+            }
+          ],
+          "category": "types"
+        },
+        {
+          "anchor": "inputpaidmediavideo",
+          "name": "InputPaidMediaVideo",
+          "description": "The paid media to send is a video.",
+          "html_description": "<p>The paid media to send is a video.</p>",
+          "rst_description": "The paid media to send is a video.",
+          "annotations": [
+            {
+              "type": "String",
+              "description": "Type of the media, must be video",
+              "html_description": "<td>Type of the media, must be <em>video</em></td>",
+              "rst_description": "Type of the media, must be *video*\n",
+              "name": "type",
+              "required": true
+            },
+            {
+              "type": "String",
+              "description": "File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass 'attach://<file_attach_name>' to upload a new one using multipart/form-data under <file_attach_name> name. More information on Sending Files",
+              "html_description": "<td>File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass &#8220;attach://&lt;file_attach_name&gt;&#8221; to upload a new one using multipart/form-data under &lt;file_attach_name&gt; name. <a href=\"#sending-files\">More information on Sending Files &#187;</a></td>",
+              "rst_description": "File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass 'attach://<file_attach_name>' to upload a new one using multipart/form-data under <file_attach_name> name. :ref:`More information on Sending Files » <sending-files>`\n",
+              "name": "media",
+              "required": true
+            },
+            {
+              "type": "InputFile or String",
+              "description": "Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. More information on Sending Files",
+              "html_description": "<td><em>Optional</em>. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass &#8220;attach://&lt;file_attach_name&gt;&#8221; if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href=\"#sending-files\">More information on Sending Files &#187;</a></td>",
+              "rst_description": "*Optional*. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`\n",
+              "name": "thumbnail",
+              "required": false
+            },
+            {
+              "type": "Integer",
+              "description": "Video width",
+              "html_description": "<td><em>Optional</em>. Video width</td>",
+              "rst_description": "*Optional*. Video width\n",
+              "name": "width",
+              "required": false
+            },
+            {
+              "type": "Integer",
+              "description": "Video height",
+              "html_description": "<td><em>Optional</em>. Video height</td>",
+              "rst_description": "*Optional*. Video height\n",
+              "name": "height",
+              "required": false
+            },
+            {
+              "type": "Integer",
+              "description": "Video duration in seconds",
+              "html_description": "<td><em>Optional</em>. Video duration in seconds</td>",
+              "rst_description": "*Optional*. Video duration in seconds\n",
+              "name": "duration",
+              "required": false
+            },
+            {
+              "type": "Boolean",
+              "description": "Pass True if the uploaded video is suitable for streaming",
+              "html_description": "<td><em>Optional</em>. Pass <em>True</em> if the uploaded video is suitable for streaming</td>",
+              "rst_description": "*Optional*. Pass :code:`True` if the uploaded video is suitable for streaming\n",
+              "name": "supports_streaming",
+              "required": false
+            }
+          ],
+          "category": "types"
         }
       ],
       "description": "All types used in the Bot API responses are represented as JSON-objects.\nIt is safe to use 32-bit signed integers for storing all Integer fields unless otherwise noted.\nOptional fields may be not returned when irrelevant."
@@ -7580,9 +7834,9 @@
         {
           "anchor": "copymessage",
           "name": "copyMessage",
-          "description": "Use this method to copy messages of any kind. Service messages, giveaway messages, giveaway winners messages, and invoice messages can't be copied. A quiz poll can be copied only if the value of the field correct_option_id is known to the bot. The method is analogous to the method forwardMessage, but the copied message doesn't have a link to the original message. Returns the MessageId of the sent message on success.",
-          "html_description": "<p>Use this method to copy messages of any kind. Service messages, giveaway messages, giveaway winners messages, and invoice messages can't be copied. A quiz <a href=\"#poll\">poll</a> can be copied only if the value of the field <em>correct_option_id</em> is known to the bot. The method is analogous to the method <a href=\"#forwardmessage\">forwardMessage</a>, but the copied message doesn't have a link to the original message. Returns the <a href=\"#messageid\">MessageId</a> of the sent message on success.</p>",
-          "rst_description": "Use this method to copy messages of any kind. Service messages, giveaway messages, giveaway winners messages, and invoice messages can't be copied. A quiz :class:`aiogram.methods.poll.Poll` can be copied only if the value of the field *correct_option_id* is known to the bot. The method is analogous to the method :class:`aiogram.methods.forward_message.ForwardMessage`, but the copied message doesn't have a link to the original message. Returns the :class:`aiogram.types.message_id.MessageId` of the sent message on success.",
+          "description": "Use this method to copy messages of any kind. Service messages, paid media messages, giveaway messages, giveaway winners messages, and invoice messages can't be copied. A quiz poll can be copied only if the value of the field correct_option_id is known to the bot. The method is analogous to the method forwardMessage, but the copied message doesn't have a link to the original message. Returns the MessageId of the sent message on success.",
+          "html_description": "<p>Use this method to copy messages of any kind. Service messages, paid media messages, giveaway messages, giveaway winners messages, and invoice messages can't be copied. A quiz <a href=\"#poll\">poll</a> can be copied only if the value of the field <em>correct_option_id</em> is known to the bot. The method is analogous to the method <a href=\"#forwardmessage\">forwardMessage</a>, but the copied message doesn't have a link to the original message. Returns the <a href=\"#messageid\">MessageId</a> of the sent message on success.</p>",
+          "rst_description": "Use this method to copy messages of any kind. Service messages, paid media messages, giveaway messages, giveaway winners messages, and invoice messages can't be copied. A quiz :class:`aiogram.methods.poll.Poll` can be copied only if the value of the field *correct_option_id* is known to the bot. The method is analogous to the method :class:`aiogram.methods.forward_message.ForwardMessage`, but the copied message doesn't have a link to the original message. Returns the :class:`aiogram.types.message_id.MessageId` of the sent message on success.",
           "annotations": [
             {
               "type": "Integer or String",
@@ -7686,9 +7940,9 @@
         {
           "anchor": "copymessages",
           "name": "copyMessages",
-          "description": "Use this method to copy messages of any kind. If some of the specified messages can't be found or copied, they are skipped. Service messages, giveaway messages, giveaway winners messages, and invoice messages can't be copied. A quiz poll can be copied only if the value of the field correct_option_id is known to the bot. The method is analogous to the method forwardMessages, but the copied messages don't have a link to the original message. Album grouping is kept for copied messages. On success, an array of MessageId of the sent messages is returned.",
-          "html_description": "<p>Use this method to copy messages of any kind. If some of the specified messages can't be found or copied, they are skipped. Service messages, giveaway messages, giveaway winners messages, and invoice messages can't be copied. A quiz <a href=\"#poll\">poll</a> can be copied only if the value of the field <em>correct_option_id</em> is known to the bot. The method is analogous to the method <a href=\"#forwardmessages\">forwardMessages</a>, but the copied messages don't have a link to the original message. Album grouping is kept for copied messages. On success, an array of <a href=\"#messageid\">MessageId</a> of the sent messages is returned.</p>",
-          "rst_description": "Use this method to copy messages of any kind. If some of the specified messages can't be found or copied, they are skipped. Service messages, giveaway messages, giveaway winners messages, and invoice messages can't be copied. A quiz :class:`aiogram.methods.poll.Poll` can be copied only if the value of the field *correct_option_id* is known to the bot. The method is analogous to the method :class:`aiogram.methods.forward_messages.ForwardMessages`, but the copied messages don't have a link to the original message. Album grouping is kept for copied messages. On success, an array of :class:`aiogram.types.message_id.MessageId` of the sent messages is returned.",
+          "description": "Use this method to copy messages of any kind. If some of the specified messages can't be found or copied, they are skipped. Service messages, paid media messages, giveaway messages, giveaway winners messages, and invoice messages can't be copied. A quiz poll can be copied only if the value of the field correct_option_id is known to the bot. The method is analogous to the method forwardMessages, but the copied messages don't have a link to the original message. Album grouping is kept for copied messages. On success, an array of MessageId of the sent messages is returned.",
+          "html_description": "<p>Use this method to copy messages of any kind. If some of the specified messages can't be found or copied, they are skipped. Service messages, paid media messages, giveaway messages, giveaway winners messages, and invoice messages can't be copied. A quiz <a href=\"#poll\">poll</a> can be copied only if the value of the field <em>correct_option_id</em> is known to the bot. The method is analogous to the method <a href=\"#forwardmessages\">forwardMessages</a>, but the copied messages don't have a link to the original message. Album grouping is kept for copied messages. On success, an array of <a href=\"#messageid\">MessageId</a> of the sent messages is returned.</p>",
+          "rst_description": "Use this method to copy messages of any kind. If some of the specified messages can't be found or copied, they are skipped. Service messages, paid media messages, giveaway messages, giveaway winners messages, and invoice messages can't be copied. A quiz :class:`aiogram.methods.poll.Poll` can be copied only if the value of the field *correct_option_id* is known to the bot. The method is analogous to the method :class:`aiogram.methods.forward_messages.ForwardMessages`, but the copied messages don't have a link to the original message. Album grouping is kept for copied messages. On success, an array of :class:`aiogram.types.message_id.MessageId` of the sent messages is returned.",
           "annotations": [
             {
               "type": "Integer or String",
@@ -8647,6 +8901,104 @@
               "html_description": "<td>Unique identifier of the message effect to be added to the message; for private chats only</td>",
               "rst_description": "Unique identifier of the message effect to be added to the message; for private chats only\n",
               "name": "message_effect_id"
+            },
+            {
+              "type": "ReplyParameters",
+              "required": false,
+              "description": "Description of the message to reply to",
+              "html_description": "<td>Description of the message to reply to</td>",
+              "rst_description": "Description of the message to reply to\n",
+              "name": "reply_parameters"
+            },
+            {
+              "type": "InlineKeyboardMarkup or ReplyKeyboardMarkup or ReplyKeyboardRemove or ForceReply",
+              "required": false,
+              "description": "Additional interface options. A JSON-serialized object for an inline keyboard, custom reply keyboard, instructions to remove a reply keyboard or to force a reply from the user",
+              "html_description": "<td>Additional interface options. A JSON-serialized object for an <a href=\"/bots/features#inline-keyboards\">inline keyboard</a>, <a href=\"/bots/features#keyboards\">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user</td>",
+              "rst_description": "Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user\n",
+              "name": "reply_markup"
+            }
+          ],
+          "category": "methods"
+        },
+        {
+          "anchor": "sendpaidmedia",
+          "name": "sendPaidMedia",
+          "description": "Use this method to send paid media to channel chats. On success, the sent Message is returned.",
+          "html_description": "<p>Use this method to send paid media to channel chats. On success, the sent <a href=\"#message\">Message</a> is returned.</p>",
+          "rst_description": "Use this method to send paid media to channel chats. On success, the sent :class:`aiogram.types.message.Message` is returned.",
+          "annotations": [
+            {
+              "type": "Integer or String",
+              "required": true,
+              "description": "Unique identifier for the target chat or username of the target channel (in the format @channelusername)",
+              "html_description": "<td>Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)</td>",
+              "rst_description": "Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)\n",
+              "name": "chat_id"
+            },
+            {
+              "type": "Integer",
+              "required": true,
+              "description": "The number of Telegram Stars that must be paid to buy access to the media",
+              "html_description": "<td>The number of Telegram Stars that must be paid to buy access to the media</td>",
+              "rst_description": "The number of Telegram Stars that must be paid to buy access to the media\n",
+              "name": "star_count"
+            },
+            {
+              "type": "Array of InputPaidMedia",
+              "required": true,
+              "description": "A JSON-serialized array describing the media to be sent; up to 10 items",
+              "html_description": "<td>A JSON-serialized array describing the media to be sent; up to 10 items</td>",
+              "rst_description": "A JSON-serialized array describing the media to be sent; up to 10 items\n",
+              "name": "media"
+            },
+            {
+              "type": "String",
+              "required": false,
+              "description": "Media caption, 0-1024 characters after entities parsing",
+              "html_description": "<td>Media caption, 0-1024 characters after entities parsing</td>",
+              "rst_description": "Media caption, 0-1024 characters after entities parsing\n",
+              "name": "caption"
+            },
+            {
+              "type": "String",
+              "required": false,
+              "description": "Mode for parsing entities in the media caption. See formatting options for more details.",
+              "html_description": "<td>Mode for parsing entities in the media caption. See <a href=\"#formatting-options\">formatting options</a> for more details.</td>",
+              "rst_description": "Mode for parsing entities in the media caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.\n",
+              "name": "parse_mode"
+            },
+            {
+              "type": "Array of MessageEntity",
+              "required": false,
+              "description": "A JSON-serialized list of special entities that appear in the caption, which can be specified instead of parse_mode",
+              "html_description": "<td>A JSON-serialized list of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em></td>",
+              "rst_description": "A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*\n",
+              "name": "caption_entities"
+            },
+            {
+              "type": "Boolean",
+              "required": false,
+              "description": "Pass True, if the caption must be shown above the message media",
+              "html_description": "<td>Pass <em>True</em>, if the caption must be shown above the message media</td>",
+              "rst_description": "Pass :code:`True`, if the caption must be shown above the message media\n",
+              "name": "show_caption_above_media"
+            },
+            {
+              "type": "Boolean",
+              "required": false,
+              "description": "Sends the message silently. Users will receive a notification with no sound.",
+              "html_description": "<td>Sends the message <a href=\"https://telegram.org/blog/channels-2-0#silent-messages\">silently</a>. Users will receive a notification with no sound.</td>",
+              "rst_description": "Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.\n",
+              "name": "disable_notification"
+            },
+            {
+              "type": "Boolean",
+              "required": false,
+              "description": "Protects the contents of the sent message from forwarding and saving",
+              "html_description": "<td>Protects the contents of the sent message from forwarding and saving</td>",
+              "rst_description": "Protects the contents of the sent message from forwarding and saving\n",
+              "name": "protect_content"
             },
             {
               "type": "ReplyParameters",
@@ -15885,9 +16237,9 @@
             },
             {
               "type": "String",
-              "description": "Bot specified invoice payload",
-              "html_description": "<td>Bot specified invoice payload</td>",
-              "rst_description": "Bot specified invoice payload\n",
+              "description": "Bot-specified invoice payload",
+              "html_description": "<td>Bot-specified invoice payload</td>",
+              "rst_description": "Bot-specified invoice payload\n",
               "name": "invoice_payload",
               "required": true
             },
@@ -15951,9 +16303,9 @@
             },
             {
               "type": "String",
-              "description": "Bot specified invoice payload",
-              "html_description": "<td>Bot specified invoice payload</td>",
-              "rst_description": "Bot specified invoice payload\n",
+              "description": "Bot-specified invoice payload",
+              "html_description": "<td>Bot-specified invoice payload</td>",
+              "rst_description": "Bot-specified invoice payload\n",
               "name": "invoice_payload",
               "required": true
             },
@@ -16009,9 +16361,9 @@
             },
             {
               "type": "String",
-              "description": "Bot specified invoice payload",
-              "html_description": "<td>Bot specified invoice payload</td>",
-              "rst_description": "Bot specified invoice payload\n",
+              "description": "Bot-specified invoice payload",
+              "html_description": "<td>Bot-specified invoice payload</td>",
+              "rst_description": "Bot-specified invoice payload\n",
               "name": "invoice_payload",
               "required": true
             },
@@ -16116,10 +16468,44 @@
         {
           "anchor": "transactionpartner",
           "name": "TransactionPartner",
-          "description": "This object describes the source of a transaction, or its recipient for outgoing transactions. Currently, it can be one of\n - TransactionPartnerFragment\n - TransactionPartnerUser\n - TransactionPartnerOther",
-          "html_description": "<p>This object describes the source of a transaction, or its recipient for outgoing transactions. Currently, it can be one of</p><ul>\n<li><a href=\"#transactionpartnerfragment\">TransactionPartnerFragment</a></li>\n<li><a href=\"#transactionpartneruser\">TransactionPartnerUser</a></li>\n<li><a href=\"#transactionpartnerother\">TransactionPartnerOther</a></li>\n</ul>",
-          "rst_description": "This object describes the source of a transaction, or its recipient for outgoing transactions. Currently, it can be one of\n\n - :class:`aiogram.types.transaction_partner_fragment.TransactionPartnerFragment`\n - :class:`aiogram.types.transaction_partner_user.TransactionPartnerUser`\n - :class:`aiogram.types.transaction_partner_other.TransactionPartnerOther`",
+          "description": "This object describes the source of a transaction, or its recipient for outgoing transactions. Currently, it can be one of\n - TransactionPartnerUser\n - TransactionPartnerFragment\n - TransactionPartnerTelegramAds\n - TransactionPartnerOther",
+          "html_description": "<p>This object describes the source of a transaction, or its recipient for outgoing transactions. Currently, it can be one of</p><ul>\n<li><a href=\"#transactionpartneruser\">TransactionPartnerUser</a></li>\n<li><a href=\"#transactionpartnerfragment\">TransactionPartnerFragment</a></li>\n<li><a href=\"#transactionpartnertelegramads\">TransactionPartnerTelegramAds</a></li>\n<li><a href=\"#transactionpartnerother\">TransactionPartnerOther</a></li>\n</ul>",
+          "rst_description": "This object describes the source of a transaction, or its recipient for outgoing transactions. Currently, it can be one of\n\n - :class:`aiogram.types.transaction_partner_user.TransactionPartnerUser`\n - :class:`aiogram.types.transaction_partner_fragment.TransactionPartnerFragment`\n - :class:`aiogram.types.transaction_partner_telegram_ads.TransactionPartnerTelegramAds`\n - :class:`aiogram.types.transaction_partner_other.TransactionPartnerOther`",
           "annotations": [],
+          "category": "types"
+        },
+        {
+          "anchor": "transactionpartneruser",
+          "name": "TransactionPartnerUser",
+          "description": "Describes a transaction with a user.",
+          "html_description": "<p>Describes a transaction with a user.</p>",
+          "rst_description": "Describes a transaction with a user.",
+          "annotations": [
+            {
+              "type": "String",
+              "description": "Type of the transaction partner, always 'user'",
+              "html_description": "<td>Type of the transaction partner, always &#8220;user&#8221;</td>",
+              "rst_description": "Type of the transaction partner, always 'user'\n",
+              "name": "type",
+              "required": true
+            },
+            {
+              "type": "User",
+              "description": "Information about the user",
+              "html_description": "<td>Information about the user</td>",
+              "rst_description": "Information about the user\n",
+              "name": "user",
+              "required": true
+            },
+            {
+              "type": "String",
+              "description": "Bot-specified invoice payload",
+              "html_description": "<td><em>Optional</em>. Bot-specified invoice payload</td>",
+              "rst_description": "*Optional*. Bot-specified invoice payload\n",
+              "name": "invoice_payload",
+              "required": false
+            }
+          ],
           "category": "types"
         },
         {
@@ -16149,26 +16535,18 @@
           "category": "types"
         },
         {
-          "anchor": "transactionpartneruser",
-          "name": "TransactionPartnerUser",
-          "description": "Describes a transaction with a user.",
-          "html_description": "<p>Describes a transaction with a user.</p>",
-          "rst_description": "Describes a transaction with a user.",
+          "anchor": "transactionpartnertelegramads",
+          "name": "TransactionPartnerTelegramAds",
+          "description": "Describes a withdrawal transaction to the Telegram Ads platform.",
+          "html_description": "<p>Describes a withdrawal transaction to the Telegram Ads platform.</p>",
+          "rst_description": "Describes a withdrawal transaction to the Telegram Ads platform.",
           "annotations": [
             {
               "type": "String",
-              "description": "Type of the transaction partner, always 'user'",
-              "html_description": "<td>Type of the transaction partner, always &#8220;user&#8221;</td>",
-              "rst_description": "Type of the transaction partner, always 'user'\n",
+              "description": "Type of the transaction partner, always 'telegram_ads'",
+              "html_description": "<td>Type of the transaction partner, always &#8220;telegram_ads&#8221;</td>",
+              "rst_description": "Type of the transaction partner, always 'telegram_ads'\n",
               "name": "type",
-              "required": true
-            },
-            {
-              "type": "User",
-              "description": "Information about the user",
-              "html_description": "<td>Information about the user</td>",
-              "rst_description": "Information about the user\n",
-              "name": "user",
               "required": true
             }
           ],

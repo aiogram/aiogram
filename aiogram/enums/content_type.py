@@ -12,6 +12,7 @@ class ContentType(str, Enum):
     ANIMATION = "animation"
     AUDIO = "audio"
     DOCUMENT = "document"
+    PAID_MEDIA = "paid_media"
     PHOTO = "photo"
     STICKER = "sticker"
     STORY = "story"

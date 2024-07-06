@@ -95,6 +95,9 @@ Available types
     input_media_document
     input_media_photo
     input_media_video
+    input_paid_media
+    input_paid_media_photo
+    input_paid_media_video
     input_poll_option
     keyboard_button
     keyboard_button_poll_type
@@ -120,6 +123,11 @@ Available types
     message_origin_user
     message_reaction_count_updated
     message_reaction_updated
+    paid_media
+    paid_media_info
+    paid_media_photo
+    paid_media_preview
+    paid_media_video
     photo_size
     poll
     poll_answer
@@ -247,6 +255,7 @@ Payments
     transaction_partner
     transaction_partner_fragment
     transaction_partner_other
+    transaction_partner_telegram_ads
     transaction_partner_user
 
 Getting updates

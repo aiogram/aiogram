@@ -29,17 +29,17 @@
       },
       {
         "type": "Integer",
-        "description": "Video width and height (diameter of the video message) as defined by sender",
-        "html_description": "<td>Video width and height (diameter of the video message) as defined by sender</td>",
-        "rst_description": "Video width and height (diameter of the video message) as defined by sender\n",
+        "description": "Video width and height (diameter of the video message) as defined by the sender",
+        "html_description": "<td>Video width and height (diameter of the video message) as defined by the sender</td>",
+        "rst_description": "Video width and height (diameter of the video message) as defined by the sender\n",
         "name": "length",
         "required": true
       },
       {
         "type": "Integer",
-        "description": "Duration of the video in seconds as defined by sender",
-        "html_description": "<td>Duration of the video in seconds as defined by sender</td>",
-        "rst_description": "Duration of the video in seconds as defined by sender\n",
+        "description": "Duration of the video in seconds as defined by the sender",
+        "html_description": "<td>Duration of the video in seconds as defined by the sender</td>",
+        "rst_description": "Duration of the video in seconds as defined by the sender\n",
         "name": "duration",
         "required": true
       },

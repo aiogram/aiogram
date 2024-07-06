@@ -90,6 +90,7 @@ Available methods
     send_location
     send_media_group
     send_message
+    send_paid_media
     send_photo
     send_poll
     send_venue
