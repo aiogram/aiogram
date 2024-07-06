@@ -24,7 +24,7 @@ Features
 
 - Added ChatMember resolution tool and updated 2.x migration guide.
   `#1525 <https://github.com/aiogram/aiogram/issues/1525>`_
-- Added full support of `Bot API 7.6 <https://core.telegram.org/bots/api-changelog#july-01-2024>`_
+- Added full support of `Bot API 7.6 <https://core.telegram.org/bots/api-changelog#july-1-2024>`_
 
   - Added the classes :class:`aiogram.types.paid_media.PaidMedia`,
       :class:`aiogram.types.paid_media_info.PaidMediaInfo`,
