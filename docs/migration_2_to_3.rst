@@ -1,3 +1,7 @@
+.. |Bot| replace:: :class:`~aiogram.client.bot.Bot`
+.. |Dispatcher| replace:: :class:`~aiogram.dispatcher.dispatcher.Dispatcher`
+.. |Router| replace:: :class:`~aiogram.dispatcher.router.Router`
+
 ==========================
 Migration FAQ (2.x -> 3.0)
 ==========================
@@ -33,24 +37,26 @@ Dependencies
 Dispatcher
 ==========
 
-- The :class:`Dispatcher` class no longer accepts a `Bot` instance in its initializer.
-  Instead, the `Bot` instance should be passed to the dispatcher only for starting polling
+- The |Dispatcher| class no longer accepts a |Bot| instance in its initializer.
+  Instead, the |Bot| instance should be passed to the dispatcher only for starting polling
   or handling events from webhooks. This approach also allows for the use of multiple bot
   instances simultaneously ("multibot").
-- :class:`Dispatcher` now can be extended with another Dispatcher-like
-  thing named :class:`Router` (:ref:`Read more » <Nested routers>`).
-- With routes, you can easily modularize your code and potentially share these modules between projects.
+- |Dispatcher| now can be extended with another Dispatcher-like thing named |Router|.
+  With routes, you can easily modularize your code and potentially share these modules between projects.
+  (:ref:`Read more » <Nested routers>`.)
 - Removed the **_handler** suffix from all event handler decorators and registering methods.
   (:ref:`Read more » <Event observers>`)
-- The Executor has been entirely removed; you can now use the Dispatcher directly to start poll the API or handle webhooks from it.
+- The :class:`Executor` has been entirely removed; you can now use the |Dispatcher| directly to start poll the API or handle webhooks from it.
 - The throttling method has been completely removed; you can now use middlewares to control
   the execution context and implement any throttling mechanism you desire.
-- Removed global context variables from the API types, Bot and Dispatcher object,
+- Removed global context variables from the API types, |Bot| and |Dispatcher| object.
   From now on, if you want to access the current bot instance within handlers or filters,
   you should accept the argument :code:`bot: Bot` and use it instead of :code:`Bot.get_current()`.
   In middlewares, it can be accessed via :code:`data["bot"]`.
-- To skip pending updates, you should now call the :class:`aiogram.methods.delete_webhook.DeleteWebhook` method directly, rather than passing :code:`skip_updates=True` to the start polling method.
-
+- To skip pending updates, you should now call the :class:`~aiogram.methods.delete_webhook.DeleteWebhook` method directly, rather than passing :code:`skip_updates=True` to the start polling method.
+- To feed updates to the |Dispatcher|, instead of method :meth:`process_update`,
+  you should use method :meth:`~aiogram.dispatcher.dispatcher.Dispatcher.feed_update`.
+  (:ref:`Read more » <Handling updates>`)
 
 
 Filtering events
@@ -128,11 +134,10 @@ Finite State machine
   you will need to specify the state if you want to use it.
 - Added the possibility to change the FSM strategy. For example,
   if you want to control the state for each user based on chat topics rather than
-  the user in a chat, you can specify this in the Dispatcher.
+  the user in a chat, you can specify this in the |Dispatcher|.
 - Now :class:`aiogram.fsm.state.State` and :class:`aiogram.fsm.state.StateGroup` don't have helper
   methods like :code:`.set()`, :code:`.next()`, etc.
-
-- Instead, you should set states by passing them directly to
+  Instead, you should set states by passing them directly to
   :class:`aiogram.fsm.context.FSMContext` (:ref:`Read more » <Finite State Machine>`)
 - The state proxy is deprecated; you should update the state data by calling
   :code:`state.set_data(...)` and :code:`state.get_data()` respectively.
@@ -155,8 +160,8 @@ Webhook
 Telegram API Server
 ===================
 
-- The `server` parameter has been moved from the `Bot` instance to `api` in `BaseSession`.
-- The constant `aiogram.bot.api.TELEGRAM_PRODUCTION` has been moved to `aiogram.client.telegram.PRODUCTION`.
+- The :obj:`server` parameter has been moved from the |Bot| instance to :obj:`api` parameter of the :class:`~aiogram.client.session.base.BaseSession`.
+- The constant :obj:`aiogram.bot.api.TELEGRAM_PRODUCTION` has been moved to :obj:`aiogram.client.telegram.PRODUCTION`.
 
 
 Telegram objects transformation (to dict, to json, from json)
