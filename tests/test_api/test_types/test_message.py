@@ -77,6 +77,7 @@ from aiogram.types import (
     PollOption,
     ProximityAlertTriggered,
     ReactionTypeCustomEmoji,
+    RefundedPayment,
     SharedUser,
     Sticker,
     Story,
@@ -587,6 +588,18 @@ TEST_CHAT_BACKGROUND_SET = Message(
         )
     ),
 )
+TEST_REFUND_PAYMENT = Message(
+    message_id=42,
+    date=datetime.datetime.now(),
+    chat=Chat(id=42, type="private"),
+    from_user=User(id=42, is_bot=False, first_name="User"),
+    refunded_payment=RefundedPayment(
+        total_amount=42,
+        provider_payment_charge_id="payment",
+        telegram_payment_charge_id="charge",
+        invoice_payload="payload",
+    ),
+)
 TEST_MESSAGE_UNKNOWN = Message(
     message_id=42,
     date=datetime.datetime.now(),
@@ -656,6 +669,7 @@ MESSAGES_AND_CONTENT_TYPES = [
     [TEST_MESSAGE_WRITE_ACCESS_ALLOWED, ContentType.WRITE_ACCESS_ALLOWED],
     [TEST_MESSAGE_BOOST_ADDED, ContentType.BOOST_ADDED],
     [TEST_CHAT_BACKGROUND_SET, ContentType.CHAT_BACKGROUND_SET],
+    [TEST_REFUND_PAYMENT, ContentType.REFUNDED_PAYMENT],
     [TEST_MESSAGE_UNKNOWN, ContentType.UNKNOWN],
 ]
 
@@ -716,6 +730,7 @@ MESSAGES_AND_COPY_METHODS = [
     [TEST_MESSAGE_GIVEAWAY_WINNERS, None],
     [TEST_MESSAGE_BOOST_ADDED, None],
     [TEST_CHAT_BACKGROUND_SET, None],
+    [TEST_REFUND_PAYMENT, None],
     [TEST_MESSAGE_UNKNOWN, None],
 ]
 

@@ -242,6 +242,7 @@ Payments
     labeled_price
     order_info
     pre_checkout_query
+    refunded_payment
     revenue_withdrawal_state
     revenue_withdrawal_state_failed
     revenue_withdrawal_state_pending
