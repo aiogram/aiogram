@@ -16,6 +16,22 @@ Changelog
 
 .. towncrier release notes start
 
+3.10.0 (2024-07-07)
+====================
+
+Features
+--------
+
+- Added full support of `Bot API 7.7 <https://core.telegram.org/bots/api-changelog#july-7-2024>`_
+
+  - Added the class :class:`aiogram.types.refunded_payment.RefundedPayment`,
+    containing information about a refunded payment.
+  - Added the field :code:`refunded_payment` to the class
+    :class:`aiogram.types.message.Message`,
+    describing a service message about a refunded payment.
+  `#1536 <https://github.com/aiogram/aiogram/issues/1536>`_
+
+
 3.9.0 (2024-07-06)
 ===================
 
