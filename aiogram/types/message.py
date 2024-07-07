@@ -13,7 +13,6 @@ from aiogram.utils.text_decorations import (
 
 from ..client.default import Default
 from ..enums import ContentType
-from . import InputPaidMediaPhoto, InputPaidMediaVideo
 from .custom import DateTime
 from .maybe_inaccessible_message import MaybeInaccessibleMessage
 
@@ -80,6 +79,8 @@ if TYPE_CHECKING:
     from .input_media_document import InputMediaDocument
     from .input_media_photo import InputMediaPhoto
     from .input_media_video import InputMediaVideo
+    from .input_paid_media_photo import InputPaidMediaPhoto
+    from .input_paid_media_video import InputPaidMediaVideo
     from .input_poll_option import InputPollOption
     from .invoice import Invoice
     from .labeled_price import LabeledPrice
@@ -98,6 +99,7 @@ if TYPE_CHECKING:
     from .proximity_alert_triggered import ProximityAlertTriggered
     from .reaction_type_custom_emoji import ReactionTypeCustomEmoji
     from .reaction_type_emoji import ReactionTypeEmoji
+    from .refunded_payment import RefundedPayment
     from .reply_keyboard_markup import ReplyKeyboardMarkup
     from .reply_keyboard_remove import ReplyKeyboardRemove
     from .reply_parameters import ReplyParameters
@@ -249,6 +251,8 @@ class Message(MaybeInaccessibleMessage):
     """*Optional*. Message is an invoice for a `payment <https://core.telegram.org/bots/api#payments>`_, information about the invoice. `More about payments » <https://core.telegram.org/bots/api#payments>`_"""
     successful_payment: Optional[SuccessfulPayment] = None
     """*Optional*. Message is a service message about a successful payment, information about the payment. `More about payments » <https://core.telegram.org/bots/api#payments>`_"""
+    refunded_payment: Optional[RefundedPayment] = None
+    """*Optional*. Message is a service message about a refunded payment, information about the payment. `More about payments » <https://core.telegram.org/bots/api#payments>`_"""
     users_shared: Optional[UsersShared] = None
     """*Optional*. Service message: users were shared with the bot"""
     chat_shared: Optional[ChatShared] = None
@@ -407,6 +411,7 @@ class Message(MaybeInaccessibleMessage):
             pinned_message: Optional[Union[Message, InaccessibleMessage]] = None,
             invoice: Optional[Invoice] = None,
             successful_payment: Optional[SuccessfulPayment] = None,
+            refunded_payment: Optional[RefundedPayment] = None,
             users_shared: Optional[UsersShared] = None,
             chat_shared: Optional[ChatShared] = None,
             connected_website: Optional[str] = None,
@@ -505,6 +510,7 @@ class Message(MaybeInaccessibleMessage):
                 pinned_message=pinned_message,
                 invoice=invoice,
                 successful_payment=successful_payment,
+                refunded_payment=refunded_payment,
                 users_shared=users_shared,
                 chat_shared=chat_shared,
                 connected_website=connected_website,
@@ -651,6 +657,8 @@ class Message(MaybeInaccessibleMessage):
             return ContentType.CHAT_BACKGROUND_SET
         if self.boost_added:
             return ContentType.BOOST_ADDED
+        if self.refunded_payment:
+            return ContentType.REFUNDED_PAYMENT
 
         return ContentType.UNKNOWN
 

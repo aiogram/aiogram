@@ -492,6 +492,14 @@
         "required": false
       },
       {
+        "type": "RefundedPayment",
+        "description": "Message is a service message about a refunded payment, information about the payment.",
+        "html_description": "<td><em>Optional</em>. Message is a service message about a refunded payment, information about the payment. <a href=\"#payments\">More about payments &#187;</a></td>",
+        "rst_description": "*Optional*. Message is a service message about a refunded payment, information about the payment. `More about payments » <https://core.telegram.org/bots/api#payments>`_\n",
+        "name": "refunded_payment",
+        "required": false
+      },
+      {
         "type": "UsersShared",
         "description": "Service message: users were shared with the bot",
         "html_description": "<td><em>Optional</em>. Service message: users were shared with the bot</td>",
