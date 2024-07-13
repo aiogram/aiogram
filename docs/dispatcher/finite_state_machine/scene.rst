@@ -223,7 +223,7 @@ Each event type can be filtered in the same way as in the Router.
 Also each event type can be marked as scene entry point, exit point or leave point.
 
 If you want to mark the scene can be entered from message or inline query,
-you should use :code:`on.message` or :code:`on.inline_query` marker:
+you should use :code:`on.message` or :code:`on.callback_query` marker:
 
 .. code-block:: python
 
