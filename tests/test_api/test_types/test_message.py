@@ -772,6 +772,14 @@ class TestMessage:
     def test_content_type(self, message: Message, content_type: str):
         assert message.content_type == content_type
 
+    def test_as_reply_parameters(self):
+        message = Message(
+            message_id=42, chat=Chat(id=42, type="private"), date=datetime.datetime.now()
+        )
+        reply_parameters = message.as_reply_parameters()
+        assert reply_parameters.message_id == message.message_id
+        assert reply_parameters.chat_id == message.chat.id
+
     @pytest.mark.parametrize(
         "alias_for_method,kwargs,method_class",
         [
@@ -846,10 +854,6 @@ class TestMessage:
             ]
         ],
     ):
-        if alias_for_method == "paid_media" and alias_type == "reply":
-            # Replies should be completely reworked
-            pytest.skip("Reply alias for paid media is not implemented yet.")
-
         message = Message(
             message_id=42, chat=Chat(id=42, type="private"), date=datetime.datetime.now()
         )
@@ -862,11 +866,15 @@ class TestMessage:
         assert isinstance(api_method, method_class)
 
         assert api_method.chat_id == message.chat.id
+        if alias_type == "reply":
+            assert api_method.reply_parameters
+            assert api_method.reply_parameters.message_id == message.message_id
+            assert api_method.reply_parameters.chat_id == message.chat.id
+        else:
+            assert api_method.reply_parameters is None
+
         if hasattr(api_method, "reply_to_message_id"):
-            if alias_type == "reply":
-                assert api_method.reply_to_message_id == message.message_id
-            else:
-                assert api_method.reply_to_message_id is None
+            assert api_method.reply_to_message_id is None
 
         for key, value in kwargs.items():
             assert getattr(api_method, key) == value
