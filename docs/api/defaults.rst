@@ -31,7 +31,7 @@ Here is an example of setting default parse mode for all requests to Telegram Bo
 
     bot = Bot(
         token=...,
-        defaults=DefaultBotProperties(
+        default=DefaultBotProperties(
             parse_mode=ParseMode.HTML,
         )
     )
