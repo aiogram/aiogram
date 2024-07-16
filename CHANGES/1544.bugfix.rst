@@ -1,0 +1,1 @@
+Fix inline query handlers to use bot's default link preview options. Fixes #1543
