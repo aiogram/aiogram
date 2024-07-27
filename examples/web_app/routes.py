@@ -43,7 +43,7 @@ async def send_message_handler(request: Request):
                 [
                     InlineKeyboardButton(
                         text="Open",
-                        web_app=WebAppInfo(url=str(request.url.with_scheme("https"))),
+                        web_app=WebAppInfo(url=str(request.url.with_scheme("https").with_path("demo"))),
                     )
                 ]
             ]

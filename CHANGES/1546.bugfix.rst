@@ -1,0 +1,1 @@
+Fixed URL path in the "Open" button at the "demo/sendMessage" endpoint in the web_app example.
