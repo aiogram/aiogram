@@ -19,6 +19,8 @@ class PinChatMessage(TelegramMethod[bool]):
     """Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)"""
     message_id: int
     """Identifier of a message to pin"""
+    business_connection_id: Optional[str] = None
+    """Unique identifier of the business connection on behalf of which the message will be pinned"""
     disable_notification: Optional[bool] = None
     """Pass :code:`True` if it is not necessary to send a notification to all chat members about the new pinned message. Notifications are always disabled in channels and private chats."""
 
@@ -31,6 +33,7 @@ class PinChatMessage(TelegramMethod[bool]):
             *,
             chat_id: Union[int, str],
             message_id: int,
+            business_connection_id: Optional[str] = None,
             disable_notification: Optional[bool] = None,
             **__pydantic_kwargs: Any,
         ) -> None:
@@ -41,6 +44,7 @@ class PinChatMessage(TelegramMethod[bool]):
             super().__init__(
                 chat_id=chat_id,
                 message_id=message_id,
+                business_connection_id=business_connection_id,
                 disable_notification=disable_notification,
                 **__pydantic_kwargs,
             )

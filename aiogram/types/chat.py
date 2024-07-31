@@ -871,6 +871,7 @@ class Chat(TelegramObject):
 
     def unpin_message(
         self,
+        business_connection_id: Optional[str] = None,
         message_id: Optional[int] = None,
         **kwargs: Any,
     ) -> UnpinChatMessage:
@@ -884,7 +885,8 @@ class Chat(TelegramObject):
 
         Source: https://core.telegram.org/bots/api#unpinchatmessage
 
-        :param message_id: Identifier of a message to unpin. If not specified, the most recent pinned message (by sending date) will be unpinned.
+        :param business_connection_id: Unique identifier of the business connection on behalf of which the message will be unpinned
+        :param message_id: Identifier of the message to unpin. Required if *business_connection_id* is specified. If not specified, the most recent pinned message (by sending date) will be unpinned.
         :return: instance of method :class:`aiogram.methods.unpin_chat_message.UnpinChatMessage`
         """
         # DO NOT EDIT MANUALLY!!!
@@ -894,6 +896,7 @@ class Chat(TelegramObject):
 
         return UnpinChatMessage(
             chat_id=self.id,
+            business_connection_id=business_connection_id,
             message_id=message_id,
             **kwargs,
         ).as_(self._bot)
@@ -901,6 +904,7 @@ class Chat(TelegramObject):
     def pin_message(
         self,
         message_id: int,
+        business_connection_id: Optional[str] = None,
         disable_notification: Optional[bool] = None,
         **kwargs: Any,
     ) -> PinChatMessage:
@@ -915,6 +919,7 @@ class Chat(TelegramObject):
         Source: https://core.telegram.org/bots/api#pinchatmessage
 
         :param message_id: Identifier of a message to pin
+        :param business_connection_id: Unique identifier of the business connection on behalf of which the message will be pinned
         :param disable_notification: Pass :code:`True` if it is not necessary to send a notification to all chat members about the new pinned message. Notifications are always disabled in channels and private chats.
         :return: instance of method :class:`aiogram.methods.pin_chat_message.PinChatMessage`
         """
@@ -926,6 +931,7 @@ class Chat(TelegramObject):
         return PinChatMessage(
             chat_id=self.id,
             message_id=message_id,
+            business_connection_id=business_connection_id,
             disable_notification=disable_notification,
             **kwargs,
         ).as_(self._bot)

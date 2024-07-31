@@ -49,3 +49,4 @@ As shortcut from received object
 --------------------------------
 
 - :meth:`aiogram.types.message.Message.answer_paid_media`
+- :meth:`aiogram.types.message.Message.reply_paid_media`

@@ -17,8 +17,10 @@ class UnpinChatMessage(TelegramMethod[bool]):
 
     chat_id: Union[int, str]
     """Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)"""
+    business_connection_id: Optional[str] = None
+    """Unique identifier of the business connection on behalf of which the message will be unpinned"""
     message_id: Optional[int] = None
-    """Identifier of a message to unpin. If not specified, the most recent pinned message (by sending date) will be unpinned."""
+    """Identifier of the message to unpin. Required if *business_connection_id* is specified. If not specified, the most recent pinned message (by sending date) will be unpinned."""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!
@@ -28,6 +30,7 @@ class UnpinChatMessage(TelegramMethod[bool]):
             __pydantic__self__,
             *,
             chat_id: Union[int, str],
+            business_connection_id: Optional[str] = None,
             message_id: Optional[int] = None,
             **__pydantic_kwargs: Any,
         ) -> None:
@@ -35,4 +38,9 @@ class UnpinChatMessage(TelegramMethod[bool]):
             # This method was auto-generated via `butcher`
             # Is needed only for type checking and IDE support without any additional plugins
 
-            super().__init__(chat_id=chat_id, message_id=message_id, **__pydantic_kwargs)
+            super().__init__(
+                chat_id=chat_id,
+                business_connection_id=business_connection_id,
+                message_id=message_id,
+                **__pydantic_kwargs,
+            )
