@@ -171,7 +171,7 @@ class Text(Iterable[NodeType]):
     def __add__(self, other: NodeType) -> "Text":
         if isinstance(other, Text) and other.type == self.type and self._params == other._params:
             return type(self)(*self, *other, **self._params)
-        if type(self) == Text and isinstance(other, str):
+        if type(self) is Text and isinstance(other, str):
             return type(self)(*self, other, **self._params)
         return Text(self, other)
 
