@@ -39,7 +39,7 @@ def pytest_configure(config):
     config.addinivalue_line("markers", "mongo: marked tests require mongo connection to run")
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope="session")
 def event_loop_policy(request):
     if sys.platform == "win32":
         return asyncio.WindowsSelectorEventLoopPolicy()
