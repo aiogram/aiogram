@@ -111,12 +111,12 @@ towncrier-build:
 
 .PHONY: towncrier-draft
 towncrier-draft:
-	towncrier build --draft
+	hatch run docs:towncrier build --draft
 
 .PHONY: towncrier-draft-github
 towncrier-draft-github:
 	mkdir -p dist
-	towncrier build --draft | pandoc - -o dist/release.md
+	hatch run docs:towncrier build --draft | pandoc - -o dist/release.md
 
 .PHONY: prepare-release
 prepare-release: bump towncrier-build

@@ -1,3 +1,5 @@
+import asyncio
+import sys
 from pathlib import Path
 
 import pytest
@@ -35,6 +37,13 @@ def pytest_addoption(parser):
 def pytest_configure(config):
     config.addinivalue_line("markers", "redis: marked tests require redis connection to run")
     config.addinivalue_line("markers", "mongo: marked tests require mongo connection to run")
+
+
+@pytest.fixture(scope="module")
+def event_loop_policy(request):
+    if sys.platform == "win32":
+        return asyncio.WindowsSelectorEventLoopPolicy()
+    return asyncio.DefaultEventLoopPolicy()
 
 
 @pytest.fixture()
