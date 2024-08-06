@@ -1,7 +1,7 @@
+from unittest import mock
 from unittest.mock import AsyncMock, patch
 
 import pytest
-from pytest_lazy_fixtures import lf
 
 from aiogram.fsm.storage.base import BaseEventIsolation, StorageKey
 from aiogram.fsm.storage.redis import RedisEventIsolation, RedisStorage
@@ -10,9 +10,9 @@ from aiogram.fsm.storage.redis import RedisEventIsolation, RedisStorage
 @pytest.mark.parametrize(
     "isolation",
     [
-        lf("redis_isolation"),
-        lf("lock_isolation"),
-        lf("disabled_isolation"),
+        pytest.lazy_fixture("redis_isolation"),
+        pytest.lazy_fixture("lock_isolation"),
+        pytest.lazy_fixture("disabled_isolation"),
     ],
 )
 class TestIsolations:
