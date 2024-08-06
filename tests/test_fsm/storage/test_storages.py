@@ -1,4 +1,5 @@
 import pytest
+from pytest_lazy_fixtures import lf
 
 from aiogram.fsm.storage.base import BaseStorage, StorageKey
 
@@ -6,9 +7,9 @@ from aiogram.fsm.storage.base import BaseStorage, StorageKey
 @pytest.mark.parametrize(
     "storage",
     [
-        pytest.lazy_fixture("redis_storage"),
-        pytest.lazy_fixture("mongo_storage"),
-        pytest.lazy_fixture("memory_storage"),
+        lf("redis_storage"),
+        lf("mongo_storage"),
+        lf("memory_storage"),
     ],
 )
 class TestStorages:

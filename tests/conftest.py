@@ -40,7 +40,8 @@ def pytest_configure(config):
 
     if sys.platform == "win32":
         asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
-    return asyncio.set_event_loop_policy(asyncio.DefaultEventLoopPolicy())
+    else:
+        asyncio.set_event_loop_policy(asyncio.DefaultEventLoopPolicy())
 
 
 @pytest.fixture()
@@ -53,7 +54,6 @@ def redis_server(request):
 
 
 @pytest.fixture()
-@pytest.mark.redis
 async def redis_storage(redis_server):
     try:
         parse_redis_url(redis_server)
@@ -82,7 +82,6 @@ def mongo_server(request):
 
 
 @pytest.fixture()
-@pytest.mark.mongo
 async def mongo_storage(mongo_server):
     try:
         parse_mongo_url(mongo_server)
@@ -113,7 +112,6 @@ async def memory_storage():
 
 
 @pytest.fixture()
-@pytest.mark.redis
 async def redis_isolation(redis_storage):
     isolation = redis_storage.create_isolation()
     return isolation

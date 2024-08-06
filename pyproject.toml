@@ -62,29 +62,29 @@ redis = [
     "redis[hiredis]~=5.0.1",
 ]
 mongo = [
-    "motor~=3.3.2",
+    "motor~=3.5.1",
 ]
 proxy = [
-    "aiohttp-socks~=0.8.3",
+    "aiohttp-socks~=0.9.0",
 ]
 i18n = [
     "Babel~=2.13.0",
 ]
 cli = [
-    "aiogram-cli~=1.0.3",
+    "aiogram-cli~=1.1.0",
 ]
 test = [
-    "pytest~=7.4.2",
-    "pytest-html~=4.0.2",
-    "pytest-asyncio~=0.21.1",
-    "pytest-lazy-fixture~=0.6.3",
-    "pytest-mock~=3.12.0",
+    "pytest~=8.3.2",
+    "pytest-html~=4.1.1",
+    "pytest-asyncio~=0.23.8",
+    "pytest-lazy-fixtures~=1.1.1",
+    "pytest-mock~=3.14.0",
     "pytest-mypy~=0.10.3",
-    "pytest-cov~=4.1.0",
+    "pytest-cov~=5.0.0",
     "pytest-aiohttp~=1.0.5",
-    "aresponses~=2.1.6",
-    "pytz~=2023.3",
-    "pycryptodomex~=3.19.0",
+    "aresponses~=3.0.0",
+    "pytz~=2024.1",
+    "pycryptodomex~=3.20.0",
 ]
 docs = [
     "Sphinx~=7.2.6",
@@ -101,10 +101,10 @@ docs = [
     "sphinxcontrib-towncrier~=0.3.2a0",
 ]
 dev = [
-    "black~=24.4.2",
+    "black~=24.8.0",
     "isort~=5.13.2",
     "ruff~=0.5.1",
-    "mypy~=1.10.0",
+    "mypy~=1.11.1",
     "toml~=0.10.2",
     "pre-commit~=3.5",
     "packaging~=24.1",
