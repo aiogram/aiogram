@@ -104,8 +104,12 @@ async def handle_set_name(message: types.Message, command: CommandObject) -> Non
 async def main() -> None:
     # Initialize Bot instance with default bot properties which will be passed to all API calls
     bot = Bot(token=TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
+
     # And the run events dispatching
     await dp.start_polling(bot)
+
+    # Don't forget to close web-session on your app close
+    await bot.session.close()
 
 
 if __name__ == "__main__":

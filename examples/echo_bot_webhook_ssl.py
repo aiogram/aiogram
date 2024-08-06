@@ -82,14 +82,20 @@ async def on_startup(bot: Bot) -> None:
     )
 
 
+async def on_shutdown(bot: Bot) -> None:
+    # Gracefully close web-sessions on app shutdown
+    await bot.session.close()
+
+
 def main() -> None:
     # Dispatcher is a root router
     dp = Dispatcher()
     # ... and all other routers should be attached to Dispatcher
     dp.include_router(router)
 
-    # Register startup hook to initialize webhook
+    # Register startup and shutdown hooks
     dp.startup.register(on_startup)
+    dp.shutdown.register(on_shutdown)
 
     # Initialize Bot instance with default bot properties which will be passed to all API calls
     bot = Bot(token=TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))

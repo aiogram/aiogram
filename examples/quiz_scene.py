@@ -292,6 +292,7 @@ async def main():
     dp = create_dispatcher()
     bot = Bot(token=TOKEN)
     await dp.start_polling(bot)
+    await bot.session.close()
 
 
 if __name__ == "__main__":

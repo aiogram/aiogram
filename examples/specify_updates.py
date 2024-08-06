@@ -91,6 +91,9 @@ async def main() -> None:
     # Start event dispatching
     await dp.start_polling(bot)
 
+    # Don't forget to close web-session on your app close
+    await bot.session.close()
+
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, stream=sys.stdout)

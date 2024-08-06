@@ -58,6 +58,11 @@ async def on_startup(dispatcher: Dispatcher, bot: Bot):
     await bot.set_webhook(f"{BASE_URL}{MAIN_BOT_PATH}")
 
 
+async def on_shutdown(dispatcher: Dispatcher, bot: Bot) -> None:
+    # Gracefully close web-sessions on app shutdown
+    await bot.session.close()
+
+
 def main():
     logging.basicConfig(level=logging.INFO, stream=sys.stdout)
     session = AiohttpSession()
@@ -70,6 +75,7 @@ def main():
     main_dispatcher = Dispatcher(storage=storage)
     main_dispatcher.include_router(main_router)
     main_dispatcher.startup.register(on_startup)
+    main_dispatcher.shutdown.register(on_shutdown)
 
     multibot_dispatcher = Dispatcher(storage=storage)
     multibot_dispatcher.include_router(form_router)
