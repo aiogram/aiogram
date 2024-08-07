@@ -166,4 +166,4 @@ class RedisEventIsolation(BaseEventIsolation):
             yield None
 
     async def close(self) -> None:
-        pass
+        await self.redis.aclose(close_connection_pool=True)
