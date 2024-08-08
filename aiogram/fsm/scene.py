@@ -907,6 +907,7 @@ class OnMarker:
     my_chat_member = ObserverMarker("my_chat_member")
     chat_member = ObserverMarker("chat_member")
     chat_join_request = ObserverMarker("chat_join_request")
+    error = ObserverMarker("error")
 
 
 on = OnMarker()
