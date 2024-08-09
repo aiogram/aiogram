@@ -16,6 +16,41 @@ Changelog
 
 .. towncrier release notes start
 
+3.11.0 (2024-08-09)
+====================
+
+Features
+--------
+
+- Added full support of `Bot API 7.8 <https://core.telegram.org/bots/api-changelog#july-31-2024>`_
+
+  - Added the field :code:`has_main_web_app` to the class :class:`aiogram.types.user.User`,
+    which is returned in the response to :class:`aiogram.methods.get_me.GetMe`.
+  - Added the parameter :code:`business_connection_id` to the methods
+    :class:`aiogram.methods.pin_chat_message.PinChatMessage`
+    and :class:`aiogram.methods.unpin_chat_message.UnpinChatMessage`,
+    allowing bots to manage pinned messages on behalf of a business account.
+  `#1551 <https://github.com/aiogram/aiogram/issues/1551>`_
+
+
+Bugfixes
+--------
+
+- Fixed URL path in the "Open" button at the "demo/sendMessage" endpoint in the web_app example.
+  `#1546 <https://github.com/aiogram/aiogram/issues/1546>`_
+
+
+Misc
+----
+
+- Added method :func:`aiogram.types.message.Message.as_reply_parameters`.
+  Replaced usage of the argument :code:`reply_to_message_id` with :code:`reply_parameters`
+  in all Message reply methods.
+  `#1538 <https://github.com/aiogram/aiogram/issues/1538>`_
+- Added `aiohttp v3.10 <https://github.com/aio-libs/aiohttp/releases/tag/v3.10.0>`_ ` support.
+  `#1548 <https://github.com/aiogram/aiogram/issues/1548>`_
+
+
 3.10.0 (2024-07-07)
 ====================
 

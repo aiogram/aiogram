@@ -1,3 +1,0 @@
-Added method :func:`aiogram.types.message.Message.as_reply_parameters`.
-Replaced usage of the argument :code:`reply_to_message_id` with :code:`reply_parameters`
-in all Message reply methods.

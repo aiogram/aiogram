@@ -1,1 +1,0 @@
-Added `aiohttp v3.10 <https://github.com/aio-libs/aiohttp/releases/tag/v3.10.0>`_ ` support.
