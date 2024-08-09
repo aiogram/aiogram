@@ -1,3 +1,5 @@
+import asyncio
+import sys
 from pathlib import Path
 
 import pytest
@@ -36,6 +38,11 @@ def pytest_configure(config):
     config.addinivalue_line("markers", "redis: marked tests require redis connection to run")
     config.addinivalue_line("markers", "mongo: marked tests require mongo connection to run")
 
+    if sys.platform == "win32":
+        asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+    else:
+        asyncio.set_event_loop_policy(asyncio.DefaultEventLoopPolicy())
+
 
 @pytest.fixture()
 def redis_server(request):
@@ -47,7 +54,6 @@ def redis_server(request):
 
 
 @pytest.fixture()
-@pytest.mark.redis
 async def redis_storage(redis_server):
     try:
         parse_redis_url(redis_server)
@@ -76,7 +82,6 @@ def mongo_server(request):
 
 
 @pytest.fixture()
-@pytest.mark.mongo
 async def mongo_storage(mongo_server):
     try:
         parse_mongo_url(mongo_server)
@@ -107,7 +112,6 @@ async def memory_storage():
 
 
 @pytest.fixture()
-@pytest.mark.redis
 async def redis_isolation(redis_storage):
     isolation = redis_storage.create_isolation()
     return isolation
@@ -149,3 +153,10 @@ async def dispatcher():
         yield dp
     finally:
         await dp.emit_shutdown()
+
+
+# @pytest.fixture(scope="session")
+# def event_loop_policy(request):
+#     if sys.platform == "win32":
+#         return asyncio.WindowsSelectorEventLoopPolicy()
+#     return asyncio.DefaultEventLoopPolicy()

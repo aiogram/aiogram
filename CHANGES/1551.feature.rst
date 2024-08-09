@@ -1,0 +1,8 @@
+Added full support of `Bot API 7.8 <https://core.telegram.org/bots/api-changelog#july-31-2024>`_
+
+- Added the field :code:`has_main_web_app` to the class :class:`aiogram.types.user.User`,
+  which is returned in the response to :class:`aiogram.methods.get_me.GetMe`.
+- Added the parameter :code:`business_connection_id` to the methods
+  :class:`aiogram.methods.pin_chat_message.PinChatMessage`
+  and :class:`aiogram.methods.unpin_chat_message.UnpinChatMessage`,
+  allowing bots to manage pinned messages on behalf of a business account.

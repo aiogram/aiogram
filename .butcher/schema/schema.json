@@ -1,7 +1,7 @@
 {
   "api": {
-    "version": "7.7",
-    "release_date": "2024-07-07"
+    "version": "7.8",
+    "release_date": "2024-07-31"
   },
   "items": [
     {
@@ -527,6 +527,14 @@
               "html_description": "<td><em>Optional</em>. <em>True</em>, if the bot can be connected to a Telegram Business account to receive its messages. Returned only in <a href=\"#getme\">getMe</a>.</td>",
               "rst_description": "*Optional*. :code:`True`, if the bot can be connected to a Telegram Business account to receive its messages. Returned only in :class:`aiogram.methods.get_me.GetMe`.\n",
               "name": "can_connect_to_business",
+              "required": false
+            },
+            {
+              "type": "Boolean",
+              "description": "True, if the bot has a main Web App. Returned only in getMe.",
+              "html_description": "<td><em>Optional</em>. <em>True</em>, if the bot has a main Web App. Returned only in <a href=\"#getme\">getMe</a>.</td>",
+              "rst_description": "*Optional*. :code:`True`, if the bot has a main Web App. Returned only in :class:`aiogram.methods.get_me.GetMe`.\n",
+              "name": "has_main_web_app",
               "required": false
             }
           ],
@@ -10571,6 +10579,14 @@
           "rst_description": "Use this method to add a message to the list of pinned messages in a chat. If the chat is not a private chat, the bot must be an administrator in the chat for this to work and must have the 'can_pin_messages' administrator right in a supergroup or 'can_edit_messages' administrator right in a channel. Returns :code:`True` on success.",
           "annotations": [
             {
+              "type": "String",
+              "required": false,
+              "description": "Unique identifier of the business connection on behalf of which the message will be pinned",
+              "html_description": "<td>Unique identifier of the business connection on behalf of which the message will be pinned</td>",
+              "rst_description": "Unique identifier of the business connection on behalf of which the message will be pinned\n",
+              "name": "business_connection_id"
+            },
+            {
               "type": "Integer or String",
               "required": true,
               "description": "Unique identifier for the target chat or username of the target channel (in the format @channelusername)",
@@ -10605,6 +10621,14 @@
           "rst_description": "Use this method to remove a message from the list of pinned messages in a chat. If the chat is not a private chat, the bot must be an administrator in the chat for this to work and must have the 'can_pin_messages' administrator right in a supergroup or 'can_edit_messages' administrator right in a channel. Returns :code:`True` on success.",
           "annotations": [
             {
+              "type": "String",
+              "required": false,
+              "description": "Unique identifier of the business connection on behalf of which the message will be unpinned",
+              "html_description": "<td>Unique identifier of the business connection on behalf of which the message will be unpinned</td>",
+              "rst_description": "Unique identifier of the business connection on behalf of which the message will be unpinned\n",
+              "name": "business_connection_id"
+            },
+            {
               "type": "Integer or String",
               "required": true,
               "description": "Unique identifier for the target chat or username of the target channel (in the format @channelusername)",
@@ -10615,9 +10639,9 @@
             {
               "type": "Integer",
               "required": false,
-              "description": "Identifier of a message to unpin. If not specified, the most recent pinned message (by sending date) will be unpinned.",
-              "html_description": "<td>Identifier of a message to unpin. If not specified, the most recent pinned message (by sending date) will be unpinned.</td>",
-              "rst_description": "Identifier of a message to unpin. If not specified, the most recent pinned message (by sending date) will be unpinned.\n",
+              "description": "Identifier of the message to unpin. Required if business_connection_id is specified. If not specified, the most recent pinned message (by sending date) will be unpinned.",
+              "html_description": "<td>Identifier of the message to unpin. Required if <em>business_connection_id</em> is specified. If not specified, the most recent pinned message (by sending date) will be unpinned.</td>",
+              "rst_description": "Identifier of the message to unpin. Required if *business_connection_id* is specified. If not specified, the most recent pinned message (by sending date) will be unpinned.\n",
               "name": "message_id"
             }
           ],
@@ -12764,9 +12788,9 @@
             {
               "type": "InputFile or String",
               "required": false,
-              "description": "A .WEBP or .PNG image with the thumbnail, must be up to 128 kilobytes in size and have a width and height of exactly 100px, or a .TGS animation with a thumbnail up to 32 kilobytes in size (see https://core.telegram.org/stickers#animated-sticker-requirements for animated sticker technical requirements), or a WEBM video with the thumbnail up to 32 kilobytes in size; see https://core.telegram.org/stickers#video-sticker-requirements for video sticker technical requirements. Pass a file_id as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. More information on Sending Files. Animated and video sticker set thumbnails can't be uploaded via HTTP URL. If omitted, then the thumbnail is dropped and the first sticker is used as the thumbnail.",
-              "html_description": "<td>A <strong>.WEBP</strong> or <strong>.PNG</strong> image with the thumbnail, must be up to 128 kilobytes in size and have a width and height of exactly 100px, or a <strong>.TGS</strong> animation with a thumbnail up to 32 kilobytes in size (see <a href=\"/stickers#animated-sticker-requirements\"/><a href=\"https://core.telegram.org/stickers#animated-sticker-requirements\">https://core.telegram.org/stickers#animated-sticker-requirements</a> for animated sticker technical requirements), or a <strong>WEBM</strong> video with the thumbnail up to 32 kilobytes in size; see <a href=\"/stickers#video-sticker-requirements\"/><a href=\"https://core.telegram.org/stickers#video-sticker-requirements\">https://core.telegram.org/stickers#video-sticker-requirements</a> for video sticker technical requirements. Pass a <em>file_id</em> as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. <a href=\"#sending-files\">More information on Sending Files &#187;</a>. Animated and video sticker set thumbnails can't be uploaded via HTTP URL. If omitted, then the thumbnail is dropped and the first sticker is used as the thumbnail.</td>",
-              "rst_description": "A **.WEBP** or **.PNG** image with the thumbnail, must be up to 128 kilobytes in size and have a width and height of exactly 100px, or a **.TGS** animation with a thumbnail up to 32 kilobytes in size (see `https://core.telegram.org/stickers#animated-sticker-requirements <https://core.telegram.org/stickers#animated-sticker-requirements>`_`https://core.telegram.org/stickers#animated-sticker-requirements <https://core.telegram.org/stickers#animated-sticker-requirements>`_ for animated sticker technical requirements), or a **WEBM** video with the thumbnail up to 32 kilobytes in size; see `https://core.telegram.org/stickers#video-sticker-requirements <https://core.telegram.org/stickers#video-sticker-requirements>`_`https://core.telegram.org/stickers#video-sticker-requirements <https://core.telegram.org/stickers#video-sticker-requirements>`_ for video sticker technical requirements. Pass a *file_id* as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`. Animated and video sticker set thumbnails can't be uploaded via HTTP URL. If omitted, then the thumbnail is dropped and the first sticker is used as the thumbnail.\n",
+              "description": "A .WEBP or .PNG image with the thumbnail, must be up to 128 kilobytes in size and have a width and height of exactly 100px, or a .TGS animation with a thumbnail up to 32 kilobytes in size (see https://core.telegram.org/stickers#animation-requirements for animated sticker technical requirements), or a WEBM video with the thumbnail up to 32 kilobytes in size; see https://core.telegram.org/stickers#video-requirements for video sticker technical requirements. Pass a file_id as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. More information on Sending Files. Animated and video sticker set thumbnails can't be uploaded via HTTP URL. If omitted, then the thumbnail is dropped and the first sticker is used as the thumbnail.",
+              "html_description": "<td>A <strong>.WEBP</strong> or <strong>.PNG</strong> image with the thumbnail, must be up to 128 kilobytes in size and have a width and height of exactly 100px, or a <strong>.TGS</strong> animation with a thumbnail up to 32 kilobytes in size (see <a href=\"/stickers#animation-requirements\"/><a href=\"https://core.telegram.org/stickers#animation-requirements\">https://core.telegram.org/stickers#animation-requirements</a> for animated sticker technical requirements), or a <strong>WEBM</strong> video with the thumbnail up to 32 kilobytes in size; see <a href=\"/stickers#video-requirements\"/><a href=\"https://core.telegram.org/stickers#video-requirements\">https://core.telegram.org/stickers#video-requirements</a> for video sticker technical requirements. Pass a <em>file_id</em> as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. <a href=\"#sending-files\">More information on Sending Files &#187;</a>. Animated and video sticker set thumbnails can't be uploaded via HTTP URL. If omitted, then the thumbnail is dropped and the first sticker is used as the thumbnail.</td>",
+              "rst_description": "A **.WEBP** or **.PNG** image with the thumbnail, must be up to 128 kilobytes in size and have a width and height of exactly 100px, or a **.TGS** animation with a thumbnail up to 32 kilobytes in size (see `https://core.telegram.org/stickers#animation-requirements <https://core.telegram.org/stickers#animation-requirements>`_`https://core.telegram.org/stickers#animation-requirements <https://core.telegram.org/stickers#animation-requirements>`_ for animated sticker technical requirements), or a **WEBM** video with the thumbnail up to 32 kilobytes in size; see `https://core.telegram.org/stickers#video-requirements <https://core.telegram.org/stickers#video-requirements>`_`https://core.telegram.org/stickers#video-requirements <https://core.telegram.org/stickers#video-requirements>`_ for video sticker technical requirements. Pass a *file_id* as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`. Animated and video sticker set thumbnails can't be uploaded via HTTP URL. If omitted, then the thumbnail is dropped and the first sticker is used as the thumbnail.\n",
               "name": "thumbnail"
             },
             {
@@ -17615,7 +17639,7 @@
           "category": "types"
         }
       ],
-      "description": "Your bot can offer users HTML5 games to play solo or to compete against each other in groups and one-on-one chats. Create games via @BotFather using the /newgame command. Please note that this kind of power requires responsibility: you will need to accept the terms for each game that your bots will be offering.\n - Games are a new type of content on Telegram, represented by the Game and InlineQueryResultGame objects.\n - Once you've created a game via BotFather, you can send games to chats as regular messages using the sendGame method, or use inline mode with InlineQueryResultGame.\n - If you send the game message without any buttons, it will automatically have a 'Play GameName' button. When this button is pressed, your bot gets a CallbackQuery with the game_short_name of the requested game. You provide the correct URL for this particular user and the app opens the game in the in-app browser.\n - You can manually add multiple buttons to your game message. Please note that the first button in the first row must always launch the game, using the field callback_game in InlineKeyboardButton. You can add extra buttons according to taste: e.g., for a description of the rules, or to open the game's official community.\n - To make your game more attractive, you can upload a GIF animation that demostrates the game to the users via BotFather (see Lumberjack for example).\n - A game message will also display high scores for the current chat. Use setGameScore to post high scores to the chat with the game, add the edit_message parameter to automatically update the message with the current scoreboard.\n - Use getGameHighScores to get data for in-game high score tables.\n - You can also add an extra sharing button for users to share their best score to different chats.\n - For examples of what can be done using this new stuff, check the @gamebot and @gamee bots."
+      "description": "Your bot can offer users HTML5 games to play solo or to compete against each other in groups and one-on-one chats. Create games via @BotFather using the /newgame command. Please note that this kind of power requires responsibility: you will need to accept the terms for each game that your bots will be offering.\n - Games are a new type of content on Telegram, represented by the Game and InlineQueryResultGame objects.\n - Once you've created a game via BotFather, you can send games to chats as regular messages using the sendGame method, or use inline mode with InlineQueryResultGame.\n - If you send the game message without any buttons, it will automatically have a 'Play GameName' button. When this button is pressed, your bot gets a CallbackQuery with the game_short_name of the requested game. You provide the correct URL for this particular user and the app opens the game in the in-app browser.\n - You can manually add multiple buttons to your game message. Please note that the first button in the first row must always launch the game, using the field callback_game in InlineKeyboardButton. You can add extra buttons according to taste: e.g., for a description of the rules, or to open the game's official community.\n - To make your game more attractive, you can upload a GIF animation that demonstrates the game to the users via BotFather (see Lumberjack for example).\n - A game message will also display high scores for the current chat. Use setGameScore to post high scores to the chat with the game, add the disable_edit_message parameter to disable automatic update of the message with the current scoreboard.\n - Use getGameHighScores to get data for in-game high score tables.\n - You can also add an extra sharing button for users to share their best score to different chats.\n - For examples of what can be done using this new stuff, check the @gamebot and @gamee bots."
     }
   ]
 }

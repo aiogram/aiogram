@@ -2033,6 +2033,7 @@ class Bot:
         self,
         chat_id: Union[int, str],
         message_id: int,
+        business_connection_id: Optional[str] = None,
         disable_notification: Optional[bool] = None,
         request_timeout: Optional[int] = None,
     ) -> bool:
@@ -2043,6 +2044,7 @@ class Bot:
 
         :param chat_id: Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
         :param message_id: Identifier of a message to pin
+        :param business_connection_id: Unique identifier of the business connection on behalf of which the message will be pinned
         :param disable_notification: Pass :code:`True` if it is not necessary to send a notification to all chat members about the new pinned message. Notifications are always disabled in channels and private chats.
         :param request_timeout: Request timeout
         :return: Returns :code:`True` on success.
@@ -2051,6 +2053,7 @@ class Bot:
         call = PinChatMessage(
             chat_id=chat_id,
             message_id=message_id,
+            business_connection_id=business_connection_id,
             disable_notification=disable_notification,
         )
         return await self(call, request_timeout=request_timeout)
@@ -3934,6 +3937,7 @@ class Bot:
     async def unpin_chat_message(
         self,
         chat_id: Union[int, str],
+        business_connection_id: Optional[str] = None,
         message_id: Optional[int] = None,
         request_timeout: Optional[int] = None,
     ) -> bool:
@@ -3943,13 +3947,15 @@ class Bot:
         Source: https://core.telegram.org/bots/api#unpinchatmessage
 
         :param chat_id: Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
-        :param message_id: Identifier of a message to unpin. If not specified, the most recent pinned message (by sending date) will be unpinned.
+        :param business_connection_id: Unique identifier of the business connection on behalf of which the message will be unpinned
+        :param message_id: Identifier of the message to unpin. Required if *business_connection_id* is specified. If not specified, the most recent pinned message (by sending date) will be unpinned.
         :param request_timeout: Request timeout
         :return: Returns :code:`True` on success.
         """
 
         call = UnpinChatMessage(
             chat_id=chat_id,
+            business_connection_id=business_connection_id,
             message_id=message_id,
         )
         return await self(call, request_timeout=request_timeout)
@@ -4297,7 +4303,7 @@ class Bot:
         :param name: Sticker set name
         :param user_id: User identifier of the sticker set owner
         :param format: Format of the thumbnail, must be one of 'static' for a **.WEBP** or **.PNG** image, 'animated' for a **.TGS** animation, or 'video' for a **WEBM** video
-        :param thumbnail: A **.WEBP** or **.PNG** image with the thumbnail, must be up to 128 kilobytes in size and have a width and height of exactly 100px, or a **.TGS** animation with a thumbnail up to 32 kilobytes in size (see `https://core.telegram.org/stickers#animated-sticker-requirements <https://core.telegram.org/stickers#animated-sticker-requirements>`_`https://core.telegram.org/stickers#animated-sticker-requirements <https://core.telegram.org/stickers#animated-sticker-requirements>`_ for animated sticker technical requirements), or a **WEBM** video with the thumbnail up to 32 kilobytes in size; see `https://core.telegram.org/stickers#video-sticker-requirements <https://core.telegram.org/stickers#video-sticker-requirements>`_`https://core.telegram.org/stickers#video-sticker-requirements <https://core.telegram.org/stickers#video-sticker-requirements>`_ for video sticker technical requirements. Pass a *file_id* as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`. Animated and video sticker set thumbnails can't be uploaded via HTTP URL. If omitted, then the thumbnail is dropped and the first sticker is used as the thumbnail.
+        :param thumbnail: A **.WEBP** or **.PNG** image with the thumbnail, must be up to 128 kilobytes in size and have a width and height of exactly 100px, or a **.TGS** animation with a thumbnail up to 32 kilobytes in size (see `https://core.telegram.org/stickers#animation-requirements <https://core.telegram.org/stickers#animation-requirements>`_`https://core.telegram.org/stickers#animation-requirements <https://core.telegram.org/stickers#animation-requirements>`_ for animated sticker technical requirements), or a **WEBM** video with the thumbnail up to 32 kilobytes in size; see `https://core.telegram.org/stickers#video-requirements <https://core.telegram.org/stickers#video-requirements>`_`https://core.telegram.org/stickers#video-requirements <https://core.telegram.org/stickers#video-requirements>`_ for video sticker technical requirements. Pass a *file_id* as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`. Animated and video sticker set thumbnails can't be uploaded via HTTP URL. If omitted, then the thumbnail is dropped and the first sticker is used as the thumbnail.
         :param request_timeout: Request timeout
         :return: Returns :code:`True` on success.
         """

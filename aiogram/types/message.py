@@ -3956,6 +3956,7 @@ class Message(MaybeInaccessibleMessage):
 
     def pin(
         self,
+        business_connection_id: Optional[str] = None,
         disable_notification: Optional[bool] = None,
         **kwargs: Any,
     ) -> PinChatMessage:
@@ -3970,6 +3971,7 @@ class Message(MaybeInaccessibleMessage):
 
         Source: https://core.telegram.org/bots/api#pinchatmessage
 
+        :param business_connection_id: Unique identifier of the business connection on behalf of which the message will be pinned
         :param disable_notification: Pass :code:`True` if it is not necessary to send a notification to all chat members about the new pinned message. Notifications are always disabled in channels and private chats.
         :return: instance of method :class:`aiogram.methods.pin_chat_message.PinChatMessage`
         """
@@ -3985,12 +3987,14 @@ class Message(MaybeInaccessibleMessage):
         return PinChatMessage(
             chat_id=self.chat.id,
             message_id=self.message_id,
+            business_connection_id=business_connection_id,
             disable_notification=disable_notification,
             **kwargs,
         ).as_(self._bot)
 
     def unpin(
         self,
+        business_connection_id: Optional[str] = None,
         **kwargs: Any,
     ) -> UnpinChatMessage:
         """
@@ -4004,6 +4008,7 @@ class Message(MaybeInaccessibleMessage):
 
         Source: https://core.telegram.org/bots/api#unpinchatmessage
 
+        :param business_connection_id: Unique identifier of the business connection on behalf of which the message will be unpinned
         :return: instance of method :class:`aiogram.methods.unpin_chat_message.UnpinChatMessage`
         """
         # DO NOT EDIT MANUALLY!!!
@@ -4018,6 +4023,7 @@ class Message(MaybeInaccessibleMessage):
         return UnpinChatMessage(
             chat_id=self.chat.id,
             message_id=self.message_id,
+            business_connection_id=business_connection_id,
             **kwargs,
         ).as_(self._bot)
 
