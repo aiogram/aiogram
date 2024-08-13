@@ -2,7 +2,14 @@ from dataclasses import dataclass
 from typing import Any, Awaitable, Callable, Dict, Optional
 
 from aiogram.dispatcher.middlewares.base import BaseMiddleware
-from aiogram.types import Chat, InaccessibleMessage, TelegramObject, Update, User
+from aiogram.types import (
+    Chat,
+    ChatBoostSourcePremium,
+    InaccessibleMessage,
+    TelegramObject,
+    Update,
+    User,
+)
 
 EVENT_CONTEXT_KEY = "event_context"
 
@@ -125,6 +132,14 @@ class UserContextMiddleware(BaseMiddleware):
         if event.message_reaction_count:
             return EventContext(chat=event.message_reaction_count.chat)
         if event.chat_boost:
+            # We only check the premium source, because only it has a sender user,
+            # other sources have a user, but it is not the sender, but the recipient
+            if isinstance(event.chat_boost.boost.source, ChatBoostSourcePremium):
+                return EventContext(
+                    chat=event.chat_boost.chat,
+                    user=event.chat_boost.boost.source.user,
+                )
+
             return EventContext(chat=event.chat_boost.chat)
         if event.removed_chat_boost:
             return EventContext(chat=event.removed_chat_boost.chat)
