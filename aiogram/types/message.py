@@ -4027,13 +4027,16 @@ class Message(MaybeInaccessibleMessage):
             **kwargs,
         ).as_(self._bot)
 
-    def get_url(self, force_private: bool = False) -> Optional[str]:
+    def get_url(
+        self, force_private: bool = False, include_thread_id: bool = False
+    ) -> Optional[str]:
         """
         Returns message URL. Cannot be used in private (one-to-one) chats.
         If chat has a username, returns URL like https://t.me/username/message_id
         Otherwise (or if {force_private} flag is set), returns https://t.me/c/shifted_chat_id/message_id
 
         :param force_private: if set, a private URL is returned even for a public chat
+        :param include_thread_id: if set, adds chat thread id to URL and returns like https://t.me/username/thread_id/message_id
         :return: string with full message URL
         """
         if self.chat.type in ("private", "group"):
@@ -4045,7 +4048,13 @@ class Message(MaybeInaccessibleMessage):
             else self.chat.username
         )
 
-        return f"https://t.me/{chat_value}/{self.message_id}"
+        message_id_value = (
+            f"{self.message_thread_id}/{self.message_id}"
+            if include_thread_id and self.message_thread_id and self.is_topic_message
+            else f"{self.message_id}"
+        )
+
+        return f"https://t.me/{chat_value}/{message_id_value}"
 
     def react(
         self,
