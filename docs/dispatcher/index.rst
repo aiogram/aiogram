@@ -29,9 +29,9 @@ So, you can use both of them with *aiogram*.
     dependency_injection
     filters/index
     long_polling
-    webhook
     finite_state_machine/index
     middlewares
     errors
     flags
+    webhook
     class_based_handlers/index

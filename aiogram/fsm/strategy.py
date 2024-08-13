@@ -3,11 +3,20 @@ from typing import Optional, Tuple
 
 
 class FSMStrategy(Enum):
+    """
+    FSM strategy for storage key generation.
+    """
+
     USER_IN_CHAT = auto()
+    """State will be stored for each user in chat."""
     CHAT = auto()
+    """State will be stored for each chat globally without separating by users."""
     GLOBAL_USER = auto()
+    """State will be stored globally for each user globally."""
     USER_IN_TOPIC = auto()
+    """State will be stored for each user in chat and topic."""
     CHAT_TOPIC = auto()
+    """State will be stored for each chat and topic, but not separated by users."""
 
 
 def apply_strategy(
