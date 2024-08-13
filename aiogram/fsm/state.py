@@ -70,10 +70,13 @@ class StatesGroupMeta(type):
     __childs__: "Tuple[Type[StatesGroup], ...]"
     __states__: Tuple[State, ...]
     __state_names__: Tuple[str, ...]
+    __all_childs__: Tuple[Type["StatesGroup"], ...]
+    __all_states__: Tuple[State, ...]
+    __all_states_names__: Tuple[str, ...]
 
     @no_type_check
     def __new__(mcs, name, bases, namespace, **kwargs):
-        cls = super(StatesGroupMeta, mcs).__new__(mcs, name, bases, namespace)
+        cls = super().__new__(mcs, name, bases, namespace)
 
         states = []
         childs = []
@@ -82,13 +85,21 @@ class StatesGroupMeta(type):
             if isinstance(arg, State):
                 states.append(arg)
             elif inspect.isclass(arg) and issubclass(arg, StatesGroup):
-                childs.append(arg)
-                arg.__parent__ = cls
+                child = cls._prepare_child(arg)
+                childs.append(child)
 
         cls.__parent__ = None
         cls.__childs__ = tuple(childs)
         cls.__states__ = tuple(states)
         cls.__state_names__ = tuple(state.state for state in states)
+
+        cls.__all_childs__ = cls._get_all_childs()
+        cls.__all_states__ = cls._get_all_states()
+
+        # In order to ensure performance, we calculate this parameter
+        # in advance already during the production of the class.
+        # Depending on the relationship, it should be recalculated
+        cls.__all_states_names__ = cls._get_all_states_names()
 
         return cls
 
@@ -98,22 +109,33 @@ class StatesGroupMeta(type):
             return ".".join((cls.__parent__.__full_group_name__, cls.__name__))
         return cls.__name__
 
-    @property
-    def __all_childs__(cls) -> Tuple[Type["StatesGroup"], ...]:
+    def _prepare_child(cls, child: Type["StatesGroup"]) -> Type["StatesGroup"]:
+        """Prepare child.
+
+        While adding `cls` for its children, we also need to recalculate
+        the parameter `__all_states_names__` for each child
+        `StatesGroup`. Since the child class appears before the
+        parent, at the time of adding the parent, the child's
+        `__all_states_names__` is already recorded without taking into
+        account the name of current parent.
+        """
+        child.__parent__ = cls  # type: ignore[assignment]
+        child.__all_states_names__ = child._get_all_states_names()
+        return child
+
+    def _get_all_childs(cls) -> Tuple[Type["StatesGroup"], ...]:
         result = cls.__childs__
         for child in cls.__childs__:
             result += child.__childs__
         return result
 
-    @property
-    def __all_states__(cls) -> Tuple[State, ...]:
+    def _get_all_states(cls) -> Tuple[State, ...]:
         result = cls.__states__
         for group in cls.__childs__:
             result += group.__all_states__
         return result
 
-    @property
-    def __all_states_names__(cls) -> Tuple[str, ...]:
+    def _get_all_states_names(cls) -> Tuple[str, ...]:
         return tuple(state.state for state in cls.__all_states__ if state.state)
 
     def __contains__(cls, item: Any) -> bool:
