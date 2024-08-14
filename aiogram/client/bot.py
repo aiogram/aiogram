@@ -38,6 +38,7 @@ from ..methods import (
     CopyMessage,
     CopyMessages,
     CreateChatInviteLink,
+    CreateChatSubscriptionInviteLink,
     CreateForumTopic,
     CreateInvoiceLink,
     CreateNewStickerSet,
@@ -52,6 +53,7 @@ from ..methods import (
     DeleteStickerSet,
     DeleteWebhook,
     EditChatInviteLink,
+    EditChatSubscriptionInviteLink,
     EditForumTopic,
     EditGeneralForumTopic,
     EditMessageCaption,
@@ -230,6 +232,7 @@ from ..types import (
     Poll,
     ReactionTypeCustomEmoji,
     ReactionTypeEmoji,
+    ReactionTypePaid,
     ReplyKeyboardMarkup,
     ReplyKeyboardRemove,
     ReplyParameters,
@@ -1325,7 +1328,7 @@ class Bot:
         request_timeout: Optional[int] = None,
     ) -> bool:
         """
-        Use this method to edit name and icon of a topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have *can_manage_topics* administrator rights, unless it is the creator of the topic. Returns :code:`True` on success.
+        Use this method to edit name and icon of a topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the *can_manage_topics* administrator rights, unless it is the creator of the topic. Returns :code:`True` on success.
 
         Source: https://core.telegram.org/bots/api#editforumtopic
 
@@ -4013,7 +4016,7 @@ class Bot:
         request_timeout: Optional[int] = None,
     ) -> bool:
         """
-        Use this method to edit the name of the 'General' topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have *can_manage_topics* administrator rights. Returns :code:`True` on success.
+        Use this method to edit the name of the 'General' topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the *can_manage_topics* administrator rights. Returns :code:`True` on success.
 
         Source: https://core.telegram.org/bots/api#editgeneralforumtopic
 
@@ -4525,18 +4528,20 @@ class Bot:
         self,
         chat_id: Union[int, str],
         message_id: int,
-        reaction: Optional[List[Union[ReactionTypeEmoji, ReactionTypeCustomEmoji]]] = None,
+        reaction: Optional[
+            List[Union[ReactionTypeEmoji, ReactionTypeCustomEmoji, ReactionTypePaid]]
+        ] = None,
         is_big: Optional[bool] = None,
         request_timeout: Optional[int] = None,
     ) -> bool:
         """
-        Use this method to change the chosen reactions on a message. Service messages can't be reacted to. Automatically forwarded messages from a channel to its discussion group have the same available reactions as messages in the channel. Returns :code:`True` on success.
+        Use this method to change the chosen reactions on a message. Service messages can't be reacted to. Automatically forwarded messages from a channel to its discussion group have the same available reactions as messages in the channel. Bots can't use paid reactions. Returns :code:`True` on success.
 
         Source: https://core.telegram.org/bots/api#setmessagereaction
 
         :param chat_id: Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
         :param message_id: Identifier of the target message. If the message belongs to a media group, the reaction is set to the first non-deleted message in the group instead.
-        :param reaction: A JSON-serialized list of reaction types to set on the message. Currently, as non-premium users, bots can set up to one reaction per message. A custom emoji reaction can be used if it is either already present on the message or explicitly allowed by chat administrators.
+        :param reaction: A JSON-serialized list of reaction types to set on the message. Currently, as non-premium users, bots can set up to one reaction per message. A custom emoji reaction can be used if it is either already present on the message or explicitly allowed by chat administrators. Paid reactions can't be used by bots.
         :param is_big: Pass :code:`True` to set the reaction with a big animation
         :param request_timeout: Request timeout
         :return: Returns :code:`True` on success.
@@ -4650,6 +4655,7 @@ class Bot:
         chat_id: Union[int, str],
         star_count: int,
         media: List[Union[InputPaidMediaPhoto, InputPaidMediaVideo]],
+        business_connection_id: Optional[str] = None,
         caption: Optional[str] = None,
         parse_mode: Optional[str] = None,
         caption_entities: Optional[List[MessageEntity]] = None,
@@ -4663,13 +4669,14 @@ class Bot:
         request_timeout: Optional[int] = None,
     ) -> Message:
         """
-        Use this method to send paid media to channel chats. On success, the sent :class:`aiogram.types.message.Message` is returned.
+        Use this method to send paid media. On success, the sent :class:`aiogram.types.message.Message` is returned.
 
         Source: https://core.telegram.org/bots/api#sendpaidmedia
 
-        :param chat_id: Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
+        :param chat_id: Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`). If the chat is a channel, all Telegram Star proceeds from this media will be credited to the chat's balance. Otherwise, they will be credited to the bot's balance.
         :param star_count: The number of Telegram Stars that must be paid to buy access to the media
         :param media: A JSON-serialized array describing the media to be sent; up to 10 items
+        :param business_connection_id: Unique identifier of the business connection on behalf of which the message will be sent
         :param caption: Media caption, 0-1024 characters after entities parsing
         :param parse_mode: Mode for parsing entities in the media caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.
         :param caption_entities: A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*
@@ -4686,6 +4693,7 @@ class Bot:
             chat_id=chat_id,
             star_count=star_count,
             media=media,
+            business_connection_id=business_connection_id,
             caption=caption,
             parse_mode=parse_mode,
             caption_entities=caption_entities,
@@ -4694,5 +4702,60 @@ class Bot:
             protect_content=protect_content,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
+        )
+        return await self(call, request_timeout=request_timeout)
+
+    async def create_chat_subscription_invite_link(
+        self,
+        chat_id: Union[int, str],
+        subscription_period: Union[datetime.datetime, datetime.timedelta, int],
+        subscription_price: int,
+        name: Optional[str] = None,
+        request_timeout: Optional[int] = None,
+    ) -> ChatInviteLink:
+        """
+        Use this method to create a `subscription invite link <https://telegram.org/blog/superchannels-star-reactions-subscriptions#star-subscriptions>`_ for a channel chat. The bot must have the *can_invite_users* administrator rights. The link can be edited using the method :class:`aiogram.methods.edit_chat_subscription_invite_link.EditChatSubscriptionInviteLink` or revoked using the method :class:`aiogram.methods.revoke_chat_invite_link.RevokeChatInviteLink`. Returns the new invite link as a :class:`aiogram.types.chat_invite_link.ChatInviteLink` object.
+
+        Source: https://core.telegram.org/bots/api#createchatsubscriptioninvitelink
+
+        :param chat_id: Unique identifier for the target channel chat or username of the target channel (in the format :code:`@channelusername`)
+        :param subscription_period: The number of seconds the subscription will be active for before the next payment. Currently, it must always be 2592000 (30 days).
+        :param subscription_price: The amount of Telegram Stars a user must pay initially and after each subsequent subscription period to be a member of the chat; 1-2500
+        :param name: Invite link name; 0-32 characters
+        :param request_timeout: Request timeout
+        :return: Returns the new invite link as a :class:`aiogram.types.chat_invite_link.ChatInviteLink` object.
+        """
+
+        call = CreateChatSubscriptionInviteLink(
+            chat_id=chat_id,
+            subscription_period=subscription_period,
+            subscription_price=subscription_price,
+            name=name,
+        )
+        return await self(call, request_timeout=request_timeout)
+
+    async def edit_chat_subscription_invite_link(
+        self,
+        chat_id: Union[int, str],
+        invite_link: str,
+        name: Optional[str] = None,
+        request_timeout: Optional[int] = None,
+    ) -> ChatInviteLink:
+        """
+        Use this method to edit a subscription invite link created by the bot. The bot must have the *can_invite_users* administrator rights. Returns the edited invite link as a :class:`aiogram.types.chat_invite_link.ChatInviteLink` object.
+
+        Source: https://core.telegram.org/bots/api#editchatsubscriptioninvitelink
+
+        :param chat_id: Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
+        :param invite_link: The invite link to edit
+        :param name: Invite link name; 0-32 characters
+        :param request_timeout: Request timeout
+        :return: Returns the edited invite link as a :class:`aiogram.types.chat_invite_link.ChatInviteLink` object.
+        """
+
+        call = EditChatSubscriptionInviteLink(
+            chat_id=chat_id,
+            invite_link=invite_link,
+            name=name,
         )
         return await self(call, request_timeout=request_timeout)

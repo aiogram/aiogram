@@ -1,0 +1,41 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available methods",
+    "anchor": "available-methods"
+  },
+  "object": {
+    "anchor": "editchatsubscriptioninvitelink",
+    "name": "editChatSubscriptionInviteLink",
+    "description": "Use this method to edit a subscription invite link created by the bot. The bot must have the can_invite_users administrator rights. Returns the edited invite link as a ChatInviteLink object.",
+    "html_description": "<p>Use this method to edit a subscription invite link created by the bot. The bot must have the <em>can_invite_users</em> administrator rights. Returns the edited invite link as a <a href=\"#chatinvitelink\">ChatInviteLink</a> object.</p>",
+    "rst_description": "Use this method to edit a subscription invite link created by the bot. The bot must have the *can_invite_users* administrator rights. Returns the edited invite link as a :class:`aiogram.types.chat_invite_link.ChatInviteLink` object.",
+    "annotations": [
+      {
+        "type": "Integer or String",
+        "required": true,
+        "description": "Unique identifier for the target chat or username of the target channel (in the format @channelusername)",
+        "html_description": "<td>Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)</td>",
+        "rst_description": "Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)\n",
+        "name": "chat_id"
+      },
+      {
+        "type": "String",
+        "required": true,
+        "description": "The invite link to edit",
+        "html_description": "<td>The invite link to edit</td>",
+        "rst_description": "The invite link to edit\n",
+        "name": "invite_link"
+      },
+      {
+        "type": "String",
+        "required": false,
+        "description": "Invite link name; 0-32 characters",
+        "html_description": "<td>Invite link name; 0-32 characters</td>",
+        "rst_description": "Invite link name; 0-32 characters\n",
+        "name": "name"
+      }
+    ],
+    "category": "methods"
+  }
+}

@@ -100,6 +100,7 @@ if TYPE_CHECKING:
     from .proximity_alert_triggered import ProximityAlertTriggered
     from .reaction_type_custom_emoji import ReactionTypeCustomEmoji
     from .reaction_type_emoji import ReactionTypeEmoji
+    from .reaction_type_paid import ReactionTypePaid
     from .refunded_payment import RefundedPayment
     from .reply_keyboard_markup import ReplyKeyboardMarkup
     from .reply_keyboard_remove import ReplyKeyboardRemove
@@ -138,9 +139,9 @@ class Message(MaybeInaccessibleMessage):
     message_thread_id: Optional[int] = None
     """*Optional*. Unique identifier of a message thread to which the message belongs; for supergroups only"""
     from_user: Optional[User] = Field(None, alias="from")
-    """*Optional*. Sender of the message; empty for messages sent to channels. For backward compatibility, the field contains a fake sender user in non-channel chats, if the message was sent on behalf of a chat."""
+    """*Optional*. Sender of the message; may be empty for messages sent to channels. For backward compatibility, if the message was sent on behalf of a chat, the field contains a fake sender user in non-channel chats"""
     sender_chat: Optional[Chat] = None
-    """*Optional*. Sender of the message, sent on behalf of a chat. For example, the channel itself for channel posts, the supergroup itself for messages from anonymous group administrators, the linked channel for messages automatically forwarded to the discussion group. For backward compatibility, the field *from* contains a fake sender user in non-channel chats, if the message was sent on behalf of a chat."""
+    """*Optional*. Sender of the message when sent on behalf of a chat. For example, the supergroup itself for messages sent by its anonymous administrators or a linked channel for messages automatically forwarded to the channel's discussion group. For backward compatibility, if the message was sent on behalf of a chat, the field *from* contains a fake sender user in non-channel chats."""
     sender_boost_count: Optional[int] = None
     """*Optional*. If the sender of the message boosted the chat, the number of boosts added by the user"""
     sender_business_bot: Optional[User] = None
@@ -4058,7 +4059,9 @@ class Message(MaybeInaccessibleMessage):
 
     def react(
         self,
-        reaction: Optional[List[Union[ReactionTypeEmoji, ReactionTypeCustomEmoji]]] = None,
+        reaction: Optional[
+            List[Union[ReactionTypeEmoji, ReactionTypeCustomEmoji, ReactionTypePaid]]
+        ] = None,
         is_big: Optional[bool] = None,
         **kwargs: Any,
     ) -> SetMessageReaction:
@@ -4069,11 +4072,11 @@ class Message(MaybeInaccessibleMessage):
         - :code:`chat_id`
         - :code:`message_id`
 
-        Use this method to change the chosen reactions on a message. Service messages can't be reacted to. Automatically forwarded messages from a channel to its discussion group have the same available reactions as messages in the channel. Returns :code:`True` on success.
+        Use this method to change the chosen reactions on a message. Service messages can't be reacted to. Automatically forwarded messages from a channel to its discussion group have the same available reactions as messages in the channel. Bots can't use paid reactions. Returns :code:`True` on success.
 
         Source: https://core.telegram.org/bots/api#setmessagereaction
 
-        :param reaction: A JSON-serialized list of reaction types to set on the message. Currently, as non-premium users, bots can set up to one reaction per message. A custom emoji reaction can be used if it is either already present on the message or explicitly allowed by chat administrators.
+        :param reaction: A JSON-serialized list of reaction types to set on the message. Currently, as non-premium users, bots can set up to one reaction per message. A custom emoji reaction can be used if it is either already present on the message or explicitly allowed by chat administrators. Paid reactions can't be used by bots.
         :param is_big: Pass :code:`True` to set the reaction with a big animation
         :return: instance of method :class:`aiogram.methods.set_message_reaction.SetMessageReaction`
         """
@@ -4118,7 +4121,7 @@ class Message(MaybeInaccessibleMessage):
         - :code:`message_thread_id`
         - :code:`business_connection_id`
 
-        Use this method to send paid media to channel chats. On success, the sent :class:`aiogram.types.message.Message` is returned.
+        Use this method to send paid media. On success, the sent :class:`aiogram.types.message.Message` is returned.
 
         Source: https://core.telegram.org/bots/api#sendpaidmedia
 
@@ -4184,7 +4187,7 @@ class Message(MaybeInaccessibleMessage):
         - :code:`business_connection_id`
         - :code:`reply_parameters`
 
-        Use this method to send paid media to channel chats. On success, the sent :class:`aiogram.types.message.Message` is returned.
+        Use this method to send paid media. On success, the sent :class:`aiogram.types.message.Message` is returned.
 
         Source: https://core.telegram.org/bots/api#sendpaidmedia
 

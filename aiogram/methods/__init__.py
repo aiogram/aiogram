@@ -14,6 +14,7 @@ from .close_general_forum_topic import CloseGeneralForumTopic
 from .copy_message import CopyMessage
 from .copy_messages import CopyMessages
 from .create_chat_invite_link import CreateChatInviteLink
+from .create_chat_subscription_invite_link import CreateChatSubscriptionInviteLink
 from .create_forum_topic import CreateForumTopic
 from .create_invoice_link import CreateInvoiceLink
 from .create_new_sticker_set import CreateNewStickerSet
@@ -28,6 +29,7 @@ from .delete_sticker_from_set import DeleteStickerFromSet
 from .delete_sticker_set import DeleteStickerSet
 from .delete_webhook import DeleteWebhook
 from .edit_chat_invite_link import EditChatInviteLink
+from .edit_chat_subscription_invite_link import EditChatSubscriptionInviteLink
 from .edit_forum_topic import EditForumTopic
 from .edit_general_forum_topic import EditGeneralForumTopic
 from .edit_message_caption import EditMessageCaption
@@ -140,6 +142,7 @@ __all__ = (
     "CopyMessage",
     "CopyMessages",
     "CreateChatInviteLink",
+    "CreateChatSubscriptionInviteLink",
     "CreateForumTopic",
     "CreateInvoiceLink",
     "CreateNewStickerSet",
@@ -154,6 +157,7 @@ __all__ = (
     "DeleteStickerSet",
     "DeleteWebhook",
     "EditChatInviteLink",
+    "EditChatSubscriptionInviteLink",
     "EditForumTopic",
     "EditGeneralForumTopic",
     "EditMessageCaption",

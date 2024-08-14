@@ -7,16 +7,24 @@
   "object": {
     "anchor": "sendpaidmedia",
     "name": "sendPaidMedia",
-    "description": "Use this method to send paid media to channel chats. On success, the sent Message is returned.",
-    "html_description": "<p>Use this method to send paid media to channel chats. On success, the sent <a href=\"#message\">Message</a> is returned.</p>",
-    "rst_description": "Use this method to send paid media to channel chats. On success, the sent :class:`aiogram.types.message.Message` is returned.",
+    "description": "Use this method to send paid media. On success, the sent Message is returned.",
+    "html_description": "<p>Use this method to send paid media. On success, the sent <a href=\"#message\">Message</a> is returned.</p>",
+    "rst_description": "Use this method to send paid media. On success, the sent :class:`aiogram.types.message.Message` is returned.",
     "annotations": [
+      {
+        "type": "String",
+        "required": false,
+        "description": "Unique identifier of the business connection on behalf of which the message will be sent",
+        "html_description": "<td>Unique identifier of the business connection on behalf of which the message will be sent</td>",
+        "rst_description": "Unique identifier of the business connection on behalf of which the message will be sent\n",
+        "name": "business_connection_id"
+      },
       {
         "type": "Integer or String",
         "required": true,
-        "description": "Unique identifier for the target chat or username of the target channel (in the format @channelusername)",
-        "html_description": "<td>Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)</td>",
-        "rst_description": "Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)\n",
+        "description": "Unique identifier for the target chat or username of the target channel (in the format @channelusername). If the chat is a channel, all Telegram Star proceeds from this media will be credited to the chat's balance. Otherwise, they will be credited to the bot's balance.",
+        "html_description": "<td>Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>). If the chat is a channel, all Telegram Star proceeds from this media will be credited to the chat's balance. Otherwise, they will be credited to the bot's balance.</td>",
+        "rst_description": "Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`). If the chat is a channel, all Telegram Star proceeds from this media will be credited to the chat's balance. Otherwise, they will be credited to the bot's balance.\n",
         "name": "chat_id"
       },
       {

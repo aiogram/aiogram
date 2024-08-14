@@ -1,11 +1,14 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Literal, Optional
+from typing import TYPE_CHECKING, Any, List, Literal, Optional, Union
 
 from ..enums import TransactionPartnerType
 from .transaction_partner import TransactionPartner
 
 if TYPE_CHECKING:
+    from .paid_media_photo import PaidMediaPhoto
+    from .paid_media_preview import PaidMediaPreview
+    from .paid_media_video import PaidMediaVideo
     from .user import User
 
 
@@ -22,6 +25,8 @@ class TransactionPartnerUser(TransactionPartner):
     """Information about the user"""
     invoice_payload: Optional[str] = None
     """*Optional*. Bot-specified invoice payload"""
+    paid_media: Optional[List[Union[PaidMediaPreview, PaidMediaPhoto, PaidMediaVideo]]] = None
+    """*Optional*. Information about the paid media bought by the user"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!
@@ -33,6 +38,9 @@ class TransactionPartnerUser(TransactionPartner):
             type: Literal[TransactionPartnerType.USER] = TransactionPartnerType.USER,
             user: User,
             invoice_payload: Optional[str] = None,
+            paid_media: Optional[
+                List[Union[PaidMediaPreview, PaidMediaPhoto, PaidMediaVideo]]
+            ] = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!
@@ -40,5 +48,9 @@ class TransactionPartnerUser(TransactionPartner):
             # Is needed only for type checking and IDE support without any additional plugins
 
             super().__init__(
-                type=type, user=user, invoice_payload=invoice_payload, **__pydantic_kwargs
+                type=type,
+                user=user,
+                invoice_payload=invoice_payload,
+                paid_media=paid_media,
+                **__pydantic_kwargs,
             )

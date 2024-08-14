@@ -44,6 +44,7 @@ Available methods
     copy_message
     copy_messages
     create_chat_invite_link
+    create_chat_subscription_invite_link
     create_forum_topic
     decline_chat_join_request
     delete_chat_photo
@@ -51,6 +52,7 @@ Available methods
     delete_forum_topic
     delete_my_commands
     edit_chat_invite_link
+    edit_chat_subscription_invite_link
     edit_forum_topic
     edit_general_forum_topic
     export_chat_invite_link

@@ -18,7 +18,7 @@ from .base import TelegramMethod
 
 class SendPaidMedia(TelegramMethod[Message]):
     """
-    Use this method to send paid media to channel chats. On success, the sent :class:`aiogram.types.message.Message` is returned.
+    Use this method to send paid media. On success, the sent :class:`aiogram.types.message.Message` is returned.
 
     Source: https://core.telegram.org/bots/api#sendpaidmedia
     """
@@ -27,11 +27,13 @@ class SendPaidMedia(TelegramMethod[Message]):
     __api_method__ = "sendPaidMedia"
 
     chat_id: Union[int, str]
-    """Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)"""
+    """Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`). If the chat is a channel, all Telegram Star proceeds from this media will be credited to the chat's balance. Otherwise, they will be credited to the bot's balance."""
     star_count: int
     """The number of Telegram Stars that must be paid to buy access to the media"""
     media: List[Union[InputPaidMediaPhoto, InputPaidMediaVideo]]
     """A JSON-serialized array describing the media to be sent; up to 10 items"""
+    business_connection_id: Optional[str] = None
+    """Unique identifier of the business connection on behalf of which the message will be sent"""
     caption: Optional[str] = None
     """Media caption, 0-1024 characters after entities parsing"""
     parse_mode: Optional[str] = None
@@ -61,6 +63,7 @@ class SendPaidMedia(TelegramMethod[Message]):
             chat_id: Union[int, str],
             star_count: int,
             media: List[Union[InputPaidMediaPhoto, InputPaidMediaVideo]],
+            business_connection_id: Optional[str] = None,
             caption: Optional[str] = None,
             parse_mode: Optional[str] = None,
             caption_entities: Optional[List[MessageEntity]] = None,
@@ -81,6 +84,7 @@ class SendPaidMedia(TelegramMethod[Message]):
                 chat_id=chat_id,
                 star_count=star_count,
                 media=media,
+                business_connection_id=business_connection_id,
                 caption=caption,
                 parse_mode=parse_mode,
                 caption_entities=caption_entities,

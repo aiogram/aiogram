@@ -102,8 +102,13 @@ build: clean
 .PHONY: bump
 bump:
 	hatch version $(args)
-	cat .butcher/schema/schema.json | jq '.api.version' -r > .apiversion
 	python scripts/bump_versions.py
+
+update-api:
+	butcher parse
+	butcher refresh
+	butcher apply all
+	@$(MAKE) bump
 
 .PHONY: towncrier-build
 towncrier-build:

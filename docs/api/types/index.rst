@@ -137,6 +137,7 @@ Available types
     reaction_type
     reaction_type_custom_emoji
     reaction_type_emoji
+    reaction_type_paid
     reply_keyboard_markup
     reply_keyboard_remove
     reply_parameters

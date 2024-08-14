@@ -16,6 +16,7 @@ if TYPE_CHECKING:
     from .message import Message
     from .reaction_type_custom_emoji import ReactionTypeCustomEmoji
     from .reaction_type_emoji import ReactionTypeEmoji
+    from .reaction_type_paid import ReactionTypePaid
 
 
 class ChatFullInfo(Chat):
@@ -57,7 +58,9 @@ class ChatFullInfo(Chat):
     """*Optional*. For private chats with business accounts, the opening hours of the business"""
     personal_chat: Optional[Chat] = None
     """*Optional*. For private chats, the personal channel of the user"""
-    available_reactions: Optional[List[Union[ReactionTypeEmoji, ReactionTypeCustomEmoji]]] = None
+    available_reactions: Optional[
+        List[Union[ReactionTypeEmoji, ReactionTypeCustomEmoji, ReactionTypePaid]]
+    ] = None
     """*Optional*. List of available reactions allowed in the chat. If omitted, then all `emoji reactions <https://core.telegram.org/bots/api#reactiontypeemoji>`_ are allowed."""
     background_custom_emoji_id: Optional[str] = None
     """*Optional*. Custom emoji identifier of the emoji chosen by the chat for the reply header and link preview background"""
@@ -138,7 +141,7 @@ class ChatFullInfo(Chat):
             business_opening_hours: Optional[BusinessOpeningHours] = None,
             personal_chat: Optional[Chat] = None,
             available_reactions: Optional[
-                List[Union[ReactionTypeEmoji, ReactionTypeCustomEmoji]]
+                List[Union[ReactionTypeEmoji, ReactionTypeCustomEmoji, ReactionTypePaid]]
             ] = None,
             background_custom_emoji_id: Optional[str] = None,
             profile_accent_color_id: Optional[int] = None,
