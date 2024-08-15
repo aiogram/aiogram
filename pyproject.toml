@@ -331,6 +331,9 @@ filename = "CHANGES.rst"
 directory = "CHANGES/"
 template = "CHANGES/.template.rst.jinja2"
 issue_format = "`#{issue} <https://github.com/aiogram/aiogram/issues/{issue}>`_"
+ignore = [
+    ".template.rst.jinja2",
+]
 
 [[tool.towncrier.section]]
 path = ""
