@@ -93,12 +93,12 @@ docs = [
     "sphinx-copybutton~=0.5.2",
     "furo~=2023.9.10",
     "Sphinx-Substitution-Extensions~=2022.2.16",
-    "towncrier~=23.6.0",
+    "towncrier~=24.7.1",
     "pygments~=2.16.1",
     "pymdown-extensions~=10.3",
     "markdown-include~=0.8.1",
     "Pygments~=2.16.1",
-    "sphinxcontrib-towncrier~=0.3.2a0",
+    "sphinxcontrib-towncrier~=0.4.0a0",
 ]
 dev = [
     "black~=24.4.2",
