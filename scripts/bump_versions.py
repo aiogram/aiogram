@@ -1,3 +1,4 @@
+import json
 import re
 from pathlib import Path
 
@@ -35,8 +36,11 @@ def get_package_version() -> str:
 
 
 def get_telegram_api_version() -> str:
+    path = Path.cwd() / ".butcher" / "schema" / "schema.json"
+    schema = json.loads(path.read_text())
+    version = schema["api"]["version"]
     path = Path.cwd() / ".apiversion"
-    version = path.read_text().strip()
+    path.write_text(version + "\n")
     return version
 
 

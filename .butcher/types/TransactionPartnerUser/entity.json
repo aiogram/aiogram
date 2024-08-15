@@ -34,6 +34,14 @@
         "rst_description": "*Optional*. Bot-specified invoice payload\n",
         "name": "invoice_payload",
         "required": false
+      },
+      {
+        "type": "Array of PaidMedia",
+        "description": "Information about the paid media bought by the user",
+        "html_description": "<td><em>Optional</em>. Information about the paid media bought by the user</td>",
+        "rst_description": "*Optional*. Information about the paid media bought by the user\n",
+        "name": "paid_media",
+        "required": false
       }
     ],
     "category": "types"

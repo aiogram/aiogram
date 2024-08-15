@@ -1,5 +1,5 @@
-from unittest.mock import patch
 from datetime import datetime
+from unittest.mock import patch
 
 import pytest
 
@@ -9,13 +9,13 @@ from aiogram.dispatcher.middlewares.user_context import (
 )
 from aiogram.types import (
     Chat,
-    Update,
-    User,
-    ChatBoostUpdated,
     ChatBoost,
-    ChatBoostSourcePremium,
     ChatBoostSourceGiftCode,
     ChatBoostSourceGiveaway,
+    ChatBoostSourcePremium,
+    ChatBoostUpdated,
+    Update,
+    User,
 )
 
 

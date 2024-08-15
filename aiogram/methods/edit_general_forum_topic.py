@@ -7,7 +7,7 @@ from .base import TelegramMethod
 
 class EditGeneralForumTopic(TelegramMethod[bool]):
     """
-    Use this method to edit the name of the 'General' topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have *can_manage_topics* administrator rights. Returns :code:`True` on success.
+    Use this method to edit the name of the 'General' topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the *can_manage_topics* administrator rights. Returns :code:`True` on success.
 
     Source: https://core.telegram.org/bots/api#editgeneralforumtopic
     """

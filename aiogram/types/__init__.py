@@ -187,6 +187,7 @@ from .reaction_count import ReactionCount
 from .reaction_type import ReactionType
 from .reaction_type_custom_emoji import ReactionTypeCustomEmoji
 from .reaction_type_emoji import ReactionTypeEmoji
+from .reaction_type_paid import ReactionTypePaid
 from .refunded_payment import RefundedPayment
 from .reply_keyboard_markup import ReplyKeyboardMarkup
 from .reply_keyboard_remove import ReplyKeyboardRemove
@@ -419,6 +420,7 @@ __all__ = (
     "ReactionType",
     "ReactionTypeCustomEmoji",
     "ReactionTypeEmoji",
+    "ReactionTypePaid",
     "RefundedPayment",
     "ReplyKeyboardMarkup",
     "ReplyKeyboardRemove",

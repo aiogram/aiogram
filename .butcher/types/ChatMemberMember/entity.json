@@ -26,6 +26,14 @@
         "rst_description": "Information about the user\n",
         "name": "user",
         "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "Date when the user's subscription will expire; Unix time",
+        "html_description": "<td><em>Optional</em>. Date when the user's subscription will expire; Unix time</td>",
+        "rst_description": "*Optional*. Date when the user's subscription will expire; Unix time\n",
+        "name": "until_date",
+        "required": false
       }
     ],
     "category": "types"
