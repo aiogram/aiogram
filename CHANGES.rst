@@ -16,6 +16,45 @@ Changelog
 
 .. towncrier release notes start
 
+3.12.0 (2024-08-16)
+====================
+
+Features
+--------
+
+- Added **message_thread_id** parameter to **message.get_url()**.
+  `#1451 <https://github.com/aiogram/aiogram/issues/1451>`_
+- Added getting user from `chat_boost` with source `ChatBoostSourcePremium` in `UserContextMiddleware` for `EventContext`
+  `#1474 <https://github.com/aiogram/aiogram/issues/1474>`_
+- Added full support of `Bot API 7.8 <https://core.telegram.org/bots/api-changelog#august-14-2024>`_
+
+  - Added the ability to send paid media to any chat.
+  - Added the parameter :code:`business_connection_id` to the method
+    :class:`aiogram.methods.send_paid_media.SendPaidMedia`,
+    allowing bots to send paid media on behalf of a business account.
+  - Added the field :code:`paid_media` to the class
+    :class:`aiogram.types.transaction_partner_user.TransactionPartnerUser`
+    for transactions involving paid media.
+  - Added the method
+    :class:`aiogram.methods.create_chat_subscription_invite_link.CreateChatSubscriptionInviteLink`,
+    allowing bots to create subscription invite links.
+  - Added the method
+    :class:`aiogram.methods.edit_chat_subscription_invite_link.EditChatSubscriptionInviteLink`,
+    allowing bots to edit the name of subscription invite links.
+  - Added the field :code:`until_date` to the class
+    :class:`aiogram.types.chat_member_member.ChatMemberMember` for members with an active subscription.
+  - Added support for paid reactions and the class
+    :class:`aiogram.types.reaction_type_paid.ReactionTypePaid`.
+  `#1560 <https://github.com/aiogram/aiogram/issues/1560>`_
+
+
+Misc
+----
+
+- Improved performance of StatesGroup
+  `#1507 <https://github.com/aiogram/aiogram/issues/1507>`_
+
+
 3.11.0 (2024-08-09)
 ====================
 
