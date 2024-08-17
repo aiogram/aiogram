@@ -38,7 +38,12 @@ class InputFile(ABC):
 
 
 class BufferedInputFile(InputFile):
-    def __init__(self, file: bytes, filename: str, chunk_size: int = DEFAULT_CHUNK_SIZE):
+    def __init__(
+        self,
+        buffer_or_bytes: bytes | io.BufferedIOBase,
+        filename: str,
+        chunk_size: int = DEFAULT_CHUNK_SIZE,
+    ):
         """
         Represents object for uploading files from filesystem
 
@@ -48,7 +53,10 @@ class BufferedInputFile(InputFile):
         """
         super().__init__(filename=filename, chunk_size=chunk_size)
 
-        self.data = file
+        if isinstance(buffer_or_bytes, bytes):
+            buffer_or_bytes = io.BytesIO(buffer_or_bytes)
+
+        self.buffer = buffer_or_bytes
 
     @classmethod
     def from_file(
@@ -68,13 +76,15 @@ class BufferedInputFile(InputFile):
         """
         if filename is None:
             filename = os.path.basename(path)
-        with open(path, "rb") as f:
-            data = f.read()
-        return cls(data, filename=filename, chunk_size=chunk_size)
+        buffer = io.BytesIO()
+        with open(path, "rb") as fp:
+            while chunk := fp.read(chunk_size):
+                buffer.write(chunk)
+        return cls(buffer, filename=filename, chunk_size=chunk_size)
 
     async def read(self, bot: "Bot") -> AsyncGenerator[bytes, None]:
-        buffer = io.BytesIO(self.data)
-        while chunk := buffer.read(self.chunk_size):
+        self.buffer.seek(0)
+        while chunk := self.buffer.read(self.chunk_size):
             yield chunk
 
 

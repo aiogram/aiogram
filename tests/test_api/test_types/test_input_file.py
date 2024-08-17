@@ -1,3 +1,4 @@
+import io
 from typing import AsyncIterable
 
 from aresponses import ResponsesMockServer
@@ -34,7 +35,7 @@ class TestInputFile:
 
         assert isinstance(file, InputFile)
         assert file.filename == "file.bin"
-        assert isinstance(file.data, bytes)
+        assert isinstance(file.buffer, io.BytesIO)
 
     async def test_buffered_input_file_readable(self, bot: MockedBot):
         file = BufferedInputFile(b"\f" * 10, filename="file.bin", chunk_size=1)
@@ -53,7 +54,7 @@ class TestInputFile:
         assert file.filename is not None
         assert file.filename.startswith("test_")
         assert file.filename.endswith(".py")
-        assert isinstance(file.data, bytes)
+        assert isinstance(file.buffer, io.BytesIO)
         assert file.chunk_size == 10
 
     async def test_buffered_input_file_from_file_readable(self, bot: MockedBot):
@@ -65,6 +66,22 @@ class TestInputFile:
             assert chunk_size == 1
             size += chunk_size
         assert size > 0
+
+    async def test_buffered_input_file_from_buffer(self, bot: MockedBot):
+        buffer = io.BytesIO(b"\f" * 10)
+        file = BufferedInputFile(buffer, filename="file.bin", chunk_size=1)
+
+        assert file.buffer is buffer
+        assert file.filename == "file.bin"
+
+        size = 0
+        async for chunk in file.read(bot):
+            chunk_size = len(chunk)
+            assert isinstance(chunk, bytes)
+            assert chunk_size == 1
+            size += chunk_size
+        assert size == 10
+        assert file.buffer.seek(0, io.SEEK_CUR) == 10
 
     async def test_url_input_file(self, aresponses: ResponsesMockServer):
         aresponses.add(
