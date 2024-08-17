@@ -39,7 +39,7 @@ class EditMessageText(TelegramMethod[Union[Message, bool]]):
     """Mode for parsing entities in the message text. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details."""
     entities: Optional[List[MessageEntity]] = None
     """A JSON-serialized list of special entities that appear in message text, which can be specified instead of *parse_mode*"""
-    link_preview_options: Optional[LinkPreviewOptions] = None
+    link_preview_options: Optional[Union[LinkPreviewOptions, Default]] = Default("link_preview")
     """Link preview generation options for the message"""
     reply_markup: Optional[InlineKeyboardMarkup] = None
     """A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_."""
@@ -65,7 +65,9 @@ class EditMessageText(TelegramMethod[Union[Message, bool]]):
             inline_message_id: Optional[str] = None,
             parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
             entities: Optional[List[MessageEntity]] = None,
-            link_preview_options: Optional[LinkPreviewOptions] = None,
+            link_preview_options: Optional[Union[LinkPreviewOptions, Default]] = Default(
+                "link_preview"
+            ),
             reply_markup: Optional[InlineKeyboardMarkup] = None,
             disable_web_page_preview: Optional[Union[bool, Default]] = Default(
                 "link_preview_is_disabled"
