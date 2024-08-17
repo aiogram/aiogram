@@ -71,7 +71,7 @@ i18n = [
     "Babel~=2.13.0",
 ]
 cli = [
-    "aiogram-cli>=1.1.0",
+    "aiogram-cli>=1.1.0,<2.0.0",
 ]
 test = [
     "pytest~=7.4.2",
