@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, List, Optional, Union
 
+from aiogram.default_annotations import DefaultLinkPreviewOptions
+
 from .base import TelegramObject
 
 if TYPE_CHECKING:
@@ -46,7 +48,7 @@ class ExternalReplyInfo(TelegramObject):
     """*Optional*. Chat the original message belongs to. Available only if the chat is a supergroup or a channel."""
     message_id: Optional[int] = None
     """*Optional*. Unique message identifier inside the original chat. Available only if the original chat is a supergroup or a channel."""
-    link_preview_options: Optional[LinkPreviewOptions] = None
+    link_preview_options: DefaultLinkPreviewOptions = None
     """*Optional*. Options used for link preview generation for the original message, if it is a text message"""
     animation: Optional[Animation] = None
     """*Optional*. Message is an animation, information about the animation"""

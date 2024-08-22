@@ -2,7 +2,7 @@ from typing import List, Literal, Optional, Union
 
 from .animation import Animation
 from .audio import Audio
-from .base import UNSET_PARSE_MODE, TelegramObject
+from .base import TelegramObject
 from .bot_command import BotCommand
 from .bot_command_scope import BotCommandScope
 from .bot_command_scope_all_chat_administrators import (
@@ -367,7 +367,6 @@ __all__ = (
     "SwitchInlineQueryChosenChat",
     "TelegramObject",
     "TextQuote",
-    "UNSET_PARSE_MODE",
     "URLInputFile",
     "Update",
     "User",

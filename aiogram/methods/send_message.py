@@ -4,7 +4,14 @@ from typing import TYPE_CHECKING, Any, List, Optional, Union
 
 from pydantic import Field
 
-from ..client.default import Default
+from aiogram.default_annotations import (
+    DefaultDisableNotification,
+    DefaultLinkPreviewOptions,
+    DefaultParseMode,
+    DefaultProtectContent,
+)
+
+from ..enums import ParseMode
 from ..types import (
     ForceReply,
     InlineKeyboardMarkup,
@@ -34,15 +41,15 @@ class SendMessage(TelegramMethod[Message]):
     """Text of the message to be sent, 1-4096 characters after entities parsing"""
     message_thread_id: Optional[int] = None
     """Unique identifier for the target message thread (topic) of the forum; for forum supergroups only"""
-    parse_mode: Optional[Union[str, Default]] = Default("parse_mode")
+    parse_mode: DefaultParseMode = None
     """Mode for parsing entities in the message text. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details."""
     entities: Optional[List[MessageEntity]] = None
     """A JSON-serialized list of special entities that appear in message text, which can be specified instead of *parse_mode*"""
-    link_preview_options: Optional[Union[LinkPreviewOptions, Default]] = Default("link_preview")
+    link_preview_options: DefaultLinkPreviewOptions = None
     """Link preview generation options for the message"""
-    disable_notification: Optional[bool] = None
+    disable_notification: DefaultDisableNotification = None
     """Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound."""
-    protect_content: Optional[Union[bool, Default]] = Default("protect_content")
+    protect_content: DefaultProtectContent = None
     """Protects the contents of the sent message from forwarding and saving"""
     reply_parameters: Optional[ReplyParameters] = None
     """Description of the message to reply to"""
@@ -57,9 +64,7 @@ class SendMessage(TelegramMethod[Message]):
 
 .. deprecated:: API:7.0
    https://core.telegram.org/bots/api-changelog#december-29-2023"""
-    disable_web_page_preview: Optional[Union[bool, Default]] = Field(
-        Default("link_preview_is_disabled"), json_schema_extra={"deprecated": True}
-    )
+    disable_web_page_preview: Optional[bool] = Field(None, json_schema_extra={"deprecated": True})
     """Disables link previews for links in this message
 
 .. deprecated:: API:7.0
@@ -80,21 +85,17 @@ class SendMessage(TelegramMethod[Message]):
             chat_id: Union[int, str],
             text: str,
             message_thread_id: Optional[int] = None,
-            parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
+            parse_mode: Optional[ParseMode] = None,
             entities: Optional[List[MessageEntity]] = None,
-            link_preview_options: Optional[Union[LinkPreviewOptions, Default]] = Default(
-                "link_preview"
-            ),
+            link_preview_options: Optional[LinkPreviewOptions] = None,
             disable_notification: Optional[bool] = None,
-            protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+            protect_content: Optional[bool] = None,
             reply_parameters: Optional[ReplyParameters] = None,
             reply_markup: Optional[
                 Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
             ] = None,
             allow_sending_without_reply: Optional[bool] = None,
-            disable_web_page_preview: Optional[Union[bool, Default]] = Default(
-                "link_preview_is_disabled"
-            ),
+            disable_web_page_preview: Optional[bool] = None,
             reply_to_message_id: Optional[int] = None,
             **__pydantic_kwargs: Any,
         ) -> None:

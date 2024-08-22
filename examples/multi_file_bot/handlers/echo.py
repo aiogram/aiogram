@@ -1,5 +1,4 @@
 from aiogram import Router
-from aiogram.filters import Command
 from aiogram.types import Message
 
 # For each module with handlers we can create a separate router.

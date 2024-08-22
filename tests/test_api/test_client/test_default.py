@@ -1,68 +1,42 @@
-import sys
-
 import pytest
+from pydantic import ValidationError
 
-from aiogram.client.default import Default, DefaultBotProperties
+from aiogram.client.default import DefaultBotProperties
+from aiogram.default_annotations import DefaultLinkPreviewOptions, DefaultParseMode
 from aiogram.enums import ParseMode
-from aiogram.types import LinkPreviewOptions
+from aiogram.types import LinkPreviewOptions, TelegramObject
+from tests.mocked_bot import MockedBot
 
 
 class TestDefault:
-    def test_init(self):
-        default = Default("test")
-        assert default._name == "test"
+    def test_default_validation(self):
+        class TestObject(TelegramObject):
+            parse_mode: DefaultParseMode = None
 
-    def test_name_property(self):
-        default = Default("test")
-        assert default.name == "test"
+        obj1 = TestObject()
+        assert obj1.parse_mode is None
+        obj2 = TestObject(parse_mode=ParseMode.HTML)
+        assert obj2.parse_mode == ParseMode.HTML
+        obj3 = TestObject(parse_mode="HTML")
+        assert obj3.parse_mode == ParseMode.HTML
+        with pytest.raises(ValidationError):
+            TestObject(parse_mode=b"some invalid type")
 
-    def test_str(self):
-        default = Default("test")
-        assert str(default) == "Default('test')"
+    def test_remain_value_after_dump_roundtrip(self):
+        bot = MockedBot(default=DefaultBotProperties())
 
-    def test_repr(self):
-        default = Default("test")
-        assert repr(default) == "<Default('test')>"
+    def test_link_preview_options_defined(self):
+        class TestObject(TelegramObject):
+            options: DefaultLinkPreviewOptions = None
+
+        # won't raise error
+        TestObject(options=LinkPreviewOptions())
 
 
 class TestDefaultBotProperties:
-    def test_post_init_empty(self):
+    def test_is_empty(self):
         default_bot_properties = DefaultBotProperties()
+        assert default_bot_properties.is_empty
 
-        assert default_bot_properties.link_preview is None
-
-    def test_post_init_auto_fill_link_preview(self):
-        default_bot_properties = DefaultBotProperties(
-            link_preview_is_disabled=True,
-            link_preview_prefer_small_media=True,
-            link_preview_prefer_large_media=True,
-            link_preview_show_above_text=True,
-        )
-
-        assert default_bot_properties.link_preview == LinkPreviewOptions(
-            is_disabled=True,
-            prefer_small_media=True,
-            prefer_large_media=True,
-            show_above_text=True,
-        )
-
-    def test_getitem(self):
-        default_bot_properties = DefaultBotProperties(
-            parse_mode=ParseMode.HTML,
-            link_preview_is_disabled=True,
-            link_preview_prefer_small_media=True,
-            link_preview_prefer_large_media=True,
-            link_preview_show_above_text=True,
-        )
-
-        assert default_bot_properties["parse_mode"] == ParseMode.HTML
-        assert default_bot_properties["link_preview_is_disabled"] is True
-        assert default_bot_properties["link_preview_prefer_small_media"] is True
-        assert default_bot_properties["link_preview_prefer_large_media"] is True
-        assert default_bot_properties["link_preview_show_above_text"] is True
-
-    @pytest.mark.skipif(sys.version_info < (3, 12), reason="requires python3.11 or higher")
-    def test_dataclass_creation_3_10_plus(self):
-        params = DefaultBotProperties.__dataclass_params__
-        assert params.slots is True
-        assert params.kw_only is True
+        default_bot_properties = DefaultBotProperties(protect_content=True)
+        assert not default_bot_properties.is_empty

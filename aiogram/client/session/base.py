@@ -77,7 +77,8 @@ class BaseSession(abc.ABC):
             warnings.warn(
                 "Custom json de/serializers are no longer supported.\n"
                 "Using pydantic_core.to_json and pydantic_core.from_json instead.",
-                DeprecationWarning,
+                category=DeprecationWarning,
+                stacklevel=2,
             )
 
     def check_response(

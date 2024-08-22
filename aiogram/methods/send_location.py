@@ -4,7 +4,11 @@ from typing import TYPE_CHECKING, Any, Optional, Union
 
 from pydantic import Field
 
-from ..client.default import Default
+from aiogram.default_annotations import (
+    DefaultDisableNotification,
+    DefaultProtectContent,
+)
+
 from ..types import (
     ForceReply,
     InlineKeyboardMarkup,
@@ -42,9 +46,9 @@ class SendLocation(TelegramMethod[Message]):
     """For live locations, a direction in which the user is moving, in degrees. Must be between 1 and 360 if specified."""
     proximity_alert_radius: Optional[int] = None
     """For live locations, a maximum distance for proximity alerts about approaching another chat member, in meters. Must be between 1 and 100000 if specified."""
-    disable_notification: Optional[bool] = None
+    disable_notification: DefaultDisableNotification = None
     """Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound."""
-    protect_content: Optional[Union[bool, Default]] = Default("protect_content")
+    protect_content: DefaultProtectContent = None
     """Protects the contents of the sent message from forwarding and saving"""
     reply_parameters: Optional[ReplyParameters] = None
     """Description of the message to reply to"""
@@ -81,7 +85,7 @@ class SendLocation(TelegramMethod[Message]):
             heading: Optional[int] = None,
             proximity_alert_radius: Optional[int] = None,
             disable_notification: Optional[bool] = None,
-            protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+            protect_content: Optional[bool] = None,
             reply_parameters: Optional[ReplyParameters] = None,
             reply_markup: Optional[
                 Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]

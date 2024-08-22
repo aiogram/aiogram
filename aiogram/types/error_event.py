@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
+from pydantic import ConfigDict
+
 from aiogram.types.base import TelegramObject
 
 if TYPE_CHECKING:
@@ -15,9 +17,13 @@ class ErrorEvent(TelegramObject):
     Source: https://core.telegram.org/bots/api#error-event
     """
 
+    model_config = ConfigDict(
+        arbitrary_types_allowed=True,  # FIXME
+    )
+
     update: Update
     """Received update"""
-    exception: Exception
+    exception: Exception  # FIXME: cannot believe that TelegramObject may contain Exception
     """Exception"""
 
     if TYPE_CHECKING:

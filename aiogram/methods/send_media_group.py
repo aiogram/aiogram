@@ -4,7 +4,11 @@ from typing import TYPE_CHECKING, Any, List, Optional, Union
 
 from pydantic import Field
 
-from ..client.default import Default
+from aiogram.default_annotations import (
+    DefaultDisableNotification,
+    DefaultProtectContent,
+)
+
 from ..types import (
     InputMediaAudio,
     InputMediaDocument,
@@ -32,9 +36,9 @@ class SendMediaGroup(TelegramMethod[List[Message]]):
     """A JSON-serialized array describing messages to be sent, must include 2-10 items"""
     message_thread_id: Optional[int] = None
     """Unique identifier for the target message thread (topic) of the forum; for forum supergroups only"""
-    disable_notification: Optional[bool] = None
+    disable_notification: DefaultDisableNotification = None
     """Sends messages `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound."""
-    protect_content: Optional[Union[bool, Default]] = Default("protect_content")
+    protect_content: DefaultProtectContent = None
     """Protects the contents of the sent messages from forwarding and saving"""
     reply_parameters: Optional[ReplyParameters] = None
     """Description of the message to reply to"""
@@ -64,7 +68,7 @@ class SendMediaGroup(TelegramMethod[List[Message]]):
             ],
             message_thread_id: Optional[int] = None,
             disable_notification: Optional[bool] = None,
-            protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+            protect_content: Optional[bool] = None,
             reply_parameters: Optional[ReplyParameters] = None,
             allow_sending_without_reply: Optional[bool] = None,
             reply_to_message_id: Optional[int] = None,

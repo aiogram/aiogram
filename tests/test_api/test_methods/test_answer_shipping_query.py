@@ -1,4 +1,4 @@
-from aiogram.methods import AnswerShippingQuery, Request
+from aiogram.methods import AnswerShippingQuery
 from tests.mocked_bot import MockedBot
 
 

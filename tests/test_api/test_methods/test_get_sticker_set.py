@@ -1,4 +1,4 @@
-from aiogram.methods import GetStickerSet, Request
+from aiogram.methods import GetStickerSet
 from aiogram.types import Sticker, StickerSet
 from tests.mocked_bot import MockedBot
 

@@ -11,7 +11,7 @@ from aiohttp.web_middlewares import middleware
 from pydantic_core import from_json
 
 from aiogram import Bot, Dispatcher, loggers
-from aiogram.client.form import extract_files, form_serialize
+from aiogram.client.form import construct_form_data, serialize_form_value
 from aiogram.methods import TelegramMethod
 from aiogram.methods.base import TelegramType
 from aiogram.webhook.security import IPFilter
@@ -146,7 +146,7 @@ class BaseRequestHandler(ABC):
         )
         self._background_feed_update_tasks.add(feed_update_task)
         feed_update_task.add_done_callback(self._background_feed_update_tasks.discard)
-        return web.json_response({}, dumps=form_serialize)
+        return web.json_response({}, dumps=serialize_form_value)
 
     def _build_response_writer(
         self, bot: Bot, result: Optional[TelegramMethod[TelegramType]]
@@ -161,10 +161,10 @@ class BaseRequestHandler(ABC):
         payload = writer.append(result.__api_method__)
         payload.set_content_disposition("form-data", name="method")
 
-        modified_result, files = extract_files(result)
+        data, files = construct_form_data(result, bot=bot)
 
-        for key, value in modified_result.model_dump(mode="json", exclude_none=True).items():
-            payload = writer.append(form_serialize(value))
+        for key, value in data.items():
+            payload = writer.append(value)
             payload.set_content_disposition("form-data", name=key)
 
         for key, value in files.items():

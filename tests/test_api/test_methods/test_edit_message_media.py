@@ -1,6 +1,6 @@
 from typing import Union
 
-from aiogram.methods import EditMessageMedia, Request
+from aiogram.methods import EditMessageMedia
 from aiogram.types import BufferedInputFile, InputMediaPhoto, Message
 from tests.mocked_bot import MockedBot
 

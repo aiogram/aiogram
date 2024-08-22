@@ -1,17 +1,16 @@
 import datetime
 import json
-from typing import Any, AsyncContextManager, AsyncGenerator, Dict, Optional, Union
+from typing import Any, AsyncContextManager, AsyncGenerator, Dict, Optional
 from unittest.mock import AsyncMock, patch
 
 import pytest
 from pytz import utc
 
 from aiogram import Bot
-from aiogram.client.default import Default, DefaultBotProperties
-from aiogram.client.form import form_serialize
+from aiogram.client.form import serialize_form_value
 from aiogram.client.session.base import BaseSession, TelegramType
 from aiogram.client.telegram import PRODUCTION, TelegramAPIServer
-from aiogram.enums import ChatType, ParseMode, TopicIconColor
+from aiogram.enums import ChatType, TopicIconColor
 from aiogram.exceptions import (
     ClientDecodeError,
     RestartingTelegram,
@@ -27,18 +26,8 @@ from aiogram.exceptions import (
     TelegramUnauthorizedError,
 )
 from aiogram.methods import DeleteMessage, GetMe, TelegramMethod
-from aiogram.types import (
-    UNSET_PARSE_MODE,
-    DateTime,
-    InputFile,
-    LinkPreviewOptions,
-    User,
-)
-from aiogram.types.base import (
-    UNSET_DISABLE_WEB_PAGE_PREVIEW,
-    UNSET_PROTECT_CONTENT,
-    TelegramObject,
-)
+from aiogram.types import DateTime, LinkPreviewOptions, User
+from aiogram.types.base import TelegramObject
 from tests.mocked_bot import MockedBot
 
 
@@ -105,7 +94,6 @@ class TestBaseSession:
     @pytest.mark.parametrize(
         "value,result",
         [
-            [None, ...],
             ["text", "text"],
             [ChatType.PRIVATE, "private"],
             [TopicIconColor.RED, "16478047"],
@@ -123,56 +111,23 @@ class TestBaseSession:
                 "1494994302",
             ],
             [LinkPreviewOptions(is_disabled=True), '{"is_disabled":true}'],
-            [Default("parse_mode"), "HTML"],
-            [Default("protect_content"), "true"],
-            [Default("link_preview_is_disabled"), "true"],
         ],
     )
-    def test_form_serialize(self, value: Any, result: str):
-        bot = MockedBot(
-            default=DefaultBotProperties(
-                parse_mode=ParseMode.HTML,
-                protect_content=True,
-                link_preview_is_disabled=True,
-            )
-        )
-
+    def test_serialize_form_value(self, value: Any, result: str):
+        # TODO: move
+        # pydantic model roundtrip is needed (DateTime has custom serialization, exclude_none=True)
         field_type = type(value)
         if issubclass(field_type, (datetime.datetime, datetime.timedelta)):
             field_type = DateTime
-        elif issubclass(field_type, InputFile):
-            field_type = Union[InputFile, str]
-        elif issubclass(field_type, Default):
-            field_type = Optional[Union[Any, Default]]
 
         class TestObject(TelegramObject):
             field: field_type
 
-        obj = TestObject.model_validate({"field": value}, context={"bot": bot})
-        serialized_obj = obj.model_dump(mode="json", exclude_none=True)
-        if value is None:
-            assert "field" not in serialized_obj
-        else:
-            value = serialized_obj["field"]
-            assert form_serialize(value) == result
+        obj = TestObject(field=value)
+        serialized_obj = obj.model_dump(exclude_none=True)
+        value = serialized_obj["field"]
 
-    @pytest.mark.parametrize(
-        "default",
-        [
-            UNSET_PARSE_MODE,
-            UNSET_DISABLE_WEB_PAGE_PREVIEW,
-            UNSET_PROTECT_CONTENT,
-        ],
-    )
-    def test_default_unset(self, default: Default):
-        bot = MockedBot()
-
-        class TestObject(TelegramObject):
-            field: Optional[Union[Any, Default]]
-
-        obj = TestObject.model_validate({"field": default}, context={"bot": bot})
-        serialized_obj = obj.model_dump(mode="json")
-        assert serialized_obj["field"] is None
+        assert serialize_form_value(value) == result
 
     @pytest.mark.parametrize(
         "status_code,content,error",

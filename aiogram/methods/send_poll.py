@@ -5,7 +5,13 @@ from typing import TYPE_CHECKING, Any, List, Optional, Union
 
 from pydantic import Field
 
-from ..client.default import Default
+from aiogram.default_annotations import (
+    DefaultDisableNotification,
+    DefaultParseMode,
+    DefaultProtectContent,
+)
+
+from ..enums import ParseMode
 from ..types import (
     DateTime,
     ForceReply,
@@ -47,7 +53,7 @@ class SendPoll(TelegramMethod[Message]):
     """0-based identifier of the correct answer option, required for polls in quiz mode"""
     explanation: Optional[str] = None
     """Text that is shown when a user chooses an incorrect answer or taps on the lamp icon in a quiz-style poll, 0-200 characters with at most 2 line feeds after entities parsing"""
-    explanation_parse_mode: Optional[Union[str, Default]] = Default("parse_mode")
+    explanation_parse_mode: DefaultParseMode = None
     """Mode for parsing entities in the explanation. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details."""
     explanation_entities: Optional[List[MessageEntity]] = None
     """A JSON-serialized list of special entities that appear in the poll explanation, which can be specified instead of *parse_mode*"""
@@ -57,9 +63,9 @@ class SendPoll(TelegramMethod[Message]):
     """Point in time (Unix timestamp) when the poll will be automatically closed. Must be at least 5 and no more than 600 seconds in the future. Can't be used together with *open_period*."""
     is_closed: Optional[bool] = None
     """Pass :code:`True` if the poll needs to be immediately closed. This can be useful for poll preview."""
-    disable_notification: Optional[bool] = None
+    disable_notification: DefaultDisableNotification = None
     """Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound."""
-    protect_content: Optional[Union[bool, Default]] = Default("protect_content")
+    protect_content: DefaultProtectContent = None
     """Protects the contents of the sent message from forwarding and saving"""
     reply_parameters: Optional[ReplyParameters] = None
     """Description of the message to reply to"""
@@ -96,13 +102,13 @@ class SendPoll(TelegramMethod[Message]):
             allows_multiple_answers: Optional[bool] = None,
             correct_option_id: Optional[int] = None,
             explanation: Optional[str] = None,
-            explanation_parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
+            explanation_parse_mode: Optional[ParseMode] = None,
             explanation_entities: Optional[List[MessageEntity]] = None,
             open_period: Optional[int] = None,
             close_date: Optional[Union[datetime.datetime, datetime.timedelta, int]] = None,
             is_closed: Optional[bool] = None,
             disable_notification: Optional[bool] = None,
-            protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+            protect_content: Optional[bool] = None,
             reply_parameters: Optional[ReplyParameters] = None,
             reply_markup: Optional[
                 Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]

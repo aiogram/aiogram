@@ -1,5 +1,4 @@
 import inspect
-import platform
 from datetime import datetime
 from unittest.mock import ANY, AsyncMock, patch
 

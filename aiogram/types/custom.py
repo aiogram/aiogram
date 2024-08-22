@@ -20,6 +20,5 @@ DateTime = Annotated[
     PlainSerializer(
         func=_serialize_datetime,
         return_type=int,
-        when_used="json-unless-none",
     ),
 ]

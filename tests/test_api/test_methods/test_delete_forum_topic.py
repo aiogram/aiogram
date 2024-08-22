@@ -1,4 +1,4 @@
-from aiogram.methods import DeleteForumTopic, Request
+from aiogram.methods import DeleteForumTopic
 from tests.mocked_bot import MockedBot
 
 

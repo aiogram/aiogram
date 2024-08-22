@@ -1,4 +1,4 @@
-from aiogram.methods import Request, SetChatDescription
+from aiogram.methods import SetChatDescription
 from tests.mocked_bot import MockedBot
 
 

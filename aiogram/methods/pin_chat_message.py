@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Optional, Union
 
+from ..default_annotations import DefaultDisableNotification
 from .base import TelegramMethod
 
 
@@ -19,7 +20,7 @@ class PinChatMessage(TelegramMethod[bool]):
     """Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)"""
     message_id: int
     """Identifier of a message to pin"""
-    disable_notification: Optional[bool] = None
+    disable_notification: DefaultDisableNotification = None
     """Pass :code:`True` if it is not necessary to send a notification to all chat members about the new pinned message. Notifications are always disabled in channels and private chats."""
 
     if TYPE_CHECKING:

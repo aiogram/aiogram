@@ -12,7 +12,7 @@ from typing import (
     TypeVar,
 )
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel
 
 from ..types import InputFile, ResponseParameters
 from ..types.base import MutableTelegramObject
@@ -24,8 +24,6 @@ TelegramType = TypeVar("TelegramType", bound=Any)
 
 
 class Request(BaseModel):
-    model_config = ConfigDict(arbitrary_types_allowed=True)
-
     method: str
 
     data: Dict[str, Optional[Any]]

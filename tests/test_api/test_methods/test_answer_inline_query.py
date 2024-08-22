@@ -1,11 +1,5 @@
-from aiogram import Bot
-from aiogram.methods import AnswerInlineQuery, Request
-from aiogram.types import (
-    InlineQueryResult,
-    InlineQueryResultArticle,
-    InlineQueryResultPhoto,
-    InputTextMessageContent,
-)
+from aiogram.methods import AnswerInlineQuery
+from aiogram.types import InlineQueryResultArticle, InputTextMessageContent
 from tests.mocked_bot import MockedBot
 
 

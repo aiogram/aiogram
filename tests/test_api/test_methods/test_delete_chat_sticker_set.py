@@ -1,4 +1,4 @@
-from aiogram.methods import DeleteChatStickerSet, Request
+from aiogram.methods import DeleteChatStickerSet
 from tests.mocked_bot import MockedBot
 
 

@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Any, List, Optional, Union
 
 from pydantic import Field
 
-from ..client.default import Default
+from ..enums import ParseMode
 from .base import TelegramObject
 from .custom import DateTime
 
@@ -138,21 +138,17 @@ class ChatMemberUpdated(TelegramObject):
         self,
         text: str,
         message_thread_id: Optional[int] = None,
-        parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
+        parse_mode: Optional[ParseMode] = None,
         entities: Optional[List[MessageEntity]] = None,
-        link_preview_options: Optional[Union[LinkPreviewOptions, Default]] = Default(
-            "link_preview"
-        ),
+        link_preview_options: Optional[LinkPreviewOptions] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        protect_content: Optional[bool] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
         ] = None,
         allow_sending_without_reply: Optional[bool] = None,
-        disable_web_page_preview: Optional[Union[bool, Default]] = Default(
-            "link_preview_is_disabled"
-        ),
+        disable_web_page_preview: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
         **kwargs: Any,
     ) -> SendMessage:
@@ -211,11 +207,11 @@ class ChatMemberUpdated(TelegramObject):
         height: Optional[int] = None,
         thumbnail: Optional[InputFile] = None,
         caption: Optional[str] = None,
-        parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
+        parse_mode: Optional[ParseMode] = None,
         caption_entities: Optional[List[MessageEntity]] = None,
         has_spoiler: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        protect_content: Optional[bool] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -283,14 +279,14 @@ class ChatMemberUpdated(TelegramObject):
         audio: Union[InputFile, str],
         message_thread_id: Optional[int] = None,
         caption: Optional[str] = None,
-        parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
+        parse_mode: Optional[ParseMode] = None,
         caption_entities: Optional[List[MessageEntity]] = None,
         duration: Optional[int] = None,
         performer: Optional[str] = None,
         title: Optional[str] = None,
         thumbnail: Optional[InputFile] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        protect_content: Optional[bool] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -360,7 +356,7 @@ class ChatMemberUpdated(TelegramObject):
         last_name: Optional[str] = None,
         vcard: Optional[str] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        protect_content: Optional[bool] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -419,11 +415,11 @@ class ChatMemberUpdated(TelegramObject):
         message_thread_id: Optional[int] = None,
         thumbnail: Optional[InputFile] = None,
         caption: Optional[str] = None,
-        parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
+        parse_mode: Optional[ParseMode] = None,
         caption_entities: Optional[List[MessageEntity]] = None,
         disable_content_type_detection: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        protect_content: Optional[bool] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -485,7 +481,7 @@ class ChatMemberUpdated(TelegramObject):
         game_short_name: str,
         message_thread_id: Optional[int] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        protect_content: Optional[bool] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[InlineKeyboardMarkup] = None,
         allow_sending_without_reply: Optional[bool] = None,
@@ -555,7 +551,7 @@ class ChatMemberUpdated(TelegramObject):
         send_email_to_provider: Optional[bool] = None,
         is_flexible: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        protect_content: Optional[bool] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[InlineKeyboardMarkup] = None,
         allow_sending_without_reply: Optional[bool] = None,
@@ -650,7 +646,7 @@ class ChatMemberUpdated(TelegramObject):
         heading: Optional[int] = None,
         proximity_alert_radius: Optional[int] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        protect_content: Optional[bool] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -712,7 +708,7 @@ class ChatMemberUpdated(TelegramObject):
         media: List[Union[InputMediaAudio, InputMediaDocument, InputMediaPhoto, InputMediaVideo]],
         message_thread_id: Optional[int] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        protect_content: Optional[bool] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
@@ -759,11 +755,11 @@ class ChatMemberUpdated(TelegramObject):
         photo: Union[InputFile, str],
         message_thread_id: Optional[int] = None,
         caption: Optional[str] = None,
-        parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
+        parse_mode: Optional[ParseMode] = None,
         caption_entities: Optional[List[MessageEntity]] = None,
         has_spoiler: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        protect_content: Optional[bool] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -828,13 +824,13 @@ class ChatMemberUpdated(TelegramObject):
         allows_multiple_answers: Optional[bool] = None,
         correct_option_id: Optional[int] = None,
         explanation: Optional[str] = None,
-        explanation_parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
+        explanation_parse_mode: Optional[ParseMode] = None,
         explanation_entities: Optional[List[MessageEntity]] = None,
         open_period: Optional[int] = None,
         close_date: Optional[Union[datetime.datetime, datetime.timedelta, int]] = None,
         is_closed: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        protect_content: Optional[bool] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -908,7 +904,7 @@ class ChatMemberUpdated(TelegramObject):
         message_thread_id: Optional[int] = None,
         emoji: Optional[str] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        protect_content: Optional[bool] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -961,7 +957,7 @@ class ChatMemberUpdated(TelegramObject):
         message_thread_id: Optional[int] = None,
         emoji: Optional[str] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        protect_content: Optional[bool] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -1022,7 +1018,7 @@ class ChatMemberUpdated(TelegramObject):
         google_place_id: Optional[str] = None,
         google_place_type: Optional[str] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        protect_content: Optional[bool] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -1092,12 +1088,12 @@ class ChatMemberUpdated(TelegramObject):
         height: Optional[int] = None,
         thumbnail: Optional[InputFile] = None,
         caption: Optional[str] = None,
-        parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
+        parse_mode: Optional[ParseMode] = None,
         caption_entities: Optional[List[MessageEntity]] = None,
         has_spoiler: Optional[bool] = None,
         supports_streaming: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        protect_content: Optional[bool] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -1170,7 +1166,7 @@ class ChatMemberUpdated(TelegramObject):
         length: Optional[int] = None,
         thumbnail: Optional[InputFile] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        protect_content: Optional[bool] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -1228,11 +1224,11 @@ class ChatMemberUpdated(TelegramObject):
         voice: Union[InputFile, str],
         message_thread_id: Optional[int] = None,
         caption: Optional[str] = None,
-        parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
+        parse_mode: Optional[ParseMode] = None,
         caption_entities: Optional[List[MessageEntity]] = None,
         duration: Optional[int] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        protect_content: Optional[bool] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]

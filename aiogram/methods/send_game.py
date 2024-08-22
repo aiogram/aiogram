@@ -1,10 +1,14 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional, Union
+from typing import TYPE_CHECKING, Any, Optional
 
 from pydantic import Field
 
-from ..client.default import Default
+from aiogram.default_annotations import (
+    DefaultDisableNotification,
+    DefaultProtectContent,
+)
+
 from ..types import InlineKeyboardMarkup, Message, ReplyParameters
 from .base import TelegramMethod
 
@@ -25,9 +29,9 @@ class SendGame(TelegramMethod[Message]):
     """Short name of the game, serves as the unique identifier for the game. Set up your games via `@BotFather <https://t.me/botfather>`_."""
     message_thread_id: Optional[int] = None
     """Unique identifier for the target message thread (topic) of the forum; for forum supergroups only"""
-    disable_notification: Optional[bool] = None
+    disable_notification: DefaultDisableNotification = None
     """Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound."""
-    protect_content: Optional[Union[bool, Default]] = Default("protect_content")
+    protect_content: DefaultProtectContent = None
     """Protects the contents of the sent message from forwarding and saving"""
     reply_parameters: Optional[ReplyParameters] = None
     """Description of the message to reply to"""
@@ -57,7 +61,7 @@ class SendGame(TelegramMethod[Message]):
             game_short_name: str,
             message_thread_id: Optional[int] = None,
             disable_notification: Optional[bool] = None,
-            protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+            protect_content: Optional[bool] = None,
             reply_parameters: Optional[ReplyParameters] = None,
             reply_markup: Optional[InlineKeyboardMarkup] = None,
             allow_sending_without_reply: Optional[bool] = None,

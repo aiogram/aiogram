@@ -37,7 +37,6 @@ from aiogram.methods import (
     UnpinChatMessage,
 )
 from aiogram.types import (
-    UNSET_PARSE_MODE,
     Animation,
     Audio,
     Chat,
@@ -854,7 +853,7 @@ class TestMessage:
     @pytest.mark.parametrize(
         "custom_parse_mode",
         [
-            UNSET_PARSE_MODE,
+            None,
             *list(ParseMode),
         ],
     )

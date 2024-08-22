@@ -1,6 +1,6 @@
 from typing import Union
 
-from aiogram.methods import Request, StopMessageLiveLocation
+from aiogram.methods import StopMessageLiveLocation
 from aiogram.types import Message
 from tests.mocked_bot import MockedBot
 

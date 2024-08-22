@@ -4,7 +4,11 @@ from typing import TYPE_CHECKING, Any, Optional, Union
 
 from pydantic import Field
 
-from ..client.default import Default
+from aiogram.default_annotations import (
+    DefaultDisableNotification,
+    DefaultProtectContent,
+)
+
 from ..types import (
     ForceReply,
     InlineKeyboardMarkup,
@@ -32,9 +36,9 @@ class SendDice(TelegramMethod[Message]):
     """Unique identifier for the target message thread (topic) of the forum; for forum supergroups only"""
     emoji: Optional[str] = None
     """Emoji on which the dice throw animation is based. Currently, must be one of '🎲', '🎯', '🏀', '⚽', '🎳', or '🎰'. Dice can have values 1-6 for '🎲', '🎯' and '🎳', values 1-5 for '🏀' and '⚽', and values 1-64 for '🎰'. Defaults to '🎲'"""
-    disable_notification: Optional[bool] = None
+    disable_notification: DefaultDisableNotification = None
     """Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound."""
-    protect_content: Optional[Union[bool, Default]] = Default("protect_content")
+    protect_content: DefaultProtectContent = None
     """Protects the contents of the sent message from forwarding"""
     reply_parameters: Optional[ReplyParameters] = None
     """Description of the message to reply to"""
@@ -66,7 +70,7 @@ class SendDice(TelegramMethod[Message]):
             message_thread_id: Optional[int] = None,
             emoji: Optional[str] = None,
             disable_notification: Optional[bool] = None,
-            protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+            protect_content: Optional[bool] = None,
             reply_parameters: Optional[ReplyParameters] = None,
             reply_markup: Optional[
                 Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]

@@ -1,6 +1,6 @@
 import datetime
 
-from aiogram.methods import Request, SendAudio
+from aiogram.methods import SendAudio
 from aiogram.types import Audio, Chat, Message
 from tests.mocked_bot import MockedBot
 

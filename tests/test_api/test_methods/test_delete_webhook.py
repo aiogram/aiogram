@@ -1,4 +1,4 @@
-from aiogram.methods import DeleteWebhook, Request
+from aiogram.methods import DeleteWebhook
 from tests.mocked_bot import MockedBot
 
 

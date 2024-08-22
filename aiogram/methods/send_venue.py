@@ -4,7 +4,11 @@ from typing import TYPE_CHECKING, Any, Optional, Union
 
 from pydantic import Field
 
-from ..client.default import Default
+from aiogram.default_annotations import (
+    DefaultDisableNotification,
+    DefaultProtectContent,
+)
+
 from ..types import (
     ForceReply,
     InlineKeyboardMarkup,
@@ -46,9 +50,9 @@ class SendVenue(TelegramMethod[Message]):
     """Google Places identifier of the venue"""
     google_place_type: Optional[str] = None
     """Google Places type of the venue. (See `supported types <https://developers.google.com/places/web-service/supported_types>`_.)"""
-    disable_notification: Optional[bool] = None
+    disable_notification: DefaultDisableNotification = None
     """Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound."""
-    protect_content: Optional[Union[bool, Default]] = Default("protect_content")
+    protect_content: DefaultProtectContent = None
     """Protects the contents of the sent message from forwarding and saving"""
     reply_parameters: Optional[ReplyParameters] = None
     """Description of the message to reply to"""
@@ -87,7 +91,7 @@ class SendVenue(TelegramMethod[Message]):
             google_place_id: Optional[str] = None,
             google_place_type: Optional[str] = None,
             disable_notification: Optional[bool] = None,
-            protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+            protect_content: Optional[bool] = None,
             reply_parameters: Optional[ReplyParameters] = None,
             reply_markup: Optional[
                 Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]

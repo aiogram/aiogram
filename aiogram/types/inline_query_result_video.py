@@ -2,8 +2,9 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, List, Literal, Optional, Union
 
-from ..client.default import Default
-from ..enums import InlineQueryResultType
+from aiogram.default_annotations import DefaultParseMode
+
+from ..enums import InlineQueryResultType, ParseMode
 from .inline_query_result import InlineQueryResult
 
 if TYPE_CHECKING:
@@ -39,7 +40,7 @@ class InlineQueryResultVideo(InlineQueryResult):
     """Title for the result"""
     caption: Optional[str] = None
     """*Optional*. Caption of the video to be sent, 0-1024 characters after entities parsing"""
-    parse_mode: Optional[Union[str, Default]] = Default("parse_mode")
+    parse_mode: DefaultParseMode = None
     """*Optional*. Mode for parsing entities in the video caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details."""
     caption_entities: Optional[List[MessageEntity]] = None
     """*Optional*. List of special entities that appear in the caption, which can be specified instead of *parse_mode*"""
@@ -78,7 +79,7 @@ class InlineQueryResultVideo(InlineQueryResult):
             thumbnail_url: str,
             title: str,
             caption: Optional[str] = None,
-            parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
+            parse_mode: Optional[ParseMode] = None,
             caption_entities: Optional[List[MessageEntity]] = None,
             video_width: Optional[int] = None,
             video_height: Optional[int] = None,

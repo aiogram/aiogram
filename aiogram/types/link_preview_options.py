@@ -1,6 +1,5 @@
-from typing import TYPE_CHECKING, Any, Optional, Union
+from typing import TYPE_CHECKING, Any, Optional
 
-from ..client.default import Default
 from .base import TelegramObject
 
 
@@ -11,15 +10,15 @@ class LinkPreviewOptions(TelegramObject):
     Source: https://core.telegram.org/bots/api#linkpreviewoptions
     """
 
-    is_disabled: Optional[Union[bool, Default]] = Default("link_preview_is_disabled")
+    is_disabled: Optional[bool] = None
     """*Optional*. :code:`True`, if the link preview is disabled"""
     url: Optional[str] = None
     """*Optional*. URL to use for the link preview. If empty, then the first URL found in the message text will be used"""
-    prefer_small_media: Optional[Union[bool, Default]] = Default("link_preview_prefer_small_media")
+    prefer_small_media: Optional[bool] = None
     """*Optional*. :code:`True`, if the media in the link preview is supposed to be shrunk; ignored if the URL isn't explicitly specified or media size change isn't supported for the preview"""
-    prefer_large_media: Optional[Union[bool, Default]] = Default("link_preview_prefer_large_media")
+    prefer_large_media: Optional[bool] = None
     """*Optional*. :code:`True`, if the media in the link preview is supposed to be enlarged; ignored if the URL isn't explicitly specified or media size change isn't supported for the preview"""
-    show_above_text: Optional[Union[bool, Default]] = Default("link_preview_show_above_text")
+    show_above_text: Optional[bool] = None
     """*Optional*. :code:`True`, if the link preview must be shown above the message text; otherwise, the link preview will be shown below the message text"""
 
     if TYPE_CHECKING:
@@ -29,17 +28,11 @@ class LinkPreviewOptions(TelegramObject):
         def __init__(
             __pydantic__self__,
             *,
-            is_disabled: Optional[Union[bool, Default]] = Default("link_preview_is_disabled"),
+            is_disabled: Optional[bool] = None,
             url: Optional[str] = None,
-            prefer_small_media: Optional[Union[bool, Default]] = Default(
-                "link_preview_prefer_small_media"
-            ),
-            prefer_large_media: Optional[Union[bool, Default]] = Default(
-                "link_preview_prefer_large_media"
-            ),
-            show_above_text: Optional[Union[bool, Default]] = Default(
-                "link_preview_show_above_text"
-            ),
+            prefer_small_media: Optional[bool] = None,
+            prefer_large_media: Optional[bool] = None,
+            show_above_text: Optional[bool] = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

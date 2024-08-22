@@ -160,10 +160,8 @@ class URLInputFile(BotContextController, InputFile):
 
         self._bot = bot
 
-    async def read(self, bot: Optional["Bot"] = None) -> AsyncGenerator[bytes, None]:
-        bot = self.bot or bot  # FIXME: invalid order suspected
-        if bot is None:
-            raise AttributeError("There is no default bot. Specify it through param")
+    async def read(self, bot: "Bot") -> AsyncGenerator[bytes, None]:
+        bot = self.bot or bot
         stream = bot.session.stream_content(
             url=self.url,
             headers=self.headers,

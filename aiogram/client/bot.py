@@ -21,6 +21,7 @@ import aiofiles
 
 from aiogram.utils.token import extract_bot_id, validate_token
 
+from ..enums import ParseMode
 from ..methods import (
     AddStickerToSet,
     AnswerCallbackQuery,
@@ -233,7 +234,7 @@ from ..types import (
     UserProfilePhotos,
     WebhookInfo,
 )
-from .default import Default, DefaultBotProperties
+from .default import DefaultBotProperties
 from .session.aiohttp import AiohttpSession
 from .session.base import BaseSession
 
@@ -274,8 +275,10 @@ class Bot:
         if default is None:
             default = DefaultBotProperties(
                 parse_mode=parse_mode,
-                link_preview_is_disabled=disable_web_page_preview,
                 protect_content=protect_content,
+                link_preview_options=LinkPreviewOptions(
+                    is_disabled=disable_web_page_preview,
+                ),
             )
 
         self.session = session
@@ -311,11 +314,15 @@ class Bot:
     def disable_web_page_preview(self) -> Optional[bool]:
         warnings.warn(
             "Accessing `disable_web_page_preview` from Bot instance is deprecated. This attribute will be removed in 3.5.0 version\n"
-            "Use `bot.default.link_preview_is_disabled` instead.",
+            "Use `bot.default.link_preview_options.is_disabled` instead.",
             category=DeprecationWarning,
             stacklevel=2,
         )
-        return self.default.link_preview_is_disabled
+        return (
+            self.default.link_preview_options.is_disabled
+            if self.default.link_preview_options
+            else None
+        )
 
     @property
     def protect_content(self) -> Optional[bool]:
@@ -856,10 +863,10 @@ class Bot:
         message_id: int,
         message_thread_id: Optional[int] = None,
         caption: Optional[str] = None,
-        parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
+        parse_mode: Optional[ParseMode] = None,
         caption_entities: Optional[List[MessageEntity]] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        protect_content: Optional[bool] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -1353,7 +1360,7 @@ class Bot:
         message_id: Optional[int] = None,
         inline_message_id: Optional[str] = None,
         caption: Optional[str] = None,
-        parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
+        parse_mode: Optional[ParseMode] = None,
         caption_entities: Optional[List[MessageEntity]] = None,
         reply_markup: Optional[InlineKeyboardMarkup] = None,
         request_timeout: Optional[int] = None,
@@ -1502,13 +1509,11 @@ class Bot:
         chat_id: Optional[Union[int, str]] = None,
         message_id: Optional[int] = None,
         inline_message_id: Optional[str] = None,
-        parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
+        parse_mode: Optional[ParseMode] = None,
         entities: Optional[List[MessageEntity]] = None,
         link_preview_options: Optional[LinkPreviewOptions] = None,
         reply_markup: Optional[InlineKeyboardMarkup] = None,
-        disable_web_page_preview: Optional[Union[bool, Default]] = Default(
-            "link_preview_is_disabled"
-        ),
+        disable_web_page_preview: Optional[bool] = None,
         request_timeout: Optional[int] = None,
     ) -> Union[Message, bool]:
         """
@@ -1571,7 +1576,7 @@ class Bot:
         message_id: int,
         message_thread_id: Optional[int] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        protect_content: Optional[bool] = None,
         request_timeout: Optional[int] = None,
     ) -> Message:
         """
@@ -2190,11 +2195,11 @@ class Bot:
         height: Optional[int] = None,
         thumbnail: Optional[InputFile] = None,
         caption: Optional[str] = None,
-        parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
+        parse_mode: Optional[ParseMode] = None,
         caption_entities: Optional[List[MessageEntity]] = None,
         has_spoiler: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        protect_content: Optional[bool] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -2256,14 +2261,14 @@ class Bot:
         audio: Union[InputFile, str],
         message_thread_id: Optional[int] = None,
         caption: Optional[str] = None,
-        parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
+        parse_mode: Optional[ParseMode] = None,
         caption_entities: Optional[List[MessageEntity]] = None,
         duration: Optional[int] = None,
         performer: Optional[str] = None,
         title: Optional[str] = None,
         thumbnail: Optional[InputFile] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        protect_content: Optional[bool] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -2357,7 +2362,7 @@ class Bot:
         last_name: Optional[str] = None,
         vcard: Optional[str] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        protect_content: Optional[bool] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -2409,7 +2414,7 @@ class Bot:
         message_thread_id: Optional[int] = None,
         emoji: Optional[str] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        protect_content: Optional[bool] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -2456,11 +2461,11 @@ class Bot:
         message_thread_id: Optional[int] = None,
         thumbnail: Optional[InputFile] = None,
         caption: Optional[str] = None,
-        parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
+        parse_mode: Optional[ParseMode] = None,
         caption_entities: Optional[List[MessageEntity]] = None,
         disable_content_type_detection: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        protect_content: Optional[bool] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -2516,7 +2521,7 @@ class Bot:
         game_short_name: str,
         message_thread_id: Optional[int] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        protect_content: Optional[bool] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[InlineKeyboardMarkup] = None,
         allow_sending_without_reply: Optional[bool] = None,
@@ -2580,7 +2585,7 @@ class Bot:
         send_email_to_provider: Optional[bool] = None,
         is_flexible: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        protect_content: Optional[bool] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[InlineKeyboardMarkup] = None,
         allow_sending_without_reply: Optional[bool] = None,
@@ -2669,7 +2674,7 @@ class Bot:
         heading: Optional[int] = None,
         proximity_alert_radius: Optional[int] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        protect_content: Optional[bool] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -2725,7 +2730,7 @@ class Bot:
         media: List[Union[InputMediaAudio, InputMediaDocument, InputMediaPhoto, InputMediaVideo]],
         message_thread_id: Optional[int] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        protect_content: Optional[bool] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
@@ -2765,21 +2770,17 @@ class Bot:
         chat_id: Union[int, str],
         text: str,
         message_thread_id: Optional[int] = None,
-        parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
+        parse_mode: Optional[ParseMode] = None,
         entities: Optional[List[MessageEntity]] = None,
-        link_preview_options: Optional[Union[LinkPreviewOptions, Default]] = Default(
-            "link_preview"
-        ),
+        link_preview_options: Optional[LinkPreviewOptions] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        protect_content: Optional[bool] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
         ] = None,
         allow_sending_without_reply: Optional[bool] = None,
-        disable_web_page_preview: Optional[Union[bool, Default]] = Default(
-            "link_preview_is_disabled"
-        ),
+        disable_web_page_preview: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
         request_timeout: Optional[int] = None,
     ) -> Message:
@@ -2828,11 +2829,11 @@ class Bot:
         photo: Union[InputFile, str],
         message_thread_id: Optional[int] = None,
         caption: Optional[str] = None,
-        parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
+        parse_mode: Optional[ParseMode] = None,
         caption_entities: Optional[List[MessageEntity]] = None,
         has_spoiler: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        protect_content: Optional[bool] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -2891,13 +2892,13 @@ class Bot:
         allows_multiple_answers: Optional[bool] = None,
         correct_option_id: Optional[int] = None,
         explanation: Optional[str] = None,
-        explanation_parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
+        explanation_parse_mode: Optional[ParseMode] = None,
         explanation_entities: Optional[List[MessageEntity]] = None,
         open_period: Optional[int] = None,
         close_date: Optional[Union[datetime.datetime, datetime.timedelta, int]] = None,
         is_closed: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        protect_content: Optional[bool] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -2966,7 +2967,7 @@ class Bot:
         message_thread_id: Optional[int] = None,
         emoji: Optional[str] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        protect_content: Optional[bool] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -3021,7 +3022,7 @@ class Bot:
         google_place_id: Optional[str] = None,
         google_place_type: Optional[str] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        protect_content: Optional[bool] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -3085,12 +3086,12 @@ class Bot:
         height: Optional[int] = None,
         thumbnail: Optional[InputFile] = None,
         caption: Optional[str] = None,
-        parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
+        parse_mode: Optional[ParseMode] = None,
         caption_entities: Optional[List[MessageEntity]] = None,
         has_spoiler: Optional[bool] = None,
         supports_streaming: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        protect_content: Optional[bool] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -3157,7 +3158,7 @@ class Bot:
         length: Optional[int] = None,
         thumbnail: Optional[InputFile] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        protect_content: Optional[bool] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -3209,11 +3210,11 @@ class Bot:
         voice: Union[InputFile, str],
         message_thread_id: Optional[int] = None,
         caption: Optional[str] = None,
-        parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
+        parse_mode: Optional[ParseMode] = None,
         caption_entities: Optional[List[MessageEntity]] = None,
         duration: Optional[int] = None,
         disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        protect_content: Optional[bool] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]

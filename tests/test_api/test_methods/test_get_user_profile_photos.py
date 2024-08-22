@@ -1,4 +1,4 @@
-from aiogram.methods import GetUserProfilePhotos, Request
+from aiogram.methods import GetUserProfilePhotos
 from aiogram.types import PhotoSize, UserProfilePhotos
 from tests.mocked_bot import MockedBot
 

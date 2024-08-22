@@ -1,4 +1,4 @@
-from aiogram.methods import LeaveChat, Request
+from aiogram.methods import LeaveChat
 from tests.mocked_bot import MockedBot
 
 
