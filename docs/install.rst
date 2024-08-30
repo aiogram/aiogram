@@ -2,13 +2,6 @@
 Installation
 ############
 
-From PyPI
----------
-
-.. code-block:: bash
-
-    pip install -U aiogram
-
 From Arch Linux Repository
 --------------------------
 
