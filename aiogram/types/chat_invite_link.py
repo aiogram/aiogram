@@ -34,6 +34,10 @@ class ChatInviteLink(TelegramObject):
     """*Optional*. The maximum number of users that can be members of the chat simultaneously after joining the chat via this invite link; 1-99999"""
     pending_join_request_count: Optional[int] = None
     """*Optional*. Number of pending join requests created using this link"""
+    subscription_period: Optional[int] = None
+    """*Optional*. The number of seconds the subscription will be active for before the next payment"""
+    subscription_price: Optional[int] = None
+    """*Optional*. The amount of Telegram Stars a user must pay initially and after each subsequent subscription period to be a member of the chat using the link"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!
@@ -51,6 +55,8 @@ class ChatInviteLink(TelegramObject):
             expire_date: Optional[DateTime] = None,
             member_limit: Optional[int] = None,
             pending_join_request_count: Optional[int] = None,
+            subscription_period: Optional[int] = None,
+            subscription_price: Optional[int] = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!
@@ -67,5 +73,7 @@ class ChatInviteLink(TelegramObject):
                 expire_date=expire_date,
                 member_limit=member_limit,
                 pending_join_request_count=pending_join_request_count,
+                subscription_period=subscription_period,
+                subscription_price=subscription_price,
                 **__pydantic_kwargs,
             )

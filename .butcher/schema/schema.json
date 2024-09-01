@@ -5129,6 +5129,22 @@
               "rst_description": "*Optional*. Number of pending join requests created using this link\n",
               "name": "pending_join_request_count",
               "required": false
+            },
+            {
+              "type": "Integer",
+              "description": "The number of seconds the subscription will be active for before the next payment",
+              "html_description": "<td><em>Optional</em>. The number of seconds the subscription will be active for before the next payment</td>",
+              "rst_description": "*Optional*. The number of seconds the subscription will be active for before the next payment\n",
+              "name": "subscription_period",
+              "required": false
+            },
+            {
+              "type": "Integer",
+              "description": "The amount of Telegram Stars a user must pay initially and after each subsequent subscription period to be a member of the chat using the link",
+              "html_description": "<td><em>Optional</em>. The amount of Telegram Stars a user must pay initially and after each subsequent subscription period to be a member of the chat using the link</td>",
+              "rst_description": "*Optional*. The amount of Telegram Stars a user must pay initially and after each subsequent subscription period to be a member of the chat using the link\n",
+              "name": "subscription_price",
+              "required": false
             }
           ],
           "category": "types"
@@ -15366,9 +15382,9 @@
             },
             {
               "type": "String",
-              "description": "Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use for your internal processes.",
-              "html_description": "<td>Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use for your internal processes.</td>",
-              "rst_description": "Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use for your internal processes.\n",
+              "description": "Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use it for your internal processes.",
+              "html_description": "<td>Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use it for your internal processes.</td>",
+              "rst_description": "Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use it for your internal processes.\n",
               "name": "payload",
               "required": true
             },
@@ -15654,9 +15670,9 @@
             {
               "type": "String",
               "required": true,
-              "description": "Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use for your internal processes.",
-              "html_description": "<td>Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use for your internal processes.</td>",
-              "rst_description": "Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use for your internal processes.\n",
+              "description": "Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use it for your internal processes.",
+              "html_description": "<td>Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use it for your internal processes.</td>",
+              "rst_description": "Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use it for your internal processes.\n",
               "name": "payload"
             },
             {
@@ -15872,9 +15888,9 @@
             {
               "type": "String",
               "required": true,
-              "description": "Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use for your internal processes.",
-              "html_description": "<td>Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use for your internal processes.</td>",
-              "rst_description": "Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use for your internal processes.\n",
+              "description": "Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use it for your internal processes.",
+              "html_description": "<td>Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use it for your internal processes.</td>",
+              "rst_description": "Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use it for your internal processes.\n",
               "name": "payload"
             },
             {

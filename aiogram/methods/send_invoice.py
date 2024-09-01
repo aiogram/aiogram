@@ -26,7 +26,7 @@ class SendInvoice(TelegramMethod[Message]):
     description: str
     """Product description, 1-255 characters"""
     payload: str
-    """Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use for your internal processes."""
+    """Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use it for your internal processes."""
     currency: str
     """Three-letter ISO 4217 currency code, see `more on currencies <https://core.telegram.org/bots/payments#supported-currencies>`_. Pass 'XTR' for payments in `Telegram Stars <https://t.me/BotNews/90>`_."""
     prices: List[LabeledPrice]
