@@ -16,19 +16,6 @@ Changelog
 
 .. towncrier release notes start
 
-3.12.0 (2024-09-05)
-====================
-
-Bugfixes
---------
-
-- Fixed link preview options to use global defaults in various types and methods
-  to use global defaults for `link_preview_options`.
-  This change ensures consistency and enhances flexibility in handling link preview options
-  across different components.
-  `#1543 <https://github.com/aiogram/aiogram/issues/1543>`_
-
-
 3.12.0 (2024-08-16)
 ====================
 

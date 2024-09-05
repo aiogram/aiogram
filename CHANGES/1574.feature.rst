@@ -1,0 +1,2 @@
+Added missing method aliases such as `.answer()`, `.reply()`, and others to `InaccessibleMessage`.  
+This change ensures consistency and improves usability by aligning the functionality of `InaccessibleMessage` with the `Message` type.
