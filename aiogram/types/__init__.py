@@ -233,6 +233,7 @@ from .web_app_data import WebAppData
 from .web_app_info import WebAppInfo
 from .webhook_info import WebhookInfo
 from .write_access_allowed import WriteAccessAllowed
+from .paid_media_purchased import PaidMediaPurchased
 
 __all__ = (
     "Animation",
@@ -397,6 +398,7 @@ __all__ = (
     "PaidMediaInfo",
     "PaidMediaPhoto",
     "PaidMediaPreview",
+    "PaidMediaPurchased",
     "PaidMediaVideo",
     "PassportData",
     "PassportElementError",

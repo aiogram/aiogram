@@ -4103,6 +4103,7 @@ class Message(MaybeInaccessibleMessage):
         self,
         star_count: int,
         media: List[Union[InputPaidMediaPhoto, InputPaidMediaVideo]],
+        payload: Optional[str] = None,
         caption: Optional[str] = None,
         parse_mode: Optional[str] = None,
         caption_entities: Optional[List[MessageEntity]] = None,
@@ -4127,8 +4128,9 @@ class Message(MaybeInaccessibleMessage):
 
         Source: https://core.telegram.org/bots/api#sendpaidmedia
 
-        :param star_count: The number of Telegram Stars that must be paid to buy access to the media
+        :param star_count: The number of Telegram Stars that must be paid to buy access to the media; 1-2500
         :param media: A JSON-serialized array describing the media to be sent; up to 10 items
+        :param payload: Bot-defined paid media payload, 0-128 bytes. This will not be displayed to the user, use it for your internal processes.
         :param caption: Media caption, 0-1024 characters after entities parsing
         :param parse_mode: Mode for parsing entities in the media caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.
         :param caption_entities: A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*
@@ -4154,6 +4156,7 @@ class Message(MaybeInaccessibleMessage):
             business_connection_id=self.business_connection_id,
             star_count=star_count,
             media=media,
+            payload=payload,
             caption=caption,
             parse_mode=parse_mode,
             caption_entities=caption_entities,
@@ -4169,6 +4172,7 @@ class Message(MaybeInaccessibleMessage):
         self,
         star_count: int,
         media: List[Union[InputPaidMediaPhoto, InputPaidMediaVideo]],
+        payload: Optional[str] = None,
         caption: Optional[str] = None,
         parse_mode: Optional[str] = None,
         caption_entities: Optional[List[MessageEntity]] = None,
@@ -4193,8 +4197,9 @@ class Message(MaybeInaccessibleMessage):
 
         Source: https://core.telegram.org/bots/api#sendpaidmedia
 
-        :param star_count: The number of Telegram Stars that must be paid to buy access to the media
+        :param star_count: The number of Telegram Stars that must be paid to buy access to the media; 1-2500
         :param media: A JSON-serialized array describing the media to be sent; up to 10 items
+        :param payload: Bot-defined paid media payload, 0-128 bytes. This will not be displayed to the user, use it for your internal processes.
         :param caption: Media caption, 0-1024 characters after entities parsing
         :param parse_mode: Mode for parsing entities in the media caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.
         :param caption_entities: A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*
@@ -4220,6 +4225,7 @@ class Message(MaybeInaccessibleMessage):
             reply_parameters=self.as_reply_parameters(),
             star_count=star_count,
             media=media,
+            payload=payload,
             caption=caption,
             parse_mode=parse_mode,
             caption_entities=caption_entities,

@@ -7,9 +7,9 @@
   "object": {
     "anchor": "chatboostsourcegiveaway",
     "name": "ChatBoostSourceGiveaway",
-    "description": "The boost was obtained by the creation of a Telegram Premium giveaway. This boosts the chat 4 times for the duration of the corresponding Telegram Premium subscription.",
-    "html_description": "<p>The boost was obtained by the creation of a Telegram Premium giveaway. This boosts the chat 4 times for the duration of the corresponding Telegram Premium subscription.</p>",
-    "rst_description": "The boost was obtained by the creation of a Telegram Premium giveaway. This boosts the chat 4 times for the duration of the corresponding Telegram Premium subscription.",
+    "description": "The boost was obtained by the creation of a Telegram Premium or a Telegram Star giveaway. This boosts the chat 4 times for the duration of the corresponding Telegram Premium subscription for Telegram Premium giveaways and prize_star_count / 500 times for one year for Telegram Star giveaways.",
+    "html_description": "<p>The boost was obtained by the creation of a Telegram Premium or a Telegram Star giveaway. This boosts the chat 4 times for the duration of the corresponding Telegram Premium subscription for Telegram Premium giveaways and <em>prize_star_count</em> / 500 times for one year for Telegram Star giveaways.</p>",
+    "rst_description": "The boost was obtained by the creation of a Telegram Premium or a Telegram Star giveaway. This boosts the chat 4 times for the duration of the corresponding Telegram Premium subscription for Telegram Premium giveaways and *prize_star_count* / 500 times for one year for Telegram Star giveaways.",
     "annotations": [
       {
         "type": "String",
@@ -29,10 +29,18 @@
       },
       {
         "type": "User",
-        "description": "User that won the prize in the giveaway if any",
-        "html_description": "<td><em>Optional</em>. User that won the prize in the giveaway if any</td>",
-        "rst_description": "*Optional*. User that won the prize in the giveaway if any\n",
+        "description": "User that won the prize in the giveaway if any; for Telegram Premium giveaways only",
+        "html_description": "<td><em>Optional</em>. User that won the prize in the giveaway if any; for Telegram Premium giveaways only</td>",
+        "rst_description": "*Optional*. User that won the prize in the giveaway if any; for Telegram Premium giveaways only\n",
         "name": "user",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "The number of Telegram Stars to be split between giveaway winners; for Telegram Star giveaways only",
+        "html_description": "<td><em>Optional</em>. The number of Telegram Stars to be split between giveaway winners; for Telegram Star giveaways only</td>",
+        "rst_description": "*Optional*. The number of Telegram Stars to be split between giveaway winners; for Telegram Star giveaways only\n",
+        "name": "prize_star_count",
         "required": false
       },
       {

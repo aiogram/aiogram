@@ -23,6 +23,7 @@ class UpdateType(str, Enum):
     CALLBACK_QUERY = "callback_query"
     SHIPPING_QUERY = "shipping_query"
     PRE_CHECKOUT_QUERY = "pre_checkout_query"
+    PURCHASED_PAID_MEDIA = "purchased_paid_media"
     POLL = "poll"
     POLL_ANSWER = "poll_answer"
     MY_CHAT_MEMBER = "my_chat_member"

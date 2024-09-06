@@ -30,8 +30,10 @@ class Giveaway(TelegramObject):
     """*Optional*. Description of additional giveaway prize"""
     country_codes: Optional[List[str]] = None
     """*Optional*. A list of two-letter `ISO 3166-1 alpha-2 <https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2>`_ country codes indicating the countries from which eligible users for the giveaway must come. If empty, then all users can participate in the giveaway. Users with a phone number that was bought on Fragment can always participate in giveaways."""
+    prize_star_count: Optional[int] = None
+    """*Optional*. The number of Telegram Stars to be split between giveaway winners; for Telegram Star giveaways only"""
     premium_subscription_month_count: Optional[int] = None
-    """*Optional*. The number of months the Telegram Premium subscription won from the giveaway will be active for"""
+    """*Optional*. The number of months the Telegram Premium subscription won from the giveaway will be active for; for Telegram Premium giveaways only"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!
@@ -47,6 +49,7 @@ class Giveaway(TelegramObject):
             has_public_winners: Optional[bool] = None,
             prize_description: Optional[str] = None,
             country_codes: Optional[List[str]] = None,
+            prize_star_count: Optional[int] = None,
             premium_subscription_month_count: Optional[int] = None,
             **__pydantic_kwargs: Any,
         ) -> None:
@@ -62,6 +65,7 @@ class Giveaway(TelegramObject):
                 has_public_winners=has_public_winners,
                 prize_description=prize_description,
                 country_codes=country_codes,
+                prize_star_count=prize_star_count,
                 premium_subscription_month_count=premium_subscription_month_count,
                 **__pydantic_kwargs,
             )

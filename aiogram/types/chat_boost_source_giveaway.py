@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 
 class ChatBoostSourceGiveaway(ChatBoostSource):
     """
-    The boost was obtained by the creation of a Telegram Premium giveaway. This boosts the chat 4 times for the duration of the corresponding Telegram Premium subscription.
+    The boost was obtained by the creation of a Telegram Premium or a Telegram Star giveaway. This boosts the chat 4 times for the duration of the corresponding Telegram Premium subscription for Telegram Premium giveaways and *prize_star_count* / 500 times for one year for Telegram Star giveaways.
 
     Source: https://core.telegram.org/bots/api#chatboostsourcegiveaway
     """
@@ -21,7 +21,9 @@ class ChatBoostSourceGiveaway(ChatBoostSource):
     giveaway_message_id: int
     """Identifier of a message in the chat with the giveaway; the message could have been deleted already. May be 0 if the message isn't sent yet."""
     user: Optional[User] = None
-    """*Optional*. User that won the prize in the giveaway if any"""
+    """*Optional*. User that won the prize in the giveaway if any; for Telegram Premium giveaways only"""
+    prize_star_count: Optional[int] = None
+    """*Optional*. The number of Telegram Stars to be split between giveaway winners; for Telegram Star giveaways only"""
     is_unclaimed: Optional[bool] = None
     """*Optional*. True, if the giveaway was completed, but there was no user to win the prize"""
 
@@ -35,6 +37,7 @@ class ChatBoostSourceGiveaway(ChatBoostSource):
             source: Literal[ChatBoostSourceType.GIVEAWAY] = ChatBoostSourceType.GIVEAWAY,
             giveaway_message_id: int,
             user: Optional[User] = None,
+            prize_star_count: Optional[int] = None,
             is_unclaimed: Optional[bool] = None,
             **__pydantic_kwargs: Any,
         ) -> None:
@@ -46,6 +49,7 @@ class ChatBoostSourceGiveaway(ChatBoostSource):
                 source=source,
                 giveaway_message_id=giveaway_message_id,
                 user=user,
+                prize_star_count=prize_star_count,
                 is_unclaimed=is_unclaimed,
                 **__pydantic_kwargs,
             )

@@ -140,6 +140,14 @@
         "required": false
       },
       {
+        "type": "PaidMediaPurchased",
+        "description": "A user purchased paid media with a non-empty payload sent by the bot in a non-channel chat",
+        "html_description": "<td><em>Optional</em>. A user purchased paid media with a non-empty payload sent by the bot in a non-channel chat</td>",
+        "rst_description": "*Optional*. A user purchased paid media with a non-empty payload sent by the bot in a non-channel chat\n",
+        "name": "purchased_paid_media",
+        "required": false
+      },
+      {
         "type": "Poll",
         "description": "New poll state. Bots receive only updates about manually stopped polls and polls, which are sent by the bot",
         "html_description": "<td><em>Optional</em>. New poll state. Bots receive only updates about manually stopped polls and polls, which are sent by the bot</td>",

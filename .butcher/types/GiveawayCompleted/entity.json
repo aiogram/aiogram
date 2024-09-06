@@ -34,6 +34,14 @@
         "rst_description": "*Optional*. Message with the giveaway that was completed, if it wasn't deleted\n",
         "name": "giveaway_message",
         "required": false
+      },
+      {
+        "type": "True",
+        "description": "True, if the giveaway is a Telegram Star giveaway. Otherwise, currently, the giveaway is a Telegram Premium giveaway.",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the giveaway is a Telegram Star giveaway. Otherwise, currently, the giveaway is a Telegram Premium giveaway.</td>",
+        "rst_description": "*Optional*. :code:`True`, if the giveaway is a Telegram Star giveaway. Otherwise, currently, the giveaway is a Telegram Premium giveaway.\n",
+        "name": "is_star_giveaway",
+        "required": false
       }
     ],
     "category": "types"

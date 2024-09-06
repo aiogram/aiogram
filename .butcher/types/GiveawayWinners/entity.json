@@ -61,9 +61,17 @@
       },
       {
         "type": "Integer",
-        "description": "The number of months the Telegram Premium subscription won from the giveaway will be active for",
-        "html_description": "<td><em>Optional</em>. The number of months the Telegram Premium subscription won from the giveaway will be active for</td>",
-        "rst_description": "*Optional*. The number of months the Telegram Premium subscription won from the giveaway will be active for\n",
+        "description": "The number of Telegram Stars that were split between giveaway winners; for Telegram Star giveaways only",
+        "html_description": "<td><em>Optional</em>. The number of Telegram Stars that were split between giveaway winners; for Telegram Star giveaways only</td>",
+        "rst_description": "*Optional*. The number of Telegram Stars that were split between giveaway winners; for Telegram Star giveaways only\n",
+        "name": "prize_star_count",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "The number of months the Telegram Premium subscription won from the giveaway will be active for; for Telegram Premium giveaways only",
+        "html_description": "<td><em>Optional</em>. The number of months the Telegram Premium subscription won from the giveaway will be active for; for Telegram Premium giveaways only</td>",
+        "rst_description": "*Optional*. The number of months the Telegram Premium subscription won from the giveaway will be active for; for Telegram Premium giveaways only\n",
         "name": "premium_subscription_month_count",
         "required": false
       },
