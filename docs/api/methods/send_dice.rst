@@ -48,8 +48,10 @@ As reply into Webhook in handler
 As shortcut from received object
 --------------------------------
 
-- :meth:`aiogram.types.message.Message.answer_dice`
-- :meth:`aiogram.types.message.Message.reply_dice`
 - :meth:`aiogram.types.chat_join_request.ChatJoinRequest.answer_dice`
 - :meth:`aiogram.types.chat_join_request.ChatJoinRequest.answer_dice_pm`
 - :meth:`aiogram.types.chat_member_updated.ChatMemberUpdated.answer_dice`
+- :meth:`aiogram.types.inaccessible_message.InaccessibleMessage.answer_dice`
+- :meth:`aiogram.types.inaccessible_message.InaccessibleMessage.reply_dice`
+- :meth:`aiogram.types.message.Message.answer_dice`
+- :meth:`aiogram.types.message.Message.reply_dice`

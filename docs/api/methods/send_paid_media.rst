@@ -48,5 +48,7 @@ As reply into Webhook in handler
 As shortcut from received object
 --------------------------------
 
+- :meth:`aiogram.types.inaccessible_message.InaccessibleMessage.answer_paid_media`
+- :meth:`aiogram.types.inaccessible_message.InaccessibleMessage.reply_paid_media`
 - :meth:`aiogram.types.message.Message.answer_paid_media`
 - :meth:`aiogram.types.message.Message.reply_paid_media`
