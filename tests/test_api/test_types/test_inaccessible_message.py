@@ -35,6 +35,7 @@ MESSAGES_AND_CONTENT_TYPES = [
     [TEST_MESSAGE_UNKNOWN, ContentType.UNKNOWN],
 ]
 
+
 class TestMessage:
     @pytest.mark.parametrize(
         "message,content_type",
@@ -120,7 +121,8 @@ class TestMessage:
         ],
     ):
         message = InaccessibleMessage(
-            message_id=42, chat=Chat(id=42, type="private"),
+            message_id=42,
+            chat=Chat(id=42, type="private"),
         )
         alias_name = "_".join(item for item in [alias_type, alias_for_method] if item)
 
