@@ -16,6 +16,43 @@ Changelog
 
 .. towncrier release notes start
 
+3.13.0 (2024-09-08)
+====================
+
+Features
+--------
+
+- - Added updates about purchased paid media, represented by the class
+    :class:`aiogram.types.paid_media_purchased.PaidMediaPurchased`
+    and the field :code:`purchased_paid_media` in the class
+    :class:`aiogram.types.update.Update`.
+  - Added the ability to specify a payload in
+    :class:`aiogram.methods.send_paid_media.SendPaidMedia` that is received back by the bot in
+    :class:`aiogram.types.transaction_partner_user.TransactionPartnerUser`
+    and :code:`purchased_paid_media` updates.
+  - Added the field :code:`prize_star_count` to the classes
+    :class:`aiogram.types.giveaway_created.GiveawayCreated`,
+    :class:`aiogram.types.giveaway.Giveaway`,
+    :class:`aiogram.types.giveaway_winners.GiveawayWinners`
+    and :class:`aiogram.types.chat_boost_source_giveaway.ChatBoostSourceGiveaway`.
+  - Added the field :code:`is_star_giveaway` to the class
+    :class:`aiogram.types.giveaway_completed.GiveawayCompleted`.
+  `#1510 <https://github.com/aiogram/aiogram/issues/1510>`_
+- Added missing method aliases such as `.answer()`, `.reply()`, and others to `InaccessibleMessage`.
+  This change ensures consistency and improves usability by aligning the functionality of `InaccessibleMessage` with the `Message` type.
+  `#1574 <https://github.com/aiogram/aiogram/issues/1574>`_
+
+
+Bugfixes
+--------
+
+- Fixed link preview options to use global defaults in various types and methods
+  to use global defaults for `link_preview_options`.
+  This change ensures consistency and enhances flexibility in handling link preview options
+  across different components.
+  `#1543 <https://github.com/aiogram/aiogram/issues/1543>`_
+
+
 3.12.0 (2024-08-16)
 ====================
 

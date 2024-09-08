@@ -1,4 +1,0 @@
-Fixed link preview options to use global defaults in various types and methods
-to use global defaults for `link_preview_options`.
-This change ensures consistency and enhances flexibility in handling link preview options
-across different components.
