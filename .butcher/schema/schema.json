@@ -1,7 +1,7 @@
 {
   "api": {
-    "version": "7.9",
-    "release_date": "2024-08-14"
+    "version": "7.10",
+    "release_date": "2024-09-06"
   },
   "items": [
     {
@@ -141,6 +141,14 @@
               "html_description": "<td><em>Optional</em>. New incoming pre-checkout query. Contains full information about checkout</td>",
               "rst_description": "*Optional*. New incoming pre-checkout query. Contains full information about checkout\n",
               "name": "pre_checkout_query",
+              "required": false
+            },
+            {
+              "type": "PaidMediaPurchased",
+              "description": "A user purchased paid media with a non-empty payload sent by the bot in a non-channel chat",
+              "html_description": "<td><em>Optional</em>. A user purchased paid media with a non-empty payload sent by the bot in a non-channel chat</td>",
+              "rst_description": "*Optional*. A user purchased paid media with a non-empty payload sent by the bot in a non-channel chat\n",
+              "name": "purchased_paid_media",
               "required": false
             },
             {
@@ -4029,10 +4037,19 @@
         {
           "anchor": "giveawaycreated",
           "name": "GiveawayCreated",
-          "description": "This object represents a service message about the creation of a scheduled giveaway. Currently holds no information.",
-          "html_description": "<p>This object represents a service message about the creation of a scheduled giveaway. Currently holds no information.</p>",
-          "rst_description": "This object represents a service message about the creation of a scheduled giveaway. Currently holds no information.",
-          "annotations": [],
+          "description": "This object represents a service message about the creation of a scheduled giveaway.",
+          "html_description": "<p>This object represents a service message about the creation of a scheduled giveaway.</p>",
+          "rst_description": "This object represents a service message about the creation of a scheduled giveaway.",
+          "annotations": [
+            {
+              "type": "Integer",
+              "description": "The number of Telegram Stars to be split between giveaway winners; for Telegram Star giveaways only",
+              "html_description": "<td><em>Optional</em>. The number of Telegram Stars to be split between giveaway winners; for Telegram Star giveaways only</td>",
+              "rst_description": "*Optional*. The number of Telegram Stars to be split between giveaway winners; for Telegram Star giveaways only\n",
+              "name": "prize_star_count",
+              "required": false
+            }
+          ],
           "category": "types"
         },
         {
@@ -4100,9 +4117,17 @@
             },
             {
               "type": "Integer",
-              "description": "The number of months the Telegram Premium subscription won from the giveaway will be active for",
-              "html_description": "<td><em>Optional</em>. The number of months the Telegram Premium subscription won from the giveaway will be active for</td>",
-              "rst_description": "*Optional*. The number of months the Telegram Premium subscription won from the giveaway will be active for\n",
+              "description": "The number of Telegram Stars to be split between giveaway winners; for Telegram Star giveaways only",
+              "html_description": "<td><em>Optional</em>. The number of Telegram Stars to be split between giveaway winners; for Telegram Star giveaways only</td>",
+              "rst_description": "*Optional*. The number of Telegram Stars to be split between giveaway winners; for Telegram Star giveaways only\n",
+              "name": "prize_star_count",
+              "required": false
+            },
+            {
+              "type": "Integer",
+              "description": "The number of months the Telegram Premium subscription won from the giveaway will be active for; for Telegram Premium giveaways only",
+              "html_description": "<td><em>Optional</em>. The number of months the Telegram Premium subscription won from the giveaway will be active for; for Telegram Premium giveaways only</td>",
+              "rst_description": "*Optional*. The number of months the Telegram Premium subscription won from the giveaway will be active for; for Telegram Premium giveaways only\n",
               "name": "premium_subscription_month_count",
               "required": false
             }
@@ -4166,9 +4191,17 @@
             },
             {
               "type": "Integer",
-              "description": "The number of months the Telegram Premium subscription won from the giveaway will be active for",
-              "html_description": "<td><em>Optional</em>. The number of months the Telegram Premium subscription won from the giveaway will be active for</td>",
-              "rst_description": "*Optional*. The number of months the Telegram Premium subscription won from the giveaway will be active for\n",
+              "description": "The number of Telegram Stars that were split between giveaway winners; for Telegram Star giveaways only",
+              "html_description": "<td><em>Optional</em>. The number of Telegram Stars that were split between giveaway winners; for Telegram Star giveaways only</td>",
+              "rst_description": "*Optional*. The number of Telegram Stars that were split between giveaway winners; for Telegram Star giveaways only\n",
+              "name": "prize_star_count",
+              "required": false
+            },
+            {
+              "type": "Integer",
+              "description": "The number of months the Telegram Premium subscription won from the giveaway will be active for; for Telegram Premium giveaways only",
+              "html_description": "<td><em>Optional</em>. The number of months the Telegram Premium subscription won from the giveaway will be active for; for Telegram Premium giveaways only</td>",
+              "rst_description": "*Optional*. The number of months the Telegram Premium subscription won from the giveaway will be active for; for Telegram Premium giveaways only\n",
               "name": "premium_subscription_month_count",
               "required": false
             },
@@ -4236,6 +4269,14 @@
               "html_description": "<td><em>Optional</em>. Message with the giveaway that was completed, if it wasn't deleted</td>",
               "rst_description": "*Optional*. Message with the giveaway that was completed, if it wasn't deleted\n",
               "name": "giveaway_message",
+              "required": false
+            },
+            {
+              "type": "True",
+              "description": "True, if the giveaway is a Telegram Star giveaway. Otherwise, currently, the giveaway is a Telegram Premium giveaway.",
+              "html_description": "<td><em>Optional</em>. <em>True</em>, if the giveaway is a Telegram Star giveaway. Otherwise, currently, the giveaway is a Telegram Premium giveaway.</td>",
+              "rst_description": "*Optional*. :code:`True`, if the giveaway is a Telegram Star giveaway. Otherwise, currently, the giveaway is a Telegram Premium giveaway.\n",
+              "name": "is_star_giveaway",
               "required": false
             }
           ],
@@ -5128,6 +5169,22 @@
               "html_description": "<td><em>Optional</em>. Number of pending join requests created using this link</td>",
               "rst_description": "*Optional*. Number of pending join requests created using this link\n",
               "name": "pending_join_request_count",
+              "required": false
+            },
+            {
+              "type": "Integer",
+              "description": "The number of seconds the subscription will be active for before the next payment",
+              "html_description": "<td><em>Optional</em>. The number of seconds the subscription will be active for before the next payment</td>",
+              "rst_description": "*Optional*. The number of seconds the subscription will be active for before the next payment\n",
+              "name": "subscription_period",
+              "required": false
+            },
+            {
+              "type": "Integer",
+              "description": "The amount of Telegram Stars a user must pay initially and after each subsequent subscription period to be a member of the chat using the link",
+              "html_description": "<td><em>Optional</em>. The amount of Telegram Stars a user must pay initially and after each subsequent subscription period to be a member of the chat using the link</td>",
+              "rst_description": "*Optional*. The amount of Telegram Stars a user must pay initially and after each subsequent subscription period to be a member of the chat using the link\n",
+              "name": "subscription_price",
               "required": false
             }
           ],
@@ -6795,9 +6852,9 @@
         {
           "anchor": "chatboostsourcegiveaway",
           "name": "ChatBoostSourceGiveaway",
-          "description": "The boost was obtained by the creation of a Telegram Premium giveaway. This boosts the chat 4 times for the duration of the corresponding Telegram Premium subscription.",
-          "html_description": "<p>The boost was obtained by the creation of a Telegram Premium giveaway. This boosts the chat 4 times for the duration of the corresponding Telegram Premium subscription.</p>",
-          "rst_description": "The boost was obtained by the creation of a Telegram Premium giveaway. This boosts the chat 4 times for the duration of the corresponding Telegram Premium subscription.",
+          "description": "The boost was obtained by the creation of a Telegram Premium or a Telegram Star giveaway. This boosts the chat 4 times for the duration of the corresponding Telegram Premium subscription for Telegram Premium giveaways and prize_star_count / 500 times for one year for Telegram Star giveaways.",
+          "html_description": "<p>The boost was obtained by the creation of a Telegram Premium or a Telegram Star giveaway. This boosts the chat 4 times for the duration of the corresponding Telegram Premium subscription for Telegram Premium giveaways and <em>prize_star_count</em> / 500 times for one year for Telegram Star giveaways.</p>",
+          "rst_description": "The boost was obtained by the creation of a Telegram Premium or a Telegram Star giveaway. This boosts the chat 4 times for the duration of the corresponding Telegram Premium subscription for Telegram Premium giveaways and *prize_star_count* / 500 times for one year for Telegram Star giveaways.",
           "annotations": [
             {
               "type": "String",
@@ -6817,10 +6874,18 @@
             },
             {
               "type": "User",
-              "description": "User that won the prize in the giveaway if any",
-              "html_description": "<td><em>Optional</em>. User that won the prize in the giveaway if any</td>",
-              "rst_description": "*Optional*. User that won the prize in the giveaway if any\n",
+              "description": "User that won the prize in the giveaway if any; for Telegram Premium giveaways only",
+              "html_description": "<td><em>Optional</em>. User that won the prize in the giveaway if any; for Telegram Premium giveaways only</td>",
+              "rst_description": "*Optional*. User that won the prize in the giveaway if any; for Telegram Premium giveaways only\n",
               "name": "user",
+              "required": false
+            },
+            {
+              "type": "Integer",
+              "description": "The number of Telegram Stars to be split between giveaway winners; for Telegram Star giveaways only",
+              "html_description": "<td><em>Optional</em>. The number of Telegram Stars to be split between giveaway winners; for Telegram Star giveaways only</td>",
+              "rst_description": "*Optional*. The number of Telegram Stars to be split between giveaway winners; for Telegram Star giveaways only\n",
+              "name": "prize_star_count",
               "required": false
             },
             {
@@ -8989,9 +9054,9 @@
             {
               "type": "Integer",
               "required": true,
-              "description": "The number of Telegram Stars that must be paid to buy access to the media",
-              "html_description": "<td>The number of Telegram Stars that must be paid to buy access to the media</td>",
-              "rst_description": "The number of Telegram Stars that must be paid to buy access to the media\n",
+              "description": "The number of Telegram Stars that must be paid to buy access to the media; 1-2500",
+              "html_description": "<td>The number of Telegram Stars that must be paid to buy access to the media; 1-2500</td>",
+              "rst_description": "The number of Telegram Stars that must be paid to buy access to the media; 1-2500\n",
               "name": "star_count"
             },
             {
@@ -9001,6 +9066,14 @@
               "html_description": "<td>A JSON-serialized array describing the media to be sent; up to 10 items</td>",
               "rst_description": "A JSON-serialized array describing the media to be sent; up to 10 items\n",
               "name": "media"
+            },
+            {
+              "type": "String",
+              "required": false,
+              "description": "Bot-defined paid media payload, 0-128 bytes. This will not be displayed to the user, use it for your internal processes.",
+              "html_description": "<td>Bot-defined paid media payload, 0-128 bytes. This will not be displayed to the user, use it for your internal processes.</td>",
+              "rst_description": "Bot-defined paid media payload, 0-128 bytes. This will not be displayed to the user, use it for your internal processes.\n",
+              "name": "payload"
             },
             {
               "type": "String",
@@ -15366,9 +15439,9 @@
             },
             {
               "type": "String",
-              "description": "Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use for your internal processes.",
-              "html_description": "<td>Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use for your internal processes.</td>",
-              "rst_description": "Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use for your internal processes.\n",
+              "description": "Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use it for your internal processes.",
+              "html_description": "<td>Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use it for your internal processes.</td>",
+              "rst_description": "Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use it for your internal processes.\n",
               "name": "payload",
               "required": true
             },
@@ -15654,9 +15727,9 @@
             {
               "type": "String",
               "required": true,
-              "description": "Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use for your internal processes.",
-              "html_description": "<td>Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use for your internal processes.</td>",
-              "rst_description": "Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use for your internal processes.\n",
+              "description": "Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use it for your internal processes.",
+              "html_description": "<td>Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use it for your internal processes.</td>",
+              "rst_description": "Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use it for your internal processes.\n",
               "name": "payload"
             },
             {
@@ -15872,9 +15945,9 @@
             {
               "type": "String",
               "required": true,
-              "description": "Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use for your internal processes.",
-              "html_description": "<td>Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use for your internal processes.</td>",
-              "rst_description": "Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use for your internal processes.\n",
+              "description": "Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use it for your internal processes.",
+              "html_description": "<td>Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use it for your internal processes.</td>",
+              "rst_description": "Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use it for your internal processes.\n",
               "name": "payload"
             },
             {
@@ -16579,6 +16652,32 @@
           "category": "types"
         },
         {
+          "anchor": "paidmediapurchased",
+          "name": "PaidMediaPurchased",
+          "description": "This object contains information about a paid media purchase.",
+          "html_description": "<p>This object contains information about a paid media purchase.</p>",
+          "rst_description": "This object contains information about a paid media purchase.",
+          "annotations": [
+            {
+              "type": "User",
+              "description": "User who purchased the media",
+              "html_description": "<td>User who purchased the media</td>",
+              "rst_description": "User who purchased the media\n",
+              "name": "from",
+              "required": true
+            },
+            {
+              "type": "String",
+              "description": "Bot-specified paid media payload",
+              "html_description": "<td>Bot-specified paid media payload</td>",
+              "rst_description": "Bot-specified paid media payload\n",
+              "name": "paid_media_payload",
+              "required": true
+            }
+          ],
+          "category": "types"
+        },
+        {
           "anchor": "revenuewithdrawalstate",
           "name": "RevenueWithdrawalState",
           "description": "This object describes the state of a revenue withdrawal operation. Currently, it can be one of\n - RevenueWithdrawalStatePending\n - RevenueWithdrawalStateSucceeded\n - RevenueWithdrawalStateFailed",
@@ -16703,6 +16802,14 @@
               "html_description": "<td><em>Optional</em>. Information about the paid media bought by the user</td>",
               "rst_description": "*Optional*. Information about the paid media bought by the user\n",
               "name": "paid_media",
+              "required": false
+            },
+            {
+              "type": "String",
+              "description": "Bot-specified paid media payload",
+              "html_description": "<td><em>Optional</em>. Bot-specified paid media payload</td>",
+              "rst_description": "*Optional*. Bot-specified paid media payload\n",
+              "name": "paid_media_payload",
               "required": false
             }
           ],

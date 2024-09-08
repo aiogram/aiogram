@@ -70,6 +70,9 @@ class Router:
             router=self, event_name="edited_business_message"
         )
         self.business_message = TelegramEventObserver(router=self, event_name="business_message")
+        self.purchased_paid_media = TelegramEventObserver(
+            router=self, event_name="purchased_paid_media"
+        )
 
         self.errors = self.error = TelegramEventObserver(router=self, event_name="error")
 
@@ -99,6 +102,7 @@ class Router:
             "business_connection": self.business_connection,
             "edited_business_message": self.edited_business_message,
             "business_message": self.business_message,
+            "purchased_paid_media": self.purchased_paid_media,
             "error": self.errors,
         }
 

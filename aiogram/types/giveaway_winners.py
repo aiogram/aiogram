@@ -29,8 +29,10 @@ class GiveawayWinners(TelegramObject):
     """List of up to 100 winners of the giveaway"""
     additional_chat_count: Optional[int] = None
     """*Optional*. The number of other chats the user had to join in order to be eligible for the giveaway"""
+    prize_star_count: Optional[int] = None
+    """*Optional*. The number of Telegram Stars that were split between giveaway winners; for Telegram Star giveaways only"""
     premium_subscription_month_count: Optional[int] = None
-    """*Optional*. The number of months the Telegram Premium subscription won from the giveaway will be active for"""
+    """*Optional*. The number of months the Telegram Premium subscription won from the giveaway will be active for; for Telegram Premium giveaways only"""
     unclaimed_prize_count: Optional[int] = None
     """*Optional*. Number of undistributed prizes"""
     only_new_members: Optional[bool] = None
@@ -53,6 +55,7 @@ class GiveawayWinners(TelegramObject):
             winner_count: int,
             winners: List[User],
             additional_chat_count: Optional[int] = None,
+            prize_star_count: Optional[int] = None,
             premium_subscription_month_count: Optional[int] = None,
             unclaimed_prize_count: Optional[int] = None,
             only_new_members: Optional[bool] = None,
@@ -71,6 +74,7 @@ class GiveawayWinners(TelegramObject):
                 winner_count=winner_count,
                 winners=winners,
                 additional_chat_count=additional_chat_count,
+                prize_star_count=prize_star_count,
                 premium_subscription_month_count=premium_subscription_month_count,
                 unclaimed_prize_count=unclaimed_prize_count,
                 only_new_members=only_new_members,

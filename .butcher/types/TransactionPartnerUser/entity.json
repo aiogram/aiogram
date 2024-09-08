@@ -42,6 +42,14 @@
         "rst_description": "*Optional*. Information about the paid media bought by the user\n",
         "name": "paid_media",
         "required": false
+      },
+      {
+        "type": "String",
+        "description": "Bot-specified paid media payload",
+        "html_description": "<td><em>Optional</em>. Bot-specified paid media payload</td>",
+        "rst_description": "*Optional*. Bot-specified paid media payload\n",
+        "name": "paid_media_payload",
+        "required": false
       }
     ],
     "category": "types"

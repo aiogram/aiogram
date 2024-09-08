@@ -212,6 +212,34 @@ Stickers
     sticker
     sticker_set
 
+Payments
+========
+
+.. toctree::
+    :maxdepth: 1
+
+    invoice
+    labeled_price
+    order_info
+    paid_media_purchased
+    pre_checkout_query
+    refunded_payment
+    revenue_withdrawal_state
+    revenue_withdrawal_state_failed
+    revenue_withdrawal_state_pending
+    revenue_withdrawal_state_succeeded
+    shipping_address
+    shipping_option
+    shipping_query
+    star_transaction
+    star_transactions
+    successful_payment
+    transaction_partner
+    transaction_partner_fragment
+    transaction_partner_other
+    transaction_partner_telegram_ads
+    transaction_partner_user
+
 Telegram Passport
 =================
 
@@ -232,33 +260,6 @@ Telegram Passport
     passport_element_error_translation_files
     passport_element_error_unspecified
     passport_file
-
-Payments
-========
-
-.. toctree::
-    :maxdepth: 1
-
-    invoice
-    labeled_price
-    order_info
-    pre_checkout_query
-    refunded_payment
-    revenue_withdrawal_state
-    revenue_withdrawal_state_failed
-    revenue_withdrawal_state_pending
-    revenue_withdrawal_state_succeeded
-    shipping_address
-    shipping_option
-    shipping_query
-    star_transaction
-    star_transactions
-    successful_payment
-    transaction_partner
-    transaction_partner_fragment
-    transaction_partner_other
-    transaction_partner_telegram_ads
-    transaction_partner_user
 
 Getting updates
 ===============

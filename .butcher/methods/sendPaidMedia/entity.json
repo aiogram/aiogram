@@ -30,9 +30,9 @@
       {
         "type": "Integer",
         "required": true,
-        "description": "The number of Telegram Stars that must be paid to buy access to the media",
-        "html_description": "<td>The number of Telegram Stars that must be paid to buy access to the media</td>",
-        "rst_description": "The number of Telegram Stars that must be paid to buy access to the media\n",
+        "description": "The number of Telegram Stars that must be paid to buy access to the media; 1-2500",
+        "html_description": "<td>The number of Telegram Stars that must be paid to buy access to the media; 1-2500</td>",
+        "rst_description": "The number of Telegram Stars that must be paid to buy access to the media; 1-2500\n",
         "name": "star_count"
       },
       {
@@ -42,6 +42,14 @@
         "html_description": "<td>A JSON-serialized array describing the media to be sent; up to 10 items</td>",
         "rst_description": "A JSON-serialized array describing the media to be sent; up to 10 items\n",
         "name": "media"
+      },
+      {
+        "type": "String",
+        "required": false,
+        "description": "Bot-defined paid media payload, 0-128 bytes. This will not be displayed to the user, use it for your internal processes.",
+        "html_description": "<td>Bot-defined paid media payload, 0-128 bytes. This will not be displayed to the user, use it for your internal processes.</td>",
+        "rst_description": "Bot-defined paid media payload, 0-128 bytes. This will not be displayed to the user, use it for your internal processes.\n",
+        "name": "payload"
       },
       {
         "type": "String",

@@ -1,0 +1,33 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Payments",
+    "anchor": "payments"
+  },
+  "object": {
+    "anchor": "paidmediapurchased",
+    "name": "PaidMediaPurchased",
+    "description": "This object contains information about a paid media purchase.",
+    "html_description": "<p>This object contains information about a paid media purchase.</p>",
+    "rst_description": "This object contains information about a paid media purchase.",
+    "annotations": [
+      {
+        "type": "User",
+        "description": "User who purchased the media",
+        "html_description": "<td>User who purchased the media</td>",
+        "rst_description": "User who purchased the media\n",
+        "name": "from",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Bot-specified paid media payload",
+        "html_description": "<td>Bot-specified paid media payload</td>",
+        "rst_description": "Bot-specified paid media payload\n",
+        "name": "paid_media_payload",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

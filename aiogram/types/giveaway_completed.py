@@ -21,6 +21,8 @@ class GiveawayCompleted(TelegramObject):
     """*Optional*. Number of undistributed prizes"""
     giveaway_message: Optional[Message] = None
     """*Optional*. Message with the giveaway that was completed, if it wasn't deleted"""
+    is_star_giveaway: Optional[bool] = None
+    """*Optional*. :code:`True`, if the giveaway is a Telegram Star giveaway. Otherwise, currently, the giveaway is a Telegram Premium giveaway."""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!
@@ -32,6 +34,7 @@ class GiveawayCompleted(TelegramObject):
             winner_count: int,
             unclaimed_prize_count: Optional[int] = None,
             giveaway_message: Optional[Message] = None,
+            is_star_giveaway: Optional[bool] = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!
@@ -42,5 +45,6 @@ class GiveawayCompleted(TelegramObject):
                 winner_count=winner_count,
                 unclaimed_prize_count=unclaimed_prize_count,
                 giveaway_message=giveaway_message,
+                is_star_giveaway=is_star_giveaway,
                 **__pydantic_kwargs,
             )

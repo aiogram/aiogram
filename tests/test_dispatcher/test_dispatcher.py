@@ -42,6 +42,7 @@ from aiogram.types import (
     ShippingQuery,
     Update,
     User,
+    PaidMediaPurchased,
 )
 from aiogram.types.error_event import ErrorEvent
 from tests.mocked_bot import MockedBot
@@ -584,6 +585,18 @@ class TestDispatcher:
                     ),
                 ),
                 True,
+                True,
+            ),
+            pytest.param(
+                "purchased_paid_media",
+                Update(
+                    update_id=42,
+                    purchased_paid_media=PaidMediaPurchased(
+                        paid_media_payload="payload",
+                        from_user=User(id=42, is_bot=False, first_name="Test"),
+                    ),
+                ),
+                False,
                 True,
             ),
         ],

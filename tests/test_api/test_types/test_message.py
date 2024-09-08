@@ -527,7 +527,7 @@ TEST_MESSAGE_GIVEAWAY_CREATED = Message(
     date=datetime.datetime.now(),
     chat=Chat(id=42, type="private"),
     from_user=None,
-    giveaway_created=GiveawayCreated(),
+    giveaway_created=GiveawayCreated(prize_star_count=42),
 )
 TEST_MESSAGE_GIVEAWAY_WINNERS = Message(
     message_id=42,
