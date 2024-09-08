@@ -87,17 +87,16 @@ test = [
     "pycryptodomex~=3.19.0",
 ]
 docs = [
-    "Sphinx~=7.2.6",
-    "sphinx-intl~=2.1.0",
-    "sphinx-autobuild~=2021.3.14",
+    "Sphinx~=8.0.2",
+    "sphinx-intl~=2.2.0",
+    "sphinx-autobuild~=2024.9.3",
     "sphinx-copybutton~=0.5.2",
-    "furo~=2023.9.10",
-    "Sphinx-Substitution-Extensions~=2022.2.16",
-    "towncrier~=24.7.1",
-    "pygments~=2.16.1",
+    "furo~=2024.8.6",
+    "Sphinx-Substitution-Extensions~=2024.8.6",
+    "towncrier~=24.8.0",
+    "pygments~=2.18.0",
     "pymdown-extensions~=10.3",
     "markdown-include~=0.8.1",
-    "Pygments~=2.16.1",
     "sphinxcontrib-towncrier~=0.4.0a0",
 ]
 dev = [
@@ -148,7 +147,7 @@ features = [
     "cli",
 ]
 [tool.hatch.envs.docs.scripts]
-serve = "sphinx-autobuild --watch aiogram/ --watch CHANGELOG.rst --watch README.rst docs/ docs/_build/ {args}"
+serve = "sphinx-autobuild --watch aiogram/ --watch CHANGES.rst --watch README.rst docs/ docs/_build/ {args}"
 
 [tool.hatch.envs.dev]
 python = "3.12"

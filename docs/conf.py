@@ -30,7 +30,7 @@ extensions = [
     "sphinx.ext.intersphinx",
     "sphinx_substitution_extensions",
     "sphinx_copybutton",
-    "sphinxcontrib.towncrier.ext",
+    # "sphinxcontrib.towncrier.ext",  # Temporary disabled due to bug in the extension https://github.com/sphinx-contrib/sphinxcontrib-towncrier/issues/92
 ]
 
 rst_prolog = f"""

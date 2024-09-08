@@ -84,7 +84,7 @@ docs-gettext:
 .PHONY: docs-gettext
 
 docs-serve:
-	hatch run docs:sphinx-autobuild --watch aiogram/ --watch CHANGELOG.rst --watch README.rst docs/ docs/_build/ $(OPTS)
+	hatch run docs:sphinx-autobuild --watch aiogram/ --watch CHANGES.rst --watch README.rst docs/ docs/_build/ $(OPTS)
 .PHONY: docs-serve
 
 $(locale_targets): docs-serve-%:
