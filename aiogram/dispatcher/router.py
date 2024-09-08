@@ -102,6 +102,7 @@ class Router:
             "business_connection": self.business_connection,
             "edited_business_message": self.edited_business_message,
             "business_message": self.business_message,
+            "purchased_paid_media": self.purchased_paid_media,
             "error": self.errors,
         }
 
