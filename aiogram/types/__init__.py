@@ -162,6 +162,7 @@ from .paid_media import PaidMedia
 from .paid_media_info import PaidMediaInfo
 from .paid_media_photo import PaidMediaPhoto
 from .paid_media_preview import PaidMediaPreview
+from .paid_media_purchased import PaidMediaPurchased
 from .paid_media_video import PaidMediaVideo
 from .passport_data import PassportData
 from .passport_element_error import PassportElementError
@@ -233,7 +234,6 @@ from .web_app_data import WebAppData
 from .web_app_info import WebAppInfo
 from .webhook_info import WebhookInfo
 from .write_access_allowed import WriteAccessAllowed
-from .paid_media_purchased import PaidMediaPurchased
 
 __all__ = (
     "Animation",
@@ -473,6 +473,8 @@ __all__ = (
     "WriteAccessAllowed",
 )
 
+from ..client.default import Default as _Default
+
 # Load typing forward refs for every TelegramObject
 for _entity_name in __all__:
     _entity = globals()[_entity_name]
@@ -484,6 +486,7 @@ for _entity_name in __all__:
             "Optional": Optional,
             "Union": Union,
             "Literal": Literal,
+            "Default": _Default,
             **{k: v for k, v in globals().items() if k in __all__},
         }
     )
