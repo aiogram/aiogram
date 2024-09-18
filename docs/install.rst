@@ -12,7 +12,7 @@ From PyPI
 From Arch Linux Repository
 --------------------------
 
-.. warning:: This package is outdated and not recommended for use. Please, use PyPI package.
+.. warning:: Package in this repository may be outdated. Use PyPI package for the latest version.
 
 .. code-block:: bash
 
