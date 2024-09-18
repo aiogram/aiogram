@@ -32,6 +32,7 @@ from aiogram.types import (
     Message,
     MessageReactionCountUpdated,
     MessageReactionUpdated,
+    PaidMediaPurchased,
     Poll,
     PollAnswer,
     PollOption,
@@ -42,7 +43,6 @@ from aiogram.types import (
     ShippingQuery,
     Update,
     User,
-    PaidMediaPurchased,
 )
 from aiogram.types.error_event import ErrorEvent
 from tests.mocked_bot import MockedBot

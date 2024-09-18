@@ -43,7 +43,8 @@ classifiers = [
 dependencies = [
     "magic-filter>=1.0.12,<1.1",
     "aiohttp>=3.9.0,<3.11",
-    "pydantic>=2.4.1,<2.10",
+    "pydantic>=2.4.1,<2.9; python_version < '3.9'",  # v2.9 breaks compatibility with Python 3.8 without any reason
+    "pydantic>=2.4.1,<2.10; python_version >= '3.9'",
     "aiofiles>=23.2.1,<24.2",
     "certifi>=2023.7.22",
     "typing-extensions>=4.7.0,<=5.0",
@@ -59,10 +60,10 @@ fast = [
     "aiodns>=3.0.0",
 ]
 redis = [
-    "redis[hiredis]~=5.0.1",
+    "redis[hiredis]>=5.0.1,<5.1.0",
 ]
 mongo = [
-    "motor~=3.3.2",
+    "motor>=3.3.2,<3.7.0",
 ]
 proxy = [
     "aiohttp-socks~=0.8.3",

@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Optional, cast
 
-from .base import TelegramObject
 from ..utils.mypy_hacks import lru_cache
+from .base import TelegramObject
 
 if TYPE_CHECKING:
     from .business_connection import BusinessConnection
@@ -18,11 +18,11 @@ if TYPE_CHECKING:
     from .message import Message
     from .message_reaction_count_updated import MessageReactionCountUpdated
     from .message_reaction_updated import MessageReactionUpdated
+    from .paid_media_purchased import PaidMediaPurchased
     from .poll import Poll
     from .poll_answer import PollAnswer
     from .pre_checkout_query import PreCheckoutQuery
     from .shipping_query import ShippingQuery
-    from .paid_media_purchased import PaidMediaPurchased
 
 
 class Update(TelegramObject):
