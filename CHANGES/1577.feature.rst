@@ -1,1 +1,0 @@
-Bump aiofiles version upper bound to <24.2

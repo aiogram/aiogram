@@ -1,1 +1,0 @@
-Fixed `Default` object annotation resolution using `pydantic`

@@ -1,1 +1,0 @@
-Increase max pydantic version support "<2.9" -> "<2.10"

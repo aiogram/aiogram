@@ -16,6 +16,32 @@ Changelog
 
 .. towncrier release notes start
 
+3.13.1 (2024-09-18)
+====================
+
+.. warning::
+
+    **Python 3.8 End of Life**: Python 3.8 will reach its end of life (EOL) soon and will no longer
+    be supported by aiogram in the next releases (1-2 months ETA).
+
+    Please upgrade to a newer version of Python to ensure compatibility and receive future updates.
+
+Misc
+----
+
+- Increase max pydantic version support "<2.9" -> "<2.10" (only For Python >=3.9)
+  `#1576 <https://github.com/aiogram/aiogram/issues/1576>`_
+- Bump aiofiles version upper bound to <24.2
+  `#1577 <https://github.com/aiogram/aiogram/issues/1577>`_
+
+
+Bugfixes
+--------
+
+- Fixed `Default` object annotation resolution using `pydantic`
+  `#1579 <https://github.com/aiogram/aiogram/issues/1579>`_
+
+
 3.13.0 (2024-09-08)
 ====================
 
