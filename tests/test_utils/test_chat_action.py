@@ -13,9 +13,10 @@ from tests.mocked_bot import MockedBot
 
 
 class TestChatActionSender:
-    async def test_wait(self, bot: Bot, event_loop: asyncio.BaseEventLoop):
+    async def test_wait(self, bot: Bot):
         sender = ChatActionSender.typing(bot=bot, chat_id=42)
-        event_loop.call_soon(sender._close_event.set)
+        loop = asyncio.get_running_loop()
+        loop.call_soon(sender._close_event.set)
         start = time.monotonic()
         await sender._wait(1)
         assert time.monotonic() - start < 1

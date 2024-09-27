@@ -1,0 +1,1 @@
+Fix PytestDeprecationWarning thrown by pytest-asyncio when running the tests
