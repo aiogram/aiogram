@@ -1628,3 +1628,37 @@ class TestSceneInheritance:
         assert parent_enter_action.callback is ParentScene.on_enter
         assert child_enter_action.callback is not ParentScene.on_enter
         assert child_enter_action.callback is ChildScene.on_enter
+
+    def test_override_non_function_handler_by_function(self):
+        class ParentScene(Scene):
+            do_exit = on.message(Command("exit"), after=After.exit)
+
+        class ChildScene1(ParentScene):
+            pass
+
+        class ChildScene2(ParentScene):
+            do_exit = on.message(Command("exit"), after=After.back)
+
+        class ChildScene3(ParentScene):
+            @on.message(Command("exit"), after=After.back)
+            async def do_exit(self, message: Message) -> None:
+                pass
+
+        assert len(ParentScene.__scene_config__.handlers) == 1
+        assert len(ChildScene1.__scene_config__.handlers) == 1
+        assert len(ChildScene2.__scene_config__.handlers) == 1
+        assert len(ChildScene3.__scene_config__.handlers) == 1
+
+        parent_handler = ParentScene.__scene_config__.handlers[0]
+        child_1_handler = ChildScene1.__scene_config__.handlers[0]
+        child_2_handler = ChildScene2.__scene_config__.handlers[0]
+        child_3_handler = ChildScene3.__scene_config__.handlers[0]
+
+        assert child_1_handler.handler is parent_handler.handler
+        assert child_1_handler.after == parent_handler.after
+        assert child_1_handler.handler is _empty_handler
+
+        assert child_2_handler.after != parent_handler.after
+        assert child_2_handler.handler is _empty_handler
+
+        assert child_3_handler.handler is not _empty_handler
