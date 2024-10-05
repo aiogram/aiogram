@@ -1,5 +1,4 @@
 import inspect
-import platform
 from datetime import datetime
 from unittest.mock import ANY, AsyncMock, patch
 
@@ -7,8 +6,9 @@ import pytest
 
 from aiogram import Dispatcher, F, Router
 from aiogram.dispatcher.event.bases import NextMiddlewareType
+from aiogram.enums import UpdateType
 from aiogram.exceptions import SceneException
-from aiogram.filters import StateFilter
+from aiogram.filters import Command, StateFilter
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.scene import (
     ActionContainer,
@@ -1545,3 +1545,86 @@ class TestSceneRegistry:
         assert isinstance(data["scenes"], ScenesManager)
         handler.assert_called_once_with(event, data)
         assert result == handler.return_value
+
+
+class TestSceneInheritance:
+    def test_inherit_handlers(self):
+        class ParentScene(Scene):
+            @on.message(Command("exit"))
+            async def command_exit(self, message: Message) -> None:
+                pass
+
+        class ChildScene(ParentScene):
+            pass
+
+        assert len(ParentScene.__scene_config__.handlers) == 1
+        assert len(ChildScene.__scene_config__.handlers) == 1
+
+        parent_command_handler = ParentScene.__scene_config__.handlers[0]
+        child_command_handler = ChildScene.__scene_config__.handlers[0]
+
+        assert parent_command_handler.handler is ParentScene.command_exit
+        assert child_command_handler.handler is ParentScene.command_exit
+
+    def test_override_handlers(self):
+        class ParentScene(Scene):
+            @on.message(Command("exit"))
+            async def command_exit(self, message: Message) -> int:
+                return 1
+
+        class ChildScene(ParentScene):
+            @on.message(Command("exit"))
+            async def command_exit(self, message: Message) -> int:
+                return 2
+
+        assert len(ParentScene.__scene_config__.handlers) == 1
+        assert len(ChildScene.__scene_config__.handlers) == 1
+
+        parent_command_handler = ParentScene.__scene_config__.handlers[0]
+        child_command_handler = ChildScene.__scene_config__.handlers[0]
+
+        assert parent_command_handler.handler is ParentScene.command_exit
+        assert child_command_handler.handler is not ParentScene.command_exit
+        assert child_command_handler.handler is ChildScene.command_exit
+
+    def test_inherit_actions(self):
+        class ParentScene(Scene):
+            @on.message.enter()
+            async def on_enter(self, message: Message) -> None:
+                pass
+
+        class ChildScene(ParentScene):
+            pass
+
+        parent_enter_action = ParentScene.__scene_config__.actions[SceneAction.enter][
+            UpdateType.MESSAGE
+        ]
+        child_enter_action = ChildScene.__scene_config__.actions[SceneAction.enter][
+            UpdateType.MESSAGE
+        ]
+
+        assert parent_enter_action.callback is ParentScene.on_enter
+        assert child_enter_action.callback is ParentScene.on_enter
+        assert child_enter_action.callback is ChildScene.on_enter
+
+    def test_override_actions(self):
+        class ParentScene(Scene):
+            @on.message.enter()
+            async def on_enter(self, message: Message) -> int:
+                return 1
+
+        class ChildScene(ParentScene):
+            @on.message.enter()
+            async def on_enter(self, message: Message) -> int:
+                return 2
+
+        parent_enter_action = ParentScene.__scene_config__.actions[SceneAction.enter][
+            UpdateType.MESSAGE
+        ]
+        child_enter_action = ChildScene.__scene_config__.actions[SceneAction.enter][
+            UpdateType.MESSAGE
+        ]
+
+        assert parent_enter_action.callback is ParentScene.on_enter
+        assert child_enter_action.callback is not ParentScene.on_enter
+        assert child_enter_action.callback is ChildScene.on_enter
