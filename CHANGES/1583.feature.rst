@@ -1,0 +1,5 @@
+Enhanced the inheritance of handlers and actions in :ref:`Scenes <Scenes>`.
+Refactored to eliminate the copying of previously connected handlers and actions from parent scenes.
+Now, handlers are dynamically rebuilt based on the current class, properly utilizing class inheritance and enabling handler overrides.
+
+That's mean that you can now override handlers and actions in the child scene, instead of copying and duplicating them.
