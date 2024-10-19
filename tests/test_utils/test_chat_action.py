@@ -96,13 +96,16 @@ class TestChatActionMiddleware:
             handler1 = flags.chat_action(value)(handler)
 
         middleware = ChatActionMiddleware()
-        with patch(
-            "aiogram.utils.chat_action.ChatActionSender._run",
-            new_callable=AsyncMock,
-        ) as mocked_run, patch(
-            "aiogram.utils.chat_action.ChatActionSender._stop",
-            new_callable=AsyncMock,
-        ) as mocked_stop:
+        with (
+            patch(
+                "aiogram.utils.chat_action.ChatActionSender._run",
+                new_callable=AsyncMock,
+            ) as mocked_run,
+            patch(
+                "aiogram.utils.chat_action.ChatActionSender._stop",
+                new_callable=AsyncMock,
+            ) as mocked_stop,
+        ):
             data = {"handler": HandlerObject(callback=handler1), "bot": bot}
             message = Message(
                 chat=Chat(id=42, type="private", title="Test"),
