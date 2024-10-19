@@ -1,0 +1,16 @@
+Checked compatibility with Python 3.13 (added to the CI/CD processes),
+so now aiogram is totally compatible with it.
+
+Dropped compatibility with Python 3.8 due to this version being `EOL <https://devguide.python.org/versions/>`_.
+
+.. warning::
+
+  In some cases you will need to have the installed compiler (Rust or C++)
+  to install some of the dependencies to compile packages from source on `pip install` command.
+
+  - If you are using Windows, you will need to have the `Visual Studio <https://visualstudio.microsoft.com/visual-cpp-build-tools/>`_ installed.
+  - If you are using Linux, you will need to have the `build-essential` package installed.
+  - If you are using macOS, you will need to have the `Xcode <https://developer.apple.com/xcode/>`_ installed.
+
+  When developers of this dependencies will release new versions with precompiled wheels for Windows, Linux and macOS,
+  this action will not be necessary anymore until the next version of the Python interpreter.
