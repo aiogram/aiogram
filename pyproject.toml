@@ -275,7 +275,7 @@ exclude_lines = [
 
 [tool.mypy]
 plugins = "pydantic.mypy"
-python_version = "3.8"
+python_version = "3.9"
 show_error_codes = true
 show_error_context = true
 pretty = true
