@@ -6,7 +6,7 @@ build-backend = "hatchling.build"
 name = "aiogram"
 description = 'Modern and fully asynchronous framework for Telegram Bot API'
 readme = "README.rst"
-requires-python = ">=3.8"
+requires-python = ">=3.9"
 license = "MIT"
 authors = [
     { name = "Alex Root Junior", email = "jroot.junior@gmail.com" },
@@ -30,11 +30,11 @@ classifiers = [
     "Typing :: Typed",
     "Intended Audience :: Developers",
     "Intended Audience :: System Administrators",
-    "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "Programming Language :: Python :: Implementation :: PyPy",
     "Topic :: Software Development :: Libraries :: Application Frameworks",
     "Topic :: Software Development :: Libraries :: Python Modules",
@@ -43,8 +43,7 @@ classifiers = [
 dependencies = [
     "magic-filter>=1.0.12,<1.1",
     "aiohttp>=3.9.0,<3.11",
-    "pydantic>=2.4.1,<2.9; python_version < '3.9'",  # v2.9 breaks compatibility with Python 3.8 without any reason
-    "pydantic>=2.4.1,<2.10; python_version >= '3.9'",
+    "pydantic>=2.4.1,<2.10",
     "aiofiles>=23.2.1,<24.2",
     "certifi>=2023.7.22",
     "typing-extensions>=4.7.0,<=5.0",
@@ -56,7 +55,8 @@ path = "aiogram/__meta__.py"
 
 [project.optional-dependencies]
 fast = [
-    "uvloop>=0.17.0; (sys_platform == 'darwin' or sys_platform == 'linux') and platform_python_implementation != 'PyPy'",
+    "uvloop>=0.17.0; (sys_platform == 'darwin' or sys_platform == 'linux') and platform_python_implementation != 'PyPy' and python_version < '3.13'",
+    "uvloop>=0.21.0; (sys_platform == 'darwin' or sys_platform == 'linux') and platform_python_implementation != 'PyPy' and python_version >= '3.13'",
     "aiodns>=3.0.0",
 ]
 redis = [
@@ -198,7 +198,7 @@ view-cov = "google-chrome-stable reports/py{matrix:python}/coverage/index.html"
 
 
 [[tool.hatch.envs.test.matrix]]
-python = ["38", "39", "310", "311", "312"]
+python = ["39", "310", "311", "312", "313"]
 
 [tool.ruff]
 line-length = 99
@@ -215,7 +215,7 @@ exclude = [
     "scripts",
     "*.egg-info",
 ]
-target-version = "py310"
+target-version = "py39"
 
 [tool.ruff.lint]
 select = [
@@ -275,7 +275,7 @@ exclude_lines = [
 
 [tool.mypy]
 plugins = "pydantic.mypy"
-python_version = "3.8"
+python_version = "3.9"
 show_error_codes = true
 show_error_context = true
 pretty = true
@@ -309,7 +309,7 @@ disallow_untyped_defs = true
 
 [tool.black]
 line-length = 99
-target-version = ['py38', 'py39', 'py310', 'py311']
+target-version = ['py39', 'py310', 'py311', 'py312', 'py313']
 exclude = '''
 (
     \.eggs
