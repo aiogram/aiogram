@@ -3520,7 +3520,6 @@ class Message(MaybeInaccessibleMessage):
     def edit_text(
         self,
         text: str,
-        business_connection_id: Optional[str] = None,
         inline_message_id: Optional[str] = None,
         parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
         entities: Optional[List[MessageEntity]] = None,
@@ -3539,13 +3538,13 @@ class Message(MaybeInaccessibleMessage):
 
         - :code:`chat_id`
         - :code:`message_id`
+        - :code:`business_connection_id`
 
         Use this method to edit text and `game <https://core.telegram.org/bots/api#games>`_ messages. On success, if the edited message is not an inline message, the edited :class:`aiogram.types.message.Message` is returned, otherwise :code:`True` is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within **48 hours** from the time they were sent.
 
         Source: https://core.telegram.org/bots/api#editmessagetext
 
         :param text: New text of the message, 1-4096 characters after entities parsing
-        :param business_connection_id: Unique identifier of the business connection on behalf of which the message to be edited was sent
         :param inline_message_id: Required if *chat_id* and *message_id* are not specified. Identifier of the inline message
         :param parse_mode: Mode for parsing entities in the message text. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.
         :param entities: A JSON-serialized list of special entities that appear in message text, which can be specified instead of *parse_mode*
@@ -3566,8 +3565,8 @@ class Message(MaybeInaccessibleMessage):
         return EditMessageText(
             chat_id=self.chat.id,
             message_id=self.message_id,
+            business_connection_id=self.business_connection_id,
             text=text,
-            business_connection_id=business_connection_id,
             inline_message_id=inline_message_id,
             parse_mode=parse_mode,
             entities=entities,
@@ -3630,7 +3629,6 @@ class Message(MaybeInaccessibleMessage):
             InputMediaPhoto,
             InputMediaVideo,
         ],
-        business_connection_id: Optional[str] = None,
         inline_message_id: Optional[str] = None,
         reply_markup: Optional[InlineKeyboardMarkup] = None,
         **kwargs: Any,
@@ -3641,13 +3639,13 @@ class Message(MaybeInaccessibleMessage):
 
         - :code:`chat_id`
         - :code:`message_id`
+        - :code:`business_connection_id`
 
         Use this method to edit animation, audio, document, photo, or video messages. If a message is part of a message album, then it can be edited only to an audio for audio albums, only to a document for document albums and to a photo or a video otherwise. When an inline message is edited, a new file can't be uploaded; use a previously uploaded file via its file_id or specify a URL. On success, if the edited message is not an inline message, the edited :class:`aiogram.types.message.Message` is returned, otherwise :code:`True` is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within **48 hours** from the time they were sent.
 
         Source: https://core.telegram.org/bots/api#editmessagemedia
 
         :param media: A JSON-serialized object for a new media content of the message
-        :param business_connection_id: Unique identifier of the business connection on behalf of which the message to be edited was sent
         :param inline_message_id: Required if *chat_id* and *message_id* are not specified. Identifier of the inline message
         :param reply_markup: A JSON-serialized object for a new `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_.
         :return: instance of method :class:`aiogram.methods.edit_message_media.EditMessageMedia`
@@ -3664,8 +3662,8 @@ class Message(MaybeInaccessibleMessage):
         return EditMessageMedia(
             chat_id=self.chat.id,
             message_id=self.message_id,
+            business_connection_id=self.business_connection_id,
             media=media,
-            business_connection_id=business_connection_id,
             inline_message_id=inline_message_id,
             reply_markup=reply_markup,
             **kwargs,
@@ -3673,7 +3671,6 @@ class Message(MaybeInaccessibleMessage):
 
     def edit_reply_markup(
         self,
-        business_connection_id: Optional[str] = None,
         inline_message_id: Optional[str] = None,
         reply_markup: Optional[InlineKeyboardMarkup] = None,
         **kwargs: Any,
@@ -3684,12 +3681,12 @@ class Message(MaybeInaccessibleMessage):
 
         - :code:`chat_id`
         - :code:`message_id`
+        - :code:`business_connection_id`
 
         Use this method to edit only the reply markup of messages. On success, if the edited message is not an inline message, the edited :class:`aiogram.types.message.Message` is returned, otherwise :code:`True` is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within **48 hours** from the time they were sent.
 
         Source: https://core.telegram.org/bots/api#editmessagereplymarkup
 
-        :param business_connection_id: Unique identifier of the business connection on behalf of which the message to be edited was sent
         :param inline_message_id: Required if *chat_id* and *message_id* are not specified. Identifier of the inline message
         :param reply_markup: A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_.
         :return: instance of method :class:`aiogram.methods.edit_message_reply_markup.EditMessageReplyMarkup`
@@ -3706,7 +3703,7 @@ class Message(MaybeInaccessibleMessage):
         return EditMessageReplyMarkup(
             chat_id=self.chat.id,
             message_id=self.message_id,
-            business_connection_id=business_connection_id,
+            business_connection_id=self.business_connection_id,
             inline_message_id=inline_message_id,
             reply_markup=reply_markup,
             **kwargs,
@@ -3714,7 +3711,6 @@ class Message(MaybeInaccessibleMessage):
 
     def delete_reply_markup(
         self,
-        business_connection_id: Optional[str] = None,
         inline_message_id: Optional[str] = None,
         **kwargs: Any,
     ) -> EditMessageReplyMarkup:
@@ -3724,13 +3720,13 @@ class Message(MaybeInaccessibleMessage):
 
         - :code:`chat_id`
         - :code:`message_id`
+        - :code:`business_connection_id`
         - :code:`reply_markup`
 
         Use this method to edit only the reply markup of messages. On success, if the edited message is not an inline message, the edited :class:`aiogram.types.message.Message` is returned, otherwise :code:`True` is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within **48 hours** from the time they were sent.
 
         Source: https://core.telegram.org/bots/api#editmessagereplymarkup
 
-        :param business_connection_id: Unique identifier of the business connection on behalf of which the message to be edited was sent
         :param inline_message_id: Required if *chat_id* and *message_id* are not specified. Identifier of the inline message
         :return: instance of method :class:`aiogram.methods.edit_message_reply_markup.EditMessageReplyMarkup`
         """
@@ -3746,8 +3742,8 @@ class Message(MaybeInaccessibleMessage):
         return EditMessageReplyMarkup(
             chat_id=self.chat.id,
             message_id=self.message_id,
+            business_connection_id=self.business_connection_id,
             reply_markup=None,
-            business_connection_id=business_connection_id,
             inline_message_id=inline_message_id,
             **kwargs,
         ).as_(self._bot)
@@ -3756,7 +3752,6 @@ class Message(MaybeInaccessibleMessage):
         self,
         latitude: float,
         longitude: float,
-        business_connection_id: Optional[str] = None,
         inline_message_id: Optional[str] = None,
         live_period: Optional[int] = None,
         horizontal_accuracy: Optional[float] = None,
@@ -3771,6 +3766,7 @@ class Message(MaybeInaccessibleMessage):
 
         - :code:`chat_id`
         - :code:`message_id`
+        - :code:`business_connection_id`
 
         Use this method to edit live location messages. A location can be edited until its *live_period* expires or editing is explicitly disabled by a call to :class:`aiogram.methods.stop_message_live_location.StopMessageLiveLocation`. On success, if the edited message is not an inline message, the edited :class:`aiogram.types.message.Message` is returned, otherwise :code:`True` is returned.
 
@@ -3778,7 +3774,6 @@ class Message(MaybeInaccessibleMessage):
 
         :param latitude: Latitude of new location
         :param longitude: Longitude of new location
-        :param business_connection_id: Unique identifier of the business connection on behalf of which the message to be edited was sent
         :param inline_message_id: Required if *chat_id* and *message_id* are not specified. Identifier of the inline message
         :param live_period: New period in seconds during which the location can be updated, starting from the message send date. If 0x7FFFFFFF is specified, then the location can be updated forever. Otherwise, the new value must not exceed the current *live_period* by more than a day, and the live location expiration date must remain within the next 90 days. If not specified, then *live_period* remains unchanged
         :param horizontal_accuracy: The radius of uncertainty for the location, measured in meters; 0-1500
@@ -3799,9 +3794,9 @@ class Message(MaybeInaccessibleMessage):
         return EditMessageLiveLocation(
             chat_id=self.chat.id,
             message_id=self.message_id,
+            business_connection_id=self.business_connection_id,
             latitude=latitude,
             longitude=longitude,
-            business_connection_id=business_connection_id,
             inline_message_id=inline_message_id,
             live_period=live_period,
             horizontal_accuracy=horizontal_accuracy,
@@ -3813,7 +3808,6 @@ class Message(MaybeInaccessibleMessage):
 
     def stop_live_location(
         self,
-        business_connection_id: Optional[str] = None,
         inline_message_id: Optional[str] = None,
         reply_markup: Optional[InlineKeyboardMarkup] = None,
         **kwargs: Any,
@@ -3824,12 +3818,12 @@ class Message(MaybeInaccessibleMessage):
 
         - :code:`chat_id`
         - :code:`message_id`
+        - :code:`business_connection_id`
 
         Use this method to stop updating a live location message before *live_period* expires. On success, if the message is not an inline message, the edited :class:`aiogram.types.message.Message` is returned, otherwise :code:`True` is returned.
 
         Source: https://core.telegram.org/bots/api#stopmessagelivelocation
 
-        :param business_connection_id: Unique identifier of the business connection on behalf of which the message to be edited was sent
         :param inline_message_id: Required if *chat_id* and *message_id* are not specified. Identifier of the inline message
         :param reply_markup: A JSON-serialized object for a new `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_.
         :return: instance of method :class:`aiogram.methods.stop_message_live_location.StopMessageLiveLocation`
@@ -3846,7 +3840,7 @@ class Message(MaybeInaccessibleMessage):
         return StopMessageLiveLocation(
             chat_id=self.chat.id,
             message_id=self.message_id,
-            business_connection_id=business_connection_id,
+            business_connection_id=self.business_connection_id,
             inline_message_id=inline_message_id,
             reply_markup=reply_markup,
             **kwargs,
@@ -3854,7 +3848,6 @@ class Message(MaybeInaccessibleMessage):
 
     def edit_caption(
         self,
-        business_connection_id: Optional[str] = None,
         inline_message_id: Optional[str] = None,
         caption: Optional[str] = None,
         parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
@@ -3871,12 +3864,12 @@ class Message(MaybeInaccessibleMessage):
 
         - :code:`chat_id`
         - :code:`message_id`
+        - :code:`business_connection_id`
 
         Use this method to edit captions of messages. On success, if the edited message is not an inline message, the edited :class:`aiogram.types.message.Message` is returned, otherwise :code:`True` is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within **48 hours** from the time they were sent.
 
         Source: https://core.telegram.org/bots/api#editmessagecaption
 
-        :param business_connection_id: Unique identifier of the business connection on behalf of which the message to be edited was sent
         :param inline_message_id: Required if *chat_id* and *message_id* are not specified. Identifier of the inline message
         :param caption: New caption of the message, 0-1024 characters after entities parsing
         :param parse_mode: Mode for parsing entities in the message caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.
@@ -3897,7 +3890,7 @@ class Message(MaybeInaccessibleMessage):
         return EditMessageCaption(
             chat_id=self.chat.id,
             message_id=self.message_id,
-            business_connection_id=business_connection_id,
+            business_connection_id=self.business_connection_id,
             inline_message_id=inline_message_id,
             caption=caption,
             parse_mode=parse_mode,
@@ -3917,6 +3910,7 @@ class Message(MaybeInaccessibleMessage):
 
         - :code:`chat_id`
         - :code:`message_id`
+        - :code:`business_connection_id`
 
         Use this method to delete a message, including service messages, with the following limitations:
 
@@ -3954,12 +3948,12 @@ class Message(MaybeInaccessibleMessage):
         return DeleteMessage(
             chat_id=self.chat.id,
             message_id=self.message_id,
+            business_connection_id=self.business_connection_id,
             **kwargs,
         ).as_(self._bot)
 
     def pin(
         self,
-        business_connection_id: Optional[str] = None,
         disable_notification: Optional[bool] = None,
         **kwargs: Any,
     ) -> PinChatMessage:
@@ -3969,12 +3963,12 @@ class Message(MaybeInaccessibleMessage):
 
         - :code:`chat_id`
         - :code:`message_id`
+        - :code:`business_connection_id`
 
         Use this method to add a message to the list of pinned messages in a chat. If the chat is not a private chat, the bot must be an administrator in the chat for this to work and must have the 'can_pin_messages' administrator right in a supergroup or 'can_edit_messages' administrator right in a channel. Returns :code:`True` on success.
 
         Source: https://core.telegram.org/bots/api#pinchatmessage
 
-        :param business_connection_id: Unique identifier of the business connection on behalf of which the message will be pinned
         :param disable_notification: Pass :code:`True` if it is not necessary to send a notification to all chat members about the new pinned message. Notifications are always disabled in channels and private chats.
         :return: instance of method :class:`aiogram.methods.pin_chat_message.PinChatMessage`
         """
@@ -3990,14 +3984,13 @@ class Message(MaybeInaccessibleMessage):
         return PinChatMessage(
             chat_id=self.chat.id,
             message_id=self.message_id,
-            business_connection_id=business_connection_id,
+            business_connection_id=self.business_connection_id,
             disable_notification=disable_notification,
             **kwargs,
         ).as_(self._bot)
 
     def unpin(
         self,
-        business_connection_id: Optional[str] = None,
         **kwargs: Any,
     ) -> UnpinChatMessage:
         """
@@ -4006,12 +3999,12 @@ class Message(MaybeInaccessibleMessage):
 
         - :code:`chat_id`
         - :code:`message_id`
+        - :code:`business_connection_id`
 
         Use this method to remove a message from the list of pinned messages in a chat. If the chat is not a private chat, the bot must be an administrator in the chat for this to work and must have the 'can_pin_messages' administrator right in a supergroup or 'can_edit_messages' administrator right in a channel. Returns :code:`True` on success.
 
         Source: https://core.telegram.org/bots/api#unpinchatmessage
 
-        :param business_connection_id: Unique identifier of the business connection on behalf of which the message will be unpinned
         :return: instance of method :class:`aiogram.methods.unpin_chat_message.UnpinChatMessage`
         """
         # DO NOT EDIT MANUALLY!!!
@@ -4026,7 +4019,7 @@ class Message(MaybeInaccessibleMessage):
         return UnpinChatMessage(
             chat_id=self.chat.id,
             message_id=self.message_id,
-            business_connection_id=business_connection_id,
+            business_connection_id=self.business_connection_id,
             **kwargs,
         ).as_(self._bot)
 
@@ -4073,6 +4066,7 @@ class Message(MaybeInaccessibleMessage):
 
         - :code:`chat_id`
         - :code:`message_id`
+        - :code:`business_connection_id`
 
         Use this method to change the chosen reactions on a message. Service messages can't be reacted to. Automatically forwarded messages from a channel to its discussion group have the same available reactions as messages in the channel. Bots can't use paid reactions. Returns :code:`True` on success.
 
@@ -4094,6 +4088,7 @@ class Message(MaybeInaccessibleMessage):
         return SetMessageReaction(
             chat_id=self.chat.id,
             message_id=self.message_id,
+            business_connection_id=self.business_connection_id,
             reaction=reaction,
             is_big=is_big,
             **kwargs,

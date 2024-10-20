@@ -223,6 +223,7 @@ edit_text:
   fill: &message-target
     chat_id: self.chat.id
     message_id: self.message_id
+    business_connection_id: self.business_connection_id
 
 edit_media:
   method: editMessageMedia
