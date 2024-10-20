@@ -20,6 +20,9 @@ class FSMContext:
     async def get_data(self) -> Dict[str, Any]:
         return await self.storage.get_data(key=self.key)
 
+    async def get_value(self, value: str) -> Any:
+        return await self.get_data()[value]
+
     async def update_data(
         self, data: Optional[Dict[str, Any]] = None, **kwargs: Any
     ) -> Dict[str, Any]:

@@ -1,0 +1,1 @@
+Added function **get_value** to **FSMContext** class method.
