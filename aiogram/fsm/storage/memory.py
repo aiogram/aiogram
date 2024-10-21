@@ -56,7 +56,9 @@ class MemoryStorage(BaseStorage):
     @overload
     async def get_value(self, storage_key: StorageKey, dict_key: str, default: Any) -> Any: ...
 
-    async def get_value(self, storage_key, dict_key: str, default=None):
+    async def get_value(
+        self, storage_key: StorageKey, dict_key: str, default: Optional[Any] = None
+    ) -> Optional[Any]:
         return copy(self.storage[storage_key].data.get(dict_key, default))
 
 

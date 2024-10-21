@@ -21,12 +21,12 @@ class FSMContext:
         return await self.storage.get_data(key=self.key)
 
     @overload
-    async def get_value(self, key: str) -> Any | None: ...
+    async def get_value(self, key: str) -> Optional[Any]: ...
 
     @overload
     async def get_value(self, key: str, default: Any) -> Any: ...
 
-    async def get_value(self, key, default=None):
+    async def get_value(self, key: str, default: Optional[Any] = None) -> Optional[Any]:
         return await self.storage.get_value(storage_key=self.key, dict_key=key, default=default)
 
     async def update_data(

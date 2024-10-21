@@ -121,7 +121,9 @@ class MongoStorage(BaseStorage):
     @overload
     async def get_value(self, storage_key: StorageKey, dict_key: str, default: Any) -> Any: ...
 
-    async def get_value(self, storage_key, dict_key, default=None):
+    async def get_value(
+        self, storage_key: StorageKey, dict_key: str, default: Optional[Any] = None
+    ) -> Optional[Any]:
         return (await self.get_data(storage_key)).get(dict_key, default)
 
     async def update_data(self, key: StorageKey, data: Dict[str, Any]) -> Dict[str, Any]:

@@ -145,7 +145,6 @@ class BaseStorage(ABC):
         pass
 
     @overload
-    @abstractmethod
     async def get_value(self, storage_key: StorageKey, dict_key: str) -> Optional[Any]:
         """
         Get single value from data by key
@@ -157,7 +156,6 @@ class BaseStorage(ABC):
         pass
 
     @overload
-    @abstractmethod
     async def get_value(self, storage_key: StorageKey, dict_key: str, default: Any) -> Any:
         """
         Get single value from data by key
@@ -168,6 +166,11 @@ class BaseStorage(ABC):
         :return: value stored in key of dict or default
         """
         pass
+
+    @abstractmethod
+    async def get_value(
+        self, storage_key: StorageKey, dict_key: str, default: Optional[Any] = None
+    ) -> Optional[Any]: ...
 
     async def update_data(self, key: StorageKey, data: Dict[str, Any]) -> Dict[str, Any]:
         """

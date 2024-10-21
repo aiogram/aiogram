@@ -595,7 +595,7 @@ class SceneWizard:
         """
         pass
 
-    async def get_value(self, key, default=None):
+    async def get_value(self, key: str, default: Optional[Any] = None) -> Optional[Any]:
         return await self.state.get_value(key, default)
 
     async def update_data(
