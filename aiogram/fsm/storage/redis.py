@@ -1,12 +1,13 @@
 import json
 from contextlib import asynccontextmanager
-from typing import Any, AsyncGenerator, Callable, Dict, Optional, cast
+from typing import Any, AsyncGenerator, Callable, Dict, Optional, cast, overload
 
 from redis.asyncio.client import Redis
 from redis.asyncio.connection import ConnectionPool
 from redis.asyncio.lock import Lock
 from redis.typing import ExpiryT
 
+from aiogram.fsm import storage
 from aiogram.fsm.state import State
 from aiogram.fsm.storage.base import (
     BaseEventIsolation,
@@ -126,6 +127,19 @@ class RedisStorage(BaseStorage):
         if isinstance(value, bytes):
             value = value.decode("utf-8")
         return cast(Dict[str, Any], self.json_loads(value))
+
+    @overload
+    async def get_value(
+        self,
+        storage_key: StorageKey,
+        dict_key: str,
+    ) -> Optional[Any]: ...
+
+    @overload
+    async def get_value(self, storage_key: StorageKey, dict_key: str, default: Any) -> Any: ...
+
+    async def get_value(self, storage_key, dict_key, default=None):
+        return (await self.get_data(storage_key)).get(dict_key, default)
 
 
 class RedisEventIsolation(BaseEventIsolation):
