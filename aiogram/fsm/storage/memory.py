@@ -59,7 +59,8 @@ class MemoryStorage(BaseStorage):
     async def get_value(
         self, storage_key: StorageKey, dict_key: str, default: Optional[Any] = None
     ) -> Optional[Any]:
-        return copy(self.storage[storage_key].data.get(dict_key, default))
+        data = self.storage[storage_key].data
+        return copy(data.get(dict_key, default))
 
 
 class DisabledEventIsolation(BaseEventIsolation):

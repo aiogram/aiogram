@@ -124,7 +124,8 @@ class MongoStorage(BaseStorage):
     async def get_value(
         self, storage_key: StorageKey, dict_key: str, default: Optional[Any] = None
     ) -> Optional[Any]:
-        return (await self.get_data(storage_key)).get(dict_key, default)
+        data = await self.get_data(storage_key)
+        return data.get(dict_key, default)
 
     async def update_data(self, key: StorageKey, data: Dict[str, Any]) -> Dict[str, Any]:
         document_id = self._key_builder.build(key)
