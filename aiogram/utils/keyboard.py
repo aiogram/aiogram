@@ -152,7 +152,7 @@ class KeyboardBuilder(Generic[ButtonType], ABC):
 
         .. code-block:: python
 
-            >>> builder = KeyboardBuilder(button_type=InlineKeyboardButton)
+            >>> builder = InlineKeyboardBuilder(button_type=InlineKeyboardButton)
             >>> ... # Add buttons to builder
             >>> markup = InlineKeyboardMarkup(inline_keyboard=builder.export())
 
