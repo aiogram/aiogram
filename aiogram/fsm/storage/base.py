@@ -167,10 +167,11 @@ class BaseStorage(ABC):
         """
         pass
 
-    @abstractmethod
     async def get_value(
         self, storage_key: StorageKey, dict_key: str, default: Optional[Any] = None
-    ) -> Optional[Any]: ...
+    ) -> Optional[Any]:
+        data = await self.get_data(storage_key)
+        return data.get(dict_key, default)
 
     async def update_data(self, key: StorageKey, data: Dict[str, Any]) -> Dict[str, Any]:
         """

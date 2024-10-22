@@ -1,4 +1,4 @@
-from typing import Any, Dict, Optional, cast, overload
+from typing import Any, Dict, Optional, cast
 
 from motor.motor_asyncio import AsyncIOMotorClient
 
@@ -114,18 +114,6 @@ class MongoStorage(BaseStorage):
         if document is None or not document.get("data"):
             return {}
         return cast(Dict[str, Any], document["data"])
-
-    @overload
-    async def get_value(self, storage_key: StorageKey, dict_key: str) -> Optional[Any]: ...
-
-    @overload
-    async def get_value(self, storage_key: StorageKey, dict_key: str, default: Any) -> Any: ...
-
-    async def get_value(
-        self, storage_key: StorageKey, dict_key: str, default: Optional[Any] = None
-    ) -> Optional[Any]:
-        data = await self.get_data(storage_key)
-        return data.get(dict_key, default)
 
     async def update_data(self, key: StorageKey, data: Dict[str, Any]) -> Dict[str, Any]:
         document_id = self._key_builder.build(key)
