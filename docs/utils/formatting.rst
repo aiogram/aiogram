@@ -28,7 +28,7 @@ Is the same as the next example, but without usage markup
 .. code-block:: python
 
     await message.answer(
-        text=f"Hello, <b>{html.quote(message.from_user.full_name)}!",
+        text=f"Hello, <b>{html.quote(message.from_user.full_name)}</b>!",
         parse_mode=ParseMode.HTML
     )
 
