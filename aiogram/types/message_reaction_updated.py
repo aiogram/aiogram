@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, List, Optional, Union
+from typing import TYPE_CHECKING, Any, Optional, Union
 
 from .base import TelegramObject
 
@@ -26,9 +26,9 @@ class MessageReactionUpdated(TelegramObject):
     """Unique identifier of the message inside the chat"""
     date: DateTime
     """Date of the change in Unix time"""
-    old_reaction: List[Union[ReactionTypeEmoji, ReactionTypeCustomEmoji, ReactionTypePaid]]
+    old_reaction: list[Union[ReactionTypeEmoji, ReactionTypeCustomEmoji, ReactionTypePaid]]
     """Previous list of reaction types that were set by the user"""
-    new_reaction: List[Union[ReactionTypeEmoji, ReactionTypeCustomEmoji, ReactionTypePaid]]
+    new_reaction: list[Union[ReactionTypeEmoji, ReactionTypeCustomEmoji, ReactionTypePaid]]
     """New list of reaction types that have been set by the user"""
     user: Optional[User] = None
     """*Optional*. The user that changed the reaction, if the user isn't anonymous"""
@@ -45,10 +45,10 @@ class MessageReactionUpdated(TelegramObject):
             chat: Chat,
             message_id: int,
             date: DateTime,
-            old_reaction: List[
+            old_reaction: list[
                 Union[ReactionTypeEmoji, ReactionTypeCustomEmoji, ReactionTypePaid]
             ],
-            new_reaction: List[
+            new_reaction: list[
                 Union[ReactionTypeEmoji, ReactionTypeCustomEmoji, ReactionTypePaid]
             ],
             user: Optional[User] = None,

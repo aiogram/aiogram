@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, List
+from typing import TYPE_CHECKING, Any
 
 from .base import TelegramMethod
 
@@ -17,7 +17,7 @@ class SetStickerEmojiList(TelegramMethod[bool]):
 
     sticker: str
     """File identifier of the sticker"""
-    emoji_list: List[str]
+    emoji_list: list[str]
     """A JSON-serialized list of 1-20 emoji associated with the sticker"""
 
     if TYPE_CHECKING:
@@ -25,7 +25,7 @@ class SetStickerEmojiList(TelegramMethod[bool]):
         # This section was auto-generated via `butcher`
 
         def __init__(
-            __pydantic__self__, *, sticker: str, emoji_list: List[str], **__pydantic_kwargs: Any
+            __pydantic__self__, *, sticker: str, emoji_list: list[str], **__pydantic_kwargs: Any
         ) -> None:
             # DO NOT EDIT MANUALLY!!!
             # This method was auto-generated via `butcher`

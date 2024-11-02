@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, List, Optional
+from typing import TYPE_CHECKING, Any, Optional
 
 from pydantic import Field
 
@@ -24,7 +24,7 @@ class StickerSet(TelegramObject):
     """Sticker set title"""
     sticker_type: str
     """Type of stickers in the set, currently one of 'regular', 'mask', 'custom_emoji'"""
-    stickers: List[Sticker]
+    stickers: list[Sticker]
     """List of all set stickers"""
     thumbnail: Optional[PhotoSize] = None
     """*Optional*. Sticker set thumbnail in the .WEBP, .TGS, or .WEBM format"""
@@ -49,7 +49,7 @@ class StickerSet(TelegramObject):
             name: str,
             title: str,
             sticker_type: str,
-            stickers: List[Sticker],
+            stickers: list[Sticker],
             thumbnail: Optional[PhotoSize] = None,
             is_animated: Optional[bool] = None,
             is_video: Optional[bool] = None,

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, List, Optional
+from typing import TYPE_CHECKING, Any, Optional
 
 from .base import TelegramMethod
 
@@ -17,7 +17,7 @@ class SetStickerKeywords(TelegramMethod[bool]):
 
     sticker: str
     """File identifier of the sticker"""
-    keywords: Optional[List[str]] = None
+    keywords: Optional[list[str]] = None
     """A JSON-serialized list of 0-20 search keywords for the sticker with total length of up to 64 characters"""
 
     if TYPE_CHECKING:
@@ -28,7 +28,7 @@ class SetStickerKeywords(TelegramMethod[bool]):
             __pydantic__self__,
             *,
             sticker: str,
-            keywords: Optional[List[str]] = None,
+            keywords: Optional[list[str]] = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

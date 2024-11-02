@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, List, Literal
+from typing import TYPE_CHECKING, Any, Literal
 
 from ..enums import PaidMediaType
 from .paid_media import PaidMedia
@@ -18,7 +18,7 @@ class PaidMediaPhoto(PaidMedia):
 
     type: Literal[PaidMediaType.PHOTO] = PaidMediaType.PHOTO
     """Type of the paid media, always 'photo'"""
-    photo: List[PhotoSize]
+    photo: list[PhotoSize]
     """The photo"""
 
     if TYPE_CHECKING:
@@ -29,7 +29,7 @@ class PaidMediaPhoto(PaidMedia):
             __pydantic__self__,
             *,
             type: Literal[PaidMediaType.PHOTO] = PaidMediaType.PHOTO,
-            photo: List[PhotoSize],
+            photo: list[PhotoSize],
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

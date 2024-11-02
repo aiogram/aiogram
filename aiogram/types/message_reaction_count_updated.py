@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, List
+from typing import TYPE_CHECKING, Any
 
 from .base import TelegramObject
 
@@ -23,7 +23,7 @@ class MessageReactionCountUpdated(TelegramObject):
     """Unique message identifier inside the chat"""
     date: DateTime
     """Date of the change in Unix time"""
-    reactions: List[ReactionCount]
+    reactions: list[ReactionCount]
     """List of reactions that are present on the message"""
 
     if TYPE_CHECKING:
@@ -36,7 +36,7 @@ class MessageReactionCountUpdated(TelegramObject):
             chat: Chat,
             message_id: int,
             date: DateTime,
-            reactions: List[ReactionCount],
+            reactions: list[ReactionCount],
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

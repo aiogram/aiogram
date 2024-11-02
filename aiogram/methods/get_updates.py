@@ -1,12 +1,12 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, List, Optional
+from typing import TYPE_CHECKING, Any, Optional
 
 from ..types import Update
 from .base import TelegramMethod
 
 
-class GetUpdates(TelegramMethod[List[Update]]):
+class GetUpdates(TelegramMethod[list[Update]]):
     """
     Use this method to receive incoming updates using long polling (`wiki <https://en.wikipedia.org/wiki/Push_technology#Long_polling>`_). Returns an Array of :class:`aiogram.types.update.Update` objects.
 
@@ -19,7 +19,7 @@ class GetUpdates(TelegramMethod[List[Update]]):
     Source: https://core.telegram.org/bots/api#getupdates
     """
 
-    __returning__ = List[Update]
+    __returning__ = list[Update]
     __api_method__ = "getUpdates"
 
     offset: Optional[int] = None
@@ -28,7 +28,7 @@ class GetUpdates(TelegramMethod[List[Update]]):
     """Limits the number of updates to be retrieved. Values between 1-100 are accepted. Defaults to 100."""
     timeout: Optional[int] = None
     """Timeout in seconds for long polling. Defaults to 0, i.e. usual short polling. Should be positive, short polling should be used for testing purposes only."""
-    allowed_updates: Optional[List[str]] = None
+    allowed_updates: Optional[list[str]] = None
     """A JSON-serialized list of the update types you want your bot to receive. For example, specify :code:`["message", "edited_channel_post", "callback_query"]` to only receive updates of these types. See :class:`aiogram.types.update.Update` for a complete list of available update types. Specify an empty list to receive all update types except *chat_member*, *message_reaction*, and *message_reaction_count* (default). If not specified, the previous setting will be used."""
 
     if TYPE_CHECKING:
@@ -41,7 +41,7 @@ class GetUpdates(TelegramMethod[List[Update]]):
             offset: Optional[int] = None,
             limit: Optional[int] = None,
             timeout: Optional[int] = None,
-            allowed_updates: Optional[List[str]] = None,
+            allowed_updates: Optional[list[str]] = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

@@ -37,7 +37,7 @@ class EditMessageText(TelegramMethod[Union[Message, bool]]):
     """Required if *chat_id* and *message_id* are not specified. Identifier of the inline message"""
     parse_mode: Optional[Union[str, Default]] = Default("parse_mode")
     """Mode for parsing entities in the message text. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details."""
-    entities: Optional[List[MessageEntity]] = None
+    entities: Optional[list[MessageEntity]] = None
     """A JSON-serialized list of special entities that appear in message text, which can be specified instead of *parse_mode*"""
     link_preview_options: Optional[Union[LinkPreviewOptions, Default]] = Default("link_preview")
     """Link preview generation options for the message"""
@@ -64,7 +64,7 @@ class EditMessageText(TelegramMethod[Union[Message, bool]]):
             message_id: Optional[int] = None,
             inline_message_id: Optional[str] = None,
             parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
-            entities: Optional[List[MessageEntity]] = None,
+            entities: Optional[list[MessageEntity]] = None,
             link_preview_options: Optional[Union[LinkPreviewOptions, Default]] = Default(
                 "link_preview"
             ),

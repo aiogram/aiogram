@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, List, Optional
+from typing import TYPE_CHECKING, Any, Optional
 
 from .base import TelegramObject
 from .custom import DateTime
@@ -29,7 +29,7 @@ class WebhookInfo(TelegramObject):
     """*Optional*. Unix time of the most recent error that happened when trying to synchronize available updates with Telegram datacenters"""
     max_connections: Optional[int] = None
     """*Optional*. The maximum allowed number of simultaneous HTTPS connections to the webhook for update delivery"""
-    allowed_updates: Optional[List[str]] = None
+    allowed_updates: Optional[list[str]] = None
     """*Optional*. A list of update types the bot is subscribed to. Defaults to all update types except *chat_member*"""
 
     if TYPE_CHECKING:
@@ -47,7 +47,7 @@ class WebhookInfo(TelegramObject):
             last_error_message: Optional[str] = None,
             last_synchronization_error_date: Optional[DateTime] = None,
             max_connections: Optional[int] = None,
-            allowed_updates: Optional[List[str]] = None,
+            allowed_updates: Optional[list[str]] = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

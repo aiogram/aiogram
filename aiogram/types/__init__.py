@@ -63,6 +63,7 @@ from .chat_photo import ChatPhoto
 from .chat_shared import ChatShared
 from .chosen_inline_result import ChosenInlineResult
 from .contact import Contact
+from .copy_text_button import CopyTextButton
 from .custom import DateTime
 from .dice import Dice
 from .document import Document
@@ -215,6 +216,7 @@ from .transaction_partner import TransactionPartner
 from .transaction_partner_fragment import TransactionPartnerFragment
 from .transaction_partner_other import TransactionPartnerOther
 from .transaction_partner_telegram_ads import TransactionPartnerTelegramAds
+from .transaction_partner_telegram_api import TransactionPartnerTelegramApi
 from .transaction_partner_user import TransactionPartnerUser
 from .update import Update
 from .user import User
@@ -298,6 +300,7 @@ __all__ = (
     "ChosenInlineResult",
     "Contact",
     "ContentType",
+    "CopyTextButton",
     "DateTime",
     "Dice",
     "Document",
@@ -450,6 +453,7 @@ __all__ = (
     "TransactionPartnerFragment",
     "TransactionPartnerOther",
     "TransactionPartnerTelegramAds",
+    "TransactionPartnerTelegramApi",
     "TransactionPartnerUser",
     "UNSET_PARSE_MODE",
     "URLInputFile",

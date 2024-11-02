@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, List, Union
+from typing import TYPE_CHECKING, Any, Union
 
 from ..types import (
     ChatMemberAdministrator,
@@ -15,7 +15,7 @@ from .base import TelegramMethod
 
 class GetChatAdministrators(
     TelegramMethod[
-        List[
+        list[
             Union[
                 ChatMemberOwner,
                 ChatMemberAdministrator,
@@ -33,7 +33,7 @@ class GetChatAdministrators(
     Source: https://core.telegram.org/bots/api#getchatadministrators
     """
 
-    __returning__ = List[
+    __returning__ = list[
         Union[
             ChatMemberOwner,
             ChatMemberAdministrator,

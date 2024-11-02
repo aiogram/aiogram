@@ -2,7 +2,7 @@
 copyMessages
 ############
 
-Returns: :obj:`List[MessageId]`
+Returns: :obj:`list[MessageId]`
 
 .. automodule:: aiogram.methods.copy_messages
     :members:
@@ -19,7 +19,7 @@ As bot method
 
 .. code-block::
 
-    result: List[MessageId] = await bot.copy_messages(...)
+    result: list[MessageId] = await bot.copy_messages(...)
 
 
 Method as object
@@ -35,7 +35,7 @@ With specific bot
 
 .. code-block:: python
 
-    result: List[MessageId] = await bot(CopyMessages(...))
+    result: list[MessageId] = await bot(CopyMessages(...))
 
 As reply into Webhook in handler
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

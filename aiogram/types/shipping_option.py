@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, List
+from typing import TYPE_CHECKING, Any
 
 from .base import TelegramObject
 
@@ -19,7 +19,7 @@ class ShippingOption(TelegramObject):
     """Shipping option identifier"""
     title: str
     """Option title"""
-    prices: List[LabeledPrice]
+    prices: list[LabeledPrice]
     """List of price portions"""
 
     if TYPE_CHECKING:
@@ -31,7 +31,7 @@ class ShippingOption(TelegramObject):
             *,
             id: str,
             title: str,
-            prices: List[LabeledPrice],
+            prices: list[LabeledPrice],
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

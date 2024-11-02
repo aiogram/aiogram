@@ -9,6 +9,7 @@ if TYPE_CHECKING:
     from .transaction_partner_fragment import TransactionPartnerFragment
     from .transaction_partner_other import TransactionPartnerOther
     from .transaction_partner_telegram_ads import TransactionPartnerTelegramAds
+    from .transaction_partner_telegram_api import TransactionPartnerTelegramApi
     from .transaction_partner_user import TransactionPartnerUser
 
 
@@ -20,7 +21,7 @@ class StarTransaction(TelegramObject):
     """
 
     id: str
-    """Unique identifier of the transaction. Coincides with the identifer of the original transaction for refund transactions. Coincides with *SuccessfulPayment.telegram_payment_charge_id* for successful incoming payments from users."""
+    """Unique identifier of the transaction. Coincides with the identifier of the original transaction for refund transactions. Coincides with *SuccessfulPayment.telegram_payment_charge_id* for successful incoming payments from users."""
     amount: int
     """Number of Telegram Stars transferred by the transaction"""
     date: DateTime
@@ -30,6 +31,7 @@ class StarTransaction(TelegramObject):
             TransactionPartnerUser,
             TransactionPartnerFragment,
             TransactionPartnerTelegramAds,
+            TransactionPartnerTelegramApi,
             TransactionPartnerOther,
         ]
     ] = None
@@ -39,6 +41,7 @@ class StarTransaction(TelegramObject):
             TransactionPartnerUser,
             TransactionPartnerFragment,
             TransactionPartnerTelegramAds,
+            TransactionPartnerTelegramApi,
             TransactionPartnerOther,
         ]
     ] = None
@@ -59,6 +62,7 @@ class StarTransaction(TelegramObject):
                     TransactionPartnerUser,
                     TransactionPartnerFragment,
                     TransactionPartnerTelegramAds,
+                    TransactionPartnerTelegramApi,
                     TransactionPartnerOther,
                 ]
             ] = None,
@@ -67,6 +71,7 @@ class StarTransaction(TelegramObject):
                     TransactionPartnerUser,
                     TransactionPartnerFragment,
                     TransactionPartnerTelegramAds,
+                    TransactionPartnerTelegramApi,
                     TransactionPartnerOther,
                 ]
             ] = None,

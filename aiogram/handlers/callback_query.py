@@ -2,7 +2,7 @@ from abc import ABC
 from typing import Optional
 
 from aiogram.handlers import BaseHandler
-from aiogram.types import CallbackQuery, MaybeInaccessibleMessage, Message, User
+from aiogram.types import CallbackQuery, MaybeInaccessibleMessage, User
 
 
 class CallbackQueryHandler(BaseHandler[CallbackQuery], ABC):

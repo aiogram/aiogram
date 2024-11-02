@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Any, List, Union
+from typing import TYPE_CHECKING, Any, Union
 
 from .base import TelegramMethod
 
@@ -15,7 +15,7 @@ class DeleteMessages(TelegramMethod[bool]):
 
     chat_id: Union[int, str]
     """Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)"""
-    message_ids: List[int]
+    message_ids: list[int]
     """A JSON-serialized list of 1-100 identifiers of messages to delete. See :class:`aiogram.methods.delete_message.DeleteMessage` for limitations on which messages can be deleted"""
 
     if TYPE_CHECKING:
@@ -26,7 +26,7 @@ class DeleteMessages(TelegramMethod[bool]):
             __pydantic__self__,
             *,
             chat_id: Union[int, str],
-            message_ids: List[int],
+            message_ids: list[int],
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

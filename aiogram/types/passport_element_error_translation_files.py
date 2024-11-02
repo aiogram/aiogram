@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, List, Literal
+from typing import TYPE_CHECKING, Any, Literal
 
 from ..enums import PassportElementErrorType
 from .passport_element_error import PassportElementError
@@ -19,7 +19,7 @@ class PassportElementErrorTranslationFiles(PassportElementError):
     """Error source, must be *translation_files*"""
     type: str
     """Type of element of the user's Telegram Passport which has the issue, one of 'passport', 'driver_license', 'identity_card', 'internal_passport', 'utility_bill', 'bank_statement', 'rental_agreement', 'passport_registration', 'temporary_registration'"""
-    file_hashes: List[str]
+    file_hashes: list[str]
     """List of base64-encoded file hashes"""
     message: str
     """Error message"""
@@ -35,7 +35,7 @@ class PassportElementErrorTranslationFiles(PassportElementError):
                 PassportElementErrorType.TRANSLATION_FILES
             ] = PassportElementErrorType.TRANSLATION_FILES,
             type: str,
-            file_hashes: List[str],
+            file_hashes: list[str],
             message: str,
             **__pydantic_kwargs: Any,
         ) -> None:

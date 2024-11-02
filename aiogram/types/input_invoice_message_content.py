@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, List, Optional
+from typing import TYPE_CHECKING, Any, Optional
 
 from .input_message_content import InputMessageContent
 
@@ -23,13 +23,13 @@ class InputInvoiceMessageContent(InputMessageContent):
     """Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use it for your internal processes."""
     currency: str
     """Three-letter ISO 4217 currency code, see `more on currencies <https://core.telegram.org/bots/payments#supported-currencies>`_. Pass 'XTR' for payments in `Telegram Stars <https://t.me/BotNews/90>`_."""
-    prices: List[LabeledPrice]
+    prices: list[LabeledPrice]
     """Price breakdown, a JSON-serialized list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.). Must contain exactly one item for payments in `Telegram Stars <https://t.me/BotNews/90>`_."""
     provider_token: Optional[str] = None
     """*Optional*. Payment provider token, obtained via `@BotFather <https://t.me/botfather>`_. Pass an empty string for payments in `Telegram Stars <https://t.me/BotNews/90>`_."""
     max_tip_amount: Optional[int] = None
     """*Optional*. The maximum accepted amount for tips in the *smallest units* of the currency (integer, **not** float/double). For example, for a maximum tip of :code:`US$ 1.45` pass :code:`max_tip_amount = 145`. See the *exp* parameter in `currencies.json <https://core.telegram.org/bots/payments/currencies.json>`_, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies). Defaults to 0. Not supported for payments in `Telegram Stars <https://t.me/BotNews/90>`_."""
-    suggested_tip_amounts: Optional[List[int]] = None
+    suggested_tip_amounts: Optional[list[int]] = None
     """*Optional*. A JSON-serialized array of suggested amounts of tip in the *smallest units* of the currency (integer, **not** float/double). At most 4 suggested tip amounts can be specified. The suggested tip amounts must be positive, passed in a strictly increased order and must not exceed *max_tip_amount*."""
     provider_data: Optional[str] = None
     """*Optional*. A JSON-serialized object for data about the invoice, which will be shared with the payment provider. A detailed description of the required fields should be provided by the payment provider."""
@@ -67,10 +67,10 @@ class InputInvoiceMessageContent(InputMessageContent):
             description: str,
             payload: str,
             currency: str,
-            prices: List[LabeledPrice],
+            prices: list[LabeledPrice],
             provider_token: Optional[str] = None,
             max_tip_amount: Optional[int] = None,
-            suggested_tip_amounts: Optional[List[int]] = None,
+            suggested_tip_amounts: Optional[list[int]] = None,
             provider_data: Optional[str] = None,
             photo_url: Optional[str] = None,
             photo_size: Optional[int] = None,
