@@ -1,12 +1,12 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, List, Optional
+from typing import TYPE_CHECKING, Any, Optional
 
 from ..types import GameHighScore
 from .base import TelegramMethod
 
 
-class GetGameHighScores(TelegramMethod[List[GameHighScore]]):
+class GetGameHighScores(TelegramMethod[list[GameHighScore]]):
     """
     Use this method to get data for high score tables. Will return the score of the specified user and several of their neighbors in a game. Returns an Array of :class:`aiogram.types.game_high_score.GameHighScore` objects.
 
@@ -15,7 +15,7 @@ class GetGameHighScores(TelegramMethod[List[GameHighScore]]):
     Source: https://core.telegram.org/bots/api#getgamehighscores
     """
 
-    __returning__ = List[GameHighScore]
+    __returning__ = list[GameHighScore]
     __api_method__ = "getGameHighScores"
 
     user_id: int

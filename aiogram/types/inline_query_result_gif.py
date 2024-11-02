@@ -1,10 +1,9 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, List, Literal, Optional, Union
+from typing import TYPE_CHECKING, Any, Literal, Optional, Union
 
 from ..client.default import Default
 from ..enums import InlineQueryResultType
-from .base import UNSET_PARSE_MODE
 from .inline_query_result import InlineQueryResult
 
 if TYPE_CHECKING:
@@ -46,7 +45,7 @@ class InlineQueryResultGif(InlineQueryResult):
     """*Optional*. Caption of the GIF file to be sent, 0-1024 characters after entities parsing"""
     parse_mode: Optional[Union[str, Default]] = Default("parse_mode")
     """*Optional*. Mode for parsing entities in the caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details."""
-    caption_entities: Optional[List[MessageEntity]] = None
+    caption_entities: Optional[list[MessageEntity]] = None
     """*Optional*. List of special entities that appear in the caption, which can be specified instead of *parse_mode*"""
     show_caption_above_media: Optional[Union[bool, Default]] = Default("show_caption_above_media")
     """*Optional*. Pass :code:`True`, if the caption must be shown above the message media"""
@@ -81,7 +80,7 @@ class InlineQueryResultGif(InlineQueryResult):
             title: Optional[str] = None,
             caption: Optional[str] = None,
             parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
-            caption_entities: Optional[List[MessageEntity]] = None,
+            caption_entities: Optional[list[MessageEntity]] = None,
             show_caption_above_media: Optional[Union[bool, Default]] = Default(
                 "show_caption_above_media"
             ),

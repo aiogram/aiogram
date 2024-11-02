@@ -20,7 +20,7 @@ class InputPollOption(TelegramObject):
     """Option text, 1-100 characters"""
     text_parse_mode: Optional[Union[str, Default]] = Default("parse_mode")
     """*Optional*. Mode for parsing entities in the text. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details. Currently, only custom emoji entities are allowed"""
-    text_entities: Optional[List[MessageEntity]] = None
+    text_entities: Optional[list[MessageEntity]] = None
     """*Optional*. A JSON-serialized list of special entities that appear in the poll option text. It can be specified instead of *text_parse_mode*"""
 
     if TYPE_CHECKING:
@@ -32,7 +32,7 @@ class InputPollOption(TelegramObject):
             *,
             text: str,
             text_parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
-            text_entities: Optional[List[MessageEntity]] = None,
+            text_entities: Optional[list[MessageEntity]] = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

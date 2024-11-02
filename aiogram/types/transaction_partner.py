@@ -8,6 +8,7 @@ class TransactionPartner(TelegramObject):
      - :class:`aiogram.types.transaction_partner_user.TransactionPartnerUser`
      - :class:`aiogram.types.transaction_partner_fragment.TransactionPartnerFragment`
      - :class:`aiogram.types.transaction_partner_telegram_ads.TransactionPartnerTelegramAds`
+     - :class:`aiogram.types.transaction_partner_telegram_api.TransactionPartnerTelegramApi`
      - :class:`aiogram.types.transaction_partner_other.TransactionPartnerOther`
 
     Source: https://core.telegram.org/bots/api#transactionpartner

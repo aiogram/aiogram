@@ -1,6 +1,5 @@
 from typing import TYPE_CHECKING, Any, Literal
 
-from ..enums import ReactionTypeType
 from .reaction_type import ReactionType
 
 

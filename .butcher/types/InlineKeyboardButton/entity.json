@@ -76,6 +76,14 @@
         "required": false
       },
       {
+        "type": "CopyTextButton",
+        "description": "Description of the button that copies the specified text to the clipboard.",
+        "html_description": "<td><em>Optional</em>. Description of the button that copies the specified text to the clipboard.</td>",
+        "rst_description": "*Optional*. Description of the button that copies the specified text to the clipboard.\n",
+        "name": "copy_text",
+        "required": false
+      },
+      {
         "type": "CallbackGame",
         "description": "Description of the game that will be launched when the user presses the button.\n\nNOTE: This type of button must always be the first button in the first row.",
         "html_description": "<td><em>Optional</em>. Description of the game that will be launched when the user presses the button.<br/>\n<br/>\n<strong>NOTE:</strong> This type of button <strong>must</strong> always be the first button in the first row.</td>",

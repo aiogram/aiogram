@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, List, Optional
+from typing import TYPE_CHECKING, Any, Optional
 
 from .base import TelegramObject
 
@@ -25,7 +25,7 @@ class GiveawayWinners(TelegramObject):
     """Point in time (Unix timestamp) when winners of the giveaway were selected"""
     winner_count: int
     """Total number of winners in the giveaway"""
-    winners: List[User]
+    winners: list[User]
     """List of up to 100 winners of the giveaway"""
     additional_chat_count: Optional[int] = None
     """*Optional*. The number of other chats the user had to join in order to be eligible for the giveaway"""
@@ -53,7 +53,7 @@ class GiveawayWinners(TelegramObject):
             giveaway_message_id: int,
             winners_selection_date: DateTime,
             winner_count: int,
-            winners: List[User],
+            winners: list[User],
             additional_chat_count: Optional[int] = None,
             prize_star_count: Optional[int] = None,
             premium_subscription_month_count: Optional[int] = None,

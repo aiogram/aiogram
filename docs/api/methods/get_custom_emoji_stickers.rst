@@ -2,7 +2,7 @@
 getCustomEmojiStickers
 ######################
 
-Returns: :obj:`List[Sticker]`
+Returns: :obj:`list[Sticker]`
 
 .. automodule:: aiogram.methods.get_custom_emoji_stickers
     :members:
@@ -19,7 +19,7 @@ As bot method
 
 .. code-block::
 
-    result: List[Sticker] = await bot.get_custom_emoji_stickers(...)
+    result: list[Sticker] = await bot.get_custom_emoji_stickers(...)
 
 
 Method as object
@@ -35,4 +35,4 @@ With specific bot
 
 .. code-block:: python
 
-    result: List[Sticker] = await bot(GetCustomEmojiStickers(...))
+    result: list[Sticker] = await bot(GetCustomEmojiStickers(...))

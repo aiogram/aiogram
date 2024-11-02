@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, List, Optional, Union
+from typing import TYPE_CHECKING, Any, Optional, Union
 
 from ..types import (
     BotCommand,
@@ -25,7 +25,7 @@ class SetMyCommands(TelegramMethod[bool]):
     __returning__ = bool
     __api_method__ = "setMyCommands"
 
-    commands: List[BotCommand]
+    commands: list[BotCommand]
     """A JSON-serialized list of bot commands to be set as the list of the bot's commands. At most 100 commands can be specified."""
     scope: Optional[
         Union[
@@ -49,7 +49,7 @@ class SetMyCommands(TelegramMethod[bool]):
         def __init__(
             __pydantic__self__,
             *,
-            commands: List[BotCommand],
+            commands: list[BotCommand],
             scope: Optional[
                 Union[
                     BotCommandScopeDefault,

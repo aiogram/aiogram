@@ -1,7 +1,7 @@
 {
   "api": {
-    "version": "7.10",
-    "release_date": "2024-09-06"
+    "version": "7.11",
+    "release_date": "2024-10-31"
   },
   "items": [
     {
@@ -985,9 +985,9 @@
           "annotations": [
             {
               "type": "Integer",
-              "description": "Unique message identifier inside this chat",
-              "html_description": "<td>Unique message identifier inside this chat</td>",
-              "rst_description": "Unique message identifier inside this chat\n",
+              "description": "Unique message identifier inside this chat. In specific instances (e.g., message containing a video sent to a big chat), the server might automatically schedule a message instead of sending it immediately. In such cases, this field will be 0 and the relevant message will be unusable until it is actually sent",
+              "html_description": "<td>Unique message identifier inside this chat. In specific instances (e.g., message containing a video sent to a big chat), the server might automatically schedule a message instead of sending it immediately. In such cases, this field will be 0 and the relevant message will be unusable until it is actually sent</td>",
+              "rst_description": "Unique message identifier inside this chat. In specific instances (e.g., message containing a video sent to a big chat), the server might automatically schedule a message instead of sending it immediately. In such cases, this field will be 0 and the relevant message will be unusable until it is actually sent\n",
               "name": "message_id",
               "required": true
             },
@@ -1675,9 +1675,9 @@
           "annotations": [
             {
               "type": "Integer",
-              "description": "Unique message identifier",
-              "html_description": "<td>Unique message identifier</td>",
-              "rst_description": "Unique message identifier\n",
+              "description": "Unique message identifier. In specific instances (e.g., message containing a video sent to a big chat), the server might automatically schedule a message instead of sending it immediately. In such cases, this field will be 0 and the relevant message will be unusable until it is actually sent",
+              "html_description": "<td>Unique message identifier. In specific instances (e.g., message containing a video sent to a big chat), the server might automatically schedule a message instead of sending it immediately. In such cases, this field will be 0 and the relevant message will be unusable until it is actually sent</td>",
+              "rst_description": "Unique message identifier. In specific instances (e.g., message containing a video sent to a big chat), the server might automatically schedule a message instead of sending it immediately. In such cases, this field will be 0 and the relevant message will be unusable until it is actually sent\n",
               "name": "message_id",
               "required": true
             }
@@ -1736,9 +1736,9 @@
           "annotations": [
             {
               "type": "String",
-              "description": "Type of the entity. Currently, can be 'mention' (@username), 'hashtag' (#hashtag), 'cashtag' ($USD), 'bot_command' (/start@jobs_bot), 'url' (https://telegram.org), 'email' (do-not-reply@telegram.org), 'phone_number' (+1-212-555-0123), 'bold' (bold text), 'italic' (italic text), 'underline' (underlined text), 'strikethrough' (strikethrough text), 'spoiler' (spoiler message), 'blockquote' (block quotation), 'expandable_blockquote' (collapsed-by-default block quotation), 'code' (monowidth string), 'pre' (monowidth block), 'text_link' (for clickable text URLs), 'text_mention' (for users without usernames), 'custom_emoji' (for inline custom emoji stickers)",
-              "html_description": "<td>Type of the entity. Currently, can be &#8220;mention&#8221; (<code>@username</code>), &#8220;hashtag&#8221; (<code>#hashtag</code>), &#8220;cashtag&#8221; (<code>$USD</code>), &#8220;bot_command&#8221; (<code>/start@jobs_bot</code>), &#8220;url&#8221; (<code>https://telegram.org</code>), &#8220;email&#8221; (<code>do-not-reply@telegram.org</code>), &#8220;phone_number&#8221; (<code>+1-212-555-0123</code>), &#8220;bold&#8221; (<strong>bold text</strong>), &#8220;italic&#8221; (<em>italic text</em>), &#8220;underline&#8221; (underlined text), &#8220;strikethrough&#8221; (strikethrough text), &#8220;spoiler&#8221; (spoiler message), &#8220;blockquote&#8221; (block quotation), &#8220;expandable_blockquote&#8221; (collapsed-by-default block quotation), &#8220;code&#8221; (monowidth string), &#8220;pre&#8221; (monowidth block), &#8220;text_link&#8221; (for clickable text URLs), &#8220;text_mention&#8221; (for users <a href=\"https://telegram.org/blog/edit#new-mentions\">without usernames</a>), &#8220;custom_emoji&#8221; (for inline custom emoji stickers)</td>",
-              "rst_description": "Type of the entity. Currently, can be 'mention' (:code:`@username`), 'hashtag' (:code:`#hashtag`), 'cashtag' (:code:`$USD`), 'bot_command' (:code:`/start@jobs_bot`), 'url' (:code:`https://telegram.org`), 'email' (:code:`do-not-reply@telegram.org`), 'phone_number' (:code:`+1-212-555-0123`), 'bold' (**bold text**), 'italic' (*italic text*), 'underline' (underlined text), 'strikethrough' (strikethrough text), 'spoiler' (spoiler message), 'blockquote' (block quotation), 'expandable_blockquote' (collapsed-by-default block quotation), 'code' (monowidth string), 'pre' (monowidth block), 'text_link' (for clickable text URLs), 'text_mention' (for users `without usernames <https://telegram.org/blog/edit#new-mentions>`_), 'custom_emoji' (for inline custom emoji stickers)\n",
+              "description": "Type of the entity. Currently, can be 'mention' (@username), 'hashtag' (#hashtag or #hashtag@chatusername), 'cashtag' ($USD or $USD@chatusername), 'bot_command' (/start@jobs_bot), 'url' (https://telegram.org), 'email' (do-not-reply@telegram.org), 'phone_number' (+1-212-555-0123), 'bold' (bold text), 'italic' (italic text), 'underline' (underlined text), 'strikethrough' (strikethrough text), 'spoiler' (spoiler message), 'blockquote' (block quotation), 'expandable_blockquote' (collapsed-by-default block quotation), 'code' (monowidth string), 'pre' (monowidth block), 'text_link' (for clickable text URLs), 'text_mention' (for users without usernames), 'custom_emoji' (for inline custom emoji stickers)",
+              "html_description": "<td>Type of the entity. Currently, can be &#8220;mention&#8221; (<code>@username</code>), &#8220;hashtag&#8221; (<code>#hashtag</code> or <code>#hashtag@chatusername</code>), &#8220;cashtag&#8221; (<code>$USD</code> or <code>$USD@chatusername</code>), &#8220;bot_command&#8221; (<code>/start@jobs_bot</code>), &#8220;url&#8221; (<code>https://telegram.org</code>), &#8220;email&#8221; (<code>do-not-reply@telegram.org</code>), &#8220;phone_number&#8221; (<code>+1-212-555-0123</code>), &#8220;bold&#8221; (<strong>bold text</strong>), &#8220;italic&#8221; (<em>italic text</em>), &#8220;underline&#8221; (underlined text), &#8220;strikethrough&#8221; (strikethrough text), &#8220;spoiler&#8221; (spoiler message), &#8220;blockquote&#8221; (block quotation), &#8220;expandable_blockquote&#8221; (collapsed-by-default block quotation), &#8220;code&#8221; (monowidth string), &#8220;pre&#8221; (monowidth block), &#8220;text_link&#8221; (for clickable text URLs), &#8220;text_mention&#8221; (for users <a href=\"https://telegram.org/blog/edit#new-mentions\">without usernames</a>), &#8220;custom_emoji&#8221; (for inline custom emoji stickers)</td>",
+              "rst_description": "Type of the entity. Currently, can be 'mention' (:code:`@username`), 'hashtag' (:code:`#hashtag` or :code:`#hashtag@chatusername`), 'cashtag' (:code:`$USD` or :code:`$USD@chatusername`), 'bot_command' (:code:`/start@jobs_bot`), 'url' (:code:`https://telegram.org`), 'email' (:code:`do-not-reply@telegram.org`), 'phone_number' (:code:`+1-212-555-0123`), 'bold' (**bold text**), 'italic' (*italic text*), 'underline' (underlined text), 'strikethrough' (strikethrough text), 'spoiler' (spoiler message), 'blockquote' (block quotation), 'expandable_blockquote' (collapsed-by-default block quotation), 'code' (monowidth string), 'pre' (monowidth block), 'text_link' (for clickable text URLs), 'text_mention' (for users `without usernames <https://telegram.org/blog/edit#new-mentions>`_), 'custom_emoji' (for inline custom emoji stickers)\n",
               "name": "type",
               "required": true
             },
@@ -4840,6 +4840,14 @@
               "required": false
             },
             {
+              "type": "CopyTextButton",
+              "description": "Description of the button that copies the specified text to the clipboard.",
+              "html_description": "<td><em>Optional</em>. Description of the button that copies the specified text to the clipboard.</td>",
+              "rst_description": "*Optional*. Description of the button that copies the specified text to the clipboard.\n",
+              "name": "copy_text",
+              "required": false
+            },
+            {
               "type": "CallbackGame",
               "description": "Description of the game that will be launched when the user presses the button.\n\nNOTE: This type of button must always be the first button in the first row.",
               "html_description": "<td><em>Optional</em>. Description of the game that will be launched when the user presses the button.<br/>\n<br/>\n<strong>NOTE:</strong> This type of button <strong>must</strong> always be the first button in the first row.</td>",
@@ -4946,6 +4954,24 @@
               "rst_description": "*Optional*. True, if channel chats can be chosen\n",
               "name": "allow_channel_chats",
               "required": false
+            }
+          ],
+          "category": "types"
+        },
+        {
+          "anchor": "copytextbutton",
+          "name": "CopyTextButton",
+          "description": "This object represents an inline keyboard button that copies specified text to the clipboard.",
+          "html_description": "<p>This object represents an inline keyboard button that copies specified text to the clipboard.</p>",
+          "rst_description": "This object represents an inline keyboard button that copies specified text to the clipboard.",
+          "annotations": [
+            {
+              "type": "String",
+              "description": "The text to be copied to the clipboard; 1-256 characters",
+              "html_description": "<td>The text to be copied to the clipboard; 1-256 characters</td>",
+              "rst_description": "The text to be copied to the clipboard; 1-256 characters\n",
+              "name": "text",
+              "required": true
             }
           ],
           "category": "types"
@@ -7796,6 +7822,14 @@
               "name": "protect_content"
             },
             {
+              "type": "Boolean",
+              "required": false,
+              "description": "Pass True to allow up to 1000 messages per second, ignoring broadcasting limits for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance",
+              "html_description": "<td>Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href=\"https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once\">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance</td>",
+              "rst_description": "Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance\n",
+              "name": "allow_paid_broadcast"
+            },
+            {
               "type": "String",
               "required": false,
               "description": "Unique identifier of the message effect to be added to the message; for private chats only",
@@ -8026,6 +8060,14 @@
               "name": "protect_content"
             },
             {
+              "type": "Boolean",
+              "required": false,
+              "description": "Pass True to allow up to 1000 messages per second, ignoring broadcasting limits for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance",
+              "html_description": "<td>Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href=\"https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once\">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance</td>",
+              "rst_description": "Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance\n",
+              "name": "allow_paid_broadcast"
+            },
+            {
               "type": "ReplyParameters",
               "required": false,
               "description": "Description of the message to reply to",
@@ -8206,6 +8248,14 @@
               "name": "protect_content"
             },
             {
+              "type": "Boolean",
+              "required": false,
+              "description": "Pass True to allow up to 1000 messages per second, ignoring broadcasting limits for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance",
+              "html_description": "<td>Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href=\"https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once\">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance</td>",
+              "rst_description": "Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance\n",
+              "name": "allow_paid_broadcast"
+            },
+            {
               "type": "String",
               "required": false,
               "description": "Unique identifier of the message effect to be added to the message; for private chats only",
@@ -8344,6 +8394,14 @@
               "name": "protect_content"
             },
             {
+              "type": "Boolean",
+              "required": false,
+              "description": "Pass True to allow up to 1000 messages per second, ignoring broadcasting limits for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance",
+              "html_description": "<td>Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href=\"https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once\">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance</td>",
+              "rst_description": "Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance\n",
+              "name": "allow_paid_broadcast"
+            },
+            {
               "type": "String",
               "required": false,
               "description": "Unique identifier of the message effect to be added to the message; for private chats only",
@@ -8464,6 +8522,14 @@
               "html_description": "<td>Protects the contents of the sent message from forwarding and saving</td>",
               "rst_description": "Protects the contents of the sent message from forwarding and saving\n",
               "name": "protect_content"
+            },
+            {
+              "type": "Boolean",
+              "required": false,
+              "description": "Pass True to allow up to 1000 messages per second, ignoring broadcasting limits for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance",
+              "html_description": "<td>Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href=\"https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once\">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance</td>",
+              "rst_description": "Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance\n",
+              "name": "allow_paid_broadcast"
             },
             {
               "type": "String",
@@ -8628,6 +8694,14 @@
               "name": "protect_content"
             },
             {
+              "type": "Boolean",
+              "required": false,
+              "description": "Pass True to allow up to 1000 messages per second, ignoring broadcasting limits for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance",
+              "html_description": "<td>Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href=\"https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once\">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance</td>",
+              "rst_description": "Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance\n",
+              "name": "allow_paid_broadcast"
+            },
+            {
               "type": "String",
               "required": false,
               "description": "Unique identifier of the message effect to be added to the message; for private chats only",
@@ -8782,6 +8856,14 @@
               "name": "protect_content"
             },
             {
+              "type": "Boolean",
+              "required": false,
+              "description": "Pass True to allow up to 1000 messages per second, ignoring broadcasting limits for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance",
+              "html_description": "<td>Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href=\"https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once\">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance</td>",
+              "rst_description": "Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance\n",
+              "name": "allow_paid_broadcast"
+            },
+            {
               "type": "String",
               "required": false,
               "description": "Unique identifier of the message effect to be added to the message; for private chats only",
@@ -8896,6 +8978,14 @@
               "name": "protect_content"
             },
             {
+              "type": "Boolean",
+              "required": false,
+              "description": "Pass True to allow up to 1000 messages per second, ignoring broadcasting limits for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance",
+              "html_description": "<td>Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href=\"https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once\">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance</td>",
+              "rst_description": "Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance\n",
+              "name": "allow_paid_broadcast"
+            },
+            {
               "type": "String",
               "required": false,
               "description": "Unique identifier of the message effect to be added to the message; for private chats only",
@@ -9000,6 +9090,14 @@
               "html_description": "<td>Protects the contents of the sent message from forwarding and saving</td>",
               "rst_description": "Protects the contents of the sent message from forwarding and saving\n",
               "name": "protect_content"
+            },
+            {
+              "type": "Boolean",
+              "required": false,
+              "description": "Pass True to allow up to 1000 messages per second, ignoring broadcasting limits for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance",
+              "html_description": "<td>Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href=\"https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once\">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance</td>",
+              "rst_description": "Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance\n",
+              "name": "allow_paid_broadcast"
             },
             {
               "type": "String",
@@ -9124,6 +9222,14 @@
               "name": "protect_content"
             },
             {
+              "type": "Boolean",
+              "required": false,
+              "description": "Pass True to allow up to 1000 messages per second, ignoring broadcasting limits for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance",
+              "html_description": "<td>Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href=\"https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once\">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance</td>",
+              "rst_description": "Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance\n",
+              "name": "allow_paid_broadcast"
+            },
+            {
               "type": "ReplyParameters",
               "required": false,
               "description": "Description of the message to reply to",
@@ -9196,6 +9302,14 @@
               "html_description": "<td>Protects the contents of the sent messages from forwarding and saving</td>",
               "rst_description": "Protects the contents of the sent messages from forwarding and saving\n",
               "name": "protect_content"
+            },
+            {
+              "type": "Boolean",
+              "required": false,
+              "description": "Pass True to allow up to 1000 messages per second, ignoring broadcasting limits for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance",
+              "html_description": "<td>Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href=\"https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once\">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance</td>",
+              "rst_description": "Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance\n",
+              "name": "allow_paid_broadcast"
             },
             {
               "type": "String",
@@ -9310,6 +9424,14 @@
               "html_description": "<td>Protects the contents of the sent message from forwarding and saving</td>",
               "rst_description": "Protects the contents of the sent message from forwarding and saving\n",
               "name": "protect_content"
+            },
+            {
+              "type": "Boolean",
+              "required": false,
+              "description": "Pass True to allow up to 1000 messages per second, ignoring broadcasting limits for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance",
+              "html_description": "<td>Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href=\"https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once\">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance</td>",
+              "rst_description": "Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance\n",
+              "name": "allow_paid_broadcast"
             },
             {
               "type": "String",
@@ -9450,6 +9572,14 @@
               "name": "protect_content"
             },
             {
+              "type": "Boolean",
+              "required": false,
+              "description": "Pass True to allow up to 1000 messages per second, ignoring broadcasting limits for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance",
+              "html_description": "<td>Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href=\"https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once\">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance</td>",
+              "rst_description": "Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance\n",
+              "name": "allow_paid_broadcast"
+            },
+            {
               "type": "String",
               "required": false,
               "description": "Unique identifier of the message effect to be added to the message; for private chats only",
@@ -9554,6 +9684,14 @@
               "html_description": "<td>Protects the contents of the sent message from forwarding and saving</td>",
               "rst_description": "Protects the contents of the sent message from forwarding and saving\n",
               "name": "protect_content"
+            },
+            {
+              "type": "Boolean",
+              "required": false,
+              "description": "Pass True to allow up to 1000 messages per second, ignoring broadcasting limits for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance",
+              "html_description": "<td>Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href=\"https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once\">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance</td>",
+              "rst_description": "Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance\n",
+              "name": "allow_paid_broadcast"
             },
             {
               "type": "String",
@@ -9742,6 +9880,14 @@
               "name": "protect_content"
             },
             {
+              "type": "Boolean",
+              "required": false,
+              "description": "Pass True to allow up to 1000 messages per second, ignoring broadcasting limits for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance",
+              "html_description": "<td>Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href=\"https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once\">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance</td>",
+              "rst_description": "Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance\n",
+              "name": "allow_paid_broadcast"
+            },
+            {
               "type": "String",
               "required": false,
               "description": "Unique identifier of the message effect to be added to the message; for private chats only",
@@ -9822,6 +9968,14 @@
               "html_description": "<td>Protects the contents of the sent message from forwarding</td>",
               "rst_description": "Protects the contents of the sent message from forwarding\n",
               "name": "protect_content"
+            },
+            {
+              "type": "Boolean",
+              "required": false,
+              "description": "Pass True to allow up to 1000 messages per second, ignoring broadcasting limits for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance",
+              "html_description": "<td>Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href=\"https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once\">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance</td>",
+              "rst_description": "Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance\n",
+              "name": "allow_paid_broadcast"
             },
             {
               "type": "String",
@@ -11877,9 +12031,9 @@
         {
           "anchor": "editmessagemedia",
           "name": "editMessageMedia",
-          "description": "Use this method to edit animation, audio, document, photo, or video messages. If a message is part of a message album, then it can be edited only to an audio for audio albums, only to a document for document albums and to a photo or a video otherwise. When an inline message is edited, a new file can't be uploaded; use a previously uploaded file via its file_id or specify a URL. On success, if the edited message is not an inline message, the edited Message is returned, otherwise True is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within 48 hours from the time they were sent.",
-          "html_description": "<p>Use this method to edit animation, audio, document, photo, or video messages. If a message is part of a message album, then it can be edited only to an audio for audio albums, only to a document for document albums and to a photo or a video otherwise. When an inline message is edited, a new file can't be uploaded; use a previously uploaded file via its file_id or specify a URL. On success, if the edited message is not an inline message, the edited <a href=\"#message\">Message</a> is returned, otherwise <em>True</em> is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within <strong>48 hours</strong> from the time they were sent.</p>",
-          "rst_description": "Use this method to edit animation, audio, document, photo, or video messages. If a message is part of a message album, then it can be edited only to an audio for audio albums, only to a document for document albums and to a photo or a video otherwise. When an inline message is edited, a new file can't be uploaded; use a previously uploaded file via its file_id or specify a URL. On success, if the edited message is not an inline message, the edited :class:`aiogram.types.message.Message` is returned, otherwise :code:`True` is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within **48 hours** from the time they were sent.",
+          "description": "Use this method to edit animation, audio, document, photo, or video messages, or to add media to text messages. If a message is part of a message album, then it can be edited only to an audio for audio albums, only to a document for document albums and to a photo or a video otherwise. When an inline message is edited, a new file can't be uploaded; use a previously uploaded file via its file_id or specify a URL. On success, if the edited message is not an inline message, the edited Message is returned, otherwise True is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within 48 hours from the time they were sent.",
+          "html_description": "<p>Use this method to edit animation, audio, document, photo, or video messages, or to add media to text messages. If a message is part of a message album, then it can be edited only to an audio for audio albums, only to a document for document albums and to a photo or a video otherwise. When an inline message is edited, a new file can't be uploaded; use a previously uploaded file via its file_id or specify a URL. On success, if the edited message is not an inline message, the edited <a href=\"#message\">Message</a> is returned, otherwise <em>True</em> is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within <strong>48 hours</strong> from the time they were sent.</p>",
+          "rst_description": "Use this method to edit animation, audio, document, photo, or video messages, or to add media to text messages. If a message is part of a message album, then it can be edited only to an audio for audio albums, only to a document for document albums and to a photo or a video otherwise. When an inline message is edited, a new file can't be uploaded; use a previously uploaded file via its file_id or specify a URL. On success, if the edited message is not an inline message, the edited :class:`aiogram.types.message.Message` is returned, otherwise :code:`True` is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within **48 hours** from the time they were sent.",
           "annotations": [
             {
               "type": "String",
@@ -12565,6 +12719,14 @@
               "html_description": "<td>Protects the contents of the sent message from forwarding and saving</td>",
               "rst_description": "Protects the contents of the sent message from forwarding and saving\n",
               "name": "protect_content"
+            },
+            {
+              "type": "Boolean",
+              "required": false,
+              "description": "Pass True to allow up to 1000 messages per second, ignoring broadcasting limits for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance",
+              "html_description": "<td>Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href=\"https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once\">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance</td>",
+              "rst_description": "Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance\n",
+              "name": "allow_paid_broadcast"
             },
             {
               "type": "String",
@@ -15893,6 +16055,14 @@
               "name": "protect_content"
             },
             {
+              "type": "Boolean",
+              "required": false,
+              "description": "Pass True to allow up to 1000 messages per second, ignoring broadcasting limits for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance",
+              "html_description": "<td>Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href=\"https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once\">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance</td>",
+              "rst_description": "Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance\n",
+              "name": "allow_paid_broadcast"
+            },
+            {
               "type": "String",
               "required": false,
               "description": "Unique identifier of the message effect to be added to the message; for private chats only",
@@ -16759,9 +16929,9 @@
         {
           "anchor": "transactionpartner",
           "name": "TransactionPartner",
-          "description": "This object describes the source of a transaction, or its recipient for outgoing transactions. Currently, it can be one of\n - TransactionPartnerUser\n - TransactionPartnerFragment\n - TransactionPartnerTelegramAds\n - TransactionPartnerOther",
-          "html_description": "<p>This object describes the source of a transaction, or its recipient for outgoing transactions. Currently, it can be one of</p><ul>\n<li><a href=\"#transactionpartneruser\">TransactionPartnerUser</a></li>\n<li><a href=\"#transactionpartnerfragment\">TransactionPartnerFragment</a></li>\n<li><a href=\"#transactionpartnertelegramads\">TransactionPartnerTelegramAds</a></li>\n<li><a href=\"#transactionpartnerother\">TransactionPartnerOther</a></li>\n</ul>",
-          "rst_description": "This object describes the source of a transaction, or its recipient for outgoing transactions. Currently, it can be one of\n\n - :class:`aiogram.types.transaction_partner_user.TransactionPartnerUser`\n - :class:`aiogram.types.transaction_partner_fragment.TransactionPartnerFragment`\n - :class:`aiogram.types.transaction_partner_telegram_ads.TransactionPartnerTelegramAds`\n - :class:`aiogram.types.transaction_partner_other.TransactionPartnerOther`",
+          "description": "This object describes the source of a transaction, or its recipient for outgoing transactions. Currently, it can be one of\n - TransactionPartnerUser\n - TransactionPartnerFragment\n - TransactionPartnerTelegramAds\n - TransactionPartnerTelegramApi\n - TransactionPartnerOther",
+          "html_description": "<p>This object describes the source of a transaction, or its recipient for outgoing transactions. Currently, it can be one of</p><ul>\n<li><a href=\"#transactionpartneruser\">TransactionPartnerUser</a></li>\n<li><a href=\"#transactionpartnerfragment\">TransactionPartnerFragment</a></li>\n<li><a href=\"#transactionpartnertelegramads\">TransactionPartnerTelegramAds</a></li>\n<li><a href=\"#transactionpartnertelegramapi\">TransactionPartnerTelegramApi</a></li>\n<li><a href=\"#transactionpartnerother\">TransactionPartnerOther</a></li>\n</ul>",
+          "rst_description": "This object describes the source of a transaction, or its recipient for outgoing transactions. Currently, it can be one of\n\n - :class:`aiogram.types.transaction_partner_user.TransactionPartnerUser`\n - :class:`aiogram.types.transaction_partner_fragment.TransactionPartnerFragment`\n - :class:`aiogram.types.transaction_partner_telegram_ads.TransactionPartnerTelegramAds`\n - :class:`aiogram.types.transaction_partner_telegram_api.TransactionPartnerTelegramApi`\n - :class:`aiogram.types.transaction_partner_other.TransactionPartnerOther`",
           "annotations": [],
           "category": "types"
         },
@@ -16860,6 +17030,32 @@
           "category": "types"
         },
         {
+          "anchor": "transactionpartnertelegramapi",
+          "name": "TransactionPartnerTelegramApi",
+          "description": "Describes a transaction with payment for paid broadcasting.",
+          "html_description": "<p>Describes a transaction with payment for <a href=\"#paid-broadcasts\">paid broadcasting</a>.</p>",
+          "rst_description": "Describes a transaction with payment for `paid broadcasting <https://core.telegram.org/bots/api#paid-broadcasts>`_.",
+          "annotations": [
+            {
+              "type": "String",
+              "description": "Type of the transaction partner, always 'telegram_api'",
+              "html_description": "<td>Type of the transaction partner, always &#8220;telegram_api&#8221;</td>",
+              "rst_description": "Type of the transaction partner, always 'telegram_api'\n",
+              "name": "type",
+              "required": true
+            },
+            {
+              "type": "Integer",
+              "description": "The number of successful requests that exceeded regular limits and were therefore billed",
+              "html_description": "<td>The number of successful requests that exceeded regular limits and were therefore billed</td>",
+              "rst_description": "The number of successful requests that exceeded regular limits and were therefore billed\n",
+              "name": "request_count",
+              "required": true
+            }
+          ],
+          "category": "types"
+        },
+        {
           "anchor": "transactionpartnerother",
           "name": "TransactionPartnerOther",
           "description": "Describes a transaction with an unknown source or recipient.",
@@ -16886,9 +17082,9 @@
           "annotations": [
             {
               "type": "String",
-              "description": "Unique identifier of the transaction. Coincides with the identifer of the original transaction for refund transactions. Coincides with SuccessfulPayment.telegram_payment_charge_id for successful incoming payments from users.",
-              "html_description": "<td>Unique identifier of the transaction. Coincides with the identifer of the original transaction for refund transactions. Coincides with <em>SuccessfulPayment.telegram_payment_charge_id</em> for successful incoming payments from users.</td>",
-              "rst_description": "Unique identifier of the transaction. Coincides with the identifer of the original transaction for refund transactions. Coincides with *SuccessfulPayment.telegram_payment_charge_id* for successful incoming payments from users.\n",
+              "description": "Unique identifier of the transaction. Coincides with the identifier of the original transaction for refund transactions. Coincides with SuccessfulPayment.telegram_payment_charge_id for successful incoming payments from users.",
+              "html_description": "<td>Unique identifier of the transaction. Coincides with the identifier of the original transaction for refund transactions. Coincides with <em>SuccessfulPayment.telegram_payment_charge_id</em> for successful incoming payments from users.</td>",
+              "rst_description": "Unique identifier of the transaction. Coincides with the identifier of the original transaction for refund transactions. Coincides with *SuccessfulPayment.telegram_payment_charge_id* for successful incoming payments from users.\n",
               "name": "id",
               "required": true
             },
@@ -17626,6 +17822,14 @@
               "html_description": "<td>Protects the contents of the sent message from forwarding and saving</td>",
               "rst_description": "Protects the contents of the sent message from forwarding and saving\n",
               "name": "protect_content"
+            },
+            {
+              "type": "Boolean",
+              "required": false,
+              "description": "Pass True to allow up to 1000 messages per second, ignoring broadcasting limits for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance",
+              "html_description": "<td>Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href=\"https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once\">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance</td>",
+              "rst_description": "Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance\n",
+              "name": "allow_paid_broadcast"
             },
             {
               "type": "String",

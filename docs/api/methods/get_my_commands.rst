@@ -2,7 +2,7 @@
 getMyCommands
 #############
 
-Returns: :obj:`List[BotCommand]`
+Returns: :obj:`list[BotCommand]`
 
 .. automodule:: aiogram.methods.get_my_commands
     :members:
@@ -19,7 +19,7 @@ As bot method
 
 .. code-block::
 
-    result: List[BotCommand] = await bot.get_my_commands(...)
+    result: list[BotCommand] = await bot.get_my_commands(...)
 
 
 Method as object
@@ -35,4 +35,4 @@ With specific bot
 
 .. code-block:: python
 
-    result: List[BotCommand] = await bot(GetMyCommands(...))
+    result: list[BotCommand] = await bot(GetMyCommands(...))

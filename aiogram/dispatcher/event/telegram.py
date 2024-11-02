@@ -7,7 +7,7 @@ from aiogram.dispatcher.middlewares.manager import MiddlewareManager
 from ...exceptions import UnsupportedKeywordArgument
 from ...filters.base import Filter
 from ...types import TelegramObject
-from .bases import REJECTED, UNHANDLED, MiddlewareType, SkipHandler
+from .bases import UNHANDLED, MiddlewareType, SkipHandler
 from .handler import CallbackType, FilterObject, HandlerObject
 
 if TYPE_CHECKING:

@@ -1,38 +1,34 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, List, Optional, Union
+from typing import TYPE_CHECKING, Any, Optional, Union
 
 from pydantic import Field
 
 from ..client.default import Default
 from ..types import (
-    ForceReply,
-    InlineKeyboardMarkup,
     InputMediaAudio,
     InputMediaDocument,
     InputMediaPhoto,
     InputMediaVideo,
     Message,
-    ReplyKeyboardMarkup,
-    ReplyKeyboardRemove,
     ReplyParameters,
 )
 from .base import TelegramMethod
 
 
-class SendMediaGroup(TelegramMethod[List[Message]]):
+class SendMediaGroup(TelegramMethod[list[Message]]):
     """
     Use this method to send a group of photos, videos, documents or audios as an album. Documents and audio files can be only grouped in an album with messages of the same type. On success, an array of `Messages <https://core.telegram.org/bots/api#message>`_ that were sent is returned.
 
     Source: https://core.telegram.org/bots/api#sendmediagroup
     """
 
-    __returning__ = List[Message]
+    __returning__ = list[Message]
     __api_method__ = "sendMediaGroup"
 
     chat_id: Union[int, str]
     """Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)"""
-    media: List[Union[InputMediaAudio, InputMediaDocument, InputMediaPhoto, InputMediaVideo]]
+    media: list[Union[InputMediaAudio, InputMediaDocument, InputMediaPhoto, InputMediaVideo]]
     """A JSON-serialized array describing messages to be sent, must include 2-10 items"""
     business_connection_id: Optional[str] = None
     """Unique identifier of the business connection on behalf of which the message will be sent"""
@@ -42,6 +38,8 @@ class SendMediaGroup(TelegramMethod[List[Message]]):
     """Sends messages `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound."""
     protect_content: Optional[Union[bool, Default]] = Default("protect_content")
     """Protects the contents of the sent messages from forwarding and saving"""
+    allow_paid_broadcast: Optional[bool] = None
+    """Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance"""
     message_effect_id: Optional[str] = None
     """Unique identifier of the message effect to be added to the message; for private chats only"""
     reply_parameters: Optional[ReplyParameters] = None
@@ -67,13 +65,14 @@ class SendMediaGroup(TelegramMethod[List[Message]]):
             __pydantic__self__,
             *,
             chat_id: Union[int, str],
-            media: List[
+            media: list[
                 Union[InputMediaAudio, InputMediaDocument, InputMediaPhoto, InputMediaVideo]
             ],
             business_connection_id: Optional[str] = None,
             message_thread_id: Optional[int] = None,
             disable_notification: Optional[bool] = None,
             protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+            allow_paid_broadcast: Optional[bool] = None,
             message_effect_id: Optional[str] = None,
             reply_parameters: Optional[ReplyParameters] = None,
             allow_sending_without_reply: Optional[bool] = None,
@@ -91,6 +90,7 @@ class SendMediaGroup(TelegramMethod[List[Message]]):
                 message_thread_id=message_thread_id,
                 disable_notification=disable_notification,
                 protect_content=protect_content,
+                allow_paid_broadcast=allow_paid_broadcast,
                 message_effect_id=message_effect_id,
                 reply_parameters=reply_parameters,
                 allow_sending_without_reply=allow_sending_without_reply,

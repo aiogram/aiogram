@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, List, Optional
+from typing import TYPE_CHECKING, Any, Optional
 
 from .base import TelegramObject
 
@@ -21,11 +21,11 @@ class Game(TelegramObject):
     """Title of the game"""
     description: str
     """Description of the game"""
-    photo: List[PhotoSize]
+    photo: list[PhotoSize]
     """Photo that will be displayed in the game message in chats."""
     text: Optional[str] = None
     """*Optional*. Brief description of the game or high scores included in the game message. Can be automatically edited to include current high scores for the game when the bot calls :class:`aiogram.methods.set_game_score.SetGameScore`, or manually edited using :class:`aiogram.methods.edit_message_text.EditMessageText`. 0-4096 characters."""
-    text_entities: Optional[List[MessageEntity]] = None
+    text_entities: Optional[list[MessageEntity]] = None
     """*Optional*. Special entities that appear in *text*, such as usernames, URLs, bot commands, etc."""
     animation: Optional[Animation] = None
     """*Optional*. Animation that will be displayed in the game message in chats. Upload via `BotFather <https://t.me/botfather>`_"""
@@ -39,9 +39,9 @@ class Game(TelegramObject):
             *,
             title: str,
             description: str,
-            photo: List[PhotoSize],
+            photo: list[PhotoSize],
             text: Optional[str] = None,
-            text_entities: Optional[List[MessageEntity]] = None,
+            text_entities: Optional[list[MessageEntity]] = None,
             animation: Optional[Animation] = None,
             **__pydantic_kwargs: Any,
         ) -> None:

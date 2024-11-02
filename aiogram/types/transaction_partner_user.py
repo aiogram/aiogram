@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, List, Literal, Optional, Union
+from typing import TYPE_CHECKING, Any, Literal, Optional, Union
 
 from ..enums import TransactionPartnerType
 from .transaction_partner import TransactionPartner
@@ -25,7 +25,7 @@ class TransactionPartnerUser(TransactionPartner):
     """Information about the user"""
     invoice_payload: Optional[str] = None
     """*Optional*. Bot-specified invoice payload"""
-    paid_media: Optional[List[Union[PaidMediaPreview, PaidMediaPhoto, PaidMediaVideo]]] = None
+    paid_media: Optional[list[Union[PaidMediaPreview, PaidMediaPhoto, PaidMediaVideo]]] = None
     """*Optional*. Information about the paid media bought by the user"""
     paid_media_payload: Optional[str] = None
     """*Optional*. Bot-specified paid media payload"""
@@ -41,7 +41,7 @@ class TransactionPartnerUser(TransactionPartner):
             user: User,
             invoice_payload: Optional[str] = None,
             paid_media: Optional[
-                List[Union[PaidMediaPreview, PaidMediaPhoto, PaidMediaVideo]]
+                list[Union[PaidMediaPreview, PaidMediaPhoto, PaidMediaVideo]]
             ] = None,
             paid_media_payload: Optional[str] = None,
             **__pydantic_kwargs: Any,

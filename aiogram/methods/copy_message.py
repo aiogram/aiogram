@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, List, Optional, Union
+from typing import TYPE_CHECKING, Any, Optional, Union
 
 from pydantic import Field
 
@@ -39,7 +39,7 @@ class CopyMessage(TelegramMethod[MessageId]):
     """New caption for media, 0-1024 characters after entities parsing. If not specified, the original caption is kept"""
     parse_mode: Optional[Union[str, Default]] = Default("parse_mode")
     """Mode for parsing entities in the new caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details."""
-    caption_entities: Optional[List[MessageEntity]] = None
+    caption_entities: Optional[list[MessageEntity]] = None
     """A JSON-serialized list of special entities that appear in the new caption, which can be specified instead of *parse_mode*"""
     show_caption_above_media: Optional[Union[bool, Default]] = Default("show_caption_above_media")
     """Pass :code:`True`, if the caption must be shown above the message media. Ignored if a new caption isn't specified."""
@@ -47,6 +47,8 @@ class CopyMessage(TelegramMethod[MessageId]):
     """Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound."""
     protect_content: Optional[Union[bool, Default]] = Default("protect_content")
     """Protects the contents of the sent message from forwarding and saving"""
+    allow_paid_broadcast: Optional[bool] = None
+    """Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance"""
     reply_parameters: Optional[ReplyParameters] = None
     """Description of the message to reply to"""
     reply_markup: Optional[
@@ -79,12 +81,13 @@ class CopyMessage(TelegramMethod[MessageId]):
             message_thread_id: Optional[int] = None,
             caption: Optional[str] = None,
             parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
-            caption_entities: Optional[List[MessageEntity]] = None,
+            caption_entities: Optional[list[MessageEntity]] = None,
             show_caption_above_media: Optional[Union[bool, Default]] = Default(
                 "show_caption_above_media"
             ),
             disable_notification: Optional[bool] = None,
             protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+            allow_paid_broadcast: Optional[bool] = None,
             reply_parameters: Optional[ReplyParameters] = None,
             reply_markup: Optional[
                 Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -108,6 +111,7 @@ class CopyMessage(TelegramMethod[MessageId]):
                 show_caption_above_media=show_caption_above_media,
                 disable_notification=disable_notification,
                 protect_content=protect_content,
+                allow_paid_broadcast=allow_paid_broadcast,
                 reply_parameters=reply_parameters,
                 reply_markup=reply_markup,
                 allow_sending_without_reply=allow_sending_without_reply,
