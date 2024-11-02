@@ -22,11 +22,27 @@ class TestStorages:
 
     async def test_set_data(self, storage: BaseStorage, storage_key: StorageKey):
         assert await storage.get_data(key=storage_key) == {}
+        assert await storage.get_value(storage_key=storage_key, dict_key="foo") is None
+        assert (
+            await storage.get_value(storage_key=storage_key, dict_key="foo", default="baz")
+            == "baz"
+        )
 
         await storage.set_data(key=storage_key, data={"foo": "bar"})
         assert await storage.get_data(key=storage_key) == {"foo": "bar"}
+        assert await storage.get_value(storage_key=storage_key, dict_key="foo") == "bar"
+        assert (
+            await storage.get_value(storage_key=storage_key, dict_key="foo", default="baz")
+            == "bar"
+        )
+
         await storage.set_data(key=storage_key, data={})
         assert await storage.get_data(key=storage_key) == {}
+        assert await storage.get_value(storage_key=storage_key, dict_key="foo") is None
+        assert (
+            await storage.get_value(storage_key=storage_key, dict_key="foo", default="baz")
+            == "baz"
+        )
 
     async def test_update_data(self, storage: BaseStorage, storage_key: StorageKey):
         assert await storage.get_data(key=storage_key) == {}

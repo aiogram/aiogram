@@ -1004,6 +1004,24 @@ class TestSceneWizard:
 
         wizard.state.get_data.assert_called_once_with()
 
+    async def test_scene_wizard_get_value_with_default(self):
+        wizard = SceneWizard(
+            scene_config=AsyncMock(),
+            manager=AsyncMock(),
+            state=AsyncMock(),
+            update_type="message",
+            event=AsyncMock(),
+            data={},
+        )
+        args = ("test_key", "test_default")
+        value = "test_value"
+        wizard.state.get_value = AsyncMock(return_value=value)
+
+        result = await wizard.get_value(*args)
+        wizard.state.get_value.assert_called_once_with(*args)
+
+        assert result == value
+
     async def test_scene_wizard_update_data_if_data(self):
         wizard = SceneWizard(
             scene_config=AsyncMock(),

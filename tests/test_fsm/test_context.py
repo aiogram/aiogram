@@ -34,6 +34,10 @@ class TestFSMContext:
         assert await state2.get_data() == {}
         assert await state3.get_data() == {}
 
+        assert await state.get_value("foo") == "bar"
+        assert await state2.get_value("foo") is None
+        assert await state3.get_value("foo", "baz") == "baz"
+
         await state2.set_state("experiments")
         assert await state.get_state() == "test"
         assert await state3.get_state() is None

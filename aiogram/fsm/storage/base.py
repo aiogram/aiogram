@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from contextlib import asynccontextmanager
 from dataclasses import dataclass
-from typing import Any, AsyncGenerator, Dict, Literal, Optional, Union
+from typing import Any, AsyncGenerator, Dict, Literal, Optional, Union, overload
 
 from aiogram.fsm.state import State
 
@@ -143,6 +143,35 @@ class BaseStorage(ABC):
         :return: current data
         """
         pass
+
+    @overload
+    async def get_value(self, storage_key: StorageKey, dict_key: str) -> Optional[Any]:
+        """
+        Get single value from data by key
+
+        :param storage_key: storage key
+        :param dict_key: value key
+        :return: value stored in key of dict or ``None``
+        """
+        pass
+
+    @overload
+    async def get_value(self, storage_key: StorageKey, dict_key: str, default: Any) -> Any:
+        """
+        Get single value from data by key
+
+        :param storage_key: storage key
+        :param dict_key: value key
+        :param default: default value to return
+        :return: value stored in key of dict or default
+        """
+        pass
+
+    async def get_value(
+        self, storage_key: StorageKey, dict_key: str, default: Optional[Any] = None
+    ) -> Optional[Any]:
+        data = await self.get_data(storage_key)
+        return data.get(dict_key, default)
 
     async def update_data(self, key: StorageKey, data: Dict[str, Any]) -> Dict[str, Any]:
         """
