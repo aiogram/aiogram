@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, List, Optional, Union
+from typing import TYPE_CHECKING, Any, Optional, Union
 
 from ..types import (
     BotCommand,
@@ -15,14 +15,14 @@ from ..types import (
 from .base import TelegramMethod
 
 
-class GetMyCommands(TelegramMethod[List[BotCommand]]):
+class GetMyCommands(TelegramMethod[list[BotCommand]]):
     """
     Use this method to get the current list of the bot's commands for the given scope and user language. Returns an Array of :class:`aiogram.types.bot_command.BotCommand` objects. If commands aren't set, an empty list is returned.
 
     Source: https://core.telegram.org/bots/api#getmycommands
     """
 
-    __returning__ = List[BotCommand]
+    __returning__ = list[BotCommand]
     __api_method__ = "getMyCommands"
 
     scope: Optional[

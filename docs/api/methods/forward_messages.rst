@@ -2,7 +2,7 @@
 forwardMessages
 ###############
 
-Returns: :obj:`List[MessageId]`
+Returns: :obj:`list[MessageId]`
 
 .. automodule:: aiogram.methods.forward_messages
     :members:
@@ -19,7 +19,7 @@ As bot method
 
 .. code-block::
 
-    result: List[MessageId] = await bot.forward_messages(...)
+    result: list[MessageId] = await bot.forward_messages(...)
 
 
 Method as object
@@ -35,7 +35,7 @@ With specific bot
 
 .. code-block:: python
 
-    result: List[MessageId] = await bot(ForwardMessages(...))
+    result: list[MessageId] = await bot(ForwardMessages(...))
 
 As reply into Webhook in handler
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

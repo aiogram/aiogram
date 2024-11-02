@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, List, Optional
+from typing import TYPE_CHECKING, Any, Optional
 
 from .base import TelegramObject
 
@@ -18,7 +18,7 @@ class PollAnswer(TelegramObject):
 
     poll_id: str
     """Unique poll identifier"""
-    option_ids: List[int]
+    option_ids: list[int]
     """0-based identifiers of chosen answer options. May be empty if the vote was retracted."""
     voter_chat: Optional[Chat] = None
     """*Optional*. The chat that changed the answer to the poll, if the voter is anonymous"""
@@ -33,7 +33,7 @@ class PollAnswer(TelegramObject):
             __pydantic__self__,
             *,
             poll_id: str,
-            option_ids: List[int],
+            option_ids: list[int],
             voter_chat: Optional[Chat] = None,
             user: Optional[User] = None,
             **__pydantic_kwargs: Any,

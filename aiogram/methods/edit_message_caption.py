@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, List, Optional, Union
+from typing import TYPE_CHECKING, Any, Optional, Union
 
 from ..client.default import Default
-from ..types import UNSET_PARSE_MODE, InlineKeyboardMarkup, Message, MessageEntity
+from ..types import InlineKeyboardMarkup, Message, MessageEntity
 from .base import TelegramMethod
 
 
@@ -29,7 +29,7 @@ class EditMessageCaption(TelegramMethod[Union[Message, bool]]):
     """New caption of the message, 0-1024 characters after entities parsing"""
     parse_mode: Optional[Union[str, Default]] = Default("parse_mode")
     """Mode for parsing entities in the message caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details."""
-    caption_entities: Optional[List[MessageEntity]] = None
+    caption_entities: Optional[list[MessageEntity]] = None
     """A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*"""
     show_caption_above_media: Optional[Union[bool, Default]] = Default("show_caption_above_media")
     """Pass :code:`True`, if the caption must be shown above the message media. Supported only for animation, photo and video messages."""
@@ -49,7 +49,7 @@ class EditMessageCaption(TelegramMethod[Union[Message, bool]]):
             inline_message_id: Optional[str] = None,
             caption: Optional[str] = None,
             parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
-            caption_entities: Optional[List[MessageEntity]] = None,
+            caption_entities: Optional[list[MessageEntity]] = None,
             show_caption_above_media: Optional[Union[bool, Default]] = Default(
                 "show_caption_above_media"
             ),

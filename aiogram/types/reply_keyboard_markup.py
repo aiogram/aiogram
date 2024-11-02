@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, List, Optional
+from typing import TYPE_CHECKING, Any, Optional
 
 from .base import MutableTelegramObject
 
@@ -15,7 +15,7 @@ class ReplyKeyboardMarkup(MutableTelegramObject):
     Source: https://core.telegram.org/bots/api#replykeyboardmarkup
     """
 
-    keyboard: List[List[KeyboardButton]]
+    keyboard: list[list[KeyboardButton]]
     """Array of button rows, each represented by an Array of :class:`aiogram.types.keyboard_button.KeyboardButton` objects"""
     is_persistent: Optional[bool] = None
     """*Optional*. Requests clients to always show the keyboard when the regular keyboard is hidden. Defaults to *false*, in which case the custom keyboard can be hidden and opened with a keyboard icon."""
@@ -35,7 +35,7 @@ class ReplyKeyboardMarkup(MutableTelegramObject):
         def __init__(
             __pydantic__self__,
             *,
-            keyboard: List[List[KeyboardButton]],
+            keyboard: list[list[KeyboardButton]],
             is_persistent: Optional[bool] = None,
             resize_keyboard: Optional[bool] = None,
             one_time_keyboard: Optional[bool] = None,

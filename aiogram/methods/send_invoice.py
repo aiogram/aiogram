@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, List, Optional, Union
+from typing import TYPE_CHECKING, Any, Optional, Union
 
 from pydantic import Field
 
@@ -29,7 +29,7 @@ class SendInvoice(TelegramMethod[Message]):
     """Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use it for your internal processes."""
     currency: str
     """Three-letter ISO 4217 currency code, see `more on currencies <https://core.telegram.org/bots/payments#supported-currencies>`_. Pass 'XTR' for payments in `Telegram Stars <https://t.me/BotNews/90>`_."""
-    prices: List[LabeledPrice]
+    prices: list[LabeledPrice]
     """Price breakdown, a JSON-serialized list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.). Must contain exactly one item for payments in `Telegram Stars <https://t.me/BotNews/90>`_."""
     message_thread_id: Optional[int] = None
     """Unique identifier for the target message thread (topic) of the forum; for forum supergroups only"""
@@ -37,7 +37,7 @@ class SendInvoice(TelegramMethod[Message]):
     """Payment provider token, obtained via `@BotFather <https://t.me/botfather>`_. Pass an empty string for payments in `Telegram Stars <https://t.me/BotNews/90>`_."""
     max_tip_amount: Optional[int] = None
     """The maximum accepted amount for tips in the *smallest units* of the currency (integer, **not** float/double). For example, for a maximum tip of :code:`US$ 1.45` pass :code:`max_tip_amount = 145`. See the *exp* parameter in `currencies.json <https://core.telegram.org/bots/payments/currencies.json>`_, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies). Defaults to 0. Not supported for payments in `Telegram Stars <https://t.me/BotNews/90>`_."""
-    suggested_tip_amounts: Optional[List[int]] = None
+    suggested_tip_amounts: Optional[list[int]] = None
     """A JSON-serialized array of suggested amounts of tips in the *smallest units* of the currency (integer, **not** float/double). At most 4 suggested tip amounts can be specified. The suggested tip amounts must be positive, passed in a strictly increased order and must not exceed *max_tip_amount*."""
     start_parameter: Optional[str] = None
     """Unique deep-linking parameter. If left empty, **forwarded copies** of the sent message will have a *Pay* button, allowing multiple users to pay directly from the forwarded message, using the same invoice. If non-empty, forwarded copies of the sent message will have a *URL* button with a deep link to the bot (instead of a *Pay* button), with the value used as the start parameter"""
@@ -69,6 +69,8 @@ class SendInvoice(TelegramMethod[Message]):
     """Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound."""
     protect_content: Optional[Union[bool, Default]] = Default("protect_content")
     """Protects the contents of the sent message from forwarding and saving"""
+    allow_paid_broadcast: Optional[bool] = None
+    """Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance"""
     message_effect_id: Optional[str] = None
     """Unique identifier of the message effect to be added to the message; for private chats only"""
     reply_parameters: Optional[ReplyParameters] = None
@@ -100,11 +102,11 @@ class SendInvoice(TelegramMethod[Message]):
             description: str,
             payload: str,
             currency: str,
-            prices: List[LabeledPrice],
+            prices: list[LabeledPrice],
             message_thread_id: Optional[int] = None,
             provider_token: Optional[str] = None,
             max_tip_amount: Optional[int] = None,
-            suggested_tip_amounts: Optional[List[int]] = None,
+            suggested_tip_amounts: Optional[list[int]] = None,
             start_parameter: Optional[str] = None,
             provider_data: Optional[str] = None,
             photo_url: Optional[str] = None,
@@ -120,6 +122,7 @@ class SendInvoice(TelegramMethod[Message]):
             is_flexible: Optional[bool] = None,
             disable_notification: Optional[bool] = None,
             protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+            allow_paid_broadcast: Optional[bool] = None,
             message_effect_id: Optional[str] = None,
             reply_parameters: Optional[ReplyParameters] = None,
             reply_markup: Optional[InlineKeyboardMarkup] = None,
@@ -157,6 +160,7 @@ class SendInvoice(TelegramMethod[Message]):
                 is_flexible=is_flexible,
                 disable_notification=disable_notification,
                 protect_content=protect_content,
+                allow_paid_broadcast=allow_paid_broadcast,
                 message_effect_id=message_effect_id,
                 reply_parameters=reply_parameters,
                 reply_markup=reply_markup,

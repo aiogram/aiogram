@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, List, Optional
+from typing import TYPE_CHECKING, Any, Optional
 
 from pydantic import Field
 
@@ -19,9 +19,9 @@ class UsersShared(TelegramObject):
 
     request_id: int
     """Identifier of the request"""
-    users: List[SharedUser]
+    users: list[SharedUser]
     """Information about users shared with the bot."""
-    user_ids: Optional[List[int]] = Field(None, json_schema_extra={"deprecated": True})
+    user_ids: Optional[list[int]] = Field(None, json_schema_extra={"deprecated": True})
     """Identifiers of the shared users. These numbers may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting them. But they have at most 52 significant bits, so 64-bit integers or double-precision float types are safe for storing these identifiers. The bot may not have access to the users and could be unable to use these identifiers, unless the users are already known to the bot by some other means.
 
 .. deprecated:: API:7.2
@@ -35,8 +35,8 @@ class UsersShared(TelegramObject):
             __pydantic__self__,
             *,
             request_id: int,
-            users: List[SharedUser],
-            user_ids: Optional[List[int]] = None,
+            users: list[SharedUser],
+            user_ids: Optional[list[int]] = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

@@ -2,7 +2,7 @@
 sendMediaGroup
 ##############
 
-Returns: :obj:`List[Message]`
+Returns: :obj:`list[Message]`
 
 .. automodule:: aiogram.methods.send_media_group
     :members:
@@ -19,7 +19,7 @@ As bot method
 
 .. code-block::
 
-    result: List[Message] = await bot.send_media_group(...)
+    result: list[Message] = await bot.send_media_group(...)
 
 
 Method as object
@@ -35,7 +35,7 @@ With specific bot
 
 .. code-block:: python
 
-    result: List[Message] = await bot(SendMediaGroup(...))
+    result: list[Message] = await bot(SendMediaGroup(...))
 
 As reply into Webhook in handler
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

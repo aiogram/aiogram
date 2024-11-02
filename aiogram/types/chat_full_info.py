@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, List, Optional, Union
+from typing import TYPE_CHECKING, Any, Optional, Union
 
 from .chat import Chat
 from .custom import DateTime
@@ -46,7 +46,7 @@ class ChatFullInfo(Chat):
     """*Optional*. :code:`True`, if the supergroup chat is a forum (has `topics <https://telegram.org/blog/topics-in-groups-collectible-usernames#topics-in-groups>`_ enabled)"""
     photo: Optional[ChatPhoto] = None
     """*Optional*. Chat photo"""
-    active_usernames: Optional[List[str]] = None
+    active_usernames: Optional[list[str]] = None
     """*Optional*. If non-empty, the list of all `active chat usernames <https://telegram.org/blog/topics-in-groups-collectible-usernames#collectible-usernames>`_; for private chats, supergroups and channels"""
     birthdate: Optional[Birthdate] = None
     """*Optional*. For private chats, the date of birth of the user"""
@@ -59,7 +59,7 @@ class ChatFullInfo(Chat):
     personal_chat: Optional[Chat] = None
     """*Optional*. For private chats, the personal channel of the user"""
     available_reactions: Optional[
-        List[Union[ReactionTypeEmoji, ReactionTypeCustomEmoji, ReactionTypePaid]]
+        list[Union[ReactionTypeEmoji, ReactionTypeCustomEmoji, ReactionTypePaid]]
     ] = None
     """*Optional*. List of available reactions allowed in the chat. If omitted, then all `emoji reactions <https://core.telegram.org/bots/api#reactiontypeemoji>`_ are allowed."""
     background_custom_emoji_id: Optional[str] = None
@@ -134,14 +134,14 @@ class ChatFullInfo(Chat):
             last_name: Optional[str] = None,
             is_forum: Optional[bool] = None,
             photo: Optional[ChatPhoto] = None,
-            active_usernames: Optional[List[str]] = None,
+            active_usernames: Optional[list[str]] = None,
             birthdate: Optional[Birthdate] = None,
             business_intro: Optional[BusinessIntro] = None,
             business_location: Optional[BusinessLocation] = None,
             business_opening_hours: Optional[BusinessOpeningHours] = None,
             personal_chat: Optional[Chat] = None,
             available_reactions: Optional[
-                List[Union[ReactionTypeEmoji, ReactionTypeCustomEmoji, ReactionTypePaid]]
+                list[Union[ReactionTypeEmoji, ReactionTypeCustomEmoji, ReactionTypePaid]]
             ] = None,
             background_custom_emoji_id: Optional[str] = None,
             profile_accent_color_id: Optional[int] = None,

@@ -131,7 +131,7 @@ class Message(MaybeInaccessibleMessage):
     """
 
     message_id: int
-    """Unique message identifier inside this chat"""
+    """Unique message identifier inside this chat. In specific instances (e.g., message containing a video sent to a big chat), the server might automatically schedule a message instead of sending it immediately. In such cases, this field will be 0 and the relevant message will be unusable until it is actually sent"""
     date: DateTime
     """Date the message was sent in Unix time. It is always a positive number, representing a valid date."""
     chat: Chat
@@ -178,7 +178,7 @@ class Message(MaybeInaccessibleMessage):
     """*Optional*. Signature of the post author for messages in channels, or the custom title of an anonymous group administrator"""
     text: Optional[str] = None
     """*Optional*. For text messages, the actual UTF-8 text of the message"""
-    entities: Optional[List[MessageEntity]] = None
+    entities: Optional[list[MessageEntity]] = None
     """*Optional*. For text messages, special entities like usernames, URLs, bot commands, etc. that appear in the text"""
     link_preview_options: Optional[LinkPreviewOptions] = None
     """*Optional*. Options used for link preview generation for the message, if it is a text message and link preview options were changed"""
@@ -192,7 +192,7 @@ class Message(MaybeInaccessibleMessage):
     """*Optional*. Message is a general file, information about the file"""
     paid_media: Optional[PaidMediaInfo] = None
     """*Optional*. Message contains paid media; information about the paid media"""
-    photo: Optional[List[PhotoSize]] = None
+    photo: Optional[list[PhotoSize]] = None
     """*Optional*. Message is a photo, available sizes of the photo"""
     sticker: Optional[Sticker] = None
     """*Optional*. Message is a sticker, information about the sticker"""
@@ -206,7 +206,7 @@ class Message(MaybeInaccessibleMessage):
     """*Optional*. Message is a voice message, information about the file"""
     caption: Optional[str] = None
     """*Optional*. Caption for the animation, audio, document, paid media, photo, video or voice"""
-    caption_entities: Optional[List[MessageEntity]] = None
+    caption_entities: Optional[list[MessageEntity]] = None
     """*Optional*. For messages with a caption, special entities like usernames, URLs, bot commands, etc. that appear in the caption"""
     show_caption_above_media: Optional[bool] = None
     """*Optional*. True, if the caption must be shown above the message media"""
@@ -224,13 +224,13 @@ class Message(MaybeInaccessibleMessage):
     """*Optional*. Message is a venue, information about the venue. For backward compatibility, when this field is set, the *location* field will also be set"""
     location: Optional[Location] = None
     """*Optional*. Message is a shared location, information about the location"""
-    new_chat_members: Optional[List[User]] = None
+    new_chat_members: Optional[list[User]] = None
     """*Optional*. New members that were added to the group or supergroup and information about them (the bot itself may be one of these members)"""
     left_chat_member: Optional[User] = None
     """*Optional*. A member was removed from the group, information about them (this member may be the bot itself)"""
     new_chat_title: Optional[str] = None
     """*Optional*. A chat title was changed to this value"""
-    new_chat_photo: Optional[List[PhotoSize]] = None
+    new_chat_photo: Optional[list[PhotoSize]] = None
     """*Optional*. A chat photo was change to this value"""
     delete_chat_photo: Optional[bool] = None
     """*Optional*. Service message: the chat photo was deleted"""
@@ -375,21 +375,21 @@ class Message(MaybeInaccessibleMessage):
             media_group_id: Optional[str] = None,
             author_signature: Optional[str] = None,
             text: Optional[str] = None,
-            entities: Optional[List[MessageEntity]] = None,
+            entities: Optional[list[MessageEntity]] = None,
             link_preview_options: Optional[LinkPreviewOptions] = None,
             effect_id: Optional[str] = None,
             animation: Optional[Animation] = None,
             audio: Optional[Audio] = None,
             document: Optional[Document] = None,
             paid_media: Optional[PaidMediaInfo] = None,
-            photo: Optional[List[PhotoSize]] = None,
+            photo: Optional[list[PhotoSize]] = None,
             sticker: Optional[Sticker] = None,
             story: Optional[Story] = None,
             video: Optional[Video] = None,
             video_note: Optional[VideoNote] = None,
             voice: Optional[Voice] = None,
             caption: Optional[str] = None,
-            caption_entities: Optional[List[MessageEntity]] = None,
+            caption_entities: Optional[list[MessageEntity]] = None,
             show_caption_above_media: Optional[bool] = None,
             has_media_spoiler: Optional[bool] = None,
             contact: Optional[Contact] = None,
@@ -398,10 +398,10 @@ class Message(MaybeInaccessibleMessage):
             poll: Optional[Poll] = None,
             venue: Optional[Venue] = None,
             location: Optional[Location] = None,
-            new_chat_members: Optional[List[User]] = None,
+            new_chat_members: Optional[list[User]] = None,
             left_chat_member: Optional[User] = None,
             new_chat_title: Optional[str] = None,
-            new_chat_photo: Optional[List[PhotoSize]] = None,
+            new_chat_photo: Optional[list[PhotoSize]] = None,
             delete_chat_photo: Optional[bool] = None,
             group_chat_created: Optional[bool] = None,
             supergroup_chat_created: Optional[bool] = None,
@@ -705,13 +705,14 @@ class Message(MaybeInaccessibleMessage):
         thumbnail: Optional[InputFile] = None,
         caption: Optional[str] = None,
         parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
-        caption_entities: Optional[List[MessageEntity]] = None,
+        caption_entities: Optional[list[MessageEntity]] = None,
         show_caption_above_media: Optional[Union[bool, Default]] = Default(
             "show_caption_above_media"
         ),
         has_spoiler: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -744,6 +745,7 @@ class Message(MaybeInaccessibleMessage):
         :param has_spoiler: Pass :code:`True` if the animation needs to be covered with a spoiler animation
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
+        :param allow_paid_broadcast: Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
         :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
@@ -775,6 +777,7 @@ class Message(MaybeInaccessibleMessage):
             has_spoiler=has_spoiler,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            allow_paid_broadcast=allow_paid_broadcast,
             message_effect_id=message_effect_id,
             reply_markup=reply_markup,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -790,13 +793,14 @@ class Message(MaybeInaccessibleMessage):
         thumbnail: Optional[InputFile] = None,
         caption: Optional[str] = None,
         parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
-        caption_entities: Optional[List[MessageEntity]] = None,
+        caption_entities: Optional[list[MessageEntity]] = None,
         show_caption_above_media: Optional[Union[bool, Default]] = Default(
             "show_caption_above_media"
         ),
         has_spoiler: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
@@ -830,6 +834,7 @@ class Message(MaybeInaccessibleMessage):
         :param has_spoiler: Pass :code:`True` if the animation needs to be covered with a spoiler animation
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
+        :param allow_paid_broadcast: Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
         :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param reply_parameters: Description of the message to reply to
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
@@ -862,6 +867,7 @@ class Message(MaybeInaccessibleMessage):
             has_spoiler=has_spoiler,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            allow_paid_broadcast=allow_paid_broadcast,
             message_effect_id=message_effect_id,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
@@ -875,13 +881,14 @@ class Message(MaybeInaccessibleMessage):
         audio: Union[InputFile, str],
         caption: Optional[str] = None,
         parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
-        caption_entities: Optional[List[MessageEntity]] = None,
+        caption_entities: Optional[list[MessageEntity]] = None,
         duration: Optional[int] = None,
         performer: Optional[str] = None,
         title: Optional[str] = None,
         thumbnail: Optional[InputFile] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -913,6 +920,7 @@ class Message(MaybeInaccessibleMessage):
         :param thumbnail: Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
+        :param allow_paid_broadcast: Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
         :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
@@ -942,6 +950,7 @@ class Message(MaybeInaccessibleMessage):
             thumbnail=thumbnail,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            allow_paid_broadcast=allow_paid_broadcast,
             message_effect_id=message_effect_id,
             reply_markup=reply_markup,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -953,13 +962,14 @@ class Message(MaybeInaccessibleMessage):
         audio: Union[InputFile, str],
         caption: Optional[str] = None,
         parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
-        caption_entities: Optional[List[MessageEntity]] = None,
+        caption_entities: Optional[list[MessageEntity]] = None,
         duration: Optional[int] = None,
         performer: Optional[str] = None,
         title: Optional[str] = None,
         thumbnail: Optional[InputFile] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
@@ -992,6 +1002,7 @@ class Message(MaybeInaccessibleMessage):
         :param thumbnail: Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
+        :param allow_paid_broadcast: Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
         :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param reply_parameters: Description of the message to reply to
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
@@ -1022,6 +1033,7 @@ class Message(MaybeInaccessibleMessage):
             thumbnail=thumbnail,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            allow_paid_broadcast=allow_paid_broadcast,
             message_effect_id=message_effect_id,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
@@ -1038,6 +1050,7 @@ class Message(MaybeInaccessibleMessage):
         vcard: Optional[str] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -1064,6 +1077,7 @@ class Message(MaybeInaccessibleMessage):
         :param vcard: Additional data about the contact in the form of a `vCard <https://en.wikipedia.org/wiki/VCard>`_, 0-2048 bytes
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
+        :param allow_paid_broadcast: Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
         :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
@@ -1089,6 +1103,7 @@ class Message(MaybeInaccessibleMessage):
             vcard=vcard,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            allow_paid_broadcast=allow_paid_broadcast,
             message_effect_id=message_effect_id,
             reply_markup=reply_markup,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -1103,6 +1118,7 @@ class Message(MaybeInaccessibleMessage):
         vcard: Optional[str] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
@@ -1130,6 +1146,7 @@ class Message(MaybeInaccessibleMessage):
         :param vcard: Additional data about the contact in the form of a `vCard <https://en.wikipedia.org/wiki/VCard>`_, 0-2048 bytes
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
+        :param allow_paid_broadcast: Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
         :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param reply_parameters: Description of the message to reply to
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
@@ -1156,6 +1173,7 @@ class Message(MaybeInaccessibleMessage):
             vcard=vcard,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            allow_paid_broadcast=allow_paid_broadcast,
             message_effect_id=message_effect_id,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
@@ -1170,10 +1188,11 @@ class Message(MaybeInaccessibleMessage):
         thumbnail: Optional[InputFile] = None,
         caption: Optional[str] = None,
         parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
-        caption_entities: Optional[List[MessageEntity]] = None,
+        caption_entities: Optional[list[MessageEntity]] = None,
         disable_content_type_detection: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -1202,6 +1221,7 @@ class Message(MaybeInaccessibleMessage):
         :param disable_content_type_detection: Disables automatic server-side content type detection for files uploaded using multipart/form-data
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
+        :param allow_paid_broadcast: Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
         :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
@@ -1229,6 +1249,7 @@ class Message(MaybeInaccessibleMessage):
             disable_content_type_detection=disable_content_type_detection,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            allow_paid_broadcast=allow_paid_broadcast,
             message_effect_id=message_effect_id,
             reply_markup=reply_markup,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -1241,10 +1262,11 @@ class Message(MaybeInaccessibleMessage):
         thumbnail: Optional[InputFile] = None,
         caption: Optional[str] = None,
         parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
-        caption_entities: Optional[List[MessageEntity]] = None,
+        caption_entities: Optional[list[MessageEntity]] = None,
         disable_content_type_detection: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
@@ -1274,6 +1296,7 @@ class Message(MaybeInaccessibleMessage):
         :param disable_content_type_detection: Disables automatic server-side content type detection for files uploaded using multipart/form-data
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
+        :param allow_paid_broadcast: Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
         :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param reply_parameters: Description of the message to reply to
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
@@ -1302,6 +1325,7 @@ class Message(MaybeInaccessibleMessage):
             disable_content_type_detection=disable_content_type_detection,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            allow_paid_broadcast=allow_paid_broadcast,
             message_effect_id=message_effect_id,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
@@ -1315,6 +1339,7 @@ class Message(MaybeInaccessibleMessage):
         game_short_name: str,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_markup: Optional[InlineKeyboardMarkup] = None,
         allow_sending_without_reply: Optional[bool] = None,
@@ -1336,6 +1361,7 @@ class Message(MaybeInaccessibleMessage):
         :param game_short_name: Short name of the game, serves as the unique identifier for the game. Set up your games via `@BotFather <https://t.me/botfather>`_.
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
+        :param allow_paid_broadcast: Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
         :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param reply_markup: A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_. If empty, one 'Play game_title' button will be shown. If not empty, the first button must launch the game.
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
@@ -1358,6 +1384,7 @@ class Message(MaybeInaccessibleMessage):
             game_short_name=game_short_name,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            allow_paid_broadcast=allow_paid_broadcast,
             message_effect_id=message_effect_id,
             reply_markup=reply_markup,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -1369,6 +1396,7 @@ class Message(MaybeInaccessibleMessage):
         game_short_name: str,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[InlineKeyboardMarkup] = None,
@@ -1391,6 +1419,7 @@ class Message(MaybeInaccessibleMessage):
         :param game_short_name: Short name of the game, serves as the unique identifier for the game. Set up your games via `@BotFather <https://t.me/botfather>`_.
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
+        :param allow_paid_broadcast: Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
         :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param reply_parameters: Description of the message to reply to
         :param reply_markup: A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_. If empty, one 'Play game_title' button will be shown. If not empty, the first button must launch the game.
@@ -1414,6 +1443,7 @@ class Message(MaybeInaccessibleMessage):
             game_short_name=game_short_name,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            allow_paid_broadcast=allow_paid_broadcast,
             message_effect_id=message_effect_id,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
@@ -1428,10 +1458,10 @@ class Message(MaybeInaccessibleMessage):
         description: str,
         payload: str,
         currency: str,
-        prices: List[LabeledPrice],
+        prices: list[LabeledPrice],
         provider_token: Optional[str] = None,
         max_tip_amount: Optional[int] = None,
-        suggested_tip_amounts: Optional[List[int]] = None,
+        suggested_tip_amounts: Optional[list[int]] = None,
         start_parameter: Optional[str] = None,
         provider_data: Optional[str] = None,
         photo_url: Optional[str] = None,
@@ -1447,6 +1477,7 @@ class Message(MaybeInaccessibleMessage):
         is_flexible: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_markup: Optional[InlineKeyboardMarkup] = None,
         allow_sending_without_reply: Optional[bool] = None,
@@ -1488,6 +1519,7 @@ class Message(MaybeInaccessibleMessage):
         :param is_flexible: Pass :code:`True` if the final price depends on the shipping method. Ignored for payments in `Telegram Stars <https://t.me/BotNews/90>`_.
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
+        :param allow_paid_broadcast: Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
         :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param reply_markup: A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_. If empty, one 'Pay :code:`total price`' button will be shown. If not empty, the first button must be a Pay button.
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
@@ -1530,6 +1562,7 @@ class Message(MaybeInaccessibleMessage):
             is_flexible=is_flexible,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            allow_paid_broadcast=allow_paid_broadcast,
             message_effect_id=message_effect_id,
             reply_markup=reply_markup,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -1542,10 +1575,10 @@ class Message(MaybeInaccessibleMessage):
         description: str,
         payload: str,
         currency: str,
-        prices: List[LabeledPrice],
+        prices: list[LabeledPrice],
         provider_token: Optional[str] = None,
         max_tip_amount: Optional[int] = None,
-        suggested_tip_amounts: Optional[List[int]] = None,
+        suggested_tip_amounts: Optional[list[int]] = None,
         start_parameter: Optional[str] = None,
         provider_data: Optional[str] = None,
         photo_url: Optional[str] = None,
@@ -1561,6 +1594,7 @@ class Message(MaybeInaccessibleMessage):
         is_flexible: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[InlineKeyboardMarkup] = None,
@@ -1603,6 +1637,7 @@ class Message(MaybeInaccessibleMessage):
         :param is_flexible: Pass :code:`True` if the final price depends on the shipping method. Ignored for payments in `Telegram Stars <https://t.me/BotNews/90>`_.
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
+        :param allow_paid_broadcast: Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
         :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param reply_parameters: Description of the message to reply to
         :param reply_markup: A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_. If empty, one 'Pay :code:`total price`' button will be shown. If not empty, the first button must be a Pay button.
@@ -1646,6 +1681,7 @@ class Message(MaybeInaccessibleMessage):
             is_flexible=is_flexible,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            allow_paid_broadcast=allow_paid_broadcast,
             message_effect_id=message_effect_id,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
@@ -1664,6 +1700,7 @@ class Message(MaybeInaccessibleMessage):
         proximity_alert_radius: Optional[int] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -1692,6 +1729,7 @@ class Message(MaybeInaccessibleMessage):
         :param proximity_alert_radius: For live locations, a maximum distance for proximity alerts about approaching another chat member, in meters. Must be between 1 and 100000 if specified.
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
+        :param allow_paid_broadcast: Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
         :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
@@ -1719,6 +1757,7 @@ class Message(MaybeInaccessibleMessage):
             proximity_alert_radius=proximity_alert_radius,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            allow_paid_broadcast=allow_paid_broadcast,
             message_effect_id=message_effect_id,
             reply_markup=reply_markup,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -1735,6 +1774,7 @@ class Message(MaybeInaccessibleMessage):
         proximity_alert_radius: Optional[int] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
@@ -1764,6 +1804,7 @@ class Message(MaybeInaccessibleMessage):
         :param proximity_alert_radius: For live locations, a maximum distance for proximity alerts about approaching another chat member, in meters. Must be between 1 and 100000 if specified.
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
+        :param allow_paid_broadcast: Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
         :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param reply_parameters: Description of the message to reply to
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
@@ -1792,6 +1833,7 @@ class Message(MaybeInaccessibleMessage):
             proximity_alert_radius=proximity_alert_radius,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            allow_paid_broadcast=allow_paid_broadcast,
             message_effect_id=message_effect_id,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
@@ -1802,9 +1844,10 @@ class Message(MaybeInaccessibleMessage):
 
     def reply_media_group(
         self,
-        media: List[Union[InputMediaAudio, InputMediaDocument, InputMediaPhoto, InputMediaVideo]],
+        media: list[Union[InputMediaAudio, InputMediaDocument, InputMediaPhoto, InputMediaVideo]],
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         allow_sending_without_reply: Optional[bool] = None,
         **kwargs: Any,
@@ -1825,6 +1868,7 @@ class Message(MaybeInaccessibleMessage):
         :param media: A JSON-serialized array describing messages to be sent, must include 2-10 items
         :param disable_notification: Sends messages `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent messages from forwarding and saving
+        :param allow_paid_broadcast: Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
         :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :return: instance of method :class:`aiogram.methods.send_media_group.SendMediaGroup`
@@ -1846,6 +1890,7 @@ class Message(MaybeInaccessibleMessage):
             media=media,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            allow_paid_broadcast=allow_paid_broadcast,
             message_effect_id=message_effect_id,
             allow_sending_without_reply=allow_sending_without_reply,
             **kwargs,
@@ -1853,9 +1898,10 @@ class Message(MaybeInaccessibleMessage):
 
     def answer_media_group(
         self,
-        media: List[Union[InputMediaAudio, InputMediaDocument, InputMediaPhoto, InputMediaVideo]],
+        media: list[Union[InputMediaAudio, InputMediaDocument, InputMediaPhoto, InputMediaVideo]],
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         allow_sending_without_reply: Optional[bool] = None,
@@ -1877,6 +1923,7 @@ class Message(MaybeInaccessibleMessage):
         :param media: A JSON-serialized array describing messages to be sent, must include 2-10 items
         :param disable_notification: Sends messages `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent messages from forwarding and saving
+        :param allow_paid_broadcast: Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
         :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param reply_parameters: Description of the message to reply to
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
@@ -1899,6 +1946,7 @@ class Message(MaybeInaccessibleMessage):
             media=media,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            allow_paid_broadcast=allow_paid_broadcast,
             message_effect_id=message_effect_id,
             reply_parameters=reply_parameters,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -1910,12 +1958,13 @@ class Message(MaybeInaccessibleMessage):
         self,
         text: str,
         parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
-        entities: Optional[List[MessageEntity]] = None,
+        entities: Optional[list[MessageEntity]] = None,
         link_preview_options: Optional[Union[LinkPreviewOptions, Default]] = Default(
             "link_preview"
         ),
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -1945,6 +1994,7 @@ class Message(MaybeInaccessibleMessage):
         :param link_preview_options: Link preview generation options for the message
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
+        :param allow_paid_broadcast: Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
         :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
@@ -1971,6 +2021,7 @@ class Message(MaybeInaccessibleMessage):
             link_preview_options=link_preview_options,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            allow_paid_broadcast=allow_paid_broadcast,
             message_effect_id=message_effect_id,
             reply_markup=reply_markup,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -1982,12 +2033,13 @@ class Message(MaybeInaccessibleMessage):
         self,
         text: str,
         parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
-        entities: Optional[List[MessageEntity]] = None,
+        entities: Optional[list[MessageEntity]] = None,
         link_preview_options: Optional[Union[LinkPreviewOptions, Default]] = Default(
             "link_preview"
         ),
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
@@ -2018,6 +2070,7 @@ class Message(MaybeInaccessibleMessage):
         :param link_preview_options: Link preview generation options for the message
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
+        :param allow_paid_broadcast: Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
         :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param reply_parameters: Description of the message to reply to
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
@@ -2045,6 +2098,7 @@ class Message(MaybeInaccessibleMessage):
             link_preview_options=link_preview_options,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            allow_paid_broadcast=allow_paid_broadcast,
             message_effect_id=message_effect_id,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
@@ -2059,13 +2113,14 @@ class Message(MaybeInaccessibleMessage):
         photo: Union[InputFile, str],
         caption: Optional[str] = None,
         parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
-        caption_entities: Optional[List[MessageEntity]] = None,
+        caption_entities: Optional[list[MessageEntity]] = None,
         show_caption_above_media: Optional[Union[bool, Default]] = Default(
             "show_caption_above_media"
         ),
         has_spoiler: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -2094,6 +2149,7 @@ class Message(MaybeInaccessibleMessage):
         :param has_spoiler: Pass :code:`True` if the photo needs to be covered with a spoiler animation
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
+        :param allow_paid_broadcast: Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
         :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
@@ -2121,6 +2177,7 @@ class Message(MaybeInaccessibleMessage):
             has_spoiler=has_spoiler,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            allow_paid_broadcast=allow_paid_broadcast,
             message_effect_id=message_effect_id,
             reply_markup=reply_markup,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -2132,13 +2189,14 @@ class Message(MaybeInaccessibleMessage):
         photo: Union[InputFile, str],
         caption: Optional[str] = None,
         parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
-        caption_entities: Optional[List[MessageEntity]] = None,
+        caption_entities: Optional[list[MessageEntity]] = None,
         show_caption_above_media: Optional[Union[bool, Default]] = Default(
             "show_caption_above_media"
         ),
         has_spoiler: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
@@ -2168,6 +2226,7 @@ class Message(MaybeInaccessibleMessage):
         :param has_spoiler: Pass :code:`True` if the photo needs to be covered with a spoiler animation
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
+        :param allow_paid_broadcast: Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
         :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param reply_parameters: Description of the message to reply to
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
@@ -2196,6 +2255,7 @@ class Message(MaybeInaccessibleMessage):
             has_spoiler=has_spoiler,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            allow_paid_broadcast=allow_paid_broadcast,
             message_effect_id=message_effect_id,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
@@ -2207,21 +2267,22 @@ class Message(MaybeInaccessibleMessage):
     def reply_poll(
         self,
         question: str,
-        options: List[Union[InputPollOption, str]],
+        options: list[Union[InputPollOption, str]],
         question_parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
-        question_entities: Optional[List[MessageEntity]] = None,
+        question_entities: Optional[list[MessageEntity]] = None,
         is_anonymous: Optional[bool] = None,
         type: Optional[str] = None,
         allows_multiple_answers: Optional[bool] = None,
         correct_option_id: Optional[int] = None,
         explanation: Optional[str] = None,
         explanation_parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
-        explanation_entities: Optional[List[MessageEntity]] = None,
+        explanation_entities: Optional[list[MessageEntity]] = None,
         open_period: Optional[int] = None,
         close_date: Optional[Union[datetime.datetime, datetime.timedelta, int]] = None,
         is_closed: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -2258,6 +2319,7 @@ class Message(MaybeInaccessibleMessage):
         :param is_closed: Pass :code:`True` if the poll needs to be immediately closed. This can be useful for poll preview.
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
+        :param allow_paid_broadcast: Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
         :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
@@ -2293,6 +2355,7 @@ class Message(MaybeInaccessibleMessage):
             is_closed=is_closed,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            allow_paid_broadcast=allow_paid_broadcast,
             message_effect_id=message_effect_id,
             reply_markup=reply_markup,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -2302,21 +2365,22 @@ class Message(MaybeInaccessibleMessage):
     def answer_poll(
         self,
         question: str,
-        options: List[Union[InputPollOption, str]],
+        options: list[Union[InputPollOption, str]],
         question_parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
-        question_entities: Optional[List[MessageEntity]] = None,
+        question_entities: Optional[list[MessageEntity]] = None,
         is_anonymous: Optional[bool] = None,
         type: Optional[str] = None,
         allows_multiple_answers: Optional[bool] = None,
         correct_option_id: Optional[int] = None,
         explanation: Optional[str] = None,
         explanation_parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
-        explanation_entities: Optional[List[MessageEntity]] = None,
+        explanation_entities: Optional[list[MessageEntity]] = None,
         open_period: Optional[int] = None,
         close_date: Optional[Union[datetime.datetime, datetime.timedelta, int]] = None,
         is_closed: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
@@ -2354,6 +2418,7 @@ class Message(MaybeInaccessibleMessage):
         :param is_closed: Pass :code:`True` if the poll needs to be immediately closed. This can be useful for poll preview.
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
+        :param allow_paid_broadcast: Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
         :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param reply_parameters: Description of the message to reply to
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
@@ -2390,6 +2455,7 @@ class Message(MaybeInaccessibleMessage):
             is_closed=is_closed,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            allow_paid_broadcast=allow_paid_broadcast,
             message_effect_id=message_effect_id,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
@@ -2403,6 +2469,7 @@ class Message(MaybeInaccessibleMessage):
         emoji: Optional[str] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -2426,6 +2493,7 @@ class Message(MaybeInaccessibleMessage):
         :param emoji: Emoji on which the dice throw animation is based. Currently, must be one of '🎲', '🎯', '🏀', '⚽', '🎳', or '🎰'. Dice can have values 1-6 for '🎲', '🎯' and '🎳', values 1-5 for '🏀' and '⚽', and values 1-64 for '🎰'. Defaults to '🎲'
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding
+        :param allow_paid_broadcast: Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
         :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
@@ -2448,6 +2516,7 @@ class Message(MaybeInaccessibleMessage):
             emoji=emoji,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            allow_paid_broadcast=allow_paid_broadcast,
             message_effect_id=message_effect_id,
             reply_markup=reply_markup,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -2459,6 +2528,7 @@ class Message(MaybeInaccessibleMessage):
         emoji: Optional[str] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
@@ -2483,6 +2553,7 @@ class Message(MaybeInaccessibleMessage):
         :param emoji: Emoji on which the dice throw animation is based. Currently, must be one of '🎲', '🎯', '🏀', '⚽', '🎳', or '🎰'. Dice can have values 1-6 for '🎲', '🎯' and '🎳', values 1-5 for '🏀' and '⚽', and values 1-64 for '🎰'. Defaults to '🎲'
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding
+        :param allow_paid_broadcast: Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
         :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param reply_parameters: Description of the message to reply to
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
@@ -2506,6 +2577,7 @@ class Message(MaybeInaccessibleMessage):
             emoji=emoji,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            allow_paid_broadcast=allow_paid_broadcast,
             message_effect_id=message_effect_id,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
@@ -2520,6 +2592,7 @@ class Message(MaybeInaccessibleMessage):
         emoji: Optional[str] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -2544,6 +2617,7 @@ class Message(MaybeInaccessibleMessage):
         :param emoji: Emoji associated with the sticker; only for just uploaded stickers
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
+        :param allow_paid_broadcast: Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
         :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
@@ -2567,6 +2641,7 @@ class Message(MaybeInaccessibleMessage):
             emoji=emoji,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            allow_paid_broadcast=allow_paid_broadcast,
             message_effect_id=message_effect_id,
             reply_markup=reply_markup,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -2579,6 +2654,7 @@ class Message(MaybeInaccessibleMessage):
         emoji: Optional[str] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
@@ -2604,6 +2680,7 @@ class Message(MaybeInaccessibleMessage):
         :param emoji: Emoji associated with the sticker; only for just uploaded stickers
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
+        :param allow_paid_broadcast: Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
         :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param reply_parameters: Description of the message to reply to
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
@@ -2628,6 +2705,7 @@ class Message(MaybeInaccessibleMessage):
             emoji=emoji,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            allow_paid_broadcast=allow_paid_broadcast,
             message_effect_id=message_effect_id,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
@@ -2648,6 +2726,7 @@ class Message(MaybeInaccessibleMessage):
         google_place_type: Optional[str] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -2678,6 +2757,7 @@ class Message(MaybeInaccessibleMessage):
         :param google_place_type: Google Places type of the venue. (See `supported types <https://developers.google.com/places/web-service/supported_types>`_.)
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
+        :param allow_paid_broadcast: Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
         :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
@@ -2707,6 +2787,7 @@ class Message(MaybeInaccessibleMessage):
             google_place_type=google_place_type,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            allow_paid_broadcast=allow_paid_broadcast,
             message_effect_id=message_effect_id,
             reply_markup=reply_markup,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -2725,6 +2806,7 @@ class Message(MaybeInaccessibleMessage):
         google_place_type: Optional[str] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
@@ -2756,6 +2838,7 @@ class Message(MaybeInaccessibleMessage):
         :param google_place_type: Google Places type of the venue. (See `supported types <https://developers.google.com/places/web-service/supported_types>`_.)
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
+        :param allow_paid_broadcast: Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
         :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param reply_parameters: Description of the message to reply to
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
@@ -2786,6 +2869,7 @@ class Message(MaybeInaccessibleMessage):
             google_place_type=google_place_type,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            allow_paid_broadcast=allow_paid_broadcast,
             message_effect_id=message_effect_id,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
@@ -2803,7 +2887,7 @@ class Message(MaybeInaccessibleMessage):
         thumbnail: Optional[InputFile] = None,
         caption: Optional[str] = None,
         parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
-        caption_entities: Optional[List[MessageEntity]] = None,
+        caption_entities: Optional[list[MessageEntity]] = None,
         show_caption_above_media: Optional[Union[bool, Default]] = Default(
             "show_caption_above_media"
         ),
@@ -2811,6 +2895,7 @@ class Message(MaybeInaccessibleMessage):
         supports_streaming: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -2844,6 +2929,7 @@ class Message(MaybeInaccessibleMessage):
         :param supports_streaming: Pass :code:`True` if the uploaded video is suitable for streaming
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
+        :param allow_paid_broadcast: Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
         :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
@@ -2876,6 +2962,7 @@ class Message(MaybeInaccessibleMessage):
             supports_streaming=supports_streaming,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            allow_paid_broadcast=allow_paid_broadcast,
             message_effect_id=message_effect_id,
             reply_markup=reply_markup,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -2891,7 +2978,7 @@ class Message(MaybeInaccessibleMessage):
         thumbnail: Optional[InputFile] = None,
         caption: Optional[str] = None,
         parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
-        caption_entities: Optional[List[MessageEntity]] = None,
+        caption_entities: Optional[list[MessageEntity]] = None,
         show_caption_above_media: Optional[Union[bool, Default]] = Default(
             "show_caption_above_media"
         ),
@@ -2899,6 +2986,7 @@ class Message(MaybeInaccessibleMessage):
         supports_streaming: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
@@ -2933,6 +3021,7 @@ class Message(MaybeInaccessibleMessage):
         :param supports_streaming: Pass :code:`True` if the uploaded video is suitable for streaming
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
+        :param allow_paid_broadcast: Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
         :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param reply_parameters: Description of the message to reply to
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
@@ -2966,6 +3055,7 @@ class Message(MaybeInaccessibleMessage):
             supports_streaming=supports_streaming,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            allow_paid_broadcast=allow_paid_broadcast,
             message_effect_id=message_effect_id,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
@@ -2982,6 +3072,7 @@ class Message(MaybeInaccessibleMessage):
         thumbnail: Optional[InputFile] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -3008,6 +3099,7 @@ class Message(MaybeInaccessibleMessage):
         :param thumbnail: Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
+        :param allow_paid_broadcast: Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
         :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
@@ -3033,6 +3125,7 @@ class Message(MaybeInaccessibleMessage):
             thumbnail=thumbnail,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            allow_paid_broadcast=allow_paid_broadcast,
             message_effect_id=message_effect_id,
             reply_markup=reply_markup,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -3047,6 +3140,7 @@ class Message(MaybeInaccessibleMessage):
         thumbnail: Optional[InputFile] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
@@ -3074,6 +3168,7 @@ class Message(MaybeInaccessibleMessage):
         :param thumbnail: Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
+        :param allow_paid_broadcast: Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
         :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param reply_parameters: Description of the message to reply to
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
@@ -3100,6 +3195,7 @@ class Message(MaybeInaccessibleMessage):
             thumbnail=thumbnail,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            allow_paid_broadcast=allow_paid_broadcast,
             message_effect_id=message_effect_id,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
@@ -3113,10 +3209,11 @@ class Message(MaybeInaccessibleMessage):
         voice: Union[InputFile, str],
         caption: Optional[str] = None,
         parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
-        caption_entities: Optional[List[MessageEntity]] = None,
+        caption_entities: Optional[list[MessageEntity]] = None,
         duration: Optional[int] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -3144,6 +3241,7 @@ class Message(MaybeInaccessibleMessage):
         :param duration: Duration of the voice message in seconds
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
+        :param allow_paid_broadcast: Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
         :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
@@ -3170,6 +3268,7 @@ class Message(MaybeInaccessibleMessage):
             duration=duration,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            allow_paid_broadcast=allow_paid_broadcast,
             message_effect_id=message_effect_id,
             reply_markup=reply_markup,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -3181,10 +3280,11 @@ class Message(MaybeInaccessibleMessage):
         voice: Union[InputFile, str],
         caption: Optional[str] = None,
         parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
-        caption_entities: Optional[List[MessageEntity]] = None,
+        caption_entities: Optional[list[MessageEntity]] = None,
         duration: Optional[int] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
@@ -3213,6 +3313,7 @@ class Message(MaybeInaccessibleMessage):
         :param duration: Duration of the voice message in seconds
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
+        :param allow_paid_broadcast: Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
         :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param reply_parameters: Description of the message to reply to
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
@@ -3240,6 +3341,7 @@ class Message(MaybeInaccessibleMessage):
             duration=duration,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            allow_paid_broadcast=allow_paid_broadcast,
             message_effect_id=message_effect_id,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
@@ -3451,12 +3553,13 @@ class Message(MaybeInaccessibleMessage):
         message_thread_id: Optional[int] = None,
         caption: Optional[str] = None,
         parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
-        caption_entities: Optional[List[MessageEntity]] = None,
+        caption_entities: Optional[list[MessageEntity]] = None,
         show_caption_above_media: Optional[Union[bool, Default]] = Default(
             "show_caption_above_media"
         ),
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        allow_paid_broadcast: Optional[bool] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -3484,6 +3587,7 @@ class Message(MaybeInaccessibleMessage):
         :param show_caption_above_media: Pass :code:`True`, if the caption must be shown above the message media. Ignored if a new caption isn't specified.
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
+        :param allow_paid_broadcast: Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
         :param reply_parameters: Description of the message to reply to
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
@@ -3510,6 +3614,7 @@ class Message(MaybeInaccessibleMessage):
             show_caption_above_media=show_caption_above_media,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            allow_paid_broadcast=allow_paid_broadcast,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -3522,7 +3627,7 @@ class Message(MaybeInaccessibleMessage):
         text: str,
         inline_message_id: Optional[str] = None,
         parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
-        entities: Optional[List[MessageEntity]] = None,
+        entities: Optional[list[MessageEntity]] = None,
         link_preview_options: Optional[Union[LinkPreviewOptions, Default]] = Default(
             "link_preview"
         ),
@@ -3641,7 +3746,7 @@ class Message(MaybeInaccessibleMessage):
         - :code:`message_id`
         - :code:`business_connection_id`
 
-        Use this method to edit animation, audio, document, photo, or video messages. If a message is part of a message album, then it can be edited only to an audio for audio albums, only to a document for document albums and to a photo or a video otherwise. When an inline message is edited, a new file can't be uploaded; use a previously uploaded file via its file_id or specify a URL. On success, if the edited message is not an inline message, the edited :class:`aiogram.types.message.Message` is returned, otherwise :code:`True` is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within **48 hours** from the time they were sent.
+        Use this method to edit animation, audio, document, photo, or video messages, or to add media to text messages. If a message is part of a message album, then it can be edited only to an audio for audio albums, only to a document for document albums and to a photo or a video otherwise. When an inline message is edited, a new file can't be uploaded; use a previously uploaded file via its file_id or specify a URL. On success, if the edited message is not an inline message, the edited :class:`aiogram.types.message.Message` is returned, otherwise :code:`True` is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within **48 hours** from the time they were sent.
 
         Source: https://core.telegram.org/bots/api#editmessagemedia
 
@@ -3851,7 +3956,7 @@ class Message(MaybeInaccessibleMessage):
         inline_message_id: Optional[str] = None,
         caption: Optional[str] = None,
         parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
-        caption_entities: Optional[List[MessageEntity]] = None,
+        caption_entities: Optional[list[MessageEntity]] = None,
         show_caption_above_media: Optional[Union[bool, Default]] = Default(
             "show_caption_above_media"
         ),
@@ -4055,7 +4160,7 @@ class Message(MaybeInaccessibleMessage):
     def react(
         self,
         reaction: Optional[
-            List[Union[ReactionTypeEmoji, ReactionTypeCustomEmoji, ReactionTypePaid]]
+            list[Union[ReactionTypeEmoji, ReactionTypeCustomEmoji, ReactionTypePaid]]
         ] = None,
         is_big: Optional[bool] = None,
         **kwargs: Any,
@@ -4097,14 +4202,15 @@ class Message(MaybeInaccessibleMessage):
     def answer_paid_media(
         self,
         star_count: int,
-        media: List[Union[InputPaidMediaPhoto, InputPaidMediaVideo]],
+        media: list[Union[InputPaidMediaPhoto, InputPaidMediaVideo]],
         payload: Optional[str] = None,
         caption: Optional[str] = None,
         parse_mode: Optional[str] = None,
-        caption_entities: Optional[List[MessageEntity]] = None,
+        caption_entities: Optional[list[MessageEntity]] = None,
         show_caption_above_media: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[bool] = None,
+        allow_paid_broadcast: Optional[bool] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -4132,6 +4238,7 @@ class Message(MaybeInaccessibleMessage):
         :param show_caption_above_media: Pass :code:`True`, if the caption must be shown above the message media
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
+        :param allow_paid_broadcast: Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
         :param reply_parameters: Description of the message to reply to
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
         :return: instance of method :class:`aiogram.methods.send_paid_media.SendPaidMedia`
@@ -4158,6 +4265,7 @@ class Message(MaybeInaccessibleMessage):
             show_caption_above_media=show_caption_above_media,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            allow_paid_broadcast=allow_paid_broadcast,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
             **kwargs,
@@ -4166,14 +4274,15 @@ class Message(MaybeInaccessibleMessage):
     def reply_paid_media(
         self,
         star_count: int,
-        media: List[Union[InputPaidMediaPhoto, InputPaidMediaVideo]],
+        media: list[Union[InputPaidMediaPhoto, InputPaidMediaVideo]],
         payload: Optional[str] = None,
         caption: Optional[str] = None,
         parse_mode: Optional[str] = None,
-        caption_entities: Optional[List[MessageEntity]] = None,
+        caption_entities: Optional[list[MessageEntity]] = None,
         show_caption_above_media: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[bool] = None,
+        allow_paid_broadcast: Optional[bool] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
         ] = None,
@@ -4201,6 +4310,7 @@ class Message(MaybeInaccessibleMessage):
         :param show_caption_above_media: Pass :code:`True`, if the caption must be shown above the message media
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
+        :param allow_paid_broadcast: Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
         :return: instance of method :class:`aiogram.methods.send_paid_media.SendPaidMedia`
         """
@@ -4227,6 +4337,7 @@ class Message(MaybeInaccessibleMessage):
             show_caption_above_media=show_caption_above_media,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            allow_paid_broadcast=allow_paid_broadcast,
             reply_markup=reply_markup,
             **kwargs,
         ).as_(self._bot)

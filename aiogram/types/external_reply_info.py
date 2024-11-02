@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, List, Optional, Union
+from typing import TYPE_CHECKING, Any, Optional, Union
 
 from .base import TelegramObject
 
@@ -57,7 +57,7 @@ class ExternalReplyInfo(TelegramObject):
     """*Optional*. Message is a general file, information about the file"""
     paid_media: Optional[PaidMediaInfo] = None
     """*Optional*. Message contains paid media; information about the paid media"""
-    photo: Optional[List[PhotoSize]] = None
+    photo: Optional[list[PhotoSize]] = None
     """*Optional*. Message is a photo, available sizes of the photo"""
     sticker: Optional[Sticker] = None
     """*Optional*. Message is a sticker, information about the sticker"""
@@ -107,7 +107,7 @@ class ExternalReplyInfo(TelegramObject):
             audio: Optional[Audio] = None,
             document: Optional[Document] = None,
             paid_media: Optional[PaidMediaInfo] = None,
-            photo: Optional[List[PhotoSize]] = None,
+            photo: Optional[list[PhotoSize]] = None,
             sticker: Optional[Sticker] = None,
             story: Optional[Story] = None,
             video: Optional[Video] = None,

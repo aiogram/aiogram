@@ -15,7 +15,7 @@ class StarTransactions(TelegramObject):
     Source: https://core.telegram.org/bots/api#startransactions
     """
 
-    transactions: List[StarTransaction]
+    transactions: list[StarTransaction]
     """The list of transactions"""
 
     if TYPE_CHECKING:
@@ -23,7 +23,7 @@ class StarTransactions(TelegramObject):
         # This section was auto-generated via `butcher`
 
         def __init__(
-            __pydantic__self__, *, transactions: List[StarTransaction], **__pydantic_kwargs: Any
+            __pydantic__self__, *, transactions: list[StarTransaction], **__pydantic_kwargs: Any
         ) -> None:
             # DO NOT EDIT MANUALLY!!!
             # This method was auto-generated via `butcher`

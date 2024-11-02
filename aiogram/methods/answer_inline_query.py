@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, List, Optional, Union
+from typing import TYPE_CHECKING, Any, Optional, Union
 
 from pydantic import Field
 
@@ -44,7 +44,7 @@ class AnswerInlineQuery(TelegramMethod[bool]):
 
     inline_query_id: str
     """Unique identifier for the answered query"""
-    results: List[
+    results: list[
         Union[
             InlineQueryResultCachedAudio,
             InlineQueryResultCachedDocument,
@@ -96,7 +96,7 @@ class AnswerInlineQuery(TelegramMethod[bool]):
             __pydantic__self__,
             *,
             inline_query_id: str,
-            results: List[
+            results: list[
                 Union[
                     InlineQueryResultCachedAudio,
                     InlineQueryResultCachedDocument,

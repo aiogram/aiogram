@@ -69,6 +69,7 @@ Available types
     chat_photo
     chat_shared
     contact
+    copy_text_button
     dice
     document
     external_reply_info
@@ -238,6 +239,7 @@ Payments
     transaction_partner_fragment
     transaction_partner_other
     transaction_partner_telegram_ads
+    transaction_partner_telegram_api
     transaction_partner_user
 
 Telegram Passport

@@ -1,0 +1,3 @@
+Fixed customized serialization in the :class:`aiogram.filters.callback_data.CallbackData` factory.
+
+From now UUID will have 32 bytes length instead of 36 bytes (with no `-` separators) in the callback data representation.

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, List, Optional
+from typing import TYPE_CHECKING, Any, Optional
 
 from aiogram.types import TelegramObject
 
@@ -23,7 +23,7 @@ class ChatShared(TelegramObject):
     """*Optional*. Title of the chat, if the title was requested by the bot."""
     username: Optional[str] = None
     """*Optional*. Username of the chat, if the username was requested by the bot and available."""
-    photo: Optional[List[PhotoSize]] = None
+    photo: Optional[list[PhotoSize]] = None
     """*Optional*. Available sizes of the chat photo, if the photo was requested by the bot"""
 
     if TYPE_CHECKING:
@@ -37,7 +37,7 @@ class ChatShared(TelegramObject):
             chat_id: int,
             title: Optional[str] = None,
             username: Optional[str] = None,
-            photo: Optional[List[PhotoSize]] = None,
+            photo: Optional[list[PhotoSize]] = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

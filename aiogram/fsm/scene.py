@@ -4,7 +4,7 @@ import inspect
 from collections import defaultdict
 from dataclasses import dataclass, replace
 from enum import Enum, auto
-from typing import Any, ClassVar, Dict, List, Optional, Tuple, Type, Union
+from typing import Any, ClassVar, Dict, List, Optional, Tuple, Type, Union, overload
 
 from typing_extensions import Self
 
@@ -316,10 +316,6 @@ class Scene:
             if not parent_scene_config:
                 continue
 
-            handlers.extend(parent_scene_config.handlers)
-            for action, action_handlers in parent_scene_config.actions.items():
-                actions[action].update(action_handlers)
-
             if reset_data_on_enter is None:
                 reset_data_on_enter = parent_scene_config.reset_data_on_enter
             if reset_history_on_enter is None:
@@ -327,9 +323,7 @@ class Scene:
             if callback_query_without_state is None:
                 callback_query_without_state = parent_scene_config.callback_query_without_state
 
-        for name in vars(cls):
-            value = getattr(cls, name)
-
+        for name, value in inspect.getmembers(cls):
             if scene_handlers := getattr(value, "__aiogram_handler__", None):
                 handlers.extend(scene_handlers)
             if isinstance(value, ObserverDecorator):
@@ -577,6 +571,32 @@ class SceneWizard:
         :return: A dictionary containing the data stored in the scene state.
         """
         return await self.state.get_data()
+
+    @overload
+    async def get_value(self, key: str) -> Optional[Any]:
+        """
+        This method returns the value from key in the data of the current state.
+
+        :param key: The keyname of the item you want to return the value from.
+
+        :return: A dictionary containing the data stored in the scene state.
+        """
+        pass
+
+    @overload
+    async def get_value(self, key: str, default: Any) -> Any:
+        """
+        This method returns the value from key in the data of the current state.
+
+        :param key: The keyname of the item you want to return the value from.
+        :param default: Default value to return, if ``key`` was not found.
+
+        :return: A dictionary containing the data stored in the scene state.
+        """
+        pass
+
+    async def get_value(self, key: str, default: Optional[Any] = None) -> Optional[Any]:
+        return await self.state.get_value(key, default)
 
     async def update_data(
         self, data: Optional[Dict[str, Any]] = None, **kwargs: Any

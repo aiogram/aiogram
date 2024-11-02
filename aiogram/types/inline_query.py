@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, List, Optional, Union
+from typing import TYPE_CHECKING, Any, Optional, Union
 
 from pydantic import Field
 
@@ -84,7 +84,7 @@ class InlineQuery(TelegramObject):
 
     def answer(
         self,
-        results: List[
+        results: list[
             Union[
                 InlineQueryResultCachedAudio,
                 InlineQueryResultCachedDocument,

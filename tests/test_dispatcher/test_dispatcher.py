@@ -778,11 +778,14 @@ class TestDispatcher:
         async def _mock_updates(*_):
             yield Update(update_id=42)
 
-        with patch(
-            "aiogram.dispatcher.dispatcher.Dispatcher._process_update", new_callable=AsyncMock
-        ) as mocked_process_update, patch(
-            "aiogram.dispatcher.dispatcher.Dispatcher._listen_updates"
-        ) as patched_listen_updates:
+        with (
+            patch(
+                "aiogram.dispatcher.dispatcher.Dispatcher._process_update", new_callable=AsyncMock
+            ) as mocked_process_update,
+            patch(
+                "aiogram.dispatcher.dispatcher.Dispatcher._listen_updates"
+            ) as patched_listen_updates,
+        ):
             patched_listen_updates.return_value = _mock_updates()
             await dispatcher._polling(bot=bot, handle_as_tasks=as_task)
             if as_task:
@@ -852,15 +855,20 @@ class TestDispatcher:
         async def _mock_updates(*_):
             yield Update(update_id=42)
 
-        with patch(
-            "aiogram.dispatcher.dispatcher.Dispatcher._process_update", new_callable=AsyncMock
-        ) as mocked_process_update, patch(
-            "aiogram.dispatcher.router.Router.emit_startup", new_callable=AsyncMock
-        ) as mocked_emit_startup, patch(
-            "aiogram.dispatcher.router.Router.emit_shutdown", new_callable=AsyncMock
-        ) as mocked_emit_shutdown, patch(
-            "aiogram.dispatcher.dispatcher.Dispatcher._listen_updates"
-        ) as patched_listen_updates:
+        with (
+            patch(
+                "aiogram.dispatcher.dispatcher.Dispatcher._process_update", new_callable=AsyncMock
+            ) as mocked_process_update,
+            patch(
+                "aiogram.dispatcher.router.Router.emit_startup", new_callable=AsyncMock
+            ) as mocked_emit_startup,
+            patch(
+                "aiogram.dispatcher.router.Router.emit_shutdown", new_callable=AsyncMock
+            ) as mocked_emit_shutdown,
+            patch(
+                "aiogram.dispatcher.dispatcher.Dispatcher._listen_updates"
+            ) as patched_listen_updates,
+        ):
             patched_listen_updates.return_value = _mock_updates()
             await dispatcher.start_polling(bot)
 
@@ -916,11 +924,14 @@ class TestDispatcher:
                 yield Update(update_id=42)
                 await asyncio.sleep(1)
 
-        with patch(
-            "aiogram.dispatcher.dispatcher.Dispatcher._process_update", new_callable=AsyncMock
-        ) as mocked_process_update, patch(
-            "aiogram.dispatcher.dispatcher.Dispatcher._listen_updates",
-            return_value=_mock_updates(),
+        with (
+            patch(
+                "aiogram.dispatcher.dispatcher.Dispatcher._process_update", new_callable=AsyncMock
+            ) as mocked_process_update,
+            patch(
+                "aiogram.dispatcher.dispatcher.Dispatcher._listen_updates",
+                return_value=_mock_updates(),
+            ),
         ):
             task = asyncio.ensure_future(dispatcher.start_polling(bot))
             await running.wait()
