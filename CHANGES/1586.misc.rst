@@ -1,6 +1,0 @@
-Added business_connection_id to the :class:`aiogram.types.message.Message` API methods shortcuts.
-
-Integrated the :code:`business_connection_id` attribute into various message manipulation methods,
-ensuring consistent data handling. This update eliminates the need to pass the
-:code:`business_connection_id` as a parameter,
-instead directly accessing it from the instance attributes.

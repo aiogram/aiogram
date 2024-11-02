@@ -16,6 +16,102 @@ Changelog
 
 .. towncrier release notes start
 
+3.14.0 (2024-11-02)
+====================
+
+Misc
+----
+
+- Checked compatibility with Python 3.13 (added to the CI/CD processes),
+  so now aiogram is totally compatible with it.
+
+  Dropped compatibility with Python 3.8 due to this version being `EOL <https://devguide.python.org/versions/>`_.
+
+  .. warning::
+
+    In some cases you will need to have the installed compiler (Rust or C++)
+    to install some of the dependencies to compile packages from source on `pip install` command.
+
+    - If you are using Windows, you will need to have the `Visual Studio <https://visualstudio.microsoft.com/visual-cpp-build-tools/>`_ installed.
+    - If you are using Linux, you will need to have the `build-essential` package installed.
+    - If you are using macOS, you will need to have the `Xcode <https://developer.apple.com/xcode/>`_ installed.
+
+    When developers of this dependencies will release new versions with precompiled wheels for Windows, Linux and macOS,
+    this action will not be necessary anymore until the next version of the Python interpreter.
+  `#1589 <https://github.com/aiogram/aiogram/issues/1589>`_
+- Added business_connection_id to the :class:`aiogram.types.message.Message` API methods shortcuts.
+
+  Integrated the :code:`business_connection_id` attribute into various message manipulation methods,
+  ensuring consistent data handling. This update eliminates the need to pass the
+  :code:`business_connection_id` as a parameter,
+  instead directly accessing it from the instance attributes.
+  `#1586 <https://github.com/aiogram/aiogram/issues/1586>`_
+
+Features
+--------
+
+- Add function ``get_value`` to all built-in storage implementations, ``FSMContext`` and ``SceneWizard``
+  `#1431 <https://github.com/aiogram/aiogram/issues/1431>`_
+- Enhanced the inheritance of handlers and actions in :ref:`Scenes <Scenes>`.
+  Refactored to eliminate the copying of previously connected handlers and actions from parent scenes.
+  Now, handlers are dynamically rebuilt based on the current class, properly utilizing class inheritance and enabling handler overrides.
+
+  That's mean that you can now override handlers and actions in the child scene, instead of copying and duplicating them.
+  `#1583 <https://github.com/aiogram/aiogram/issues/1583>`_
+- Added full support of `Bot API 7.11 <https://core.telegram.org/bots/api-changelog#october-31-2024>`_
+
+  - Added the class :class:`aiogram.types.copy_text_button.CopyTextButton`
+    and the field :code:`copy_text` in the class
+    :class:`aiogram.types.inline_keyboard_button.InlineKeyboardButton`,
+    allowing bots to send and receive inline buttons that copy arbitrary text.
+  - Added the parameter :code:`allow_paid_broadcast` to the methods
+    :class:`aiogram.methods.send_message.SendMessage`,
+    :class:`aiogram.methods.send_photo.SendPhoto`,
+    :class:`aiogram.methods.send_video.SendVideo`,
+    :class:`aiogram.methods.send_animation.SendAnimation`,
+    :class:`aiogram.methods.send_audio.SendAudio`,
+    :class:`aiogram.methods.send_document.SendDocument`,
+    :class:`aiogram.methods.send_paid_media.SendPaidMedia`,
+    :class:`aiogram.methods.send_sticker.SendSticker`,
+    :class:`aiogram.methods.send_video_note.SendVideoNote`,
+    :class:`aiogram.methods.send_voice.SendVoice`,
+    :class:`aiogram.methods.send_location.SendLocation`,
+    :class:`aiogram.methods.send_venue.SendVenue`,
+    :class:`aiogram.methods.send_contact.SendContact`,
+    :class:`aiogram.methods.send_poll.SendPoll`,
+    :class:`aiogram.methods.send_dice.SendDice`,
+    :class:`aiogram.methods.send_invoice.SendInvoice`,
+    :class:`aiogram.methods.send_game.SendGame`,
+    :class:`aiogram.methods.send_media_group.SendMediaGroup`
+    and :class:`aiogram.methods.copy_message.CopyMessage`.
+  - Added the class
+    :class:`aiogram.types.transaction_partner_telegram_api.TransactionPartnerTelegramApi`
+    for transactions related to paid broadcasted messages.
+  - Introduced the ability to add media to existing text messages using the method
+    :class:`aiogram.methods.edit_message_media.EditMessageMedia`.
+  - Added support for hashtag and cashtag entities with a specified chat username
+    that opens a search for the relevant tag within the specified chat.
+  `#1601 <https://github.com/aiogram/aiogram/issues/1601>`_
+
+
+Bugfixes
+--------
+
+- Fix PytestDeprecationWarning thrown by pytest-asyncio when running the tests
+  `#1584 <https://github.com/aiogram/aiogram/issues/1584>`_
+- Fixed customized serialization in the :class:`aiogram.filters.callback_data.CallbackData` factory.
+
+  From now UUID will have 32 bytes length instead of 36 bytes (with no `-` separators) in the callback data representation.
+  `#1602 <https://github.com/aiogram/aiogram/issues/1602>`_
+
+
+Improved Documentation
+----------------------
+
+- Add missing closing tag for bold.
+  `#1599 <https://github.com/aiogram/aiogram/issues/1599>`_
+
+
 3.13.1 (2024-09-18)
 ====================
 

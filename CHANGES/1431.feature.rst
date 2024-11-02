@@ -1,1 +1,0 @@
-Add function ``get_value`` to all built-in storage implementations, ``FSMContext`` and ``SceneWizard``
