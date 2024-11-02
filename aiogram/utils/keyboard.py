@@ -21,6 +21,7 @@ from typing import (
 from aiogram.filters.callback_data import CallbackData
 from aiogram.types import (
     CallbackGame,
+    CopyTextButton,
     InlineKeyboardButton,
     InlineKeyboardMarkup,
     KeyboardButton,
@@ -31,7 +32,6 @@ from aiogram.types import (
     ReplyKeyboardMarkup,
     SwitchInlineQueryChosenChat,
     WebAppInfo,
-    CopyTextButton,
 )
 
 ButtonType = TypeVar("ButtonType", InlineKeyboardButton, KeyboardButton)
