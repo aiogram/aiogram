@@ -1,6 +1,6 @@
 from typing import Union
 
-from aiogram.methods import EditMessageReplyMarkup, Request
+from aiogram.methods import EditMessageReplyMarkup
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
 from tests.mocked_bot import MockedBot
 

@@ -1,4 +1,4 @@
-from aiogram.methods import ReopenForumTopic, Request
+from aiogram.methods import ReopenForumTopic
 from tests.mocked_bot import MockedBot
 
 

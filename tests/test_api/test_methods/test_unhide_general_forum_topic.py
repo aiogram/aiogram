@@ -1,4 +1,4 @@
-from aiogram.methods import Request, UnhideGeneralForumTopic
+from aiogram.methods import UnhideGeneralForumTopic
 from tests.mocked_bot import MockedBot
 
 

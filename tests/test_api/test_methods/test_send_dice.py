@@ -1,4 +1,4 @@
-from aiogram.methods import Request, SendDice
+from aiogram.methods import SendDice
 from aiogram.types import Message
 from tests.mocked_bot import MockedBot
 

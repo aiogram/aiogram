@@ -1,4 +1,4 @@
-from aiogram.methods import CreateInvoiceLink, Request
+from aiogram.methods import CreateInvoiceLink
 from aiogram.types import LabeledPrice
 from tests.mocked_bot import MockedBot
 

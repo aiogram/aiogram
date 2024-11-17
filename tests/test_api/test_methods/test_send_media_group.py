@@ -1,7 +1,7 @@
 import datetime
 from typing import List
 
-from aiogram.methods import Request, SendMediaGroup
+from aiogram.methods import SendMediaGroup
 from aiogram.types import (
     BufferedInputFile,
     Chat,

@@ -1,4 +1,4 @@
-from aiogram.methods import Request, SetStickerEmojiList, SetStickerMaskPosition
+from aiogram.methods import SetStickerMaskPosition
 from tests.mocked_bot import MockedBot
 
 

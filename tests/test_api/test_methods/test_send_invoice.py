@@ -1,6 +1,6 @@
 import datetime
 
-from aiogram.methods import Request, SendInvoice
+from aiogram.methods import SendInvoice
 from aiogram.types import Chat, Invoice, LabeledPrice, Message
 from tests.mocked_bot import MockedBot
 

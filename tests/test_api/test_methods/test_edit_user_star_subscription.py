@@ -1,6 +1,4 @@
-from aiogram.enums import StickerFormat
-from aiogram.methods import EditUserStarSubscription, Request, UploadStickerFile
-from aiogram.types import BufferedInputFile, File
+from aiogram.methods import EditUserStarSubscription
 from tests.mocked_bot import MockedBot
 
 

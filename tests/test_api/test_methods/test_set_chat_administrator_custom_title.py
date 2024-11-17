@@ -1,4 +1,4 @@
-from aiogram.methods import Request, SetChatAdministratorCustomTitle
+from aiogram.methods import SetChatAdministratorCustomTitle
 from tests.mocked_bot import MockedBot
 
 

@@ -1,17 +1,11 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, List, Optional, Union
+from typing import TYPE_CHECKING, Any, Optional, Union
 
 from pydantic import Field
 
 from ..client.default import Default
-from ..types import (
-    UNSET_PARSE_MODE,
-    InlineKeyboardMarkup,
-    LinkPreviewOptions,
-    Message,
-    MessageEntity,
-)
+from ..types import InlineKeyboardMarkup, LinkPreviewOptions, Message, MessageEntity
 from .base import TelegramMethod
 
 

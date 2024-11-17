@@ -1,6 +1,5 @@
-from aiogram.enums import StickerFormat
-from aiogram.methods import GetAvailableGifts, Request, UploadStickerFile
-from aiogram.types import BufferedInputFile, File, Gift, Gifts, Sticker
+from aiogram.methods import GetAvailableGifts
+from aiogram.types import Gift, Gifts, Sticker
 from tests.mocked_bot import MockedBot
 
 

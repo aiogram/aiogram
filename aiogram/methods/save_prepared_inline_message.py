@@ -2,23 +2,14 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Optional, Union
 
-from ..types.prepared_inline_message import PreparedInlineMessage
-from .base import TelegramMethod
-
 from ..types.inline_query_result_article import InlineQueryResultArticle
 from ..types.inline_query_result_audio import InlineQueryResultAudio
 from ..types.inline_query_result_cached_audio import InlineQueryResultCachedAudio
-from ..types.inline_query_result_cached_document import (
-    InlineQueryResultCachedDocument,
-)
+from ..types.inline_query_result_cached_document import InlineQueryResultCachedDocument
 from ..types.inline_query_result_cached_gif import InlineQueryResultCachedGif
-from ..types.inline_query_result_cached_mpeg4_gif import (
-    InlineQueryResultCachedMpeg4Gif,
-)
+from ..types.inline_query_result_cached_mpeg4_gif import InlineQueryResultCachedMpeg4Gif
 from ..types.inline_query_result_cached_photo import InlineQueryResultCachedPhoto
-from ..types.inline_query_result_cached_sticker import (
-    InlineQueryResultCachedSticker,
-)
+from ..types.inline_query_result_cached_sticker import InlineQueryResultCachedSticker
 from ..types.inline_query_result_cached_video import InlineQueryResultCachedVideo
 from ..types.inline_query_result_cached_voice import InlineQueryResultCachedVoice
 from ..types.inline_query_result_contact import InlineQueryResultContact
@@ -31,6 +22,8 @@ from ..types.inline_query_result_photo import InlineQueryResultPhoto
 from ..types.inline_query_result_venue import InlineQueryResultVenue
 from ..types.inline_query_result_video import InlineQueryResultVideo
 from ..types.inline_query_result_voice import InlineQueryResultVoice
+from ..types.prepared_inline_message import PreparedInlineMessage
+from .base import TelegramMethod
 
 
 class SavePreparedInlineMessage(TelegramMethod[PreparedInlineMessage]):

@@ -1,6 +1,6 @@
 import datetime
 
-from aiogram.methods import Request, SendVideo
+from aiogram.methods import SendVideo
 from aiogram.types import Chat, Message, Video
 from tests.mocked_bot import MockedBot
 

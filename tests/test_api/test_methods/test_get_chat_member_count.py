@@ -1,4 +1,4 @@
-from aiogram.methods import GetChatMemberCount, Request
+from aiogram.methods import GetChatMemberCount
 from tests.mocked_bot import MockedBot
 
 

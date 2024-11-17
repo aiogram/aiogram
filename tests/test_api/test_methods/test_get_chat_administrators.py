@@ -1,6 +1,6 @@
 from typing import List
 
-from aiogram.methods import GetChatAdministrators, Request
+from aiogram.methods import GetChatAdministrators
 from aiogram.types import ChatMember, ChatMemberOwner, User
 from tests.mocked_bot import MockedBot
 

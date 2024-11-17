@@ -1,4 +1,4 @@
-from aiogram.methods import Request, UnpinChatMessage
+from aiogram.methods import UnpinChatMessage
 from tests.mocked_bot import MockedBot
 
 

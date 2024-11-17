@@ -1,8 +1,6 @@
 from datetime import datetime, timedelta
 
-from aiogram.methods import (
-    SavePreparedInlineMessage,
-)
+from aiogram.methods import SavePreparedInlineMessage
 from aiogram.types import (
     InlineQueryResultArticle,
     InputTextMessageContent,

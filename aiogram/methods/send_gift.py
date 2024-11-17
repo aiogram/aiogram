@@ -2,9 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Optional
 
-from .base import TelegramMethod
-
 from ..types.message_entity import MessageEntity
+from .base import TelegramMethod
 
 
 class SendGift(TelegramMethod[bool]):

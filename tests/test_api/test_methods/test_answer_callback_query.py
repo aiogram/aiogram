@@ -1,4 +1,4 @@
-from aiogram.methods import AnswerCallbackQuery, Request
+from aiogram.methods import AnswerCallbackQuery
 from tests.mocked_bot import MockedBot
 
 
