@@ -36,6 +36,30 @@
         "required": true
       },
       {
+        "type": "Integer",
+        "description": "Expiration date of the subscription, in Unix time; for recurring payments only",
+        "html_description": "<td><em>Optional</em>. Expiration date of the subscription, in Unix time; for recurring payments only</td>",
+        "rst_description": "*Optional*. Expiration date of the subscription, in Unix time; for recurring payments only\n",
+        "name": "subscription_expiration_date",
+        "required": false
+      },
+      {
+        "type": "True",
+        "description": "True, if the payment is a recurring payment for a subscription",
+        "html_description": "<td><em>Optional</em>. True, if the payment is a recurring payment for a subscription</td>",
+        "rst_description": "*Optional*. True, if the payment is a recurring payment for a subscription\n",
+        "name": "is_recurring",
+        "required": false
+      },
+      {
+        "type": "True",
+        "description": "True, if the payment is the first payment for a subscription",
+        "html_description": "<td><em>Optional</em>. True, if the payment is the first payment for a subscription</td>",
+        "rst_description": "*Optional*. True, if the payment is the first payment for a subscription\n",
+        "name": "is_first_recurring",
+        "required": false
+      },
+      {
         "type": "String",
         "description": "Identifier of the shipping option chosen by the user",
         "html_description": "<td><em>Optional</em>. Identifier of the shipping option chosen by the user</td>",

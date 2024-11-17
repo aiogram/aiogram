@@ -83,6 +83,8 @@ from .game import Game
 from .game_high_score import GameHighScore
 from .general_forum_topic_hidden import GeneralForumTopicHidden
 from .general_forum_topic_unhidden import GeneralForumTopicUnhidden
+from .gift import Gift
+from .gifts import Gifts
 from .giveaway import Giveaway
 from .giveaway_completed import GiveawayCompleted
 from .giveaway_created import GiveawayCreated
@@ -184,6 +186,7 @@ from .poll import Poll
 from .poll_answer import PollAnswer
 from .poll_option import PollOption
 from .pre_checkout_query import PreCheckoutQuery
+from .prepared_inline_message import PreparedInlineMessage
 from .proximity_alert_triggered import ProximityAlertTriggered
 from .reaction_count import ReactionCount
 from .reaction_type import ReactionType
@@ -321,6 +324,8 @@ __all__ = (
     "GameHighScore",
     "GeneralForumTopicHidden",
     "GeneralForumTopicUnhidden",
+    "Gift",
+    "Gifts",
     "Giveaway",
     "GiveawayCompleted",
     "GiveawayCreated",
@@ -420,6 +425,7 @@ __all__ = (
     "PollAnswer",
     "PollOption",
     "PreCheckoutQuery",
+    "PreparedInlineMessage",
     "ProximityAlertTriggered",
     "ReactionCount",
     "ReactionType",

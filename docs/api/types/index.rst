@@ -200,6 +200,7 @@ Inline mode
     input_message_content
     input_text_message_content
     input_venue_message_content
+    prepared_inline_message
     sent_web_app_message
 
 Stickers
@@ -208,6 +209,8 @@ Stickers
 .. toctree::
     :maxdepth: 1
 
+    gift
+    gifts
     input_sticker
     mask_position
     sticker
