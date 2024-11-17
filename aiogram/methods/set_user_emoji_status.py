@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+import datetime
+from typing import TYPE_CHECKING, Any, Optional, Union
 
 from .base import TelegramMethod
 
@@ -19,7 +20,9 @@ class SetUserEmojiStatus(TelegramMethod[bool]):
     """Unique identifier of the target user"""
     emoji_status_custom_emoji_id: Optional[str] = None
     """Custom emoji identifier of the emoji status to set. Pass an empty string to remove the status."""
-    emoji_status_expiration_date: Optional[int] = None
+    emoji_status_expiration_date: Optional[Union[datetime.datetime, datetime.timedelta, int]] = (
+        None
+    )
     """Expiration date of the emoji status, if any"""
 
     if TYPE_CHECKING:
@@ -31,7 +34,9 @@ class SetUserEmojiStatus(TelegramMethod[bool]):
             *,
             user_id: int,
             emoji_status_custom_emoji_id: Optional[str] = None,
-            emoji_status_expiration_date: Optional[int] = None,
+            emoji_status_expiration_date: Optional[
+                Union[datetime.datetime, datetime.timedelta, int]
+            ] = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

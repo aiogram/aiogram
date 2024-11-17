@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+import datetime
+from typing import TYPE_CHECKING, Any, Union
 
 from .base import TelegramObject
 
@@ -14,7 +15,7 @@ class PreparedInlineMessage(TelegramObject):
 
     id: str
     """Unique identifier of the prepared message"""
-    expiration_date: int
+    expiration_date: Union[datetime.datetime, datetime.timedelta, int]
     """Expiration date of the prepared message, in Unix time. Expired prepared messages can no longer be used"""
 
     if TYPE_CHECKING:
@@ -22,7 +23,11 @@ class PreparedInlineMessage(TelegramObject):
         # This section was auto-generated via `butcher`
 
         def __init__(
-            __pydantic__self__, *, id: str, expiration_date: int, **__pydantic_kwargs: Any
+            __pydantic__self__,
+            *,
+            id: str,
+            expiration_date: Union[datetime.datetime, datetime.timedelta, int],
+            **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!
             # This method was auto-generated via `butcher`

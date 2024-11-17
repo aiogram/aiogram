@@ -4,8 +4,7 @@ from typing import TYPE_CHECKING, Any, Optional
 
 from .base import TelegramMethod
 
-if TYPE_CHECKING:
-    from ..types import MessageEntity
+from ..types.message_entity import MessageEntity
 
 
 class SendGift(TelegramMethod[bool]):

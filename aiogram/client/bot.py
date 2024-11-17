@@ -4968,7 +4968,9 @@ class Bot:
         self,
         user_id: int,
         emoji_status_custom_emoji_id: Optional[str] = None,
-        emoji_status_expiration_date: Optional[int] = None,
+        emoji_status_expiration_date: Optional[
+            Union[datetime.datetime, datetime.timedelta, int]
+        ] = None,
         request_timeout: Optional[int] = None,
     ) -> bool:
         """
