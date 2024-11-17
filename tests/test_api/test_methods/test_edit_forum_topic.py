@@ -1,4 +1,4 @@
-from aiogram.methods import EditForumTopic, Request
+from aiogram.methods import EditForumTopic
 from tests.mocked_bot import MockedBot
 
 

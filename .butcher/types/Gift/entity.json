@@ -1,0 +1,57 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Stickers",
+    "anchor": "stickers"
+  },
+  "object": {
+    "anchor": "gift",
+    "name": "Gift",
+    "description": "This object represents a gift that can be sent by the bot.",
+    "html_description": "<p>This object represents a gift that can be sent by the bot.</p>",
+    "rst_description": "This object represents a gift that can be sent by the bot.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Unique identifier of the gift",
+        "html_description": "<td>Unique identifier of the gift</td>",
+        "rst_description": "Unique identifier of the gift\n",
+        "name": "id",
+        "required": true
+      },
+      {
+        "type": "Sticker",
+        "description": "The sticker that represents the gift",
+        "html_description": "<td>The sticker that represents the gift</td>",
+        "rst_description": "The sticker that represents the gift\n",
+        "name": "sticker",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "The number of Telegram Stars that must be paid to send the sticker",
+        "html_description": "<td>The number of Telegram Stars that must be paid to send the sticker</td>",
+        "rst_description": "The number of Telegram Stars that must be paid to send the sticker\n",
+        "name": "star_count",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "The total number of the gifts of this type that can be sent; for limited gifts only",
+        "html_description": "<td><em>Optional</em>. The total number of the gifts of this type that can be sent; for limited gifts only</td>",
+        "rst_description": "*Optional*. The total number of the gifts of this type that can be sent; for limited gifts only\n",
+        "name": "total_count",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "The number of remaining gifts of this type that can be sent; for limited gifts only",
+        "html_description": "<td><em>Optional</em>. The number of remaining gifts of this type that can be sent; for limited gifts only</td>",
+        "rst_description": "*Optional*. The number of remaining gifts of this type that can be sent; for limited gifts only\n",
+        "name": "remaining_count",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

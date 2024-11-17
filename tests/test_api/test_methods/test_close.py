@@ -1,4 +1,4 @@
-from aiogram.methods import Close, Request
+from aiogram.methods import Close
 from tests.mocked_bot import MockedBot
 
 

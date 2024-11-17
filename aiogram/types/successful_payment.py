@@ -25,6 +25,12 @@ class SuccessfulPayment(TelegramObject):
     """Telegram payment identifier"""
     provider_payment_charge_id: str
     """Provider payment identifier"""
+    subscription_expiration_date: Optional[int] = None
+    """*Optional*. Expiration date of the subscription, in Unix time; for recurring payments only"""
+    is_recurring: Optional[bool] = None
+    """*Optional*. True, if the payment is a recurring payment for a subscription"""
+    is_first_recurring: Optional[bool] = None
+    """*Optional*. True, if the payment is the first payment for a subscription"""
     shipping_option_id: Optional[str] = None
     """*Optional*. Identifier of the shipping option chosen by the user"""
     order_info: Optional[OrderInfo] = None
@@ -42,6 +48,9 @@ class SuccessfulPayment(TelegramObject):
             invoice_payload: str,
             telegram_payment_charge_id: str,
             provider_payment_charge_id: str,
+            subscription_expiration_date: Optional[int] = None,
+            is_recurring: Optional[bool] = None,
+            is_first_recurring: Optional[bool] = None,
             shipping_option_id: Optional[str] = None,
             order_info: Optional[OrderInfo] = None,
             **__pydantic_kwargs: Any,
@@ -56,6 +65,9 @@ class SuccessfulPayment(TelegramObject):
                 invoice_payload=invoice_payload,
                 telegram_payment_charge_id=telegram_payment_charge_id,
                 provider_payment_charge_id=provider_payment_charge_id,
+                subscription_expiration_date=subscription_expiration_date,
+                is_recurring=is_recurring,
+                is_first_recurring=is_first_recurring,
                 shipping_option_id=shipping_option_id,
                 order_info=order_info,
                 **__pydantic_kwargs,

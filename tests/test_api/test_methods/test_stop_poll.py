@@ -1,4 +1,4 @@
-from aiogram.methods import Request, StopPoll
+from aiogram.methods import StopPoll
 from aiogram.types import Poll, PollOption
 from tests.mocked_bot import MockedBot
 

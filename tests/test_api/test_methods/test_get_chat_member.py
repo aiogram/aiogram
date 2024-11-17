@@ -1,5 +1,5 @@
-from aiogram.methods import GetChatMember, Request
-from aiogram.types import ChatMember, ChatMemberOwner, User
+from aiogram.methods import GetChatMember
+from aiogram.types import ChatMemberOwner, User
 from tests.mocked_bot import MockedBot
 
 

@@ -15,9 +15,11 @@ Stickers
     create_new_sticker_set
     delete_sticker_from_set
     delete_sticker_set
+    get_available_gifts
     get_custom_emoji_stickers
     get_sticker_set
     replace_sticker_in_set
+    send_gift
     send_sticker
     set_custom_emoji_sticker_set_thumbnail
     set_sticker_emoji_list
@@ -112,6 +114,7 @@ Available methods
     set_my_description
     set_my_name
     set_my_short_description
+    set_user_emoji_status
     unban_chat_member
     unban_chat_sender_chat
     unhide_general_forum_topic
@@ -144,6 +147,7 @@ Inline mode
 
     answer_inline_query
     answer_web_app_query
+    save_prepared_inline_message
 
 Games
 =====
@@ -164,6 +168,7 @@ Payments
     answer_pre_checkout_query
     answer_shipping_query
     create_invoice_link
+    edit_user_star_subscription
     get_star_transactions
     refund_star_payment
     send_invoice

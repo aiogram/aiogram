@@ -1,5 +1,5 @@
 from aiogram.methods import GetMyName
-from aiogram.types import BotDescription, BotName
+from aiogram.types import BotName
 from tests.mocked_bot import MockedBot
 
 

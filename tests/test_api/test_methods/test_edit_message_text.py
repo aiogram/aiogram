@@ -1,6 +1,6 @@
 from typing import Union
 
-from aiogram.methods import EditMessageText, Request
+from aiogram.methods import EditMessageText
 from aiogram.types import Message
 from tests.mocked_bot import MockedBot
 

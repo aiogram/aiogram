@@ -1,5 +1,5 @@
 from aiogram.enums import StickerFormat
-from aiogram.methods import CreateNewStickerSet, Request
+from aiogram.methods import CreateNewStickerSet
 from aiogram.types import FSInputFile, InputSticker
 from tests.mocked_bot import MockedBot
 

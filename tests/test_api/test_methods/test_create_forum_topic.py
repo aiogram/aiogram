@@ -1,4 +1,4 @@
-from aiogram.methods import CreateForumTopic, Request
+from aiogram.methods import CreateForumTopic
 from aiogram.types import ForumTopic
 from tests.mocked_bot import MockedBot
 

@@ -1,5 +1,5 @@
-from aiogram.methods import Request, SetPassportDataErrors
-from aiogram.types import PassportElementError, PassportElementErrorFile
+from aiogram.methods import SetPassportDataErrors
+from aiogram.types import PassportElementErrorFile
 from tests.mocked_bot import MockedBot
 
 

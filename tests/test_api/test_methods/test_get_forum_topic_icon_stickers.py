@@ -1,6 +1,6 @@
 from typing import List
 
-from aiogram.methods import GetForumTopicIconStickers, Request
+from aiogram.methods import GetForumTopicIconStickers
 from aiogram.types import Sticker
 from tests.mocked_bot import MockedBot
 

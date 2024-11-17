@@ -1,4 +1,4 @@
-from aiogram.methods import GetFile, Request
+from aiogram.methods import GetFile
 from aiogram.types import File
 from tests.mocked_bot import MockedBot
 

@@ -1,10 +1,6 @@
 from datetime import timedelta
 
-from aiogram.methods import (
-    CreateChatInviteLink,
-    CreateChatSubscriptionInviteLink,
-    Request,
-)
+from aiogram.methods import CreateChatSubscriptionInviteLink
 from aiogram.types import ChatInviteLink, User
 from tests.mocked_bot import MockedBot
 

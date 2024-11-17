@@ -1,0 +1,65 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Inline mode",
+    "anchor": "inline-mode"
+  },
+  "object": {
+    "anchor": "savepreparedinlinemessage",
+    "name": "savePreparedInlineMessage",
+    "description": "Stores a message that can be sent by a user of a Mini App. Returns a PreparedInlineMessage object.",
+    "html_description": "<p>Stores a message that can be sent by a user of a Mini App. Returns a <a href=\"#preparedinlinemessage\">PreparedInlineMessage</a> object.</p>",
+    "rst_description": "Stores a message that can be sent by a user of a Mini App. Returns a :class:`aiogram.types.prepared_inline_message.PreparedInlineMessage` object.",
+    "annotations": [
+      {
+        "type": "Integer",
+        "required": true,
+        "description": "Unique identifier of the target user that can use the prepared message",
+        "html_description": "<td>Unique identifier of the target user that can use the prepared message</td>",
+        "rst_description": "Unique identifier of the target user that can use the prepared message\n",
+        "name": "user_id"
+      },
+      {
+        "type": "InlineQueryResult",
+        "required": true,
+        "description": "A JSON-serialized object describing the message to be sent",
+        "html_description": "<td>A JSON-serialized object describing the message to be sent</td>",
+        "rst_description": "A JSON-serialized object describing the message to be sent\n",
+        "name": "result"
+      },
+      {
+        "type": "Boolean",
+        "required": false,
+        "description": "Pass True if the message can be sent to private chats with users",
+        "html_description": "<td>Pass <em>True</em> if the message can be sent to private chats with users</td>",
+        "rst_description": "Pass :code:`True` if the message can be sent to private chats with users\n",
+        "name": "allow_user_chats"
+      },
+      {
+        "type": "Boolean",
+        "required": false,
+        "description": "Pass True if the message can be sent to private chats with bots",
+        "html_description": "<td>Pass <em>True</em> if the message can be sent to private chats with bots</td>",
+        "rst_description": "Pass :code:`True` if the message can be sent to private chats with bots\n",
+        "name": "allow_bot_chats"
+      },
+      {
+        "type": "Boolean",
+        "required": false,
+        "description": "Pass True if the message can be sent to group and supergroup chats",
+        "html_description": "<td>Pass <em>True</em> if the message can be sent to group and supergroup chats</td>",
+        "rst_description": "Pass :code:`True` if the message can be sent to group and supergroup chats\n",
+        "name": "allow_group_chats"
+      },
+      {
+        "type": "Boolean",
+        "required": false,
+        "description": "Pass True if the message can be sent to channel chats",
+        "html_description": "<td>Pass <em>True</em> if the message can be sent to channel chats</td>",
+        "rst_description": "Pass :code:`True` if the message can be sent to channel chats\n",
+        "name": "allow_channel_chats"
+      }
+    ],
+    "category": "methods"
+  }
+}

@@ -25,10 +25,14 @@ class TransactionPartnerUser(TransactionPartner):
     """Information about the user"""
     invoice_payload: Optional[str] = None
     """*Optional*. Bot-specified invoice payload"""
+    subscription_period: Optional[int] = None
+    """*Optional*. The duration of the paid subscription"""
     paid_media: Optional[list[Union[PaidMediaPreview, PaidMediaPhoto, PaidMediaVideo]]] = None
     """*Optional*. Information about the paid media bought by the user"""
     paid_media_payload: Optional[str] = None
     """*Optional*. Bot-specified paid media payload"""
+    gift: Optional[str] = None
+    """*Optional*. The gift sent to the user by the bot"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!
@@ -40,10 +44,12 @@ class TransactionPartnerUser(TransactionPartner):
             type: Literal[TransactionPartnerType.USER] = TransactionPartnerType.USER,
             user: User,
             invoice_payload: Optional[str] = None,
+            subscription_period: Optional[int] = None,
             paid_media: Optional[
                 list[Union[PaidMediaPreview, PaidMediaPhoto, PaidMediaVideo]]
             ] = None,
             paid_media_payload: Optional[str] = None,
+            gift: Optional[str] = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!
@@ -54,7 +60,9 @@ class TransactionPartnerUser(TransactionPartner):
                 type=type,
                 user=user,
                 invoice_payload=invoice_payload,
+                subscription_period=subscription_period,
                 paid_media=paid_media,
                 paid_media_payload=paid_media_payload,
+                gift=gift,
                 **__pydantic_kwargs,
             )

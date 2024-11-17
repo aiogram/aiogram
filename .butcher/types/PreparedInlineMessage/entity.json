@@ -1,0 +1,33 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Inline mode",
+    "anchor": "inline-mode"
+  },
+  "object": {
+    "anchor": "preparedinlinemessage",
+    "name": "PreparedInlineMessage",
+    "description": "Describes an inline message to be sent by a user of a Mini App.",
+    "html_description": "<p>Describes an inline message to be sent by a user of a Mini App.</p>",
+    "rst_description": "Describes an inline message to be sent by a user of a Mini App.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Unique identifier of the prepared message",
+        "html_description": "<td>Unique identifier of the prepared message</td>",
+        "rst_description": "Unique identifier of the prepared message\n",
+        "name": "id",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "Expiration date of the prepared message, in Unix time. Expired prepared messages can no longer be used",
+        "html_description": "<td>Expiration date of the prepared message, in Unix time. Expired prepared messages can no longer be used</td>",
+        "rst_description": "Expiration date of the prepared message, in Unix time. Expired prepared messages can no longer be used\n",
+        "name": "expiration_date",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}
