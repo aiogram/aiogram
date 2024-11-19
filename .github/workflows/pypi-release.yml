@@ -39,7 +39,7 @@ jobs:
           venv/bin/pip install ../dist/aiogram-*.whl
           venv/bin/python -c "import aiogram; print(aiogram.__version__)"
       - name: Publish artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: dist
           path: dist/*
@@ -55,7 +55,7 @@ jobs:
       id-token: write
     steps:
       - name: Download artifacts
-        uses: actions/download-artifact@v1
+        uses: actions/download-artifact@v4
         with:
           name: dist
           path: dist

@@ -21,7 +21,7 @@ from aiogram.client.session import aiohttp
 from aiogram.client.session.aiohttp import AiohttpSession
 from aiogram.exceptions import TelegramNetworkError
 from aiogram.methods import TelegramMethod
-from aiogram.types import UNSET_PARSE_MODE, InputFile
+from aiogram.types import InputFile
 from tests.mocked_bot import MockedBot
 
 
@@ -248,13 +248,16 @@ class TestAiohttpSession:
         async with AiohttpSession() as session:
             assert isinstance(session, AsyncContextManager)
 
-            with patch(
-                "aiogram.client.session.aiohttp.AiohttpSession.create_session",
-                new_callable=AsyncMock,
-            ) as mocked_create_session, patch(
-                "aiogram.client.session.aiohttp.AiohttpSession.close",
-                new_callable=AsyncMock,
-            ) as mocked_close:
+            with (
+                patch(
+                    "aiogram.client.session.aiohttp.AiohttpSession.create_session",
+                    new_callable=AsyncMock,
+                ) as mocked_create_session,
+                patch(
+                    "aiogram.client.session.aiohttp.AiohttpSession.close",
+                    new_callable=AsyncMock,
+                ) as mocked_close,
+            ):
                 async with session as ctx:
                     assert session == ctx
                 mocked_close.assert_awaited_once()

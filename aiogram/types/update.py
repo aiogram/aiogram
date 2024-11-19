@@ -18,6 +18,7 @@ if TYPE_CHECKING:
     from .message import Message
     from .message_reaction_count_updated import MessageReactionCountUpdated
     from .message_reaction_updated import MessageReactionUpdated
+    from .paid_media_purchased import PaidMediaPurchased
     from .poll import Poll
     from .poll_answer import PollAnswer
     from .pre_checkout_query import PreCheckoutQuery
@@ -65,6 +66,8 @@ class Update(TelegramObject):
     """*Optional*. New incoming shipping query. Only for invoices with flexible price"""
     pre_checkout_query: Optional[PreCheckoutQuery] = None
     """*Optional*. New incoming pre-checkout query. Contains full information about checkout"""
+    purchased_paid_media: Optional[PaidMediaPurchased] = None
+    """*Optional*. A user purchased paid media with a non-empty payload sent by the bot in a non-channel chat"""
     poll: Optional[Poll] = None
     """*Optional*. New poll state. Bots receive only updates about manually stopped polls and polls, which are sent by the bot"""
     poll_answer: Optional[PollAnswer] = None
@@ -103,6 +106,7 @@ class Update(TelegramObject):
             callback_query: Optional[CallbackQuery] = None,
             shipping_query: Optional[ShippingQuery] = None,
             pre_checkout_query: Optional[PreCheckoutQuery] = None,
+            purchased_paid_media: Optional[PaidMediaPurchased] = None,
             poll: Optional[Poll] = None,
             poll_answer: Optional[PollAnswer] = None,
             my_chat_member: Optional[ChatMemberUpdated] = None,
@@ -133,6 +137,7 @@ class Update(TelegramObject):
                 callback_query=callback_query,
                 shipping_query=shipping_query,
                 pre_checkout_query=pre_checkout_query,
+                purchased_paid_media=purchased_paid_media,
                 poll=poll,
                 poll_answer=poll_answer,
                 my_chat_member=my_chat_member,
@@ -199,6 +204,8 @@ class Update(TelegramObject):
             return "edited_business_message"
         if self.business_message:
             return "business_message"
+        if self.purchased_paid_media:
+            return "purchased_paid_media"
 
         raise UpdateTypeLookupError("Update does not contain any known event type.")
 

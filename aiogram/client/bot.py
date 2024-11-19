@@ -10,7 +10,6 @@ from typing import (
     AsyncGenerator,
     AsyncIterator,
     BinaryIO,
-    List,
     Optional,
     Type,
     TypeVar,
@@ -38,6 +37,7 @@ from ..methods import (
     CopyMessage,
     CopyMessages,
     CreateChatInviteLink,
+    CreateChatSubscriptionInviteLink,
     CreateForumTopic,
     CreateInvoiceLink,
     CreateNewStickerSet,
@@ -52,6 +52,7 @@ from ..methods import (
     DeleteStickerSet,
     DeleteWebhook,
     EditChatInviteLink,
+    EditChatSubscriptionInviteLink,
     EditForumTopic,
     EditGeneralForumTopic,
     EditMessageCaption,
@@ -59,9 +60,11 @@ from ..methods import (
     EditMessageMedia,
     EditMessageReplyMarkup,
     EditMessageText,
+    EditUserStarSubscription,
     ExportChatInviteLink,
     ForwardMessage,
     ForwardMessages,
+    GetAvailableGifts,
     GetBusinessConnection,
     GetChat,
     GetChatAdministrators,
@@ -78,6 +81,7 @@ from ..methods import (
     GetMyDescription,
     GetMyName,
     GetMyShortDescription,
+    GetStarTransactions,
     GetStickerSet,
     GetUpdates,
     GetUserChatBoosts,
@@ -94,6 +98,7 @@ from ..methods import (
     ReplaceStickerInSet,
     RestrictChatMember,
     RevokeChatInviteLink,
+    SavePreparedInlineMessage,
     SendAnimation,
     SendAudio,
     SendChatAction,
@@ -101,10 +106,12 @@ from ..methods import (
     SendDice,
     SendDocument,
     SendGame,
+    SendGift,
     SendInvoice,
     SendLocation,
     SendMediaGroup,
     SendMessage,
+    SendPaidMedia,
     SendPhoto,
     SendPoll,
     SendSticker,
@@ -134,6 +141,7 @@ from ..methods import (
     SetStickerPositionInSet,
     SetStickerSetThumbnail,
     SetStickerSetTitle,
+    SetUserEmojiStatus,
     SetWebhook,
     StopMessageLiveLocation,
     StopPoll,
@@ -175,6 +183,7 @@ from ..types import (
     ForceReply,
     ForumTopic,
     GameHighScore,
+    Gifts,
     InlineKeyboardMarkup,
     InlineQueryResultArticle,
     InlineQueryResultAudio,
@@ -203,6 +212,8 @@ from ..types import (
     InputMediaDocument,
     InputMediaPhoto,
     InputMediaVideo,
+    InputPaidMediaPhoto,
+    InputPaidMediaVideo,
     InputPollOption,
     InputSticker,
     LabeledPrice,
@@ -224,13 +235,16 @@ from ..types import (
     PassportElementErrorTranslationFiles,
     PassportElementErrorUnspecified,
     Poll,
+    PreparedInlineMessage,
     ReactionTypeCustomEmoji,
     ReactionTypeEmoji,
+    ReactionTypePaid,
     ReplyKeyboardMarkup,
     ReplyKeyboardRemove,
     ReplyParameters,
     SentWebAppMessage,
     ShippingOption,
+    StarTransactions,
     Sticker,
     StickerSet,
     Update,
@@ -561,7 +575,7 @@ class Bot:
     async def answer_inline_query(
         self,
         inline_query_id: str,
-        results: List[
+        results: list[
             Union[
                 InlineQueryResultCachedAudio,
                 InlineQueryResultCachedDocument,
@@ -654,7 +668,7 @@ class Bot:
         self,
         shipping_query_id: str,
         ok: bool,
-        shipping_options: Optional[List[ShippingOption]] = None,
+        shipping_options: Optional[list[ShippingOption]] = None,
         error_message: Optional[str] = None,
         request_timeout: Optional[int] = None,
     ) -> bool:
@@ -845,12 +859,13 @@ class Bot:
         message_thread_id: Optional[int] = None,
         caption: Optional[str] = None,
         parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
-        caption_entities: Optional[List[MessageEntity]] = None,
+        caption_entities: Optional[list[MessageEntity]] = None,
         show_caption_above_media: Optional[Union[bool, Default]] = Default(
             "show_caption_above_media"
         ),
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        allow_paid_broadcast: Optional[bool] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
             Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
@@ -860,7 +875,7 @@ class Bot:
         request_timeout: Optional[int] = None,
     ) -> MessageId:
         """
-        Use this method to copy messages of any kind. Service messages, giveaway messages, giveaway winners messages, and invoice messages can't be copied. A quiz :class:`aiogram.methods.poll.Poll` can be copied only if the value of the field *correct_option_id* is known to the bot. The method is analogous to the method :class:`aiogram.methods.forward_message.ForwardMessage`, but the copied message doesn't have a link to the original message. Returns the :class:`aiogram.types.message_id.MessageId` of the sent message on success.
+        Use this method to copy messages of any kind. Service messages, paid media messages, giveaway messages, giveaway winners messages, and invoice messages can't be copied. A quiz :class:`aiogram.methods.poll.Poll` can be copied only if the value of the field *correct_option_id* is known to the bot. The method is analogous to the method :class:`aiogram.methods.forward_message.ForwardMessage`, but the copied message doesn't have a link to the original message. Returns the :class:`aiogram.types.message_id.MessageId` of the sent message on success.
 
         Source: https://core.telegram.org/bots/api#copymessage
 
@@ -874,6 +889,7 @@ class Bot:
         :param show_caption_above_media: Pass :code:`True`, if the caption must be shown above the message media. Ignored if a new caption isn't specified.
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
+        :param allow_paid_broadcast: Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
         :param reply_parameters: Description of the message to reply to
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
@@ -893,6 +909,7 @@ class Bot:
             show_caption_above_media=show_caption_above_media,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            allow_paid_broadcast=allow_paid_broadcast,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -967,10 +984,12 @@ class Bot:
         description: str,
         payload: str,
         currency: str,
-        prices: List[LabeledPrice],
+        prices: list[LabeledPrice],
+        business_connection_id: Optional[str] = None,
         provider_token: Optional[str] = None,
+        subscription_period: Optional[int] = None,
         max_tip_amount: Optional[int] = None,
-        suggested_tip_amounts: Optional[List[int]] = None,
+        suggested_tip_amounts: Optional[list[int]] = None,
         provider_data: Optional[str] = None,
         photo_url: Optional[str] = None,
         photo_size: Optional[int] = None,
@@ -992,10 +1011,12 @@ class Bot:
 
         :param title: Product name, 1-32 characters
         :param description: Product description, 1-255 characters
-        :param payload: Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use for your internal processes.
+        :param payload: Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use it for your internal processes.
         :param currency: Three-letter ISO 4217 currency code, see `more on currencies <https://core.telegram.org/bots/payments#supported-currencies>`_. Pass 'XTR' for payments in `Telegram Stars <https://t.me/BotNews/90>`_.
         :param prices: Price breakdown, a JSON-serialized list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.). Must contain exactly one item for payments in `Telegram Stars <https://t.me/BotNews/90>`_.
+        :param business_connection_id: Unique identifier of the business connection on behalf of which the link will be created
         :param provider_token: Payment provider token, obtained via `@BotFather <https://t.me/botfather>`_. Pass an empty string for payments in `Telegram Stars <https://t.me/BotNews/90>`_.
+        :param subscription_period: The number of seconds the subscription will be active for before the next payment. The currency must be set to 'XTR' (Telegram Stars) if the parameter is used. Currently, it must always be 2592000 (30 days) if specified.
         :param max_tip_amount: The maximum accepted amount for tips in the *smallest units* of the currency (integer, **not** float/double). For example, for a maximum tip of :code:`US$ 1.45` pass :code:`max_tip_amount = 145`. See the *exp* parameter in `currencies.json <https://core.telegram.org/bots/payments/currencies.json>`_, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies). Defaults to 0. Not supported for payments in `Telegram Stars <https://t.me/BotNews/90>`_.
         :param suggested_tip_amounts: A JSON-serialized array of suggested amounts of tips in the *smallest units* of the currency (integer, **not** float/double). At most 4 suggested tip amounts can be specified. The suggested tip amounts must be positive, passed in a strictly increased order and must not exceed *max_tip_amount*.
         :param provider_data: JSON-serialized data about the invoice, which will be shared with the payment provider. A detailed description of required fields should be provided by the payment provider.
@@ -1020,7 +1041,9 @@ class Bot:
             payload=payload,
             currency=currency,
             prices=prices,
+            business_connection_id=business_connection_id,
             provider_token=provider_token,
+            subscription_period=subscription_period,
             max_tip_amount=max_tip_amount,
             suggested_tip_amounts=suggested_tip_amounts,
             provider_data=provider_data,
@@ -1043,7 +1066,7 @@ class Bot:
         user_id: int,
         name: str,
         title: str,
-        stickers: List[InputSticker],
+        stickers: list[InputSticker],
         sticker_type: Optional[str] = None,
         needs_repainting: Optional[bool] = None,
         sticker_format: Optional[str] = None,
@@ -1320,7 +1343,7 @@ class Bot:
         request_timeout: Optional[int] = None,
     ) -> bool:
         """
-        Use this method to edit name and icon of a topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have *can_manage_topics* administrator rights, unless it is the creator of the topic. Returns :code:`True` on success.
+        Use this method to edit name and icon of a topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the *can_manage_topics* administrator rights, unless it is the creator of the topic. Returns :code:`True` on success.
 
         Source: https://core.telegram.org/bots/api#editforumtopic
 
@@ -1342,12 +1365,13 @@ class Bot:
 
     async def edit_message_caption(
         self,
+        business_connection_id: Optional[str] = None,
         chat_id: Optional[Union[int, str]] = None,
         message_id: Optional[int] = None,
         inline_message_id: Optional[str] = None,
         caption: Optional[str] = None,
         parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
-        caption_entities: Optional[List[MessageEntity]] = None,
+        caption_entities: Optional[list[MessageEntity]] = None,
         show_caption_above_media: Optional[Union[bool, Default]] = Default(
             "show_caption_above_media"
         ),
@@ -1355,10 +1379,11 @@ class Bot:
         request_timeout: Optional[int] = None,
     ) -> Union[Message, bool]:
         """
-        Use this method to edit captions of messages. On success, if the edited message is not an inline message, the edited :class:`aiogram.types.message.Message` is returned, otherwise :code:`True` is returned.
+        Use this method to edit captions of messages. On success, if the edited message is not an inline message, the edited :class:`aiogram.types.message.Message` is returned, otherwise :code:`True` is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within **48 hours** from the time they were sent.
 
         Source: https://core.telegram.org/bots/api#editmessagecaption
 
+        :param business_connection_id: Unique identifier of the business connection on behalf of which the message to be edited was sent
         :param chat_id: Required if *inline_message_id* is not specified. Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
         :param message_id: Required if *inline_message_id* is not specified. Identifier of the message to edit
         :param inline_message_id: Required if *chat_id* and *message_id* are not specified. Identifier of the inline message
@@ -1368,10 +1393,11 @@ class Bot:
         :param show_caption_above_media: Pass :code:`True`, if the caption must be shown above the message media. Supported only for animation, photo and video messages.
         :param reply_markup: A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_.
         :param request_timeout: Request timeout
-        :return: On success, if the edited message is not an inline message, the edited :class:`aiogram.types.message.Message` is returned, otherwise :code:`True` is returned.
+        :return: Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within **48 hours** from the time they were sent.
         """
 
         call = EditMessageCaption(
+            business_connection_id=business_connection_id,
             chat_id=chat_id,
             message_id=message_id,
             inline_message_id=inline_message_id,
@@ -1387,6 +1413,7 @@ class Bot:
         self,
         latitude: float,
         longitude: float,
+        business_connection_id: Optional[str] = None,
         chat_id: Optional[Union[int, str]] = None,
         message_id: Optional[int] = None,
         inline_message_id: Optional[str] = None,
@@ -1404,6 +1431,7 @@ class Bot:
 
         :param latitude: Latitude of new location
         :param longitude: Longitude of new location
+        :param business_connection_id: Unique identifier of the business connection on behalf of which the message to be edited was sent
         :param chat_id: Required if *inline_message_id* is not specified. Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
         :param message_id: Required if *inline_message_id* is not specified. Identifier of the message to edit
         :param inline_message_id: Required if *chat_id* and *message_id* are not specified. Identifier of the inline message
@@ -1419,6 +1447,7 @@ class Bot:
         call = EditMessageLiveLocation(
             latitude=latitude,
             longitude=longitude,
+            business_connection_id=business_connection_id,
             chat_id=chat_id,
             message_id=message_id,
             inline_message_id=inline_message_id,
@@ -1439,6 +1468,7 @@ class Bot:
             InputMediaPhoto,
             InputMediaVideo,
         ],
+        business_connection_id: Optional[str] = None,
         chat_id: Optional[Union[int, str]] = None,
         message_id: Optional[int] = None,
         inline_message_id: Optional[str] = None,
@@ -1446,21 +1476,23 @@ class Bot:
         request_timeout: Optional[int] = None,
     ) -> Union[Message, bool]:
         """
-        Use this method to edit animation, audio, document, photo, or video messages. If a message is part of a message album, then it can be edited only to an audio for audio albums, only to a document for document albums and to a photo or a video otherwise. When an inline message is edited, a new file can't be uploaded; use a previously uploaded file via its file_id or specify a URL. On success, if the edited message is not an inline message, the edited :class:`aiogram.types.message.Message` is returned, otherwise :code:`True` is returned.
+        Use this method to edit animation, audio, document, photo, or video messages, or to add media to text messages. If a message is part of a message album, then it can be edited only to an audio for audio albums, only to a document for document albums and to a photo or a video otherwise. When an inline message is edited, a new file can't be uploaded; use a previously uploaded file via its file_id or specify a URL. On success, if the edited message is not an inline message, the edited :class:`aiogram.types.message.Message` is returned, otherwise :code:`True` is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within **48 hours** from the time they were sent.
 
         Source: https://core.telegram.org/bots/api#editmessagemedia
 
         :param media: A JSON-serialized object for a new media content of the message
+        :param business_connection_id: Unique identifier of the business connection on behalf of which the message to be edited was sent
         :param chat_id: Required if *inline_message_id* is not specified. Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
         :param message_id: Required if *inline_message_id* is not specified. Identifier of the message to edit
         :param inline_message_id: Required if *chat_id* and *message_id* are not specified. Identifier of the inline message
         :param reply_markup: A JSON-serialized object for a new `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_.
         :param request_timeout: Request timeout
-        :return: On success, if the edited message is not an inline message, the edited :class:`aiogram.types.message.Message` is returned, otherwise :code:`True` is returned.
+        :return: Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within **48 hours** from the time they were sent.
         """
 
         call = EditMessageMedia(
             media=media,
+            business_connection_id=business_connection_id,
             chat_id=chat_id,
             message_id=message_id,
             inline_message_id=inline_message_id,
@@ -1470,6 +1502,7 @@ class Bot:
 
     async def edit_message_reply_markup(
         self,
+        business_connection_id: Optional[str] = None,
         chat_id: Optional[Union[int, str]] = None,
         message_id: Optional[int] = None,
         inline_message_id: Optional[str] = None,
@@ -1477,19 +1510,21 @@ class Bot:
         request_timeout: Optional[int] = None,
     ) -> Union[Message, bool]:
         """
-        Use this method to edit only the reply markup of messages. On success, if the edited message is not an inline message, the edited :class:`aiogram.types.message.Message` is returned, otherwise :code:`True` is returned.
+        Use this method to edit only the reply markup of messages. On success, if the edited message is not an inline message, the edited :class:`aiogram.types.message.Message` is returned, otherwise :code:`True` is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within **48 hours** from the time they were sent.
 
         Source: https://core.telegram.org/bots/api#editmessagereplymarkup
 
+        :param business_connection_id: Unique identifier of the business connection on behalf of which the message to be edited was sent
         :param chat_id: Required if *inline_message_id* is not specified. Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
         :param message_id: Required if *inline_message_id* is not specified. Identifier of the message to edit
         :param inline_message_id: Required if *chat_id* and *message_id* are not specified. Identifier of the inline message
         :param reply_markup: A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_.
         :param request_timeout: Request timeout
-        :return: On success, if the edited message is not an inline message, the edited :class:`aiogram.types.message.Message` is returned, otherwise :code:`True` is returned.
+        :return: Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within **48 hours** from the time they were sent.
         """
 
         call = EditMessageReplyMarkup(
+            business_connection_id=business_connection_id,
             chat_id=chat_id,
             message_id=message_id,
             inline_message_id=inline_message_id,
@@ -1500,12 +1535,15 @@ class Bot:
     async def edit_message_text(
         self,
         text: str,
+        business_connection_id: Optional[str] = None,
         chat_id: Optional[Union[int, str]] = None,
         message_id: Optional[int] = None,
         inline_message_id: Optional[str] = None,
         parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
-        entities: Optional[List[MessageEntity]] = None,
-        link_preview_options: Optional[LinkPreviewOptions] = None,
+        entities: Optional[list[MessageEntity]] = None,
+        link_preview_options: Optional[Union[LinkPreviewOptions, Default]] = Default(
+            "link_preview"
+        ),
         reply_markup: Optional[InlineKeyboardMarkup] = None,
         disable_web_page_preview: Optional[Union[bool, Default]] = Default(
             "link_preview_is_disabled"
@@ -1513,11 +1551,12 @@ class Bot:
         request_timeout: Optional[int] = None,
     ) -> Union[Message, bool]:
         """
-        Use this method to edit text and `game <https://core.telegram.org/bots/api#games>`_ messages. On success, if the edited message is not an inline message, the edited :class:`aiogram.types.message.Message` is returned, otherwise :code:`True` is returned.
+        Use this method to edit text and `game <https://core.telegram.org/bots/api#games>`_ messages. On success, if the edited message is not an inline message, the edited :class:`aiogram.types.message.Message` is returned, otherwise :code:`True` is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within **48 hours** from the time they were sent.
 
         Source: https://core.telegram.org/bots/api#editmessagetext
 
         :param text: New text of the message, 1-4096 characters after entities parsing
+        :param business_connection_id: Unique identifier of the business connection on behalf of which the message to be edited was sent
         :param chat_id: Required if *inline_message_id* is not specified. Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
         :param message_id: Required if *inline_message_id* is not specified. Identifier of the message to edit
         :param inline_message_id: Required if *chat_id* and *message_id* are not specified. Identifier of the inline message
@@ -1527,11 +1566,12 @@ class Bot:
         :param reply_markup: A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_.
         :param disable_web_page_preview: Disables link previews for links in this message
         :param request_timeout: Request timeout
-        :return: On success, if the edited message is not an inline message, the edited :class:`aiogram.types.message.Message` is returned, otherwise :code:`True` is returned.
+        :return: Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within **48 hours** from the time they were sent.
         """
 
         call = EditMessageText(
             text=text,
+            business_connection_id=business_connection_id,
             chat_id=chat_id,
             message_id=message_id,
             inline_message_id=inline_message_id,
@@ -1624,7 +1664,7 @@ class Bot:
         self,
         chat_id: Union[int, str],
         request_timeout: Optional[int] = None,
-    ) -> List[
+    ) -> list[
         Union[
             ChatMemberOwner,
             ChatMemberAdministrator,
@@ -1721,9 +1761,9 @@ class Bot:
 
     async def get_custom_emoji_stickers(
         self,
-        custom_emoji_ids: List[str],
+        custom_emoji_ids: list[str],
         request_timeout: Optional[int] = None,
-    ) -> List[Sticker]:
+    ) -> list[Sticker]:
         """
         Use this method to get information about custom emoji stickers by their identifiers. Returns an Array of :class:`aiogram.types.sticker.Sticker` objects.
 
@@ -1763,7 +1803,7 @@ class Bot:
     async def get_forum_topic_icon_stickers(
         self,
         request_timeout: Optional[int] = None,
-    ) -> List[Sticker]:
+    ) -> list[Sticker]:
         """
         Use this method to get custom emoji stickers, which can be used as a forum topic icon by any user. Requires no parameters. Returns an Array of :class:`aiogram.types.sticker.Sticker` objects.
 
@@ -1783,7 +1823,7 @@ class Bot:
         message_id: Optional[int] = None,
         inline_message_id: Optional[str] = None,
         request_timeout: Optional[int] = None,
-    ) -> List[GameHighScore]:
+    ) -> list[GameHighScore]:
         """
         Use this method to get data for high score tables. Will return the score of the specified user and several of their neighbors in a game. Returns an Array of :class:`aiogram.types.game_high_score.GameHighScore` objects.
 
@@ -1838,7 +1878,7 @@ class Bot:
         ] = None,
         language_code: Optional[str] = None,
         request_timeout: Optional[int] = None,
-    ) -> List[BotCommand]:
+    ) -> list[BotCommand]:
         """
         Use this method to get the current list of the bot's commands for the given scope and user language. Returns an Array of :class:`aiogram.types.bot_command.BotCommand` objects. If commands aren't set, an empty list is returned.
 
@@ -1901,9 +1941,9 @@ class Bot:
         offset: Optional[int] = None,
         limit: Optional[int] = None,
         timeout: Optional[int] = None,
-        allowed_updates: Optional[List[str]] = None,
+        allowed_updates: Optional[list[str]] = None,
         request_timeout: Optional[int] = None,
-    ) -> List[Update]:
+    ) -> list[Update]:
         """
         Use this method to receive incoming updates using long polling (`wiki <https://en.wikipedia.org/wiki/Push_technology#Long_polling>`_). Returns an Array of :class:`aiogram.types.update.Update` objects.
 
@@ -2013,6 +2053,7 @@ class Bot:
         self,
         chat_id: Union[int, str],
         message_id: int,
+        business_connection_id: Optional[str] = None,
         disable_notification: Optional[bool] = None,
         request_timeout: Optional[int] = None,
     ) -> bool:
@@ -2023,6 +2064,7 @@ class Bot:
 
         :param chat_id: Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
         :param message_id: Identifier of a message to pin
+        :param business_connection_id: Unique identifier of the business connection on behalf of which the message will be pinned
         :param disable_notification: Pass :code:`True` if it is not necessary to send a notification to all chat members about the new pinned message. Notifications are always disabled in channels and private chats.
         :param request_timeout: Request timeout
         :return: Returns :code:`True` on success.
@@ -2031,6 +2073,7 @@ class Bot:
         call = PinChatMessage(
             chat_id=chat_id,
             message_id=message_id,
+            business_connection_id=business_connection_id,
             disable_notification=disable_notification,
         )
         return await self(call, request_timeout=request_timeout)
@@ -2193,13 +2236,14 @@ class Bot:
         thumbnail: Optional[InputFile] = None,
         caption: Optional[str] = None,
         parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
-        caption_entities: Optional[List[MessageEntity]] = None,
+        caption_entities: Optional[list[MessageEntity]] = None,
         show_caption_above_media: Optional[Union[bool, Default]] = Default(
             "show_caption_above_media"
         ),
         has_spoiler: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
@@ -2229,6 +2273,7 @@ class Bot:
         :param has_spoiler: Pass :code:`True` if the animation needs to be covered with a spoiler animation
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
+        :param allow_paid_broadcast: Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
         :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param reply_parameters: Description of the message to reply to
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
@@ -2254,6 +2299,7 @@ class Bot:
             has_spoiler=has_spoiler,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            allow_paid_broadcast=allow_paid_broadcast,
             message_effect_id=message_effect_id,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
@@ -2270,13 +2316,14 @@ class Bot:
         message_thread_id: Optional[int] = None,
         caption: Optional[str] = None,
         parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
-        caption_entities: Optional[List[MessageEntity]] = None,
+        caption_entities: Optional[list[MessageEntity]] = None,
         duration: Optional[int] = None,
         performer: Optional[str] = None,
         title: Optional[str] = None,
         thumbnail: Optional[InputFile] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
@@ -2305,6 +2352,7 @@ class Bot:
         :param thumbnail: Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
+        :param allow_paid_broadcast: Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
         :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param reply_parameters: Description of the message to reply to
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
@@ -2328,6 +2376,7 @@ class Bot:
             thumbnail=thumbnail,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            allow_paid_broadcast=allow_paid_broadcast,
             message_effect_id=message_effect_id,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
@@ -2380,6 +2429,7 @@ class Bot:
         vcard: Optional[str] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
@@ -2403,6 +2453,7 @@ class Bot:
         :param vcard: Additional data about the contact in the form of a `vCard <https://en.wikipedia.org/wiki/VCard>`_, 0-2048 bytes
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
+        :param allow_paid_broadcast: Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
         :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param reply_parameters: Description of the message to reply to
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
@@ -2422,6 +2473,7 @@ class Bot:
             vcard=vcard,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            allow_paid_broadcast=allow_paid_broadcast,
             message_effect_id=message_effect_id,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
@@ -2438,6 +2490,7 @@ class Bot:
         emoji: Optional[str] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
@@ -2458,6 +2511,7 @@ class Bot:
         :param emoji: Emoji on which the dice throw animation is based. Currently, must be one of '🎲', '🎯', '🏀', '⚽', '🎳', or '🎰'. Dice can have values 1-6 for '🎲', '🎯' and '🎳', values 1-5 for '🏀' and '⚽', and values 1-64 for '🎰'. Defaults to '🎲'
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding
+        :param allow_paid_broadcast: Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
         :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param reply_parameters: Description of the message to reply to
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
@@ -2474,6 +2528,7 @@ class Bot:
             emoji=emoji,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            allow_paid_broadcast=allow_paid_broadcast,
             message_effect_id=message_effect_id,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
@@ -2491,10 +2546,11 @@ class Bot:
         thumbnail: Optional[InputFile] = None,
         caption: Optional[str] = None,
         parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
-        caption_entities: Optional[List[MessageEntity]] = None,
+        caption_entities: Optional[list[MessageEntity]] = None,
         disable_content_type_detection: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
@@ -2520,6 +2576,7 @@ class Bot:
         :param disable_content_type_detection: Disables automatic server-side content type detection for files uploaded using multipart/form-data
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
+        :param allow_paid_broadcast: Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
         :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param reply_parameters: Description of the message to reply to
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
@@ -2541,6 +2598,7 @@ class Bot:
             disable_content_type_detection=disable_content_type_detection,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            allow_paid_broadcast=allow_paid_broadcast,
             message_effect_id=message_effect_id,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
@@ -2557,6 +2615,7 @@ class Bot:
         message_thread_id: Optional[int] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[InlineKeyboardMarkup] = None,
@@ -2575,6 +2634,7 @@ class Bot:
         :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
+        :param allow_paid_broadcast: Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
         :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param reply_parameters: Description of the message to reply to
         :param reply_markup: A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_. If empty, one 'Play game_title' button will be shown. If not empty, the first button must launch the game.
@@ -2591,6 +2651,7 @@ class Bot:
             message_thread_id=message_thread_id,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            allow_paid_broadcast=allow_paid_broadcast,
             message_effect_id=message_effect_id,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
@@ -2606,11 +2667,11 @@ class Bot:
         description: str,
         payload: str,
         currency: str,
-        prices: List[LabeledPrice],
+        prices: list[LabeledPrice],
         message_thread_id: Optional[int] = None,
         provider_token: Optional[str] = None,
         max_tip_amount: Optional[int] = None,
-        suggested_tip_amounts: Optional[List[int]] = None,
+        suggested_tip_amounts: Optional[list[int]] = None,
         start_parameter: Optional[str] = None,
         provider_data: Optional[str] = None,
         photo_url: Optional[str] = None,
@@ -2626,6 +2687,7 @@ class Bot:
         is_flexible: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[InlineKeyboardMarkup] = None,
@@ -2641,7 +2703,7 @@ class Bot:
         :param chat_id: Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
         :param title: Product name, 1-32 characters
         :param description: Product description, 1-255 characters
-        :param payload: Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use for your internal processes.
+        :param payload: Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use it for your internal processes.
         :param currency: Three-letter ISO 4217 currency code, see `more on currencies <https://core.telegram.org/bots/payments#supported-currencies>`_. Pass 'XTR' for payments in `Telegram Stars <https://t.me/BotNews/90>`_.
         :param prices: Price breakdown, a JSON-serialized list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.). Must contain exactly one item for payments in `Telegram Stars <https://t.me/BotNews/90>`_.
         :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
@@ -2663,6 +2725,7 @@ class Bot:
         :param is_flexible: Pass :code:`True` if the final price depends on the shipping method. Ignored for payments in `Telegram Stars <https://t.me/BotNews/90>`_.
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
+        :param allow_paid_broadcast: Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
         :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param reply_parameters: Description of the message to reply to
         :param reply_markup: A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_. If empty, one 'Pay :code:`total price`' button will be shown. If not empty, the first button must be a Pay button.
@@ -2698,6 +2761,7 @@ class Bot:
             is_flexible=is_flexible,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            allow_paid_broadcast=allow_paid_broadcast,
             message_effect_id=message_effect_id,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
@@ -2719,6 +2783,7 @@ class Bot:
         proximity_alert_radius: Optional[int] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
@@ -2744,6 +2809,7 @@ class Bot:
         :param proximity_alert_radius: For live locations, a maximum distance for proximity alerts about approaching another chat member, in meters. Must be between 1 and 100000 if specified.
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
+        :param allow_paid_broadcast: Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
         :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param reply_parameters: Description of the message to reply to
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
@@ -2765,6 +2831,7 @@ class Bot:
             proximity_alert_radius=proximity_alert_radius,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            allow_paid_broadcast=allow_paid_broadcast,
             message_effect_id=message_effect_id,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
@@ -2776,17 +2843,18 @@ class Bot:
     async def send_media_group(
         self,
         chat_id: Union[int, str],
-        media: List[Union[InputMediaAudio, InputMediaDocument, InputMediaPhoto, InputMediaVideo]],
+        media: list[Union[InputMediaAudio, InputMediaDocument, InputMediaPhoto, InputMediaVideo]],
         business_connection_id: Optional[str] = None,
         message_thread_id: Optional[int] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
         request_timeout: Optional[int] = None,
-    ) -> List[Message]:
+    ) -> list[Message]:
         """
         Use this method to send a group of photos, videos, documents or audios as an album. Documents and audio files can be only grouped in an album with messages of the same type. On success, an array of `Messages <https://core.telegram.org/bots/api#message>`_ that were sent is returned.
 
@@ -2798,6 +2866,7 @@ class Bot:
         :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
         :param disable_notification: Sends messages `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent messages from forwarding and saving
+        :param allow_paid_broadcast: Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
         :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param reply_parameters: Description of the message to reply to
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
@@ -2813,6 +2882,7 @@ class Bot:
             message_thread_id=message_thread_id,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            allow_paid_broadcast=allow_paid_broadcast,
             message_effect_id=message_effect_id,
             reply_parameters=reply_parameters,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -2827,12 +2897,13 @@ class Bot:
         business_connection_id: Optional[str] = None,
         message_thread_id: Optional[int] = None,
         parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
-        entities: Optional[List[MessageEntity]] = None,
+        entities: Optional[list[MessageEntity]] = None,
         link_preview_options: Optional[Union[LinkPreviewOptions, Default]] = Default(
             "link_preview"
         ),
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
@@ -2859,6 +2930,7 @@ class Bot:
         :param link_preview_options: Link preview generation options for the message
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
+        :param allow_paid_broadcast: Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
         :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param reply_parameters: Description of the message to reply to
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
@@ -2879,6 +2951,7 @@ class Bot:
             link_preview_options=link_preview_options,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            allow_paid_broadcast=allow_paid_broadcast,
             message_effect_id=message_effect_id,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
@@ -2896,13 +2969,14 @@ class Bot:
         message_thread_id: Optional[int] = None,
         caption: Optional[str] = None,
         parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
-        caption_entities: Optional[List[MessageEntity]] = None,
+        caption_entities: Optional[list[MessageEntity]] = None,
         show_caption_above_media: Optional[Union[bool, Default]] = Default(
             "show_caption_above_media"
         ),
         has_spoiler: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
@@ -2928,6 +3002,7 @@ class Bot:
         :param has_spoiler: Pass :code:`True` if the photo needs to be covered with a spoiler animation
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
+        :param allow_paid_broadcast: Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
         :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param reply_parameters: Description of the message to reply to
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
@@ -2949,6 +3024,7 @@ class Bot:
             has_spoiler=has_spoiler,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            allow_paid_broadcast=allow_paid_broadcast,
             message_effect_id=message_effect_id,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
@@ -2961,23 +3037,24 @@ class Bot:
         self,
         chat_id: Union[int, str],
         question: str,
-        options: List[Union[InputPollOption, str]],
+        options: list[Union[InputPollOption, str]],
         business_connection_id: Optional[str] = None,
         message_thread_id: Optional[int] = None,
         question_parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
-        question_entities: Optional[List[MessageEntity]] = None,
+        question_entities: Optional[list[MessageEntity]] = None,
         is_anonymous: Optional[bool] = None,
         type: Optional[str] = None,
         allows_multiple_answers: Optional[bool] = None,
         correct_option_id: Optional[int] = None,
         explanation: Optional[str] = None,
         explanation_parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
-        explanation_entities: Optional[List[MessageEntity]] = None,
+        explanation_entities: Optional[list[MessageEntity]] = None,
         open_period: Optional[int] = None,
         close_date: Optional[Union[datetime.datetime, datetime.timedelta, int]] = None,
         is_closed: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
@@ -3011,6 +3088,7 @@ class Bot:
         :param is_closed: Pass :code:`True` if the poll needs to be immediately closed. This can be useful for poll preview.
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
+        :param allow_paid_broadcast: Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
         :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param reply_parameters: Description of the message to reply to
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
@@ -3040,6 +3118,7 @@ class Bot:
             is_closed=is_closed,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            allow_paid_broadcast=allow_paid_broadcast,
             message_effect_id=message_effect_id,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
@@ -3057,6 +3136,7 @@ class Bot:
         emoji: Optional[str] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
@@ -3078,6 +3158,7 @@ class Bot:
         :param emoji: Emoji associated with the sticker; only for just uploaded stickers
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
+        :param allow_paid_broadcast: Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
         :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param reply_parameters: Description of the message to reply to
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
@@ -3095,6 +3176,7 @@ class Bot:
             emoji=emoji,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            allow_paid_broadcast=allow_paid_broadcast,
             message_effect_id=message_effect_id,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
@@ -3118,6 +3200,7 @@ class Bot:
         google_place_type: Optional[str] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
@@ -3145,6 +3228,7 @@ class Bot:
         :param google_place_type: Google Places type of the venue. (See `supported types <https://developers.google.com/places/web-service/supported_types>`_.)
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
+        :param allow_paid_broadcast: Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
         :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param reply_parameters: Description of the message to reply to
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
@@ -3168,6 +3252,7 @@ class Bot:
             google_place_type=google_place_type,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            allow_paid_broadcast=allow_paid_broadcast,
             message_effect_id=message_effect_id,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
@@ -3188,7 +3273,7 @@ class Bot:
         thumbnail: Optional[InputFile] = None,
         caption: Optional[str] = None,
         parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
-        caption_entities: Optional[List[MessageEntity]] = None,
+        caption_entities: Optional[list[MessageEntity]] = None,
         show_caption_above_media: Optional[Union[bool, Default]] = Default(
             "show_caption_above_media"
         ),
@@ -3196,6 +3281,7 @@ class Bot:
         supports_streaming: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
@@ -3226,6 +3312,7 @@ class Bot:
         :param supports_streaming: Pass :code:`True` if the uploaded video is suitable for streaming
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
+        :param allow_paid_broadcast: Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
         :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param reply_parameters: Description of the message to reply to
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
@@ -3252,6 +3339,7 @@ class Bot:
             supports_streaming=supports_streaming,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            allow_paid_broadcast=allow_paid_broadcast,
             message_effect_id=message_effect_id,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
@@ -3271,6 +3359,7 @@ class Bot:
         thumbnail: Optional[InputFile] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
@@ -3294,6 +3383,7 @@ class Bot:
         :param thumbnail: Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
+        :param allow_paid_broadcast: Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
         :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param reply_parameters: Description of the message to reply to
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
@@ -3313,6 +3403,7 @@ class Bot:
             thumbnail=thumbnail,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            allow_paid_broadcast=allow_paid_broadcast,
             message_effect_id=message_effect_id,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
@@ -3329,10 +3420,11 @@ class Bot:
         message_thread_id: Optional[int] = None,
         caption: Optional[str] = None,
         parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
-        caption_entities: Optional[List[MessageEntity]] = None,
+        caption_entities: Optional[list[MessageEntity]] = None,
         duration: Optional[int] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
@@ -3357,6 +3449,7 @@ class Bot:
         :param duration: Duration of the voice message in seconds
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
+        :param allow_paid_broadcast: Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
         :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param reply_parameters: Description of the message to reply to
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
@@ -3377,6 +3470,7 @@ class Bot:
             duration=duration,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            allow_paid_broadcast=allow_paid_broadcast,
             message_effect_id=message_effect_id,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
@@ -3594,7 +3688,7 @@ class Bot:
 
     async def set_my_commands(
         self,
-        commands: List[BotCommand],
+        commands: list[BotCommand],
         scope: Optional[
             Union[
                 BotCommandScopeDefault,
@@ -3654,7 +3748,7 @@ class Bot:
     async def set_passport_data_errors(
         self,
         user_id: int,
-        errors: List[
+        errors: list[
             Union[
                 PassportElementErrorDataField,
                 PassportElementErrorFrontSide,
@@ -3716,7 +3810,7 @@ class Bot:
         certificate: Optional[InputFile] = None,
         ip_address: Optional[str] = None,
         max_connections: Optional[int] = None,
-        allowed_updates: Optional[List[str]] = None,
+        allowed_updates: Optional[list[str]] = None,
         drop_pending_updates: Optional[bool] = None,
         secret_token: Optional[str] = None,
         request_timeout: Optional[int] = None,
@@ -3760,6 +3854,7 @@ class Bot:
 
     async def stop_message_live_location(
         self,
+        business_connection_id: Optional[str] = None,
         chat_id: Optional[Union[int, str]] = None,
         message_id: Optional[int] = None,
         inline_message_id: Optional[str] = None,
@@ -3771,6 +3866,7 @@ class Bot:
 
         Source: https://core.telegram.org/bots/api#stopmessagelivelocation
 
+        :param business_connection_id: Unique identifier of the business connection on behalf of which the message to be edited was sent
         :param chat_id: Required if *inline_message_id* is not specified. Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
         :param message_id: Required if *inline_message_id* is not specified. Identifier of the message with live location to stop
         :param inline_message_id: Required if *chat_id* and *message_id* are not specified. Identifier of the inline message
@@ -3780,6 +3876,7 @@ class Bot:
         """
 
         call = StopMessageLiveLocation(
+            business_connection_id=business_connection_id,
             chat_id=chat_id,
             message_id=message_id,
             inline_message_id=inline_message_id,
@@ -3791,6 +3888,7 @@ class Bot:
         self,
         chat_id: Union[int, str],
         message_id: int,
+        business_connection_id: Optional[str] = None,
         reply_markup: Optional[InlineKeyboardMarkup] = None,
         request_timeout: Optional[int] = None,
     ) -> Poll:
@@ -3801,6 +3899,7 @@ class Bot:
 
         :param chat_id: Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
         :param message_id: Identifier of the original message with the poll
+        :param business_connection_id: Unique identifier of the business connection on behalf of which the message to be edited was sent
         :param reply_markup: A JSON-serialized object for a new message `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_.
         :param request_timeout: Request timeout
         :return: On success, the stopped :class:`aiogram.types.poll.Poll` is returned.
@@ -3809,6 +3908,7 @@ class Bot:
         call = StopPoll(
             chat_id=chat_id,
             message_id=message_id,
+            business_connection_id=business_connection_id,
             reply_markup=reply_markup,
         )
         return await self(call, request_timeout=request_timeout)
@@ -3908,6 +4008,7 @@ class Bot:
     async def unpin_chat_message(
         self,
         chat_id: Union[int, str],
+        business_connection_id: Optional[str] = None,
         message_id: Optional[int] = None,
         request_timeout: Optional[int] = None,
     ) -> bool:
@@ -3917,13 +4018,15 @@ class Bot:
         Source: https://core.telegram.org/bots/api#unpinchatmessage
 
         :param chat_id: Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
-        :param message_id: Identifier of a message to unpin. If not specified, the most recent pinned message (by sending date) will be unpinned.
+        :param business_connection_id: Unique identifier of the business connection on behalf of which the message will be unpinned
+        :param message_id: Identifier of the message to unpin. Required if *business_connection_id* is specified. If not specified, the most recent pinned message (by sending date) will be unpinned.
         :param request_timeout: Request timeout
         :return: Returns :code:`True` on success.
         """
 
         call = UnpinChatMessage(
             chat_id=chat_id,
+            business_connection_id=business_connection_id,
             message_id=message_id,
         )
         return await self(call, request_timeout=request_timeout)
@@ -3981,7 +4084,7 @@ class Bot:
         request_timeout: Optional[int] = None,
     ) -> bool:
         """
-        Use this method to edit the name of the 'General' topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have *can_manage_topics* administrator rights. Returns :code:`True` on success.
+        Use this method to edit the name of the 'General' topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the *can_manage_topics* administrator rights. Returns :code:`True` on success.
 
         Source: https://core.telegram.org/bots/api#editgeneralforumtopic
 
@@ -4189,7 +4292,7 @@ class Bot:
     async def set_sticker_emoji_list(
         self,
         sticker: str,
-        emoji_list: List[str],
+        emoji_list: list[str],
         request_timeout: Optional[int] = None,
     ) -> bool:
         """
@@ -4212,7 +4315,7 @@ class Bot:
     async def set_sticker_keywords(
         self,
         sticker: str,
-        keywords: Optional[List[str]] = None,
+        keywords: Optional[list[str]] = None,
         request_timeout: Optional[int] = None,
     ) -> bool:
         """
@@ -4271,7 +4374,7 @@ class Bot:
         :param name: Sticker set name
         :param user_id: User identifier of the sticker set owner
         :param format: Format of the thumbnail, must be one of 'static' for a **.WEBP** or **.PNG** image, 'animated' for a **.TGS** animation, or 'video' for a **WEBM** video
-        :param thumbnail: A **.WEBP** or **.PNG** image with the thumbnail, must be up to 128 kilobytes in size and have a width and height of exactly 100px, or a **.TGS** animation with a thumbnail up to 32 kilobytes in size (see `https://core.telegram.org/stickers#animated-sticker-requirements <https://core.telegram.org/stickers#animated-sticker-requirements>`_`https://core.telegram.org/stickers#animated-sticker-requirements <https://core.telegram.org/stickers#animated-sticker-requirements>`_ for animated sticker technical requirements), or a **WEBM** video with the thumbnail up to 32 kilobytes in size; see `https://core.telegram.org/stickers#video-sticker-requirements <https://core.telegram.org/stickers#video-sticker-requirements>`_`https://core.telegram.org/stickers#video-sticker-requirements <https://core.telegram.org/stickers#video-sticker-requirements>`_ for video sticker technical requirements. Pass a *file_id* as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`. Animated and video sticker set thumbnails can't be uploaded via HTTP URL. If omitted, then the thumbnail is dropped and the first sticker is used as the thumbnail.
+        :param thumbnail: A **.WEBP** or **.PNG** image with the thumbnail, must be up to 128 kilobytes in size and have a width and height of exactly 100px, or a **.TGS** animation with a thumbnail up to 32 kilobytes in size (see `https://core.telegram.org/stickers#animation-requirements <https://core.telegram.org/stickers#animation-requirements>`_`https://core.telegram.org/stickers#animation-requirements <https://core.telegram.org/stickers#animation-requirements>`_ for animated sticker technical requirements), or a **WEBM** video with the thumbnail up to 32 kilobytes in size; see `https://core.telegram.org/stickers#video-requirements <https://core.telegram.org/stickers#video-requirements>`_`https://core.telegram.org/stickers#video-requirements <https://core.telegram.org/stickers#video-requirements>`_ for video sticker technical requirements. Pass a *file_id* as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`. Animated and video sticker set thumbnails can't be uploaded via HTTP URL. If omitted, then the thumbnail is dropped and the first sticker is used as the thumbnail.
         :param request_timeout: Request timeout
         :return: Returns :code:`True` on success.
         """
@@ -4374,15 +4477,15 @@ class Bot:
         self,
         chat_id: Union[int, str],
         from_chat_id: Union[int, str],
-        message_ids: List[int],
+        message_ids: list[int],
         message_thread_id: Optional[int] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[bool] = None,
         remove_caption: Optional[bool] = None,
         request_timeout: Optional[int] = None,
-    ) -> List[MessageId]:
+    ) -> list[MessageId]:
         """
-        Use this method to copy messages of any kind. If some of the specified messages can't be found or copied, they are skipped. Service messages, giveaway messages, giveaway winners messages, and invoice messages can't be copied. A quiz :class:`aiogram.methods.poll.Poll` can be copied only if the value of the field *correct_option_id* is known to the bot. The method is analogous to the method :class:`aiogram.methods.forward_messages.ForwardMessages`, but the copied messages don't have a link to the original message. Album grouping is kept for copied messages. On success, an array of :class:`aiogram.types.message_id.MessageId` of the sent messages is returned.
+        Use this method to copy messages of any kind. If some of the specified messages can't be found or copied, they are skipped. Service messages, paid media messages, giveaway messages, giveaway winners messages, and invoice messages can't be copied. A quiz :class:`aiogram.methods.poll.Poll` can be copied only if the value of the field *correct_option_id* is known to the bot. The method is analogous to the method :class:`aiogram.methods.forward_messages.ForwardMessages`, but the copied messages don't have a link to the original message. Album grouping is kept for copied messages. On success, an array of :class:`aiogram.types.message_id.MessageId` of the sent messages is returned.
 
         Source: https://core.telegram.org/bots/api#copymessages
 
@@ -4411,7 +4514,7 @@ class Bot:
     async def delete_messages(
         self,
         chat_id: Union[int, str],
-        message_ids: List[int],
+        message_ids: list[int],
         request_timeout: Optional[int] = None,
     ) -> bool:
         """
@@ -4435,12 +4538,12 @@ class Bot:
         self,
         chat_id: Union[int, str],
         from_chat_id: Union[int, str],
-        message_ids: List[int],
+        message_ids: list[int],
         message_thread_id: Optional[int] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[bool] = None,
         request_timeout: Optional[int] = None,
-    ) -> List[MessageId]:
+    ) -> list[MessageId]:
         """
         Use this method to forward multiple messages of any kind. If some of the specified messages can't be found or forwarded, they are skipped. Service messages and messages with protected content can't be forwarded. Album grouping is kept for forwarded messages. On success, an array of :class:`aiogram.types.message_id.MessageId` of the sent messages is returned.
 
@@ -4493,18 +4596,20 @@ class Bot:
         self,
         chat_id: Union[int, str],
         message_id: int,
-        reaction: Optional[List[Union[ReactionTypeEmoji, ReactionTypeCustomEmoji]]] = None,
+        reaction: Optional[
+            list[Union[ReactionTypeEmoji, ReactionTypeCustomEmoji, ReactionTypePaid]]
+        ] = None,
         is_big: Optional[bool] = None,
         request_timeout: Optional[int] = None,
     ) -> bool:
         """
-        Use this method to change the chosen reactions on a message. Service messages can't be reacted to. Automatically forwarded messages from a channel to its discussion group have the same available reactions as messages in the channel. Returns :code:`True` on success.
+        Use this method to change the chosen reactions on a message. Service messages can't be reacted to. Automatically forwarded messages from a channel to its discussion group have the same available reactions as messages in the channel. Bots can't use paid reactions. Returns :code:`True` on success.
 
         Source: https://core.telegram.org/bots/api#setmessagereaction
 
         :param chat_id: Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
         :param message_id: Identifier of the target message. If the message belongs to a media group, the reaction is set to the first non-deleted message in the group instead.
-        :param reaction: A JSON-serialized list of reaction types to set on the message. Currently, as non-premium users, bots can set up to one reaction per message. A custom emoji reaction can be used if it is either already present on the message or explicitly allowed by chat administrators.
+        :param reaction: A JSON-serialized list of reaction types to set on the message. Currently, as non-premium users, bots can set up to one reaction per message. A custom emoji reaction can be used if it is either already present on the message or explicitly allowed by chat administrators. Paid reactions can't be used by bots.
         :param is_big: Pass :code:`True` to set the reaction with a big animation
         :param request_timeout: Request timeout
         :return: Returns :code:`True` on success.
@@ -4587,5 +4692,302 @@ class Bot:
         call = RefundStarPayment(
             user_id=user_id,
             telegram_payment_charge_id=telegram_payment_charge_id,
+        )
+        return await self(call, request_timeout=request_timeout)
+
+    async def get_star_transactions(
+        self,
+        offset: Optional[int] = None,
+        limit: Optional[int] = None,
+        request_timeout: Optional[int] = None,
+    ) -> StarTransactions:
+        """
+        Returns the bot's Telegram Star transactions in chronological order. On success, returns a :class:`aiogram.types.star_transactions.StarTransactions` object.
+
+        Source: https://core.telegram.org/bots/api#getstartransactions
+
+        :param offset: Number of transactions to skip in the response
+        :param limit: The maximum number of transactions to be retrieved. Values between 1-100 are accepted. Defaults to 100.
+        :param request_timeout: Request timeout
+        :return: On success, returns a :class:`aiogram.types.star_transactions.StarTransactions` object.
+        """
+
+        call = GetStarTransactions(
+            offset=offset,
+            limit=limit,
+        )
+        return await self(call, request_timeout=request_timeout)
+
+    async def send_paid_media(
+        self,
+        chat_id: Union[int, str],
+        star_count: int,
+        media: list[Union[InputPaidMediaPhoto, InputPaidMediaVideo]],
+        business_connection_id: Optional[str] = None,
+        payload: Optional[str] = None,
+        caption: Optional[str] = None,
+        parse_mode: Optional[str] = None,
+        caption_entities: Optional[list[MessageEntity]] = None,
+        show_caption_above_media: Optional[bool] = None,
+        disable_notification: Optional[bool] = None,
+        protect_content: Optional[bool] = None,
+        allow_paid_broadcast: Optional[bool] = None,
+        reply_parameters: Optional[ReplyParameters] = None,
+        reply_markup: Optional[
+            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
+        ] = None,
+        request_timeout: Optional[int] = None,
+    ) -> Message:
+        """
+        Use this method to send paid media. On success, the sent :class:`aiogram.types.message.Message` is returned.
+
+        Source: https://core.telegram.org/bots/api#sendpaidmedia
+
+        :param chat_id: Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`). If the chat is a channel, all Telegram Star proceeds from this media will be credited to the chat's balance. Otherwise, they will be credited to the bot's balance.
+        :param star_count: The number of Telegram Stars that must be paid to buy access to the media; 1-2500
+        :param media: A JSON-serialized array describing the media to be sent; up to 10 items
+        :param business_connection_id: Unique identifier of the business connection on behalf of which the message will be sent
+        :param payload: Bot-defined paid media payload, 0-128 bytes. This will not be displayed to the user, use it for your internal processes.
+        :param caption: Media caption, 0-1024 characters after entities parsing
+        :param parse_mode: Mode for parsing entities in the media caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.
+        :param caption_entities: A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*
+        :param show_caption_above_media: Pass :code:`True`, if the caption must be shown above the message media
+        :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
+        :param protect_content: Protects the contents of the sent message from forwarding and saving
+        :param allow_paid_broadcast: Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
+        :param reply_parameters: Description of the message to reply to
+        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
+        :param request_timeout: Request timeout
+        :return: On success, the sent :class:`aiogram.types.message.Message` is returned.
+        """
+
+        call = SendPaidMedia(
+            chat_id=chat_id,
+            star_count=star_count,
+            media=media,
+            business_connection_id=business_connection_id,
+            payload=payload,
+            caption=caption,
+            parse_mode=parse_mode,
+            caption_entities=caption_entities,
+            show_caption_above_media=show_caption_above_media,
+            disable_notification=disable_notification,
+            protect_content=protect_content,
+            allow_paid_broadcast=allow_paid_broadcast,
+            reply_parameters=reply_parameters,
+            reply_markup=reply_markup,
+        )
+        return await self(call, request_timeout=request_timeout)
+
+    async def create_chat_subscription_invite_link(
+        self,
+        chat_id: Union[int, str],
+        subscription_period: Union[datetime.datetime, datetime.timedelta, int],
+        subscription_price: int,
+        name: Optional[str] = None,
+        request_timeout: Optional[int] = None,
+    ) -> ChatInviteLink:
+        """
+        Use this method to create a `subscription invite link <https://telegram.org/blog/superchannels-star-reactions-subscriptions#star-subscriptions>`_ for a channel chat. The bot must have the *can_invite_users* administrator rights. The link can be edited using the method :class:`aiogram.methods.edit_chat_subscription_invite_link.EditChatSubscriptionInviteLink` or revoked using the method :class:`aiogram.methods.revoke_chat_invite_link.RevokeChatInviteLink`. Returns the new invite link as a :class:`aiogram.types.chat_invite_link.ChatInviteLink` object.
+
+        Source: https://core.telegram.org/bots/api#createchatsubscriptioninvitelink
+
+        :param chat_id: Unique identifier for the target channel chat or username of the target channel (in the format :code:`@channelusername`)
+        :param subscription_period: The number of seconds the subscription will be active for before the next payment. Currently, it must always be 2592000 (30 days).
+        :param subscription_price: The amount of Telegram Stars a user must pay initially and after each subsequent subscription period to be a member of the chat; 1-2500
+        :param name: Invite link name; 0-32 characters
+        :param request_timeout: Request timeout
+        :return: Returns the new invite link as a :class:`aiogram.types.chat_invite_link.ChatInviteLink` object.
+        """
+
+        call = CreateChatSubscriptionInviteLink(
+            chat_id=chat_id,
+            subscription_period=subscription_period,
+            subscription_price=subscription_price,
+            name=name,
+        )
+        return await self(call, request_timeout=request_timeout)
+
+    async def edit_chat_subscription_invite_link(
+        self,
+        chat_id: Union[int, str],
+        invite_link: str,
+        name: Optional[str] = None,
+        request_timeout: Optional[int] = None,
+    ) -> ChatInviteLink:
+        """
+        Use this method to edit a subscription invite link created by the bot. The bot must have the *can_invite_users* administrator rights. Returns the edited invite link as a :class:`aiogram.types.chat_invite_link.ChatInviteLink` object.
+
+        Source: https://core.telegram.org/bots/api#editchatsubscriptioninvitelink
+
+        :param chat_id: Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
+        :param invite_link: The invite link to edit
+        :param name: Invite link name; 0-32 characters
+        :param request_timeout: Request timeout
+        :return: Returns the edited invite link as a :class:`aiogram.types.chat_invite_link.ChatInviteLink` object.
+        """
+
+        call = EditChatSubscriptionInviteLink(
+            chat_id=chat_id,
+            invite_link=invite_link,
+            name=name,
+        )
+        return await self(call, request_timeout=request_timeout)
+
+    async def edit_user_star_subscription(
+        self,
+        user_id: int,
+        telegram_payment_charge_id: str,
+        is_canceled: bool,
+        request_timeout: Optional[int] = None,
+    ) -> bool:
+        """
+        Allows the bot to cancel or re-enable extension of a subscription paid in Telegram Stars. Returns :code:`True` on success.
+
+        Source: https://core.telegram.org/bots/api#edituserstarsubscription
+
+        :param user_id: Identifier of the user whose subscription will be edited
+        :param telegram_payment_charge_id: Telegram payment identifier for the subscription
+        :param is_canceled: Pass :code:`True` to cancel extension of the user subscription; the subscription must be active up to the end of the current subscription period. Pass :code:`False` to allow the user to re-enable a subscription that was previously canceled by the bot.
+        :param request_timeout: Request timeout
+        :return: Returns :code:`True` on success.
+        """
+
+        call = EditUserStarSubscription(
+            user_id=user_id,
+            telegram_payment_charge_id=telegram_payment_charge_id,
+            is_canceled=is_canceled,
+        )
+        return await self(call, request_timeout=request_timeout)
+
+    async def get_available_gifts(
+        self,
+        request_timeout: Optional[int] = None,
+    ) -> Gifts:
+        """
+        Returns the list of gifts that can be sent by the bot to users. Requires no parameters. Returns a :class:`aiogram.types.gifts.Gifts` object.
+
+        Source: https://core.telegram.org/bots/api#getavailablegifts
+
+        :param request_timeout: Request timeout
+        :return: Returns a :class:`aiogram.types.gifts.Gifts` object.
+        """
+
+        call = GetAvailableGifts()
+        return await self(call, request_timeout=request_timeout)
+
+    async def save_prepared_inline_message(
+        self,
+        user_id: int,
+        result: Union[
+            InlineQueryResultCachedAudio,
+            InlineQueryResultCachedDocument,
+            InlineQueryResultCachedGif,
+            InlineQueryResultCachedMpeg4Gif,
+            InlineQueryResultCachedPhoto,
+            InlineQueryResultCachedSticker,
+            InlineQueryResultCachedVideo,
+            InlineQueryResultCachedVoice,
+            InlineQueryResultArticle,
+            InlineQueryResultAudio,
+            InlineQueryResultContact,
+            InlineQueryResultGame,
+            InlineQueryResultDocument,
+            InlineQueryResultGif,
+            InlineQueryResultLocation,
+            InlineQueryResultMpeg4Gif,
+            InlineQueryResultPhoto,
+            InlineQueryResultVenue,
+            InlineQueryResultVideo,
+            InlineQueryResultVoice,
+        ],
+        allow_user_chats: Optional[bool] = None,
+        allow_bot_chats: Optional[bool] = None,
+        allow_group_chats: Optional[bool] = None,
+        allow_channel_chats: Optional[bool] = None,
+        request_timeout: Optional[int] = None,
+    ) -> PreparedInlineMessage:
+        """
+        Stores a message that can be sent by a user of a Mini App. Returns a :class:`aiogram.types.prepared_inline_message.PreparedInlineMessage` object.
+
+        Source: https://core.telegram.org/bots/api#savepreparedinlinemessage
+
+        :param user_id: Unique identifier of the target user that can use the prepared message
+        :param result: A JSON-serialized object describing the message to be sent
+        :param allow_user_chats: Pass :code:`True` if the message can be sent to private chats with users
+        :param allow_bot_chats: Pass :code:`True` if the message can be sent to private chats with bots
+        :param allow_group_chats: Pass :code:`True` if the message can be sent to group and supergroup chats
+        :param allow_channel_chats: Pass :code:`True` if the message can be sent to channel chats
+        :param request_timeout: Request timeout
+        :return: Returns a :class:`aiogram.types.prepared_inline_message.PreparedInlineMessage` object.
+        """
+
+        call = SavePreparedInlineMessage(
+            user_id=user_id,
+            result=result,
+            allow_user_chats=allow_user_chats,
+            allow_bot_chats=allow_bot_chats,
+            allow_group_chats=allow_group_chats,
+            allow_channel_chats=allow_channel_chats,
+        )
+        return await self(call, request_timeout=request_timeout)
+
+    async def send_gift(
+        self,
+        user_id: int,
+        gift_id: str,
+        text: Optional[str] = None,
+        text_parse_mode: Optional[str] = None,
+        text_entities: Optional[list[MessageEntity]] = None,
+        request_timeout: Optional[int] = None,
+    ) -> bool:
+        """
+        Sends a gift to the given user. The gift can't be converted to Telegram Stars by the user. Returns :code:`True` on success.
+
+        Source: https://core.telegram.org/bots/api#sendgift
+
+        :param user_id: Unique identifier of the target user that will receive the gift
+        :param gift_id: Identifier of the gift
+        :param text: Text that will be shown along with the gift; 0-255 characters
+        :param text_parse_mode: Mode for parsing entities in the text. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details. Entities other than 'bold', 'italic', 'underline', 'strikethrough', 'spoiler', and 'custom_emoji' are ignored.
+        :param text_entities: A JSON-serialized list of special entities that appear in the gift text. It can be specified instead of *text_parse_mode*. Entities other than 'bold', 'italic', 'underline', 'strikethrough', 'spoiler', and 'custom_emoji' are ignored.
+        :param request_timeout: Request timeout
+        :return: Returns :code:`True` on success.
+        """
+
+        call = SendGift(
+            user_id=user_id,
+            gift_id=gift_id,
+            text=text,
+            text_parse_mode=text_parse_mode,
+            text_entities=text_entities,
+        )
+        return await self(call, request_timeout=request_timeout)
+
+    async def set_user_emoji_status(
+        self,
+        user_id: int,
+        emoji_status_custom_emoji_id: Optional[str] = None,
+        emoji_status_expiration_date: Optional[
+            Union[datetime.datetime, datetime.timedelta, int]
+        ] = None,
+        request_timeout: Optional[int] = None,
+    ) -> bool:
+        """
+        Changes the emoji status for a given user that previously allowed the bot to manage their emoji status via the Mini App method `requestEmojiStatusAccess <https://core.telegram.org/bots/webapps#initializing-mini-apps>`_. Returns :code:`True` on success.
+
+        Source: https://core.telegram.org/bots/api#setuseremojistatus
+
+        :param user_id: Unique identifier of the target user
+        :param emoji_status_custom_emoji_id: Custom emoji identifier of the emoji status to set. Pass an empty string to remove the status.
+        :param emoji_status_expiration_date: Expiration date of the emoji status, if any
+        :param request_timeout: Request timeout
+        :return: Returns :code:`True` on success.
+        """
+
+        call = SetUserEmojiStatus(
+            user_id=user_id,
+            emoji_status_custom_emoji_id=emoji_status_custom_emoji_id,
+            emoji_status_expiration_date=emoji_status_expiration_date,
         )
         return await self(call, request_timeout=request_timeout)

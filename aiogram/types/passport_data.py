@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, List
+from typing import TYPE_CHECKING, Any
 
 from .base import TelegramObject
 
@@ -16,7 +16,7 @@ class PassportData(TelegramObject):
     Source: https://core.telegram.org/bots/api#passportdata
     """
 
-    data: List[EncryptedPassportElement]
+    data: list[EncryptedPassportElement]
     """Array with information about documents and other Telegram Passport elements that was shared with the bot"""
     credentials: EncryptedCredentials
     """Encrypted credentials required to decrypt the data"""
@@ -28,7 +28,7 @@ class PassportData(TelegramObject):
         def __init__(
             __pydantic__self__,
             *,
-            data: List[EncryptedPassportElement],
+            data: list[EncryptedPassportElement],
             credentials: EncryptedCredentials,
             **__pydantic_kwargs: Any,
         ) -> None:

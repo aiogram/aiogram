@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, List
+from typing import TYPE_CHECKING, Any
 
 from .base import TelegramObject
 
@@ -15,7 +15,7 @@ class UserChatBoosts(TelegramObject):
     Source: https://core.telegram.org/bots/api#userchatboosts
     """
 
-    boosts: List[ChatBoost]
+    boosts: list[ChatBoost]
     """The list of boosts added to the chat by the user"""
 
     if TYPE_CHECKING:
@@ -23,7 +23,7 @@ class UserChatBoosts(TelegramObject):
         # This section was auto-generated via `butcher`
 
         def __init__(
-            __pydantic__self__, *, boosts: List[ChatBoost], **__pydantic_kwargs: Any
+            __pydantic__self__, *, boosts: list[ChatBoost], **__pydantic_kwargs: Any
         ) -> None:
             # DO NOT EDIT MANUALLY!!!
             # This method was auto-generated via `butcher`

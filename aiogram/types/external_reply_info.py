@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, List, Optional, Union
+from typing import TYPE_CHECKING, Any, Optional, Union
 
 from .base import TelegramObject
 
@@ -21,6 +21,7 @@ if TYPE_CHECKING:
     from .message_origin_chat import MessageOriginChat
     from .message_origin_hidden_user import MessageOriginHiddenUser
     from .message_origin_user import MessageOriginUser
+    from .paid_media_info import PaidMediaInfo
     from .photo_size import PhotoSize
     from .poll import Poll
     from .sticker import Sticker
@@ -54,7 +55,9 @@ class ExternalReplyInfo(TelegramObject):
     """*Optional*. Message is an audio file, information about the file"""
     document: Optional[Document] = None
     """*Optional*. Message is a general file, information about the file"""
-    photo: Optional[List[PhotoSize]] = None
+    paid_media: Optional[PaidMediaInfo] = None
+    """*Optional*. Message contains paid media; information about the paid media"""
+    photo: Optional[list[PhotoSize]] = None
     """*Optional*. Message is a photo, available sizes of the photo"""
     sticker: Optional[Sticker] = None
     """*Optional*. Message is a sticker, information about the sticker"""
@@ -103,7 +106,8 @@ class ExternalReplyInfo(TelegramObject):
             animation: Optional[Animation] = None,
             audio: Optional[Audio] = None,
             document: Optional[Document] = None,
-            photo: Optional[List[PhotoSize]] = None,
+            paid_media: Optional[PaidMediaInfo] = None,
+            photo: Optional[list[PhotoSize]] = None,
             sticker: Optional[Sticker] = None,
             story: Optional[Story] = None,
             video: Optional[Video] = None,
@@ -133,6 +137,7 @@ class ExternalReplyInfo(TelegramObject):
                 animation=animation,
                 audio=audio,
                 document=document,
+                paid_media=paid_media,
                 photo=photo,
                 sticker=sticker,
                 story=story,

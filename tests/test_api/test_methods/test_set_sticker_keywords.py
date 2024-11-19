@@ -1,4 +1,4 @@
-from aiogram.methods import Request, SetStickerKeywords
+from aiogram.methods import SetStickerKeywords
 from tests.mocked_bot import MockedBot
 
 

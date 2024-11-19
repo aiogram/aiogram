@@ -21,6 +21,7 @@ from typing import (
 from aiogram.filters.callback_data import CallbackData
 from aiogram.types import (
     CallbackGame,
+    CopyTextButton,
     InlineKeyboardButton,
     InlineKeyboardMarkup,
     KeyboardButton,
@@ -309,6 +310,7 @@ class InlineKeyboardBuilder(KeyboardBuilder[InlineKeyboardButton]):
         switch_inline_query: Optional[str] = None,
         switch_inline_query_current_chat: Optional[str] = None,
         switch_inline_query_chosen_chat: Optional[SwitchInlineQueryChosenChat] = None,
+        copy_text: Optional[CopyTextButton] = None,
         callback_game: Optional[CallbackGame] = None,
         pay: Optional[bool] = None,
         **kwargs: Any,
@@ -324,6 +326,7 @@ class InlineKeyboardBuilder(KeyboardBuilder[InlineKeyboardButton]):
                 switch_inline_query=switch_inline_query,
                 switch_inline_query_current_chat=switch_inline_query_current_chat,
                 switch_inline_query_chosen_chat=switch_inline_query_chosen_chat,
+                copy_text=copy_text,
                 callback_game=callback_game,
                 pay=pay,
                 **kwargs,
@@ -397,8 +400,7 @@ class ReplyKeyboardBuilder(KeyboardBuilder[KeyboardButton]):
 
     if TYPE_CHECKING:
 
-        def as_markup(self, **kwargs: Any) -> ReplyKeyboardMarkup:
-            ...
+        def as_markup(self, **kwargs: Any) -> ReplyKeyboardMarkup: ...
 
     def __init__(self, markup: Optional[List[List[KeyboardButton]]] = None) -> None:
         super().__init__(button_type=KeyboardButton, markup=markup)

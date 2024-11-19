@@ -32,6 +32,7 @@ from aiogram.types import (
     Message,
     MessageReactionCountUpdated,
     MessageReactionUpdated,
+    PaidMediaPurchased,
     Poll,
     PollAnswer,
     PollOption,
@@ -586,6 +587,18 @@ class TestDispatcher:
                 True,
                 True,
             ),
+            pytest.param(
+                "purchased_paid_media",
+                Update(
+                    update_id=42,
+                    purchased_paid_media=PaidMediaPurchased(
+                        paid_media_payload="payload",
+                        from_user=User(id=42, is_bot=False, first_name="Test"),
+                    ),
+                ),
+                False,
+                True,
+            ),
         ],
     )
     async def test_listen_update(
@@ -765,11 +778,14 @@ class TestDispatcher:
         async def _mock_updates(*_):
             yield Update(update_id=42)
 
-        with patch(
-            "aiogram.dispatcher.dispatcher.Dispatcher._process_update", new_callable=AsyncMock
-        ) as mocked_process_update, patch(
-            "aiogram.dispatcher.dispatcher.Dispatcher._listen_updates"
-        ) as patched_listen_updates:
+        with (
+            patch(
+                "aiogram.dispatcher.dispatcher.Dispatcher._process_update", new_callable=AsyncMock
+            ) as mocked_process_update,
+            patch(
+                "aiogram.dispatcher.dispatcher.Dispatcher._listen_updates"
+            ) as patched_listen_updates,
+        ):
             patched_listen_updates.return_value = _mock_updates()
             await dispatcher._polling(bot=bot, handle_as_tasks=as_task)
             if as_task:
@@ -839,15 +855,20 @@ class TestDispatcher:
         async def _mock_updates(*_):
             yield Update(update_id=42)
 
-        with patch(
-            "aiogram.dispatcher.dispatcher.Dispatcher._process_update", new_callable=AsyncMock
-        ) as mocked_process_update, patch(
-            "aiogram.dispatcher.router.Router.emit_startup", new_callable=AsyncMock
-        ) as mocked_emit_startup, patch(
-            "aiogram.dispatcher.router.Router.emit_shutdown", new_callable=AsyncMock
-        ) as mocked_emit_shutdown, patch(
-            "aiogram.dispatcher.dispatcher.Dispatcher._listen_updates"
-        ) as patched_listen_updates:
+        with (
+            patch(
+                "aiogram.dispatcher.dispatcher.Dispatcher._process_update", new_callable=AsyncMock
+            ) as mocked_process_update,
+            patch(
+                "aiogram.dispatcher.router.Router.emit_startup", new_callable=AsyncMock
+            ) as mocked_emit_startup,
+            patch(
+                "aiogram.dispatcher.router.Router.emit_shutdown", new_callable=AsyncMock
+            ) as mocked_emit_shutdown,
+            patch(
+                "aiogram.dispatcher.dispatcher.Dispatcher._listen_updates"
+            ) as patched_listen_updates,
+        ):
             patched_listen_updates.return_value = _mock_updates()
             await dispatcher.start_polling(bot)
 
@@ -903,11 +924,14 @@ class TestDispatcher:
                 yield Update(update_id=42)
                 await asyncio.sleep(1)
 
-        with patch(
-            "aiogram.dispatcher.dispatcher.Dispatcher._process_update", new_callable=AsyncMock
-        ) as mocked_process_update, patch(
-            "aiogram.dispatcher.dispatcher.Dispatcher._listen_updates",
-            return_value=_mock_updates(),
+        with (
+            patch(
+                "aiogram.dispatcher.dispatcher.Dispatcher._process_update", new_callable=AsyncMock
+            ) as mocked_process_update,
+            patch(
+                "aiogram.dispatcher.dispatcher.Dispatcher._listen_updates",
+                return_value=_mock_updates(),
+            ),
         ):
             task = asyncio.ensure_future(dispatcher.start_polling(bot))
             await running.wait()
@@ -992,17 +1016,13 @@ class TestDispatcher:
                 pytest.fail("Expected 'Detected slow response into webhook' warning.")
 
     def test_specify_updates_calculation(self):
-        def simple_msg_handler() -> None:
-            ...
+        def simple_msg_handler() -> None: ...
 
-        def simple_callback_query_handler() -> None:
-            ...
+        def simple_callback_query_handler() -> None: ...
 
-        def simple_poll_handler() -> None:
-            ...
+        def simple_poll_handler() -> None: ...
 
-        def simple_edited_msg_handler() -> None:
-            ...
+        def simple_edited_msg_handler() -> None: ...
 
         dispatcher = Dispatcher()
         dispatcher.message.register(simple_msg_handler)

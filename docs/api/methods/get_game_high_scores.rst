@@ -2,7 +2,7 @@
 getGameHighScores
 #################
 
-Returns: :obj:`List[GameHighScore]`
+Returns: :obj:`list[GameHighScore]`
 
 .. automodule:: aiogram.methods.get_game_high_scores
     :members:
@@ -19,7 +19,7 @@ As bot method
 
 .. code-block::
 
-    result: List[GameHighScore] = await bot.get_game_high_scores(...)
+    result: list[GameHighScore] = await bot.get_game_high_scores(...)
 
 
 Method as object
@@ -35,4 +35,4 @@ With specific bot
 
 .. code-block:: python
 
-    result: List[GameHighScore] = await bot(GetGameHighScores(...))
+    result: list[GameHighScore] = await bot(GetGameHighScores(...))

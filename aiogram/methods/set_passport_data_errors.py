@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, List, Union
+from typing import TYPE_CHECKING, Any, Union
 
 from ..types import (
     PassportElementErrorDataField,
@@ -29,7 +29,7 @@ class SetPassportDataErrors(TelegramMethod[bool]):
 
     user_id: int
     """User identifier"""
-    errors: List[
+    errors: list[
         Union[
             PassportElementErrorDataField,
             PassportElementErrorFrontSide,
@@ -52,7 +52,7 @@ class SetPassportDataErrors(TelegramMethod[bool]):
             __pydantic__self__,
             *,
             user_id: int,
-            errors: List[
+            errors: list[
                 Union[
                     PassportElementErrorDataField,
                     PassportElementErrorFrontSide,

@@ -237,7 +237,7 @@ you should use :code:`on.message` or :code:`on.inline_query` marker:
             pass
 
 
-Scene has only tree points for transitions:
+Scene has only three points for transitions:
 
 - enter point - when user enters to the scene
 - leave point - when user leaves the scene and the enter another scene

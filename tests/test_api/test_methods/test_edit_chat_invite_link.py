@@ -1,4 +1,4 @@
-from aiogram.methods import EditChatInviteLink, Request
+from aiogram.methods import EditChatInviteLink
 from aiogram.types import ChatInviteLink, User
 from tests.mocked_bot import MockedBot
 

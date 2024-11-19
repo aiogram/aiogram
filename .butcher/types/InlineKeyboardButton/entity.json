@@ -29,9 +29,9 @@
       },
       {
         "type": "String",
-        "description": "Data to be sent in a callback query to the bot when button is pressed, 1-64 bytes. Not supported for messages sent on behalf of a Telegram Business account.",
-        "html_description": "<td><em>Optional</em>. Data to be sent in a <a href=\"#callbackquery\">callback query</a> to the bot when button is pressed, 1-64 bytes. Not supported for messages sent on behalf of a Telegram Business account.</td>",
-        "rst_description": "*Optional*. Data to be sent in a `callback query <https://core.telegram.org/bots/api#callbackquery>`_ to the bot when button is pressed, 1-64 bytes. Not supported for messages sent on behalf of a Telegram Business account.\n",
+        "description": "Data to be sent in a callback query to the bot when the button is pressed, 1-64 bytes",
+        "html_description": "<td><em>Optional</em>. Data to be sent in a <a href=\"#callbackquery\">callback query</a> to the bot when the button is pressed, 1-64 bytes</td>",
+        "rst_description": "*Optional*. Data to be sent in a `callback query <https://core.telegram.org/bots/api#callbackquery>`_ to the bot when the button is pressed, 1-64 bytes\n",
         "name": "callback_data",
         "required": false
       },
@@ -73,6 +73,14 @@
         "html_description": "<td><em>Optional</em>. If set, pressing the button will prompt the user to select one of their chats of the specified type, open that chat and insert the bot's username and the specified inline query in the input field. Not supported for messages sent on behalf of a Telegram Business account.</td>",
         "rst_description": "*Optional*. If set, pressing the button will prompt the user to select one of their chats of the specified type, open that chat and insert the bot's username and the specified inline query in the input field. Not supported for messages sent on behalf of a Telegram Business account.\n",
         "name": "switch_inline_query_chosen_chat",
+        "required": false
+      },
+      {
+        "type": "CopyTextButton",
+        "description": "Description of the button that copies the specified text to the clipboard.",
+        "html_description": "<td><em>Optional</em>. Description of the button that copies the specified text to the clipboard.</td>",
+        "rst_description": "*Optional*. Description of the button that copies the specified text to the clipboard.\n",
+        "name": "copy_text",
         "required": false
       },
       {

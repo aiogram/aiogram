@@ -7,6 +7,7 @@ class ReactionType(TelegramObject):
 
      - :class:`aiogram.types.reaction_type_emoji.ReactionTypeEmoji`
      - :class:`aiogram.types.reaction_type_custom_emoji.ReactionTypeCustomEmoji`
+     - :class:`aiogram.types.reaction_type_paid.ReactionTypePaid`
 
     Source: https://core.telegram.org/bots/api#reactiontype
     """

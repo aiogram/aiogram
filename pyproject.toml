@@ -6,7 +6,7 @@ build-backend = "hatchling.build"
 name = "aiogram"
 description = 'Modern and fully asynchronous framework for Telegram Bot API'
 readme = "README.rst"
-requires-python = ">=3.8"
+requires-python = ">=3.9"
 license = "MIT"
 authors = [
     { name = "Alex Root Junior", email = "jroot.junior@gmail.com" },
@@ -30,11 +30,11 @@ classifiers = [
     "Typing :: Typed",
     "Intended Audience :: Developers",
     "Intended Audience :: System Administrators",
-    "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "Programming Language :: Python :: Implementation :: PyPy",
     "Topic :: Software Development :: Libraries :: Application Frameworks",
     "Topic :: Software Development :: Libraries :: Python Modules",
@@ -42,9 +42,9 @@ classifiers = [
 ]
 dependencies = [
     "magic-filter>=1.0.12,<1.1",
-    "aiohttp~=3.9.0",
-    "pydantic>=2.4.1,<2.8",
-    "aiofiles~=23.2.1",
+    "aiohttp>=3.9.0,<3.11",
+    "pydantic>=2.4.1,<2.10",
+    "aiofiles>=23.2.1,<24.2",
     "certifi>=2023.7.22",
     "typing-extensions>=4.7.0,<=5.0",
 ]
@@ -55,14 +55,15 @@ path = "aiogram/__meta__.py"
 
 [project.optional-dependencies]
 fast = [
-    "uvloop>=0.17.0; (sys_platform == 'darwin' or sys_platform == 'linux') and platform_python_implementation != 'PyPy'",
+    "uvloop>=0.17.0; (sys_platform == 'darwin' or sys_platform == 'linux') and platform_python_implementation != 'PyPy' and python_version < '3.13'",
+    "uvloop>=0.21.0; (sys_platform == 'darwin' or sys_platform == 'linux') and platform_python_implementation != 'PyPy' and python_version >= '3.13'",
     "aiodns>=3.0.0",
 ]
 redis = [
-    "redis[hiredis]~=5.0.1",
+    "redis[hiredis]>=5.0.1,<5.1.0",
 ]
 mongo = [
-    "motor~=3.3.2",
+    "motor>=3.3.2,<3.7.0",
 ]
 proxy = [
     "aiohttp-socks~=0.8.3",
@@ -71,7 +72,7 @@ i18n = [
     "Babel~=2.13.0",
 ]
 cli = [
-    "aiogram-cli~=1.0.3",
+    "aiogram-cli>=1.1.0,<2.0.0",
 ]
 test = [
     "pytest~=7.4.2",
@@ -87,27 +88,26 @@ test = [
     "pycryptodomex~=3.19.0",
 ]
 docs = [
-    "Sphinx~=7.2.6",
-    "sphinx-intl~=2.1.0",
-    "sphinx-autobuild~=2021.3.14",
+    "Sphinx~=8.0.2",
+    "sphinx-intl~=2.2.0",
+    "sphinx-autobuild~=2024.9.3",
     "sphinx-copybutton~=0.5.2",
-    "furo~=2023.9.10",
-    "Sphinx-Substitution-Extensions~=2022.2.16",
-    "towncrier~=23.6.0",
-    "pygments~=2.16.1",
+    "furo~=2024.8.6",
+    "Sphinx-Substitution-Extensions~=2024.8.6",
+    "towncrier~=24.8.0",
+    "pygments~=2.18.0",
     "pymdown-extensions~=10.3",
     "markdown-include~=0.8.1",
-    "Pygments~=2.16.1",
-    "sphinxcontrib-towncrier~=0.3.2a0",
+    "sphinxcontrib-towncrier~=0.4.0a0",
 ]
 dev = [
-    "black~=23.10.0",
-    "isort~=5.12.0",
-    "ruff~=0.1.1",
-    "mypy~=1.6.1",
+    "black~=24.4.2",
+    "isort~=5.13.2",
+    "ruff~=0.5.1",
+    "mypy~=1.10.0",
     "toml~=0.10.2",
-    "pre-commit~=3.5.0",
-    "packaging~=23.1",
+    "pre-commit~=3.5",
+    "packaging~=24.1",
     "motor-types~=1.0.0b4",
 ]
 
@@ -132,10 +132,10 @@ post-install-commands = [
 
 [tool.hatch.envs.default.scripts]
 reformat = [
-    "black aiogram tests",
-    "isort aiogram tests",
+    "black aiogram tests examples",
+    "isort aiogram tests examples",
 ]
-lint = "ruff aiogram"
+lint = "ruff check aiogram tests examples"
 
 [tool.hatch.envs.docs]
 features = [
@@ -148,7 +148,7 @@ features = [
     "cli",
 ]
 [tool.hatch.envs.docs.scripts]
-serve = "sphinx-autobuild --watch aiogram/ --watch CHANGELOG.rst --watch README.rst docs/ docs/_build/ {args}"
+serve = "sphinx-autobuild --watch aiogram/ --watch CHANGES.rst --watch README.rst docs/ docs/_build/ {args}"
 
 [tool.hatch.envs.dev]
 python = "3.12"
@@ -198,23 +198,10 @@ view-cov = "google-chrome-stable reports/py{matrix:python}/coverage/index.html"
 
 
 [[tool.hatch.envs.test.matrix]]
-python = ["38", "39", "310", "311", "312"]
+python = ["39", "310", "311", "312", "313"]
 
 [tool.ruff]
 line-length = 99
-select = [
-    # "C", # TODO: mccabe - code complecity
-    "C4",
-    "E",
-    "F",
-    "T10",
-    "T20",
-    "Q",
-    "RET",
-]
-ignore = [
-    "F401"
-]
 src = ["aiogram", "tests"]
 exclude = [
     ".git",
@@ -228,9 +215,24 @@ exclude = [
     "scripts",
     "*.egg-info",
 ]
-target-version = "py310"
+target-version = "py39"
 
-[tool.ruff.isort]
+[tool.ruff.lint]
+select = [
+    # "C", # TODO: mccabe - code complecity
+    "C4",
+    "E",
+    "F",
+    "T10",
+    "T20",
+    "Q",
+    "RET",
+]
+ignore = [
+    "F401"
+]
+
+[tool.ruff.lint.isort]
 known-first-party = [
     "aiogram",
     "finite_state_machine",
@@ -238,7 +240,7 @@ known-first-party = [
     "routes",
 ]
 
-[tool.ruff.per-file-ignores]
+[tool.ruff.lint.per-file-ignores]
 "aiogram/client/bot.py" = ["E501"]
 "aiogram/types/*" = ["E501"]
 "aiogram/methods/*" = ["E501"]
@@ -273,7 +275,7 @@ exclude_lines = [
 
 [tool.mypy]
 plugins = "pydantic.mypy"
-python_version = "3.8"
+python_version = "3.9"
 show_error_codes = true
 show_error_context = true
 pretty = true
@@ -307,7 +309,7 @@ disallow_untyped_defs = true
 
 [tool.black]
 line-length = 99
-target-version = ['py38', 'py39', 'py310', 'py311']
+target-version = ['py39', 'py310', 'py311', 'py312', 'py313']
 exclude = '''
 (
     \.eggs
@@ -329,6 +331,9 @@ filename = "CHANGES.rst"
 directory = "CHANGES/"
 template = "CHANGES/.template.rst.jinja2"
 issue_format = "`#{issue} <https://github.com/aiogram/aiogram/issues/{issue}>`_"
+ignore = [
+    ".template.rst.jinja2",
+]
 
 [[tool.towncrier.section]]
 path = ""

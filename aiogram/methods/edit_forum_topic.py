@@ -7,7 +7,7 @@ from .base import TelegramMethod
 
 class EditForumTopic(TelegramMethod[bool]):
     """
-    Use this method to edit name and icon of a topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have *can_manage_topics* administrator rights, unless it is the creator of the topic. Returns :code:`True` on success.
+    Use this method to edit name and icon of a topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the *can_manage_topics* administrator rights, unless it is the creator of the topic. Returns :code:`True` on success.
 
     Source: https://core.telegram.org/bots/api#editforumtopic
     """

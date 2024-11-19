@@ -7,6 +7,7 @@ from .base import TelegramObject
 if TYPE_CHECKING:
     from .reaction_type_custom_emoji import ReactionTypeCustomEmoji
     from .reaction_type_emoji import ReactionTypeEmoji
+    from .reaction_type_paid import ReactionTypePaid
 
 
 class ReactionCount(TelegramObject):
@@ -16,7 +17,7 @@ class ReactionCount(TelegramObject):
     Source: https://core.telegram.org/bots/api#reactioncount
     """
 
-    type: Union[ReactionTypeEmoji, ReactionTypeCustomEmoji]
+    type: Union[ReactionTypeEmoji, ReactionTypeCustomEmoji, ReactionTypePaid]
     """Type of the reaction"""
     total_count: int
     """Number of times the reaction was added"""
@@ -28,7 +29,7 @@ class ReactionCount(TelegramObject):
         def __init__(
             __pydantic__self__,
             *,
-            type: Union[ReactionTypeEmoji, ReactionTypeCustomEmoji],
+            type: Union[ReactionTypeEmoji, ReactionTypeCustomEmoji, ReactionTypePaid],
             total_count: int,
             **__pydantic_kwargs: Any,
         ) -> None:

@@ -13,6 +13,14 @@
     "annotations": [
       {
         "type": "String",
+        "required": false,
+        "description": "Unique identifier of the business connection on behalf of which the link will be created",
+        "html_description": "<td>Unique identifier of the business connection on behalf of which the link will be created</td>",
+        "rst_description": "Unique identifier of the business connection on behalf of which the link will be created\n",
+        "name": "business_connection_id"
+      },
+      {
+        "type": "String",
         "required": true,
         "description": "Product name, 1-32 characters",
         "html_description": "<td>Product name, 1-32 characters</td>",
@@ -30,9 +38,9 @@
       {
         "type": "String",
         "required": true,
-        "description": "Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use for your internal processes.",
-        "html_description": "<td>Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use for your internal processes.</td>",
-        "rst_description": "Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use for your internal processes.\n",
+        "description": "Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use it for your internal processes.",
+        "html_description": "<td>Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use it for your internal processes.</td>",
+        "rst_description": "Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use it for your internal processes.\n",
         "name": "payload"
       },
       {
@@ -58,6 +66,14 @@
         "html_description": "<td>Price breakdown, a JSON-serialized list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.). Must contain exactly one item for payments in <a href=\"https://t.me/BotNews/90\">Telegram Stars</a>.</td>",
         "rst_description": "Price breakdown, a JSON-serialized list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.). Must contain exactly one item for payments in `Telegram Stars <https://t.me/BotNews/90>`_.\n",
         "name": "prices"
+      },
+      {
+        "type": "Integer",
+        "required": false,
+        "description": "The number of seconds the subscription will be active for before the next payment. The currency must be set to 'XTR' (Telegram Stars) if the parameter is used. Currently, it must always be 2592000 (30 days) if specified.",
+        "html_description": "<td>The number of seconds the subscription will be active for before the next payment. The currency must be set to &#8220;XTR&#8221; (Telegram Stars) if the parameter is used. Currently, it must always be 2592000 (30 days) if specified.</td>",
+        "rst_description": "The number of seconds the subscription will be active for before the next payment. The currency must be set to 'XTR' (Telegram Stars) if the parameter is used. Currently, it must always be 2592000 (30 days) if specified.\n",
+        "name": "subscription_period"
       },
       {
         "type": "Integer",

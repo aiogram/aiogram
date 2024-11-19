@@ -2,7 +2,7 @@
 getUpdates
 ##########
 
-Returns: :obj:`List[Update]`
+Returns: :obj:`list[Update]`
 
 .. automodule:: aiogram.methods.get_updates
     :members:
@@ -19,7 +19,7 @@ As bot method
 
 .. code-block::
 
-    result: List[Update] = await bot.get_updates(...)
+    result: list[Update] = await bot.get_updates(...)
 
 
 Method as object
@@ -35,4 +35,4 @@ With specific bot
 
 .. code-block:: python
 
-    result: List[Update] = await bot(GetUpdates(...))
+    result: list[Update] = await bot(GetUpdates(...))

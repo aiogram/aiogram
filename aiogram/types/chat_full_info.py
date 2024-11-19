@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, List, Optional, Union
+from typing import TYPE_CHECKING, Any, Optional, Union
 
 from .chat import Chat
 from .custom import DateTime
@@ -16,6 +16,7 @@ if TYPE_CHECKING:
     from .message import Message
     from .reaction_type_custom_emoji import ReactionTypeCustomEmoji
     from .reaction_type_emoji import ReactionTypeEmoji
+    from .reaction_type_paid import ReactionTypePaid
 
 
 class ChatFullInfo(Chat):
@@ -45,7 +46,7 @@ class ChatFullInfo(Chat):
     """*Optional*. :code:`True`, if the supergroup chat is a forum (has `topics <https://telegram.org/blog/topics-in-groups-collectible-usernames#topics-in-groups>`_ enabled)"""
     photo: Optional[ChatPhoto] = None
     """*Optional*. Chat photo"""
-    active_usernames: Optional[List[str]] = None
+    active_usernames: Optional[list[str]] = None
     """*Optional*. If non-empty, the list of all `active chat usernames <https://telegram.org/blog/topics-in-groups-collectible-usernames#collectible-usernames>`_; for private chats, supergroups and channels"""
     birthdate: Optional[Birthdate] = None
     """*Optional*. For private chats, the date of birth of the user"""
@@ -57,7 +58,9 @@ class ChatFullInfo(Chat):
     """*Optional*. For private chats with business accounts, the opening hours of the business"""
     personal_chat: Optional[Chat] = None
     """*Optional*. For private chats, the personal channel of the user"""
-    available_reactions: Optional[List[Union[ReactionTypeEmoji, ReactionTypeCustomEmoji]]] = None
+    available_reactions: Optional[
+        list[Union[ReactionTypeEmoji, ReactionTypeCustomEmoji, ReactionTypePaid]]
+    ] = None
     """*Optional*. List of available reactions allowed in the chat. If omitted, then all `emoji reactions <https://core.telegram.org/bots/api#reactiontypeemoji>`_ are allowed."""
     background_custom_emoji_id: Optional[str] = None
     """*Optional*. Custom emoji identifier of the emoji chosen by the chat for the reply header and link preview background"""
@@ -87,6 +90,8 @@ class ChatFullInfo(Chat):
     """*Optional*. The most recent pinned message (by sending date)"""
     permissions: Optional[ChatPermissions] = None
     """*Optional*. Default chat member permissions, for groups and supergroups"""
+    can_send_paid_media: Optional[bool] = None
+    """*Optional*. :code:`True`, if paid media messages can be sent or forwarded to the channel chat. The field is available only for channel chats."""
     slow_mode_delay: Optional[int] = None
     """*Optional*. For supergroups, the minimum allowed delay between consecutive messages sent by each unprivileged user; in seconds"""
     unrestrict_boost_count: Optional[int] = None
@@ -129,14 +134,14 @@ class ChatFullInfo(Chat):
             last_name: Optional[str] = None,
             is_forum: Optional[bool] = None,
             photo: Optional[ChatPhoto] = None,
-            active_usernames: Optional[List[str]] = None,
+            active_usernames: Optional[list[str]] = None,
             birthdate: Optional[Birthdate] = None,
             business_intro: Optional[BusinessIntro] = None,
             business_location: Optional[BusinessLocation] = None,
             business_opening_hours: Optional[BusinessOpeningHours] = None,
             personal_chat: Optional[Chat] = None,
             available_reactions: Optional[
-                List[Union[ReactionTypeEmoji, ReactionTypeCustomEmoji]]
+                list[Union[ReactionTypeEmoji, ReactionTypeCustomEmoji, ReactionTypePaid]]
             ] = None,
             background_custom_emoji_id: Optional[str] = None,
             profile_accent_color_id: Optional[int] = None,
@@ -152,6 +157,7 @@ class ChatFullInfo(Chat):
             invite_link: Optional[str] = None,
             pinned_message: Optional[Message] = None,
             permissions: Optional[ChatPermissions] = None,
+            can_send_paid_media: Optional[bool] = None,
             slow_mode_delay: Optional[int] = None,
             unrestrict_boost_count: Optional[int] = None,
             message_auto_delete_time: Optional[int] = None,
@@ -202,6 +208,7 @@ class ChatFullInfo(Chat):
                 invite_link=invite_link,
                 pinned_message=pinned_message,
                 permissions=permissions,
+                can_send_paid_media=can_send_paid_media,
                 slow_mode_delay=slow_mode_delay,
                 unrestrict_boost_count=unrestrict_boost_count,
                 message_auto_delete_time=message_auto_delete_time,

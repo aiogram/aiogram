@@ -53,3 +53,5 @@ As shortcut from received object
 - :meth:`aiogram.types.chat_join_request.ChatJoinRequest.answer_poll`
 - :meth:`aiogram.types.chat_join_request.ChatJoinRequest.answer_poll_pm`
 - :meth:`aiogram.types.chat_member_updated.ChatMemberUpdated.answer_poll`
+- :meth:`aiogram.types.inaccessible_message.InaccessibleMessage.answer_poll`
+- :meth:`aiogram.types.inaccessible_message.InaccessibleMessage.reply_poll`

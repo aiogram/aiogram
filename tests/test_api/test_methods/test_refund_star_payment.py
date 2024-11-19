@@ -1,6 +1,4 @@
-from aiogram.enums import StickerFormat
-from aiogram.methods import AddStickerToSet, RefundStarPayment
-from aiogram.types import InputSticker
+from aiogram.methods import RefundStarPayment
 from tests.mocked_bot import MockedBot
 
 

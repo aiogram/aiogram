@@ -12,19 +12,14 @@ From PyPI
 From Arch Linux Repository
 --------------------------
 
+.. warning:: Package in this repository may be outdated. Use PyPI package for the latest version.
+
 .. code-block:: bash
 
     pacman -S python-aiogram
 
-Development build (3.x)
-=======================
-
-From PyPI
------------------------
-
-.. code-block:: bash
-
-    pip install -U aiogram
+Development build
+=================
 
 From GitHub
 -----------

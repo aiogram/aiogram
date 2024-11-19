@@ -1,4 +1,4 @@
-from aiogram.methods import Request, RestrictChatMember
+from aiogram.methods import RestrictChatMember
 from aiogram.types import ChatPermissions
 from tests.mocked_bot import MockedBot
 

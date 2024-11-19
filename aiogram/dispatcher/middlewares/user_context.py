@@ -2,7 +2,14 @@ from dataclasses import dataclass
 from typing import Any, Awaitable, Callable, Dict, Optional
 
 from aiogram.dispatcher.middlewares.base import BaseMiddleware
-from aiogram.types import Chat, InaccessibleMessage, TelegramObject, Update, User
+from aiogram.types import (
+    Chat,
+    ChatBoostSourcePremium,
+    InaccessibleMessage,
+    TelegramObject,
+    Update,
+    User,
+)
 
 EVENT_CONTEXT_KEY = "event_context"
 
@@ -57,17 +64,19 @@ class UserContextMiddleware(BaseMiddleware):
             return EventContext(
                 chat=event.message.chat,
                 user=event.message.from_user,
-                thread_id=event.message.message_thread_id
-                if event.message.is_topic_message
-                else None,
+                thread_id=(
+                    event.message.message_thread_id if event.message.is_topic_message else None
+                ),
             )
         if event.edited_message:
             return EventContext(
                 chat=event.edited_message.chat,
                 user=event.edited_message.from_user,
-                thread_id=event.edited_message.message_thread_id
-                if event.edited_message.is_topic_message
-                else None,
+                thread_id=(
+                    event.edited_message.message_thread_id
+                    if event.edited_message.is_topic_message
+                    else None
+                ),
             )
         if event.channel_post:
             return EventContext(chat=event.channel_post.chat)
@@ -78,14 +87,22 @@ class UserContextMiddleware(BaseMiddleware):
         if event.chosen_inline_result:
             return EventContext(user=event.chosen_inline_result.from_user)
         if event.callback_query:
-            if event.callback_query.message:
+            callback_query_message = event.callback_query.message
+            if callback_query_message:
                 return EventContext(
-                    chat=event.callback_query.message.chat,
+                    chat=callback_query_message.chat,
                     user=event.callback_query.from_user,
-                    thread_id=event.callback_query.message.message_thread_id
-                    if not isinstance(event.callback_query.message, InaccessibleMessage)
-                    and event.callback_query.message.is_topic_message
-                    else None,
+                    thread_id=(
+                        callback_query_message.message_thread_id
+                        if not isinstance(callback_query_message, InaccessibleMessage)
+                        and callback_query_message.is_topic_message
+                        else None
+                    ),
+                    business_connection_id=(
+                        callback_query_message.business_connection_id
+                        if not isinstance(callback_query_message, InaccessibleMessage)
+                        else None
+                    ),
                 )
             return EventContext(user=event.callback_query.from_user)
         if event.shipping_query:
@@ -115,6 +132,14 @@ class UserContextMiddleware(BaseMiddleware):
         if event.message_reaction_count:
             return EventContext(chat=event.message_reaction_count.chat)
         if event.chat_boost:
+            # We only check the premium source, because only it has a sender user,
+            # other sources have a user, but it is not the sender, but the recipient
+            if isinstance(event.chat_boost.boost.source, ChatBoostSourcePremium):
+                return EventContext(
+                    chat=event.chat_boost.chat,
+                    user=event.chat_boost.boost.source.user,
+                )
+
             return EventContext(chat=event.chat_boost.chat)
         if event.removed_chat_boost:
             return EventContext(chat=event.removed_chat_boost.chat)
@@ -132,18 +157,26 @@ class UserContextMiddleware(BaseMiddleware):
             return EventContext(
                 chat=event.business_message.chat,
                 user=event.business_message.from_user,
-                thread_id=event.business_message.message_thread_id
-                if event.business_message.is_topic_message
-                else None,
+                thread_id=(
+                    event.business_message.message_thread_id
+                    if event.business_message.is_topic_message
+                    else None
+                ),
                 business_connection_id=event.business_message.business_connection_id,
             )
         if event.edited_business_message:
             return EventContext(
                 chat=event.edited_business_message.chat,
                 user=event.edited_business_message.from_user,
-                thread_id=event.edited_business_message.message_thread_id
-                if event.edited_business_message.is_topic_message
-                else None,
+                thread_id=(
+                    event.edited_business_message.message_thread_id
+                    if event.edited_business_message.is_topic_message
+                    else None
+                ),
                 business_connection_id=event.edited_business_message.business_connection_id,
+            )
+        if event.purchased_paid_media:
+            return EventContext(
+                user=event.purchased_paid_media.from_user,
             )
         return EventContext()

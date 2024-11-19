@@ -46,9 +46,9 @@
       {
         "type": "String",
         "required": true,
-        "description": "Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use for your internal processes.",
-        "html_description": "<td>Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use for your internal processes.</td>",
-        "rst_description": "Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use for your internal processes.\n",
+        "description": "Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use it for your internal processes.",
+        "html_description": "<td>Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use it for your internal processes.</td>",
+        "rst_description": "Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use it for your internal processes.\n",
         "name": "payload"
       },
       {
@@ -210,6 +210,14 @@
         "html_description": "<td>Protects the contents of the sent message from forwarding and saving</td>",
         "rst_description": "Protects the contents of the sent message from forwarding and saving\n",
         "name": "protect_content"
+      },
+      {
+        "type": "Boolean",
+        "required": false,
+        "description": "Pass True to allow up to 1000 messages per second, ignoring broadcasting limits for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance",
+        "html_description": "<td>Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href=\"https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once\">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance</td>",
+        "rst_description": "Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance\n",
+        "name": "allow_paid_broadcast"
       },
       {
         "type": "String",

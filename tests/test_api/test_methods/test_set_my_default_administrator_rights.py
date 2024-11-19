@@ -1,4 +1,4 @@
-from aiogram.methods import Request, SetMyDefaultAdministratorRights
+from aiogram.methods import SetMyDefaultAdministratorRights
 from tests.mocked_bot import MockedBot
 
 

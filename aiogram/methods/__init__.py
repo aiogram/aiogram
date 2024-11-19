@@ -14,6 +14,7 @@ from .close_general_forum_topic import CloseGeneralForumTopic
 from .copy_message import CopyMessage
 from .copy_messages import CopyMessages
 from .create_chat_invite_link import CreateChatInviteLink
+from .create_chat_subscription_invite_link import CreateChatSubscriptionInviteLink
 from .create_forum_topic import CreateForumTopic
 from .create_invoice_link import CreateInvoiceLink
 from .create_new_sticker_set import CreateNewStickerSet
@@ -28,6 +29,7 @@ from .delete_sticker_from_set import DeleteStickerFromSet
 from .delete_sticker_set import DeleteStickerSet
 from .delete_webhook import DeleteWebhook
 from .edit_chat_invite_link import EditChatInviteLink
+from .edit_chat_subscription_invite_link import EditChatSubscriptionInviteLink
 from .edit_forum_topic import EditForumTopic
 from .edit_general_forum_topic import EditGeneralForumTopic
 from .edit_message_caption import EditMessageCaption
@@ -35,9 +37,11 @@ from .edit_message_live_location import EditMessageLiveLocation
 from .edit_message_media import EditMessageMedia
 from .edit_message_reply_markup import EditMessageReplyMarkup
 from .edit_message_text import EditMessageText
+from .edit_user_star_subscription import EditUserStarSubscription
 from .export_chat_invite_link import ExportChatInviteLink
 from .forward_message import ForwardMessage
 from .forward_messages import ForwardMessages
+from .get_available_gifts import GetAvailableGifts
 from .get_business_connection import GetBusinessConnection
 from .get_chat import GetChat
 from .get_chat_administrators import GetChatAdministrators
@@ -54,6 +58,7 @@ from .get_my_default_administrator_rights import GetMyDefaultAdministratorRights
 from .get_my_description import GetMyDescription
 from .get_my_name import GetMyName
 from .get_my_short_description import GetMyShortDescription
+from .get_star_transactions import GetStarTransactions
 from .get_sticker_set import GetStickerSet
 from .get_updates import GetUpdates
 from .get_user_chat_boosts import GetUserChatBoosts
@@ -70,6 +75,7 @@ from .reopen_general_forum_topic import ReopenGeneralForumTopic
 from .replace_sticker_in_set import ReplaceStickerInSet
 from .restrict_chat_member import RestrictChatMember
 from .revoke_chat_invite_link import RevokeChatInviteLink
+from .save_prepared_inline_message import SavePreparedInlineMessage
 from .send_animation import SendAnimation
 from .send_audio import SendAudio
 from .send_chat_action import SendChatAction
@@ -77,10 +83,12 @@ from .send_contact import SendContact
 from .send_dice import SendDice
 from .send_document import SendDocument
 from .send_game import SendGame
+from .send_gift import SendGift
 from .send_invoice import SendInvoice
 from .send_location import SendLocation
 from .send_media_group import SendMediaGroup
 from .send_message import SendMessage
+from .send_paid_media import SendPaidMedia
 from .send_photo import SendPhoto
 from .send_poll import SendPoll
 from .send_sticker import SendSticker
@@ -110,6 +118,7 @@ from .set_sticker_mask_position import SetStickerMaskPosition
 from .set_sticker_position_in_set import SetStickerPositionInSet
 from .set_sticker_set_thumbnail import SetStickerSetThumbnail
 from .set_sticker_set_title import SetStickerSetTitle
+from .set_user_emoji_status import SetUserEmojiStatus
 from .set_webhook import SetWebhook
 from .stop_message_live_location import StopMessageLiveLocation
 from .stop_poll import StopPoll
@@ -138,6 +147,7 @@ __all__ = (
     "CopyMessage",
     "CopyMessages",
     "CreateChatInviteLink",
+    "CreateChatSubscriptionInviteLink",
     "CreateForumTopic",
     "CreateInvoiceLink",
     "CreateNewStickerSet",
@@ -152,6 +162,7 @@ __all__ = (
     "DeleteStickerSet",
     "DeleteWebhook",
     "EditChatInviteLink",
+    "EditChatSubscriptionInviteLink",
     "EditForumTopic",
     "EditGeneralForumTopic",
     "EditMessageCaption",
@@ -159,9 +170,11 @@ __all__ = (
     "EditMessageMedia",
     "EditMessageReplyMarkup",
     "EditMessageText",
+    "EditUserStarSubscription",
     "ExportChatInviteLink",
     "ForwardMessage",
     "ForwardMessages",
+    "GetAvailableGifts",
     "GetBusinessConnection",
     "GetChat",
     "GetChatAdministrators",
@@ -178,6 +191,7 @@ __all__ = (
     "GetMyDescription",
     "GetMyName",
     "GetMyShortDescription",
+    "GetStarTransactions",
     "GetStickerSet",
     "GetUpdates",
     "GetUserChatBoosts",
@@ -196,6 +210,7 @@ __all__ = (
     "Response",
     "RestrictChatMember",
     "RevokeChatInviteLink",
+    "SavePreparedInlineMessage",
     "SendAnimation",
     "SendAudio",
     "SendChatAction",
@@ -203,10 +218,12 @@ __all__ = (
     "SendDice",
     "SendDocument",
     "SendGame",
+    "SendGift",
     "SendInvoice",
     "SendLocation",
     "SendMediaGroup",
     "SendMessage",
+    "SendPaidMedia",
     "SendPhoto",
     "SendPoll",
     "SendSticker",
@@ -236,6 +253,7 @@ __all__ = (
     "SetStickerPositionInSet",
     "SetStickerSetThumbnail",
     "SetStickerSetTitle",
+    "SetUserEmojiStatus",
     "SetWebhook",
     "StopMessageLiveLocation",
     "StopPoll",

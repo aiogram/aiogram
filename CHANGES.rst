@@ -16,6 +16,407 @@ Changelog
 
 .. towncrier release notes start
 
+3.15.0 (2024-11-17)
+====================
+
+Features
+--------
+
+- Added full support for `Bot API 8.0 <https://core.telegram.org/bots/api-changelog#november-17-2024>`_
+
+  - Added the parameter :code:`subscription_period` to the method
+    :class:`aiogram.methods.create_invoice_link.CreateInvoiceLink`
+    to support the creation of links that are billed periodically.
+  - Added the parameter :code:`business_connection_id` to the method
+    :class:`aiogram.methods.create_invoice_link.CreateInvoiceLink`
+    to support the creation of invoice links on behalf of business accounts.
+  - Added the fields :code:`subscription_expiration_date`,
+    :code:`is_recurring` and :code:`is_first_recurring` to the class
+    :class:`aiogram.types.successful_payment.SuccessfulPayment`.
+  - Added the method :class:`aiogram.methods.edit_user_star_subscription.EditUserStarSubscription`.
+  - Added the field :code:`subscription_period` to the class
+    :class:`aiogram.types.transaction_partner_user.TransactionPartnerUser`.
+  - Added the method :class:`aiogram.methods.set_user_emoji_status.SetUserEmojiStatus`.
+    The user must allow the bot to manage their emoji status.
+  - Added the class :class:`aiogram.types.prepared_inline_message.PreparedInlineMessage`
+    and the method :class:`aiogram.methods.save_prepared_inline_message.SavePreparedInlineMessage`,
+    allowing bots to suggest users send a specific message from a Mini App via the method
+    :class:`aiogram.methods.share_message.ShareMessage`.
+  - Added the classes :class:`aiogram.types.gift.Gift` and :class:`aiogram.types.gifts.Gifts`
+    and the method :class:`aiogram.methods.get_available_gifts.GetAvailableGifts`,
+    allowing bots to get all gifts available for sending.
+  - Added the field :code:`gift` to the class
+    :class:`aiogram.types.transaction_partner_user.TransactionPartnerUser`.
+  `#1606 <https://github.com/aiogram/aiogram/issues/1606>`_
+
+
+3.14.0 (2024-11-02)
+====================
+
+Misc
+----
+
+- Checked compatibility with Python 3.13 (added to the CI/CD processes),
+  so now aiogram is totally compatible with it.
+
+  Dropped compatibility with Python 3.8 due to this version being `EOL <https://devguide.python.org/versions/>`_.
+
+  .. warning::
+
+    In some cases you will need to have the installed compiler (Rust or C++)
+    to install some of the dependencies to compile packages from source on `pip install` command.
+
+    - If you are using Windows, you will need to have the `Visual Studio <https://visualstudio.microsoft.com/visual-cpp-build-tools/>`_ installed.
+    - If you are using Linux, you will need to have the `build-essential` package installed.
+    - If you are using macOS, you will need to have the `Xcode <https://developer.apple.com/xcode/>`_ installed.
+
+    When developers of this dependencies will release new versions with precompiled wheels for Windows, Linux and macOS,
+    this action will not be necessary anymore until the next version of the Python interpreter.
+  `#1589 <https://github.com/aiogram/aiogram/issues/1589>`_
+- Added business_connection_id to the :class:`aiogram.types.message.Message` API methods shortcuts.
+
+  Integrated the :code:`business_connection_id` attribute into various message manipulation methods,
+  ensuring consistent data handling. This update eliminates the need to pass the
+  :code:`business_connection_id` as a parameter,
+  instead directly accessing it from the instance attributes.
+  `#1586 <https://github.com/aiogram/aiogram/issues/1586>`_
+
+Features
+--------
+
+- Add function ``get_value`` to all built-in storage implementations, ``FSMContext`` and ``SceneWizard``
+  `#1431 <https://github.com/aiogram/aiogram/issues/1431>`_
+- Enhanced the inheritance of handlers and actions in :ref:`Scenes <Scenes>`.
+  Refactored to eliminate the copying of previously connected handlers and actions from parent scenes.
+  Now, handlers are dynamically rebuilt based on the current class, properly utilizing class inheritance and enabling handler overrides.
+
+  That's mean that you can now override handlers and actions in the child scene, instead of copying and duplicating them.
+  `#1583 <https://github.com/aiogram/aiogram/issues/1583>`_
+- Added full support of `Bot API 7.11 <https://core.telegram.org/bots/api-changelog#october-31-2024>`_
+
+  - Added the class :class:`aiogram.types.copy_text_button.CopyTextButton`
+    and the field :code:`copy_text` in the class
+    :class:`aiogram.types.inline_keyboard_button.InlineKeyboardButton`,
+    allowing bots to send and receive inline buttons that copy arbitrary text.
+  - Added the parameter :code:`allow_paid_broadcast` to the methods
+    :class:`aiogram.methods.send_message.SendMessage`,
+    :class:`aiogram.methods.send_photo.SendPhoto`,
+    :class:`aiogram.methods.send_video.SendVideo`,
+    :class:`aiogram.methods.send_animation.SendAnimation`,
+    :class:`aiogram.methods.send_audio.SendAudio`,
+    :class:`aiogram.methods.send_document.SendDocument`,
+    :class:`aiogram.methods.send_paid_media.SendPaidMedia`,
+    :class:`aiogram.methods.send_sticker.SendSticker`,
+    :class:`aiogram.methods.send_video_note.SendVideoNote`,
+    :class:`aiogram.methods.send_voice.SendVoice`,
+    :class:`aiogram.methods.send_location.SendLocation`,
+    :class:`aiogram.methods.send_venue.SendVenue`,
+    :class:`aiogram.methods.send_contact.SendContact`,
+    :class:`aiogram.methods.send_poll.SendPoll`,
+    :class:`aiogram.methods.send_dice.SendDice`,
+    :class:`aiogram.methods.send_invoice.SendInvoice`,
+    :class:`aiogram.methods.send_game.SendGame`,
+    :class:`aiogram.methods.send_media_group.SendMediaGroup`
+    and :class:`aiogram.methods.copy_message.CopyMessage`.
+  - Added the class
+    :class:`aiogram.types.transaction_partner_telegram_api.TransactionPartnerTelegramApi`
+    for transactions related to paid broadcasted messages.
+  - Introduced the ability to add media to existing text messages using the method
+    :class:`aiogram.methods.edit_message_media.EditMessageMedia`.
+  - Added support for hashtag and cashtag entities with a specified chat username
+    that opens a search for the relevant tag within the specified chat.
+  `#1601 <https://github.com/aiogram/aiogram/issues/1601>`_
+
+
+Bugfixes
+--------
+
+- Fix PytestDeprecationWarning thrown by pytest-asyncio when running the tests
+  `#1584 <https://github.com/aiogram/aiogram/issues/1584>`_
+- Fixed customized serialization in the :class:`aiogram.filters.callback_data.CallbackData` factory.
+
+  From now UUID will have 32 bytes length instead of 36 bytes (with no `-` separators) in the callback data representation.
+  `#1602 <https://github.com/aiogram/aiogram/issues/1602>`_
+
+
+Improved Documentation
+----------------------
+
+- Add missing closing tag for bold.
+  `#1599 <https://github.com/aiogram/aiogram/issues/1599>`_
+
+
+3.13.1 (2024-09-18)
+====================
+
+.. warning::
+
+    **Python 3.8 End of Life**: Python 3.8 will reach its end of life (EOL) soon and will no longer
+    be supported by aiogram in the next releases (1-2 months ETA).
+
+    Please upgrade to a newer version of Python to ensure compatibility and receive future updates.
+
+Misc
+----
+
+- Increase max pydantic version support "<2.9" -> "<2.10" (only For Python >=3.9)
+  `#1576 <https://github.com/aiogram/aiogram/issues/1576>`_
+- Bump aiofiles version upper bound to <24.2
+  `#1577 <https://github.com/aiogram/aiogram/issues/1577>`_
+
+
+Bugfixes
+--------
+
+- Fixed `Default` object annotation resolution using `pydantic`
+  `#1579 <https://github.com/aiogram/aiogram/issues/1579>`_
+
+
+3.13.0 (2024-09-08)
+====================
+
+Features
+--------
+
+- - Added updates about purchased paid media, represented by the class
+    :class:`aiogram.types.paid_media_purchased.PaidMediaPurchased`
+    and the field :code:`purchased_paid_media` in the class
+    :class:`aiogram.types.update.Update`.
+  - Added the ability to specify a payload in
+    :class:`aiogram.methods.send_paid_media.SendPaidMedia` that is received back by the bot in
+    :class:`aiogram.types.transaction_partner_user.TransactionPartnerUser`
+    and :code:`purchased_paid_media` updates.
+  - Added the field :code:`prize_star_count` to the classes
+    :class:`aiogram.types.giveaway_created.GiveawayCreated`,
+    :class:`aiogram.types.giveaway.Giveaway`,
+    :class:`aiogram.types.giveaway_winners.GiveawayWinners`
+    and :class:`aiogram.types.chat_boost_source_giveaway.ChatBoostSourceGiveaway`.
+  - Added the field :code:`is_star_giveaway` to the class
+    :class:`aiogram.types.giveaway_completed.GiveawayCompleted`.
+  `#1510 <https://github.com/aiogram/aiogram/issues/1510>`_
+- Added missing method aliases such as `.answer()`, `.reply()`, and others to `InaccessibleMessage`.
+  This change ensures consistency and improves usability by aligning the functionality of `InaccessibleMessage` with the `Message` type.
+  `#1574 <https://github.com/aiogram/aiogram/issues/1574>`_
+
+
+Bugfixes
+--------
+
+- Fixed link preview options to use global defaults in various types and methods
+  to use global defaults for `link_preview_options`.
+  This change ensures consistency and enhances flexibility in handling link preview options
+  across different components.
+  `#1543 <https://github.com/aiogram/aiogram/issues/1543>`_
+
+
+3.12.0 (2024-08-16)
+====================
+
+Features
+--------
+
+- Added **message_thread_id** parameter to **message.get_url()**.
+  `#1451 <https://github.com/aiogram/aiogram/issues/1451>`_
+- Added getting user from `chat_boost` with source `ChatBoostSourcePremium` in `UserContextMiddleware` for `EventContext`
+  `#1474 <https://github.com/aiogram/aiogram/issues/1474>`_
+- Added full support of `Bot API 7.8 <https://core.telegram.org/bots/api-changelog#august-14-2024>`_
+
+  - Added the ability to send paid media to any chat.
+  - Added the parameter :code:`business_connection_id` to the method
+    :class:`aiogram.methods.send_paid_media.SendPaidMedia`,
+    allowing bots to send paid media on behalf of a business account.
+  - Added the field :code:`paid_media` to the class
+    :class:`aiogram.types.transaction_partner_user.TransactionPartnerUser`
+    for transactions involving paid media.
+  - Added the method
+    :class:`aiogram.methods.create_chat_subscription_invite_link.CreateChatSubscriptionInviteLink`,
+    allowing bots to create subscription invite links.
+  - Added the method
+    :class:`aiogram.methods.edit_chat_subscription_invite_link.EditChatSubscriptionInviteLink`,
+    allowing bots to edit the name of subscription invite links.
+  - Added the field :code:`until_date` to the class
+    :class:`aiogram.types.chat_member_member.ChatMemberMember` for members with an active subscription.
+  - Added support for paid reactions and the class
+    :class:`aiogram.types.reaction_type_paid.ReactionTypePaid`.
+  `#1560 <https://github.com/aiogram/aiogram/issues/1560>`_
+
+
+Misc
+----
+
+- Improved performance of StatesGroup
+  `#1507 <https://github.com/aiogram/aiogram/issues/1507>`_
+
+
+3.11.0 (2024-08-09)
+====================
+
+Features
+--------
+
+- Added full support of `Bot API 7.8 <https://core.telegram.org/bots/api-changelog#july-31-2024>`_
+
+  - Added the field :code:`has_main_web_app` to the class :class:`aiogram.types.user.User`,
+    which is returned in the response to :class:`aiogram.methods.get_me.GetMe`.
+  - Added the parameter :code:`business_connection_id` to the methods
+    :class:`aiogram.methods.pin_chat_message.PinChatMessage`
+    and :class:`aiogram.methods.unpin_chat_message.UnpinChatMessage`,
+    allowing bots to manage pinned messages on behalf of a business account.
+  `#1551 <https://github.com/aiogram/aiogram/issues/1551>`_
+
+
+Bugfixes
+--------
+
+- Fixed URL path in the "Open" button at the "demo/sendMessage" endpoint in the web_app example.
+  `#1546 <https://github.com/aiogram/aiogram/issues/1546>`_
+
+
+Misc
+----
+
+- Added method :func:`aiogram.types.message.Message.as_reply_parameters`.
+  Replaced usage of the argument :code:`reply_to_message_id` with :code:`reply_parameters`
+  in all Message reply methods.
+  `#1538 <https://github.com/aiogram/aiogram/issues/1538>`_
+- Added `aiohttp v3.10 <https://github.com/aio-libs/aiohttp/releases/tag/v3.10.0>`_ ` support.
+  `#1548 <https://github.com/aiogram/aiogram/issues/1548>`_
+
+
+3.10.0 (2024-07-07)
+====================
+
+Features
+--------
+
+- Added full support of `Bot API 7.7 <https://core.telegram.org/bots/api-changelog#july-7-2024>`_
+
+  - Added the class :class:`aiogram.types.refunded_payment.RefundedPayment`,
+    containing information about a refunded payment.
+  - Added the field :code:`refunded_payment` to the class
+    :class:`aiogram.types.message.Message`,
+    describing a service message about a refunded payment.
+  `#1536 <https://github.com/aiogram/aiogram/issues/1536>`_
+
+
+3.9.0 (2024-07-06)
+===================
+
+Features
+--------
+
+- Added ChatMember resolution tool and updated 2.x migration guide.
+  `#1525 <https://github.com/aiogram/aiogram/issues/1525>`_
+- Added full support of `Bot API 7.6 <https://core.telegram.org/bots/api-changelog#july-1-2024>`_
+
+  - Added the classes :class:`aiogram.types.paid_media.PaidMedia`,
+      :class:`aiogram.types.paid_media_info.PaidMediaInfo`,
+      :class:`aiogram.types.paid_media_preview.PaidMediaPreview`,
+      :class:`aiogram.types.paid_media_photo.PaidMediaPhoto`
+      and :class:`aiogram.types.paid_media_video.PaidMediaVideo`,
+      containing information about paid media.
+  - Added the method :class:`aiogram.methods.send_paid_media.SendPaidMedia`
+      and the classes :class:`aiogram.types.input_paid_media.InputPaidMedia`,
+      :class:`aiogram.types.input_paid_media_photo.InputPaidMediaPhoto`
+      and :class:`aiogram.types.input_paid_media_video.InputPaidMediaVideo`,
+      to support sending paid media.
+  - Documented that the methods :class:`aiogram.methods.copy_message.CopyMessage`
+      and :class:`aiogram.methods.copy_messages.CopyMessages` cannot be used to copy paid media.
+  - Added the field :code:`can_send_paid_media` to the class
+      :class:`aiogram.types.chat_full_info.ChatFullInfo`.
+  - Added the field :code:`paid_media` to the classes
+      :class:`aiogram.types.message.Message` and
+      :class:`aiogram.types.external_reply_info.ExternalReplyInfo`.
+  - Added the class
+      :class:`aiogram.types.transaction_partner_telegram_ads.TransactionPartnerTelegramAds`,
+      containing information about Telegram Star transactions involving the Telegram Ads Platform.
+  - Added the field :code:`invoice_payload` to the class
+      :class:`aiogram.types.transaction_partner_user.TransactionPartnerUser`,
+      containing the bot-specified invoice payload.
+  - Changed the default opening mode for Direct Link Mini Apps.
+  - Added support for launching Web Apps via t.me link in the class
+      :class:`aiogram.types.menu_button_web_app.MenuButtonWebApp`.
+  - Added the field :code:`section_separator_color` to the class :code:`ThemeParams`.
+  `#1533 <https://github.com/aiogram/aiogram/issues/1533>`_
+
+
+Bugfixes
+--------
+
+- Fixed event context resolving for the callback query that is coming from the business account
+  `#1520 <https://github.com/aiogram/aiogram/issues/1520>`_
+
+
+3.8.0 (2024-06-19)
+===================
+
+Features
+--------
+
+- Added utility to safely deserialize any Telegram object or method to a JSON-compatible object (dict).
+  (:ref:`>> Read more <serialization-tool>`)
+  `#1450 <https://github.com/aiogram/aiogram/issues/1450>`_
+- Added full support of `Bot API 7.5 <https://core.telegram.org/bots/api-changelog#june-18-2024>`_
+
+  - Added the classes :class:`aiogram.types.star_transactions.StarTransactions`,
+      :class:`aiogram.types.star_transaction.StarTransaction`,
+      :class:`aiogram.types.transaction_partner.TransactionPartner`
+      and :class:`aiogram.types.revenue_withdrawal_state.RevenueWithdrawalState`,
+      containing information about Telegram Star transactions involving the bot.
+  - Added the method :class:`aiogram.methods.get_star_transactions.GetStarTransactions`
+      that can be used to get the list of all Telegram Star transactions for the bot.
+  - Added support for callback buttons in
+      :class:`aiogram.types.inline_keyboard_markup.InlineKeyboardMarkup`
+      for messages sent on behalf of a business account.
+  - Added support for callback queries originating from a message sent
+      on behalf of a business account.
+  - Added the parameter :code:`business_connection_id` to the methods
+      :class:`aiogram.methods.edit_message_text.EditMessageText`,
+      :class:`aiogram.methods.edit_message_media.EditMessageMedia`,
+      :class:`aiogram.methods.edit_message_caption.EditMessageCaption`,
+      :class:`aiogram.methods.edit_message_live_location.EditMessageLiveLocation`,
+      :class:`aiogram.methods.stop_message_live_location.StopMessageLiveLocation`
+      and :class:`aiogram.methods.edit_message_reply_markup.EditMessageReplyMarkup`,
+      allowing the bot to edit business messages.
+  - Added the parameter :code:`business_connection_id` to the method
+      :class:`aiogram.methods.stop_poll.StopPoll`,
+      allowing the bot to stop polls it sent on behalf of a business account.
+  `#1518 <https://github.com/aiogram/aiogram/issues/1518>`_
+
+
+Bugfixes
+--------
+
+- Increased DNS cache ttl setting to aiohttp session as a workaround for DNS resolution issues in aiohttp.
+  `#1500 <https://github.com/aiogram/aiogram/issues/1500>`_
+
+
+Improved Documentation
+----------------------
+
+- Fixed MongoStorage section in the documentation by adding extra dependency to ReadTheDocs configuration.
+  `#1501 <https://github.com/aiogram/aiogram/issues/1501>`_
+- Added information about dependency changes to the :code:`2.x --> 3.x` migration guide.
+  `#1504 <https://github.com/aiogram/aiogram/issues/1504>`_
+
+
+Misc
+----
+
+- [Only for contributors] Fail redis and mongo tests if incorrect URI provided + some storages tests refactoring
+
+  If incorrect URIs provided to "--redis" and/or "--mongo" options tests should fail with errors instead of skipping.
+  Otherwise the next scenario is possible:
+    1) developer breaks RedisStorage and/or MongoStorage code
+    2) tests are run with incorrect redis and/or mongo URIsprovided by "--redis" and "--mongo" options (for example, wrong port specified)
+    3) tests pass because skipping doesn't fail tests run
+    4) developer or reviewer doesn't notice that redis and/or mongo tests were skipped
+    5) broken code gets in codebase
+
+  Also some refactorings done (related with storages and storages tests).
+  `#1510 <https://github.com/aiogram/aiogram/issues/1510>`_
+
+
 3.7.0 (2024-05-31)
 ===================
 

@@ -29,11 +29,35 @@
       },
       {
         "type": "String",
-        "description": "Bot specified invoice payload",
-        "html_description": "<td>Bot specified invoice payload</td>",
-        "rst_description": "Bot specified invoice payload\n",
+        "description": "Bot-specified invoice payload",
+        "html_description": "<td>Bot-specified invoice payload</td>",
+        "rst_description": "Bot-specified invoice payload\n",
         "name": "invoice_payload",
         "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "Expiration date of the subscription, in Unix time; for recurring payments only",
+        "html_description": "<td><em>Optional</em>. Expiration date of the subscription, in Unix time; for recurring payments only</td>",
+        "rst_description": "*Optional*. Expiration date of the subscription, in Unix time; for recurring payments only\n",
+        "name": "subscription_expiration_date",
+        "required": false
+      },
+      {
+        "type": "True",
+        "description": "True, if the payment is a recurring payment for a subscription",
+        "html_description": "<td><em>Optional</em>. True, if the payment is a recurring payment for a subscription</td>",
+        "rst_description": "*Optional*. True, if the payment is a recurring payment for a subscription\n",
+        "name": "is_recurring",
+        "required": false
+      },
+      {
+        "type": "True",
+        "description": "True, if the payment is the first payment for a subscription",
+        "html_description": "<td><em>Optional</em>. True, if the payment is the first payment for a subscription</td>",
+        "rst_description": "*Optional*. True, if the payment is the first payment for a subscription\n",
+        "name": "is_first_recurring",
+        "required": false
       },
       {
         "type": "String",

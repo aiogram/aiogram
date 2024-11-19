@@ -1,4 +1,4 @@
-from aiogram.methods import GetMe, Request
+from aiogram.methods import GetMe
 from aiogram.types import User
 from tests.mocked_bot import MockedBot
 

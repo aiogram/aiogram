@@ -1,0 +1,25 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Payments",
+    "anchor": "payments"
+  },
+  "object": {
+    "anchor": "transactionpartnerother",
+    "name": "TransactionPartnerOther",
+    "description": "Describes a transaction with an unknown source or recipient.",
+    "html_description": "<p>Describes a transaction with an unknown source or recipient.</p>",
+    "rst_description": "Describes a transaction with an unknown source or recipient.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Type of the transaction partner, always 'other'",
+        "html_description": "<td>Type of the transaction partner, always &#8220;other&#8221;</td>",
+        "rst_description": "Type of the transaction partner, always 'other'\n",
+        "name": "type",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

@@ -1,5 +1,3 @@
-from typing import AsyncIterable
-
 from aresponses import ResponsesMockServer
 
 from aiogram import Bot

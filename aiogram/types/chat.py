@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import datetime
-from typing import TYPE_CHECKING, Any, List, Optional, Union
+from typing import TYPE_CHECKING, Any, Optional, Union
 
 from pydantic import Field
 
@@ -50,6 +50,7 @@ if TYPE_CHECKING:
     from .message import Message
     from .reaction_type_custom_emoji import ReactionTypeCustomEmoji
     from .reaction_type_emoji import ReactionTypeEmoji
+    from .reaction_type_paid import ReactionTypePaid
 
 
 class Chat(TelegramObject):
@@ -78,14 +79,14 @@ class Chat(TelegramObject):
 
 .. deprecated:: API:7.3
    https://core.telegram.org/bots/api-changelog#may-6-2024"""
-    active_usernames: Optional[List[str]] = Field(None, json_schema_extra={"deprecated": True})
+    active_usernames: Optional[list[str]] = Field(None, json_schema_extra={"deprecated": True})
     """*Optional*. If non-empty, the list of all `active chat usernames <https://telegram.org/blog/topics-in-groups-collectible-usernames#collectible-usernames>`_; for private chats, supergroups and channels. Returned only in :class:`aiogram.methods.get_chat.GetChat`.
 
 .. deprecated:: API:7.3
    https://core.telegram.org/bots/api-changelog#may-6-2024"""
-    available_reactions: Optional[List[Union[ReactionTypeEmoji, ReactionTypeCustomEmoji]]] = Field(
-        None, json_schema_extra={"deprecated": True}
-    )
+    available_reactions: Optional[
+        list[Union[ReactionTypeEmoji, ReactionTypeCustomEmoji, ReactionTypePaid]]
+    ] = Field(None, json_schema_extra={"deprecated": True})
     """*Optional*. List of available reactions allowed in the chat. If omitted, then all `emoji reactions <https://core.telegram.org/bots/api#reactiontypeemoji>`_ are allowed. Returned only in :class:`aiogram.methods.get_chat.GetChat`.
 
 .. deprecated:: API:7.3
@@ -282,9 +283,9 @@ class Chat(TelegramObject):
             last_name: Optional[str] = None,
             is_forum: Optional[bool] = None,
             accent_color_id: Optional[int] = None,
-            active_usernames: Optional[List[str]] = None,
+            active_usernames: Optional[list[str]] = None,
             available_reactions: Optional[
-                List[Union[ReactionTypeEmoji, ReactionTypeCustomEmoji]]
+                list[Union[ReactionTypeEmoji, ReactionTypeCustomEmoji, ReactionTypePaid]]
             ] = None,
             background_custom_emoji_id: Optional[str] = None,
             bio: Optional[str] = None,
@@ -871,6 +872,7 @@ class Chat(TelegramObject):
 
     def unpin_message(
         self,
+        business_connection_id: Optional[str] = None,
         message_id: Optional[int] = None,
         **kwargs: Any,
     ) -> UnpinChatMessage:
@@ -884,7 +886,8 @@ class Chat(TelegramObject):
 
         Source: https://core.telegram.org/bots/api#unpinchatmessage
 
-        :param message_id: Identifier of a message to unpin. If not specified, the most recent pinned message (by sending date) will be unpinned.
+        :param business_connection_id: Unique identifier of the business connection on behalf of which the message will be unpinned
+        :param message_id: Identifier of the message to unpin. Required if *business_connection_id* is specified. If not specified, the most recent pinned message (by sending date) will be unpinned.
         :return: instance of method :class:`aiogram.methods.unpin_chat_message.UnpinChatMessage`
         """
         # DO NOT EDIT MANUALLY!!!
@@ -894,6 +897,7 @@ class Chat(TelegramObject):
 
         return UnpinChatMessage(
             chat_id=self.id,
+            business_connection_id=business_connection_id,
             message_id=message_id,
             **kwargs,
         ).as_(self._bot)
@@ -901,6 +905,7 @@ class Chat(TelegramObject):
     def pin_message(
         self,
         message_id: int,
+        business_connection_id: Optional[str] = None,
         disable_notification: Optional[bool] = None,
         **kwargs: Any,
     ) -> PinChatMessage:
@@ -915,6 +920,7 @@ class Chat(TelegramObject):
         Source: https://core.telegram.org/bots/api#pinchatmessage
 
         :param message_id: Identifier of a message to pin
+        :param business_connection_id: Unique identifier of the business connection on behalf of which the message will be pinned
         :param disable_notification: Pass :code:`True` if it is not necessary to send a notification to all chat members about the new pinned message. Notifications are always disabled in channels and private chats.
         :return: instance of method :class:`aiogram.methods.pin_chat_message.PinChatMessage`
         """
@@ -926,6 +932,7 @@ class Chat(TelegramObject):
         return PinChatMessage(
             chat_id=self.id,
             message_id=message_id,
+            business_connection_id=business_connection_id,
             disable_notification=disable_notification,
             **kwargs,
         ).as_(self._bot)

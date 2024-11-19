@@ -69,6 +69,7 @@ Available types
     chat_photo
     chat_shared
     contact
+    copy_text_button
     dice
     document
     external_reply_info
@@ -95,6 +96,9 @@ Available types
     input_media_document
     input_media_photo
     input_media_video
+    input_paid_media
+    input_paid_media_photo
+    input_paid_media_video
     input_poll_option
     keyboard_button
     keyboard_button_poll_type
@@ -120,6 +124,11 @@ Available types
     message_origin_user
     message_reaction_count_updated
     message_reaction_updated
+    paid_media
+    paid_media_info
+    paid_media_photo
+    paid_media_preview
+    paid_media_video
     photo_size
     poll
     poll_answer
@@ -129,6 +138,7 @@ Available types
     reaction_type
     reaction_type_custom_emoji
     reaction_type_emoji
+    reaction_type_paid
     reply_keyboard_markup
     reply_keyboard_remove
     reply_parameters
@@ -190,6 +200,7 @@ Inline mode
     input_message_content
     input_text_message_content
     input_venue_message_content
+    prepared_inline_message
     sent_web_app_message
 
 Stickers
@@ -198,10 +209,41 @@ Stickers
 .. toctree::
     :maxdepth: 1
 
+    gift
+    gifts
     input_sticker
     mask_position
     sticker
     sticker_set
+
+Payments
+========
+
+.. toctree::
+    :maxdepth: 1
+
+    invoice
+    labeled_price
+    order_info
+    paid_media_purchased
+    pre_checkout_query
+    refunded_payment
+    revenue_withdrawal_state
+    revenue_withdrawal_state_failed
+    revenue_withdrawal_state_pending
+    revenue_withdrawal_state_succeeded
+    shipping_address
+    shipping_option
+    shipping_query
+    star_transaction
+    star_transactions
+    successful_payment
+    transaction_partner
+    transaction_partner_fragment
+    transaction_partner_other
+    transaction_partner_telegram_ads
+    transaction_partner_telegram_api
+    transaction_partner_user
 
 Telegram Passport
 =================
@@ -223,21 +265,6 @@ Telegram Passport
     passport_element_error_translation_files
     passport_element_error_unspecified
     passport_file
-
-Payments
-========
-
-.. toctree::
-    :maxdepth: 1
-
-    invoice
-    labeled_price
-    order_info
-    pre_checkout_query
-    shipping_address
-    shipping_option
-    shipping_query
-    successful_payment
 
 Getting updates
 ===============

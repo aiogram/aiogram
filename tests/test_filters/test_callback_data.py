@@ -92,6 +92,18 @@ class TestCallbackData:
 
         assert MyCallback(foo="test", bar=42).pack() == "test:test:42"
 
+    def test_pack_uuid(self):
+        class MyCallbackWithUUID(CallbackData, prefix="test"):
+            foo: str
+            bar: UUID
+
+        callback = MyCallbackWithUUID(
+            foo="test",
+            bar=UUID("123e4567-e89b-12d3-a456-426655440000"),
+        )
+
+        assert callback.pack() == "test:test:123e4567e89b12d3a456426655440000"
+
     def test_pack_optional(self):
         class MyCallback1(CallbackData, prefix="test1"):
             foo: str

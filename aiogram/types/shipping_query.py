@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, List, Optional
+from typing import TYPE_CHECKING, Any, Optional
 
 from pydantic import Field
 
@@ -25,7 +25,7 @@ class ShippingQuery(TelegramObject):
     from_user: User = Field(..., alias="from")
     """User who sent the query"""
     invoice_payload: str
-    """Bot specified invoice payload"""
+    """Bot-specified invoice payload"""
     shipping_address: ShippingAddress
     """User specified shipping address"""
 
@@ -57,7 +57,7 @@ class ShippingQuery(TelegramObject):
     def answer(
         self,
         ok: bool,
-        shipping_options: Optional[List[ShippingOption]] = None,
+        shipping_options: Optional[list[ShippingOption]] = None,
         error_message: Optional[str] = None,
         **kwargs: Any,
     ) -> AnswerShippingQuery:

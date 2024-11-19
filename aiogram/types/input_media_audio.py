@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, List, Literal, Optional, Union
+from typing import TYPE_CHECKING, Any, Literal, Optional, Union
 
 from ..client.default import Default
 from ..enums import InputMediaType
@@ -28,7 +28,7 @@ class InputMediaAudio(InputMedia):
     """*Optional*. Caption of the audio to be sent, 0-1024 characters after entities parsing"""
     parse_mode: Optional[Union[str, Default]] = Default("parse_mode")
     """*Optional*. Mode for parsing entities in the audio caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details."""
-    caption_entities: Optional[List[MessageEntity]] = None
+    caption_entities: Optional[list[MessageEntity]] = None
     """*Optional*. List of special entities that appear in the caption, which can be specified instead of *parse_mode*"""
     duration: Optional[int] = None
     """*Optional*. Duration of the audio in seconds"""
@@ -49,7 +49,7 @@ class InputMediaAudio(InputMedia):
             thumbnail: Optional[InputFile] = None,
             caption: Optional[str] = None,
             parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
-            caption_entities: Optional[List[MessageEntity]] = None,
+            caption_entities: Optional[list[MessageEntity]] = None,
             duration: Optional[int] = None,
             performer: Optional[str] = None,
             title: Optional[str] = None,

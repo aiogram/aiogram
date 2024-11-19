@@ -198,13 +198,16 @@ class TestCallbackAnswerMiddleware:
             stack.append("answer")
 
         middleware = CallbackAnswerMiddleware()
-        with patch(
-            "aiogram.utils.callback_answer.CallbackAnswerMiddleware.construct_callback_answer",
-            new_callable=MagicMock,
-            side_effect=lambda **kwargs: CallbackAnswer(**{"answered": False, **properties}),
-        ), patch(
-            "aiogram.utils.callback_answer.CallbackAnswerMiddleware.answer",
-            new=answer,
+        with (
+            patch(
+                "aiogram.utils.callback_answer.CallbackAnswerMiddleware.construct_callback_answer",
+                new_callable=MagicMock,
+                side_effect=lambda **kwargs: CallbackAnswer(**{"answered": False, **properties}),
+            ),
+            patch(
+                "aiogram.utils.callback_answer.CallbackAnswerMiddleware.answer",
+                new=answer,
+            ),
         ):
             await middleware(handler, event, {})
 

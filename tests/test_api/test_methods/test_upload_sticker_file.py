@@ -1,5 +1,5 @@
 from aiogram.enums import StickerFormat
-from aiogram.methods import Request, UploadStickerFile
+from aiogram.methods import UploadStickerFile
 from aiogram.types import BufferedInputFile, File
 from tests.mocked_bot import MockedBot
 

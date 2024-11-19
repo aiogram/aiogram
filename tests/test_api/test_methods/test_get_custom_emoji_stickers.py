@@ -1,6 +1,6 @@
 from typing import List
 
-from aiogram.methods import GetCustomEmojiStickers, Request
+from aiogram.methods import GetCustomEmojiStickers
 from aiogram.types import Sticker
 from tests.mocked_bot import MockedBot
 

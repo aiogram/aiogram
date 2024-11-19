@@ -1,4 +1,4 @@
-from aiogram.methods import Request, UnbanChatMember
+from aiogram.methods import UnbanChatMember
 from tests.mocked_bot import MockedBot
 
 

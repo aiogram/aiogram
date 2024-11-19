@@ -1,6 +1,7 @@
 """
 This example shows how to use webhook with SSL certificate.
 """
+
 import logging
 import ssl
 import sys

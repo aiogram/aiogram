@@ -20,12 +20,10 @@ Here are the three different available builtin types of input file:
 
 .. warning::
 
-    **Be respectful with Telegram**
+    **Be respectful to Telegram**
 
     Instances of `InputFile` are reusable.
-    That's mean you can create instance of InputFile and sent this file multiple times but Telegram
-    does not recommend to do that and when you upload file once just save their `file_id`
-    and use it in next times.
+    That means you can create an instance of InputFile and send it multiple times. However, Telegram does not recommend doing this. Instead, once you upload a file, save its `file_id` and reuse that later.
 
 Upload from file system
 =======================

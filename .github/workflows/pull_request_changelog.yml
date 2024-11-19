@@ -22,10 +22,10 @@ jobs:
       - name: Set up Python 3.10
         uses: actions/setup-python@v5
         with:
-          python-version: "3.10"
+          python-version: "3.12"
 
       - name: Install towncrier
-        run: pip install towncrier
+        run: pip install -U towncrier
 
       - name: Check changelog
         env:
@@ -36,7 +36,7 @@ jobs:
 
       - name: Find bot comment
         if: "always()"
-        uses: peter-evans/find-comment@v2
+        uses: peter-evans/find-comment@v3
         id: fc
         with:
           issue-number: ${{ github.event.pull_request.number }}
@@ -45,7 +45,7 @@ jobs:
 
       - name: Ask for changelog
         if: "failure()"
-        uses: peter-evans/create-or-update-comment@v2
+        uses: peter-evans/create-or-update-comment@v4
         with:
           edit-mode: replace
           comment-id: ${{ steps.fc.outputs.comment-id }}
@@ -65,7 +65,7 @@ jobs:
 
       - name: Changelog found
         if: "success()"
-        uses: peter-evans/create-or-update-comment@v2
+        uses: peter-evans/create-or-update-comment@v4
         with:
           edit-mode: replace
           comment-id: ${{ steps.fc.outputs.comment-id }}
@@ -80,7 +80,7 @@ jobs:
     if: "contains(github.event.pull_request.labels.*.name, 'skip news')"
     steps:
       - name: Find bot comment
-        uses: peter-evans/find-comment@v2
+        uses: peter-evans/find-comment@v3
         id: fc
         with:
           issue-number: ${{ github.event.pull_request.number }}
@@ -88,7 +88,7 @@ jobs:
           body-includes: Changelog
 
       - name: Comment when docs is not needed
-        uses: peter-evans/create-or-update-comment@v2
+        uses: peter-evans/create-or-update-comment@v4
         with:
           edit-mode: replace
           comment-id: ${{ steps.fc.outputs.comment-id }}

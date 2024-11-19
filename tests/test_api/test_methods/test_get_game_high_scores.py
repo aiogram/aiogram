@@ -1,6 +1,6 @@
 from typing import List
 
-from aiogram.methods import GetGameHighScores, Request
+from aiogram.methods import GetGameHighScores
 from aiogram.types import GameHighScore, User
 from tests.mocked_bot import MockedBot
 

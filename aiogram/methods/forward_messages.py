@@ -1,24 +1,24 @@
-from typing import TYPE_CHECKING, Any, List, Optional, Union
+from typing import TYPE_CHECKING, Any, Optional, Union
 
 from ..types import MessageId
 from .base import TelegramMethod
 
 
-class ForwardMessages(TelegramMethod[List[MessageId]]):
+class ForwardMessages(TelegramMethod[list[MessageId]]):
     """
     Use this method to forward multiple messages of any kind. If some of the specified messages can't be found or forwarded, they are skipped. Service messages and messages with protected content can't be forwarded. Album grouping is kept for forwarded messages. On success, an array of :class:`aiogram.types.message_id.MessageId` of the sent messages is returned.
 
     Source: https://core.telegram.org/bots/api#forwardmessages
     """
 
-    __returning__ = List[MessageId]
+    __returning__ = list[MessageId]
     __api_method__ = "forwardMessages"
 
     chat_id: Union[int, str]
     """Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)"""
     from_chat_id: Union[int, str]
     """Unique identifier for the chat where the original messages were sent (or channel username in the format :code:`@channelusername`)"""
-    message_ids: List[int]
+    message_ids: list[int]
     """A JSON-serialized list of 1-100 identifiers of messages in the chat *from_chat_id* to forward. The identifiers must be specified in a strictly increasing order."""
     message_thread_id: Optional[int] = None
     """Unique identifier for the target message thread (topic) of the forum; for forum supergroups only"""
@@ -36,7 +36,7 @@ class ForwardMessages(TelegramMethod[List[MessageId]]):
             *,
             chat_id: Union[int, str],
             from_chat_id: Union[int, str],
-            message_ids: List[int],
+            message_ids: list[int],
             message_thread_id: Optional[int] = None,
             disable_notification: Optional[bool] = None,
             protect_content: Optional[bool] = None,

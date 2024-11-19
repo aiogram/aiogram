@@ -95,6 +95,7 @@ Read more
 .. toctree::
 
     storages
+    strategy
     scene
 
 

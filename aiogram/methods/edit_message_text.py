@@ -1,23 +1,17 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, List, Optional, Union
+from typing import TYPE_CHECKING, Any, Optional, Union
 
 from pydantic import Field
 
 from ..client.default import Default
-from ..types import (
-    UNSET_PARSE_MODE,
-    InlineKeyboardMarkup,
-    LinkPreviewOptions,
-    Message,
-    MessageEntity,
-)
+from ..types import InlineKeyboardMarkup, LinkPreviewOptions, Message, MessageEntity
 from .base import TelegramMethod
 
 
 class EditMessageText(TelegramMethod[Union[Message, bool]]):
     """
-    Use this method to edit text and `game <https://core.telegram.org/bots/api#games>`_ messages. On success, if the edited message is not an inline message, the edited :class:`aiogram.types.message.Message` is returned, otherwise :code:`True` is returned.
+    Use this method to edit text and `game <https://core.telegram.org/bots/api#games>`_ messages. On success, if the edited message is not an inline message, the edited :class:`aiogram.types.message.Message` is returned, otherwise :code:`True` is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within **48 hours** from the time they were sent.
 
     Source: https://core.telegram.org/bots/api#editmessagetext
     """
@@ -27,6 +21,8 @@ class EditMessageText(TelegramMethod[Union[Message, bool]]):
 
     text: str
     """New text of the message, 1-4096 characters after entities parsing"""
+    business_connection_id: Optional[str] = None
+    """Unique identifier of the business connection on behalf of which the message to be edited was sent"""
     chat_id: Optional[Union[int, str]] = None
     """Required if *inline_message_id* is not specified. Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)"""
     message_id: Optional[int] = None
@@ -35,9 +31,9 @@ class EditMessageText(TelegramMethod[Union[Message, bool]]):
     """Required if *chat_id* and *message_id* are not specified. Identifier of the inline message"""
     parse_mode: Optional[Union[str, Default]] = Default("parse_mode")
     """Mode for parsing entities in the message text. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details."""
-    entities: Optional[List[MessageEntity]] = None
+    entities: Optional[list[MessageEntity]] = None
     """A JSON-serialized list of special entities that appear in message text, which can be specified instead of *parse_mode*"""
-    link_preview_options: Optional[LinkPreviewOptions] = None
+    link_preview_options: Optional[Union[LinkPreviewOptions, Default]] = Default("link_preview")
     """Link preview generation options for the message"""
     reply_markup: Optional[InlineKeyboardMarkup] = None
     """A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_."""
@@ -57,12 +53,15 @@ class EditMessageText(TelegramMethod[Union[Message, bool]]):
             __pydantic__self__,
             *,
             text: str,
+            business_connection_id: Optional[str] = None,
             chat_id: Optional[Union[int, str]] = None,
             message_id: Optional[int] = None,
             inline_message_id: Optional[str] = None,
             parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
-            entities: Optional[List[MessageEntity]] = None,
-            link_preview_options: Optional[LinkPreviewOptions] = None,
+            entities: Optional[list[MessageEntity]] = None,
+            link_preview_options: Optional[Union[LinkPreviewOptions, Default]] = Default(
+                "link_preview"
+            ),
             reply_markup: Optional[InlineKeyboardMarkup] = None,
             disable_web_page_preview: Optional[Union[bool, Default]] = Default(
                 "link_preview_is_disabled"
@@ -75,6 +74,7 @@ class EditMessageText(TelegramMethod[Union[Message, bool]]):
 
             super().__init__(
                 text=text,
+                business_connection_id=business_connection_id,
                 chat_id=chat_id,
                 message_id=message_id,
                 inline_message_id=inline_message_id,

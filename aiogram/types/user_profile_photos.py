@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, List
+from typing import TYPE_CHECKING, Any
 
 from .base import TelegramObject
 
@@ -17,7 +17,7 @@ class UserProfilePhotos(TelegramObject):
 
     total_count: int
     """Total number of profile pictures the target user has"""
-    photos: List[List[PhotoSize]]
+    photos: list[list[PhotoSize]]
     """Requested profile pictures (in up to 4 sizes each)"""
 
     if TYPE_CHECKING:
@@ -28,7 +28,7 @@ class UserProfilePhotos(TelegramObject):
             __pydantic__self__,
             *,
             total_count: int,
-            photos: List[List[PhotoSize]],
+            photos: list[list[PhotoSize]],
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

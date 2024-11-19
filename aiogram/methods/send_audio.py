@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, List, Optional, Union
+from typing import TYPE_CHECKING, Any, Optional, Union
 
 from pydantic import Field
 
@@ -41,7 +41,7 @@ class SendAudio(TelegramMethod[Message]):
     """Audio caption, 0-1024 characters after entities parsing"""
     parse_mode: Optional[Union[str, Default]] = Default("parse_mode")
     """Mode for parsing entities in the audio caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details."""
-    caption_entities: Optional[List[MessageEntity]] = None
+    caption_entities: Optional[list[MessageEntity]] = None
     """A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*"""
     duration: Optional[int] = None
     """Duration of the audio in seconds"""
@@ -55,6 +55,8 @@ class SendAudio(TelegramMethod[Message]):
     """Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound."""
     protect_content: Optional[Union[bool, Default]] = Default("protect_content")
     """Protects the contents of the sent message from forwarding and saving"""
+    allow_paid_broadcast: Optional[bool] = None
+    """Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance"""
     message_effect_id: Optional[str] = None
     """Unique identifier of the message effect to be added to the message; for private chats only"""
     reply_parameters: Optional[ReplyParameters] = None
@@ -89,13 +91,14 @@ class SendAudio(TelegramMethod[Message]):
             message_thread_id: Optional[int] = None,
             caption: Optional[str] = None,
             parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
-            caption_entities: Optional[List[MessageEntity]] = None,
+            caption_entities: Optional[list[MessageEntity]] = None,
             duration: Optional[int] = None,
             performer: Optional[str] = None,
             title: Optional[str] = None,
             thumbnail: Optional[InputFile] = None,
             disable_notification: Optional[bool] = None,
             protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+            allow_paid_broadcast: Optional[bool] = None,
             message_effect_id: Optional[str] = None,
             reply_parameters: Optional[ReplyParameters] = None,
             reply_markup: Optional[
@@ -123,6 +126,7 @@ class SendAudio(TelegramMethod[Message]):
                 thumbnail=thumbnail,
                 disable_notification=disable_notification,
                 protect_content=protect_content,
+                allow_paid_broadcast=allow_paid_broadcast,
                 message_effect_id=message_effect_id,
                 reply_parameters=reply_parameters,
                 reply_markup=reply_markup,

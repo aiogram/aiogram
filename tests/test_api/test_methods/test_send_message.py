@@ -1,6 +1,6 @@
 import datetime
 
-from aiogram.methods import Request, SendMessage
+from aiogram.methods import SendMessage
 from aiogram.types import Chat, ForceReply, Message, ReplyKeyboardRemove
 from tests.mocked_bot import MockedBot
 

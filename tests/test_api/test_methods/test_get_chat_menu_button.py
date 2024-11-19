@@ -1,4 +1,4 @@
-from aiogram.methods import GetChatMenuButton, Request
+from aiogram.methods import GetChatMenuButton
 from aiogram.types import MenuButton, MenuButtonDefault
 from tests.mocked_bot import MockedBot
 

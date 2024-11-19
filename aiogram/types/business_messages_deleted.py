@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, List
+from typing import TYPE_CHECKING, Any
 
 from .base import TelegramObject
 
@@ -19,7 +19,7 @@ class BusinessMessagesDeleted(TelegramObject):
     """Unique identifier of the business connection"""
     chat: Chat
     """Information about a chat in the business account. The bot may not have access to the chat or the corresponding user."""
-    message_ids: List[int]
+    message_ids: list[int]
     """The list of identifiers of deleted messages in the chat of the business account"""
 
     if TYPE_CHECKING:
@@ -31,7 +31,7 @@ class BusinessMessagesDeleted(TelegramObject):
             *,
             business_connection_id: str,
             chat: Chat,
-            message_ids: List[int],
+            message_ids: list[int],
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

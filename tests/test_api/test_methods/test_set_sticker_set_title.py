@@ -1,4 +1,4 @@
-from aiogram.methods import Request, SetStickerEmojiList, SetStickerSetTitle
+from aiogram.methods import SetStickerSetTitle
 from tests.mocked_bot import MockedBot
 
 

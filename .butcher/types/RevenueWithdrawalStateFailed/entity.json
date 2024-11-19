@@ -1,0 +1,25 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Payments",
+    "anchor": "payments"
+  },
+  "object": {
+    "anchor": "revenuewithdrawalstatefailed",
+    "name": "RevenueWithdrawalStateFailed",
+    "description": "The withdrawal failed and the transaction was refunded.",
+    "html_description": "<p>The withdrawal failed and the transaction was refunded.</p>",
+    "rst_description": "The withdrawal failed and the transaction was refunded.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Type of the state, always 'failed'",
+        "html_description": "<td>Type of the state, always &#8220;failed&#8221;</td>",
+        "rst_description": "Type of the state, always 'failed'\n",
+        "name": "type",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

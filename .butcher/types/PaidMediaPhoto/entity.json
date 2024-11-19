@@ -1,0 +1,33 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "paidmediaphoto",
+    "name": "PaidMediaPhoto",
+    "description": "The paid media is a photo.",
+    "html_description": "<p>The paid media is a photo.</p>",
+    "rst_description": "The paid media is a photo.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Type of the paid media, always 'photo'",
+        "html_description": "<td>Type of the paid media, always &#8220;photo&#8221;</td>",
+        "rst_description": "Type of the paid media, always 'photo'\n",
+        "name": "type",
+        "required": true
+      },
+      {
+        "type": "Array of PhotoSize",
+        "description": "The photo",
+        "html_description": "<td>The photo</td>",
+        "rst_description": "The photo\n",
+        "name": "photo",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "paidmediapreview",
+    "name": "PaidMediaPreview",
+    "description": "The paid media isn't available before the payment.",
+    "html_description": "<p>The paid media isn't available before the payment.</p>",
+    "rst_description": "The paid media isn't available before the payment.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Type of the paid media, always 'preview'",
+        "html_description": "<td>Type of the paid media, always &#8220;preview&#8221;</td>",
+        "rst_description": "Type of the paid media, always 'preview'\n",
+        "name": "type",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "Media width as defined by the sender",
+        "html_description": "<td><em>Optional</em>. Media width as defined by the sender</td>",
+        "rst_description": "*Optional*. Media width as defined by the sender\n",
+        "name": "width",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "Media height as defined by the sender",
+        "html_description": "<td><em>Optional</em>. Media height as defined by the sender</td>",
+        "rst_description": "*Optional*. Media height as defined by the sender\n",
+        "name": "height",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "Duration of the media in seconds as defined by the sender",
+        "html_description": "<td><em>Optional</em>. Duration of the media in seconds as defined by the sender</td>",
+        "rst_description": "*Optional*. Duration of the media in seconds as defined by the sender\n",
+        "name": "duration",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

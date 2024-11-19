@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, List, Optional
+from typing import TYPE_CHECKING, Any, Optional
 
 from pydantic import Field
 
@@ -24,7 +24,7 @@ class CreateNewStickerSet(TelegramMethod[bool]):
     """Short name of sticker set, to be used in :code:`t.me/addstickers/` URLs (e.g., *animals*). Can contain only English letters, digits and underscores. Must begin with a letter, can't contain consecutive underscores and must end in :code:`"_by_<bot_username>"`. :code:`<bot_username>` is case insensitive. 1-64 characters."""
     title: str
     """Sticker set title, 1-64 characters"""
-    stickers: List[InputSticker]
+    stickers: list[InputSticker]
     """A JSON-serialized list of 1-50 initial stickers to be added to the sticker set"""
     sticker_type: Optional[str] = None
     """Type of stickers in the set, pass 'regular', 'mask', or 'custom_emoji'. By default, a regular sticker set is created."""
@@ -46,7 +46,7 @@ class CreateNewStickerSet(TelegramMethod[bool]):
             user_id: int,
             name: str,
             title: str,
-            stickers: List[InputSticker],
+            stickers: list[InputSticker],
             sticker_type: Optional[str] = None,
             needs_repainting: Optional[bool] = None,
             sticker_format: Optional[str] = None,

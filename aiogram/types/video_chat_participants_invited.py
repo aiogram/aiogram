@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, List
+from typing import TYPE_CHECKING, Any
 
 from .base import TelegramObject
 
@@ -15,14 +15,14 @@ class VideoChatParticipantsInvited(TelegramObject):
     Source: https://core.telegram.org/bots/api#videochatparticipantsinvited
     """
 
-    users: List[User]
+    users: list[User]
     """New members that were invited to the video chat"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!
         # This section was auto-generated via `butcher`
 
-        def __init__(__pydantic__self__, *, users: List[User], **__pydantic_kwargs: Any) -> None:
+        def __init__(__pydantic__self__, *, users: list[User], **__pydantic_kwargs: Any) -> None:
             # DO NOT EDIT MANUALLY!!!
             # This method was auto-generated via `butcher`
             # Is needed only for type checking and IDE support without any additional plugins

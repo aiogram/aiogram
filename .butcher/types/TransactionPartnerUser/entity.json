@@ -1,0 +1,73 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Payments",
+    "anchor": "payments"
+  },
+  "object": {
+    "anchor": "transactionpartneruser",
+    "name": "TransactionPartnerUser",
+    "description": "Describes a transaction with a user.",
+    "html_description": "<p>Describes a transaction with a user.</p>",
+    "rst_description": "Describes a transaction with a user.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Type of the transaction partner, always 'user'",
+        "html_description": "<td>Type of the transaction partner, always &#8220;user&#8221;</td>",
+        "rst_description": "Type of the transaction partner, always 'user'\n",
+        "name": "type",
+        "required": true
+      },
+      {
+        "type": "User",
+        "description": "Information about the user",
+        "html_description": "<td>Information about the user</td>",
+        "rst_description": "Information about the user\n",
+        "name": "user",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Bot-specified invoice payload",
+        "html_description": "<td><em>Optional</em>. Bot-specified invoice payload</td>",
+        "rst_description": "*Optional*. Bot-specified invoice payload\n",
+        "name": "invoice_payload",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "The duration of the paid subscription",
+        "html_description": "<td><em>Optional</em>. The duration of the paid subscription</td>",
+        "rst_description": "*Optional*. The duration of the paid subscription\n",
+        "name": "subscription_period",
+        "required": false
+      },
+      {
+        "type": "Array of PaidMedia",
+        "description": "Information about the paid media bought by the user",
+        "html_description": "<td><em>Optional</em>. Information about the paid media bought by the user</td>",
+        "rst_description": "*Optional*. Information about the paid media bought by the user\n",
+        "name": "paid_media",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "Bot-specified paid media payload",
+        "html_description": "<td><em>Optional</em>. Bot-specified paid media payload</td>",
+        "rst_description": "*Optional*. Bot-specified paid media payload\n",
+        "name": "paid_media_payload",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "The gift sent to the user by the bot",
+        "html_description": "<td><em>Optional</em>. The gift sent to the user by the bot</td>",
+        "rst_description": "*Optional*. The gift sent to the user by the bot\n",
+        "name": "gift",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

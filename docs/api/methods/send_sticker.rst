@@ -53,3 +53,5 @@ As shortcut from received object
 - :meth:`aiogram.types.chat_join_request.ChatJoinRequest.answer_sticker`
 - :meth:`aiogram.types.chat_join_request.ChatJoinRequest.answer_sticker_pm`
 - :meth:`aiogram.types.chat_member_updated.ChatMemberUpdated.answer_sticker`
+- :meth:`aiogram.types.inaccessible_message.InaccessibleMessage.answer_sticker`
+- :meth:`aiogram.types.inaccessible_message.InaccessibleMessage.reply_sticker`

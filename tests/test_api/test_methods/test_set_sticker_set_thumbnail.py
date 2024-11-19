@@ -1,5 +1,5 @@
 from aiogram.enums import StickerFormat
-from aiogram.methods import Request, SetStickerSetThumbnail
+from aiogram.methods import SetStickerSetThumbnail
 from tests.mocked_bot import MockedBot
 
 

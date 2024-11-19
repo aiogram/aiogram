@@ -1,4 +1,4 @@
-from aiogram.methods import LogOut, Request
+from aiogram.methods import LogOut
 from tests.mocked_bot import MockedBot
 
 

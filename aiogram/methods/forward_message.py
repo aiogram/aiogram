@@ -4,7 +4,6 @@ from typing import TYPE_CHECKING, Any, Optional, Union
 
 from ..client.default import Default
 from ..types import Message
-from ..types.base import UNSET_PROTECT_CONTENT
 from .base import TelegramMethod
 
 

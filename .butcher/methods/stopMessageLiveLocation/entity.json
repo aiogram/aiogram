@@ -12,6 +12,14 @@
     "rst_description": "Use this method to stop updating a live location message before *live_period* expires. On success, if the message is not an inline message, the edited :class:`aiogram.types.message.Message` is returned, otherwise :code:`True` is returned.",
     "annotations": [
       {
+        "type": "String",
+        "required": false,
+        "description": "Unique identifier of the business connection on behalf of which the message to be edited was sent",
+        "html_description": "<td>Unique identifier of the business connection on behalf of which the message to be edited was sent</td>",
+        "rst_description": "Unique identifier of the business connection on behalf of which the message to be edited was sent\n",
+        "name": "business_connection_id"
+      },
+      {
         "type": "Integer or String",
         "required": false,
         "description": "Required if inline_message_id is not specified. Unique identifier for the target chat or username of the target channel (in the format @channelusername)",

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, List
+from typing import TYPE_CHECKING, Any
 
 from .base import MutableTelegramObject
 
@@ -15,7 +15,7 @@ class InlineKeyboardMarkup(MutableTelegramObject):
     Source: https://core.telegram.org/bots/api#inlinekeyboardmarkup
     """
 
-    inline_keyboard: List[List[InlineKeyboardButton]]
+    inline_keyboard: list[list[InlineKeyboardButton]]
     """Array of button rows, each represented by an Array of :class:`aiogram.types.inline_keyboard_button.InlineKeyboardButton` objects"""
 
     if TYPE_CHECKING:
@@ -25,7 +25,7 @@ class InlineKeyboardMarkup(MutableTelegramObject):
         def __init__(
             __pydantic__self__,
             *,
-            inline_keyboard: List[List[InlineKeyboardButton]],
+            inline_keyboard: list[list[InlineKeyboardButton]],
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!
