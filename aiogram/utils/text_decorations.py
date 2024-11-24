@@ -218,7 +218,7 @@ class HtmlDecoration(TextDecoration):
         return html.escape(value, quote=False)
 
     def custom_emoji(self, value: str, custom_emoji_id: str) -> str:
-        return f'<{self.EMOJI_TAG} emoji-id="{custom_emoji_id}">{value}</tg-emoji>'
+        return f'<{self.EMOJI_TAG} emoji-id="{custom_emoji_id}">{value}</{self.EMOJI_TAG}>'
 
     def blockquote(self, value: str) -> str:
         return f"<{self.BLOCKQUOTE_TAG}>{value}</{self.BLOCKQUOTE_TAG}>"
