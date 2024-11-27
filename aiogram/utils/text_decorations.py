@@ -150,8 +150,8 @@ class TextDecoration(ABC):
         pass
 
     @abstractmethod
-    def blockquote(self, value: str) -> str: #pragma: no cover
-        return f"<blockquote>{value}</blockquote>"
+    def blockquote(self, value: str) -> str: # pragma: no cover
+        pass
     
     @abstractmethod
     def custom_emoji(self, value: str, custom_emoji_id: str) -> str:  # pragma: no cover
