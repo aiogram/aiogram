@@ -1,0 +1,1 @@
+Make sure KeyboardBuilder is not suggested to be used directly in the documentation.
