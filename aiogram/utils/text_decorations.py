@@ -138,6 +138,10 @@ class TextDecoration(ABC):
         pass
 
     @abstractmethod
+    def underline(self, value: str) -> str:  # pragma: no cover
+        pass
+
+    @abstractmethod
     def strikethrough(self, value: str) -> str:  # pragma: no cover
         pass
 
@@ -145,6 +149,10 @@ class TextDecoration(ABC):
     def quote(self, value: str) -> str:  # pragma: no cover
         pass
 
+    @abstractmethod
+    def blockquote(self, value: str) -> str: #pragma: no cover
+        return f"<blockquote>{value}</blockquote>"
+    
     @abstractmethod
     def custom_emoji(self, value: str, custom_emoji_id: str) -> str:  # pragma: no cover
         pass
@@ -177,6 +185,9 @@ class HtmlDecoration(TextDecoration):
 
     def strikethrough(self, value: str) -> str:
         return f"<s>{value}</s>"
+
+    def blockquote(self, value: str) -> str:
+        return f"<blockquote>{value}</blockquote>"
 
     def quote(self, value: str) -> str:
         return html.escape(value, quote=False)
@@ -215,6 +226,9 @@ class MarkdownDecoration(TextDecoration):
     def strikethrough(self, value: str) -> str:
         return f"~{value}~"
 
+    def blockquote(self, value: str) -> str:
+        return f">{value}"
+    
     def quote(self, value: str) -> str:
         return re.sub(pattern=self.MARKDOWN_QUOTE_PATTERN, repl=r"\\\1", string=value)
 
