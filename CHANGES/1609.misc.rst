@@ -1,0 +1,1 @@
+Fixed the order of handlers in the :class:`aiogram.fsm.scene.Scene`
