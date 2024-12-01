@@ -1,5 +1,6 @@
 import io
 import os
+from pathlib import Path
 from tempfile import mkstemp
 from unittest.mock import AsyncMock, MagicMock, patch
 
@@ -112,7 +113,8 @@ class TestBot:
                 mocked_close.assert_not_awaited()
                 await session.close()
 
-    async def test_download_file(self, aresponses: ResponsesMockServer):
+    @pytest.mark.parametrize("file_path", ["file.png", Path("file.png")])
+    async def test_download_file(self, aresponses: ResponsesMockServer, file_path):
         aresponses.add(
             method_pattern="get",
             response=aresponses.Response(status=200, body=b"\f" * 10),
@@ -127,7 +129,7 @@ class TestBot:
 
         async with Bot("42:TEST").context() as bot:
             with patch("aiofiles.threadpool.sync_open", return_value=mock_file):
-                await bot.download_file("TEST", "file.png")
+                await bot.download_file("TEST", file_path)
                 mock_file.write.assert_called_once_with(b"\f" * 10)
 
     async def test_download_file_default_destination(
