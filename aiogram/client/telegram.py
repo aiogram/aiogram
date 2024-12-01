@@ -67,7 +67,7 @@ class TelegramAPIServer:
         """
         return self.base.format(token=token, method=method)
 
-    def file_url(self, token: str, path: str) -> str:
+    def file_url(self, token: str, path: Union[str, Path]) -> str:
         """
         Generate URL for downloading files
 
