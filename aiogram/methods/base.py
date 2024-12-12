@@ -93,3 +93,6 @@ class TelegramMethod(BotContextController, BaseModel, Generic[TelegramType], ABC
                 "and then call it `await method()`"
             )
         return self.emit(bot).__await__()
+    
+    async def __call__(self) -> TelegramType:
+        return await self
