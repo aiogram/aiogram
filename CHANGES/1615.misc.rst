@@ -1,1 +1,1 @@
-Increased aiohttp upper limit
+Increased max :code:`aiohttp` version support from “<3.11” to “<3.12”
