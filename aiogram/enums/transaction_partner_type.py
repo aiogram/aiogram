@@ -13,3 +13,4 @@ class TransactionPartnerType(str, Enum):
     USER = "user"
     TELEGRAM_ADS = "telegram_ads"
     TELEGRAM_API = "telegram_api"
+    AFFILIATE_PROGRAM = "affiliate_program"

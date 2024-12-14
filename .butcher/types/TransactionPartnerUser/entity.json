@@ -28,6 +28,14 @@
         "required": true
       },
       {
+        "type": "AffiliateInfo",
+        "description": "Information about the affiliate that received a commission via this transaction",
+        "html_description": "<td><em>Optional</em>. Information about the affiliate that received a commission via this transaction</td>",
+        "rst_description": "*Optional*. Information about the affiliate that received a commission via this transaction\n",
+        "name": "affiliate",
+        "required": false
+      },
+      {
         "type": "String",
         "description": "Bot-specified invoice payload",
         "html_description": "<td><em>Optional</em>. Bot-specified invoice payload</td>",
@@ -60,7 +68,7 @@
         "required": false
       },
       {
-        "type": "String",
+        "type": "Gift",
         "description": "The gift sent to the user by the bot",
         "html_description": "<td><em>Optional</em>. The gift sent to the user by the bot</td>",
         "rst_description": "*Optional*. The gift sent to the user by the bot\n",

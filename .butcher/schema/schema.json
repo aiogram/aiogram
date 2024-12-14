@@ -1,7 +1,7 @@
 {
   "api": {
-    "version": "8.0",
-    "release_date": "2024-11-17"
+    "version": "8.1",
+    "release_date": "2024-12-04"
   },
   "items": [
     {
@@ -16344,9 +16344,9 @@
             {
               "type": "String",
               "required": false,
-              "description": "Unique identifier of the business connection on behalf of which the link will be created",
-              "html_description": "<td>Unique identifier of the business connection on behalf of which the link will be created</td>",
-              "rst_description": "Unique identifier of the business connection on behalf of which the link will be created\n",
+              "description": "Unique identifier of the business connection on behalf of which the link will be created. For payments in Telegram Stars only.",
+              "html_description": "<td>Unique identifier of the business connection on behalf of which the link will be created. For payments in <a href=\"https://t.me/BotNews/90\">Telegram Stars</a> only.</td>",
+              "rst_description": "Unique identifier of the business connection on behalf of which the link will be created. For payments in `Telegram Stars <https://t.me/BotNews/90>`_ only.\n",
               "name": "business_connection_id"
             },
             {
@@ -16400,9 +16400,9 @@
             {
               "type": "Integer",
               "required": false,
-              "description": "The number of seconds the subscription will be active for before the next payment. The currency must be set to 'XTR' (Telegram Stars) if the parameter is used. Currently, it must always be 2592000 (30 days) if specified.",
-              "html_description": "<td>The number of seconds the subscription will be active for before the next payment. The currency must be set to &#8220;XTR&#8221; (Telegram Stars) if the parameter is used. Currently, it must always be 2592000 (30 days) if specified.</td>",
-              "rst_description": "The number of seconds the subscription will be active for before the next payment. The currency must be set to 'XTR' (Telegram Stars) if the parameter is used. Currently, it must always be 2592000 (30 days) if specified.\n",
+              "description": "The number of seconds the subscription will be active for before the next payment. The currency must be set to 'XTR' (Telegram Stars) if the parameter is used. Currently, it must always be 2592000 (30 days) if specified. Any number of subscriptions can be active for a given bot at the same time, including multiple concurrent subscriptions from the same user. Subscription price must no exceed 2500 Telegram Stars.",
+              "html_description": "<td>The number of seconds the subscription will be active for before the next payment. The currency must be set to &#8220;XTR&#8221; (Telegram Stars) if the parameter is used. Currently, it must always be 2592000 (30 days) if specified. Any number of subscriptions can be active for a given bot at the same time, including multiple concurrent subscriptions from the same user. Subscription price must no exceed 2500 Telegram Stars.</td>",
+              "rst_description": "The number of seconds the subscription will be active for before the next payment. The currency must be set to 'XTR' (Telegram Stars) if the parameter is used. Currently, it must always be 2592000 (30 days) if specified. Any number of subscriptions can be active for a given bot at the same time, including multiple concurrent subscriptions from the same user. Subscription price must no exceed 2500 Telegram Stars.\n",
               "name": "subscription_period"
             },
             {
@@ -17246,11 +17246,61 @@
           "category": "types"
         },
         {
+          "anchor": "affiliateinfo",
+          "name": "AffiliateInfo",
+          "description": "Contains information about the affiliate that received a commission via this transaction.",
+          "html_description": "<p>Contains information about the affiliate that received a commission via this transaction.</p>",
+          "rst_description": "Contains information about the affiliate that received a commission via this transaction.",
+          "annotations": [
+            {
+              "type": "User",
+              "description": "The bot or the user that received an affiliate commission if it was received by a bot or a user",
+              "html_description": "<td><em>Optional</em>. The bot or the user that received an affiliate commission if it was received by a bot or a user</td>",
+              "rst_description": "*Optional*. The bot or the user that received an affiliate commission if it was received by a bot or a user\n",
+              "name": "affiliate_user",
+              "required": false
+            },
+            {
+              "type": "Chat",
+              "description": "The chat that received an affiliate commission if it was received by a chat",
+              "html_description": "<td><em>Optional</em>. The chat that received an affiliate commission if it was received by a chat</td>",
+              "rst_description": "*Optional*. The chat that received an affiliate commission if it was received by a chat\n",
+              "name": "affiliate_chat",
+              "required": false
+            },
+            {
+              "type": "Integer",
+              "description": "The number of Telegram Stars received by the affiliate for each 1000 Telegram Stars received by the bot from referred users",
+              "html_description": "<td>The number of Telegram Stars received by the affiliate for each 1000 Telegram Stars received by the bot from referred users</td>",
+              "rst_description": "The number of Telegram Stars received by the affiliate for each 1000 Telegram Stars received by the bot from referred users\n",
+              "name": "commission_per_mille",
+              "required": true
+            },
+            {
+              "type": "Integer",
+              "description": "Integer amount of Telegram Stars received by the affiliate from the transaction, rounded to 0; can be negative for refunds",
+              "html_description": "<td>Integer amount of Telegram Stars received by the affiliate from the transaction, rounded to 0; can be negative for refunds</td>",
+              "rst_description": "Integer amount of Telegram Stars received by the affiliate from the transaction, rounded to 0; can be negative for refunds\n",
+              "name": "amount",
+              "required": true
+            },
+            {
+              "type": "Integer",
+              "description": "The number of 1/1000000000 shares of Telegram Stars received by the affiliate; from -999999999 to 999999999; can be negative for refunds",
+              "html_description": "<td><em>Optional</em>. The number of 1/1000000000 shares of Telegram Stars received by the affiliate; from -999999999 to 999999999; can be negative for refunds</td>",
+              "rst_description": "*Optional*. The number of 1/1000000000 shares of Telegram Stars received by the affiliate; from -999999999 to 999999999; can be negative for refunds\n",
+              "name": "nanostar_amount",
+              "required": false
+            }
+          ],
+          "category": "types"
+        },
+        {
           "anchor": "transactionpartner",
           "name": "TransactionPartner",
-          "description": "This object describes the source of a transaction, or its recipient for outgoing transactions. Currently, it can be one of\n - TransactionPartnerUser\n - TransactionPartnerFragment\n - TransactionPartnerTelegramAds\n - TransactionPartnerTelegramApi\n - TransactionPartnerOther",
-          "html_description": "<p>This object describes the source of a transaction, or its recipient for outgoing transactions. Currently, it can be one of</p><ul>\n<li><a href=\"#transactionpartneruser\">TransactionPartnerUser</a></li>\n<li><a href=\"#transactionpartnerfragment\">TransactionPartnerFragment</a></li>\n<li><a href=\"#transactionpartnertelegramads\">TransactionPartnerTelegramAds</a></li>\n<li><a href=\"#transactionpartnertelegramapi\">TransactionPartnerTelegramApi</a></li>\n<li><a href=\"#transactionpartnerother\">TransactionPartnerOther</a></li>\n</ul>",
-          "rst_description": "This object describes the source of a transaction, or its recipient for outgoing transactions. Currently, it can be one of\n\n - :class:`aiogram.types.transaction_partner_user.TransactionPartnerUser`\n - :class:`aiogram.types.transaction_partner_fragment.TransactionPartnerFragment`\n - :class:`aiogram.types.transaction_partner_telegram_ads.TransactionPartnerTelegramAds`\n - :class:`aiogram.types.transaction_partner_telegram_api.TransactionPartnerTelegramApi`\n - :class:`aiogram.types.transaction_partner_other.TransactionPartnerOther`",
+          "description": "This object describes the source of a transaction, or its recipient for outgoing transactions. Currently, it can be one of\n - TransactionPartnerUser\n - TransactionPartnerAffiliateProgram\n - TransactionPartnerFragment\n - TransactionPartnerTelegramAds\n - TransactionPartnerTelegramApi\n - TransactionPartnerOther",
+          "html_description": "<p>This object describes the source of a transaction, or its recipient for outgoing transactions. Currently, it can be one of</p><ul>\n<li><a href=\"#transactionpartneruser\">TransactionPartnerUser</a></li>\n<li><a href=\"#transactionpartneraffiliateprogram\">TransactionPartnerAffiliateProgram</a></li>\n<li><a href=\"#transactionpartnerfragment\">TransactionPartnerFragment</a></li>\n<li><a href=\"#transactionpartnertelegramads\">TransactionPartnerTelegramAds</a></li>\n<li><a href=\"#transactionpartnertelegramapi\">TransactionPartnerTelegramApi</a></li>\n<li><a href=\"#transactionpartnerother\">TransactionPartnerOther</a></li>\n</ul>",
+          "rst_description": "This object describes the source of a transaction, or its recipient for outgoing transactions. Currently, it can be one of\n\n - :class:`aiogram.types.transaction_partner_user.TransactionPartnerUser`\n - :class:`aiogram.types.transaction_partner_affiliate_program.TransactionPartnerAffiliateProgram`\n - :class:`aiogram.types.transaction_partner_fragment.TransactionPartnerFragment`\n - :class:`aiogram.types.transaction_partner_telegram_ads.TransactionPartnerTelegramAds`\n - :class:`aiogram.types.transaction_partner_telegram_api.TransactionPartnerTelegramApi`\n - :class:`aiogram.types.transaction_partner_other.TransactionPartnerOther`",
           "annotations": [],
           "category": "types"
         },
@@ -17276,6 +17326,14 @@
               "rst_description": "Information about the user\n",
               "name": "user",
               "required": true
+            },
+            {
+              "type": "AffiliateInfo",
+              "description": "Information about the affiliate that received a commission via this transaction",
+              "html_description": "<td><em>Optional</em>. Information about the affiliate that received a commission via this transaction</td>",
+              "rst_description": "*Optional*. Information about the affiliate that received a commission via this transaction\n",
+              "name": "affiliate",
+              "required": false
             },
             {
               "type": "String",
@@ -17310,12 +17368,46 @@
               "required": false
             },
             {
-              "type": "String",
+              "type": "Gift",
               "description": "The gift sent to the user by the bot",
               "html_description": "<td><em>Optional</em>. The gift sent to the user by the bot</td>",
               "rst_description": "*Optional*. The gift sent to the user by the bot\n",
               "name": "gift",
               "required": false
+            }
+          ],
+          "category": "types"
+        },
+        {
+          "anchor": "transactionpartneraffiliateprogram",
+          "name": "TransactionPartnerAffiliateProgram",
+          "description": "Describes the affiliate program that issued the affiliate commission received via this transaction.",
+          "html_description": "<p>Describes the affiliate program that issued the affiliate commission received via this transaction.</p>",
+          "rst_description": "Describes the affiliate program that issued the affiliate commission received via this transaction.",
+          "annotations": [
+            {
+              "type": "String",
+              "description": "Type of the transaction partner, always 'affiliate_program'",
+              "html_description": "<td>Type of the transaction partner, always &#8220;affiliate_program&#8221;</td>",
+              "rst_description": "Type of the transaction partner, always 'affiliate_program'\n",
+              "name": "type",
+              "required": true
+            },
+            {
+              "type": "User",
+              "description": "Information about the bot that sponsored the affiliate program",
+              "html_description": "<td><em>Optional</em>. Information about the bot that sponsored the affiliate program</td>",
+              "rst_description": "*Optional*. Information about the bot that sponsored the affiliate program\n",
+              "name": "sponsor_user",
+              "required": false
+            },
+            {
+              "type": "Integer",
+              "description": "The number of Telegram Stars received by the bot for each 1000 Telegram Stars received by the affiliate program sponsor from referred users",
+              "html_description": "<td>The number of Telegram Stars received by the bot for each 1000 Telegram Stars received by the affiliate program sponsor from referred users</td>",
+              "rst_description": "The number of Telegram Stars received by the bot for each 1000 Telegram Stars received by the affiliate program sponsor from referred users\n",
+              "name": "commission_per_mille",
+              "required": true
             }
           ],
           "category": "types"
@@ -17425,11 +17517,19 @@
             },
             {
               "type": "Integer",
-              "description": "Number of Telegram Stars transferred by the transaction",
-              "html_description": "<td>Number of Telegram Stars transferred by the transaction</td>",
-              "rst_description": "Number of Telegram Stars transferred by the transaction\n",
+              "description": "Integer amount of Telegram Stars transferred by the transaction",
+              "html_description": "<td>Integer amount of Telegram Stars transferred by the transaction</td>",
+              "rst_description": "Integer amount of Telegram Stars transferred by the transaction\n",
               "name": "amount",
               "required": true
+            },
+            {
+              "type": "Integer",
+              "description": "The number of 1/1000000000 shares of Telegram Stars transferred by the transaction; from 0 to 999999999",
+              "html_description": "<td><em>Optional</em>. The number of 1/1000000000 shares of Telegram Stars transferred by the transaction; from 0 to 999999999</td>",
+              "rst_description": "*Optional*. The number of 1/1000000000 shares of Telegram Stars transferred by the transaction; from 0 to 999999999\n",
+              "name": "nanostar_amount",
+              "required": false
             },
             {
               "type": "Integer",
