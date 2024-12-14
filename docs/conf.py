@@ -69,3 +69,14 @@ texinfo_documents = [
 towncrier_draft_autoversion_mode = "draft"
 towncrier_draft_include_empty = False
 towncrier_draft_working_directory = Path(__file__).parent.parent
+
+
+def skip_model_prefixed_members(app, what, name, obj, skip, options):
+    # Skip any member whose name starts with "model_"
+    if name.startswith("model_"):
+        return True
+    return skip
+
+
+def setup(app):
+    app.connect("autodoc-skip-member", skip_model_prefixed_members)

@@ -203,25 +203,13 @@ Inline mode
     prepared_inline_message
     sent_web_app_message
 
-Stickers
-========
-
-.. toctree::
-    :maxdepth: 1
-
-    gift
-    gifts
-    input_sticker
-    mask_position
-    sticker
-    sticker_set
-
 Payments
 ========
 
 .. toctree::
     :maxdepth: 1
 
+    affiliate_info
     invoice
     labeled_price
     order_info
@@ -239,11 +227,25 @@ Payments
     star_transactions
     successful_payment
     transaction_partner
+    transaction_partner_affiliate_program
     transaction_partner_fragment
     transaction_partner_other
     transaction_partner_telegram_ads
     transaction_partner_telegram_api
     transaction_partner_user
+
+Stickers
+========
+
+.. toctree::
+    :maxdepth: 1
+
+    gift
+    gifts
+    input_sticker
+    mask_position
+    sticker
+    sticker_set
 
 Telegram Passport
 =================

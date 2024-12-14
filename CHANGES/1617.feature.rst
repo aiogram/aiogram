@@ -1,0 +1,5 @@
+Added full support of `Bot API 8.1<https://core.telegram.org/bots/api-changelog#december-4-2024>`_:
+
+- Added the field :code:`nanostar_amount` to the class :class:`aiogram.types.star_transaction.StarTransaction`.
+- Added the class :class:`aiogram.types.transaction_partner_affiliate_program.TransactionPartnerAffiliateProgram` for transactions pertaining to incoming affiliate commissions.
+- Added the class :class:`aiogram.types.affiliate_info.AffiliateInfo` and the field :code:`affiliate` to the class :class:`aiogram.types.transaction_partner_user.TransactionPartnerUser`, allowing bots to identify the relevant affiliate in transactions with an affiliate commission.
