@@ -90,6 +90,6 @@ class TelegramMethod(BotContextController, BaseModel, Generic[TelegramType], ABC
                 "This method is not mounted to a any bot instance, please call it explicilty "
                 "with bot instance `await bot(method)`\n"
                 "or mount method to a bot instance `method.as_(bot)` "
-                "and then call it `await method()`"
+                "and then call it `await method`"
             )
         return self.emit(bot).__await__()
