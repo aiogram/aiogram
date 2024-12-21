@@ -16,6 +16,38 @@ Changelog
 
 .. towncrier release notes start
 
+3.13.1 (2024-12-21)
+====================
+
+Features
+--------
+
+- Added full support of `Bot API 8.1<https://core.telegram.org/bots/api-changelog#december-4-2024>`_:
+
+  - Added the field :code:`nanostar_amount` to the class :class:`aiogram.types.star_transaction.StarTransaction`.
+  - Added the class :class:`aiogram.types.transaction_partner_affiliate_program.TransactionPartnerAffiliateProgram` for transactions pertaining to incoming affiliate commissions.
+  - Added the class :class:`aiogram.types.affiliate_info.AffiliateInfo` and the field :code:`affiliate` to the class :class:`aiogram.types.transaction_partner_user.TransactionPartnerUser`, allowing bots to identify the relevant affiliate in transactions with an affiliate commission.
+  `#1617 <https://github.com/aiogram/aiogram/issues/1617>`_
+
+
+Bugfixes
+--------
+
+- Corrected the exception text of `aiogram.methods.base.TelegramMethod.__await__` method.
+  `#1616 <https://github.com/aiogram/aiogram/issues/1616>`_
+
+
+Misc
+----
+
+- Increased max :code:`pydantic` version support from “<2.10” to “<2.11”
+  `#1607 <https://github.com/aiogram/aiogram/issues/1607>`_
+- Fixed closing tag for :code:`tg-emoji` in the :class:`aiogram.utils.text_decoration.HtmlDecoration`: use the same constant as for tag opening
+  `#1608 <https://github.com/aiogram/aiogram/issues/1608>`_
+- Increased max :code:`aiohttp` version support from “<3.11” to “<3.12”
+  `#1615 <https://github.com/aiogram/aiogram/issues/1615>`_
+
+
 3.15.0 (2024-11-17)
 ====================
 

@@ -1,1 +1,0 @@
-Corrected the exception text of `aiogram.methods.base.TelegramMethod.__await__` method.
