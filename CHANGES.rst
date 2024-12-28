@@ -22,7 +22,7 @@ Changelog
 Features
 --------
 
-- Added full support of `Bot API 8.1<https://core.telegram.org/bots/api-changelog#december-4-2024>`_:
+- Added full support of `Bot API 8.1 <https://core.telegram.org/bots/api-changelog#december-4-2024>`_:
 
   - Added the field :code:`nanostar_amount` to the class :class:`aiogram.types.star_transaction.StarTransaction`.
   - Added the class :class:`aiogram.types.transaction_partner_affiliate_program.TransactionPartnerAffiliateProgram` for transactions pertaining to incoming affiliate commissions.
