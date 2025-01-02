@@ -93,6 +93,8 @@ from ..methods import (
     PinChatMessage,
     PromoteChatMember,
     RefundStarPayment,
+    RemoveChatVerification,
+    RemoveUserVerification,
     ReopenForumTopic,
     ReopenGeneralForumTopic,
     ReplaceStickerInSet,
@@ -154,6 +156,8 @@ from ..methods import (
     UnpinAllGeneralForumTopicMessages,
     UnpinChatMessage,
     UploadStickerFile,
+    VerifyChat,
+    VerifyUser,
 )
 from ..types import (
     BotCommand,
@@ -3816,7 +3820,7 @@ class Bot:
         request_timeout: Optional[int] = None,
     ) -> bool:
         """
-        Use this method to specify a URL and receive incoming updates via an outgoing webhook. Whenever there is an update for the bot, we will send an HTTPS POST request to the specified URL, containing a JSON-serialized :class:`aiogram.types.update.Update`. In case of an unsuccessful request, we will give up after a reasonable amount of attempts. Returns :code:`True` on success.
+        Use this method to specify a URL and receive incoming updates via an outgoing webhook. Whenever there is an update for the bot, we will send an HTTPS POST request to the specified URL, containing a JSON-serialized :class:`aiogram.types.update.Update`. In case of an unsuccessful request (a request with response `HTTP status code <https://en.wikipedia.org/wiki/List_of_HTTP_status_codes>`_ different from :code:`2XY`), we will repeat the request and give up after a reasonable amount of attempts. Returns :code:`True` on success.
         If you'd like to make sure that the webhook was set by you, you can specify secret data in the parameter *secret_token*. If specified, the request will contain a header 'X-Telegram-Bot-Api-Secret-Token' with the secret token as content.
 
          **Notes**
@@ -4373,8 +4377,8 @@ class Bot:
 
         :param name: Sticker set name
         :param user_id: User identifier of the sticker set owner
-        :param format: Format of the thumbnail, must be one of 'static' for a **.WEBP** or **.PNG** image, 'animated' for a **.TGS** animation, or 'video' for a **WEBM** video
-        :param thumbnail: A **.WEBP** or **.PNG** image with the thumbnail, must be up to 128 kilobytes in size and have a width and height of exactly 100px, or a **.TGS** animation with a thumbnail up to 32 kilobytes in size (see `https://core.telegram.org/stickers#animation-requirements <https://core.telegram.org/stickers#animation-requirements>`_`https://core.telegram.org/stickers#animation-requirements <https://core.telegram.org/stickers#animation-requirements>`_ for animated sticker technical requirements), or a **WEBM** video with the thumbnail up to 32 kilobytes in size; see `https://core.telegram.org/stickers#video-requirements <https://core.telegram.org/stickers#video-requirements>`_`https://core.telegram.org/stickers#video-requirements <https://core.telegram.org/stickers#video-requirements>`_ for video sticker technical requirements. Pass a *file_id* as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`. Animated and video sticker set thumbnails can't be uploaded via HTTP URL. If omitted, then the thumbnail is dropped and the first sticker is used as the thumbnail.
+        :param format: Format of the thumbnail, must be one of 'static' for a **.WEBP** or **.PNG** image, 'animated' for a **.TGS** animation, or 'video' for a **.WEBM** video
+        :param thumbnail: A **.WEBP** or **.PNG** image with the thumbnail, must be up to 128 kilobytes in size and have a width and height of exactly 100px, or a **.TGS** animation with a thumbnail up to 32 kilobytes in size (see `https://core.telegram.org/stickers#animation-requirements <https://core.telegram.org/stickers#animation-requirements>`_`https://core.telegram.org/stickers#animation-requirements <https://core.telegram.org/stickers#animation-requirements>`_ for animated sticker technical requirements), or a **.WEBM** video with the thumbnail up to 32 kilobytes in size; see `https://core.telegram.org/stickers#video-requirements <https://core.telegram.org/stickers#video-requirements>`_`https://core.telegram.org/stickers#video-requirements <https://core.telegram.org/stickers#video-requirements>`_ for video sticker technical requirements. Pass a *file_id* as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`. Animated and video sticker set thumbnails can't be uploaded via HTTP URL. If omitted, then the thumbnail is dropped and the first sticker is used as the thumbnail.
         :param request_timeout: Request timeout
         :return: Returns :code:`True` on success.
         """
@@ -4936,6 +4940,7 @@ class Bot:
         self,
         user_id: int,
         gift_id: str,
+        pay_for_upgrade: Optional[bool] = None,
         text: Optional[str] = None,
         text_parse_mode: Optional[str] = None,
         text_entities: Optional[list[MessageEntity]] = None,
@@ -4948,6 +4953,7 @@ class Bot:
 
         :param user_id: Unique identifier of the target user that will receive the gift
         :param gift_id: Identifier of the gift
+        :param pay_for_upgrade: Pass :code:`True` to pay for the gift upgrade from the bot's balance, thereby making the upgrade free for the receiver
         :param text: Text that will be shown along with the gift; 0-255 characters
         :param text_parse_mode: Mode for parsing entities in the text. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details. Entities other than 'bold', 'italic', 'underline', 'strikethrough', 'spoiler', and 'custom_emoji' are ignored.
         :param text_entities: A JSON-serialized list of special entities that appear in the gift text. It can be specified instead of *text_parse_mode*. Entities other than 'bold', 'italic', 'underline', 'strikethrough', 'spoiler', and 'custom_emoji' are ignored.
@@ -4958,6 +4964,7 @@ class Bot:
         call = SendGift(
             user_id=user_id,
             gift_id=gift_id,
+            pay_for_upgrade=pay_for_upgrade,
             text=text,
             text_parse_mode=text_parse_mode,
             text_entities=text_entities,
@@ -4989,5 +4996,91 @@ class Bot:
             user_id=user_id,
             emoji_status_custom_emoji_id=emoji_status_custom_emoji_id,
             emoji_status_expiration_date=emoji_status_expiration_date,
+        )
+        return await self(call, request_timeout=request_timeout)
+
+    async def remove_chat_verification(
+        self,
+        chat_id: Union[int, str],
+        request_timeout: Optional[int] = None,
+    ) -> bool:
+        """
+        Removes verification from a chat that is currently verified on behalf of the organization represented by the bot. Returns :code:`True` on success.
+
+        Source: https://core.telegram.org/bots/api#removechatverification
+
+        :param chat_id: Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
+        :param request_timeout: Request timeout
+        :return: Returns :code:`True` on success.
+        """
+
+        call = RemoveChatVerification(
+            chat_id=chat_id,
+        )
+        return await self(call, request_timeout=request_timeout)
+
+    async def remove_user_verification(
+        self,
+        user_id: int,
+        request_timeout: Optional[int] = None,
+    ) -> bool:
+        """
+        Removes verification from a user who is currently verified on behalf of the organization represented by the bot. Returns :code:`True` on success.
+
+        Source: https://core.telegram.org/bots/api#removeuserverification
+
+        :param user_id: Unique identifier of the target user
+        :param request_timeout: Request timeout
+        :return: Returns :code:`True` on success.
+        """
+
+        call = RemoveUserVerification(
+            user_id=user_id,
+        )
+        return await self(call, request_timeout=request_timeout)
+
+    async def verify_chat(
+        self,
+        chat_id: Union[int, str],
+        custom_description: Optional[str] = None,
+        request_timeout: Optional[int] = None,
+    ) -> bool:
+        """
+        Verifies a chat on behalf of the organization which is represented by the bot. Returns :code:`True` on success.
+
+        Source: https://core.telegram.org/bots/api#verifychat
+
+        :param chat_id: Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
+        :param custom_description: Custom description for the verification; 0-70 characters. Must be empty if the organization isn't allowed to provide a custom verification description.
+        :param request_timeout: Request timeout
+        :return: Returns :code:`True` on success.
+        """
+
+        call = VerifyChat(
+            chat_id=chat_id,
+            custom_description=custom_description,
+        )
+        return await self(call, request_timeout=request_timeout)
+
+    async def verify_user(
+        self,
+        user_id: int,
+        custom_description: Optional[str] = None,
+        request_timeout: Optional[int] = None,
+    ) -> bool:
+        """
+        Verifies a user on behalf of the organization which is represented by the bot. Returns :code:`True` on success.
+
+        Source: https://core.telegram.org/bots/api#verifyuser
+
+        :param user_id: Unique identifier of the target user
+        :param custom_description: Custom description for the verification; 0-70 characters. Must be empty if the organization isn't allowed to provide a custom verification description.
+        :param request_timeout: Request timeout
+        :return: Returns :code:`True` on success.
+        """
+
+        call = VerifyUser(
+            user_id=user_id,
+            custom_description=custom_description,
         )
         return await self(call, request_timeout=request_timeout)
