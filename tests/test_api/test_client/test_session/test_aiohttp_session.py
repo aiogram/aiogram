@@ -90,7 +90,7 @@ class TestAiohttpSession:
         assert session._should_reset_connector is False
 
         assert session.proxy is None
-        session.proxy = "socks5://auth:auth@proxy.url/"
+        session.proxy = "socks5://auth:auth@proxy.url:1080/"
         assert session._should_reset_connector
         await session.create_session()
         assert session._should_reset_connector is False
