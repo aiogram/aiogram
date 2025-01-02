@@ -1,5 +1,6 @@
 from typing import List, Literal, Optional, Union
 
+from .affiliate_info import AffiliateInfo
 from .animation import Animation
 from .audio import Audio
 from .background_fill import BackgroundFill
@@ -216,6 +217,7 @@ from .successful_payment import SuccessfulPayment
 from .switch_inline_query_chosen_chat import SwitchInlineQueryChosenChat
 from .text_quote import TextQuote
 from .transaction_partner import TransactionPartner
+from .transaction_partner_affiliate_program import TransactionPartnerAffiliateProgram
 from .transaction_partner_fragment import TransactionPartnerFragment
 from .transaction_partner_other import TransactionPartnerOther
 from .transaction_partner_telegram_ads import TransactionPartnerTelegramAds
@@ -241,6 +243,7 @@ from .webhook_info import WebhookInfo
 from .write_access_allowed import WriteAccessAllowed
 
 __all__ = (
+    "AffiliateInfo",
     "Animation",
     "Audio",
     "BackgroundFill",
@@ -456,6 +459,7 @@ __all__ = (
     "TelegramObject",
     "TextQuote",
     "TransactionPartner",
+    "TransactionPartnerAffiliateProgram",
     "TransactionPartnerFragment",
     "TransactionPartnerOther",
     "TransactionPartnerTelegramAds",

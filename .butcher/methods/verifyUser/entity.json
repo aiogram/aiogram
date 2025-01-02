@@ -1,0 +1,33 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Stickers",
+    "anchor": "stickers"
+  },
+  "object": {
+    "anchor": "verifyuser",
+    "name": "verifyUser",
+    "description": "Verifies a user on behalf of the organization which is represented by the bot. Returns True on success.",
+    "html_description": "<p>Verifies a user on behalf of the organization which is represented by the bot. Returns <em>True</em> on success.</p>",
+    "rst_description": "Verifies a user on behalf of the organization which is represented by the bot. Returns :code:`True` on success.",
+    "annotations": [
+      {
+        "type": "Integer",
+        "required": true,
+        "description": "Unique identifier of the target user",
+        "html_description": "<td>Unique identifier of the target user</td>",
+        "rst_description": "Unique identifier of the target user\n",
+        "name": "user_id"
+      },
+      {
+        "type": "String",
+        "required": false,
+        "description": "Custom description for the verification; 0-70 characters. Must be empty if the organization isn't allowed to provide a custom verification description.",
+        "html_description": "<td>Custom description for the verification; 0-70 characters. Must be empty if the organization isn't allowed to provide a custom verification description.</td>",
+        "rst_description": "Custom description for the verification; 0-70 characters. Must be empty if the organization isn't allowed to provide a custom verification description.\n",
+        "name": "custom_description"
+      }
+    ],
+    "category": "methods"
+  }
+}

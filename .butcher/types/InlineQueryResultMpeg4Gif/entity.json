@@ -29,9 +29,9 @@
       },
       {
         "type": "String",
-        "description": "A valid URL for the MPEG4 file. File size must not exceed 1MB",
-        "html_description": "<td>A valid URL for the MPEG4 file. File size must not exceed 1MB</td>",
-        "rst_description": "A valid URL for the MPEG4 file. File size must not exceed 1MB\n",
+        "description": "A valid URL for the MPEG4 file",
+        "html_description": "<td>A valid URL for the MPEG4 file</td>",
+        "rst_description": "A valid URL for the MPEG4 file\n",
         "name": "mpeg4_url",
         "required": true
       },

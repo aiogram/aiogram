@@ -1,0 +1,25 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Stickers",
+    "anchor": "stickers"
+  },
+  "object": {
+    "anchor": "removeuserverification",
+    "name": "removeUserVerification",
+    "description": "Removes verification from a user who is currently verified on behalf of the organization represented by the bot. Returns True on success.",
+    "html_description": "<p>Removes verification from a user who is currently verified on behalf of the organization represented by the bot. Returns <em>True</em> on success.</p>",
+    "rst_description": "Removes verification from a user who is currently verified on behalf of the organization represented by the bot. Returns :code:`True` on success.",
+    "annotations": [
+      {
+        "type": "Integer",
+        "required": true,
+        "description": "Unique identifier of the target user",
+        "html_description": "<td>Unique identifier of the target user</td>",
+        "rst_description": "Unique identifier of the target user\n",
+        "name": "user_id"
+      }
+    ],
+    "category": "methods"
+  }
+}
