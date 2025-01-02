@@ -1,5 +1,7 @@
 from pathlib import Path
 
+import pytest
+
 from aiogram.client.telegram import (
     PRODUCTION,
     BareFilesPathWrapper,
@@ -13,15 +15,17 @@ class TestAPIServer:
         method_url = PRODUCTION.api_url(token="42:TEST", method="apiMethod")
         assert method_url == "https://api.telegram.org/bot42:TEST/apiMethod"
 
-    def test_file_url(self):
-        file_url = PRODUCTION.file_url(token="42:TEST", path="path")
+    @pytest.mark.parametrize("path", ["path", Path("path")])
+    def test_file_url(self, path):
+        file_url = PRODUCTION.file_url(token="42:TEST", path=path)
         assert file_url == "https://api.telegram.org/file/bot42:TEST/path"
 
-    def test_from_base(self):
+    @pytest.mark.parametrize("path", ["path", Path("path")])
+    def test_from_base(self, path):
         local_server = TelegramAPIServer.from_base("http://localhost:8081", is_local=True)
 
         method_url = local_server.api_url("42:TEST", method="apiMethod")
-        file_url = local_server.file_url(token="42:TEST", path="path")
+        file_url = local_server.file_url(token="42:TEST", path=path)
 
         assert method_url == "http://localhost:8081/bot42:TEST/apiMethod"
         assert file_url == "http://localhost:8081/file/bot42:TEST/path"
