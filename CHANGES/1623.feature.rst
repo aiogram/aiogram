@@ -1,6 +1,0 @@
-Added full support of the `Bot API 8.2 <https://core.telegram.org/bots/api-changelog#january-1-2025>`_
-
-- Added the methods :class:`aiogram.methods.verify_user.VerifyUser`, :class:`aiogram.methods.verify_chat.VerifyChat`, :class:`aiogram.methods.remove_user_verification.RemoveUserVerification` and :class:`aiogram.methods.remove_chat_verification.RemoveChatVerification`, allowing bots to manage verifications on behalf of an organization.
-- Added the field :code:`upgrade_star_count` to the class :class:`aiogram.types.gift.Gift`.
-- Added the parameter :code:`pay_for_upgrade` to the method :class:`aiogram.methods.send_gift.SendGift`.
-- Removed the field :code:`hide_url` from the class :class:`aiogram.types.inline_query_result_article.InlineQueryResultArticle`. Pass an empty string as :code:`url` instead.
