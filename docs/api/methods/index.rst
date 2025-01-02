@@ -18,6 +18,8 @@ Stickers
     get_available_gifts
     get_custom_emoji_stickers
     get_sticker_set
+    remove_chat_verification
+    remove_user_verification
     replace_sticker_in_set
     send_gift
     send_sticker
@@ -29,6 +31,8 @@ Stickers
     set_sticker_set_thumbnail
     set_sticker_set_title
     upload_sticker_file
+    verify_chat
+    verify_user
 
 Available methods
 =================

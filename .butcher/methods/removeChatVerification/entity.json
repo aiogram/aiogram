@@ -1,0 +1,25 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Stickers",
+    "anchor": "stickers"
+  },
+  "object": {
+    "anchor": "removechatverification",
+    "name": "removeChatVerification",
+    "description": "Removes verification from a chat that is currently verified on behalf of the organization represented by the bot. Returns True on success.",
+    "html_description": "<p>Removes verification from a chat that is currently verified on behalf of the organization represented by the bot. Returns <em>True</em> on success.</p>",
+    "rst_description": "Removes verification from a chat that is currently verified on behalf of the organization represented by the bot. Returns :code:`True` on success.",
+    "annotations": [
+      {
+        "type": "Integer or String",
+        "required": true,
+        "description": "Unique identifier for the target chat or username of the target channel (in the format @channelusername)",
+        "html_description": "<td>Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)</td>",
+        "rst_description": "Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)\n",
+        "name": "chat_id"
+      }
+    ],
+    "category": "methods"
+  }
+}

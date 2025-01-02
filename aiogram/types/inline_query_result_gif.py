@@ -28,7 +28,7 @@ class InlineQueryResultGif(InlineQueryResult):
     id: str
     """Unique identifier for this result, 1-64 bytes"""
     gif_url: str
-    """A valid URL for the GIF file. File size must not exceed 1MB"""
+    """A valid URL for the GIF file"""
     thumbnail_url: str
     """URL of the static (JPEG or GIF) or animated (MPEG4) thumbnail for the result"""
     gif_width: Optional[int] = None

@@ -20,6 +20,8 @@ class SendGift(TelegramMethod[bool]):
     """Unique identifier of the target user that will receive the gift"""
     gift_id: str
     """Identifier of the gift"""
+    pay_for_upgrade: Optional[bool] = None
+    """Pass :code:`True` to pay for the gift upgrade from the bot's balance, thereby making the upgrade free for the receiver"""
     text: Optional[str] = None
     """Text that will be shown along with the gift; 0-255 characters"""
     text_parse_mode: Optional[str] = None
@@ -36,6 +38,7 @@ class SendGift(TelegramMethod[bool]):
             *,
             user_id: int,
             gift_id: str,
+            pay_for_upgrade: Optional[bool] = None,
             text: Optional[str] = None,
             text_parse_mode: Optional[str] = None,
             text_entities: Optional[list[MessageEntity]] = None,
@@ -48,6 +51,7 @@ class SendGift(TelegramMethod[bool]):
             super().__init__(
                 user_id=user_id,
                 gift_id=gift_id,
+                pay_for_upgrade=pay_for_upgrade,
                 text=text,
                 text_parse_mode=text_parse_mode,
                 text_entities=text_entities,

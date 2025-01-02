@@ -37,6 +37,14 @@
       },
       {
         "type": "Integer",
+        "description": "The number of Telegram Stars that must be paid to upgrade the gift to a unique one",
+        "html_description": "<td><em>Optional</em>. The number of Telegram Stars that must be paid to upgrade the gift to a unique one</td>",
+        "rst_description": "*Optional*. The number of Telegram Stars that must be paid to upgrade the gift to a unique one\n",
+        "name": "upgrade_star_count",
+        "required": false
+      },
+      {
+        "type": "Integer",
         "description": "The total number of the gifts of this type that can be sent; for limited gifts only",
         "html_description": "<td><em>Optional</em>. The total number of the gifts of this type that can be sent; for limited gifts only</td>",
         "rst_description": "*Optional*. The total number of the gifts of this type that can be sent; for limited gifts only\n",
