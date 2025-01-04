@@ -391,7 +391,7 @@ class Bot:
 
     @classmethod
     async def __aiofiles_reader(
-        cls, file: str, chunk_size: int = 65536
+        cls, file: Union[str, pathlib.Path], chunk_size: int = 65536
     ) -> AsyncGenerator[bytes, None]:
         async with aiofiles.open(file, "rb") as f:
             while chunk := await f.read(chunk_size):
@@ -399,7 +399,7 @@ class Bot:
 
     async def download_file(
         self,
-        file_path: str,
+        file_path: Union[str, pathlib.Path],
         destination: Optional[Union[BinaryIO, pathlib.Path, str]] = None,
         timeout: int = 30,
         chunk_size: int = 65536,
@@ -423,7 +423,7 @@ class Bot:
         close_stream = False
         if self.session.api.is_local:
             stream = self.__aiofiles_reader(
-                str(self.session.api.wrap_local_file.to_local(file_path)), chunk_size=chunk_size
+                self.session.api.wrap_local_file.to_local(file_path), chunk_size=chunk_size
             )
             close_stream = True
         else:
