@@ -54,7 +54,7 @@ async def command_add_bot(message: Message, command: CommandObject, bot: Bot) ->
     return await message.answer(f"Bot @{bot_user.username} successful added")
 
 
-async def on_startup(dispatcher: Dispatcher, bot: Bot):
+async def on_startup(bot: Bot):
     await bot.set_webhook(f"{BASE_URL}{MAIN_BOT_PATH}")
 
 
