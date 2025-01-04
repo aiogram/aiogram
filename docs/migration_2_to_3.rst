@@ -83,7 +83,7 @@ Bot API
 =======
 
 - All API methods are now classes with validation, implemented via
-  `pydantic <https://docs.pydantic.dev/>`.
+  `pydantic <https://docs.pydantic.dev/>`_.
   These API calls are also available as methods in the Bot class.
 - More pre-defined Enums have been added and moved to the `aiogram.enums` sub-package.
   For example, the chat type enum is now :class:`aiogram.enums.ChatType` instead of :class:`aiogram.types.chat.ChatType`.

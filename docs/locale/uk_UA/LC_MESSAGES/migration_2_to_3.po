@@ -230,11 +230,11 @@ msgstr ""
 #: ../../migration_2_to_3.rst:71
 msgid ""
 "All API methods are now classes with validation, implemented via "
-"`pydantic <https://docs.pydantic.dev/>`. These API calls are also "
+"`pydantic <https://docs.pydantic.dev/>`_. These API calls are also "
 "available as methods in the Bot class."
 msgstr ""
 "Всі методи API тепер є класами з валідацією, реалізованими через "
-"`pydantic <https://docs.pydantic.dev/>`. Ці виклики API також доступні як"
+"`pydantic <https://docs.pydantic.dev/>`_. Ці виклики API також доступні як"
 " методи в класі Bot."
 
 #: ../../migration_2_to_3.rst:74
