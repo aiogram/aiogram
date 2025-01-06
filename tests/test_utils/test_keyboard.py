@@ -172,7 +172,7 @@ class TestKeyboardBuilder:
 
     def test_add_wo_max_width(self):
         builder = KeyboardBuilder(button_type=KeyboardButton)
-
+        builder.max_width = 0
         count = 42
 
         for index in range(count):
