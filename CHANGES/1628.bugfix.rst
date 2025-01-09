@@ -1,0 +1,1 @@
+Don't require :code:`Downloadable.file_id` to be writable
