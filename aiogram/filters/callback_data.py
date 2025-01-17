@@ -22,6 +22,7 @@ from uuid import UUID
 from magic_filter import MagicFilter
 from pydantic import BaseModel
 from pydantic.fields import FieldInfo
+from pydantic_core import PydanticUndefined
 
 from aiogram.filters.base import Filter
 from aiogram.types import CallbackQuery
@@ -130,8 +131,8 @@ class CallbackData(BaseModel):
         payload = {}
         for k, v in zip(names, parts):  # type: str, Optional[str]
             if field := cls.model_fields.get(k):
-                if v == "" and _check_field_is_nullable(field):
-                    v = None
+                if v == "" and _check_field_is_nullable(field) and field.default != "":
+                    v = field.default if field.default is not PydanticUndefined else None
             payload[k] = v
         return cls(**payload)
 
