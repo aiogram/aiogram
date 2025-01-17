@@ -1,1 +1,1 @@
-Don't require :code:`Downloadable.file_id` to be writable
+Change the :code:`Downloadable` protocol to be non-writable to shut up type checking that checks code that uses the :code:`bot.download(...)` method
