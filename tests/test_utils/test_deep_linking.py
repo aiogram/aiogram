@@ -10,12 +10,14 @@ PAYLOADS = [
     "aaBBccDDeeFF5544332211",
     -12345678901234567890,
     12345678901234567890,
+    "underscore_and-dash",
 ]
 WRONG_PAYLOADS = [
     "@BotFather",
     "Some:special$characters#=",
     "spaces spaces spaces",
     1234567890123456789.0,
+    "has`backtick",
 ]
 
 
