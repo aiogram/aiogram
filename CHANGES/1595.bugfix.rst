@@ -1,0 +1,1 @@
+Fixed endless loop while adding buttons to the :code:`KeyboardBuilder`.
