@@ -1,0 +1,1 @@
+Change the :code:`Downloadable` protocol to be non-writable to shut up type checking that checks code that uses the :code:`bot.download(...)` method
