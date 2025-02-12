@@ -218,6 +218,7 @@ from .switch_inline_query_chosen_chat import SwitchInlineQueryChosenChat
 from .text_quote import TextQuote
 from .transaction_partner import TransactionPartner
 from .transaction_partner_affiliate_program import TransactionPartnerAffiliateProgram
+from .transaction_partner_chat import TransactionPartnerChat
 from .transaction_partner_fragment import TransactionPartnerFragment
 from .transaction_partner_other import TransactionPartnerOther
 from .transaction_partner_telegram_ads import TransactionPartnerTelegramAds
@@ -460,6 +461,7 @@ __all__ = (
     "TextQuote",
     "TransactionPartner",
     "TransactionPartnerAffiliateProgram",
+    "TransactionPartnerChat",
     "TransactionPartnerFragment",
     "TransactionPartnerOther",
     "TransactionPartnerTelegramAds",

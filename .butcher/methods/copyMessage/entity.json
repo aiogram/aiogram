@@ -44,6 +44,14 @@
         "name": "message_id"
       },
       {
+        "type": "Integer",
+        "required": false,
+        "description": "New start timestamp for the copied video in the message",
+        "html_description": "<td>New start timestamp for the copied video in the message</td>",
+        "rst_description": "New start timestamp for the copied video in the message\n",
+        "name": "video_start_timestamp"
+      },
+      {
         "type": "String",
         "required": false,
         "description": "New caption for media, 0-1024 characters after entities parsing. If not specified, the original caption is kept",

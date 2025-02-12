@@ -60,6 +60,22 @@
         "required": false
       },
       {
+        "type": "Array of PhotoSize",
+        "description": "Available sizes of the cover of the video in the message",
+        "html_description": "<td><em>Optional</em>. Available sizes of the cover of the video in the message</td>",
+        "rst_description": "*Optional*. Available sizes of the cover of the video in the message\n",
+        "name": "cover",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "Timestamp in seconds from which the video will play in the message",
+        "html_description": "<td><em>Optional</em>. Timestamp in seconds from which the video will play in the message</td>",
+        "rst_description": "*Optional*. Timestamp in seconds from which the video will play in the message\n",
+        "name": "start_timestamp",
+        "required": false
+      },
+      {
         "type": "String",
         "description": "Original filename as defined by the sender",
         "html_description": "<td><em>Optional</em>. Original filename as defined by the sender</td>",

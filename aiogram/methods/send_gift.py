@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any, Optional, Union
 
 from ..types.message_entity import MessageEntity
 from .base import TelegramMethod
@@ -8,7 +8,7 @@ from .base import TelegramMethod
 
 class SendGift(TelegramMethod[bool]):
     """
-    Sends a gift to the given user. The gift can't be converted to Telegram Stars by the user. Returns :code:`True` on success.
+    Sends a gift to the given user or channel chat. The gift can't be converted to Telegram Stars by the receiver. Returns :code:`True` on success.
 
     Source: https://core.telegram.org/bots/api#sendgift
     """
@@ -16,10 +16,12 @@ class SendGift(TelegramMethod[bool]):
     __returning__ = bool
     __api_method__ = "sendGift"
 
-    user_id: int
-    """Unique identifier of the target user that will receive the gift"""
     gift_id: str
     """Identifier of the gift"""
+    user_id: Optional[int] = None
+    """Required if *chat_id* is not specified. Unique identifier of the target user who will receive the gift."""
+    chat_id: Optional[Union[int, str]] = None
+    """Required if *user_id* is not specified. Unique identifier for the chat or username of the channel (in the format :code:`@channelusername`) that will receive the gift."""
     pay_for_upgrade: Optional[bool] = None
     """Pass :code:`True` to pay for the gift upgrade from the bot's balance, thereby making the upgrade free for the receiver"""
     text: Optional[str] = None
@@ -36,8 +38,9 @@ class SendGift(TelegramMethod[bool]):
         def __init__(
             __pydantic__self__,
             *,
-            user_id: int,
             gift_id: str,
+            user_id: Optional[int] = None,
+            chat_id: Optional[Union[int, str]] = None,
             pay_for_upgrade: Optional[bool] = None,
             text: Optional[str] = None,
             text_parse_mode: Optional[str] = None,
@@ -49,8 +52,9 @@ class SendGift(TelegramMethod[bool]):
             # Is needed only for type checking and IDE support without any additional plugins
 
             super().__init__(
-                user_id=user_id,
                 gift_id=gift_id,
+                user_id=user_id,
+                chat_id=chat_id,
                 pay_for_upgrade=pay_for_upgrade,
                 text=text,
                 text_parse_mode=text_parse_mode,

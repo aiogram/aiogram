@@ -36,6 +36,14 @@
         "name": "from_chat_id"
       },
       {
+        "type": "Integer",
+        "required": false,
+        "description": "New start timestamp for the forwarded video in the message",
+        "html_description": "<td>New start timestamp for the forwarded video in the message</td>",
+        "rst_description": "New start timestamp for the forwarded video in the message\n",
+        "name": "video_start_timestamp"
+      },
+      {
         "type": "Boolean",
         "required": false,
         "description": "Sends the message silently. Users will receive a notification with no sound.",

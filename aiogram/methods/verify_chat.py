@@ -7,7 +7,7 @@ from .base import TelegramMethod
 
 class VerifyChat(TelegramMethod[bool]):
     """
-    Verifies a chat on behalf of the organization which is represented by the bot. Returns :code:`True` on success.
+    Verifies a chat `on behalf of the organization <https://telegram.org/verify#third-party-verification>`_ which is represented by the bot. Returns :code:`True` on success.
 
     Source: https://core.telegram.org/bots/api#verifychat
     """

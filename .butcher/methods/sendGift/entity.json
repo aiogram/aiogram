@@ -7,17 +7,25 @@
   "object": {
     "anchor": "sendgift",
     "name": "sendGift",
-    "description": "Sends a gift to the given user. The gift can't be converted to Telegram Stars by the user. Returns True on success.",
-    "html_description": "<p>Sends a gift to the given user. The gift can't be converted to Telegram Stars by the user. Returns <em>True</em> on success.</p>",
-    "rst_description": "Sends a gift to the given user. The gift can't be converted to Telegram Stars by the user. Returns :code:`True` on success.",
+    "description": "Sends a gift to the given user or channel chat. The gift can't be converted to Telegram Stars by the receiver. Returns True on success.",
+    "html_description": "<p>Sends a gift to the given user or channel chat. The gift can't be converted to Telegram Stars by the receiver. Returns <em>True</em> on success.</p>",
+    "rst_description": "Sends a gift to the given user or channel chat. The gift can't be converted to Telegram Stars by the receiver. Returns :code:`True` on success.",
     "annotations": [
       {
         "type": "Integer",
-        "required": true,
-        "description": "Unique identifier of the target user that will receive the gift",
-        "html_description": "<td>Unique identifier of the target user that will receive the gift</td>",
-        "rst_description": "Unique identifier of the target user that will receive the gift\n",
+        "required": false,
+        "description": "Required if chat_id is not specified. Unique identifier of the target user who will receive the gift.",
+        "html_description": "<td>Required if <em>chat_id</em> is not specified. Unique identifier of the target user who will receive the gift.</td>",
+        "rst_description": "Required if *chat_id* is not specified. Unique identifier of the target user who will receive the gift.\n",
         "name": "user_id"
+      },
+      {
+        "type": "Integer or String",
+        "required": false,
+        "description": "Required if user_id is not specified. Unique identifier for the chat or username of the channel (in the format @channelusername) that will receive the gift.",
+        "html_description": "<td>Required if <em>user_id</em> is not specified. Unique identifier for the chat or username of the channel (in the format <code>@channelusername</code>) that will receive the gift.</td>",
+        "rst_description": "Required if *user_id* is not specified. Unique identifier for the chat or username of the channel (in the format :code:`@channelusername`) that will receive the gift.\n",
+        "name": "chat_id"
       },
       {
         "type": "String",

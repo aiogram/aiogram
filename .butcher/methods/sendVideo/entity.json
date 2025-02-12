@@ -76,6 +76,22 @@
         "name": "thumbnail"
       },
       {
+        "type": "InputFile or String",
+        "required": false,
+        "description": "Cover for the video in the message. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass 'attach://<file_attach_name>' to upload a new one using multipart/form-data under <file_attach_name> name. More information on Sending Files",
+        "html_description": "<td>Cover for the video in the message. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass &#8220;attach://&lt;file_attach_name&gt;&#8221; to upload a new one using multipart/form-data under &lt;file_attach_name&gt; name. <a href=\"#sending-files\">More information on Sending Files &#187;</a></td>",
+        "rst_description": "Cover for the video in the message. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass 'attach://<file_attach_name>' to upload a new one using multipart/form-data under <file_attach_name> name. :ref:`More information on Sending Files » <sending-files>`\n",
+        "name": "cover"
+      },
+      {
+        "type": "Integer",
+        "required": false,
+        "description": "Start timestamp for the video in the message",
+        "html_description": "<td>Start timestamp for the video in the message</td>",
+        "rst_description": "Start timestamp for the video in the message\n",
+        "name": "start_timestamp"
+      },
+      {
         "type": "String",
         "required": false,
         "description": "Video caption (may also be used when resending videos by file_id), 0-1024 characters after entities parsing",
