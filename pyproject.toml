@@ -303,6 +303,7 @@ module = [
     "uvloop",
     "redis.*",
     "babel.*",
+    "aiohttp_socks.*",
 ]
 ignore_missing_imports = true
 disallow_untyped_defs = true
