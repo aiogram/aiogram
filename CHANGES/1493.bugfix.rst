@@ -1,1 +1,1 @@
-The filter now activates even if an empty string ("") is set as the default value in the class.
+Fix handling of default empty string ("") in CallbackData filter
