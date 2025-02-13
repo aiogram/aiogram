@@ -1,0 +1,1 @@
+ Increased max :code:`redis` version support from “<5.1.0” to “<5.3.0”
