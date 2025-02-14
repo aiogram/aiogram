@@ -12,3 +12,4 @@ multi_parse:
     - TransactionPartnerUser
     - TransactionPartnerTelegramAds
     - TransactionPartnerTelegramApi
+    - TransactionPartnerAffiliateProgram

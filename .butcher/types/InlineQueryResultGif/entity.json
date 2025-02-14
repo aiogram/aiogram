@@ -29,9 +29,9 @@
       },
       {
         "type": "String",
-        "description": "A valid URL for the GIF file. File size must not exceed 1MB",
-        "html_description": "<td>A valid URL for the GIF file. File size must not exceed 1MB</td>",
-        "rst_description": "A valid URL for the GIF file. File size must not exceed 1MB\n",
+        "description": "A valid URL for the GIF file",
+        "html_description": "<td>A valid URL for the GIF file</td>",
+        "rst_description": "A valid URL for the GIF file\n",
         "name": "gif_url",
         "required": true
       },

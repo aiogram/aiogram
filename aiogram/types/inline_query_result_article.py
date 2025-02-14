@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Literal, Optional, Union
 
+from pydantic import Field
+
 from ..enums import InlineQueryResultType
 from .inline_query_result import InlineQueryResult
 
@@ -39,8 +41,6 @@ class InlineQueryResultArticle(InlineQueryResult):
     """*Optional*. `Inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_ attached to the message"""
     url: Optional[str] = None
     """*Optional*. URL of the result"""
-    hide_url: Optional[bool] = None
-    """*Optional*. Pass :code:`True` if you don't want the URL to be shown in the message"""
     description: Optional[str] = None
     """*Optional*. Short description of the result"""
     thumbnail_url: Optional[str] = None
@@ -49,6 +49,11 @@ class InlineQueryResultArticle(InlineQueryResult):
     """*Optional*. Thumbnail width"""
     thumbnail_height: Optional[int] = None
     """*Optional*. Thumbnail height"""
+    hide_url: Optional[bool] = Field(None, json_schema_extra={"deprecated": True})
+    """*Optional*. Pass :code:`True` if you don't want the URL to be shown in the message
+
+.. deprecated:: API:8.2
+   https://core.telegram.org/bots/api-changelog#january-1-2025"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!
@@ -69,11 +74,11 @@ class InlineQueryResultArticle(InlineQueryResult):
             ],
             reply_markup: Optional[InlineKeyboardMarkup] = None,
             url: Optional[str] = None,
-            hide_url: Optional[bool] = None,
             description: Optional[str] = None,
             thumbnail_url: Optional[str] = None,
             thumbnail_width: Optional[int] = None,
             thumbnail_height: Optional[int] = None,
+            hide_url: Optional[bool] = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!
@@ -87,10 +92,10 @@ class InlineQueryResultArticle(InlineQueryResult):
                 input_message_content=input_message_content,
                 reply_markup=reply_markup,
                 url=url,
-                hide_url=hide_url,
                 description=description,
                 thumbnail_url=thumbnail_url,
                 thumbnail_width=thumbnail_width,
                 thumbnail_height=thumbnail_height,
+                hide_url=hide_url,
                 **__pydantic_kwargs,
             )

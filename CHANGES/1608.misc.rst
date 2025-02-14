@@ -1,1 +1,0 @@
-Fixed closing tag for :code:`tg-emoji` in the :class:`aiogram.utils.text_decoration.HtmlDecoration`: use the same constant as for tag opening

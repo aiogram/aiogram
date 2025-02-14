@@ -21,9 +21,9 @@
       },
       {
         "type": "String",
-        "description": "Format of the added sticker, must be one of 'static' for a .WEBP or .PNG image, 'animated' for a .TGS animation, 'video' for a WEBM video",
-        "html_description": "<td>Format of the added sticker, must be one of &#8220;static&#8221; for a <strong>.WEBP</strong> or <strong>.PNG</strong> image, &#8220;animated&#8221; for a <strong>.TGS</strong> animation, &#8220;video&#8221; for a <strong>WEBM</strong> video</td>",
-        "rst_description": "Format of the added sticker, must be one of 'static' for a **.WEBP** or **.PNG** image, 'animated' for a **.TGS** animation, 'video' for a **WEBM** video\n",
+        "description": "Format of the added sticker, must be one of 'static' for a .WEBP or .PNG image, 'animated' for a .TGS animation, 'video' for a .WEBM video",
+        "html_description": "<td>Format of the added sticker, must be one of &#8220;static&#8221; for a <strong>.WEBP</strong> or <strong>.PNG</strong> image, &#8220;animated&#8221; for a <strong>.TGS</strong> animation, &#8220;video&#8221; for a <strong>.WEBM</strong> video</td>",
+        "rst_description": "Format of the added sticker, must be one of 'static' for a **.WEBP** or **.PNG** image, 'animated' for a **.TGS** animation, 'video' for a **.WEBM** video\n",
         "name": "format",
         "required": true
       },

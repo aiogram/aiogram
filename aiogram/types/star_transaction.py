@@ -6,6 +6,9 @@ from .base import TelegramObject
 from .custom import DateTime
 
 if TYPE_CHECKING:
+    from .transaction_partner_affiliate_program import (
+        TransactionPartnerAffiliateProgram,
+    )
     from .transaction_partner_fragment import TransactionPartnerFragment
     from .transaction_partner_other import TransactionPartnerOther
     from .transaction_partner_telegram_ads import TransactionPartnerTelegramAds
@@ -23,12 +26,15 @@ class StarTransaction(TelegramObject):
     id: str
     """Unique identifier of the transaction. Coincides with the identifier of the original transaction for refund transactions. Coincides with *SuccessfulPayment.telegram_payment_charge_id* for successful incoming payments from users."""
     amount: int
-    """Number of Telegram Stars transferred by the transaction"""
+    """Integer amount of Telegram Stars transferred by the transaction"""
     date: DateTime
     """Date the transaction was created in Unix time"""
+    nanostar_amount: Optional[int] = None
+    """*Optional*. The number of 1/1000000000 shares of Telegram Stars transferred by the transaction; from 0 to 999999999"""
     source: Optional[
         Union[
             TransactionPartnerUser,
+            TransactionPartnerAffiliateProgram,
             TransactionPartnerFragment,
             TransactionPartnerTelegramAds,
             TransactionPartnerTelegramApi,
@@ -39,6 +45,7 @@ class StarTransaction(TelegramObject):
     receiver: Optional[
         Union[
             TransactionPartnerUser,
+            TransactionPartnerAffiliateProgram,
             TransactionPartnerFragment,
             TransactionPartnerTelegramAds,
             TransactionPartnerTelegramApi,
@@ -57,9 +64,11 @@ class StarTransaction(TelegramObject):
             id: str,
             amount: int,
             date: DateTime,
+            nanostar_amount: Optional[int] = None,
             source: Optional[
                 Union[
                     TransactionPartnerUser,
+                    TransactionPartnerAffiliateProgram,
                     TransactionPartnerFragment,
                     TransactionPartnerTelegramAds,
                     TransactionPartnerTelegramApi,
@@ -69,6 +78,7 @@ class StarTransaction(TelegramObject):
             receiver: Optional[
                 Union[
                     TransactionPartnerUser,
+                    TransactionPartnerAffiliateProgram,
                     TransactionPartnerFragment,
                     TransactionPartnerTelegramAds,
                     TransactionPartnerTelegramApi,
@@ -85,6 +95,7 @@ class StarTransaction(TelegramObject):
                 id=id,
                 amount=amount,
                 date=date,
+                nanostar_amount=nanostar_amount,
                 source=source,
                 receiver=receiver,
                 **__pydantic_kwargs,

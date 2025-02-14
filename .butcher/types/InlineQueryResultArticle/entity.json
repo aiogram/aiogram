@@ -60,14 +60,6 @@
         "required": false
       },
       {
-        "type": "Boolean",
-        "description": "Pass True if you don't want the URL to be shown in the message",
-        "html_description": "<td><em>Optional</em>. Pass <em>True</em> if you don't want the URL to be shown in the message</td>",
-        "rst_description": "*Optional*. Pass :code:`True` if you don't want the URL to be shown in the message\n",
-        "name": "hide_url",
-        "required": false
-      },
-      {
         "type": "String",
         "description": "Short description of the result",
         "html_description": "<td><em>Optional</em>. Short description of the result</td>",
@@ -98,6 +90,18 @@
         "rst_description": "*Optional*. Thumbnail height\n",
         "name": "thumbnail_height",
         "required": false
+      },
+      {
+        "type": "Boolean",
+        "description": "Pass True if you don't want the URL to be shown in the message",
+        "html_description": "<td><em>Optional</em>. Pass <em>True</em> if you don't want the URL to be shown in the message</td>",
+        "rst_description": "*Optional*. Pass :code:`True` if you don't want the URL to be shown in the message\n",
+        "name": "hide_url",
+        "required": false,
+        "deprecated": {
+          "version": "8.2",
+          "release_date": "2025-01-01"
+        }
       }
     ],
     "category": "types"

@@ -1,7 +1,7 @@
 {
   "api": {
-    "version": "8.0",
-    "release_date": "2024-11-17"
+    "version": "8.2",
+    "release_date": "2025-01-01"
   },
   "items": [
     {
@@ -244,9 +244,9 @@
             {
               "type": "Array of String",
               "required": false,
-              "description": "A JSON-serialized list of the update types you want your bot to receive. For example, specify [\"message\", \"edited_channel_post\", \"callback_query\"] to only receive updates of these types. See Update for a complete list of available update types. Specify an empty list to receive all update types except chat_member, message_reaction, and message_reaction_count (default). If not specified, the previous setting will be used.\n\nPlease note that this parameter doesn't affect updates created before the call to the getUpdates, so unwanted updates may be received for a short period of time.",
-              "html_description": "<td>A JSON-serialized list of the update types you want your bot to receive. For example, specify <code>[\"message\", \"edited_channel_post\", \"callback_query\"]</code> to only receive updates of these types. See <a href=\"#update\">Update</a> for a complete list of available update types. Specify an empty list to receive all update types except <em>chat_member</em>, <em>message_reaction</em>, and <em>message_reaction_count</em> (default). If not specified, the previous setting will be used.<br/>\n<br/>\nPlease note that this parameter doesn't affect updates created before the call to the getUpdates, so unwanted updates may be received for a short period of time.</td>",
-              "rst_description": "A JSON-serialized list of the update types you want your bot to receive. For example, specify :code:`[\"message\", \"edited_channel_post\", \"callback_query\"]` to only receive updates of these types. See :class:`aiogram.types.update.Update` for a complete list of available update types. Specify an empty list to receive all update types except *chat_member*, *message_reaction*, and *message_reaction_count* (default). If not specified, the previous setting will be used.\n\n\n\nPlease note that this parameter doesn't affect updates created before the call to the getUpdates, so unwanted updates may be received for a short period of time.\n",
+              "description": "A JSON-serialized list of the update types you want your bot to receive. For example, specify [\"message\", \"edited_channel_post\", \"callback_query\"] to only receive updates of these types. See Update for a complete list of available update types. Specify an empty list to receive all update types except chat_member, message_reaction, and message_reaction_count (default). If not specified, the previous setting will be used.\n\nPlease note that this parameter doesn't affect updates created before the call to getUpdates, so unwanted updates may be received for a short period of time.",
+              "html_description": "<td>A JSON-serialized list of the update types you want your bot to receive. For example, specify <code>[\"message\", \"edited_channel_post\", \"callback_query\"]</code> to only receive updates of these types. See <a href=\"#update\">Update</a> for a complete list of available update types. Specify an empty list to receive all update types except <em>chat_member</em>, <em>message_reaction</em>, and <em>message_reaction_count</em> (default). If not specified, the previous setting will be used.<br/>\n<br/>\nPlease note that this parameter doesn't affect updates created before the call to getUpdates, so unwanted updates may be received for a short period of time.</td>",
+              "rst_description": "A JSON-serialized list of the update types you want your bot to receive. For example, specify :code:`[\"message\", \"edited_channel_post\", \"callback_query\"]` to only receive updates of these types. See :class:`aiogram.types.update.Update` for a complete list of available update types. Specify an empty list to receive all update types except *chat_member*, *message_reaction*, and *message_reaction_count* (default). If not specified, the previous setting will be used.\n\n\n\nPlease note that this parameter doesn't affect updates created before the call to getUpdates, so unwanted updates may be received for a short period of time.\n",
               "name": "allowed_updates"
             }
           ],
@@ -255,9 +255,9 @@
         {
           "anchor": "setwebhook",
           "name": "setWebhook",
-          "description": "Use this method to specify a URL and receive incoming updates via an outgoing webhook. Whenever there is an update for the bot, we will send an HTTPS POST request to the specified URL, containing a JSON-serialized Update. In case of an unsuccessful request, we will give up after a reasonable amount of attempts. Returns True on success.\nIf you'd like to make sure that the webhook was set by you, you can specify secret data in the parameter secret_token. If specified, the request will contain a header 'X-Telegram-Bot-Api-Secret-Token' with the secret token as content.\nNotes\n1. You will not be able to receive updates using getUpdates for as long as an outgoing webhook is set up.\n2. To use a self-signed certificate, you need to upload your public key certificate using certificate parameter. Please upload as InputFile, sending a String will not work.\n3. Ports currently supported for webhooks: 443, 80, 88, 8443.\nIf you're having any trouble setting up webhooks, please check out this amazing guide to webhooks.",
-          "html_description": "<p>Use this method to specify a URL and receive incoming updates via an outgoing webhook. Whenever there is an update for the bot, we will send an HTTPS POST request to the specified URL, containing a JSON-serialized <a href=\"#update\">Update</a>. In case of an unsuccessful request, we will give up after a reasonable amount of attempts. Returns <em>True</em> on success.</p><p>If you'd like to make sure that the webhook was set by you, you can specify secret data in the parameter <em>secret_token</em>. If specified, the request will contain a header &#8220;X-Telegram-Bot-Api-Secret-Token&#8221; with the secret token as content.</p><blockquote>\n<p><strong>Notes</strong><br/>\n<strong>1.</strong> You will not be able to receive updates using <a href=\"#getupdates\">getUpdates</a> for as long as an outgoing webhook is set up.<br/>\n<strong>2.</strong> To use a self-signed certificate, you need to upload your <a href=\"/bots/self-signed\">public key certificate</a> using <em>certificate</em> parameter. Please upload as InputFile, sending a String will not work.<br/>\n<strong>3.</strong> Ports currently supported <em>for webhooks</em>: <strong>443, 80, 88, 8443</strong>.</p>\n<p>If you're having any trouble setting up webhooks, please check out this <a href=\"/bots/webhooks\">amazing guide to webhooks</a>.</p>\n</blockquote>",
-          "rst_description": "Use this method to specify a URL and receive incoming updates via an outgoing webhook. Whenever there is an update for the bot, we will send an HTTPS POST request to the specified URL, containing a JSON-serialized :class:`aiogram.types.update.Update`. In case of an unsuccessful request, we will give up after a reasonable amount of attempts. Returns :code:`True` on success.\nIf you'd like to make sure that the webhook was set by you, you can specify secret data in the parameter *secret_token*. If specified, the request will contain a header 'X-Telegram-Bot-Api-Secret-Token' with the secret token as content.\n\n **Notes**\n \n **1.** You will not be able to receive updates using :class:`aiogram.methods.get_updates.GetUpdates` for as long as an outgoing webhook is set up.\n \n **2.** To use a self-signed certificate, you need to upload your `public key certificate <https://core.telegram.org/bots/self-signed>`_ using *certificate* parameter. Please upload as InputFile, sending a String will not work.\n \n **3.** Ports currently supported *for webhooks*: **443, 80, 88, 8443**.\n If you're having any trouble setting up webhooks, please check out this `amazing guide to webhooks <https://core.telegram.org/bots/webhooks>`_.",
+          "description": "Use this method to specify a URL and receive incoming updates via an outgoing webhook. Whenever there is an update for the bot, we will send an HTTPS POST request to the specified URL, containing a JSON-serialized Update. In case of an unsuccessful request (a request with response HTTP status code different from 2XY), we will repeat the request and give up after a reasonable amount of attempts. Returns True on success.\nIf you'd like to make sure that the webhook was set by you, you can specify secret data in the parameter secret_token. If specified, the request will contain a header 'X-Telegram-Bot-Api-Secret-Token' with the secret token as content.\nNotes\n1. You will not be able to receive updates using getUpdates for as long as an outgoing webhook is set up.\n2. To use a self-signed certificate, you need to upload your public key certificate using certificate parameter. Please upload as InputFile, sending a String will not work.\n3. Ports currently supported for webhooks: 443, 80, 88, 8443.\nIf you're having any trouble setting up webhooks, please check out this amazing guide to webhooks.",
+          "html_description": "<p>Use this method to specify a URL and receive incoming updates via an outgoing webhook. Whenever there is an update for the bot, we will send an HTTPS POST request to the specified URL, containing a JSON-serialized <a href=\"#update\">Update</a>. In case of an unsuccessful request (a request with response <a href=\"https://en.wikipedia.org/wiki/List_of_HTTP_status_codes\">HTTP status code</a> different from <code>2XY</code>), we will repeat the request and give up after a reasonable amount of attempts. Returns <em>True</em> on success.</p><p>If you'd like to make sure that the webhook was set by you, you can specify secret data in the parameter <em>secret_token</em>. If specified, the request will contain a header &#8220;X-Telegram-Bot-Api-Secret-Token&#8221; with the secret token as content.</p><blockquote>\n<p><strong>Notes</strong><br/>\n<strong>1.</strong> You will not be able to receive updates using <a href=\"#getupdates\">getUpdates</a> for as long as an outgoing webhook is set up.<br/>\n<strong>2.</strong> To use a self-signed certificate, you need to upload your <a href=\"/bots/self-signed\">public key certificate</a> using <em>certificate</em> parameter. Please upload as InputFile, sending a String will not work.<br/>\n<strong>3.</strong> Ports currently supported <em>for webhooks</em>: <strong>443, 80, 88, 8443</strong>.</p>\n<p>If you're having any trouble setting up webhooks, please check out this <a href=\"/bots/webhooks\">amazing guide to webhooks</a>.</p>\n</blockquote>",
+          "rst_description": "Use this method to specify a URL and receive incoming updates via an outgoing webhook. Whenever there is an update for the bot, we will send an HTTPS POST request to the specified URL, containing a JSON-serialized :class:`aiogram.types.update.Update`. In case of an unsuccessful request (a request with response `HTTP status code <https://en.wikipedia.org/wiki/List_of_HTTP_status_codes>`_ different from :code:`2XY`), we will repeat the request and give up after a reasonable amount of attempts. Returns :code:`True` on success.\nIf you'd like to make sure that the webhook was set by you, you can specify secret data in the parameter *secret_token*. If specified, the request will contain a header 'X-Telegram-Bot-Api-Secret-Token' with the secret token as content.\n\n **Notes**\n \n **1.** You will not be able to receive updates using :class:`aiogram.methods.get_updates.GetUpdates` for as long as an outgoing webhook is set up.\n \n **2.** To use a self-signed certificate, you need to upload your `public key certificate <https://core.telegram.org/bots/self-signed>`_ using *certificate* parameter. Please upload as InputFile, sending a String will not work.\n \n **3.** Ports currently supported *for webhooks*: **443, 80, 88, 8443**.\n If you're having any trouble setting up webhooks, please check out this `amazing guide to webhooks <https://core.telegram.org/bots/webhooks>`_.",
           "annotations": [
             {
               "type": "String",
@@ -3616,9 +3616,9 @@
         {
           "anchor": "backgroundtypepattern",
           "name": "BackgroundTypePattern",
-          "description": "The background is a PNG or TGV (gzipped subset of SVG with MIME type 'application/x-tgwallpattern') pattern to be combined with the background fill chosen by the user.",
-          "html_description": "<p>The background is a PNG or TGV (gzipped subset of SVG with MIME type &#8220;application/x-tgwallpattern&#8221;) pattern to be combined with the background fill chosen by the user.</p>",
-          "rst_description": "The background is a PNG or TGV (gzipped subset of SVG with MIME type 'application/x-tgwallpattern') pattern to be combined with the background fill chosen by the user.",
+          "description": "The background is a .PNG or .TGV (gzipped subset of SVG with MIME type 'application/x-tgwallpattern') pattern to be combined with the background fill chosen by the user.",
+          "html_description": "<p>The background is a .PNG or .TGV (gzipped subset of SVG with MIME type &#8220;application/x-tgwallpattern&#8221;) pattern to be combined with the background fill chosen by the user.</p>",
+          "rst_description": "The background is a .PNG or .TGV (gzipped subset of SVG with MIME type 'application/x-tgwallpattern') pattern to be combined with the background fill chosen by the user.",
           "annotations": [
             {
               "type": "String",
@@ -12658,9 +12658,9 @@
             },
             {
               "type": "String",
-              "description": "Format of the added sticker, must be one of 'static' for a .WEBP or .PNG image, 'animated' for a .TGS animation, 'video' for a WEBM video",
-              "html_description": "<td>Format of the added sticker, must be one of &#8220;static&#8221; for a <strong>.WEBP</strong> or <strong>.PNG</strong> image, &#8220;animated&#8221; for a <strong>.TGS</strong> animation, &#8220;video&#8221; for a <strong>WEBM</strong> video</td>",
-              "rst_description": "Format of the added sticker, must be one of 'static' for a **.WEBP** or **.PNG** image, 'animated' for a **.TGS** animation, 'video' for a **WEBM** video\n",
+              "description": "Format of the added sticker, must be one of 'static' for a .WEBP or .PNG image, 'animated' for a .TGS animation, 'video' for a .WEBM video",
+              "html_description": "<td>Format of the added sticker, must be one of &#8220;static&#8221; for a <strong>.WEBP</strong> or <strong>.PNG</strong> image, &#8220;animated&#8221; for a <strong>.TGS</strong> animation, &#8220;video&#8221; for a <strong>.WEBM</strong> video</td>",
+              "rst_description": "Format of the added sticker, must be one of 'static' for a **.WEBP** or **.PNG** image, 'animated' for a **.TGS** animation, 'video' for a **.WEBM** video\n",
               "name": "format",
               "required": true
             },
@@ -13167,17 +13167,17 @@
             {
               "type": "InputFile or String",
               "required": false,
-              "description": "A .WEBP or .PNG image with the thumbnail, must be up to 128 kilobytes in size and have a width and height of exactly 100px, or a .TGS animation with a thumbnail up to 32 kilobytes in size (see https://core.telegram.org/stickers#animation-requirements for animated sticker technical requirements), or a WEBM video with the thumbnail up to 32 kilobytes in size; see https://core.telegram.org/stickers#video-requirements for video sticker technical requirements. Pass a file_id as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. More information on Sending Files. Animated and video sticker set thumbnails can't be uploaded via HTTP URL. If omitted, then the thumbnail is dropped and the first sticker is used as the thumbnail.",
-              "html_description": "<td>A <strong>.WEBP</strong> or <strong>.PNG</strong> image with the thumbnail, must be up to 128 kilobytes in size and have a width and height of exactly 100px, or a <strong>.TGS</strong> animation with a thumbnail up to 32 kilobytes in size (see <a href=\"/stickers#animation-requirements\"/><a href=\"https://core.telegram.org/stickers#animation-requirements\">https://core.telegram.org/stickers#animation-requirements</a> for animated sticker technical requirements), or a <strong>WEBM</strong> video with the thumbnail up to 32 kilobytes in size; see <a href=\"/stickers#video-requirements\"/><a href=\"https://core.telegram.org/stickers#video-requirements\">https://core.telegram.org/stickers#video-requirements</a> for video sticker technical requirements. Pass a <em>file_id</em> as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. <a href=\"#sending-files\">More information on Sending Files &#187;</a>. Animated and video sticker set thumbnails can't be uploaded via HTTP URL. If omitted, then the thumbnail is dropped and the first sticker is used as the thumbnail.</td>",
-              "rst_description": "A **.WEBP** or **.PNG** image with the thumbnail, must be up to 128 kilobytes in size and have a width and height of exactly 100px, or a **.TGS** animation with a thumbnail up to 32 kilobytes in size (see `https://core.telegram.org/stickers#animation-requirements <https://core.telegram.org/stickers#animation-requirements>`_`https://core.telegram.org/stickers#animation-requirements <https://core.telegram.org/stickers#animation-requirements>`_ for animated sticker technical requirements), or a **WEBM** video with the thumbnail up to 32 kilobytes in size; see `https://core.telegram.org/stickers#video-requirements <https://core.telegram.org/stickers#video-requirements>`_`https://core.telegram.org/stickers#video-requirements <https://core.telegram.org/stickers#video-requirements>`_ for video sticker technical requirements. Pass a *file_id* as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`. Animated and video sticker set thumbnails can't be uploaded via HTTP URL. If omitted, then the thumbnail is dropped and the first sticker is used as the thumbnail.\n",
+              "description": "A .WEBP or .PNG image with the thumbnail, must be up to 128 kilobytes in size and have a width and height of exactly 100px, or a .TGS animation with a thumbnail up to 32 kilobytes in size (see https://core.telegram.org/stickers#animation-requirements for animated sticker technical requirements), or a .WEBM video with the thumbnail up to 32 kilobytes in size; see https://core.telegram.org/stickers#video-requirements for video sticker technical requirements. Pass a file_id as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. More information on Sending Files. Animated and video sticker set thumbnails can't be uploaded via HTTP URL. If omitted, then the thumbnail is dropped and the first sticker is used as the thumbnail.",
+              "html_description": "<td>A <strong>.WEBP</strong> or <strong>.PNG</strong> image with the thumbnail, must be up to 128 kilobytes in size and have a width and height of exactly 100px, or a <strong>.TGS</strong> animation with a thumbnail up to 32 kilobytes in size (see <a href=\"/stickers#animation-requirements\"/><a href=\"https://core.telegram.org/stickers#animation-requirements\">https://core.telegram.org/stickers#animation-requirements</a> for animated sticker technical requirements), or a <strong>.WEBM</strong> video with the thumbnail up to 32 kilobytes in size; see <a href=\"/stickers#video-requirements\"/><a href=\"https://core.telegram.org/stickers#video-requirements\">https://core.telegram.org/stickers#video-requirements</a> for video sticker technical requirements. Pass a <em>file_id</em> as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. <a href=\"#sending-files\">More information on Sending Files &#187;</a>. Animated and video sticker set thumbnails can't be uploaded via HTTP URL. If omitted, then the thumbnail is dropped and the first sticker is used as the thumbnail.</td>",
+              "rst_description": "A **.WEBP** or **.PNG** image with the thumbnail, must be up to 128 kilobytes in size and have a width and height of exactly 100px, or a **.TGS** animation with a thumbnail up to 32 kilobytes in size (see `https://core.telegram.org/stickers#animation-requirements <https://core.telegram.org/stickers#animation-requirements>`_`https://core.telegram.org/stickers#animation-requirements <https://core.telegram.org/stickers#animation-requirements>`_ for animated sticker technical requirements), or a **.WEBM** video with the thumbnail up to 32 kilobytes in size; see `https://core.telegram.org/stickers#video-requirements <https://core.telegram.org/stickers#video-requirements>`_`https://core.telegram.org/stickers#video-requirements <https://core.telegram.org/stickers#video-requirements>`_ for video sticker technical requirements. Pass a *file_id* as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`. Animated and video sticker set thumbnails can't be uploaded via HTTP URL. If omitted, then the thumbnail is dropped and the first sticker is used as the thumbnail.\n",
               "name": "thumbnail"
             },
             {
               "type": "String",
               "required": true,
-              "description": "Format of the thumbnail, must be one of 'static' for a .WEBP or .PNG image, 'animated' for a .TGS animation, or 'video' for a WEBM video",
-              "html_description": "<td>Format of the thumbnail, must be one of &#8220;static&#8221; for a <strong>.WEBP</strong> or <strong>.PNG</strong> image, &#8220;animated&#8221; for a <strong>.TGS</strong> animation, or &#8220;video&#8221; for a <strong>WEBM</strong> video</td>",
-              "rst_description": "Format of the thumbnail, must be one of 'static' for a **.WEBP** or **.PNG** image, 'animated' for a **.TGS** animation, or 'video' for a **WEBM** video\n",
+              "description": "Format of the thumbnail, must be one of 'static' for a .WEBP or .PNG image, 'animated' for a .TGS animation, or 'video' for a .WEBM video",
+              "html_description": "<td>Format of the thumbnail, must be one of &#8220;static&#8221; for a <strong>.WEBP</strong> or <strong>.PNG</strong> image, &#8220;animated&#8221; for a <strong>.TGS</strong> animation, or &#8220;video&#8221; for a <strong>.WEBM</strong> video</td>",
+              "rst_description": "Format of the thumbnail, must be one of 'static' for a **.WEBP** or **.PNG** image, 'animated' for a **.TGS** animation, or 'video' for a **.WEBM** video\n",
               "name": "format"
             }
           ],
@@ -13260,6 +13260,14 @@
             },
             {
               "type": "Integer",
+              "description": "The number of Telegram Stars that must be paid to upgrade the gift to a unique one",
+              "html_description": "<td><em>Optional</em>. The number of Telegram Stars that must be paid to upgrade the gift to a unique one</td>",
+              "rst_description": "*Optional*. The number of Telegram Stars that must be paid to upgrade the gift to a unique one\n",
+              "name": "upgrade_star_count",
+              "required": false
+            },
+            {
+              "type": "Integer",
               "description": "The total number of the gifts of this type that can be sent; for limited gifts only",
               "html_description": "<td><em>Optional</em>. The total number of the gifts of this type that can be sent; for limited gifts only</td>",
               "rst_description": "*Optional*. The total number of the gifts of this type that can be sent; for limited gifts only\n",
@@ -13328,6 +13336,14 @@
               "name": "gift_id"
             },
             {
+              "type": "Boolean",
+              "required": false,
+              "description": "Pass True to pay for the gift upgrade from the bot's balance, thereby making the upgrade free for the receiver",
+              "html_description": "<td>Pass <em>True</em> to pay for the gift upgrade from the bot's balance, thereby making the upgrade free for the receiver</td>",
+              "rst_description": "Pass :code:`True` to pay for the gift upgrade from the bot's balance, thereby making the upgrade free for the receiver\n",
+              "name": "pay_for_upgrade"
+            },
+            {
               "type": "String",
               "required": false,
               "description": "Text that will be shown along with the gift; 0-255 characters",
@@ -13350,6 +13366,94 @@
               "html_description": "<td>A JSON-serialized list of special entities that appear in the gift text. It can be specified instead of <em>text_parse_mode</em>. Entities other than &#8220;bold&#8221;, &#8220;italic&#8221;, &#8220;underline&#8221;, &#8220;strikethrough&#8221;, &#8220;spoiler&#8221;, and &#8220;custom_emoji&#8221; are ignored.</td>",
               "rst_description": "A JSON-serialized list of special entities that appear in the gift text. It can be specified instead of *text_parse_mode*. Entities other than 'bold', 'italic', 'underline', 'strikethrough', 'spoiler', and 'custom_emoji' are ignored.\n",
               "name": "text_entities"
+            }
+          ],
+          "category": "methods"
+        },
+        {
+          "anchor": "verifyuser",
+          "name": "verifyUser",
+          "description": "Verifies a user on behalf of the organization which is represented by the bot. Returns True on success.",
+          "html_description": "<p>Verifies a user on behalf of the organization which is represented by the bot. Returns <em>True</em> on success.</p>",
+          "rst_description": "Verifies a user on behalf of the organization which is represented by the bot. Returns :code:`True` on success.",
+          "annotations": [
+            {
+              "type": "Integer",
+              "required": true,
+              "description": "Unique identifier of the target user",
+              "html_description": "<td>Unique identifier of the target user</td>",
+              "rst_description": "Unique identifier of the target user\n",
+              "name": "user_id"
+            },
+            {
+              "type": "String",
+              "required": false,
+              "description": "Custom description for the verification; 0-70 characters. Must be empty if the organization isn't allowed to provide a custom verification description.",
+              "html_description": "<td>Custom description for the verification; 0-70 characters. Must be empty if the organization isn't allowed to provide a custom verification description.</td>",
+              "rst_description": "Custom description for the verification; 0-70 characters. Must be empty if the organization isn't allowed to provide a custom verification description.\n",
+              "name": "custom_description"
+            }
+          ],
+          "category": "methods"
+        },
+        {
+          "anchor": "verifychat",
+          "name": "verifyChat",
+          "description": "Verifies a chat on behalf of the organization which is represented by the bot. Returns True on success.",
+          "html_description": "<p>Verifies a chat on behalf of the organization which is represented by the bot. Returns <em>True</em> on success.</p>",
+          "rst_description": "Verifies a chat on behalf of the organization which is represented by the bot. Returns :code:`True` on success.",
+          "annotations": [
+            {
+              "type": "Integer or String",
+              "required": true,
+              "description": "Unique identifier for the target chat or username of the target channel (in the format @channelusername)",
+              "html_description": "<td>Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)</td>",
+              "rst_description": "Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)\n",
+              "name": "chat_id"
+            },
+            {
+              "type": "String",
+              "required": false,
+              "description": "Custom description for the verification; 0-70 characters. Must be empty if the organization isn't allowed to provide a custom verification description.",
+              "html_description": "<td>Custom description for the verification; 0-70 characters. Must be empty if the organization isn't allowed to provide a custom verification description.</td>",
+              "rst_description": "Custom description for the verification; 0-70 characters. Must be empty if the organization isn't allowed to provide a custom verification description.\n",
+              "name": "custom_description"
+            }
+          ],
+          "category": "methods"
+        },
+        {
+          "anchor": "removeuserverification",
+          "name": "removeUserVerification",
+          "description": "Removes verification from a user who is currently verified on behalf of the organization represented by the bot. Returns True on success.",
+          "html_description": "<p>Removes verification from a user who is currently verified on behalf of the organization represented by the bot. Returns <em>True</em> on success.</p>",
+          "rst_description": "Removes verification from a user who is currently verified on behalf of the organization represented by the bot. Returns :code:`True` on success.",
+          "annotations": [
+            {
+              "type": "Integer",
+              "required": true,
+              "description": "Unique identifier of the target user",
+              "html_description": "<td>Unique identifier of the target user</td>",
+              "rst_description": "Unique identifier of the target user\n",
+              "name": "user_id"
+            }
+          ],
+          "category": "methods"
+        },
+        {
+          "anchor": "removechatverification",
+          "name": "removeChatVerification",
+          "description": "Removes verification from a chat that is currently verified on behalf of the organization represented by the bot. Returns True on success.",
+          "html_description": "<p>Removes verification from a chat that is currently verified on behalf of the organization represented by the bot. Returns <em>True</em> on success.</p>",
+          "rst_description": "Removes verification from a chat that is currently verified on behalf of the organization represented by the bot. Returns :code:`True` on success.",
+          "annotations": [
+            {
+              "type": "Integer or String",
+              "required": true,
+              "description": "Unique identifier for the target chat or username of the target channel (in the format @channelusername)",
+              "html_description": "<td>Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)</td>",
+              "rst_description": "Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)\n",
+              "name": "chat_id"
             }
           ],
           "category": "methods"
@@ -13576,14 +13680,6 @@
               "required": false
             },
             {
-              "type": "Boolean",
-              "description": "Pass True if you don't want the URL to be shown in the message",
-              "html_description": "<td><em>Optional</em>. Pass <em>True</em> if you don't want the URL to be shown in the message</td>",
-              "rst_description": "*Optional*. Pass :code:`True` if you don't want the URL to be shown in the message\n",
-              "name": "hide_url",
-              "required": false
-            },
-            {
               "type": "String",
               "description": "Short description of the result",
               "html_description": "<td><em>Optional</em>. Short description of the result</td>",
@@ -13765,9 +13861,9 @@
             },
             {
               "type": "String",
-              "description": "A valid URL for the GIF file. File size must not exceed 1MB",
-              "html_description": "<td>A valid URL for the GIF file. File size must not exceed 1MB</td>",
-              "rst_description": "A valid URL for the GIF file. File size must not exceed 1MB\n",
+              "description": "A valid URL for the GIF file",
+              "html_description": "<td>A valid URL for the GIF file</td>",
+              "rst_description": "A valid URL for the GIF file\n",
               "name": "gif_url",
               "required": true
             },
@@ -13895,9 +13991,9 @@
             },
             {
               "type": "String",
-              "description": "A valid URL for the MPEG4 file. File size must not exceed 1MB",
-              "html_description": "<td>A valid URL for the MPEG4 file. File size must not exceed 1MB</td>",
-              "rst_description": "A valid URL for the MPEG4 file. File size must not exceed 1MB\n",
+              "description": "A valid URL for the MPEG4 file",
+              "html_description": "<td>A valid URL for the MPEG4 file</td>",
+              "rst_description": "A valid URL for the MPEG4 file\n",
               "name": "mpeg4_url",
               "required": true
             },
@@ -16344,9 +16440,9 @@
             {
               "type": "String",
               "required": false,
-              "description": "Unique identifier of the business connection on behalf of which the link will be created",
-              "html_description": "<td>Unique identifier of the business connection on behalf of which the link will be created</td>",
-              "rst_description": "Unique identifier of the business connection on behalf of which the link will be created\n",
+              "description": "Unique identifier of the business connection on behalf of which the link will be created. For payments in Telegram Stars only.",
+              "html_description": "<td>Unique identifier of the business connection on behalf of which the link will be created. For payments in <a href=\"https://t.me/BotNews/90\">Telegram Stars</a> only.</td>",
+              "rst_description": "Unique identifier of the business connection on behalf of which the link will be created. For payments in `Telegram Stars <https://t.me/BotNews/90>`_ only.\n",
               "name": "business_connection_id"
             },
             {
@@ -16400,9 +16496,9 @@
             {
               "type": "Integer",
               "required": false,
-              "description": "The number of seconds the subscription will be active for before the next payment. The currency must be set to 'XTR' (Telegram Stars) if the parameter is used. Currently, it must always be 2592000 (30 days) if specified.",
-              "html_description": "<td>The number of seconds the subscription will be active for before the next payment. The currency must be set to &#8220;XTR&#8221; (Telegram Stars) if the parameter is used. Currently, it must always be 2592000 (30 days) if specified.</td>",
-              "rst_description": "The number of seconds the subscription will be active for before the next payment. The currency must be set to 'XTR' (Telegram Stars) if the parameter is used. Currently, it must always be 2592000 (30 days) if specified.\n",
+              "description": "The number of seconds the subscription will be active for before the next payment. The currency must be set to 'XTR' (Telegram Stars) if the parameter is used. Currently, it must always be 2592000 (30 days) if specified. Any number of subscriptions can be active for a given bot at the same time, including multiple concurrent subscriptions from the same user. Subscription price must no exceed 2500 Telegram Stars.",
+              "html_description": "<td>The number of seconds the subscription will be active for before the next payment. The currency must be set to &#8220;XTR&#8221; (Telegram Stars) if the parameter is used. Currently, it must always be 2592000 (30 days) if specified. Any number of subscriptions can be active for a given bot at the same time, including multiple concurrent subscriptions from the same user. Subscription price must no exceed 2500 Telegram Stars.</td>",
+              "rst_description": "The number of seconds the subscription will be active for before the next payment. The currency must be set to 'XTR' (Telegram Stars) if the parameter is used. Currently, it must always be 2592000 (30 days) if specified. Any number of subscriptions can be active for a given bot at the same time, including multiple concurrent subscriptions from the same user. Subscription price must no exceed 2500 Telegram Stars.\n",
               "name": "subscription_period"
             },
             {
@@ -17246,11 +17342,61 @@
           "category": "types"
         },
         {
+          "anchor": "affiliateinfo",
+          "name": "AffiliateInfo",
+          "description": "Contains information about the affiliate that received a commission via this transaction.",
+          "html_description": "<p>Contains information about the affiliate that received a commission via this transaction.</p>",
+          "rst_description": "Contains information about the affiliate that received a commission via this transaction.",
+          "annotations": [
+            {
+              "type": "User",
+              "description": "The bot or the user that received an affiliate commission if it was received by a bot or a user",
+              "html_description": "<td><em>Optional</em>. The bot or the user that received an affiliate commission if it was received by a bot or a user</td>",
+              "rst_description": "*Optional*. The bot or the user that received an affiliate commission if it was received by a bot or a user\n",
+              "name": "affiliate_user",
+              "required": false
+            },
+            {
+              "type": "Chat",
+              "description": "The chat that received an affiliate commission if it was received by a chat",
+              "html_description": "<td><em>Optional</em>. The chat that received an affiliate commission if it was received by a chat</td>",
+              "rst_description": "*Optional*. The chat that received an affiliate commission if it was received by a chat\n",
+              "name": "affiliate_chat",
+              "required": false
+            },
+            {
+              "type": "Integer",
+              "description": "The number of Telegram Stars received by the affiliate for each 1000 Telegram Stars received by the bot from referred users",
+              "html_description": "<td>The number of Telegram Stars received by the affiliate for each 1000 Telegram Stars received by the bot from referred users</td>",
+              "rst_description": "The number of Telegram Stars received by the affiliate for each 1000 Telegram Stars received by the bot from referred users\n",
+              "name": "commission_per_mille",
+              "required": true
+            },
+            {
+              "type": "Integer",
+              "description": "Integer amount of Telegram Stars received by the affiliate from the transaction, rounded to 0; can be negative for refunds",
+              "html_description": "<td>Integer amount of Telegram Stars received by the affiliate from the transaction, rounded to 0; can be negative for refunds</td>",
+              "rst_description": "Integer amount of Telegram Stars received by the affiliate from the transaction, rounded to 0; can be negative for refunds\n",
+              "name": "amount",
+              "required": true
+            },
+            {
+              "type": "Integer",
+              "description": "The number of 1/1000000000 shares of Telegram Stars received by the affiliate; from -999999999 to 999999999; can be negative for refunds",
+              "html_description": "<td><em>Optional</em>. The number of 1/1000000000 shares of Telegram Stars received by the affiliate; from -999999999 to 999999999; can be negative for refunds</td>",
+              "rst_description": "*Optional*. The number of 1/1000000000 shares of Telegram Stars received by the affiliate; from -999999999 to 999999999; can be negative for refunds\n",
+              "name": "nanostar_amount",
+              "required": false
+            }
+          ],
+          "category": "types"
+        },
+        {
           "anchor": "transactionpartner",
           "name": "TransactionPartner",
-          "description": "This object describes the source of a transaction, or its recipient for outgoing transactions. Currently, it can be one of\n - TransactionPartnerUser\n - TransactionPartnerFragment\n - TransactionPartnerTelegramAds\n - TransactionPartnerTelegramApi\n - TransactionPartnerOther",
-          "html_description": "<p>This object describes the source of a transaction, or its recipient for outgoing transactions. Currently, it can be one of</p><ul>\n<li><a href=\"#transactionpartneruser\">TransactionPartnerUser</a></li>\n<li><a href=\"#transactionpartnerfragment\">TransactionPartnerFragment</a></li>\n<li><a href=\"#transactionpartnertelegramads\">TransactionPartnerTelegramAds</a></li>\n<li><a href=\"#transactionpartnertelegramapi\">TransactionPartnerTelegramApi</a></li>\n<li><a href=\"#transactionpartnerother\">TransactionPartnerOther</a></li>\n</ul>",
-          "rst_description": "This object describes the source of a transaction, or its recipient for outgoing transactions. Currently, it can be one of\n\n - :class:`aiogram.types.transaction_partner_user.TransactionPartnerUser`\n - :class:`aiogram.types.transaction_partner_fragment.TransactionPartnerFragment`\n - :class:`aiogram.types.transaction_partner_telegram_ads.TransactionPartnerTelegramAds`\n - :class:`aiogram.types.transaction_partner_telegram_api.TransactionPartnerTelegramApi`\n - :class:`aiogram.types.transaction_partner_other.TransactionPartnerOther`",
+          "description": "This object describes the source of a transaction, or its recipient for outgoing transactions. Currently, it can be one of\n - TransactionPartnerUser\n - TransactionPartnerAffiliateProgram\n - TransactionPartnerFragment\n - TransactionPartnerTelegramAds\n - TransactionPartnerTelegramApi\n - TransactionPartnerOther",
+          "html_description": "<p>This object describes the source of a transaction, or its recipient for outgoing transactions. Currently, it can be one of</p><ul>\n<li><a href=\"#transactionpartneruser\">TransactionPartnerUser</a></li>\n<li><a href=\"#transactionpartneraffiliateprogram\">TransactionPartnerAffiliateProgram</a></li>\n<li><a href=\"#transactionpartnerfragment\">TransactionPartnerFragment</a></li>\n<li><a href=\"#transactionpartnertelegramads\">TransactionPartnerTelegramAds</a></li>\n<li><a href=\"#transactionpartnertelegramapi\">TransactionPartnerTelegramApi</a></li>\n<li><a href=\"#transactionpartnerother\">TransactionPartnerOther</a></li>\n</ul>",
+          "rst_description": "This object describes the source of a transaction, or its recipient for outgoing transactions. Currently, it can be one of\n\n - :class:`aiogram.types.transaction_partner_user.TransactionPartnerUser`\n - :class:`aiogram.types.transaction_partner_affiliate_program.TransactionPartnerAffiliateProgram`\n - :class:`aiogram.types.transaction_partner_fragment.TransactionPartnerFragment`\n - :class:`aiogram.types.transaction_partner_telegram_ads.TransactionPartnerTelegramAds`\n - :class:`aiogram.types.transaction_partner_telegram_api.TransactionPartnerTelegramApi`\n - :class:`aiogram.types.transaction_partner_other.TransactionPartnerOther`",
           "annotations": [],
           "category": "types"
         },
@@ -17276,6 +17422,14 @@
               "rst_description": "Information about the user\n",
               "name": "user",
               "required": true
+            },
+            {
+              "type": "AffiliateInfo",
+              "description": "Information about the affiliate that received a commission via this transaction",
+              "html_description": "<td><em>Optional</em>. Information about the affiliate that received a commission via this transaction</td>",
+              "rst_description": "*Optional*. Information about the affiliate that received a commission via this transaction\n",
+              "name": "affiliate",
+              "required": false
             },
             {
               "type": "String",
@@ -17310,12 +17464,46 @@
               "required": false
             },
             {
-              "type": "String",
+              "type": "Gift",
               "description": "The gift sent to the user by the bot",
               "html_description": "<td><em>Optional</em>. The gift sent to the user by the bot</td>",
               "rst_description": "*Optional*. The gift sent to the user by the bot\n",
               "name": "gift",
               "required": false
+            }
+          ],
+          "category": "types"
+        },
+        {
+          "anchor": "transactionpartneraffiliateprogram",
+          "name": "TransactionPartnerAffiliateProgram",
+          "description": "Describes the affiliate program that issued the affiliate commission received via this transaction.",
+          "html_description": "<p>Describes the affiliate program that issued the affiliate commission received via this transaction.</p>",
+          "rst_description": "Describes the affiliate program that issued the affiliate commission received via this transaction.",
+          "annotations": [
+            {
+              "type": "String",
+              "description": "Type of the transaction partner, always 'affiliate_program'",
+              "html_description": "<td>Type of the transaction partner, always &#8220;affiliate_program&#8221;</td>",
+              "rst_description": "Type of the transaction partner, always 'affiliate_program'\n",
+              "name": "type",
+              "required": true
+            },
+            {
+              "type": "User",
+              "description": "Information about the bot that sponsored the affiliate program",
+              "html_description": "<td><em>Optional</em>. Information about the bot that sponsored the affiliate program</td>",
+              "rst_description": "*Optional*. Information about the bot that sponsored the affiliate program\n",
+              "name": "sponsor_user",
+              "required": false
+            },
+            {
+              "type": "Integer",
+              "description": "The number of Telegram Stars received by the bot for each 1000 Telegram Stars received by the affiliate program sponsor from referred users",
+              "html_description": "<td>The number of Telegram Stars received by the bot for each 1000 Telegram Stars received by the affiliate program sponsor from referred users</td>",
+              "rst_description": "The number of Telegram Stars received by the bot for each 1000 Telegram Stars received by the affiliate program sponsor from referred users\n",
+              "name": "commission_per_mille",
+              "required": true
             }
           ],
           "category": "types"
@@ -17425,11 +17613,19 @@
             },
             {
               "type": "Integer",
-              "description": "Number of Telegram Stars transferred by the transaction",
-              "html_description": "<td>Number of Telegram Stars transferred by the transaction</td>",
-              "rst_description": "Number of Telegram Stars transferred by the transaction\n",
+              "description": "Integer amount of Telegram Stars transferred by the transaction",
+              "html_description": "<td>Integer amount of Telegram Stars transferred by the transaction</td>",
+              "rst_description": "Integer amount of Telegram Stars transferred by the transaction\n",
               "name": "amount",
               "required": true
+            },
+            {
+              "type": "Integer",
+              "description": "The number of 1/1000000000 shares of Telegram Stars transferred by the transaction; from 0 to 999999999",
+              "html_description": "<td><em>Optional</em>. The number of 1/1000000000 shares of Telegram Stars transferred by the transaction; from 0 to 999999999</td>",
+              "rst_description": "*Optional*. The number of 1/1000000000 shares of Telegram Stars transferred by the transaction; from 0 to 999999999\n",
+              "name": "nanostar_amount",
+              "required": false
             },
             {
               "type": "Integer",

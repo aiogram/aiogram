@@ -41,7 +41,7 @@ class TestAiohttpSession:
 
     async def test_create_proxy_session(self):
         auth = aiohttp.BasicAuth("login", "password", "encoding")
-        async with AiohttpSession(proxy=("socks5://proxy.url/", auth)) as session:
+        async with AiohttpSession(proxy=("socks5://proxy.url:1080/", auth)) as session:
             assert session._connector_type == aiohttp_socks.ProxyConnector
 
             assert isinstance(session._connector_init, dict)
@@ -51,7 +51,7 @@ class TestAiohttpSession:
             assert isinstance(aiohttp_session.connector, aiohttp_socks.ProxyConnector)
 
     async def test_create_proxy_session_proxy_url(self):
-        async with AiohttpSession(proxy="socks4://proxy.url/") as session:
+        async with AiohttpSession(proxy="socks4://proxy.url:1080/") as session:
             assert isinstance(session.proxy, str)
 
             assert isinstance(session._connector_init, dict)
@@ -62,8 +62,8 @@ class TestAiohttpSession:
 
     async def test_create_proxy_session_chained_proxies(self):
         proxy_chain = [
-            "socks4://proxy.url/",
-            "socks5://proxy.url/",
+            "socks4://proxy.url:1080/",
+            "socks5://proxy.url:1080/",
             "http://user:password@127.0.0.1:3128",
         ]
         async with AiohttpSession(proxy=proxy_chain) as session:
@@ -90,7 +90,7 @@ class TestAiohttpSession:
         assert session._should_reset_connector is False
 
         assert session.proxy is None
-        session.proxy = "socks5://auth:auth@proxy.url/"
+        session.proxy = "socks5://auth:auth@proxy.url:1080/"
         assert session._should_reset_connector
         await session.create_session()
         assert session._should_reset_connector is False

@@ -6,6 +6,8 @@ from ..enums import TransactionPartnerType
 from .transaction_partner import TransactionPartner
 
 if TYPE_CHECKING:
+    from .affiliate_info import AffiliateInfo
+    from .gift import Gift
     from .paid_media_photo import PaidMediaPhoto
     from .paid_media_preview import PaidMediaPreview
     from .paid_media_video import PaidMediaVideo
@@ -23,6 +25,8 @@ class TransactionPartnerUser(TransactionPartner):
     """Type of the transaction partner, always 'user'"""
     user: User
     """Information about the user"""
+    affiliate: Optional[AffiliateInfo] = None
+    """*Optional*. Information about the affiliate that received a commission via this transaction"""
     invoice_payload: Optional[str] = None
     """*Optional*. Bot-specified invoice payload"""
     subscription_period: Optional[int] = None
@@ -31,7 +35,7 @@ class TransactionPartnerUser(TransactionPartner):
     """*Optional*. Information about the paid media bought by the user"""
     paid_media_payload: Optional[str] = None
     """*Optional*. Bot-specified paid media payload"""
-    gift: Optional[str] = None
+    gift: Optional[Gift] = None
     """*Optional*. The gift sent to the user by the bot"""
 
     if TYPE_CHECKING:
@@ -43,13 +47,14 @@ class TransactionPartnerUser(TransactionPartner):
             *,
             type: Literal[TransactionPartnerType.USER] = TransactionPartnerType.USER,
             user: User,
+            affiliate: Optional[AffiliateInfo] = None,
             invoice_payload: Optional[str] = None,
             subscription_period: Optional[int] = None,
             paid_media: Optional[
                 list[Union[PaidMediaPreview, PaidMediaPhoto, PaidMediaVideo]]
             ] = None,
             paid_media_payload: Optional[str] = None,
-            gift: Optional[str] = None,
+            gift: Optional[Gift] = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!
@@ -59,6 +64,7 @@ class TransactionPartnerUser(TransactionPartner):
             super().__init__(
                 type=type,
                 user=user,
+                affiliate=affiliate,
                 invoice_payload=invoice_payload,
                 subscription_period=subscription_period,
                 paid_media=paid_media,

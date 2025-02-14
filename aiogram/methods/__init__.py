@@ -70,6 +70,8 @@ from .log_out import LogOut
 from .pin_chat_message import PinChatMessage
 from .promote_chat_member import PromoteChatMember
 from .refund_star_payment import RefundStarPayment
+from .remove_chat_verification import RemoveChatVerification
+from .remove_user_verification import RemoveUserVerification
 from .reopen_forum_topic import ReopenForumTopic
 from .reopen_general_forum_topic import ReopenGeneralForumTopic
 from .replace_sticker_in_set import ReplaceStickerInSet
@@ -130,6 +132,8 @@ from .unpin_all_forum_topic_messages import UnpinAllForumTopicMessages
 from .unpin_all_general_forum_topic_messages import UnpinAllGeneralForumTopicMessages
 from .unpin_chat_message import UnpinChatMessage
 from .upload_sticker_file import UploadStickerFile
+from .verify_chat import VerifyChat
+from .verify_user import VerifyUser
 
 __all__ = (
     "AddStickerToSet",
@@ -203,6 +207,8 @@ __all__ = (
     "PinChatMessage",
     "PromoteChatMember",
     "RefundStarPayment",
+    "RemoveChatVerification",
+    "RemoveUserVerification",
     "ReopenForumTopic",
     "ReopenGeneralForumTopic",
     "ReplaceStickerInSet",
@@ -266,4 +272,6 @@ __all__ = (
     "UnpinAllGeneralForumTopicMessages",
     "UnpinChatMessage",
     "UploadStickerFile",
+    "VerifyChat",
+    "VerifyUser",
 )

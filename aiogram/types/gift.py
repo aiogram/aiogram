@@ -21,6 +21,8 @@ class Gift(TelegramObject):
     """The sticker that represents the gift"""
     star_count: int
     """The number of Telegram Stars that must be paid to send the sticker"""
+    upgrade_star_count: Optional[int] = None
+    """*Optional*. The number of Telegram Stars that must be paid to upgrade the gift to a unique one"""
     total_count: Optional[int] = None
     """*Optional*. The total number of the gifts of this type that can be sent; for limited gifts only"""
     remaining_count: Optional[int] = None
@@ -36,6 +38,7 @@ class Gift(TelegramObject):
             id: str,
             sticker: Sticker,
             star_count: int,
+            upgrade_star_count: Optional[int] = None,
             total_count: Optional[int] = None,
             remaining_count: Optional[int] = None,
             **__pydantic_kwargs: Any,
@@ -48,6 +51,7 @@ class Gift(TelegramObject):
                 id=id,
                 sticker=sticker,
                 star_count=star_count,
+                upgrade_star_count=upgrade_star_count,
                 total_count=total_count,
                 remaining_count=remaining_count,
                 **__pydantic_kwargs,

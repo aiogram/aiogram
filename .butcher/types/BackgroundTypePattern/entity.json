@@ -7,9 +7,9 @@
   "object": {
     "anchor": "backgroundtypepattern",
     "name": "BackgroundTypePattern",
-    "description": "The background is a PNG or TGV (gzipped subset of SVG with MIME type 'application/x-tgwallpattern') pattern to be combined with the background fill chosen by the user.",
-    "html_description": "<p>The background is a PNG or TGV (gzipped subset of SVG with MIME type &#8220;application/x-tgwallpattern&#8221;) pattern to be combined with the background fill chosen by the user.</p>",
-    "rst_description": "The background is a PNG or TGV (gzipped subset of SVG with MIME type 'application/x-tgwallpattern') pattern to be combined with the background fill chosen by the user.",
+    "description": "The background is a .PNG or .TGV (gzipped subset of SVG with MIME type 'application/x-tgwallpattern') pattern to be combined with the background fill chosen by the user.",
+    "html_description": "<p>The background is a .PNG or .TGV (gzipped subset of SVG with MIME type &#8220;application/x-tgwallpattern&#8221;) pattern to be combined with the background fill chosen by the user.</p>",
+    "rst_description": "The background is a .PNG or .TGV (gzipped subset of SVG with MIME type 'application/x-tgwallpattern') pattern to be combined with the background fill chosen by the user.",
     "annotations": [
       {
         "type": "String",
