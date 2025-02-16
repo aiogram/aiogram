@@ -2885,6 +2885,8 @@ class Message(MaybeInaccessibleMessage):
         width: Optional[int] = None,
         height: Optional[int] = None,
         thumbnail: Optional[InputFile] = None,
+        cover: Optional[Union[InputFile, str]] = None,
+        start_timestamp: Optional[Union[datetime.datetime, datetime.timedelta, int]] = None,
         caption: Optional[str] = None,
         parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
         caption_entities: Optional[list[MessageEntity]] = None,
@@ -2921,6 +2923,8 @@ class Message(MaybeInaccessibleMessage):
         :param width: Video width
         :param height: Video height
         :param thumbnail: Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`
+        :param cover: Cover for the video in the message. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass 'attach://<file_attach_name>' to upload a new one using multipart/form-data under <file_attach_name> name. :ref:`More information on Sending Files » <sending-files>`
+        :param start_timestamp: Start timestamp for the video in the message
         :param caption: Video caption (may also be used when resending videos by *file_id*), 0-1024 characters after entities parsing
         :param parse_mode: Mode for parsing entities in the video caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.
         :param caption_entities: A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*
@@ -2954,6 +2958,8 @@ class Message(MaybeInaccessibleMessage):
             width=width,
             height=height,
             thumbnail=thumbnail,
+            cover=cover,
+            start_timestamp=start_timestamp,
             caption=caption,
             parse_mode=parse_mode,
             caption_entities=caption_entities,
@@ -2976,6 +2982,8 @@ class Message(MaybeInaccessibleMessage):
         width: Optional[int] = None,
         height: Optional[int] = None,
         thumbnail: Optional[InputFile] = None,
+        cover: Optional[Union[InputFile, str]] = None,
+        start_timestamp: Optional[Union[datetime.datetime, datetime.timedelta, int]] = None,
         caption: Optional[str] = None,
         parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
         caption_entities: Optional[list[MessageEntity]] = None,
@@ -3013,6 +3021,8 @@ class Message(MaybeInaccessibleMessage):
         :param width: Video width
         :param height: Video height
         :param thumbnail: Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`
+        :param cover: Cover for the video in the message. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass 'attach://<file_attach_name>' to upload a new one using multipart/form-data under <file_attach_name> name. :ref:`More information on Sending Files » <sending-files>`
+        :param start_timestamp: Start timestamp for the video in the message
         :param caption: Video caption (may also be used when resending videos by *file_id*), 0-1024 characters after entities parsing
         :param parse_mode: Mode for parsing entities in the video caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.
         :param caption_entities: A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*
@@ -3047,6 +3057,8 @@ class Message(MaybeInaccessibleMessage):
             width=width,
             height=height,
             thumbnail=thumbnail,
+            cover=cover,
+            start_timestamp=start_timestamp,
             caption=caption,
             parse_mode=parse_mode,
             caption_entities=caption_entities,
@@ -3551,6 +3563,7 @@ class Message(MaybeInaccessibleMessage):
         self,
         chat_id: Union[int, str],
         message_thread_id: Optional[int] = None,
+        video_start_timestamp: Optional[Union[datetime.datetime, datetime.timedelta, int]] = None,
         caption: Optional[str] = None,
         parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
         caption_entities: Optional[list[MessageEntity]] = None,
@@ -3581,6 +3594,7 @@ class Message(MaybeInaccessibleMessage):
 
         :param chat_id: Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
         :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
+        :param video_start_timestamp: New start timestamp for the copied video in the message
         :param caption: New caption for media, 0-1024 characters after entities parsing. If not specified, the original caption is kept
         :param parse_mode: Mode for parsing entities in the new caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.
         :param caption_entities: A JSON-serialized list of special entities that appear in the new caption, which can be specified instead of *parse_mode*
@@ -3608,6 +3622,7 @@ class Message(MaybeInaccessibleMessage):
             message_id=self.message_id,
             chat_id=chat_id,
             message_thread_id=message_thread_id,
+            video_start_timestamp=video_start_timestamp,
             caption=caption,
             parse_mode=parse_mode,
             caption_entities=caption_entities,
@@ -3685,6 +3700,7 @@ class Message(MaybeInaccessibleMessage):
         self,
         chat_id: Union[int, str],
         message_thread_id: Optional[int] = None,
+        video_start_timestamp: Optional[Union[datetime.datetime, datetime.timedelta, int]] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
         **kwargs: Any,
@@ -3702,6 +3718,7 @@ class Message(MaybeInaccessibleMessage):
 
         :param chat_id: Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
         :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
+        :param video_start_timestamp: New start timestamp for the forwarded video in the message
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the forwarded message from forwarding and saving
         :return: instance of method :class:`aiogram.methods.forward_message.ForwardMessage`
@@ -3720,6 +3737,7 @@ class Message(MaybeInaccessibleMessage):
             message_id=self.message_id,
             chat_id=chat_id,
             message_thread_id=message_thread_id,
+            video_start_timestamp=video_start_timestamp,
             disable_notification=disable_notification,
             protect_content=protect_content,
             **kwargs,
@@ -4173,7 +4191,7 @@ class Message(MaybeInaccessibleMessage):
         - :code:`message_id`
         - :code:`business_connection_id`
 
-        Use this method to change the chosen reactions on a message. Service messages can't be reacted to. Automatically forwarded messages from a channel to its discussion group have the same available reactions as messages in the channel. Bots can't use paid reactions. Returns :code:`True` on success.
+        Use this method to change the chosen reactions on a message. Service messages of some types can't be reacted to. Automatically forwarded messages from a channel to its discussion group have the same available reactions as messages in the channel. Bots can't use paid reactions. Returns :code:`True` on success.
 
         Source: https://core.telegram.org/bots/api#setmessagereaction
 

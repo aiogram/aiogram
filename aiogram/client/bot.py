@@ -684,7 +684,7 @@ class Bot:
         :param shipping_query_id: Unique identifier for the query to be answered
         :param ok: Pass :code:`True` if delivery to the specified address is possible and :code:`False` if there are any problems (for example, if delivery to the specified address is not possible)
         :param shipping_options: Required if *ok* is :code:`True`. A JSON-serialized array of available shipping options.
-        :param error_message: Required if *ok* is :code:`False`. Error message in human readable form that explains why it is impossible to complete the order (e.g. "Sorry, delivery to your desired address is unavailable'). Telegram will display this message to the user.
+        :param error_message: Required if *ok* is :code:`False`. Error message in human readable form that explains why it is impossible to complete the order (e.g. 'Sorry, delivery to your desired address is unavailable'). Telegram will display this message to the user.
         :param request_timeout: Request timeout
         :return: On success, :code:`True` is returned.
         """
@@ -861,6 +861,7 @@ class Bot:
         from_chat_id: Union[int, str],
         message_id: int,
         message_thread_id: Optional[int] = None,
+        video_start_timestamp: Optional[Union[datetime.datetime, datetime.timedelta, int]] = None,
         caption: Optional[str] = None,
         parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
         caption_entities: Optional[list[MessageEntity]] = None,
@@ -887,6 +888,7 @@ class Bot:
         :param from_chat_id: Unique identifier for the chat where the original message was sent (or channel username in the format :code:`@channelusername`)
         :param message_id: Message identifier in the chat specified in *from_chat_id*
         :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
+        :param video_start_timestamp: New start timestamp for the copied video in the message
         :param caption: New caption for media, 0-1024 characters after entities parsing. If not specified, the original caption is kept
         :param parse_mode: Mode for parsing entities in the new caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.
         :param caption_entities: A JSON-serialized list of special entities that appear in the new caption, which can be specified instead of *parse_mode*
@@ -907,6 +909,7 @@ class Bot:
             from_chat_id=from_chat_id,
             message_id=message_id,
             message_thread_id=message_thread_id,
+            video_start_timestamp=video_start_timestamp,
             caption=caption,
             parse_mode=parse_mode,
             caption_entities=caption_entities,
@@ -1615,6 +1618,7 @@ class Bot:
         from_chat_id: Union[int, str],
         message_id: int,
         message_thread_id: Optional[int] = None,
+        video_start_timestamp: Optional[Union[datetime.datetime, datetime.timedelta, int]] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
         request_timeout: Optional[int] = None,
@@ -1628,6 +1632,7 @@ class Bot:
         :param from_chat_id: Unique identifier for the chat where the original message was sent (or channel username in the format :code:`@channelusername`)
         :param message_id: Message identifier in the chat specified in *from_chat_id*
         :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
+        :param video_start_timestamp: New start timestamp for the forwarded video in the message
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the forwarded message from forwarding and saving
         :param request_timeout: Request timeout
@@ -1639,6 +1644,7 @@ class Bot:
             from_chat_id=from_chat_id,
             message_id=message_id,
             message_thread_id=message_thread_id,
+            video_start_timestamp=video_start_timestamp,
             disable_notification=disable_notification,
             protect_content=protect_content,
         )
@@ -3275,6 +3281,8 @@ class Bot:
         width: Optional[int] = None,
         height: Optional[int] = None,
         thumbnail: Optional[InputFile] = None,
+        cover: Optional[Union[InputFile, str]] = None,
+        start_timestamp: Optional[Union[datetime.datetime, datetime.timedelta, int]] = None,
         caption: Optional[str] = None,
         parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
         caption_entities: Optional[list[MessageEntity]] = None,
@@ -3308,6 +3316,8 @@ class Bot:
         :param width: Video width
         :param height: Video height
         :param thumbnail: Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`
+        :param cover: Cover for the video in the message. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass 'attach://<file_attach_name>' to upload a new one using multipart/form-data under <file_attach_name> name. :ref:`More information on Sending Files » <sending-files>`
+        :param start_timestamp: Start timestamp for the video in the message
         :param caption: Video caption (may also be used when resending videos by *file_id*), 0-1024 characters after entities parsing
         :param parse_mode: Mode for parsing entities in the video caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.
         :param caption_entities: A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*
@@ -3335,6 +3345,8 @@ class Bot:
             width=width,
             height=height,
             thumbnail=thumbnail,
+            cover=cover,
+            start_timestamp=start_timestamp,
             caption=caption,
             parse_mode=parse_mode,
             caption_entities=caption_entities,
@@ -4607,7 +4619,7 @@ class Bot:
         request_timeout: Optional[int] = None,
     ) -> bool:
         """
-        Use this method to change the chosen reactions on a message. Service messages can't be reacted to. Automatically forwarded messages from a channel to its discussion group have the same available reactions as messages in the channel. Bots can't use paid reactions. Returns :code:`True` on success.
+        Use this method to change the chosen reactions on a message. Service messages of some types can't be reacted to. Automatically forwarded messages from a channel to its discussion group have the same available reactions as messages in the channel. Bots can't use paid reactions. Returns :code:`True` on success.
 
         Source: https://core.telegram.org/bots/api#setmessagereaction
 
@@ -4869,7 +4881,7 @@ class Bot:
         request_timeout: Optional[int] = None,
     ) -> Gifts:
         """
-        Returns the list of gifts that can be sent by the bot to users. Requires no parameters. Returns a :class:`aiogram.types.gifts.Gifts` object.
+        Returns the list of gifts that can be sent by the bot to users and channel chats. Requires no parameters. Returns a :class:`aiogram.types.gifts.Gifts` object.
 
         Source: https://core.telegram.org/bots/api#getavailablegifts
 
@@ -4938,8 +4950,9 @@ class Bot:
 
     async def send_gift(
         self,
-        user_id: int,
         gift_id: str,
+        user_id: Optional[int] = None,
+        chat_id: Optional[Union[int, str]] = None,
         pay_for_upgrade: Optional[bool] = None,
         text: Optional[str] = None,
         text_parse_mode: Optional[str] = None,
@@ -4947,12 +4960,13 @@ class Bot:
         request_timeout: Optional[int] = None,
     ) -> bool:
         """
-        Sends a gift to the given user. The gift can't be converted to Telegram Stars by the user. Returns :code:`True` on success.
+        Sends a gift to the given user or channel chat. The gift can't be converted to Telegram Stars by the receiver. Returns :code:`True` on success.
 
         Source: https://core.telegram.org/bots/api#sendgift
 
-        :param user_id: Unique identifier of the target user that will receive the gift
         :param gift_id: Identifier of the gift
+        :param user_id: Required if *chat_id* is not specified. Unique identifier of the target user who will receive the gift.
+        :param chat_id: Required if *user_id* is not specified. Unique identifier for the chat or username of the channel (in the format :code:`@channelusername`) that will receive the gift.
         :param pay_for_upgrade: Pass :code:`True` to pay for the gift upgrade from the bot's balance, thereby making the upgrade free for the receiver
         :param text: Text that will be shown along with the gift; 0-255 characters
         :param text_parse_mode: Mode for parsing entities in the text. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details. Entities other than 'bold', 'italic', 'underline', 'strikethrough', 'spoiler', and 'custom_emoji' are ignored.
@@ -4962,8 +4976,9 @@ class Bot:
         """
 
         call = SendGift(
-            user_id=user_id,
             gift_id=gift_id,
+            user_id=user_id,
+            chat_id=chat_id,
             pay_for_upgrade=pay_for_upgrade,
             text=text,
             text_parse_mode=text_parse_mode,
@@ -5005,7 +5020,7 @@ class Bot:
         request_timeout: Optional[int] = None,
     ) -> bool:
         """
-        Removes verification from a chat that is currently verified on behalf of the organization represented by the bot. Returns :code:`True` on success.
+        Removes verification from a chat that is currently verified `on behalf of the organization <https://telegram.org/verify#third-party-verification>`_ represented by the bot. Returns :code:`True` on success.
 
         Source: https://core.telegram.org/bots/api#removechatverification
 
@@ -5025,7 +5040,7 @@ class Bot:
         request_timeout: Optional[int] = None,
     ) -> bool:
         """
-        Removes verification from a user who is currently verified on behalf of the organization represented by the bot. Returns :code:`True` on success.
+        Removes verification from a user who is currently verified `on behalf of the organization <https://telegram.org/verify#third-party-verification>`_ represented by the bot. Returns :code:`True` on success.
 
         Source: https://core.telegram.org/bots/api#removeuserverification
 
@@ -5046,7 +5061,7 @@ class Bot:
         request_timeout: Optional[int] = None,
     ) -> bool:
         """
-        Verifies a chat on behalf of the organization which is represented by the bot. Returns :code:`True` on success.
+        Verifies a chat `on behalf of the organization <https://telegram.org/verify#third-party-verification>`_ which is represented by the bot. Returns :code:`True` on success.
 
         Source: https://core.telegram.org/bots/api#verifychat
 
@@ -5069,7 +5084,7 @@ class Bot:
         request_timeout: Optional[int] = None,
     ) -> bool:
         """
-        Verifies a user on behalf of the organization which is represented by the bot. Returns :code:`True` on success.
+        Verifies a user `on behalf of the organization <https://telegram.org/verify#third-party-verification>`_ which is represented by the bot. Returns :code:`True` on success.
 
         Source: https://core.telegram.org/bots/api#verifyuser
 

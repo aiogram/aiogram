@@ -7,7 +7,7 @@ from .base import TelegramMethod
 
 class RemoveUserVerification(TelegramMethod[bool]):
     """
-    Removes verification from a user who is currently verified on behalf of the organization represented by the bot. Returns :code:`True` on success.
+    Removes verification from a user who is currently verified `on behalf of the organization <https://telegram.org/verify#third-party-verification>`_ represented by the bot. Returns :code:`True` on success.
 
     Source: https://core.telegram.org/bots/api#removeuserverification
     """

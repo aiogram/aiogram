@@ -7,7 +7,7 @@ from .base import TelegramMethod
 
 class VerifyUser(TelegramMethod[bool]):
     """
-    Verifies a user on behalf of the organization which is represented by the bot. Returns :code:`True` on success.
+    Verifies a user `on behalf of the organization <https://telegram.org/verify#third-party-verification>`_ which is represented by the bot. Returns :code:`True` on success.
 
     Source: https://core.telegram.org/bots/api#verifyuser
     """

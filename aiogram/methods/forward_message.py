@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import datetime
 from typing import TYPE_CHECKING, Any, Optional, Union
 
 from ..client.default import Default
@@ -25,6 +26,8 @@ class ForwardMessage(TelegramMethod[Message]):
     """Message identifier in the chat specified in *from_chat_id*"""
     message_thread_id: Optional[int] = None
     """Unique identifier for the target message thread (topic) of the forum; for forum supergroups only"""
+    video_start_timestamp: Optional[Union[datetime.datetime, datetime.timedelta, int]] = None
+    """New start timestamp for the forwarded video in the message"""
     disable_notification: Optional[bool] = None
     """Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound."""
     protect_content: Optional[Union[bool, Default]] = Default("protect_content")
@@ -41,6 +44,9 @@ class ForwardMessage(TelegramMethod[Message]):
             from_chat_id: Union[int, str],
             message_id: int,
             message_thread_id: Optional[int] = None,
+            video_start_timestamp: Optional[
+                Union[datetime.datetime, datetime.timedelta, int]
+            ] = None,
             disable_notification: Optional[bool] = None,
             protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
             **__pydantic_kwargs: Any,
@@ -54,6 +60,7 @@ class ForwardMessage(TelegramMethod[Message]):
                 from_chat_id=from_chat_id,
                 message_id=message_id,
                 message_thread_id=message_thread_id,
+                video_start_timestamp=video_start_timestamp,
                 disable_notification=disable_notification,
                 protect_content=protect_content,
                 **__pydantic_kwargs,

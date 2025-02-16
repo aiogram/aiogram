@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import datetime
 from typing import TYPE_CHECKING, Any, Optional
 
 from .base import TelegramObject
@@ -27,6 +28,10 @@ class Video(TelegramObject):
     """Duration of the video in seconds as defined by the sender"""
     thumbnail: Optional[PhotoSize] = None
     """*Optional*. Video thumbnail"""
+    cover: Optional[list[PhotoSize]] = None
+    """*Optional*. Available sizes of the cover of the video in the message"""
+    start_timestamp: Optional[datetime.datetime] = None
+    """*Optional*. Timestamp in seconds from which the video will play in the message"""
     file_name: Optional[str] = None
     """*Optional*. Original filename as defined by the sender"""
     mime_type: Optional[str] = None
@@ -47,6 +52,8 @@ class Video(TelegramObject):
             height: int,
             duration: int,
             thumbnail: Optional[PhotoSize] = None,
+            cover: Optional[list[PhotoSize]] = None,
+            start_timestamp: Optional[datetime.datetime] = None,
             file_name: Optional[str] = None,
             mime_type: Optional[str] = None,
             file_size: Optional[int] = None,
@@ -63,6 +70,8 @@ class Video(TelegramObject):
                 height=height,
                 duration=duration,
                 thumbnail=thumbnail,
+                cover=cover,
+                start_timestamp=start_timestamp,
                 file_name=file_name,
                 mime_type=mime_type,
                 file_size=file_size,

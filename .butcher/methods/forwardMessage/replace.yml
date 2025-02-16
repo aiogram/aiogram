@@ -1,11 +1,5 @@
 annotations:
-  thumbnail:
-    parsed_type:
-      type: entity
-      references:
-        category: types
-        name: InputFile
-  start_timestamp:
+  video_start_timestamp:
     parsed_type:
       type: union
       items:

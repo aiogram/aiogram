@@ -1,0 +1,41 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Payments",
+    "anchor": "payments"
+  },
+  "object": {
+    "anchor": "transactionpartnerchat",
+    "name": "TransactionPartnerChat",
+    "description": "Describes a transaction with a chat.",
+    "html_description": "<p>Describes a transaction with a chat.</p>",
+    "rst_description": "Describes a transaction with a chat.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Type of the transaction partner, always 'chat'",
+        "html_description": "<td>Type of the transaction partner, always &#8220;chat&#8221;</td>",
+        "rst_description": "Type of the transaction partner, always 'chat'\n",
+        "name": "type",
+        "required": true
+      },
+      {
+        "type": "Chat",
+        "description": "Information about the chat",
+        "html_description": "<td>Information about the chat</td>",
+        "rst_description": "Information about the chat\n",
+        "name": "chat",
+        "required": true
+      },
+      {
+        "type": "Gift",
+        "description": "The gift sent to the chat by the bot",
+        "html_description": "<td><em>Optional</em>. The gift sent to the chat by the bot</td>",
+        "rst_description": "*Optional*. The gift sent to the chat by the bot\n",
+        "name": "gift",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

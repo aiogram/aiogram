@@ -9,3 +9,29 @@ annotations:
           references:
             category: types
             name: InputFile
+  cover:
+    parsed_type:
+      type: union
+      items:
+        - type: std
+          name: str
+        - type: entity
+          references:
+            category: types
+            name: InputFile
+  thumbnail:
+    parsed_type:
+      type: entity
+      references:
+        category: types
+        name: InputFile
+  start_timestamp:
+    parsed_type:
+      type: union
+      items:
+        - type: std
+          name: datetime.datetime
+        - type: std
+          name: datetime.timedelta
+        - type: std
+          name: int

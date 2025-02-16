@@ -8,8 +8,8 @@
     "anchor": "removechatverification",
     "name": "removeChatVerification",
     "description": "Removes verification from a chat that is currently verified on behalf of the organization represented by the bot. Returns True on success.",
-    "html_description": "<p>Removes verification from a chat that is currently verified on behalf of the organization represented by the bot. Returns <em>True</em> on success.</p>",
-    "rst_description": "Removes verification from a chat that is currently verified on behalf of the organization represented by the bot. Returns :code:`True` on success.",
+    "html_description": "<p>Removes verification from a chat that is currently verified <a href=\"https://telegram.org/verify#third-party-verification\">on behalf of the organization</a> represented by the bot. Returns <em>True</em> on success.</p>",
+    "rst_description": "Removes verification from a chat that is currently verified `on behalf of the organization <https://telegram.org/verify#third-party-verification>`_ represented by the bot. Returns :code:`True` on success.",
     "annotations": [
       {
         "type": "Integer or String",

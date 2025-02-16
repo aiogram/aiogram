@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import datetime
 from typing import TYPE_CHECKING, Any, Optional, Union
 
 from pydantic import Field
@@ -35,6 +36,8 @@ class CopyMessage(TelegramMethod[MessageId]):
     """Message identifier in the chat specified in *from_chat_id*"""
     message_thread_id: Optional[int] = None
     """Unique identifier for the target message thread (topic) of the forum; for forum supergroups only"""
+    video_start_timestamp: Optional[Union[datetime.datetime, datetime.timedelta, int]] = None
+    """New start timestamp for the copied video in the message"""
     caption: Optional[str] = None
     """New caption for media, 0-1024 characters after entities parsing. If not specified, the original caption is kept"""
     parse_mode: Optional[Union[str, Default]] = Default("parse_mode")
@@ -79,6 +82,9 @@ class CopyMessage(TelegramMethod[MessageId]):
             from_chat_id: Union[int, str],
             message_id: int,
             message_thread_id: Optional[int] = None,
+            video_start_timestamp: Optional[
+                Union[datetime.datetime, datetime.timedelta, int]
+            ] = None,
             caption: Optional[str] = None,
             parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
             caption_entities: Optional[list[MessageEntity]] = None,
@@ -105,6 +111,7 @@ class CopyMessage(TelegramMethod[MessageId]):
                 from_chat_id=from_chat_id,
                 message_id=message_id,
                 message_thread_id=message_thread_id,
+                video_start_timestamp=video_start_timestamp,
                 caption=caption,
                 parse_mode=parse_mode,
                 caption_entities=caption_entities,
