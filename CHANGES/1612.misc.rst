@@ -1,1 +1,0 @@
-Removed redundant :code:`Path` to :code:`str` convertion on file download.
