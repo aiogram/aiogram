@@ -7,9 +7,9 @@
   "object": {
     "anchor": "getavailablegifts",
     "name": "getAvailableGifts",
-    "description": "Returns the list of gifts that can be sent by the bot to users. Requires no parameters. Returns a Gifts object.",
-    "html_description": "<p>Returns the list of gifts that can be sent by the bot to users. Requires no parameters. Returns a <a href=\"#gifts\">Gifts</a> object.</p>",
-    "rst_description": "Returns the list of gifts that can be sent by the bot to users. Requires no parameters. Returns a :class:`aiogram.types.gifts.Gifts` object.",
+    "description": "Returns the list of gifts that can be sent by the bot to users and channel chats. Requires no parameters. Returns a Gifts object.",
+    "html_description": "<p>Returns the list of gifts that can be sent by the bot to users and channel chats. Requires no parameters. Returns a <a href=\"#gifts\">Gifts</a> object.</p>",
+    "rst_description": "Returns the list of gifts that can be sent by the bot to users and channel chats. Requires no parameters. Returns a :class:`aiogram.types.gifts.Gifts` object.",
     "annotations": [],
     "category": "methods"
   }

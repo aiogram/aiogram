@@ -9,6 +9,7 @@ if TYPE_CHECKING:
     from .transaction_partner_affiliate_program import (
         TransactionPartnerAffiliateProgram,
     )
+    from .transaction_partner_chat import TransactionPartnerChat
     from .transaction_partner_fragment import TransactionPartnerFragment
     from .transaction_partner_other import TransactionPartnerOther
     from .transaction_partner_telegram_ads import TransactionPartnerTelegramAds
@@ -18,7 +19,7 @@ if TYPE_CHECKING:
 
 class StarTransaction(TelegramObject):
     """
-    Describes a Telegram Star transaction.
+    Describes a Telegram Star transaction. Note that if the buyer initiates a chargeback with the payment provider from whom they acquired Stars (e.g., Apple, Google) following this transaction, the refunded Stars will be deducted from the bot's balance. This is outside of Telegram's control.
 
     Source: https://core.telegram.org/bots/api#startransaction
     """
@@ -34,6 +35,7 @@ class StarTransaction(TelegramObject):
     source: Optional[
         Union[
             TransactionPartnerUser,
+            TransactionPartnerChat,
             TransactionPartnerAffiliateProgram,
             TransactionPartnerFragment,
             TransactionPartnerTelegramAds,
@@ -45,6 +47,7 @@ class StarTransaction(TelegramObject):
     receiver: Optional[
         Union[
             TransactionPartnerUser,
+            TransactionPartnerChat,
             TransactionPartnerAffiliateProgram,
             TransactionPartnerFragment,
             TransactionPartnerTelegramAds,
@@ -68,6 +71,7 @@ class StarTransaction(TelegramObject):
             source: Optional[
                 Union[
                     TransactionPartnerUser,
+                    TransactionPartnerChat,
                     TransactionPartnerAffiliateProgram,
                     TransactionPartnerFragment,
                     TransactionPartnerTelegramAds,
@@ -78,6 +82,7 @@ class StarTransaction(TelegramObject):
             receiver: Optional[
                 Union[
                     TransactionPartnerUser,
+                    TransactionPartnerChat,
                     TransactionPartnerAffiliateProgram,
                     TransactionPartnerFragment,
                     TransactionPartnerTelegramAds,

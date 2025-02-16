@@ -179,9 +179,12 @@ class KeyboardBuilder(Generic[ButtonType], ABC):
             last_row.extend(head)
 
         # Separate buttons to exclusive rows with max possible row width
-        while buttons:
-            row, buttons = buttons[: self.max_width], buttons[self.max_width :]
-            markup.append(list(row))
+        if self.max_width > 0:
+            while buttons:
+                row, buttons = buttons[: self.max_width], buttons[self.max_width :]
+                markup.append(list(row))
+        else:
+            markup.append(list(buttons))
 
         self._markup = markup
         return self

@@ -170,6 +170,16 @@ class TestKeyboardBuilder:
         if last_columns:
             assert len(markup[-1]) == last_columns
 
+    def test_add_wo_max_width(self):
+        builder = KeyboardBuilder(button_type=KeyboardButton)
+        builder.max_width = 0
+        count = 42
+
+        for index in range(count):
+            builder.add(KeyboardButton(text=f"btn-{index}"))
+
+        assert len(list(builder.buttons)) == count
+
     def test_row(
         self,
     ):

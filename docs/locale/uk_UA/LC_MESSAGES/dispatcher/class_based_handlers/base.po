@@ -47,12 +47,12 @@ msgid ""
 "This class also has a default initializer and you don't need to change "
 "it. The initializer accepts the incoming event and all contextual data, "
 "which can be accessed from the handler through attributes: :code:`event: "
-"TelegramEvent` and :code:`data: Dict[Any, str]`"
+"TelegramEvent` and :code:`data: Dict[str, Any]`"
 msgstr ""
 "Цей клас також має ініціалізатор за замовчуванням, і вам не потрібно його"
 " змінювати. Ініціалізатор приймає поточну подію та всі контекстні дані, "
 "доступ до яких можна отримати з обробника через атрибути: :code:`event: "
-"TelegramEvent` and :code:`data: Dict[Any, str]`"
+"TelegramEvent` and :code:`data: Dict[str, Any]`"
 
 #: ../../dispatcher/class_based_handlers/base.rst:17
 #, fuzzy

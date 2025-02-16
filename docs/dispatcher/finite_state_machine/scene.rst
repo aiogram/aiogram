@@ -30,7 +30,7 @@ They allow you to control and manage the flow of the conversation in a more orga
 Scene Lifecycle
 ---------------
 
-Each Scene can be "entered", "left" of "exited", allowing for clear transitions between different
+Each Scene can be "entered", "left" or "exited", allowing for clear transitions between different
 stages of the conversation.
 For instance, in a multi-step form filling interaction, each step could be a Scene -
 the bot guides the user from one Scene to the next as they provide the required information.

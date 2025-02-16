@@ -1,7 +1,7 @@
 {
   "api": {
-    "version": "8.2",
-    "release_date": "2025-01-01"
+    "version": "8.3",
+    "release_date": "2025-02-12"
   },
   "items": [
     {
@@ -867,6 +867,14 @@
               "html_description": "<td><em>Optional</em>. Default chat member permissions, for groups and supergroups</td>",
               "rst_description": "*Optional*. Default chat member permissions, for groups and supergroups\n",
               "name": "permissions",
+              "required": false
+            },
+            {
+              "type": "True",
+              "description": "True, if gifts can be sent to the chat",
+              "html_description": "<td><em>Optional</em>. <em>True</em>, if gifts can be sent to the chat</td>",
+              "rst_description": "*Optional*. :code:`True`, if gifts can be sent to the chat\n",
+              "name": "can_send_gift",
               "required": false
             },
             {
@@ -2623,6 +2631,22 @@
               "html_description": "<td><em>Optional</em>. Video thumbnail</td>",
               "rst_description": "*Optional*. Video thumbnail\n",
               "name": "thumbnail",
+              "required": false
+            },
+            {
+              "type": "Array of PhotoSize",
+              "description": "Available sizes of the cover of the video in the message",
+              "html_description": "<td><em>Optional</em>. Available sizes of the cover of the video in the message</td>",
+              "rst_description": "*Optional*. Available sizes of the cover of the video in the message\n",
+              "name": "cover",
+              "required": false
+            },
+            {
+              "type": "Integer",
+              "description": "Timestamp in seconds from which the video will play in the message",
+              "html_description": "<td><em>Optional</em>. Timestamp in seconds from which the video will play in the message</td>",
+              "rst_description": "*Optional*. Timestamp in seconds from which the video will play in the message\n",
+              "name": "start_timestamp",
               "required": false
             },
             {
@@ -7270,11 +7294,27 @@
               "required": true
             },
             {
-              "type": "InputFile or String",
+              "type": "String",
               "description": "Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. More information on Sending Files",
               "html_description": "<td><em>Optional</em>. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass &#8220;attach://&lt;file_attach_name&gt;&#8221; if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href=\"#sending-files\">More information on Sending Files &#187;</a></td>",
               "rst_description": "*Optional*. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`\n",
               "name": "thumbnail",
+              "required": false
+            },
+            {
+              "type": "String",
+              "description": "Cover for the video in the message. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass 'attach://<file_attach_name>' to upload a new one using multipart/form-data under <file_attach_name> name. More information on Sending Files",
+              "html_description": "<td><em>Optional</em>. Cover for the video in the message. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass &#8220;attach://&lt;file_attach_name&gt;&#8221; to upload a new one using multipart/form-data under &lt;file_attach_name&gt; name. <a href=\"#sending-files\">More information on Sending Files &#187;</a></td>",
+              "rst_description": "*Optional*. Cover for the video in the message. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass 'attach://<file_attach_name>' to upload a new one using multipart/form-data under <file_attach_name> name. :ref:`More information on Sending Files » <sending-files>`\n",
+              "name": "cover",
+              "required": false
+            },
+            {
+              "type": "Integer",
+              "description": "Start timestamp for the video in the message",
+              "html_description": "<td><em>Optional</em>. Start timestamp for the video in the message</td>",
+              "rst_description": "*Optional*. Start timestamp for the video in the message\n",
+              "name": "start_timestamp",
               "required": false
             },
             {
@@ -7376,7 +7416,7 @@
               "required": true
             },
             {
-              "type": "InputFile or String",
+              "type": "String",
               "description": "Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. More information on Sending Files",
               "html_description": "<td><em>Optional</em>. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass &#8220;attach://&lt;file_attach_name&gt;&#8221; if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href=\"#sending-files\">More information on Sending Files &#187;</a></td>",
               "rst_description": "*Optional*. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`\n",
@@ -7474,7 +7514,7 @@
               "required": true
             },
             {
-              "type": "InputFile or String",
+              "type": "String",
               "description": "Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. More information on Sending Files",
               "html_description": "<td><em>Optional</em>. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass &#8220;attach://&lt;file_attach_name&gt;&#8221; if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href=\"#sending-files\">More information on Sending Files &#187;</a></td>",
               "rst_description": "*Optional*. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`\n",
@@ -7556,7 +7596,7 @@
               "required": true
             },
             {
-              "type": "InputFile or String",
+              "type": "String",
               "description": "Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. More information on Sending Files",
               "html_description": "<td><em>Optional</em>. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass &#8220;attach://&lt;file_attach_name&gt;&#8221; if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href=\"#sending-files\">More information on Sending Files &#187;</a></td>",
               "rst_description": "*Optional*. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`\n",
@@ -7666,11 +7706,27 @@
               "required": true
             },
             {
-              "type": "InputFile or String",
+              "type": "String",
               "description": "Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. More information on Sending Files",
               "html_description": "<td><em>Optional</em>. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass &#8220;attach://&lt;file_attach_name&gt;&#8221; if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href=\"#sending-files\">More information on Sending Files &#187;</a></td>",
               "rst_description": "*Optional*. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`\n",
               "name": "thumbnail",
+              "required": false
+            },
+            {
+              "type": "String",
+              "description": "Cover for the video in the message. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass 'attach://<file_attach_name>' to upload a new one using multipart/form-data under <file_attach_name> name. More information on Sending Files",
+              "html_description": "<td><em>Optional</em>. Cover for the video in the message. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass &#8220;attach://&lt;file_attach_name&gt;&#8221; to upload a new one using multipart/form-data under &lt;file_attach_name&gt; name. <a href=\"#sending-files\">More information on Sending Files &#187;</a></td>",
+              "rst_description": "*Optional*. Cover for the video in the message. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass 'attach://<file_attach_name>' to upload a new one using multipart/form-data under <file_attach_name> name. :ref:`More information on Sending Files » <sending-files>`\n",
+              "name": "cover",
+              "required": false
+            },
+            {
+              "type": "Integer",
+              "description": "Start timestamp for the video in the message",
+              "html_description": "<td><em>Optional</em>. Start timestamp for the video in the message</td>",
+              "rst_description": "*Optional*. Start timestamp for the video in the message\n",
+              "name": "start_timestamp",
               "required": false
             },
             {
@@ -7888,6 +7944,14 @@
               "name": "from_chat_id"
             },
             {
+              "type": "Integer",
+              "required": false,
+              "description": "New start timestamp for the forwarded video in the message",
+              "html_description": "<td>New start timestamp for the forwarded video in the message</td>",
+              "rst_description": "New start timestamp for the forwarded video in the message\n",
+              "name": "video_start_timestamp"
+            },
+            {
               "type": "Boolean",
               "required": false,
               "description": "Sends the message silently. Users will receive a notification with no sound.",
@@ -8010,6 +8074,14 @@
               "html_description": "<td>Message identifier in the chat specified in <em>from_chat_id</em></td>",
               "rst_description": "Message identifier in the chat specified in *from_chat_id*\n",
               "name": "message_id"
+            },
+            {
+              "type": "Integer",
+              "required": false,
+              "description": "New start timestamp for the copied video in the message",
+              "html_description": "<td>New start timestamp for the copied video in the message</td>",
+              "rst_description": "New start timestamp for the copied video in the message\n",
+              "name": "video_start_timestamp"
             },
             {
               "type": "String",
@@ -8628,6 +8700,22 @@
               "html_description": "<td>Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass &#8220;attach://&lt;file_attach_name&gt;&#8221; if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href=\"#sending-files\">More information on Sending Files &#187;</a></td>",
               "rst_description": "Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`\n",
               "name": "thumbnail"
+            },
+            {
+              "type": "InputFile or String",
+              "required": false,
+              "description": "Cover for the video in the message. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass 'attach://<file_attach_name>' to upload a new one using multipart/form-data under <file_attach_name> name. More information on Sending Files",
+              "html_description": "<td>Cover for the video in the message. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass &#8220;attach://&lt;file_attach_name&gt;&#8221; to upload a new one using multipart/form-data under &lt;file_attach_name&gt; name. <a href=\"#sending-files\">More information on Sending Files &#187;</a></td>",
+              "rst_description": "Cover for the video in the message. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass 'attach://<file_attach_name>' to upload a new one using multipart/form-data under <file_attach_name> name. :ref:`More information on Sending Files » <sending-files>`\n",
+              "name": "cover"
+            },
+            {
+              "type": "Integer",
+              "required": false,
+              "description": "Start timestamp for the video in the message",
+              "html_description": "<td>Start timestamp for the video in the message</td>",
+              "rst_description": "Start timestamp for the video in the message\n",
+              "name": "start_timestamp"
             },
             {
               "type": "String",
@@ -10049,9 +10137,9 @@
         {
           "anchor": "setmessagereaction",
           "name": "setMessageReaction",
-          "description": "Use this method to change the chosen reactions on a message. Service messages can't be reacted to. Automatically forwarded messages from a channel to its discussion group have the same available reactions as messages in the channel. Bots can't use paid reactions. Returns True on success.",
-          "html_description": "<p>Use this method to change the chosen reactions on a message. Service messages can't be reacted to. Automatically forwarded messages from a channel to its discussion group have the same available reactions as messages in the channel. Bots can't use paid reactions. Returns <em>True</em> on success.</p>",
-          "rst_description": "Use this method to change the chosen reactions on a message. Service messages can't be reacted to. Automatically forwarded messages from a channel to its discussion group have the same available reactions as messages in the channel. Bots can't use paid reactions. Returns :code:`True` on success.",
+          "description": "Use this method to change the chosen reactions on a message. Service messages of some types can't be reacted to. Automatically forwarded messages from a channel to its discussion group have the same available reactions as messages in the channel. Bots can't use paid reactions. Returns True on success.",
+          "html_description": "<p>Use this method to change the chosen reactions on a message. Service messages of some types can't be reacted to. Automatically forwarded messages from a channel to its discussion group have the same available reactions as messages in the channel. Bots can't use paid reactions. Returns <em>True</em> on success.</p>",
+          "rst_description": "Use this method to change the chosen reactions on a message. Service messages of some types can't be reacted to. Automatically forwarded messages from a channel to its discussion group have the same available reactions as messages in the channel. Bots can't use paid reactions. Returns :code:`True` on success.",
           "annotations": [
             {
               "type": "Integer or String",
@@ -13306,26 +13394,34 @@
         {
           "anchor": "getavailablegifts",
           "name": "getAvailableGifts",
-          "description": "Returns the list of gifts that can be sent by the bot to users. Requires no parameters. Returns a Gifts object.",
-          "html_description": "<p>Returns the list of gifts that can be sent by the bot to users. Requires no parameters. Returns a <a href=\"#gifts\">Gifts</a> object.</p>",
-          "rst_description": "Returns the list of gifts that can be sent by the bot to users. Requires no parameters. Returns a :class:`aiogram.types.gifts.Gifts` object.",
+          "description": "Returns the list of gifts that can be sent by the bot to users and channel chats. Requires no parameters. Returns a Gifts object.",
+          "html_description": "<p>Returns the list of gifts that can be sent by the bot to users and channel chats. Requires no parameters. Returns a <a href=\"#gifts\">Gifts</a> object.</p>",
+          "rst_description": "Returns the list of gifts that can be sent by the bot to users and channel chats. Requires no parameters. Returns a :class:`aiogram.types.gifts.Gifts` object.",
           "annotations": [],
           "category": "methods"
         },
         {
           "anchor": "sendgift",
           "name": "sendGift",
-          "description": "Sends a gift to the given user. The gift can't be converted to Telegram Stars by the user. Returns True on success.",
-          "html_description": "<p>Sends a gift to the given user. The gift can't be converted to Telegram Stars by the user. Returns <em>True</em> on success.</p>",
-          "rst_description": "Sends a gift to the given user. The gift can't be converted to Telegram Stars by the user. Returns :code:`True` on success.",
+          "description": "Sends a gift to the given user or channel chat. The gift can't be converted to Telegram Stars by the receiver. Returns True on success.",
+          "html_description": "<p>Sends a gift to the given user or channel chat. The gift can't be converted to Telegram Stars by the receiver. Returns <em>True</em> on success.</p>",
+          "rst_description": "Sends a gift to the given user or channel chat. The gift can't be converted to Telegram Stars by the receiver. Returns :code:`True` on success.",
           "annotations": [
             {
               "type": "Integer",
-              "required": true,
-              "description": "Unique identifier of the target user that will receive the gift",
-              "html_description": "<td>Unique identifier of the target user that will receive the gift</td>",
-              "rst_description": "Unique identifier of the target user that will receive the gift\n",
+              "required": false,
+              "description": "Required if chat_id is not specified. Unique identifier of the target user who will receive the gift.",
+              "html_description": "<td>Required if <em>chat_id</em> is not specified. Unique identifier of the target user who will receive the gift.</td>",
+              "rst_description": "Required if *chat_id* is not specified. Unique identifier of the target user who will receive the gift.\n",
               "name": "user_id"
+            },
+            {
+              "type": "Integer or String",
+              "required": false,
+              "description": "Required if user_id is not specified. Unique identifier for the chat or username of the channel (in the format @channelusername) that will receive the gift.",
+              "html_description": "<td>Required if <em>user_id</em> is not specified. Unique identifier for the chat or username of the channel (in the format <code>@channelusername</code>) that will receive the gift.</td>",
+              "rst_description": "Required if *user_id* is not specified. Unique identifier for the chat or username of the channel (in the format :code:`@channelusername`) that will receive the gift.\n",
+              "name": "chat_id"
             },
             {
               "type": "String",
@@ -13374,8 +13470,8 @@
           "anchor": "verifyuser",
           "name": "verifyUser",
           "description": "Verifies a user on behalf of the organization which is represented by the bot. Returns True on success.",
-          "html_description": "<p>Verifies a user on behalf of the organization which is represented by the bot. Returns <em>True</em> on success.</p>",
-          "rst_description": "Verifies a user on behalf of the organization which is represented by the bot. Returns :code:`True` on success.",
+          "html_description": "<p>Verifies a user <a href=\"https://telegram.org/verify#third-party-verification\">on behalf of the organization</a> which is represented by the bot. Returns <em>True</em> on success.</p>",
+          "rst_description": "Verifies a user `on behalf of the organization <https://telegram.org/verify#third-party-verification>`_ which is represented by the bot. Returns :code:`True` on success.",
           "annotations": [
             {
               "type": "Integer",
@@ -13400,8 +13496,8 @@
           "anchor": "verifychat",
           "name": "verifyChat",
           "description": "Verifies a chat on behalf of the organization which is represented by the bot. Returns True on success.",
-          "html_description": "<p>Verifies a chat on behalf of the organization which is represented by the bot. Returns <em>True</em> on success.</p>",
-          "rst_description": "Verifies a chat on behalf of the organization which is represented by the bot. Returns :code:`True` on success.",
+          "html_description": "<p>Verifies a chat <a href=\"https://telegram.org/verify#third-party-verification\">on behalf of the organization</a> which is represented by the bot. Returns <em>True</em> on success.</p>",
+          "rst_description": "Verifies a chat `on behalf of the organization <https://telegram.org/verify#third-party-verification>`_ which is represented by the bot. Returns :code:`True` on success.",
           "annotations": [
             {
               "type": "Integer or String",
@@ -13426,8 +13522,8 @@
           "anchor": "removeuserverification",
           "name": "removeUserVerification",
           "description": "Removes verification from a user who is currently verified on behalf of the organization represented by the bot. Returns True on success.",
-          "html_description": "<p>Removes verification from a user who is currently verified on behalf of the organization represented by the bot. Returns <em>True</em> on success.</p>",
-          "rst_description": "Removes verification from a user who is currently verified on behalf of the organization represented by the bot. Returns :code:`True` on success.",
+          "html_description": "<p>Removes verification from a user who is currently verified <a href=\"https://telegram.org/verify#third-party-verification\">on behalf of the organization</a> represented by the bot. Returns <em>True</em> on success.</p>",
+          "rst_description": "Removes verification from a user who is currently verified `on behalf of the organization <https://telegram.org/verify#third-party-verification>`_ represented by the bot. Returns :code:`True` on success.",
           "annotations": [
             {
               "type": "Integer",
@@ -13444,8 +13540,8 @@
           "anchor": "removechatverification",
           "name": "removeChatVerification",
           "description": "Removes verification from a chat that is currently verified on behalf of the organization represented by the bot. Returns True on success.",
-          "html_description": "<p>Removes verification from a chat that is currently verified on behalf of the organization represented by the bot. Returns <em>True</em> on success.</p>",
-          "rst_description": "Removes verification from a chat that is currently verified on behalf of the organization represented by the bot. Returns :code:`True` on success.",
+          "html_description": "<p>Removes verification from a chat that is currently verified <a href=\"https://telegram.org/verify#third-party-verification\">on behalf of the organization</a> represented by the bot. Returns <em>True</em> on success.</p>",
+          "rst_description": "Removes verification from a chat that is currently verified `on behalf of the organization <https://telegram.org/verify#third-party-verification>`_ represented by the bot. Returns :code:`True` on success.",
           "annotations": [
             {
               "type": "Integer or String",
@@ -16650,9 +16746,9 @@
             {
               "type": "String",
               "required": false,
-              "description": "Required if ok is False. Error message in human readable form that explains why it is impossible to complete the order (e.g. \"Sorry, delivery to your desired address is unavailable'). Telegram will display this message to the user.",
-              "html_description": "<td>Required if <em>ok</em> is <em>False</em>. Error message in human readable form that explains why it is impossible to complete the order (e.g. \"Sorry, delivery to your desired address is unavailable'). Telegram will display this message to the user.</td>",
-              "rst_description": "Required if *ok* is :code:`False`. Error message in human readable form that explains why it is impossible to complete the order (e.g. \"Sorry, delivery to your desired address is unavailable'). Telegram will display this message to the user.\n",
+              "description": "Required if ok is False. Error message in human readable form that explains why it is impossible to complete the order (e.g. 'Sorry, delivery to your desired address is unavailable'). Telegram will display this message to the user.",
+              "html_description": "<td>Required if <em>ok</em> is <em>False</em>. Error message in human readable form that explains why it is impossible to complete the order (e.g. &#8220;Sorry, delivery to your desired address is unavailable&#8221;). Telegram will display this message to the user.</td>",
+              "rst_description": "Required if *ok* is :code:`False`. Error message in human readable form that explains why it is impossible to complete the order (e.g. 'Sorry, delivery to your desired address is unavailable'). Telegram will display this message to the user.\n",
               "name": "error_message"
             }
           ],
@@ -16991,9 +17087,9 @@
         {
           "anchor": "successfulpayment",
           "name": "SuccessfulPayment",
-          "description": "This object contains basic information about a successful payment.",
-          "html_description": "<p>This object contains basic information about a successful payment.</p>",
-          "rst_description": "This object contains basic information about a successful payment.",
+          "description": "This object contains basic information about a successful payment. Note that if the buyer initiates a chargeback with the relevant payment provider following this transaction, the funds may be debited from your balance. This is outside of Telegram's control.",
+          "html_description": "<p>This object contains basic information about a successful payment. Note that if the buyer initiates a chargeback with the relevant payment provider following this transaction, the funds may be debited from your balance. This is outside of Telegram's control.</p>",
+          "rst_description": "This object contains basic information about a successful payment. Note that if the buyer initiates a chargeback with the relevant payment provider following this transaction, the funds may be debited from your balance. This is outside of Telegram's control.",
           "annotations": [
             {
               "type": "String",
@@ -17394,9 +17490,9 @@
         {
           "anchor": "transactionpartner",
           "name": "TransactionPartner",
-          "description": "This object describes the source of a transaction, or its recipient for outgoing transactions. Currently, it can be one of\n - TransactionPartnerUser\n - TransactionPartnerAffiliateProgram\n - TransactionPartnerFragment\n - TransactionPartnerTelegramAds\n - TransactionPartnerTelegramApi\n - TransactionPartnerOther",
-          "html_description": "<p>This object describes the source of a transaction, or its recipient for outgoing transactions. Currently, it can be one of</p><ul>\n<li><a href=\"#transactionpartneruser\">TransactionPartnerUser</a></li>\n<li><a href=\"#transactionpartneraffiliateprogram\">TransactionPartnerAffiliateProgram</a></li>\n<li><a href=\"#transactionpartnerfragment\">TransactionPartnerFragment</a></li>\n<li><a href=\"#transactionpartnertelegramads\">TransactionPartnerTelegramAds</a></li>\n<li><a href=\"#transactionpartnertelegramapi\">TransactionPartnerTelegramApi</a></li>\n<li><a href=\"#transactionpartnerother\">TransactionPartnerOther</a></li>\n</ul>",
-          "rst_description": "This object describes the source of a transaction, or its recipient for outgoing transactions. Currently, it can be one of\n\n - :class:`aiogram.types.transaction_partner_user.TransactionPartnerUser`\n - :class:`aiogram.types.transaction_partner_affiliate_program.TransactionPartnerAffiliateProgram`\n - :class:`aiogram.types.transaction_partner_fragment.TransactionPartnerFragment`\n - :class:`aiogram.types.transaction_partner_telegram_ads.TransactionPartnerTelegramAds`\n - :class:`aiogram.types.transaction_partner_telegram_api.TransactionPartnerTelegramApi`\n - :class:`aiogram.types.transaction_partner_other.TransactionPartnerOther`",
+          "description": "This object describes the source of a transaction, or its recipient for outgoing transactions. Currently, it can be one of\n - TransactionPartnerUser\n - TransactionPartnerChat\n - TransactionPartnerAffiliateProgram\n - TransactionPartnerFragment\n - TransactionPartnerTelegramAds\n - TransactionPartnerTelegramApi\n - TransactionPartnerOther",
+          "html_description": "<p>This object describes the source of a transaction, or its recipient for outgoing transactions. Currently, it can be one of</p><ul>\n<li><a href=\"#transactionpartneruser\">TransactionPartnerUser</a></li>\n<li><a href=\"#transactionpartnerchat\">TransactionPartnerChat</a></li>\n<li><a href=\"#transactionpartneraffiliateprogram\">TransactionPartnerAffiliateProgram</a></li>\n<li><a href=\"#transactionpartnerfragment\">TransactionPartnerFragment</a></li>\n<li><a href=\"#transactionpartnertelegramads\">TransactionPartnerTelegramAds</a></li>\n<li><a href=\"#transactionpartnertelegramapi\">TransactionPartnerTelegramApi</a></li>\n<li><a href=\"#transactionpartnerother\">TransactionPartnerOther</a></li>\n</ul>",
+          "rst_description": "This object describes the source of a transaction, or its recipient for outgoing transactions. Currently, it can be one of\n\n - :class:`aiogram.types.transaction_partner_user.TransactionPartnerUser`\n - :class:`aiogram.types.transaction_partner_chat.TransactionPartnerChat`\n - :class:`aiogram.types.transaction_partner_affiliate_program.TransactionPartnerAffiliateProgram`\n - :class:`aiogram.types.transaction_partner_fragment.TransactionPartnerFragment`\n - :class:`aiogram.types.transaction_partner_telegram_ads.TransactionPartnerTelegramAds`\n - :class:`aiogram.types.transaction_partner_telegram_api.TransactionPartnerTelegramApi`\n - :class:`aiogram.types.transaction_partner_other.TransactionPartnerOther`",
           "annotations": [],
           "category": "types"
         },
@@ -17468,6 +17564,40 @@
               "description": "The gift sent to the user by the bot",
               "html_description": "<td><em>Optional</em>. The gift sent to the user by the bot</td>",
               "rst_description": "*Optional*. The gift sent to the user by the bot\n",
+              "name": "gift",
+              "required": false
+            }
+          ],
+          "category": "types"
+        },
+        {
+          "anchor": "transactionpartnerchat",
+          "name": "TransactionPartnerChat",
+          "description": "Describes a transaction with a chat.",
+          "html_description": "<p>Describes a transaction with a chat.</p>",
+          "rst_description": "Describes a transaction with a chat.",
+          "annotations": [
+            {
+              "type": "String",
+              "description": "Type of the transaction partner, always 'chat'",
+              "html_description": "<td>Type of the transaction partner, always &#8220;chat&#8221;</td>",
+              "rst_description": "Type of the transaction partner, always 'chat'\n",
+              "name": "type",
+              "required": true
+            },
+            {
+              "type": "Chat",
+              "description": "Information about the chat",
+              "html_description": "<td>Information about the chat</td>",
+              "rst_description": "Information about the chat\n",
+              "name": "chat",
+              "required": true
+            },
+            {
+              "type": "Gift",
+              "description": "The gift sent to the chat by the bot",
+              "html_description": "<td><em>Optional</em>. The gift sent to the chat by the bot</td>",
+              "rst_description": "*Optional*. The gift sent to the chat by the bot\n",
               "name": "gift",
               "required": false
             }
@@ -17599,9 +17729,9 @@
         {
           "anchor": "startransaction",
           "name": "StarTransaction",
-          "description": "Describes a Telegram Star transaction.",
-          "html_description": "<p>Describes a Telegram Star transaction.</p>",
-          "rst_description": "Describes a Telegram Star transaction.",
+          "description": "Describes a Telegram Star transaction. Note that if the buyer initiates a chargeback with the payment provider from whom they acquired Stars (e.g., Apple, Google) following this transaction, the refunded Stars will be deducted from the bot's balance. This is outside of Telegram's control.",
+          "html_description": "<p>Describes a Telegram Star transaction. Note that if the buyer initiates a chargeback with the payment provider from whom they acquired Stars (e.g., Apple, Google) following this transaction, the refunded Stars will be deducted from the bot's balance. This is outside of Telegram's control.</p>",
+          "rst_description": "Describes a Telegram Star transaction. Note that if the buyer initiates a chargeback with the payment provider from whom they acquired Stars (e.g., Apple, Google) following this transaction, the refunded Stars will be deducted from the bot's balance. This is outside of Telegram's control.",
           "annotations": [
             {
               "type": "String",

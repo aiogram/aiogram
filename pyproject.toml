@@ -60,7 +60,7 @@ fast = [
     "aiodns>=3.0.0",
 ]
 redis = [
-    "redis[hiredis]>=5.0.1,<5.1.0",
+    "redis[hiredis]>=5.0.1,<5.3.0",
 ]
 mongo = [
     "motor>=3.3.2,<3.7.0",
@@ -303,6 +303,7 @@ module = [
     "uvloop",
     "redis.*",
     "babel.*",
+    "aiohttp_socks.*",
 ]
 ignore_missing_imports = true
 disallow_untyped_defs = true
