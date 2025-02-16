@@ -44,8 +44,6 @@ Bugfixes
   `#1628 <https://github.com/aiogram/aiogram/issues/1628>`_
 - Fix the regex pattern that finds the "bad characters" for deeplink payload.
   `#1630 <https://github.com/aiogram/aiogram/issues/1630>`_
-- Fix small typo in the Scenes documentation
-  `#1640 <https://github.com/aiogram/aiogram/issues/1640>`_
 
 
 Improved Documentation
@@ -53,7 +51,8 @@ Improved Documentation
 
 - Update :code:`data: Dict[Any, str]` to :code:`data: Dict[str, Any]`
   `#1634 <https://github.com/aiogram/aiogram/issues/1634>`_
-
+- Fix small typo in the Scenes documentation
+  `#1640 <https://github.com/aiogram/aiogram/issues/1640>`_
 
 Misc
 ----
