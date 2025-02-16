@@ -1,0 +1,28 @@
+====
+Added functionality for negative numbers in keyboard adjust.
+====
+If the function gets a negative number in `adjust()`, it applies them to the lower buttons in the same way that positive numbers affect the upper buttons.
+
+Negative numbers have a higher priority in formatting.
+
+You can make that:
+
+.. image:: https://github.com/aiogram/aiogram/assets/104172267/4d55a4c6-23fa-4a73-824b-0f2d7c879431
+
+
+With this code:
+
+    .. code-block:: python
+    
+        def test_markup():
+            builder = ReplyKeyboardBuilder()
+            builder.row(*(KeyboardButton(text=f"test-{index}") for index in range(6)))
+            builder.button(text="Add", callback_data="add")
+            builder.button(text="Cancel", callback_data="cancel")
+            builder.adjust(3, -1, -1)
+            return builder.as_markup()
+
+        @router.message(Command('test'))
+        async def test_handler(msg: Message) -> None:
+            await msg.answer("This is TEST!!!", reply_markup=test_markup())
+          ...
