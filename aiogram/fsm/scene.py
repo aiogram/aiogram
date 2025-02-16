@@ -323,7 +323,10 @@ class Scene:
             if callback_query_without_state is None:
                 callback_query_without_state = parent_scene_config.callback_query_without_state
 
-        for name, value in inspect.getmembers(cls):
+        members: dict[str, Any] = {}
+        for base in reversed(inspect.getmro(cls)):
+            members.update(base.__dict__)
+        for name, value in members.items():
             if scene_handlers := getattr(value, "__aiogram_handler__", None):
                 handlers.extend(scene_handlers)
             if isinstance(value, ObserverDecorator):

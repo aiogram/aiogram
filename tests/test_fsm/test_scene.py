@@ -1680,3 +1680,31 @@ class TestSceneInheritance:
         assert child_2_handler.handler is _empty_handler
 
         assert child_3_handler.handler is not _empty_handler
+
+
+def collect_handler_names(scene):
+    return [handler.handler.__name__ for handler in scene.__scene_config__.handlers]
+
+
+class TestSceneHandlersOrdering:
+    def test_correct_ordering(self):
+        class Scene1(Scene):
+            @on.message()
+            async def handler1(self, message: Message) -> None:
+                pass
+
+            @on.message()
+            async def handler2(self, message: Message) -> None:
+                pass
+
+        class Scene2(Scene):
+            @on.message()
+            async def handler2(self, message: Message) -> None:
+                pass
+
+            @on.message()
+            async def handler1(self, message: Message) -> None:
+                pass
+
+        assert collect_handler_names(Scene1) == ["handler1", "handler2"]
+        assert collect_handler_names(Scene2) == ["handler2", "handler1"]
