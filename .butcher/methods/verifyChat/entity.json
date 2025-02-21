@@ -8,8 +8,8 @@
     "anchor": "verifychat",
     "name": "verifyChat",
     "description": "Verifies a chat on behalf of the organization which is represented by the bot. Returns True on success.",
-    "html_description": "<p>Verifies a chat on behalf of the organization which is represented by the bot. Returns <em>True</em> on success.</p>",
-    "rst_description": "Verifies a chat on behalf of the organization which is represented by the bot. Returns :code:`True` on success.",
+    "html_description": "<p>Verifies a chat <a href=\"https://telegram.org/verify#third-party-verification\">on behalf of the organization</a> which is represented by the bot. Returns <em>True</em> on success.</p>",
+    "rst_description": "Verifies a chat `on behalf of the organization <https://telegram.org/verify#third-party-verification>`_ which is represented by the bot. Returns :code:`True` on success.",
     "annotations": [
       {
         "type": "Integer or String",

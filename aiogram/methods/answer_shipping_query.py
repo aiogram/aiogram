@@ -23,7 +23,7 @@ class AnswerShippingQuery(TelegramMethod[bool]):
     shipping_options: Optional[list[ShippingOption]] = None
     """Required if *ok* is :code:`True`. A JSON-serialized array of available shipping options."""
     error_message: Optional[str] = None
-    """Required if *ok* is :code:`False`. Error message in human readable form that explains why it is impossible to complete the order (e.g. "Sorry, delivery to your desired address is unavailable'). Telegram will display this message to the user."""
+    """Required if *ok* is :code:`False`. Error message in human readable form that explains why it is impossible to complete the order (e.g. 'Sorry, delivery to your desired address is unavailable'). Telegram will display this message to the user."""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!

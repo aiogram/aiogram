@@ -228,6 +228,7 @@ Payments
     successful_payment
     transaction_partner
     transaction_partner_affiliate_program
+    transaction_partner_chat
     transaction_partner_fragment
     transaction_partner_other
     transaction_partner_telegram_ads

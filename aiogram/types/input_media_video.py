@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import datetime
 from typing import TYPE_CHECKING, Any, Literal, Optional, Union
 
 from ..client.default import Default
@@ -24,6 +25,10 @@ class InputMediaVideo(InputMedia):
     """File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass 'attach://<file_attach_name>' to upload a new one using multipart/form-data under <file_attach_name> name. :ref:`More information on Sending Files » <sending-files>`"""
     thumbnail: Optional[InputFile] = None
     """*Optional*. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`"""
+    cover: Optional[Union[str, InputFile]] = None
+    """*Optional*. Cover for the video in the message. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass 'attach://<file_attach_name>' to upload a new one using multipart/form-data under <file_attach_name> name. :ref:`More information on Sending Files » <sending-files>`"""
+    start_timestamp: Optional[Union[datetime.datetime, datetime.timedelta, int]] = None
+    """*Optional*. Start timestamp for the video in the message"""
     caption: Optional[str] = None
     """*Optional*. Caption of the video to be sent, 0-1024 characters after entities parsing"""
     parse_mode: Optional[Union[str, Default]] = Default("parse_mode")
@@ -53,6 +58,8 @@ class InputMediaVideo(InputMedia):
             type: Literal[InputMediaType.VIDEO] = InputMediaType.VIDEO,
             media: Union[str, InputFile],
             thumbnail: Optional[InputFile] = None,
+            cover: Optional[Union[str, InputFile]] = None,
+            start_timestamp: Optional[Union[datetime.datetime, datetime.timedelta, int]] = None,
             caption: Optional[str] = None,
             parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
             caption_entities: Optional[list[MessageEntity]] = None,
@@ -74,6 +81,8 @@ class InputMediaVideo(InputMedia):
                 type=type,
                 media=media,
                 thumbnail=thumbnail,
+                cover=cover,
+                start_timestamp=start_timestamp,
                 caption=caption,
                 parse_mode=parse_mode,
                 caption_entities=caption_entities,

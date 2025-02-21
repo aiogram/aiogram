@@ -1,1 +1,0 @@
-Fix the regex pattern that finds the "bad characters" for deeplink payload.

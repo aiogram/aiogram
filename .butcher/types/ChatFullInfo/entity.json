@@ -261,6 +261,14 @@
       },
       {
         "type": "True",
+        "description": "True, if gifts can be sent to the chat",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if gifts can be sent to the chat</td>",
+        "rst_description": "*Optional*. :code:`True`, if gifts can be sent to the chat\n",
+        "name": "can_send_gift",
+        "required": false
+      },
+      {
+        "type": "True",
         "description": "True, if paid media messages can be sent or forwarded to the channel chat. The field is available only for channel chats.",
         "html_description": "<td><em>Optional</em>. <em>True</em>, if paid media messages can be sent or forwarded to the channel chat. The field is available only for channel chats.</td>",
         "rst_description": "*Optional*. :code:`True`, if paid media messages can be sent or forwarded to the channel chat. The field is available only for channel chats.\n",

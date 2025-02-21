@@ -16,6 +16,53 @@ Changelog
 
 .. towncrier release notes start
 
+3.18.0 (2025-02-16)
+====================
+
+Features
+--------
+
+- Added full support for the `Bot API 8.3 <https://core.telegram.org/bots/api-changelog#february-12-2025>`_:
+
+  - Added the parameter :code:`chat_id` to the method :class:`aiogram.methods.send_gift.SendGift`, allowing bots to send gifts to channel chats.
+  - Added the field :code:`can_send_gift` to the class :class:`aiogram.types.chat_full_info.ChatFullInfo`.
+  - Added the class :class:`aiogram.types.transaction_partner_chat.TransactionPartnerChat` describing transactions with chats.
+  - Added the fields :code:`cover` and :code:`start_timestamp` to the class :class:`aiogram.types.video.Video`, containing a message-specific cover and a start timestamp for the video.
+  - Added the parameters :code:`cover` and :code:`start_timestamp` to the method :class:`aiogram.methods.send_video.SendVideo`, allowing bots to specify a cover and a start timestamp for the videos they send.
+  - Added the fields :code:`cover` and :code:`start_timestamp` to the classes :class:`aiogram.types.input_media_video.InputMediaVideo` and :class:`aiogram.types.input_paid_media_video.InputPaidMediaVideo`, allowing bots to edit video covers and start timestamps, and specify them for videos in albums and paid media.
+  - Added the parameter :code:`video_start_timestamp` to the methods :class:`aiogram.methods.forward_message.ForwardMessage` and :class:`aiogram.methods.copy_message.CopyMessage`, allowing bots to change the start timestamp for forwarded and copied videos.
+  - Allowed adding reactions to most types of service messages.
+  `#1638 <https://github.com/aiogram/aiogram/issues/1638>`_
+
+
+Bugfixes
+--------
+
+- Fixed endless loop while adding buttons to the :code:`KeyboardBuilder`.
+  `#1595 <https://github.com/aiogram/aiogram/issues/1595>`_
+- Change the :code:`Downloadable` protocol to be non-writable to shut up type checking that checks code that uses the :code:`bot.download(...)` method
+  `#1628 <https://github.com/aiogram/aiogram/issues/1628>`_
+- Fix the regex pattern that finds the "bad characters" for deeplink payload.
+  `#1630 <https://github.com/aiogram/aiogram/issues/1630>`_
+
+
+Improved Documentation
+----------------------
+
+- Update :code:`data: Dict[Any, str]` to :code:`data: Dict[str, Any]`
+  `#1634 <https://github.com/aiogram/aiogram/issues/1634>`_
+- Fix small typo in the Scenes documentation
+  `#1640 <https://github.com/aiogram/aiogram/issues/1640>`_
+
+Misc
+----
+
+- Removed redundant :code:`Path` to :code:`str` convertion on file download.
+  `#1612 <https://github.com/aiogram/aiogram/issues/1612>`_
+- Increased max :code:`redis` version support from “<5.1.0” to “<5.3.0”
+  `#1631 <https://github.com/aiogram/aiogram/issues/1631>`_
+
+
 3.17.0 (2025-01-02)
 ====================
 
