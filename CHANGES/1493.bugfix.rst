@@ -1,0 +1,1 @@
+Fix handling of default empty string ("") in CallbackData filter
