@@ -1,0 +1,39 @@
+import logging
+from aiogram import Bot, Dispatcher, types
+from aiogram.utils import executor
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+import datetime
+
+API_TOKEN = 'Hsjjsjjj_bot'
+CHANNEL_ID =2400174743 '@nnnnnmnllk'
+
+logging.basicConfig(level=logging.INFO)
+bot = Bot(token=7926034069:AAEtV9uN8du2tIKOwXCDUmG0G1Jr1TV0qe4)
+dp = Dispatcher(bot)
+
+# Tasdiqlash tugmasi
+confirm_button = InlineKeyboardMarkup(row_width=1)
+confirm_button.add(InlineKeyboardButton("✅ Tasdiqlash", callback_data='confirm'))
+
+@dp.message_handler(commands=['start'])
+async def send_welcome(message: types.Message):
+    await message.reply("Salom! Davomat uchun 'Kelganman' deb yozing.")
+
+@dp.message_handler(lambda message: message.text.lower() == 'kelganman')
+async def check_in(message: types.Message):
+    await message.reply("Iltimos, kelganingizni tasdiqlang:", reply_markup=confirm_button)
+
+@dp.callback_query_handler(lambda c: c.data == 'confirm')
+async def confirm(callback_query: types.CallbackQuery):
+    user = callback_query.from_user
+    now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    text = f"👤 {user.full_name} (@{user.username})\n🕒 Kelgan vaqti: {now}"
+    
+    # Kanalga yuborish
+    await bot.send_message(CHANNEL_ID, text)
+    
+    # Foydalanuvchiga javob
+    await callback_query.message.edit_text("✅ Davomatingiz qayd etildi!")
+    
+if name == 'main':
+    executor.start_polling(dp, skip_updates=True)
