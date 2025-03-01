@@ -1708,3 +1708,45 @@ class TestSceneHandlersOrdering:
 
         assert collect_handler_names(Scene1) == ["handler1", "handler2"]
         assert collect_handler_names(Scene2) == ["handler2", "handler1"]
+
+    def test_inherited_handlers_follow_mro_order(self):
+        class Scene1(Scene):
+            @on.message()
+            async def handler1(self, message: Message) -> None:
+                pass
+
+            @on.message()
+            async def handler2(self, message: Message) -> None:
+                pass
+
+        class Scene2(Scene1):
+            @on.message()
+            async def handler3(self, message: Message) -> None:
+                pass
+
+            @on.message()
+            async def handler4(self, message: Message) -> None:
+                pass
+
+        assert collect_handler_names(Scene2) == ["handler3", "handler4", "handler1", "handler2"]
+
+    def test_inherited_overwrite_follow_mro_order(self):
+        class Scene1(Scene):
+            @on.message()
+            async def handler1(self, message: Message) -> None:
+                pass
+
+            @on.message()
+            async def handler2(self, message: Message) -> None:
+                pass
+
+        class Scene2(Scene1):
+            @on.message()
+            async def handler2(self, message: Message) -> None:
+                pass
+
+            @on.message()
+            async def handler3(self, message: Message) -> None:
+                pass
+
+        assert collect_handler_names(Scene2) == ["handler3", "handler1", "handler2"]
