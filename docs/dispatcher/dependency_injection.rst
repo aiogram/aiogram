@@ -105,14 +105,14 @@ Example of using type hints:
     class MyMessageMiddleware(BaseMiddleware):
         async def __call__(
             self,
-            handler: Callable[[Message, MiddlewareData], Awaitable[Any]],
+            handler: Callable[[Message, MyMiddlewareData], Awaitable[Any]],
             event: Message,
-            data: MiddlewareData,
+            data: MyMiddlewareData,
         ) -> Any:
             bot = data["bot"]  # <-- IDE will show you that data has `bot` key and its type is `Bot`
 
-            data["my_custom_value"] = 42  # <-- IDE will show you that you can set `my_custom_value` key with int value and warn you if you try to set it with other type
-            return await handler(event, data))
+            data["my_custom_value"] = bot.id * 42  # <-- IDE will show you that you can set `my_custom_value` key with int value and warn you if you try to set it with other type
+            return await handler(event, data)
 
 
 Available context data type helpers
