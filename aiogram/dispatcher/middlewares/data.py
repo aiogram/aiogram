@@ -20,11 +20,18 @@ class DispatcherData(TypedDict, total=False):
     """
 
     dispatcher: Dispatcher
+    """Instance of the Dispatcher from which the handler was called."""
     bot: Bot
-    bots: list[Bot]
+    """Bot that received the update."""
+    bots: NotRequired[list[Bot]]
+    """List of all bots in the Dispatcher. Used only in polling mode."""
     event_update: Update
+    """Update object that triggered the handler."""
     event_router: Router
+    """Router that was used to find the handler."""
     handler: NotRequired[HandlerObject]
+    """Handler object that was called.
+    Available only in the handler itself and inner middlewares."""
 
 
 class UserContextData(TypedDict, total=False):
@@ -33,10 +40,21 @@ class UserContextData(TypedDict, total=False):
     """
 
     event_context: EventContext
+    """Event context object that contains user and chat data."""
     event_from_user: NotRequired[User]
-    event_chat: NotRequired[Chat]  # Deprecated
-    event_thread_id: NotRequired[int]  # Deprecated
-    event_business_connection_id: NotRequired[str]  # Deprecated
+    """User object that triggered the handler."""
+    event_chat: NotRequired[Chat]
+    """Chat object that triggered the handler.
+    .. deprecated:: 3.5.0
+        Use :attr:`event_context.chat` instead."""
+    event_thread_id: NotRequired[int]
+    """Thread ID of the chat that triggered the handler.
+    .. deprecated:: 3.5.0
+        Use :attr:`event_context.chat` instead."""
+    event_business_connection_id: NotRequired[str]
+    """Business connection ID of the chat that triggered the handler.
+    .. deprecated:: 3.5.0
+        Use :attr:`event_context.business_connection_id` instead."""
 
 
 class FSMData(TypedDict, total=False):
@@ -45,8 +63,11 @@ class FSMData(TypedDict, total=False):
     """
 
     fsm_storage: BaseStorage
+    """Storage used for FSM."""
     state: NotRequired[FSMContext]
+    """Current state of the FSM."""
     raw_state: NotRequired[str | None]
+    """Raw state of the FSM."""
 
 
 class I18nData(TypedDict, total=False):
@@ -57,7 +78,9 @@ class I18nData(TypedDict, total=False):
     """
 
     i18n: I18n
+    """I18n object."""
     i18n_middleware: I18nMiddleware
+    """I18n middleware."""
 
 
 class MiddlewareData(
