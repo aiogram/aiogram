@@ -3,3 +3,18 @@ object caused by :code:`inspect.getmembers` returning sorted members.
 Handlers are now registered in the order of their definition within the class,
 ensuring proper execution sequence, especially when handling filters with different
 levels of specificity.
+
+For backward compatibility, the old behavior can be restored by setting the
+:code:`attrs_resolver=inspect_members_resolver` parameter in the :class:`aiogram.fsm.scene.Scene`:
+
+.. code-block:: python
+
+    from aiogram.utils.class_attrs_resolver import inspect_members_resolver
+
+
+    class MyScene(Scene, attrs_resolver=inspect_members_resolver):
+
+In this case, the handlers will be registered in the order returned by :code:`inspect.getmembers`.
+
+By default, the :code:`attrs_resolver` parameter is set to :code:`get_sorted_mro_attrs_resolver` now,
+so you **don't need** to specify it explicitly.
