@@ -261,7 +261,8 @@ filterwarnings = [
 branch = false
 parallel = true
 omit = [
-    "aiogram/__about__.py",
+    "aiogram/__meta__.py",
+    "aiogram/dispatcher/middlewares/data.py"
 ]
 
 [tool.coverage.report]

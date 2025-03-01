@@ -1,0 +1,4 @@
+Add TypedDict definitions for middleware context data to the dispatcher dependency injection docs.
+
+So, now you can use :class:`aiogram.dispatcher.middleware.data.MiddlewareData` directly or
+extend it with your own data in the middlewares.
