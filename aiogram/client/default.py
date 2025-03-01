@@ -1,8 +1,9 @@
 from __future__ import annotations
 
-import sys
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Any, Dict, Optional
+from typing import TYPE_CHECKING, Any, Optional
+
+from aiogram.utils.dataclass import dataclass_kwargs
 
 if TYPE_CHECKING:
     from aiogram.types import LinkPreviewOptions
@@ -28,13 +29,7 @@ class Default:
         return f"<{self}>"
 
 
-_dataclass_properties: Dict[str, Any] = {}
-if sys.version_info >= (3, 10):
-    # Speedup attribute access for dataclasses in Python 3.10+
-    _dataclass_properties.update({"slots": True, "kw_only": True})
-
-
-@dataclass(**_dataclass_properties)
+@dataclass(**dataclass_kwargs(slots=True, kw_only=True))
 class DefaultBotProperties:
     """
     Default bot properties.
