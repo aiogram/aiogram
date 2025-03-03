@@ -24,6 +24,7 @@ BAD_PATTERN = re.compile(r"[^a-zA-Z0-9-_]")
 async def create_start_link(
     bot: Bot,
     payload: str,
+    link_type: Literal["start", "startgroup", "startapp"],
     encode: bool = False,
     encoder: Optional[Callable[[bytes], bytes]] = None,
 ) -> str:
@@ -35,6 +36,7 @@ async def create_start_link(
 
     :param bot: bot instance
     :param payload: args passed with /start
+    :param link_type: name of query arg
     :param encode: encode payload with base64url or custom encoder
     :param encoder: custom encoder callable
     :return: link
@@ -42,7 +44,7 @@ async def create_start_link(
     username = (await bot.me()).username
     return create_deep_link(
         username=cast(str, username),
-        link_type="start",
+        link_type=link_type,
         payload=payload,
         encode=encode,
         encoder=encoder,
@@ -79,7 +81,7 @@ async def create_startgroup_link(
 
 def create_deep_link(
     username: str,
-    link_type: Literal["start", "startgroup"],
+    link_type: Literal["start", "startgroup", "startapp"],
     payload: str,
     encode: bool = False,
     encoder: Optional[Callable[[bytes], bytes]] = None,
