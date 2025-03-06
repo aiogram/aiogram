@@ -85,17 +85,17 @@ async def create_startapp_link(
     encoder: Optional[Callable[[bytes], bytes]] = None,
 ) -> str:
     """
-        Create 'startapp' deep link with your payload.
+    Create 'startapp' deep link with your payload.
 
-        If you need to encode payload or pass special characters -
-            set encode as True
+    If you need to encode payload or pass special characters -
+        set encode as True
 
-        :param bot: bot instance
-        :param payload: args passed with /start
-        :param encode: encode payload with base64url or custom encoder
-        :param encoder: custom encoder callable
-        :return: link
-        """
+    :param bot: bot instance
+    :param payload: args passed with /start
+    :param encode: encode payload with base64url or custom encoder
+    :param encoder: custom encoder callable
+    :return: link
+    """
     username = (await bot.me()).username
     return create_deep_link(
         username=cast(str, username),
