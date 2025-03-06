@@ -3,6 +3,7 @@ from __future__ import annotations
 __all__ = [
     "create_start_link",
     "create_startgroup_link",
+    "create_startapp_link",
     "create_deep_link",
     "create_telegram_link",
     "encode_payload",
@@ -24,7 +25,6 @@ BAD_PATTERN = re.compile(r"[^a-zA-Z0-9-_]")
 async def create_start_link(
     bot: Bot,
     payload: str,
-    link_type: Literal["start", "startgroup", "startapp"],
     encode: bool = False,
     encoder: Optional[Callable[[bytes], bytes]] = None,
 ) -> str:
@@ -36,7 +36,6 @@ async def create_start_link(
 
     :param bot: bot instance
     :param payload: args passed with /start
-    :param link_type: name of query arg
     :param encode: encode payload with base64url or custom encoder
     :param encoder: custom encoder callable
     :return: link
@@ -44,7 +43,7 @@ async def create_start_link(
     username = (await bot.me()).username
     return create_deep_link(
         username=cast(str, username),
-        link_type=link_type,
+        link_type="start",
         payload=payload,
         encode=encode,
         encoder=encoder,
@@ -73,6 +72,34 @@ async def create_startgroup_link(
     return create_deep_link(
         username=cast(str, username),
         link_type="startgroup",
+        payload=payload,
+        encode=encode,
+        encoder=encoder,
+    )
+
+
+async def create_startapp_link(
+    bot: Bot,
+    payload: str,
+    encode: bool = False,
+    encoder: Optional[Callable[[bytes], bytes]] = None,
+) -> str:
+    """
+        Create 'startapp' deep link with your payload.
+
+        If you need to encode payload or pass special characters -
+            set encode as True
+
+        :param bot: bot instance
+        :param payload: args passed with /start
+        :param encode: encode payload with base64url or custom encoder
+        :param encoder: custom encoder callable
+        :return: link
+        """
+    username = (await bot.me()).username
+    return create_deep_link(
+        username=cast(str, username),
+        link_type="startapp",
         payload=payload,
         encode=encode,
         encoder=encoder,
