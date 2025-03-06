@@ -1,7 +1,8 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional, Union
+from typing import TYPE_CHECKING, Any, Optional
 
+from ..types import ChatIdUnion
 from .base import TelegramMethod
 
 
@@ -15,7 +16,7 @@ class PromoteChatMember(TelegramMethod[bool]):
     __returning__ = bool
     __api_method__ = "promoteChatMember"
 
-    chat_id: Union[int, str]
+    chat_id: ChatIdUnion
     """Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)"""
     user_id: int
     """Unique identifier of the target user"""
@@ -57,7 +58,7 @@ class PromoteChatMember(TelegramMethod[bool]):
         def __init__(
             __pydantic__self__,
             *,
-            chat_id: Union[int, str],
+            chat_id: ChatIdUnion,
             user_id: int,
             is_anonymous: Optional[bool] = None,
             can_manage_chat: Optional[bool] = None,

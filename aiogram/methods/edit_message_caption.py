@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, Optional, Union
 
 from ..client.default import Default
-from ..types import InlineKeyboardMarkup, Message, MessageEntity
+from ..types import ChatIdUnion, InlineKeyboardMarkup, Message, MessageEntity
 from .base import TelegramMethod
 
 
@@ -19,7 +19,7 @@ class EditMessageCaption(TelegramMethod[Union[Message, bool]]):
 
     business_connection_id: Optional[str] = None
     """Unique identifier of the business connection on behalf of which the message to be edited was sent"""
-    chat_id: Optional[Union[int, str]] = None
+    chat_id: Optional[ChatIdUnion] = None
     """Required if *inline_message_id* is not specified. Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)"""
     message_id: Optional[int] = None
     """Required if *inline_message_id* is not specified. Identifier of the message to edit"""
@@ -44,7 +44,7 @@ class EditMessageCaption(TelegramMethod[Union[Message, bool]]):
             __pydantic__self__,
             *,
             business_connection_id: Optional[str] = None,
-            chat_id: Optional[Union[int, str]] = None,
+            chat_id: Optional[ChatIdUnion] = None,
             message_id: Optional[int] = None,
             inline_message_id: Optional[str] = None,
             caption: Optional[str] = None,

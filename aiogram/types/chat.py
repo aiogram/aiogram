@@ -1,7 +1,6 @@
 from __future__ import annotations
 
-import datetime
-from typing import TYPE_CHECKING, Any, Optional, Union
+from typing import TYPE_CHECKING, Any, Optional
 
 from pydantic import Field
 
@@ -46,6 +45,7 @@ if TYPE_CHECKING:
     from .chat_location import ChatLocation
     from .chat_permissions import ChatPermissions
     from .chat_photo import ChatPhoto
+    from .date_time_union import DateTimeUnion
     from .input_file import InputFile
     from .message import Message
     from .reaction_type_union import ReactionTypeUnion
@@ -562,7 +562,7 @@ class Chat(TelegramObject):
         self,
         invite_link: str,
         name: Optional[str] = None,
-        expire_date: Optional[Union[datetime.datetime, datetime.timedelta, int]] = None,
+        expire_date: Optional[DateTimeUnion] = None,
         member_limit: Optional[int] = None,
         creates_join_request: Optional[bool] = None,
         **kwargs: Any,
@@ -602,7 +602,7 @@ class Chat(TelegramObject):
     def create_invite_link(
         self,
         name: Optional[str] = None,
-        expire_date: Optional[Union[datetime.datetime, datetime.timedelta, int]] = None,
+        expire_date: Optional[DateTimeUnion] = None,
         member_limit: Optional[int] = None,
         creates_join_request: Optional[bool] = None,
         **kwargs: Any,
@@ -1076,7 +1076,7 @@ class Chat(TelegramObject):
         user_id: int,
         permissions: ChatPermissions,
         use_independent_chat_permissions: Optional[bool] = None,
-        until_date: Optional[Union[datetime.datetime, datetime.timedelta, int]] = None,
+        until_date: Optional[DateTimeUnion] = None,
         **kwargs: Any,
     ) -> RestrictChatMember:
         """
@@ -1144,7 +1144,7 @@ class Chat(TelegramObject):
     def ban(
         self,
         user_id: int,
-        until_date: Optional[Union[datetime.datetime, datetime.timedelta, int]] = None,
+        until_date: Optional[DateTimeUnion] = None,
         revoke_messages: Optional[bool] = None,
         **kwargs: Any,
     ) -> BanChatMember:

@@ -1,9 +1,8 @@
 from __future__ import annotations
 
-import datetime
-from typing import TYPE_CHECKING, Any, Optional, Union
+from typing import TYPE_CHECKING, Any, Optional
 
-from ..types import ChatInviteLink
+from ..types import ChatIdUnion, ChatInviteLink, DateTimeUnion
 from .base import TelegramMethod
 
 
@@ -17,9 +16,9 @@ class CreateChatSubscriptionInviteLink(TelegramMethod[ChatInviteLink]):
     __returning__ = ChatInviteLink
     __api_method__ = "createChatSubscriptionInviteLink"
 
-    chat_id: Union[int, str]
+    chat_id: ChatIdUnion
     """Unique identifier for the target channel chat or username of the target channel (in the format :code:`@channelusername`)"""
-    subscription_period: Union[datetime.datetime, datetime.timedelta, int]
+    subscription_period: DateTimeUnion
     """The number of seconds the subscription will be active for before the next payment. Currently, it must always be 2592000 (30 days)."""
     subscription_price: int
     """The amount of Telegram Stars a user must pay initially and after each subsequent subscription period to be a member of the chat; 1-2500"""
@@ -33,8 +32,8 @@ class CreateChatSubscriptionInviteLink(TelegramMethod[ChatInviteLink]):
         def __init__(
             __pydantic__self__,
             *,
-            chat_id: Union[int, str],
-            subscription_period: Union[datetime.datetime, datetime.timedelta, int],
+            chat_id: ChatIdUnion,
+            subscription_period: DateTimeUnion,
             subscription_price: int,
             name: Optional[str] = None,
             **__pydantic_kwargs: Any,

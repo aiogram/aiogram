@@ -6,6 +6,7 @@ from ..client.default import Default
 from .base import TelegramObject
 
 if TYPE_CHECKING:
+    from .chat_id_union import ChatIdUnion
     from .message_entity import MessageEntity
 
 
@@ -18,7 +19,7 @@ class ReplyParameters(TelegramObject):
 
     message_id: int
     """Identifier of the message that will be replied to in the current chat, or in the chat *chat_id* if it is specified"""
-    chat_id: Optional[Union[int, str]] = None
+    chat_id: Optional[ChatIdUnion] = None
     """*Optional*. If the message to be replied to is from a different chat, unique identifier for the chat or username of the channel (in the format :code:`@channelusername`). Not supported for messages sent on behalf of a business account."""
     allow_sending_without_reply: Optional[Union[bool, Default]] = Default(
         "allow_sending_without_reply"
@@ -41,7 +42,7 @@ class ReplyParameters(TelegramObject):
             __pydantic__self__,
             *,
             message_id: int,
-            chat_id: Optional[Union[int, str]] = None,
+            chat_id: Optional[ChatIdUnion] = None,
             allow_sending_without_reply: Optional[Union[bool, Default]] = Default(
                 "allow_sending_without_reply"
             ),

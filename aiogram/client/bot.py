@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import datetime
 import io
 import pathlib
 from contextlib import asynccontextmanager
@@ -168,6 +167,7 @@ from ..types import (
     BusinessConnection,
     ChatAdministratorRights,
     ChatFullInfo,
+    ChatIdUnion,
     ChatInviteLink,
     ChatMemberAdministrator,
     ChatMemberBanned,
@@ -176,9 +176,9 @@ from ..types import (
     ChatMemberOwner,
     ChatMemberRestricted,
     ChatPermissions,
+    DateTimeUnion,
     Downloadable,
     File,
-    ForceReply,
     ForumTopic,
     GameHighScore,
     Gifts,
@@ -186,17 +186,15 @@ from ..types import (
     InlineQueryResultsButton,
     InlineQueryResultUnion,
     InputFile,
-    InputMediaAudio,
-    InputMediaDocument,
-    InputMediaPhoto,
+    InputFileUnion,
     InputMediaUnion,
-    InputMediaVideo,
     InputPaidMediaUnion,
-    InputPollOption,
+    InputPollOptionUnion,
     InputSticker,
     LabeledPrice,
     LinkPreviewOptions,
     MaskPosition,
+    MediaUnion,
     MenuButtonCommands,
     MenuButtonDefault,
     MenuButtonUnion,
@@ -208,8 +206,7 @@ from ..types import (
     Poll,
     PreparedInlineMessage,
     ReactionTypeUnion,
-    ReplyKeyboardMarkup,
-    ReplyKeyboardRemove,
+    ReplyMarkupUnion,
     ReplyParameters,
     SentWebAppMessage,
     ShippingOption,
@@ -664,7 +661,7 @@ class Bot:
 
     async def approve_chat_join_request(
         self,
-        chat_id: Union[int, str],
+        chat_id: ChatIdUnion,
         user_id: int,
         request_timeout: Optional[int] = None,
     ) -> bool:
@@ -687,9 +684,9 @@ class Bot:
 
     async def ban_chat_member(
         self,
-        chat_id: Union[int, str],
+        chat_id: ChatIdUnion,
         user_id: int,
-        until_date: Optional[Union[datetime.datetime, datetime.timedelta, int]] = None,
+        until_date: Optional[DateTimeUnion] = None,
         revoke_messages: Optional[bool] = None,
         request_timeout: Optional[int] = None,
     ) -> bool:
@@ -716,7 +713,7 @@ class Bot:
 
     async def ban_chat_sender_chat(
         self,
-        chat_id: Union[int, str],
+        chat_id: ChatIdUnion,
         sender_chat_id: int,
         request_timeout: Optional[int] = None,
     ) -> bool:
@@ -755,7 +752,7 @@ class Bot:
 
     async def close_forum_topic(
         self,
-        chat_id: Union[int, str],
+        chat_id: ChatIdUnion,
         message_thread_id: int,
         request_timeout: Optional[int] = None,
     ) -> bool:
@@ -778,11 +775,11 @@ class Bot:
 
     async def copy_message(
         self,
-        chat_id: Union[int, str],
-        from_chat_id: Union[int, str],
+        chat_id: ChatIdUnion,
+        from_chat_id: ChatIdUnion,
         message_id: int,
         message_thread_id: Optional[int] = None,
-        video_start_timestamp: Optional[Union[datetime.datetime, datetime.timedelta, int]] = None,
+        video_start_timestamp: Optional[DateTimeUnion] = None,
         caption: Optional[str] = None,
         parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
         caption_entities: Optional[list[MessageEntity]] = None,
@@ -793,9 +790,7 @@ class Bot:
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
         allow_paid_broadcast: Optional[bool] = None,
         reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[
-            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
-        ] = None,
+        reply_markup: Optional[ReplyMarkupUnion] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
         request_timeout: Optional[int] = None,
@@ -847,9 +842,9 @@ class Bot:
 
     async def create_chat_invite_link(
         self,
-        chat_id: Union[int, str],
+        chat_id: ChatIdUnion,
         name: Optional[str] = None,
-        expire_date: Optional[Union[datetime.datetime, datetime.timedelta, int]] = None,
+        expire_date: Optional[DateTimeUnion] = None,
         member_limit: Optional[int] = None,
         creates_join_request: Optional[bool] = None,
         request_timeout: Optional[int] = None,
@@ -879,7 +874,7 @@ class Bot:
 
     async def create_forum_topic(
         self,
-        chat_id: Union[int, str],
+        chat_id: ChatIdUnion,
         name: str,
         icon_color: Optional[int] = None,
         icon_custom_emoji_id: Optional[str] = None,
@@ -1029,7 +1024,7 @@ class Bot:
 
     async def decline_chat_join_request(
         self,
-        chat_id: Union[int, str],
+        chat_id: ChatIdUnion,
         user_id: int,
         request_timeout: Optional[int] = None,
     ) -> bool:
@@ -1052,7 +1047,7 @@ class Bot:
 
     async def delete_chat_photo(
         self,
-        chat_id: Union[int, str],
+        chat_id: ChatIdUnion,
         request_timeout: Optional[int] = None,
     ) -> bool:
         """
@@ -1072,7 +1067,7 @@ class Bot:
 
     async def delete_chat_sticker_set(
         self,
-        chat_id: Union[int, str],
+        chat_id: ChatIdUnion,
         request_timeout: Optional[int] = None,
     ) -> bool:
         """
@@ -1092,7 +1087,7 @@ class Bot:
 
     async def delete_forum_topic(
         self,
-        chat_id: Union[int, str],
+        chat_id: ChatIdUnion,
         message_thread_id: int,
         request_timeout: Optional[int] = None,
     ) -> bool:
@@ -1115,7 +1110,7 @@ class Bot:
 
     async def delete_message(
         self,
-        chat_id: Union[int, str],
+        chat_id: ChatIdUnion,
         message_id: int,
         request_timeout: Optional[int] = None,
     ) -> bool:
@@ -1219,10 +1214,10 @@ class Bot:
 
     async def edit_chat_invite_link(
         self,
-        chat_id: Union[int, str],
+        chat_id: ChatIdUnion,
         invite_link: str,
         name: Optional[str] = None,
-        expire_date: Optional[Union[datetime.datetime, datetime.timedelta, int]] = None,
+        expire_date: Optional[DateTimeUnion] = None,
         member_limit: Optional[int] = None,
         creates_join_request: Optional[bool] = None,
         request_timeout: Optional[int] = None,
@@ -1254,7 +1249,7 @@ class Bot:
 
     async def edit_forum_topic(
         self,
-        chat_id: Union[int, str],
+        chat_id: ChatIdUnion,
         message_thread_id: int,
         name: Optional[str] = None,
         icon_custom_emoji_id: Optional[str] = None,
@@ -1284,7 +1279,7 @@ class Bot:
     async def edit_message_caption(
         self,
         business_connection_id: Optional[str] = None,
-        chat_id: Optional[Union[int, str]] = None,
+        chat_id: Optional[ChatIdUnion] = None,
         message_id: Optional[int] = None,
         inline_message_id: Optional[str] = None,
         caption: Optional[str] = None,
@@ -1332,7 +1327,7 @@ class Bot:
         latitude: float,
         longitude: float,
         business_connection_id: Optional[str] = None,
-        chat_id: Optional[Union[int, str]] = None,
+        chat_id: Optional[ChatIdUnion] = None,
         message_id: Optional[int] = None,
         inline_message_id: Optional[str] = None,
         live_period: Optional[int] = None,
@@ -1381,7 +1376,7 @@ class Bot:
         self,
         media: InputMediaUnion,
         business_connection_id: Optional[str] = None,
-        chat_id: Optional[Union[int, str]] = None,
+        chat_id: Optional[ChatIdUnion] = None,
         message_id: Optional[int] = None,
         inline_message_id: Optional[str] = None,
         reply_markup: Optional[InlineKeyboardMarkup] = None,
@@ -1415,7 +1410,7 @@ class Bot:
     async def edit_message_reply_markup(
         self,
         business_connection_id: Optional[str] = None,
-        chat_id: Optional[Union[int, str]] = None,
+        chat_id: Optional[ChatIdUnion] = None,
         message_id: Optional[int] = None,
         inline_message_id: Optional[str] = None,
         reply_markup: Optional[InlineKeyboardMarkup] = None,
@@ -1448,7 +1443,7 @@ class Bot:
         self,
         text: str,
         business_connection_id: Optional[str] = None,
-        chat_id: Optional[Union[int, str]] = None,
+        chat_id: Optional[ChatIdUnion] = None,
         message_id: Optional[int] = None,
         inline_message_id: Optional[str] = None,
         parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
@@ -1497,7 +1492,7 @@ class Bot:
 
     async def export_chat_invite_link(
         self,
-        chat_id: Union[int, str],
+        chat_id: ChatIdUnion,
         request_timeout: Optional[int] = None,
     ) -> str:
         """
@@ -1519,11 +1514,11 @@ class Bot:
 
     async def forward_message(
         self,
-        chat_id: Union[int, str],
-        from_chat_id: Union[int, str],
+        chat_id: ChatIdUnion,
+        from_chat_id: ChatIdUnion,
         message_id: int,
         message_thread_id: Optional[int] = None,
-        video_start_timestamp: Optional[Union[datetime.datetime, datetime.timedelta, int]] = None,
+        video_start_timestamp: Optional[DateTimeUnion] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
         request_timeout: Optional[int] = None,
@@ -1557,7 +1552,7 @@ class Bot:
 
     async def get_chat(
         self,
-        chat_id: Union[int, str],
+        chat_id: ChatIdUnion,
         request_timeout: Optional[int] = None,
     ) -> ChatFullInfo:
         """
@@ -1577,7 +1572,7 @@ class Bot:
 
     async def get_chat_administrators(
         self,
-        chat_id: Union[int, str],
+        chat_id: ChatIdUnion,
         request_timeout: Optional[int] = None,
     ) -> list[
         Union[
@@ -1606,7 +1601,7 @@ class Bot:
 
     async def get_chat_member(
         self,
-        chat_id: Union[int, str],
+        chat_id: ChatIdUnion,
         user_id: int,
         request_timeout: Optional[int] = None,
     ) -> Union[
@@ -1636,7 +1631,7 @@ class Bot:
 
     async def get_chat_member_count(
         self,
-        chat_id: Union[int, str],
+        chat_id: ChatIdUnion,
         request_timeout: Optional[int] = None,
     ) -> int:
         """
@@ -1920,7 +1915,7 @@ class Bot:
 
     async def leave_chat(
         self,
-        chat_id: Union[int, str],
+        chat_id: ChatIdUnion,
         request_timeout: Optional[int] = None,
     ) -> bool:
         """
@@ -1956,7 +1951,7 @@ class Bot:
 
     async def pin_chat_message(
         self,
-        chat_id: Union[int, str],
+        chat_id: ChatIdUnion,
         message_id: int,
         business_connection_id: Optional[str] = None,
         disable_notification: Optional[bool] = None,
@@ -1985,7 +1980,7 @@ class Bot:
 
     async def promote_chat_member(
         self,
-        chat_id: Union[int, str],
+        chat_id: ChatIdUnion,
         user_id: int,
         is_anonymous: Optional[bool] = None,
         can_manage_chat: Optional[bool] = None,
@@ -2053,7 +2048,7 @@ class Bot:
 
     async def reopen_forum_topic(
         self,
-        chat_id: Union[int, str],
+        chat_id: ChatIdUnion,
         message_thread_id: int,
         request_timeout: Optional[int] = None,
     ) -> bool:
@@ -2076,11 +2071,11 @@ class Bot:
 
     async def restrict_chat_member(
         self,
-        chat_id: Union[int, str],
+        chat_id: ChatIdUnion,
         user_id: int,
         permissions: ChatPermissions,
         use_independent_chat_permissions: Optional[bool] = None,
-        until_date: Optional[Union[datetime.datetime, datetime.timedelta, int]] = None,
+        until_date: Optional[DateTimeUnion] = None,
         request_timeout: Optional[int] = None,
     ) -> bool:
         """
@@ -2108,7 +2103,7 @@ class Bot:
 
     async def revoke_chat_invite_link(
         self,
-        chat_id: Union[int, str],
+        chat_id: ChatIdUnion,
         invite_link: str,
         request_timeout: Optional[int] = None,
     ) -> ChatInviteLink:
@@ -2131,8 +2126,8 @@ class Bot:
 
     async def send_animation(
         self,
-        chat_id: Union[int, str],
-        animation: Union[InputFile, str],
+        chat_id: ChatIdUnion,
+        animation: InputFileUnion,
         business_connection_id: Optional[str] = None,
         message_thread_id: Optional[int] = None,
         duration: Optional[int] = None,
@@ -2151,9 +2146,7 @@ class Bot:
         allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[
-            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
-        ] = None,
+        reply_markup: Optional[ReplyMarkupUnion] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
         request_timeout: Optional[int] = None,
@@ -2215,8 +2208,8 @@ class Bot:
 
     async def send_audio(
         self,
-        chat_id: Union[int, str],
-        audio: Union[InputFile, str],
+        chat_id: ChatIdUnion,
+        audio: InputFileUnion,
         business_connection_id: Optional[str] = None,
         message_thread_id: Optional[int] = None,
         caption: Optional[str] = None,
@@ -2231,9 +2224,7 @@ class Bot:
         allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[
-            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
-        ] = None,
+        reply_markup: Optional[ReplyMarkupUnion] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
         request_timeout: Optional[int] = None,
@@ -2292,7 +2283,7 @@ class Bot:
 
     async def send_chat_action(
         self,
-        chat_id: Union[int, str],
+        chat_id: ChatIdUnion,
         action: str,
         business_connection_id: Optional[str] = None,
         message_thread_id: Optional[int] = None,
@@ -2325,7 +2316,7 @@ class Bot:
 
     async def send_contact(
         self,
-        chat_id: Union[int, str],
+        chat_id: ChatIdUnion,
         phone_number: str,
         first_name: str,
         business_connection_id: Optional[str] = None,
@@ -2337,9 +2328,7 @@ class Bot:
         allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[
-            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
-        ] = None,
+        reply_markup: Optional[ReplyMarkupUnion] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
         request_timeout: Optional[int] = None,
@@ -2389,7 +2378,7 @@ class Bot:
 
     async def send_dice(
         self,
-        chat_id: Union[int, str],
+        chat_id: ChatIdUnion,
         business_connection_id: Optional[str] = None,
         message_thread_id: Optional[int] = None,
         emoji: Optional[str] = None,
@@ -2398,9 +2387,7 @@ class Bot:
         allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[
-            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
-        ] = None,
+        reply_markup: Optional[ReplyMarkupUnion] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
         request_timeout: Optional[int] = None,
@@ -2444,8 +2431,8 @@ class Bot:
 
     async def send_document(
         self,
-        chat_id: Union[int, str],
-        document: Union[InputFile, str],
+        chat_id: ChatIdUnion,
+        document: InputFileUnion,
         business_connection_id: Optional[str] = None,
         message_thread_id: Optional[int] = None,
         thumbnail: Optional[InputFile] = None,
@@ -2458,9 +2445,7 @@ class Bot:
         allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[
-            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
-        ] = None,
+        reply_markup: Optional[ReplyMarkupUnion] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
         request_timeout: Optional[int] = None,
@@ -2567,7 +2552,7 @@ class Bot:
 
     async def send_invoice(
         self,
-        chat_id: Union[int, str],
+        chat_id: ChatIdUnion,
         title: str,
         description: str,
         payload: str,
@@ -2677,7 +2662,7 @@ class Bot:
 
     async def send_location(
         self,
-        chat_id: Union[int, str],
+        chat_id: ChatIdUnion,
         latitude: float,
         longitude: float,
         business_connection_id: Optional[str] = None,
@@ -2691,9 +2676,7 @@ class Bot:
         allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[
-            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
-        ] = None,
+        reply_markup: Optional[ReplyMarkupUnion] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
         request_timeout: Optional[int] = None,
@@ -2747,8 +2730,8 @@ class Bot:
 
     async def send_media_group(
         self,
-        chat_id: Union[int, str],
-        media: list[Union[InputMediaAudio, InputMediaDocument, InputMediaPhoto, InputMediaVideo]],
+        chat_id: ChatIdUnion,
+        media: list[MediaUnion],
         business_connection_id: Optional[str] = None,
         message_thread_id: Optional[int] = None,
         disable_notification: Optional[bool] = None,
@@ -2797,7 +2780,7 @@ class Bot:
 
     async def send_message(
         self,
-        chat_id: Union[int, str],
+        chat_id: ChatIdUnion,
         text: str,
         business_connection_id: Optional[str] = None,
         message_thread_id: Optional[int] = None,
@@ -2811,9 +2794,7 @@ class Bot:
         allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[
-            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
-        ] = None,
+        reply_markup: Optional[ReplyMarkupUnion] = None,
         allow_sending_without_reply: Optional[bool] = None,
         disable_web_page_preview: Optional[Union[bool, Default]] = Default(
             "link_preview_is_disabled"
@@ -2868,8 +2849,8 @@ class Bot:
 
     async def send_photo(
         self,
-        chat_id: Union[int, str],
-        photo: Union[InputFile, str],
+        chat_id: ChatIdUnion,
+        photo: InputFileUnion,
         business_connection_id: Optional[str] = None,
         message_thread_id: Optional[int] = None,
         caption: Optional[str] = None,
@@ -2884,9 +2865,7 @@ class Bot:
         allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[
-            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
-        ] = None,
+        reply_markup: Optional[ReplyMarkupUnion] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
         request_timeout: Optional[int] = None,
@@ -2940,9 +2919,9 @@ class Bot:
 
     async def send_poll(
         self,
-        chat_id: Union[int, str],
+        chat_id: ChatIdUnion,
         question: str,
-        options: list[Union[InputPollOption, str]],
+        options: list[InputPollOptionUnion],
         business_connection_id: Optional[str] = None,
         message_thread_id: Optional[int] = None,
         question_parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
@@ -2955,16 +2934,14 @@ class Bot:
         explanation_parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
         explanation_entities: Optional[list[MessageEntity]] = None,
         open_period: Optional[int] = None,
-        close_date: Optional[Union[datetime.datetime, datetime.timedelta, int]] = None,
+        close_date: Optional[DateTimeUnion] = None,
         is_closed: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
         allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[
-            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
-        ] = None,
+        reply_markup: Optional[ReplyMarkupUnion] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
         request_timeout: Optional[int] = None,
@@ -3034,8 +3011,8 @@ class Bot:
 
     async def send_sticker(
         self,
-        chat_id: Union[int, str],
-        sticker: Union[InputFile, str],
+        chat_id: ChatIdUnion,
+        sticker: InputFileUnion,
         business_connection_id: Optional[str] = None,
         message_thread_id: Optional[int] = None,
         emoji: Optional[str] = None,
@@ -3044,9 +3021,7 @@ class Bot:
         allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[
-            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
-        ] = None,
+        reply_markup: Optional[ReplyMarkupUnion] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
         request_timeout: Optional[int] = None,
@@ -3092,7 +3067,7 @@ class Bot:
 
     async def send_venue(
         self,
-        chat_id: Union[int, str],
+        chat_id: ChatIdUnion,
         latitude: float,
         longitude: float,
         title: str,
@@ -3108,9 +3083,7 @@ class Bot:
         allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[
-            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
-        ] = None,
+        reply_markup: Optional[ReplyMarkupUnion] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
         request_timeout: Optional[int] = None,
@@ -3168,16 +3141,16 @@ class Bot:
 
     async def send_video(
         self,
-        chat_id: Union[int, str],
-        video: Union[InputFile, str],
+        chat_id: ChatIdUnion,
+        video: InputFileUnion,
         business_connection_id: Optional[str] = None,
         message_thread_id: Optional[int] = None,
         duration: Optional[int] = None,
         width: Optional[int] = None,
         height: Optional[int] = None,
         thumbnail: Optional[InputFile] = None,
-        cover: Optional[Union[InputFile, str]] = None,
-        start_timestamp: Optional[Union[datetime.datetime, datetime.timedelta, int]] = None,
+        cover: Optional[InputFileUnion] = None,
+        start_timestamp: Optional[DateTimeUnion] = None,
         caption: Optional[str] = None,
         parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
         caption_entities: Optional[list[MessageEntity]] = None,
@@ -3191,9 +3164,7 @@ class Bot:
         allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[
-            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
-        ] = None,
+        reply_markup: Optional[ReplyMarkupUnion] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
         request_timeout: Optional[int] = None,
@@ -3261,8 +3232,8 @@ class Bot:
 
     async def send_video_note(
         self,
-        chat_id: Union[int, str],
-        video_note: Union[InputFile, str],
+        chat_id: ChatIdUnion,
+        video_note: InputFileUnion,
         business_connection_id: Optional[str] = None,
         message_thread_id: Optional[int] = None,
         duration: Optional[int] = None,
@@ -3273,9 +3244,7 @@ class Bot:
         allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[
-            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
-        ] = None,
+        reply_markup: Optional[ReplyMarkupUnion] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
         request_timeout: Optional[int] = None,
@@ -3325,8 +3294,8 @@ class Bot:
 
     async def send_voice(
         self,
-        chat_id: Union[int, str],
-        voice: Union[InputFile, str],
+        chat_id: ChatIdUnion,
+        voice: InputFileUnion,
         business_connection_id: Optional[str] = None,
         message_thread_id: Optional[int] = None,
         caption: Optional[str] = None,
@@ -3338,9 +3307,7 @@ class Bot:
         allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[
-            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
-        ] = None,
+        reply_markup: Optional[ReplyMarkupUnion] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
         request_timeout: Optional[int] = None,
@@ -3392,7 +3359,7 @@ class Bot:
 
     async def set_chat_administrator_custom_title(
         self,
-        chat_id: Union[int, str],
+        chat_id: ChatIdUnion,
         user_id: int,
         custom_title: str,
         request_timeout: Optional[int] = None,
@@ -3418,7 +3385,7 @@ class Bot:
 
     async def set_chat_description(
         self,
-        chat_id: Union[int, str],
+        chat_id: ChatIdUnion,
         description: Optional[str] = None,
         request_timeout: Optional[int] = None,
     ) -> bool:
@@ -3464,7 +3431,7 @@ class Bot:
 
     async def set_chat_permissions(
         self,
-        chat_id: Union[int, str],
+        chat_id: ChatIdUnion,
         permissions: ChatPermissions,
         use_independent_chat_permissions: Optional[bool] = None,
         request_timeout: Optional[int] = None,
@@ -3490,7 +3457,7 @@ class Bot:
 
     async def set_chat_photo(
         self,
-        chat_id: Union[int, str],
+        chat_id: ChatIdUnion,
         photo: InputFile,
         request_timeout: Optional[int] = None,
     ) -> bool:
@@ -3513,7 +3480,7 @@ class Bot:
 
     async def set_chat_sticker_set(
         self,
-        chat_id: Union[int, str],
+        chat_id: ChatIdUnion,
         sticker_set_name: str,
         request_timeout: Optional[int] = None,
     ) -> bool:
@@ -3536,7 +3503,7 @@ class Bot:
 
     async def set_chat_title(
         self,
-        chat_id: Union[int, str],
+        chat_id: ChatIdUnion,
         title: str,
         request_timeout: Optional[int] = None,
     ) -> bool:
@@ -3742,7 +3709,7 @@ class Bot:
     async def stop_message_live_location(
         self,
         business_connection_id: Optional[str] = None,
-        chat_id: Optional[Union[int, str]] = None,
+        chat_id: Optional[ChatIdUnion] = None,
         message_id: Optional[int] = None,
         inline_message_id: Optional[str] = None,
         reply_markup: Optional[InlineKeyboardMarkup] = None,
@@ -3773,7 +3740,7 @@ class Bot:
 
     async def stop_poll(
         self,
-        chat_id: Union[int, str],
+        chat_id: ChatIdUnion,
         message_id: int,
         business_connection_id: Optional[str] = None,
         reply_markup: Optional[InlineKeyboardMarkup] = None,
@@ -3802,7 +3769,7 @@ class Bot:
 
     async def unban_chat_member(
         self,
-        chat_id: Union[int, str],
+        chat_id: ChatIdUnion,
         user_id: int,
         only_if_banned: Optional[bool] = None,
         request_timeout: Optional[int] = None,
@@ -3828,7 +3795,7 @@ class Bot:
 
     async def unban_chat_sender_chat(
         self,
-        chat_id: Union[int, str],
+        chat_id: ChatIdUnion,
         sender_chat_id: int,
         request_timeout: Optional[int] = None,
     ) -> bool:
@@ -3851,7 +3818,7 @@ class Bot:
 
     async def unpin_all_chat_messages(
         self,
-        chat_id: Union[int, str],
+        chat_id: ChatIdUnion,
         request_timeout: Optional[int] = None,
     ) -> bool:
         """
@@ -3871,7 +3838,7 @@ class Bot:
 
     async def unpin_all_forum_topic_messages(
         self,
-        chat_id: Union[int, str],
+        chat_id: ChatIdUnion,
         message_thread_id: int,
         request_timeout: Optional[int] = None,
     ) -> bool:
@@ -3894,7 +3861,7 @@ class Bot:
 
     async def unpin_chat_message(
         self,
-        chat_id: Union[int, str],
+        chat_id: ChatIdUnion,
         business_connection_id: Optional[str] = None,
         message_id: Optional[int] = None,
         request_timeout: Optional[int] = None,
@@ -3946,7 +3913,7 @@ class Bot:
 
     async def close_general_forum_topic(
         self,
-        chat_id: Union[int, str],
+        chat_id: ChatIdUnion,
         request_timeout: Optional[int] = None,
     ) -> bool:
         """
@@ -3966,7 +3933,7 @@ class Bot:
 
     async def edit_general_forum_topic(
         self,
-        chat_id: Union[int, str],
+        chat_id: ChatIdUnion,
         name: str,
         request_timeout: Optional[int] = None,
     ) -> bool:
@@ -3989,7 +3956,7 @@ class Bot:
 
     async def hide_general_forum_topic(
         self,
-        chat_id: Union[int, str],
+        chat_id: ChatIdUnion,
         request_timeout: Optional[int] = None,
     ) -> bool:
         """
@@ -4009,7 +3976,7 @@ class Bot:
 
     async def reopen_general_forum_topic(
         self,
-        chat_id: Union[int, str],
+        chat_id: ChatIdUnion,
         request_timeout: Optional[int] = None,
     ) -> bool:
         """
@@ -4029,7 +3996,7 @@ class Bot:
 
     async def unhide_general_forum_topic(
         self,
-        chat_id: Union[int, str],
+        chat_id: ChatIdUnion,
         request_timeout: Optional[int] = None,
     ) -> bool:
         """
@@ -4250,7 +4217,7 @@ class Bot:
         name: str,
         user_id: int,
         format: str,
-        thumbnail: Optional[Union[InputFile, str]] = None,
+        thumbnail: Optional[InputFileUnion] = None,
         request_timeout: Optional[int] = None,
     ) -> bool:
         """
@@ -4342,7 +4309,7 @@ class Bot:
 
     async def unpin_all_general_forum_topic_messages(
         self,
-        chat_id: Union[int, str],
+        chat_id: ChatIdUnion,
         request_timeout: Optional[int] = None,
     ) -> bool:
         """
@@ -4362,8 +4329,8 @@ class Bot:
 
     async def copy_messages(
         self,
-        chat_id: Union[int, str],
-        from_chat_id: Union[int, str],
+        chat_id: ChatIdUnion,
+        from_chat_id: ChatIdUnion,
         message_ids: list[int],
         message_thread_id: Optional[int] = None,
         disable_notification: Optional[bool] = None,
@@ -4400,7 +4367,7 @@ class Bot:
 
     async def delete_messages(
         self,
-        chat_id: Union[int, str],
+        chat_id: ChatIdUnion,
         message_ids: list[int],
         request_timeout: Optional[int] = None,
     ) -> bool:
@@ -4423,8 +4390,8 @@ class Bot:
 
     async def forward_messages(
         self,
-        chat_id: Union[int, str],
-        from_chat_id: Union[int, str],
+        chat_id: ChatIdUnion,
+        from_chat_id: ChatIdUnion,
         message_ids: list[int],
         message_thread_id: Optional[int] = None,
         disable_notification: Optional[bool] = None,
@@ -4458,7 +4425,7 @@ class Bot:
 
     async def get_user_chat_boosts(
         self,
-        chat_id: Union[int, str],
+        chat_id: ChatIdUnion,
         user_id: int,
         request_timeout: Optional[int] = None,
     ) -> UserChatBoosts:
@@ -4481,7 +4448,7 @@ class Bot:
 
     async def set_message_reaction(
         self,
-        chat_id: Union[int, str],
+        chat_id: ChatIdUnion,
         message_id: int,
         reaction: Optional[list[ReactionTypeUnion]] = None,
         is_big: Optional[bool] = None,
@@ -4605,7 +4572,7 @@ class Bot:
 
     async def send_paid_media(
         self,
-        chat_id: Union[int, str],
+        chat_id: ChatIdUnion,
         star_count: int,
         media: list[InputPaidMediaUnion],
         business_connection_id: Optional[str] = None,
@@ -4618,9 +4585,7 @@ class Bot:
         protect_content: Optional[bool] = None,
         allow_paid_broadcast: Optional[bool] = None,
         reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[
-            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
-        ] = None,
+        reply_markup: Optional[ReplyMarkupUnion] = None,
         request_timeout: Optional[int] = None,
     ) -> Message:
         """
@@ -4666,8 +4631,8 @@ class Bot:
 
     async def create_chat_subscription_invite_link(
         self,
-        chat_id: Union[int, str],
-        subscription_period: Union[datetime.datetime, datetime.timedelta, int],
+        chat_id: ChatIdUnion,
+        subscription_period: DateTimeUnion,
         subscription_price: int,
         name: Optional[str] = None,
         request_timeout: Optional[int] = None,
@@ -4695,7 +4660,7 @@ class Bot:
 
     async def edit_chat_subscription_invite_link(
         self,
-        chat_id: Union[int, str],
+        chat_id: ChatIdUnion,
         invite_link: str,
         name: Optional[str] = None,
         request_timeout: Optional[int] = None,
@@ -4800,7 +4765,7 @@ class Bot:
         self,
         gift_id: str,
         user_id: Optional[int] = None,
-        chat_id: Optional[Union[int, str]] = None,
+        chat_id: Optional[ChatIdUnion] = None,
         pay_for_upgrade: Optional[bool] = None,
         text: Optional[str] = None,
         text_parse_mode: Optional[str] = None,
@@ -4838,9 +4803,7 @@ class Bot:
         self,
         user_id: int,
         emoji_status_custom_emoji_id: Optional[str] = None,
-        emoji_status_expiration_date: Optional[
-            Union[datetime.datetime, datetime.timedelta, int]
-        ] = None,
+        emoji_status_expiration_date: Optional[DateTimeUnion] = None,
         request_timeout: Optional[int] = None,
     ) -> bool:
         """
@@ -4864,7 +4827,7 @@ class Bot:
 
     async def remove_chat_verification(
         self,
-        chat_id: Union[int, str],
+        chat_id: ChatIdUnion,
         request_timeout: Optional[int] = None,
     ) -> bool:
         """
@@ -4904,7 +4867,7 @@ class Bot:
 
     async def verify_chat(
         self,
-        chat_id: Union[int, str],
+        chat_id: ChatIdUnion,
         custom_description: Optional[str] = None,
         request_timeout: Optional[int] = None,
     ) -> bool:

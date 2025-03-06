@@ -160,6 +160,7 @@ from .login_url import LoginUrl
 from .mask_position import MaskPosition
 from .maybe_inaccessible_message import MaybeInaccessibleMessage
 from .maybe_inaccessible_message_union import MaybeInaccessibleMessageUnion
+from .media_union import MediaUnion
 from .menu_button import MenuButton
 from .menu_button_commands import MenuButtonCommands
 from .menu_button_default import MenuButtonDefault
@@ -426,6 +427,7 @@ __all__ = (
     "MaskPosition",
     "MaybeInaccessibleMessage",
     "MaybeInaccessibleMessageUnion",
+    "MediaUnion",
     "MenuButton",
     "MenuButtonCommands",
     "MenuButtonDefault",

@@ -1,7 +1,8 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional, Union
+from typing import TYPE_CHECKING, Any, Optional
 
+from ..types import ChatIdUnion
 from ..types.message_entity import MessageEntity
 from .base import TelegramMethod
 
@@ -20,7 +21,7 @@ class SendGift(TelegramMethod[bool]):
     """Identifier of the gift"""
     user_id: Optional[int] = None
     """Required if *chat_id* is not specified. Unique identifier of the target user who will receive the gift."""
-    chat_id: Optional[Union[int, str]] = None
+    chat_id: Optional[ChatIdUnion] = None
     """Required if *user_id* is not specified. Unique identifier for the chat or username of the channel (in the format :code:`@channelusername`) that will receive the gift."""
     pay_for_upgrade: Optional[bool] = None
     """Pass :code:`True` to pay for the gift upgrade from the bot's balance, thereby making the upgrade free for the receiver"""
@@ -40,7 +41,7 @@ class SendGift(TelegramMethod[bool]):
             *,
             gift_id: str,
             user_id: Optional[int] = None,
-            chat_id: Optional[Union[int, str]] = None,
+            chat_id: Optional[ChatIdUnion] = None,
             pay_for_upgrade: Optional[bool] = None,
             text: Optional[str] = None,
             text_parse_mode: Optional[str] = None,

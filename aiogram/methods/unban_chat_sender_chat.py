@@ -1,7 +1,8 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Union
+from typing import TYPE_CHECKING, Any
 
+from ..types import ChatIdUnion
 from .base import TelegramMethod
 
 
@@ -15,7 +16,7 @@ class UnbanChatSenderChat(TelegramMethod[bool]):
     __returning__ = bool
     __api_method__ = "unbanChatSenderChat"
 
-    chat_id: Union[int, str]
+    chat_id: ChatIdUnion
     """Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)"""
     sender_chat_id: int
     """Unique identifier of the target sender chat"""
@@ -27,7 +28,7 @@ class UnbanChatSenderChat(TelegramMethod[bool]):
         def __init__(
             __pydantic__self__,
             *,
-            chat_id: Union[int, str],
+            chat_id: ChatIdUnion,
             sender_chat_id: int,
             **__pydantic_kwargs: Any,
         ) -> None:

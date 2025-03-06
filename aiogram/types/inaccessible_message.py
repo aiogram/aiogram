@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import datetime
 from typing import TYPE_CHECKING, Any, List, Literal, Optional, Union
 
 from aiogram.types.chat import Chat
@@ -30,20 +29,17 @@ if TYPE_CHECKING:
         SendVideoNote,
         SendVoice,
     )
-    from .force_reply import ForceReply
+    from .date_time_union import DateTimeUnion
     from .inline_keyboard_markup import InlineKeyboardMarkup
     from .input_file import InputFile
-    from .input_media_audio import InputMediaAudio
-    from .input_media_document import InputMediaDocument
-    from .input_media_photo import InputMediaPhoto
-    from .input_media_video import InputMediaVideo
+    from .input_file_union import InputFileUnion
     from .input_paid_media_union import InputPaidMediaUnion
-    from .input_poll_option import InputPollOption
+    from .input_poll_option_union import InputPollOptionUnion
     from .labeled_price import LabeledPrice
     from .link_preview_options import LinkPreviewOptions
+    from .media_union import MediaUnion
     from .message_entity import MessageEntity
-    from .reply_keyboard_markup import ReplyKeyboardMarkup
-    from .reply_keyboard_remove import ReplyKeyboardRemove
+    from .reply_markup_union import ReplyMarkupUnion
 
 
 class InaccessibleMessage(MaybeInaccessibleMessage):
@@ -93,9 +89,7 @@ class InaccessibleMessage(MaybeInaccessibleMessage):
         allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[
-            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
-        ] = None,
+        reply_markup: Optional[ReplyMarkupUnion] = None,
         allow_sending_without_reply: Optional[bool] = None,
         disable_web_page_preview: Optional[Union[bool, Default]] = Default(
             "link_preview_is_disabled"
@@ -173,9 +167,7 @@ class InaccessibleMessage(MaybeInaccessibleMessage):
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
         allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
-        reply_markup: Optional[
-            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
-        ] = None,
+        reply_markup: Optional[ReplyMarkupUnion] = None,
         allow_sending_without_reply: Optional[bool] = None,
         disable_web_page_preview: Optional[Union[bool, Default]] = Default(
             "link_preview_is_disabled"
@@ -238,7 +230,7 @@ class InaccessibleMessage(MaybeInaccessibleMessage):
 
     def answer_animation(
         self,
-        animation: Union[InputFile, str],
+        animation: InputFileUnion,
         business_connection_id: Optional[str] = None,
         message_thread_id: Optional[int] = None,
         duration: Optional[int] = None,
@@ -257,9 +249,7 @@ class InaccessibleMessage(MaybeInaccessibleMessage):
         allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[
-            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
-        ] = None,
+        reply_markup: Optional[ReplyMarkupUnion] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
         **kwargs: Any,
@@ -332,7 +322,7 @@ class InaccessibleMessage(MaybeInaccessibleMessage):
 
     def reply_animation(
         self,
-        animation: Union[InputFile, str],
+        animation: InputFileUnion,
         business_connection_id: Optional[str] = None,
         message_thread_id: Optional[int] = None,
         duration: Optional[int] = None,
@@ -350,9 +340,7 @@ class InaccessibleMessage(MaybeInaccessibleMessage):
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
         allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
-        reply_markup: Optional[
-            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
-        ] = None,
+        reply_markup: Optional[ReplyMarkupUnion] = None,
         allow_sending_without_reply: Optional[bool] = None,
         **kwargs: Any,
     ) -> SendAnimation:
@@ -422,7 +410,7 @@ class InaccessibleMessage(MaybeInaccessibleMessage):
 
     def answer_audio(
         self,
-        audio: Union[InputFile, str],
+        audio: InputFileUnion,
         business_connection_id: Optional[str] = None,
         message_thread_id: Optional[int] = None,
         caption: Optional[str] = None,
@@ -437,9 +425,7 @@ class InaccessibleMessage(MaybeInaccessibleMessage):
         allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[
-            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
-        ] = None,
+        reply_markup: Optional[ReplyMarkupUnion] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
         **kwargs: Any,
@@ -509,7 +495,7 @@ class InaccessibleMessage(MaybeInaccessibleMessage):
 
     def reply_audio(
         self,
-        audio: Union[InputFile, str],
+        audio: InputFileUnion,
         business_connection_id: Optional[str] = None,
         message_thread_id: Optional[int] = None,
         caption: Optional[str] = None,
@@ -523,9 +509,7 @@ class InaccessibleMessage(MaybeInaccessibleMessage):
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
         allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
-        reply_markup: Optional[
-            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
-        ] = None,
+        reply_markup: Optional[ReplyMarkupUnion] = None,
         allow_sending_without_reply: Optional[bool] = None,
         **kwargs: Any,
     ) -> SendAudio:
@@ -603,9 +587,7 @@ class InaccessibleMessage(MaybeInaccessibleMessage):
         allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[
-            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
-        ] = None,
+        reply_markup: Optional[ReplyMarkupUnion] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
         **kwargs: Any,
@@ -676,9 +658,7 @@ class InaccessibleMessage(MaybeInaccessibleMessage):
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
         allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
-        reply_markup: Optional[
-            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
-        ] = None,
+        reply_markup: Optional[ReplyMarkupUnion] = None,
         allow_sending_without_reply: Optional[bool] = None,
         **kwargs: Any,
     ) -> SendContact:
@@ -736,7 +716,7 @@ class InaccessibleMessage(MaybeInaccessibleMessage):
 
     def answer_document(
         self,
-        document: Union[InputFile, str],
+        document: InputFileUnion,
         business_connection_id: Optional[str] = None,
         message_thread_id: Optional[int] = None,
         thumbnail: Optional[InputFile] = None,
@@ -749,9 +729,7 @@ class InaccessibleMessage(MaybeInaccessibleMessage):
         allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[
-            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
-        ] = None,
+        reply_markup: Optional[ReplyMarkupUnion] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
         **kwargs: Any,
@@ -816,7 +794,7 @@ class InaccessibleMessage(MaybeInaccessibleMessage):
 
     def reply_document(
         self,
-        document: Union[InputFile, str],
+        document: InputFileUnion,
         business_connection_id: Optional[str] = None,
         message_thread_id: Optional[int] = None,
         thumbnail: Optional[InputFile] = None,
@@ -828,9 +806,7 @@ class InaccessibleMessage(MaybeInaccessibleMessage):
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
         allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
-        reply_markup: Optional[
-            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
-        ] = None,
+        reply_markup: Optional[ReplyMarkupUnion] = None,
         allow_sending_without_reply: Optional[bool] = None,
         **kwargs: Any,
     ) -> SendDocument:
@@ -1263,9 +1239,7 @@ class InaccessibleMessage(MaybeInaccessibleMessage):
         allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[
-            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
-        ] = None,
+        reply_markup: Optional[ReplyMarkupUnion] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
         **kwargs: Any,
@@ -1342,9 +1316,7 @@ class InaccessibleMessage(MaybeInaccessibleMessage):
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
         allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
-        reply_markup: Optional[
-            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
-        ] = None,
+        reply_markup: Optional[ReplyMarkupUnion] = None,
         allow_sending_without_reply: Optional[bool] = None,
         **kwargs: Any,
     ) -> SendLocation:
@@ -1406,7 +1378,7 @@ class InaccessibleMessage(MaybeInaccessibleMessage):
 
     def answer_media_group(
         self,
-        media: list[Union[InputMediaAudio, InputMediaDocument, InputMediaPhoto, InputMediaVideo]],
+        media: list[MediaUnion],
         business_connection_id: Optional[str] = None,
         message_thread_id: Optional[int] = None,
         disable_notification: Optional[bool] = None,
@@ -1466,7 +1438,7 @@ class InaccessibleMessage(MaybeInaccessibleMessage):
 
     def reply_media_group(
         self,
-        media: list[Union[InputMediaAudio, InputMediaDocument, InputMediaPhoto, InputMediaVideo]],
+        media: list[MediaUnion],
         business_connection_id: Optional[str] = None,
         message_thread_id: Optional[int] = None,
         disable_notification: Optional[bool] = None,
@@ -1522,7 +1494,7 @@ class InaccessibleMessage(MaybeInaccessibleMessage):
 
     def answer_photo(
         self,
-        photo: Union[InputFile, str],
+        photo: InputFileUnion,
         business_connection_id: Optional[str] = None,
         message_thread_id: Optional[int] = None,
         caption: Optional[str] = None,
@@ -1537,9 +1509,7 @@ class InaccessibleMessage(MaybeInaccessibleMessage):
         allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[
-            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
-        ] = None,
+        reply_markup: Optional[ReplyMarkupUnion] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
         **kwargs: Any,
@@ -1604,7 +1574,7 @@ class InaccessibleMessage(MaybeInaccessibleMessage):
 
     def reply_photo(
         self,
-        photo: Union[InputFile, str],
+        photo: InputFileUnion,
         business_connection_id: Optional[str] = None,
         message_thread_id: Optional[int] = None,
         caption: Optional[str] = None,
@@ -1618,9 +1588,7 @@ class InaccessibleMessage(MaybeInaccessibleMessage):
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
         allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
-        reply_markup: Optional[
-            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
-        ] = None,
+        reply_markup: Optional[ReplyMarkupUnion] = None,
         allow_sending_without_reply: Optional[bool] = None,
         **kwargs: Any,
     ) -> SendPhoto:
@@ -1683,7 +1651,7 @@ class InaccessibleMessage(MaybeInaccessibleMessage):
     def answer_poll(
         self,
         question: str,
-        options: list[Union[InputPollOption, str]],
+        options: list[InputPollOptionUnion],
         business_connection_id: Optional[str] = None,
         message_thread_id: Optional[int] = None,
         question_parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
@@ -1696,16 +1664,14 @@ class InaccessibleMessage(MaybeInaccessibleMessage):
         explanation_parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
         explanation_entities: Optional[list[MessageEntity]] = None,
         open_period: Optional[int] = None,
-        close_date: Optional[Union[datetime.datetime, datetime.timedelta, int]] = None,
+        close_date: Optional[DateTimeUnion] = None,
         is_closed: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
         allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[
-            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
-        ] = None,
+        reply_markup: Optional[ReplyMarkupUnion] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
         **kwargs: Any,
@@ -1787,7 +1753,7 @@ class InaccessibleMessage(MaybeInaccessibleMessage):
     def reply_poll(
         self,
         question: str,
-        options: list[Union[InputPollOption, str]],
+        options: list[InputPollOptionUnion],
         business_connection_id: Optional[str] = None,
         message_thread_id: Optional[int] = None,
         question_parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
@@ -1800,15 +1766,13 @@ class InaccessibleMessage(MaybeInaccessibleMessage):
         explanation_parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
         explanation_entities: Optional[list[MessageEntity]] = None,
         open_period: Optional[int] = None,
-        close_date: Optional[Union[datetime.datetime, datetime.timedelta, int]] = None,
+        close_date: Optional[DateTimeUnion] = None,
         is_closed: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
         allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
-        reply_markup: Optional[
-            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
-        ] = None,
+        reply_markup: Optional[ReplyMarkupUnion] = None,
         allow_sending_without_reply: Optional[bool] = None,
         **kwargs: Any,
     ) -> SendPoll:
@@ -1894,9 +1858,7 @@ class InaccessibleMessage(MaybeInaccessibleMessage):
         allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[
-            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
-        ] = None,
+        reply_markup: Optional[ReplyMarkupUnion] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
         **kwargs: Any,
@@ -1958,9 +1920,7 @@ class InaccessibleMessage(MaybeInaccessibleMessage):
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
         allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
-        reply_markup: Optional[
-            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
-        ] = None,
+        reply_markup: Optional[ReplyMarkupUnion] = None,
         allow_sending_without_reply: Optional[bool] = None,
         **kwargs: Any,
     ) -> SendDice:
@@ -2012,7 +1972,7 @@ class InaccessibleMessage(MaybeInaccessibleMessage):
 
     def answer_sticker(
         self,
-        sticker: Union[InputFile, str],
+        sticker: InputFileUnion,
         business_connection_id: Optional[str] = None,
         message_thread_id: Optional[int] = None,
         emoji: Optional[str] = None,
@@ -2021,9 +1981,7 @@ class InaccessibleMessage(MaybeInaccessibleMessage):
         allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[
-            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
-        ] = None,
+        reply_markup: Optional[ReplyMarkupUnion] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
         **kwargs: Any,
@@ -2080,7 +2038,7 @@ class InaccessibleMessage(MaybeInaccessibleMessage):
 
     def reply_sticker(
         self,
-        sticker: Union[InputFile, str],
+        sticker: InputFileUnion,
         business_connection_id: Optional[str] = None,
         message_thread_id: Optional[int] = None,
         emoji: Optional[str] = None,
@@ -2088,9 +2046,7 @@ class InaccessibleMessage(MaybeInaccessibleMessage):
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
         allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
-        reply_markup: Optional[
-            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
-        ] = None,
+        reply_markup: Optional[ReplyMarkupUnion] = None,
         allow_sending_without_reply: Optional[bool] = None,
         **kwargs: Any,
     ) -> SendSticker:
@@ -2159,9 +2115,7 @@ class InaccessibleMessage(MaybeInaccessibleMessage):
         allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[
-            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
-        ] = None,
+        reply_markup: Optional[ReplyMarkupUnion] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
         **kwargs: Any,
@@ -2244,9 +2198,7 @@ class InaccessibleMessage(MaybeInaccessibleMessage):
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
         allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
-        reply_markup: Optional[
-            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
-        ] = None,
+        reply_markup: Optional[ReplyMarkupUnion] = None,
         allow_sending_without_reply: Optional[bool] = None,
         **kwargs: Any,
     ) -> SendVenue:
@@ -2312,15 +2264,15 @@ class InaccessibleMessage(MaybeInaccessibleMessage):
 
     def answer_video(
         self,
-        video: Union[InputFile, str],
+        video: InputFileUnion,
         business_connection_id: Optional[str] = None,
         message_thread_id: Optional[int] = None,
         duration: Optional[int] = None,
         width: Optional[int] = None,
         height: Optional[int] = None,
         thumbnail: Optional[InputFile] = None,
-        cover: Optional[Union[InputFile, str]] = None,
-        start_timestamp: Optional[Union[datetime.datetime, datetime.timedelta, int]] = None,
+        cover: Optional[InputFileUnion] = None,
+        start_timestamp: Optional[DateTimeUnion] = None,
         caption: Optional[str] = None,
         parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
         caption_entities: Optional[list[MessageEntity]] = None,
@@ -2334,9 +2286,7 @@ class InaccessibleMessage(MaybeInaccessibleMessage):
         allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[
-            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
-        ] = None,
+        reply_markup: Optional[ReplyMarkupUnion] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
         **kwargs: Any,
@@ -2415,15 +2365,15 @@ class InaccessibleMessage(MaybeInaccessibleMessage):
 
     def reply_video(
         self,
-        video: Union[InputFile, str],
+        video: InputFileUnion,
         business_connection_id: Optional[str] = None,
         message_thread_id: Optional[int] = None,
         duration: Optional[int] = None,
         width: Optional[int] = None,
         height: Optional[int] = None,
         thumbnail: Optional[InputFile] = None,
-        cover: Optional[Union[InputFile, str]] = None,
-        start_timestamp: Optional[Union[datetime.datetime, datetime.timedelta, int]] = None,
+        cover: Optional[InputFileUnion] = None,
+        start_timestamp: Optional[DateTimeUnion] = None,
         caption: Optional[str] = None,
         parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
         caption_entities: Optional[list[MessageEntity]] = None,
@@ -2436,9 +2386,7 @@ class InaccessibleMessage(MaybeInaccessibleMessage):
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
         allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
-        reply_markup: Optional[
-            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
-        ] = None,
+        reply_markup: Optional[ReplyMarkupUnion] = None,
         allow_sending_without_reply: Optional[bool] = None,
         **kwargs: Any,
     ) -> SendVideo:
@@ -2514,7 +2462,7 @@ class InaccessibleMessage(MaybeInaccessibleMessage):
 
     def answer_video_note(
         self,
-        video_note: Union[InputFile, str],
+        video_note: InputFileUnion,
         business_connection_id: Optional[str] = None,
         message_thread_id: Optional[int] = None,
         duration: Optional[int] = None,
@@ -2525,9 +2473,7 @@ class InaccessibleMessage(MaybeInaccessibleMessage):
         allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[
-            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
-        ] = None,
+        reply_markup: Optional[ReplyMarkupUnion] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
         **kwargs: Any,
@@ -2588,7 +2534,7 @@ class InaccessibleMessage(MaybeInaccessibleMessage):
 
     def reply_video_note(
         self,
-        video_note: Union[InputFile, str],
+        video_note: InputFileUnion,
         business_connection_id: Optional[str] = None,
         message_thread_id: Optional[int] = None,
         duration: Optional[int] = None,
@@ -2598,9 +2544,7 @@ class InaccessibleMessage(MaybeInaccessibleMessage):
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
         allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
-        reply_markup: Optional[
-            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
-        ] = None,
+        reply_markup: Optional[ReplyMarkupUnion] = None,
         allow_sending_without_reply: Optional[bool] = None,
         **kwargs: Any,
     ) -> SendVideoNote:
@@ -2658,7 +2602,7 @@ class InaccessibleMessage(MaybeInaccessibleMessage):
 
     def answer_voice(
         self,
-        voice: Union[InputFile, str],
+        voice: InputFileUnion,
         business_connection_id: Optional[str] = None,
         message_thread_id: Optional[int] = None,
         caption: Optional[str] = None,
@@ -2670,9 +2614,7 @@ class InaccessibleMessage(MaybeInaccessibleMessage):
         allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[
-            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
-        ] = None,
+        reply_markup: Optional[ReplyMarkupUnion] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
         **kwargs: Any,
@@ -2735,7 +2677,7 @@ class InaccessibleMessage(MaybeInaccessibleMessage):
 
     def reply_voice(
         self,
-        voice: Union[InputFile, str],
+        voice: InputFileUnion,
         business_connection_id: Optional[str] = None,
         message_thread_id: Optional[int] = None,
         caption: Optional[str] = None,
@@ -2746,9 +2688,7 @@ class InaccessibleMessage(MaybeInaccessibleMessage):
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
         allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
-        reply_markup: Optional[
-            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
-        ] = None,
+        reply_markup: Optional[ReplyMarkupUnion] = None,
         allow_sending_without_reply: Optional[bool] = None,
         **kwargs: Any,
     ) -> SendVoice:
@@ -2820,9 +2760,7 @@ class InaccessibleMessage(MaybeInaccessibleMessage):
         protect_content: Optional[bool] = None,
         allow_paid_broadcast: Optional[bool] = None,
         reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[
-            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
-        ] = None,
+        reply_markup: Optional[ReplyMarkupUnion] = None,
         **kwargs: Any,
     ) -> SendPaidMedia:
         """
@@ -2890,9 +2828,7 @@ class InaccessibleMessage(MaybeInaccessibleMessage):
         disable_notification: Optional[bool] = None,
         protect_content: Optional[bool] = None,
         allow_paid_broadcast: Optional[bool] = None,
-        reply_markup: Optional[
-            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
-        ] = None,
+        reply_markup: Optional[ReplyMarkupUnion] = None,
         **kwargs: Any,
     ) -> SendPaidMedia:
         """

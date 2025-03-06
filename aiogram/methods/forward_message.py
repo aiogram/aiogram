@@ -1,10 +1,9 @@
 from __future__ import annotations
 
-import datetime
 from typing import TYPE_CHECKING, Any, Optional, Union
 
 from ..client.default import Default
-from ..types import Message
+from ..types import ChatIdUnion, DateTimeUnion, Message
 from .base import TelegramMethod
 
 
@@ -18,15 +17,15 @@ class ForwardMessage(TelegramMethod[Message]):
     __returning__ = Message
     __api_method__ = "forwardMessage"
 
-    chat_id: Union[int, str]
+    chat_id: ChatIdUnion
     """Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)"""
-    from_chat_id: Union[int, str]
+    from_chat_id: ChatIdUnion
     """Unique identifier for the chat where the original message was sent (or channel username in the format :code:`@channelusername`)"""
     message_id: int
     """Message identifier in the chat specified in *from_chat_id*"""
     message_thread_id: Optional[int] = None
     """Unique identifier for the target message thread (topic) of the forum; for forum supergroups only"""
-    video_start_timestamp: Optional[Union[datetime.datetime, datetime.timedelta, int]] = None
+    video_start_timestamp: Optional[DateTimeUnion] = None
     """New start timestamp for the forwarded video in the message"""
     disable_notification: Optional[bool] = None
     """Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound."""
@@ -40,13 +39,11 @@ class ForwardMessage(TelegramMethod[Message]):
         def __init__(
             __pydantic__self__,
             *,
-            chat_id: Union[int, str],
-            from_chat_id: Union[int, str],
+            chat_id: ChatIdUnion,
+            from_chat_id: ChatIdUnion,
             message_id: int,
             message_thread_id: Optional[int] = None,
-            video_start_timestamp: Optional[
-                Union[datetime.datetime, datetime.timedelta, int]
-            ] = None,
+            video_start_timestamp: Optional[DateTimeUnion] = None,
             disable_notification: Optional[bool] = None,
             protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
             **__pydantic_kwargs: Any,

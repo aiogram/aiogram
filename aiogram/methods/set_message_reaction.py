@@ -1,6 +1,6 @@
-from typing import TYPE_CHECKING, Any, Optional, Union
+from typing import TYPE_CHECKING, Any, Optional
 
-from ..types import ReactionTypeUnion
+from ..types import ChatIdUnion, ReactionTypeUnion
 from .base import TelegramMethod
 
 
@@ -14,7 +14,7 @@ class SetMessageReaction(TelegramMethod[bool]):
     __returning__ = bool
     __api_method__ = "setMessageReaction"
 
-    chat_id: Union[int, str]
+    chat_id: ChatIdUnion
     """Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)"""
     message_id: int
     """Identifier of the target message. If the message belongs to a media group, the reaction is set to the first non-deleted message in the group instead."""
@@ -30,7 +30,7 @@ class SetMessageReaction(TelegramMethod[bool]):
         def __init__(
             __pydantic__self__,
             *,
-            chat_id: Union[int, str],
+            chat_id: ChatIdUnion,
             message_id: int,
             reaction: Optional[list[ReactionTypeUnion]] = None,
             is_big: Optional[bool] = None,
