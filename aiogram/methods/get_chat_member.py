@@ -1,45 +1,19 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Union
+from typing import TYPE_CHECKING, Any
 
-from ..types import (
-    ChatIdUnion,
-    ChatMemberAdministrator,
-    ChatMemberBanned,
-    ChatMemberLeft,
-    ChatMemberMember,
-    ChatMemberOwner,
-    ChatMemberRestricted,
-)
+from ..types import ChatIdUnion, ResultChatMemberUnion
 from .base import TelegramMethod
 
 
-class GetChatMember(
-    TelegramMethod[
-        Union[
-            ChatMemberOwner,
-            ChatMemberAdministrator,
-            ChatMemberMember,
-            ChatMemberRestricted,
-            ChatMemberLeft,
-            ChatMemberBanned,
-        ]
-    ]
-):
+class GetChatMember(TelegramMethod[ResultChatMemberUnion]):
     """
     Use this method to get information about a member of a chat. The method is only guaranteed to work for other users if the bot is an administrator in the chat. Returns a :class:`aiogram.types.chat_member.ChatMember` object on success.
 
     Source: https://core.telegram.org/bots/api#getchatmember
     """
 
-    __returning__ = Union[
-        ChatMemberOwner,
-        ChatMemberAdministrator,
-        ChatMemberMember,
-        ChatMemberRestricted,
-        ChatMemberLeft,
-        ChatMemberBanned,
-    ]
+    __returning__ = ResultChatMemberUnion
     __api_method__ = "getChatMember"
 
     chat_id: ChatIdUnion

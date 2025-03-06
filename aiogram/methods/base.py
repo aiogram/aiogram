@@ -66,7 +66,7 @@ class TelegramMethod(BotContextController, BaseModel, Generic[TelegramType], ABC
         return {k: v for k, v in values.items() if not isinstance(v, UNSET_TYPE)}
 
     if TYPE_CHECKING:
-        __returning__: ClassVar[type]
+        __returning__: ClassVar[Any]
         __api_method__: ClassVar[str]
     else:
 

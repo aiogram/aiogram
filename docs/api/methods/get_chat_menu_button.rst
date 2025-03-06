@@ -2,7 +2,7 @@
 getChatMenuButton
 #################
 
-Returns: :obj:`Union[MenuButtonDefault, MenuButtonWebApp, MenuButtonCommands]`
+Returns: :obj:`ResultMenuButtonUnion`
 
 .. automodule:: aiogram.methods.get_chat_menu_button
     :members:
@@ -19,7 +19,7 @@ As bot method
 
 .. code-block::
 
-    result: Union[MenuButtonDefault, MenuButtonWebApp, MenuButtonCommands] = await bot.get_chat_menu_button(...)
+    result: ResultMenuButtonUnion = await bot.get_chat_menu_button(...)
 
 
 Method as object
@@ -35,4 +35,4 @@ With specific bot
 
 .. code-block:: python
 
-    result: Union[MenuButtonDefault, MenuButtonWebApp, MenuButtonCommands] = await bot(GetChatMenuButton(...))
+    result: ResultMenuButtonUnion = await bot(GetChatMenuButton(...))

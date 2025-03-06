@@ -169,12 +169,6 @@ from ..types import (
     ChatFullInfo,
     ChatIdUnion,
     ChatInviteLink,
-    ChatMemberAdministrator,
-    ChatMemberBanned,
-    ChatMemberLeft,
-    ChatMemberMember,
-    ChatMemberOwner,
-    ChatMemberRestricted,
     ChatPermissions,
     DateTimeUnion,
     Downloadable,
@@ -195,10 +189,7 @@ from ..types import (
     LinkPreviewOptions,
     MaskPosition,
     MediaUnion,
-    MenuButtonCommands,
-    MenuButtonDefault,
     MenuButtonUnion,
-    MenuButtonWebApp,
     Message,
     MessageEntity,
     MessageId,
@@ -208,6 +199,8 @@ from ..types import (
     ReactionTypeUnion,
     ReplyMarkupUnion,
     ReplyParameters,
+    ResultChatMemberUnion,
+    ResultMenuButtonUnion,
     SentWebAppMessage,
     ShippingOption,
     StarTransactions,
@@ -1574,16 +1567,7 @@ class Bot:
         self,
         chat_id: ChatIdUnion,
         request_timeout: Optional[int] = None,
-    ) -> list[
-        Union[
-            ChatMemberOwner,
-            ChatMemberAdministrator,
-            ChatMemberMember,
-            ChatMemberRestricted,
-            ChatMemberLeft,
-            ChatMemberBanned,
-        ]
-    ]:
+    ) -> list[ResultChatMemberUnion]:
         """
         Use this method to get a list of administrators in a chat, which aren't bots. Returns an Array of :class:`aiogram.types.chat_member.ChatMember` objects.
 
@@ -1604,14 +1588,7 @@ class Bot:
         chat_id: ChatIdUnion,
         user_id: int,
         request_timeout: Optional[int] = None,
-    ) -> Union[
-        ChatMemberOwner,
-        ChatMemberAdministrator,
-        ChatMemberMember,
-        ChatMemberRestricted,
-        ChatMemberLeft,
-        ChatMemberBanned,
-    ]:
+    ) -> ResultChatMemberUnion:
         """
         Use this method to get information about a member of a chat. The method is only guaranteed to work for other users if the bot is an administrator in the chat. Returns a :class:`aiogram.types.chat_member.ChatMember` object on success.
 
@@ -1653,7 +1630,7 @@ class Bot:
         self,
         chat_id: Optional[int] = None,
         request_timeout: Optional[int] = None,
-    ) -> Union[MenuButtonDefault, MenuButtonWebApp, MenuButtonCommands]:
+    ) -> ResultMenuButtonUnion:
         """
         Use this method to get the current value of the bot's menu button in a private chat, or the default menu button. Returns :class:`aiogram.types.menu_button.MenuButton` on success.
 

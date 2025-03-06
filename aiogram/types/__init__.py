@@ -220,6 +220,8 @@ from .reply_keyboard_remove import ReplyKeyboardRemove
 from .reply_markup_union import ReplyMarkupUnion
 from .reply_parameters import ReplyParameters
 from .response_parameters import ResponseParameters
+from .result_chat_member_union import ResultChatMemberUnion
+from .result_menu_button_union import ResultMenuButtonUnion
 from .revenue_withdrawal_state import RevenueWithdrawalState
 from .revenue_withdrawal_state_failed import RevenueWithdrawalStateFailed
 from .revenue_withdrawal_state_pending import RevenueWithdrawalStatePending
@@ -485,6 +487,8 @@ __all__ = (
     "ReplyMarkupUnion",
     "ReplyParameters",
     "ResponseParameters",
+    "ResultChatMemberUnion",
+    "ResultMenuButtonUnion",
     "RevenueWithdrawalState",
     "RevenueWithdrawalStateFailed",
     "RevenueWithdrawalStatePending",
