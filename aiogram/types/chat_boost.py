@@ -1,14 +1,12 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Union
+from typing import TYPE_CHECKING, Any
 
 from .base import TelegramObject
 from .custom import DateTime
 
 if TYPE_CHECKING:
-    from .chat_boost_source_gift_code import ChatBoostSourceGiftCode
-    from .chat_boost_source_giveaway import ChatBoostSourceGiveaway
-    from .chat_boost_source_premium import ChatBoostSourcePremium
+    from .chat_boost_source_union import ChatBoostSourceUnion
 
 
 class ChatBoost(TelegramObject):
@@ -24,7 +22,7 @@ class ChatBoost(TelegramObject):
     """Point in time (Unix timestamp) when the chat was boosted"""
     expiration_date: DateTime
     """Point in time (Unix timestamp) when the boost will automatically expire, unless the booster's Telegram Premium subscription is prolonged"""
-    source: Union[ChatBoostSourcePremium, ChatBoostSourceGiftCode, ChatBoostSourceGiveaway]
+    source: ChatBoostSourceUnion
     """Source of the added boost"""
 
     if TYPE_CHECKING:
@@ -37,9 +35,7 @@ class ChatBoost(TelegramObject):
             boost_id: str,
             add_date: DateTime,
             expiration_date: DateTime,
-            source: Union[
-                ChatBoostSourcePremium, ChatBoostSourceGiftCode, ChatBoostSourceGiveaway
-            ],
+            source: ChatBoostSourceUnion,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

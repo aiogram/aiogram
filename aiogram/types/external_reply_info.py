@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional, Union
+from typing import TYPE_CHECKING, Any, Optional
 
 from .base import TelegramObject
 
@@ -17,10 +17,7 @@ if TYPE_CHECKING:
     from .invoice import Invoice
     from .link_preview_options import LinkPreviewOptions
     from .location import Location
-    from .message_origin_channel import MessageOriginChannel
-    from .message_origin_chat import MessageOriginChat
-    from .message_origin_hidden_user import MessageOriginHiddenUser
-    from .message_origin_user import MessageOriginUser
+    from .message_origin_union import MessageOriginUnion
     from .paid_media_info import PaidMediaInfo
     from .photo_size import PhotoSize
     from .poll import Poll
@@ -39,9 +36,7 @@ class ExternalReplyInfo(TelegramObject):
     Source: https://core.telegram.org/bots/api#externalreplyinfo
     """
 
-    origin: Union[
-        MessageOriginUser, MessageOriginHiddenUser, MessageOriginChat, MessageOriginChannel
-    ]
+    origin: MessageOriginUnion
     """Origin of the message replied to by the given message"""
     chat: Optional[Chat] = None
     """*Optional*. Chat the original message belongs to. Available only if the chat is a supergroup or a channel."""
@@ -97,9 +92,7 @@ class ExternalReplyInfo(TelegramObject):
         def __init__(
             __pydantic__self__,
             *,
-            origin: Union[
-                MessageOriginUser, MessageOriginHiddenUser, MessageOriginChat, MessageOriginChannel
-            ],
+            origin: MessageOriginUnion,
             chat: Optional[Chat] = None,
             message_id: Optional[int] = None,
             link_preview_options: Optional[LinkPreviewOptions] = None,

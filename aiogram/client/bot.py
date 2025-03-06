@@ -161,13 +161,7 @@ from ..methods import (
 )
 from ..types import (
     BotCommand,
-    BotCommandScopeAllChatAdministrators,
-    BotCommandScopeAllGroupChats,
-    BotCommandScopeAllPrivateChats,
-    BotCommandScopeChat,
-    BotCommandScopeChatAdministrators,
-    BotCommandScopeChatMember,
-    BotCommandScopeDefault,
+    BotCommandScopeUnion,
     BotDescription,
     BotName,
     BotShortDescription,
@@ -189,35 +183,15 @@ from ..types import (
     GameHighScore,
     Gifts,
     InlineKeyboardMarkup,
-    InlineQueryResultArticle,
-    InlineQueryResultAudio,
-    InlineQueryResultCachedAudio,
-    InlineQueryResultCachedDocument,
-    InlineQueryResultCachedGif,
-    InlineQueryResultCachedMpeg4Gif,
-    InlineQueryResultCachedPhoto,
-    InlineQueryResultCachedSticker,
-    InlineQueryResultCachedVideo,
-    InlineQueryResultCachedVoice,
-    InlineQueryResultContact,
-    InlineQueryResultDocument,
-    InlineQueryResultGame,
-    InlineQueryResultGif,
-    InlineQueryResultLocation,
-    InlineQueryResultMpeg4Gif,
-    InlineQueryResultPhoto,
     InlineQueryResultsButton,
-    InlineQueryResultVenue,
-    InlineQueryResultVideo,
-    InlineQueryResultVoice,
+    InlineQueryResultUnion,
     InputFile,
-    InputMediaAnimation,
     InputMediaAudio,
     InputMediaDocument,
     InputMediaPhoto,
+    InputMediaUnion,
     InputMediaVideo,
-    InputPaidMediaPhoto,
-    InputPaidMediaVideo,
+    InputPaidMediaUnion,
     InputPollOption,
     InputSticker,
     LabeledPrice,
@@ -225,24 +199,15 @@ from ..types import (
     MaskPosition,
     MenuButtonCommands,
     MenuButtonDefault,
+    MenuButtonUnion,
     MenuButtonWebApp,
     Message,
     MessageEntity,
     MessageId,
-    PassportElementErrorDataField,
-    PassportElementErrorFile,
-    PassportElementErrorFiles,
-    PassportElementErrorFrontSide,
-    PassportElementErrorReverseSide,
-    PassportElementErrorSelfie,
-    PassportElementErrorTranslationFile,
-    PassportElementErrorTranslationFiles,
-    PassportElementErrorUnspecified,
+    PassportElementErrorUnion,
     Poll,
     PreparedInlineMessage,
-    ReactionTypeCustomEmoji,
-    ReactionTypeEmoji,
-    ReactionTypePaid,
+    ReactionTypeUnion,
     ReplyKeyboardMarkup,
     ReplyKeyboardRemove,
     ReplyParameters,
@@ -579,30 +544,7 @@ class Bot:
     async def answer_inline_query(
         self,
         inline_query_id: str,
-        results: list[
-            Union[
-                InlineQueryResultCachedAudio,
-                InlineQueryResultCachedDocument,
-                InlineQueryResultCachedGif,
-                InlineQueryResultCachedMpeg4Gif,
-                InlineQueryResultCachedPhoto,
-                InlineQueryResultCachedSticker,
-                InlineQueryResultCachedVideo,
-                InlineQueryResultCachedVoice,
-                InlineQueryResultArticle,
-                InlineQueryResultAudio,
-                InlineQueryResultContact,
-                InlineQueryResultGame,
-                InlineQueryResultDocument,
-                InlineQueryResultGif,
-                InlineQueryResultLocation,
-                InlineQueryResultMpeg4Gif,
-                InlineQueryResultPhoto,
-                InlineQueryResultVenue,
-                InlineQueryResultVideo,
-                InlineQueryResultVoice,
-            ]
-        ],
+        results: list[InlineQueryResultUnion],
         cache_time: Optional[int] = None,
         is_personal: Optional[bool] = None,
         next_offset: Optional[str] = None,
@@ -700,28 +642,7 @@ class Bot:
     async def answer_web_app_query(
         self,
         web_app_query_id: str,
-        result: Union[
-            InlineQueryResultCachedAudio,
-            InlineQueryResultCachedDocument,
-            InlineQueryResultCachedGif,
-            InlineQueryResultCachedMpeg4Gif,
-            InlineQueryResultCachedPhoto,
-            InlineQueryResultCachedSticker,
-            InlineQueryResultCachedVideo,
-            InlineQueryResultCachedVoice,
-            InlineQueryResultArticle,
-            InlineQueryResultAudio,
-            InlineQueryResultContact,
-            InlineQueryResultGame,
-            InlineQueryResultDocument,
-            InlineQueryResultGif,
-            InlineQueryResultLocation,
-            InlineQueryResultMpeg4Gif,
-            InlineQueryResultPhoto,
-            InlineQueryResultVenue,
-            InlineQueryResultVideo,
-            InlineQueryResultVoice,
-        ],
+        result: InlineQueryResultUnion,
         request_timeout: Optional[int] = None,
     ) -> SentWebAppMessage:
         """
@@ -1235,17 +1156,7 @@ class Bot:
 
     async def delete_my_commands(
         self,
-        scope: Optional[
-            Union[
-                BotCommandScopeDefault,
-                BotCommandScopeAllPrivateChats,
-                BotCommandScopeAllGroupChats,
-                BotCommandScopeAllChatAdministrators,
-                BotCommandScopeChat,
-                BotCommandScopeChatAdministrators,
-                BotCommandScopeChatMember,
-            ]
-        ] = None,
+        scope: Optional[BotCommandScopeUnion] = None,
         language_code: Optional[str] = None,
         request_timeout: Optional[int] = None,
     ) -> bool:
@@ -1468,13 +1379,7 @@ class Bot:
 
     async def edit_message_media(
         self,
-        media: Union[
-            InputMediaAnimation,
-            InputMediaDocument,
-            InputMediaAudio,
-            InputMediaPhoto,
-            InputMediaVideo,
-        ],
+        media: InputMediaUnion,
         business_connection_id: Optional[str] = None,
         chat_id: Optional[Union[int, str]] = None,
         message_id: Optional[int] = None,
@@ -1875,17 +1780,7 @@ class Bot:
 
     async def get_my_commands(
         self,
-        scope: Optional[
-            Union[
-                BotCommandScopeDefault,
-                BotCommandScopeAllPrivateChats,
-                BotCommandScopeAllGroupChats,
-                BotCommandScopeAllChatAdministrators,
-                BotCommandScopeChat,
-                BotCommandScopeChatAdministrators,
-                BotCommandScopeChatMember,
-            ]
-        ] = None,
+        scope: Optional[BotCommandScopeUnion] = None,
         language_code: Optional[str] = None,
         request_timeout: Optional[int] = None,
     ) -> list[BotCommand]:
@@ -3547,9 +3442,7 @@ class Bot:
     async def set_chat_menu_button(
         self,
         chat_id: Optional[int] = None,
-        menu_button: Optional[
-            Union[MenuButtonCommands, MenuButtonWebApp, MenuButtonDefault]
-        ] = None,
+        menu_button: Optional[MenuButtonUnion] = None,
         request_timeout: Optional[int] = None,
     ) -> bool:
         """
@@ -3705,17 +3598,7 @@ class Bot:
     async def set_my_commands(
         self,
         commands: list[BotCommand],
-        scope: Optional[
-            Union[
-                BotCommandScopeDefault,
-                BotCommandScopeAllPrivateChats,
-                BotCommandScopeAllGroupChats,
-                BotCommandScopeAllChatAdministrators,
-                BotCommandScopeChat,
-                BotCommandScopeChatAdministrators,
-                BotCommandScopeChatMember,
-            ]
-        ] = None,
+        scope: Optional[BotCommandScopeUnion] = None,
         language_code: Optional[str] = None,
         request_timeout: Optional[int] = None,
     ) -> bool:
@@ -3764,19 +3647,7 @@ class Bot:
     async def set_passport_data_errors(
         self,
         user_id: int,
-        errors: list[
-            Union[
-                PassportElementErrorDataField,
-                PassportElementErrorFrontSide,
-                PassportElementErrorReverseSide,
-                PassportElementErrorSelfie,
-                PassportElementErrorFile,
-                PassportElementErrorFiles,
-                PassportElementErrorTranslationFile,
-                PassportElementErrorTranslationFiles,
-                PassportElementErrorUnspecified,
-            ]
-        ],
+        errors: list[PassportElementErrorUnion],
         request_timeout: Optional[int] = None,
     ) -> bool:
         """
@@ -4612,9 +4483,7 @@ class Bot:
         self,
         chat_id: Union[int, str],
         message_id: int,
-        reaction: Optional[
-            list[Union[ReactionTypeEmoji, ReactionTypeCustomEmoji, ReactionTypePaid]]
-        ] = None,
+        reaction: Optional[list[ReactionTypeUnion]] = None,
         is_big: Optional[bool] = None,
         request_timeout: Optional[int] = None,
     ) -> bool:
@@ -4738,7 +4607,7 @@ class Bot:
         self,
         chat_id: Union[int, str],
         star_count: int,
-        media: list[Union[InputPaidMediaPhoto, InputPaidMediaVideo]],
+        media: list[InputPaidMediaUnion],
         business_connection_id: Optional[str] = None,
         payload: Optional[str] = None,
         caption: Optional[str] = None,
@@ -4895,28 +4764,7 @@ class Bot:
     async def save_prepared_inline_message(
         self,
         user_id: int,
-        result: Union[
-            InlineQueryResultCachedAudio,
-            InlineQueryResultCachedDocument,
-            InlineQueryResultCachedGif,
-            InlineQueryResultCachedMpeg4Gif,
-            InlineQueryResultCachedPhoto,
-            InlineQueryResultCachedSticker,
-            InlineQueryResultCachedVideo,
-            InlineQueryResultCachedVoice,
-            InlineQueryResultArticle,
-            InlineQueryResultAudio,
-            InlineQueryResultContact,
-            InlineQueryResultGame,
-            InlineQueryResultDocument,
-            InlineQueryResultGif,
-            InlineQueryResultLocation,
-            InlineQueryResultMpeg4Gif,
-            InlineQueryResultPhoto,
-            InlineQueryResultVenue,
-            InlineQueryResultVideo,
-            InlineQueryResultVoice,
-        ],
+        result: InlineQueryResultUnion,
         allow_user_chats: Optional[bool] = None,
         allow_bot_chats: Optional[bool] = None,
         allow_group_chats: Optional[bool] = None,

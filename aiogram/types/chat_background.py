@@ -1,13 +1,11 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Union
+from typing import TYPE_CHECKING, Any
+
+from .base import TelegramObject
 
 if TYPE_CHECKING:
-    from .background_type_chat_theme import BackgroundTypeChatTheme
-    from .background_type_fill import BackgroundTypeFill
-    from .background_type_pattern import BackgroundTypePattern
-    from .background_type_wallpaper import BackgroundTypeWallpaper
-from .base import TelegramObject
+    from .background_type_union import BackgroundTypeUnion
 
 
 class ChatBackground(TelegramObject):
@@ -17,9 +15,7 @@ class ChatBackground(TelegramObject):
     Source: https://core.telegram.org/bots/api#chatbackground
     """
 
-    type: Union[
-        BackgroundTypeFill, BackgroundTypeWallpaper, BackgroundTypePattern, BackgroundTypeChatTheme
-    ]
+    type: BackgroundTypeUnion
     """Type of the background"""
 
     if TYPE_CHECKING:
@@ -27,15 +23,7 @@ class ChatBackground(TelegramObject):
         # This section was auto-generated via `butcher`
 
         def __init__(
-            __pydantic__self__,
-            *,
-            type: Union[
-                BackgroundTypeFill,
-                BackgroundTypeWallpaper,
-                BackgroundTypePattern,
-                BackgroundTypeChatTheme,
-            ],
-            **__pydantic_kwargs: Any,
+            __pydantic__self__, *, type: BackgroundTypeUnion, **__pydantic_kwargs: Any
         ) -> None:
             # DO NOT EDIT MANUALLY!!!
             # This method was auto-generated via `butcher`

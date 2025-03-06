@@ -37,8 +37,7 @@ if TYPE_CHECKING:
     from .input_media_document import InputMediaDocument
     from .input_media_photo import InputMediaPhoto
     from .input_media_video import InputMediaVideo
-    from .input_paid_media_photo import InputPaidMediaPhoto
-    from .input_paid_media_video import InputPaidMediaVideo
+    from .input_paid_media_union import InputPaidMediaUnion
     from .input_poll_option import InputPollOption
     from .labeled_price import LabeledPrice
     from .link_preview_options import LinkPreviewOptions
@@ -2810,7 +2809,7 @@ class InaccessibleMessage(MaybeInaccessibleMessage):
     def answer_paid_media(
         self,
         star_count: int,
-        media: list[Union[InputPaidMediaPhoto, InputPaidMediaVideo]],
+        media: list[InputPaidMediaUnion],
         business_connection_id: Optional[str] = None,
         payload: Optional[str] = None,
         caption: Optional[str] = None,
@@ -2881,7 +2880,7 @@ class InaccessibleMessage(MaybeInaccessibleMessage):
     def reply_paid_media(
         self,
         star_count: int,
-        media: list[Union[InputPaidMediaPhoto, InputPaidMediaVideo]],
+        media: list[InputPaidMediaUnion],
         business_connection_id: Optional[str] = None,
         payload: Optional[str] = None,
         caption: Optional[str] = None,

@@ -5,8 +5,7 @@ from typing import TYPE_CHECKING, Any, Optional, Union
 from ..types import (
     ForceReply,
     InlineKeyboardMarkup,
-    InputPaidMediaPhoto,
-    InputPaidMediaVideo,
+    InputPaidMediaUnion,
     Message,
     MessageEntity,
     ReplyKeyboardMarkup,
@@ -30,7 +29,7 @@ class SendPaidMedia(TelegramMethod[Message]):
     """Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`). If the chat is a channel, all Telegram Star proceeds from this media will be credited to the chat's balance. Otherwise, they will be credited to the bot's balance."""
     star_count: int
     """The number of Telegram Stars that must be paid to buy access to the media; 1-2500"""
-    media: list[Union[InputPaidMediaPhoto, InputPaidMediaVideo]]
+    media: list[InputPaidMediaUnion]
     """A JSON-serialized array describing the media to be sent; up to 10 items"""
     business_connection_id: Optional[str] = None
     """Unique identifier of the business connection on behalf of which the message will be sent"""
@@ -66,7 +65,7 @@ class SendPaidMedia(TelegramMethod[Message]):
             *,
             chat_id: Union[int, str],
             star_count: int,
-            media: list[Union[InputPaidMediaPhoto, InputPaidMediaVideo]],
+            media: list[InputPaidMediaUnion],
             business_connection_id: Optional[str] = None,
             payload: Optional[str] = None,
             caption: Optional[str] = None,

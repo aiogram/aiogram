@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional, Union
+from typing import TYPE_CHECKING, Any, Optional
 
-from ..types import MenuButtonCommands, MenuButtonDefault, MenuButtonWebApp
+from ..types import MenuButtonUnion
 from .base import TelegramMethod
 
 
@@ -18,7 +18,7 @@ class SetChatMenuButton(TelegramMethod[bool]):
 
     chat_id: Optional[int] = None
     """Unique identifier for the target private chat. If not specified, default bot's menu button will be changed"""
-    menu_button: Optional[Union[MenuButtonCommands, MenuButtonWebApp, MenuButtonDefault]] = None
+    menu_button: Optional[MenuButtonUnion] = None
     """A JSON-serialized object for the bot's new menu button. Defaults to :class:`aiogram.types.menu_button_default.MenuButtonDefault`"""
 
     if TYPE_CHECKING:
@@ -29,9 +29,7 @@ class SetChatMenuButton(TelegramMethod[bool]):
             __pydantic__self__,
             *,
             chat_id: Optional[int] = None,
-            menu_button: Optional[
-                Union[MenuButtonCommands, MenuButtonWebApp, MenuButtonDefault]
-            ] = None,
+            menu_button: Optional[MenuButtonUnion] = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING, Any, Optional, Union
 
-from ..types import ReactionTypeCustomEmoji, ReactionTypeEmoji, ReactionTypePaid
+from ..types import ReactionTypeUnion
 from .base import TelegramMethod
 
 
@@ -18,9 +18,7 @@ class SetMessageReaction(TelegramMethod[bool]):
     """Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)"""
     message_id: int
     """Identifier of the target message. If the message belongs to a media group, the reaction is set to the first non-deleted message in the group instead."""
-    reaction: Optional[
-        list[Union[ReactionTypeEmoji, ReactionTypeCustomEmoji, ReactionTypePaid]]
-    ] = None
+    reaction: Optional[list[ReactionTypeUnion]] = None
     """A JSON-serialized list of reaction types to set on the message. Currently, as non-premium users, bots can set up to one reaction per message. A custom emoji reaction can be used if it is either already present on the message or explicitly allowed by chat administrators. Paid reactions can't be used by bots."""
     is_big: Optional[bool] = None
     """Pass :code:`True` to set the reaction with a big animation"""
@@ -34,9 +32,7 @@ class SetMessageReaction(TelegramMethod[bool]):
             *,
             chat_id: Union[int, str],
             message_id: int,
-            reaction: Optional[
-                list[Union[ReactionTypeEmoji, ReactionTypeCustomEmoji, ReactionTypePaid]]
-            ] = None,
+            reaction: Optional[list[ReactionTypeUnion]] = None,
             is_big: Optional[bool] = None,
             **__pydantic_kwargs: Any,
         ) -> None:

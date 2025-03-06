@@ -1,13 +1,11 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Literal, Union
+from typing import TYPE_CHECKING, Any, Literal
 
 from .background_type import BackgroundType
 
 if TYPE_CHECKING:
-    from .background_fill_freeform_gradient import BackgroundFillFreeformGradient
-    from .background_fill_gradient import BackgroundFillGradient
-    from .background_fill_solid import BackgroundFillSolid
+    from .background_fill_union import BackgroundFillUnion
 
 
 class BackgroundTypeFill(BackgroundType):
@@ -19,7 +17,7 @@ class BackgroundTypeFill(BackgroundType):
 
     type: Literal["fill"] = "fill"
     """Type of the background, always 'fill'"""
-    fill: Union[BackgroundFillSolid, BackgroundFillGradient, BackgroundFillFreeformGradient]
+    fill: BackgroundFillUnion
     """The background fill"""
     dark_theme_dimming: int
     """Dimming of the background in dark themes, as a percentage; 0-100"""
@@ -32,9 +30,7 @@ class BackgroundTypeFill(BackgroundType):
             __pydantic__self__,
             *,
             type: Literal["fill"] = "fill",
-            fill: Union[
-                BackgroundFillSolid, BackgroundFillGradient, BackgroundFillFreeformGradient
-            ],
+            fill: BackgroundFillUnion,
             dark_theme_dimming: int,
             **__pydantic_kwargs: Any,
         ) -> None:

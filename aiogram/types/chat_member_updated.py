@@ -31,12 +31,7 @@ if TYPE_CHECKING:
     )
     from .chat import Chat
     from .chat_invite_link import ChatInviteLink
-    from .chat_member_administrator import ChatMemberAdministrator
-    from .chat_member_banned import ChatMemberBanned
-    from .chat_member_left import ChatMemberLeft
-    from .chat_member_member import ChatMemberMember
-    from .chat_member_owner import ChatMemberOwner
-    from .chat_member_restricted import ChatMemberRestricted
+    from .chat_member_union import ChatMemberUnion
     from .force_reply import ForceReply
     from .inline_keyboard_markup import InlineKeyboardMarkup
     from .input_file import InputFile
@@ -67,23 +62,9 @@ class ChatMemberUpdated(TelegramObject):
     """Performer of the action, which resulted in the change"""
     date: DateTime
     """Date the change was done in Unix time"""
-    old_chat_member: Union[
-        ChatMemberOwner,
-        ChatMemberAdministrator,
-        ChatMemberMember,
-        ChatMemberRestricted,
-        ChatMemberLeft,
-        ChatMemberBanned,
-    ]
+    old_chat_member: ChatMemberUnion
     """Previous information about the chat member"""
-    new_chat_member: Union[
-        ChatMemberOwner,
-        ChatMemberAdministrator,
-        ChatMemberMember,
-        ChatMemberRestricted,
-        ChatMemberLeft,
-        ChatMemberBanned,
-    ]
+    new_chat_member: ChatMemberUnion
     """New information about the chat member"""
     invite_link: Optional[ChatInviteLink] = None
     """*Optional*. Chat invite link, which was used by the user to join the chat; for joining by invite link events only."""
@@ -102,22 +83,8 @@ class ChatMemberUpdated(TelegramObject):
             chat: Chat,
             from_user: User,
             date: DateTime,
-            old_chat_member: Union[
-                ChatMemberOwner,
-                ChatMemberAdministrator,
-                ChatMemberMember,
-                ChatMemberRestricted,
-                ChatMemberLeft,
-                ChatMemberBanned,
-            ],
-            new_chat_member: Union[
-                ChatMemberOwner,
-                ChatMemberAdministrator,
-                ChatMemberMember,
-                ChatMemberRestricted,
-                ChatMemberLeft,
-                ChatMemberBanned,
-            ],
+            old_chat_member: ChatMemberUnion,
+            new_chat_member: ChatMemberUnion,
             invite_link: Optional[ChatInviteLink] = None,
             via_join_request: Optional[bool] = None,
             via_chat_folder_invite_link: Optional[bool] = None,

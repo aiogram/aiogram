@@ -1,17 +1,8 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional, Union
+from typing import TYPE_CHECKING, Any, Optional
 
-from ..types import (
-    BotCommand,
-    BotCommandScopeAllChatAdministrators,
-    BotCommandScopeAllGroupChats,
-    BotCommandScopeAllPrivateChats,
-    BotCommandScopeChat,
-    BotCommandScopeChatAdministrators,
-    BotCommandScopeChatMember,
-    BotCommandScopeDefault,
-)
+from ..types import BotCommand, BotCommandScopeUnion
 from .base import TelegramMethod
 
 
@@ -25,17 +16,7 @@ class GetMyCommands(TelegramMethod[list[BotCommand]]):
     __returning__ = list[BotCommand]
     __api_method__ = "getMyCommands"
 
-    scope: Optional[
-        Union[
-            BotCommandScopeDefault,
-            BotCommandScopeAllPrivateChats,
-            BotCommandScopeAllGroupChats,
-            BotCommandScopeAllChatAdministrators,
-            BotCommandScopeChat,
-            BotCommandScopeChatAdministrators,
-            BotCommandScopeChatMember,
-        ]
-    ] = None
+    scope: Optional[BotCommandScopeUnion] = None
     """A JSON-serialized object, describing scope of users. Defaults to :class:`aiogram.types.bot_command_scope_default.BotCommandScopeDefault`."""
     language_code: Optional[str] = None
     """A two-letter ISO 639-1 language code or an empty string"""
@@ -47,17 +28,7 @@ class GetMyCommands(TelegramMethod[list[BotCommand]]):
         def __init__(
             __pydantic__self__,
             *,
-            scope: Optional[
-                Union[
-                    BotCommandScopeDefault,
-                    BotCommandScopeAllPrivateChats,
-                    BotCommandScopeAllGroupChats,
-                    BotCommandScopeAllChatAdministrators,
-                    BotCommandScopeChat,
-                    BotCommandScopeChatAdministrators,
-                    BotCommandScopeChatMember,
-                ]
-            ] = None,
+            scope: Optional[BotCommandScopeUnion] = None,
             language_code: Optional[str] = None,
             **__pydantic_kwargs: Any,
         ) -> None:

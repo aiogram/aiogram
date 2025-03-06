@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional, Union
+from typing import TYPE_CHECKING, Any, Optional
 
 from .chat import Chat
 from .custom import DateTime
@@ -14,9 +14,7 @@ if TYPE_CHECKING:
     from .chat_permissions import ChatPermissions
     from .chat_photo import ChatPhoto
     from .message import Message
-    from .reaction_type_custom_emoji import ReactionTypeCustomEmoji
-    from .reaction_type_emoji import ReactionTypeEmoji
-    from .reaction_type_paid import ReactionTypePaid
+    from .reaction_type_union import ReactionTypeUnion
 
 
 class ChatFullInfo(Chat):
@@ -58,9 +56,7 @@ class ChatFullInfo(Chat):
     """*Optional*. For private chats with business accounts, the opening hours of the business"""
     personal_chat: Optional[Chat] = None
     """*Optional*. For private chats, the personal channel of the user"""
-    available_reactions: Optional[
-        list[Union[ReactionTypeEmoji, ReactionTypeCustomEmoji, ReactionTypePaid]]
-    ] = None
+    available_reactions: Optional[list[ReactionTypeUnion]] = None
     """*Optional*. List of available reactions allowed in the chat. If omitted, then all `emoji reactions <https://core.telegram.org/bots/api#reactiontypeemoji>`_ are allowed."""
     background_custom_emoji_id: Optional[str] = None
     """*Optional*. Custom emoji identifier of the emoji chosen by the chat for the reply header and link preview background"""
@@ -142,9 +138,7 @@ class ChatFullInfo(Chat):
             business_location: Optional[BusinessLocation] = None,
             business_opening_hours: Optional[BusinessOpeningHours] = None,
             personal_chat: Optional[Chat] = None,
-            available_reactions: Optional[
-                list[Union[ReactionTypeEmoji, ReactionTypeCustomEmoji, ReactionTypePaid]]
-            ] = None,
+            available_reactions: Optional[list[ReactionTypeUnion]] = None,
             background_custom_emoji_id: Optional[str] = None,
             profile_accent_color_id: Optional[int] = None,
             profile_background_custom_emoji_id: Optional[str] = None,

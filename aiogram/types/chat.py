@@ -48,9 +48,7 @@ if TYPE_CHECKING:
     from .chat_photo import ChatPhoto
     from .input_file import InputFile
     from .message import Message
-    from .reaction_type_custom_emoji import ReactionTypeCustomEmoji
-    from .reaction_type_emoji import ReactionTypeEmoji
-    from .reaction_type_paid import ReactionTypePaid
+    from .reaction_type_union import ReactionTypeUnion
 
 
 class Chat(TelegramObject):
@@ -84,9 +82,9 @@ class Chat(TelegramObject):
 
 .. deprecated:: API:7.3
    https://core.telegram.org/bots/api-changelog#may-6-2024"""
-    available_reactions: Optional[
-        list[Union[ReactionTypeEmoji, ReactionTypeCustomEmoji, ReactionTypePaid]]
-    ] = Field(None, json_schema_extra={"deprecated": True})
+    available_reactions: Optional[list[ReactionTypeUnion]] = Field(
+        None, json_schema_extra={"deprecated": True}
+    )
     """*Optional*. List of available reactions allowed in the chat. If omitted, then all `emoji reactions <https://core.telegram.org/bots/api#reactiontypeemoji>`_ are allowed. Returned only in :class:`aiogram.methods.get_chat.GetChat`.
 
 .. deprecated:: API:7.3
@@ -284,9 +282,7 @@ class Chat(TelegramObject):
             is_forum: Optional[bool] = None,
             accent_color_id: Optional[int] = None,
             active_usernames: Optional[list[str]] = None,
-            available_reactions: Optional[
-                list[Union[ReactionTypeEmoji, ReactionTypeCustomEmoji, ReactionTypePaid]]
-            ] = None,
+            available_reactions: Optional[list[ReactionTypeUnion]] = None,
             background_custom_emoji_id: Optional[str] = None,
             bio: Optional[str] = None,
             birthdate: Optional[Birthdate] = None,
