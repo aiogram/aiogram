@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  aiogram\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-08 19:04+0300\n"
+"POT-Creation-Date: 2025-03-08 02:28+0200\n"
 "PO-Revision-Date: 2023-09-14 18:34+0300\n"
 "Last-Translator: \n"
 "Language: uk_UA\n"
@@ -17,17 +17,17 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.12.1\n"
+"Generated-By: Babel 2.13.1\n"
 
-#: ../../migration_2_to_3.rst:3
+#: ../../migration_2_to_3.rst:7
 msgid "Migration FAQ (2.x -> 3.0)"
 msgstr "FAQ по переходу з версії 2.x на 3.0"
 
-#: ../../migration_2_to_3.rst:7
+#: ../../migration_2_to_3.rst:11
 msgid "This guide is still in progress."
 msgstr "Цей посібник все ще в розробці."
 
-#: ../../migration_2_to_3.rst:9
+#: ../../migration_2_to_3.rst:13
 msgid ""
 "This version introduces numerous breaking changes and architectural "
 "improvements. It helps reduce the count of global variables in your code,"
@@ -42,7 +42,7 @@ msgstr ""
 "покращень, він робить проміжне програмне забезпечення (мідлварі) та "
 "фільтри більш контрольованими."
 
-#: ../../migration_2_to_3.rst:15
+#: ../../migration_2_to_3.rst:19
 msgid ""
 "On this page, you can read about the changes made in relation to the last"
 " stable 2.x version."
@@ -50,7 +50,7 @@ msgstr ""
 "На цій сторінці ви можете прочитати про зміни, внесені в останню "
 "стабільну версію 2.x."
 
-#: ../../migration_2_to_3.rst:19
+#: ../../migration_2_to_3.rst:23
 msgid ""
 "This page more closely resembles a detailed changelog than a migration "
 "guide, but it will be updated in the future."
@@ -58,7 +58,7 @@ msgstr ""
 "Ця сторінка більше нагадує детальний список змін, ніж посібник з "
 "міграції, але вона буде оновлюватися в майбутньому."
 
-#: ../../migration_2_to_3.rst:22
+#: ../../migration_2_to_3.rst:26
 msgid ""
 "Feel free to contribute to this page, if you find something that is not "
 "mentioned here."
@@ -66,14 +66,29 @@ msgstr ""
 "Не соромтеся зробити свій внесок у цю сторінку, якщо ви знайшли щось, про"
 " що тут не згадано."
 
-#: ../../migration_2_to_3.rst:26
-msgid "Dispatcher"
+#: ../../migration_2_to_3.rst:29
+msgid "Dependencies"
+msgstr "Залежності"
+
+#: ../../migration_2_to_3.rst:31
+msgid ""
+"The dependencies required for :code:`i18n` are no longer part of the "
+"default package. If your application uses translation functionality, be "
+"sure to add an optional dependency:"
+msgstr "Залежності, необхідні для :code:`i18n`, більше не є частиною пакету за замовчуванням. Якщо ваш додаток використовує функціональність перекладу, обов'язково додайте необов'язкову залежність:"
+
+#: ../../migration_2_to_3.rst:34
+msgid ":code:`pip install aiogram[i18n]`"
 msgstr ""
 
-#: ../../migration_2_to_3.rst:28
+#: ../../migration_2_to_3.rst:38
+msgid "Dispatcher"
+msgstr "Диспетчер"
+
+#: ../../migration_2_to_3.rst:40
 msgid ""
-"The :class:`Dispatcher` class no longer accepts a `Bot` instance in its "
-"initializer. Instead, the `Bot` instance should be passed to the "
+"The |Dispatcher| class no longer accepts a |Bot| instance in its "
+"initializer. Instead, the |Bot| instance should be passed to the "
 "dispatcher only for starting polling or handling events from webhooks. "
 "This approach also allows for the use of multiple bot instances "
 "simultaneously (\"multibot\")."
@@ -84,24 +99,18 @@ msgstr ""
 "також дозволяє використовувати декілька екземплярів бота одночасно "
 "(\"мультибот\")."
 
-#: ../../migration_2_to_3.rst:32
+#: ../../migration_2_to_3.rst:44
 msgid ""
-":class:`Dispatcher` now can be extended with another Dispatcher-like "
-"thing named :class:`Router` (:ref:`Read more » <Nested routers>`)."
+"|Dispatcher| now can be extended with another Dispatcher-like thing named"
+" |Router|. With routes, you can easily modularize your code and "
+"potentially share these modules between projects. (:ref:`Read more » "
+"<Nested routers>`.)"
 msgstr ""
 "Клас :class:`Dispatcher` тепер можна розширити ще одним об'єктом на "
 "кшталт диспетчера з назвою :class:`Router` (:ref:`Детальніше » <Nested "
 "routers>`)."
 
-#: ../../migration_2_to_3.rst:34
-msgid ""
-"With routes, you can easily modularize your code and potentially share "
-"these modules between projects."
-msgstr ""
-"За допомогою роутерів ви можете легко модулювати свій код і потенційно "
-"перевикористовувати ці модулі між проектами."
-
-#: ../../migration_2_to_3.rst:35
+#: ../../migration_2_to_3.rst:47
 msgid ""
 "Removed the **_handler** suffix from all event handler decorators and "
 "registering methods. (:ref:`Read more » <Event observers>`)"
@@ -109,16 +118,15 @@ msgstr ""
 "Видалено суфікс **_handler** з усіх декораторів обробників подій та "
 "методів реєстрації. (:ref:`Детальніше » <Event observers>`)"
 
-#: ../../migration_2_to_3.rst:37
-#, fuzzy
+#: ../../migration_2_to_3.rst:49
 msgid ""
-"The Executor has been entirely removed; you can now use the Dispatcher "
-"directly to start poll the API or handle webhooks from it."
+"The :class:`Executor` has been entirely removed; you can now use the "
+"|Dispatcher| directly to start poll the API or handle webhooks from it."
 msgstr ""
 "Executor було повністю вилучено; тепер ви можете використовувати "
 "Dispatcher безпосередньо для запуску полінгу або обробки вебхуків."
 
-#: ../../migration_2_to_3.rst:38
+#: ../../migration_2_to_3.rst:50
 msgid ""
 "The throttling method has been completely removed; you can now use "
 "middlewares to control the execution context and implement any throttling"
@@ -129,13 +137,13 @@ msgstr ""
 "керування контекстом виконання та реалізовувати будь-який механізм "
 "дроселювання за вашим бажанням."
 
-#: ../../migration_2_to_3.rst:40
+#: ../../migration_2_to_3.rst:52
 msgid ""
-"Removed global context variables from the API types, Bot and Dispatcher "
-"object, From now on, if you want to access the current bot instance "
-"within handlers or filters, you should accept the argument :code:`bot: "
-"Bot` and use it instead of :code:`Bot.get_current()`. In middlewares, it "
-"can be accessed via :code:`data[\"bot\"]`."
+"Removed global context variables from the API types, |Bot| and "
+"|Dispatcher| object. From now on, if you want to access the current bot "
+"instance within handlers or filters, you should accept the argument "
+":code:`bot: Bot` and use it instead of :code:`Bot.get_current()`. In "
+"middlewares, it can be accessed via :code:`data[\"bot\"]`."
 msgstr ""
 "Вилучено глобальні контекстні змінні з типів API, об'єктів Bot та "
 "Dispatcher, Відтепер, якщо ви хочете отримати доступ до поточного "
@@ -144,10 +152,11 @@ msgstr ""
 ":code:`Bot.get_current()`. У проміжному програмному забезпеченні "
 "(middleware) доступ до нього можна отримати через :code:`data[\"bot\"]`."
 
-#: ../../migration_2_to_3.rst:44
+#: ../../migration_2_to_3.rst:56
+#, fuzzy
 msgid ""
 "To skip pending updates, you should now call the "
-":class:`aiogram.methods.delete_webhook.DeleteWebhook` method directly, "
+":class:`~aiogram.methods.delete_webhook.DeleteWebhook` method directly, "
 "rather than passing :code:`skip_updates=True` to the start polling "
 "method."
 msgstr ""
@@ -155,11 +164,19 @@ msgstr ""
 ":class:`aiogram.methods.delete_webhook.DeleteWebhook` безпосередньо, а не"
 " передавати :code:`skip_updates=True` до методу запуску полінгу."
 
-#: ../../migration_2_to_3.rst:49
+#: ../../migration_2_to_3.rst:57
+msgid ""
+"To feed updates to the |Dispatcher|, instead of method "
+":meth:`process_update`, you should use method "
+":meth:`~aiogram.dispatcher.dispatcher.Dispatcher.feed_update`. "
+"(:ref:`Read more » <Handling updates>`)"
+msgstr ""
+
+#: ../../migration_2_to_3.rst:63
 msgid "Filtering events"
 msgstr "Фільтрація подій"
 
-#: ../../migration_2_to_3.rst:51
+#: ../../migration_2_to_3.rst:65
 msgid ""
 "Keyword filters can no longer be used; use filters explicitly. (`Read "
 "more » <https://github.com/aiogram/aiogram/issues/942>`_)"
@@ -168,7 +185,7 @@ msgstr ""
 "використовуйте фільтри явно. (`Детальніше » "
 "<https://github.com/aiogram/aiogram/issues/942>`_)"
 
-#: ../../migration_2_to_3.rst:52
+#: ../../migration_2_to_3.rst:66
 msgid ""
 "Due to the removal of keyword filters, all previously enabled-by-default "
 "filters (such as state and content_type) are now disabled. You must "
@@ -182,7 +199,7 @@ msgstr ""
 "замість :code:`@dp.message_handler(content_types=ContentType.PHOTO)` слід"
 " використовувати :code:`@router.message(F.photo)`."
 
-#: ../../migration_2_to_3.rst:57
+#: ../../migration_2_to_3.rst:71
 #, fuzzy
 msgid ""
 "Most common filters have been replaced with the \"magic filter.\" "
@@ -191,7 +208,7 @@ msgstr ""
 "Більшість звичайних фільтрів було замінено на \"магічний фільтр\". "
 "(:ref:`Детальніше далі » <magic-filters>`)"
 
-#: ../../migration_2_to_3.rst:58
+#: ../../migration_2_to_3.rst:72
 msgid ""
 "By default, the message handler now receives any content type. If you "
 "want a specific one, simply add the appropriate filters (Magic or any "
@@ -201,7 +218,7 @@ msgstr ""
 " Якщо вам потрібен певний тип, просто додайте відповідні фільтри (Magic "
 "або будь-який інший)."
 
-#: ../../migration_2_to_3.rst:60
+#: ../../migration_2_to_3.rst:74
 msgid ""
 "The state filter is no longer enabled by default. This means that if you "
 "used :code:`state=\"*\"` in v2, you should not pass any state filter in "
@@ -213,7 +230,7 @@ msgstr ""
 "фільтр стану у v3. І навпаки, якщо стан не було вказано у v2, вам "
 "потрібно буде вказати його у v3."
 
-#: ../../migration_2_to_3.rst:63
+#: ../../migration_2_to_3.rst:77
 msgid ""
 "Added the possibility to register global filters for each router, which "
 "helps to reduce code repetition and provides an easier way to control the"
@@ -223,11 +240,11 @@ msgstr ""
 "допомагає зменшити повторення коду і полегшує контроль призначення "
 "кожного роутера."
 
-#: ../../migration_2_to_3.rst:69
+#: ../../migration_2_to_3.rst:83
 msgid "Bot API"
 msgstr ""
 
-#: ../../migration_2_to_3.rst:71
+#: ../../migration_2_to_3.rst:85
 msgid ""
 "All API methods are now classes with validation, implemented via "
 "`pydantic <https://docs.pydantic.dev/>`. These API calls are also "
@@ -237,7 +254,7 @@ msgstr ""
 "`pydantic <https://docs.pydantic.dev/>`. Ці виклики API також доступні як"
 " методи в класі Bot."
 
-#: ../../migration_2_to_3.rst:74
+#: ../../migration_2_to_3.rst:88
 msgid ""
 "More pre-defined Enums have been added and moved to the `aiogram.enums` "
 "sub-package. For example, the chat type enum is now "
@@ -249,7 +266,7 @@ msgstr ""
 ":class:`aiogram.enums.ChatType` замість "
 ":class:`aiogram.types.chat.ChatType`."
 
-#: ../../migration_2_to_3.rst:76
+#: ../../migration_2_to_3.rst:90
 msgid ""
 "The HTTP client session has been separated into a container that can be "
 "reused across different Bot instances within the application."
@@ -257,7 +274,7 @@ msgstr ""
 "Клієнтська сесія HTTP була відокремлена в контейнер, який можна повторно "
 "використовувати для різних екземплярів бота в додатку."
 
-#: ../../migration_2_to_3.rst:78
+#: ../../migration_2_to_3.rst:92
 msgid ""
 "API Exceptions are no longer classified by specific messages, as Telegram"
 " has no documented error codes. However, all errors are classified by "
@@ -273,11 +290,11 @@ msgstr ""
 " випадків слід перевіряти лише тип помилки (за кодом статусу), не "
 "перевіряючи повідомлення про помилку."
 
-#: ../../migration_2_to_3.rst:88
+#: ../../migration_2_to_3.rst:102
 msgid "Middlewares"
 msgstr "Проміжне ПО (Middlewares)"
 
-#: ../../migration_2_to_3.rst:90
+#: ../../migration_2_to_3.rst:104
 msgid ""
 "Middlewares can now control an execution context, e.g., using context "
 "managers. (:ref:`Read more » <middlewares>`)"
@@ -286,7 +303,7 @@ msgstr ""
 " наприклад, за допомогою менеджерів контексту. (:ref:`Детальніше » "
 "<middlewares>`)"
 
-#: ../../migration_2_to_3.rst:92
+#: ../../migration_2_to_3.rst:106
 msgid ""
 "All contextual data is now shared end-to-end between middlewares, "
 "filters, and handlers. For example now you can easily pass some data into"
@@ -299,7 +316,7 @@ msgstr ""
 "забезпеченні і отримати їх у шарі фільтрів так само, як і в обробниках "
 "через аргументи ключових слів."
 
-#: ../../migration_2_to_3.rst:95
+#: ../../migration_2_to_3.rst:109
 msgid ""
 "Added a mechanism named **flags** that helps customize handler behavior "
 "in conjunction with middlewares. (:ref:`Read more » <flags>`)"
@@ -308,11 +325,11 @@ msgstr ""
 "поведінку обробника у поєднанні з проміжним програмним забезпеченням. "
 "(:ref:`Детальніше про » <flags>`)"
 
-#: ../../migration_2_to_3.rst:100
+#: ../../migration_2_to_3.rst:114
 msgid "Keyboard Markup"
 msgstr "Розмітка клавіатури"
 
-#: ../../migration_2_to_3.rst:102
+#: ../../migration_2_to_3.rst:116
 msgid ""
 "Now :class:`aiogram.types.inline_keyboard_markup.InlineKeyboardMarkup` "
 "and :class:`aiogram.types.reply_keyboard_markup.ReplyKeyboardMarkup` no "
@@ -329,11 +346,11 @@ msgstr ""
 ":class:`aiogram.utils.keyboard.InlineKeyboardBuilder` відповідно "
 "(:ref:`Детальніше » <Keyboard builder>`)"
 
-#: ../../migration_2_to_3.rst:110
+#: ../../migration_2_to_3.rst:124
 msgid "Callbacks data"
-msgstr ""
+msgstr "Дані зворотного виклику"
 
-#: ../../migration_2_to_3.rst:112
+#: ../../migration_2_to_3.rst:126
 msgid ""
 "The callback data factory is now strictly typed using `pydantic "
 "<https://docs.pydantic.dev/>`_ models. (:ref:`Read more » <Callback data "
@@ -343,11 +360,11 @@ msgstr ""
 "моделей `pydantic <https://docs.pydantic.dev/>`_. (:ref:`Детальніше » "
 "<Callback data factory>`)"
 
-#: ../../migration_2_to_3.rst:117
+#: ../../migration_2_to_3.rst:131
 msgid "Finite State machine"
 msgstr "Скінченний автомат"
 
-#: ../../migration_2_to_3.rst:119
+#: ../../migration_2_to_3.rst:133
 msgid ""
 "State filters will no longer be automatically added to all handlers; you "
 "will need to specify the state if you want to use it."
@@ -356,37 +373,30 @@ msgstr ""
 "обробників; вам потрібно буде вказати стан, якщо ви хочете його "
 "використати."
 
-#: ../../migration_2_to_3.rst:121
+#: ../../migration_2_to_3.rst:135
 msgid ""
 "Added the possibility to change the FSM strategy. For example, if you "
 "want to control the state for each user based on chat topics rather than "
-"the user in a chat, you can specify this in the Dispatcher."
+"the user in a chat, you can specify this in the |Dispatcher|."
 msgstr ""
 "Додано можливість змінювати стратегію FSM. Наприклад, якщо ви хочете "
 "контролювати стан для кожного користувача на основі топіків чату, а не "
 "користувача в чаті, ви можете вказати це в Диспетчері."
 
-#: ../../migration_2_to_3.rst:124
+#: ../../migration_2_to_3.rst:138
+#, fuzzy
 msgid ""
 "Now :class:`aiogram.fsm.state.State` and "
 ":class:`aiogram.fsm.state.StateGroup` don't have helper methods like "
-":code:`.set()`, :code:`.next()`, etc."
+":code:`.set()`, :code:`.next()`, etc. Instead, you should set states by "
+"passing them directly to :class:`aiogram.fsm.context.FSMContext` "
+"(:ref:`Read more » <Finite State Machine>`)"
 msgstr ""
 "Тепер :class:`aiogram.fsm.state.State` та "
 ":class:`aiogram.fsm.state.StateGroup` не мають допоміжних методів, таких "
 "як :code:`.set()`, :code:`.next()` тощо."
 
-#: ../../migration_2_to_3.rst:127
-msgid ""
-"Instead, you should set states by passing them directly to "
-":class:`aiogram.fsm.context.FSMContext` (:ref:`Read more » <Finite State "
-"Machine>`)"
-msgstr ""
-"Замість цього вам слід встановлювати стани, передаючи їх безпосередньо до"
-" :class:`aiogram.fsm.context.FSMContext` (:ref:`Детальніше » <Finite "
-"State Machine>`)"
-
-#: ../../migration_2_to_3.rst:129
+#: ../../migration_2_to_3.rst:142
 msgid ""
 "The state proxy is deprecated; you should update the state data by "
 "calling :code:`state.set_data(...)` and :code:`state.get_data()` "
@@ -395,11 +405,11 @@ msgstr ""
 "Проксі стану є застарілим; вам слід оновити дані стану, викликавши "
 ":code:`state.set_data(...)` та :code:`state.get_data()` відповідно."
 
-#: ../../migration_2_to_3.rst:134
+#: ../../migration_2_to_3.rst:147
 msgid "Sending Files"
 msgstr "Надсилання файлів"
 
-#: ../../migration_2_to_3.rst:136
+#: ../../migration_2_to_3.rst:149
 msgid ""
 "From now on, you should wrap files in an InputFile object before sending "
 "them, instead of passing the IO object directly to the API method. "
@@ -409,38 +419,129 @@ msgstr ""
 "замість того, щоб передавати об'єкт вводу-виводу безпосередньо до методу "
 "API. (:ref:`Детальніше » <sending-files>`)"
 
-#: ../../migration_2_to_3.rst:141
+#: ../../migration_2_to_3.rst:154
 msgid "Webhook"
-msgstr ""
+msgstr "Вебхук"
 
-#: ../../migration_2_to_3.rst:143
+#: ../../migration_2_to_3.rst:156
 msgid "The aiohttp web app configuration has been simplified."
 msgstr "Спрощено налаштування веб-застосунку aiohttp."
 
-#: ../../migration_2_to_3.rst:144
+#: ../../migration_2_to_3.rst:157
 msgid ""
 "By default, the ability to upload files has been added when you `make "
 "requests in response to updates <https://core.telegram.org/bots/faq#how-"
 "can-i-make-requests-in-response-to-updates>`_ (available for webhook "
 "only)."
-msgstr ""
+msgstr "За замовчуванням додана можливість завантаження файлів при `відповідях на оновлення <https://core.telegram.org/bots/faq#how-can-i-make-requests-in-response-to-updates>`_ (доступно тільки для вебхука)."
 
-#: ../../migration_2_to_3.rst:148
+#: ../../migration_2_to_3.rst:161
 msgid "Telegram API Server"
 msgstr "Сервер Telegram API"
 
-#: ../../migration_2_to_3.rst:150
+#: ../../migration_2_to_3.rst:163
+#, fuzzy
 msgid ""
-"The `server` parameter has been moved from the `Bot` instance to `api` in"
-" `BaseSession`."
+"The :obj:`server` parameter has been moved from the |Bot| instance to "
+":obj:`api` parameter of the "
+":class:`~aiogram.client.session.base.BaseSession`."
 msgstr ""
 "Параметр `server` було перенесено з екземпляра `Bot` до `api` в "
 "`BaseSession`."
 
-#: ../../migration_2_to_3.rst:151
+#: ../../migration_2_to_3.rst:164
+#, fuzzy
 msgid ""
-"The constant `aiogram.bot.api.TELEGRAM_PRODUCTION` has been moved to "
-"`aiogram.client.telegram.PRODUCTION`."
+"The constant :obj:`aiogram.bot.api.TELEGRAM_PRODUCTION` has been moved to"
+" :obj:`aiogram.client.telegram.PRODUCTION`."
 msgstr ""
 "Константа `aiogram.bot.api.TELEGRAM_PRODUCTION` була переміщена на "
 "`aiogram.client.telegram.PRODUCTION`."
+
+#: ../../migration_2_to_3.rst:168
+msgid "Telegram objects transformation (to dict, to json, from json)"
+msgstr "Перетворення об'єктів Telegram (у словник, у json, з json)"
+
+#: ../../migration_2_to_3.rst:170
+msgid ""
+"Methods :code:`TelegramObject.to_object()`, "
+":code:`TelegramObject.to_json()` and :code:`TelegramObject.to_python()` "
+"have been removed due to the use of `pydantic "
+"<https://docs.pydantic.dev/>`_ models."
+msgstr "Методи :code:`TelegramObject.to_object()`, :code:`TelegramObject.to_json()` та :code:`TelegramObject.to_python()` були вилучені через використання моделей `pydantic <https://docs.pydantic.dev/>`_."
+
+
+#: ../../migration_2_to_3.rst:172
+msgid ""
+":code:`TelegramObject.to_object()` should be replaced by "
+":code:`TelegramObject.model_validate()` (`Read more "
+"<https://docs.pydantic.dev/2.7/api/base_model/#pydantic.BaseModel.model_validate>`_)"
+msgstr ":code:`TelegramObject.to_object()` слід замінити на "
+":code:`TelegramObject.model_validate()` (`Детальніше "
+"<https://docs.pydantic.dev/2.7/api/base_model/#pydantic.BaseModel.model_validate>`_)"
+
+#: ../../migration_2_to_3.rst:174
+msgid ""
+":code:`TelegramObject.as_json()` should be replaced by "
+":func:`aiogram.utils.serialization.deserialize_telegram_object_to_python`"
+msgstr ":code:`TelegramObject.as_json()` слід замінити на "
+":func:`aiogram.utils.serialization.deserialize_telegram_object_to_python`"
+
+#: ../../migration_2_to_3.rst:175
+msgid ""
+":code:`<TelegramObject>.to_python()` should be replaced by "
+":code:`json.dumps(deserialize_telegram_object_to_python(<TelegramObject>))`"
+msgstr ":code:`<TelegramObject>.to_python()` слід замінити на "
+":code:`json.dumps(deserialize_telegram_object_to_python(<TelegramObject>))`"
+
+
+#: ../../migration_2_to_3.rst:177
+msgid "Here are some usage examples:"
+msgstr "Ось деякі приклади використання:"
+
+#: ../../migration_2_to_3.rst:179
+msgid "Creating an object from a dictionary representation of an object"
+msgstr "Створення об'єкта з представлення об'єкта у вигляді словника"
+
+#: ../../migration_2_to_3.rst:201
+msgid "Creating a json representation of an object"
+msgstr "Cтворення представлення об'єкта у вигляді json"
+
+#: ../../migration_2_to_3.rst:223
+msgid "Creating a dictionary representation of an object"
+msgstr "Створення представлення об'єкта у вигляді словника"
+
+#: ../../migration_2_to_3.rst:247
+msgid "ChatMember tools"
+msgstr "Інструменти ChatMember"
+
+#: ../../migration_2_to_3.rst:249
+msgid ""
+"Now :class:`aiogram.types.chat_member.ChatMember` no longer contains "
+"tools to resolve an object with the appropriate status."
+msgstr "Тепер :class:`aiogram.types.chat_member.ChatMember` більше не містить "
+"інструментів для вирішення об'єкта з відповідним статусом."
+
+#: ../../migration_2_to_3.rst:266
+msgid ""
+"Now :class:`aiogram.types.chat_member.ChatMember` and all its child "
+"classes no longer contain methods for checking for membership in certain "
+"logical groups. As a substitute, you can use pre-defined groups or create"
+" such groups yourself and check their entry using the :func:`isinstance` "
+"function"
+msgstr "Відтепер :class:`aiogram.types.chat_member.ChatMember` та всі його "
+"дочірні класи більше не містять методів для перевірки належності до певних логічних груп. "
+"Замість цього ви можете використовувати попередньо визначені групи або створювати такі "
+"групи самостійно та перевіряти їх входження за допомогою функції :func:`isinstance`"
+
+#: ../../migration_2_to_3.rst:294
+msgid ""
+"You also can independently create group similar to ADMINS that fits the "
+"logic of your application."
+msgstr "Також ви можете самостійно створити групу, подібну до ADMINS, яка відповідає логіці вашого застосунку."
+
+#: ../../migration_2_to_3.rst:296
+msgid ""
+"E.g., you can create a PUNISHED group and include banned and restricted "
+"members there!"
+msgstr "Наприклад, ви можете створити групу PUNISHED та включити туди заблокованих та обмежених учасників!"

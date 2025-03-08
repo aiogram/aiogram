@@ -8,14 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-11-06 14:18+0200\n"
+"POT-Creation-Date: 2025-03-08 02:28+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.10.3\n"
+"Generated-By: Babel 2.13.1\n"
 
 #: ../../api/types/inline_query_result_gif.rst:3
 msgid "InlineQueryResultGif"
@@ -45,11 +45,12 @@ msgstr ""
 
 #: ../../docstring
 #: aiogram.types.inline_query_result_gif.InlineQueryResultGif.gif_url:1 of
-msgid "A valid URL for the GIF file. File size must not exceed 1MB"
+msgid "A valid URL for the GIF file"
 msgstr ""
 
 #: ../../docstring
-#: aiogram.types.inline_query_result_gif.InlineQueryResultGif.thumb_url:1 of
+#: aiogram.types.inline_query_result_gif.InlineQueryResultGif.thumbnail_url:1
+#: of
 msgid ""
 "URL of the static (JPEG or GIF) or animated (MPEG4) thumbnail for the "
 "result"
@@ -71,7 +72,7 @@ msgid "*Optional*. Duration of the GIF in seconds"
 msgstr ""
 
 #: ../../docstring
-#: aiogram.types.inline_query_result_gif.InlineQueryResultGif.thumb_mime_type:1
+#: aiogram.types.inline_query_result_gif.InlineQueryResultGif.thumbnail_mime_type:1
 #: of
 msgid ""
 "*Optional*. MIME type of the thumbnail, must be one of 'image/jpeg', "
@@ -107,6 +108,14 @@ msgid ""
 msgstr ""
 
 #: ../../docstring
+#: aiogram.types.inline_query_result_gif.InlineQueryResultGif.show_caption_above_media:1
+#: of
+msgid ""
+"*Optional*. Pass :code:`True`, if the caption must be shown above the "
+"message media"
+msgstr ""
+
+#: ../../docstring
 #: aiogram.types.inline_query_result_gif.InlineQueryResultGif.reply_markup:1 of
 msgid ""
 "*Optional*. `Inline keyboard <https://core.telegram.org/bots/features"
@@ -124,4 +133,7 @@ msgstr ""
 #~ "<https://core.telegram.org/bots#inline-keyboards-and-"
 #~ "on-the-fly-updating>`_ attached to "
 #~ "the message"
+#~ msgstr ""
+
+#~ msgid "A valid URL for the GIF file. File size must not exceed 1MB"
 #~ msgstr ""

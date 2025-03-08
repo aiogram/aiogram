@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-16 01:15+0200\n"
+"POT-Creation-Date: 2025-03-08 02:28+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: uk_UA\n"
@@ -74,9 +74,21 @@ msgid ""
 " giveaways."
 msgstr ""
 
+#: ../../docstring aiogram.types.giveaway.Giveaway.prize_star_count:1 of
+msgid ""
+"*Optional*. The number of Telegram Stars to be split between giveaway "
+"winners; for Telegram Star giveaways only"
+msgstr ""
+
 #: ../../docstring
 #: aiogram.types.giveaway.Giveaway.premium_subscription_month_count:1 of
 msgid ""
 "*Optional*. The number of months the Telegram Premium subscription won "
-"from the giveaway will be active for"
+"from the giveaway will be active for; for Telegram Premium giveaways only"
 msgstr ""
+
+#~ msgid ""
+#~ "*Optional*. The number of months the "
+#~ "Telegram Premium subscription won from "
+#~ "the giveaway will be active for"
+#~ msgstr ""

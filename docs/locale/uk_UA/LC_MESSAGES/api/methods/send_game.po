@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-16 01:15+0200\n"
+"POT-Creation-Date: 2025-03-08 02:28+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -45,6 +45,13 @@ msgid ""
 " up your games via `@BotFather <https://t.me/botfather>`_."
 msgstr ""
 
+#: ../../docstring aiogram.methods.send_game.SendGame.business_connection_id:1
+#: of
+msgid ""
+"Unique identifier of the business connection on behalf of which the "
+"message will be sent"
+msgstr ""
+
 #: ../../docstring aiogram.methods.send_game.SendGame.message_thread_id:1 of
 msgid ""
 "Unique identifier for the target message thread (topic) of the forum; for"
@@ -59,6 +66,21 @@ msgstr ""
 
 #: ../../docstring aiogram.methods.send_game.SendGame.protect_content:1 of
 msgid "Protects the contents of the sent message from forwarding and saving"
+msgstr ""
+
+#: ../../docstring aiogram.methods.send_game.SendGame.allow_paid_broadcast:1 of
+msgid ""
+"Pass :code:`True` to allow up to 1000 messages per second, ignoring "
+"`broadcasting limits <https://core.telegram.org/bots/faq#how-can-i"
+"-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 "
+"Telegram Stars per message. The relevant Stars will be withdrawn from the"
+" bot's balance"
+msgstr ""
+
+#: ../../docstring aiogram.methods.send_game.SendGame.message_effect_id:1 of
+msgid ""
+"Unique identifier of the message effect to be added to the message; for "
+"private chats only"
 msgstr ""
 
 #: ../../docstring aiogram.methods.send_game.SendGame.reply_parameters:1 of
@@ -144,6 +166,14 @@ msgstr ""
 
 #: ../../api/methods/send_game.rst:55
 msgid ":meth:`aiogram.types.chat_member_updated.ChatMemberUpdated.answer_game`"
+msgstr ""
+
+#: ../../api/methods/send_game.rst:56
+msgid ":meth:`aiogram.types.inaccessible_message.InaccessibleMessage.answer_game`"
+msgstr ""
+
+#: ../../api/methods/send_game.rst:57
+msgid ":meth:`aiogram.types.inaccessible_message.InaccessibleMessage.reply_game`"
 msgstr ""
 
 #~ msgid ""

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-16 01:15+0200\n"
+"POT-Creation-Date: 2025-03-08 02:28+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -53,6 +53,13 @@ msgid ""
 msgstr ""
 
 #: ../../docstring
+#: aiogram.methods.send_video_note.SendVideoNote.business_connection_id:1 of
+msgid ""
+"Unique identifier of the business connection on behalf of which the "
+"message will be sent"
+msgstr ""
+
+#: ../../docstring
 #: aiogram.methods.send_video_note.SendVideoNote.message_thread_id:1 of
 msgid ""
 "Unique identifier for the target message thread (topic) of the forum; for"
@@ -92,6 +99,23 @@ msgid "Protects the contents of the sent message from forwarding and saving"
 msgstr ""
 
 #: ../../docstring
+#: aiogram.methods.send_video_note.SendVideoNote.allow_paid_broadcast:1 of
+msgid ""
+"Pass :code:`True` to allow up to 1000 messages per second, ignoring "
+"`broadcasting limits <https://core.telegram.org/bots/faq#how-can-i"
+"-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 "
+"Telegram Stars per message. The relevant Stars will be withdrawn from the"
+" bot's balance"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.send_video_note.SendVideoNote.message_effect_id:1 of
+msgid ""
+"Unique identifier of the message effect to be added to the message; for "
+"private chats only"
+msgstr ""
+
+#: ../../docstring
 #: aiogram.methods.send_video_note.SendVideoNote.reply_parameters:1 of
 msgid "Description of the message to reply to"
 msgstr ""
@@ -103,7 +127,7 @@ msgid ""
 "keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, "
 "`custom reply keyboard "
 "<https://core.telegram.org/bots/features#keyboards>`_, instructions to "
-"remove reply keyboard or to force a reply from the user."
+"remove a reply keyboard or to force a reply from the user"
 msgstr ""
 
 #: ../../docstring
@@ -181,6 +205,14 @@ msgstr ""
 msgid ":meth:`aiogram.types.chat_member_updated.ChatMemberUpdated.answer_video_note`"
 msgstr ""
 
+#: ../../api/methods/send_video_note.rst:56
+msgid ":meth:`aiogram.types.inaccessible_message.InaccessibleMessage.answer_video_note`"
+msgstr ""
+
+#: ../../api/methods/send_video_note.rst:57
+msgid ":meth:`aiogram.types.inaccessible_message.InaccessibleMessage.reply_video_note`"
+msgstr ""
+
 #~ msgid ""
 #~ "Additional interface options. A JSON-"
 #~ "serialized object for an `inline "
@@ -190,4 +222,15 @@ msgstr ""
 #~ "<https://core.telegram.org/bots#keyboards>`_, instructions "
 #~ "to remove reply keyboard or to "
 #~ "force a reply from the user."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Additional interface options. A JSON-"
+#~ "serialized object for an `inline "
+#~ "keyboard <https://core.telegram.org/bots/features#inline-"
+#~ "keyboards>`_, `custom reply keyboard "
+#~ "<https://core.telegram.org/bots/features#keyboards>`_, "
+#~ "instructions to remove reply keyboard or"
+#~ " to force a reply from the "
+#~ "user."
 #~ msgstr ""
