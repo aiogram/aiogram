@@ -1,0 +1,2 @@
+Added new method to utils/deep_linking.py module to creating "startapp" deep links, see also 
+https://core.telegram.org/api/links#main-mini-app-links
