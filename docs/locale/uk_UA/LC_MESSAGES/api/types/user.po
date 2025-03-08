@@ -8,14 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-11-23 00:47+0200\n"
+"POT-Creation-Date: 2025-03-08 02:28+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.10.3\n"
+"Generated-By: Babel 2.13.1\n"
 
 #: ../../api/types/user.rst:3
 msgid "User"
@@ -90,6 +90,19 @@ msgid ""
 "only in :class:`aiogram.methods.get_me.GetMe`."
 msgstr ""
 
+#: ../../docstring aiogram.types.user.User.can_connect_to_business:1 of
+msgid ""
+"*Optional*. :code:`True`, if the bot can be connected to a Telegram "
+"Business account to receive its messages. Returned only in "
+":class:`aiogram.methods.get_me.GetMe`."
+msgstr ""
+
+#: ../../docstring aiogram.types.user.User.has_main_web_app:1 of
+msgid ""
+"*Optional*. :code:`True`, if the bot has a main Web App. Returned only in"
+" :class:`aiogram.methods.get_me.GetMe`."
+msgstr ""
+
 #: aiogram.types.user.User.get_profile_photos:1 of
 msgid ""
 "Shortcut for method "
@@ -111,7 +124,7 @@ msgstr ""
 msgid "Source: https://core.telegram.org/bots/api#getuserprofilephotos"
 msgstr ""
 
-#: aiogram.types.user.User.get_profile_photos of
+#: ../../api/types/user.rst
 msgid "Parameters"
 msgstr ""
 
@@ -127,7 +140,7 @@ msgid ""
 "accepted. Defaults to 100."
 msgstr ""
 
-#: aiogram.types.user.User.get_profile_photos of
+#: ../../api/types/user.rst
 msgid "Returns"
 msgstr ""
 

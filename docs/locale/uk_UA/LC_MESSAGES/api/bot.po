@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-16 01:15+0200\n"
+"POT-Creation-Date: 2025-03-08 02:28+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -54,8 +54,7 @@ msgstr ""
 msgid "Bot class"
 msgstr ""
 
-#: aiogram.client.bot.Bot.__init__ aiogram.client.bot.Bot.context
-#: aiogram.client.bot.Bot.download aiogram.client.bot.Bot.download_file of
+#: ../../api/bot.rst
 msgid "Parameters"
 msgstr ""
 
@@ -71,33 +70,15 @@ msgstr ""
 
 #: aiogram.client.bot.Bot.__init__:6 of
 msgid ""
-"Default parse mode. If specified it will be propagated into the API "
-"methods at runtime."
-msgstr ""
-
-#: aiogram.client.bot.Bot.__init__:8 of
-msgid ""
-"Default disable_web_page_preview mode. If specified it will be propagated"
-" into the API methods at runtime."
-msgstr ""
-
-#: aiogram.client.bot.Bot.__init__:10 of
-msgid ""
-"Default protect_content mode. If specified it will be propagated into the"
-" API methods at runtime."
-msgstr ""
-
-#: aiogram.client.bot.Bot.__init__:12 of
-msgid ""
 "Default bot properties. If specified it will be propagated into the API "
 "methods at runtime."
 msgstr ""
 
-#: aiogram.client.bot.Bot.__init__ of
+#: ../../api/bot.rst
 msgid "Raises"
 msgstr ""
 
-#: aiogram.client.bot.Bot.__init__:14 of
+#: aiogram.client.bot.Bot.__init__:8 of
 msgid "When token has invalid format this exception will be raised"
 msgstr ""
 
@@ -105,8 +86,7 @@ msgstr ""
 msgid "Get bot ID from token"
 msgstr ""
 
-#: aiogram.client.bot.Bot.context aiogram.client.bot.Bot.id
-#: aiogram.client.bot.Bot.me of
+#: ../../api/bot.rst
 msgid "Returns"
 msgstr ""
 
@@ -166,3 +146,21 @@ msgstr ""
 #: aiogram.client.bot.Bot.download:6 of
 msgid "file_id or Downloadable object"
 msgstr ""
+
+#~ msgid ""
+#~ "Default parse mode. If specified it "
+#~ "will be propagated into the API "
+#~ "methods at runtime."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Default disable_web_page_preview mode. If "
+#~ "specified it will be propagated into "
+#~ "the API methods at runtime."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Default protect_content mode. If specified "
+#~ "it will be propagated into the API"
+#~ " methods at runtime."
+#~ msgstr ""

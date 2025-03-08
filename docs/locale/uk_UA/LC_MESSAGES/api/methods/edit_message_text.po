@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-16 01:15+0200\n"
+"POT-Creation-Date: 2025-03-08 02:28+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -31,7 +31,9 @@ msgid ""
 "<https://core.telegram.org/bots/api#games>`_ messages. On success, if the"
 " edited message is not an inline message, the edited "
 ":class:`aiogram.types.message.Message` is returned, otherwise "
-":code:`True` is returned."
+":code:`True` is returned. Note that business messages that were not sent "
+"by the bot and do not contain an inline keyboard can only be edited "
+"within **48 hours** from the time they were sent."
 msgstr ""
 
 #: aiogram.methods.edit_message_text.EditMessageText:3 of
@@ -40,6 +42,14 @@ msgstr ""
 
 #: ../../docstring aiogram.methods.edit_message_text.EditMessageText.text:1 of
 msgid "New text of the message, 1-4096 characters after entities parsing"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.edit_message_text.EditMessageText.business_connection_id:1
+#: of
+msgid ""
+"Unique identifier of the business connection on behalf of which the "
+"message to be edited was sent"
 msgstr ""
 
 #: ../../docstring aiogram.methods.edit_message_text.EditMessageText.chat_id:1
@@ -148,4 +158,14 @@ msgstr ""
 #~ "`inline keyboard <https://core.telegram.org/bots"
 #~ "#inline-keyboards-and-on-the-fly-"
 #~ "updating>`_."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Use this method to edit text and"
+#~ " `game <https://core.telegram.org/bots/api#games>`_ "
+#~ "messages. On success, if the edited "
+#~ "message is not an inline message, "
+#~ "the edited :class:`aiogram.types.message.Message` is"
+#~ " returned, otherwise :code:`True` is "
+#~ "returned."
 #~ msgstr ""

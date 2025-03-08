@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  aiogram\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-11-24 21:53+0200\n"
+"POT-Creation-Date: 2025-03-08 02:28+0200\n"
 "PO-Revision-Date: 2023-11-23 01:27+0200\n"
 "Last-Translator: \n"
 "Language: uk_UA\n"
@@ -59,20 +59,21 @@ msgid ""
 msgstr ""
 "Сцена в **aiogram** схожа на абстрактний, ізольований простір імен або "
 "кімнату, до якої користувач може потрапити за допомогою коду. Коли "
-"користувач перебуває в межах Сцени, більшість інших глобальних команд "
-"або обробників повідомлень пропускаються, якщо тільки вони не призначені "
-"для роботи поза Сценами."
-"Сцени забезпечують структуру для більш складних взаємодій, "
-"ефективно ізолюючи та керуючи контекстами для різних етапів розмови. Вони"
-" дозволяють більш організовано контролювати та керувати розмовою."
+"користувач перебуває в межах Сцени, більшість інших глобальних команд або"
+" обробників повідомлень пропускаються, якщо тільки вони не призначені для"
+" роботи поза Сценами.Сцени забезпечують структуру для більш складних "
+"взаємодій, ефективно ізолюючи та керуючи контекстами для різних етапів "
+"розмови. Вони дозволяють більш організовано контролювати та керувати "
+"розмовою."
 
 #: ../../dispatcher/finite_state_machine/scene.rst:31
 msgid "Scene Lifecycle"
 msgstr "Життєвий цикл"
 
 #: ../../dispatcher/finite_state_machine/scene.rst:33
+#, fuzzy
 msgid ""
-"Each Scene can be \"entered\", \"left\" of \"exited\", allowing for clear"
+"Each Scene can be \"entered\", \"left\" or \"exited\", allowing for clear"
 " transitions between different stages of the conversation. For instance, "
 "in a multi-step form filling interaction, each step could be a Scene - "
 "the bot guides the user from one Scene to the next as they provide the "
@@ -385,28 +386,11 @@ msgstr ""
 msgid "Adds the scene to the given router."
 msgstr "Додає сцену до заданого маршрутизатора."
 
-#: aiogram.fsm.scene.Scene.add_to_router aiogram.fsm.scene.SceneRegistry.add
-#: aiogram.fsm.scene.SceneRegistry.get aiogram.fsm.scene.SceneRegistry.register
-#: aiogram.fsm.scene.SceneWizard.back aiogram.fsm.scene.SceneWizard.enter
-#: aiogram.fsm.scene.SceneWizard.exit aiogram.fsm.scene.SceneWizard.goto
-#: aiogram.fsm.scene.SceneWizard.leave aiogram.fsm.scene.SceneWizard.retake
-#: aiogram.fsm.scene.SceneWizard.set_data
-#: aiogram.fsm.scene.SceneWizard.update_data
-#: aiogram.fsm.scene.ScenesManager.close aiogram.fsm.scene.ScenesManager.enter
-#: of
+#: ../../dispatcher/finite_state_machine/scene.rst
 msgid "Parameters"
 msgstr "Параметри"
 
-#: aiogram.fsm.scene.Scene.add_to_router aiogram.fsm.scene.Scene.as_router
-#: aiogram.fsm.scene.SceneRegistry.add aiogram.fsm.scene.SceneRegistry.get
-#: aiogram.fsm.scene.SceneRegistry.register aiogram.fsm.scene.SceneWizard.back
-#: aiogram.fsm.scene.SceneWizard.clear_data aiogram.fsm.scene.SceneWizard.enter
-#: aiogram.fsm.scene.SceneWizard.exit aiogram.fsm.scene.SceneWizard.get_data
-#: aiogram.fsm.scene.SceneWizard.goto aiogram.fsm.scene.SceneWizard.leave
-#: aiogram.fsm.scene.SceneWizard.retake aiogram.fsm.scene.SceneWizard.set_data
-#: aiogram.fsm.scene.SceneWizard.update_data
-#: aiogram.fsm.scene.ScenesManager.close aiogram.fsm.scene.ScenesManager.enter
-#: of
+#: ../../dispatcher/finite_state_machine/scene.rst
 msgid "Returns"
 msgstr "Повертає"
 
@@ -572,6 +556,14 @@ msgstr "Додаткові іменовані аргументи для пере
 #: ../../docstring aiogram.fsm.scene.SceneConfig.actions:1 of
 msgid "Scene actions"
 msgstr "Дії сцени"
+
+#: aiogram.utils.class_attrs_resolver.get_sorted_mro_attrs_resolver:1 of
+msgid "Attributes resolver."
+msgstr ""
+
+#: aiogram.utils.class_attrs_resolver.get_sorted_mro_attrs_resolver:4 of
+msgid "This attribute should only be changed when you know what you are doing."
+msgstr ""
 
 #: ../../docstring aiogram.fsm.scene.SceneConfig.callback_query_without_state:1
 #: of
@@ -827,7 +819,8 @@ msgstr ""
 ":code:`on.inline_query`:"
 
 #: ../../dispatcher/finite_state_machine/scene.rst:240
-msgid "Scene has only tree points for transitions:"
+#, fuzzy
+msgid "Scene has only three points for transitions:"
 msgstr "Сцени мають три точки для переходів:"
 
 #: ../../dispatcher/finite_state_machine/scene.rst:242

@@ -8,14 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-03-11 01:52+0200\n"
+"POT-Creation-Date: 2025-03-08 02:28+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.11.0\n"
+"Generated-By: Babel 2.13.1\n"
 
 #: ../../api/methods/create_new_sticker_set.rst:3
 msgid "createNewStickerSet"
@@ -64,14 +64,6 @@ msgid ""
 msgstr ""
 
 #: ../../docstring
-#: aiogram.methods.create_new_sticker_set.CreateNewStickerSet.sticker_format:1
-#: of
-msgid ""
-"Format of stickers in the set, must be one of 'static', 'animated', "
-"'video'"
-msgstr ""
-
-#: ../../docstring
 #: aiogram.methods.create_new_sticker_set.CreateNewStickerSet.sticker_type:1 of
 msgid ""
 "Type of stickers in the set, pass 'regular', 'mask', or 'custom_emoji'. "
@@ -88,37 +80,51 @@ msgid ""
 "context; for custom emoji sticker sets only"
 msgstr ""
 
-#: ../../api/methods/create_new_sticker_set.rst:14
+#: ../../docstring
+#: aiogram.methods.create_new_sticker_set.CreateNewStickerSet.sticker_format:1
+#: of
+msgid ""
+"Format of stickers in the set, must be one of 'static', 'animated', "
+"'video'"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.create_new_sticker_set.CreateNewStickerSet.sticker_format:3
+#: of
+msgid "https://core.telegram.org/bots/api-changelog#march-31-2024"
+msgstr ""
+
+#: ../../api/methods/create_new_sticker_set.rst:15
 msgid "Usage"
 msgstr ""
 
-#: ../../api/methods/create_new_sticker_set.rst:17
+#: ../../api/methods/create_new_sticker_set.rst:18
 msgid "As bot method"
 msgstr ""
 
-#: ../../api/methods/create_new_sticker_set.rst:25
+#: ../../api/methods/create_new_sticker_set.rst:26
 msgid "Method as object"
 msgstr ""
 
-#: ../../api/methods/create_new_sticker_set.rst:27
+#: ../../api/methods/create_new_sticker_set.rst:28
 msgid "Imports:"
 msgstr ""
 
-#: ../../api/methods/create_new_sticker_set.rst:29
+#: ../../api/methods/create_new_sticker_set.rst:30
 msgid ""
 ":code:`from aiogram.methods.create_new_sticker_set import "
 "CreateNewStickerSet`"
 msgstr ""
 
-#: ../../api/methods/create_new_sticker_set.rst:30
+#: ../../api/methods/create_new_sticker_set.rst:31
 msgid "alias: :code:`from aiogram.methods import CreateNewStickerSet`"
 msgstr ""
 
-#: ../../api/methods/create_new_sticker_set.rst:33
+#: ../../api/methods/create_new_sticker_set.rst:34
 msgid "With specific bot"
 msgstr ""
 
-#: ../../api/methods/create_new_sticker_set.rst:40
+#: ../../api/methods/create_new_sticker_set.rst:41
 msgid "As reply into Webhook in handler"
 msgstr ""
 

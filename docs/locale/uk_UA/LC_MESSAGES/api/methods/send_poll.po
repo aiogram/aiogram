@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-16 01:15+0200\n"
+"POT-Creation-Date: 2025-03-08 02:28+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -46,15 +46,33 @@ msgid "Poll question, 1-300 characters"
 msgstr ""
 
 #: ../../docstring aiogram.methods.send_poll.SendPoll.options:1 of
+msgid "A JSON-serialized list of 2-10 answer options"
+msgstr ""
+
+#: ../../docstring aiogram.methods.send_poll.SendPoll.business_connection_id:1
+#: of
 msgid ""
-"A JSON-serialized list of answer options, 2-10 strings 1-100 characters "
-"each"
+"Unique identifier of the business connection on behalf of which the "
+"message will be sent"
 msgstr ""
 
 #: ../../docstring aiogram.methods.send_poll.SendPoll.message_thread_id:1 of
 msgid ""
 "Unique identifier for the target message thread (topic) of the forum; for"
 " forum supergroups only"
+msgstr ""
+
+#: ../../docstring aiogram.methods.send_poll.SendPoll.question_parse_mode:1 of
+msgid ""
+"Mode for parsing entities in the question. See `formatting options "
+"<https://core.telegram.org/bots/api#formatting-options>`_ for more "
+"details. Currently, only custom emoji entities are allowed"
+msgstr ""
+
+#: ../../docstring aiogram.methods.send_poll.SendPoll.question_entities:1 of
+msgid ""
+"A JSON-serialized list of special entities that appear in the poll "
+"question. It can be specified instead of *question_parse_mode*"
 msgstr ""
 
 #: ../../docstring aiogram.methods.send_poll.SendPoll.is_anonymous:1 of
@@ -96,7 +114,7 @@ msgstr ""
 #: ../../docstring aiogram.methods.send_poll.SendPoll.explanation_entities:1 of
 msgid ""
 "A JSON-serialized list of special entities that appear in the poll "
-"explanation, which can be specified instead of *parse_mode*"
+"explanation. It can be specified instead of *explanation_parse_mode*"
 msgstr ""
 
 #: ../../docstring aiogram.methods.send_poll.SendPoll.open_period:1 of
@@ -128,6 +146,21 @@ msgstr ""
 msgid "Protects the contents of the sent message from forwarding and saving"
 msgstr ""
 
+#: ../../docstring aiogram.methods.send_poll.SendPoll.allow_paid_broadcast:1 of
+msgid ""
+"Pass :code:`True` to allow up to 1000 messages per second, ignoring "
+"`broadcasting limits <https://core.telegram.org/bots/faq#how-can-i"
+"-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 "
+"Telegram Stars per message. The relevant Stars will be withdrawn from the"
+" bot's balance"
+msgstr ""
+
+#: ../../docstring aiogram.methods.send_poll.SendPoll.message_effect_id:1 of
+msgid ""
+"Unique identifier of the message effect to be added to the message; for "
+"private chats only"
+msgstr ""
+
 #: ../../docstring aiogram.methods.send_poll.SendPoll.reply_parameters:1 of
 msgid "Description of the message to reply to"
 msgstr ""
@@ -138,7 +171,7 @@ msgid ""
 "keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, "
 "`custom reply keyboard "
 "<https://core.telegram.org/bots/features#keyboards>`_, instructions to "
-"remove reply keyboard or to force a reply from the user."
+"remove a reply keyboard or to force a reply from the user"
 msgstr ""
 
 #: ../../docstring
@@ -214,6 +247,14 @@ msgstr ""
 msgid ":meth:`aiogram.types.chat_member_updated.ChatMemberUpdated.answer_poll`"
 msgstr ""
 
+#: ../../api/methods/send_poll.rst:56
+msgid ":meth:`aiogram.types.inaccessible_message.InaccessibleMessage.answer_poll`"
+msgstr ""
+
+#: ../../api/methods/send_poll.rst:57
+msgid ":meth:`aiogram.types.inaccessible_message.InaccessibleMessage.reply_poll`"
+msgstr ""
+
 #~ msgid ""
 #~ "Additional interface options. A JSON-"
 #~ "serialized object for an `inline "
@@ -223,4 +264,28 @@ msgstr ""
 #~ "<https://core.telegram.org/bots#keyboards>`_, instructions "
 #~ "to remove reply keyboard or to "
 #~ "force a reply from the user."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "A JSON-serialized list of answer "
+#~ "options, 2-10 strings 1-100 characters "
+#~ "each"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "A JSON-serialized list of special "
+#~ "entities that appear in the poll "
+#~ "explanation, which can be specified "
+#~ "instead of *parse_mode*"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Additional interface options. A JSON-"
+#~ "serialized object for an `inline "
+#~ "keyboard <https://core.telegram.org/bots/features#inline-"
+#~ "keyboards>`_, `custom reply keyboard "
+#~ "<https://core.telegram.org/bots/features#keyboards>`_, "
+#~ "instructions to remove reply keyboard or"
+#~ " to force a reply from the "
+#~ "user."
 #~ msgstr ""

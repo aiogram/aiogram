@@ -8,22 +8,22 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-30 18:31+0300\n"
+"POT-Creation-Date: 2025-03-08 02:28+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language-Team: Українська <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.12.1\n"
+"Generated-By: Babel 2.13.1\n"
 
 #: ../../utils/formatting.rst:5
 msgid "Formatting"
-msgstr ""
+msgstr "Форматування"
 
 #: ../../utils/formatting.rst:7
 msgid "Make your message formatting flexible and simple"
-msgstr ""
+msgstr "Зробіть форматування ваших повідомлень гнучким і простим"
 
 #: ../../utils/formatting.rst:9
 msgid ""
@@ -32,22 +32,27 @@ msgid ""
 "the Telegram without the need to remember tag parity (opening and "
 "closing) or escaping user input."
 msgstr ""
+"Цей інструмент працює на основі сутностей повідомлень, а не "
+"використовуючи HTML чи розмітку Markdown, ви можете легко створити своє "
+"повідомлення та надіслати його у Telegram без необхідності пам'ятати про "
+"парність тегів (відкриття та закриття) або про екранування "
+"користувацького вводу."
 
 #: ../../utils/formatting.rst:14
 msgid "Usage"
-msgstr ""
+msgstr "Використання"
 
 #: ../../utils/formatting.rst:17
 msgid "Basic scenario"
-msgstr ""
+msgstr "Основний сценарій"
 
 #: ../../utils/formatting.rst:19
 msgid "Construct your message and send it to the Telegram."
-msgstr ""
+msgstr "Складіть своє повідомлення та надішліть його у Telegram."
 
 #: ../../utils/formatting.rst:26
 msgid "Is the same as the next example, but without usage markup"
-msgstr ""
+msgstr "Такий самий, як наступний приклад, але без використання розмітки"
 
 #: ../../utils/formatting.rst:35
 msgid ""
@@ -56,16 +61,22 @@ msgid ""
 ":code:`[MessageEntity(type='bold', offset=7, length=4)]` and passed into "
 "dict which can be used as :code:`**kwargs` in API call."
 msgstr ""
+"Дослівно, коли ви виконуєте метод :code:`as_kwargs`, об'єкт Text "
+"перетворюється у текст :code:`Hello, Alex!` із списком сутностей "
+":code:`[MessageEntity(type='bold', offset=7, length=4)]` і передається у "
+"словник, який може бути використаний як :code:`**kwargs` в API-виклику."
 
 #: ../../utils/formatting.rst:39
 msgid ""
 "The complete list of elements is listed `on this page below <#available-"
 "elements>`_."
 msgstr ""
+"Повний список елементів наведено `на сторінці нижче <#available-"
+"elements>`_."
 
 #: ../../utils/formatting.rst:42
 msgid "Advanced scenario"
-msgstr ""
+msgstr "Розширений сценарій"
 
 #: ../../utils/formatting.rst:44
 msgid ""
@@ -73,145 +84,138 @@ msgid ""
 "so, out of the box aiogram has a few already implemented functions that "
 "helps you to format your messages:"
 msgstr ""
+"На додаток до базових елементів можуть бути реалізовані структури "
+"рендерингу контенту, тому з коробки aiogram надає декілька вже "
+"реалізованих функцій, які допомагають форматувати ваші повідомлення:"
 
 #: aiogram.utils.formatting.as_line:1 of
 msgid "Wrap multiple nodes into line with :code:`\\\\n` at the end of line."
-msgstr ""
+msgstr "Об'єднайте кілька вузлів у рядок із :code:`\\\\n` в кінці рядка."
 
-#: aiogram.utils.formatting.Text.as_kwargs
-#: aiogram.utils.formatting.as_key_value aiogram.utils.formatting.as_line
-#: aiogram.utils.formatting.as_list aiogram.utils.formatting.as_marked_list
-#: aiogram.utils.formatting.as_marked_section
-#: aiogram.utils.formatting.as_numbered_list
-#: aiogram.utils.formatting.as_numbered_section
-#: aiogram.utils.formatting.as_section of
+#: ../../utils/formatting.rst
 msgid "Parameters"
-msgstr ""
+msgstr "Параметри"
 
 #: aiogram.utils.formatting.as_line:3 of
 msgid "Text or Any"
-msgstr ""
+msgstr "Текст або Інше"
 
 #: aiogram.utils.formatting.as_line:4 of
 msgid "ending of the line, by default is :code:`\\\\n`"
-msgstr ""
+msgstr "завершення рядка, за замовчуванням :code:`\\\\n`"
 
 #: aiogram.utils.formatting.as_line:5 of
 msgid "separator between items, by default is empty string"
-msgstr ""
+msgstr "роздільник між елементами, за замовчуванням порожній рядок"
 
-#: aiogram.utils.formatting.Text.as_kwargs aiogram.utils.formatting.Text.render
-#: aiogram.utils.formatting.as_key_value aiogram.utils.formatting.as_line
-#: aiogram.utils.formatting.as_list aiogram.utils.formatting.as_marked_list
-#: aiogram.utils.formatting.as_marked_section
-#: aiogram.utils.formatting.as_numbered_list
-#: aiogram.utils.formatting.as_numbered_section
-#: aiogram.utils.formatting.as_section of
+#: ../../utils/formatting.rst
 msgid "Returns"
-msgstr ""
+msgstr "Повертає"
 
 #: aiogram.utils.formatting.as_key_value:5 aiogram.utils.formatting.as_line:6
 #: aiogram.utils.formatting.as_marked_list:5
 #: aiogram.utils.formatting.as_numbered_list:6
 #: aiogram.utils.formatting.as_section:5 of
 msgid "Text"
-msgstr ""
+msgstr "Текст"
 
 #: aiogram.utils.formatting.as_list:1 of
 msgid "Wrap each element to separated lines"
-msgstr ""
+msgstr "Обгорніть кожен елемент у окремий рядок"
 
 #: aiogram.utils.formatting.as_marked_list:1 of
 msgid "Wrap elements as marked list"
-msgstr ""
+msgstr "Обгорніть елементи у маркований список"
 
 #: aiogram.utils.formatting.as_marked_list:4 of
 msgid "line marker, by default is '- '"
-msgstr ""
+msgstr "маркер рядка, за замовчуванням '- '"
 
 #: aiogram.utils.formatting.as_numbered_list:1 of
 msgid "Wrap elements as numbered list"
-msgstr ""
+msgstr "Обгорніть елементи у нумерований список"
 
 #: aiogram.utils.formatting.as_numbered_list:4 of
 msgid "initial number, by default 1"
-msgstr ""
+msgstr "початковий номер, за замовчуванням 1"
 
 #: aiogram.utils.formatting.as_numbered_list:5 of
 msgid "number format, by default '{}. '"
-msgstr ""
+msgstr "формат номера, за замовчуванням '{}. '"
 
 #: aiogram.utils.formatting.as_section:1 of
 msgid "Wrap elements as simple section, section has title and body"
-msgstr ""
+msgstr "Обгорніть елементи у простий розділ, розділ має заголовок та тіло"
 
 #: aiogram.utils.formatting.as_marked_section:1 of
 msgid "Wrap elements as section with marked list"
-msgstr ""
+msgstr "Обгорніть елементи у розділ із маркованим списком"
 
 #: aiogram.utils.formatting.as_numbered_section:1 of
 msgid "Wrap elements as section with numbered list"
-msgstr ""
+msgstr "Обгорніть елементи у розділ із нумерованим списком"
 
 #: aiogram.utils.formatting.as_key_value:1 of
 msgid "Wrap elements pair as key-value line. (:code:`<b>{key}:</b> {value}`)"
 msgstr ""
+"Обгорніть пари елементів у рядок ключ-значення. (:code:`<b>{key}:</b> "
+"{value}`)"
 
 #: ../../utils/formatting.rst:64
 msgid "and lets complete them all:"
-msgstr ""
+msgstr "і давайте завершимо їх всіх:"
 
 #: ../../utils/formatting.rst:92
 msgid "Will be rendered into:"
-msgstr ""
+msgstr "Буде відрендерено у:"
 
 #: ../../utils/formatting.rst:94
 msgid "**Success:**"
-msgstr ""
+msgstr "**Успішно:**"
 
 #: ../../utils/formatting.rst:96
 msgid "✅ Test 1"
-msgstr ""
+msgstr "✅ Тест 1"
 
 #: ../../utils/formatting.rst:98
 msgid "✅ Test 3"
-msgstr ""
+msgstr "✅ Тест 3"
 
 #: ../../utils/formatting.rst:100
 msgid "✅ Test 4"
-msgstr ""
+msgstr "✅ Тест 4"
 
 #: ../../utils/formatting.rst:102
 msgid "**Failed:**"
-msgstr ""
+msgstr "**Помилки:**"
 
 #: ../../utils/formatting.rst:104
 msgid "❌ Test 2"
-msgstr ""
+msgstr "❌ Тест 2"
 
 #: ../../utils/formatting.rst:106
 msgid "**Summary:**"
-msgstr ""
+msgstr "**Підсумки:**"
 
 #: ../../utils/formatting.rst:108
 msgid "**Total**: 4"
-msgstr ""
+msgstr "**Загалом**: 4"
 
 #: ../../utils/formatting.rst:110
 msgid "**Success**: 3"
-msgstr ""
+msgstr "**Успішно**: 3"
 
 #: ../../utils/formatting.rst:112
 msgid "**Failed**: 1"
-msgstr ""
+msgstr "**Помилки**: 1"
 
 #: ../../utils/formatting.rst:114
 msgid "#test"
-msgstr ""
+msgstr "#тест"
 
 #: ../../utils/formatting.rst:117
 msgid "Or as HTML:"
-msgstr ""
+msgstr "Або як HTML:"
 
 #: ../../utils/formatting.rst:137
 msgid "Available methods"
@@ -226,8 +230,9 @@ msgid "Simple text element"
 msgstr ""
 
 #: aiogram.utils.formatting.Text.render:1 of
+#, fuzzy
 msgid "Render elements tree as text with entities list"
-msgstr ""
+msgstr "Обгорніть елементи у розділ із нумерованим списком"
 
 #: aiogram.utils.formatting.Text.as_kwargs:1 of
 msgid ""
@@ -247,9 +252,11 @@ msgstr ""
 msgid "Available elements"
 msgstr ""
 
-#: aiogram.utils.formatting.Bold:1 aiogram.utils.formatting.BotCommand:1
-#: aiogram.utils.formatting.CashTag:1 aiogram.utils.formatting.Code:1
-#: aiogram.utils.formatting.CustomEmoji:1 aiogram.utils.formatting.Email:1
+#: aiogram.utils.formatting.BlockQuote:1 aiogram.utils.formatting.Bold:1
+#: aiogram.utils.formatting.BotCommand:1 aiogram.utils.formatting.CashTag:1
+#: aiogram.utils.formatting.Code:1 aiogram.utils.formatting.CustomEmoji:1
+#: aiogram.utils.formatting.Email:1
+#: aiogram.utils.formatting.ExpandableBlockQuote:1
 #: aiogram.utils.formatting.HashTag:1 aiogram.utils.formatting.Italic:1
 #: aiogram.utils.formatting.PhoneNumber:1 aiogram.utils.formatting.Pre:1
 #: aiogram.utils.formatting.Spoiler:1 aiogram.utils.formatting.Strikethrough:1
@@ -440,4 +447,26 @@ msgid ""
 "Will be wrapped into :obj:`aiogram.types.message_entity.MessageEntity` "
 "with type "
 ":obj:`aiogram.enums.message_entity_type.MessageEntityType.CUSTOM_EMOJI`"
+msgstr ""
+
+#: aiogram.utils.formatting.BlockQuote:1 of
+msgid "Block quote element."
+msgstr ""
+
+#: aiogram.utils.formatting.BlockQuote:3 of
+msgid ""
+"Will be wrapped into :obj:`aiogram.types.message_entity.MessageEntity` "
+"with type "
+":obj:`aiogram.enums.message_entity_type.MessageEntityType.BLOCKQUOTE`"
+msgstr ""
+
+#: aiogram.utils.formatting.ExpandableBlockQuote:1 of
+msgid "Expandable block quote element."
+msgstr ""
+
+#: aiogram.utils.formatting.ExpandableBlockQuote:3 of
+msgid ""
+"Will be wrapped into :obj:`aiogram.types.message_entity.MessageEntity` "
+"with type "
+":obj:`aiogram.enums.message_entity_type.MessageEntityType.EXPANDABLE_BLOCKQUOTE`"
 msgstr ""

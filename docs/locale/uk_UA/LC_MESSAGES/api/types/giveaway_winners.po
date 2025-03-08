@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-16 01:15+0200\n"
+"POT-Creation-Date: 2025-03-08 02:28+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: uk_UA\n"
@@ -40,7 +40,7 @@ msgstr ""
 
 #: ../../docstring
 #: aiogram.types.giveaway_winners.GiveawayWinners.giveaway_message_id:1 of
-msgid "Identifier of the messsage with the giveaway in the chat"
+msgid "Identifier of the message with the giveaway in the chat"
 msgstr ""
 
 #: ../../docstring
@@ -65,11 +65,18 @@ msgid ""
 msgstr ""
 
 #: ../../docstring
+#: aiogram.types.giveaway_winners.GiveawayWinners.prize_star_count:1 of
+msgid ""
+"*Optional*. The number of Telegram Stars that were split between giveaway"
+" winners; for Telegram Star giveaways only"
+msgstr ""
+
+#: ../../docstring
 #: aiogram.types.giveaway_winners.GiveawayWinners.premium_subscription_month_count:1
 #: of
 msgid ""
 "*Optional*. The number of months the Telegram Premium subscription won "
-"from the giveaway will be active for"
+"from the giveaway will be active for; for Telegram Premium giveaways only"
 msgstr ""
 
 #: ../../docstring
@@ -95,3 +102,12 @@ msgstr ""
 #: aiogram.types.giveaway_winners.GiveawayWinners.prize_description:1 of
 msgid "*Optional*. Description of additional giveaway prize"
 msgstr ""
+
+#~ msgid "Identifier of the messsage with the giveaway in the chat"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "*Optional*. The number of months the "
+#~ "Telegram Premium subscription won from "
+#~ "the giveaway will be active for"
+#~ msgstr ""

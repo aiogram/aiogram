@@ -1,0 +1,69 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2025, aiogram Team
+# This file is distributed under the same license as the aiogram package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: aiogram \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-03-08 02:28+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: uk_UA\n"
+"Language-Team: uk_UA <LL@li.org>\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.13.1\n"
+
+#: ../../api/types/business_connection.rst:3
+msgid "BusinessConnection"
+msgstr ""
+
+#: aiogram.types.business_connection.BusinessConnection:1 of
+msgid "Describes the connection of the bot with a business account."
+msgstr ""
+
+#: aiogram.types.business_connection.BusinessConnection:3 of
+msgid "Source: https://core.telegram.org/bots/api#businessconnection"
+msgstr ""
+
+#: ../../docstring aiogram.types.business_connection.BusinessConnection.id:1 of
+msgid "Unique identifier of the business connection"
+msgstr ""
+
+#: ../../docstring aiogram.types.business_connection.BusinessConnection.user:1
+#: of
+msgid "Business account user that created the business connection"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.business_connection.BusinessConnection.user_chat_id:1 of
+msgid ""
+"Identifier of a private chat with the user who created the business "
+"connection. This number may have more than 32 significant bits and some "
+"programming languages may have difficulty/silent defects in interpreting "
+"it. But it has at most 52 significant bits, so a 64-bit integer or "
+"double-precision float type are safe for storing this identifier."
+msgstr ""
+
+#: ../../docstring aiogram.types.business_connection.BusinessConnection.date:1
+#: of
+msgid "Date the connection was established in Unix time"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.business_connection.BusinessConnection.can_reply:1 of
+msgid ""
+"True, if the bot can act on behalf of the business account in chats that "
+"were active in the last 24 hours"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.business_connection.BusinessConnection.is_enabled:1 of
+msgid "True, if the connection is active"
+msgstr ""

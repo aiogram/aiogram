@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-29 02:16+0300\n"
+"POT-Creation-Date: 2025-03-08 02:28+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -39,10 +39,10 @@ msgstr ""
 #: aiogram.types.chat_administrator_rights.ChatAdministratorRights.can_manage_chat:1
 #: of
 msgid ""
-":code:`True`, if the administrator can access the chat event log, boost "
-"list in channels, see channel members, report spam messages, see "
-"anonymous administrators in supergroups and ignore slow mode. Implied by "
-"any other administrator privilege"
+":code:`True`, if the administrator can access the chat event log, get "
+"boost list, see hidden supergroup and channel members, report spam "
+"messages and ignore slow mode. Implied by any other administrator "
+"privilege."
 msgstr ""
 
 #: ../../docstring
@@ -90,11 +90,34 @@ msgid ":code:`True`, if the user is allowed to invite new users to the chat"
 msgstr ""
 
 #: ../../docstring
+#: aiogram.types.chat_administrator_rights.ChatAdministratorRights.can_post_stories:1
+#: of
+msgid ":code:`True`, if the administrator can post stories to the chat"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.chat_administrator_rights.ChatAdministratorRights.can_edit_stories:1
+#: of
+msgid ""
+":code:`True`, if the administrator can edit stories posted by other "
+"users, post stories to the chat page, pin chat stories, and access the "
+"chat's story archive"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.chat_administrator_rights.ChatAdministratorRights.can_delete_stories:1
+#: of
+msgid ""
+":code:`True`, if the administrator can delete stories posted by other "
+"users"
+msgstr ""
+
+#: ../../docstring
 #: aiogram.types.chat_administrator_rights.ChatAdministratorRights.can_post_messages:1
 #: of
 msgid ""
 "*Optional*. :code:`True`, if the administrator can post messages in the "
-"channel, or access channel statistics; channels only"
+"channel, or access channel statistics; for channels only"
 msgstr ""
 
 #: ../../docstring
@@ -102,39 +125,15 @@ msgstr ""
 #: of
 msgid ""
 "*Optional*. :code:`True`, if the administrator can edit messages of other"
-" users and can pin messages; channels only"
+" users and can pin messages; for channels only"
 msgstr ""
 
 #: ../../docstring
 #: aiogram.types.chat_administrator_rights.ChatAdministratorRights.can_pin_messages:1
 #: of
 msgid ""
-"*Optional*. :code:`True`, if the user is allowed to pin messages; groups "
-"and supergroups only"
-msgstr ""
-
-#: ../../docstring
-#: aiogram.types.chat_administrator_rights.ChatAdministratorRights.can_post_stories:1
-#: of
-msgid ""
-"*Optional*. :code:`True`, if the administrator can post stories in the "
-"channel; channels only"
-msgstr ""
-
-#: ../../docstring
-#: aiogram.types.chat_administrator_rights.ChatAdministratorRights.can_edit_stories:1
-#: of
-msgid ""
-"*Optional*. :code:`True`, if the administrator can edit stories posted by"
-" other users; channels only"
-msgstr ""
-
-#: ../../docstring
-#: aiogram.types.chat_administrator_rights.ChatAdministratorRights.can_delete_stories:1
-#: of
-msgid ""
-"*Optional*. :code:`True`, if the administrator can delete stories posted "
-"by other users; channels only"
+"*Optional*. :code:`True`, if the user is allowed to pin messages; for "
+"groups and supergroups only"
 msgstr ""
 
 #: ../../docstring
@@ -142,7 +141,7 @@ msgstr ""
 #: of
 msgid ""
 "*Optional*. :code:`True`, if the user is allowed to create, rename, "
-"close, and reopen forum topics; supergroups only"
+"close, and reopen forum topics; for supergroups only"
 msgstr ""
 
 #~ msgid ""
@@ -197,4 +196,58 @@ msgstr ""
 #~ "*Optional*. :code:`True`, if the administrator"
 #~ " can delete stories posted by other"
 #~ " users"
+#~ msgstr ""
+
+#~ msgid ""
+#~ ":code:`True`, if the administrator can "
+#~ "access the chat event log, boost "
+#~ "list in channels, see channel members,"
+#~ " report spam messages, see anonymous "
+#~ "administrators in supergroups and ignore "
+#~ "slow mode. Implied by any other "
+#~ "administrator privilege"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "*Optional*. :code:`True`, if the administrator"
+#~ " can post messages in the channel,"
+#~ " or access channel statistics; channels "
+#~ "only"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "*Optional*. :code:`True`, if the administrator"
+#~ " can edit messages of other users "
+#~ "and can pin messages; channels only"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "*Optional*. :code:`True`, if the user is"
+#~ " allowed to pin messages; groups and"
+#~ " supergroups only"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "*Optional*. :code:`True`, if the administrator"
+#~ " can post stories in the channel; "
+#~ "channels only"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "*Optional*. :code:`True`, if the administrator"
+#~ " can edit stories posted by other "
+#~ "users; channels only"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "*Optional*. :code:`True`, if the administrator"
+#~ " can delete stories posted by other"
+#~ " users; channels only"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "*Optional*. :code:`True`, if the user is"
+#~ " allowed to create, rename, close, "
+#~ "and reopen forum topics; supergroups "
+#~ "only"
 #~ msgstr ""

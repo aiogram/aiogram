@@ -8,14 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-11-06 14:18+0200\n"
+"POT-Creation-Date: 2025-03-08 02:28+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.10.3\n"
+"Generated-By: Babel 2.13.1\n"
 
 #: ../../api/methods/stop_poll.rst:3
 msgid "stopPoll"
@@ -45,40 +45,47 @@ msgstr ""
 msgid "Identifier of the original message with the poll"
 msgstr ""
 
+#: ../../docstring aiogram.methods.stop_poll.StopPoll.business_connection_id:1
+#: of
+msgid ""
+"Unique identifier of the business connection on behalf of which the "
+"message to be edited was sent"
+msgstr ""
+
 #: ../../docstring aiogram.methods.stop_poll.StopPoll.reply_markup:1 of
 msgid ""
 "A JSON-serialized object for a new message `inline keyboard "
 "<https://core.telegram.org/bots/features#inline-keyboards>`_."
 msgstr ""
 
-#: ../../api/methods/stop_poll.rst:14
+#: ../../api/methods/stop_poll.rst:15
 msgid "Usage"
 msgstr ""
 
-#: ../../api/methods/stop_poll.rst:17
+#: ../../api/methods/stop_poll.rst:18
 msgid "As bot method"
 msgstr ""
 
-#: ../../api/methods/stop_poll.rst:25
+#: ../../api/methods/stop_poll.rst:26
 msgid "Method as object"
 msgstr ""
 
-#: ../../api/methods/stop_poll.rst:27
+#: ../../api/methods/stop_poll.rst:28
 msgid "Imports:"
 msgstr ""
 
-#: ../../api/methods/stop_poll.rst:29
+#: ../../api/methods/stop_poll.rst:30
 msgid ":code:`from aiogram.methods.stop_poll import StopPoll`"
 msgstr ""
 
-#: ../../api/methods/stop_poll.rst:30
+#: ../../api/methods/stop_poll.rst:31
 msgid "alias: :code:`from aiogram.methods import StopPoll`"
 msgstr ""
 
-#: ../../api/methods/stop_poll.rst:33
+#: ../../api/methods/stop_poll.rst:34
 msgid "With specific bot"
 msgstr ""
 
-#: ../../api/methods/stop_poll.rst:40
+#: ../../api/methods/stop_poll.rst:41
 msgid "As reply into Webhook in handler"
 msgstr ""

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-16 01:15+0200\n"
+"POT-Creation-Date: 2025-03-08 02:28+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: uk_UA\n"
@@ -26,9 +26,9 @@ msgstr ""
 
 #: aiogram.types.keyboard_button_request_users.KeyboardButtonRequestUsers:1 of
 msgid ""
-"This object defines the criteria used to request suitable users. The "
-"identifiers of the selected users will be shared with the bot when the "
-"corresponding button is pressed. `More about requesting users » "
+"This object defines the criteria used to request suitable users. "
+"Information about the selected users will be shared with the bot when the"
+" corresponding button is pressed. `More about requesting users » "
 "<https://core.telegram.org/bots/features#chat-and-user-selection>`_"
 msgstr ""
 
@@ -70,3 +70,32 @@ msgid ""
 "*Optional*. The maximum number of users to be selected; 1-10. Defaults to"
 " 1."
 msgstr ""
+
+#: ../../docstring
+#: aiogram.types.keyboard_button_request_users.KeyboardButtonRequestUsers.request_name:1
+#: of
+msgid "*Optional*. Pass :code:`True` to request the users' first and last names"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.keyboard_button_request_users.KeyboardButtonRequestUsers.request_username:1
+#: of
+msgid "*Optional*. Pass :code:`True` to request the users' usernames"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.keyboard_button_request_users.KeyboardButtonRequestUsers.request_photo:1
+#: of
+msgid "*Optional*. Pass :code:`True` to request the users' photos"
+msgstr ""
+
+#~ msgid ""
+#~ "This object defines the criteria used"
+#~ " to request suitable users. The "
+#~ "identifiers of the selected users will"
+#~ " be shared with the bot when "
+#~ "the corresponding button is pressed. "
+#~ "`More about requesting users » "
+#~ "<https://core.telegram.org/bots/features#chat-and-user-"
+#~ "selection>`_"
+#~ msgstr ""

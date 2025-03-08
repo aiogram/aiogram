@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  aiogram\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-16 01:15+0200\n"
+"POT-Creation-Date: 2025-03-08 02:28+0200\n"
 "PO-Revision-Date: 2022-12-10 19:44+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -21,9 +21,11 @@ msgid "Dispatcher"
 msgstr "Диспетчер"
 
 #: ../../dispatcher/dispatcher.rst:5
+#, fuzzy
 msgid ""
-"Dispatcher is root :obj:`Router` and in code Dispatcher can be used "
-"directly for routing updates or attach another routers into dispatcher."
+"Dispatcher is root :class:`~aiogram.dispatcher.router.Router` and in code"
+" Dispatcher can be used directly for routing updates or attach another "
+"routers into dispatcher."
 msgstr ""
 "Диспетчер - це кореневий маршрутизатор, і в коді диспетчер може "
 "використовуватися безпосередньо для маршрутизації подій або підключення "
@@ -41,22 +43,18 @@ msgstr ""
 #: ../../dispatcher/dispatcher.rst:9
 #, fuzzy
 msgid ":ref:`Router <Router>`"
-msgstr "`Router <router.html>`__"
+msgstr "`Маршрутизатор <router.html>`__"
 
 #: ../../dispatcher/dispatcher.rst:10
 msgid ":ref:`Filtering events`"
-msgstr ""
+msgstr ":ref:`Фільтрація подій`"
 
 #: aiogram.dispatcher.dispatcher.Dispatcher:1
 #: aiogram.dispatcher.dispatcher.Dispatcher.__init__:1 of
 msgid "Root router"
 msgstr "Кореневий маршрутизатор"
 
-#: aiogram.dispatcher.dispatcher.Dispatcher.__init__
-#: aiogram.dispatcher.dispatcher.Dispatcher.feed_raw_update
-#: aiogram.dispatcher.dispatcher.Dispatcher.feed_update
-#: aiogram.dispatcher.dispatcher.Dispatcher.run_polling
-#: aiogram.dispatcher.dispatcher.Dispatcher.start_polling of
+#: ../../dispatcher/dispatcher.rst
 msgid "Parameters"
 msgstr "Параметри"
 
@@ -66,7 +64,7 @@ msgstr "Сховище для кінцевого автомату (FSM)"
 
 #: aiogram.dispatcher.dispatcher.Dispatcher.__init__:4 of
 msgid "FSM strategy"
-msgstr "Стратегія кінцевого апарату"
+msgstr "Стратегія кінцевого автомату"
 
 #: aiogram.dispatcher.dispatcher.Dispatcher.__init__:5 of
 msgid "Events isolation"
@@ -77,9 +75,8 @@ msgid ""
 "Disable FSM, note that if you disable FSM then you should not use storage"
 " and events isolation"
 msgstr ""
-"Відключення кінцевого апарату, зауважте що при вимкненому кінцевому "
-"апаратові вам не слід використовувати сховище (кінцевого апарату) та "
-"ізоляцію подій"
+"Відключення кінцевого автомату, зауважте, що при вимкненому кінцевому "
+"автоматі вам не слід використовувати сховище та ізоляцію подій"
 
 #: aiogram.dispatcher.dispatcher.Dispatcher.__init__:8 of
 msgid "Other arguments, will be passed as keyword arguments to handlers"
@@ -89,103 +86,108 @@ msgstr "Інші аргументи будуть передані обробни
 msgid ""
 "Main entry point for incoming updates with automatic Dict->Update "
 "serializer"
-msgstr "Основна точка входу для подій"
+msgstr "Основна точка входу для подій з автоматичною серіалізацією Dict->Update"
 
 #: aiogram.dispatcher.dispatcher.Dispatcher.feed_update:1 of
 msgid ""
 "Main entry point for incoming updates Response of this method can be used"
 " as Webhook response"
 msgstr ""
-"Основна точка входу для подій. Відповідь цього метода може бути "
+"Основна точка входу для подій. Відповідь цього методу може бути "
 "використана для відповіді у Webhook"
 
 #: aiogram.dispatcher.dispatcher.Dispatcher.run_polling:1 of
 msgid "Run many bots with polling"
-msgstr "Запуск кількох ботів з опитуванням"
+msgstr "Запуск кількох ботів із використанням опитування"
 
 #: aiogram.dispatcher.dispatcher.Dispatcher.run_polling:3
 #: aiogram.dispatcher.dispatcher.Dispatcher.start_polling:3 of
 #, fuzzy
 msgid "Bot instances (one or more)"
-msgstr "Екземпляри ботів"
+msgstr "Екземпляри ботів (один або кілька)"
 
 #: aiogram.dispatcher.dispatcher.Dispatcher.run_polling:4
 #: aiogram.dispatcher.dispatcher.Dispatcher.start_polling:4 of
 msgid "Long-polling wait time"
-msgstr ""
+msgstr "Час очікування під час тривалого опитування"
 
 #: aiogram.dispatcher.dispatcher.Dispatcher.run_polling:5
 #: aiogram.dispatcher.dispatcher.Dispatcher.start_polling:5 of
 msgid "Run task for each event and no wait result"
-msgstr "Запуск обробки без очікування результату"
+msgstr "Запуск завдання для кожної події без очікування результату"
 
 #: aiogram.dispatcher.dispatcher.Dispatcher.run_polling:6
 #: aiogram.dispatcher.dispatcher.Dispatcher.start_polling:6 of
 msgid "backoff-retry config"
-msgstr ""
+msgstr "конфігурація повторів із затримкою"
 
 #: aiogram.dispatcher.dispatcher.Dispatcher.run_polling:7 of
 msgid "List of the update types you want your bot to receive"
-msgstr "Список типів подій, які має опрацьовувати ваш бот"
+msgstr "Список типів оновлень, які має отримувати ваш бот"
 
 #: aiogram.dispatcher.dispatcher.Dispatcher.run_polling:8
 #: aiogram.dispatcher.dispatcher.Dispatcher.start_polling:9 of
 msgid "handle signals (SIGINT/SIGTERM)"
-msgstr ""
+msgstr "обробка сигналів (SIGINT/SIGTERM)"
 
 #: aiogram.dispatcher.dispatcher.Dispatcher.run_polling:9
 #: aiogram.dispatcher.dispatcher.Dispatcher.start_polling:10 of
 msgid "close bot sessions on shutdown"
-msgstr ""
+msgstr "закривати сесії бота під час завершення роботи"
 
 #: aiogram.dispatcher.dispatcher.Dispatcher.run_polling:10
 #: aiogram.dispatcher.dispatcher.Dispatcher.start_polling:11 of
 msgid "contextual data"
 msgstr "контекстні дані"
 
-#: aiogram.dispatcher.dispatcher.Dispatcher.run_polling
-#: aiogram.dispatcher.dispatcher.Dispatcher.start_polling
-#: aiogram.dispatcher.dispatcher.Dispatcher.stop_polling of
+#: ../../dispatcher/dispatcher.rst
 msgid "Returns"
 msgstr "Повертає"
 
 #: aiogram.dispatcher.dispatcher.Dispatcher.start_polling:1 of
 msgid "Polling runner"
-msgstr "Запуск кількох ботів з опитуванням (асинхронно)"
+msgstr "Запуск виконавця опитування"
 
 #: aiogram.dispatcher.dispatcher.Dispatcher.start_polling:7 of
 msgid ""
 "List of the update types you want your bot to receive By default, all "
 "used update types are enabled (resolved from handlers)"
 msgstr ""
+"Список типів оновлень, які має отримувати ваш бот. За замовчуванням "
+"увімкнені всі використовувані типи оновлень (визначено з обробників)"
 
 #: aiogram.dispatcher.dispatcher.Dispatcher.stop_polling:1 of
 msgid "Execute this method if you want to stop polling programmatically"
-msgstr ""
+msgstr "Використовуйте цей метод, якщо хочете зупинити опитування програмно"
 
 #: ../../dispatcher/dispatcher.rst:18
 msgid "Simple usage"
-msgstr "Просте застосування"
+msgstr "Просте використання"
 
 #: ../../dispatcher/dispatcher.rst:20 ../../dispatcher/dispatcher.rst:33
 msgid "Example:"
-msgstr "Наприклад:"
+msgstr "Приклад:"
 
 #: ../../dispatcher/dispatcher.rst:31
 msgid "Including routers"
-msgstr "Включаючи маршрутизатори"
+msgstr "Додавання маршрутизаторів"
 
-#: ../../dispatcher/dispatcher.rst:43
+#: ../../dispatcher/dispatcher.rst:46
 msgid "Handling updates"
-msgstr "Обробка подій"
+msgstr "Обробка оновлень"
 
-#: ../../dispatcher/dispatcher.rst:45
+#: ../../dispatcher/dispatcher.rst:48
 msgid ""
 "All updates can be propagated to the dispatcher by "
-":obj:`Dispatcher.feed_update(bot=..., update=...)` method:"
+":meth:`~aiogram.dispatcher.dispatcher.Dispatcher.feed_update` method:"
 msgstr ""
-"Усі оновлення можна передати диспетчеру через "
-":obj:`Dispatcher.feed_update(bot=..., update=...)` method:"
+"Усі оновлення можна передати диспетчеру через метод "
+":meth:`~aiogram.dispatcher.dispatcher.Dispatcher.feed_update`:"
 
-#~ msgid "Bot instances (one or mre)"
-#~ msgstr "Екземпляри ботів"
+#: ../../dispatcher/dispatcher.rst:57
+msgid ""
+"Also you can feed raw update (dictionary) object to the dispatcher by "
+":meth:`~aiogram.dispatcher.dispatcher.Dispatcher.feed_raw_update` method:"
+msgstr ""
+"Також ви можете передати сирий об'єкт оновлення (словник) до диспетчера "
+"через метод :meth:`~aiogram.dispatcher.dispatcher.Dispatcher.feed_raw_update`:"
