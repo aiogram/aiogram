@@ -1,10 +1,11 @@
 from __future__ import annotations
 
-import datetime
-from typing import TYPE_CHECKING, Any, Literal, Optional, Union
+from typing import TYPE_CHECKING, Any, Literal, Optional
 
 from ..enums import InputPaidMediaType
+from .date_time_union import DateTimeUnion
 from .input_file import InputFile
+from .input_file_union import InputFileUnion
 from .input_paid_media import InputPaidMedia
 
 
@@ -17,13 +18,13 @@ class InputPaidMediaVideo(InputPaidMedia):
 
     type: Literal[InputPaidMediaType.VIDEO] = InputPaidMediaType.VIDEO
     """Type of the media, must be *video*"""
-    media: Union[str, InputFile]
+    media: InputFileUnion
     """File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass 'attach://<file_attach_name>' to upload a new one using multipart/form-data under <file_attach_name> name. :ref:`More information on Sending Files » <sending-files>`"""
     thumbnail: Optional[InputFile] = None
     """*Optional*. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`"""
-    cover: Optional[Union[str, InputFile]] = None
+    cover: Optional[InputFileUnion] = None
     """*Optional*. Cover for the video in the message. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass 'attach://<file_attach_name>' to upload a new one using multipart/form-data under <file_attach_name> name. :ref:`More information on Sending Files » <sending-files>`"""
-    start_timestamp: Optional[Union[datetime.datetime, datetime.timedelta, int]] = None
+    start_timestamp: Optional[DateTimeUnion] = None
     """*Optional*. Start timestamp for the video in the message"""
     width: Optional[int] = None
     """*Optional*. Video width"""
@@ -42,10 +43,10 @@ class InputPaidMediaVideo(InputPaidMedia):
             __pydantic__self__,
             *,
             type: Literal[InputPaidMediaType.VIDEO] = InputPaidMediaType.VIDEO,
-            media: Union[str, InputFile],
+            media: InputFileUnion,
             thumbnail: Optional[InputFile] = None,
-            cover: Optional[Union[str, InputFile]] = None,
-            start_timestamp: Optional[Union[datetime.datetime, datetime.timedelta, int]] = None,
+            cover: Optional[InputFileUnion] = None,
+            start_timestamp: Optional[DateTimeUnion] = None,
             width: Optional[int] = None,
             height: Optional[int] = None,
             duration: Optional[int] = None,

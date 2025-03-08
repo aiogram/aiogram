@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional, Union
+from typing import TYPE_CHECKING, Any, Optional
 
-from ..types import ForumTopic
+from ..types import ChatIdUnion, ForumTopic
 from .base import TelegramMethod
 
 
@@ -16,7 +16,7 @@ class CreateForumTopic(TelegramMethod[ForumTopic]):
     __returning__ = ForumTopic
     __api_method__ = "createForumTopic"
 
-    chat_id: Union[int, str]
+    chat_id: ChatIdUnion
     """Unique identifier for the target chat or username of the target supergroup (in the format :code:`@supergroupusername`)"""
     name: str
     """Topic name, 1-128 characters"""
@@ -32,7 +32,7 @@ class CreateForumTopic(TelegramMethod[ForumTopic]):
         def __init__(
             __pydantic__self__,
             *,
-            chat_id: Union[int, str],
+            chat_id: ChatIdUnion,
             name: str,
             icon_color: Optional[int] = None,
             icon_custom_emoji_id: Optional[str] = None,

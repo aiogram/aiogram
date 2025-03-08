@@ -1,14 +1,12 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Literal, Optional, Union
+from typing import TYPE_CHECKING, Any, Literal, Optional
 
 from ..enums import TransactionPartnerType
 from .transaction_partner import TransactionPartner
 
 if TYPE_CHECKING:
-    from .revenue_withdrawal_state_failed import RevenueWithdrawalStateFailed
-    from .revenue_withdrawal_state_pending import RevenueWithdrawalStatePending
-    from .revenue_withdrawal_state_succeeded import RevenueWithdrawalStateSucceeded
+    from .revenue_withdrawal_state_union import RevenueWithdrawalStateUnion
 
 
 class TransactionPartnerFragment(TransactionPartner):
@@ -20,13 +18,7 @@ class TransactionPartnerFragment(TransactionPartner):
 
     type: Literal[TransactionPartnerType.FRAGMENT] = TransactionPartnerType.FRAGMENT
     """Type of the transaction partner, always 'fragment'"""
-    withdrawal_state: Optional[
-        Union[
-            RevenueWithdrawalStatePending,
-            RevenueWithdrawalStateSucceeded,
-            RevenueWithdrawalStateFailed,
-        ]
-    ] = None
+    withdrawal_state: Optional[RevenueWithdrawalStateUnion] = None
     """*Optional*. State of the transaction if the transaction is outgoing"""
 
     if TYPE_CHECKING:
@@ -37,13 +29,7 @@ class TransactionPartnerFragment(TransactionPartner):
             __pydantic__self__,
             *,
             type: Literal[TransactionPartnerType.FRAGMENT] = TransactionPartnerType.FRAGMENT,
-            withdrawal_state: Optional[
-                Union[
-                    RevenueWithdrawalStatePending,
-                    RevenueWithdrawalStateSucceeded,
-                    RevenueWithdrawalStateFailed,
-                ]
-            ] = None,
+            withdrawal_state: Optional[RevenueWithdrawalStateUnion] = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

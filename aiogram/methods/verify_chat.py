@@ -1,7 +1,8 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional, Union
+from typing import TYPE_CHECKING, Any, Optional
 
+from ..types import ChatIdUnion
 from .base import TelegramMethod
 
 
@@ -15,7 +16,7 @@ class VerifyChat(TelegramMethod[bool]):
     __returning__ = bool
     __api_method__ = "verifyChat"
 
-    chat_id: Union[int, str]
+    chat_id: ChatIdUnion
     """Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)"""
     custom_description: Optional[str] = None
     """Custom description for the verification; 0-70 characters. Must be empty if the organization isn't allowed to provide a custom verification description."""
@@ -27,7 +28,7 @@ class VerifyChat(TelegramMethod[bool]):
         def __init__(
             __pydantic__self__,
             *,
-            chat_id: Union[int, str],
+            chat_id: ChatIdUnion,
             custom_description: Optional[str] = None,
             **__pydantic_kwargs: Any,
         ) -> None:

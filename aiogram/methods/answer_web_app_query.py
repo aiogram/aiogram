@@ -1,30 +1,8 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Union
+from typing import TYPE_CHECKING, Any
 
-from ..types import (
-    InlineQueryResultArticle,
-    InlineQueryResultAudio,
-    InlineQueryResultCachedAudio,
-    InlineQueryResultCachedDocument,
-    InlineQueryResultCachedGif,
-    InlineQueryResultCachedMpeg4Gif,
-    InlineQueryResultCachedPhoto,
-    InlineQueryResultCachedSticker,
-    InlineQueryResultCachedVideo,
-    InlineQueryResultCachedVoice,
-    InlineQueryResultContact,
-    InlineQueryResultDocument,
-    InlineQueryResultGame,
-    InlineQueryResultGif,
-    InlineQueryResultLocation,
-    InlineQueryResultMpeg4Gif,
-    InlineQueryResultPhoto,
-    InlineQueryResultVenue,
-    InlineQueryResultVideo,
-    InlineQueryResultVoice,
-    SentWebAppMessage,
-)
+from ..types import InlineQueryResultUnion, SentWebAppMessage
 from .base import TelegramMethod
 
 
@@ -40,28 +18,7 @@ class AnswerWebAppQuery(TelegramMethod[SentWebAppMessage]):
 
     web_app_query_id: str
     """Unique identifier for the query to be answered"""
-    result: Union[
-        InlineQueryResultCachedAudio,
-        InlineQueryResultCachedDocument,
-        InlineQueryResultCachedGif,
-        InlineQueryResultCachedMpeg4Gif,
-        InlineQueryResultCachedPhoto,
-        InlineQueryResultCachedSticker,
-        InlineQueryResultCachedVideo,
-        InlineQueryResultCachedVoice,
-        InlineQueryResultArticle,
-        InlineQueryResultAudio,
-        InlineQueryResultContact,
-        InlineQueryResultGame,
-        InlineQueryResultDocument,
-        InlineQueryResultGif,
-        InlineQueryResultLocation,
-        InlineQueryResultMpeg4Gif,
-        InlineQueryResultPhoto,
-        InlineQueryResultVenue,
-        InlineQueryResultVideo,
-        InlineQueryResultVoice,
-    ]
+    result: InlineQueryResultUnion
     """A JSON-serialized object describing the message to be sent"""
 
     if TYPE_CHECKING:
@@ -72,28 +29,7 @@ class AnswerWebAppQuery(TelegramMethod[SentWebAppMessage]):
             __pydantic__self__,
             *,
             web_app_query_id: str,
-            result: Union[
-                InlineQueryResultCachedAudio,
-                InlineQueryResultCachedDocument,
-                InlineQueryResultCachedGif,
-                InlineQueryResultCachedMpeg4Gif,
-                InlineQueryResultCachedPhoto,
-                InlineQueryResultCachedSticker,
-                InlineQueryResultCachedVideo,
-                InlineQueryResultCachedVoice,
-                InlineQueryResultArticle,
-                InlineQueryResultAudio,
-                InlineQueryResultContact,
-                InlineQueryResultGame,
-                InlineQueryResultDocument,
-                InlineQueryResultGif,
-                InlineQueryResultLocation,
-                InlineQueryResultMpeg4Gif,
-                InlineQueryResultPhoto,
-                InlineQueryResultVenue,
-                InlineQueryResultVideo,
-                InlineQueryResultVoice,
-            ],
+            result: InlineQueryResultUnion,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

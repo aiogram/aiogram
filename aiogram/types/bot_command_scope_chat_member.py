@@ -1,9 +1,12 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Literal, Union
+from typing import TYPE_CHECKING, Any, Literal
 
 from ..enums import BotCommandScopeType
 from .bot_command_scope import BotCommandScope
+
+if TYPE_CHECKING:
+    from .chat_id_union import ChatIdUnion
 
 
 class BotCommandScopeChatMember(BotCommandScope):
@@ -15,7 +18,7 @@ class BotCommandScopeChatMember(BotCommandScope):
 
     type: Literal[BotCommandScopeType.CHAT_MEMBER] = BotCommandScopeType.CHAT_MEMBER
     """Scope type, must be *chat_member*"""
-    chat_id: Union[int, str]
+    chat_id: ChatIdUnion
     """Unique identifier for the target chat or username of the target supergroup (in the format :code:`@supergroupusername`)"""
     user_id: int
     """Unique identifier of the target user"""
@@ -28,7 +31,7 @@ class BotCommandScopeChatMember(BotCommandScope):
             __pydantic__self__,
             *,
             type: Literal[BotCommandScopeType.CHAT_MEMBER] = BotCommandScopeType.CHAT_MEMBER,
-            chat_id: Union[int, str],
+            chat_id: ChatIdUnion,
             user_id: int,
             **__pydantic_kwargs: Any,
         ) -> None:

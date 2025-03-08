@@ -1,13 +1,11 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Literal, Optional, Union
+from typing import TYPE_CHECKING, Any, Literal, Optional
 
 from .background_type import BackgroundType
 
 if TYPE_CHECKING:
-    from .background_fill_freeform_gradient import BackgroundFillFreeformGradient
-    from .background_fill_gradient import BackgroundFillGradient
-    from .background_fill_solid import BackgroundFillSolid
+    from .background_fill_union import BackgroundFillUnion
     from .document import Document
 
 
@@ -22,7 +20,7 @@ class BackgroundTypePattern(BackgroundType):
     """Type of the background, always 'pattern'"""
     document: Document
     """Document with the pattern"""
-    fill: Union[BackgroundFillSolid, BackgroundFillGradient, BackgroundFillFreeformGradient]
+    fill: BackgroundFillUnion
     """The background fill that is combined with the pattern"""
     intensity: int
     """Intensity of the pattern when it is shown above the filled background; 0-100"""
@@ -40,9 +38,7 @@ class BackgroundTypePattern(BackgroundType):
             *,
             type: Literal["pattern"] = "pattern",
             document: Document,
-            fill: Union[
-                BackgroundFillSolid, BackgroundFillGradient, BackgroundFillFreeformGradient
-            ],
+            fill: BackgroundFillUnion,
             intensity: int,
             is_inverted: Optional[bool] = None,
             is_moving: Optional[bool] = None,

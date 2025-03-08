@@ -1,15 +1,13 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Union
+from typing import TYPE_CHECKING, Any
 
 from .base import TelegramObject
 from .custom import DateTime
 
 if TYPE_CHECKING:
     from .chat import Chat
-    from .chat_boost_source_gift_code import ChatBoostSourceGiftCode
-    from .chat_boost_source_giveaway import ChatBoostSourceGiveaway
-    from .chat_boost_source_premium import ChatBoostSourcePremium
+    from .chat_boost_source_union import ChatBoostSourceUnion
 
 
 class ChatBoostRemoved(TelegramObject):
@@ -25,7 +23,7 @@ class ChatBoostRemoved(TelegramObject):
     """Unique identifier of the boost"""
     remove_date: DateTime
     """Point in time (Unix timestamp) when the boost was removed"""
-    source: Union[ChatBoostSourcePremium, ChatBoostSourceGiftCode, ChatBoostSourceGiveaway]
+    source: ChatBoostSourceUnion
     """Source of the removed boost"""
 
     if TYPE_CHECKING:
@@ -38,9 +36,7 @@ class ChatBoostRemoved(TelegramObject):
             chat: Chat,
             boost_id: str,
             remove_date: DateTime,
-            source: Union[
-                ChatBoostSourcePremium, ChatBoostSourceGiftCode, ChatBoostSourceGiveaway
-            ],
+            source: ChatBoostSourceUnion,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

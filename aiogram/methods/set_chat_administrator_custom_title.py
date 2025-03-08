@@ -1,7 +1,8 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Union
+from typing import TYPE_CHECKING, Any
 
+from ..types import ChatIdUnion
 from .base import TelegramMethod
 
 
@@ -15,7 +16,7 @@ class SetChatAdministratorCustomTitle(TelegramMethod[bool]):
     __returning__ = bool
     __api_method__ = "setChatAdministratorCustomTitle"
 
-    chat_id: Union[int, str]
+    chat_id: ChatIdUnion
     """Unique identifier for the target chat or username of the target supergroup (in the format :code:`@supergroupusername`)"""
     user_id: int
     """Unique identifier of the target user"""
@@ -29,7 +30,7 @@ class SetChatAdministratorCustomTitle(TelegramMethod[bool]):
         def __init__(
             __pydantic__self__,
             *,
-            chat_id: Union[int, str],
+            chat_id: ChatIdUnion,
             user_id: int,
             custom_title: str,
             **__pydantic_kwargs: Any,

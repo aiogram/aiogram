@@ -8,6 +8,7 @@ from .input_media import InputMedia
 
 if TYPE_CHECKING:
     from .input_file import InputFile
+    from .input_file_union import InputFileUnion
     from .message_entity import MessageEntity
 
 
@@ -20,7 +21,7 @@ class InputMediaAudio(InputMedia):
 
     type: Literal[InputMediaType.AUDIO] = InputMediaType.AUDIO
     """Type of the result, must be *audio*"""
-    media: Union[str, InputFile]
+    media: InputFileUnion
     """File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass 'attach://<file_attach_name>' to upload a new one using multipart/form-data under <file_attach_name> name. :ref:`More information on Sending Files » <sending-files>`"""
     thumbnail: Optional[InputFile] = None
     """*Optional*. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`"""
@@ -45,7 +46,7 @@ class InputMediaAudio(InputMedia):
             __pydantic__self__,
             *,
             type: Literal[InputMediaType.AUDIO] = InputMediaType.AUDIO,
-            media: Union[str, InputFile],
+            media: InputFileUnion,
             thumbnail: Optional[InputFile] = None,
             caption: Optional[str] = None,
             parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),

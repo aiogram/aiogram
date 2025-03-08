@@ -6,13 +6,11 @@ from pydantic import Field
 
 from ..client.default import Default
 from ..types import (
-    ForceReply,
-    InlineKeyboardMarkup,
+    ChatIdUnion,
     LinkPreviewOptions,
     Message,
     MessageEntity,
-    ReplyKeyboardMarkup,
-    ReplyKeyboardRemove,
+    ReplyMarkupUnion,
     ReplyParameters,
 )
 from .base import TelegramMethod
@@ -28,7 +26,7 @@ class SendMessage(TelegramMethod[Message]):
     __returning__ = Message
     __api_method__ = "sendMessage"
 
-    chat_id: Union[int, str]
+    chat_id: ChatIdUnion
     """Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)"""
     text: str
     """Text of the message to be sent, 1-4096 characters after entities parsing"""
@@ -52,9 +50,7 @@ class SendMessage(TelegramMethod[Message]):
     """Unique identifier of the message effect to be added to the message; for private chats only"""
     reply_parameters: Optional[ReplyParameters] = None
     """Description of the message to reply to"""
-    reply_markup: Optional[
-        Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
-    ] = None
+    reply_markup: Optional[ReplyMarkupUnion] = None
     """Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user"""
     allow_sending_without_reply: Optional[bool] = Field(
         None, json_schema_extra={"deprecated": True}
@@ -83,7 +79,7 @@ class SendMessage(TelegramMethod[Message]):
         def __init__(
             __pydantic__self__,
             *,
-            chat_id: Union[int, str],
+            chat_id: ChatIdUnion,
             text: str,
             business_connection_id: Optional[str] = None,
             message_thread_id: Optional[int] = None,
@@ -97,9 +93,7 @@ class SendMessage(TelegramMethod[Message]):
             allow_paid_broadcast: Optional[bool] = None,
             message_effect_id: Optional[str] = None,
             reply_parameters: Optional[ReplyParameters] = None,
-            reply_markup: Optional[
-                Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
-            ] = None,
+            reply_markup: Optional[ReplyMarkupUnion] = None,
             allow_sending_without_reply: Optional[bool] = None,
             disable_web_page_preview: Optional[Union[bool, Default]] = Default(
                 "link_preview_is_disabled"

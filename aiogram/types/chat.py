@@ -1,7 +1,6 @@
 from __future__ import annotations
 
-import datetime
-from typing import TYPE_CHECKING, Any, Optional, Union
+from typing import TYPE_CHECKING, Any, Optional
 
 from pydantic import Field
 
@@ -46,11 +45,10 @@ if TYPE_CHECKING:
     from .chat_location import ChatLocation
     from .chat_permissions import ChatPermissions
     from .chat_photo import ChatPhoto
+    from .date_time_union import DateTimeUnion
     from .input_file import InputFile
     from .message import Message
-    from .reaction_type_custom_emoji import ReactionTypeCustomEmoji
-    from .reaction_type_emoji import ReactionTypeEmoji
-    from .reaction_type_paid import ReactionTypePaid
+    from .reaction_type_union import ReactionTypeUnion
 
 
 class Chat(TelegramObject):
@@ -84,9 +82,9 @@ class Chat(TelegramObject):
 
 .. deprecated:: API:7.3
    https://core.telegram.org/bots/api-changelog#may-6-2024"""
-    available_reactions: Optional[
-        list[Union[ReactionTypeEmoji, ReactionTypeCustomEmoji, ReactionTypePaid]]
-    ] = Field(None, json_schema_extra={"deprecated": True})
+    available_reactions: Optional[list[ReactionTypeUnion]] = Field(
+        None, json_schema_extra={"deprecated": True}
+    )
     """*Optional*. List of available reactions allowed in the chat. If omitted, then all `emoji reactions <https://core.telegram.org/bots/api#reactiontypeemoji>`_ are allowed. Returned only in :class:`aiogram.methods.get_chat.GetChat`.
 
 .. deprecated:: API:7.3
@@ -284,9 +282,7 @@ class Chat(TelegramObject):
             is_forum: Optional[bool] = None,
             accent_color_id: Optional[int] = None,
             active_usernames: Optional[list[str]] = None,
-            available_reactions: Optional[
-                list[Union[ReactionTypeEmoji, ReactionTypeCustomEmoji, ReactionTypePaid]]
-            ] = None,
+            available_reactions: Optional[list[ReactionTypeUnion]] = None,
             background_custom_emoji_id: Optional[str] = None,
             bio: Optional[str] = None,
             birthdate: Optional[Birthdate] = None,
@@ -566,7 +562,7 @@ class Chat(TelegramObject):
         self,
         invite_link: str,
         name: Optional[str] = None,
-        expire_date: Optional[Union[datetime.datetime, datetime.timedelta, int]] = None,
+        expire_date: Optional[DateTimeUnion] = None,
         member_limit: Optional[int] = None,
         creates_join_request: Optional[bool] = None,
         **kwargs: Any,
@@ -606,7 +602,7 @@ class Chat(TelegramObject):
     def create_invite_link(
         self,
         name: Optional[str] = None,
-        expire_date: Optional[Union[datetime.datetime, datetime.timedelta, int]] = None,
+        expire_date: Optional[DateTimeUnion] = None,
         member_limit: Optional[int] = None,
         creates_join_request: Optional[bool] = None,
         **kwargs: Any,
@@ -1080,7 +1076,7 @@ class Chat(TelegramObject):
         user_id: int,
         permissions: ChatPermissions,
         use_independent_chat_permissions: Optional[bool] = None,
-        until_date: Optional[Union[datetime.datetime, datetime.timedelta, int]] = None,
+        until_date: Optional[DateTimeUnion] = None,
         **kwargs: Any,
     ) -> RestrictChatMember:
         """
@@ -1148,7 +1144,7 @@ class Chat(TelegramObject):
     def ban(
         self,
         user_id: int,
-        until_date: Optional[Union[datetime.datetime, datetime.timedelta, int]] = None,
+        until_date: Optional[DateTimeUnion] = None,
         revoke_messages: Optional[bool] = None,
         **kwargs: Any,
     ) -> BanChatMember:

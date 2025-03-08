@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import datetime
 from typing import TYPE_CHECKING, Any, Optional, Union
 
 from pydantic import Field
@@ -31,25 +30,17 @@ if TYPE_CHECKING:
     )
     from .chat import Chat
     from .chat_invite_link import ChatInviteLink
-    from .chat_member_administrator import ChatMemberAdministrator
-    from .chat_member_banned import ChatMemberBanned
-    from .chat_member_left import ChatMemberLeft
-    from .chat_member_member import ChatMemberMember
-    from .chat_member_owner import ChatMemberOwner
-    from .chat_member_restricted import ChatMemberRestricted
-    from .force_reply import ForceReply
+    from .chat_member_union import ChatMemberUnion
+    from .date_time_union import DateTimeUnion
     from .inline_keyboard_markup import InlineKeyboardMarkup
     from .input_file import InputFile
-    from .input_media_audio import InputMediaAudio
-    from .input_media_document import InputMediaDocument
-    from .input_media_photo import InputMediaPhoto
-    from .input_media_video import InputMediaVideo
-    from .input_poll_option import InputPollOption
+    from .input_file_union import InputFileUnion
+    from .input_poll_option_union import InputPollOptionUnion
     from .labeled_price import LabeledPrice
     from .link_preview_options import LinkPreviewOptions
+    from .media_union import MediaUnion
     from .message_entity import MessageEntity
-    from .reply_keyboard_markup import ReplyKeyboardMarkup
-    from .reply_keyboard_remove import ReplyKeyboardRemove
+    from .reply_markup_union import ReplyMarkupUnion
     from .reply_parameters import ReplyParameters
     from .user import User
 
@@ -67,23 +58,9 @@ class ChatMemberUpdated(TelegramObject):
     """Performer of the action, which resulted in the change"""
     date: DateTime
     """Date the change was done in Unix time"""
-    old_chat_member: Union[
-        ChatMemberOwner,
-        ChatMemberAdministrator,
-        ChatMemberMember,
-        ChatMemberRestricted,
-        ChatMemberLeft,
-        ChatMemberBanned,
-    ]
+    old_chat_member: ChatMemberUnion
     """Previous information about the chat member"""
-    new_chat_member: Union[
-        ChatMemberOwner,
-        ChatMemberAdministrator,
-        ChatMemberMember,
-        ChatMemberRestricted,
-        ChatMemberLeft,
-        ChatMemberBanned,
-    ]
+    new_chat_member: ChatMemberUnion
     """New information about the chat member"""
     invite_link: Optional[ChatInviteLink] = None
     """*Optional*. Chat invite link, which was used by the user to join the chat; for joining by invite link events only."""
@@ -102,22 +79,8 @@ class ChatMemberUpdated(TelegramObject):
             chat: Chat,
             from_user: User,
             date: DateTime,
-            old_chat_member: Union[
-                ChatMemberOwner,
-                ChatMemberAdministrator,
-                ChatMemberMember,
-                ChatMemberRestricted,
-                ChatMemberLeft,
-                ChatMemberBanned,
-            ],
-            new_chat_member: Union[
-                ChatMemberOwner,
-                ChatMemberAdministrator,
-                ChatMemberMember,
-                ChatMemberRestricted,
-                ChatMemberLeft,
-                ChatMemberBanned,
-            ],
+            old_chat_member: ChatMemberUnion,
+            new_chat_member: ChatMemberUnion,
             invite_link: Optional[ChatInviteLink] = None,
             via_join_request: Optional[bool] = None,
             via_chat_folder_invite_link: Optional[bool] = None,
@@ -154,9 +117,7 @@ class ChatMemberUpdated(TelegramObject):
         allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[
-            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
-        ] = None,
+        reply_markup: Optional[ReplyMarkupUnion] = None,
         allow_sending_without_reply: Optional[bool] = None,
         disable_web_page_preview: Optional[Union[bool, Default]] = Default(
             "link_preview_is_disabled"
@@ -218,7 +179,7 @@ class ChatMemberUpdated(TelegramObject):
 
     def answer_animation(
         self,
-        animation: Union[InputFile, str],
+        animation: InputFileUnion,
         business_connection_id: Optional[str] = None,
         message_thread_id: Optional[int] = None,
         duration: Optional[int] = None,
@@ -237,9 +198,7 @@ class ChatMemberUpdated(TelegramObject):
         allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[
-            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
-        ] = None,
+        reply_markup: Optional[ReplyMarkupUnion] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
         **kwargs: Any,
@@ -308,7 +267,7 @@ class ChatMemberUpdated(TelegramObject):
 
     def answer_audio(
         self,
-        audio: Union[InputFile, str],
+        audio: InputFileUnion,
         business_connection_id: Optional[str] = None,
         message_thread_id: Optional[int] = None,
         caption: Optional[str] = None,
@@ -323,9 +282,7 @@ class ChatMemberUpdated(TelegramObject):
         allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[
-            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
-        ] = None,
+        reply_markup: Optional[ReplyMarkupUnion] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
         **kwargs: Any,
@@ -402,9 +359,7 @@ class ChatMemberUpdated(TelegramObject):
         allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[
-            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
-        ] = None,
+        reply_markup: Optional[ReplyMarkupUnion] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
         **kwargs: Any,
@@ -461,7 +416,7 @@ class ChatMemberUpdated(TelegramObject):
 
     def answer_document(
         self,
-        document: Union[InputFile, str],
+        document: InputFileUnion,
         business_connection_id: Optional[str] = None,
         message_thread_id: Optional[int] = None,
         thumbnail: Optional[InputFile] = None,
@@ -474,9 +429,7 @@ class ChatMemberUpdated(TelegramObject):
         allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[
-            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
-        ] = None,
+        reply_markup: Optional[ReplyMarkupUnion] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
         **kwargs: Any,
@@ -725,9 +678,7 @@ class ChatMemberUpdated(TelegramObject):
         allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[
-            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
-        ] = None,
+        reply_markup: Optional[ReplyMarkupUnion] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
         **kwargs: Any,
@@ -788,7 +739,7 @@ class ChatMemberUpdated(TelegramObject):
 
     def answer_media_group(
         self,
-        media: list[Union[InputMediaAudio, InputMediaDocument, InputMediaPhoto, InputMediaVideo]],
+        media: list[MediaUnion],
         business_connection_id: Optional[str] = None,
         message_thread_id: Optional[int] = None,
         disable_notification: Optional[bool] = None,
@@ -844,7 +795,7 @@ class ChatMemberUpdated(TelegramObject):
 
     def answer_photo(
         self,
-        photo: Union[InputFile, str],
+        photo: InputFileUnion,
         business_connection_id: Optional[str] = None,
         message_thread_id: Optional[int] = None,
         caption: Optional[str] = None,
@@ -859,9 +810,7 @@ class ChatMemberUpdated(TelegramObject):
         allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[
-            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
-        ] = None,
+        reply_markup: Optional[ReplyMarkupUnion] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
         **kwargs: Any,
@@ -923,7 +872,7 @@ class ChatMemberUpdated(TelegramObject):
     def answer_poll(
         self,
         question: str,
-        options: list[Union[InputPollOption, str]],
+        options: list[InputPollOptionUnion],
         business_connection_id: Optional[str] = None,
         message_thread_id: Optional[int] = None,
         question_parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
@@ -936,16 +885,14 @@ class ChatMemberUpdated(TelegramObject):
         explanation_parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
         explanation_entities: Optional[list[MessageEntity]] = None,
         open_period: Optional[int] = None,
-        close_date: Optional[Union[datetime.datetime, datetime.timedelta, int]] = None,
+        close_date: Optional[DateTimeUnion] = None,
         is_closed: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
         allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[
-            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
-        ] = None,
+        reply_markup: Optional[ReplyMarkupUnion] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
         **kwargs: Any,
@@ -1030,9 +977,7 @@ class ChatMemberUpdated(TelegramObject):
         allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[
-            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
-        ] = None,
+        reply_markup: Optional[ReplyMarkupUnion] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
         **kwargs: Any,
@@ -1083,7 +1028,7 @@ class ChatMemberUpdated(TelegramObject):
 
     def answer_sticker(
         self,
-        sticker: Union[InputFile, str],
+        sticker: InputFileUnion,
         business_connection_id: Optional[str] = None,
         message_thread_id: Optional[int] = None,
         emoji: Optional[str] = None,
@@ -1092,9 +1037,7 @@ class ChatMemberUpdated(TelegramObject):
         allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[
-            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
-        ] = None,
+        reply_markup: Optional[ReplyMarkupUnion] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
         **kwargs: Any,
@@ -1162,9 +1105,7 @@ class ChatMemberUpdated(TelegramObject):
         allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[
-            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
-        ] = None,
+        reply_markup: Optional[ReplyMarkupUnion] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
         **kwargs: Any,
@@ -1229,15 +1170,15 @@ class ChatMemberUpdated(TelegramObject):
 
     def answer_video(
         self,
-        video: Union[InputFile, str],
+        video: InputFileUnion,
         business_connection_id: Optional[str] = None,
         message_thread_id: Optional[int] = None,
         duration: Optional[int] = None,
         width: Optional[int] = None,
         height: Optional[int] = None,
         thumbnail: Optional[InputFile] = None,
-        cover: Optional[Union[InputFile, str]] = None,
-        start_timestamp: Optional[Union[datetime.datetime, datetime.timedelta, int]] = None,
+        cover: Optional[InputFileUnion] = None,
+        start_timestamp: Optional[DateTimeUnion] = None,
         caption: Optional[str] = None,
         parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
         caption_entities: Optional[list[MessageEntity]] = None,
@@ -1251,9 +1192,7 @@ class ChatMemberUpdated(TelegramObject):
         allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[
-            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
-        ] = None,
+        reply_markup: Optional[ReplyMarkupUnion] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
         **kwargs: Any,
@@ -1328,7 +1267,7 @@ class ChatMemberUpdated(TelegramObject):
 
     def answer_video_note(
         self,
-        video_note: Union[InputFile, str],
+        video_note: InputFileUnion,
         business_connection_id: Optional[str] = None,
         message_thread_id: Optional[int] = None,
         duration: Optional[int] = None,
@@ -1339,9 +1278,7 @@ class ChatMemberUpdated(TelegramObject):
         allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[
-            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
-        ] = None,
+        reply_markup: Optional[ReplyMarkupUnion] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
         **kwargs: Any,
@@ -1398,7 +1335,7 @@ class ChatMemberUpdated(TelegramObject):
 
     def answer_voice(
         self,
-        voice: Union[InputFile, str],
+        voice: InputFileUnion,
         business_connection_id: Optional[str] = None,
         message_thread_id: Optional[int] = None,
         caption: Optional[str] = None,
@@ -1410,9 +1347,7 @@ class ChatMemberUpdated(TelegramObject):
         allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[
-            Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
-        ] = None,
+        reply_markup: Optional[ReplyMarkupUnion] = None,
         allow_sending_without_reply: Optional[bool] = None,
         reply_to_message_id: Optional[int] = None,
         **kwargs: Any,

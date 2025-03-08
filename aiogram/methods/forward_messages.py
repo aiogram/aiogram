@@ -1,6 +1,6 @@
-from typing import TYPE_CHECKING, Any, Optional, Union
+from typing import TYPE_CHECKING, Any, Optional
 
-from ..types import MessageId
+from ..types import ChatIdUnion, MessageId
 from .base import TelegramMethod
 
 
@@ -14,9 +14,9 @@ class ForwardMessages(TelegramMethod[list[MessageId]]):
     __returning__ = list[MessageId]
     __api_method__ = "forwardMessages"
 
-    chat_id: Union[int, str]
+    chat_id: ChatIdUnion
     """Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)"""
-    from_chat_id: Union[int, str]
+    from_chat_id: ChatIdUnion
     """Unique identifier for the chat where the original messages were sent (or channel username in the format :code:`@channelusername`)"""
     message_ids: list[int]
     """A JSON-serialized list of 1-100 identifiers of messages in the chat *from_chat_id* to forward. The identifiers must be specified in a strictly increasing order."""
@@ -34,8 +34,8 @@ class ForwardMessages(TelegramMethod[list[MessageId]]):
         def __init__(
             __pydantic__self__,
             *,
-            chat_id: Union[int, str],
-            from_chat_id: Union[int, str],
+            chat_id: ChatIdUnion,
+            from_chat_id: ChatIdUnion,
             message_ids: list[int],
             message_thread_id: Optional[int] = None,
             disable_notification: Optional[bool] = None,
