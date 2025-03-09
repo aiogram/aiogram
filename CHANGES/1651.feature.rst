@@ -1,0 +1,2 @@
+Updated "create_startapp_link" method, added app_name param for support direct mini app links, see 
+also https://core.telegram.org/api/links#direct-mini-app-links
