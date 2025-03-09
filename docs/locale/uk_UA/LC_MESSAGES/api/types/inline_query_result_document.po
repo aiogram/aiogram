@@ -8,14 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-10-01 22:51+0300\n"
+"POT-Creation-Date: 2025-03-08 02:28+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.10.3\n"
+"Generated-By: Babel 2.13.1\n"
 
 #: ../../api/types/inline_query_result_document.rst:3
 msgid "InlineQueryResultDocument"
@@ -27,11 +27,10 @@ msgid ""
 "user with an optional caption. Alternatively, you can use "
 "*input_message_content* to send a message with the specified content "
 "instead of the file. Currently, only **.PDF** and **.ZIP** files can be "
-"sent using this method. **Note:** This will only work in Telegram "
-"versions released after 9 April, 2016. Older clients will ignore them."
+"sent using this method."
 msgstr ""
 
-#: aiogram.types.inline_query_result_document.InlineQueryResultDocument:4 of
+#: aiogram.types.inline_query_result_document.InlineQueryResultDocument:3 of
 msgid "Source: https://core.telegram.org/bots/api#inlinequeryresultdocument"
 msgstr ""
 
@@ -110,19 +109,34 @@ msgid "*Optional*. Content of the message to be sent instead of the file"
 msgstr ""
 
 #: ../../docstring
-#: aiogram.types.inline_query_result_document.InlineQueryResultDocument.thumb_url:1
+#: aiogram.types.inline_query_result_document.InlineQueryResultDocument.thumbnail_url:1
 #: of
 msgid "*Optional*. URL of the thumbnail (JPEG only) for the file"
 msgstr ""
 
 #: ../../docstring
-#: aiogram.types.inline_query_result_document.InlineQueryResultDocument.thumb_width:1
+#: aiogram.types.inline_query_result_document.InlineQueryResultDocument.thumbnail_width:1
 #: of
 msgid "*Optional*. Thumbnail width"
 msgstr ""
 
 #: ../../docstring
-#: aiogram.types.inline_query_result_document.InlineQueryResultDocument.thumb_height:1
+#: aiogram.types.inline_query_result_document.InlineQueryResultDocument.thumbnail_height:1
 #: of
 msgid "*Optional*. Thumbnail height"
 msgstr ""
+
+#~ msgid ""
+#~ "Represents a link to a file. By"
+#~ " default, this file will be sent "
+#~ "by the user with an optional "
+#~ "caption. Alternatively, you can use "
+#~ "*input_message_content* to send a message "
+#~ "with the specified content instead of"
+#~ " the file. Currently, only **.PDF** "
+#~ "and **.ZIP** files can be sent "
+#~ "using this method. **Note:** This will"
+#~ " only work in Telegram versions "
+#~ "released after 9 April, 2016. Older "
+#~ "clients will ignore them."
+#~ msgstr ""

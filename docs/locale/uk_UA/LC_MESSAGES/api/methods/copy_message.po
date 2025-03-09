@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-16 01:15+0200\n"
+"POT-Creation-Date: 2025-03-08 02:28+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -27,11 +27,11 @@ msgstr ""
 
 #: aiogram.methods.copy_message.CopyMessage:1 of
 msgid ""
-"Use this method to copy messages of any kind. Service messages, giveaway "
-"messages, giveaway winners messages, and invoice messages can't be "
-"copied. A quiz :class:`aiogram.methods.poll.Poll` can be copied only if "
-"the value of the field *correct_option_id* is known to the bot. The "
-"method is analogous to the method "
+"Use this method to copy messages of any kind. Service messages, paid "
+"media messages, giveaway messages, giveaway winners messages, and invoice"
+" messages can't be copied. A quiz :class:`aiogram.methods.poll.Poll` can "
+"be copied only if the value of the field *correct_option_id* is known to "
+"the bot. The method is analogous to the method "
 ":class:`aiogram.methods.forward_message.ForwardMessage`, but the copied "
 "message doesn't have a link to the original message. Returns the "
 ":class:`aiogram.types.message_id.MessageId` of the sent message on "
@@ -65,6 +65,11 @@ msgid ""
 " forum supergroups only"
 msgstr ""
 
+#: ../../docstring
+#: aiogram.methods.copy_message.CopyMessage.video_start_timestamp:1 of
+msgid "New start timestamp for the copied video in the message"
+msgstr ""
+
 #: ../../docstring aiogram.methods.copy_message.CopyMessage.caption:1 of
 msgid ""
 "New caption for media, 0-1024 characters after entities parsing. If not "
@@ -86,6 +91,13 @@ msgid ""
 msgstr ""
 
 #: ../../docstring
+#: aiogram.methods.copy_message.CopyMessage.show_caption_above_media:1 of
+msgid ""
+"Pass :code:`True`, if the caption must be shown above the message media. "
+"Ignored if a new caption isn't specified."
+msgstr ""
+
+#: ../../docstring
 #: aiogram.methods.copy_message.CopyMessage.disable_notification:1 of
 msgid ""
 "Sends the message `silently <https://telegram.org/blog/channels-2-0"
@@ -95,6 +107,16 @@ msgstr ""
 #: ../../docstring aiogram.methods.copy_message.CopyMessage.protect_content:1
 #: of
 msgid "Protects the contents of the sent message from forwarding and saving"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.copy_message.CopyMessage.allow_paid_broadcast:1 of
+msgid ""
+"Pass :code:`True` to allow up to 1000 messages per second, ignoring "
+"`broadcasting limits <https://core.telegram.org/bots/faq#how-can-i"
+"-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 "
+"Telegram Stars per message. The relevant Stars will be withdrawn from the"
+" bot's balance"
 msgstr ""
 
 #: ../../docstring aiogram.methods.copy_message.CopyMessage.reply_parameters:1
@@ -108,7 +130,7 @@ msgid ""
 "keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, "
 "`custom reply keyboard "
 "<https://core.telegram.org/bots/features#keyboards>`_, instructions to "
-"remove reply keyboard or to force a reply from the user."
+"remove a reply keyboard or to force a reply from the user"
 msgstr ""
 
 #: ../../docstring
@@ -194,4 +216,32 @@ msgstr ""
 #~ "link to the original message. Returns"
 #~ " the :class:`aiogram.types.message_id.MessageId` of "
 #~ "the sent message on success."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Use this method to copy messages "
+#~ "of any kind. Service messages, giveaway"
+#~ " messages, giveaway winners messages, and"
+#~ " invoice messages can't be copied. A"
+#~ " quiz :class:`aiogram.methods.poll.Poll` can be"
+#~ " copied only if the value of "
+#~ "the field *correct_option_id* is known "
+#~ "to the bot. The method is "
+#~ "analogous to the method "
+#~ ":class:`aiogram.methods.forward_message.ForwardMessage`, but "
+#~ "the copied message doesn't have a "
+#~ "link to the original message. Returns"
+#~ " the :class:`aiogram.types.message_id.MessageId` of "
+#~ "the sent message on success."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Additional interface options. A JSON-"
+#~ "serialized object for an `inline "
+#~ "keyboard <https://core.telegram.org/bots/features#inline-"
+#~ "keyboards>`_, `custom reply keyboard "
+#~ "<https://core.telegram.org/bots/features#keyboards>`_, "
+#~ "instructions to remove reply keyboard or"
+#~ " to force a reply from the "
+#~ "user."
 #~ msgstr ""

@@ -7,14 +7,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  aiogram\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-02 15:10+0300\n"
+"POT-Creation-Date: 2025-03-08 02:28+0200\n"
 "PO-Revision-Date: 2022-12-13 21:40+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.12.1\n"
+"Generated-By: Babel 2.13.1\n"
 
 #: ../../api/upload_file.rst:5
 msgid "How to upload file?"
@@ -77,16 +77,17 @@ msgstr ""
 "<#upload-from-url>`__"
 
 #: ../../api/upload_file.rst:23
-msgid "**Be respectful with Telegram**"
+#, fuzzy
+msgid "**Be respectful to Telegram**"
 msgstr "**Поважайте Telegram**"
 
 #: ../../api/upload_file.rst:25
 #, fuzzy
 msgid ""
-"Instances of `InputFile` are reusable. That's mean you can create "
-"instance of InputFile and sent this file multiple times but Telegram does"
-" not recommend to do that and when you upload file once just save their "
-"`file_id` and use it in next times."
+"Instances of `InputFile` are reusable. That means you can create an "
+"instance of InputFile and send it multiple times. However, Telegram does "
+"not recommend doing this. Instead, once you upload a file, save its "
+"`file_id` and reuse that later."
 msgstr ""
 "Екземпляри `InputFile` можна використовувати повторно. Це означає, що ви "
 "можете створити екземпляр InputFile і надіслати цей файл кілька разів, "
@@ -94,15 +95,15 @@ msgstr ""
 " раз, просто збережіть його `file_id` і використовуйте його наступного "
 "разу."
 
-#: ../../api/upload_file.rst:31
+#: ../../api/upload_file.rst:29
 msgid "Upload from file system"
 msgstr "Відвантаження з файлової системи"
 
-#: ../../api/upload_file.rst:33
+#: ../../api/upload_file.rst:31
 msgid "By first step you will need to import InputFile wrapper:"
 msgstr "Перш за все, вам потрібно буде імпортувати обгортку InputFile:"
 
-#: ../../api/upload_file.rst:39
+#: ../../api/upload_file.rst:37
 msgid "Then you can use it:"
 msgstr "Тепер ви можете використовувати її:"
 
@@ -111,8 +112,7 @@ msgstr "Тепер ви можете використовувати її:"
 msgid "Represents object for uploading files from filesystem"
 msgstr "Об’єкт для відвантаження файлів із файлової системи"
 
-#: aiogram.types.input_file.BufferedInputFile.__init__
-#: aiogram.types.input_file.FSInputFile.__init__ of
+#: ../../api/upload_file.rst
 msgid "Parameters"
 msgstr "Параметри"
 
@@ -133,11 +133,11 @@ msgstr ""
 msgid "Uploading chunk size"
 msgstr "Розмір фрагмента відвантаження"
 
-#: ../../api/upload_file.rst:52
+#: ../../api/upload_file.rst:50
 msgid "Upload from buffer"
 msgstr "Відвантаження з буферу"
 
-#: ../../api/upload_file.rst:54
+#: ../../api/upload_file.rst:52
 #, fuzzy
 msgid ""
 "Files can be also passed from buffer (For example you generate image "
@@ -148,11 +148,11 @@ msgstr ""
 " за допомогою `Pillow <https://pillow.readthedocs.io/en/stable/>`_ і "
 "хочете надіслати його в Telegram):"
 
-#: ../../api/upload_file.rst:58 ../../api/upload_file.rst:80
+#: ../../api/upload_file.rst:56 ../../api/upload_file.rst:78
 msgid "Import wrapper:"
 msgstr "Імпорт обгортки:"
 
-#: ../../api/upload_file.rst:64 ../../api/upload_file.rst:86
+#: ../../api/upload_file.rst:62 ../../api/upload_file.rst:84
 msgid "And then you can use it:"
 msgstr "Тепер ви можете використовувати її:"
 
@@ -164,11 +164,11 @@ msgstr "Байти"
 msgid "Filename to be propagated to telegram."
 msgstr "Ім'я файлу, яке буде передано в telegram."
 
-#: ../../api/upload_file.rst:74
+#: ../../api/upload_file.rst:72
 msgid "Upload from url"
 msgstr "Відвантаження з URL"
 
-#: ../../api/upload_file.rst:76
+#: ../../api/upload_file.rst:74
 msgid ""
 "If you need to upload a file from another server, but the direct link is "
 "bound to your server's IP, or you want to bypass native `upload limits "

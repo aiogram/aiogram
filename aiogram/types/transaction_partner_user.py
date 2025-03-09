@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Literal, Optional, Union
+from typing import TYPE_CHECKING, Any, Literal, Optional
 
 from ..enums import TransactionPartnerType
 from .transaction_partner import TransactionPartner
@@ -8,9 +8,7 @@ from .transaction_partner import TransactionPartner
 if TYPE_CHECKING:
     from .affiliate_info import AffiliateInfo
     from .gift import Gift
-    from .paid_media_photo import PaidMediaPhoto
-    from .paid_media_preview import PaidMediaPreview
-    from .paid_media_video import PaidMediaVideo
+    from .paid_media_union import PaidMediaUnion
     from .user import User
 
 
@@ -31,7 +29,7 @@ class TransactionPartnerUser(TransactionPartner):
     """*Optional*. Bot-specified invoice payload"""
     subscription_period: Optional[int] = None
     """*Optional*. The duration of the paid subscription"""
-    paid_media: Optional[list[Union[PaidMediaPreview, PaidMediaPhoto, PaidMediaVideo]]] = None
+    paid_media: Optional[list[PaidMediaUnion]] = None
     """*Optional*. Information about the paid media bought by the user"""
     paid_media_payload: Optional[str] = None
     """*Optional*. Bot-specified paid media payload"""
@@ -50,9 +48,7 @@ class TransactionPartnerUser(TransactionPartner):
             affiliate: Optional[AffiliateInfo] = None,
             invoice_payload: Optional[str] = None,
             subscription_period: Optional[int] = None,
-            paid_media: Optional[
-                list[Union[PaidMediaPreview, PaidMediaPhoto, PaidMediaVideo]]
-            ] = None,
+            paid_media: Optional[list[PaidMediaUnion]] = None,
             paid_media_payload: Optional[str] = None,
             gift: Optional[Gift] = None,
             **__pydantic_kwargs: Any,

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-16 01:15+0200\n"
+"POT-Creation-Date: 2025-03-08 02:28+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: uk_UA\n"
@@ -74,6 +74,11 @@ msgstr ""
 #: ../../docstring
 #: aiogram.types.external_reply_info.ExternalReplyInfo.document:1 of
 msgid "*Optional*. Message is a general file, information about the file"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.external_reply_info.ExternalReplyInfo.paid_media:1 of
+msgid "*Optional*. Message contains paid media; information about the paid media"
 msgstr ""
 
 #: ../../docstring aiogram.types.external_reply_info.ExternalReplyInfo.photo:1

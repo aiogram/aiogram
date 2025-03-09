@@ -1,13 +1,11 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Union
+from typing import TYPE_CHECKING, Any
 
 from .base import TelegramObject
 
 if TYPE_CHECKING:
-    from .paid_media_photo import PaidMediaPhoto
-    from .paid_media_preview import PaidMediaPreview
-    from .paid_media_video import PaidMediaVideo
+    from .paid_media_union import PaidMediaUnion
 
 
 class PaidMediaInfo(TelegramObject):
@@ -19,7 +17,7 @@ class PaidMediaInfo(TelegramObject):
 
     star_count: int
     """The number of Telegram Stars that must be paid to buy access to the media"""
-    paid_media: list[Union[PaidMediaPreview, PaidMediaPhoto, PaidMediaVideo]]
+    paid_media: list[PaidMediaUnion]
     """Information about the paid media"""
 
     if TYPE_CHECKING:
@@ -30,7 +28,7 @@ class PaidMediaInfo(TelegramObject):
             __pydantic__self__,
             *,
             star_count: int,
-            paid_media: list[Union[PaidMediaPreview, PaidMediaPhoto, PaidMediaVideo]],
+            paid_media: list[PaidMediaUnion],
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

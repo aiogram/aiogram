@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Union
+from typing import TYPE_CHECKING, Any
 
-from ..types import ChatFullInfo
+from ..types import ChatFullInfo, ChatIdUnion
 from .base import TelegramMethod
 
 
@@ -16,7 +16,7 @@ class GetChat(TelegramMethod[ChatFullInfo]):
     __returning__ = ChatFullInfo
     __api_method__ = "getChat"
 
-    chat_id: Union[int, str]
+    chat_id: ChatIdUnion
     """Unique identifier for the target chat or username of the target supergroup or channel (in the format :code:`@channelusername`)"""
 
     if TYPE_CHECKING:
@@ -24,7 +24,7 @@ class GetChat(TelegramMethod[ChatFullInfo]):
         # This section was auto-generated via `butcher`
 
         def __init__(
-            __pydantic__self__, *, chat_id: Union[int, str], **__pydantic_kwargs: Any
+            __pydantic__self__, *, chat_id: ChatIdUnion, **__pydantic_kwargs: Any
         ) -> None:
             # DO NOT EDIT MANUALLY!!!
             # This method was auto-generated via `butcher`

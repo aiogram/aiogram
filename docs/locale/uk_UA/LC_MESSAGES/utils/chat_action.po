@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  aiogram\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-11-16 02:34+0200\n"
+"POT-Creation-Date: 2025-03-08 02:28+0200\n"
 "PO-Revision-Date: 2022-10-13 21:22+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -48,7 +48,7 @@ msgstr ""
 "працює до завершення дії та надсилає `дію чату "
 "<https://core.telegram.org/bots/api#sendchataction>`_  кожні 5 секунд."
 
-#: aiogram.utils.chat_action.ChatActionSender.__init__ of
+#: ../../utils/chat_action.rst
 msgid "Parameters"
 msgstr "Параметри"
 
@@ -61,14 +61,18 @@ msgid "target chat id"
 msgstr "ідентифікатор цільового чату"
 
 #: aiogram.utils.chat_action.ChatActionSender.__init__:3 of
+msgid "unique identifier for the target message thread; supergroups only"
+msgstr ""
+
+#: aiogram.utils.chat_action.ChatActionSender.__init__:4 of
 msgid "chat action type"
 msgstr "тип дії"
 
-#: aiogram.utils.chat_action.ChatActionSender.__init__:4 of
+#: aiogram.utils.chat_action.ChatActionSender.__init__:5 of
 msgid "interval between iterations"
 msgstr "інтервал між ітераціями"
 
-#: aiogram.utils.chat_action.ChatActionSender.__init__:5 of
+#: aiogram.utils.chat_action.ChatActionSender.__init__:6 of
 #, fuzzy
 msgid "sleep before first sending of the action"
 msgstr "затримка перед першою ітерацією"

@@ -1,0 +1,94 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2025, aiogram Team
+# This file is distributed under the same license as the aiogram package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: aiogram \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-03-08 02:28+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: uk_UA\n"
+"Language-Team: uk_UA <LL@li.org>\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.13.1\n"
+
+#: ../../api/methods/set_user_emoji_status.rst:3
+msgid "setUserEmojiStatus"
+msgstr ""
+
+#: ../../api/methods/set_user_emoji_status.rst:5
+msgid "Returns: :obj:`bool`"
+msgstr ""
+
+#: aiogram.methods.set_user_emoji_status.SetUserEmojiStatus:1 of
+msgid ""
+"Changes the emoji status for a given user that previously allowed the bot"
+" to manage their emoji status via the Mini App method "
+"`requestEmojiStatusAccess <https://core.telegram.org/bots/webapps"
+"#initializing-mini-apps>`_. Returns :code:`True` on success."
+msgstr ""
+
+#: aiogram.methods.set_user_emoji_status.SetUserEmojiStatus:3 of
+msgid "Source: https://core.telegram.org/bots/api#setuseremojistatus"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.set_user_emoji_status.SetUserEmojiStatus.user_id:1 of
+msgid "Unique identifier of the target user"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.set_user_emoji_status.SetUserEmojiStatus.emoji_status_custom_emoji_id:1
+#: of
+msgid ""
+"Custom emoji identifier of the emoji status to set. Pass an empty string "
+"to remove the status."
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.set_user_emoji_status.SetUserEmojiStatus.emoji_status_expiration_date:1
+#: of
+msgid "Expiration date of the emoji status, if any"
+msgstr ""
+
+#: ../../api/methods/set_user_emoji_status.rst:15
+msgid "Usage"
+msgstr ""
+
+#: ../../api/methods/set_user_emoji_status.rst:18
+msgid "As bot method"
+msgstr ""
+
+#: ../../api/methods/set_user_emoji_status.rst:26
+msgid "Method as object"
+msgstr ""
+
+#: ../../api/methods/set_user_emoji_status.rst:28
+msgid "Imports:"
+msgstr ""
+
+#: ../../api/methods/set_user_emoji_status.rst:30
+msgid ""
+":code:`from aiogram.methods.set_user_emoji_status import "
+"SetUserEmojiStatus`"
+msgstr ""
+
+#: ../../api/methods/set_user_emoji_status.rst:31
+msgid "alias: :code:`from aiogram.methods import SetUserEmojiStatus`"
+msgstr ""
+
+#: ../../api/methods/set_user_emoji_status.rst:34
+msgid "With specific bot"
+msgstr ""
+
+#: ../../api/methods/set_user_emoji_status.rst:41
+msgid "As reply into Webhook in handler"
+msgstr ""

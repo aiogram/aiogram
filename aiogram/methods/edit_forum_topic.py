@@ -1,7 +1,8 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional, Union
+from typing import TYPE_CHECKING, Any, Optional
 
+from ..types import ChatIdUnion
 from .base import TelegramMethod
 
 
@@ -15,7 +16,7 @@ class EditForumTopic(TelegramMethod[bool]):
     __returning__ = bool
     __api_method__ = "editForumTopic"
 
-    chat_id: Union[int, str]
+    chat_id: ChatIdUnion
     """Unique identifier for the target chat or username of the target supergroup (in the format :code:`@supergroupusername`)"""
     message_thread_id: int
     """Unique identifier for the target message thread of the forum topic"""
@@ -31,7 +32,7 @@ class EditForumTopic(TelegramMethod[bool]):
         def __init__(
             __pydantic__self__,
             *,
-            chat_id: Union[int, str],
+            chat_id: ChatIdUnion,
             message_thread_id: int,
             name: Optional[str] = None,
             icon_custom_emoji_id: Optional[str] = None,

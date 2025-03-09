@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-16 01:15+0200\n"
+"POT-Creation-Date: 2025-03-08 02:28+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: uk_UA\n"
@@ -22,4 +22,17 @@ msgstr ""
 
 #: ../../api/types/chat_boost_added.rst:3
 msgid "ChatBoostAdded"
+msgstr ""
+
+#: aiogram.types.chat_boost_added.ChatBoostAdded:1 of
+msgid "This object represents a service message about a user boosting a chat."
+msgstr ""
+
+#: aiogram.types.chat_boost_added.ChatBoostAdded:3 of
+msgid "Source: https://core.telegram.org/bots/api#chatboostadded"
+msgstr ""
+
+#: ../../docstring aiogram.types.chat_boost_added.ChatBoostAdded.boost_count:1
+#: of
+msgid "Number of boosts added by the user"
 msgstr ""

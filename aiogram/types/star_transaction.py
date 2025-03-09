@@ -1,20 +1,12 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional, Union
+from typing import TYPE_CHECKING, Any, Optional
 
 from .base import TelegramObject
 from .custom import DateTime
 
 if TYPE_CHECKING:
-    from .transaction_partner_affiliate_program import (
-        TransactionPartnerAffiliateProgram,
-    )
-    from .transaction_partner_chat import TransactionPartnerChat
-    from .transaction_partner_fragment import TransactionPartnerFragment
-    from .transaction_partner_other import TransactionPartnerOther
-    from .transaction_partner_telegram_ads import TransactionPartnerTelegramAds
-    from .transaction_partner_telegram_api import TransactionPartnerTelegramApi
-    from .transaction_partner_user import TransactionPartnerUser
+    from .transaction_partner_union import TransactionPartnerUnion
 
 
 class StarTransaction(TelegramObject):
@@ -32,29 +24,9 @@ class StarTransaction(TelegramObject):
     """Date the transaction was created in Unix time"""
     nanostar_amount: Optional[int] = None
     """*Optional*. The number of 1/1000000000 shares of Telegram Stars transferred by the transaction; from 0 to 999999999"""
-    source: Optional[
-        Union[
-            TransactionPartnerUser,
-            TransactionPartnerChat,
-            TransactionPartnerAffiliateProgram,
-            TransactionPartnerFragment,
-            TransactionPartnerTelegramAds,
-            TransactionPartnerTelegramApi,
-            TransactionPartnerOther,
-        ]
-    ] = None
+    source: Optional[TransactionPartnerUnion] = None
     """*Optional*. Source of an incoming transaction (e.g., a user purchasing goods or services, Fragment refunding a failed withdrawal). Only for incoming transactions"""
-    receiver: Optional[
-        Union[
-            TransactionPartnerUser,
-            TransactionPartnerChat,
-            TransactionPartnerAffiliateProgram,
-            TransactionPartnerFragment,
-            TransactionPartnerTelegramAds,
-            TransactionPartnerTelegramApi,
-            TransactionPartnerOther,
-        ]
-    ] = None
+    receiver: Optional[TransactionPartnerUnion] = None
     """*Optional*. Receiver of an outgoing transaction (e.g., a user for a purchase refund, Fragment for a withdrawal). Only for outgoing transactions"""
 
     if TYPE_CHECKING:
@@ -68,28 +40,8 @@ class StarTransaction(TelegramObject):
             amount: int,
             date: DateTime,
             nanostar_amount: Optional[int] = None,
-            source: Optional[
-                Union[
-                    TransactionPartnerUser,
-                    TransactionPartnerChat,
-                    TransactionPartnerAffiliateProgram,
-                    TransactionPartnerFragment,
-                    TransactionPartnerTelegramAds,
-                    TransactionPartnerTelegramApi,
-                    TransactionPartnerOther,
-                ]
-            ] = None,
-            receiver: Optional[
-                Union[
-                    TransactionPartnerUser,
-                    TransactionPartnerChat,
-                    TransactionPartnerAffiliateProgram,
-                    TransactionPartnerFragment,
-                    TransactionPartnerTelegramAds,
-                    TransactionPartnerTelegramApi,
-                    TransactionPartnerOther,
-                ]
-            ] = None,
+            source: Optional[TransactionPartnerUnion] = None,
+            receiver: Optional[TransactionPartnerUnion] = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

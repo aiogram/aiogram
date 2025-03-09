@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-16 01:15+0200\n"
+"POT-Creation-Date: 2025-03-08 02:28+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,42 +21,42 @@ msgstr ""
 msgid "aiogram"
 msgstr ""
 
-#: ../../../README.rst:-1
+#: ../../../README.rst:5
 msgid "MIT License"
 msgstr ""
 
-#: ../../../README.rst:-1
+#: ../../../README.rst:9
 msgid "PyPi status"
 msgstr ""
 
-#: ../../../README.rst:-1
+#: ../../../README.rst:13
 msgid "PyPi Package Version"
 msgstr ""
 
-#: ../../../README.rst:-1
+#: ../../../README.rst:17
 msgid "Downloads"
 msgstr "Завантаження"
 
-#: ../../../README.rst:-1
+#: ../../../README.rst:21
 msgid "Supported python versions"
 msgstr "Підтримувані версії Python"
 
-#: ../../../README.rst:-1
+#: ../../../README.rst:25
 msgid "Telegram Bot API"
 msgstr ""
 
-#: ../../../README.rst:-1
+#: ../../../README.rst:29
 msgid "Tests"
 msgstr "Тести"
 
-#: ../../../README.rst:-1
+#: ../../../README.rst:33
 msgid "Codecov"
-msgstr ""
+msgstr "Покриття коду"
 
 #: ../../../README.rst:37
 msgid ""
 "**aiogram** is a modern and fully asynchronous framework for `Telegram "
-"Bot API <https://core.telegram.org/bots/api>`_ written in Python 3.8 "
+"Bot API <https://core.telegram.org/bots/api>`_ written in Python 3.8+ "
 "using `asyncio <https://docs.python.org/3/library/asyncio.html>`_ and "
 "`aiohttp <https://github.com/aio-libs/aiohttp>`_."
 msgstr ""
@@ -70,7 +70,7 @@ msgstr ""
 msgid "Make your bots faster and more powerful!"
 msgstr "Зробіть своїх ботів швидшими та потужнішими!"
 
-#: ../../../README.rst:47
+#: ../../../README.rst:44
 msgid "Documentation:"
 msgstr "Документація"
 
@@ -107,12 +107,11 @@ msgid "Supports `PyPy <https://www.pypy.org/>`_"
 msgstr "Працює з `PyPy <https://www.pypy.org/>`_"
 
 #: ../../../README.rst:55
-#, fuzzy
 msgid ""
-"Supports `Telegram Bot API 7.0 <https://core.telegram.org/bots/api>`_ and"
+"Supports `Telegram Bot API 8.3 <https://core.telegram.org/bots/api>`_ and"
 " gets fast updates to the latest versions of the Bot API"
 msgstr ""
-"Підтримує `Telegram Bot API 6.3 <https://core.telegram.org/bots/api>`_ та"
+"Підтримує найсвіжішу версію `Telegram Bot API <https://core.telegram.org/bots/api>`_ та"
 " швидко отримує оновлення до нових версії АПІ"
 
 #: ../../../README.rst:56
@@ -211,6 +210,14 @@ msgstr ""
 msgid "Simple usage"
 msgstr "Приклад використання"
 
-#: ../../index.rst:9
+#: ../../index.rst:10
+msgid "Usage without dispatcher"
+msgstr "Використання без диспетчера"
+
+#: ../../index.rst:12
+msgid "Just only interact with Bot API, without handling events"
+msgstr "Тільки взаємодія з АПІ, без обробки подій"
+
+#: ../../index.rst:18
 msgid "Contents"
 msgstr "Зміст"

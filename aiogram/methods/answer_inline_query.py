@@ -1,32 +1,10 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional, Union
+from typing import TYPE_CHECKING, Any, Optional
 
 from pydantic import Field
 
-from ..types import (
-    InlineQueryResultArticle,
-    InlineQueryResultAudio,
-    InlineQueryResultCachedAudio,
-    InlineQueryResultCachedDocument,
-    InlineQueryResultCachedGif,
-    InlineQueryResultCachedMpeg4Gif,
-    InlineQueryResultCachedPhoto,
-    InlineQueryResultCachedSticker,
-    InlineQueryResultCachedVideo,
-    InlineQueryResultCachedVoice,
-    InlineQueryResultContact,
-    InlineQueryResultDocument,
-    InlineQueryResultGame,
-    InlineQueryResultGif,
-    InlineQueryResultLocation,
-    InlineQueryResultMpeg4Gif,
-    InlineQueryResultPhoto,
-    InlineQueryResultsButton,
-    InlineQueryResultVenue,
-    InlineQueryResultVideo,
-    InlineQueryResultVoice,
-)
+from ..types import InlineQueryResultsButton, InlineQueryResultUnion
 from .base import TelegramMethod
 
 
@@ -44,30 +22,7 @@ class AnswerInlineQuery(TelegramMethod[bool]):
 
     inline_query_id: str
     """Unique identifier for the answered query"""
-    results: list[
-        Union[
-            InlineQueryResultCachedAudio,
-            InlineQueryResultCachedDocument,
-            InlineQueryResultCachedGif,
-            InlineQueryResultCachedMpeg4Gif,
-            InlineQueryResultCachedPhoto,
-            InlineQueryResultCachedSticker,
-            InlineQueryResultCachedVideo,
-            InlineQueryResultCachedVoice,
-            InlineQueryResultArticle,
-            InlineQueryResultAudio,
-            InlineQueryResultContact,
-            InlineQueryResultGame,
-            InlineQueryResultDocument,
-            InlineQueryResultGif,
-            InlineQueryResultLocation,
-            InlineQueryResultMpeg4Gif,
-            InlineQueryResultPhoto,
-            InlineQueryResultVenue,
-            InlineQueryResultVideo,
-            InlineQueryResultVoice,
-        ]
-    ]
+    results: list[InlineQueryResultUnion]
     """A JSON-serialized array of results for the inline query"""
     cache_time: Optional[int] = None
     """The maximum amount of time in seconds that the result of the inline query may be cached on the server. Defaults to 300."""
@@ -96,30 +51,7 @@ class AnswerInlineQuery(TelegramMethod[bool]):
             __pydantic__self__,
             *,
             inline_query_id: str,
-            results: list[
-                Union[
-                    InlineQueryResultCachedAudio,
-                    InlineQueryResultCachedDocument,
-                    InlineQueryResultCachedGif,
-                    InlineQueryResultCachedMpeg4Gif,
-                    InlineQueryResultCachedPhoto,
-                    InlineQueryResultCachedSticker,
-                    InlineQueryResultCachedVideo,
-                    InlineQueryResultCachedVoice,
-                    InlineQueryResultArticle,
-                    InlineQueryResultAudio,
-                    InlineQueryResultContact,
-                    InlineQueryResultGame,
-                    InlineQueryResultDocument,
-                    InlineQueryResultGif,
-                    InlineQueryResultLocation,
-                    InlineQueryResultMpeg4Gif,
-                    InlineQueryResultPhoto,
-                    InlineQueryResultVenue,
-                    InlineQueryResultVideo,
-                    InlineQueryResultVoice,
-                ]
-            ],
+            results: list[InlineQueryResultUnion],
             cache_time: Optional[int] = None,
             is_personal: Optional[bool] = None,
             next_offset: Optional[str] = None,

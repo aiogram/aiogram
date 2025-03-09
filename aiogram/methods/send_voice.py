@@ -6,13 +6,11 @@ from pydantic import Field
 
 from ..client.default import Default
 from ..types import (
-    ForceReply,
-    InlineKeyboardMarkup,
-    InputFile,
+    ChatIdUnion,
+    InputFileUnion,
     Message,
     MessageEntity,
-    ReplyKeyboardMarkup,
-    ReplyKeyboardRemove,
+    ReplyMarkupUnion,
     ReplyParameters,
 )
 from .base import TelegramMethod
@@ -28,9 +26,9 @@ class SendVoice(TelegramMethod[Message]):
     __returning__ = Message
     __api_method__ = "sendVoice"
 
-    chat_id: Union[int, str]
+    chat_id: ChatIdUnion
     """Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)"""
-    voice: Union[InputFile, str]
+    voice: InputFileUnion
     """Audio file to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`"""
     business_connection_id: Optional[str] = None
     """Unique identifier of the business connection on behalf of which the message will be sent"""
@@ -54,9 +52,7 @@ class SendVoice(TelegramMethod[Message]):
     """Unique identifier of the message effect to be added to the message; for private chats only"""
     reply_parameters: Optional[ReplyParameters] = None
     """Description of the message to reply to"""
-    reply_markup: Optional[
-        Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
-    ] = None
+    reply_markup: Optional[ReplyMarkupUnion] = None
     """Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user"""
     allow_sending_without_reply: Optional[bool] = Field(
         None, json_schema_extra={"deprecated": True}
@@ -78,8 +74,8 @@ class SendVoice(TelegramMethod[Message]):
         def __init__(
             __pydantic__self__,
             *,
-            chat_id: Union[int, str],
-            voice: Union[InputFile, str],
+            chat_id: ChatIdUnion,
+            voice: InputFileUnion,
             business_connection_id: Optional[str] = None,
             message_thread_id: Optional[int] = None,
             caption: Optional[str] = None,
@@ -91,9 +87,7 @@ class SendVoice(TelegramMethod[Message]):
             allow_paid_broadcast: Optional[bool] = None,
             message_effect_id: Optional[str] = None,
             reply_parameters: Optional[ReplyParameters] = None,
-            reply_markup: Optional[
-                Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
-            ] = None,
+            reply_markup: Optional[ReplyMarkupUnion] = None,
             allow_sending_without_reply: Optional[bool] = None,
             reply_to_message_id: Optional[int] = None,
             **__pydantic_kwargs: Any,

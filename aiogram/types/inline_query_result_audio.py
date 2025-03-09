@@ -8,11 +8,7 @@ from .inline_query_result import InlineQueryResult
 
 if TYPE_CHECKING:
     from .inline_keyboard_markup import InlineKeyboardMarkup
-    from .input_contact_message_content import InputContactMessageContent
-    from .input_invoice_message_content import InputInvoiceMessageContent
-    from .input_location_message_content import InputLocationMessageContent
-    from .input_text_message_content import InputTextMessageContent
-    from .input_venue_message_content import InputVenueMessageContent
+    from .input_message_content_union import InputMessageContentUnion
     from .message_entity import MessageEntity
 
 
@@ -43,15 +39,7 @@ class InlineQueryResultAudio(InlineQueryResult):
     """*Optional*. Audio duration in seconds"""
     reply_markup: Optional[InlineKeyboardMarkup] = None
     """*Optional*. `Inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_ attached to the message"""
-    input_message_content: Optional[
-        Union[
-            InputTextMessageContent,
-            InputLocationMessageContent,
-            InputVenueMessageContent,
-            InputContactMessageContent,
-            InputInvoiceMessageContent,
-        ]
-    ] = None
+    input_message_content: Optional[InputMessageContentUnion] = None
     """*Optional*. Content of the message to be sent instead of the audio"""
 
     if TYPE_CHECKING:
@@ -71,15 +59,7 @@ class InlineQueryResultAudio(InlineQueryResult):
             performer: Optional[str] = None,
             audio_duration: Optional[int] = None,
             reply_markup: Optional[InlineKeyboardMarkup] = None,
-            input_message_content: Optional[
-                Union[
-                    InputTextMessageContent,
-                    InputLocationMessageContent,
-                    InputVenueMessageContent,
-                    InputContactMessageContent,
-                    InputInvoiceMessageContent,
-                ]
-            ] = None,
+            input_message_content: Optional[InputMessageContentUnion] = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

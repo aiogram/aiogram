@@ -1,6 +1,6 @@
-from typing import TYPE_CHECKING, Any, Union
+from typing import TYPE_CHECKING, Any
 
-from ..types import UserChatBoosts
+from ..types import ChatIdUnion, UserChatBoosts
 from .base import TelegramMethod
 
 
@@ -14,7 +14,7 @@ class GetUserChatBoosts(TelegramMethod[UserChatBoosts]):
     __returning__ = UserChatBoosts
     __api_method__ = "getUserChatBoosts"
 
-    chat_id: Union[int, str]
+    chat_id: ChatIdUnion
     """Unique identifier for the chat or username of the channel (in the format :code:`@channelusername`)"""
     user_id: int
     """Unique identifier of the target user"""
@@ -24,7 +24,7 @@ class GetUserChatBoosts(TelegramMethod[UserChatBoosts]):
         # This section was auto-generated via `butcher`
 
         def __init__(
-            __pydantic__self__, *, chat_id: Union[int, str], user_id: int, **__pydantic_kwargs: Any
+            __pydantic__self__, *, chat_id: ChatIdUnion, user_id: int, **__pydantic_kwargs: Any
         ) -> None:
             # DO NOT EDIT MANUALLY!!!
             # This method was auto-generated via `butcher`

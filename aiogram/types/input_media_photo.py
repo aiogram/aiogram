@@ -7,7 +7,7 @@ from ..enums import InputMediaType
 from .input_media import InputMedia
 
 if TYPE_CHECKING:
-    from .input_file import InputFile
+    from .input_file_union import InputFileUnion
     from .message_entity import MessageEntity
 
 
@@ -20,7 +20,7 @@ class InputMediaPhoto(InputMedia):
 
     type: Literal[InputMediaType.PHOTO] = InputMediaType.PHOTO
     """Type of the result, must be *photo*"""
-    media: Union[str, InputFile]
+    media: InputFileUnion
     """File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass 'attach://<file_attach_name>' to upload a new one using multipart/form-data under <file_attach_name> name. :ref:`More information on Sending Files » <sending-files>`"""
     caption: Optional[str] = None
     """*Optional*. Caption of the photo to be sent, 0-1024 characters after entities parsing"""
@@ -41,7 +41,7 @@ class InputMediaPhoto(InputMedia):
             __pydantic__self__,
             *,
             type: Literal[InputMediaType.PHOTO] = InputMediaType.PHOTO,
-            media: Union[str, InputFile],
+            media: InputFileUnion,
             caption: Optional[str] = None,
             parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
             caption_entities: Optional[list[MessageEntity]] = None,

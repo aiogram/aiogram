@@ -8,14 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-11-23 00:47+0200\n"
+"POT-Creation-Date: 2025-03-08 02:28+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.10.3\n"
+"Generated-By: Babel 2.13.1\n"
 
 #: ../../api/methods/edit_message_live_location.rst:3
 msgid "editMessageLiveLocation"
@@ -53,6 +53,14 @@ msgid "Longitude of new location"
 msgstr ""
 
 #: ../../docstring
+#: aiogram.methods.edit_message_live_location.EditMessageLiveLocation.business_connection_id:1
+#: of
+msgid ""
+"Unique identifier of the business connection on behalf of which the "
+"message to be edited was sent"
+msgstr ""
+
+#: ../../docstring
 #: aiogram.methods.edit_message_live_location.EditMessageLiveLocation.chat_id:1
 #: of
 msgid ""
@@ -75,6 +83,18 @@ msgstr ""
 msgid ""
 "Required if *chat_id* and *message_id* are not specified. Identifier of "
 "the inline message"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.edit_message_live_location.EditMessageLiveLocation.live_period:1
+#: of
+msgid ""
+"New period in seconds during which the location can be updated, starting "
+"from the message send date. If 0x7FFFFFFF is specified, then the location"
+" can be updated forever. Otherwise, the new value must not exceed the "
+"current *live_period* by more than a day, and the live location "
+"expiration date must remain within the next 90 days. If not specified, "
+"then *live_period* remains unchanged"
 msgstr ""
 
 #: ../../docstring
@@ -107,45 +127,45 @@ msgid ""
 "<https://core.telegram.org/bots/features#inline-keyboards>`_."
 msgstr ""
 
-#: ../../api/methods/edit_message_live_location.rst:14
+#: ../../api/methods/edit_message_live_location.rst:15
 msgid "Usage"
 msgstr ""
 
-#: ../../api/methods/edit_message_live_location.rst:17
+#: ../../api/methods/edit_message_live_location.rst:18
 msgid "As bot method"
 msgstr ""
 
-#: ../../api/methods/edit_message_live_location.rst:25
+#: ../../api/methods/edit_message_live_location.rst:26
 msgid "Method as object"
 msgstr ""
 
-#: ../../api/methods/edit_message_live_location.rst:27
+#: ../../api/methods/edit_message_live_location.rst:28
 msgid "Imports:"
 msgstr ""
 
-#: ../../api/methods/edit_message_live_location.rst:29
+#: ../../api/methods/edit_message_live_location.rst:30
 msgid ""
 ":code:`from aiogram.methods.edit_message_live_location import "
 "EditMessageLiveLocation`"
 msgstr ""
 
-#: ../../api/methods/edit_message_live_location.rst:30
+#: ../../api/methods/edit_message_live_location.rst:31
 msgid "alias: :code:`from aiogram.methods import EditMessageLiveLocation`"
 msgstr ""
 
-#: ../../api/methods/edit_message_live_location.rst:33
+#: ../../api/methods/edit_message_live_location.rst:34
 msgid "With specific bot"
 msgstr ""
 
-#: ../../api/methods/edit_message_live_location.rst:40
+#: ../../api/methods/edit_message_live_location.rst:41
 msgid "As reply into Webhook in handler"
 msgstr ""
 
-#: ../../api/methods/edit_message_live_location.rst:48
+#: ../../api/methods/edit_message_live_location.rst:49
 msgid "As shortcut from received object"
 msgstr ""
 
-#: ../../api/methods/edit_message_live_location.rst:50
+#: ../../api/methods/edit_message_live_location.rst:51
 msgid ":meth:`aiogram.types.message.Message.edit_live_location`"
 msgstr ""
 

@@ -1,0 +1,66 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2025, aiogram Team
+# This file is distributed under the same license as the aiogram package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: aiogram \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-03-08 02:28+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: uk_UA\n"
+"Language-Team: uk_UA <LL@li.org>\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.13.1\n"
+
+#: ../../api/types/shared_user.rst:3
+msgid "SharedUser"
+msgstr ""
+
+#: aiogram.types.shared_user.SharedUser:1 of
+msgid ""
+"This object contains information about a user that was shared with the "
+"bot using a "
+":class:`aiogram.types.keyboard_button_request_users.KeyboardButtonRequestUsers`"
+" button."
+msgstr ""
+
+#: aiogram.types.shared_user.SharedUser:3 of
+msgid "Source: https://core.telegram.org/bots/api#shareduser"
+msgstr ""
+
+#: ../../docstring aiogram.types.shared_user.SharedUser.user_id:1 of
+msgid ""
+"Identifier of the shared user. This number may have more than 32 "
+"significant bits and some programming languages may have "
+"difficulty/silent defects in interpreting it. But it has at most 52 "
+"significant bits, so 64-bit integers or double-precision float types are "
+"safe for storing these identifiers. The bot may not have access to the "
+"user and could be unable to use this identifier, unless the user is "
+"already known to the bot by some other means."
+msgstr ""
+
+#: ../../docstring aiogram.types.shared_user.SharedUser.first_name:1 of
+msgid "*Optional*. First name of the user, if the name was requested by the bot"
+msgstr ""
+
+#: ../../docstring aiogram.types.shared_user.SharedUser.last_name:1 of
+msgid "*Optional*. Last name of the user, if the name was requested by the bot"
+msgstr ""
+
+#: ../../docstring aiogram.types.shared_user.SharedUser.username:1 of
+msgid "*Optional*. Username of the user, if the username was requested by the bot"
+msgstr ""
+
+#: ../../docstring aiogram.types.shared_user.SharedUser.photo:1 of
+msgid ""
+"*Optional*. Available sizes of the chat photo, if the photo was requested"
+" by the bot"
+msgstr ""

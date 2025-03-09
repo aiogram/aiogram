@@ -1,7 +1,8 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional, Union
+from typing import TYPE_CHECKING, Any, Optional
 
+from ..types import ChatIdUnion
 from .base import TelegramMethod
 
 
@@ -15,7 +16,7 @@ class UnpinChatMessage(TelegramMethod[bool]):
     __returning__ = bool
     __api_method__ = "unpinChatMessage"
 
-    chat_id: Union[int, str]
+    chat_id: ChatIdUnion
     """Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)"""
     business_connection_id: Optional[str] = None
     """Unique identifier of the business connection on behalf of which the message will be unpinned"""
@@ -29,7 +30,7 @@ class UnpinChatMessage(TelegramMethod[bool]):
         def __init__(
             __pydantic__self__,
             *,
-            chat_id: Union[int, str],
+            chat_id: ChatIdUnion,
             business_connection_id: Optional[str] = None,
             message_id: Optional[int] = None,
             **__pydantic_kwargs: Any,

@@ -1,7 +1,8 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Union
+from typing import TYPE_CHECKING, Any
 
+from ..types import ChatIdUnion
 from .base import TelegramMethod
 
 
@@ -33,7 +34,7 @@ class DeleteMessage(TelegramMethod[bool]):
     __returning__ = bool
     __api_method__ = "deleteMessage"
 
-    chat_id: Union[int, str]
+    chat_id: ChatIdUnion
     """Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)"""
     message_id: int
     """Identifier of the message to delete"""
@@ -43,11 +44,7 @@ class DeleteMessage(TelegramMethod[bool]):
         # This section was auto-generated via `butcher`
 
         def __init__(
-            __pydantic__self__,
-            *,
-            chat_id: Union[int, str],
-            message_id: int,
-            **__pydantic_kwargs: Any,
+            __pydantic__self__, *, chat_id: ChatIdUnion, message_id: int, **__pydantic_kwargs: Any
         ) -> None:
             # DO NOT EDIT MANUALLY!!!
             # This method was auto-generated via `butcher`

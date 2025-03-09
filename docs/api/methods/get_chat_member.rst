@@ -2,7 +2,7 @@
 getChatMember
 #############
 
-Returns: :obj:`Union[ChatMemberOwner, ChatMemberAdministrator, ChatMemberMember, ChatMemberRestricted, ChatMemberLeft, ChatMemberBanned]`
+Returns: :obj:`ResultChatMemberUnion`
 
 .. automodule:: aiogram.methods.get_chat_member
     :members:
@@ -19,7 +19,7 @@ As bot method
 
 .. code-block::
 
-    result: Union[ChatMemberOwner, ChatMemberAdministrator, ChatMemberMember, ChatMemberRestricted, ChatMemberLeft, ChatMemberBanned] = await bot.get_chat_member(...)
+    result: ResultChatMemberUnion = await bot.get_chat_member(...)
 
 
 Method as object
@@ -35,7 +35,7 @@ With specific bot
 
 .. code-block:: python
 
-    result: Union[ChatMemberOwner, ChatMemberAdministrator, ChatMemberMember, ChatMemberRestricted, ChatMemberLeft, ChatMemberBanned] = await bot(GetChatMember(...))
+    result: ResultChatMemberUnion = await bot(GetChatMember(...))
 
 
 
