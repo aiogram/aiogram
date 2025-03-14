@@ -232,7 +232,7 @@ Example:
 
 .. code-block:: python
     :caption: module_1.py
-:name: module_1
+    # module_1
 
     router2 = Router()
 
@@ -242,7 +242,7 @@ Example:
 
 .. code-block:: python
     :caption: module_2.py
-:name: module_2
+    # module_2
 
     from module_2 import router2
 
