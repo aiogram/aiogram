@@ -25,20 +25,20 @@ from aiogram import Bot, Dispatcher, Router
 from aiogram import types
 from aiogram.filters.command import Command, CommandStart
 from aiogram.utils.i18n import gettext as _, I18n
-from aiogram.utils.i18n.middleware import I18nMiddleware
+from aiogram.utils.i18n.middleware import I18nMiddleware, SimpleI18nMiddleware
 
 
-class BotI18nMiddleware(I18nMiddleware):
-    async def get_locale(self, event: types.Update | Any, data: dict[str, Any]) -> str:
-        # here is your logic, ex. get language from redis DB
-        return 'en'
+# class BotI18nMiddleware(I18nMiddleware):
+#     async def get_locale(self, event: types.Update | Any, data: dict[str, Any]) -> str:
+#         # here is your logic, ex. get language from redis DB.
+#         return 'en'
 
 
 bot = Bot(token="<Your token>")
 router = Router()
 dp = Dispatcher()
-# NOTE: custom middleware is provided. You can use any middleware you want, ex: SimpleI18nMiddleware
-i18n_middleware = BotI18nMiddleware(
+# NOTE: basic middleware is provided. You can customize your middleware, ex. BotI18nMiddleware
+i18n_middleware = SimpleI18nMiddleware(
     I18n(
         path="locales",
         default_locale="en",
