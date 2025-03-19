@@ -57,4 +57,8 @@ References
 
 .. autofunction:: aiogram.utils.deep_linking.create_start_link
 
+.. autofunction:: aiogram.utils.deep_linking.create_startgroup_link
+
+.. autofunction:: aiogram.utils.deep_linking.create_startapp_link
+
 .. autofunction:: aiogram.utils.deep_linking.decode_payload

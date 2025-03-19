@@ -1,5 +1,0 @@
-Introduce Union types for streamlined type handling.
-
-Implemented Union types across various modules to consolidate and simplify type annotations.
-This change replaces repetitive union declarations with reusable Union aliases,
-improving code readability and maintainability.

@@ -31,8 +31,7 @@ async def create_start_link(
     """
     Create 'start' deep link with your payload.
 
-    If you need to encode payload or pass special characters -
-        set encode as True
+    If you need to encode payload or pass special characters - set encode as True
 
     :param bot: bot instance
     :param payload: args passed with /start
@@ -59,8 +58,7 @@ async def create_startgroup_link(
     """
     Create 'startgroup' deep link with your payload.
 
-    If you need to encode payload or pass special characters -
-        set encode as True
+    If you need to encode payload or pass special characters - set encode as True
 
     :param bot: bot instance
     :param payload: args passed with /start
@@ -88,8 +86,12 @@ async def create_startapp_link(
     """
     Create 'startapp' deep link with your payload.
 
-    If you need to encode payload or pass special characters -
-        set encode as True
+    If you need to encode payload or pass special characters - set encode as True
+
+    **Read more**:
+
+    - `Main Mini App links <https://core.telegram.org/api/links#main-mini-app-links>`_
+    - `Direct mini app links <https://core.telegram.org/api/links#direct-mini-app-links>`_
 
     :param bot: bot instance
     :param payload: args passed with /start

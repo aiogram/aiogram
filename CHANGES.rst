@@ -16,6 +16,69 @@ Changelog
 
 .. towncrier release notes start
 
+3.19.0 (2025-03-19)
+====================
+
+Features
+--------
+
+- Added TypedDict definitions for middleware context data to the dispatcher dependency injection docs.
+
+  So, now you can use :class:`aiogram.dispatcher.middleware.data.MiddlewareData` directly or
+  extend it with your own data in the middlewares.
+  `#1637 <https://github.com/aiogram/aiogram/issues/1637>`_
+- Added new method :func:`aiogram.utils.deep_linking.create_startapp_link` to deep-linking module
+  for creating "startapp" deep links.
+  See also https://core.telegram.org/api/links#main-mini-app-links and https://core.telegram.org/api/links#direct-mini-app-links
+  `#1648 <https://github.com/aiogram/aiogram/issues/1648>`_, `#1651 <https://github.com/aiogram/aiogram/issues/1651>`_
+
+
+Bugfixes
+--------
+
+- Fixed handling of default empty string ("") in CallbackData filter
+  `#1493 <https://github.com/aiogram/aiogram/issues/1493>`_
+- Resolved incorrect ordering of registered handlers in the :class:`aiogram.fsm.scene.Scene`
+  object caused by :code:`inspect.getmembers` returning sorted members.
+  Handlers are now registered in the order of their definition within the class,
+  ensuring proper execution sequence, especially when handling filters with different
+  levels of specificity.
+
+  For backward compatibility, the old behavior can be restored by setting the
+  :code:`attrs_resolver=inspect_members_resolver` parameter in the :class:`aiogram.fsm.scene.Scene`:
+
+  .. code-block:: python
+
+      from aiogram.utils.class_attrs_resolver import inspect_members_resolver
+
+
+      class MyScene(Scene, attrs_resolver=inspect_members_resolver):
+
+  In this case, the handlers will be registered in the order returned by :code:`inspect.getmembers`.
+
+  By default, the :code:`attrs_resolver` parameter is set to :code:`get_sorted_mro_attrs_resolver` now,
+  so you **don't need** to specify it explicitly.
+  `#1641 <https://github.com/aiogram/aiogram/issues/1641>`_
+
+
+Improved Documentation
+----------------------
+
+- Updated 🇺🇦Ukrainian docs translation
+  `#1650 <https://github.com/aiogram/aiogram/issues/1650>`_
+
+
+Misc
+----
+
+- Introduce Union types for streamlined type handling.
+
+  Implemented Union types across various modules to consolidate and simplify type annotations.
+  This change replaces repetitive union declarations with reusable Union aliases,
+  improving code readability and maintainability.
+  `#1592 <https://github.com/aiogram/aiogram/issues/1592>`_
+
+
 3.18.0 (2025-02-16)
 ====================
 
