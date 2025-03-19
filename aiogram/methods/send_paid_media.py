@@ -1,16 +1,13 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional, Union
+from typing import TYPE_CHECKING, Any, Optional
 
 from ..types import (
-    ForceReply,
-    InlineKeyboardMarkup,
-    InputPaidMediaPhoto,
-    InputPaidMediaVideo,
+    ChatIdUnion,
+    InputPaidMediaUnion,
     Message,
     MessageEntity,
-    ReplyKeyboardMarkup,
-    ReplyKeyboardRemove,
+    ReplyMarkupUnion,
     ReplyParameters,
 )
 from .base import TelegramMethod
@@ -26,11 +23,11 @@ class SendPaidMedia(TelegramMethod[Message]):
     __returning__ = Message
     __api_method__ = "sendPaidMedia"
 
-    chat_id: Union[int, str]
+    chat_id: ChatIdUnion
     """Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`). If the chat is a channel, all Telegram Star proceeds from this media will be credited to the chat's balance. Otherwise, they will be credited to the bot's balance."""
     star_count: int
     """The number of Telegram Stars that must be paid to buy access to the media; 1-2500"""
-    media: list[Union[InputPaidMediaPhoto, InputPaidMediaVideo]]
+    media: list[InputPaidMediaUnion]
     """A JSON-serialized array describing the media to be sent; up to 10 items"""
     business_connection_id: Optional[str] = None
     """Unique identifier of the business connection on behalf of which the message will be sent"""
@@ -52,9 +49,7 @@ class SendPaidMedia(TelegramMethod[Message]):
     """Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance"""
     reply_parameters: Optional[ReplyParameters] = None
     """Description of the message to reply to"""
-    reply_markup: Optional[
-        Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
-    ] = None
+    reply_markup: Optional[ReplyMarkupUnion] = None
     """Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user"""
 
     if TYPE_CHECKING:
@@ -64,9 +59,9 @@ class SendPaidMedia(TelegramMethod[Message]):
         def __init__(
             __pydantic__self__,
             *,
-            chat_id: Union[int, str],
+            chat_id: ChatIdUnion,
             star_count: int,
-            media: list[Union[InputPaidMediaPhoto, InputPaidMediaVideo]],
+            media: list[InputPaidMediaUnion],
             business_connection_id: Optional[str] = None,
             payload: Optional[str] = None,
             caption: Optional[str] = None,
@@ -77,9 +72,7 @@ class SendPaidMedia(TelegramMethod[Message]):
             protect_content: Optional[bool] = None,
             allow_paid_broadcast: Optional[bool] = None,
             reply_parameters: Optional[ReplyParameters] = None,
-            reply_markup: Optional[
-                Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
-            ] = None,
+            reply_markup: Optional[ReplyMarkupUnion] = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

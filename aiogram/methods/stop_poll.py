@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional, Union
+from typing import TYPE_CHECKING, Any, Optional
 
-from ..types import InlineKeyboardMarkup, Poll
+from ..types import ChatIdUnion, InlineKeyboardMarkup, Poll
 from .base import TelegramMethod
 
 
@@ -16,7 +16,7 @@ class StopPoll(TelegramMethod[Poll]):
     __returning__ = Poll
     __api_method__ = "stopPoll"
 
-    chat_id: Union[int, str]
+    chat_id: ChatIdUnion
     """Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)"""
     message_id: int
     """Identifier of the original message with the poll"""
@@ -32,7 +32,7 @@ class StopPoll(TelegramMethod[Poll]):
         def __init__(
             __pydantic__self__,
             *,
-            chat_id: Union[int, str],
+            chat_id: ChatIdUnion,
             message_id: int,
             business_connection_id: Optional[str] = None,
             reply_markup: Optional[InlineKeyboardMarkup] = None,

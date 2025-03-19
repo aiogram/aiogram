@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-16 01:15+0200\n"
+"POT-Creation-Date: 2025-03-08 02:28+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: uk_UA\n"
@@ -25,7 +25,7 @@ msgid "forwardMessages"
 msgstr ""
 
 #: ../../api/methods/forward_messages.rst:5
-msgid "Returns: :obj:`List[MessageId]`"
+msgid "Returns: :obj:`list[MessageId]`"
 msgstr ""
 
 #: aiogram.methods.forward_messages.ForwardMessages:1 of
@@ -59,8 +59,9 @@ msgstr ""
 #: ../../docstring
 #: aiogram.methods.forward_messages.ForwardMessages.message_ids:1 of
 msgid ""
-"Identifiers of 1-100 messages in the chat *from_chat_id* to forward. The "
-"identifiers must be specified in a strictly increasing order."
+"A JSON-serialized list of 1-100 identifiers of messages in the chat "
+"*from_chat_id* to forward. The identifiers must be specified in a "
+"strictly increasing order."
 msgstr ""
 
 #: ../../docstring
@@ -113,3 +114,13 @@ msgstr ""
 #: ../../api/methods/forward_messages.rst:41
 msgid "As reply into Webhook in handler"
 msgstr ""
+
+#~ msgid "Returns: :obj:`List[MessageId]`"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Identifiers of 1-100 messages in the "
+#~ "chat *from_chat_id* to forward. The "
+#~ "identifiers must be specified in a "
+#~ "strictly increasing order."
+#~ msgstr ""

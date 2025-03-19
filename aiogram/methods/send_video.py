@@ -1,19 +1,18 @@
 from __future__ import annotations
 
-import datetime
 from typing import TYPE_CHECKING, Any, Optional, Union
 
 from pydantic import Field
 
 from ..client.default import Default
 from ..types import (
-    ForceReply,
-    InlineKeyboardMarkup,
+    ChatIdUnion,
+    DateTimeUnion,
     InputFile,
+    InputFileUnion,
     Message,
     MessageEntity,
-    ReplyKeyboardMarkup,
-    ReplyKeyboardRemove,
+    ReplyMarkupUnion,
     ReplyParameters,
 )
 from .base import TelegramMethod
@@ -29,9 +28,9 @@ class SendVideo(TelegramMethod[Message]):
     __returning__ = Message
     __api_method__ = "sendVideo"
 
-    chat_id: Union[int, str]
+    chat_id: ChatIdUnion
     """Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)"""
-    video: Union[InputFile, str]
+    video: InputFileUnion
     """Video to send. Pass a file_id as String to send a video that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a video from the Internet, or upload a new video using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`"""
     business_connection_id: Optional[str] = None
     """Unique identifier of the business connection on behalf of which the message will be sent"""
@@ -45,9 +44,9 @@ class SendVideo(TelegramMethod[Message]):
     """Video height"""
     thumbnail: Optional[InputFile] = None
     """Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`"""
-    cover: Optional[Union[InputFile, str]] = None
+    cover: Optional[InputFileUnion] = None
     """Cover for the video in the message. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass 'attach://<file_attach_name>' to upload a new one using multipart/form-data under <file_attach_name> name. :ref:`More information on Sending Files » <sending-files>`"""
-    start_timestamp: Optional[Union[datetime.datetime, datetime.timedelta, int]] = None
+    start_timestamp: Optional[DateTimeUnion] = None
     """Start timestamp for the video in the message"""
     caption: Optional[str] = None
     """Video caption (may also be used when resending videos by *file_id*), 0-1024 characters after entities parsing"""
@@ -71,9 +70,7 @@ class SendVideo(TelegramMethod[Message]):
     """Unique identifier of the message effect to be added to the message; for private chats only"""
     reply_parameters: Optional[ReplyParameters] = None
     """Description of the message to reply to"""
-    reply_markup: Optional[
-        Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
-    ] = None
+    reply_markup: Optional[ReplyMarkupUnion] = None
     """Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user"""
     allow_sending_without_reply: Optional[bool] = Field(
         None, json_schema_extra={"deprecated": True}
@@ -95,16 +92,16 @@ class SendVideo(TelegramMethod[Message]):
         def __init__(
             __pydantic__self__,
             *,
-            chat_id: Union[int, str],
-            video: Union[InputFile, str],
+            chat_id: ChatIdUnion,
+            video: InputFileUnion,
             business_connection_id: Optional[str] = None,
             message_thread_id: Optional[int] = None,
             duration: Optional[int] = None,
             width: Optional[int] = None,
             height: Optional[int] = None,
             thumbnail: Optional[InputFile] = None,
-            cover: Optional[Union[InputFile, str]] = None,
-            start_timestamp: Optional[Union[datetime.datetime, datetime.timedelta, int]] = None,
+            cover: Optional[InputFileUnion] = None,
+            start_timestamp: Optional[DateTimeUnion] = None,
             caption: Optional[str] = None,
             parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
             caption_entities: Optional[list[MessageEntity]] = None,
@@ -118,9 +115,7 @@ class SendVideo(TelegramMethod[Message]):
             allow_paid_broadcast: Optional[bool] = None,
             message_effect_id: Optional[str] = None,
             reply_parameters: Optional[ReplyParameters] = None,
-            reply_markup: Optional[
-                Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
-            ] = None,
+            reply_markup: Optional[ReplyMarkupUnion] = None,
             allow_sending_without_reply: Optional[bool] = None,
             reply_to_message_id: Optional[int] = None,
             **__pydantic_kwargs: Any,

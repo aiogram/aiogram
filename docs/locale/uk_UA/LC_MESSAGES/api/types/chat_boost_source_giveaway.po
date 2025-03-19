@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-16 01:15+0200\n"
+"POT-Creation-Date: 2025-03-08 02:28+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: uk_UA\n"
@@ -26,9 +26,11 @@ msgstr ""
 
 #: aiogram.types.chat_boost_source_giveaway.ChatBoostSourceGiveaway:1 of
 msgid ""
-"The boost was obtained by the creation of a Telegram Premium giveaway. "
-"This boosts the chat 4 times for the duration of the corresponding "
-"Telegram Premium subscription."
+"The boost was obtained by the creation of a Telegram Premium or a "
+"Telegram Star giveaway. This boosts the chat 4 times for the duration of "
+"the corresponding Telegram Premium subscription for Telegram Premium "
+"giveaways and *prize_star_count* / 500 times for one year for Telegram "
+"Star giveaways."
 msgstr ""
 
 #: aiogram.types.chat_boost_source_giveaway.ChatBoostSourceGiveaway:3 of
@@ -50,7 +52,17 @@ msgstr ""
 
 #: ../../docstring
 #: aiogram.types.chat_boost_source_giveaway.ChatBoostSourceGiveaway.user:1 of
-msgid "*Optional*. User that won the prize in the giveaway if any"
+msgid ""
+"*Optional*. User that won the prize in the giveaway if any; for Telegram "
+"Premium giveaways only"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.chat_boost_source_giveaway.ChatBoostSourceGiveaway.prize_star_count:1
+#: of
+msgid ""
+"*Optional*. The number of Telegram Stars to be split between giveaway "
+"winners; for Telegram Star giveaways only"
 msgstr ""
 
 #: ../../docstring
@@ -60,3 +72,14 @@ msgid ""
 "*Optional*. True, if the giveaway was completed, but there was no user to"
 " win the prize"
 msgstr ""
+
+#~ msgid ""
+#~ "The boost was obtained by the "
+#~ "creation of a Telegram Premium giveaway."
+#~ " This boosts the chat 4 times "
+#~ "for the duration of the corresponding"
+#~ " Telegram Premium subscription."
+#~ msgstr ""
+
+#~ msgid "*Optional*. User that won the prize in the giveaway if any"
+#~ msgstr ""

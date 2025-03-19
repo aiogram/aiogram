@@ -1,6 +1,10 @@
 import pytest
 
-from aiogram.utils.deep_linking import create_start_link, create_startgroup_link
+from aiogram.utils.deep_linking import (
+    create_start_link,
+    create_startapp_link,
+    create_startgroup_link,
+)
 from aiogram.utils.payload import decode_payload, encode_payload
 from tests.mocked_bot import MockedBot
 
@@ -44,6 +48,14 @@ class TestDeepLinking:
         link = await create_startgroup_link(bot, payload)
         assert link == f"https://t.me/tbot?startgroup={payload}"
 
+    async def test_get_startapp_link(self, bot: MockedBot, payload: str):
+        link = await create_startapp_link(bot, payload)
+        assert link == f"https://t.me/tbot?startapp={payload}"
+
+    async def test_get_startapp_link_with_app_name(self, bot: MockedBot, payload: str):
+        link = await create_startapp_link(bot, payload, app_name="app")
+        assert link == f"https://t.me/tbot/app?startapp={payload}"
+
     async def test_filter_encode_and_decode(self, payload: str):
         encoded = encode_payload(payload)
         decoded = decode_payload(encoded)
@@ -84,6 +96,26 @@ class TestDeepLinking:
         encoded_payload = encode_payload(wrong_payload)
 
         assert link == f"https://t.me/tbot?start={encoded_payload}"
+
+    async def test_get_startapp_link_with_encoding(self, bot: MockedBot, wrong_payload: str):
+        # define link
+        link = await create_startapp_link(bot, wrong_payload, encode=True)
+
+        # define reference link
+        encoded_payload = encode_payload(wrong_payload)
+
+        assert link == f"https://t.me/tbot?startapp={encoded_payload}"
+
+    async def test_get_startapp_link_with_app_name_and_encoding(
+        self, bot: MockedBot, wrong_payload: str
+    ):
+        # define link
+        link = await create_startapp_link(bot, wrong_payload, encode=True, app_name="app")
+
+        # define reference link
+        encoded_payload = encode_payload(wrong_payload)
+
+        assert link == f"https://t.me/tbot/app?startapp={encoded_payload}"
 
     async def test_64_len_payload(self, bot: MockedBot):
         payload = "p" * 64

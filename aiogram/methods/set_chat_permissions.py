@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional, Union
+from typing import TYPE_CHECKING, Any, Optional
 
-from ..types import ChatPermissions
+from ..types import ChatIdUnion, ChatPermissions
 from .base import TelegramMethod
 
 
@@ -16,7 +16,7 @@ class SetChatPermissions(TelegramMethod[bool]):
     __returning__ = bool
     __api_method__ = "setChatPermissions"
 
-    chat_id: Union[int, str]
+    chat_id: ChatIdUnion
     """Unique identifier for the target chat or username of the target supergroup (in the format :code:`@supergroupusername`)"""
     permissions: ChatPermissions
     """A JSON-serialized object for new default chat permissions"""
@@ -30,7 +30,7 @@ class SetChatPermissions(TelegramMethod[bool]):
         def __init__(
             __pydantic__self__,
             *,
-            chat_id: Union[int, str],
+            chat_id: ChatIdUnion,
             permissions: ChatPermissions,
             use_independent_chat_permissions: Optional[bool] = None,
             **__pydantic_kwargs: Any,

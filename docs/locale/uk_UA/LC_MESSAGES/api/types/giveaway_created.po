@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-16 01:15+0200\n"
+"POT-Creation-Date: 2025-03-08 02:28+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: uk_UA\n"
@@ -27,9 +27,22 @@ msgstr ""
 #: aiogram.types.giveaway_created.GiveawayCreated:1 of
 msgid ""
 "This object represents a service message about the creation of a "
-"scheduled giveaway. Currently holds no information."
+"scheduled giveaway."
 msgstr ""
 
 #: aiogram.types.giveaway_created.GiveawayCreated:3 of
 msgid "Source: https://core.telegram.org/bots/api#giveawaycreated"
 msgstr ""
+
+#: ../../docstring
+#: aiogram.types.giveaway_created.GiveawayCreated.prize_star_count:1 of
+msgid ""
+"*Optional*. The number of Telegram Stars to be split between giveaway "
+"winners; for Telegram Star giveaways only"
+msgstr ""
+
+#~ msgid ""
+#~ "This object represents a service message"
+#~ " about the creation of a scheduled"
+#~ " giveaway. Currently holds no information."
+#~ msgstr ""

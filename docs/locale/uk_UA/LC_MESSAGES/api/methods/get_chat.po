@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-16 01:15+0200\n"
+"POT-Creation-Date: 2025-03-08 02:28+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,13 +22,13 @@ msgid "getChat"
 msgstr ""
 
 #: ../../api/methods/get_chat.rst:5
-msgid "Returns: :obj:`Chat`"
+msgid "Returns: :obj:`ChatFullInfo`"
 msgstr ""
 
 #: aiogram.methods.get_chat.GetChat:1 of
 msgid ""
-"Use this method to get up to date information about the chat. Returns a "
-":class:`aiogram.types.chat.Chat` object on success."
+"Use this method to get up-to-date information about the chat. Returns a "
+":class:`aiogram.types.chat_full_info.ChatFullInfo` object on success."
 msgstr ""
 
 #: aiogram.methods.get_chat.GetChat:3 of
@@ -77,4 +77,14 @@ msgstr ""
 #~ " a user, group or channel, etc.). "
 #~ "Returns a :class:`aiogram.types.chat.Chat` object"
 #~ " on success."
+#~ msgstr ""
+
+#~ msgid "Returns: :obj:`Chat`"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Use this method to get up to "
+#~ "date information about the chat. Returns"
+#~ " a :class:`aiogram.types.chat.Chat` object on "
+#~ "success."
 #~ msgstr ""

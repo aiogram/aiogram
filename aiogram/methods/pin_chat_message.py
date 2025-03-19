@@ -1,7 +1,8 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional, Union
+from typing import TYPE_CHECKING, Any, Optional
 
+from ..types import ChatIdUnion
 from .base import TelegramMethod
 
 
@@ -15,7 +16,7 @@ class PinChatMessage(TelegramMethod[bool]):
     __returning__ = bool
     __api_method__ = "pinChatMessage"
 
-    chat_id: Union[int, str]
+    chat_id: ChatIdUnion
     """Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)"""
     message_id: int
     """Identifier of a message to pin"""
@@ -31,7 +32,7 @@ class PinChatMessage(TelegramMethod[bool]):
         def __init__(
             __pydantic__self__,
             *,
-            chat_id: Union[int, str],
+            chat_id: ChatIdUnion,
             message_id: int,
             business_connection_id: Optional[str] = None,
             disable_notification: Optional[bool] = None,

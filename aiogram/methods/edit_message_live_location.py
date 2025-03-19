@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Optional, Union
 
-from ..types import InlineKeyboardMarkup, Message
+from ..types import ChatIdUnion, InlineKeyboardMarkup, Message
 from .base import TelegramMethod
 
 
@@ -22,7 +22,7 @@ class EditMessageLiveLocation(TelegramMethod[Union[Message, bool]]):
     """Longitude of new location"""
     business_connection_id: Optional[str] = None
     """Unique identifier of the business connection on behalf of which the message to be edited was sent"""
-    chat_id: Optional[Union[int, str]] = None
+    chat_id: Optional[ChatIdUnion] = None
     """Required if *inline_message_id* is not specified. Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)"""
     message_id: Optional[int] = None
     """Required if *inline_message_id* is not specified. Identifier of the message to edit"""
@@ -49,7 +49,7 @@ class EditMessageLiveLocation(TelegramMethod[Union[Message, bool]]):
             latitude: float,
             longitude: float,
             business_connection_id: Optional[str] = None,
-            chat_id: Optional[Union[int, str]] = None,
+            chat_id: Optional[ChatIdUnion] = None,
             message_id: Optional[int] = None,
             inline_message_id: Optional[str] = None,
             live_period: Optional[int] = None,

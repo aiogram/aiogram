@@ -1,6 +1,8 @@
-from typing import TYPE_CHECKING, Any, Union
+from typing import TYPE_CHECKING, Any
 
 from aiogram.methods import TelegramMethod
+
+from ..types import ChatIdUnion
 
 
 class UnpinAllGeneralForumTopicMessages(TelegramMethod[bool]):
@@ -13,7 +15,7 @@ class UnpinAllGeneralForumTopicMessages(TelegramMethod[bool]):
     __returning__ = bool
     __api_method__ = "unpinAllGeneralForumTopicMessages"
 
-    chat_id: Union[int, str]
+    chat_id: ChatIdUnion
     """Unique identifier for the target chat or username of the target supergroup (in the format :code:`@supergroupusername`)"""
 
     if TYPE_CHECKING:
@@ -21,7 +23,7 @@ class UnpinAllGeneralForumTopicMessages(TelegramMethod[bool]):
         # This section was auto-generated via `butcher`
 
         def __init__(
-            __pydantic__self__, *, chat_id: Union[int, str], **__pydantic_kwargs: Any
+            __pydantic__self__, *, chat_id: ChatIdUnion, **__pydantic_kwargs: Any
         ) -> None:
             # DO NOT EDIT MANUALLY!!!
             # This method was auto-generated via `butcher`

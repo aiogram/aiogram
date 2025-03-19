@@ -1,18 +1,16 @@
 from __future__ import annotations
 
-import datetime
 from typing import TYPE_CHECKING, Any, Optional, Union
 
 from pydantic import Field
 
 from ..client.default import Default
 from ..types import (
-    ForceReply,
-    InlineKeyboardMarkup,
+    ChatIdUnion,
+    DateTimeUnion,
     MessageEntity,
     MessageId,
-    ReplyKeyboardMarkup,
-    ReplyKeyboardRemove,
+    ReplyMarkupUnion,
     ReplyParameters,
 )
 from .base import TelegramMethod
@@ -28,15 +26,15 @@ class CopyMessage(TelegramMethod[MessageId]):
     __returning__ = MessageId
     __api_method__ = "copyMessage"
 
-    chat_id: Union[int, str]
+    chat_id: ChatIdUnion
     """Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)"""
-    from_chat_id: Union[int, str]
+    from_chat_id: ChatIdUnion
     """Unique identifier for the chat where the original message was sent (or channel username in the format :code:`@channelusername`)"""
     message_id: int
     """Message identifier in the chat specified in *from_chat_id*"""
     message_thread_id: Optional[int] = None
     """Unique identifier for the target message thread (topic) of the forum; for forum supergroups only"""
-    video_start_timestamp: Optional[Union[datetime.datetime, datetime.timedelta, int]] = None
+    video_start_timestamp: Optional[DateTimeUnion] = None
     """New start timestamp for the copied video in the message"""
     caption: Optional[str] = None
     """New caption for media, 0-1024 characters after entities parsing. If not specified, the original caption is kept"""
@@ -54,9 +52,7 @@ class CopyMessage(TelegramMethod[MessageId]):
     """Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance"""
     reply_parameters: Optional[ReplyParameters] = None
     """Description of the message to reply to"""
-    reply_markup: Optional[
-        Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
-    ] = None
+    reply_markup: Optional[ReplyMarkupUnion] = None
     """Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user"""
     allow_sending_without_reply: Optional[bool] = Field(
         None, json_schema_extra={"deprecated": True}
@@ -78,13 +74,11 @@ class CopyMessage(TelegramMethod[MessageId]):
         def __init__(
             __pydantic__self__,
             *,
-            chat_id: Union[int, str],
-            from_chat_id: Union[int, str],
+            chat_id: ChatIdUnion,
+            from_chat_id: ChatIdUnion,
             message_id: int,
             message_thread_id: Optional[int] = None,
-            video_start_timestamp: Optional[
-                Union[datetime.datetime, datetime.timedelta, int]
-            ] = None,
+            video_start_timestamp: Optional[DateTimeUnion] = None,
             caption: Optional[str] = None,
             parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
             caption_entities: Optional[list[MessageEntity]] = None,
@@ -95,9 +89,7 @@ class CopyMessage(TelegramMethod[MessageId]):
             protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
             allow_paid_broadcast: Optional[bool] = None,
             reply_parameters: Optional[ReplyParameters] = None,
-            reply_markup: Optional[
-                Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, ForceReply]
-            ] = None,
+            reply_markup: Optional[ReplyMarkupUnion] = None,
             allow_sending_without_reply: Optional[bool] = None,
             reply_to_message_id: Optional[int] = None,
             **__pydantic_kwargs: Any,

@@ -1,18 +1,8 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Union
+from typing import TYPE_CHECKING, Any
 
-from ..types import (
-    PassportElementErrorDataField,
-    PassportElementErrorFile,
-    PassportElementErrorFiles,
-    PassportElementErrorFrontSide,
-    PassportElementErrorReverseSide,
-    PassportElementErrorSelfie,
-    PassportElementErrorTranslationFile,
-    PassportElementErrorTranslationFiles,
-    PassportElementErrorUnspecified,
-)
+from ..types import PassportElementErrorUnion
 from .base import TelegramMethod
 
 
@@ -29,19 +19,7 @@ class SetPassportDataErrors(TelegramMethod[bool]):
 
     user_id: int
     """User identifier"""
-    errors: list[
-        Union[
-            PassportElementErrorDataField,
-            PassportElementErrorFrontSide,
-            PassportElementErrorReverseSide,
-            PassportElementErrorSelfie,
-            PassportElementErrorFile,
-            PassportElementErrorFiles,
-            PassportElementErrorTranslationFile,
-            PassportElementErrorTranslationFiles,
-            PassportElementErrorUnspecified,
-        ]
-    ]
+    errors: list[PassportElementErrorUnion]
     """A JSON-serialized array describing the errors"""
 
     if TYPE_CHECKING:
@@ -52,19 +30,7 @@ class SetPassportDataErrors(TelegramMethod[bool]):
             __pydantic__self__,
             *,
             user_id: int,
-            errors: list[
-                Union[
-                    PassportElementErrorDataField,
-                    PassportElementErrorFrontSide,
-                    PassportElementErrorReverseSide,
-                    PassportElementErrorSelfie,
-                    PassportElementErrorFile,
-                    PassportElementErrorFiles,
-                    PassportElementErrorTranslationFile,
-                    PassportElementErrorTranslationFiles,
-                    PassportElementErrorUnspecified,
-                ]
-            ],
+            errors: list[PassportElementErrorUnion],
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

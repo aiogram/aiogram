@@ -20,6 +20,10 @@ from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State
 from aiogram.fsm.storage.memory import MemoryStorageRecord
 from aiogram.types import TelegramObject, Update
+from aiogram.utils.class_attrs_resolver import (
+    ClassAttrsResolver,
+    get_sorted_mro_attrs_resolver,
+)
 
 
 class HistoryManager:
@@ -214,6 +218,15 @@ class SceneConfig:
     """Reset scene history on enter"""
     callback_query_without_state: Optional[bool] = None
     """Allow callback query without state"""
+    attrs_resolver: ClassAttrsResolver = get_sorted_mro_attrs_resolver
+    """
+    Attributes resolver.
+
+    .. danger::
+        This attribute should only be changed when you know what you are doing.
+
+    .. versionadded:: 3.19.0
+    """
 
 
 async def _empty_handler(*args: Any, **kwargs: Any) -> None:
@@ -302,6 +315,7 @@ class Scene:
         reset_data_on_enter = kwargs.pop("reset_data_on_enter", None)
         reset_history_on_enter = kwargs.pop("reset_history_on_enter", None)
         callback_query_without_state = kwargs.pop("callback_query_without_state", None)
+        attrs_resolver = kwargs.pop("attrs_resolver", None)
 
         super().__init_subclass__(**kwargs)
 
@@ -322,8 +336,13 @@ class Scene:
                 reset_history_on_enter = parent_scene_config.reset_history_on_enter
             if callback_query_without_state is None:
                 callback_query_without_state = parent_scene_config.callback_query_without_state
+            if attrs_resolver is None:
+                attrs_resolver = parent_scene_config.attrs_resolver
 
-        for name, value in inspect.getmembers(cls):
+        if attrs_resolver is None:
+            attrs_resolver = get_sorted_mro_attrs_resolver
+
+        for name, value in attrs_resolver(cls):
             if scene_handlers := getattr(value, "__aiogram_handler__", None):
                 handlers.extend(scene_handlers)
             if isinstance(value, ObserverDecorator):
@@ -346,6 +365,7 @@ class Scene:
             reset_data_on_enter=reset_data_on_enter,
             reset_history_on_enter=reset_history_on_enter,
             callback_query_without_state=callback_query_without_state,
+            attrs_resolver=attrs_resolver,
         )
 
     @classmethod

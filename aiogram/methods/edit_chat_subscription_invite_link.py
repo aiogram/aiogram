@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional, Union
+from typing import TYPE_CHECKING, Any, Optional
 
-from ..types import ChatInviteLink
+from ..types import ChatIdUnion, ChatInviteLink
 from .base import TelegramMethod
 
 
@@ -16,7 +16,7 @@ class EditChatSubscriptionInviteLink(TelegramMethod[ChatInviteLink]):
     __returning__ = ChatInviteLink
     __api_method__ = "editChatSubscriptionInviteLink"
 
-    chat_id: Union[int, str]
+    chat_id: ChatIdUnion
     """Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)"""
     invite_link: str
     """The invite link to edit"""
@@ -30,7 +30,7 @@ class EditChatSubscriptionInviteLink(TelegramMethod[ChatInviteLink]):
         def __init__(
             __pydantic__self__,
             *,
-            chat_id: Union[int, str],
+            chat_id: ChatIdUnion,
             invite_link: str,
             name: Optional[str] = None,
             **__pydantic_kwargs: Any,

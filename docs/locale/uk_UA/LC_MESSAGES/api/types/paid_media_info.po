@@ -1,0 +1,41 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2025, aiogram Team
+# This file is distributed under the same license as the aiogram package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: aiogram \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-03-08 02:28+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: uk_UA\n"
+"Language-Team: uk_UA <LL@li.org>\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.13.1\n"
+
+#: ../../api/types/paid_media_info.rst:3
+msgid "PaidMediaInfo"
+msgstr ""
+
+#: aiogram.types.paid_media_info.PaidMediaInfo:1 of
+msgid "Describes the paid media added to a message."
+msgstr ""
+
+#: aiogram.types.paid_media_info.PaidMediaInfo:3 of
+msgid "Source: https://core.telegram.org/bots/api#paidmediainfo"
+msgstr ""
+
+#: ../../docstring aiogram.types.paid_media_info.PaidMediaInfo.star_count:1 of
+msgid "The number of Telegram Stars that must be paid to buy access to the media"
+msgstr ""
+
+#: ../../docstring aiogram.types.paid_media_info.PaidMediaInfo.paid_media:1 of
+msgid "Information about the paid media"
+msgstr ""

@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Union
+from typing import TYPE_CHECKING, Any
 
-from ..types import InputFile
+from ..types import ChatIdUnion, InputFile
 from .base import TelegramMethod
 
 
@@ -16,7 +16,7 @@ class SetChatPhoto(TelegramMethod[bool]):
     __returning__ = bool
     __api_method__ = "setChatPhoto"
 
-    chat_id: Union[int, str]
+    chat_id: ChatIdUnion
     """Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)"""
     photo: InputFile
     """New chat photo, uploaded using multipart/form-data"""
@@ -26,11 +26,7 @@ class SetChatPhoto(TelegramMethod[bool]):
         # This section was auto-generated via `butcher`
 
         def __init__(
-            __pydantic__self__,
-            *,
-            chat_id: Union[int, str],
-            photo: InputFile,
-            **__pydantic_kwargs: Any,
+            __pydantic__self__, *, chat_id: ChatIdUnion, photo: InputFile, **__pydantic_kwargs: Any
         ) -> None:
             # DO NOT EDIT MANUALLY!!!
             # This method was auto-generated via `butcher`

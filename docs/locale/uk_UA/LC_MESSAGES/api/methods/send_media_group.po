@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-16 01:15+0200\n"
+"POT-Creation-Date: 2025-03-08 02:28+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,7 +22,7 @@ msgid "sendMediaGroup"
 msgstr ""
 
 #: ../../api/methods/send_media_group.rst:5
-msgid "Returns: :obj:`List[Message]`"
+msgid "Returns: :obj:`list[Message]`"
 msgstr ""
 
 #: aiogram.methods.send_media_group.SendMediaGroup:1 of
@@ -51,6 +51,13 @@ msgid ""
 msgstr ""
 
 #: ../../docstring
+#: aiogram.methods.send_media_group.SendMediaGroup.business_connection_id:1 of
+msgid ""
+"Unique identifier of the business connection on behalf of which the "
+"message will be sent"
+msgstr ""
+
+#: ../../docstring
 #: aiogram.methods.send_media_group.SendMediaGroup.message_thread_id:1 of
 msgid ""
 "Unique identifier for the target message thread (topic) of the forum; for"
@@ -67,6 +74,23 @@ msgstr ""
 #: ../../docstring
 #: aiogram.methods.send_media_group.SendMediaGroup.protect_content:1 of
 msgid "Protects the contents of the sent messages from forwarding and saving"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.send_media_group.SendMediaGroup.allow_paid_broadcast:1 of
+msgid ""
+"Pass :code:`True` to allow up to 1000 messages per second, ignoring "
+"`broadcasting limits <https://core.telegram.org/bots/faq#how-can-i"
+"-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 "
+"Telegram Stars per message. The relevant Stars will be withdrawn from the"
+" bot's balance"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.send_media_group.SendMediaGroup.message_effect_id:1 of
+msgid ""
+"Unique identifier of the message effect to be added to the message; for "
+"private chats only"
 msgstr ""
 
 #: ../../docstring
@@ -148,3 +172,14 @@ msgstr ""
 #: ../../api/methods/send_media_group.rst:55
 msgid ":meth:`aiogram.types.chat_member_updated.ChatMemberUpdated.answer_media_group`"
 msgstr ""
+
+#: ../../api/methods/send_media_group.rst:56
+msgid ":meth:`aiogram.types.inaccessible_message.InaccessibleMessage.answer_media_group`"
+msgstr ""
+
+#: ../../api/methods/send_media_group.rst:57
+msgid ":meth:`aiogram.types.inaccessible_message.InaccessibleMessage.reply_media_group`"
+msgstr ""
+
+#~ msgid "Returns: :obj:`List[Message]`"
+#~ msgstr ""

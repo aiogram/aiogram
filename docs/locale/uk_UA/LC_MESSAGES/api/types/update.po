@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-16 01:15+0200\n"
+"POT-Creation-Date: 2025-03-08 02:28+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -40,8 +40,8 @@ msgstr ""
 #: ../../docstring aiogram.types.update.Update.update_id:1 of
 msgid ""
 "The update's unique identifier. Update identifiers start from a certain "
-"positive number and increase sequentially. This ID becomes especially "
-"handy if you're using `webhooks "
+"positive number and increase sequentially. This identifier becomes "
+"especially handy if you're using `webhooks "
 "<https://core.telegram.org/bots/api#setwebhook>`_, since it allows you to"
 " ignore repeated updates or to restore the correct update sequence, "
 "should they get out of order. If there are no new updates for at least a "
@@ -56,7 +56,8 @@ msgstr ""
 #: ../../docstring aiogram.types.update.Update.edited_message:1 of
 msgid ""
 "*Optional*. New version of a message that is known to the bot and was "
-"edited"
+"edited. This update may at times be triggered by changes to message "
+"fields that are either unavailable or not actively used by your bot."
 msgstr ""
 
 #: ../../docstring aiogram.types.update.Update.channel_post:1 of
@@ -68,7 +69,26 @@ msgstr ""
 #: ../../docstring aiogram.types.update.Update.edited_channel_post:1 of
 msgid ""
 "*Optional*. New version of a channel post that is known to the bot and "
-"was edited"
+"was edited. This update may at times be triggered by changes to message "
+"fields that are either unavailable or not actively used by your bot."
+msgstr ""
+
+#: ../../docstring aiogram.types.update.Update.business_connection:1 of
+msgid ""
+"*Optional*. The bot was connected to or disconnected from a business "
+"account, or a user edited an existing connection with the bot"
+msgstr ""
+
+#: ../../docstring aiogram.types.update.Update.business_message:1 of
+msgid "*Optional*. New message from a connected business account"
+msgstr ""
+
+#: ../../docstring aiogram.types.update.Update.edited_business_message:1 of
+msgid "*Optional*. New version of a message from a connected business account"
+msgstr ""
+
+#: ../../docstring aiogram.types.update.Update.deleted_business_messages:1 of
+msgid "*Optional*. Messages were deleted from a connected business account"
 msgstr ""
 
 #: ../../docstring aiogram.types.update.Update.message_reaction:1 of
@@ -84,7 +104,8 @@ msgid ""
 "*Optional*. Reactions to a message with anonymous reactions were changed."
 " The bot must be an administrator in the chat and must explicitly specify"
 " :code:`\"message_reaction_count\"` in the list of *allowed_updates* to "
-"receive these updates."
+"receive these updates. The updates are grouped and can be sent with delay"
+" up to a few minutes."
 msgstr ""
 
 #: ../../docstring aiogram.types.update.Update.inline_query:1 of
@@ -118,10 +139,16 @@ msgid ""
 "about checkout"
 msgstr ""
 
+#: ../../docstring aiogram.types.update.Update.purchased_paid_media:1 of
+msgid ""
+"*Optional*. A user purchased paid media with a non-empty payload sent by "
+"the bot in a non-channel chat"
+msgstr ""
+
 #: ../../docstring aiogram.types.update.Update.poll:1 of
 msgid ""
-"*Optional*. New poll state. Bots receive only updates about stopped polls"
-" and polls, which are sent by the bot"
+"*Optional*. New poll state. Bots receive only updates about manually "
+"stopped polls and polls, which are sent by the bot"
 msgstr ""
 
 #: ../../docstring aiogram.types.update.Update.poll_answer:1 of
@@ -168,7 +195,7 @@ msgstr ""
 msgid "Detect update type If update type is unknown, raise UpdateTypeLookupError"
 msgstr ""
 
-#: aiogram.types.update.Update.event_type of
+#: ../../api/types/update.rst
 msgid "Returns"
 msgstr ""
 
@@ -183,4 +210,50 @@ msgstr ""
 #~ "chat and must explicitly specify "
 #~ "'chat_member' in the list of "
 #~ "*allowed_updates* to receive these updates."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "The update's unique identifier. Update "
+#~ "identifiers start from a certain "
+#~ "positive number and increase sequentially. "
+#~ "This ID becomes especially handy if "
+#~ "you're using `webhooks "
+#~ "<https://core.telegram.org/bots/api#setwebhook>`_, since "
+#~ "it allows you to ignore repeated "
+#~ "updates or to restore the correct "
+#~ "update sequence, should they get out "
+#~ "of order. If there are no new "
+#~ "updates for at least a week, then"
+#~ " identifier of the next update will"
+#~ " be chosen randomly instead of "
+#~ "sequentially."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "*Optional*. New version of a message "
+#~ "that is known to the bot and "
+#~ "was edited"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "*Optional*. New version of a channel "
+#~ "post that is known to the bot "
+#~ "and was edited"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "*Optional*. Reactions to a message with"
+#~ " anonymous reactions were changed. The "
+#~ "bot must be an administrator in "
+#~ "the chat and must explicitly specify "
+#~ ":code:`\"message_reaction_count\"` in the list "
+#~ "of *allowed_updates* to receive these "
+#~ "updates."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "*Optional*. New poll state. Bots receive"
+#~ " only updates about stopped polls and"
+#~ " polls, which are sent by the "
+#~ "bot"
 #~ msgstr ""

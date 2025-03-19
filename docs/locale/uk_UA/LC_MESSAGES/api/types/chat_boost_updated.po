@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-16 01:15+0200\n"
+"POT-Creation-Date: 2025-03-08 02:28+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: uk_UA\n"
@@ -37,5 +37,8 @@ msgid "Chat which was boosted"
 msgstr ""
 
 #: ../../docstring aiogram.types.chat_boost_updated.ChatBoostUpdated.boost:1 of
-msgid "Infomation about the chat boost"
+msgid "Information about the chat boost"
 msgstr ""
+
+#~ msgid "Infomation about the chat boost"
+#~ msgstr ""

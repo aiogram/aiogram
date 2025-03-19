@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-16 01:15+0200\n"
+"POT-Creation-Date: 2025-03-08 02:28+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -59,6 +59,11 @@ msgstr ""
 msgid ""
 "Unique identifier for the target message thread (topic) of the forum; for"
 " forum supergroups only"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.forward_message.ForwardMessage.video_start_timestamp:1 of
+msgid "New start timestamp for the forwarded video in the message"
 msgstr ""
 
 #: ../../docstring

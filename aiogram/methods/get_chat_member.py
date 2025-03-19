@@ -1,47 +1,22 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Union
+from typing import TYPE_CHECKING, Any
 
-from ..types import (
-    ChatMemberAdministrator,
-    ChatMemberBanned,
-    ChatMemberLeft,
-    ChatMemberMember,
-    ChatMemberOwner,
-    ChatMemberRestricted,
-)
+from ..types import ChatIdUnion, ResultChatMemberUnion
 from .base import TelegramMethod
 
 
-class GetChatMember(
-    TelegramMethod[
-        Union[
-            ChatMemberOwner,
-            ChatMemberAdministrator,
-            ChatMemberMember,
-            ChatMemberRestricted,
-            ChatMemberLeft,
-            ChatMemberBanned,
-        ]
-    ]
-):
+class GetChatMember(TelegramMethod[ResultChatMemberUnion]):
     """
     Use this method to get information about a member of a chat. The method is only guaranteed to work for other users if the bot is an administrator in the chat. Returns a :class:`aiogram.types.chat_member.ChatMember` object on success.
 
     Source: https://core.telegram.org/bots/api#getchatmember
     """
 
-    __returning__ = Union[
-        ChatMemberOwner,
-        ChatMemberAdministrator,
-        ChatMemberMember,
-        ChatMemberRestricted,
-        ChatMemberLeft,
-        ChatMemberBanned,
-    ]
+    __returning__ = ResultChatMemberUnion
     __api_method__ = "getChatMember"
 
-    chat_id: Union[int, str]
+    chat_id: ChatIdUnion
     """Unique identifier for the target chat or username of the target supergroup or channel (in the format :code:`@channelusername`)"""
     user_id: int
     """Unique identifier of the target user"""
@@ -51,7 +26,7 @@ class GetChatMember(
         # This section was auto-generated via `butcher`
 
         def __init__(
-            __pydantic__self__, *, chat_id: Union[int, str], user_id: int, **__pydantic_kwargs: Any
+            __pydantic__self__, *, chat_id: ChatIdUnion, user_id: int, **__pydantic_kwargs: Any
         ) -> None:
             # DO NOT EDIT MANUALLY!!!
             # This method was auto-generated via `butcher`

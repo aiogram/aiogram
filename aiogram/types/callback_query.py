@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional, Union
+from typing import TYPE_CHECKING, Any, Optional
 
 from pydantic import Field
 
@@ -8,8 +8,7 @@ from .base import TelegramObject
 
 if TYPE_CHECKING:
     from ..methods import AnswerCallbackQuery
-    from .inaccessible_message import InaccessibleMessage
-    from .message import Message
+    from .maybe_inaccessible_message_union import MaybeInaccessibleMessageUnion
     from .user import User
 
 
@@ -28,7 +27,7 @@ class CallbackQuery(TelegramObject):
     """Sender"""
     chat_instance: str
     """Global identifier, uniquely corresponding to the chat to which the message with the callback button was sent. Useful for high scores in :class:`aiogram.methods.games.Games`."""
-    message: Optional[Union[Message, InaccessibleMessage]] = None
+    message: Optional[MaybeInaccessibleMessageUnion] = None
     """*Optional*. Message sent by the bot with the callback button that originated the query"""
     inline_message_id: Optional[str] = None
     """*Optional*. Identifier of the message sent via the bot in inline mode, that originated the query."""
@@ -47,7 +46,7 @@ class CallbackQuery(TelegramObject):
             id: str,
             from_user: User,
             chat_instance: str,
-            message: Optional[Union[Message, InaccessibleMessage]] = None,
+            message: Optional[MaybeInaccessibleMessageUnion] = None,
             inline_message_id: Optional[str] = None,
             data: Optional[str] = None,
             game_short_name: Optional[str] = None,

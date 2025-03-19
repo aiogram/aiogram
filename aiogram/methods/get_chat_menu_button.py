@@ -1,21 +1,19 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional, Union
+from typing import TYPE_CHECKING, Any, Optional
 
-from ..types import MenuButtonCommands, MenuButtonDefault, MenuButtonWebApp
+from ..types import ResultMenuButtonUnion
 from .base import TelegramMethod
 
 
-class GetChatMenuButton(
-    TelegramMethod[Union[MenuButtonDefault, MenuButtonWebApp, MenuButtonCommands]]
-):
+class GetChatMenuButton(TelegramMethod[ResultMenuButtonUnion]):
     """
     Use this method to get the current value of the bot's menu button in a private chat, or the default menu button. Returns :class:`aiogram.types.menu_button.MenuButton` on success.
 
     Source: https://core.telegram.org/bots/api#getchatmenubutton
     """
 
-    __returning__ = Union[MenuButtonDefault, MenuButtonWebApp, MenuButtonCommands]
+    __returning__ = ResultMenuButtonUnion
     __api_method__ = "getChatMenuButton"
 
     chat_id: Optional[int] = None

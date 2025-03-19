@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-16 01:15+0200\n"
+"POT-Creation-Date: 2025-03-08 02:28+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -54,6 +54,13 @@ msgid ""
 "files>`"
 msgstr ""
 
+#: ../../docstring
+#: aiogram.methods.send_video.SendVideo.business_connection_id:1 of
+msgid ""
+"Unique identifier of the business connection on behalf of which the "
+"message will be sent"
+msgstr ""
+
 #: ../../docstring aiogram.methods.send_video.SendVideo.message_thread_id:1 of
 msgid ""
 "Unique identifier for the target message thread (topic) of the forum; for"
@@ -84,6 +91,20 @@ msgid ""
 "information on Sending Files » <sending-files>`"
 msgstr ""
 
+#: ../../docstring aiogram.methods.send_video.SendVideo.cover:1 of
+msgid ""
+"Cover for the video in the message. Pass a file_id to send a file that "
+"exists on the Telegram servers (recommended), pass an HTTP URL for "
+"Telegram to get a file from the Internet, or pass "
+"'attach://<file_attach_name>' to upload a new one using multipart/form-"
+"data under <file_attach_name> name. :ref:`More information on Sending "
+"Files » <sending-files>`"
+msgstr ""
+
+#: ../../docstring aiogram.methods.send_video.SendVideo.start_timestamp:1 of
+msgid "Start timestamp for the video in the message"
+msgstr ""
+
 #: ../../docstring aiogram.methods.send_video.SendVideo.caption:1 of
 msgid ""
 "Video caption (may also be used when resending videos by *file_id*), "
@@ -101,6 +122,11 @@ msgstr ""
 msgid ""
 "A JSON-serialized list of special entities that appear in the caption, "
 "which can be specified instead of *parse_mode*"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.send_video.SendVideo.show_caption_above_media:1 of
+msgid "Pass :code:`True`, if the caption must be shown above the message media"
 msgstr ""
 
 #: ../../docstring aiogram.methods.send_video.SendVideo.has_spoiler:1 of
@@ -124,6 +150,22 @@ msgstr ""
 msgid "Protects the contents of the sent message from forwarding and saving"
 msgstr ""
 
+#: ../../docstring aiogram.methods.send_video.SendVideo.allow_paid_broadcast:1
+#: of
+msgid ""
+"Pass :code:`True` to allow up to 1000 messages per second, ignoring "
+"`broadcasting limits <https://core.telegram.org/bots/faq#how-can-i"
+"-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 "
+"Telegram Stars per message. The relevant Stars will be withdrawn from the"
+" bot's balance"
+msgstr ""
+
+#: ../../docstring aiogram.methods.send_video.SendVideo.message_effect_id:1 of
+msgid ""
+"Unique identifier of the message effect to be added to the message; for "
+"private chats only"
+msgstr ""
+
 #: ../../docstring aiogram.methods.send_video.SendVideo.reply_parameters:1 of
 msgid "Description of the message to reply to"
 msgstr ""
@@ -134,7 +176,7 @@ msgid ""
 "keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, "
 "`custom reply keyboard "
 "<https://core.telegram.org/bots/features#keyboards>`_, instructions to "
-"remove reply keyboard or to force a reply from the user."
+"remove a reply keyboard or to force a reply from the user"
 msgstr ""
 
 #: ../../docstring
@@ -211,6 +253,14 @@ msgstr ""
 msgid ":meth:`aiogram.types.chat_member_updated.ChatMemberUpdated.answer_video`"
 msgstr ""
 
+#: ../../api/methods/send_video.rst:56
+msgid ":meth:`aiogram.types.inaccessible_message.InaccessibleMessage.answer_video`"
+msgstr ""
+
+#: ../../api/methods/send_video.rst:57
+msgid ":meth:`aiogram.types.inaccessible_message.InaccessibleMessage.reply_video`"
+msgstr ""
+
 #~ msgid ""
 #~ "Additional interface options. A JSON-"
 #~ "serialized object for an `inline "
@@ -220,4 +270,15 @@ msgstr ""
 #~ "<https://core.telegram.org/bots#keyboards>`_, instructions "
 #~ "to remove reply keyboard or to "
 #~ "force a reply from the user."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Additional interface options. A JSON-"
+#~ "serialized object for an `inline "
+#~ "keyboard <https://core.telegram.org/bots/features#inline-"
+#~ "keyboards>`_, `custom reply keyboard "
+#~ "<https://core.telegram.org/bots/features#keyboards>`_, "
+#~ "instructions to remove reply keyboard or"
+#~ " to force a reply from the "
+#~ "user."
 #~ msgstr ""

@@ -1,7 +1,8 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Union
+from typing import TYPE_CHECKING, Any
 
+from ..types import ChatIdUnion
 from .base import TelegramMethod
 
 
@@ -17,7 +18,7 @@ class ExportChatInviteLink(TelegramMethod[str]):
     __returning__ = str
     __api_method__ = "exportChatInviteLink"
 
-    chat_id: Union[int, str]
+    chat_id: ChatIdUnion
     """Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)"""
 
     if TYPE_CHECKING:
@@ -25,7 +26,7 @@ class ExportChatInviteLink(TelegramMethod[str]):
         # This section was auto-generated via `butcher`
 
         def __init__(
-            __pydantic__self__, *, chat_id: Union[int, str], **__pydantic_kwargs: Any
+            __pydantic__self__, *, chat_id: ChatIdUnion, **__pydantic_kwargs: Any
         ) -> None:
             # DO NOT EDIT MANUALLY!!!
             # This method was auto-generated via `butcher`

@@ -5,7 +5,13 @@ from typing import TYPE_CHECKING, Any, Optional, Union
 from pydantic import Field
 
 from ..client.default import Default
-from ..types import InlineKeyboardMarkup, LabeledPrice, Message, ReplyParameters
+from ..types import (
+    ChatIdUnion,
+    InlineKeyboardMarkup,
+    LabeledPrice,
+    Message,
+    ReplyParameters,
+)
 from .base import TelegramMethod
 
 
@@ -19,7 +25,7 @@ class SendInvoice(TelegramMethod[Message]):
     __returning__ = Message
     __api_method__ = "sendInvoice"
 
-    chat_id: Union[int, str]
+    chat_id: ChatIdUnion
     """Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)"""
     title: str
     """Product name, 1-32 characters"""
@@ -97,7 +103,7 @@ class SendInvoice(TelegramMethod[Message]):
         def __init__(
             __pydantic__self__,
             *,
-            chat_id: Union[int, str],
+            chat_id: ChatIdUnion,
             title: str,
             description: str,
             payload: str,

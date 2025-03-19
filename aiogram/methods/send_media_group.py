@@ -5,14 +5,7 @@ from typing import TYPE_CHECKING, Any, Optional, Union
 from pydantic import Field
 
 from ..client.default import Default
-from ..types import (
-    InputMediaAudio,
-    InputMediaDocument,
-    InputMediaPhoto,
-    InputMediaVideo,
-    Message,
-    ReplyParameters,
-)
+from ..types import ChatIdUnion, MediaUnion, Message, ReplyParameters
 from .base import TelegramMethod
 
 
@@ -26,9 +19,9 @@ class SendMediaGroup(TelegramMethod[list[Message]]):
     __returning__ = list[Message]
     __api_method__ = "sendMediaGroup"
 
-    chat_id: Union[int, str]
+    chat_id: ChatIdUnion
     """Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)"""
-    media: list[Union[InputMediaAudio, InputMediaDocument, InputMediaPhoto, InputMediaVideo]]
+    media: list[MediaUnion]
     """A JSON-serialized array describing messages to be sent, must include 2-10 items"""
     business_connection_id: Optional[str] = None
     """Unique identifier of the business connection on behalf of which the message will be sent"""
@@ -64,10 +57,8 @@ class SendMediaGroup(TelegramMethod[list[Message]]):
         def __init__(
             __pydantic__self__,
             *,
-            chat_id: Union[int, str],
-            media: list[
-                Union[InputMediaAudio, InputMediaDocument, InputMediaPhoto, InputMediaVideo]
-            ],
+            chat_id: ChatIdUnion,
+            media: list[MediaUnion],
             business_connection_id: Optional[str] = None,
             message_thread_id: Optional[int] = None,
             disable_notification: Optional[bool] = None,

@@ -1,17 +1,13 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Literal, Optional, Union
+from typing import TYPE_CHECKING, Any, Literal, Optional
 
 from ..enums import InlineQueryResultType
 from .inline_query_result import InlineQueryResult
 
 if TYPE_CHECKING:
     from .inline_keyboard_markup import InlineKeyboardMarkup
-    from .input_contact_message_content import InputContactMessageContent
-    from .input_invoice_message_content import InputInvoiceMessageContent
-    from .input_location_message_content import InputLocationMessageContent
-    from .input_text_message_content import InputTextMessageContent
-    from .input_venue_message_content import InputVenueMessageContent
+    from .input_message_content_union import InputMessageContentUnion
 
 
 class InlineQueryResultVenue(InlineQueryResult):
@@ -43,15 +39,7 @@ class InlineQueryResultVenue(InlineQueryResult):
     """*Optional*. Google Places type of the venue. (See `supported types <https://developers.google.com/places/web-service/supported_types>`_.)"""
     reply_markup: Optional[InlineKeyboardMarkup] = None
     """*Optional*. `Inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_ attached to the message"""
-    input_message_content: Optional[
-        Union[
-            InputTextMessageContent,
-            InputLocationMessageContent,
-            InputVenueMessageContent,
-            InputContactMessageContent,
-            InputInvoiceMessageContent,
-        ]
-    ] = None
+    input_message_content: Optional[InputMessageContentUnion] = None
     """*Optional*. Content of the message to be sent instead of the venue"""
     thumbnail_url: Optional[str] = None
     """*Optional*. Url of the thumbnail for the result"""
@@ -78,15 +66,7 @@ class InlineQueryResultVenue(InlineQueryResult):
             google_place_id: Optional[str] = None,
             google_place_type: Optional[str] = None,
             reply_markup: Optional[InlineKeyboardMarkup] = None,
-            input_message_content: Optional[
-                Union[
-                    InputTextMessageContent,
-                    InputLocationMessageContent,
-                    InputVenueMessageContent,
-                    InputContactMessageContent,
-                    InputInvoiceMessageContent,
-                ]
-            ] = None,
+            input_message_content: Optional[InputMessageContentUnion] = None,
             thumbnail_url: Optional[str] = None,
             thumbnail_width: Optional[int] = None,
             thumbnail_height: Optional[int] = None,
