@@ -200,7 +200,6 @@ class TestNode:
         assert "text_entities" in result
         assert "text_parse_mode" in result
 
-
     def test_as_html(self):
         node = Text("Hello, ", Bold("World"), "!")
         assert node.as_html() == "Hello, <b>World</b>!"
