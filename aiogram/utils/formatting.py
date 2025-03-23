@@ -110,7 +110,7 @@ class Text(Iterable[NodeType]):
         parse_mode_key: str = "parse_mode",
     ) -> Dict[str, Any]:
         """
-        Render elements tree as keyword arguments for usage in the API call, for example:
+        Render element tree as keyword arguments for usage in an API call, for example:
 
         .. code-block:: python
 
@@ -131,6 +131,90 @@ class Text(Iterable[NodeType]):
         if replace_parse_mode:
             result[parse_mode_key] = None
         return result
+
+    def as_caption_kwargs(self, *, replace_parse_mode: bool = True) -> Dict[str, Any]:
+        """
+        Shortcut for :meth:`as_kwargs` for usage with API calls that take
+        ``caption`` as a parameter.
+
+        .. code-block:: python
+
+            entities = Text(...)
+            await message.answer_photo(**entities.as_caption_kwargs(), photo=phot)
+
+        :param replace_parse_mode: Will be passed to :meth:`as_kwargs`.
+        :return:
+        """
+        return self.as_kwargs(
+            text_key="caption",
+            entities_key="caption_entities",
+            replace_parse_mode=replace_parse_mode,
+        )
+
+    def as_poll_question_kwargs(self, *, replace_parse_mode: bool = True) -> Dict[str, Any]:
+        """
+        Shortcut for :meth:`as_kwargs` for usage with
+        method :class:`aiogram.methods.send_poll.SendPoll`.
+
+        .. code-block:: python
+
+            entities = Text(...)
+            await message.answer_poll(**entities.as_poll_question_kwargs(), options=options)
+
+        :param replace_parse_mode: Will be passed to :meth:`as_kwargs`.
+        :return:
+        """
+        return self.as_kwargs(
+            text_key="question",
+            entities_key="question_entities",
+            parse_mode_key="question_parse_mode",
+            replace_parse_mode=replace_parse_mode,
+        )
+
+    def as_poll_explanation_kwargs(self, *, replace_parse_mode: bool = True) -> Dict[str, Any]:
+        """
+        Shortcut for :meth:`as_kwargs` for usage with
+        method :class:`aiogram.methods.send_poll.SendPoll`.
+
+        .. code-block:: python
+
+            question_entities = Text(...)
+            explanation_entities = Text(...)
+            await message.answer_poll(
+                **question_entities.as_poll_question_kwargs(),
+                options=options,
+                **explanation_entities.as_poll_explanation_kwargs(),
+            )
+
+        :param replace_parse_mode: Will be passed to :meth:`as_kwargs`.
+        :return:
+        """
+        return self.as_kwargs(
+            text_key="explanation",
+            entities_key="explanation_entities",
+            parse_mode_key="explanation_parse_mode",
+            replace_parse_mode=replace_parse_mode,
+        )
+
+    def as_gift_text_kwargs(self, *, replace_parse_mode: bool = True) -> Dict[str, Any]:
+        """
+        Shortcut for :meth:`as_kwargs` for usage with
+        method :class:`aiogram.methods.send_gift.SendGift`.
+
+        .. code-block:: python
+
+            entities = Text(...)
+            await bot.send_gift(gift_id=gift_id, user_id=user_id, **entities.as_gift_text_kwargs())
+
+        :param replace_parse_mode: Will be passed to :meth:`as_kwargs`.
+        :return:
+        """
+        return self.as_kwargs(
+            text_key="text",
+            entities_key="text_entities",
+            parse_mode_key="text_parse_mode",
+            replace_parse_mode=replace_parse_mode,
+        )
 
     def as_html(self) -> str:
         """
