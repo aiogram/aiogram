@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 from asyncio import Transport
 from typing import Any, Awaitable, Callable, Dict, Optional, Set, Tuple, cast
 
-from aiohttp import MultipartWriter, web
+from aiohttp import JsonPayload, MultipartWriter, Payload, web
 from aiohttp.abc import Application
 from aiohttp.typedefs import Handler
 from aiohttp.web_middlewares import middleware
@@ -151,13 +151,17 @@ class BaseRequestHandler(ABC):
 
     def _build_response_writer(
         self, bot: Bot, result: Optional[TelegramMethod[TelegramType]]
-    ) -> MultipartWriter:
+    ) -> Payload:
+        if not result:
+            # we need to return something "empty"
+            # and "empty" form doesn't work
+            # since it's sending only "end" boundary w/o "start"
+            return JsonPayload({})
+
         writer = MultipartWriter(
             "form-data",
             boundary=f"webhookBoundary{secrets.token_urlsafe(16)}",
         )
-        if not result:
-            return writer
 
         payload = writer.append(result.__api_method__)
         payload.set_content_disposition("form-data", name="method")
