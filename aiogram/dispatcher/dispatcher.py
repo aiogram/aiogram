@@ -364,7 +364,7 @@ class Dispatcher(Router):
             "Run polling for bot @%s id=%d - %r", user.username, bot.id, user.full_name
         )
 
-        # Create a semaphore if concurrent_updates_limit is specified
+        # Create semaphore if tasks_concurrency_limit is specified
         semaphore = None
         if tasks_concurrency_limit is not None and handle_as_tasks:
             semaphore = asyncio.Semaphore(tasks_concurrency_limit)

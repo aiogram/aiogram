@@ -810,7 +810,7 @@ class TestDispatcher:
         tasks_concurrency_limit: int,
         should_create_semaphore: bool,
     ):
-        """Test that semaphore is created only when handle_as_tasks=True and concurrent_updates_limit is not None"""
+        """Test that semaphore is created only when handle_as_tasks=True and tasks_concurrency_limit is not None"""
         dispatcher = Dispatcher()
 
         async def _mock_updates(*_):
