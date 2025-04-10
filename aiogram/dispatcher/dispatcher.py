@@ -329,7 +329,7 @@ class Dispatcher(Router):
 
         :param handle_update: Coroutine that processes the update
         :param semaphore: Semaphore to limit concurrent tasks
-        :return: None
+        :return: bool indicating the result of the update processing
         """
         try:
             return await handle_update
