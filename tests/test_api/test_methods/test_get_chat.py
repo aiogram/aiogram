@@ -1,5 +1,5 @@
 from aiogram.methods import GetChat
-from aiogram.types import ChatFullInfo
+from aiogram.types import AcceptedGiftTypes, ChatFullInfo
 from tests.mocked_bot import MockedBot
 
 
@@ -14,6 +14,12 @@ class TestGetChat:
                 title="chat",
                 accent_color_id=0,
                 max_reaction_count=0,
+                accepted_gift_types=AcceptedGiftTypes(
+                    unlimited_gifts=True,
+                    limited_gifts=True,
+                    unique_gifts=True,
+                    premium_subscription=True,
+                ),
             ),
         )
 

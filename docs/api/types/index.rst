@@ -11,6 +11,7 @@ Available types
 .. toctree::
     :maxdepth: 1
 
+    accepted_gift_types
     animation
     audio
     background_fill
@@ -35,6 +36,7 @@ Available types
     bot_description
     bot_name
     bot_short_description
+    business_bot_rights
     business_connection
     business_intro
     business_location
@@ -82,6 +84,9 @@ Available types
     forum_topic_reopened
     general_forum_topic_hidden
     general_forum_topic_unhidden
+    gift
+    gift_info
+    gifts
     giveaway
     giveaway_completed
     giveaway_created
@@ -100,6 +105,12 @@ Available types
     input_paid_media_photo
     input_paid_media_video
     input_poll_option
+    input_profile_photo
+    input_profile_photo_animated
+    input_profile_photo_static
+    input_story_content
+    input_story_content_photo
+    input_story_content_video
     keyboard_button
     keyboard_button_poll_type
     keyboard_button_request_chat
@@ -107,6 +118,7 @@ Available types
     keyboard_button_request_users
     link_preview_options
     location
+    location_address
     login_url
     maybe_inaccessible_message
     menu_button
@@ -124,11 +136,16 @@ Available types
     message_origin_user
     message_reaction_count_updated
     message_reaction_updated
+    owned_gift
+    owned_gift_regular
+    owned_gift_unique
+    owned_gifts
     paid_media
     paid_media_info
     paid_media_photo
     paid_media_preview
     paid_media_video
+    paid_message_price_changed
     photo_size
     poll
     poll_answer
@@ -144,9 +161,24 @@ Available types
     reply_parameters
     response_parameters
     shared_user
+    star_amount
     story
+    story_area
+    story_area_position
+    story_area_type
+    story_area_type_link
+    story_area_type_location
+    story_area_type_suggested_reaction
+    story_area_type_unique_gift
+    story_area_type_weather
     switch_inline_query_chosen_chat
     text_quote
+    unique_gift
+    unique_gift_backdrop
+    unique_gift_backdrop_colors
+    unique_gift_info
+    unique_gift_model
+    unique_gift_symbol
     user
     user_chat_boosts
     user_profile_photos
@@ -241,8 +273,6 @@ Stickers
 .. toctree::
     :maxdepth: 1
 
-    gift
-    gifts
     input_sticker
     mask_position
     sticker

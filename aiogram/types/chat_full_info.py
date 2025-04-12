@@ -2,10 +2,13 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Optional
 
+from pydantic import Field
+
 from .chat import Chat
 from .custom import DateTime
 
 if TYPE_CHECKING:
+    from .accepted_gift_types import AcceptedGiftTypes
     from .birthdate import Birthdate
     from .business_intro import BusinessIntro
     from .business_location import BusinessLocation
@@ -32,6 +35,8 @@ class ChatFullInfo(Chat):
     """Identifier of the accent color for the chat name and backgrounds of the chat photo, reply header, and link preview. See `accent colors <https://core.telegram.org/bots/api#accent-colors>`_ for more details."""
     max_reaction_count: int
     """The maximum number of reactions that can be set on a message in the chat"""
+    accepted_gift_types: AcceptedGiftTypes
+    """Information about types of gifts that are accepted by the chat or by the corresponding user for private chats"""
     title: Optional[str] = None
     """*Optional*. Title, for supergroups, channels and group chats"""
     username: Optional[str] = None
@@ -86,8 +91,6 @@ class ChatFullInfo(Chat):
     """*Optional*. The most recent pinned message (by sending date)"""
     permissions: Optional[ChatPermissions] = None
     """*Optional*. Default chat member permissions, for groups and supergroups"""
-    can_send_gift: Optional[bool] = None
-    """*Optional*. :code:`True`, if gifts can be sent to the chat"""
     can_send_paid_media: Optional[bool] = None
     """*Optional*. :code:`True`, if paid media messages can be sent or forwarded to the channel chat. The field is available only for channel chats."""
     slow_mode_delay: Optional[int] = None
@@ -114,6 +117,11 @@ class ChatFullInfo(Chat):
     """*Optional*. Unique identifier for the linked chat, i.e. the discussion group identifier for a channel and vice versa; for supergroups and channel chats. This identifier may be greater than 32 bits and some programming languages may have difficulty/silent defects in interpreting it. But it is smaller than 52 bits, so a signed 64 bit integer or double-precision float type are safe for storing this identifier."""
     location: Optional[ChatLocation] = None
     """*Optional*. For supergroups, the location to which the supergroup is connected"""
+    can_send_gift: Optional[bool] = Field(None, json_schema_extra={"deprecated": True})
+    """*Optional*. :code:`True`, if gifts can be sent to the chat
+
+.. deprecated:: API:9.0
+   https://core.telegram.org/bots/api-changelog#april-11-2025"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!
@@ -126,6 +134,7 @@ class ChatFullInfo(Chat):
             type: str,
             accent_color_id: int,
             max_reaction_count: int,
+            accepted_gift_types: AcceptedGiftTypes,
             title: Optional[str] = None,
             username: Optional[str] = None,
             first_name: Optional[str] = None,
@@ -153,7 +162,6 @@ class ChatFullInfo(Chat):
             invite_link: Optional[str] = None,
             pinned_message: Optional[Message] = None,
             permissions: Optional[ChatPermissions] = None,
-            can_send_gift: Optional[bool] = None,
             can_send_paid_media: Optional[bool] = None,
             slow_mode_delay: Optional[int] = None,
             unrestrict_boost_count: Optional[int] = None,
@@ -167,6 +175,7 @@ class ChatFullInfo(Chat):
             custom_emoji_sticker_set_name: Optional[str] = None,
             linked_chat_id: Optional[int] = None,
             location: Optional[ChatLocation] = None,
+            can_send_gift: Optional[bool] = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!
@@ -178,6 +187,7 @@ class ChatFullInfo(Chat):
                 type=type,
                 accent_color_id=accent_color_id,
                 max_reaction_count=max_reaction_count,
+                accepted_gift_types=accepted_gift_types,
                 title=title,
                 username=username,
                 first_name=first_name,
@@ -205,7 +215,6 @@ class ChatFullInfo(Chat):
                 invite_link=invite_link,
                 pinned_message=pinned_message,
                 permissions=permissions,
-                can_send_gift=can_send_gift,
                 can_send_paid_media=can_send_paid_media,
                 slow_mode_delay=slow_mode_delay,
                 unrestrict_boost_count=unrestrict_boost_count,
@@ -219,5 +228,6 @@ class ChatFullInfo(Chat):
                 custom_emoji_sticker_set_name=custom_emoji_sticker_set_name,
                 linked_chat_id=linked_chat_id,
                 location=location,
+                can_send_gift=can_send_gift,
                 **__pydantic_kwargs,
             )

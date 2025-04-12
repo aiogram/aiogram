@@ -1,0 +1,49 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "acceptedgifttypes",
+    "name": "AcceptedGiftTypes",
+    "description": "This object describes the types of gifts that can be gifted to a user or a chat.",
+    "html_description": "<p>This object describes the types of gifts that can be gifted to a user or a chat.</p>",
+    "rst_description": "This object describes the types of gifts that can be gifted to a user or a chat.",
+    "annotations": [
+      {
+        "type": "Boolean",
+        "description": "True, if unlimited regular gifts are accepted",
+        "html_description": "<td>True, if unlimited regular gifts are accepted</td>",
+        "rst_description": "True, if unlimited regular gifts are accepted\n",
+        "name": "unlimited_gifts",
+        "required": true
+      },
+      {
+        "type": "Boolean",
+        "description": "True, if limited regular gifts are accepted",
+        "html_description": "<td>True, if limited regular gifts are accepted</td>",
+        "rst_description": "True, if limited regular gifts are accepted\n",
+        "name": "limited_gifts",
+        "required": true
+      },
+      {
+        "type": "Boolean",
+        "description": "True, if unique gifts or gifts that can be upgraded to unique for free are accepted",
+        "html_description": "<td>True, if unique gifts or gifts that can be upgraded to unique for free are accepted</td>",
+        "rst_description": "True, if unique gifts or gifts that can be upgraded to unique for free are accepted\n",
+        "name": "unique_gifts",
+        "required": true
+      },
+      {
+        "type": "Boolean",
+        "description": "True, if a Telegram Premium subscription is accepted",
+        "html_description": "<td>True, if a Telegram Premium subscription is accepted</td>",
+        "rst_description": "True, if a Telegram Premium subscription is accepted\n",
+        "name": "premium_subscription",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

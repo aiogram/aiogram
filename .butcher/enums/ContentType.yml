@@ -43,3 +43,4 @@ extract:
     - has_media_spoiler
     - effect_id
     - show_caption_above_media
+    - paid_star_count

@@ -1,0 +1,89 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Updating messages",
+    "anchor": "updating-messages"
+  },
+  "object": {
+    "anchor": "getbusinessaccountgifts",
+    "name": "getBusinessAccountGifts",
+    "description": "Returns the gifts received and owned by a managed business account. Requires the can_view_gifts_and_stars business bot right. Returns OwnedGifts on success.",
+    "html_description": "<p>Returns the gifts received and owned by a managed business account. Requires the <em>can_view_gifts_and_stars</em> business bot right. Returns <a href=\"#ownedgifts\">OwnedGifts</a> on success.</p>",
+    "rst_description": "Returns the gifts received and owned by a managed business account. Requires the *can_view_gifts_and_stars* business bot right. Returns :class:`aiogram.types.owned_gifts.OwnedGifts` on success.",
+    "annotations": [
+      {
+        "type": "String",
+        "required": true,
+        "description": "Unique identifier of the business connection",
+        "html_description": "<td>Unique identifier of the business connection</td>",
+        "rst_description": "Unique identifier of the business connection\n",
+        "name": "business_connection_id"
+      },
+      {
+        "type": "Boolean",
+        "required": false,
+        "description": "Pass True to exclude gifts that aren't saved to the account's profile page",
+        "html_description": "<td>Pass True to exclude gifts that aren't saved to the account's profile page</td>",
+        "rst_description": "Pass True to exclude gifts that aren't saved to the account's profile page\n",
+        "name": "exclude_unsaved"
+      },
+      {
+        "type": "Boolean",
+        "required": false,
+        "description": "Pass True to exclude gifts that are saved to the account's profile page",
+        "html_description": "<td>Pass True to exclude gifts that are saved to the account's profile page</td>",
+        "rst_description": "Pass True to exclude gifts that are saved to the account's profile page\n",
+        "name": "exclude_saved"
+      },
+      {
+        "type": "Boolean",
+        "required": false,
+        "description": "Pass True to exclude gifts that can be purchased an unlimited number of times",
+        "html_description": "<td>Pass True to exclude gifts that can be purchased an unlimited number of times</td>",
+        "rst_description": "Pass True to exclude gifts that can be purchased an unlimited number of times\n",
+        "name": "exclude_unlimited"
+      },
+      {
+        "type": "Boolean",
+        "required": false,
+        "description": "Pass True to exclude gifts that can be purchased a limited number of times",
+        "html_description": "<td>Pass True to exclude gifts that can be purchased a limited number of times</td>",
+        "rst_description": "Pass True to exclude gifts that can be purchased a limited number of times\n",
+        "name": "exclude_limited"
+      },
+      {
+        "type": "Boolean",
+        "required": false,
+        "description": "Pass True to exclude unique gifts",
+        "html_description": "<td>Pass True to exclude unique gifts</td>",
+        "rst_description": "Pass True to exclude unique gifts\n",
+        "name": "exclude_unique"
+      },
+      {
+        "type": "Boolean",
+        "required": false,
+        "description": "Pass True to sort results by gift price instead of send date. Sorting is applied before pagination.",
+        "html_description": "<td>Pass True to sort results by gift price instead of send date. Sorting is applied before pagination.</td>",
+        "rst_description": "Pass True to sort results by gift price instead of send date. Sorting is applied before pagination.\n",
+        "name": "sort_by_price"
+      },
+      {
+        "type": "String",
+        "required": false,
+        "description": "Offset of the first entry to return as received from the previous request; use empty string to get the first chunk of results",
+        "html_description": "<td>Offset of the first entry to return as received from the previous request; use empty string to get the first chunk of results</td>",
+        "rst_description": "Offset of the first entry to return as received from the previous request; use empty string to get the first chunk of results\n",
+        "name": "offset"
+      },
+      {
+        "type": "Integer",
+        "required": false,
+        "description": "The maximum number of gifts to be returned; 1-100. Defaults to 100",
+        "html_description": "<td>The maximum number of gifts to be returned; 1-100. Defaults to 100</td>",
+        "rst_description": "The maximum number of gifts to be returned; 1-100. Defaults to 100\n",
+        "name": "limit"
+      }
+    ],
+    "category": "methods"
+  }
+}

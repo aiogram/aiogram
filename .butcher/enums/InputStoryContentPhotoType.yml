@@ -1,0 +1,11 @@
+name: InputStoryContentType
+description: |
+  This object represents input story content photo type.
+
+  Source: https://core.telegram.org/bots/api#inputstorycontentphoto
+multi_parse:
+  attribute: type
+  regexp: "must be '([a-z_]+)'"
+  entities:
+    - InputStoryContentPhoto
+    - InputStoryContentVideo

@@ -15,13 +15,9 @@ Stickers
     create_new_sticker_set
     delete_sticker_from_set
     delete_sticker_set
-    get_available_gifts
     get_custom_emoji_stickers
     get_sticker_set
-    remove_chat_verification
-    remove_user_verification
     replace_sticker_in_set
-    send_gift
     send_sticker
     set_custom_emoji_sticker_set_thumbnail
     set_sticker_emoji_list
@@ -31,8 +27,6 @@ Stickers
     set_sticker_set_thumbnail
     set_sticker_set_title
     upload_sticker_file
-    verify_chat
-    verify_user
 
 Available methods
 =================
@@ -133,15 +127,39 @@ Updating messages
 .. toctree::
     :maxdepth: 1
 
+    convert_gift_to_stars
+    delete_business_messages
     delete_message
     delete_messages
+    delete_story
     edit_message_caption
     edit_message_live_location
     edit_message_media
     edit_message_reply_markup
     edit_message_text
+    edit_story
+    get_available_gifts
+    get_business_account_gifts
+    get_business_account_star_balance
+    gift_premium_subscription
+    post_story
+    read_business_message
+    remove_business_account_profile_photo
+    remove_chat_verification
+    remove_user_verification
+    send_gift
+    set_business_account_bio
+    set_business_account_gift_settings
+    set_business_account_name
+    set_business_account_profile_photo
+    set_business_account_username
     stop_message_live_location
     stop_poll
+    transfer_business_account_stars
+    transfer_gift
+    upgrade_gift
+    verify_chat
+    verify_user
 
 Inline mode
 ===========

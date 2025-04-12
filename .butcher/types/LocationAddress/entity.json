@@ -1,0 +1,49 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "locationaddress",
+    "name": "LocationAddress",
+    "description": "Describes the physical address of a location.",
+    "html_description": "<p>Describes the physical address of a location.</p>",
+    "rst_description": "Describes the physical address of a location.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "The two-letter ISO 3166-1 alpha-2 country code of the country where the location is located",
+        "html_description": "<td>The two-letter ISO 3166-1 alpha-2 country code of the country where the location is located</td>",
+        "rst_description": "The two-letter ISO 3166-1 alpha-2 country code of the country where the location is located\n",
+        "name": "country_code",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "State of the location",
+        "html_description": "<td><em>Optional</em>. State of the location</td>",
+        "rst_description": "*Optional*. State of the location\n",
+        "name": "state",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "City of the location",
+        "html_description": "<td><em>Optional</em>. City of the location</td>",
+        "rst_description": "*Optional*. City of the location\n",
+        "name": "city",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "Street address of the location",
+        "html_description": "<td><em>Optional</em>. Street address of the location</td>",
+        "rst_description": "*Optional*. Street address of the location\n",
+        "name": "street",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

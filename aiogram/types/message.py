@@ -68,6 +68,7 @@ if TYPE_CHECKING:
     from .game import Game
     from .general_forum_topic_hidden import GeneralForumTopicHidden
     from .general_forum_topic_unhidden import GeneralForumTopicUnhidden
+    from .gift_info import GiftInfo
     from .giveaway import Giveaway
     from .giveaway_completed import GiveawayCompleted
     from .giveaway_created import GiveawayCreated
@@ -77,7 +78,6 @@ if TYPE_CHECKING:
     from .input_file_union import InputFileUnion
     from .input_media_union import InputMediaUnion
     from .input_paid_media_union import InputPaidMediaUnion
-    from .input_poll_option import InputPollOption
     from .input_poll_option_union import InputPollOptionUnion
     from .invoice import Invoice
     from .labeled_price import LabeledPrice
@@ -89,6 +89,7 @@ if TYPE_CHECKING:
     from .message_entity import MessageEntity
     from .message_origin_union import MessageOriginUnion
     from .paid_media_info import PaidMediaInfo
+    from .paid_message_price_changed import PaidMessagePriceChanged
     from .passport_data import PassportData
     from .photo_size import PhotoSize
     from .poll import Poll
@@ -101,6 +102,7 @@ if TYPE_CHECKING:
     from .story import Story
     from .successful_payment import SuccessfulPayment
     from .text_quote import TextQuote
+    from .unique_gift_info import UniqueGiftInfo
     from .user import User
     from .user_shared import UserShared
     from .users_shared import UsersShared
@@ -167,6 +169,8 @@ class Message(MaybeInaccessibleMessage):
     """*Optional*. The unique identifier of a media message group this message belongs to"""
     author_signature: Optional[str] = None
     """*Optional*. Signature of the post author for messages in channels, or the custom title of an anonymous group administrator"""
+    paid_star_count: Optional[int] = None
+    """*Optional*. The number of Telegram Stars that were paid by the sender of the message to send it"""
     text: Optional[str] = None
     """*Optional*. For text messages, the actual UTF-8 text of the message"""
     entities: Optional[list[MessageEntity]] = None
@@ -249,6 +253,10 @@ class Message(MaybeInaccessibleMessage):
     """*Optional*. Service message: users were shared with the bot"""
     chat_shared: Optional[ChatShared] = None
     """*Optional*. Service message: a chat was shared with the bot"""
+    gift: Optional[GiftInfo] = None
+    """*Optional*. Service message: a regular gift was sent or received"""
+    unique_gift: Optional[UniqueGiftInfo] = None
+    """*Optional*. Service message: a unique gift was sent or received"""
     connected_website: Optional[str] = None
     """*Optional*. The domain name of the website on which the user has logged in. `More about Telegram Login » <https://core.telegram.org/widgets/login>`_"""
     write_access_allowed: Optional[WriteAccessAllowed] = None
@@ -281,6 +289,8 @@ class Message(MaybeInaccessibleMessage):
     """*Optional*. A giveaway with public winners was completed"""
     giveaway_completed: Optional[GiveawayCompleted] = None
     """*Optional*. Service message: a giveaway without public winners was completed"""
+    paid_message_price_changed: Optional[PaidMessagePriceChanged] = None
+    """*Optional*. Service message: the price for paid messages has changed in the chat"""
     video_chat_scheduled: Optional[VideoChatScheduled] = None
     """*Optional*. Service message: video chat scheduled"""
     video_chat_started: Optional[VideoChatStarted] = None
@@ -358,6 +368,7 @@ class Message(MaybeInaccessibleMessage):
             is_from_offline: Optional[bool] = None,
             media_group_id: Optional[str] = None,
             author_signature: Optional[str] = None,
+            paid_star_count: Optional[int] = None,
             text: Optional[str] = None,
             entities: Optional[list[MessageEntity]] = None,
             link_preview_options: Optional[LinkPreviewOptions] = None,
@@ -399,6 +410,8 @@ class Message(MaybeInaccessibleMessage):
             refunded_payment: Optional[RefundedPayment] = None,
             users_shared: Optional[UsersShared] = None,
             chat_shared: Optional[ChatShared] = None,
+            gift: Optional[GiftInfo] = None,
+            unique_gift: Optional[UniqueGiftInfo] = None,
             connected_website: Optional[str] = None,
             write_access_allowed: Optional[WriteAccessAllowed] = None,
             passport_data: Optional[PassportData] = None,
@@ -415,6 +428,7 @@ class Message(MaybeInaccessibleMessage):
             giveaway: Optional[Giveaway] = None,
             giveaway_winners: Optional[GiveawayWinners] = None,
             giveaway_completed: Optional[GiveawayCompleted] = None,
+            paid_message_price_changed: Optional[PaidMessagePriceChanged] = None,
             video_chat_scheduled: Optional[VideoChatScheduled] = None,
             video_chat_started: Optional[VideoChatStarted] = None,
             video_chat_ended: Optional[VideoChatEnded] = None,
@@ -457,6 +471,7 @@ class Message(MaybeInaccessibleMessage):
                 is_from_offline=is_from_offline,
                 media_group_id=media_group_id,
                 author_signature=author_signature,
+                paid_star_count=paid_star_count,
                 text=text,
                 entities=entities,
                 link_preview_options=link_preview_options,
@@ -498,6 +513,8 @@ class Message(MaybeInaccessibleMessage):
                 refunded_payment=refunded_payment,
                 users_shared=users_shared,
                 chat_shared=chat_shared,
+                gift=gift,
+                unique_gift=unique_gift,
                 connected_website=connected_website,
                 write_access_allowed=write_access_allowed,
                 passport_data=passport_data,
@@ -514,6 +531,7 @@ class Message(MaybeInaccessibleMessage):
                 giveaway=giveaway,
                 giveaway_winners=giveaway_winners,
                 giveaway_completed=giveaway_completed,
+                paid_message_price_changed=paid_message_price_changed,
                 video_chat_scheduled=video_chat_scheduled,
                 video_chat_started=video_chat_started,
                 video_chat_ended=video_chat_ended,
@@ -644,7 +662,12 @@ class Message(MaybeInaccessibleMessage):
             return ContentType.BOOST_ADDED
         if self.refunded_payment:
             return ContentType.REFUNDED_PAYMENT
-
+        if self.gift:
+            return ContentType.GIFT
+        if self.unique_gift:
+            return ContentType.UNIQUE_GIFT
+        if self.paid_message_price_changed:
+            return ContentType.PAID_MESSAGE_PRICE_CHANGED
         return ContentType.UNKNOWN
 
     def _unparse_entities(self, text_decoration: TextDecoration) -> str:
@@ -4163,7 +4186,7 @@ class Message(MaybeInaccessibleMessage):
 
         Source: https://core.telegram.org/bots/api#sendpaidmedia
 
-        :param star_count: The number of Telegram Stars that must be paid to buy access to the media; 1-2500
+        :param star_count: The number of Telegram Stars that must be paid to buy access to the media; 1-10000
         :param media: A JSON-serialized array describing the media to be sent; up to 10 items
         :param payload: Bot-defined paid media payload, 0-128 bytes. This will not be displayed to the user, use it for your internal processes.
         :param caption: Media caption, 0-1024 characters after entities parsing
@@ -4233,7 +4256,7 @@ class Message(MaybeInaccessibleMessage):
 
         Source: https://core.telegram.org/bots/api#sendpaidmedia
 
-        :param star_count: The number of Telegram Stars that must be paid to buy access to the media; 1-2500
+        :param star_count: The number of Telegram Stars that must be paid to buy access to the media; 1-10000
         :param media: A JSON-serialized array describing the media to be sent; up to 10 items
         :param payload: Bot-defined paid media payload, 0-128 bytes. This will not be displayed to the user, use it for your internal processes.
         :param caption: Media caption, 0-1024 characters after entities parsing

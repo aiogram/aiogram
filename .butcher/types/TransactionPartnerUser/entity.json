@@ -20,6 +20,14 @@
         "required": true
       },
       {
+        "type": "String",
+        "description": "Type of the transaction, currently one of 'invoice_payment' for payments via invoices, 'paid_media_payment' for payments for paid media, 'gift_purchase' for gifts sent by the bot, 'premium_purchase' for Telegram Premium subscriptions gifted by the bot, 'business_account_transfer' for direct transfers from managed business accounts",
+        "html_description": "<td>Type of the transaction, currently one of &#8220;invoice_payment&#8221; for payments via invoices, &#8220;paid_media_payment&#8221; for payments for paid media, &#8220;gift_purchase&#8221; for gifts sent by the bot, &#8220;premium_purchase&#8221; for Telegram Premium subscriptions gifted by the bot, &#8220;business_account_transfer&#8221; for direct transfers from managed business accounts</td>",
+        "rst_description": "Type of the transaction, currently one of 'invoice_payment' for payments via invoices, 'paid_media_payment' for payments for paid media, 'gift_purchase' for gifts sent by the bot, 'premium_purchase' for Telegram Premium subscriptions gifted by the bot, 'business_account_transfer' for direct transfers from managed business accounts\n",
+        "name": "transaction_type",
+        "required": true
+      },
+      {
         "type": "User",
         "description": "Information about the user",
         "html_description": "<td>Information about the user</td>",
@@ -29,50 +37,58 @@
       },
       {
         "type": "AffiliateInfo",
-        "description": "Information about the affiliate that received a commission via this transaction",
-        "html_description": "<td><em>Optional</em>. Information about the affiliate that received a commission via this transaction</td>",
-        "rst_description": "*Optional*. Information about the affiliate that received a commission via this transaction\n",
+        "description": "Information about the affiliate that received a commission via this transaction. Can be available only for 'invoice_payment' and 'paid_media_payment' transactions.",
+        "html_description": "<td><em>Optional</em>. Information about the affiliate that received a commission via this transaction. Can be available only for &#8220;invoice_payment&#8221; and &#8220;paid_media_payment&#8221; transactions.</td>",
+        "rst_description": "*Optional*. Information about the affiliate that received a commission via this transaction. Can be available only for 'invoice_payment' and 'paid_media_payment' transactions.\n",
         "name": "affiliate",
         "required": false
       },
       {
         "type": "String",
-        "description": "Bot-specified invoice payload",
-        "html_description": "<td><em>Optional</em>. Bot-specified invoice payload</td>",
-        "rst_description": "*Optional*. Bot-specified invoice payload\n",
+        "description": "Bot-specified invoice payload. Can be available only for 'invoice_payment' transactions.",
+        "html_description": "<td><em>Optional</em>. Bot-specified invoice payload. Can be available only for &#8220;invoice_payment&#8221; transactions.</td>",
+        "rst_description": "*Optional*. Bot-specified invoice payload. Can be available only for 'invoice_payment' transactions.\n",
         "name": "invoice_payload",
         "required": false
       },
       {
         "type": "Integer",
-        "description": "The duration of the paid subscription",
-        "html_description": "<td><em>Optional</em>. The duration of the paid subscription</td>",
-        "rst_description": "*Optional*. The duration of the paid subscription\n",
+        "description": "The duration of the paid subscription. Can be available only for 'invoice_payment' transactions.",
+        "html_description": "<td><em>Optional</em>. The duration of the paid subscription. Can be available only for &#8220;invoice_payment&#8221; transactions.</td>",
+        "rst_description": "*Optional*. The duration of the paid subscription. Can be available only for 'invoice_payment' transactions.\n",
         "name": "subscription_period",
         "required": false
       },
       {
         "type": "Array of PaidMedia",
-        "description": "Information about the paid media bought by the user",
-        "html_description": "<td><em>Optional</em>. Information about the paid media bought by the user</td>",
-        "rst_description": "*Optional*. Information about the paid media bought by the user\n",
+        "description": "Information about the paid media bought by the user; for 'paid_media_payment' transactions only",
+        "html_description": "<td><em>Optional</em>. Information about the paid media bought by the user; for &#8220;paid_media_payment&#8221; transactions only</td>",
+        "rst_description": "*Optional*. Information about the paid media bought by the user; for 'paid_media_payment' transactions only\n",
         "name": "paid_media",
         "required": false
       },
       {
         "type": "String",
-        "description": "Bot-specified paid media payload",
-        "html_description": "<td><em>Optional</em>. Bot-specified paid media payload</td>",
-        "rst_description": "*Optional*. Bot-specified paid media payload\n",
+        "description": "Bot-specified paid media payload. Can be available only for 'paid_media_payment' transactions.",
+        "html_description": "<td><em>Optional</em>. Bot-specified paid media payload. Can be available only for &#8220;paid_media_payment&#8221; transactions.</td>",
+        "rst_description": "*Optional*. Bot-specified paid media payload. Can be available only for 'paid_media_payment' transactions.\n",
         "name": "paid_media_payload",
         "required": false
       },
       {
         "type": "Gift",
-        "description": "The gift sent to the user by the bot",
-        "html_description": "<td><em>Optional</em>. The gift sent to the user by the bot</td>",
-        "rst_description": "*Optional*. The gift sent to the user by the bot\n",
+        "description": "The gift sent to the user by the bot; for 'gift_purchase' transactions only",
+        "html_description": "<td><em>Optional</em>. The gift sent to the user by the bot; for &#8220;gift_purchase&#8221; transactions only</td>",
+        "rst_description": "*Optional*. The gift sent to the user by the bot; for 'gift_purchase' transactions only\n",
         "name": "gift",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "Number of months the gifted Telegram Premium subscription will be active for; for 'premium_purchase' transactions only",
+        "html_description": "<td><em>Optional</em>. Number of months the gifted Telegram Premium subscription will be active for; for &#8220;premium_purchase&#8221; transactions only</td>",
+        "rst_description": "*Optional*. Number of months the gifted Telegram Premium subscription will be active for; for 'premium_purchase' transactions only\n",
+        "name": "premium_subscription_duration",
         "required": false
       }
     ],

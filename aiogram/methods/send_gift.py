@@ -26,7 +26,7 @@ class SendGift(TelegramMethod[bool]):
     pay_for_upgrade: Optional[bool] = None
     """Pass :code:`True` to pay for the gift upgrade from the bot's balance, thereby making the upgrade free for the receiver"""
     text: Optional[str] = None
-    """Text that will be shown along with the gift; 0-255 characters"""
+    """Text that will be shown along with the gift; 0-128 characters"""
     text_parse_mode: Optional[str] = None
     """Mode for parsing entities in the text. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details. Entities other than 'bold', 'italic', 'underline', 'strikethrough', 'spoiler', and 'custom_emoji' are ignored."""
     text_entities: Optional[list[MessageEntity]] = None
