@@ -1,0 +1,11 @@
+name: InputProfilePhotoType
+description: |
+  This object represents input profile photo type
+
+  Source: https://core.telegram.org/bots/api#inputprofilephoto
+multi_parse:
+  attribute: type
+  regexp: "must be '([a-z_]+)'"
+  entities:
+    - InputProfilePhotoStatic
+    - InputProfilePhotoAnimated

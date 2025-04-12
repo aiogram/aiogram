@@ -1,0 +1,65 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Updating messages",
+    "anchor": "updating-messages"
+  },
+  "object": {
+    "anchor": "giftpremiumsubscription",
+    "name": "giftPremiumSubscription",
+    "description": "Gifts a Telegram Premium subscription to the given user. Returns True on success.",
+    "html_description": "<p>Gifts a Telegram Premium subscription to the given user. Returns <em>True</em> on success.</p>",
+    "rst_description": "Gifts a Telegram Premium subscription to the given user. Returns :code:`True` on success.",
+    "annotations": [
+      {
+        "type": "Integer",
+        "required": true,
+        "description": "Unique identifier of the target user who will receive a Telegram Premium subscription",
+        "html_description": "<td>Unique identifier of the target user who will receive a Telegram Premium subscription</td>",
+        "rst_description": "Unique identifier of the target user who will receive a Telegram Premium subscription\n",
+        "name": "user_id"
+      },
+      {
+        "type": "Integer",
+        "required": true,
+        "description": "Number of months the Telegram Premium subscription will be active for the user; must be one of 3, 6, or 12",
+        "html_description": "<td>Number of months the Telegram Premium subscription will be active for the user; must be one of 3, 6, or 12</td>",
+        "rst_description": "Number of months the Telegram Premium subscription will be active for the user; must be one of 3, 6, or 12\n",
+        "name": "month_count"
+      },
+      {
+        "type": "Integer",
+        "required": true,
+        "description": "Number of Telegram Stars to pay for the Telegram Premium subscription; must be 1000 for 3 months, 1500 for 6 months, and 2500 for 12 months",
+        "html_description": "<td>Number of Telegram Stars to pay for the Telegram Premium subscription; must be 1000 for 3 months, 1500 for 6 months, and 2500 for 12 months</td>",
+        "rst_description": "Number of Telegram Stars to pay for the Telegram Premium subscription; must be 1000 for 3 months, 1500 for 6 months, and 2500 for 12 months\n",
+        "name": "star_count"
+      },
+      {
+        "type": "String",
+        "required": false,
+        "description": "Text that will be shown along with the service message about the subscription; 0-128 characters",
+        "html_description": "<td>Text that will be shown along with the service message about the subscription; 0-128 characters</td>",
+        "rst_description": "Text that will be shown along with the service message about the subscription; 0-128 characters\n",
+        "name": "text"
+      },
+      {
+        "type": "String",
+        "required": false,
+        "description": "Mode for parsing entities in the text. See formatting options for more details. Entities other than 'bold', 'italic', 'underline', 'strikethrough', 'spoiler', and 'custom_emoji' are ignored.",
+        "html_description": "<td>Mode for parsing entities in the text. See <a href=\"#formatting-options\">formatting options</a> for more details. Entities other than &#8220;bold&#8221;, &#8220;italic&#8221;, &#8220;underline&#8221;, &#8220;strikethrough&#8221;, &#8220;spoiler&#8221;, and &#8220;custom_emoji&#8221; are ignored.</td>",
+        "rst_description": "Mode for parsing entities in the text. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details. Entities other than 'bold', 'italic', 'underline', 'strikethrough', 'spoiler', and 'custom_emoji' are ignored.\n",
+        "name": "text_parse_mode"
+      },
+      {
+        "type": "Array of MessageEntity",
+        "required": false,
+        "description": "A JSON-serialized list of special entities that appear in the gift text. It can be specified instead of text_parse_mode. Entities other than 'bold', 'italic', 'underline', 'strikethrough', 'spoiler', and 'custom_emoji' are ignored.",
+        "html_description": "<td>A JSON-serialized list of special entities that appear in the gift text. It can be specified instead of <em>text_parse_mode</em>. Entities other than &#8220;bold&#8221;, &#8220;italic&#8221;, &#8220;underline&#8221;, &#8220;strikethrough&#8221;, &#8220;spoiler&#8221;, and &#8220;custom_emoji&#8221; are ignored.</td>",
+        "rst_description": "A JSON-serialized list of special entities that appear in the gift text. It can be specified instead of *text_parse_mode*. Entities other than 'bold', 'italic', 'underline', 'strikethrough', 'spoiler', and 'custom_emoji' are ignored.\n",
+        "name": "text_entities"
+      }
+    ],
+    "category": "methods"
+  }
+}

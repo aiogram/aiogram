@@ -1,0 +1,57 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "inputstorycontentvideo",
+    "name": "InputStoryContentVideo",
+    "description": "Describes a video to post as a story.",
+    "html_description": "<p>Describes a video to post as a story.</p>",
+    "rst_description": "Describes a video to post as a story.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Type of the content, must be 'video'",
+        "html_description": "<td>Type of the content, must be &#8220;video&#8221;</td>",
+        "rst_description": "Type of the content, must be 'video'\n",
+        "name": "type",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "The video to post as a story. The video must be of the size 720x1280, streamable, encoded with H.265 codec, with key frames added each second in the MPEG4 format, and must not exceed 30 MB. The video can't be reused and can only be uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the video was uploaded using multipart/form-data under <file_attach_name>. More information on Sending Files",
+        "html_description": "<td>The video to post as a story. The video must be of the size 720x1280, streamable, encoded with H.265 codec, with key frames added each second in the MPEG4 format, and must not exceed 30 MB. The video can't be reused and can only be uploaded as a new file, so you can pass &#8220;attach://&lt;file_attach_name&gt;&#8221; if the video was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href=\"#sending-files\">More information on Sending Files &#187;</a></td>",
+        "rst_description": "The video to post as a story. The video must be of the size 720x1280, streamable, encoded with H.265 codec, with key frames added each second in the MPEG4 format, and must not exceed 30 MB. The video can't be reused and can only be uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the video was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`\n",
+        "name": "video",
+        "required": true
+      },
+      {
+        "type": "Float",
+        "description": "Precise duration of the video in seconds; 0-60",
+        "html_description": "<td><em>Optional</em>. Precise duration of the video in seconds; 0-60</td>",
+        "rst_description": "*Optional*. Precise duration of the video in seconds; 0-60\n",
+        "name": "duration",
+        "required": false
+      },
+      {
+        "type": "Float",
+        "description": "Timestamp in seconds of the frame that will be used as the static cover for the story. Defaults to 0.0.",
+        "html_description": "<td><em>Optional</em>. Timestamp in seconds of the frame that will be used as the static cover for the story. Defaults to 0.0.</td>",
+        "rst_description": "*Optional*. Timestamp in seconds of the frame that will be used as the static cover for the story. Defaults to 0.0.\n",
+        "name": "cover_frame_timestamp",
+        "required": false
+      },
+      {
+        "type": "Boolean",
+        "description": "Pass True if the video has no sound",
+        "html_description": "<td><em>Optional</em>. Pass <em>True</em> if the video has no sound</td>",
+        "rst_description": "*Optional*. Pass :code:`True` if the video has no sound\n",
+        "name": "is_animation",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

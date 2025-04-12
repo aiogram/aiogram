@@ -1,0 +1,11 @@
+name: OwnedGiftType
+description: |
+  This object represents owned gift type
+
+  Source: https://core.telegram.org/bots/api#ownedgift
+multi_parse:
+  attribute: type
+  regexp: "'([a-z_]+)'"
+  entities:
+    - OwnedGiftRegular
+    - OwnedGiftUnique

@@ -58,6 +58,8 @@ from aiogram.types import (
     Game,
     GeneralForumTopicHidden,
     GeneralForumTopicUnhidden,
+    Gift,
+    GiftInfo,
     Giveaway,
     GiveawayCompleted,
     GiveawayCreated,
@@ -71,6 +73,7 @@ from aiogram.types import (
     MessageEntity,
     PaidMediaInfo,
     PaidMediaPhoto,
+    PaidMessagePriceChanged,
     PassportData,
     PhotoSize,
     Poll,
@@ -82,6 +85,12 @@ from aiogram.types import (
     Sticker,
     Story,
     SuccessfulPayment,
+    UniqueGift,
+    UniqueGiftBackdrop,
+    UniqueGiftBackdropColors,
+    UniqueGiftInfo,
+    UniqueGiftModel,
+    UniqueGiftSymbol,
     User,
     UserShared,
     UsersShared,
@@ -606,6 +615,92 @@ TEST_MESSAGE_UNKNOWN = Message(
     chat=Chat(id=42, type="private"),
     from_user=User(id=42, is_bot=False, first_name="Test"),
 )
+TEST_MESSAGE_GIFT = Message(
+    message_id=42,
+    date=datetime.datetime.now(),
+    chat=Chat(id=42, type="private"),
+    from_user=User(id=42, is_bot=False, first_name="Test"),
+    gift=GiftInfo(
+        gift=Gift(
+            id="test_gift_id",
+            sticker=Sticker(
+                file_id="test_file_id",
+                file_unique_id="test_file_unique_id",
+                type="regular",
+                width=512,
+                height=512,
+                is_animated=False,
+                is_video=False,
+            ),
+            star_count=100,
+        ),
+        owned_gift_id="test_owned_gift_id",
+        convert_star_count=50,
+        prepaid_upgrade_star_count=25,
+        can_be_upgraded=True,
+        text="Test gift message",
+        is_private=False,
+    ),
+)
+TEST_MESSAGE_UNIQUE_GIFT = Message(
+    message_id=42,
+    date=datetime.datetime.now(),
+    chat=Chat(id=42, type="private"),
+    from_user=User(id=42, is_bot=False, first_name="Test"),
+    unique_gift=UniqueGiftInfo(
+        gift=UniqueGift(
+            base_name="test_gift",
+            name="test_unique_gift",
+            number=1,
+            model=UniqueGiftModel(
+                name="test_model",
+                sticker=Sticker(
+                    file_id="test_file_id",
+                    file_unique_id="test_file_unique_id",
+                    type="regular",
+                    width=512,
+                    height=512,
+                    is_animated=False,
+                    is_video=False,
+                ),
+                rarity_per_mille=100,
+            ),
+            symbol=UniqueGiftSymbol(
+                name="test_symbol",
+                sticker=Sticker(
+                    file_id="test_file_id",
+                    file_unique_id="test_file_unique_id",
+                    type="regular",
+                    width=512,
+                    height=512,
+                    is_animated=False,
+                    is_video=False,
+                ),
+                rarity_per_mille=100,
+            ),
+            backdrop=UniqueGiftBackdrop(
+                name="test_backdrop",
+                colors=UniqueGiftBackdropColors(
+                    center_color=0xFFFFFF,
+                    edge_color=0x000000,
+                    symbol_color=0xFF0000,
+                    text_color=0x0000FF,
+                ),
+                rarity_per_mille=100,
+            ),
+        ),
+        origin="upgrade",
+    ),
+)
+TEST_MESSAGE_PAID_MESSAGE_PRICE_CHANGED = Message(
+    message_id=42,
+    date=datetime.datetime.now(),
+    chat=Chat(id=42, type="private"),
+    from_user=User(id=42, is_bot=False, first_name="Test"),
+    paid_message_price_changed=PaidMessagePriceChanged(
+        paid_message_star_count=100,
+    ),
+)
 
 MESSAGES_AND_CONTENT_TYPES = [
     [TEST_MESSAGE_TEXT, ContentType.TEXT],
@@ -670,6 +765,9 @@ MESSAGES_AND_CONTENT_TYPES = [
     [TEST_MESSAGE_BOOST_ADDED, ContentType.BOOST_ADDED],
     [TEST_CHAT_BACKGROUND_SET, ContentType.CHAT_BACKGROUND_SET],
     [TEST_REFUND_PAYMENT, ContentType.REFUNDED_PAYMENT],
+    [TEST_MESSAGE_GIFT, ContentType.GIFT],
+    [TEST_MESSAGE_UNIQUE_GIFT, ContentType.UNIQUE_GIFT],
+    [TEST_MESSAGE_PAID_MESSAGE_PRICE_CHANGED, ContentType.PAID_MESSAGE_PRICE_CHANGED],
     [TEST_MESSAGE_UNKNOWN, ContentType.UNKNOWN],
 ]
 
@@ -731,6 +829,9 @@ MESSAGES_AND_COPY_METHODS = [
     [TEST_MESSAGE_BOOST_ADDED, None],
     [TEST_CHAT_BACKGROUND_SET, None],
     [TEST_REFUND_PAYMENT, None],
+    [TEST_MESSAGE_GIFT, None],
+    [TEST_MESSAGE_UNIQUE_GIFT, None],
+    [TEST_MESSAGE_PAID_MESSAGE_PRICE_CHANGED, None],
     [TEST_MESSAGE_UNKNOWN, None],
 ]
 

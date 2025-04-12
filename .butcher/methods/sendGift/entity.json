@@ -1,8 +1,8 @@
 {
   "meta": {},
   "group": {
-    "title": "Stickers",
-    "anchor": "stickers"
+    "title": "Updating messages",
+    "anchor": "updating-messages"
   },
   "object": {
     "anchor": "sendgift",
@@ -46,9 +46,9 @@
       {
         "type": "String",
         "required": false,
-        "description": "Text that will be shown along with the gift; 0-255 characters",
-        "html_description": "<td>Text that will be shown along with the gift; 0-255 characters</td>",
-        "rst_description": "Text that will be shown along with the gift; 0-255 characters\n",
+        "description": "Text that will be shown along with the gift; 0-128 characters",
+        "html_description": "<td>Text that will be shown along with the gift; 0-128 characters</td>",
+        "rst_description": "Text that will be shown along with the gift; 0-128 characters\n",
         "name": "text"
       },
       {

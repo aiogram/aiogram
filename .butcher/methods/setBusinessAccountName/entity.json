@@ -1,0 +1,41 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Updating messages",
+    "anchor": "updating-messages"
+  },
+  "object": {
+    "anchor": "setbusinessaccountname",
+    "name": "setBusinessAccountName",
+    "description": "Changes the first and last name of a managed business account. Requires the can_change_name business bot right. Returns True on success.",
+    "html_description": "<p>Changes the first and last name of a managed business account. Requires the <em>can_change_name</em> business bot right. Returns <em>True</em> on success.</p>",
+    "rst_description": "Changes the first and last name of a managed business account. Requires the *can_change_name* business bot right. Returns :code:`True` on success.",
+    "annotations": [
+      {
+        "type": "String",
+        "required": true,
+        "description": "Unique identifier of the business connection",
+        "html_description": "<td>Unique identifier of the business connection</td>",
+        "rst_description": "Unique identifier of the business connection\n",
+        "name": "business_connection_id"
+      },
+      {
+        "type": "String",
+        "required": true,
+        "description": "The new value of the first name for the business account; 1-64 characters",
+        "html_description": "<td>The new value of the first name for the business account; 1-64 characters</td>",
+        "rst_description": "The new value of the first name for the business account; 1-64 characters\n",
+        "name": "first_name"
+      },
+      {
+        "type": "String",
+        "required": false,
+        "description": "The new value of the last name for the business account; 0-64 characters",
+        "html_description": "<td>The new value of the last name for the business account; 0-64 characters</td>",
+        "rst_description": "The new value of the last name for the business account; 0-64 characters\n",
+        "name": "last_name"
+      }
+    ],
+    "category": "methods"
+  }
+}

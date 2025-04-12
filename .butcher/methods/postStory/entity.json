@@ -1,0 +1,89 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Updating messages",
+    "anchor": "updating-messages"
+  },
+  "object": {
+    "anchor": "poststory",
+    "name": "postStory",
+    "description": "Posts a story on behalf of a managed business account. Requires the can_manage_stories business bot right. Returns Story on success.",
+    "html_description": "<p>Posts a story on behalf of a managed business account. Requires the <em>can_manage_stories</em> business bot right. Returns <a href=\"#story\">Story</a> on success.</p>",
+    "rst_description": "Posts a story on behalf of a managed business account. Requires the *can_manage_stories* business bot right. Returns :class:`aiogram.types.story.Story` on success.",
+    "annotations": [
+      {
+        "type": "String",
+        "required": true,
+        "description": "Unique identifier of the business connection",
+        "html_description": "<td>Unique identifier of the business connection</td>",
+        "rst_description": "Unique identifier of the business connection\n",
+        "name": "business_connection_id"
+      },
+      {
+        "type": "InputStoryContent",
+        "required": true,
+        "description": "Content of the story",
+        "html_description": "<td>Content of the story</td>",
+        "rst_description": "Content of the story\n",
+        "name": "content"
+      },
+      {
+        "type": "Integer",
+        "required": true,
+        "description": "Period after which the story is moved to the archive, in seconds; must be one of 6 * 3600, 12 * 3600, 86400, or 2 * 86400",
+        "html_description": "<td>Period after which the story is moved to the archive, in seconds; must be one of <code>6 * 3600</code>, <code>12 * 3600</code>, <code>86400</code>, or <code>2 * 86400</code></td>",
+        "rst_description": "Period after which the story is moved to the archive, in seconds; must be one of :code:`6 * 3600`, :code:`12 * 3600`, :code:`86400`, or :code:`2 * 86400`\n",
+        "name": "active_period"
+      },
+      {
+        "type": "String",
+        "required": false,
+        "description": "Caption of the story, 0-2048 characters after entities parsing",
+        "html_description": "<td>Caption of the story, 0-2048 characters after entities parsing</td>",
+        "rst_description": "Caption of the story, 0-2048 characters after entities parsing\n",
+        "name": "caption"
+      },
+      {
+        "type": "String",
+        "required": false,
+        "description": "Mode for parsing entities in the story caption. See formatting options for more details.",
+        "html_description": "<td>Mode for parsing entities in the story caption. See <a href=\"#formatting-options\">formatting options</a> for more details.</td>",
+        "rst_description": "Mode for parsing entities in the story caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.\n",
+        "name": "parse_mode"
+      },
+      {
+        "type": "Array of MessageEntity",
+        "required": false,
+        "description": "A JSON-serialized list of special entities that appear in the caption, which can be specified instead of parse_mode",
+        "html_description": "<td>A JSON-serialized list of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em></td>",
+        "rst_description": "A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*\n",
+        "name": "caption_entities"
+      },
+      {
+        "type": "Array of StoryArea",
+        "required": false,
+        "description": "A JSON-serialized list of clickable areas to be shown on the story",
+        "html_description": "<td>A JSON-serialized list of clickable areas to be shown on the story</td>",
+        "rst_description": "A JSON-serialized list of clickable areas to be shown on the story\n",
+        "name": "areas"
+      },
+      {
+        "type": "Boolean",
+        "required": false,
+        "description": "Pass True to keep the story accessible after it expires",
+        "html_description": "<td>Pass <em>True</em> to keep the story accessible after it expires</td>",
+        "rst_description": "Pass :code:`True` to keep the story accessible after it expires\n",
+        "name": "post_to_chat_page"
+      },
+      {
+        "type": "Boolean",
+        "required": false,
+        "description": "Pass True if the content of the story must be protected from forwarding and screenshotting",
+        "html_description": "<td>Pass <em>True</em> if the content of the story must be protected from forwarding and screenshotting</td>",
+        "rst_description": "Pass :code:`True` if the content of the story must be protected from forwarding and screenshotting\n",
+        "name": "protect_content"
+      }
+    ],
+    "category": "methods"
+  }
+}
