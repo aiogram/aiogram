@@ -1,0 +1,16 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "ownedgift",
+    "name": "OwnedGift",
+    "description": "This object describes a gift received and owned by a user or a chat. Currently, it can be one of\n - OwnedGiftRegular\n - OwnedGiftUnique",
+    "html_description": "<p>This object describes a gift received and owned by a user or a chat. Currently, it can be one of</p><ul>\n<li><a href=\"#ownedgiftregular\">OwnedGiftRegular</a></li>\n<li><a href=\"#ownedgiftunique\">OwnedGiftUnique</a></li>\n</ul>",
+    "rst_description": "This object describes a gift received and owned by a user or a chat. Currently, it can be one of\n\n - :class:`aiogram.types.owned_gift_regular.OwnedGiftRegular`\n - :class:`aiogram.types.owned_gift_unique.OwnedGiftUnique`",
+    "annotations": [],
+    "category": "types"
+  }
+}

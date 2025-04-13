@@ -1,0 +1,65 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "storyareaposition",
+    "name": "StoryAreaPosition",
+    "description": "Describes the position of a clickable area within a story.",
+    "html_description": "<p>Describes the position of a clickable area within a story.</p>",
+    "rst_description": "Describes the position of a clickable area within a story.",
+    "annotations": [
+      {
+        "type": "Float",
+        "description": "The abscissa of the area's center, as a percentage of the media width",
+        "html_description": "<td>The abscissa of the area's center, as a percentage of the media width</td>",
+        "rst_description": "The abscissa of the area's center, as a percentage of the media width\n",
+        "name": "x_percentage",
+        "required": true
+      },
+      {
+        "type": "Float",
+        "description": "The ordinate of the area's center, as a percentage of the media height",
+        "html_description": "<td>The ordinate of the area's center, as a percentage of the media height</td>",
+        "rst_description": "The ordinate of the area's center, as a percentage of the media height\n",
+        "name": "y_percentage",
+        "required": true
+      },
+      {
+        "type": "Float",
+        "description": "The width of the area's rectangle, as a percentage of the media width",
+        "html_description": "<td>The width of the area's rectangle, as a percentage of the media width</td>",
+        "rst_description": "The width of the area's rectangle, as a percentage of the media width\n",
+        "name": "width_percentage",
+        "required": true
+      },
+      {
+        "type": "Float",
+        "description": "The height of the area's rectangle, as a percentage of the media height",
+        "html_description": "<td>The height of the area's rectangle, as a percentage of the media height</td>",
+        "rst_description": "The height of the area's rectangle, as a percentage of the media height\n",
+        "name": "height_percentage",
+        "required": true
+      },
+      {
+        "type": "Float",
+        "description": "The clockwise rotation angle of the rectangle, in degrees; 0-360",
+        "html_description": "<td>The clockwise rotation angle of the rectangle, in degrees; 0-360</td>",
+        "rst_description": "The clockwise rotation angle of the rectangle, in degrees; 0-360\n",
+        "name": "rotation_angle",
+        "required": true
+      },
+      {
+        "type": "Float",
+        "description": "The radius of the rectangle corner rounding, as a percentage of the media width",
+        "html_description": "<td>The radius of the rectangle corner rounding, as a percentage of the media width</td>",
+        "rst_description": "The radius of the rectangle corner rounding, as a percentage of the media width\n",
+        "name": "corner_radius_percentage",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

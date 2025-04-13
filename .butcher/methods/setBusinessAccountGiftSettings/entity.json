@@ -1,0 +1,41 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Updating messages",
+    "anchor": "updating-messages"
+  },
+  "object": {
+    "anchor": "setbusinessaccountgiftsettings",
+    "name": "setBusinessAccountGiftSettings",
+    "description": "Changes the privacy settings pertaining to incoming gifts in a managed business account. Requires the can_change_gift_settings business bot right. Returns True on success.",
+    "html_description": "<p>Changes the privacy settings pertaining to incoming gifts in a managed business account. Requires the <em>can_change_gift_settings</em> business bot right. Returns <em>True</em> on success.</p>",
+    "rst_description": "Changes the privacy settings pertaining to incoming gifts in a managed business account. Requires the *can_change_gift_settings* business bot right. Returns :code:`True` on success.",
+    "annotations": [
+      {
+        "type": "String",
+        "required": true,
+        "description": "Unique identifier of the business connection",
+        "html_description": "<td>Unique identifier of the business connection</td>",
+        "rst_description": "Unique identifier of the business connection\n",
+        "name": "business_connection_id"
+      },
+      {
+        "type": "Boolean",
+        "required": true,
+        "description": "Pass True, if a button for sending a gift to the user or by the business account must always be shown in the input field",
+        "html_description": "<td>Pass True, if a button for sending a gift to the user or by the business account must always be shown in the input field</td>",
+        "rst_description": "Pass True, if a button for sending a gift to the user or by the business account must always be shown in the input field\n",
+        "name": "show_gift_button"
+      },
+      {
+        "type": "AcceptedGiftTypes",
+        "required": true,
+        "description": "Types of gifts accepted by the business account",
+        "html_description": "<td>Types of gifts accepted by the business account</td>",
+        "rst_description": "Types of gifts accepted by the business account\n",
+        "name": "accepted_gift_types"
+      }
+    ],
+    "category": "methods"
+  }
+}

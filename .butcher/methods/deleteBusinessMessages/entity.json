@@ -1,0 +1,33 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Updating messages",
+    "anchor": "updating-messages"
+  },
+  "object": {
+    "anchor": "deletebusinessmessages",
+    "name": "deleteBusinessMessages",
+    "description": "Delete messages on behalf of a business account. Requires the can_delete_outgoing_messages business bot right to delete messages sent by the bot itself, or the can_delete_all_messages business bot right to delete any message. Returns True on success.",
+    "html_description": "<p>Delete messages on behalf of a business account. Requires the <em>can_delete_outgoing_messages</em> business bot right to delete messages sent by the bot itself, or the <em>can_delete_all_messages</em> business bot right to delete any message. Returns <em>True</em> on success.</p>",
+    "rst_description": "Delete messages on behalf of a business account. Requires the *can_delete_outgoing_messages* business bot right to delete messages sent by the bot itself, or the *can_delete_all_messages* business bot right to delete any message. Returns :code:`True` on success.",
+    "annotations": [
+      {
+        "type": "String",
+        "required": true,
+        "description": "Unique identifier of the business connection on behalf of which to delete the messages",
+        "html_description": "<td>Unique identifier of the business connection on behalf of which to delete the messages</td>",
+        "rst_description": "Unique identifier of the business connection on behalf of which to delete the messages\n",
+        "name": "business_connection_id"
+      },
+      {
+        "type": "Array of Integer",
+        "required": true,
+        "description": "A JSON-serialized list of 1-100 identifiers of messages to delete. All messages must be from the same chat. See deleteMessage for limitations on which messages can be deleted",
+        "html_description": "<td>A JSON-serialized list of 1-100 identifiers of messages to delete. All messages must be from the same chat. See <a href=\"#deletemessage\">deleteMessage</a> for limitations on which messages can be deleted</td>",
+        "rst_description": "A JSON-serialized list of 1-100 identifiers of messages to delete. All messages must be from the same chat. See :class:`aiogram.methods.delete_message.DeleteMessage` for limitations on which messages can be deleted\n",
+        "name": "message_ids"
+      }
+    ],
+    "category": "methods"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "storyareatype",
+    "name": "StoryAreaType",
+    "description": "Describes the type of a clickable area on a story. Currently, it can be one of\n - StoryAreaTypeLocation\n - StoryAreaTypeSuggestedReaction\n - StoryAreaTypeLink\n - StoryAreaTypeWeather\n - StoryAreaTypeUniqueGift",
+    "html_description": "<p>Describes the type of a clickable area on a story. Currently, it can be one of</p><ul>\n<li><a href=\"#storyareatypelocation\">StoryAreaTypeLocation</a></li>\n<li><a href=\"#storyareatypesuggestedreaction\">StoryAreaTypeSuggestedReaction</a></li>\n<li><a href=\"#storyareatypelink\">StoryAreaTypeLink</a></li>\n<li><a href=\"#storyareatypeweather\">StoryAreaTypeWeather</a></li>\n<li><a href=\"#storyareatypeuniquegift\">StoryAreaTypeUniqueGift</a></li>\n</ul>",
+    "rst_description": "Describes the type of a clickable area on a story. Currently, it can be one of\n\n - :class:`aiogram.types.story_area_type_location.StoryAreaTypeLocation`\n - :class:`aiogram.types.story_area_type_suggested_reaction.StoryAreaTypeSuggestedReaction`\n - :class:`aiogram.types.story_area_type_link.StoryAreaTypeLink`\n - :class:`aiogram.types.story_area_type_weather.StoryAreaTypeWeather`\n - :class:`aiogram.types.story_area_type_unique_gift.StoryAreaTypeUniqueGift`",
+    "annotations": [],
+    "category": "types"
+  }
+}

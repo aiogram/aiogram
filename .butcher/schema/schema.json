@@ -1,7 +1,7 @@
 {
   "api": {
-    "version": "8.3",
-    "release_date": "2025-02-12"
+    "version": "9.0",
+    "release_date": "2025-04-11"
   },
   "items": [
     {
@@ -870,12 +870,12 @@
               "required": false
             },
             {
-              "type": "True",
-              "description": "True, if gifts can be sent to the chat",
-              "html_description": "<td><em>Optional</em>. <em>True</em>, if gifts can be sent to the chat</td>",
-              "rst_description": "*Optional*. :code:`True`, if gifts can be sent to the chat\n",
-              "name": "can_send_gift",
-              "required": false
+              "type": "AcceptedGiftTypes",
+              "description": "Information about types of gifts that are accepted by the chat or by the corresponding user for private chats",
+              "html_description": "<td>Information about types of gifts that are accepted by the chat or by the corresponding user for private chats</td>",
+              "rst_description": "Information about types of gifts that are accepted by the chat or by the corresponding user for private chats\n",
+              "name": "accepted_gift_types",
+              "required": true
             },
             {
               "type": "True",
@@ -1165,6 +1165,14 @@
               "html_description": "<td><em>Optional</em>. Signature of the post author for messages in channels, or the custom title of an anonymous group administrator</td>",
               "rst_description": "*Optional*. Signature of the post author for messages in channels, or the custom title of an anonymous group administrator\n",
               "name": "author_signature",
+              "required": false
+            },
+            {
+              "type": "Integer",
+              "description": "The number of Telegram Stars that were paid by the sender of the message to send it",
+              "html_description": "<td><em>Optional</em>. The number of Telegram Stars that were paid by the sender of the message to send it</td>",
+              "rst_description": "*Optional*. The number of Telegram Stars that were paid by the sender of the message to send it\n",
+              "name": "paid_star_count",
               "required": false
             },
             {
@@ -1496,6 +1504,22 @@
               "required": false
             },
             {
+              "type": "GiftInfo",
+              "description": "Service message: a regular gift was sent or received",
+              "html_description": "<td><em>Optional</em>. Service message: a regular gift was sent or received</td>",
+              "rst_description": "*Optional*. Service message: a regular gift was sent or received\n",
+              "name": "gift",
+              "required": false
+            },
+            {
+              "type": "UniqueGiftInfo",
+              "description": "Service message: a unique gift was sent or received",
+              "html_description": "<td><em>Optional</em>. Service message: a unique gift was sent or received</td>",
+              "rst_description": "*Optional*. Service message: a unique gift was sent or received\n",
+              "name": "unique_gift",
+              "required": false
+            },
+            {
               "type": "String",
               "description": "The domain name of the website on which the user has logged in.",
               "html_description": "<td><em>Optional</em>. The domain name of the website on which the user has logged in. <a href=\"/widgets/login\">More about Telegram Login &#187;</a></td>",
@@ -1621,6 +1645,14 @@
               "html_description": "<td><em>Optional</em>. Service message: a giveaway without public winners was completed</td>",
               "rst_description": "*Optional*. Service message: a giveaway without public winners was completed\n",
               "name": "giveaway_completed",
+              "required": false
+            },
+            {
+              "type": "PaidMessagePriceChanged",
+              "description": "Service message: the price for paid messages has changed in the chat",
+              "html_description": "<td><em>Optional</em>. Service message: the price for paid messages has changed in the chat</td>",
+              "rst_description": "*Optional*. Service message: the price for paid messages has changed in the chat\n",
+              "name": "paid_message_price_changed",
               "required": false
             },
             {
@@ -4059,6 +4091,24 @@
           "category": "types"
         },
         {
+          "anchor": "paidmessagepricechanged",
+          "name": "PaidMessagePriceChanged",
+          "description": "Describes a service message about a change in the price of paid messages within a chat.",
+          "html_description": "<p>Describes a service message about a change in the price of paid messages within a chat.</p>",
+          "rst_description": "Describes a service message about a change in the price of paid messages within a chat.",
+          "annotations": [
+            {
+              "type": "Integer",
+              "description": "The new number of Telegram Stars that must be paid by non-administrator users of the supergroup chat for each sent message",
+              "html_description": "<td>The new number of Telegram Stars that must be paid by non-administrator users of the supergroup chat for each sent message</td>",
+              "rst_description": "The new number of Telegram Stars that must be paid by non-administrator users of the supergroup chat for each sent message\n",
+              "name": "paid_message_star_count",
+              "required": true
+            }
+          ],
+          "category": "types"
+        },
+        {
           "anchor": "giveawaycreated",
           "name": "GiveawayCreated",
           "description": "This object represents a service message about the creation of a scheduled giveaway.",
@@ -6232,6 +6282,319 @@
           "category": "types"
         },
         {
+          "anchor": "storyareaposition",
+          "name": "StoryAreaPosition",
+          "description": "Describes the position of a clickable area within a story.",
+          "html_description": "<p>Describes the position of a clickable area within a story.</p>",
+          "rst_description": "Describes the position of a clickable area within a story.",
+          "annotations": [
+            {
+              "type": "Float",
+              "description": "The abscissa of the area's center, as a percentage of the media width",
+              "html_description": "<td>The abscissa of the area's center, as a percentage of the media width</td>",
+              "rst_description": "The abscissa of the area's center, as a percentage of the media width\n",
+              "name": "x_percentage",
+              "required": true
+            },
+            {
+              "type": "Float",
+              "description": "The ordinate of the area's center, as a percentage of the media height",
+              "html_description": "<td>The ordinate of the area's center, as a percentage of the media height</td>",
+              "rst_description": "The ordinate of the area's center, as a percentage of the media height\n",
+              "name": "y_percentage",
+              "required": true
+            },
+            {
+              "type": "Float",
+              "description": "The width of the area's rectangle, as a percentage of the media width",
+              "html_description": "<td>The width of the area's rectangle, as a percentage of the media width</td>",
+              "rst_description": "The width of the area's rectangle, as a percentage of the media width\n",
+              "name": "width_percentage",
+              "required": true
+            },
+            {
+              "type": "Float",
+              "description": "The height of the area's rectangle, as a percentage of the media height",
+              "html_description": "<td>The height of the area's rectangle, as a percentage of the media height</td>",
+              "rst_description": "The height of the area's rectangle, as a percentage of the media height\n",
+              "name": "height_percentage",
+              "required": true
+            },
+            {
+              "type": "Float",
+              "description": "The clockwise rotation angle of the rectangle, in degrees; 0-360",
+              "html_description": "<td>The clockwise rotation angle of the rectangle, in degrees; 0-360</td>",
+              "rst_description": "The clockwise rotation angle of the rectangle, in degrees; 0-360\n",
+              "name": "rotation_angle",
+              "required": true
+            },
+            {
+              "type": "Float",
+              "description": "The radius of the rectangle corner rounding, as a percentage of the media width",
+              "html_description": "<td>The radius of the rectangle corner rounding, as a percentage of the media width</td>",
+              "rst_description": "The radius of the rectangle corner rounding, as a percentage of the media width\n",
+              "name": "corner_radius_percentage",
+              "required": true
+            }
+          ],
+          "category": "types"
+        },
+        {
+          "anchor": "locationaddress",
+          "name": "LocationAddress",
+          "description": "Describes the physical address of a location.",
+          "html_description": "<p>Describes the physical address of a location.</p>",
+          "rst_description": "Describes the physical address of a location.",
+          "annotations": [
+            {
+              "type": "String",
+              "description": "The two-letter ISO 3166-1 alpha-2 country code of the country where the location is located",
+              "html_description": "<td>The two-letter ISO 3166-1 alpha-2 country code of the country where the location is located</td>",
+              "rst_description": "The two-letter ISO 3166-1 alpha-2 country code of the country where the location is located\n",
+              "name": "country_code",
+              "required": true
+            },
+            {
+              "type": "String",
+              "description": "State of the location",
+              "html_description": "<td><em>Optional</em>. State of the location</td>",
+              "rst_description": "*Optional*. State of the location\n",
+              "name": "state",
+              "required": false
+            },
+            {
+              "type": "String",
+              "description": "City of the location",
+              "html_description": "<td><em>Optional</em>. City of the location</td>",
+              "rst_description": "*Optional*. City of the location\n",
+              "name": "city",
+              "required": false
+            },
+            {
+              "type": "String",
+              "description": "Street address of the location",
+              "html_description": "<td><em>Optional</em>. Street address of the location</td>",
+              "rst_description": "*Optional*. Street address of the location\n",
+              "name": "street",
+              "required": false
+            }
+          ],
+          "category": "types"
+        },
+        {
+          "anchor": "storyareatype",
+          "name": "StoryAreaType",
+          "description": "Describes the type of a clickable area on a story. Currently, it can be one of\n - StoryAreaTypeLocation\n - StoryAreaTypeSuggestedReaction\n - StoryAreaTypeLink\n - StoryAreaTypeWeather\n - StoryAreaTypeUniqueGift",
+          "html_description": "<p>Describes the type of a clickable area on a story. Currently, it can be one of</p><ul>\n<li><a href=\"#storyareatypelocation\">StoryAreaTypeLocation</a></li>\n<li><a href=\"#storyareatypesuggestedreaction\">StoryAreaTypeSuggestedReaction</a></li>\n<li><a href=\"#storyareatypelink\">StoryAreaTypeLink</a></li>\n<li><a href=\"#storyareatypeweather\">StoryAreaTypeWeather</a></li>\n<li><a href=\"#storyareatypeuniquegift\">StoryAreaTypeUniqueGift</a></li>\n</ul>",
+          "rst_description": "Describes the type of a clickable area on a story. Currently, it can be one of\n\n - :class:`aiogram.types.story_area_type_location.StoryAreaTypeLocation`\n - :class:`aiogram.types.story_area_type_suggested_reaction.StoryAreaTypeSuggestedReaction`\n - :class:`aiogram.types.story_area_type_link.StoryAreaTypeLink`\n - :class:`aiogram.types.story_area_type_weather.StoryAreaTypeWeather`\n - :class:`aiogram.types.story_area_type_unique_gift.StoryAreaTypeUniqueGift`",
+          "annotations": [],
+          "category": "types"
+        },
+        {
+          "anchor": "storyareatypelocation",
+          "name": "StoryAreaTypeLocation",
+          "description": "Describes a story area pointing to a location. Currently, a story can have up to 10 location areas.",
+          "html_description": "<p>Describes a story area pointing to a location. Currently, a story can have up to 10 location areas.</p>",
+          "rst_description": "Describes a story area pointing to a location. Currently, a story can have up to 10 location areas.",
+          "annotations": [
+            {
+              "type": "String",
+              "description": "Type of the area, always 'location'",
+              "html_description": "<td>Type of the area, always &#8220;location&#8221;</td>",
+              "rst_description": "Type of the area, always 'location'\n",
+              "name": "type",
+              "required": true
+            },
+            {
+              "type": "Float",
+              "description": "Location latitude in degrees",
+              "html_description": "<td>Location latitude in degrees</td>",
+              "rst_description": "Location latitude in degrees\n",
+              "name": "latitude",
+              "required": true
+            },
+            {
+              "type": "Float",
+              "description": "Location longitude in degrees",
+              "html_description": "<td>Location longitude in degrees</td>",
+              "rst_description": "Location longitude in degrees\n",
+              "name": "longitude",
+              "required": true
+            },
+            {
+              "type": "LocationAddress",
+              "description": "Address of the location",
+              "html_description": "<td><em>Optional</em>. Address of the location</td>",
+              "rst_description": "*Optional*. Address of the location\n",
+              "name": "address",
+              "required": false
+            }
+          ],
+          "category": "types"
+        },
+        {
+          "anchor": "storyareatypesuggestedreaction",
+          "name": "StoryAreaTypeSuggestedReaction",
+          "description": "Describes a story area pointing to a suggested reaction. Currently, a story can have up to 5 suggested reaction areas.",
+          "html_description": "<p>Describes a story area pointing to a suggested reaction. Currently, a story can have up to 5 suggested reaction areas.</p>",
+          "rst_description": "Describes a story area pointing to a suggested reaction. Currently, a story can have up to 5 suggested reaction areas.",
+          "annotations": [
+            {
+              "type": "String",
+              "description": "Type of the area, always 'suggested_reaction'",
+              "html_description": "<td>Type of the area, always &#8220;suggested_reaction&#8221;</td>",
+              "rst_description": "Type of the area, always 'suggested_reaction'\n",
+              "name": "type",
+              "required": true
+            },
+            {
+              "type": "ReactionType",
+              "description": "Type of the reaction",
+              "html_description": "<td>Type of the reaction</td>",
+              "rst_description": "Type of the reaction\n",
+              "name": "reaction_type",
+              "required": true
+            },
+            {
+              "type": "Boolean",
+              "description": "Pass True if the reaction area has a dark background",
+              "html_description": "<td><em>Optional</em>. Pass <em>True</em> if the reaction area has a dark background</td>",
+              "rst_description": "*Optional*. Pass :code:`True` if the reaction area has a dark background\n",
+              "name": "is_dark",
+              "required": false
+            },
+            {
+              "type": "Boolean",
+              "description": "Pass True if reaction area corner is flipped",
+              "html_description": "<td><em>Optional</em>. Pass <em>True</em> if reaction area corner is flipped</td>",
+              "rst_description": "*Optional*. Pass :code:`True` if reaction area corner is flipped\n",
+              "name": "is_flipped",
+              "required": false
+            }
+          ],
+          "category": "types"
+        },
+        {
+          "anchor": "storyareatypelink",
+          "name": "StoryAreaTypeLink",
+          "description": "Describes a story area pointing to an HTTP or tg:// link. Currently, a story can have up to 3 link areas.",
+          "html_description": "<p>Describes a story area pointing to an HTTP or tg:// link. Currently, a story can have up to 3 link areas.</p>",
+          "rst_description": "Describes a story area pointing to an HTTP or tg:// link. Currently, a story can have up to 3 link areas.",
+          "annotations": [
+            {
+              "type": "String",
+              "description": "Type of the area, always 'link'",
+              "html_description": "<td>Type of the area, always &#8220;link&#8221;</td>",
+              "rst_description": "Type of the area, always 'link'\n",
+              "name": "type",
+              "required": true
+            },
+            {
+              "type": "String",
+              "description": "HTTP or tg:// URL to be opened when the area is clicked",
+              "html_description": "<td>HTTP or tg:// URL to be opened when the area is clicked</td>",
+              "rst_description": "HTTP or tg:// URL to be opened when the area is clicked\n",
+              "name": "url",
+              "required": true
+            }
+          ],
+          "category": "types"
+        },
+        {
+          "anchor": "storyareatypeweather",
+          "name": "StoryAreaTypeWeather",
+          "description": "Describes a story area containing weather information. Currently, a story can have up to 3 weather areas.",
+          "html_description": "<p>Describes a story area containing weather information. Currently, a story can have up to 3 weather areas.</p>",
+          "rst_description": "Describes a story area containing weather information. Currently, a story can have up to 3 weather areas.",
+          "annotations": [
+            {
+              "type": "String",
+              "description": "Type of the area, always 'weather'",
+              "html_description": "<td>Type of the area, always &#8220;weather&#8221;</td>",
+              "rst_description": "Type of the area, always 'weather'\n",
+              "name": "type",
+              "required": true
+            },
+            {
+              "type": "Float",
+              "description": "Temperature, in degree Celsius",
+              "html_description": "<td>Temperature, in degree Celsius</td>",
+              "rst_description": "Temperature, in degree Celsius\n",
+              "name": "temperature",
+              "required": true
+            },
+            {
+              "type": "String",
+              "description": "Emoji representing the weather",
+              "html_description": "<td>Emoji representing the weather</td>",
+              "rst_description": "Emoji representing the weather\n",
+              "name": "emoji",
+              "required": true
+            },
+            {
+              "type": "Integer",
+              "description": "A color of the area background in the ARGB format",
+              "html_description": "<td>A color of the area background in the ARGB format</td>",
+              "rst_description": "A color of the area background in the ARGB format\n",
+              "name": "background_color",
+              "required": true
+            }
+          ],
+          "category": "types"
+        },
+        {
+          "anchor": "storyareatypeuniquegift",
+          "name": "StoryAreaTypeUniqueGift",
+          "description": "Describes a story area pointing to a unique gift. Currently, a story can have at most 1 unique gift area.",
+          "html_description": "<p>Describes a story area pointing to a unique gift. Currently, a story can have at most 1 unique gift area.</p>",
+          "rst_description": "Describes a story area pointing to a unique gift. Currently, a story can have at most 1 unique gift area.",
+          "annotations": [
+            {
+              "type": "String",
+              "description": "Type of the area, always 'unique_gift'",
+              "html_description": "<td>Type of the area, always &#8220;unique_gift&#8221;</td>",
+              "rst_description": "Type of the area, always 'unique_gift'\n",
+              "name": "type",
+              "required": true
+            },
+            {
+              "type": "String",
+              "description": "Unique name of the gift",
+              "html_description": "<td>Unique name of the gift</td>",
+              "rst_description": "Unique name of the gift\n",
+              "name": "name",
+              "required": true
+            }
+          ],
+          "category": "types"
+        },
+        {
+          "anchor": "storyarea",
+          "name": "StoryArea",
+          "description": "Describes a clickable area on a story media.",
+          "html_description": "<p>Describes a clickable area on a story media.</p>",
+          "rst_description": "Describes a clickable area on a story media.",
+          "annotations": [
+            {
+              "type": "StoryAreaPosition",
+              "description": "Position of the area",
+              "html_description": "<td>Position of the area</td>",
+              "rst_description": "Position of the area\n",
+              "name": "position",
+              "required": true
+            },
+            {
+              "type": "StoryAreaType",
+              "description": "Type of the area",
+              "html_description": "<td>Type of the area</td>",
+              "rst_description": "Type of the area\n",
+              "name": "type",
+              "required": true
+            }
+          ],
+          "category": "types"
+        },
+        {
           "anchor": "chatlocation",
           "name": "ChatLocation",
           "description": "Represents a location to which a chat is connected.",
@@ -6507,6 +6870,699 @@
               "html_description": "<td><em>Optional</em>. Unique identifier of the custom emoji shown as the topic icon</td>",
               "rst_description": "*Optional*. Unique identifier of the custom emoji shown as the topic icon\n",
               "name": "icon_custom_emoji_id",
+              "required": false
+            }
+          ],
+          "category": "types"
+        },
+        {
+          "anchor": "gift",
+          "name": "Gift",
+          "description": "This object represents a gift that can be sent by the bot.",
+          "html_description": "<p>This object represents a gift that can be sent by the bot.</p>",
+          "rst_description": "This object represents a gift that can be sent by the bot.",
+          "annotations": [
+            {
+              "type": "String",
+              "description": "Unique identifier of the gift",
+              "html_description": "<td>Unique identifier of the gift</td>",
+              "rst_description": "Unique identifier of the gift\n",
+              "name": "id",
+              "required": true
+            },
+            {
+              "type": "Sticker",
+              "description": "The sticker that represents the gift",
+              "html_description": "<td>The sticker that represents the gift</td>",
+              "rst_description": "The sticker that represents the gift\n",
+              "name": "sticker",
+              "required": true
+            },
+            {
+              "type": "Integer",
+              "description": "The number of Telegram Stars that must be paid to send the sticker",
+              "html_description": "<td>The number of Telegram Stars that must be paid to send the sticker</td>",
+              "rst_description": "The number of Telegram Stars that must be paid to send the sticker\n",
+              "name": "star_count",
+              "required": true
+            },
+            {
+              "type": "Integer",
+              "description": "The number of Telegram Stars that must be paid to upgrade the gift to a unique one",
+              "html_description": "<td><em>Optional</em>. The number of Telegram Stars that must be paid to upgrade the gift to a unique one</td>",
+              "rst_description": "*Optional*. The number of Telegram Stars that must be paid to upgrade the gift to a unique one\n",
+              "name": "upgrade_star_count",
+              "required": false
+            },
+            {
+              "type": "Integer",
+              "description": "The total number of the gifts of this type that can be sent; for limited gifts only",
+              "html_description": "<td><em>Optional</em>. The total number of the gifts of this type that can be sent; for limited gifts only</td>",
+              "rst_description": "*Optional*. The total number of the gifts of this type that can be sent; for limited gifts only\n",
+              "name": "total_count",
+              "required": false
+            },
+            {
+              "type": "Integer",
+              "description": "The number of remaining gifts of this type that can be sent; for limited gifts only",
+              "html_description": "<td><em>Optional</em>. The number of remaining gifts of this type that can be sent; for limited gifts only</td>",
+              "rst_description": "*Optional*. The number of remaining gifts of this type that can be sent; for limited gifts only\n",
+              "name": "remaining_count",
+              "required": false
+            }
+          ],
+          "category": "types"
+        },
+        {
+          "anchor": "gifts",
+          "name": "Gifts",
+          "description": "This object represent a list of gifts.",
+          "html_description": "<p>This object represent a list of gifts.</p>",
+          "rst_description": "This object represent a list of gifts.",
+          "annotations": [
+            {
+              "type": "Array of Gift",
+              "description": "The list of gifts",
+              "html_description": "<td>The list of gifts</td>",
+              "rst_description": "The list of gifts\n",
+              "name": "gifts",
+              "required": true
+            }
+          ],
+          "category": "types"
+        },
+        {
+          "anchor": "uniquegiftmodel",
+          "name": "UniqueGiftModel",
+          "description": "This object describes the model of a unique gift.",
+          "html_description": "<p>This object describes the model of a unique gift.</p>",
+          "rst_description": "This object describes the model of a unique gift.",
+          "annotations": [
+            {
+              "type": "String",
+              "description": "Name of the model",
+              "html_description": "<td>Name of the model</td>",
+              "rst_description": "Name of the model\n",
+              "name": "name",
+              "required": true
+            },
+            {
+              "type": "Sticker",
+              "description": "The sticker that represents the unique gift",
+              "html_description": "<td>The sticker that represents the unique gift</td>",
+              "rst_description": "The sticker that represents the unique gift\n",
+              "name": "sticker",
+              "required": true
+            },
+            {
+              "type": "Integer",
+              "description": "The number of unique gifts that receive this model for every 1000 gifts upgraded",
+              "html_description": "<td>The number of unique gifts that receive this model for every 1000 gifts upgraded</td>",
+              "rst_description": "The number of unique gifts that receive this model for every 1000 gifts upgraded\n",
+              "name": "rarity_per_mille",
+              "required": true
+            }
+          ],
+          "category": "types"
+        },
+        {
+          "anchor": "uniquegiftsymbol",
+          "name": "UniqueGiftSymbol",
+          "description": "This object describes the symbol shown on the pattern of a unique gift.",
+          "html_description": "<p>This object describes the symbol shown on the pattern of a unique gift.</p>",
+          "rst_description": "This object describes the symbol shown on the pattern of a unique gift.",
+          "annotations": [
+            {
+              "type": "String",
+              "description": "Name of the symbol",
+              "html_description": "<td>Name of the symbol</td>",
+              "rst_description": "Name of the symbol\n",
+              "name": "name",
+              "required": true
+            },
+            {
+              "type": "Sticker",
+              "description": "The sticker that represents the unique gift",
+              "html_description": "<td>The sticker that represents the unique gift</td>",
+              "rst_description": "The sticker that represents the unique gift\n",
+              "name": "sticker",
+              "required": true
+            },
+            {
+              "type": "Integer",
+              "description": "The number of unique gifts that receive this model for every 1000 gifts upgraded",
+              "html_description": "<td>The number of unique gifts that receive this model for every 1000 gifts upgraded</td>",
+              "rst_description": "The number of unique gifts that receive this model for every 1000 gifts upgraded\n",
+              "name": "rarity_per_mille",
+              "required": true
+            }
+          ],
+          "category": "types"
+        },
+        {
+          "anchor": "uniquegiftbackdropcolors",
+          "name": "UniqueGiftBackdropColors",
+          "description": "This object describes the colors of the backdrop of a unique gift.",
+          "html_description": "<p>This object describes the colors of the backdrop of a unique gift.</p>",
+          "rst_description": "This object describes the colors of the backdrop of a unique gift.",
+          "annotations": [
+            {
+              "type": "Integer",
+              "description": "The color in the center of the backdrop in RGB format",
+              "html_description": "<td>The color in the center of the backdrop in RGB format</td>",
+              "rst_description": "The color in the center of the backdrop in RGB format\n",
+              "name": "center_color",
+              "required": true
+            },
+            {
+              "type": "Integer",
+              "description": "The color on the edges of the backdrop in RGB format",
+              "html_description": "<td>The color on the edges of the backdrop in RGB format</td>",
+              "rst_description": "The color on the edges of the backdrop in RGB format\n",
+              "name": "edge_color",
+              "required": true
+            },
+            {
+              "type": "Integer",
+              "description": "The color to be applied to the symbol in RGB format",
+              "html_description": "<td>The color to be applied to the symbol in RGB format</td>",
+              "rst_description": "The color to be applied to the symbol in RGB format\n",
+              "name": "symbol_color",
+              "required": true
+            },
+            {
+              "type": "Integer",
+              "description": "The color for the text on the backdrop in RGB format",
+              "html_description": "<td>The color for the text on the backdrop in RGB format</td>",
+              "rst_description": "The color for the text on the backdrop in RGB format\n",
+              "name": "text_color",
+              "required": true
+            }
+          ],
+          "category": "types"
+        },
+        {
+          "anchor": "uniquegiftbackdrop",
+          "name": "UniqueGiftBackdrop",
+          "description": "This object describes the backdrop of a unique gift.",
+          "html_description": "<p>This object describes the backdrop of a unique gift.</p>",
+          "rst_description": "This object describes the backdrop of a unique gift.",
+          "annotations": [
+            {
+              "type": "String",
+              "description": "Name of the backdrop",
+              "html_description": "<td>Name of the backdrop</td>",
+              "rst_description": "Name of the backdrop\n",
+              "name": "name",
+              "required": true
+            },
+            {
+              "type": "UniqueGiftBackdropColors",
+              "description": "Colors of the backdrop",
+              "html_description": "<td>Colors of the backdrop</td>",
+              "rst_description": "Colors of the backdrop\n",
+              "name": "colors",
+              "required": true
+            },
+            {
+              "type": "Integer",
+              "description": "The number of unique gifts that receive this backdrop for every 1000 gifts upgraded",
+              "html_description": "<td>The number of unique gifts that receive this backdrop for every 1000 gifts upgraded</td>",
+              "rst_description": "The number of unique gifts that receive this backdrop for every 1000 gifts upgraded\n",
+              "name": "rarity_per_mille",
+              "required": true
+            }
+          ],
+          "category": "types"
+        },
+        {
+          "anchor": "uniquegift",
+          "name": "UniqueGift",
+          "description": "This object describes a unique gift that was upgraded from a regular gift.",
+          "html_description": "<p>This object describes a unique gift that was upgraded from a regular gift.</p>",
+          "rst_description": "This object describes a unique gift that was upgraded from a regular gift.",
+          "annotations": [
+            {
+              "type": "String",
+              "description": "Human-readable name of the regular gift from which this unique gift was upgraded",
+              "html_description": "<td>Human-readable name of the regular gift from which this unique gift was upgraded</td>",
+              "rst_description": "Human-readable name of the regular gift from which this unique gift was upgraded\n",
+              "name": "base_name",
+              "required": true
+            },
+            {
+              "type": "String",
+              "description": "Unique name of the gift. This name can be used in https://t.me/nft/... links and story areas",
+              "html_description": "<td>Unique name of the gift. This name can be used in <code>https://t.me/nft/...</code> links and story areas</td>",
+              "rst_description": "Unique name of the gift. This name can be used in :code:`https://t.me/nft/...` links and story areas\n",
+              "name": "name",
+              "required": true
+            },
+            {
+              "type": "Integer",
+              "description": "Unique number of the upgraded gift among gifts upgraded from the same regular gift",
+              "html_description": "<td>Unique number of the upgraded gift among gifts upgraded from the same regular gift</td>",
+              "rst_description": "Unique number of the upgraded gift among gifts upgraded from the same regular gift\n",
+              "name": "number",
+              "required": true
+            },
+            {
+              "type": "UniqueGiftModel",
+              "description": "Model of the gift",
+              "html_description": "<td>Model of the gift</td>",
+              "rst_description": "Model of the gift\n",
+              "name": "model",
+              "required": true
+            },
+            {
+              "type": "UniqueGiftSymbol",
+              "description": "Symbol of the gift",
+              "html_description": "<td>Symbol of the gift</td>",
+              "rst_description": "Symbol of the gift\n",
+              "name": "symbol",
+              "required": true
+            },
+            {
+              "type": "UniqueGiftBackdrop",
+              "description": "Backdrop of the gift",
+              "html_description": "<td>Backdrop of the gift</td>",
+              "rst_description": "Backdrop of the gift\n",
+              "name": "backdrop",
+              "required": true
+            }
+          ],
+          "category": "types"
+        },
+        {
+          "anchor": "giftinfo",
+          "name": "GiftInfo",
+          "description": "Describes a service message about a regular gift that was sent or received.",
+          "html_description": "<p>Describes a service message about a regular gift that was sent or received.</p>",
+          "rst_description": "Describes a service message about a regular gift that was sent or received.",
+          "annotations": [
+            {
+              "type": "Gift",
+              "description": "Information about the gift",
+              "html_description": "<td>Information about the gift</td>",
+              "rst_description": "Information about the gift\n",
+              "name": "gift",
+              "required": true
+            },
+            {
+              "type": "String",
+              "description": "Unique identifier of the received gift for the bot; only present for gifts received on behalf of business accounts",
+              "html_description": "<td><em>Optional</em>. Unique identifier of the received gift for the bot; only present for gifts received on behalf of business accounts</td>",
+              "rst_description": "*Optional*. Unique identifier of the received gift for the bot; only present for gifts received on behalf of business accounts\n",
+              "name": "owned_gift_id",
+              "required": false
+            },
+            {
+              "type": "Integer",
+              "description": "Number of Telegram Stars that can be claimed by the receiver by converting the gift; omitted if conversion to Telegram Stars is impossible",
+              "html_description": "<td><em>Optional</em>. Number of Telegram Stars that can be claimed by the receiver by converting the gift; omitted if conversion to Telegram Stars is impossible</td>",
+              "rst_description": "*Optional*. Number of Telegram Stars that can be claimed by the receiver by converting the gift; omitted if conversion to Telegram Stars is impossible\n",
+              "name": "convert_star_count",
+              "required": false
+            },
+            {
+              "type": "Integer",
+              "description": "Number of Telegram Stars that were prepaid by the sender for the ability to upgrade the gift",
+              "html_description": "<td><em>Optional</em>. Number of Telegram Stars that were prepaid by the sender for the ability to upgrade the gift</td>",
+              "rst_description": "*Optional*. Number of Telegram Stars that were prepaid by the sender for the ability to upgrade the gift\n",
+              "name": "prepaid_upgrade_star_count",
+              "required": false
+            },
+            {
+              "type": "True",
+              "description": "True, if the gift can be upgraded to a unique gift",
+              "html_description": "<td><em>Optional</em>. True, if the gift can be upgraded to a unique gift</td>",
+              "rst_description": "*Optional*. True, if the gift can be upgraded to a unique gift\n",
+              "name": "can_be_upgraded",
+              "required": false
+            },
+            {
+              "type": "String",
+              "description": "Text of the message that was added to the gift",
+              "html_description": "<td><em>Optional</em>. Text of the message that was added to the gift</td>",
+              "rst_description": "*Optional*. Text of the message that was added to the gift\n",
+              "name": "text",
+              "required": false
+            },
+            {
+              "type": "Array of MessageEntity",
+              "description": "Special entities that appear in the text",
+              "html_description": "<td><em>Optional</em>. Special entities that appear in the text</td>",
+              "rst_description": "*Optional*. Special entities that appear in the text\n",
+              "name": "entities",
+              "required": false
+            },
+            {
+              "type": "True",
+              "description": "True, if the sender and gift text are shown only to the gift receiver; otherwise, everyone will be able to see them",
+              "html_description": "<td><em>Optional</em>. True, if the sender and gift text are shown only to the gift receiver; otherwise, everyone will be able to see them</td>",
+              "rst_description": "*Optional*. True, if the sender and gift text are shown only to the gift receiver; otherwise, everyone will be able to see them\n",
+              "name": "is_private",
+              "required": false
+            }
+          ],
+          "category": "types"
+        },
+        {
+          "anchor": "uniquegiftinfo",
+          "name": "UniqueGiftInfo",
+          "description": "Describes a service message about a unique gift that was sent or received.",
+          "html_description": "<p>Describes a service message about a unique gift that was sent or received.</p>",
+          "rst_description": "Describes a service message about a unique gift that was sent or received.",
+          "annotations": [
+            {
+              "type": "UniqueGift",
+              "description": "Information about the gift",
+              "html_description": "<td>Information about the gift</td>",
+              "rst_description": "Information about the gift\n",
+              "name": "gift",
+              "required": true
+            },
+            {
+              "type": "String",
+              "description": "Origin of the gift. Currently, either 'upgrade' or 'transfer'",
+              "html_description": "<td>Origin of the gift. Currently, either &#8220;upgrade&#8221; or &#8220;transfer&#8221;</td>",
+              "rst_description": "Origin of the gift. Currently, either 'upgrade' or 'transfer'\n",
+              "name": "origin",
+              "required": true
+            },
+            {
+              "type": "String",
+              "description": "Unique identifier of the received gift for the bot; only present for gifts received on behalf of business accounts",
+              "html_description": "<td><em>Optional</em>. Unique identifier of the received gift for the bot; only present for gifts received on behalf of business accounts</td>",
+              "rst_description": "*Optional*. Unique identifier of the received gift for the bot; only present for gifts received on behalf of business accounts\n",
+              "name": "owned_gift_id",
+              "required": false
+            },
+            {
+              "type": "Integer",
+              "description": "Number of Telegram Stars that must be paid to transfer the gift; omitted if the bot cannot transfer the gift",
+              "html_description": "<td><em>Optional</em>. Number of Telegram Stars that must be paid to transfer the gift; omitted if the bot cannot transfer the gift</td>",
+              "rst_description": "*Optional*. Number of Telegram Stars that must be paid to transfer the gift; omitted if the bot cannot transfer the gift\n",
+              "name": "transfer_star_count",
+              "required": false
+            }
+          ],
+          "category": "types"
+        },
+        {
+          "anchor": "ownedgift",
+          "name": "OwnedGift",
+          "description": "This object describes a gift received and owned by a user or a chat. Currently, it can be one of\n - OwnedGiftRegular\n - OwnedGiftUnique",
+          "html_description": "<p>This object describes a gift received and owned by a user or a chat. Currently, it can be one of</p><ul>\n<li><a href=\"#ownedgiftregular\">OwnedGiftRegular</a></li>\n<li><a href=\"#ownedgiftunique\">OwnedGiftUnique</a></li>\n</ul>",
+          "rst_description": "This object describes a gift received and owned by a user or a chat. Currently, it can be one of\n\n - :class:`aiogram.types.owned_gift_regular.OwnedGiftRegular`\n - :class:`aiogram.types.owned_gift_unique.OwnedGiftUnique`",
+          "annotations": [],
+          "category": "types"
+        },
+        {
+          "anchor": "ownedgiftregular",
+          "name": "OwnedGiftRegular",
+          "description": "Describes a regular gift owned by a user or a chat.",
+          "html_description": "<p>Describes a regular gift owned by a user or a chat.</p>",
+          "rst_description": "Describes a regular gift owned by a user or a chat.",
+          "annotations": [
+            {
+              "type": "String",
+              "description": "Type of the gift, always 'regular'",
+              "html_description": "<td>Type of the gift, always &#8220;regular&#8221;</td>",
+              "rst_description": "Type of the gift, always 'regular'\n",
+              "name": "type",
+              "required": true
+            },
+            {
+              "type": "Gift",
+              "description": "Information about the regular gift",
+              "html_description": "<td>Information about the regular gift</td>",
+              "rst_description": "Information about the regular gift\n",
+              "name": "gift",
+              "required": true
+            },
+            {
+              "type": "String",
+              "description": "Unique identifier of the gift for the bot; for gifts received on behalf of business accounts only",
+              "html_description": "<td><em>Optional</em>. Unique identifier of the gift for the bot; for gifts received on behalf of business accounts only</td>",
+              "rst_description": "*Optional*. Unique identifier of the gift for the bot; for gifts received on behalf of business accounts only\n",
+              "name": "owned_gift_id",
+              "required": false
+            },
+            {
+              "type": "User",
+              "description": "Sender of the gift if it is a known user",
+              "html_description": "<td><em>Optional</em>. Sender of the gift if it is a known user</td>",
+              "rst_description": "*Optional*. Sender of the gift if it is a known user\n",
+              "name": "sender_user",
+              "required": false
+            },
+            {
+              "type": "Integer",
+              "description": "Date the gift was sent in Unix time",
+              "html_description": "<td>Date the gift was sent in Unix time</td>",
+              "rst_description": "Date the gift was sent in Unix time\n",
+              "name": "send_date",
+              "required": true
+            },
+            {
+              "type": "String",
+              "description": "Text of the message that was added to the gift",
+              "html_description": "<td><em>Optional</em>. Text of the message that was added to the gift</td>",
+              "rst_description": "*Optional*. Text of the message that was added to the gift\n",
+              "name": "text",
+              "required": false
+            },
+            {
+              "type": "Array of MessageEntity",
+              "description": "Special entities that appear in the text",
+              "html_description": "<td><em>Optional</em>. Special entities that appear in the text</td>",
+              "rst_description": "*Optional*. Special entities that appear in the text\n",
+              "name": "entities",
+              "required": false
+            },
+            {
+              "type": "True",
+              "description": "True, if the sender and gift text are shown only to the gift receiver; otherwise, everyone will be able to see them",
+              "html_description": "<td><em>Optional</em>. True, if the sender and gift text are shown only to the gift receiver; otherwise, everyone will be able to see them</td>",
+              "rst_description": "*Optional*. True, if the sender and gift text are shown only to the gift receiver; otherwise, everyone will be able to see them\n",
+              "name": "is_private",
+              "required": false
+            },
+            {
+              "type": "True",
+              "description": "True, if the gift is displayed on the account's profile page; for gifts received on behalf of business accounts only",
+              "html_description": "<td><em>Optional</em>. True, if the gift is displayed on the account's profile page; for gifts received on behalf of business accounts only</td>",
+              "rst_description": "*Optional*. True, if the gift is displayed on the account's profile page; for gifts received on behalf of business accounts only\n",
+              "name": "is_saved",
+              "required": false
+            },
+            {
+              "type": "True",
+              "description": "True, if the gift can be upgraded to a unique gift; for gifts received on behalf of business accounts only",
+              "html_description": "<td><em>Optional</em>. True, if the gift can be upgraded to a unique gift; for gifts received on behalf of business accounts only</td>",
+              "rst_description": "*Optional*. True, if the gift can be upgraded to a unique gift; for gifts received on behalf of business accounts only\n",
+              "name": "can_be_upgraded",
+              "required": false
+            },
+            {
+              "type": "True",
+              "description": "True, if the gift was refunded and isn't available anymore",
+              "html_description": "<td><em>Optional</em>. True, if the gift was refunded and isn't available anymore</td>",
+              "rst_description": "*Optional*. True, if the gift was refunded and isn't available anymore\n",
+              "name": "was_refunded",
+              "required": false
+            },
+            {
+              "type": "Integer",
+              "description": "Number of Telegram Stars that can be claimed by the receiver instead of the gift; omitted if the gift cannot be converted to Telegram Stars",
+              "html_description": "<td><em>Optional</em>. Number of Telegram Stars that can be claimed by the receiver instead of the gift; omitted if the gift cannot be converted to Telegram Stars</td>",
+              "rst_description": "*Optional*. Number of Telegram Stars that can be claimed by the receiver instead of the gift; omitted if the gift cannot be converted to Telegram Stars\n",
+              "name": "convert_star_count",
+              "required": false
+            },
+            {
+              "type": "Integer",
+              "description": "Number of Telegram Stars that were paid by the sender for the ability to upgrade the gift",
+              "html_description": "<td><em>Optional</em>. Number of Telegram Stars that were paid by the sender for the ability to upgrade the gift</td>",
+              "rst_description": "*Optional*. Number of Telegram Stars that were paid by the sender for the ability to upgrade the gift\n",
+              "name": "prepaid_upgrade_star_count",
+              "required": false
+            }
+          ],
+          "category": "types"
+        },
+        {
+          "anchor": "ownedgiftunique",
+          "name": "OwnedGiftUnique",
+          "description": "Describes a unique gift received and owned by a user or a chat.",
+          "html_description": "<p>Describes a unique gift received and owned by a user or a chat.</p>",
+          "rst_description": "Describes a unique gift received and owned by a user or a chat.",
+          "annotations": [
+            {
+              "type": "String",
+              "description": "Type of the gift, always 'unique'",
+              "html_description": "<td>Type of the gift, always &#8220;unique&#8221;</td>",
+              "rst_description": "Type of the gift, always 'unique'\n",
+              "name": "type",
+              "required": true
+            },
+            {
+              "type": "UniqueGift",
+              "description": "Information about the unique gift",
+              "html_description": "<td>Information about the unique gift</td>",
+              "rst_description": "Information about the unique gift\n",
+              "name": "gift",
+              "required": true
+            },
+            {
+              "type": "String",
+              "description": "Unique identifier of the received gift for the bot; for gifts received on behalf of business accounts only",
+              "html_description": "<td><em>Optional</em>. Unique identifier of the received gift for the bot; for gifts received on behalf of business accounts only</td>",
+              "rst_description": "*Optional*. Unique identifier of the received gift for the bot; for gifts received on behalf of business accounts only\n",
+              "name": "owned_gift_id",
+              "required": false
+            },
+            {
+              "type": "User",
+              "description": "Sender of the gift if it is a known user",
+              "html_description": "<td><em>Optional</em>. Sender of the gift if it is a known user</td>",
+              "rst_description": "*Optional*. Sender of the gift if it is a known user\n",
+              "name": "sender_user",
+              "required": false
+            },
+            {
+              "type": "Integer",
+              "description": "Date the gift was sent in Unix time",
+              "html_description": "<td>Date the gift was sent in Unix time</td>",
+              "rst_description": "Date the gift was sent in Unix time\n",
+              "name": "send_date",
+              "required": true
+            },
+            {
+              "type": "True",
+              "description": "True, if the gift is displayed on the account's profile page; for gifts received on behalf of business accounts only",
+              "html_description": "<td><em>Optional</em>. True, if the gift is displayed on the account's profile page; for gifts received on behalf of business accounts only</td>",
+              "rst_description": "*Optional*. True, if the gift is displayed on the account's profile page; for gifts received on behalf of business accounts only\n",
+              "name": "is_saved",
+              "required": false
+            },
+            {
+              "type": "True",
+              "description": "True, if the gift can be transferred to another owner; for gifts received on behalf of business accounts only",
+              "html_description": "<td><em>Optional</em>. True, if the gift can be transferred to another owner; for gifts received on behalf of business accounts only</td>",
+              "rst_description": "*Optional*. True, if the gift can be transferred to another owner; for gifts received on behalf of business accounts only\n",
+              "name": "can_be_transferred",
+              "required": false
+            },
+            {
+              "type": "Integer",
+              "description": "Number of Telegram Stars that must be paid to transfer the gift; omitted if the bot cannot transfer the gift",
+              "html_description": "<td><em>Optional</em>. Number of Telegram Stars that must be paid to transfer the gift; omitted if the bot cannot transfer the gift</td>",
+              "rst_description": "*Optional*. Number of Telegram Stars that must be paid to transfer the gift; omitted if the bot cannot transfer the gift\n",
+              "name": "transfer_star_count",
+              "required": false
+            }
+          ],
+          "category": "types"
+        },
+        {
+          "anchor": "ownedgifts",
+          "name": "OwnedGifts",
+          "description": "Contains the list of gifts received and owned by a user or a chat.",
+          "html_description": "<p>Contains the list of gifts received and owned by a user or a chat.</p>",
+          "rst_description": "Contains the list of gifts received and owned by a user or a chat.",
+          "annotations": [
+            {
+              "type": "Integer",
+              "description": "The total number of gifts owned by the user or the chat",
+              "html_description": "<td>The total number of gifts owned by the user or the chat</td>",
+              "rst_description": "The total number of gifts owned by the user or the chat\n",
+              "name": "total_count",
+              "required": true
+            },
+            {
+              "type": "Array of OwnedGift",
+              "description": "The list of gifts",
+              "html_description": "<td>The list of gifts</td>",
+              "rst_description": "The list of gifts\n",
+              "name": "gifts",
+              "required": true
+            },
+            {
+              "type": "String",
+              "description": "Offset for the next request. If empty, then there are no more results",
+              "html_description": "<td><em>Optional</em>. Offset for the next request. If empty, then there are no more results</td>",
+              "rst_description": "*Optional*. Offset for the next request. If empty, then there are no more results\n",
+              "name": "next_offset",
+              "required": false
+            }
+          ],
+          "category": "types"
+        },
+        {
+          "anchor": "acceptedgifttypes",
+          "name": "AcceptedGiftTypes",
+          "description": "This object describes the types of gifts that can be gifted to a user or a chat.",
+          "html_description": "<p>This object describes the types of gifts that can be gifted to a user or a chat.</p>",
+          "rst_description": "This object describes the types of gifts that can be gifted to a user or a chat.",
+          "annotations": [
+            {
+              "type": "Boolean",
+              "description": "True, if unlimited regular gifts are accepted",
+              "html_description": "<td>True, if unlimited regular gifts are accepted</td>",
+              "rst_description": "True, if unlimited regular gifts are accepted\n",
+              "name": "unlimited_gifts",
+              "required": true
+            },
+            {
+              "type": "Boolean",
+              "description": "True, if limited regular gifts are accepted",
+              "html_description": "<td>True, if limited regular gifts are accepted</td>",
+              "rst_description": "True, if limited regular gifts are accepted\n",
+              "name": "limited_gifts",
+              "required": true
+            },
+            {
+              "type": "Boolean",
+              "description": "True, if unique gifts or gifts that can be upgraded to unique for free are accepted",
+              "html_description": "<td>True, if unique gifts or gifts that can be upgraded to unique for free are accepted</td>",
+              "rst_description": "True, if unique gifts or gifts that can be upgraded to unique for free are accepted\n",
+              "name": "unique_gifts",
+              "required": true
+            },
+            {
+              "type": "Boolean",
+              "description": "True, if a Telegram Premium subscription is accepted",
+              "html_description": "<td>True, if a Telegram Premium subscription is accepted</td>",
+              "rst_description": "True, if a Telegram Premium subscription is accepted\n",
+              "name": "premium_subscription",
+              "required": true
+            }
+          ],
+          "category": "types"
+        },
+        {
+          "anchor": "staramount",
+          "name": "StarAmount",
+          "description": "Describes an amount of Telegram Stars.",
+          "html_description": "<p>Describes an amount of Telegram Stars.</p>",
+          "rst_description": "Describes an amount of Telegram Stars.",
+          "annotations": [
+            {
+              "type": "Integer",
+              "description": "Integer amount of Telegram Stars, rounded to 0; can be negative",
+              "html_description": "<td>Integer amount of Telegram Stars, rounded to 0; can be negative</td>",
+              "rst_description": "Integer amount of Telegram Stars, rounded to 0; can be negative\n",
+              "name": "amount",
+              "required": true
+            },
+            {
+              "type": "Integer",
+              "description": "The number of 1/1000000000 shares of Telegram Stars; from -999999999 to 999999999; can be negative if and only if amount is non-positive",
+              "html_description": "<td><em>Optional</em>. The number of 1/1000000000 shares of Telegram Stars; from -999999999 to 999999999; can be negative if and only if <em>amount</em> is non-positive</td>",
+              "rst_description": "*Optional*. The number of 1/1000000000 shares of Telegram Stars; from -999999999 to 999999999; can be negative if and only if *amount* is non-positive\n",
+              "name": "nanostar_amount",
               "required": false
             }
           ],
@@ -7078,6 +8134,128 @@
           "category": "types"
         },
         {
+          "anchor": "businessbotrights",
+          "name": "BusinessBotRights",
+          "description": "Represents the rights of a business bot.",
+          "html_description": "<p>Represents the rights of a business bot.</p>",
+          "rst_description": "Represents the rights of a business bot.",
+          "annotations": [
+            {
+              "type": "True",
+              "description": "True, if the bot can send and edit messages in the private chats that had incoming messages in the last 24 hours",
+              "html_description": "<td><em>Optional</em>. True, if the bot can send and edit messages in the private chats that had incoming messages in the last 24 hours</td>",
+              "rst_description": "*Optional*. True, if the bot can send and edit messages in the private chats that had incoming messages in the last 24 hours\n",
+              "name": "can_reply",
+              "required": false
+            },
+            {
+              "type": "True",
+              "description": "True, if the bot can mark incoming private messages as read",
+              "html_description": "<td><em>Optional</em>. True, if the bot can mark incoming private messages as read</td>",
+              "rst_description": "*Optional*. True, if the bot can mark incoming private messages as read\n",
+              "name": "can_read_messages",
+              "required": false
+            },
+            {
+              "type": "True",
+              "description": "True, if the bot can delete messages sent by the bot",
+              "html_description": "<td><em>Optional</em>. True, if the bot can delete messages sent by the bot</td>",
+              "rst_description": "*Optional*. True, if the bot can delete messages sent by the bot\n",
+              "name": "can_delete_outgoing_messages",
+              "required": false
+            },
+            {
+              "type": "True",
+              "description": "True, if the bot can delete all private messages in managed chats",
+              "html_description": "<td><em>Optional</em>. True, if the bot can delete all private messages in managed chats</td>",
+              "rst_description": "*Optional*. True, if the bot can delete all private messages in managed chats\n",
+              "name": "can_delete_all_messages",
+              "required": false
+            },
+            {
+              "type": "True",
+              "description": "True, if the bot can edit the first and last name of the business account",
+              "html_description": "<td><em>Optional</em>. True, if the bot can edit the first and last name of the business account</td>",
+              "rst_description": "*Optional*. True, if the bot can edit the first and last name of the business account\n",
+              "name": "can_edit_name",
+              "required": false
+            },
+            {
+              "type": "True",
+              "description": "True, if the bot can edit the bio of the business account",
+              "html_description": "<td><em>Optional</em>. True, if the bot can edit the bio of the business account</td>",
+              "rst_description": "*Optional*. True, if the bot can edit the bio of the business account\n",
+              "name": "can_edit_bio",
+              "required": false
+            },
+            {
+              "type": "True",
+              "description": "True, if the bot can edit the profile photo of the business account",
+              "html_description": "<td><em>Optional</em>. True, if the bot can edit the profile photo of the business account</td>",
+              "rst_description": "*Optional*. True, if the bot can edit the profile photo of the business account\n",
+              "name": "can_edit_profile_photo",
+              "required": false
+            },
+            {
+              "type": "True",
+              "description": "True, if the bot can edit the username of the business account",
+              "html_description": "<td><em>Optional</em>. True, if the bot can edit the username of the business account</td>",
+              "rst_description": "*Optional*. True, if the bot can edit the username of the business account\n",
+              "name": "can_edit_username",
+              "required": false
+            },
+            {
+              "type": "True",
+              "description": "True, if the bot can change the privacy settings pertaining to gifts for the business account",
+              "html_description": "<td><em>Optional</em>. True, if the bot can change the privacy settings pertaining to gifts for the business account</td>",
+              "rst_description": "*Optional*. True, if the bot can change the privacy settings pertaining to gifts for the business account\n",
+              "name": "can_change_gift_settings",
+              "required": false
+            },
+            {
+              "type": "True",
+              "description": "True, if the bot can view gifts and the amount of Telegram Stars owned by the business account",
+              "html_description": "<td><em>Optional</em>. True, if the bot can view gifts and the amount of Telegram Stars owned by the business account</td>",
+              "rst_description": "*Optional*. True, if the bot can view gifts and the amount of Telegram Stars owned by the business account\n",
+              "name": "can_view_gifts_and_stars",
+              "required": false
+            },
+            {
+              "type": "True",
+              "description": "True, if the bot can convert regular gifts owned by the business account to Telegram Stars",
+              "html_description": "<td><em>Optional</em>. True, if the bot can convert regular gifts owned by the business account to Telegram Stars</td>",
+              "rst_description": "*Optional*. True, if the bot can convert regular gifts owned by the business account to Telegram Stars\n",
+              "name": "can_convert_gifts_to_stars",
+              "required": false
+            },
+            {
+              "type": "True",
+              "description": "True, if the bot can transfer and upgrade gifts owned by the business account",
+              "html_description": "<td><em>Optional</em>. True, if the bot can transfer and upgrade gifts owned by the business account</td>",
+              "rst_description": "*Optional*. True, if the bot can transfer and upgrade gifts owned by the business account\n",
+              "name": "can_transfer_and_upgrade_gifts",
+              "required": false
+            },
+            {
+              "type": "True",
+              "description": "True, if the bot can transfer Telegram Stars received by the business account to its own account, or use them to upgrade and transfer gifts",
+              "html_description": "<td><em>Optional</em>. True, if the bot can transfer Telegram Stars received by the business account to its own account, or use them to upgrade and transfer gifts</td>",
+              "rst_description": "*Optional*. True, if the bot can transfer Telegram Stars received by the business account to its own account, or use them to upgrade and transfer gifts\n",
+              "name": "can_transfer_stars",
+              "required": false
+            },
+            {
+              "type": "True",
+              "description": "True, if the bot can post, edit and delete stories on behalf of the business account",
+              "html_description": "<td><em>Optional</em>. True, if the bot can post, edit and delete stories on behalf of the business account</td>",
+              "rst_description": "*Optional*. True, if the bot can post, edit and delete stories on behalf of the business account\n",
+              "name": "can_manage_stories",
+              "required": false
+            }
+          ],
+          "category": "types"
+        },
+        {
           "anchor": "businessconnection",
           "name": "BusinessConnection",
           "description": "Describes the connection of the bot with a business account.",
@@ -7117,12 +8295,12 @@
               "required": true
             },
             {
-              "type": "Boolean",
-              "description": "True, if the bot can act on behalf of the business account in chats that were active in the last 24 hours",
-              "html_description": "<td>True, if the bot can act on behalf of the business account in chats that were active in the last 24 hours</td>",
-              "rst_description": "True, if the bot can act on behalf of the business account in chats that were active in the last 24 hours\n",
-              "name": "can_reply",
-              "required": true
+              "type": "BusinessBotRights",
+              "description": "Rights of the business bot",
+              "html_description": "<td><em>Optional</em>. Rights of the business bot</td>",
+              "rst_description": "*Optional*. Rights of the business bot\n",
+              "name": "rights",
+              "required": false
             },
             {
               "type": "Boolean",
@@ -7759,6 +8937,160 @@
               "html_description": "<td><em>Optional</em>. Pass <em>True</em> if the uploaded video is suitable for streaming</td>",
               "rst_description": "*Optional*. Pass :code:`True` if the uploaded video is suitable for streaming\n",
               "name": "supports_streaming",
+              "required": false
+            }
+          ],
+          "category": "types"
+        },
+        {
+          "anchor": "inputprofilephoto",
+          "name": "InputProfilePhoto",
+          "description": "This object describes a profile photo to set. Currently, it can be one of\n - InputProfilePhotoStatic\n - InputProfilePhotoAnimated",
+          "html_description": "<p>This object describes a profile photo to set. Currently, it can be one of</p><ul>\n<li><a href=\"#inputprofilephotostatic\">InputProfilePhotoStatic</a></li>\n<li><a href=\"#inputprofilephotoanimated\">InputProfilePhotoAnimated</a></li>\n</ul>",
+          "rst_description": "This object describes a profile photo to set. Currently, it can be one of\n\n - :class:`aiogram.types.input_profile_photo_static.InputProfilePhotoStatic`\n - :class:`aiogram.types.input_profile_photo_animated.InputProfilePhotoAnimated`",
+          "annotations": [],
+          "category": "types"
+        },
+        {
+          "anchor": "inputprofilephotostatic",
+          "name": "InputProfilePhotoStatic",
+          "description": "A static profile photo in the .JPG format.",
+          "html_description": "<p>A static profile photo in the .JPG format.</p>",
+          "rst_description": "A static profile photo in the .JPG format.",
+          "annotations": [
+            {
+              "type": "String",
+              "description": "Type of the profile photo, must be 'static'",
+              "html_description": "<td>Type of the profile photo, must be &#8220;static&#8221;</td>",
+              "rst_description": "Type of the profile photo, must be 'static'\n",
+              "name": "type",
+              "required": true
+            },
+            {
+              "type": "String",
+              "description": "The static profile photo. Profile photos can't be reused and can only be uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the photo was uploaded using multipart/form-data under <file_attach_name>. More information on Sending Files",
+              "html_description": "<td>The static profile photo. Profile photos can't be reused and can only be uploaded as a new file, so you can pass &#8220;attach://&lt;file_attach_name&gt;&#8221; if the photo was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href=\"#sending-files\">More information on Sending Files &#187;</a></td>",
+              "rst_description": "The static profile photo. Profile photos can't be reused and can only be uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the photo was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`\n",
+              "name": "photo",
+              "required": true
+            }
+          ],
+          "category": "types"
+        },
+        {
+          "anchor": "inputprofilephotoanimated",
+          "name": "InputProfilePhotoAnimated",
+          "description": "An animated profile photo in the MPEG4 format.",
+          "html_description": "<p>An animated profile photo in the MPEG4 format.</p>",
+          "rst_description": "An animated profile photo in the MPEG4 format.",
+          "annotations": [
+            {
+              "type": "String",
+              "description": "Type of the profile photo, must be 'animated'",
+              "html_description": "<td>Type of the profile photo, must be &#8220;animated&#8221;</td>",
+              "rst_description": "Type of the profile photo, must be 'animated'\n",
+              "name": "type",
+              "required": true
+            },
+            {
+              "type": "String",
+              "description": "The animated profile photo. Profile photos can't be reused and can only be uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the photo was uploaded using multipart/form-data under <file_attach_name>. More information on Sending Files",
+              "html_description": "<td>The animated profile photo. Profile photos can't be reused and can only be uploaded as a new file, so you can pass &#8220;attach://&lt;file_attach_name&gt;&#8221; if the photo was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href=\"#sending-files\">More information on Sending Files &#187;</a></td>",
+              "rst_description": "The animated profile photo. Profile photos can't be reused and can only be uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the photo was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`\n",
+              "name": "animation",
+              "required": true
+            },
+            {
+              "type": "Float",
+              "description": "Timestamp in seconds of the frame that will be used as the static profile photo. Defaults to 0.0.",
+              "html_description": "<td><em>Optional</em>. Timestamp in seconds of the frame that will be used as the static profile photo. Defaults to 0.0.</td>",
+              "rst_description": "*Optional*. Timestamp in seconds of the frame that will be used as the static profile photo. Defaults to 0.0.\n",
+              "name": "main_frame_timestamp",
+              "required": false
+            }
+          ],
+          "category": "types"
+        },
+        {
+          "anchor": "inputstorycontent",
+          "name": "InputStoryContent",
+          "description": "This object describes the content of a story to post. Currently, it can be one of\n - InputStoryContentPhoto\n - InputStoryContentVideo",
+          "html_description": "<p>This object describes the content of a story to post. Currently, it can be one of</p><ul>\n<li><a href=\"#inputstorycontentphoto\">InputStoryContentPhoto</a></li>\n<li><a href=\"#inputstorycontentvideo\">InputStoryContentVideo</a></li>\n</ul>",
+          "rst_description": "This object describes the content of a story to post. Currently, it can be one of\n\n - :class:`aiogram.types.input_story_content_photo.InputStoryContentPhoto`\n - :class:`aiogram.types.input_story_content_video.InputStoryContentVideo`",
+          "annotations": [],
+          "category": "types"
+        },
+        {
+          "anchor": "inputstorycontentphoto",
+          "name": "InputStoryContentPhoto",
+          "description": "Describes a photo to post as a story.",
+          "html_description": "<p>Describes a photo to post as a story.</p>",
+          "rst_description": "Describes a photo to post as a story.",
+          "annotations": [
+            {
+              "type": "String",
+              "description": "Type of the content, must be 'photo'",
+              "html_description": "<td>Type of the content, must be &#8220;photo&#8221;</td>",
+              "rst_description": "Type of the content, must be 'photo'\n",
+              "name": "type",
+              "required": true
+            },
+            {
+              "type": "String",
+              "description": "The photo to post as a story. The photo must be of the size 1080x1920 and must not exceed 10 MB. The photo can't be reused and can only be uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the photo was uploaded using multipart/form-data under <file_attach_name>. More information on Sending Files",
+              "html_description": "<td>The photo to post as a story. The photo must be of the size 1080x1920 and must not exceed 10 MB. The photo can't be reused and can only be uploaded as a new file, so you can pass &#8220;attach://&lt;file_attach_name&gt;&#8221; if the photo was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href=\"#sending-files\">More information on Sending Files &#187;</a></td>",
+              "rst_description": "The photo to post as a story. The photo must be of the size 1080x1920 and must not exceed 10 MB. The photo can't be reused and can only be uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the photo was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`\n",
+              "name": "photo",
+              "required": true
+            }
+          ],
+          "category": "types"
+        },
+        {
+          "anchor": "inputstorycontentvideo",
+          "name": "InputStoryContentVideo",
+          "description": "Describes a video to post as a story.",
+          "html_description": "<p>Describes a video to post as a story.</p>",
+          "rst_description": "Describes a video to post as a story.",
+          "annotations": [
+            {
+              "type": "String",
+              "description": "Type of the content, must be 'video'",
+              "html_description": "<td>Type of the content, must be &#8220;video&#8221;</td>",
+              "rst_description": "Type of the content, must be 'video'\n",
+              "name": "type",
+              "required": true
+            },
+            {
+              "type": "String",
+              "description": "The video to post as a story. The video must be of the size 720x1280, streamable, encoded with H.265 codec, with key frames added each second in the MPEG4 format, and must not exceed 30 MB. The video can't be reused and can only be uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the video was uploaded using multipart/form-data under <file_attach_name>. More information on Sending Files",
+              "html_description": "<td>The video to post as a story. The video must be of the size 720x1280, streamable, encoded with H.265 codec, with key frames added each second in the MPEG4 format, and must not exceed 30 MB. The video can't be reused and can only be uploaded as a new file, so you can pass &#8220;attach://&lt;file_attach_name&gt;&#8221; if the video was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href=\"#sending-files\">More information on Sending Files &#187;</a></td>",
+              "rst_description": "The video to post as a story. The video must be of the size 720x1280, streamable, encoded with H.265 codec, with key frames added each second in the MPEG4 format, and must not exceed 30 MB. The video can't be reused and can only be uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the video was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`\n",
+              "name": "video",
+              "required": true
+            },
+            {
+              "type": "Float",
+              "description": "Precise duration of the video in seconds; 0-60",
+              "html_description": "<td><em>Optional</em>. Precise duration of the video in seconds; 0-60</td>",
+              "rst_description": "*Optional*. Precise duration of the video in seconds; 0-60\n",
+              "name": "duration",
+              "required": false
+            },
+            {
+              "type": "Float",
+              "description": "Timestamp in seconds of the frame that will be used as the static cover for the story. Defaults to 0.0.",
+              "html_description": "<td><em>Optional</em>. Timestamp in seconds of the frame that will be used as the static cover for the story. Defaults to 0.0.</td>",
+              "rst_description": "*Optional*. Timestamp in seconds of the frame that will be used as the static cover for the story. Defaults to 0.0.\n",
+              "name": "cover_frame_timestamp",
+              "required": false
+            },
+            {
+              "type": "Boolean",
+              "description": "Pass True if the video has no sound",
+              "html_description": "<td><em>Optional</em>. Pass <em>True</em> if the video has no sound</td>",
+              "rst_description": "*Optional*. Pass :code:`True` if the video has no sound\n",
+              "name": "is_animation",
               "required": false
             }
           ],
@@ -9240,9 +10572,9 @@
             {
               "type": "Integer",
               "required": true,
-              "description": "The number of Telegram Stars that must be paid to buy access to the media; 1-2500",
-              "html_description": "<td>The number of Telegram Stars that must be paid to buy access to the media; 1-2500</td>",
-              "rst_description": "The number of Telegram Stars that must be paid to buy access to the media; 1-2500\n",
+              "description": "The number of Telegram Stars that must be paid to buy access to the media; 1-10000",
+              "html_description": "<td>The number of Telegram Stars that must be paid to buy access to the media; 1-10000</td>",
+              "rst_description": "The number of Telegram Stars that must be paid to buy access to the media; 1-10000\n",
               "name": "star_count"
             },
             {
@@ -10814,9 +12146,9 @@
             {
               "type": "Integer",
               "required": true,
-              "description": "The amount of Telegram Stars a user must pay initially and after each subsequent subscription period to be a member of the chat; 1-2500",
-              "html_description": "<td>The amount of Telegram Stars a user must pay initially and after each subsequent subscription period to be a member of the chat; 1-2500</td>",
-              "rst_description": "The amount of Telegram Stars a user must pay initially and after each subsequent subscription period to be a member of the chat; 1-2500\n",
+              "description": "The amount of Telegram Stars a user must pay initially and after each subsequent subscription period to be a member of the chat; 1-10000",
+              "html_description": "<td>The amount of Telegram Stars a user must pay initially and after each subsequent subscription period to be a member of the chat; 1-10000</td>",
+              "rst_description": "The amount of Telegram Stars a user must pay initially and after each subsequent subscription period to be a member of the chat; 1-10000\n",
               "name": "subscription_price"
             }
           ],
@@ -12499,6 +13831,877 @@
             }
           ],
           "category": "methods"
+        },
+        {
+          "anchor": "getavailablegifts",
+          "name": "getAvailableGifts",
+          "description": "Returns the list of gifts that can be sent by the bot to users and channel chats. Requires no parameters. Returns a Gifts object.",
+          "html_description": "<p>Returns the list of gifts that can be sent by the bot to users and channel chats. Requires no parameters. Returns a <a href=\"#gifts\">Gifts</a> object.</p>",
+          "rst_description": "Returns the list of gifts that can be sent by the bot to users and channel chats. Requires no parameters. Returns a :class:`aiogram.types.gifts.Gifts` object.",
+          "annotations": [],
+          "category": "methods"
+        },
+        {
+          "anchor": "sendgift",
+          "name": "sendGift",
+          "description": "Sends a gift to the given user or channel chat. The gift can't be converted to Telegram Stars by the receiver. Returns True on success.",
+          "html_description": "<p>Sends a gift to the given user or channel chat. The gift can't be converted to Telegram Stars by the receiver. Returns <em>True</em> on success.</p>",
+          "rst_description": "Sends a gift to the given user or channel chat. The gift can't be converted to Telegram Stars by the receiver. Returns :code:`True` on success.",
+          "annotations": [
+            {
+              "type": "Integer",
+              "required": false,
+              "description": "Required if chat_id is not specified. Unique identifier of the target user who will receive the gift.",
+              "html_description": "<td>Required if <em>chat_id</em> is not specified. Unique identifier of the target user who will receive the gift.</td>",
+              "rst_description": "Required if *chat_id* is not specified. Unique identifier of the target user who will receive the gift.\n",
+              "name": "user_id"
+            },
+            {
+              "type": "Integer or String",
+              "required": false,
+              "description": "Required if user_id is not specified. Unique identifier for the chat or username of the channel (in the format @channelusername) that will receive the gift.",
+              "html_description": "<td>Required if <em>user_id</em> is not specified. Unique identifier for the chat or username of the channel (in the format <code>@channelusername</code>) that will receive the gift.</td>",
+              "rst_description": "Required if *user_id* is not specified. Unique identifier for the chat or username of the channel (in the format :code:`@channelusername`) that will receive the gift.\n",
+              "name": "chat_id"
+            },
+            {
+              "type": "String",
+              "required": true,
+              "description": "Identifier of the gift",
+              "html_description": "<td>Identifier of the gift</td>",
+              "rst_description": "Identifier of the gift\n",
+              "name": "gift_id"
+            },
+            {
+              "type": "Boolean",
+              "required": false,
+              "description": "Pass True to pay for the gift upgrade from the bot's balance, thereby making the upgrade free for the receiver",
+              "html_description": "<td>Pass <em>True</em> to pay for the gift upgrade from the bot's balance, thereby making the upgrade free for the receiver</td>",
+              "rst_description": "Pass :code:`True` to pay for the gift upgrade from the bot's balance, thereby making the upgrade free for the receiver\n",
+              "name": "pay_for_upgrade"
+            },
+            {
+              "type": "String",
+              "required": false,
+              "description": "Text that will be shown along with the gift; 0-128 characters",
+              "html_description": "<td>Text that will be shown along with the gift; 0-128 characters</td>",
+              "rst_description": "Text that will be shown along with the gift; 0-128 characters\n",
+              "name": "text"
+            },
+            {
+              "type": "String",
+              "required": false,
+              "description": "Mode for parsing entities in the text. See formatting options for more details. Entities other than 'bold', 'italic', 'underline', 'strikethrough', 'spoiler', and 'custom_emoji' are ignored.",
+              "html_description": "<td>Mode for parsing entities in the text. See <a href=\"#formatting-options\">formatting options</a> for more details. Entities other than &#8220;bold&#8221;, &#8220;italic&#8221;, &#8220;underline&#8221;, &#8220;strikethrough&#8221;, &#8220;spoiler&#8221;, and &#8220;custom_emoji&#8221; are ignored.</td>",
+              "rst_description": "Mode for parsing entities in the text. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details. Entities other than 'bold', 'italic', 'underline', 'strikethrough', 'spoiler', and 'custom_emoji' are ignored.\n",
+              "name": "text_parse_mode"
+            },
+            {
+              "type": "Array of MessageEntity",
+              "required": false,
+              "description": "A JSON-serialized list of special entities that appear in the gift text. It can be specified instead of text_parse_mode. Entities other than 'bold', 'italic', 'underline', 'strikethrough', 'spoiler', and 'custom_emoji' are ignored.",
+              "html_description": "<td>A JSON-serialized list of special entities that appear in the gift text. It can be specified instead of <em>text_parse_mode</em>. Entities other than &#8220;bold&#8221;, &#8220;italic&#8221;, &#8220;underline&#8221;, &#8220;strikethrough&#8221;, &#8220;spoiler&#8221;, and &#8220;custom_emoji&#8221; are ignored.</td>",
+              "rst_description": "A JSON-serialized list of special entities that appear in the gift text. It can be specified instead of *text_parse_mode*. Entities other than 'bold', 'italic', 'underline', 'strikethrough', 'spoiler', and 'custom_emoji' are ignored.\n",
+              "name": "text_entities"
+            }
+          ],
+          "category": "methods"
+        },
+        {
+          "anchor": "giftpremiumsubscription",
+          "name": "giftPremiumSubscription",
+          "description": "Gifts a Telegram Premium subscription to the given user. Returns True on success.",
+          "html_description": "<p>Gifts a Telegram Premium subscription to the given user. Returns <em>True</em> on success.</p>",
+          "rst_description": "Gifts a Telegram Premium subscription to the given user. Returns :code:`True` on success.",
+          "annotations": [
+            {
+              "type": "Integer",
+              "required": true,
+              "description": "Unique identifier of the target user who will receive a Telegram Premium subscription",
+              "html_description": "<td>Unique identifier of the target user who will receive a Telegram Premium subscription</td>",
+              "rst_description": "Unique identifier of the target user who will receive a Telegram Premium subscription\n",
+              "name": "user_id"
+            },
+            {
+              "type": "Integer",
+              "required": true,
+              "description": "Number of months the Telegram Premium subscription will be active for the user; must be one of 3, 6, or 12",
+              "html_description": "<td>Number of months the Telegram Premium subscription will be active for the user; must be one of 3, 6, or 12</td>",
+              "rst_description": "Number of months the Telegram Premium subscription will be active for the user; must be one of 3, 6, or 12\n",
+              "name": "month_count"
+            },
+            {
+              "type": "Integer",
+              "required": true,
+              "description": "Number of Telegram Stars to pay for the Telegram Premium subscription; must be 1000 for 3 months, 1500 for 6 months, and 2500 for 12 months",
+              "html_description": "<td>Number of Telegram Stars to pay for the Telegram Premium subscription; must be 1000 for 3 months, 1500 for 6 months, and 2500 for 12 months</td>",
+              "rst_description": "Number of Telegram Stars to pay for the Telegram Premium subscription; must be 1000 for 3 months, 1500 for 6 months, and 2500 for 12 months\n",
+              "name": "star_count"
+            },
+            {
+              "type": "String",
+              "required": false,
+              "description": "Text that will be shown along with the service message about the subscription; 0-128 characters",
+              "html_description": "<td>Text that will be shown along with the service message about the subscription; 0-128 characters</td>",
+              "rst_description": "Text that will be shown along with the service message about the subscription; 0-128 characters\n",
+              "name": "text"
+            },
+            {
+              "type": "String",
+              "required": false,
+              "description": "Mode for parsing entities in the text. See formatting options for more details. Entities other than 'bold', 'italic', 'underline', 'strikethrough', 'spoiler', and 'custom_emoji' are ignored.",
+              "html_description": "<td>Mode for parsing entities in the text. See <a href=\"#formatting-options\">formatting options</a> for more details. Entities other than &#8220;bold&#8221;, &#8220;italic&#8221;, &#8220;underline&#8221;, &#8220;strikethrough&#8221;, &#8220;spoiler&#8221;, and &#8220;custom_emoji&#8221; are ignored.</td>",
+              "rst_description": "Mode for parsing entities in the text. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details. Entities other than 'bold', 'italic', 'underline', 'strikethrough', 'spoiler', and 'custom_emoji' are ignored.\n",
+              "name": "text_parse_mode"
+            },
+            {
+              "type": "Array of MessageEntity",
+              "required": false,
+              "description": "A JSON-serialized list of special entities that appear in the gift text. It can be specified instead of text_parse_mode. Entities other than 'bold', 'italic', 'underline', 'strikethrough', 'spoiler', and 'custom_emoji' are ignored.",
+              "html_description": "<td>A JSON-serialized list of special entities that appear in the gift text. It can be specified instead of <em>text_parse_mode</em>. Entities other than &#8220;bold&#8221;, &#8220;italic&#8221;, &#8220;underline&#8221;, &#8220;strikethrough&#8221;, &#8220;spoiler&#8221;, and &#8220;custom_emoji&#8221; are ignored.</td>",
+              "rst_description": "A JSON-serialized list of special entities that appear in the gift text. It can be specified instead of *text_parse_mode*. Entities other than 'bold', 'italic', 'underline', 'strikethrough', 'spoiler', and 'custom_emoji' are ignored.\n",
+              "name": "text_entities"
+            }
+          ],
+          "category": "methods"
+        },
+        {
+          "anchor": "verifyuser",
+          "name": "verifyUser",
+          "description": "Verifies a user on behalf of the organization which is represented by the bot. Returns True on success.",
+          "html_description": "<p>Verifies a user <a href=\"https://telegram.org/verify#third-party-verification\">on behalf of the organization</a> which is represented by the bot. Returns <em>True</em> on success.</p>",
+          "rst_description": "Verifies a user `on behalf of the organization <https://telegram.org/verify#third-party-verification>`_ which is represented by the bot. Returns :code:`True` on success.",
+          "annotations": [
+            {
+              "type": "Integer",
+              "required": true,
+              "description": "Unique identifier of the target user",
+              "html_description": "<td>Unique identifier of the target user</td>",
+              "rst_description": "Unique identifier of the target user\n",
+              "name": "user_id"
+            },
+            {
+              "type": "String",
+              "required": false,
+              "description": "Custom description for the verification; 0-70 characters. Must be empty if the organization isn't allowed to provide a custom verification description.",
+              "html_description": "<td>Custom description for the verification; 0-70 characters. Must be empty if the organization isn't allowed to provide a custom verification description.</td>",
+              "rst_description": "Custom description for the verification; 0-70 characters. Must be empty if the organization isn't allowed to provide a custom verification description.\n",
+              "name": "custom_description"
+            }
+          ],
+          "category": "methods"
+        },
+        {
+          "anchor": "verifychat",
+          "name": "verifyChat",
+          "description": "Verifies a chat on behalf of the organization which is represented by the bot. Returns True on success.",
+          "html_description": "<p>Verifies a chat <a href=\"https://telegram.org/verify#third-party-verification\">on behalf of the organization</a> which is represented by the bot. Returns <em>True</em> on success.</p>",
+          "rst_description": "Verifies a chat `on behalf of the organization <https://telegram.org/verify#third-party-verification>`_ which is represented by the bot. Returns :code:`True` on success.",
+          "annotations": [
+            {
+              "type": "Integer or String",
+              "required": true,
+              "description": "Unique identifier for the target chat or username of the target channel (in the format @channelusername)",
+              "html_description": "<td>Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)</td>",
+              "rst_description": "Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)\n",
+              "name": "chat_id"
+            },
+            {
+              "type": "String",
+              "required": false,
+              "description": "Custom description for the verification; 0-70 characters. Must be empty if the organization isn't allowed to provide a custom verification description.",
+              "html_description": "<td>Custom description for the verification; 0-70 characters. Must be empty if the organization isn't allowed to provide a custom verification description.</td>",
+              "rst_description": "Custom description for the verification; 0-70 characters. Must be empty if the organization isn't allowed to provide a custom verification description.\n",
+              "name": "custom_description"
+            }
+          ],
+          "category": "methods"
+        },
+        {
+          "anchor": "removeuserverification",
+          "name": "removeUserVerification",
+          "description": "Removes verification from a user who is currently verified on behalf of the organization represented by the bot. Returns True on success.",
+          "html_description": "<p>Removes verification from a user who is currently verified <a href=\"https://telegram.org/verify#third-party-verification\">on behalf of the organization</a> represented by the bot. Returns <em>True</em> on success.</p>",
+          "rst_description": "Removes verification from a user who is currently verified `on behalf of the organization <https://telegram.org/verify#third-party-verification>`_ represented by the bot. Returns :code:`True` on success.",
+          "annotations": [
+            {
+              "type": "Integer",
+              "required": true,
+              "description": "Unique identifier of the target user",
+              "html_description": "<td>Unique identifier of the target user</td>",
+              "rst_description": "Unique identifier of the target user\n",
+              "name": "user_id"
+            }
+          ],
+          "category": "methods"
+        },
+        {
+          "anchor": "removechatverification",
+          "name": "removeChatVerification",
+          "description": "Removes verification from a chat that is currently verified on behalf of the organization represented by the bot. Returns True on success.",
+          "html_description": "<p>Removes verification from a chat that is currently verified <a href=\"https://telegram.org/verify#third-party-verification\">on behalf of the organization</a> represented by the bot. Returns <em>True</em> on success.</p>",
+          "rst_description": "Removes verification from a chat that is currently verified `on behalf of the organization <https://telegram.org/verify#third-party-verification>`_ represented by the bot. Returns :code:`True` on success.",
+          "annotations": [
+            {
+              "type": "Integer or String",
+              "required": true,
+              "description": "Unique identifier for the target chat or username of the target channel (in the format @channelusername)",
+              "html_description": "<td>Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)</td>",
+              "rst_description": "Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)\n",
+              "name": "chat_id"
+            }
+          ],
+          "category": "methods"
+        },
+        {
+          "anchor": "readbusinessmessage",
+          "name": "readBusinessMessage",
+          "description": "Marks incoming message as read on behalf of a business account. Requires the can_read_messages business bot right. Returns True on success.",
+          "html_description": "<p>Marks incoming message as read on behalf of a business account. Requires the <em>can_read_messages</em> business bot right. Returns <em>True</em> on success.</p>",
+          "rst_description": "Marks incoming message as read on behalf of a business account. Requires the *can_read_messages* business bot right. Returns :code:`True` on success.",
+          "annotations": [
+            {
+              "type": "String",
+              "required": true,
+              "description": "Unique identifier of the business connection on behalf of which to read the message",
+              "html_description": "<td>Unique identifier of the business connection on behalf of which to read the message</td>",
+              "rst_description": "Unique identifier of the business connection on behalf of which to read the message\n",
+              "name": "business_connection_id"
+            },
+            {
+              "type": "Integer",
+              "required": true,
+              "description": "Unique identifier of the chat in which the message was received. The chat must have been active in the last 24 hours.",
+              "html_description": "<td>Unique identifier of the chat in which the message was received. The chat must have been active in the last 24 hours.</td>",
+              "rst_description": "Unique identifier of the chat in which the message was received. The chat must have been active in the last 24 hours.\n",
+              "name": "chat_id"
+            },
+            {
+              "type": "Integer",
+              "required": true,
+              "description": "Unique identifier of the message to mark as read",
+              "html_description": "<td>Unique identifier of the message to mark as read</td>",
+              "rst_description": "Unique identifier of the message to mark as read\n",
+              "name": "message_id"
+            }
+          ],
+          "category": "methods"
+        },
+        {
+          "anchor": "deletebusinessmessages",
+          "name": "deleteBusinessMessages",
+          "description": "Delete messages on behalf of a business account. Requires the can_delete_outgoing_messages business bot right to delete messages sent by the bot itself, or the can_delete_all_messages business bot right to delete any message. Returns True on success.",
+          "html_description": "<p>Delete messages on behalf of a business account. Requires the <em>can_delete_outgoing_messages</em> business bot right to delete messages sent by the bot itself, or the <em>can_delete_all_messages</em> business bot right to delete any message. Returns <em>True</em> on success.</p>",
+          "rst_description": "Delete messages on behalf of a business account. Requires the *can_delete_outgoing_messages* business bot right to delete messages sent by the bot itself, or the *can_delete_all_messages* business bot right to delete any message. Returns :code:`True` on success.",
+          "annotations": [
+            {
+              "type": "String",
+              "required": true,
+              "description": "Unique identifier of the business connection on behalf of which to delete the messages",
+              "html_description": "<td>Unique identifier of the business connection on behalf of which to delete the messages</td>",
+              "rst_description": "Unique identifier of the business connection on behalf of which to delete the messages\n",
+              "name": "business_connection_id"
+            },
+            {
+              "type": "Array of Integer",
+              "required": true,
+              "description": "A JSON-serialized list of 1-100 identifiers of messages to delete. All messages must be from the same chat. See deleteMessage for limitations on which messages can be deleted",
+              "html_description": "<td>A JSON-serialized list of 1-100 identifiers of messages to delete. All messages must be from the same chat. See <a href=\"#deletemessage\">deleteMessage</a> for limitations on which messages can be deleted</td>",
+              "rst_description": "A JSON-serialized list of 1-100 identifiers of messages to delete. All messages must be from the same chat. See :class:`aiogram.methods.delete_message.DeleteMessage` for limitations on which messages can be deleted\n",
+              "name": "message_ids"
+            }
+          ],
+          "category": "methods"
+        },
+        {
+          "anchor": "setbusinessaccountname",
+          "name": "setBusinessAccountName",
+          "description": "Changes the first and last name of a managed business account. Requires the can_change_name business bot right. Returns True on success.",
+          "html_description": "<p>Changes the first and last name of a managed business account. Requires the <em>can_change_name</em> business bot right. Returns <em>True</em> on success.</p>",
+          "rst_description": "Changes the first and last name of a managed business account. Requires the *can_change_name* business bot right. Returns :code:`True` on success.",
+          "annotations": [
+            {
+              "type": "String",
+              "required": true,
+              "description": "Unique identifier of the business connection",
+              "html_description": "<td>Unique identifier of the business connection</td>",
+              "rst_description": "Unique identifier of the business connection\n",
+              "name": "business_connection_id"
+            },
+            {
+              "type": "String",
+              "required": true,
+              "description": "The new value of the first name for the business account; 1-64 characters",
+              "html_description": "<td>The new value of the first name for the business account; 1-64 characters</td>",
+              "rst_description": "The new value of the first name for the business account; 1-64 characters\n",
+              "name": "first_name"
+            },
+            {
+              "type": "String",
+              "required": false,
+              "description": "The new value of the last name for the business account; 0-64 characters",
+              "html_description": "<td>The new value of the last name for the business account; 0-64 characters</td>",
+              "rst_description": "The new value of the last name for the business account; 0-64 characters\n",
+              "name": "last_name"
+            }
+          ],
+          "category": "methods"
+        },
+        {
+          "anchor": "setbusinessaccountusername",
+          "name": "setBusinessAccountUsername",
+          "description": "Changes the username of a managed business account. Requires the can_change_username business bot right. Returns True on success.",
+          "html_description": "<p>Changes the username of a managed business account. Requires the <em>can_change_username</em> business bot right. Returns <em>True</em> on success.</p>",
+          "rst_description": "Changes the username of a managed business account. Requires the *can_change_username* business bot right. Returns :code:`True` on success.",
+          "annotations": [
+            {
+              "type": "String",
+              "required": true,
+              "description": "Unique identifier of the business connection",
+              "html_description": "<td>Unique identifier of the business connection</td>",
+              "rst_description": "Unique identifier of the business connection\n",
+              "name": "business_connection_id"
+            },
+            {
+              "type": "String",
+              "required": false,
+              "description": "The new value of the username for the business account; 0-32 characters",
+              "html_description": "<td>The new value of the username for the business account; 0-32 characters</td>",
+              "rst_description": "The new value of the username for the business account; 0-32 characters\n",
+              "name": "username"
+            }
+          ],
+          "category": "methods"
+        },
+        {
+          "anchor": "setbusinessaccountbio",
+          "name": "setBusinessAccountBio",
+          "description": "Changes the bio of a managed business account. Requires the can_change_bio business bot right. Returns True on success.",
+          "html_description": "<p>Changes the bio of a managed business account. Requires the <em>can_change_bio</em> business bot right. Returns <em>True</em> on success.</p>",
+          "rst_description": "Changes the bio of a managed business account. Requires the *can_change_bio* business bot right. Returns :code:`True` on success.",
+          "annotations": [
+            {
+              "type": "String",
+              "required": true,
+              "description": "Unique identifier of the business connection",
+              "html_description": "<td>Unique identifier of the business connection</td>",
+              "rst_description": "Unique identifier of the business connection\n",
+              "name": "business_connection_id"
+            },
+            {
+              "type": "String",
+              "required": false,
+              "description": "The new value of the bio for the business account; 0-140 characters",
+              "html_description": "<td>The new value of the bio for the business account; 0-140 characters</td>",
+              "rst_description": "The new value of the bio for the business account; 0-140 characters\n",
+              "name": "bio"
+            }
+          ],
+          "category": "methods"
+        },
+        {
+          "anchor": "setbusinessaccountprofilephoto",
+          "name": "setBusinessAccountProfilePhoto",
+          "description": "Changes the profile photo of a managed business account. Requires the can_edit_profile_photo business bot right. Returns True on success.",
+          "html_description": "<p>Changes the profile photo of a managed business account. Requires the <em>can_edit_profile_photo</em> business bot right. Returns <em>True</em> on success.</p>",
+          "rst_description": "Changes the profile photo of a managed business account. Requires the *can_edit_profile_photo* business bot right. Returns :code:`True` on success.",
+          "annotations": [
+            {
+              "type": "String",
+              "required": true,
+              "description": "Unique identifier of the business connection",
+              "html_description": "<td>Unique identifier of the business connection</td>",
+              "rst_description": "Unique identifier of the business connection\n",
+              "name": "business_connection_id"
+            },
+            {
+              "type": "InputProfilePhoto",
+              "required": true,
+              "description": "The new profile photo to set",
+              "html_description": "<td>The new profile photo to set</td>",
+              "rst_description": "The new profile photo to set\n",
+              "name": "photo"
+            },
+            {
+              "type": "Boolean",
+              "required": false,
+              "description": "Pass True to set the public photo, which will be visible even if the main photo is hidden by the business account's privacy settings. An account can have only one public photo.",
+              "html_description": "<td>Pass True to set the public photo, which will be visible even if the main photo is hidden by the business account's privacy settings. An account can have only one public photo.</td>",
+              "rst_description": "Pass True to set the public photo, which will be visible even if the main photo is hidden by the business account's privacy settings. An account can have only one public photo.\n",
+              "name": "is_public"
+            }
+          ],
+          "category": "methods"
+        },
+        {
+          "anchor": "removebusinessaccountprofilephoto",
+          "name": "removeBusinessAccountProfilePhoto",
+          "description": "Removes the current profile photo of a managed business account. Requires the can_edit_profile_photo business bot right. Returns True on success.",
+          "html_description": "<p>Removes the current profile photo of a managed business account. Requires the <em>can_edit_profile_photo</em> business bot right. Returns <em>True</em> on success.</p>",
+          "rst_description": "Removes the current profile photo of a managed business account. Requires the *can_edit_profile_photo* business bot right. Returns :code:`True` on success.",
+          "annotations": [
+            {
+              "type": "String",
+              "required": true,
+              "description": "Unique identifier of the business connection",
+              "html_description": "<td>Unique identifier of the business connection</td>",
+              "rst_description": "Unique identifier of the business connection\n",
+              "name": "business_connection_id"
+            },
+            {
+              "type": "Boolean",
+              "required": false,
+              "description": "Pass True to remove the public photo, which is visible even if the main photo is hidden by the business account's privacy settings. After the main photo is removed, the previous profile photo (if present) becomes the main photo.",
+              "html_description": "<td>Pass True to remove the public photo, which is visible even if the main photo is hidden by the business account's privacy settings. After the main photo is removed, the previous profile photo (if present) becomes the main photo.</td>",
+              "rst_description": "Pass True to remove the public photo, which is visible even if the main photo is hidden by the business account's privacy settings. After the main photo is removed, the previous profile photo (if present) becomes the main photo.\n",
+              "name": "is_public"
+            }
+          ],
+          "category": "methods"
+        },
+        {
+          "anchor": "setbusinessaccountgiftsettings",
+          "name": "setBusinessAccountGiftSettings",
+          "description": "Changes the privacy settings pertaining to incoming gifts in a managed business account. Requires the can_change_gift_settings business bot right. Returns True on success.",
+          "html_description": "<p>Changes the privacy settings pertaining to incoming gifts in a managed business account. Requires the <em>can_change_gift_settings</em> business bot right. Returns <em>True</em> on success.</p>",
+          "rst_description": "Changes the privacy settings pertaining to incoming gifts in a managed business account. Requires the *can_change_gift_settings* business bot right. Returns :code:`True` on success.",
+          "annotations": [
+            {
+              "type": "String",
+              "required": true,
+              "description": "Unique identifier of the business connection",
+              "html_description": "<td>Unique identifier of the business connection</td>",
+              "rst_description": "Unique identifier of the business connection\n",
+              "name": "business_connection_id"
+            },
+            {
+              "type": "Boolean",
+              "required": true,
+              "description": "Pass True, if a button for sending a gift to the user or by the business account must always be shown in the input field",
+              "html_description": "<td>Pass True, if a button for sending a gift to the user or by the business account must always be shown in the input field</td>",
+              "rst_description": "Pass True, if a button for sending a gift to the user or by the business account must always be shown in the input field\n",
+              "name": "show_gift_button"
+            },
+            {
+              "type": "AcceptedGiftTypes",
+              "required": true,
+              "description": "Types of gifts accepted by the business account",
+              "html_description": "<td>Types of gifts accepted by the business account</td>",
+              "rst_description": "Types of gifts accepted by the business account\n",
+              "name": "accepted_gift_types"
+            }
+          ],
+          "category": "methods"
+        },
+        {
+          "anchor": "getbusinessaccountstarbalance",
+          "name": "getBusinessAccountStarBalance",
+          "description": "Returns the amount of Telegram Stars owned by a managed business account. Requires the can_view_gifts_and_stars business bot right. Returns StarAmount on success.",
+          "html_description": "<p>Returns the amount of Telegram Stars owned by a managed business account. Requires the <em>can_view_gifts_and_stars</em> business bot right. Returns <a href=\"#staramount\">StarAmount</a> on success.</p>",
+          "rst_description": "Returns the amount of Telegram Stars owned by a managed business account. Requires the *can_view_gifts_and_stars* business bot right. Returns :class:`aiogram.types.star_amount.StarAmount` on success.",
+          "annotations": [
+            {
+              "type": "String",
+              "required": true,
+              "description": "Unique identifier of the business connection",
+              "html_description": "<td>Unique identifier of the business connection</td>",
+              "rst_description": "Unique identifier of the business connection\n",
+              "name": "business_connection_id"
+            }
+          ],
+          "category": "methods"
+        },
+        {
+          "anchor": "transferbusinessaccountstars",
+          "name": "transferBusinessAccountStars",
+          "description": "Transfers Telegram Stars from the business account balance to the bot's balance. Requires the can_transfer_stars business bot right. Returns True on success.",
+          "html_description": "<p>Transfers Telegram Stars from the business account balance to the bot's balance. Requires the <em>can_transfer_stars</em> business bot right. Returns <em>True</em> on success.</p>",
+          "rst_description": "Transfers Telegram Stars from the business account balance to the bot's balance. Requires the *can_transfer_stars* business bot right. Returns :code:`True` on success.",
+          "annotations": [
+            {
+              "type": "String",
+              "required": true,
+              "description": "Unique identifier of the business connection",
+              "html_description": "<td>Unique identifier of the business connection</td>",
+              "rst_description": "Unique identifier of the business connection\n",
+              "name": "business_connection_id"
+            },
+            {
+              "type": "Integer",
+              "required": true,
+              "description": "Number of Telegram Stars to transfer; 1-10000",
+              "html_description": "<td>Number of Telegram Stars to transfer; 1-10000</td>",
+              "rst_description": "Number of Telegram Stars to transfer; 1-10000\n",
+              "name": "star_count"
+            }
+          ],
+          "category": "methods"
+        },
+        {
+          "anchor": "getbusinessaccountgifts",
+          "name": "getBusinessAccountGifts",
+          "description": "Returns the gifts received and owned by a managed business account. Requires the can_view_gifts_and_stars business bot right. Returns OwnedGifts on success.",
+          "html_description": "<p>Returns the gifts received and owned by a managed business account. Requires the <em>can_view_gifts_and_stars</em> business bot right. Returns <a href=\"#ownedgifts\">OwnedGifts</a> on success.</p>",
+          "rst_description": "Returns the gifts received and owned by a managed business account. Requires the *can_view_gifts_and_stars* business bot right. Returns :class:`aiogram.types.owned_gifts.OwnedGifts` on success.",
+          "annotations": [
+            {
+              "type": "String",
+              "required": true,
+              "description": "Unique identifier of the business connection",
+              "html_description": "<td>Unique identifier of the business connection</td>",
+              "rst_description": "Unique identifier of the business connection\n",
+              "name": "business_connection_id"
+            },
+            {
+              "type": "Boolean",
+              "required": false,
+              "description": "Pass True to exclude gifts that aren't saved to the account's profile page",
+              "html_description": "<td>Pass True to exclude gifts that aren't saved to the account's profile page</td>",
+              "rst_description": "Pass True to exclude gifts that aren't saved to the account's profile page\n",
+              "name": "exclude_unsaved"
+            },
+            {
+              "type": "Boolean",
+              "required": false,
+              "description": "Pass True to exclude gifts that are saved to the account's profile page",
+              "html_description": "<td>Pass True to exclude gifts that are saved to the account's profile page</td>",
+              "rst_description": "Pass True to exclude gifts that are saved to the account's profile page\n",
+              "name": "exclude_saved"
+            },
+            {
+              "type": "Boolean",
+              "required": false,
+              "description": "Pass True to exclude gifts that can be purchased an unlimited number of times",
+              "html_description": "<td>Pass True to exclude gifts that can be purchased an unlimited number of times</td>",
+              "rst_description": "Pass True to exclude gifts that can be purchased an unlimited number of times\n",
+              "name": "exclude_unlimited"
+            },
+            {
+              "type": "Boolean",
+              "required": false,
+              "description": "Pass True to exclude gifts that can be purchased a limited number of times",
+              "html_description": "<td>Pass True to exclude gifts that can be purchased a limited number of times</td>",
+              "rst_description": "Pass True to exclude gifts that can be purchased a limited number of times\n",
+              "name": "exclude_limited"
+            },
+            {
+              "type": "Boolean",
+              "required": false,
+              "description": "Pass True to exclude unique gifts",
+              "html_description": "<td>Pass True to exclude unique gifts</td>",
+              "rst_description": "Pass True to exclude unique gifts\n",
+              "name": "exclude_unique"
+            },
+            {
+              "type": "Boolean",
+              "required": false,
+              "description": "Pass True to sort results by gift price instead of send date. Sorting is applied before pagination.",
+              "html_description": "<td>Pass True to sort results by gift price instead of send date. Sorting is applied before pagination.</td>",
+              "rst_description": "Pass True to sort results by gift price instead of send date. Sorting is applied before pagination.\n",
+              "name": "sort_by_price"
+            },
+            {
+              "type": "String",
+              "required": false,
+              "description": "Offset of the first entry to return as received from the previous request; use empty string to get the first chunk of results",
+              "html_description": "<td>Offset of the first entry to return as received from the previous request; use empty string to get the first chunk of results</td>",
+              "rst_description": "Offset of the first entry to return as received from the previous request; use empty string to get the first chunk of results\n",
+              "name": "offset"
+            },
+            {
+              "type": "Integer",
+              "required": false,
+              "description": "The maximum number of gifts to be returned; 1-100. Defaults to 100",
+              "html_description": "<td>The maximum number of gifts to be returned; 1-100. Defaults to 100</td>",
+              "rst_description": "The maximum number of gifts to be returned; 1-100. Defaults to 100\n",
+              "name": "limit"
+            }
+          ],
+          "category": "methods"
+        },
+        {
+          "anchor": "convertgifttostars",
+          "name": "convertGiftToStars",
+          "description": "Converts a given regular gift to Telegram Stars. Requires the can_convert_gifts_to_stars business bot right. Returns True on success.",
+          "html_description": "<p>Converts a given regular gift to Telegram Stars. Requires the <em>can_convert_gifts_to_stars</em> business bot right. Returns <em>True</em> on success.</p>",
+          "rst_description": "Converts a given regular gift to Telegram Stars. Requires the *can_convert_gifts_to_stars* business bot right. Returns :code:`True` on success.",
+          "annotations": [
+            {
+              "type": "String",
+              "required": true,
+              "description": "Unique identifier of the business connection",
+              "html_description": "<td>Unique identifier of the business connection</td>",
+              "rst_description": "Unique identifier of the business connection\n",
+              "name": "business_connection_id"
+            },
+            {
+              "type": "String",
+              "required": true,
+              "description": "Unique identifier of the regular gift that should be converted to Telegram Stars",
+              "html_description": "<td>Unique identifier of the regular gift that should be converted to Telegram Stars</td>",
+              "rst_description": "Unique identifier of the regular gift that should be converted to Telegram Stars\n",
+              "name": "owned_gift_id"
+            }
+          ],
+          "category": "methods"
+        },
+        {
+          "anchor": "upgradegift",
+          "name": "upgradeGift",
+          "description": "Upgrades a given regular gift to a unique gift. Requires the can_transfer_and_upgrade_gifts business bot right. Additionally requires the can_transfer_stars business bot right if the upgrade is paid. Returns True on success.",
+          "html_description": "<p>Upgrades a given regular gift to a unique gift. Requires the <em>can_transfer_and_upgrade_gifts</em> business bot right. Additionally requires the <em>can_transfer_stars</em> business bot right if the upgrade is paid. Returns <em>True</em> on success.</p>",
+          "rst_description": "Upgrades a given regular gift to a unique gift. Requires the *can_transfer_and_upgrade_gifts* business bot right. Additionally requires the *can_transfer_stars* business bot right if the upgrade is paid. Returns :code:`True` on success.",
+          "annotations": [
+            {
+              "type": "String",
+              "required": true,
+              "description": "Unique identifier of the business connection",
+              "html_description": "<td>Unique identifier of the business connection</td>",
+              "rst_description": "Unique identifier of the business connection\n",
+              "name": "business_connection_id"
+            },
+            {
+              "type": "String",
+              "required": true,
+              "description": "Unique identifier of the regular gift that should be upgraded to a unique one",
+              "html_description": "<td>Unique identifier of the regular gift that should be upgraded to a unique one</td>",
+              "rst_description": "Unique identifier of the regular gift that should be upgraded to a unique one\n",
+              "name": "owned_gift_id"
+            },
+            {
+              "type": "Boolean",
+              "required": false,
+              "description": "Pass True to keep the original gift text, sender and receiver in the upgraded gift",
+              "html_description": "<td>Pass True to keep the original gift text, sender and receiver in the upgraded gift</td>",
+              "rst_description": "Pass True to keep the original gift text, sender and receiver in the upgraded gift\n",
+              "name": "keep_original_details"
+            },
+            {
+              "type": "Integer",
+              "required": false,
+              "description": "The amount of Telegram Stars that will be paid for the upgrade from the business account balance. If gift.prepaid_upgrade_star_count > 0, then pass 0, otherwise, the can_transfer_stars business bot right is required and gift.upgrade_star_count must be passed.",
+              "html_description": "<td>The amount of Telegram Stars that will be paid for the upgrade from the business account balance. If <code>gift.prepaid_upgrade_star_count &gt; 0</code>, then pass 0, otherwise, the <em>can_transfer_stars</em> business bot right is required and <code>gift.upgrade_star_count</code> must be passed.</td>",
+              "rst_description": "The amount of Telegram Stars that will be paid for the upgrade from the business account balance. If :code:`gift.prepaid_upgrade_star_count > 0`, then pass 0, otherwise, the *can_transfer_stars* business bot right is required and :code:`gift.upgrade_star_count` must be passed.\n",
+              "name": "star_count"
+            }
+          ],
+          "category": "methods"
+        },
+        {
+          "anchor": "transfergift",
+          "name": "transferGift",
+          "description": "Transfers an owned unique gift to another user. Requires the can_transfer_and_upgrade_gifts business bot right. Requires can_transfer_stars business bot right if the transfer is paid. Returns True on success.",
+          "html_description": "<p>Transfers an owned unique gift to another user. Requires the <em>can_transfer_and_upgrade_gifts</em> business bot right. Requires <em>can_transfer_stars</em> business bot right if the transfer is paid. Returns <em>True</em> on success.</p>",
+          "rst_description": "Transfers an owned unique gift to another user. Requires the *can_transfer_and_upgrade_gifts* business bot right. Requires *can_transfer_stars* business bot right if the transfer is paid. Returns :code:`True` on success.",
+          "annotations": [
+            {
+              "type": "String",
+              "required": true,
+              "description": "Unique identifier of the business connection",
+              "html_description": "<td>Unique identifier of the business connection</td>",
+              "rst_description": "Unique identifier of the business connection\n",
+              "name": "business_connection_id"
+            },
+            {
+              "type": "String",
+              "required": true,
+              "description": "Unique identifier of the regular gift that should be transferred",
+              "html_description": "<td>Unique identifier of the regular gift that should be transferred</td>",
+              "rst_description": "Unique identifier of the regular gift that should be transferred\n",
+              "name": "owned_gift_id"
+            },
+            {
+              "type": "Integer",
+              "required": true,
+              "description": "Unique identifier of the chat which will own the gift. The chat must be active in the last 24 hours.",
+              "html_description": "<td>Unique identifier of the chat which will own the gift. The chat must be active in the last 24 hours.</td>",
+              "rst_description": "Unique identifier of the chat which will own the gift. The chat must be active in the last 24 hours.\n",
+              "name": "new_owner_chat_id"
+            },
+            {
+              "type": "Integer",
+              "required": false,
+              "description": "The amount of Telegram Stars that will be paid for the transfer from the business account balance. If positive, then the can_transfer_stars business bot right is required.",
+              "html_description": "<td>The amount of Telegram Stars that will be paid for the transfer from the business account balance. If positive, then the <em>can_transfer_stars</em> business bot right is required.</td>",
+              "rst_description": "The amount of Telegram Stars that will be paid for the transfer from the business account balance. If positive, then the *can_transfer_stars* business bot right is required.\n",
+              "name": "star_count"
+            }
+          ],
+          "category": "methods"
+        },
+        {
+          "anchor": "poststory",
+          "name": "postStory",
+          "description": "Posts a story on behalf of a managed business account. Requires the can_manage_stories business bot right. Returns Story on success.",
+          "html_description": "<p>Posts a story on behalf of a managed business account. Requires the <em>can_manage_stories</em> business bot right. Returns <a href=\"#story\">Story</a> on success.</p>",
+          "rst_description": "Posts a story on behalf of a managed business account. Requires the *can_manage_stories* business bot right. Returns :class:`aiogram.types.story.Story` on success.",
+          "annotations": [
+            {
+              "type": "String",
+              "required": true,
+              "description": "Unique identifier of the business connection",
+              "html_description": "<td>Unique identifier of the business connection</td>",
+              "rst_description": "Unique identifier of the business connection\n",
+              "name": "business_connection_id"
+            },
+            {
+              "type": "InputStoryContent",
+              "required": true,
+              "description": "Content of the story",
+              "html_description": "<td>Content of the story</td>",
+              "rst_description": "Content of the story\n",
+              "name": "content"
+            },
+            {
+              "type": "Integer",
+              "required": true,
+              "description": "Period after which the story is moved to the archive, in seconds; must be one of 6 * 3600, 12 * 3600, 86400, or 2 * 86400",
+              "html_description": "<td>Period after which the story is moved to the archive, in seconds; must be one of <code>6 * 3600</code>, <code>12 * 3600</code>, <code>86400</code>, or <code>2 * 86400</code></td>",
+              "rst_description": "Period after which the story is moved to the archive, in seconds; must be one of :code:`6 * 3600`, :code:`12 * 3600`, :code:`86400`, or :code:`2 * 86400`\n",
+              "name": "active_period"
+            },
+            {
+              "type": "String",
+              "required": false,
+              "description": "Caption of the story, 0-2048 characters after entities parsing",
+              "html_description": "<td>Caption of the story, 0-2048 characters after entities parsing</td>",
+              "rst_description": "Caption of the story, 0-2048 characters after entities parsing\n",
+              "name": "caption"
+            },
+            {
+              "type": "String",
+              "required": false,
+              "description": "Mode for parsing entities in the story caption. See formatting options for more details.",
+              "html_description": "<td>Mode for parsing entities in the story caption. See <a href=\"#formatting-options\">formatting options</a> for more details.</td>",
+              "rst_description": "Mode for parsing entities in the story caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.\n",
+              "name": "parse_mode"
+            },
+            {
+              "type": "Array of MessageEntity",
+              "required": false,
+              "description": "A JSON-serialized list of special entities that appear in the caption, which can be specified instead of parse_mode",
+              "html_description": "<td>A JSON-serialized list of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em></td>",
+              "rst_description": "A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*\n",
+              "name": "caption_entities"
+            },
+            {
+              "type": "Array of StoryArea",
+              "required": false,
+              "description": "A JSON-serialized list of clickable areas to be shown on the story",
+              "html_description": "<td>A JSON-serialized list of clickable areas to be shown on the story</td>",
+              "rst_description": "A JSON-serialized list of clickable areas to be shown on the story\n",
+              "name": "areas"
+            },
+            {
+              "type": "Boolean",
+              "required": false,
+              "description": "Pass True to keep the story accessible after it expires",
+              "html_description": "<td>Pass <em>True</em> to keep the story accessible after it expires</td>",
+              "rst_description": "Pass :code:`True` to keep the story accessible after it expires\n",
+              "name": "post_to_chat_page"
+            },
+            {
+              "type": "Boolean",
+              "required": false,
+              "description": "Pass True if the content of the story must be protected from forwarding and screenshotting",
+              "html_description": "<td>Pass <em>True</em> if the content of the story must be protected from forwarding and screenshotting</td>",
+              "rst_description": "Pass :code:`True` if the content of the story must be protected from forwarding and screenshotting\n",
+              "name": "protect_content"
+            }
+          ],
+          "category": "methods"
+        },
+        {
+          "anchor": "editstory",
+          "name": "editStory",
+          "description": "Edits a story previously posted by the bot on behalf of a managed business account. Requires the can_manage_stories business bot right. Returns Story on success.",
+          "html_description": "<p>Edits a story previously posted by the bot on behalf of a managed business account. Requires the <em>can_manage_stories</em> business bot right. Returns <a href=\"#story\">Story</a> on success.</p>",
+          "rst_description": "Edits a story previously posted by the bot on behalf of a managed business account. Requires the *can_manage_stories* business bot right. Returns :class:`aiogram.types.story.Story` on success.",
+          "annotations": [
+            {
+              "type": "String",
+              "required": true,
+              "description": "Unique identifier of the business connection",
+              "html_description": "<td>Unique identifier of the business connection</td>",
+              "rst_description": "Unique identifier of the business connection\n",
+              "name": "business_connection_id"
+            },
+            {
+              "type": "Integer",
+              "required": true,
+              "description": "Unique identifier of the story to edit",
+              "html_description": "<td>Unique identifier of the story to edit</td>",
+              "rst_description": "Unique identifier of the story to edit\n",
+              "name": "story_id"
+            },
+            {
+              "type": "InputStoryContent",
+              "required": true,
+              "description": "Content of the story",
+              "html_description": "<td>Content of the story</td>",
+              "rst_description": "Content of the story\n",
+              "name": "content"
+            },
+            {
+              "type": "String",
+              "required": false,
+              "description": "Caption of the story, 0-2048 characters after entities parsing",
+              "html_description": "<td>Caption of the story, 0-2048 characters after entities parsing</td>",
+              "rst_description": "Caption of the story, 0-2048 characters after entities parsing\n",
+              "name": "caption"
+            },
+            {
+              "type": "String",
+              "required": false,
+              "description": "Mode for parsing entities in the story caption. See formatting options for more details.",
+              "html_description": "<td>Mode for parsing entities in the story caption. See <a href=\"#formatting-options\">formatting options</a> for more details.</td>",
+              "rst_description": "Mode for parsing entities in the story caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.\n",
+              "name": "parse_mode"
+            },
+            {
+              "type": "Array of MessageEntity",
+              "required": false,
+              "description": "A JSON-serialized list of special entities that appear in the caption, which can be specified instead of parse_mode",
+              "html_description": "<td>A JSON-serialized list of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em></td>",
+              "rst_description": "A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*\n",
+              "name": "caption_entities"
+            },
+            {
+              "type": "Array of StoryArea",
+              "required": false,
+              "description": "A JSON-serialized list of clickable areas to be shown on the story",
+              "html_description": "<td>A JSON-serialized list of clickable areas to be shown on the story</td>",
+              "rst_description": "A JSON-serialized list of clickable areas to be shown on the story\n",
+              "name": "areas"
+            }
+          ],
+          "category": "methods"
+        },
+        {
+          "anchor": "deletestory",
+          "name": "deleteStory",
+          "description": "Deletes a story previously posted by the bot on behalf of a managed business account. Requires the can_manage_stories business bot right. Returns True on success.",
+          "html_description": "<p>Deletes a story previously posted by the bot on behalf of a managed business account. Requires the <em>can_manage_stories</em> business bot right. Returns <em>True</em> on success.</p>",
+          "rst_description": "Deletes a story previously posted by the bot on behalf of a managed business account. Requires the *can_manage_stories* business bot right. Returns :code:`True` on success.",
+          "annotations": [
+            {
+              "type": "String",
+              "required": true,
+              "description": "Unique identifier of the business connection",
+              "html_description": "<td>Unique identifier of the business connection</td>",
+              "rst_description": "Unique identifier of the business connection\n",
+              "name": "business_connection_id"
+            },
+            {
+              "type": "Integer",
+              "required": true,
+              "description": "Unique identifier of the story to delete",
+              "html_description": "<td>Unique identifier of the story to delete</td>",
+              "rst_description": "Unique identifier of the story to delete\n",
+              "name": "story_id"
+            }
+          ],
+          "category": "methods"
         }
       ],
       "description": "The following methods allow you to change an existing message in the message history instead of sending a new one with a result of an action. This is most useful for messages with inline keyboards using callback queries, but can also help reduce clutter in conversations with regular chat bots.\nPlease note, that it is currently only possible to edit messages without reply_markup or with inline keyboards."
@@ -12737,10 +14940,10 @@
           "rst_description": "This object describes a sticker to be added to a sticker set.",
           "annotations": [
             {
-              "type": "InputFile or String",
-              "description": "The added sticker. Pass a file_id as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, upload a new one using multipart/form-data, or pass 'attach://<file_attach_name>' to upload a new one using multipart/form-data under <file_attach_name> name. Animated and video stickers can't be uploaded via HTTP URL. More information on Sending Files",
-              "html_description": "<td>The added sticker. Pass a <em>file_id</em> as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, upload a new one using multipart/form-data, or pass &#8220;attach://&lt;file_attach_name&gt;&#8221; to upload a new one using multipart/form-data under &lt;file_attach_name&gt; name. Animated and video stickers can't be uploaded via HTTP URL. <a href=\"#sending-files\">More information on Sending Files &#187;</a></td>",
-              "rst_description": "The added sticker. Pass a *file_id* as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, upload a new one using multipart/form-data, or pass 'attach://<file_attach_name>' to upload a new one using multipart/form-data under <file_attach_name> name. Animated and video stickers can't be uploaded via HTTP URL. :ref:`More information on Sending Files » <sending-files>`\n",
+              "type": "String",
+              "description": "The added sticker. Pass a file_id as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or pass 'attach://<file_attach_name>' to upload a new file using multipart/form-data under <file_attach_name> name. Animated and video stickers can't be uploaded via HTTP URL. More information on Sending Files",
+              "html_description": "<td>The added sticker. Pass a <em>file_id</em> as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or pass &#8220;attach://&lt;file_attach_name&gt;&#8221; to upload a new file using multipart/form-data under &lt;file_attach_name&gt; name. Animated and video stickers can't be uploaded via HTTP URL. <a href=\"#sending-files\">More information on Sending Files &#187;</a></td>",
+              "rst_description": "The added sticker. Pass a *file_id* as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or pass 'attach://<file_attach_name>' to upload a new file using multipart/form-data under <file_attach_name> name. Animated and video stickers can't be uploaded via HTTP URL. :ref:`More information on Sending Files » <sending-files>`\n",
               "name": "sticker",
               "required": true
             },
@@ -13311,245 +15514,6 @@
               "html_description": "<td>Sticker set name</td>",
               "rst_description": "Sticker set name\n",
               "name": "name"
-            }
-          ],
-          "category": "methods"
-        },
-        {
-          "anchor": "gift",
-          "name": "Gift",
-          "description": "This object represents a gift that can be sent by the bot.",
-          "html_description": "<p>This object represents a gift that can be sent by the bot.</p>",
-          "rst_description": "This object represents a gift that can be sent by the bot.",
-          "annotations": [
-            {
-              "type": "String",
-              "description": "Unique identifier of the gift",
-              "html_description": "<td>Unique identifier of the gift</td>",
-              "rst_description": "Unique identifier of the gift\n",
-              "name": "id",
-              "required": true
-            },
-            {
-              "type": "Sticker",
-              "description": "The sticker that represents the gift",
-              "html_description": "<td>The sticker that represents the gift</td>",
-              "rst_description": "The sticker that represents the gift\n",
-              "name": "sticker",
-              "required": true
-            },
-            {
-              "type": "Integer",
-              "description": "The number of Telegram Stars that must be paid to send the sticker",
-              "html_description": "<td>The number of Telegram Stars that must be paid to send the sticker</td>",
-              "rst_description": "The number of Telegram Stars that must be paid to send the sticker\n",
-              "name": "star_count",
-              "required": true
-            },
-            {
-              "type": "Integer",
-              "description": "The number of Telegram Stars that must be paid to upgrade the gift to a unique one",
-              "html_description": "<td><em>Optional</em>. The number of Telegram Stars that must be paid to upgrade the gift to a unique one</td>",
-              "rst_description": "*Optional*. The number of Telegram Stars that must be paid to upgrade the gift to a unique one\n",
-              "name": "upgrade_star_count",
-              "required": false
-            },
-            {
-              "type": "Integer",
-              "description": "The total number of the gifts of this type that can be sent; for limited gifts only",
-              "html_description": "<td><em>Optional</em>. The total number of the gifts of this type that can be sent; for limited gifts only</td>",
-              "rst_description": "*Optional*. The total number of the gifts of this type that can be sent; for limited gifts only\n",
-              "name": "total_count",
-              "required": false
-            },
-            {
-              "type": "Integer",
-              "description": "The number of remaining gifts of this type that can be sent; for limited gifts only",
-              "html_description": "<td><em>Optional</em>. The number of remaining gifts of this type that can be sent; for limited gifts only</td>",
-              "rst_description": "*Optional*. The number of remaining gifts of this type that can be sent; for limited gifts only\n",
-              "name": "remaining_count",
-              "required": false
-            }
-          ],
-          "category": "types"
-        },
-        {
-          "anchor": "gifts",
-          "name": "Gifts",
-          "description": "This object represent a list of gifts.",
-          "html_description": "<p>This object represent a list of gifts.</p>",
-          "rst_description": "This object represent a list of gifts.",
-          "annotations": [
-            {
-              "type": "Array of Gift",
-              "description": "The list of gifts",
-              "html_description": "<td>The list of gifts</td>",
-              "rst_description": "The list of gifts\n",
-              "name": "gifts",
-              "required": true
-            }
-          ],
-          "category": "types"
-        },
-        {
-          "anchor": "getavailablegifts",
-          "name": "getAvailableGifts",
-          "description": "Returns the list of gifts that can be sent by the bot to users and channel chats. Requires no parameters. Returns a Gifts object.",
-          "html_description": "<p>Returns the list of gifts that can be sent by the bot to users and channel chats. Requires no parameters. Returns a <a href=\"#gifts\">Gifts</a> object.</p>",
-          "rst_description": "Returns the list of gifts that can be sent by the bot to users and channel chats. Requires no parameters. Returns a :class:`aiogram.types.gifts.Gifts` object.",
-          "annotations": [],
-          "category": "methods"
-        },
-        {
-          "anchor": "sendgift",
-          "name": "sendGift",
-          "description": "Sends a gift to the given user or channel chat. The gift can't be converted to Telegram Stars by the receiver. Returns True on success.",
-          "html_description": "<p>Sends a gift to the given user or channel chat. The gift can't be converted to Telegram Stars by the receiver. Returns <em>True</em> on success.</p>",
-          "rst_description": "Sends a gift to the given user or channel chat. The gift can't be converted to Telegram Stars by the receiver. Returns :code:`True` on success.",
-          "annotations": [
-            {
-              "type": "Integer",
-              "required": false,
-              "description": "Required if chat_id is not specified. Unique identifier of the target user who will receive the gift.",
-              "html_description": "<td>Required if <em>chat_id</em> is not specified. Unique identifier of the target user who will receive the gift.</td>",
-              "rst_description": "Required if *chat_id* is not specified. Unique identifier of the target user who will receive the gift.\n",
-              "name": "user_id"
-            },
-            {
-              "type": "Integer or String",
-              "required": false,
-              "description": "Required if user_id is not specified. Unique identifier for the chat or username of the channel (in the format @channelusername) that will receive the gift.",
-              "html_description": "<td>Required if <em>user_id</em> is not specified. Unique identifier for the chat or username of the channel (in the format <code>@channelusername</code>) that will receive the gift.</td>",
-              "rst_description": "Required if *user_id* is not specified. Unique identifier for the chat or username of the channel (in the format :code:`@channelusername`) that will receive the gift.\n",
-              "name": "chat_id"
-            },
-            {
-              "type": "String",
-              "required": true,
-              "description": "Identifier of the gift",
-              "html_description": "<td>Identifier of the gift</td>",
-              "rst_description": "Identifier of the gift\n",
-              "name": "gift_id"
-            },
-            {
-              "type": "Boolean",
-              "required": false,
-              "description": "Pass True to pay for the gift upgrade from the bot's balance, thereby making the upgrade free for the receiver",
-              "html_description": "<td>Pass <em>True</em> to pay for the gift upgrade from the bot's balance, thereby making the upgrade free for the receiver</td>",
-              "rst_description": "Pass :code:`True` to pay for the gift upgrade from the bot's balance, thereby making the upgrade free for the receiver\n",
-              "name": "pay_for_upgrade"
-            },
-            {
-              "type": "String",
-              "required": false,
-              "description": "Text that will be shown along with the gift; 0-255 characters",
-              "html_description": "<td>Text that will be shown along with the gift; 0-255 characters</td>",
-              "rst_description": "Text that will be shown along with the gift; 0-255 characters\n",
-              "name": "text"
-            },
-            {
-              "type": "String",
-              "required": false,
-              "description": "Mode for parsing entities in the text. See formatting options for more details. Entities other than 'bold', 'italic', 'underline', 'strikethrough', 'spoiler', and 'custom_emoji' are ignored.",
-              "html_description": "<td>Mode for parsing entities in the text. See <a href=\"#formatting-options\">formatting options</a> for more details. Entities other than &#8220;bold&#8221;, &#8220;italic&#8221;, &#8220;underline&#8221;, &#8220;strikethrough&#8221;, &#8220;spoiler&#8221;, and &#8220;custom_emoji&#8221; are ignored.</td>",
-              "rst_description": "Mode for parsing entities in the text. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details. Entities other than 'bold', 'italic', 'underline', 'strikethrough', 'spoiler', and 'custom_emoji' are ignored.\n",
-              "name": "text_parse_mode"
-            },
-            {
-              "type": "Array of MessageEntity",
-              "required": false,
-              "description": "A JSON-serialized list of special entities that appear in the gift text. It can be specified instead of text_parse_mode. Entities other than 'bold', 'italic', 'underline', 'strikethrough', 'spoiler', and 'custom_emoji' are ignored.",
-              "html_description": "<td>A JSON-serialized list of special entities that appear in the gift text. It can be specified instead of <em>text_parse_mode</em>. Entities other than &#8220;bold&#8221;, &#8220;italic&#8221;, &#8220;underline&#8221;, &#8220;strikethrough&#8221;, &#8220;spoiler&#8221;, and &#8220;custom_emoji&#8221; are ignored.</td>",
-              "rst_description": "A JSON-serialized list of special entities that appear in the gift text. It can be specified instead of *text_parse_mode*. Entities other than 'bold', 'italic', 'underline', 'strikethrough', 'spoiler', and 'custom_emoji' are ignored.\n",
-              "name": "text_entities"
-            }
-          ],
-          "category": "methods"
-        },
-        {
-          "anchor": "verifyuser",
-          "name": "verifyUser",
-          "description": "Verifies a user on behalf of the organization which is represented by the bot. Returns True on success.",
-          "html_description": "<p>Verifies a user <a href=\"https://telegram.org/verify#third-party-verification\">on behalf of the organization</a> which is represented by the bot. Returns <em>True</em> on success.</p>",
-          "rst_description": "Verifies a user `on behalf of the organization <https://telegram.org/verify#third-party-verification>`_ which is represented by the bot. Returns :code:`True` on success.",
-          "annotations": [
-            {
-              "type": "Integer",
-              "required": true,
-              "description": "Unique identifier of the target user",
-              "html_description": "<td>Unique identifier of the target user</td>",
-              "rst_description": "Unique identifier of the target user\n",
-              "name": "user_id"
-            },
-            {
-              "type": "String",
-              "required": false,
-              "description": "Custom description for the verification; 0-70 characters. Must be empty if the organization isn't allowed to provide a custom verification description.",
-              "html_description": "<td>Custom description for the verification; 0-70 characters. Must be empty if the organization isn't allowed to provide a custom verification description.</td>",
-              "rst_description": "Custom description for the verification; 0-70 characters. Must be empty if the organization isn't allowed to provide a custom verification description.\n",
-              "name": "custom_description"
-            }
-          ],
-          "category": "methods"
-        },
-        {
-          "anchor": "verifychat",
-          "name": "verifyChat",
-          "description": "Verifies a chat on behalf of the organization which is represented by the bot. Returns True on success.",
-          "html_description": "<p>Verifies a chat <a href=\"https://telegram.org/verify#third-party-verification\">on behalf of the organization</a> which is represented by the bot. Returns <em>True</em> on success.</p>",
-          "rst_description": "Verifies a chat `on behalf of the organization <https://telegram.org/verify#third-party-verification>`_ which is represented by the bot. Returns :code:`True` on success.",
-          "annotations": [
-            {
-              "type": "Integer or String",
-              "required": true,
-              "description": "Unique identifier for the target chat or username of the target channel (in the format @channelusername)",
-              "html_description": "<td>Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)</td>",
-              "rst_description": "Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)\n",
-              "name": "chat_id"
-            },
-            {
-              "type": "String",
-              "required": false,
-              "description": "Custom description for the verification; 0-70 characters. Must be empty if the organization isn't allowed to provide a custom verification description.",
-              "html_description": "<td>Custom description for the verification; 0-70 characters. Must be empty if the organization isn't allowed to provide a custom verification description.</td>",
-              "rst_description": "Custom description for the verification; 0-70 characters. Must be empty if the organization isn't allowed to provide a custom verification description.\n",
-              "name": "custom_description"
-            }
-          ],
-          "category": "methods"
-        },
-        {
-          "anchor": "removeuserverification",
-          "name": "removeUserVerification",
-          "description": "Removes verification from a user who is currently verified on behalf of the organization represented by the bot. Returns True on success.",
-          "html_description": "<p>Removes verification from a user who is currently verified <a href=\"https://telegram.org/verify#third-party-verification\">on behalf of the organization</a> represented by the bot. Returns <em>True</em> on success.</p>",
-          "rst_description": "Removes verification from a user who is currently verified `on behalf of the organization <https://telegram.org/verify#third-party-verification>`_ represented by the bot. Returns :code:`True` on success.",
-          "annotations": [
-            {
-              "type": "Integer",
-              "required": true,
-              "description": "Unique identifier of the target user",
-              "html_description": "<td>Unique identifier of the target user</td>",
-              "rst_description": "Unique identifier of the target user\n",
-              "name": "user_id"
-            }
-          ],
-          "category": "methods"
-        },
-        {
-          "anchor": "removechatverification",
-          "name": "removeChatVerification",
-          "description": "Removes verification from a chat that is currently verified on behalf of the organization represented by the bot. Returns True on success.",
-          "html_description": "<p>Removes verification from a chat that is currently verified <a href=\"https://telegram.org/verify#third-party-verification\">on behalf of the organization</a> represented by the bot. Returns <em>True</em> on success.</p>",
-          "rst_description": "Removes verification from a chat that is currently verified `on behalf of the organization <https://telegram.org/verify#third-party-verification>`_ represented by the bot. Returns :code:`True` on success.",
-          "annotations": [
-            {
-              "type": "Integer or String",
-              "required": true,
-              "description": "Unique identifier for the target chat or username of the target channel (in the format @channelusername)",
-              "html_description": "<td>Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)</td>",
-              "rst_description": "Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)\n",
-              "name": "chat_id"
             }
           ],
           "category": "methods"
@@ -16592,9 +18556,9 @@
             {
               "type": "Integer",
               "required": false,
-              "description": "The number of seconds the subscription will be active for before the next payment. The currency must be set to 'XTR' (Telegram Stars) if the parameter is used. Currently, it must always be 2592000 (30 days) if specified. Any number of subscriptions can be active for a given bot at the same time, including multiple concurrent subscriptions from the same user. Subscription price must no exceed 2500 Telegram Stars.",
-              "html_description": "<td>The number of seconds the subscription will be active for before the next payment. The currency must be set to &#8220;XTR&#8221; (Telegram Stars) if the parameter is used. Currently, it must always be 2592000 (30 days) if specified. Any number of subscriptions can be active for a given bot at the same time, including multiple concurrent subscriptions from the same user. Subscription price must no exceed 2500 Telegram Stars.</td>",
-              "rst_description": "The number of seconds the subscription will be active for before the next payment. The currency must be set to 'XTR' (Telegram Stars) if the parameter is used. Currently, it must always be 2592000 (30 days) if specified. Any number of subscriptions can be active for a given bot at the same time, including multiple concurrent subscriptions from the same user. Subscription price must no exceed 2500 Telegram Stars.\n",
+              "description": "The number of seconds the subscription will be active for before the next payment. The currency must be set to 'XTR' (Telegram Stars) if the parameter is used. Currently, it must always be 2592000 (30 days) if specified. Any number of subscriptions can be active for a given bot at the same time, including multiple concurrent subscriptions from the same user. Subscription price must no exceed 10000 Telegram Stars.",
+              "html_description": "<td>The number of seconds the subscription will be active for before the next payment. The currency must be set to &#8220;XTR&#8221; (Telegram Stars) if the parameter is used. Currently, it must always be 2592000 (30 days) if specified. Any number of subscriptions can be active for a given bot at the same time, including multiple concurrent subscriptions from the same user. Subscription price must no exceed 10000 Telegram Stars.</td>",
+              "rst_description": "The number of seconds the subscription will be active for before the next payment. The currency must be set to 'XTR' (Telegram Stars) if the parameter is used. Currently, it must always be 2592000 (30 days) if specified. Any number of subscriptions can be active for a given bot at the same time, including multiple concurrent subscriptions from the same user. Subscription price must no exceed 10000 Telegram Stars.\n",
               "name": "subscription_period"
             },
             {
@@ -17512,6 +19476,14 @@
               "required": true
             },
             {
+              "type": "String",
+              "description": "Type of the transaction, currently one of 'invoice_payment' for payments via invoices, 'paid_media_payment' for payments for paid media, 'gift_purchase' for gifts sent by the bot, 'premium_purchase' for Telegram Premium subscriptions gifted by the bot, 'business_account_transfer' for direct transfers from managed business accounts",
+              "html_description": "<td>Type of the transaction, currently one of &#8220;invoice_payment&#8221; for payments via invoices, &#8220;paid_media_payment&#8221; for payments for paid media, &#8220;gift_purchase&#8221; for gifts sent by the bot, &#8220;premium_purchase&#8221; for Telegram Premium subscriptions gifted by the bot, &#8220;business_account_transfer&#8221; for direct transfers from managed business accounts</td>",
+              "rst_description": "Type of the transaction, currently one of 'invoice_payment' for payments via invoices, 'paid_media_payment' for payments for paid media, 'gift_purchase' for gifts sent by the bot, 'premium_purchase' for Telegram Premium subscriptions gifted by the bot, 'business_account_transfer' for direct transfers from managed business accounts\n",
+              "name": "transaction_type",
+              "required": true
+            },
+            {
               "type": "User",
               "description": "Information about the user",
               "html_description": "<td>Information about the user</td>",
@@ -17521,50 +19493,58 @@
             },
             {
               "type": "AffiliateInfo",
-              "description": "Information about the affiliate that received a commission via this transaction",
-              "html_description": "<td><em>Optional</em>. Information about the affiliate that received a commission via this transaction</td>",
-              "rst_description": "*Optional*. Information about the affiliate that received a commission via this transaction\n",
+              "description": "Information about the affiliate that received a commission via this transaction. Can be available only for 'invoice_payment' and 'paid_media_payment' transactions.",
+              "html_description": "<td><em>Optional</em>. Information about the affiliate that received a commission via this transaction. Can be available only for &#8220;invoice_payment&#8221; and &#8220;paid_media_payment&#8221; transactions.</td>",
+              "rst_description": "*Optional*. Information about the affiliate that received a commission via this transaction. Can be available only for 'invoice_payment' and 'paid_media_payment' transactions.\n",
               "name": "affiliate",
               "required": false
             },
             {
               "type": "String",
-              "description": "Bot-specified invoice payload",
-              "html_description": "<td><em>Optional</em>. Bot-specified invoice payload</td>",
-              "rst_description": "*Optional*. Bot-specified invoice payload\n",
+              "description": "Bot-specified invoice payload. Can be available only for 'invoice_payment' transactions.",
+              "html_description": "<td><em>Optional</em>. Bot-specified invoice payload. Can be available only for &#8220;invoice_payment&#8221; transactions.</td>",
+              "rst_description": "*Optional*. Bot-specified invoice payload. Can be available only for 'invoice_payment' transactions.\n",
               "name": "invoice_payload",
               "required": false
             },
             {
               "type": "Integer",
-              "description": "The duration of the paid subscription",
-              "html_description": "<td><em>Optional</em>. The duration of the paid subscription</td>",
-              "rst_description": "*Optional*. The duration of the paid subscription\n",
+              "description": "The duration of the paid subscription. Can be available only for 'invoice_payment' transactions.",
+              "html_description": "<td><em>Optional</em>. The duration of the paid subscription. Can be available only for &#8220;invoice_payment&#8221; transactions.</td>",
+              "rst_description": "*Optional*. The duration of the paid subscription. Can be available only for 'invoice_payment' transactions.\n",
               "name": "subscription_period",
               "required": false
             },
             {
               "type": "Array of PaidMedia",
-              "description": "Information about the paid media bought by the user",
-              "html_description": "<td><em>Optional</em>. Information about the paid media bought by the user</td>",
-              "rst_description": "*Optional*. Information about the paid media bought by the user\n",
+              "description": "Information about the paid media bought by the user; for 'paid_media_payment' transactions only",
+              "html_description": "<td><em>Optional</em>. Information about the paid media bought by the user; for &#8220;paid_media_payment&#8221; transactions only</td>",
+              "rst_description": "*Optional*. Information about the paid media bought by the user; for 'paid_media_payment' transactions only\n",
               "name": "paid_media",
               "required": false
             },
             {
               "type": "String",
-              "description": "Bot-specified paid media payload",
-              "html_description": "<td><em>Optional</em>. Bot-specified paid media payload</td>",
-              "rst_description": "*Optional*. Bot-specified paid media payload\n",
+              "description": "Bot-specified paid media payload. Can be available only for 'paid_media_payment' transactions.",
+              "html_description": "<td><em>Optional</em>. Bot-specified paid media payload. Can be available only for &#8220;paid_media_payment&#8221; transactions.</td>",
+              "rst_description": "*Optional*. Bot-specified paid media payload. Can be available only for 'paid_media_payment' transactions.\n",
               "name": "paid_media_payload",
               "required": false
             },
             {
               "type": "Gift",
-              "description": "The gift sent to the user by the bot",
-              "html_description": "<td><em>Optional</em>. The gift sent to the user by the bot</td>",
-              "rst_description": "*Optional*. The gift sent to the user by the bot\n",
+              "description": "The gift sent to the user by the bot; for 'gift_purchase' transactions only",
+              "html_description": "<td><em>Optional</em>. The gift sent to the user by the bot; for &#8220;gift_purchase&#8221; transactions only</td>",
+              "rst_description": "*Optional*. The gift sent to the user by the bot; for 'gift_purchase' transactions only\n",
               "name": "gift",
+              "required": false
+            },
+            {
+              "type": "Integer",
+              "description": "Number of months the gifted Telegram Premium subscription will be active for; for 'premium_purchase' transactions only",
+              "html_description": "<td><em>Optional</em>. Number of months the gifted Telegram Premium subscription will be active for; for &#8220;premium_purchase&#8221; transactions only</td>",
+              "rst_description": "*Optional*. Number of months the gifted Telegram Premium subscription will be active for; for 'premium_purchase' transactions only\n",
+              "name": "premium_subscription_duration",
               "required": false
             }
           ],

@@ -1,0 +1,33 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Updating messages",
+    "anchor": "updating-messages"
+  },
+  "object": {
+    "anchor": "convertgifttostars",
+    "name": "convertGiftToStars",
+    "description": "Converts a given regular gift to Telegram Stars. Requires the can_convert_gifts_to_stars business bot right. Returns True on success.",
+    "html_description": "<p>Converts a given regular gift to Telegram Stars. Requires the <em>can_convert_gifts_to_stars</em> business bot right. Returns <em>True</em> on success.</p>",
+    "rst_description": "Converts a given regular gift to Telegram Stars. Requires the *can_convert_gifts_to_stars* business bot right. Returns :code:`True` on success.",
+    "annotations": [
+      {
+        "type": "String",
+        "required": true,
+        "description": "Unique identifier of the business connection",
+        "html_description": "<td>Unique identifier of the business connection</td>",
+        "rst_description": "Unique identifier of the business connection\n",
+        "name": "business_connection_id"
+      },
+      {
+        "type": "String",
+        "required": true,
+        "description": "Unique identifier of the regular gift that should be converted to Telegram Stars",
+        "html_description": "<td>Unique identifier of the regular gift that should be converted to Telegram Stars</td>",
+        "rst_description": "Unique identifier of the regular gift that should be converted to Telegram Stars\n",
+        "name": "owned_gift_id"
+      }
+    ],
+    "category": "methods"
+  }
+}

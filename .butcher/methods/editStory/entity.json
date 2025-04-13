@@ -1,0 +1,73 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Updating messages",
+    "anchor": "updating-messages"
+  },
+  "object": {
+    "anchor": "editstory",
+    "name": "editStory",
+    "description": "Edits a story previously posted by the bot on behalf of a managed business account. Requires the can_manage_stories business bot right. Returns Story on success.",
+    "html_description": "<p>Edits a story previously posted by the bot on behalf of a managed business account. Requires the <em>can_manage_stories</em> business bot right. Returns <a href=\"#story\">Story</a> on success.</p>",
+    "rst_description": "Edits a story previously posted by the bot on behalf of a managed business account. Requires the *can_manage_stories* business bot right. Returns :class:`aiogram.types.story.Story` on success.",
+    "annotations": [
+      {
+        "type": "String",
+        "required": true,
+        "description": "Unique identifier of the business connection",
+        "html_description": "<td>Unique identifier of the business connection</td>",
+        "rst_description": "Unique identifier of the business connection\n",
+        "name": "business_connection_id"
+      },
+      {
+        "type": "Integer",
+        "required": true,
+        "description": "Unique identifier of the story to edit",
+        "html_description": "<td>Unique identifier of the story to edit</td>",
+        "rst_description": "Unique identifier of the story to edit\n",
+        "name": "story_id"
+      },
+      {
+        "type": "InputStoryContent",
+        "required": true,
+        "description": "Content of the story",
+        "html_description": "<td>Content of the story</td>",
+        "rst_description": "Content of the story\n",
+        "name": "content"
+      },
+      {
+        "type": "String",
+        "required": false,
+        "description": "Caption of the story, 0-2048 characters after entities parsing",
+        "html_description": "<td>Caption of the story, 0-2048 characters after entities parsing</td>",
+        "rst_description": "Caption of the story, 0-2048 characters after entities parsing\n",
+        "name": "caption"
+      },
+      {
+        "type": "String",
+        "required": false,
+        "description": "Mode for parsing entities in the story caption. See formatting options for more details.",
+        "html_description": "<td>Mode for parsing entities in the story caption. See <a href=\"#formatting-options\">formatting options</a> for more details.</td>",
+        "rst_description": "Mode for parsing entities in the story caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.\n",
+        "name": "parse_mode"
+      },
+      {
+        "type": "Array of MessageEntity",
+        "required": false,
+        "description": "A JSON-serialized list of special entities that appear in the caption, which can be specified instead of parse_mode",
+        "html_description": "<td>A JSON-serialized list of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em></td>",
+        "rst_description": "A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*\n",
+        "name": "caption_entities"
+      },
+      {
+        "type": "Array of StoryArea",
+        "required": false,
+        "description": "A JSON-serialized list of clickable areas to be shown on the story",
+        "html_description": "<td>A JSON-serialized list of clickable areas to be shown on the story</td>",
+        "rst_description": "A JSON-serialized list of clickable areas to be shown on the story\n",
+        "name": "areas"
+      }
+    ],
+    "category": "methods"
+  }
+}

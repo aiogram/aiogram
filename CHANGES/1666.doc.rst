@@ -1,0 +1,1 @@
+Fixed broken code block formatting in ``router.rst`` caused by incorrect indentation of directive options.

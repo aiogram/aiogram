@@ -2773,7 +2773,7 @@ class InaccessibleMessage(MaybeInaccessibleMessage):
 
         Source: https://core.telegram.org/bots/api#sendpaidmedia
 
-        :param star_count: The number of Telegram Stars that must be paid to buy access to the media; 1-2500
+        :param star_count: The number of Telegram Stars that must be paid to buy access to the media; 1-10000
         :param media: A JSON-serialized array describing the media to be sent; up to 10 items
         :param business_connection_id: Unique identifier of the business connection on behalf of which the message will be sent
         :param payload: Bot-defined paid media payload, 0-128 bytes. This will not be displayed to the user, use it for your internal processes.
@@ -2842,7 +2842,7 @@ class InaccessibleMessage(MaybeInaccessibleMessage):
 
         Source: https://core.telegram.org/bots/api#sendpaidmedia
 
-        :param star_count: The number of Telegram Stars that must be paid to buy access to the media; 1-2500
+        :param star_count: The number of Telegram Stars that must be paid to buy access to the media; 1-10000
         :param media: A JSON-serialized array describing the media to be sent; up to 10 items
         :param business_connection_id: Unique identifier of the business connection on behalf of which the message will be sent
         :param payload: Bot-defined paid media payload, 0-128 bytes. This will not be displayed to the user, use it for your internal processes.

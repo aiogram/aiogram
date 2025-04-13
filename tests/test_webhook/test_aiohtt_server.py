@@ -150,13 +150,9 @@ class TestSimpleRequestHandler:
 
         resp = await self.make_reqest(client=client, text="spam")
         assert resp.status == 200
-        assert resp.content_type == "multipart/form-data"
-        result = {}
-        reader = MultipartReader.from_response(resp)
-        while part := await reader.next():
-            value = await part.read()
-            result[part.name] = value.decode()
-        assert not result
+        assert resp.content_type == "application/json"
+        expected_result = {}
+        assert await resp.json() == expected_result
 
     async def test_reply_into_webhook_background(self, bot: MockedBot, aiohttp_client):
         app = Application()

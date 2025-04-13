@@ -1,0 +1,1 @@
+Add different shortcut methods for ``aiogram.utils.formatting.Text.as_kwargs()``

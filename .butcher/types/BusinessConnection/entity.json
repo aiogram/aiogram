@@ -44,12 +44,12 @@
         "required": true
       },
       {
-        "type": "Boolean",
-        "description": "True, if the bot can act on behalf of the business account in chats that were active in the last 24 hours",
-        "html_description": "<td>True, if the bot can act on behalf of the business account in chats that were active in the last 24 hours</td>",
-        "rst_description": "True, if the bot can act on behalf of the business account in chats that were active in the last 24 hours\n",
-        "name": "can_reply",
-        "required": true
+        "type": "BusinessBotRights",
+        "description": "Rights of the business bot",
+        "html_description": "<td><em>Optional</em>. Rights of the business bot</td>",
+        "rst_description": "*Optional*. Rights of the business bot\n",
+        "name": "rights",
+        "required": false
       },
       {
         "type": "Boolean",
@@ -58,6 +58,18 @@
         "rst_description": "True, if the connection is active\n",
         "name": "is_enabled",
         "required": true
+      },
+      {
+        "type": "Boolean",
+        "description": "True, if the bot can act on behalf of the business account in chats that were active in the last 24 hours",
+        "html_description": "<td>True, if the bot can act on behalf of the business account in chats that were active in the last 24 hours</td>",
+        "rst_description": "True, if the bot can act on behalf of the business account in chats that were active in the last 24 hours\n",
+        "name": "can_reply",
+        "required": false,
+        "deprecated": {
+          "version": "9.0",
+          "release_date": "2025-04-11"
+        }
       }
     ],
     "category": "types"

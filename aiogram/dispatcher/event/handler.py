@@ -41,11 +41,7 @@ class CallableObject:
         wrapped = partial(self.callback, *args, **self._prepare_kwargs(kwargs))
         if self.awaitable:
             return await wrapped()
-
-        loop = asyncio.get_event_loop()
-        context = contextvars.copy_context()
-        wrapped = partial(context.run, wrapped)
-        return await loop.run_in_executor(None, wrapped)
+        return await asyncio.to_thread(wrapped)
 
 
 @dataclass

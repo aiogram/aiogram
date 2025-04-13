@@ -1,0 +1,81 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "giftinfo",
+    "name": "GiftInfo",
+    "description": "Describes a service message about a regular gift that was sent or received.",
+    "html_description": "<p>Describes a service message about a regular gift that was sent or received.</p>",
+    "rst_description": "Describes a service message about a regular gift that was sent or received.",
+    "annotations": [
+      {
+        "type": "Gift",
+        "description": "Information about the gift",
+        "html_description": "<td>Information about the gift</td>",
+        "rst_description": "Information about the gift\n",
+        "name": "gift",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Unique identifier of the received gift for the bot; only present for gifts received on behalf of business accounts",
+        "html_description": "<td><em>Optional</em>. Unique identifier of the received gift for the bot; only present for gifts received on behalf of business accounts</td>",
+        "rst_description": "*Optional*. Unique identifier of the received gift for the bot; only present for gifts received on behalf of business accounts\n",
+        "name": "owned_gift_id",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "Number of Telegram Stars that can be claimed by the receiver by converting the gift; omitted if conversion to Telegram Stars is impossible",
+        "html_description": "<td><em>Optional</em>. Number of Telegram Stars that can be claimed by the receiver by converting the gift; omitted if conversion to Telegram Stars is impossible</td>",
+        "rst_description": "*Optional*. Number of Telegram Stars that can be claimed by the receiver by converting the gift; omitted if conversion to Telegram Stars is impossible\n",
+        "name": "convert_star_count",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "Number of Telegram Stars that were prepaid by the sender for the ability to upgrade the gift",
+        "html_description": "<td><em>Optional</em>. Number of Telegram Stars that were prepaid by the sender for the ability to upgrade the gift</td>",
+        "rst_description": "*Optional*. Number of Telegram Stars that were prepaid by the sender for the ability to upgrade the gift\n",
+        "name": "prepaid_upgrade_star_count",
+        "required": false
+      },
+      {
+        "type": "True",
+        "description": "True, if the gift can be upgraded to a unique gift",
+        "html_description": "<td><em>Optional</em>. True, if the gift can be upgraded to a unique gift</td>",
+        "rst_description": "*Optional*. True, if the gift can be upgraded to a unique gift\n",
+        "name": "can_be_upgraded",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "Text of the message that was added to the gift",
+        "html_description": "<td><em>Optional</em>. Text of the message that was added to the gift</td>",
+        "rst_description": "*Optional*. Text of the message that was added to the gift\n",
+        "name": "text",
+        "required": false
+      },
+      {
+        "type": "Array of MessageEntity",
+        "description": "Special entities that appear in the text",
+        "html_description": "<td><em>Optional</em>. Special entities that appear in the text</td>",
+        "rst_description": "*Optional*. Special entities that appear in the text\n",
+        "name": "entities",
+        "required": false
+      },
+      {
+        "type": "True",
+        "description": "True, if the sender and gift text are shown only to the gift receiver; otherwise, everyone will be able to see them",
+        "html_description": "<td><em>Optional</em>. True, if the sender and gift text are shown only to the gift receiver; otherwise, everyone will be able to see them</td>",
+        "rst_description": "*Optional*. True, if the sender and gift text are shown only to the gift receiver; otherwise, everyone will be able to see them\n",
+        "name": "is_private",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

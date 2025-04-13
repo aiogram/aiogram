@@ -188,6 +188,14 @@
         "required": false
       },
       {
+        "type": "Integer",
+        "description": "The number of Telegram Stars that were paid by the sender of the message to send it",
+        "html_description": "<td><em>Optional</em>. The number of Telegram Stars that were paid by the sender of the message to send it</td>",
+        "rst_description": "*Optional*. The number of Telegram Stars that were paid by the sender of the message to send it\n",
+        "name": "paid_star_count",
+        "required": false
+      },
+      {
         "type": "String",
         "description": "For text messages, the actual UTF-8 text of the message",
         "html_description": "<td><em>Optional</em>. For text messages, the actual UTF-8 text of the message</td>",
@@ -516,6 +524,22 @@
         "required": false
       },
       {
+        "type": "GiftInfo",
+        "description": "Service message: a regular gift was sent or received",
+        "html_description": "<td><em>Optional</em>. Service message: a regular gift was sent or received</td>",
+        "rst_description": "*Optional*. Service message: a regular gift was sent or received\n",
+        "name": "gift",
+        "required": false
+      },
+      {
+        "type": "UniqueGiftInfo",
+        "description": "Service message: a unique gift was sent or received",
+        "html_description": "<td><em>Optional</em>. Service message: a unique gift was sent or received</td>",
+        "rst_description": "*Optional*. Service message: a unique gift was sent or received\n",
+        "name": "unique_gift",
+        "required": false
+      },
+      {
         "type": "String",
         "description": "The domain name of the website on which the user has logged in.",
         "html_description": "<td><em>Optional</em>. The domain name of the website on which the user has logged in. <a href=\"/widgets/login\">More about Telegram Login &#187;</a></td>",
@@ -641,6 +665,14 @@
         "html_description": "<td><em>Optional</em>. Service message: a giveaway without public winners was completed</td>",
         "rst_description": "*Optional*. Service message: a giveaway without public winners was completed\n",
         "name": "giveaway_completed",
+        "required": false
+      },
+      {
+        "type": "PaidMessagePriceChanged",
+        "description": "Service message: the price for paid messages has changed in the chat",
+        "html_description": "<td><em>Optional</em>. Service message: the price for paid messages has changed in the chat</td>",
+        "rst_description": "*Optional*. Service message: the price for paid messages has changed in the chat\n",
+        "name": "paid_message_price_changed",
         "required": false
       },
       {
