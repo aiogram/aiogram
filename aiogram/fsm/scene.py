@@ -556,7 +556,9 @@ class SceneWizard:
         if not self.scene:
             raise SceneException("Scene is not initialized")
 
-        loggers.scene.debug("Call action %r in scene %r (middleware aware)", action.name, self.scene_config.state)
+        loggers.scene.debug(
+            "Call action %r in scene %r (middleware aware)", action.name, self.scene_config.state
+        )
         action_config = self.scene_config.actions.get(action, {})
         if not action_config:
             loggers.scene.debug(
@@ -588,9 +590,7 @@ class SceneWizard:
             return await action_config[event_type].call(self.scene, event, **data)
 
         await observer.wrap_outer_middleware(
-            _actual_handler,
-            event=self.event,
-            data={**self.data, **kwargs}
+            _actual_handler, event=self.event, data={**self.data, **kwargs}
         )
         return True
 
