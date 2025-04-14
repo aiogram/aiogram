@@ -551,10 +551,12 @@ class SceneWizard:
         await self.manager.enter(scene, _check_active=False, **kwargs)
 
     async def _on_action(self, action: SceneAction, **kwargs: Any) -> bool:
+        from aiogram.dispatcher.router import Router
+
         if not self.scene:
             raise SceneException("Scene is not initialized")
 
-        loggers.scene.debug("Call action %r in scene %r", action.name, self.scene_config.state)
+        loggers.scene.debug("Call action %r in scene %r (middleware aware)", action.name, self.scene_config.state)
         action_config = self.scene_config.actions.get(action, {})
         if not action_config:
             loggers.scene.debug(
@@ -572,7 +574,24 @@ class SceneWizard:
             )
             return False
 
-        await action_config[event_type].call(self.scene, self.event, **{**self.data, **kwargs})
+        router: Router = getattr(self.manager.registry, "router", None)
+        if router is None:
+            await action_config[event_type].call(self.scene, self.event, **{**self.data, **kwargs})
+            return True
+
+        observer = router.observers.get(event_type)
+        if observer is None:
+            await action_config[event_type].call(self.scene, self.event, **{**self.data, **kwargs})
+            return True
+
+        async def _actual_handler(event, data):
+            return await action_config[event_type].call(self.scene, event, **data)
+
+        await observer.wrap_outer_middleware(
+            _actual_handler,
+            event=self.event,
+            data={**self.data, **kwargs}
+        )
         return True
 
     async def set_data(self, data: Dict[str, Any]) -> None:
