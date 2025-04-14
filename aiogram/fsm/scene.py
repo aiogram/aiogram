@@ -584,7 +584,7 @@ class SceneWizard:
             await action_config[event_type].call(self.scene, self.event, **{**self.data, **kwargs})
             return True
 
-        async def _actual_handler(event, data):
+        async def _actual_handler(event, **data):
             return await action_config[event_type].call(self.scene, event, **data)
 
         await observer.wrap_outer_middleware(
