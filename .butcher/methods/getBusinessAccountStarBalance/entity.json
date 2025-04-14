@@ -1,0 +1,25 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Updating messages",
+    "anchor": "updating-messages"
+  },
+  "object": {
+    "anchor": "getbusinessaccountstarbalance",
+    "name": "getBusinessAccountStarBalance",
+    "description": "Returns the amount of Telegram Stars owned by a managed business account. Requires the can_view_gifts_and_stars business bot right. Returns StarAmount on success.",
+    "html_description": "<p>Returns the amount of Telegram Stars owned by a managed business account. Requires the <em>can_view_gifts_and_stars</em> business bot right. Returns <a href=\"#staramount\">StarAmount</a> on success.</p>",
+    "rst_description": "Returns the amount of Telegram Stars owned by a managed business account. Requires the *can_view_gifts_and_stars* business bot right. Returns :class:`aiogram.types.star_amount.StarAmount` on success.",
+    "annotations": [
+      {
+        "type": "String",
+        "required": true,
+        "description": "Unique identifier of the business connection",
+        "html_description": "<td>Unique identifier of the business connection</td>",
+        "rst_description": "Unique identifier of the business connection\n",
+        "name": "business_connection_id"
+      }
+    ],
+    "category": "methods"
+  }
+}

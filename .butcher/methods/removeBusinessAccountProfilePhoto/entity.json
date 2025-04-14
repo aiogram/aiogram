@@ -1,0 +1,33 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Updating messages",
+    "anchor": "updating-messages"
+  },
+  "object": {
+    "anchor": "removebusinessaccountprofilephoto",
+    "name": "removeBusinessAccountProfilePhoto",
+    "description": "Removes the current profile photo of a managed business account. Requires the can_edit_profile_photo business bot right. Returns True on success.",
+    "html_description": "<p>Removes the current profile photo of a managed business account. Requires the <em>can_edit_profile_photo</em> business bot right. Returns <em>True</em> on success.</p>",
+    "rst_description": "Removes the current profile photo of a managed business account. Requires the *can_edit_profile_photo* business bot right. Returns :code:`True` on success.",
+    "annotations": [
+      {
+        "type": "String",
+        "required": true,
+        "description": "Unique identifier of the business connection",
+        "html_description": "<td>Unique identifier of the business connection</td>",
+        "rst_description": "Unique identifier of the business connection\n",
+        "name": "business_connection_id"
+      },
+      {
+        "type": "Boolean",
+        "required": false,
+        "description": "Pass True to remove the public photo, which is visible even if the main photo is hidden by the business account's privacy settings. After the main photo is removed, the previous profile photo (if present) becomes the main photo.",
+        "html_description": "<td>Pass True to remove the public photo, which is visible even if the main photo is hidden by the business account's privacy settings. After the main photo is removed, the previous profile photo (if present) becomes the main photo.</td>",
+        "rst_description": "Pass True to remove the public photo, which is visible even if the main photo is hidden by the business account's privacy settings. After the main photo is removed, the previous profile photo (if present) becomes the main photo.\n",
+        "name": "is_public"
+      }
+    ],
+    "category": "methods"
+  }
+}

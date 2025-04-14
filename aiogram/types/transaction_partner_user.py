@@ -21,20 +21,24 @@ class TransactionPartnerUser(TransactionPartner):
 
     type: Literal[TransactionPartnerType.USER] = TransactionPartnerType.USER
     """Type of the transaction partner, always 'user'"""
+    transaction_type: str
+    """Type of the transaction, currently one of 'invoice_payment' for payments via invoices, 'paid_media_payment' for payments for paid media, 'gift_purchase' for gifts sent by the bot, 'premium_purchase' for Telegram Premium subscriptions gifted by the bot, 'business_account_transfer' for direct transfers from managed business accounts"""
     user: User
     """Information about the user"""
     affiliate: Optional[AffiliateInfo] = None
-    """*Optional*. Information about the affiliate that received a commission via this transaction"""
+    """*Optional*. Information about the affiliate that received a commission via this transaction. Can be available only for 'invoice_payment' and 'paid_media_payment' transactions."""
     invoice_payload: Optional[str] = None
-    """*Optional*. Bot-specified invoice payload"""
+    """*Optional*. Bot-specified invoice payload. Can be available only for 'invoice_payment' transactions."""
     subscription_period: Optional[int] = None
-    """*Optional*. The duration of the paid subscription"""
+    """*Optional*. The duration of the paid subscription. Can be available only for 'invoice_payment' transactions."""
     paid_media: Optional[list[PaidMediaUnion]] = None
-    """*Optional*. Information about the paid media bought by the user"""
+    """*Optional*. Information about the paid media bought by the user; for 'paid_media_payment' transactions only"""
     paid_media_payload: Optional[str] = None
-    """*Optional*. Bot-specified paid media payload"""
+    """*Optional*. Bot-specified paid media payload. Can be available only for 'paid_media_payment' transactions."""
     gift: Optional[Gift] = None
-    """*Optional*. The gift sent to the user by the bot"""
+    """*Optional*. The gift sent to the user by the bot; for 'gift_purchase' transactions only"""
+    premium_subscription_duration: Optional[int] = None
+    """*Optional*. Number of months the gifted Telegram Premium subscription will be active for; for 'premium_purchase' transactions only"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!
@@ -44,6 +48,7 @@ class TransactionPartnerUser(TransactionPartner):
             __pydantic__self__,
             *,
             type: Literal[TransactionPartnerType.USER] = TransactionPartnerType.USER,
+            transaction_type: str,
             user: User,
             affiliate: Optional[AffiliateInfo] = None,
             invoice_payload: Optional[str] = None,
@@ -51,6 +56,7 @@ class TransactionPartnerUser(TransactionPartner):
             paid_media: Optional[list[PaidMediaUnion]] = None,
             paid_media_payload: Optional[str] = None,
             gift: Optional[Gift] = None,
+            premium_subscription_duration: Optional[int] = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!
@@ -59,6 +65,7 @@ class TransactionPartnerUser(TransactionPartner):
 
             super().__init__(
                 type=type,
+                transaction_type=transaction_type,
                 user=user,
                 affiliate=affiliate,
                 invoice_payload=invoice_payload,
@@ -66,5 +73,6 @@ class TransactionPartnerUser(TransactionPartner):
                 paid_media=paid_media,
                 paid_media_payload=paid_media_payload,
                 gift=gift,
+                premium_subscription_duration=premium_subscription_duration,
                 **__pydantic_kwargs,
             )

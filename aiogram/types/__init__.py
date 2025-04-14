@@ -1,5 +1,6 @@
 from typing import List, Literal, Optional, Union
 
+from .accepted_gift_types import AcceptedGiftTypes
 from .affiliate_info import AffiliateInfo
 from .animation import Animation
 from .audio import Audio
@@ -31,6 +32,7 @@ from .bot_command_scope_union import BotCommandScopeUnion
 from .bot_description import BotDescription
 from .bot_name import BotName
 from .bot_short_description import BotShortDescription
+from .business_bot_rights import BusinessBotRights
 from .business_connection import BusinessConnection
 from .business_intro import BusinessIntro
 from .business_location import BusinessLocation
@@ -92,6 +94,7 @@ from .game_high_score import GameHighScore
 from .general_forum_topic_hidden import GeneralForumTopicHidden
 from .general_forum_topic_unhidden import GeneralForumTopicUnhidden
 from .gift import Gift
+from .gift_info import GiftInfo
 from .gifts import Gifts
 from .giveaway import Giveaway
 from .giveaway_completed import GiveawayCompleted
@@ -144,7 +147,15 @@ from .input_paid_media_union import InputPaidMediaUnion
 from .input_paid_media_video import InputPaidMediaVideo
 from .input_poll_option import InputPollOption
 from .input_poll_option_union import InputPollOptionUnion
+from .input_profile_photo import InputProfilePhoto
+from .input_profile_photo_animated import InputProfilePhotoAnimated
+from .input_profile_photo_static import InputProfilePhotoStatic
+from .input_profile_photo_union import InputProfilePhotoUnion
 from .input_sticker import InputSticker
+from .input_story_content import InputStoryContent
+from .input_story_content_photo import InputStoryContentPhoto
+from .input_story_content_union import InputStoryContentUnion
+from .input_story_content_video import InputStoryContentVideo
 from .input_text_message_content import InputTextMessageContent
 from .input_venue_message_content import InputVenueMessageContent
 from .invoice import Invoice
@@ -156,6 +167,7 @@ from .keyboard_button_request_users import KeyboardButtonRequestUsers
 from .labeled_price import LabeledPrice
 from .link_preview_options import LinkPreviewOptions
 from .location import Location
+from .location_address import LocationAddress
 from .login_url import LoginUrl
 from .mask_position import MaskPosition
 from .maybe_inaccessible_message import MaybeInaccessibleMessage
@@ -179,6 +191,11 @@ from .message_origin_user import MessageOriginUser
 from .message_reaction_count_updated import MessageReactionCountUpdated
 from .message_reaction_updated import MessageReactionUpdated
 from .order_info import OrderInfo
+from .owned_gift import OwnedGift
+from .owned_gift_regular import OwnedGiftRegular
+from .owned_gift_union import OwnedGiftUnion
+from .owned_gift_unique import OwnedGiftUnique
+from .owned_gifts import OwnedGifts
 from .paid_media import PaidMedia
 from .paid_media_info import PaidMediaInfo
 from .paid_media_photo import PaidMediaPhoto
@@ -186,6 +203,7 @@ from .paid_media_preview import PaidMediaPreview
 from .paid_media_purchased import PaidMediaPurchased
 from .paid_media_union import PaidMediaUnion
 from .paid_media_video import PaidMediaVideo
+from .paid_message_price_changed import PaidMessagePriceChanged
 from .passport_data import PassportData
 from .passport_element_error import PassportElementError
 from .passport_element_error_data_field import PassportElementErrorDataField
@@ -232,11 +250,21 @@ from .shared_user import SharedUser
 from .shipping_address import ShippingAddress
 from .shipping_option import ShippingOption
 from .shipping_query import ShippingQuery
+from .star_amount import StarAmount
 from .star_transaction import StarTransaction
 from .star_transactions import StarTransactions
 from .sticker import Sticker
 from .sticker_set import StickerSet
 from .story import Story
+from .story_area import StoryArea
+from .story_area_position import StoryAreaPosition
+from .story_area_type import StoryAreaType
+from .story_area_type_link import StoryAreaTypeLink
+from .story_area_type_location import StoryAreaTypeLocation
+from .story_area_type_suggested_reaction import StoryAreaTypeSuggestedReaction
+from .story_area_type_union import StoryAreaTypeUnion
+from .story_area_type_unique_gift import StoryAreaTypeUniqueGift
+from .story_area_type_weather import StoryAreaTypeWeather
 from .successful_payment import SuccessfulPayment
 from .switch_inline_query_chosen_chat import SwitchInlineQueryChosenChat
 from .text_quote import TextQuote
@@ -249,6 +277,12 @@ from .transaction_partner_telegram_ads import TransactionPartnerTelegramAds
 from .transaction_partner_telegram_api import TransactionPartnerTelegramApi
 from .transaction_partner_union import TransactionPartnerUnion
 from .transaction_partner_user import TransactionPartnerUser
+from .unique_gift import UniqueGift
+from .unique_gift_backdrop import UniqueGiftBackdrop
+from .unique_gift_backdrop_colors import UniqueGiftBackdropColors
+from .unique_gift_info import UniqueGiftInfo
+from .unique_gift_model import UniqueGiftModel
+from .unique_gift_symbol import UniqueGiftSymbol
 from .update import Update
 from .user import User
 from .user_chat_boosts import UserChatBoosts
@@ -269,6 +303,7 @@ from .webhook_info import WebhookInfo
 from .write_access_allowed import WriteAccessAllowed
 
 __all__ = (
+    "AcceptedGiftTypes",
     "AffiliateInfo",
     "Animation",
     "Audio",
@@ -298,6 +333,7 @@ __all__ = (
     "BotName",
     "BotShortDescription",
     "BufferedInputFile",
+    "BusinessBotRights",
     "BusinessConnection",
     "BusinessIntro",
     "BusinessLocation",
@@ -361,6 +397,7 @@ __all__ = (
     "GeneralForumTopicHidden",
     "GeneralForumTopicUnhidden",
     "Gift",
+    "GiftInfo",
     "Gifts",
     "Giveaway",
     "GiveawayCompleted",
@@ -413,7 +450,15 @@ __all__ = (
     "InputPaidMediaVideo",
     "InputPollOption",
     "InputPollOptionUnion",
+    "InputProfilePhoto",
+    "InputProfilePhotoAnimated",
+    "InputProfilePhotoStatic",
+    "InputProfilePhotoUnion",
     "InputSticker",
+    "InputStoryContent",
+    "InputStoryContentPhoto",
+    "InputStoryContentUnion",
+    "InputStoryContentVideo",
     "InputTextMessageContent",
     "InputVenueMessageContent",
     "Invoice",
@@ -425,6 +470,7 @@ __all__ = (
     "LabeledPrice",
     "LinkPreviewOptions",
     "Location",
+    "LocationAddress",
     "LoginUrl",
     "MaskPosition",
     "MaybeInaccessibleMessage",
@@ -448,6 +494,11 @@ __all__ = (
     "MessageReactionCountUpdated",
     "MessageReactionUpdated",
     "OrderInfo",
+    "OwnedGift",
+    "OwnedGiftRegular",
+    "OwnedGiftUnion",
+    "OwnedGiftUnique",
+    "OwnedGifts",
     "PaidMedia",
     "PaidMediaInfo",
     "PaidMediaPhoto",
@@ -455,6 +506,7 @@ __all__ = (
     "PaidMediaPurchased",
     "PaidMediaUnion",
     "PaidMediaVideo",
+    "PaidMessagePriceChanged",
     "PassportData",
     "PassportElementError",
     "PassportElementErrorDataField",
@@ -499,11 +551,21 @@ __all__ = (
     "ShippingAddress",
     "ShippingOption",
     "ShippingQuery",
+    "StarAmount",
     "StarTransaction",
     "StarTransactions",
     "Sticker",
     "StickerSet",
     "Story",
+    "StoryArea",
+    "StoryAreaPosition",
+    "StoryAreaType",
+    "StoryAreaTypeLink",
+    "StoryAreaTypeLocation",
+    "StoryAreaTypeSuggestedReaction",
+    "StoryAreaTypeUnion",
+    "StoryAreaTypeUniqueGift",
+    "StoryAreaTypeWeather",
     "SuccessfulPayment",
     "SwitchInlineQueryChosenChat",
     "TelegramObject",
@@ -519,6 +581,12 @@ __all__ = (
     "TransactionPartnerUser",
     "UNSET_PARSE_MODE",
     "URLInputFile",
+    "UniqueGift",
+    "UniqueGiftBackdrop",
+    "UniqueGiftBackdropColors",
+    "UniqueGiftInfo",
+    "UniqueGiftModel",
+    "UniqueGiftSymbol",
     "Update",
     "User",
     "UserChatBoosts",

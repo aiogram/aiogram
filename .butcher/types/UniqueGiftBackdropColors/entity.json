@@ -1,0 +1,49 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "uniquegiftbackdropcolors",
+    "name": "UniqueGiftBackdropColors",
+    "description": "This object describes the colors of the backdrop of a unique gift.",
+    "html_description": "<p>This object describes the colors of the backdrop of a unique gift.</p>",
+    "rst_description": "This object describes the colors of the backdrop of a unique gift.",
+    "annotations": [
+      {
+        "type": "Integer",
+        "description": "The color in the center of the backdrop in RGB format",
+        "html_description": "<td>The color in the center of the backdrop in RGB format</td>",
+        "rst_description": "The color in the center of the backdrop in RGB format\n",
+        "name": "center_color",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "The color on the edges of the backdrop in RGB format",
+        "html_description": "<td>The color on the edges of the backdrop in RGB format</td>",
+        "rst_description": "The color on the edges of the backdrop in RGB format\n",
+        "name": "edge_color",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "The color to be applied to the symbol in RGB format",
+        "html_description": "<td>The color to be applied to the symbol in RGB format</td>",
+        "rst_description": "The color to be applied to the symbol in RGB format\n",
+        "name": "symbol_color",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "The color for the text on the backdrop in RGB format",
+        "html_description": "<td>The color for the text on the backdrop in RGB format</td>",
+        "rst_description": "The color for the text on the backdrop in RGB format\n",
+        "name": "text_color",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

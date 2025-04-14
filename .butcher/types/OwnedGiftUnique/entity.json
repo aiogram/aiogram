@@ -1,0 +1,81 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "ownedgiftunique",
+    "name": "OwnedGiftUnique",
+    "description": "Describes a unique gift received and owned by a user or a chat.",
+    "html_description": "<p>Describes a unique gift received and owned by a user or a chat.</p>",
+    "rst_description": "Describes a unique gift received and owned by a user or a chat.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Type of the gift, always 'unique'",
+        "html_description": "<td>Type of the gift, always &#8220;unique&#8221;</td>",
+        "rst_description": "Type of the gift, always 'unique'\n",
+        "name": "type",
+        "required": true
+      },
+      {
+        "type": "UniqueGift",
+        "description": "Information about the unique gift",
+        "html_description": "<td>Information about the unique gift</td>",
+        "rst_description": "Information about the unique gift\n",
+        "name": "gift",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Unique identifier of the received gift for the bot; for gifts received on behalf of business accounts only",
+        "html_description": "<td><em>Optional</em>. Unique identifier of the received gift for the bot; for gifts received on behalf of business accounts only</td>",
+        "rst_description": "*Optional*. Unique identifier of the received gift for the bot; for gifts received on behalf of business accounts only\n",
+        "name": "owned_gift_id",
+        "required": false
+      },
+      {
+        "type": "User",
+        "description": "Sender of the gift if it is a known user",
+        "html_description": "<td><em>Optional</em>. Sender of the gift if it is a known user</td>",
+        "rst_description": "*Optional*. Sender of the gift if it is a known user\n",
+        "name": "sender_user",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "Date the gift was sent in Unix time",
+        "html_description": "<td>Date the gift was sent in Unix time</td>",
+        "rst_description": "Date the gift was sent in Unix time\n",
+        "name": "send_date",
+        "required": true
+      },
+      {
+        "type": "True",
+        "description": "True, if the gift is displayed on the account's profile page; for gifts received on behalf of business accounts only",
+        "html_description": "<td><em>Optional</em>. True, if the gift is displayed on the account's profile page; for gifts received on behalf of business accounts only</td>",
+        "rst_description": "*Optional*. True, if the gift is displayed on the account's profile page; for gifts received on behalf of business accounts only\n",
+        "name": "is_saved",
+        "required": false
+      },
+      {
+        "type": "True",
+        "description": "True, if the gift can be transferred to another owner; for gifts received on behalf of business accounts only",
+        "html_description": "<td><em>Optional</em>. True, if the gift can be transferred to another owner; for gifts received on behalf of business accounts only</td>",
+        "rst_description": "*Optional*. True, if the gift can be transferred to another owner; for gifts received on behalf of business accounts only\n",
+        "name": "can_be_transferred",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "Number of Telegram Stars that must be paid to transfer the gift; omitted if the bot cannot transfer the gift",
+        "html_description": "<td><em>Optional</em>. Number of Telegram Stars that must be paid to transfer the gift; omitted if the bot cannot transfer the gift</td>",
+        "rst_description": "*Optional*. Number of Telegram Stars that must be paid to transfer the gift; omitted if the bot cannot transfer the gift\n",
+        "name": "transfer_star_count",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

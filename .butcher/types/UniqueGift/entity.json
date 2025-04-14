@@ -1,0 +1,65 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "uniquegift",
+    "name": "UniqueGift",
+    "description": "This object describes a unique gift that was upgraded from a regular gift.",
+    "html_description": "<p>This object describes a unique gift that was upgraded from a regular gift.</p>",
+    "rst_description": "This object describes a unique gift that was upgraded from a regular gift.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Human-readable name of the regular gift from which this unique gift was upgraded",
+        "html_description": "<td>Human-readable name of the regular gift from which this unique gift was upgraded</td>",
+        "rst_description": "Human-readable name of the regular gift from which this unique gift was upgraded\n",
+        "name": "base_name",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Unique name of the gift. This name can be used in https://t.me/nft/... links and story areas",
+        "html_description": "<td>Unique name of the gift. This name can be used in <code>https://t.me/nft/...</code> links and story areas</td>",
+        "rst_description": "Unique name of the gift. This name can be used in :code:`https://t.me/nft/...` links and story areas\n",
+        "name": "name",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "Unique number of the upgraded gift among gifts upgraded from the same regular gift",
+        "html_description": "<td>Unique number of the upgraded gift among gifts upgraded from the same regular gift</td>",
+        "rst_description": "Unique number of the upgraded gift among gifts upgraded from the same regular gift\n",
+        "name": "number",
+        "required": true
+      },
+      {
+        "type": "UniqueGiftModel",
+        "description": "Model of the gift",
+        "html_description": "<td>Model of the gift</td>",
+        "rst_description": "Model of the gift\n",
+        "name": "model",
+        "required": true
+      },
+      {
+        "type": "UniqueGiftSymbol",
+        "description": "Symbol of the gift",
+        "html_description": "<td>Symbol of the gift</td>",
+        "rst_description": "Symbol of the gift\n",
+        "name": "symbol",
+        "required": true
+      },
+      {
+        "type": "UniqueGiftBackdrop",
+        "description": "Backdrop of the gift",
+        "html_description": "<td>Backdrop of the gift</td>",
+        "rst_description": "Backdrop of the gift\n",
+        "name": "backdrop",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

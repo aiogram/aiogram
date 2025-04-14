@@ -1,0 +1,41 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Updating messages",
+    "anchor": "updating-messages"
+  },
+  "object": {
+    "anchor": "readbusinessmessage",
+    "name": "readBusinessMessage",
+    "description": "Marks incoming message as read on behalf of a business account. Requires the can_read_messages business bot right. Returns True on success.",
+    "html_description": "<p>Marks incoming message as read on behalf of a business account. Requires the <em>can_read_messages</em> business bot right. Returns <em>True</em> on success.</p>",
+    "rst_description": "Marks incoming message as read on behalf of a business account. Requires the *can_read_messages* business bot right. Returns :code:`True` on success.",
+    "annotations": [
+      {
+        "type": "String",
+        "required": true,
+        "description": "Unique identifier of the business connection on behalf of which to read the message",
+        "html_description": "<td>Unique identifier of the business connection on behalf of which to read the message</td>",
+        "rst_description": "Unique identifier of the business connection on behalf of which to read the message\n",
+        "name": "business_connection_id"
+      },
+      {
+        "type": "Integer",
+        "required": true,
+        "description": "Unique identifier of the chat in which the message was received. The chat must have been active in the last 24 hours.",
+        "html_description": "<td>Unique identifier of the chat in which the message was received. The chat must have been active in the last 24 hours.</td>",
+        "rst_description": "Unique identifier of the chat in which the message was received. The chat must have been active in the last 24 hours.\n",
+        "name": "chat_id"
+      },
+      {
+        "type": "Integer",
+        "required": true,
+        "description": "Unique identifier of the message to mark as read",
+        "html_description": "<td>Unique identifier of the message to mark as read</td>",
+        "rst_description": "Unique identifier of the message to mark as read\n",
+        "name": "message_id"
+      }
+    ],
+    "category": "methods"
+  }
+}

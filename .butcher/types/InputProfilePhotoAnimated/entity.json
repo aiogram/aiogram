@@ -1,0 +1,41 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "inputprofilephotoanimated",
+    "name": "InputProfilePhotoAnimated",
+    "description": "An animated profile photo in the MPEG4 format.",
+    "html_description": "<p>An animated profile photo in the MPEG4 format.</p>",
+    "rst_description": "An animated profile photo in the MPEG4 format.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Type of the profile photo, must be 'animated'",
+        "html_description": "<td>Type of the profile photo, must be &#8220;animated&#8221;</td>",
+        "rst_description": "Type of the profile photo, must be 'animated'\n",
+        "name": "type",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "The animated profile photo. Profile photos can't be reused and can only be uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the photo was uploaded using multipart/form-data under <file_attach_name>. More information on Sending Files",
+        "html_description": "<td>The animated profile photo. Profile photos can't be reused and can only be uploaded as a new file, so you can pass &#8220;attach://&lt;file_attach_name&gt;&#8221; if the photo was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href=\"#sending-files\">More information on Sending Files &#187;</a></td>",
+        "rst_description": "The animated profile photo. Profile photos can't be reused and can only be uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the photo was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`\n",
+        "name": "animation",
+        "required": true
+      },
+      {
+        "type": "Float",
+        "description": "Timestamp in seconds of the frame that will be used as the static profile photo. Defaults to 0.0.",
+        "html_description": "<td><em>Optional</em>. Timestamp in seconds of the frame that will be used as the static profile photo. Defaults to 0.0.</td>",
+        "rst_description": "*Optional*. Timestamp in seconds of the frame that will be used as the static profile photo. Defaults to 0.0.\n",
+        "name": "main_frame_timestamp",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

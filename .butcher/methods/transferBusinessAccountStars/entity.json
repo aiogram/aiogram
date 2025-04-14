@@ -1,0 +1,33 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Updating messages",
+    "anchor": "updating-messages"
+  },
+  "object": {
+    "anchor": "transferbusinessaccountstars",
+    "name": "transferBusinessAccountStars",
+    "description": "Transfers Telegram Stars from the business account balance to the bot's balance. Requires the can_transfer_stars business bot right. Returns True on success.",
+    "html_description": "<p>Transfers Telegram Stars from the business account balance to the bot's balance. Requires the <em>can_transfer_stars</em> business bot right. Returns <em>True</em> on success.</p>",
+    "rst_description": "Transfers Telegram Stars from the business account balance to the bot's balance. Requires the *can_transfer_stars* business bot right. Returns :code:`True` on success.",
+    "annotations": [
+      {
+        "type": "String",
+        "required": true,
+        "description": "Unique identifier of the business connection",
+        "html_description": "<td>Unique identifier of the business connection</td>",
+        "rst_description": "Unique identifier of the business connection\n",
+        "name": "business_connection_id"
+      },
+      {
+        "type": "Integer",
+        "required": true,
+        "description": "Number of Telegram Stars to transfer; 1-10000",
+        "html_description": "<td>Number of Telegram Stars to transfer; 1-10000</td>",
+        "rst_description": "Number of Telegram Stars to transfer; 1-10000\n",
+        "name": "star_count"
+      }
+    ],
+    "category": "methods"
+  }
+}

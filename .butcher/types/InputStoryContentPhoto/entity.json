@@ -1,0 +1,33 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "inputstorycontentphoto",
+    "name": "InputStoryContentPhoto",
+    "description": "Describes a photo to post as a story.",
+    "html_description": "<p>Describes a photo to post as a story.</p>",
+    "rst_description": "Describes a photo to post as a story.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Type of the content, must be 'photo'",
+        "html_description": "<td>Type of the content, must be &#8220;photo&#8221;</td>",
+        "rst_description": "Type of the content, must be 'photo'\n",
+        "name": "type",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "The photo to post as a story. The photo must be of the size 1080x1920 and must not exceed 10 MB. The photo can't be reused and can only be uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the photo was uploaded using multipart/form-data under <file_attach_name>. More information on Sending Files",
+        "html_description": "<td>The photo to post as a story. The photo must be of the size 1080x1920 and must not exceed 10 MB. The photo can't be reused and can only be uploaded as a new file, so you can pass &#8220;attach://&lt;file_attach_name&gt;&#8221; if the photo was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href=\"#sending-files\">More information on Sending Files &#187;</a></td>",
+        "rst_description": "The photo to post as a story. The photo must be of the size 1080x1920 and must not exceed 10 MB. The photo can't be reused and can only be uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the photo was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`\n",
+        "name": "photo",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

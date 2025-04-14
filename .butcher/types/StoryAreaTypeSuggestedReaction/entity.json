@@ -1,0 +1,49 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "storyareatypesuggestedreaction",
+    "name": "StoryAreaTypeSuggestedReaction",
+    "description": "Describes a story area pointing to a suggested reaction. Currently, a story can have up to 5 suggested reaction areas.",
+    "html_description": "<p>Describes a story area pointing to a suggested reaction. Currently, a story can have up to 5 suggested reaction areas.</p>",
+    "rst_description": "Describes a story area pointing to a suggested reaction. Currently, a story can have up to 5 suggested reaction areas.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Type of the area, always 'suggested_reaction'",
+        "html_description": "<td>Type of the area, always &#8220;suggested_reaction&#8221;</td>",
+        "rst_description": "Type of the area, always 'suggested_reaction'\n",
+        "name": "type",
+        "required": true
+      },
+      {
+        "type": "ReactionType",
+        "description": "Type of the reaction",
+        "html_description": "<td>Type of the reaction</td>",
+        "rst_description": "Type of the reaction\n",
+        "name": "reaction_type",
+        "required": true
+      },
+      {
+        "type": "Boolean",
+        "description": "Pass True if the reaction area has a dark background",
+        "html_description": "<td><em>Optional</em>. Pass <em>True</em> if the reaction area has a dark background</td>",
+        "rst_description": "*Optional*. Pass :code:`True` if the reaction area has a dark background\n",
+        "name": "is_dark",
+        "required": false
+      },
+      {
+        "type": "Boolean",
+        "description": "Pass True if reaction area corner is flipped",
+        "html_description": "<td><em>Optional</em>. Pass <em>True</em> if reaction area corner is flipped</td>",
+        "rst_description": "*Optional*. Pass :code:`True` if reaction area corner is flipped\n",
+        "name": "is_flipped",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

@@ -1,0 +1,121 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "ownedgiftregular",
+    "name": "OwnedGiftRegular",
+    "description": "Describes a regular gift owned by a user or a chat.",
+    "html_description": "<p>Describes a regular gift owned by a user or a chat.</p>",
+    "rst_description": "Describes a regular gift owned by a user or a chat.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Type of the gift, always 'regular'",
+        "html_description": "<td>Type of the gift, always &#8220;regular&#8221;</td>",
+        "rst_description": "Type of the gift, always 'regular'\n",
+        "name": "type",
+        "required": true
+      },
+      {
+        "type": "Gift",
+        "description": "Information about the regular gift",
+        "html_description": "<td>Information about the regular gift</td>",
+        "rst_description": "Information about the regular gift\n",
+        "name": "gift",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Unique identifier of the gift for the bot; for gifts received on behalf of business accounts only",
+        "html_description": "<td><em>Optional</em>. Unique identifier of the gift for the bot; for gifts received on behalf of business accounts only</td>",
+        "rst_description": "*Optional*. Unique identifier of the gift for the bot; for gifts received on behalf of business accounts only\n",
+        "name": "owned_gift_id",
+        "required": false
+      },
+      {
+        "type": "User",
+        "description": "Sender of the gift if it is a known user",
+        "html_description": "<td><em>Optional</em>. Sender of the gift if it is a known user</td>",
+        "rst_description": "*Optional*. Sender of the gift if it is a known user\n",
+        "name": "sender_user",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "Date the gift was sent in Unix time",
+        "html_description": "<td>Date the gift was sent in Unix time</td>",
+        "rst_description": "Date the gift was sent in Unix time\n",
+        "name": "send_date",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Text of the message that was added to the gift",
+        "html_description": "<td><em>Optional</em>. Text of the message that was added to the gift</td>",
+        "rst_description": "*Optional*. Text of the message that was added to the gift\n",
+        "name": "text",
+        "required": false
+      },
+      {
+        "type": "Array of MessageEntity",
+        "description": "Special entities that appear in the text",
+        "html_description": "<td><em>Optional</em>. Special entities that appear in the text</td>",
+        "rst_description": "*Optional*. Special entities that appear in the text\n",
+        "name": "entities",
+        "required": false
+      },
+      {
+        "type": "True",
+        "description": "True, if the sender and gift text are shown only to the gift receiver; otherwise, everyone will be able to see them",
+        "html_description": "<td><em>Optional</em>. True, if the sender and gift text are shown only to the gift receiver; otherwise, everyone will be able to see them</td>",
+        "rst_description": "*Optional*. True, if the sender and gift text are shown only to the gift receiver; otherwise, everyone will be able to see them\n",
+        "name": "is_private",
+        "required": false
+      },
+      {
+        "type": "True",
+        "description": "True, if the gift is displayed on the account's profile page; for gifts received on behalf of business accounts only",
+        "html_description": "<td><em>Optional</em>. True, if the gift is displayed on the account's profile page; for gifts received on behalf of business accounts only</td>",
+        "rst_description": "*Optional*. True, if the gift is displayed on the account's profile page; for gifts received on behalf of business accounts only\n",
+        "name": "is_saved",
+        "required": false
+      },
+      {
+        "type": "True",
+        "description": "True, if the gift can be upgraded to a unique gift; for gifts received on behalf of business accounts only",
+        "html_description": "<td><em>Optional</em>. True, if the gift can be upgraded to a unique gift; for gifts received on behalf of business accounts only</td>",
+        "rst_description": "*Optional*. True, if the gift can be upgraded to a unique gift; for gifts received on behalf of business accounts only\n",
+        "name": "can_be_upgraded",
+        "required": false
+      },
+      {
+        "type": "True",
+        "description": "True, if the gift was refunded and isn't available anymore",
+        "html_description": "<td><em>Optional</em>. True, if the gift was refunded and isn't available anymore</td>",
+        "rst_description": "*Optional*. True, if the gift was refunded and isn't available anymore\n",
+        "name": "was_refunded",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "Number of Telegram Stars that can be claimed by the receiver instead of the gift; omitted if the gift cannot be converted to Telegram Stars",
+        "html_description": "<td><em>Optional</em>. Number of Telegram Stars that can be claimed by the receiver instead of the gift; omitted if the gift cannot be converted to Telegram Stars</td>",
+        "rst_description": "*Optional*. Number of Telegram Stars that can be claimed by the receiver instead of the gift; omitted if the gift cannot be converted to Telegram Stars\n",
+        "name": "convert_star_count",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "Number of Telegram Stars that were paid by the sender for the ability to upgrade the gift",
+        "html_description": "<td><em>Optional</em>. Number of Telegram Stars that were paid by the sender for the ability to upgrade the gift</td>",
+        "rst_description": "*Optional*. Number of Telegram Stars that were paid by the sender for the ability to upgrade the gift\n",
+        "name": "prepaid_upgrade_star_count",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

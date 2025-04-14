@@ -1,0 +1,49 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "uniquegiftinfo",
+    "name": "UniqueGiftInfo",
+    "description": "Describes a service message about a unique gift that was sent or received.",
+    "html_description": "<p>Describes a service message about a unique gift that was sent or received.</p>",
+    "rst_description": "Describes a service message about a unique gift that was sent or received.",
+    "annotations": [
+      {
+        "type": "UniqueGift",
+        "description": "Information about the gift",
+        "html_description": "<td>Information about the gift</td>",
+        "rst_description": "Information about the gift\n",
+        "name": "gift",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Origin of the gift. Currently, either 'upgrade' or 'transfer'",
+        "html_description": "<td>Origin of the gift. Currently, either &#8220;upgrade&#8221; or &#8220;transfer&#8221;</td>",
+        "rst_description": "Origin of the gift. Currently, either 'upgrade' or 'transfer'\n",
+        "name": "origin",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Unique identifier of the received gift for the bot; only present for gifts received on behalf of business accounts",
+        "html_description": "<td><em>Optional</em>. Unique identifier of the received gift for the bot; only present for gifts received on behalf of business accounts</td>",
+        "rst_description": "*Optional*. Unique identifier of the received gift for the bot; only present for gifts received on behalf of business accounts\n",
+        "name": "owned_gift_id",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "Number of Telegram Stars that must be paid to transfer the gift; omitted if the bot cannot transfer the gift",
+        "html_description": "<td><em>Optional</em>. Number of Telegram Stars that must be paid to transfer the gift; omitted if the bot cannot transfer the gift</td>",
+        "rst_description": "*Optional*. Number of Telegram Stars that must be paid to transfer the gift; omitted if the bot cannot transfer the gift\n",
+        "name": "transfer_star_count",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

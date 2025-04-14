@@ -260,12 +260,12 @@
         "required": false
       },
       {
-        "type": "True",
-        "description": "True, if gifts can be sent to the chat",
-        "html_description": "<td><em>Optional</em>. <em>True</em>, if gifts can be sent to the chat</td>",
-        "rst_description": "*Optional*. :code:`True`, if gifts can be sent to the chat\n",
-        "name": "can_send_gift",
-        "required": false
+        "type": "AcceptedGiftTypes",
+        "description": "Information about types of gifts that are accepted by the chat or by the corresponding user for private chats",
+        "html_description": "<td>Information about types of gifts that are accepted by the chat or by the corresponding user for private chats</td>",
+        "rst_description": "Information about types of gifts that are accepted by the chat or by the corresponding user for private chats\n",
+        "name": "accepted_gift_types",
+        "required": true
       },
       {
         "type": "True",
@@ -370,6 +370,18 @@
         "rst_description": "*Optional*. For supergroups, the location to which the supergroup is connected\n",
         "name": "location",
         "required": false
+      },
+      {
+        "type": "True",
+        "description": "True, if gifts can be sent to the chat",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if gifts can be sent to the chat</td>",
+        "rst_description": "*Optional*. :code:`True`, if gifts can be sent to the chat\n",
+        "name": "can_send_gift",
+        "required": false,
+        "deprecated": {
+          "version": "9.0",
+          "release_date": "2025-04-11"
+        }
       }
     ],
     "category": "types"

@@ -1,0 +1,33 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Updating messages",
+    "anchor": "updating-messages"
+  },
+  "object": {
+    "anchor": "setbusinessaccountbio",
+    "name": "setBusinessAccountBio",
+    "description": "Changes the bio of a managed business account. Requires the can_change_bio business bot right. Returns True on success.",
+    "html_description": "<p>Changes the bio of a managed business account. Requires the <em>can_change_bio</em> business bot right. Returns <em>True</em> on success.</p>",
+    "rst_description": "Changes the bio of a managed business account. Requires the *can_change_bio* business bot right. Returns :code:`True` on success.",
+    "annotations": [
+      {
+        "type": "String",
+        "required": true,
+        "description": "Unique identifier of the business connection",
+        "html_description": "<td>Unique identifier of the business connection</td>",
+        "rst_description": "Unique identifier of the business connection\n",
+        "name": "business_connection_id"
+      },
+      {
+        "type": "String",
+        "required": false,
+        "description": "The new value of the bio for the business account; 0-140 characters",
+        "html_description": "<td>The new value of the bio for the business account; 0-140 characters</td>",
+        "rst_description": "The new value of the bio for the business account; 0-140 characters\n",
+        "name": "bio"
+      }
+    ],
+    "category": "methods"
+  }
+}

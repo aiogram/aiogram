@@ -11,6 +11,7 @@ from .base import Request, Response, TelegramMethod
 from .close import Close
 from .close_forum_topic import CloseForumTopic
 from .close_general_forum_topic import CloseGeneralForumTopic
+from .convert_gift_to_stars import ConvertGiftToStars
 from .copy_message import CopyMessage
 from .copy_messages import CopyMessages
 from .create_chat_invite_link import CreateChatInviteLink
@@ -19,6 +20,7 @@ from .create_forum_topic import CreateForumTopic
 from .create_invoice_link import CreateInvoiceLink
 from .create_new_sticker_set import CreateNewStickerSet
 from .decline_chat_join_request import DeclineChatJoinRequest
+from .delete_business_messages import DeleteBusinessMessages
 from .delete_chat_photo import DeleteChatPhoto
 from .delete_chat_sticker_set import DeleteChatStickerSet
 from .delete_forum_topic import DeleteForumTopic
@@ -27,6 +29,7 @@ from .delete_messages import DeleteMessages
 from .delete_my_commands import DeleteMyCommands
 from .delete_sticker_from_set import DeleteStickerFromSet
 from .delete_sticker_set import DeleteStickerSet
+from .delete_story import DeleteStory
 from .delete_webhook import DeleteWebhook
 from .edit_chat_invite_link import EditChatInviteLink
 from .edit_chat_subscription_invite_link import EditChatSubscriptionInviteLink
@@ -37,11 +40,14 @@ from .edit_message_live_location import EditMessageLiveLocation
 from .edit_message_media import EditMessageMedia
 from .edit_message_reply_markup import EditMessageReplyMarkup
 from .edit_message_text import EditMessageText
+from .edit_story import EditStory
 from .edit_user_star_subscription import EditUserStarSubscription
 from .export_chat_invite_link import ExportChatInviteLink
 from .forward_message import ForwardMessage
 from .forward_messages import ForwardMessages
 from .get_available_gifts import GetAvailableGifts
+from .get_business_account_gifts import GetBusinessAccountGifts
+from .get_business_account_star_balance import GetBusinessAccountStarBalance
 from .get_business_connection import GetBusinessConnection
 from .get_chat import GetChat
 from .get_chat_administrators import GetChatAdministrators
@@ -64,12 +70,16 @@ from .get_updates import GetUpdates
 from .get_user_chat_boosts import GetUserChatBoosts
 from .get_user_profile_photos import GetUserProfilePhotos
 from .get_webhook_info import GetWebhookInfo
+from .gift_premium_subscription import GiftPremiumSubscription
 from .hide_general_forum_topic import HideGeneralForumTopic
 from .leave_chat import LeaveChat
 from .log_out import LogOut
 from .pin_chat_message import PinChatMessage
+from .post_story import PostStory
 from .promote_chat_member import PromoteChatMember
+from .read_business_message import ReadBusinessMessage
 from .refund_star_payment import RefundStarPayment
+from .remove_business_account_profile_photo import RemoveBusinessAccountProfilePhoto
 from .remove_chat_verification import RemoveChatVerification
 from .remove_user_verification import RemoveUserVerification
 from .reopen_forum_topic import ReopenForumTopic
@@ -98,6 +108,11 @@ from .send_venue import SendVenue
 from .send_video import SendVideo
 from .send_video_note import SendVideoNote
 from .send_voice import SendVoice
+from .set_business_account_bio import SetBusinessAccountBio
+from .set_business_account_gift_settings import SetBusinessAccountGiftSettings
+from .set_business_account_name import SetBusinessAccountName
+from .set_business_account_profile_photo import SetBusinessAccountProfilePhoto
+from .set_business_account_username import SetBusinessAccountUsername
 from .set_chat_administrator_custom_title import SetChatAdministratorCustomTitle
 from .set_chat_description import SetChatDescription
 from .set_chat_menu_button import SetChatMenuButton
@@ -124,6 +139,8 @@ from .set_user_emoji_status import SetUserEmojiStatus
 from .set_webhook import SetWebhook
 from .stop_message_live_location import StopMessageLiveLocation
 from .stop_poll import StopPoll
+from .transfer_business_account_stars import TransferBusinessAccountStars
+from .transfer_gift import TransferGift
 from .unban_chat_member import UnbanChatMember
 from .unban_chat_sender_chat import UnbanChatSenderChat
 from .unhide_general_forum_topic import UnhideGeneralForumTopic
@@ -131,6 +148,7 @@ from .unpin_all_chat_messages import UnpinAllChatMessages
 from .unpin_all_forum_topic_messages import UnpinAllForumTopicMessages
 from .unpin_all_general_forum_topic_messages import UnpinAllGeneralForumTopicMessages
 from .unpin_chat_message import UnpinChatMessage
+from .upgrade_gift import UpgradeGift
 from .upload_sticker_file import UploadStickerFile
 from .verify_chat import VerifyChat
 from .verify_user import VerifyUser
@@ -148,6 +166,7 @@ __all__ = (
     "Close",
     "CloseForumTopic",
     "CloseGeneralForumTopic",
+    "ConvertGiftToStars",
     "CopyMessage",
     "CopyMessages",
     "CreateChatInviteLink",
@@ -156,6 +175,7 @@ __all__ = (
     "CreateInvoiceLink",
     "CreateNewStickerSet",
     "DeclineChatJoinRequest",
+    "DeleteBusinessMessages",
     "DeleteChatPhoto",
     "DeleteChatStickerSet",
     "DeleteForumTopic",
@@ -164,6 +184,7 @@ __all__ = (
     "DeleteMyCommands",
     "DeleteStickerFromSet",
     "DeleteStickerSet",
+    "DeleteStory",
     "DeleteWebhook",
     "EditChatInviteLink",
     "EditChatSubscriptionInviteLink",
@@ -174,11 +195,14 @@ __all__ = (
     "EditMessageMedia",
     "EditMessageReplyMarkup",
     "EditMessageText",
+    "EditStory",
     "EditUserStarSubscription",
     "ExportChatInviteLink",
     "ForwardMessage",
     "ForwardMessages",
     "GetAvailableGifts",
+    "GetBusinessAccountGifts",
+    "GetBusinessAccountStarBalance",
     "GetBusinessConnection",
     "GetChat",
     "GetChatAdministrators",
@@ -201,12 +225,16 @@ __all__ = (
     "GetUserChatBoosts",
     "GetUserProfilePhotos",
     "GetWebhookInfo",
+    "GiftPremiumSubscription",
     "HideGeneralForumTopic",
     "LeaveChat",
     "LogOut",
     "PinChatMessage",
+    "PostStory",
     "PromoteChatMember",
+    "ReadBusinessMessage",
     "RefundStarPayment",
+    "RemoveBusinessAccountProfilePhoto",
     "RemoveChatVerification",
     "RemoveUserVerification",
     "ReopenForumTopic",
@@ -237,6 +265,11 @@ __all__ = (
     "SendVideo",
     "SendVideoNote",
     "SendVoice",
+    "SetBusinessAccountBio",
+    "SetBusinessAccountGiftSettings",
+    "SetBusinessAccountName",
+    "SetBusinessAccountProfilePhoto",
+    "SetBusinessAccountUsername",
     "SetChatAdministratorCustomTitle",
     "SetChatDescription",
     "SetChatMenuButton",
@@ -264,6 +297,8 @@ __all__ = (
     "StopMessageLiveLocation",
     "StopPoll",
     "TelegramMethod",
+    "TransferBusinessAccountStars",
+    "TransferGift",
     "UnbanChatMember",
     "UnbanChatSenderChat",
     "UnhideGeneralForumTopic",
@@ -271,6 +306,7 @@ __all__ = (
     "UnpinAllForumTopicMessages",
     "UnpinAllGeneralForumTopicMessages",
     "UnpinChatMessage",
+    "UpgradeGift",
     "UploadStickerFile",
     "VerifyChat",
     "VerifyUser",
