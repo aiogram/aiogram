@@ -1,2 +1,3 @@
-- Scene action handlers (such as ``enter``, ``leave``, etc.) now properly receive context and data from observer (``outer_middleware``) middlewares, matching the behavior of regular handlers.
-- Fixed ``TypeError`` when accessing middleware-injected arguments inside scene handlers.
+- Scene action handlers now receive context and data from all observer middlewares (both outer and standard).
+- Fixed ``TypeError`` with middleware-injected arguments in scene handlers.
+- Middleware chain for scenes now fully matches standard handler behavior.

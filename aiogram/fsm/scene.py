@@ -11,9 +11,9 @@ from typing_extensions import Self
 from aiogram import loggers
 from aiogram.dispatcher.dispatcher import Dispatcher
 from aiogram.dispatcher.event.bases import NextMiddlewareType
-from aiogram.dispatcher.middlewares.manager import MiddlewareManager
 from aiogram.dispatcher.event.handler import CallableObject, CallbackType
 from aiogram.dispatcher.flags import extract_flags_from_object
+from aiogram.dispatcher.middlewares.manager import MiddlewareManager
 from aiogram.dispatcher.router import Router
 from aiogram.exceptions import SceneException
 from aiogram.filters import StateFilter
