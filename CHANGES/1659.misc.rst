@@ -1,2 +1,0 @@
-Bump pydantic upper bound from <2.11 to <2.12.
-Upgrading `pydantic` to version 2.11 significantly reduces resource consumption, more details on the `pydantic blog post <https://pydantic.dev/articles/pydantic-v2-11-release>`_

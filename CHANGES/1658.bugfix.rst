@@ -1,6 +1,0 @@
-Fix memory exhaustion in polling mode with concurrent updates.
-
-Added a semaphore-based solution to limit the number of concurrent tasks when using :code:`handle_as_tasks=True` in polling mode.
-This prevents Out of Memory (OOM) errors in memory-limited containers when there's a large queue of updates to process.
-You can now control the maximum number of concurrent updates with the new :code:`tasks_concurrency_limit`
-parameter in :code:`start_polling()` and :code:`run_polling()` methods.
