@@ -11,6 +11,7 @@ from typing_extensions import Self
 from aiogram import loggers
 from aiogram.dispatcher.dispatcher import Dispatcher
 from aiogram.dispatcher.event.bases import NextMiddlewareType
+from aiogram.dispatcher.middlewares.manager import MiddlewareManager
 from aiogram.dispatcher.event.handler import CallableObject, CallbackType
 from aiogram.dispatcher.flags import extract_flags_from_object
 from aiogram.dispatcher.router import Router
@@ -586,12 +587,10 @@ class SceneWizard:
             await action_config[event_type].call(self.scene, self.event, **{**self.data, **kwargs})
             return True
 
-        async def _actual_handler(event, **data):
-            return await action_config[event_type].call(self.scene, event, **data)
-
-        await observer.wrap_outer_middleware(
-            _actual_handler, event=self.event, data={**self.data, **kwargs}
-        )
+        middlewares = [*observer.outer_middleware, *observer._resolve_middlewares()]
+        handler = lambda event, **data: action_config[event_type].call(self.scene, event, **data)
+        wrapped = MiddlewareManager.wrap_middlewares(middlewares, handler)
+        await wrapped(self.event, {**self.data, **kwargs})
         return True
 
     async def set_data(self, data: Dict[str, Any]) -> None:
