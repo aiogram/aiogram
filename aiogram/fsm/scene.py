@@ -413,7 +413,7 @@ class Scene:
         return router
 
     @classmethod
-    def as_handler(cls, **kwargs: Any) -> CallbackType:
+    def as_handler(cls, **handler_kwargs: Any) -> CallbackType:
         """
         Create an entry point handler for the scene, can be used to simplify the handler
         that starts the scene.
@@ -421,8 +421,10 @@ class Scene:
         >>> router.message.register(MyScene.as_handler(), Command("start"))
         """
 
-        async def enter_to_scene_handler(event: TelegramObject, scenes: ScenesManager) -> None:
-            await scenes.enter(cls, **kwargs)
+        async def enter_to_scene_handler(
+            event: TelegramObject, scenes: ScenesManager, **middleware_kwargs: Any
+        ) -> None:
+            await scenes.enter(cls, **{**handler_kwargs, **middleware_kwargs})
 
         return enter_to_scene_handler
 

@@ -1,0 +1,4 @@
+Fixed an issue where the scene entry handler (:code:`enter`) was not receiving data
+passed to the context by middleware, which could result in a :code:`TypeError`.
+
+Also updated the documentation to clarify how to enter the scene.
