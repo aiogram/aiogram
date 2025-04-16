@@ -1,0 +1,1 @@
+Add ``get_value`` method to MongoDB and Redis FSM storages for retrieving individual values

@@ -1,6 +1,6 @@
 import json
 from contextlib import asynccontextmanager
-from typing import Any, AsyncGenerator, Callable, Dict, Optional, cast
+from typing import Any, AsyncGenerator, Callable, Dict, Optional, cast, overload
 
 from redis.asyncio.client import Redis
 from redis.asyncio.connection import ConnectionPool
@@ -126,6 +126,18 @@ class RedisStorage(BaseStorage):
         if isinstance(value, bytes):
             value = value.decode("utf-8")
         return cast(Dict[str, Any], self.json_loads(value))
+
+    @overload
+    async def get_value(self, storage_key: StorageKey, dict_key: str) -> Optional[Any]: ...
+
+    @overload
+    async def get_value(self, storage_key: StorageKey, dict_key: str, default: Any) -> Any: ...
+
+    async def get_value(
+        self, storage_key: StorageKey, dict_key: str, default: Optional[Any] = None
+    ) -> Optional[Any]:
+        data = await self.get_data(storage_key)
+        return data.get(dict_key, default)
 
 
 class RedisEventIsolation(BaseEventIsolation):
