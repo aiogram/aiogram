@@ -28,13 +28,18 @@ class MyCallback(CallbackData, prefix="test"):
 
 
 class TestCallbackData:
-    def test_init_subclass_prefix_required(self):
-        assert MyCallback.__prefix__ == "test"
+    def test_init_subclass_prefix_optional(self):
+        # Case 1: Explicitly provided prefix
+        class ExplicitCallbackData(CallbackData, prefix="explicit"):
+            pass
 
-        with pytest.raises(ValueError, match="prefix required.+"):
+        assert ExplicitCallbackData.__prefix__ == "explicit"
 
-            class MyInvalidCallback(CallbackData):
-                pass
+        # Case 2: No prefix provided; should default to class name
+        class DefaultCallbackData(CallbackData):
+            pass
+
+        assert DefaultCallbackData.__prefix__ == "DefaultCallbackData"
 
     def test_init_subclass_sep_validation(self):
         assert MyCallback.__separator__ == ":"
