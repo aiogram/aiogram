@@ -1,1 +1,5 @@
-Fixed an issue #1677
+Fixed MyPy [return-value] error in `InlineKeyboardBuilder().as_markup()`.
+`as_markup` method now overloads parent class method and uses `super()`, to call parent's 
+`as_markup` method.
+Also added correct type hint to `as_markup`'s return in `InlineKeyboardBuilder` and 
+`ReplyKeyboardBuilder` classes.
