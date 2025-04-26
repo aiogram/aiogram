@@ -1,0 +1,1 @@
+Added documentation for changing state of another user in FSM
