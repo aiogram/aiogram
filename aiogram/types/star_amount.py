@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Optional
 
+from pydantic import Field
+
 from .base import TelegramObject
 
 
@@ -12,7 +14,7 @@ class StarAmount(TelegramObject):
     Source: https://core.telegram.org/bots/api#staramount
     """
 
-    amount: int
+    amount: int = Field(..., alias="star_count")
     """Integer amount of Telegram Stars, rounded to 0; can be negative"""
     nanostar_amount: Optional[int] = None
     """*Optional*. The number of 1/1000000000 shares of Telegram Stars; from -999999999 to 999999999; can be negative if and only if *amount* is non-positive"""
