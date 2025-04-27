@@ -1,0 +1,2 @@
+Fixed an issue in the :code:`StarAmount` type where the field :code:`amount` was not correctly deserialized when retrieving the business account star balance.
+The response from the Telegram API contains the field `star_count`, which now correctly maps to the `amount` field in the `StarAmount` class.
