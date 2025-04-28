@@ -1490,7 +1490,9 @@ class TestSceneRegistry:
         registry = SceneRegistry(router, register_on_add)
         registry.add(MyScene)
 
-        with pytest.raises(SceneException, match="Scene must be a subclass of Scene or a string"):
+        with pytest.raises(
+            SceneException, match="Scene must be a subclass of Scene, State or a string"
+        ):
             registry.get(MyScene)
 
     def test_scene_registry_get_scene_not_registered(self):
