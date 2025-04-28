@@ -1,12 +1,13 @@
 import json
 from contextlib import asynccontextmanager
-from typing import Any, AsyncGenerator, Callable, Dict, Optional, cast
+from typing import Any, AsyncGenerator, Callable, Dict, Mapping, Optional, cast
 
 from redis.asyncio.client import Redis
 from redis.asyncio.connection import ConnectionPool
 from redis.asyncio.lock import Lock
 from redis.typing import ExpiryT
 
+from aiogram.exceptions import DataNotDictLikeError
 from aiogram.fsm.state import State
 from aiogram.fsm.storage.base import (
     BaseEventIsolation,
@@ -103,8 +104,13 @@ class RedisStorage(BaseStorage):
     async def set_data(
         self,
         key: StorageKey,
-        data: Dict[str, Any],
+        data: Mapping[str, Any],
     ) -> None:
+        if not isinstance(data, dict):
+            raise DataNotDictLikeError(
+                f"Data must be a dict or dict-like object, got {type(data).__name__}"
+            )
+
         redis_key = self.key_builder.build(key, "data")
         if not data:
             await self.redis.delete(redis_key)
