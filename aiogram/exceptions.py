@@ -203,6 +203,3 @@ class DataNotDictLikeError(DetailedAiogramError):
     """
     Exception raised when data is not dict-like.
     """
-
-    def __init__(self, message: str) -> None:
-        self.message = message
