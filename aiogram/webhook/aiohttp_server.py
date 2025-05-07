@@ -5,7 +5,7 @@ from asyncio import Transport
 from typing import Any, Awaitable, Callable, Dict, Optional, Set, Tuple, cast
 
 from aiohttp import JsonPayload, MultipartWriter, Payload, web
-from aiohttp.abc import Application
+from aiohttp.web_app import Application
 from aiohttp.typedefs import Handler
 from aiohttp.web_middlewares import middleware
 
