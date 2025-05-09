@@ -1,0 +1,1 @@
+Add support for `State` type in scenes methods like `goto`, `enter`, `get`
