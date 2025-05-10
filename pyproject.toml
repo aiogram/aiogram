@@ -69,7 +69,7 @@ proxy = [
     "aiohttp-socks~=0.8.3",
 ]
 i18n = [
-    "Babel~=2.13.0",
+    "Babel>=2.13.0,<3",
 ]
 cli = [
     "aiogram-cli>=1.1.0,<2.0.0",
