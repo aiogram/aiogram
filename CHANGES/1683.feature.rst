@@ -1,0 +1,11 @@
+Refactor methods input types to calm down MyPy. #1682
+
+`Dict[str, Any]` is replaced with `Mapping[str, Any]` in the following methods:
+
+- `FSMContext.set_data`
+- `FSMContext.update_data`
+- `BaseStorage.set_data`
+- `BaseStorage.update_data`
+- `BaseStorage's child methods`
+- `SceneWizard.set_data`
+- `SceneWizard.update_data`

@@ -197,3 +197,9 @@ class ClientDecodeError(AiogramError):
             f"{original_type.__module__}.{original_type.__name__}: {self.original}\n"
             f"Content: {self.data}"
         )
+
+
+class DataNotDictLikeError(DetailedAiogramError):
+    """
+    Exception raised when data is not dict-like.
+    """

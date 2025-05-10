@@ -1,7 +1,16 @@
 from abc import ABC, abstractmethod
 from contextlib import asynccontextmanager
 from dataclasses import dataclass
-from typing import Any, AsyncGenerator, Dict, Literal, Optional, Union, overload
+from typing import (
+    Any,
+    AsyncGenerator,
+    Dict,
+    Literal,
+    Mapping,
+    Optional,
+    Union,
+    overload,
+)
 
 from aiogram.fsm.state import State
 
@@ -125,7 +134,7 @@ class BaseStorage(ABC):
         pass
 
     @abstractmethod
-    async def set_data(self, key: StorageKey, data: Dict[str, Any]) -> None:
+    async def set_data(self, key: StorageKey, data: Mapping[str, Any]) -> None:
         """
         Write data (replace)
 
@@ -173,7 +182,7 @@ class BaseStorage(ABC):
         data = await self.get_data(storage_key)
         return data.get(dict_key, default)
 
-    async def update_data(self, key: StorageKey, data: Dict[str, Any]) -> Dict[str, Any]:
+    async def update_data(self, key: StorageKey, data: Mapping[str, Any]) -> Dict[str, Any]:
         """
         Update date in the storage for key (like dict.update)
 
