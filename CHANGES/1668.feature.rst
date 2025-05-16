@@ -1,0 +1,1 @@
+Feature: Make CallbackData prefix optional and default to class name
