@@ -1,4 +1,4 @@
-from typing import Any, Dict, Optional, overload
+from typing import Any, Dict, Mapping, Optional, overload
 
 from aiogram.fsm.storage.base import BaseStorage, StateType, StorageKey
 
@@ -14,7 +14,7 @@ class FSMContext:
     async def get_state(self) -> Optional[str]:
         return await self.storage.get_state(key=self.key)
 
-    async def set_data(self, data: Dict[str, Any]) -> None:
+    async def set_data(self, data: Mapping[str, Any]) -> None:
         await self.storage.set_data(key=self.key, data=data)
 
     async def get_data(self) -> Dict[str, Any]:
@@ -30,7 +30,7 @@ class FSMContext:
         return await self.storage.get_value(storage_key=self.key, dict_key=key, default=default)
 
     async def update_data(
-        self, data: Optional[Dict[str, Any]] = None, **kwargs: Any
+        self, data: Optional[Mapping[str, Any]] = None, **kwargs: Any
     ) -> Dict[str, Any]:
         if data:
             kwargs.update(data)

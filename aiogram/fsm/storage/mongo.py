@@ -1,7 +1,8 @@
-from typing import Any, Dict, Optional, cast
+from typing import Any, Dict, Mapping, Optional, cast
 
 from motor.motor_asyncio import AsyncIOMotorClient
 
+from aiogram.exceptions import DataNotDictLikeError
 from aiogram.fsm.state import State
 from aiogram.fsm.storage.base import (
     BaseStorage,
@@ -90,7 +91,12 @@ class MongoStorage(BaseStorage):
             return None
         return document.get("state")
 
-    async def set_data(self, key: StorageKey, data: Dict[str, Any]) -> None:
+    async def set_data(self, key: StorageKey, data: Mapping[str, Any]) -> None:
+        if not isinstance(data, dict):
+            raise DataNotDictLikeError(
+                f"Data must be a dict or dict-like object, got {type(data).__name__}"
+            )
+
         document_id = self._key_builder.build(key)
         if not data:
             updated = await self._collection.find_one_and_update(
@@ -115,7 +121,7 @@ class MongoStorage(BaseStorage):
             return {}
         return cast(Dict[str, Any], document["data"])
 
-    async def update_data(self, key: StorageKey, data: Dict[str, Any]) -> Dict[str, Any]:
+    async def update_data(self, key: StorageKey, data: Mapping[str, Any]) -> Dict[str, Any]:
         document_id = self._key_builder.build(key)
         update_with = {f"data.{key}": value for key, value in data.items()}
         update_result = await self._collection.find_one_and_update(

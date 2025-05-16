@@ -4,7 +4,18 @@ import inspect
 from collections import defaultdict
 from dataclasses import dataclass, replace
 from enum import Enum, auto
-from typing import Any, ClassVar, Dict, List, Optional, Tuple, Type, Union, overload
+from typing import (
+    Any,
+    ClassVar,
+    Dict,
+    List,
+    Mapping,
+    Optional,
+    Tuple,
+    Type,
+    Union,
+    overload,
+)
 
 from typing_extensions import Self
 
@@ -577,11 +588,11 @@ class SceneWizard:
         await action_config[event_type].call(self.scene, self.event, **{**self.data, **kwargs})
         return True
 
-    async def set_data(self, data: Dict[str, Any]) -> None:
+    async def set_data(self, data: Mapping[str, Any]) -> None:
         """
         Sets custom data in the current state.
 
-        :param data: A dictionary containing the custom data to be set in the current state.
+        :param data: A mapping containing the custom data to be set in the current state.
         :return: None
         """
         await self.state.set_data(data=data)
@@ -621,12 +632,12 @@ class SceneWizard:
         return await self.state.get_value(key, default)
 
     async def update_data(
-        self, data: Optional[Dict[str, Any]] = None, **kwargs: Any
+        self, data: Optional[Mapping[str, Any]] = None, **kwargs: Any
     ) -> Dict[str, Any]:
         """
         This method updates the data stored in the current state
 
-        :param data: Optional dictionary of data to update.
+        :param data: Optional mapping of data to update.
         :param kwargs: Additional key-value pairs of data to update.
         :return: Dictionary of updated data
         """
