@@ -1,0 +1,1 @@
+Feature: Example of dynamic language switching in aiogram bot using i18n utilities, allowing real-time translation.
