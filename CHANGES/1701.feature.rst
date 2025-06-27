@@ -1,0 +1,1 @@
+Added :code:`polling_interval` parameter in Dispatcher. To set the time between fetching telegram updates.
