@@ -1,0 +1,207 @@
+import sqlite3
+import logging
+from aiogram import Bot, Dispatcher, types, executor
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+from aiogram.utils.exceptions import ChatNotFound
+
+# ======= CONFIGURAÇÕES =======
+API_TOKEN = '7255625175:AAFKqzlrBhorK1G67h9yr8iZqVl_v04pcbg' 
+CANAL_ID = -1002836352327
+ADMIN_ID = 6380044062
+# ==============================
+
+logging.basicConfig(level=logging.INFO)
+bot = Bot(token=API_TOKEN, parse_mode="Markdown")
+dp = Dispatcher(bot)
+
+conn = sqlite3.connect('trilune.db')
+c = conn.cursor()
+
+# Criação das tabelas
+c.execute('''CREATE TABLE IF NOT EXISTS estoque (id INTEGER PRIMARY KEY AUTOINCREMENT, bin TEXT, banco TEXT, pais TEXT, nivel TEXT, tipo TEXT, dados TEXT)''')
+c.execute('''CREATE TABLE IF NOT EXISTS saldo (user_id INTEGER, saldo REAL)''')
+c.execute('''CREATE TABLE IF NOT EXISTS admins (user_id INTEGER)''')
+c.execute('''CREATE TABLE IF NOT EXISTS banidos (user_id INTEGER)''')
+c.execute('''CREATE TABLE IF NOT EXISTS pix (chave TEXT)''')
+c.execute('''CREATE TABLE IF NOT EXISTS gifts (codigo TEXT, valor REAL)''')
+conn.commit()
+
+# Adiciona admin principal se não existir
+c.execute('SELECT * FROM admins WHERE user_id=?', (ADMIN_ID,))
+if not c.fetchone():
+    c.execute('INSERT INTO admins (user_id) VALUES (?)', (ADMIN_ID,))
+    conn.commit()
+
+# ======= TECLADOS =======
+def teclado_principal(is_admin=False):
+    kb = InlineKeyboardMarkup(row_width=2)
+    kb.add(
+        InlineKeyboardButton("💳 CC Dados", callback_data="cc_dados"),
+        InlineKeyboardButton("💳 CC Full", callback_data="cc_full"),
+        InlineKeyboardButton("🔎 Buscar BIN", callback_data="buscar_bin"),
+        InlineKeyboardButton("🏦 Buscar Banco", callback_data="buscar_banco"),
+        InlineKeyboardButton("🌍 Buscar País", callback_data="buscar_pais"),
+        InlineKeyboardButton("💰 Carteira", callback_data="carteira"),
+        InlineKeyboardButton("💠 Chave PIX", callback_data="ver_pix")
+    )
+    if is_admin:
+        kb.add(InlineKeyboardButton("⚙️ Painel Administrativo", callback_data="admin"))
+    kb.add(InlineKeyboardButton("📢 Canal", url="https://t.me/c/2836352327/3"))
+    return kb
+
+def painel_admin():
+    kb = InlineKeyboardMarkup(row_width=2)
+    kb.add(
+        InlineKeyboardButton("➕ Carregar Cartões", callback_data="carregar"),
+        InlineKeyboardButton("💳 Alterar Chave PIX", callback_data="pix"),
+        InlineKeyboardButton("🎁 Criar Gift", callback_data="gift"),
+        InlineKeyboardButton("👤 Banir Usuário", callback_data="banir"),
+        InlineKeyboardButton("👥 Adicionar Admin", callback_data="add_admin"),
+        InlineKeyboardButton("❌ Remover Admin", callback_data="rem_admin"),
+        InlineKeyboardButton("💰 Adicionar Saldo", callback_data="add_saldo"),
+        InlineKeyboardButton("📦 Ver Estoque", callback_data="ver_estoque"),
+        InlineKeyboardButton("🔙 Voltar", callback_data="voltar")
+    )
+    return kb
+
+# ======= VERIFICAÇÃO DE CANAL =======
+async def usuario_no_canal(user_id):
+    try:
+        membro = await bot.get_chat_member(CANAL_ID, user_id)
+        return membro.status in ["member", "administrator", "creator"]
+    except ChatNotFound:
+        return False
+
+# ======= COMANDO /start =======
+@dp.message_handler(commands=["start"])
+async def start(msg: types.Message):
+    c.execute('SELECT * FROM banidos WHERE user_id=?', (msg.from_user.id,))
+    if c.fetchone():
+        await msg.answer("🚫 Você está banido do bot.")
+        return
+
+    if await usuario_no_canal(msg.from_user.id):
+        c.execute('SELECT * FROM saldo WHERE user_id=?', (msg.from_user.id,))
+        if not c.fetchone():
+            c.execute('INSERT INTO saldo (user_id, saldo) VALUES (?, ?)', (msg.from_user.id, 0))
+            conn.commit()
+
+        c.execute('SELECT * FROM admins WHERE user_id=?', (msg.from_user.id,))
+        is_admin = bool(c.fetchone()) or msg.from_user.id == ADMIN_ID
+
+        texto = (
+            "💳 *TRILUNE STORE - BOT OFICIAL*\n"
+            "🔥 BÔNUS de 50% em recargas acima de R$9,99\n"
+            "━━━━━━━━━━━━━━━━━━━━━━━\n"
+            "✅ CCs testadas na hora\n"
+            "💳 Infos virgens direto do painel\n"
+            "⚡ Recargas rápidas via PIX\n"
+            "━━━━━━━━━━━━━━━━━━━━━━━\n"
+            "📌 *REGRAS RÁPIDAS:*\n"
+            "❌ Sem estorno de saldo\n"
+            "🚫 Abuso de bugs = ban\n"
+            "⚠️ Não garantimos vínculo, saldo ou aprovação\n"
+            "✅ Garantimos apenas LIVE no teste\n"
+            "━━━━━━━━━━━━━━━━━━━━━━━"
+        )
+        await msg.answer(texto, reply_markup=teclado_principal(is_admin))
+    else:
+        kb = InlineKeyboardMarkup().add(InlineKeyboardButton("🔗 Entrar no Canal", url="https://t.me/c/2836352327/3"))
+        await msg.answer("⚠️ Para usar o bot, participe do canal primeiro.", reply_markup=kb)
+
+# ======= CALLBACKS =======
+@dp.callback_query_handler()
+async def callback(call: types.CallbackQuery):
+    user_id = call.from_user.id
+
+    # Painel do Usuário
+    if call.data == "carteira":
+        c.execute('SELECT saldo FROM saldo WHERE user_id=?', (user_id,))
+        saldo = c.fetchone()
+        saldo = saldo[0] if saldo else 0
+        await call.message.answer(f"🏦 *Carteira:*\nID: `{user_id}`\n💰 Saldo: R$ {saldo:.2f}")
+
+    elif call.data == "ver_pix":
+        c.execute('SELECT chave FROM pix')
+        resultado = c.fetchone()
+        if resultado:
+            await call.message.answer(f"💳 *Chave PIX para recarga:*\n`{resultado[0]}`\n⚠️ Após o pagamento, envie o comprovante para o ADM.")
+        else:
+            await call.message.answer("⚠️ Chave PIX ainda não cadastrada.")
+
+    elif call.data in ["cc_dados", "cc_full"]:
+        tipo = "CC Dados" if call.data == "cc_dados" else "CC Full"
+        c.execute('SELECT DISTINCT nivel FROM estoque WHERE tipo=?', (tipo,))
+        niveis = c.fetchall()
+        if niveis:
+            kb = InlineKeyboardMarkup(row_width=2)
+            for n in niveis:
+                kb.add(InlineKeyboardButton(n[0], callback_data=f"comprar_{tipo}_{n[0]}"))
+            kb.add(InlineKeyboardButton("🔙 Voltar", callback_data="voltar"))
+            await call.message.edit_text(f"💳 Selecione o nível de {tipo}:", reply_markup=kb)
+        else:
+            await call.message.answer("⚠️ Estoque indisponível no momento.")
+
+    elif call.data == "buscar_bin":
+        await call.message.answer("🔎 Envie o BIN (6 ou 8 dígitos) para pesquisar.")
+
+    elif call.data == "buscar_banco":
+        c.execute('SELECT DISTINCT banco FROM estoque')
+        bancos = c.fetchall()
+        if bancos:
+            kb = InlineKeyboardMarkup(row_width=2)
+            for b in bancos:
+                kb.add(InlineKeyboardButton(b[0], callback_data=f"banco_{b[0]}"))
+            kb.add(InlineKeyboardButton("🔙 Voltar", callback_data="voltar"))
+            await call.message.answer("🏦 Selecione o Banco:", reply_markup=kb)
+        else:
+            await call.message.answer("⚠️ Nenhum Banco disponível no estoque.")
+
+    elif call.data == "buscar_pais":
+        paises_fixos = ["Brasil", "Portugal", "Argentina", "Espanha", "Angola", "Moçambique", "Estados Unidos", "França", "Itália", "Alemanha", "Suíça"]
+        kb = InlineKeyboardMarkup(row_width=2)
+        for p in paises_fixos:
+            c.execute('SELECT COUNT(*) FROM estoque WHERE pais=?', (p,))
+            if c.fetchone()[0] > 0:
+                kb.add(InlineKeyboardButton(p, callback_data=f"pais_{p}"))
+        kb.add(InlineKeyboardButton("🔙 Voltar", callback_data="voltar"))
+        await call.message.answer("🌍 Selecione o País:", reply_markup=kb)
+
+    # Painel Administrativo
+    elif call.data == "admin" and (user_id == ADMIN_ID or c.execute('SELECT * FROM admins WHERE user_id=?', (user_id,)).fetchone()):
+        await call.message.edit_text("⚙️ *Painel Administrativo*", reply_markup=painel_admin())
+
+    elif call.data == "pix":
+        await call.message.answer("💳 Envie a nova chave PIX:")
+
+    elif call.data == "gift":
+        await call.message.answer("🎁 Envie o Gift no formato:\ngift_|codigo|valor")
+
+    elif call.data == "add_admin":
+        await call.message.answer("👥 Envie o ID do usuário para adicionar como admin:")
+
+    elif call.data == "rem_admin":
+        await call.message.answer("❌ Envie o ID do admin para remover:")
+
+    elif call.data == "carregar":
+        await call.message.answer("➕ Envie os cartões no formato:\nbin|banco|pais|nivel|tipo|dados")
+
+    elif call.data == "banir":
+        await call.message.answer("👤 Envie o ID do usuário para banir:")
+
+    elif call.data == "add_saldo":
+        await call.message.answer("💰 Envie no formato:\nsaldo_|id_usuario|valor")
+
+    elif call.data == "ver_estoque":
+        c.execute('SELECT COUNT(*) FROM estoque')
+        total = c.fetchone()[0]
+        await call.message.answer(f"📦 Cartões em estoque: {total}")
+
+    elif call.data == "voltar":
+        c.execute('SELECT * FROM admins WHERE user_id=?', (user_id,))
+        is_admin = bool(c.fetchone()) or user_id == ADMIN_ID
+        await call.message.edit_text("Menu Principal:", reply_markup=teclado_principal(is_admin))
+
+# ======= RODANDO O BOT =======
+if __name__ == "__main__":
+    executor.start_polling(dp, skip_updates=True)
