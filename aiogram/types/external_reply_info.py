@@ -8,6 +8,7 @@ if TYPE_CHECKING:
     from .animation import Animation
     from .audio import Audio
     from .chat import Chat
+    from .checklist import Checklist
     from .contact import Contact
     from .dice import Dice
     from .document import Document
@@ -66,6 +67,8 @@ class ExternalReplyInfo(TelegramObject):
     """*Optional*. Message is a voice message, information about the file"""
     has_media_spoiler: Optional[bool] = None
     """*Optional*. :code:`True`, if the message media is covered by a spoiler animation"""
+    checklist: Optional[Checklist] = None
+    """*Optional*. Message is a checklist"""
     contact: Optional[Contact] = None
     """*Optional*. Message is a shared contact, information about the contact"""
     dice: Optional[Dice] = None
@@ -107,6 +110,7 @@ class ExternalReplyInfo(TelegramObject):
             video_note: Optional[VideoNote] = None,
             voice: Optional[Voice] = None,
             has_media_spoiler: Optional[bool] = None,
+            checklist: Optional[Checklist] = None,
             contact: Optional[Contact] = None,
             dice: Optional[Dice] = None,
             game: Optional[Game] = None,
@@ -138,6 +142,7 @@ class ExternalReplyInfo(TelegramObject):
                 video_note=video_note,
                 voice=voice,
                 has_media_spoiler=has_media_spoiler,
+                checklist=checklist,
                 contact=contact,
                 dice=dice,
                 game=game,

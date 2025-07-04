@@ -62,9 +62,9 @@
       {
         "type": "Array of InputPollOption",
         "required": true,
-        "description": "A JSON-serialized list of 2-10 answer options",
-        "html_description": "<td>A JSON-serialized list of 2-10 answer options</td>",
-        "rst_description": "A JSON-serialized list of 2-10 answer options\n",
+        "description": "A JSON-serialized list of 2-12 answer options",
+        "html_description": "<td>A JSON-serialized list of 2-12 answer options</td>",
+        "rst_description": "A JSON-serialized list of 2-12 answer options\n",
         "name": "options"
       },
       {

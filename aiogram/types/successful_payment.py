@@ -28,9 +28,9 @@ class SuccessfulPayment(TelegramObject):
     subscription_expiration_date: Optional[int] = None
     """*Optional*. Expiration date of the subscription, in Unix time; for recurring payments only"""
     is_recurring: Optional[bool] = None
-    """*Optional*. True, if the payment is a recurring payment for a subscription"""
+    """*Optional*. :code:`True`, if the payment is a recurring payment for a subscription"""
     is_first_recurring: Optional[bool] = None
-    """*Optional*. True, if the payment is the first payment for a subscription"""
+    """*Optional*. :code:`True`, if the payment is the first payment for a subscription"""
     shipping_option_id: Optional[str] = None
     """*Optional*. Identifier of the shipping option chosen by the user"""
     order_info: Optional[OrderInfo] = None

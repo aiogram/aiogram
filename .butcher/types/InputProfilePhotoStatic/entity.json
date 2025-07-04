@@ -13,9 +13,9 @@
     "annotations": [
       {
         "type": "String",
-        "description": "Type of the profile photo, must be 'static'",
-        "html_description": "<td>Type of the profile photo, must be &#8220;static&#8221;</td>",
-        "rst_description": "Type of the profile photo, must be 'static'\n",
+        "description": "Type of the profile photo, must be static",
+        "html_description": "<td>Type of the profile photo, must be <em>static</em></td>",
+        "rst_description": "Type of the profile photo, must be *static*\n",
         "name": "type",
         "required": true
       },

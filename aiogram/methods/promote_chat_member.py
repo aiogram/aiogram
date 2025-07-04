@@ -23,7 +23,7 @@ class PromoteChatMember(TelegramMethod[bool]):
     is_anonymous: Optional[bool] = None
     """Pass :code:`True` if the administrator's presence in the chat is hidden"""
     can_manage_chat: Optional[bool] = None
-    """Pass :code:`True` if the administrator can access the chat event log, get boost list, see hidden supergroup and channel members, report spam messages and ignore slow mode. Implied by any other administrator privilege."""
+    """Pass :code:`True` if the administrator can access the chat event log, get boost list, see hidden supergroup and channel members, report spam messages, ignore slow mode, and send messages to the chat without paying Telegram Stars. Implied by any other administrator privilege."""
     can_delete_messages: Optional[bool] = None
     """Pass :code:`True` if the administrator can delete messages of other users"""
     can_manage_video_chats: Optional[bool] = None
@@ -43,7 +43,7 @@ class PromoteChatMember(TelegramMethod[bool]):
     can_delete_stories: Optional[bool] = None
     """Pass :code:`True` if the administrator can delete stories posted by other users"""
     can_post_messages: Optional[bool] = None
-    """Pass :code:`True` if the administrator can post messages in the channel, or access channel statistics; for channels only"""
+    """Pass :code:`True` if the administrator can post messages in the channel, approve suggested posts, or access channel statistics; for channels only"""
     can_edit_messages: Optional[bool] = None
     """Pass :code:`True` if the administrator can edit messages of other users and can pin messages; for channels only"""
     can_pin_messages: Optional[bool] = None

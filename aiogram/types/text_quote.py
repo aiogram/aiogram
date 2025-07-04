@@ -22,7 +22,7 @@ class TextQuote(TelegramObject):
     entities: Optional[list[MessageEntity]] = None
     """*Optional*. Special entities that appear in the quote. Currently, only *bold*, *italic*, *underline*, *strikethrough*, *spoiler*, and *custom_emoji* entities are kept in quotes."""
     is_manual: Optional[bool] = None
-    """*Optional*. True, if the quote was chosen manually by the message sender. Otherwise, the quote was added automatically by the server."""
+    """*Optional*. :code:`True`, if the quote was chosen manually by the message sender. Otherwise, the quote was added automatically by the server."""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!

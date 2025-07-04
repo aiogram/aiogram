@@ -70,12 +70,17 @@ from .chat_member_updated import ChatMemberUpdated
 from .chat_permissions import ChatPermissions
 from .chat_photo import ChatPhoto
 from .chat_shared import ChatShared
+from .checklist import Checklist
+from .checklist_task import ChecklistTask
+from .checklist_tasks_added import ChecklistTasksAdded
+from .checklist_tasks_done import ChecklistTasksDone
 from .chosen_inline_result import ChosenInlineResult
 from .contact import Contact
 from .copy_text_button import CopyTextButton
 from .custom import DateTime
 from .date_time_union import DateTimeUnion
 from .dice import Dice
+from .direct_message_price_changed import DirectMessagePriceChanged
 from .document import Document
 from .downloadable import Downloadable
 from .encrypted_credentials import EncryptedCredentials
@@ -127,6 +132,8 @@ from .inline_query_result_venue import InlineQueryResultVenue
 from .inline_query_result_video import InlineQueryResultVideo
 from .inline_query_result_voice import InlineQueryResultVoice
 from .inline_query_results_button import InlineQueryResultsButton
+from .input_checklist import InputChecklist
+from .input_checklist_task import InputChecklistTask
 from .input_contact_message_content import InputContactMessageContent
 from .input_file import BufferedInputFile, FSInputFile, InputFile, URLInputFile
 from .input_file_union import InputFileUnion
@@ -371,6 +378,10 @@ __all__ = (
     "ChatPermissions",
     "ChatPhoto",
     "ChatShared",
+    "Checklist",
+    "ChecklistTask",
+    "ChecklistTasksAdded",
+    "ChecklistTasksDone",
     "ChosenInlineResult",
     "Contact",
     "ContentType",
@@ -378,6 +389,7 @@ __all__ = (
     "DateTime",
     "DateTimeUnion",
     "Dice",
+    "DirectMessagePriceChanged",
     "Document",
     "Downloadable",
     "EncryptedCredentials",
@@ -430,6 +442,8 @@ __all__ = (
     "InlineQueryResultVideo",
     "InlineQueryResultVoice",
     "InlineQueryResultsButton",
+    "InputChecklist",
+    "InputChecklistTask",
     "InputContactMessageContent",
     "InputFile",
     "InputFileUnion",

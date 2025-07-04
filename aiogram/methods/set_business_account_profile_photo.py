@@ -21,7 +21,7 @@ class SetBusinessAccountProfilePhoto(TelegramMethod[bool]):
     photo: InputProfilePhotoUnion
     """The new profile photo to set"""
     is_public: Optional[bool] = None
-    """Pass True to set the public photo, which will be visible even if the main photo is hidden by the business account's privacy settings. An account can have only one public photo."""
+    """Pass :code:`True` to set the public photo, which will be visible even if the main photo is hidden by the business account's privacy settings. An account can have only one public photo."""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!

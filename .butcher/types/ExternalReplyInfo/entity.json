@@ -132,6 +132,14 @@
         "required": false
       },
       {
+        "type": "Checklist",
+        "description": "Message is a checklist",
+        "html_description": "<td><em>Optional</em>. Message is a checklist</td>",
+        "rst_description": "*Optional*. Message is a checklist\n",
+        "name": "checklist",
+        "required": false
+      },
+      {
         "type": "Contact",
         "description": "Message is a shared contact, information about the contact",
         "html_description": "<td><em>Optional</em>. Message is a shared contact, information about the contact</td>",

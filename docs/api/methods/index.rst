@@ -86,6 +86,7 @@ Available methods
     send_animation
     send_audio
     send_chat_action
+    send_checklist
     send_contact
     send_dice
     send_document
@@ -133,6 +134,7 @@ Updating messages
     delete_messages
     delete_story
     edit_message_caption
+    edit_message_checklist
     edit_message_live_location
     edit_message_media
     edit_message_reply_markup
@@ -191,6 +193,7 @@ Payments
     answer_shipping_query
     create_invoice_link
     edit_user_star_subscription
+    get_my_star_balance
     get_star_transactions
     refund_star_payment
     send_invoice

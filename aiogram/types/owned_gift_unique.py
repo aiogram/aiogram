@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, Literal, Optional
 
 from aiogram.enums import OwnedGiftType
+from .custom import DateTime
 
 from .owned_gift import OwnedGift
 
@@ -29,11 +30,13 @@ class OwnedGiftUnique(OwnedGift):
     sender_user: Optional[User] = None
     """*Optional*. Sender of the gift if it is a known user"""
     is_saved: Optional[bool] = None
-    """*Optional*. True, if the gift is displayed on the account's profile page; for gifts received on behalf of business accounts only"""
+    """*Optional*. :code:`True`, if the gift is displayed on the account's profile page; for gifts received on behalf of business accounts only"""
     can_be_transferred: Optional[bool] = None
-    """*Optional*. True, if the gift can be transferred to another owner; for gifts received on behalf of business accounts only"""
+    """*Optional*. :code:`True`, if the gift can be transferred to another owner; for gifts received on behalf of business accounts only"""
     transfer_star_count: Optional[int] = None
     """*Optional*. Number of Telegram Stars that must be paid to transfer the gift; omitted if the bot cannot transfer the gift"""
+    next_transfer_date: Optional[DateTime] = None
+    """*Optional*. Point in time (Unix timestamp) when the gift can be transferred. If it is in the past, then the gift can be transferred now"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!
@@ -50,6 +53,7 @@ class OwnedGiftUnique(OwnedGift):
             is_saved: Optional[bool] = None,
             can_be_transferred: Optional[bool] = None,
             transfer_star_count: Optional[int] = None,
+            next_transfer_date: Optional[DateTime] = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!
@@ -65,5 +69,6 @@ class OwnedGiftUnique(OwnedGift):
                 is_saved=is_saved,
                 can_be_transferred=can_be_transferred,
                 transfer_star_count=transfer_star_count,
+                next_transfer_date=next_transfer_date,
                 **__pydantic_kwargs,
             )

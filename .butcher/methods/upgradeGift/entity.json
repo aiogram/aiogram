@@ -31,8 +31,8 @@
         "type": "Boolean",
         "required": false,
         "description": "Pass True to keep the original gift text, sender and receiver in the upgraded gift",
-        "html_description": "<td>Pass True to keep the original gift text, sender and receiver in the upgraded gift</td>",
-        "rst_description": "Pass True to keep the original gift text, sender and receiver in the upgraded gift\n",
+        "html_description": "<td>Pass <em>True</em> to keep the original gift text, sender and receiver in the upgraded gift</td>",
+        "rst_description": "Pass :code:`True` to keep the original gift text, sender and receiver in the upgraded gift\n",
         "name": "keep_original_details"
       },
       {

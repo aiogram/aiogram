@@ -14,32 +14,32 @@
       {
         "type": "Boolean",
         "description": "True, if unlimited regular gifts are accepted",
-        "html_description": "<td>True, if unlimited regular gifts are accepted</td>",
-        "rst_description": "True, if unlimited regular gifts are accepted\n",
+        "html_description": "<td><em>True</em>, if unlimited regular gifts are accepted</td>",
+        "rst_description": ":code:`True`, if unlimited regular gifts are accepted\n",
         "name": "unlimited_gifts",
         "required": true
       },
       {
         "type": "Boolean",
         "description": "True, if limited regular gifts are accepted",
-        "html_description": "<td>True, if limited regular gifts are accepted</td>",
-        "rst_description": "True, if limited regular gifts are accepted\n",
+        "html_description": "<td><em>True</em>, if limited regular gifts are accepted</td>",
+        "rst_description": ":code:`True`, if limited regular gifts are accepted\n",
         "name": "limited_gifts",
         "required": true
       },
       {
         "type": "Boolean",
         "description": "True, if unique gifts or gifts that can be upgraded to unique for free are accepted",
-        "html_description": "<td>True, if unique gifts or gifts that can be upgraded to unique for free are accepted</td>",
-        "rst_description": "True, if unique gifts or gifts that can be upgraded to unique for free are accepted\n",
+        "html_description": "<td><em>True</em>, if unique gifts or gifts that can be upgraded to unique for free are accepted</td>",
+        "rst_description": ":code:`True`, if unique gifts or gifts that can be upgraded to unique for free are accepted\n",
         "name": "unique_gifts",
         "required": true
       },
       {
         "type": "Boolean",
         "description": "True, if a Telegram Premium subscription is accepted",
-        "html_description": "<td>True, if a Telegram Premium subscription is accepted</td>",
-        "rst_description": "True, if a Telegram Premium subscription is accepted\n",
+        "html_description": "<td><em>True</em>, if a Telegram Premium subscription is accepted</td>",
+        "rst_description": ":code:`True`, if a Telegram Premium subscription is accepted\n",
         "name": "premium_subscription",
         "required": true
       }

@@ -27,7 +27,7 @@ class ChatPermissions(MutableTelegramObject):
     can_send_voice_notes: Optional[bool] = None
     """*Optional*. :code:`True`, if the user is allowed to send voice notes"""
     can_send_polls: Optional[bool] = None
-    """*Optional*. :code:`True`, if the user is allowed to send polls"""
+    """*Optional*. :code:`True`, if the user is allowed to send polls and checklists"""
     can_send_other_messages: Optional[bool] = None
     """*Optional*. :code:`True`, if the user is allowed to send animations, games, stickers and use inline bots"""
     can_add_web_page_previews: Optional[bool] = None

@@ -22,32 +22,32 @@
       {
         "type": "Boolean",
         "description": "True, if private chats with users can be chosen",
-        "html_description": "<td><em>Optional</em>. True, if private chats with users can be chosen</td>",
-        "rst_description": "*Optional*. True, if private chats with users can be chosen\n",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if private chats with users can be chosen</td>",
+        "rst_description": "*Optional*. :code:`True`, if private chats with users can be chosen\n",
         "name": "allow_user_chats",
         "required": false
       },
       {
         "type": "Boolean",
         "description": "True, if private chats with bots can be chosen",
-        "html_description": "<td><em>Optional</em>. True, if private chats with bots can be chosen</td>",
-        "rst_description": "*Optional*. True, if private chats with bots can be chosen\n",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if private chats with bots can be chosen</td>",
+        "rst_description": "*Optional*. :code:`True`, if private chats with bots can be chosen\n",
         "name": "allow_bot_chats",
         "required": false
       },
       {
         "type": "Boolean",
         "description": "True, if group and supergroup chats can be chosen",
-        "html_description": "<td><em>Optional</em>. True, if group and supergroup chats can be chosen</td>",
-        "rst_description": "*Optional*. True, if group and supergroup chats can be chosen\n",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if group and supergroup chats can be chosen</td>",
+        "rst_description": "*Optional*. :code:`True`, if group and supergroup chats can be chosen\n",
         "name": "allow_group_chats",
         "required": false
       },
       {
         "type": "Boolean",
         "description": "True, if channel chats can be chosen",
-        "html_description": "<td><em>Optional</em>. True, if channel chats can be chosen</td>",
-        "rst_description": "*Optional*. True, if channel chats can be chosen\n",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if channel chats can be chosen</td>",
+        "rst_description": "*Optional*. :code:`True`, if channel chats can be chosen\n",
         "name": "allow_channel_chats",
         "required": false
       }

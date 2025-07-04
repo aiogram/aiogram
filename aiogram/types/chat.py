@@ -1029,7 +1029,7 @@ class Chat(TelegramObject):
 
         :param user_id: Unique identifier of the target user
         :param is_anonymous: Pass :code:`True` if the administrator's presence in the chat is hidden
-        :param can_manage_chat: Pass :code:`True` if the administrator can access the chat event log, get boost list, see hidden supergroup and channel members, report spam messages and ignore slow mode. Implied by any other administrator privilege.
+        :param can_manage_chat: Pass :code:`True` if the administrator can access the chat event log, get boost list, see hidden supergroup and channel members, report spam messages, ignore slow mode, and send messages to the chat without paying Telegram Stars. Implied by any other administrator privilege.
         :param can_delete_messages: Pass :code:`True` if the administrator can delete messages of other users
         :param can_manage_video_chats: Pass :code:`True` if the administrator can manage video chats
         :param can_restrict_members: Pass :code:`True` if the administrator can restrict, ban or unban chat members, or access supergroup statistics
@@ -1039,7 +1039,7 @@ class Chat(TelegramObject):
         :param can_post_stories: Pass :code:`True` if the administrator can post stories to the chat
         :param can_edit_stories: Pass :code:`True` if the administrator can edit stories posted by other users, post stories to the chat page, pin chat stories, and access the chat's story archive
         :param can_delete_stories: Pass :code:`True` if the administrator can delete stories posted by other users
-        :param can_post_messages: Pass :code:`True` if the administrator can post messages in the channel, or access channel statistics; for channels only
+        :param can_post_messages: Pass :code:`True` if the administrator can post messages in the channel, approve suggested posts, or access channel statistics; for channels only
         :param can_edit_messages: Pass :code:`True` if the administrator can edit messages of other users and can pin messages; for channels only
         :param can_pin_messages: Pass :code:`True` if the administrator can pin messages; for supergroups only
         :param can_manage_topics: Pass :code:`True` if the user is allowed to create, rename, close, and reopen forum topics; for supergroups only

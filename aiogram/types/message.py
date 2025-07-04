@@ -56,9 +56,13 @@ if TYPE_CHECKING:
     from .chat_boost_added import ChatBoostAdded
     from .chat_id_union import ChatIdUnion
     from .chat_shared import ChatShared
+    from .checklist import Checklist
+    from .checklist_tasks_added import ChecklistTasksAdded
+    from .checklist_tasks_done import ChecklistTasksDone
     from .contact import Contact
     from .date_time_union import DateTimeUnion
     from .dice import Dice
+    from .direct_message_price_changed import DirectMessagePriceChanged
     from .document import Document
     from .external_reply_info import ExternalReplyInfo
     from .forum_topic_closed import ForumTopicClosed
@@ -164,7 +168,7 @@ class Message(MaybeInaccessibleMessage):
     has_protected_content: Optional[bool] = None
     """*Optional*. :code:`True`, if the message can't be forwarded"""
     is_from_offline: Optional[bool] = None
-    """*Optional*. True, if the message was sent by an implicit action, for example, as an away or a greeting business message, or as a scheduled message"""
+    """*Optional*. :code:`True`, if the message was sent by an implicit action, for example, as an away or a greeting business message, or as a scheduled message"""
     media_group_id: Optional[str] = None
     """*Optional*. The unique identifier of a media message group this message belongs to"""
     author_signature: Optional[str] = None
@@ -204,9 +208,11 @@ class Message(MaybeInaccessibleMessage):
     caption_entities: Optional[list[MessageEntity]] = None
     """*Optional*. For messages with a caption, special entities like usernames, URLs, bot commands, etc. that appear in the caption"""
     show_caption_above_media: Optional[bool] = None
-    """*Optional*. True, if the caption must be shown above the message media"""
+    """*Optional*. :code:`True`, if the caption must be shown above the message media"""
     has_media_spoiler: Optional[bool] = None
     """*Optional*. :code:`True`, if the message media is covered by a spoiler animation"""
+    checklist: Optional[Checklist] = None
+    """*Optional*. Message is a checklist"""
     contact: Optional[Contact] = None
     """*Optional*. Message is a shared contact, information about the contact"""
     dice: Optional[Dice] = None
@@ -269,6 +275,12 @@ class Message(MaybeInaccessibleMessage):
     """*Optional*. Service message: user boosted the chat"""
     chat_background_set: Optional[ChatBackground] = None
     """*Optional*. Service message: chat background set"""
+    checklist_tasks_done: Optional[ChecklistTasksDone] = None
+    """*Optional*. Service message: some tasks in a checklist were marked as done or not done"""
+    checklist_tasks_added: Optional[ChecklistTasksAdded] = None
+    """*Optional*. Service message: tasks were added to a checklist"""
+    direct_message_price_changed: Optional[DirectMessagePriceChanged] = None
+    """*Optional*. Service message: the price for paid messages in the corresponding direct messages chat of a channel has changed"""
     forum_topic_created: Optional[ForumTopicCreated] = None
     """*Optional*. Service message: forum topic created"""
     forum_topic_edited: Optional[ForumTopicEdited] = None
@@ -387,6 +399,7 @@ class Message(MaybeInaccessibleMessage):
             caption_entities: Optional[list[MessageEntity]] = None,
             show_caption_above_media: Optional[bool] = None,
             has_media_spoiler: Optional[bool] = None,
+            checklist: Optional[Checklist] = None,
             contact: Optional[Contact] = None,
             dice: Optional[Dice] = None,
             game: Optional[Game] = None,
@@ -418,6 +431,9 @@ class Message(MaybeInaccessibleMessage):
             proximity_alert_triggered: Optional[ProximityAlertTriggered] = None,
             boost_added: Optional[ChatBoostAdded] = None,
             chat_background_set: Optional[ChatBackground] = None,
+            checklist_tasks_done: Optional[ChecklistTasksDone] = None,
+            checklist_tasks_added: Optional[ChecklistTasksAdded] = None,
+            direct_message_price_changed: Optional[DirectMessagePriceChanged] = None,
             forum_topic_created: Optional[ForumTopicCreated] = None,
             forum_topic_edited: Optional[ForumTopicEdited] = None,
             forum_topic_closed: Optional[ForumTopicClosed] = None,
@@ -490,6 +506,7 @@ class Message(MaybeInaccessibleMessage):
                 caption_entities=caption_entities,
                 show_caption_above_media=show_caption_above_media,
                 has_media_spoiler=has_media_spoiler,
+                checklist=checklist,
                 contact=contact,
                 dice=dice,
                 game=game,
@@ -521,6 +538,9 @@ class Message(MaybeInaccessibleMessage):
                 proximity_alert_triggered=proximity_alert_triggered,
                 boost_added=boost_added,
                 chat_background_set=chat_background_set,
+                checklist_tasks_done=checklist_tasks_done,
+                checklist_tasks_added=checklist_tasks_added,
+                direct_message_price_changed=direct_message_price_changed,
                 forum_topic_created=forum_topic_created,
                 forum_topic_edited=forum_topic_edited,
                 forum_topic_closed=forum_topic_closed,
@@ -570,6 +590,8 @@ class Message(MaybeInaccessibleMessage):
             return ContentType.VIDEO_NOTE
         if self.voice:
             return ContentType.VOICE
+        if self.checklist:
+            return ContentType.CHECKLIST
         if self.contact:
             return ContentType.CONTACT
         if self.venue:
@@ -660,6 +682,12 @@ class Message(MaybeInaccessibleMessage):
             return ContentType.CHAT_BACKGROUND_SET
         if self.boost_added:
             return ContentType.BOOST_ADDED
+        if self.checklist_tasks_done:
+            return ContentType.CHECKLIST_TASKS_DONE
+        if self.checklist_tasks_added:
+            return ContentType.CHECKLIST_TASKS_ADDED
+        if self.direct_message_price_changed:
+            return ContentType.DIRECT_MESSAGE_PRICE_CHANGED
         if self.refunded_payment:
             return ContentType.REFUNDED_PAYMENT
         if self.gift:
@@ -2281,7 +2309,7 @@ class Message(MaybeInaccessibleMessage):
         Source: https://core.telegram.org/bots/api#sendpoll
 
         :param question: Poll question, 1-300 characters
-        :param options: A JSON-serialized list of 2-10 answer options
+        :param options: A JSON-serialized list of 2-12 answer options
         :param question_parse_mode: Mode for parsing entities in the question. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details. Currently, only custom emoji entities are allowed
         :param question_entities: A JSON-serialized list of special entities that appear in the poll question. It can be specified instead of *question_parse_mode*
         :param is_anonymous: :code:`True`, if the poll needs to be anonymous, defaults to :code:`True`
@@ -2378,7 +2406,7 @@ class Message(MaybeInaccessibleMessage):
         Source: https://core.telegram.org/bots/api#sendpoll
 
         :param question: Poll question, 1-300 characters
-        :param options: A JSON-serialized list of 2-10 answer options
+        :param options: A JSON-serialized list of 2-12 answer options
         :param question_parse_mode: Mode for parsing entities in the question. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details. Currently, only custom emoji entities are allowed
         :param question_entities: A JSON-serialized list of special entities that appear in the poll question. It can be specified instead of *question_parse_mode*
         :param is_anonymous: :code:`True`, if the poll needs to be anonymous, defaults to :code:`True`

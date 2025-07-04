@@ -1,0 +1,5 @@
+annotations:
+  next_transfer_date:
+    parsed_type:
+      type: std
+      name: DateTime

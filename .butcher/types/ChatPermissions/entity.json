@@ -69,9 +69,9 @@
       },
       {
         "type": "Boolean",
-        "description": "True, if the user is allowed to send polls",
-        "html_description": "<td><em>Optional</em>. <em>True</em>, if the user is allowed to send polls</td>",
-        "rst_description": "*Optional*. :code:`True`, if the user is allowed to send polls\n",
+        "description": "True, if the user is allowed to send polls and checklists",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the user is allowed to send polls and checklists</td>",
+        "rst_description": "*Optional*. :code:`True`, if the user is allowed to send polls and checklists\n",
         "name": "can_send_polls",
         "required": false
       },

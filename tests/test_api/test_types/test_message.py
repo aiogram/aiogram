@@ -16,6 +16,7 @@ from aiogram.methods import (
     PinChatMessage,
     SendAnimation,
     SendAudio,
+    SendChecklist,
     SendContact,
     SendDice,
     SendDocument,
@@ -47,8 +48,13 @@ from aiogram.types import (
     ChatBackground,
     ChatBoostAdded,
     ChatShared,
+    Checklist,
+    ChecklistTask,
+    ChecklistTasksAdded,
+    ChecklistTasksDone,
     Contact,
     Dice,
+    DirectMessagePriceChanged,
     Document,
     EncryptedCredentials,
     ForumTopicClosed,
@@ -692,6 +698,58 @@ TEST_MESSAGE_UNIQUE_GIFT = Message(
         origin="upgrade",
     ),
 )
+TEST_MESSAGE_CHECKLIST = Message(
+    message_id=42,
+    date=datetime.datetime.now(),
+    chat=Chat(id=42, type="private"),
+    from_user=User(id=42, is_bot=False, first_name="Test"),
+    checklist=Checklist(
+        title="Test Checklist",
+        tasks=[
+            ChecklistTask(
+                id=1,
+                text="Task 1",
+            ),
+            ChecklistTask(
+                id=2,
+                text="Task 2",
+            ),
+        ],
+    ),
+)
+TEST_MESSAGE_CHECKLIST_TASKS_DONE = Message(
+    message_id=42,
+    date=datetime.datetime.now(),
+    chat=Chat(id=42, type="private"),
+    from_user=User(id=42, is_bot=False, first_name="Test"),
+    checklist_tasks_done=ChecklistTasksDone(
+        marked_as_done_task_ids=[1, 2],
+    ),
+)
+TEST_MESSAGE_CHECKLIST_TASKS_ADDED = Message(
+    message_id=42,
+    date=datetime.datetime.now(),
+    chat=Chat(id=42, type="private"),
+    from_user=User(id=42, is_bot=False, first_name="Test"),
+    checklist_tasks_added=ChecklistTasksAdded(
+        tasks=[
+            ChecklistTask(
+                id=3,
+                text="New Task",
+            ),
+        ],
+    ),
+)
+TEST_MESSAGE_DIRECT_MESSAGE_PRICE_CHANGED = Message(
+    message_id=42,
+    date=datetime.datetime.now(),
+    chat=Chat(id=42, type="private"),
+    from_user=User(id=42, is_bot=False, first_name="Test"),
+    direct_message_price_changed=DirectMessagePriceChanged(
+        are_direct_messages_enabled=True,
+        direct_message_star_count=50,
+    ),
+)
 TEST_MESSAGE_PAID_MESSAGE_PRICE_CHANGED = Message(
     message_id=42,
     date=datetime.datetime.now(),
@@ -713,6 +771,7 @@ MESSAGES_AND_CONTENT_TYPES = [
     [TEST_MESSAGE_VIDEO, ContentType.VIDEO],
     [TEST_MESSAGE_VIDEO_NOTE, ContentType.VIDEO_NOTE],
     [TEST_MESSAGE_VOICE, ContentType.VOICE],
+    [TEST_MESSAGE_CHECKLIST, ContentType.CHECKLIST],
     [TEST_MESSAGE_CONTACT, ContentType.CONTACT],
     [TEST_MESSAGE_VENUE, ContentType.VENUE],
     [TEST_MESSAGE_LOCATION, ContentType.LOCATION],
@@ -764,6 +823,9 @@ MESSAGES_AND_CONTENT_TYPES = [
     [TEST_MESSAGE_WRITE_ACCESS_ALLOWED, ContentType.WRITE_ACCESS_ALLOWED],
     [TEST_MESSAGE_BOOST_ADDED, ContentType.BOOST_ADDED],
     [TEST_CHAT_BACKGROUND_SET, ContentType.CHAT_BACKGROUND_SET],
+    [TEST_MESSAGE_CHECKLIST_TASKS_DONE, ContentType.CHECKLIST_TASKS_DONE],
+    [TEST_MESSAGE_CHECKLIST_TASKS_ADDED, ContentType.CHECKLIST_TASKS_ADDED],
+    [TEST_MESSAGE_DIRECT_MESSAGE_PRICE_CHANGED, ContentType.DIRECT_MESSAGE_PRICE_CHANGED],
     [TEST_REFUND_PAYMENT, ContentType.REFUNDED_PAYMENT],
     [TEST_MESSAGE_GIFT, ContentType.GIFT],
     [TEST_MESSAGE_UNIQUE_GIFT, ContentType.UNIQUE_GIFT],
@@ -783,6 +845,7 @@ MESSAGES_AND_COPY_METHODS = [
     [TEST_MESSAGE_VIDEO, SendVideo],
     [TEST_MESSAGE_VIDEO_NOTE, SendVideoNote],
     [TEST_MESSAGE_VOICE, SendVoice],
+    [TEST_MESSAGE_CHECKLIST, None],
     [TEST_MESSAGE_CONTACT, SendContact],
     [TEST_MESSAGE_VENUE, SendVenue],
     [TEST_MESSAGE_LOCATION, SendLocation],
@@ -828,6 +891,9 @@ MESSAGES_AND_COPY_METHODS = [
     [TEST_MESSAGE_GIVEAWAY_WINNERS, None],
     [TEST_MESSAGE_BOOST_ADDED, None],
     [TEST_CHAT_BACKGROUND_SET, None],
+    [TEST_MESSAGE_CHECKLIST_TASKS_DONE, None],
+    [TEST_MESSAGE_CHECKLIST_TASKS_ADDED, None],
+    [TEST_MESSAGE_DIRECT_MESSAGE_PRICE_CHANGED, None],
     [TEST_REFUND_PAYMENT, None],
     [TEST_MESSAGE_GIFT, None],
     [TEST_MESSAGE_UNIQUE_GIFT, None],

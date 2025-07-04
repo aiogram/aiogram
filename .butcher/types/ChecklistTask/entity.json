@@ -1,0 +1,57 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "checklisttask",
+    "name": "ChecklistTask",
+    "description": "Describes a task in a checklist.",
+    "html_description": "<p>Describes a task in a checklist.</p>",
+    "rst_description": "Describes a task in a checklist.",
+    "annotations": [
+      {
+        "type": "Integer",
+        "description": "Unique identifier of the task",
+        "html_description": "<td>Unique identifier of the task</td>",
+        "rst_description": "Unique identifier of the task\n",
+        "name": "id",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Text of the task",
+        "html_description": "<td>Text of the task</td>",
+        "rst_description": "Text of the task\n",
+        "name": "text",
+        "required": true
+      },
+      {
+        "type": "Array of MessageEntity",
+        "description": "Special entities that appear in the task text",
+        "html_description": "<td><em>Optional</em>. Special entities that appear in the task text</td>",
+        "rst_description": "*Optional*. Special entities that appear in the task text\n",
+        "name": "text_entities",
+        "required": false
+      },
+      {
+        "type": "User",
+        "description": "User that completed the task; omitted if the task wasn't completed",
+        "html_description": "<td><em>Optional</em>. User that completed the task; omitted if the task wasn't completed</td>",
+        "rst_description": "*Optional*. User that completed the task; omitted if the task wasn't completed\n",
+        "name": "completed_by_user",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "Point in time (Unix timestamp) when the task was completed; 0 if the task wasn't completed",
+        "html_description": "<td><em>Optional</em>. Point in time (Unix timestamp) when the task was completed; 0 if the task wasn't completed</td>",
+        "rst_description": "*Optional*. Point in time (Unix timestamp) when the task was completed; 0 if the task wasn't completed\n",
+        "name": "completion_date",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}
