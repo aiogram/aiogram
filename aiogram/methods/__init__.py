@@ -33,10 +33,10 @@ from .delete_story import DeleteStory
 from .delete_webhook import DeleteWebhook
 from .edit_chat_invite_link import EditChatInviteLink
 from .edit_chat_subscription_invite_link import EditChatSubscriptionInviteLink
-from .edit_message_checklist import EditMessageChecklist
 from .edit_forum_topic import EditForumTopic
 from .edit_general_forum_topic import EditGeneralForumTopic
 from .edit_message_caption import EditMessageCaption
+from .edit_message_checklist import EditMessageChecklist
 from .edit_message_live_location import EditMessageLiveLocation
 from .edit_message_media import EditMessageMedia
 from .edit_message_reply_markup import EditMessageReplyMarkup

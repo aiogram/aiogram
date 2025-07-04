@@ -2,11 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Optional
 
-from ..types import (
-    InlineKeyboardMarkup,
-    InputChecklist,
-    Message,
-)
+from ..types import InlineKeyboardMarkup, InputChecklist, Message
 from .base import TelegramMethod
 
 

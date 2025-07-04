@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Optional
 
-from .custom import DateTime
 from .base import TelegramObject
+from .custom import DateTime
 
 if TYPE_CHECKING:
     from .unique_gift import UniqueGift
