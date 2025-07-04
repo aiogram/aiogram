@@ -15,7 +15,7 @@ class InputProfilePhotoStatic(InputProfilePhoto):
     Source: https://core.telegram.org/bots/api#inputprofilephotostatic
     """
 
-    type: Literal["static"] = "static"
+    type: Literal[InputProfilePhotoType.STATIC] = InputProfilePhotoType.STATIC
     """Type of the profile photo, must be *static*"""
     photo: InputFileUnion
     """The static profile photo. Profile photos can't be reused and can only be uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the photo was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`"""
@@ -27,7 +27,7 @@ class InputProfilePhotoStatic(InputProfilePhoto):
         def __init__(
             __pydantic__self__,
             *,
-            type: Literal["static"] = "static",
+            type: Literal[InputProfilePhotoType.STATIC] = InputProfilePhotoType.STATIC,
             photo: InputFileUnion,
             **__pydantic_kwargs: Any,
         ) -> None:
