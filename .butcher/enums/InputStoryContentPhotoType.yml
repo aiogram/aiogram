@@ -5,7 +5,7 @@ description: |
   Source: https://core.telegram.org/bots/api#inputstorycontentphoto
 multi_parse:
   attribute: type
-  regexp: "must be '([a-z_]+)'"
+  regexp: "must be *([a-z_]+)*"
   entities:
     - InputStoryContentPhoto
     - InputStoryContentVideo

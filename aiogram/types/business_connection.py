@@ -28,7 +28,7 @@ class BusinessConnection(TelegramObject):
     date: DateTime
     """Date the connection was established in Unix time"""
     is_enabled: bool
-    """True, if the connection is active"""
+    """:code:`True`, if the connection is active"""
     rights: Optional[BusinessBotRights] = None
     """*Optional*. Rights of the business bot"""
     can_reply: Optional[bool] = Field(None, json_schema_extra={"deprecated": True})

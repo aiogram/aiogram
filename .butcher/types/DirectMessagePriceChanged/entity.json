@@ -1,0 +1,33 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "directmessagepricechanged",
+    "name": "DirectMessagePriceChanged",
+    "description": "Describes a service message about a change in the price of direct messages sent to a channel chat.",
+    "html_description": "<p>Describes a service message about a change in the price of direct messages sent to a channel chat.</p>",
+    "rst_description": "Describes a service message about a change in the price of direct messages sent to a channel chat.",
+    "annotations": [
+      {
+        "type": "Boolean",
+        "description": "True, if direct messages are enabled for the channel chat; false otherwise",
+        "html_description": "<td><em>True</em>, if direct messages are enabled for the channel chat; false otherwise</td>",
+        "rst_description": ":code:`True`, if direct messages are enabled for the channel chat; false otherwise\n",
+        "name": "are_direct_messages_enabled",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "The new number of Telegram Stars that must be paid by users for each direct message sent to the channel. Does not apply to users who have been exempted by administrators. Defaults to 0.",
+        "html_description": "<td><em>Optional</em>. The new number of Telegram Stars that must be paid by users for each direct message sent to the channel. Does not apply to users who have been exempted by administrators. Defaults to 0.</td>",
+        "rst_description": "*Optional*. The new number of Telegram Stars that must be paid by users for each direct message sent to the channel. Does not apply to users who have been exempted by administrators. Defaults to 0.\n",
+        "name": "direct_message_star_count",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

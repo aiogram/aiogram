@@ -18,7 +18,7 @@ class RemoveBusinessAccountProfilePhoto(TelegramMethod[bool]):
     business_connection_id: str
     """Unique identifier of the business connection"""
     is_public: Optional[bool] = None
-    """Pass True to remove the public photo, which is visible even if the main photo is hidden by the business account's privacy settings. After the main photo is removed, the previous profile photo (if present) becomes the main photo."""
+    """Pass :code:`True` to remove the public photo, which is visible even if the main photo is hidden by the business account's privacy settings. After the main photo is removed, the previous profile photo (if present) becomes the main photo."""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!

@@ -11,11 +11,11 @@ class WriteAccessAllowed(TelegramObject):
     """
 
     from_request: Optional[bool] = None
-    """*Optional*. True, if the access was granted after the user accepted an explicit request from a Web App sent by the method `requestWriteAccess <https://core.telegram.org/bots/webapps#initializing-mini-apps>`_"""
+    """*Optional*. :code:`True`, if the access was granted after the user accepted an explicit request from a Web App sent by the method `requestWriteAccess <https://core.telegram.org/bots/webapps#initializing-mini-apps>`_"""
     web_app_name: Optional[str] = None
     """*Optional*. Name of the Web App, if the access was granted when the Web App was launched from a link"""
     from_attachment_menu: Optional[bool] = None
-    """*Optional*. True, if the access was granted when the bot was added to the attachment or side menu"""
+    """*Optional*. :code:`True`, if the access was granted when the bot was added to the attachment or side menu"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!

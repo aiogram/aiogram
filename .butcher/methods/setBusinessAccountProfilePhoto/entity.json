@@ -31,8 +31,8 @@
         "type": "Boolean",
         "required": false,
         "description": "Pass True to set the public photo, which will be visible even if the main photo is hidden by the business account's privacy settings. An account can have only one public photo.",
-        "html_description": "<td>Pass True to set the public photo, which will be visible even if the main photo is hidden by the business account's privacy settings. An account can have only one public photo.</td>",
-        "rst_description": "Pass True to set the public photo, which will be visible even if the main photo is hidden by the business account's privacy settings. An account can have only one public photo.\n",
+        "html_description": "<td>Pass <em>True</em> to set the public photo, which will be visible even if the main photo is hidden by the business account's privacy settings. An account can have only one public photo.</td>",
+        "rst_description": "Pass :code:`True` to set the public photo, which will be visible even if the main photo is hidden by the business account's privacy settings. An account can have only one public photo.\n",
         "name": "is_public"
       }
     ],

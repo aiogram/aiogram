@@ -14,8 +14,8 @@
       {
         "type": "Boolean",
         "description": "True, if the access was granted after the user accepted an explicit request from a Web App sent by the method requestWriteAccess",
-        "html_description": "<td><em>Optional</em>. True, if the access was granted after the user accepted an explicit request from a Web App sent by the method <a href=\"/bots/webapps#initializing-mini-apps\">requestWriteAccess</a></td>",
-        "rst_description": "*Optional*. True, if the access was granted after the user accepted an explicit request from a Web App sent by the method `requestWriteAccess <https://core.telegram.org/bots/webapps#initializing-mini-apps>`_\n",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the access was granted after the user accepted an explicit request from a Web App sent by the method <a href=\"/bots/webapps#initializing-mini-apps\">requestWriteAccess</a></td>",
+        "rst_description": "*Optional*. :code:`True`, if the access was granted after the user accepted an explicit request from a Web App sent by the method `requestWriteAccess <https://core.telegram.org/bots/webapps#initializing-mini-apps>`_\n",
         "name": "from_request",
         "required": false
       },
@@ -30,8 +30,8 @@
       {
         "type": "Boolean",
         "description": "True, if the access was granted when the bot was added to the attachment or side menu",
-        "html_description": "<td><em>Optional</em>. True, if the access was granted when the bot was added to the attachment or side menu</td>",
-        "rst_description": "*Optional*. True, if the access was granted when the bot was added to the attachment or side menu\n",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the access was granted when the bot was added to the attachment or side menu</td>",
+        "rst_description": "*Optional*. :code:`True`, if the access was granted when the bot was added to the attachment or side menu\n",
         "name": "from_attachment_menu",
         "required": false
       }

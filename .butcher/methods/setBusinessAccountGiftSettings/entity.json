@@ -23,8 +23,8 @@
         "type": "Boolean",
         "required": true,
         "description": "Pass True, if a button for sending a gift to the user or by the business account must always be shown in the input field",
-        "html_description": "<td>Pass True, if a button for sending a gift to the user or by the business account must always be shown in the input field</td>",
-        "rst_description": "Pass True, if a button for sending a gift to the user or by the business account must always be shown in the input field\n",
+        "html_description": "<td>Pass <em>True</em>, if a button for sending a gift to the user or by the business account must always be shown in the input field</td>",
+        "rst_description": "Pass :code:`True`, if a button for sending a gift to the user or by the business account must always be shown in the input field\n",
         "name": "show_gift_button"
       },
       {

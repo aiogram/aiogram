@@ -1,0 +1,57 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "checklist",
+    "name": "Checklist",
+    "description": "Describes a checklist.",
+    "html_description": "<p>Describes a checklist.</p>",
+    "rst_description": "Describes a checklist.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Title of the checklist",
+        "html_description": "<td>Title of the checklist</td>",
+        "rst_description": "Title of the checklist\n",
+        "name": "title",
+        "required": true
+      },
+      {
+        "type": "Array of MessageEntity",
+        "description": "Special entities that appear in the checklist title",
+        "html_description": "<td><em>Optional</em>. Special entities that appear in the checklist title</td>",
+        "rst_description": "*Optional*. Special entities that appear in the checklist title\n",
+        "name": "title_entities",
+        "required": false
+      },
+      {
+        "type": "Array of ChecklistTask",
+        "description": "List of tasks in the checklist",
+        "html_description": "<td>List of tasks in the checklist</td>",
+        "rst_description": "List of tasks in the checklist\n",
+        "name": "tasks",
+        "required": true
+      },
+      {
+        "type": "True",
+        "description": "True, if users other than the creator of the list can add tasks to the list",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if users other than the creator of the list can add tasks to the list</td>",
+        "rst_description": "*Optional*. :code:`True`, if users other than the creator of the list can add tasks to the list\n",
+        "name": "others_can_add_tasks",
+        "required": false
+      },
+      {
+        "type": "True",
+        "description": "True, if users other than the creator of the list can mark tasks as done or not done",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if users other than the creator of the list can mark tasks as done or not done</td>",
+        "rst_description": "*Optional*. :code:`True`, if users other than the creator of the list can mark tasks as done or not done\n",
+        "name": "others_can_mark_tasks_as_done",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

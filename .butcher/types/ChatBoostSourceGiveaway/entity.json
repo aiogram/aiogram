@@ -46,8 +46,8 @@
       {
         "type": "True",
         "description": "True, if the giveaway was completed, but there was no user to win the prize",
-        "html_description": "<td><em>Optional</em>. True, if the giveaway was completed, but there was no user to win the prize</td>",
-        "rst_description": "*Optional*. True, if the giveaway was completed, but there was no user to win the prize\n",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the giveaway was completed, but there was no user to win the prize</td>",
+        "rst_description": "*Optional*. :code:`True`, if the giveaway was completed, but there was no user to win the prize\n",
         "name": "is_unclaimed",
         "required": false
       }

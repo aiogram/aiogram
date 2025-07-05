@@ -25,7 +25,7 @@ class ChatBoostSourceGiveaway(ChatBoostSource):
     prize_star_count: Optional[int] = None
     """*Optional*. The number of Telegram Stars to be split between giveaway winners; for Telegram Star giveaways only"""
     is_unclaimed: Optional[bool] = None
-    """*Optional*. True, if the giveaway was completed, but there was no user to win the prize"""
+    """*Optional*. :code:`True`, if the giveaway was completed, but there was no user to win the prize"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!

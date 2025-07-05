@@ -13,9 +13,9 @@
     "annotations": [
       {
         "type": "String",
-        "description": "Type of the profile photo, must be 'animated'",
-        "html_description": "<td>Type of the profile photo, must be &#8220;animated&#8221;</td>",
-        "rst_description": "Type of the profile photo, must be 'animated'\n",
+        "description": "Type of the profile photo, must be animated",
+        "html_description": "<td>Type of the profile photo, must be <em>animated</em></td>",
+        "rst_description": "Type of the profile photo, must be *animated*\n",
         "name": "type",
         "required": true
       },

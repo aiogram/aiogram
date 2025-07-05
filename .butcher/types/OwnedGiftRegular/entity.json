@@ -70,32 +70,32 @@
       {
         "type": "True",
         "description": "True, if the sender and gift text are shown only to the gift receiver; otherwise, everyone will be able to see them",
-        "html_description": "<td><em>Optional</em>. True, if the sender and gift text are shown only to the gift receiver; otherwise, everyone will be able to see them</td>",
-        "rst_description": "*Optional*. True, if the sender and gift text are shown only to the gift receiver; otherwise, everyone will be able to see them\n",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the sender and gift text are shown only to the gift receiver; otherwise, everyone will be able to see them</td>",
+        "rst_description": "*Optional*. :code:`True`, if the sender and gift text are shown only to the gift receiver; otherwise, everyone will be able to see them\n",
         "name": "is_private",
         "required": false
       },
       {
         "type": "True",
         "description": "True, if the gift is displayed on the account's profile page; for gifts received on behalf of business accounts only",
-        "html_description": "<td><em>Optional</em>. True, if the gift is displayed on the account's profile page; for gifts received on behalf of business accounts only</td>",
-        "rst_description": "*Optional*. True, if the gift is displayed on the account's profile page; for gifts received on behalf of business accounts only\n",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the gift is displayed on the account's profile page; for gifts received on behalf of business accounts only</td>",
+        "rst_description": "*Optional*. :code:`True`, if the gift is displayed on the account's profile page; for gifts received on behalf of business accounts only\n",
         "name": "is_saved",
         "required": false
       },
       {
         "type": "True",
         "description": "True, if the gift can be upgraded to a unique gift; for gifts received on behalf of business accounts only",
-        "html_description": "<td><em>Optional</em>. True, if the gift can be upgraded to a unique gift; for gifts received on behalf of business accounts only</td>",
-        "rst_description": "*Optional*. True, if the gift can be upgraded to a unique gift; for gifts received on behalf of business accounts only\n",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the gift can be upgraded to a unique gift; for gifts received on behalf of business accounts only</td>",
+        "rst_description": "*Optional*. :code:`True`, if the gift can be upgraded to a unique gift; for gifts received on behalf of business accounts only\n",
         "name": "can_be_upgraded",
         "required": false
       },
       {
         "type": "True",
         "description": "True, if the gift was refunded and isn't available anymore",
-        "html_description": "<td><em>Optional</em>. True, if the gift was refunded and isn't available anymore</td>",
-        "rst_description": "*Optional*. True, if the gift was refunded and isn't available anymore\n",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the gift was refunded and isn't available anymore</td>",
+        "rst_description": "*Optional*. :code:`True`, if the gift was refunded and isn't available anymore\n",
         "name": "was_refunded",
         "required": false
       },

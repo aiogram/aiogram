@@ -1,0 +1,57 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Updating messages",
+    "anchor": "updating-messages"
+  },
+  "object": {
+    "anchor": "editmessagechecklist",
+    "name": "editMessageChecklist",
+    "description": "Use this method to edit a checklist on behalf of a connected business account. On success, the edited Message is returned.",
+    "html_description": "<p>Use this method to edit a checklist on behalf of a connected business account. On success, the edited <a href=\"#message\">Message</a> is returned.</p>",
+    "rst_description": "Use this method to edit a checklist on behalf of a connected business account. On success, the edited :class:`aiogram.types.message.Message` is returned.",
+    "annotations": [
+      {
+        "type": "String",
+        "required": true,
+        "description": "Unique identifier of the business connection on behalf of which the message will be sent",
+        "html_description": "<td>Unique identifier of the business connection on behalf of which the message will be sent</td>",
+        "rst_description": "Unique identifier of the business connection on behalf of which the message will be sent\n",
+        "name": "business_connection_id"
+      },
+      {
+        "type": "Integer",
+        "required": true,
+        "description": "Unique identifier for the target chat",
+        "html_description": "<td>Unique identifier for the target chat</td>",
+        "rst_description": "Unique identifier for the target chat\n",
+        "name": "chat_id"
+      },
+      {
+        "type": "Integer",
+        "required": true,
+        "description": "Unique identifier for the target message",
+        "html_description": "<td>Unique identifier for the target message</td>",
+        "rst_description": "Unique identifier for the target message\n",
+        "name": "message_id"
+      },
+      {
+        "type": "InputChecklist",
+        "required": true,
+        "description": "A JSON-serialized object for the new checklist",
+        "html_description": "<td>A JSON-serialized object for the new checklist</td>",
+        "rst_description": "A JSON-serialized object for the new checklist\n",
+        "name": "checklist"
+      },
+      {
+        "type": "InlineKeyboardMarkup",
+        "required": false,
+        "description": "A JSON-serialized object for the new inline keyboard for the message",
+        "html_description": "<td>A JSON-serialized object for the new inline keyboard for the message</td>",
+        "rst_description": "A JSON-serialized object for the new inline keyboard for the message\n",
+        "name": "reply_markup"
+      }
+    ],
+    "category": "methods"
+  }
+}

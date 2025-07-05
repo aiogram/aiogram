@@ -34,13 +34,13 @@ class OwnedGiftRegular(OwnedGift):
     entities: Optional[list[MessageEntity]] = None
     """*Optional*. Special entities that appear in the text"""
     is_private: Optional[bool] = None
-    """*Optional*. True, if the sender and gift text are shown only to the gift receiver; otherwise, everyone will be able to see them"""
+    """*Optional*. :code:`True`, if the sender and gift text are shown only to the gift receiver; otherwise, everyone will be able to see them"""
     is_saved: Optional[bool] = None
-    """*Optional*. True, if the gift is displayed on the account's profile page; for gifts received on behalf of business accounts only"""
+    """*Optional*. :code:`True`, if the gift is displayed on the account's profile page; for gifts received on behalf of business accounts only"""
     can_be_upgraded: Optional[bool] = None
-    """*Optional*. True, if the gift can be upgraded to a unique gift; for gifts received on behalf of business accounts only"""
+    """*Optional*. :code:`True`, if the gift can be upgraded to a unique gift; for gifts received on behalf of business accounts only"""
     was_refunded: Optional[bool] = None
-    """*Optional*. True, if the gift was refunded and isn't available anymore"""
+    """*Optional*. :code:`True`, if the gift was refunded and isn't available anymore"""
     convert_star_count: Optional[int] = None
     """*Optional*. Number of Telegram Stars that can be claimed by the receiver instead of the gift; omitted if the gift cannot be converted to Telegram Stars"""
     prepaid_upgrade_star_count: Optional[int] = None

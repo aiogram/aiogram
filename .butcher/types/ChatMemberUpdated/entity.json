@@ -62,16 +62,16 @@
       {
         "type": "Boolean",
         "description": "True, if the user joined the chat after sending a direct join request without using an invite link and being approved by an administrator",
-        "html_description": "<td><em>Optional</em>. True, if the user joined the chat after sending a direct join request without using an invite link and being approved by an administrator</td>",
-        "rst_description": "*Optional*. True, if the user joined the chat after sending a direct join request without using an invite link and being approved by an administrator\n",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the user joined the chat after sending a direct join request without using an invite link and being approved by an administrator</td>",
+        "rst_description": "*Optional*. :code:`True`, if the user joined the chat after sending a direct join request without using an invite link and being approved by an administrator\n",
         "name": "via_join_request",
         "required": false
       },
       {
         "type": "Boolean",
         "description": "True, if the user joined the chat via a chat folder invite link",
-        "html_description": "<td><em>Optional</em>. True, if the user joined the chat via a chat folder invite link</td>",
-        "rst_description": "*Optional*. True, if the user joined the chat via a chat folder invite link\n",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the user joined the chat via a chat folder invite link</td>",
+        "rst_description": "*Optional*. :code:`True`, if the user joined the chat via a chat folder invite link\n",
         "name": "via_chat_folder_invite_link",
         "required": false
       }
