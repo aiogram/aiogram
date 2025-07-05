@@ -1,1 +1,0 @@
-Correctly pass error message in TelegramMigrateToChat.

@@ -1,1 +1,0 @@
-Changed Babel's pinned version from minor to major.
