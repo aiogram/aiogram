@@ -54,8 +54,8 @@
       {
         "type": "Boolean",
         "description": "True, if the connection is active",
-        "html_description": "<td>True, if the connection is active</td>",
-        "rst_description": "True, if the connection is active\n",
+        "html_description": "<td><em>True</em>, if the connection is active</td>",
+        "rst_description": ":code:`True`, if the connection is active\n",
         "name": "is_enabled",
         "required": true
       },

@@ -1724,7 +1724,7 @@ class ChatJoinRequest(TelegramObject):
         Source: https://core.telegram.org/bots/api#sendpoll
 
         :param question: Poll question, 1-300 characters
-        :param options: A JSON-serialized list of 2-10 answer options
+        :param options: A JSON-serialized list of 2-12 answer options
         :param business_connection_id: Unique identifier of the business connection on behalf of which the message will be sent
         :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
         :param question_parse_mode: Mode for parsing entities in the question. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details. Currently, only custom emoji entities are allowed
@@ -1822,7 +1822,7 @@ class ChatJoinRequest(TelegramObject):
         Source: https://core.telegram.org/bots/api#sendpoll
 
         :param question: Poll question, 1-300 characters
-        :param options: A JSON-serialized list of 2-10 answer options
+        :param options: A JSON-serialized list of 2-12 answer options
         :param business_connection_id: Unique identifier of the business connection on behalf of which the message will be sent
         :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
         :param question_parse_mode: Mode for parsing entities in the question. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details. Currently, only custom emoji entities are allowed

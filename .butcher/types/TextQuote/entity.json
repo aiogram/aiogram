@@ -38,8 +38,8 @@
       {
         "type": "True",
         "description": "True, if the quote was chosen manually by the message sender. Otherwise, the quote was added automatically by the server.",
-        "html_description": "<td><em>Optional</em>. True, if the quote was chosen manually by the message sender. Otherwise, the quote was added automatically by the server.</td>",
-        "rst_description": "*Optional*. True, if the quote was chosen manually by the message sender. Otherwise, the quote was added automatically by the server.\n",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the quote was chosen manually by the message sender. Otherwise, the quote was added automatically by the server.</td>",
+        "rst_description": "*Optional*. :code:`True`, if the quote was chosen manually by the message sender. Otherwise, the quote was added automatically by the server.\n",
         "name": "is_manual",
         "required": false
       }

@@ -15,7 +15,7 @@ class InputStoryContentVideo(InputStoryContent):
     """
 
     type: Literal[InputStoryContentType.VIDEO] = InputStoryContentType.VIDEO
-    """Type of the content, must be 'video'"""
+    """Type of the content, must be *video*"""
     video: str
     """The video to post as a story. The video must be of the size 720x1280, streamable, encoded with H.265 codec, with key frames added each second in the MPEG4 format, and must not exceed 30 MB. The video can't be reused and can only be uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the video was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`"""
     duration: Optional[float] = None

@@ -25,13 +25,13 @@ class GiftInfo(TelegramObject):
     prepaid_upgrade_star_count: Optional[int] = None
     """*Optional*. Number of Telegram Stars that were prepaid by the sender for the ability to upgrade the gift"""
     can_be_upgraded: Optional[bool] = None
-    """*Optional*. True, if the gift can be upgraded to a unique gift"""
+    """*Optional*. :code:`True`, if the gift can be upgraded to a unique gift"""
     text: Optional[str] = None
     """*Optional*. Text of the message that was added to the gift"""
     entities: Optional[list[MessageEntity]] = None
     """*Optional*. Special entities that appear in the text"""
     is_private: Optional[bool] = None
-    """*Optional*. True, if the sender and gift text are shown only to the gift receiver; otherwise, everyone will be able to see them"""
+    """*Optional*. :code:`True`, if the sender and gift text are shown only to the gift receiver; otherwise, everyone will be able to see them"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!

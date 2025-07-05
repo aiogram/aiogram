@@ -36,6 +36,7 @@ from .edit_chat_subscription_invite_link import EditChatSubscriptionInviteLink
 from .edit_forum_topic import EditForumTopic
 from .edit_general_forum_topic import EditGeneralForumTopic
 from .edit_message_caption import EditMessageCaption
+from .edit_message_checklist import EditMessageChecklist
 from .edit_message_live_location import EditMessageLiveLocation
 from .edit_message_media import EditMessageMedia
 from .edit_message_reply_markup import EditMessageReplyMarkup
@@ -64,6 +65,7 @@ from .get_my_default_administrator_rights import GetMyDefaultAdministratorRights
 from .get_my_description import GetMyDescription
 from .get_my_name import GetMyName
 from .get_my_short_description import GetMyShortDescription
+from .get_my_star_balance import GetMyStarBalance
 from .get_star_transactions import GetStarTransactions
 from .get_sticker_set import GetStickerSet
 from .get_updates import GetUpdates
@@ -91,6 +93,7 @@ from .save_prepared_inline_message import SavePreparedInlineMessage
 from .send_animation import SendAnimation
 from .send_audio import SendAudio
 from .send_chat_action import SendChatAction
+from .send_checklist import SendChecklist
 from .send_contact import SendContact
 from .send_dice import SendDice
 from .send_document import SendDocument
@@ -191,6 +194,7 @@ __all__ = (
     "EditForumTopic",
     "EditGeneralForumTopic",
     "EditMessageCaption",
+    "EditMessageChecklist",
     "EditMessageLiveLocation",
     "EditMessageMedia",
     "EditMessageReplyMarkup",
@@ -219,6 +223,7 @@ __all__ = (
     "GetMyDescription",
     "GetMyName",
     "GetMyShortDescription",
+    "GetMyStarBalance",
     "GetStarTransactions",
     "GetStickerSet",
     "GetUpdates",
@@ -248,6 +253,7 @@ __all__ = (
     "SendAnimation",
     "SendAudio",
     "SendChatAction",
+    "SendChecklist",
     "SendContact",
     "SendDice",
     "SendDocument",

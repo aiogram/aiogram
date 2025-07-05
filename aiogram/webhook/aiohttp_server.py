@@ -5,8 +5,8 @@ from asyncio import Transport
 from typing import Any, Awaitable, Callable, Dict, Optional, Set, Tuple, cast
 
 from aiohttp import JsonPayload, MultipartWriter, Payload, web
-from aiohttp.abc import Application
 from aiohttp.typedefs import Handler
+from aiohttp.web_app import Application
 from aiohttp.web_middlewares import middleware
 
 from aiogram import Bot, Dispatcher, loggers
@@ -111,7 +111,7 @@ class BaseRequestHandler(ABC):
         app.on_shutdown.append(self._handle_close)
         app.router.add_route("POST", path, self.handle, **kwargs)
 
-    async def _handle_close(self, app: Application) -> None:
+    async def _handle_close(self, *a: Any, **kw: Any) -> None:
         await self.close()
 
     @abstractmethod

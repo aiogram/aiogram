@@ -89,6 +89,37 @@ Complete example
     :linenos:
 
 
+Changing state for another user
+-------------------------------
+
+In some cases, you might need to change the state for a user other than the one who triggered the current handler.
+For example, you might want to change the state of a user based on an admin's command.
+
+To do this, you can use the ``get_context`` method of the FSM middleware through the dispatcher:
+
+.. code-block:: python
+
+    @example_router.message(Command("example"))
+    async def command_example(message: Message, dispatcher: Dispatcher, bot: Bot):
+        user_id = ...  # Get the user ID in the way that you need
+        state = await dispatcher.fsm.get_context(
+            bot=bot,
+            chat_id=user_id,
+            user_id=user_id,
+        )
+
+        # Now you can use the state context to change the state for the specified user
+        await state.set_state(YourState.some_state)
+
+        # Or store data in the state
+        await state.update_data(some_key="some_value")
+
+        # Or clear the state
+        await state.clear()
+
+This allows you to manage the state of any user in your bot, not just the one who triggered the current handler.
+
+
 Read more
 =========
 

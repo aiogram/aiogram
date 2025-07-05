@@ -5,7 +5,7 @@ description: |
   Source: https://core.telegram.org/bots/api#inputprofilephoto
 multi_parse:
   attribute: type
-  regexp: "must be '([a-z_]+)'"
+  regexp: "must be *([a-z_]+)*"
   entities:
     - InputProfilePhotoStatic
     - InputProfilePhotoAnimated

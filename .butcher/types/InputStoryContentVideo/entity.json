@@ -13,9 +13,9 @@
     "annotations": [
       {
         "type": "String",
-        "description": "Type of the content, must be 'video'",
-        "html_description": "<td>Type of the content, must be &#8220;video&#8221;</td>",
-        "rst_description": "Type of the content, must be 'video'\n",
+        "description": "Type of the content, must be video",
+        "html_description": "<td>Type of the content, must be <em>video</em></td>",
+        "rst_description": "Type of the content, must be *video*\n",
         "name": "type",
         "required": true
       },

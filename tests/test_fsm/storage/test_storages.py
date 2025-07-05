@@ -1,5 +1,8 @@
+from typing import TypedDict
+
 import pytest
 
+from aiogram.exceptions import DataNotDictLikeError
 from aiogram.fsm.storage.base import BaseStorage, StorageKey
 
 
@@ -43,6 +46,21 @@ class TestStorages:
             await storage.get_value(storage_key=storage_key, dict_key="foo", default="baz")
             == "baz"
         )
+
+        class CustomTypedDict(TypedDict, total=False):
+            foo: str
+            bar: str
+
+        await storage.set_data(key=storage_key, data=CustomTypedDict(foo="bar", bar="baz"))
+        assert await storage.get_data(key=storage_key) == {"foo": "bar", "bar": "baz"}
+        assert await storage.get_value(storage_key=storage_key, dict_key="foo") == "bar"
+        assert (
+            await storage.get_value(storage_key=storage_key, dict_key="foo", default="baz")
+            == "bar"
+        )
+
+        with pytest.raises(DataNotDictLikeError):
+            await storage.set_data(key=storage_key, data=())
 
     async def test_update_data(self, storage: BaseStorage, storage_key: StorageKey):
         assert await storage.get_data(key=storage_key) == {}

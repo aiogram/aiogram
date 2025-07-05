@@ -3,8 +3,18 @@ from collections import defaultdict
 from contextlib import asynccontextmanager
 from copy import copy
 from dataclasses import dataclass, field
-from typing import Any, AsyncGenerator, DefaultDict, Dict, Hashable, Optional, overload
+from typing import (
+    Any,
+    AsyncGenerator,
+    DefaultDict,
+    Dict,
+    Hashable,
+    Mapping,
+    Optional,
+    overload,
+)
 
+from aiogram.exceptions import DataNotDictLikeError
 from aiogram.fsm.state import State
 from aiogram.fsm.storage.base import (
     BaseEventIsolation,
@@ -44,7 +54,11 @@ class MemoryStorage(BaseStorage):
     async def get_state(self, key: StorageKey) -> Optional[str]:
         return self.storage[key].state
 
-    async def set_data(self, key: StorageKey, data: Dict[str, Any]) -> None:
+    async def set_data(self, key: StorageKey, data: Mapping[str, Any]) -> None:
+        if not isinstance(data, dict):
+            raise DataNotDictLikeError(
+                f"Data must be a dict or dict-like object, got {type(data).__name__}"
+            )
         self.storage[key].data = data.copy()
 
     async def get_data(self, key: StorageKey) -> Dict[str, Any]:

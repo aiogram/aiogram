@@ -70,9 +70,14 @@ Available types
     chat_permissions
     chat_photo
     chat_shared
+    checklist
+    checklist_task
+    checklist_tasks_added
+    checklist_tasks_done
     contact
     copy_text_button
     dice
+    direct_message_price_changed
     document
     external_reply_info
     file
@@ -94,6 +99,8 @@ Available types
     inaccessible_message
     inline_keyboard_button
     inline_keyboard_markup
+    input_checklist
+    input_checklist_task
     input_file
     input_media
     input_media_animation

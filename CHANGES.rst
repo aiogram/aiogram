@@ -16,6 +16,88 @@ Changelog
 
 .. towncrier release notes start
 
+3.21.0 (2025-07-05)
+====================
+
+Features
+--------
+
+- Refactor methods input types to calm down MyPy. #1682
+
+  `Dict[str, Any]` is replaced with `Mapping[str, Any]` in the following methods:
+
+  - `FSMContext.set_data`
+  - `FSMContext.update_data`
+  - `BaseStorage.set_data`
+  - `BaseStorage.update_data`
+  - `BaseStorage's child methods`
+  - `SceneWizard.set_data`
+  - `SceneWizard.update_data`
+  `#1683 <https://github.com/aiogram/aiogram/issues/1683>`_
+- Add support for `State` type in scenes methods like `goto`, `enter`, `get`
+  `#1685 <https://github.com/aiogram/aiogram/issues/1685>`_
+- Added full support for the `Bot API 9.1 <https://core.telegram.org/bots/api-changelog#july-3-2025>`_:
+
+  **Checklists**
+
+  - Added the class :class:`aiogram.types.checklist_task.ChecklistTask` representing a task in a checklist.
+  - Added the class :class:`aiogram.types.checklist.Checklist` representing a checklist.
+  - Added the class :class:`aiogram.types.input_checklist_task.InputChecklistTask` representing a task to add to a checklist.
+  - Added the class :class:`aiogram.types.input_checklist.InputChecklist` representing a checklist to create.
+  - Added the field :code:`checklist` to the classes :class:`aiogram.types.message.Message` and :class:`aiogram.types.external_reply_info.ExternalReplyInfo`, describing a checklist in a message.
+  - Added the class :class:`aiogram.types.checklist_tasks_done.ChecklistTasksDone` and the field :code:`checklist_tasks_done` to the class :class:`aiogram.types.message.Message`, describing a service message about status changes for tasks in a checklist (i.e., marked as done/not done).
+  - Added the class :class:`aiogram.types.checklist_tasks_added.ChecklistTasksAdded` and the field :code:`checklist_tasks_added` to the class :class:`aiogram.types.message.Message`, describing a service message about the addition of new tasks to a checklist.
+  - Added the method :class:`aiogram.methods.send_checklist.SendChecklist`, allowing bots to send a checklist on behalf of a business account.
+  - Added the method :class:`aiogram.methods.edit_message_checklist.EditMessageChecklist`, allowing bots to edit a checklist on behalf of a business account.
+
+  **Gifts**
+
+  - Added the field :code:`next_transfer_date` to the classes :class:`aiogram.types.owned_gift_unique.OwnedGiftUnique` and :class:`aiogram.types.unique_gift_info.UniqueGiftInfo`.
+  - Added the field :code:`last_resale_star_count` to the class :class:`aiogram.types.unique_gift_info.UniqueGiftInfo`.
+  - Added "resale" as the possible value of the field :code:`origin` in the class :class:`aiogram.types.unique_gift_info.UniqueGiftInfo`.
+
+  **General**
+
+  - Increased the maximum number of options in a poll to 12.
+  - Added the method :class:`aiogram.methods.get_my_star_balance.GetMyStarBalance`, allowing bots to get their current balance of Telegram Stars.
+  - Added the class :class:`aiogram.types.direct_message_price_changed.DirectMessagePriceChanged` and the field :code:`direct_message_price_changed` to the class :class:`aiogram.types.message.Message`, describing a service message about a price change for direct messages sent to the channel chat.
+  `#1704 <https://github.com/aiogram/aiogram/issues/1704>`_
+
+
+Bugfixes
+--------
+
+- Fixed an issue where the scene entry handler (:code:`enter`) was not receiving data
+  passed to the context by middleware, which could result in a :code:`TypeError`.
+
+  Also updated the documentation to clarify how to enter the scene.
+  `#1672 <https://github.com/aiogram/aiogram/issues/1672>`_
+- Correctly pass error message in TelegramMigrateToChat.
+  `#1694 <https://github.com/aiogram/aiogram/issues/1694>`_
+
+
+Improved Documentation
+----------------------
+
+- Added documentation for changing state of another user in FSM
+  `#1633 <https://github.com/aiogram/aiogram/issues/1633>`_
+
+
+Misc
+----
+
+- Fixed MyPy [return-value] error in `InlineKeyboardBuilder().as_markup()`.
+  `as_markup` method now overloads parent class method and uses `super()`, to call parent's
+  `as_markup` method.
+  Also added correct type hint to `as_markup`'s return in `InlineKeyboardBuilder` and
+  `ReplyKeyboardBuilder` classes.
+  `#1677 <https://github.com/aiogram/aiogram/issues/1677>`_
+- Changed Babel's pinned version from minor to major.
+  `#1681 <https://github.com/aiogram/aiogram/issues/1681>`_
+- Increased max :code:`aiohttp` version support from “<3.12” to “<3.13”
+  `#1700 <https://github.com/aiogram/aiogram/issues/1700>`_
+
+
 3.20.0 (2025-04-14)
 ====================
 

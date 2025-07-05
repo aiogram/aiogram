@@ -119,7 +119,7 @@ class TelegramMigrateToChat(TelegramAPIError):
         if chat_id := getattr(method, "chat_id", None):
             description += f" from {chat_id}"
         description += f"\nOriginal description: {message}"
-        super().__init__(method=method, message=message)
+        super().__init__(method=method, message=description)
         self.migrate_to_chat_id = migrate_to_chat_id
 
 
@@ -197,3 +197,9 @@ class ClientDecodeError(AiogramError):
             f"{original_type.__module__}.{original_type.__name__}: {self.original}\n"
             f"Content: {self.data}"
         )
+
+
+class DataNotDictLikeError(DetailedAiogramError):
+    """
+    Exception raised when data is not dict-like.
+    """

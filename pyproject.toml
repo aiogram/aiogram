@@ -42,7 +42,7 @@ classifiers = [
 ]
 dependencies = [
     "magic-filter>=1.0.12,<1.1",
-    "aiohttp>=3.9.0,<3.12",
+    "aiohttp>=3.9.0,<3.13",
     "pydantic>=2.4.1,<2.12",
     "aiofiles>=23.2.1,<24.2",
     "certifi>=2023.7.22",
@@ -69,7 +69,7 @@ proxy = [
     "aiohttp-socks~=0.8.3",
 ]
 i18n = [
-    "Babel~=2.13.0",
+    "Babel>=2.13.0,<3",
 ]
 cli = [
     "aiogram-cli>=1.1.0,<2.0.0",

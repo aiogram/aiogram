@@ -46,16 +46,16 @@
       {
         "type": "True",
         "description": "True, if the payment is a recurring payment for a subscription",
-        "html_description": "<td><em>Optional</em>. True, if the payment is a recurring payment for a subscription</td>",
-        "rst_description": "*Optional*. True, if the payment is a recurring payment for a subscription\n",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the payment is a recurring payment for a subscription</td>",
+        "rst_description": "*Optional*. :code:`True`, if the payment is a recurring payment for a subscription\n",
         "name": "is_recurring",
         "required": false
       },
       {
         "type": "True",
         "description": "True, if the payment is the first payment for a subscription",
-        "html_description": "<td><em>Optional</em>. True, if the payment is the first payment for a subscription</td>",
-        "rst_description": "*Optional*. True, if the payment is the first payment for a subscription\n",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the payment is the first payment for a subscription</td>",
+        "rst_description": "*Optional*. :code:`True`, if the payment is the first payment for a subscription\n",
         "name": "is_first_recurring",
         "required": false
       },

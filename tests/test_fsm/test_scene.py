@@ -685,6 +685,44 @@ class TestScene:
 
         scenes.enter.assert_called_once_with(MyScene, **kwargs)
 
+    async def test_scene_as_handler_enter_with_middleware_data(self):
+        """Test that middleware data is correctly passed to the scene when using as_handler()."""
+
+        class MyScene(Scene):
+            @on.message.enter()
+            def test_handler(self, *args, **kwargs):
+                pass
+
+        event = AsyncMock()
+
+        scenes = ScenesManager(
+            registry=SceneRegistry(Router()),
+            update_type="message",
+            event=event,
+            state=FSMContext(
+                storage=MemoryStorage(), key=StorageKey(bot_id=42, chat_id=-42, user_id=42)
+            ),
+            data={},
+        )
+        scenes.enter = AsyncMock()
+
+        # Kwargs passed to as_handler
+        handler_kwargs = {"handler_kwarg": "handler_value", "mixed_kwarg": "handler_value"}
+        handler = MyScene.as_handler(**handler_kwargs)
+
+        # Middleware data that would be passed to the handler
+        middleware_data = {
+            "middleware_data": "middleware_value",
+            "mixed_kwarg": "middleware_value",
+        }
+
+        # Call the handler with middleware data
+        await handler(event, scenes, **middleware_data)
+
+        # Verify that both handler kwargs and middleware data are passed to scenes.enter
+        expected_kwargs = {**handler_kwargs, **middleware_data}
+        scenes.enter.assert_called_once_with(MyScene, **expected_kwargs)
+
 
 class TestSceneWizard:
     async def test_scene_wizard_enter_with_reset_data_on_enter(self):
@@ -1452,7 +1490,9 @@ class TestSceneRegistry:
         registry = SceneRegistry(router, register_on_add)
         registry.add(MyScene)
 
-        with pytest.raises(SceneException, match="Scene must be a subclass of Scene or a string"):
+        with pytest.raises(
+            SceneException, match="Scene must be a subclass of Scene, State or a string"
+        ):
             registry.get(MyScene)
 
     def test_scene_registry_get_scene_not_registered(self):

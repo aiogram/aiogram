@@ -23,48 +23,48 @@
         "type": "Boolean",
         "required": false,
         "description": "Pass True to exclude gifts that aren't saved to the account's profile page",
-        "html_description": "<td>Pass True to exclude gifts that aren't saved to the account's profile page</td>",
-        "rst_description": "Pass True to exclude gifts that aren't saved to the account's profile page\n",
+        "html_description": "<td>Pass <em>True</em> to exclude gifts that aren't saved to the account's profile page</td>",
+        "rst_description": "Pass :code:`True` to exclude gifts that aren't saved to the account's profile page\n",
         "name": "exclude_unsaved"
       },
       {
         "type": "Boolean",
         "required": false,
         "description": "Pass True to exclude gifts that are saved to the account's profile page",
-        "html_description": "<td>Pass True to exclude gifts that are saved to the account's profile page</td>",
-        "rst_description": "Pass True to exclude gifts that are saved to the account's profile page\n",
+        "html_description": "<td>Pass <em>True</em> to exclude gifts that are saved to the account's profile page</td>",
+        "rst_description": "Pass :code:`True` to exclude gifts that are saved to the account's profile page\n",
         "name": "exclude_saved"
       },
       {
         "type": "Boolean",
         "required": false,
         "description": "Pass True to exclude gifts that can be purchased an unlimited number of times",
-        "html_description": "<td>Pass True to exclude gifts that can be purchased an unlimited number of times</td>",
-        "rst_description": "Pass True to exclude gifts that can be purchased an unlimited number of times\n",
+        "html_description": "<td>Pass <em>True</em> to exclude gifts that can be purchased an unlimited number of times</td>",
+        "rst_description": "Pass :code:`True` to exclude gifts that can be purchased an unlimited number of times\n",
         "name": "exclude_unlimited"
       },
       {
         "type": "Boolean",
         "required": false,
         "description": "Pass True to exclude gifts that can be purchased a limited number of times",
-        "html_description": "<td>Pass True to exclude gifts that can be purchased a limited number of times</td>",
-        "rst_description": "Pass True to exclude gifts that can be purchased a limited number of times\n",
+        "html_description": "<td>Pass <em>True</em> to exclude gifts that can be purchased a limited number of times</td>",
+        "rst_description": "Pass :code:`True` to exclude gifts that can be purchased a limited number of times\n",
         "name": "exclude_limited"
       },
       {
         "type": "Boolean",
         "required": false,
         "description": "Pass True to exclude unique gifts",
-        "html_description": "<td>Pass True to exclude unique gifts</td>",
-        "rst_description": "Pass True to exclude unique gifts\n",
+        "html_description": "<td>Pass <em>True</em> to exclude unique gifts</td>",
+        "rst_description": "Pass :code:`True` to exclude unique gifts\n",
         "name": "exclude_unique"
       },
       {
         "type": "Boolean",
         "required": false,
         "description": "Pass True to sort results by gift price instead of send date. Sorting is applied before pagination.",
-        "html_description": "<td>Pass True to sort results by gift price instead of send date. Sorting is applied before pagination.</td>",
-        "rst_description": "Pass True to sort results by gift price instead of send date. Sorting is applied before pagination.\n",
+        "html_description": "<td>Pass <em>True</em> to sort results by gift price instead of send date. Sorting is applied before pagination.</td>",
+        "rst_description": "Pass :code:`True` to sort results by gift price instead of send date. Sorting is applied before pagination.\n",
         "name": "sort_by_price"
       },
       {

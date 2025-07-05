@@ -38,7 +38,7 @@ class ChatMemberRestricted(ChatMember):
     can_send_voice_notes: bool
     """:code:`True`, if the user is allowed to send voice notes"""
     can_send_polls: bool
-    """:code:`True`, if the user is allowed to send polls"""
+    """:code:`True`, if the user is allowed to send polls and checklists"""
     can_send_other_messages: bool
     """:code:`True`, if the user is allowed to send animations, games, stickers and use inline bots"""
     can_add_web_page_previews: bool

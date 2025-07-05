@@ -166,8 +166,8 @@
       {
         "type": "True",
         "description": "True, if the message was sent by an implicit action, for example, as an away or a greeting business message, or as a scheduled message",
-        "html_description": "<td><em>Optional</em>. True, if the message was sent by an implicit action, for example, as an away or a greeting business message, or as a scheduled message</td>",
-        "rst_description": "*Optional*. True, if the message was sent by an implicit action, for example, as an away or a greeting business message, or as a scheduled message\n",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the message was sent by an implicit action, for example, as an away or a greeting business message, or as a scheduled message</td>",
+        "rst_description": "*Optional*. :code:`True`, if the message was sent by an implicit action, for example, as an away or a greeting business message, or as a scheduled message\n",
         "name": "is_from_offline",
         "required": false
       },
@@ -326,8 +326,8 @@
       {
         "type": "True",
         "description": "True, if the caption must be shown above the message media",
-        "html_description": "<td><em>Optional</em>. True, if the caption must be shown above the message media</td>",
-        "rst_description": "*Optional*. True, if the caption must be shown above the message media\n",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the caption must be shown above the message media</td>",
+        "rst_description": "*Optional*. :code:`True`, if the caption must be shown above the message media\n",
         "name": "show_caption_above_media",
         "required": false
       },
@@ -337,6 +337,14 @@
         "html_description": "<td><em>Optional</em>. <em>True</em>, if the message media is covered by a spoiler animation</td>",
         "rst_description": "*Optional*. :code:`True`, if the message media is covered by a spoiler animation\n",
         "name": "has_media_spoiler",
+        "required": false
+      },
+      {
+        "type": "Checklist",
+        "description": "Message is a checklist",
+        "html_description": "<td><em>Optional</em>. Message is a checklist</td>",
+        "rst_description": "*Optional*. Message is a checklist\n",
+        "name": "checklist",
         "required": false
       },
       {
@@ -585,6 +593,30 @@
         "html_description": "<td><em>Optional</em>. Service message: chat background set</td>",
         "rst_description": "*Optional*. Service message: chat background set\n",
         "name": "chat_background_set",
+        "required": false
+      },
+      {
+        "type": "ChecklistTasksDone",
+        "description": "Service message: some tasks in a checklist were marked as done or not done",
+        "html_description": "<td><em>Optional</em>. Service message: some tasks in a checklist were marked as done or not done</td>",
+        "rst_description": "*Optional*. Service message: some tasks in a checklist were marked as done or not done\n",
+        "name": "checklist_tasks_done",
+        "required": false
+      },
+      {
+        "type": "ChecklistTasksAdded",
+        "description": "Service message: tasks were added to a checklist",
+        "html_description": "<td><em>Optional</em>. Service message: tasks were added to a checklist</td>",
+        "rst_description": "*Optional*. Service message: tasks were added to a checklist\n",
+        "name": "checklist_tasks_added",
+        "required": false
+      },
+      {
+        "type": "DirectMessagePriceChanged",
+        "description": "Service message: the price for paid messages in the corresponding direct messages chat of a channel has changed",
+        "html_description": "<td><em>Optional</em>. Service message: the price for paid messages in the corresponding direct messages chat of a channel has changed</td>",
+        "rst_description": "*Optional*. Service message: the price for paid messages in the corresponding direct messages chat of a channel has changed\n",
+        "name": "direct_message_price_changed",
         "required": false
       },
       {

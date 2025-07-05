@@ -336,11 +336,9 @@ class InlineKeyboardBuilder(KeyboardBuilder[InlineKeyboardButton]):
             ),
         )
 
-    if TYPE_CHECKING:
-
-        def as_markup(self, **kwargs: Any) -> InlineKeyboardMarkup:
-            """Construct an InlineKeyboardMarkup"""
-            ...
+    def as_markup(self, **kwargs: Any) -> InlineKeyboardMarkup:
+        """Construct an InlineKeyboardMarkup"""
+        return cast(InlineKeyboardMarkup, super().as_markup(**kwargs))
 
     def __init__(self, markup: Optional[List[List[InlineKeyboardButton]]] = None) -> None:
         super().__init__(button_type=InlineKeyboardButton, markup=markup)
@@ -401,9 +399,9 @@ class ReplyKeyboardBuilder(KeyboardBuilder[KeyboardButton]):
             ),
         )
 
-    if TYPE_CHECKING:
-
-        def as_markup(self, **kwargs: Any) -> ReplyKeyboardMarkup: ...
+    def as_markup(self, **kwargs: Any) -> ReplyKeyboardMarkup:
+        """Construct a ReplyKeyboardMarkup"""
+        return cast(ReplyKeyboardMarkup, super().as_markup(**kwargs))
 
     def __init__(self, markup: Optional[List[List[KeyboardButton]]] = None) -> None:
         super().__init__(button_type=KeyboardButton, markup=markup)

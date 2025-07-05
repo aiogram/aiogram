@@ -19,17 +19,17 @@ class GetBusinessAccountGifts(TelegramMethod[OwnedGifts]):
     business_connection_id: str
     """Unique identifier of the business connection"""
     exclude_unsaved: Optional[bool] = None
-    """Pass True to exclude gifts that aren't saved to the account's profile page"""
+    """Pass :code:`True` to exclude gifts that aren't saved to the account's profile page"""
     exclude_saved: Optional[bool] = None
-    """Pass True to exclude gifts that are saved to the account's profile page"""
+    """Pass :code:`True` to exclude gifts that are saved to the account's profile page"""
     exclude_unlimited: Optional[bool] = None
-    """Pass True to exclude gifts that can be purchased an unlimited number of times"""
+    """Pass :code:`True` to exclude gifts that can be purchased an unlimited number of times"""
     exclude_limited: Optional[bool] = None
-    """Pass True to exclude gifts that can be purchased a limited number of times"""
+    """Pass :code:`True` to exclude gifts that can be purchased a limited number of times"""
     exclude_unique: Optional[bool] = None
-    """Pass True to exclude unique gifts"""
+    """Pass :code:`True` to exclude unique gifts"""
     sort_by_price: Optional[bool] = None
-    """Pass True to sort results by gift price instead of send date. Sorting is applied before pagination."""
+    """Pass :code:`True` to sort results by gift price instead of send date. Sorting is applied before pagination."""
     offset: Optional[str] = None
     """Offset of the first entry to return as received from the previous request; use empty string to get the first chunk of results"""
     limit: Optional[int] = None

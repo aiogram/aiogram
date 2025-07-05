@@ -65,9 +65,9 @@ class ChatMemberUpdated(TelegramObject):
     invite_link: Optional[ChatInviteLink] = None
     """*Optional*. Chat invite link, which was used by the user to join the chat; for joining by invite link events only."""
     via_join_request: Optional[bool] = None
-    """*Optional*. True, if the user joined the chat after sending a direct join request without using an invite link and being approved by an administrator"""
+    """*Optional*. :code:`True`, if the user joined the chat after sending a direct join request without using an invite link and being approved by an administrator"""
     via_chat_folder_invite_link: Optional[bool] = None
-    """*Optional*. True, if the user joined the chat via a chat folder invite link"""
+    """*Optional*. :code:`True`, if the user joined the chat via a chat folder invite link"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!
@@ -908,7 +908,7 @@ class ChatMemberUpdated(TelegramObject):
         Source: https://core.telegram.org/bots/api#sendpoll
 
         :param question: Poll question, 1-300 characters
-        :param options: A JSON-serialized list of 2-10 answer options
+        :param options: A JSON-serialized list of 2-12 answer options
         :param business_connection_id: Unique identifier of the business connection on behalf of which the message will be sent
         :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
         :param question_parse_mode: Mode for parsing entities in the question. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details. Currently, only custom emoji entities are allowed

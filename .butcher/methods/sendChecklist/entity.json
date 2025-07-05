@@ -1,0 +1,81 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available methods",
+    "anchor": "available-methods"
+  },
+  "object": {
+    "anchor": "sendchecklist",
+    "name": "sendChecklist",
+    "description": "Use this method to send a checklist on behalf of a connected business account. On success, the sent Message is returned.",
+    "html_description": "<p>Use this method to send a checklist on behalf of a connected business account. On success, the sent <a href=\"#message\">Message</a> is returned.</p>",
+    "rst_description": "Use this method to send a checklist on behalf of a connected business account. On success, the sent :class:`aiogram.types.message.Message` is returned.",
+    "annotations": [
+      {
+        "type": "String",
+        "required": true,
+        "description": "Unique identifier of the business connection on behalf of which the message will be sent",
+        "html_description": "<td>Unique identifier of the business connection on behalf of which the message will be sent</td>",
+        "rst_description": "Unique identifier of the business connection on behalf of which the message will be sent\n",
+        "name": "business_connection_id"
+      },
+      {
+        "type": "Integer",
+        "required": true,
+        "description": "Unique identifier for the target chat",
+        "html_description": "<td>Unique identifier for the target chat</td>",
+        "rst_description": "Unique identifier for the target chat\n",
+        "name": "chat_id"
+      },
+      {
+        "type": "InputChecklist",
+        "required": true,
+        "description": "A JSON-serialized object for the checklist to send",
+        "html_description": "<td>A JSON-serialized object for the checklist to send</td>",
+        "rst_description": "A JSON-serialized object for the checklist to send\n",
+        "name": "checklist"
+      },
+      {
+        "type": "Boolean",
+        "required": false,
+        "description": "Sends the message silently. Users will receive a notification with no sound.",
+        "html_description": "<td>Sends the message silently. Users will receive a notification with no sound.</td>",
+        "rst_description": "Sends the message silently. Users will receive a notification with no sound.\n",
+        "name": "disable_notification"
+      },
+      {
+        "type": "Boolean",
+        "required": false,
+        "description": "Protects the contents of the sent message from forwarding and saving",
+        "html_description": "<td>Protects the contents of the sent message from forwarding and saving</td>",
+        "rst_description": "Protects the contents of the sent message from forwarding and saving\n",
+        "name": "protect_content"
+      },
+      {
+        "type": "String",
+        "required": false,
+        "description": "Unique identifier of the message effect to be added to the message",
+        "html_description": "<td>Unique identifier of the message effect to be added to the message</td>",
+        "rst_description": "Unique identifier of the message effect to be added to the message\n",
+        "name": "message_effect_id"
+      },
+      {
+        "type": "ReplyParameters",
+        "required": false,
+        "description": "A JSON-serialized object for description of the message to reply to",
+        "html_description": "<td>A JSON-serialized object for description of the message to reply to</td>",
+        "rst_description": "A JSON-serialized object for description of the message to reply to\n",
+        "name": "reply_parameters"
+      },
+      {
+        "type": "InlineKeyboardMarkup",
+        "required": false,
+        "description": "A JSON-serialized object for an inline keyboard",
+        "html_description": "<td>A JSON-serialized object for an inline keyboard</td>",
+        "rst_description": "A JSON-serialized object for an inline keyboard\n",
+        "name": "reply_markup"
+      }
+    ],
+    "category": "methods"
+  }
+}

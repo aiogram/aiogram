@@ -58,6 +58,7 @@ from ..methods import (
     EditForumTopic,
     EditGeneralForumTopic,
     EditMessageCaption,
+    EditMessageChecklist,
     EditMessageLiveLocation,
     EditMessageMedia,
     EditMessageReplyMarkup,
@@ -86,6 +87,7 @@ from ..methods import (
     GetMyDescription,
     GetMyName,
     GetMyShortDescription,
+    GetMyStarBalance,
     GetStarTransactions,
     GetStickerSet,
     GetUpdates,
@@ -113,6 +115,7 @@ from ..methods import (
     SendAnimation,
     SendAudio,
     SendChatAction,
+    SendChecklist,
     SendContact,
     SendDice,
     SendDocument,
@@ -198,6 +201,7 @@ from ..types import (
     InlineKeyboardMarkup,
     InlineQueryResultsButton,
     InlineQueryResultUnion,
+    InputChecklist,
     InputFile,
     InputFileUnion,
     InputMediaUnion,
@@ -2009,7 +2013,7 @@ class Bot:
         :param chat_id: Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
         :param user_id: Unique identifier of the target user
         :param is_anonymous: Pass :code:`True` if the administrator's presence in the chat is hidden
-        :param can_manage_chat: Pass :code:`True` if the administrator can access the chat event log, get boost list, see hidden supergroup and channel members, report spam messages and ignore slow mode. Implied by any other administrator privilege.
+        :param can_manage_chat: Pass :code:`True` if the administrator can access the chat event log, get boost list, see hidden supergroup and channel members, report spam messages, ignore slow mode, and send messages to the chat without paying Telegram Stars. Implied by any other administrator privilege.
         :param can_delete_messages: Pass :code:`True` if the administrator can delete messages of other users
         :param can_manage_video_chats: Pass :code:`True` if the administrator can manage video chats
         :param can_restrict_members: Pass :code:`True` if the administrator can restrict, ban or unban chat members, or access supergroup statistics
@@ -2019,7 +2023,7 @@ class Bot:
         :param can_post_stories: Pass :code:`True` if the administrator can post stories to the chat
         :param can_edit_stories: Pass :code:`True` if the administrator can edit stories posted by other users, post stories to the chat page, pin chat stories, and access the chat's story archive
         :param can_delete_stories: Pass :code:`True` if the administrator can delete stories posted by other users
-        :param can_post_messages: Pass :code:`True` if the administrator can post messages in the channel, or access channel statistics; for channels only
+        :param can_post_messages: Pass :code:`True` if the administrator can post messages in the channel, approve suggested posts, or access channel statistics; for channels only
         :param can_edit_messages: Pass :code:`True` if the administrator can edit messages of other users and can pin messages; for channels only
         :param can_pin_messages: Pass :code:`True` if the administrator can pin messages; for supergroups only
         :param can_manage_topics: Pass :code:`True` if the user is allowed to create, rename, close, and reopen forum topics; for supergroups only
@@ -2955,7 +2959,7 @@ class Bot:
 
         :param chat_id: Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
         :param question: Poll question, 1-300 characters
-        :param options: A JSON-serialized list of 2-10 answer options
+        :param options: A JSON-serialized list of 2-12 answer options
         :param business_connection_id: Unique identifier of the business connection on behalf of which the message will be sent
         :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
         :param question_parse_mode: Mode for parsing entities in the question. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details. Currently, only custom emoji entities are allowed
@@ -4943,7 +4947,7 @@ class Bot:
         request_timeout: Optional[int] = None,
     ) -> bool:
         """
-        Delete messages on behalf of a business account. Requires the *can_delete_outgoing_messages* business bot right to delete messages sent by the bot itself, or the *can_delete_all_messages* business bot right to delete any message. Returns :code:`True` on success.
+        Delete messages on behalf of a business account. Requires the *can_delete_sent_messages* business bot right to delete messages sent by the bot itself, or the *can_delete_all_messages* business bot right to delete any message. Returns :code:`True` on success.
 
         Source: https://core.telegram.org/bots/api#deletebusinessmessages
 
@@ -5039,12 +5043,12 @@ class Bot:
         Source: https://core.telegram.org/bots/api#getbusinessaccountgifts
 
         :param business_connection_id: Unique identifier of the business connection
-        :param exclude_unsaved: Pass True to exclude gifts that aren't saved to the account's profile page
-        :param exclude_saved: Pass True to exclude gifts that are saved to the account's profile page
-        :param exclude_unlimited: Pass True to exclude gifts that can be purchased an unlimited number of times
-        :param exclude_limited: Pass True to exclude gifts that can be purchased a limited number of times
-        :param exclude_unique: Pass True to exclude unique gifts
-        :param sort_by_price: Pass True to sort results by gift price instead of send date. Sorting is applied before pagination.
+        :param exclude_unsaved: Pass :code:`True` to exclude gifts that aren't saved to the account's profile page
+        :param exclude_saved: Pass :code:`True` to exclude gifts that are saved to the account's profile page
+        :param exclude_unlimited: Pass :code:`True` to exclude gifts that can be purchased an unlimited number of times
+        :param exclude_limited: Pass :code:`True` to exclude gifts that can be purchased a limited number of times
+        :param exclude_unique: Pass :code:`True` to exclude unique gifts
+        :param sort_by_price: Pass :code:`True` to sort results by gift price instead of send date. Sorting is applied before pagination.
         :param offset: Offset of the first entry to return as received from the previous request; use empty string to get the first chunk of results
         :param limit: The maximum number of gifts to be returned; 1-100. Defaults to 100
         :param request_timeout: Request timeout
@@ -5201,7 +5205,7 @@ class Bot:
         Source: https://core.telegram.org/bots/api#removebusinessaccountprofilephoto
 
         :param business_connection_id: Unique identifier of the business connection
-        :param is_public: Pass True to remove the public photo, which is visible even if the main photo is hidden by the business account's privacy settings. After the main photo is removed, the previous profile photo (if present) becomes the main photo.
+        :param is_public: Pass :code:`True` to remove the public photo, which is visible even if the main photo is hidden by the business account's privacy settings. After the main photo is removed, the previous profile photo (if present) becomes the main photo.
         :param request_timeout: Request timeout
         :return: Returns :code:`True` on success.
         """
@@ -5248,7 +5252,7 @@ class Bot:
         Source: https://core.telegram.org/bots/api#setbusinessaccountgiftsettings
 
         :param business_connection_id: Unique identifier of the business connection
-        :param show_gift_button: Pass True, if a button for sending a gift to the user or by the business account must always be shown in the input field
+        :param show_gift_button: Pass :code:`True`, if a button for sending a gift to the user or by the business account must always be shown in the input field
         :param accepted_gift_types: Types of gifts accepted by the business account
         :param request_timeout: Request timeout
         :return: Returns :code:`True` on success.
@@ -5301,7 +5305,7 @@ class Bot:
 
         :param business_connection_id: Unique identifier of the business connection
         :param photo: The new profile photo to set
-        :param is_public: Pass True to set the public photo, which will be visible even if the main photo is hidden by the business account's privacy settings. An account can have only one public photo.
+        :param is_public: Pass :code:`True` to set the public photo, which will be visible even if the main photo is hidden by the business account's privacy settings. An account can have only one public photo.
         :param request_timeout: Request timeout
         :return: Returns :code:`True` on success.
         """
@@ -5403,7 +5407,7 @@ class Bot:
 
         :param business_connection_id: Unique identifier of the business connection
         :param owned_gift_id: Unique identifier of the regular gift that should be upgraded to a unique one
-        :param keep_original_details: Pass True to keep the original gift text, sender and receiver in the upgraded gift
+        :param keep_original_details: Pass :code:`True` to keep the original gift text, sender and receiver in the upgraded gift
         :param star_count: The amount of Telegram Stars that will be paid for the upgrade from the business account balance. If :code:`gift.prepaid_upgrade_star_count > 0`, then pass 0, otherwise, the *can_transfer_stars* business bot right is required and :code:`gift.upgrade_star_count` must be passed.
         :param request_timeout: Request timeout
         :return: Returns :code:`True` on success.
@@ -5414,5 +5418,94 @@ class Bot:
             owned_gift_id=owned_gift_id,
             keep_original_details=keep_original_details,
             star_count=star_count,
+        )
+        return await self(call, request_timeout=request_timeout)
+
+    async def edit_message_checklist(
+        self,
+        business_connection_id: str,
+        chat_id: int,
+        message_id: int,
+        checklist: InputChecklist,
+        reply_markup: Optional[InlineKeyboardMarkup] = None,
+        request_timeout: Optional[int] = None,
+    ) -> Message:
+        """
+        Use this method to edit a checklist on behalf of a connected business account. On success, the edited :class:`aiogram.types.message.Message` is returned.
+
+        Source: https://core.telegram.org/bots/api#editmessagechecklist
+
+        :param business_connection_id: Unique identifier of the business connection on behalf of which the message will be sent
+        :param chat_id: Unique identifier for the target chat
+        :param message_id: Unique identifier for the target message
+        :param checklist: A JSON-serialized object for the new checklist
+        :param reply_markup: A JSON-serialized object for the new inline keyboard for the message
+        :param request_timeout: Request timeout
+        :return: On success, the edited :class:`aiogram.types.message.Message` is returned.
+        """
+
+        call = EditMessageChecklist(
+            business_connection_id=business_connection_id,
+            chat_id=chat_id,
+            message_id=message_id,
+            checklist=checklist,
+            reply_markup=reply_markup,
+        )
+        return await self(call, request_timeout=request_timeout)
+
+    async def get_my_star_balance(
+        self,
+        request_timeout: Optional[int] = None,
+    ) -> StarAmount:
+        """
+        A method to get the current Telegram Stars balance of the bot. Requires no parameters. On success, returns a :class:`aiogram.types.star_amount.StarAmount` object.
+
+        Source: https://core.telegram.org/bots/api#getmystarbalance
+
+        :param request_timeout: Request timeout
+        :return: On success, returns a :class:`aiogram.types.star_amount.StarAmount` object.
+        """
+
+        call = GetMyStarBalance()
+        return await self(call, request_timeout=request_timeout)
+
+    async def send_checklist(
+        self,
+        business_connection_id: str,
+        chat_id: int,
+        checklist: InputChecklist,
+        disable_notification: Optional[bool] = None,
+        protect_content: Optional[bool] = None,
+        message_effect_id: Optional[str] = None,
+        reply_parameters: Optional[ReplyParameters] = None,
+        reply_markup: Optional[InlineKeyboardMarkup] = None,
+        request_timeout: Optional[int] = None,
+    ) -> Message:
+        """
+        Use this method to send a checklist on behalf of a connected business account. On success, the sent :class:`aiogram.types.message.Message` is returned.
+
+        Source: https://core.telegram.org/bots/api#sendchecklist
+
+        :param business_connection_id: Unique identifier of the business connection on behalf of which the message will be sent
+        :param chat_id: Unique identifier for the target chat
+        :param checklist: A JSON-serialized object for the checklist to send
+        :param disable_notification: Sends the message silently. Users will receive a notification with no sound.
+        :param protect_content: Protects the contents of the sent message from forwarding and saving
+        :param message_effect_id: Unique identifier of the message effect to be added to the message
+        :param reply_parameters: A JSON-serialized object for description of the message to reply to
+        :param reply_markup: A JSON-serialized object for an inline keyboard
+        :param request_timeout: Request timeout
+        :return: On success, the sent :class:`aiogram.types.message.Message` is returned.
+        """
+
+        call = SendChecklist(
+            business_connection_id=business_connection_id,
+            chat_id=chat_id,
+            checklist=checklist,
+            disable_notification=disable_notification,
+            protect_content=protect_content,
+            message_effect_id=message_effect_id,
+            reply_parameters=reply_parameters,
+            reply_markup=reply_markup,
         )
         return await self(call, request_timeout=request_timeout)

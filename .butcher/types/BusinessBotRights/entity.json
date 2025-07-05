@@ -14,17 +14,113 @@
       {
         "type": "True",
         "description": "True, if the bot can send and edit messages in the private chats that had incoming messages in the last 24 hours",
-        "html_description": "<td><em>Optional</em>. True, if the bot can send and edit messages in the private chats that had incoming messages in the last 24 hours</td>",
-        "rst_description": "*Optional*. True, if the bot can send and edit messages in the private chats that had incoming messages in the last 24 hours\n",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the bot can send and edit messages in the private chats that had incoming messages in the last 24 hours</td>",
+        "rst_description": "*Optional*. :code:`True`, if the bot can send and edit messages in the private chats that had incoming messages in the last 24 hours\n",
         "name": "can_reply",
         "required": false
       },
       {
         "type": "True",
         "description": "True, if the bot can mark incoming private messages as read",
-        "html_description": "<td><em>Optional</em>. True, if the bot can mark incoming private messages as read</td>",
-        "rst_description": "*Optional*. True, if the bot can mark incoming private messages as read\n",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the bot can mark incoming private messages as read</td>",
+        "rst_description": "*Optional*. :code:`True`, if the bot can mark incoming private messages as read\n",
         "name": "can_read_messages",
+        "required": false
+      },
+      {
+        "type": "True",
+        "description": "True, if the bot can delete messages sent by the bot",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the bot can delete messages sent by the bot</td>",
+        "rst_description": "*Optional*. :code:`True`, if the bot can delete messages sent by the bot\n",
+        "name": "can_delete_sent_messages",
+        "required": false
+      },
+      {
+        "type": "True",
+        "description": "True, if the bot can delete all private messages in managed chats",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the bot can delete all private messages in managed chats</td>",
+        "rst_description": "*Optional*. :code:`True`, if the bot can delete all private messages in managed chats\n",
+        "name": "can_delete_all_messages",
+        "required": false
+      },
+      {
+        "type": "True",
+        "description": "True, if the bot can edit the first and last name of the business account",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the bot can edit the first and last name of the business account</td>",
+        "rst_description": "*Optional*. :code:`True`, if the bot can edit the first and last name of the business account\n",
+        "name": "can_edit_name",
+        "required": false
+      },
+      {
+        "type": "True",
+        "description": "True, if the bot can edit the bio of the business account",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the bot can edit the bio of the business account</td>",
+        "rst_description": "*Optional*. :code:`True`, if the bot can edit the bio of the business account\n",
+        "name": "can_edit_bio",
+        "required": false
+      },
+      {
+        "type": "True",
+        "description": "True, if the bot can edit the profile photo of the business account",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the bot can edit the profile photo of the business account</td>",
+        "rst_description": "*Optional*. :code:`True`, if the bot can edit the profile photo of the business account\n",
+        "name": "can_edit_profile_photo",
+        "required": false
+      },
+      {
+        "type": "True",
+        "description": "True, if the bot can edit the username of the business account",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the bot can edit the username of the business account</td>",
+        "rst_description": "*Optional*. :code:`True`, if the bot can edit the username of the business account\n",
+        "name": "can_edit_username",
+        "required": false
+      },
+      {
+        "type": "True",
+        "description": "True, if the bot can change the privacy settings pertaining to gifts for the business account",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the bot can change the privacy settings pertaining to gifts for the business account</td>",
+        "rst_description": "*Optional*. :code:`True`, if the bot can change the privacy settings pertaining to gifts for the business account\n",
+        "name": "can_change_gift_settings",
+        "required": false
+      },
+      {
+        "type": "True",
+        "description": "True, if the bot can view gifts and the amount of Telegram Stars owned by the business account",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the bot can view gifts and the amount of Telegram Stars owned by the business account</td>",
+        "rst_description": "*Optional*. :code:`True`, if the bot can view gifts and the amount of Telegram Stars owned by the business account\n",
+        "name": "can_view_gifts_and_stars",
+        "required": false
+      },
+      {
+        "type": "True",
+        "description": "True, if the bot can convert regular gifts owned by the business account to Telegram Stars",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the bot can convert regular gifts owned by the business account to Telegram Stars</td>",
+        "rst_description": "*Optional*. :code:`True`, if the bot can convert regular gifts owned by the business account to Telegram Stars\n",
+        "name": "can_convert_gifts_to_stars",
+        "required": false
+      },
+      {
+        "type": "True",
+        "description": "True, if the bot can transfer and upgrade gifts owned by the business account",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the bot can transfer and upgrade gifts owned by the business account</td>",
+        "rst_description": "*Optional*. :code:`True`, if the bot can transfer and upgrade gifts owned by the business account\n",
+        "name": "can_transfer_and_upgrade_gifts",
+        "required": false
+      },
+      {
+        "type": "True",
+        "description": "True, if the bot can transfer Telegram Stars received by the business account to its own account, or use them to upgrade and transfer gifts",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the bot can transfer Telegram Stars received by the business account to its own account, or use them to upgrade and transfer gifts</td>",
+        "rst_description": "*Optional*. :code:`True`, if the bot can transfer Telegram Stars received by the business account to its own account, or use them to upgrade and transfer gifts\n",
+        "name": "can_transfer_stars",
+        "required": false
+      },
+      {
+        "type": "True",
+        "description": "True, if the bot can post, edit and delete stories on behalf of the business account",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the bot can post, edit and delete stories on behalf of the business account</td>",
+        "rst_description": "*Optional*. :code:`True`, if the bot can post, edit and delete stories on behalf of the business account\n",
+        "name": "can_manage_stories",
         "required": false
       },
       {
@@ -33,95 +129,11 @@
         "html_description": "<td><em>Optional</em>. True, if the bot can delete messages sent by the bot</td>",
         "rst_description": "*Optional*. True, if the bot can delete messages sent by the bot\n",
         "name": "can_delete_outgoing_messages",
-        "required": false
-      },
-      {
-        "type": "True",
-        "description": "True, if the bot can delete all private messages in managed chats",
-        "html_description": "<td><em>Optional</em>. True, if the bot can delete all private messages in managed chats</td>",
-        "rst_description": "*Optional*. True, if the bot can delete all private messages in managed chats\n",
-        "name": "can_delete_all_messages",
-        "required": false
-      },
-      {
-        "type": "True",
-        "description": "True, if the bot can edit the first and last name of the business account",
-        "html_description": "<td><em>Optional</em>. True, if the bot can edit the first and last name of the business account</td>",
-        "rst_description": "*Optional*. True, if the bot can edit the first and last name of the business account\n",
-        "name": "can_edit_name",
-        "required": false
-      },
-      {
-        "type": "True",
-        "description": "True, if the bot can edit the bio of the business account",
-        "html_description": "<td><em>Optional</em>. True, if the bot can edit the bio of the business account</td>",
-        "rst_description": "*Optional*. True, if the bot can edit the bio of the business account\n",
-        "name": "can_edit_bio",
-        "required": false
-      },
-      {
-        "type": "True",
-        "description": "True, if the bot can edit the profile photo of the business account",
-        "html_description": "<td><em>Optional</em>. True, if the bot can edit the profile photo of the business account</td>",
-        "rst_description": "*Optional*. True, if the bot can edit the profile photo of the business account\n",
-        "name": "can_edit_profile_photo",
-        "required": false
-      },
-      {
-        "type": "True",
-        "description": "True, if the bot can edit the username of the business account",
-        "html_description": "<td><em>Optional</em>. True, if the bot can edit the username of the business account</td>",
-        "rst_description": "*Optional*. True, if the bot can edit the username of the business account\n",
-        "name": "can_edit_username",
-        "required": false
-      },
-      {
-        "type": "True",
-        "description": "True, if the bot can change the privacy settings pertaining to gifts for the business account",
-        "html_description": "<td><em>Optional</em>. True, if the bot can change the privacy settings pertaining to gifts for the business account</td>",
-        "rst_description": "*Optional*. True, if the bot can change the privacy settings pertaining to gifts for the business account\n",
-        "name": "can_change_gift_settings",
-        "required": false
-      },
-      {
-        "type": "True",
-        "description": "True, if the bot can view gifts and the amount of Telegram Stars owned by the business account",
-        "html_description": "<td><em>Optional</em>. True, if the bot can view gifts and the amount of Telegram Stars owned by the business account</td>",
-        "rst_description": "*Optional*. True, if the bot can view gifts and the amount of Telegram Stars owned by the business account\n",
-        "name": "can_view_gifts_and_stars",
-        "required": false
-      },
-      {
-        "type": "True",
-        "description": "True, if the bot can convert regular gifts owned by the business account to Telegram Stars",
-        "html_description": "<td><em>Optional</em>. True, if the bot can convert regular gifts owned by the business account to Telegram Stars</td>",
-        "rst_description": "*Optional*. True, if the bot can convert regular gifts owned by the business account to Telegram Stars\n",
-        "name": "can_convert_gifts_to_stars",
-        "required": false
-      },
-      {
-        "type": "True",
-        "description": "True, if the bot can transfer and upgrade gifts owned by the business account",
-        "html_description": "<td><em>Optional</em>. True, if the bot can transfer and upgrade gifts owned by the business account</td>",
-        "rst_description": "*Optional*. True, if the bot can transfer and upgrade gifts owned by the business account\n",
-        "name": "can_transfer_and_upgrade_gifts",
-        "required": false
-      },
-      {
-        "type": "True",
-        "description": "True, if the bot can transfer Telegram Stars received by the business account to its own account, or use them to upgrade and transfer gifts",
-        "html_description": "<td><em>Optional</em>. True, if the bot can transfer Telegram Stars received by the business account to its own account, or use them to upgrade and transfer gifts</td>",
-        "rst_description": "*Optional*. True, if the bot can transfer Telegram Stars received by the business account to its own account, or use them to upgrade and transfer gifts\n",
-        "name": "can_transfer_stars",
-        "required": false
-      },
-      {
-        "type": "True",
-        "description": "True, if the bot can post, edit and delete stories on behalf of the business account",
-        "html_description": "<td><em>Optional</em>. True, if the bot can post, edit and delete stories on behalf of the business account</td>",
-        "rst_description": "*Optional*. True, if the bot can post, edit and delete stories on behalf of the business account\n",
-        "name": "can_manage_stories",
-        "required": false
+        "required": false,
+        "deprecated": {
+          "version": "9.1",
+          "release_date": "2025-07-03"
+        }
       }
     ],
     "category": "types"

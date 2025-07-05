@@ -45,9 +45,9 @@
       },
       {
         "type": "Boolean",
-        "description": "True, if the administrator can access the chat event log, get boost list, see hidden supergroup and channel members, report spam messages and ignore slow mode. Implied by any other administrator privilege.",
-        "html_description": "<td><em>True</em>, if the administrator can access the chat event log, get boost list, see hidden supergroup and channel members, report spam messages and ignore slow mode. Implied by any other administrator privilege.</td>",
-        "rst_description": ":code:`True`, if the administrator can access the chat event log, get boost list, see hidden supergroup and channel members, report spam messages and ignore slow mode. Implied by any other administrator privilege.\n",
+        "description": "True, if the administrator can access the chat event log, get boost list, see hidden supergroup and channel members, report spam messages, ignore slow mode, and send messages to the chat without paying Telegram Stars. Implied by any other administrator privilege.",
+        "html_description": "<td><em>True</em>, if the administrator can access the chat event log, get boost list, see hidden supergroup and channel members, report spam messages, ignore slow mode, and send messages to the chat without paying Telegram Stars. Implied by any other administrator privilege.</td>",
+        "rst_description": ":code:`True`, if the administrator can access the chat event log, get boost list, see hidden supergroup and channel members, report spam messages, ignore slow mode, and send messages to the chat without paying Telegram Stars. Implied by any other administrator privilege.\n",
         "name": "can_manage_chat",
         "required": true
       },
@@ -125,9 +125,9 @@
       },
       {
         "type": "Boolean",
-        "description": "True, if the administrator can post messages in the channel, or access channel statistics; for channels only",
-        "html_description": "<td><em>Optional</em>. <em>True</em>, if the administrator can post messages in the channel, or access channel statistics; for channels only</td>",
-        "rst_description": "*Optional*. :code:`True`, if the administrator can post messages in the channel, or access channel statistics; for channels only\n",
+        "description": "True, if the administrator can post messages in the channel, approve suggested posts, or access channel statistics; for channels only",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the administrator can post messages in the channel, approve suggested posts, or access channel statistics; for channels only</td>",
+        "rst_description": "*Optional*. :code:`True`, if the administrator can post messages in the channel, approve suggested posts, or access channel statistics; for channels only\n",
         "name": "can_post_messages",
         "required": false
       },

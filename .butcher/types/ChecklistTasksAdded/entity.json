@@ -1,0 +1,33 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "checklisttasksadded",
+    "name": "ChecklistTasksAdded",
+    "description": "Describes a service message about tasks added to a checklist.",
+    "html_description": "<p>Describes a service message about tasks added to a checklist.</p>",
+    "rst_description": "Describes a service message about tasks added to a checklist.",
+    "annotations": [
+      {
+        "type": "Message",
+        "description": "Message containing the checklist to which the tasks were added. Note that the Message object in this field will not contain the reply_to_message field even if it itself is a reply.",
+        "html_description": "<td><em>Optional</em>. Message containing the checklist to which the tasks were added. Note that the Message object in this field will not contain the <em>reply_to_message</em> field even if it itself is a reply.</td>",
+        "rst_description": "*Optional*. Message containing the checklist to which the tasks were added. Note that the Message object in this field will not contain the *reply_to_message* field even if it itself is a reply.\n",
+        "name": "checklist_message",
+        "required": false
+      },
+      {
+        "type": "Array of ChecklistTask",
+        "description": "List of tasks added to the checklist",
+        "html_description": "<td>List of tasks added to the checklist</td>",
+        "rst_description": "List of tasks added to the checklist\n",
+        "name": "tasks",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

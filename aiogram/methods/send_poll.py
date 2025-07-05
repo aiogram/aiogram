@@ -32,7 +32,7 @@ class SendPoll(TelegramMethod[Message]):
     question: str
     """Poll question, 1-300 characters"""
     options: list[InputPollOptionUnion]
-    """A JSON-serialized list of 2-10 answer options"""
+    """A JSON-serialized list of 2-12 answer options"""
     business_connection_id: Optional[str] = None
     """Unique identifier of the business connection on behalf of which the message will be sent"""
     message_thread_id: Optional[int] = None
