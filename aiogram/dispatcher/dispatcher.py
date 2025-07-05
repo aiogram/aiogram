@@ -195,6 +195,7 @@ class Dispatcher(Router):
         polling_timeout: int = 30,
         backoff_config: BackoffConfig = DEFAULT_BACKOFF_CONFIG,
         allowed_updates: Optional[List[str]] = None,
+        polling_interval: float = 0,
     ) -> AsyncGenerator[Update, None]:
         """
         Endless updates reader with correctly handling any server-side or connection errors.
@@ -245,6 +246,8 @@ class Dispatcher(Router):
                 # All updates with update_id less than or equal to offset will be marked
                 # as confirmed on the server and will no longer be returned.
                 get_updates.offset = update.update_id + 1
+
+            await asyncio.sleep(polling_interval)
 
     async def _listen_update(self, update: Update, **kwargs: Any) -> Any:
         """
@@ -344,6 +347,7 @@ class Dispatcher(Router):
         backoff_config: BackoffConfig = DEFAULT_BACKOFF_CONFIG,
         allowed_updates: Optional[List[str]] = None,
         tasks_concurrency_limit: Optional[int] = None,
+        polling_interval: float = 0,
         **kwargs: Any,
     ) -> None:
         """
@@ -356,6 +360,7 @@ class Dispatcher(Router):
         :param allowed_updates: List of the update types you want your bot to receive
         :param tasks_concurrency_limit: Maximum number of concurrent updates to process
             (None = no limit), used only if handle_as_tasks is True
+        :param polling_interval: Time in seconds between requests for updates
         :param kwargs:
         :return:
         """
@@ -375,6 +380,7 @@ class Dispatcher(Router):
                 polling_timeout=polling_timeout,
                 backoff_config=backoff_config,
                 allowed_updates=allowed_updates,
+                polling_interval=polling_interval,
             ):
                 handle_update = self._process_update(bot=bot, update=update, **kwargs)
                 if handle_as_tasks:
@@ -503,6 +509,7 @@ class Dispatcher(Router):
         handle_signals: bool = True,
         close_bot_session: bool = True,
         tasks_concurrency_limit: Optional[int] = None,
+        polling_interval: float = 0,
         **kwargs: Any,
     ) -> None:
         """
@@ -518,6 +525,7 @@ class Dispatcher(Router):
         :param close_bot_session: close bot sessions on shutdown
         :param tasks_concurrency_limit: Maximum number of concurrent updates to process
             (None = no limit), used only if handle_as_tasks is True
+        :param polling_interval: Time in seconds between requests for updates
         :param kwargs: contextual data
         :return:
         """
@@ -574,6 +582,7 @@ class Dispatcher(Router):
                             backoff_config=backoff_config,
                             allowed_updates=allowed_updates,
                             tasks_concurrency_limit=tasks_concurrency_limit,
+                            polling_interval=polling_interval,
                             **workflow_data,
                         )
                     )
@@ -609,6 +618,7 @@ class Dispatcher(Router):
         handle_signals: bool = True,
         close_bot_session: bool = True,
         tasks_concurrency_limit: Optional[int] = None,
+        polling_interval: float = 0,
         **kwargs: Any,
     ) -> None:
         """
@@ -623,6 +633,7 @@ class Dispatcher(Router):
         :param close_bot_session: close bot sessions on shutdown
         :param tasks_concurrency_limit: Maximum number of concurrent updates to process
             (None = no limit), used only if handle_as_tasks is True
+        :param polling_interval: Time in seconds between requests for updates
         :param kwargs: contextual data
         :return:
         """
@@ -638,5 +649,6 @@ class Dispatcher(Router):
                     handle_signals=handle_signals,
                     close_bot_session=close_bot_session,
                     tasks_concurrency_limit=tasks_concurrency_limit,
+                    polling_interval=polling_interval
                 )
             )
