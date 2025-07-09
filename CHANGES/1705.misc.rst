@@ -1,0 +1,1 @@
+Migrated MongoStorage from relying on deprecated motor package to using new async PyMongo. Added BaseStorage, MemoryStorage, MongoStorage, RedisStorage to __init__.py file in aiogram/storage/fsm to improve developer experience.
