@@ -1,6 +1,6 @@
 from typing import Any, Dict, Mapping, Optional, cast
 
-from pymongo import AsyncMongoClient
+from motor.motor_asyncio import AsyncIOMotorClient
 
 from aiogram.exceptions import DataNotDictLikeError
 from aiogram.fsm.state import State
@@ -15,18 +15,18 @@ from aiogram.fsm.storage.base import (
 
 class MongoStorage(BaseStorage):
     """
-    MongoDB storage required :code:`PyMongo` package installed (:code:`pip install PyMongo`).
+    MongoDB storage required :code:`motor` package installed (:code:`pip install motor`)
     """
 
     def __init__(
         self,
-        client: AsyncMongoClient,
+        client: AsyncIOMotorClient,
         key_builder: Optional[KeyBuilder] = None,
         db_name: str = "aiogram_fsm",
         collection_name: str = "states_and_data",
     ) -> None:
         """
-        :param client: Instance of AsyncMongoClient
+        :param client: Instance of AsyncIOMotorClient
         :param key_builder: builder that helps to convert contextual key to string
         :param db_name: name of the MongoDB database for FSM
         :param collection_name: name of the collection for storing FSM states and data
@@ -46,13 +46,13 @@ class MongoStorage(BaseStorage):
         Create an instance of :class:`MongoStorage` with specifying the connection string
 
         :param url: for example :code:`mongodb://user:password@host:port`
-        :param connection_kwargs: see :code:`PyMongo` docs
+        :param connection_kwargs: see :code:`motor` docs
         :param kwargs: arguments to be passed to :class:`MongoStorage`
         :return: an instance of :class:`MongoStorage`
         """
         if connection_kwargs is None:
             connection_kwargs = {}
-        client = AsyncMongoClient(url, **connection_kwargs)
+        client = AsyncIOMotorClient(url, **connection_kwargs)
         return cls(client=client, **kwargs)
 
     async def close(self) -> None:
