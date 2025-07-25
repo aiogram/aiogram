@@ -13,7 +13,9 @@ PRODUCTION_PUBLIC_KEY = bytes.fromhex(
 TEST_PUBLIC_KEY = bytes.fromhex("40055058a4ee38156a06562e52eece92a771bcd8346a8c4615cb7376eddf72ec")
 
 
-def check_webapp_signature(bot_id: int, init_data: str, is_test: bool = False) -> bool:
+def check_webapp_signature(
+    bot_id: int, init_data: str, public_key_bytes: bytes = PRODUCTION_PUBLIC_KEY
+) -> bool:
     """
     Check incoming WebApp init data signature without bot token using only bot id.
 
@@ -21,7 +23,7 @@ def check_webapp_signature(bot_id: int, init_data: str, is_test: bool = False) -
 
     :param bot_id: Bot ID
     :param init_data: WebApp init data
-    :param is_test: Is test environment
+    :param public_key: Public key
     :return: True if signature is valid, False otherwise
     """
     try:
@@ -43,7 +45,6 @@ def check_webapp_signature(bot_id: int, init_data: str, is_test: bool = False) -
     padding = "=" * (-len(signature_b64) % 4)
     signature = base64.urlsafe_b64decode(signature_b64 + padding)
 
-    public_key_bytes = TEST_PUBLIC_KEY if is_test else PRODUCTION_PUBLIC_KEY
     public_key = Ed25519PublicKey.from_public_bytes(public_key_bytes)
 
     try:
@@ -54,16 +55,16 @@ def check_webapp_signature(bot_id: int, init_data: str, is_test: bool = False) -
 
 
 def safe_check_webapp_init_data_from_signature(
-    bot_id: int, init_data: str, is_test: bool = False
+    bot_id: int, init_data: str, public_key_bytes: bytes = PRODUCTION_PUBLIC_KEY
 ) -> WebAppInitData:
     """
     Validate raw WebApp init data using only bot id and return it as WebAppInitData object
 
     :param bot_id: bot id
     :param init_data: data from frontend to be parsed and validated
-    :param is_test: is test environment, default is False
+    :param public_key_bytes: public key
     :return: WebAppInitData object
     """
-    if check_webapp_signature(bot_id, init_data, is_test):
+    if check_webapp_signature(bot_id, init_data, public_key_bytes):
         return parse_webapp_init_data(init_data)
     raise ValueError("Invalid init data signature")
