@@ -16,6 +16,14 @@ async def test_get_storage_passing_only_url(mongo_server):
         pytest.fail(str(e))
 
 
+async def test_pymongo_storage_close_does_not_throw(mongo_server):
+    storage = PyMongoStorage.from_url(url=mongo_server)
+    try:
+        assert await storage.close() is None
+    except Exception as e:
+        pytest.fail(f"close() raised an exception: {e}")
+
+
 async def test_update_not_existing_data_with_empty_dictionary(
     mongo_storage: PyMongoStorage,
     storage_key: StorageKey,
