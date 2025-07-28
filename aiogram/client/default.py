@@ -55,6 +55,7 @@ class DefaultBotProperties:
     """Show link preview above text."""
     show_caption_above_media: Optional[bool] = None
     """Show caption above media."""
+    max_sends_per_secods: Optional[int] = None
 
     def __post_init__(self) -> None:
         has_any_link_preview_option = any(

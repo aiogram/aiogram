@@ -292,10 +292,10 @@ class Bot:
         if session is None:
             session = AiohttpSession()
         if default is None:
-            default = DefaultBotProperties()
+            default = DefaultBotProperties(max_sends_per_secods=29)
 
         self.session = session
-        self.limiter = PrioritySlidingWindowLimiter(max_calls=29, period=1.0)
+        self.limiter = PrioritySlidingWindowLimiter(max_calls=default.max_sends_per_secods, period=1.0)
 
         # Few arguments are completely removed in 3.7.0 version
         # Temporary solution to raise an error if user passed these arguments
