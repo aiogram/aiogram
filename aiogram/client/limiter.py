@@ -99,46 +99,36 @@ class TelegramRateLimiter:
         """Ожидание в соответствии с лимитами Telegram"""
         async with self.lock:
             now = time.monotonic()
-            
             # Очищаем устаревшие записи для всех лимитов
             self._cleanup_history(now)
-            
             # Проверяем все лимиты и ждем, если нужно
             while True:
                 can_proceed = True
                 sleep_time = 0
-                
                 # 1. Лимит для конкретного чата (1 сообщение/сек)
                 if len(self.per_chat_history.get(chat_id, deque())) >= self.PER_CHAT_LIMIT:
                     oldest = self.per_chat_history[chat_id][0]
                     sleep_time = max(sleep_time, self.PER_CHAT_PERIOD - (now - oldest) + 0.01)
                     can_proceed = False
-                
                 # 2. Лимит для групп (20 сообщений/минуту)
                 if chat_type in [ChatType.GROUP, ChatType.CHANNEL]:
                     if len(self.group_history) >= self.GROUP_LIMIT:
                         oldest = self.group_history[0]
                         sleep_time = max(sleep_time, self.GROUP_PERIOD - (now - oldest) + 0.01)
                         can_proceed = False
-                
                 # 3. Лимит для массовых рассылок (30 сообщений/сек)
                 if is_broadcast:
                     if len(self.broadcast_history) >= self.BROADCAST_LIMIT:
                         oldest = self.broadcast_history[0]
                         sleep_time = max(sleep_time, self.BROADCAST_PERIOD - (now - oldest) + 0.01)
                         can_proceed = False
-                
                 if can_proceed:
                     break
-                
                 # Добавляем небольшой jitter для избежания коллизий
-                jitter = random.uniform(0.05, 0.2)
-                await asyncio.sleep(max(0, sleep_time + jitter))
-                
+                await asyncio.sleep(max(0, sleep_time))
                 # Обновляем время после ожидания
                 now = time.monotonic()
                 self._cleanup_history(now)
-            
             # Записываем время вызова во все соответствующие истории
             self._record_call(now, chat_id, chat_type, is_broadcast)
 
@@ -151,15 +141,12 @@ class TelegramRateLimiter:
                 history.popleft()
             if len(history) == 0:
                 chats_to_remove.append(chat_id)
-        
         # Удаляем пустые очереди чатов
         for chat_id in chats_to_remove:
             del self.per_chat_history[chat_id]
-        
         # Очищаем историю групп
         while self.group_history and now - self.group_history[0] > self.GROUP_PERIOD:
             self.group_history.popleft()
-        
         # Очищаем историю массовых рассылок
         while self.broadcast_history and now - self.broadcast_history[0] > self.BROADCAST_PERIOD:
             self.broadcast_history.popleft()
@@ -170,11 +157,9 @@ class TelegramRateLimiter:
         if chat_id not in self.per_chat_history:
             self.per_chat_history[chat_id] = deque()
         self.per_chat_history[chat_id].append(timestamp)
-        
         # Запись для лимита групп, если это группа или канал
         if chat_type in [ChatType.GROUP, ChatType.CHANNEL]:
             self.group_history.append(timestamp)
-        
         # Запись для лимита массовых рассылок
         if is_broadcast:
             self.broadcast_history.append(timestamp)
