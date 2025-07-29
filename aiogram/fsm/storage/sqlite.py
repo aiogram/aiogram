@@ -1,5 +1,6 @@
-from aiosqlite import connect, Connection
 from typing import Any, Dict, Mapping, Optional, cast
+
+from aiosqlite import Connection, connect
 
 from aiogram.fsm.storage.base import (
     BaseEventIsolation,
@@ -45,10 +46,12 @@ class SqliteStorage(BaseStorage):
         :return: an instance of :class:`MongoStorage`
         """
         connection = await connect(db_filename)
-        await connection.execute(f'''CREATE TABLE IF NOT EXISTS aiogram_fsm (
+        await connection.execute(
+            f"""CREATE TABLE IF NOT EXISTS aiogram_fsm (
                                     id TEXT PRIMARY KEY,
                                     state BLOB,
-                                    data BLOB)''')
+                                    data BLOB)"""
+        )
         await connection.commit()
         return cls(connection=connection)
 
@@ -66,6 +69,3 @@ class SqliteStorage(BaseStorage):
 
     async def get_data(self, key: StorageKey) -> Dict[str, Any]:
         pass
-
-
-
