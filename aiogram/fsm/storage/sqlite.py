@@ -74,7 +74,17 @@ class SqliteStorage(BaseStorage):
         await self._connection.commit()
 
     async def get_state(self, key: StorageKey) -> Optional[str]:
-        pass
+        id = self._key_builder.build(key)
+
+        cursor = await self._connection.execute(
+            f"""SELECT state
+                FROM aiogram_fsm
+                WHERE id = ?""",
+            (id),
+        )
+
+        row = await cursor.fetchone()
+        return row[0] if row else None
 
     async def set_data(self, key: StorageKey, data: Mapping[str, Any]) -> None:
         pass
