@@ -32,10 +32,10 @@ class SqliteStorage(BaseStorage):
         if key_builder is None:
             key_builder = DefaultKeyBuilder()
         self._key_builder = key_builder
-        self.connection = connection
+        self._connection = connection
 
     @classmethod
-    async def connect(cls, db_filename: str = SQLITE_FILENAME) -> Connection:
+    async def connect(cls, db_filename: str = SQLITE_FILENAME) -> "SqliteStorage":
         """
         Create an instance of :class:`SqliteStorage` with specifying the DB filename
 
@@ -53,7 +53,7 @@ class SqliteStorage(BaseStorage):
         return cls(connection=connection)
 
     async def close(self) -> None:
-        await self.connection.close()
+        await self._connection.close()
 
     async def set_state(self, key: StorageKey, state: StateType = None) -> None:
         pass
