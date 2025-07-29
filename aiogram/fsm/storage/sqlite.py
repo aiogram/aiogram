@@ -2,6 +2,7 @@ from typing import Any, Dict, Mapping, Optional, cast
 
 from aiosqlite import Connection, connect
 
+from aiogram.fsm.state import State
 from aiogram.fsm.storage.base import (
     BaseEventIsolation,
     BaseStorage,
@@ -48,9 +49,9 @@ class SqliteStorage(BaseStorage):
         connection = await connect(db_filename)
         await connection.execute(
             f"""CREATE TABLE IF NOT EXISTS aiogram_fsm (
-                                    id TEXT PRIMARY KEY,
-                                    state BLOB,
-                                    data BLOB)"""
+                    id TEXT PRIMARY KEY,
+                    state TEXT,
+                    data BLOB)"""
         )
         await connection.commit()
         return cls(connection=connection)
@@ -59,7 +60,18 @@ class SqliteStorage(BaseStorage):
         await self._connection.close()
 
     async def set_state(self, key: StorageKey, state: StateType = None) -> None:
-        pass
+        id = self._key_builder.build(key)
+        state = cast(str, state.state if isinstance(state, State) else state)
+
+        await self._connection.execute(
+            f"""INSERT INTO aiogram_fsm (id, state)
+                VALUES (?, ?)
+                ON CONFLICT (id)
+                DO UPDATE SET state = ?""",
+            (id, state, state),
+        )
+
+        await self._connection.commit()
 
     async def get_state(self, key: StorageKey) -> Optional[str]:
         pass
