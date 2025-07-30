@@ -80,7 +80,7 @@ class SqliteStorage(BaseStorage):
             f"""SELECT state
                 FROM aiogram_fsm
                 WHERE id = ?""",
-            (id),
+            (id,),
         )
 
         row = await cursor.fetchone()

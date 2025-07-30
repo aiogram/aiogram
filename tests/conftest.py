@@ -114,11 +114,12 @@ async def memory_storage():
 
 @pytest.fixture()
 async def sqlite_storage():
-    storage = SqliteStorage.connect("aiogram_fsm_test.sqlite")
+    storage = await SqliteStorage.connect("aiogram_fsm_test.sqlite")
     try:
         yield storage
     finally:
         await storage.close()
+        Path("aiogram_fsm_test.sqlite").unlink()
 
 
 @pytest.fixture()
