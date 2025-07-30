@@ -1,7 +1,10 @@
+import json
+
 from typing import Any, Dict, Mapping, Optional, cast
 
 from aiosqlite import Connection, connect
 
+from aiogram.exceptions import DataNotDictLikeError
 from aiogram.fsm.state import State
 from aiogram.fsm.storage.base import (
     BaseEventIsolation,
@@ -51,7 +54,7 @@ class SqliteStorage(BaseStorage):
             f"""CREATE TABLE IF NOT EXISTS aiogram_fsm (
                     id TEXT PRIMARY KEY,
                     state TEXT,
-                    data BLOB)"""
+                    data TEXT)"""
         )
         await connection.commit()
         return cls(connection=connection)
@@ -87,7 +90,23 @@ class SqliteStorage(BaseStorage):
         return row[0] if row else None
 
     async def set_data(self, key: StorageKey, data: Mapping[str, Any]) -> None:
-        pass
+        if not isinstance(data, dict):
+            raise DataNotDictLikeError(
+                f"Data must be a dict or dict-like object, got {type(data).__name__}"
+            )
+
+        id = self._key_builder.build(key)
+        data_cell = json.dumps(data) if data else None
+
+        await self._connection.execute(
+            f"""INSERT INTO aiogram_fsm (id, data)
+                VALUES (?, ?)
+                ON CONFLICT (id)
+                DO UPDATE SET data = ?""",
+            (id, data_cell, data_cell),
+        )
+
+        await self._connection.commit()
 
     async def get_data(self, key: StorageKey) -> Dict[str, Any]:
         pass
