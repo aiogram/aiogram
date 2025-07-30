@@ -113,7 +113,7 @@ async def memory_storage():
 
 
 @pytest.fixture()
-async def squlite_storage():
+async def sqlite_storage():
     storage = SqliteStorage.connect("aiogram_fsm_test.sqlite")
     try:
         yield storage
