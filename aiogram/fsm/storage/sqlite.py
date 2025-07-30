@@ -1,5 +1,4 @@
 import json
-
 from typing import Any, Dict, Mapping, Optional, cast
 
 from aiosqlite import Connection, connect
@@ -109,4 +108,17 @@ class SqliteStorage(BaseStorage):
         await self._connection.commit()
 
     async def get_data(self, key: StorageKey) -> Dict[str, Any]:
-        pass
+        id = self._key_builder.build(key)
+        data_cell = {}
+
+        cursor = await self._connection.execute(
+            f"""SELECT data
+                FROM aiogram_fsm
+                WHERE id = ?""",
+            (id,),
+        )
+        row = await cursor.fetchone()
+
+        if row and row[0]:
+            data_cell = cast(Dict[str, Any], json.loads(row[0]))
+        return data_cell
