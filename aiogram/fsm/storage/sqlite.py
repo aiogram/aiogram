@@ -55,6 +55,8 @@ class SqliteStorage(BaseStorage):
                     state TEXT,
                     data TEXT)"""
         )
+        # db optimization on start
+        await connection.execute(f"""VACUUM""")
         await connection.commit()
         return cls(connection=connection)
 
@@ -65,13 +67,29 @@ class SqliteStorage(BaseStorage):
         id = self._key_builder.build(key)
         state = cast(str, state.state if isinstance(state, State) else state)
 
-        await self._connection.execute(
-            f"""INSERT INTO aiogram_fsm (id, state)
-                VALUES (?, ?)
-                ON CONFLICT (id)
-                DO UPDATE SET state = ?""",
-            (id, state, state),
+        cursor = await self._connection.execute(
+            f"""SELECT data
+                FROM aiogram_fsm
+                WHERE id = ?""",
+            (id,),
         )
+        row = await cursor.fetchone()
+
+        if not state and (not row or not row[0]):
+            # db clean up on the go
+            await self._connection.execute(
+                f"""DELETE FROM aiogram_fsm
+                    where id = ?""",
+                (id,),
+            )
+        else:
+            await self._connection.execute(
+                f"""INSERT INTO aiogram_fsm (id, state)
+                    VALUES (?, ?)
+                    ON CONFLICT (id)
+                    DO UPDATE SET state = ?""",
+                (id, state, state),
+            )
 
         await self._connection.commit()
 
@@ -97,13 +115,29 @@ class SqliteStorage(BaseStorage):
         id = self._key_builder.build(key)
         data_cell = json.dumps(data) if data else None
 
-        await self._connection.execute(
-            f"""INSERT INTO aiogram_fsm (id, data)
-                VALUES (?, ?)
-                ON CONFLICT (id)
-                DO UPDATE SET data = ?""",
-            (id, data_cell, data_cell),
+        cursor = await self._connection.execute(
+            f"""SELECT state
+                FROM aiogram_fsm
+                WHERE id = ?""",
+            (id,),
         )
+        row = await cursor.fetchone()
+
+        if not data and not row:
+            # db clean up on the go
+            await self._connection.execute(
+                f"""DELETE FROM aiogram_fsm
+                    where id = ?""",
+                (id,),
+            )
+        else:
+            await self._connection.execute(
+                f"""INSERT INTO aiogram_fsm (id, data)
+                    VALUES (?, ?)
+                    ON CONFLICT (id)
+                    DO UPDATE SET data = ?""",
+                (id, data_cell, data_cell),
+            )
 
         await self._connection.commit()
 
