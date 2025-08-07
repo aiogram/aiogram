@@ -47,7 +47,6 @@ dependencies = [
     "aiofiles>=23.2.1,<24.2",
     "certifi>=2023.7.22",
     "typing-extensions>=4.7.0,<=5.0",
-    "aiosqlite>=0.21.0",
 ]
 dynamic = ["version"]
 
@@ -65,6 +64,9 @@ redis = [
 ]
 mongo = [
     "motor>=3.3.2,<3.7.0",
+]
+sqlite = [
+    "aiosqlite>=0.21.0",
 ]
 proxy = [
     "aiohttp-socks~=0.8.3",
@@ -123,6 +125,7 @@ features = [
     "fast",
     "redis",
     "mongo",
+    "sqlite',
     "proxy",
     "i18n",
     "cli",
@@ -143,6 +146,7 @@ features = [
     "fast",
     "redis",
     "mongo",
+    "sqlite",
     "proxy",
     "i18n",
     "docs",
@@ -158,6 +162,7 @@ features = [
     "fast",
     "redis",
     "mongo",
+    "sqlite",
     "proxy",
     "i18n",
     "test",
@@ -176,6 +181,7 @@ features = [
     "fast",
     "redis",
     "mongo",
+    "sqlite",
     "proxy",
     "i18n",
     "test",
