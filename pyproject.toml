@@ -125,7 +125,7 @@ features = [
     "fast",
     "redis",
     "mongo",
-    "sqlite',
+    "sqlite",
     "proxy",
     "i18n",
     "cli",
