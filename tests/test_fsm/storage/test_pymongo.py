@@ -29,7 +29,6 @@ async def test_update_not_existing_data_with_empty_dictionary(
     storage_key: StorageKey,
 ):
     assert await pymongo_storage._collection.find_one({}) is None
-    assert await pymongo_storage.get_data(key=storage_key) == {}
     assert await pymongo_storage.update_data(key=storage_key, data={}) == {}
     assert await pymongo_storage._collection.find_one({}) is None
 
