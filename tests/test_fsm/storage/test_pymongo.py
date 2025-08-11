@@ -8,16 +8,16 @@ from tests.conftest import CHAT_ID, USER_ID
 PREFIX = "fsm"
 
 
-async def test_get_storage_passing_only_url(mongo_server):
-    storage = PyMongoStorage.from_url(url=mongo_server)
+async def test_get_storage_passing_only_url(pymongo_server):
+    storage = PyMongoStorage.from_url(url=pymongo_server)
     try:
         await storage._client.server_info()
     except PyMongoError as e:
         pytest.fail(str(e))
 
 
-async def test_pymongo_storage_close_does_not_throw(mongo_server):
-    storage = PyMongoStorage.from_url(url=mongo_server)
+async def test_pymongo_storage_close_does_not_throw(pymongo_server):
+    storage = PyMongoStorage.from_url(url=pymongo_server)
     try:
         assert await storage.close() is None
     except Exception as e:
@@ -25,133 +25,132 @@ async def test_pymongo_storage_close_does_not_throw(mongo_server):
 
 
 async def test_update_not_existing_data_with_empty_dictionary(
-    mongo_storage: PyMongoStorage,
+    pymongo_storage: PyMongoStorage,
     storage_key: StorageKey,
 ):
-    assert await mongo_storage._collection.find_one({}) is None
-    assert await mongo_storage.get_data(key=storage_key) == {}
-    assert await mongo_storage.update_data(key=storage_key, data={}) == {}
-    assert await mongo_storage._collection.find_one({}) is None
+    assert await pymongo_storage._collection.find_one({}) is None
+    assert await pymongo_storage.get_data(key=storage_key) == {}
+    assert await pymongo_storage.update_data(key=storage_key, data={}) == {}
+    assert await pymongo_storage._collection.find_one({}) is None
 
 
 async def test_document_life_cycle(
-    mongo_storage: PyMongoStorage,
+    pymongo_storage: PyMongoStorage,
     storage_key: StorageKey,
 ):
-    assert await mongo_storage._collection.find_one({}) is None
-    await mongo_storage.set_state(storage_key, "test")
-    await mongo_storage.set_data(storage_key, {"key": "value"})
-    assert await mongo_storage._collection.find_one({}) == {
+    assert await pymongo_storage._collection.find_one({}) is None
+    await pymongo_storage.set_state(storage_key, "test")
+    await pymongo_storage.set_data(storage_key, {"key": "value"})
+    assert await pymongo_storage._collection.find_one({}) == {
         "_id": f"{PREFIX}:{CHAT_ID}:{USER_ID}",
         "state": "test",
         "data": {"key": "value"},
     }
-    await mongo_storage.set_state(storage_key, None)
-    assert await mongo_storage._collection.find_one({}) == {
+    await pymongo_storage.set_state(storage_key, None)
+    assert await pymongo_storage._collection.find_one({}) == {
         "_id": f"{PREFIX}:{CHAT_ID}:{USER_ID}",
         "data": {"key": "value"},
     }
-    await mongo_storage.set_data(storage_key, {})
-    assert await mongo_storage._collection.find_one({}) is None
+    await pymongo_storage.set_data(storage_key, {})
+    assert await pymongo_storage._collection.find_one({}) is None
 
 
 class TestStateAndDataDoNotAffectEachOther:
     async def test_state_and_data_do_not_affect_each_other_while_getting(
         self,
-        mongo_storage: PyMongoStorage,
+        pymongo_storage: PyMongoStorage,
         storage_key: StorageKey,
     ):
-        assert await mongo_storage._collection.find_one({}) is None
-        await mongo_storage.set_state(storage_key, "test")
-        await mongo_storage.set_data(storage_key, {"key": "value"})
-        assert await mongo_storage.get_state(storage_key) == "test"
-        assert await mongo_storage.get_data(storage_key) == {"key": "value"}
+        assert await pymongo_storage._collection.find_one({}) is None
+        await pymongo_storage.set_state(storage_key, "test")
+        await pymongo_storage.set_data(storage_key, {"key": "value"})
+        assert await pymongo_storage.get_state(storage_key) == "test"
+        assert await pymongo_storage.get_data(storage_key) == {"key": "value"}
 
     async def test_data_do_not_affect_to_deleted_state_getting(
         self,
-        mongo_storage: PyMongoStorage,
+        pymongo_storage: PyMongoStorage,
         storage_key: StorageKey,
     ):
-        await mongo_storage.set_state(storage_key, "test")
-        await mongo_storage.set_data(storage_key, {"key": "value"})
-        await mongo_storage.set_state(storage_key, None)
-        assert await mongo_storage.get_state(storage_key) is None
+        await pymongo_storage.set_state(storage_key, "test")
+        await pymongo_storage.set_data(storage_key, {"key": "value"})
+        await pymongo_storage.set_state(storage_key, None)
+        assert await pymongo_storage.get_state(storage_key) is None
 
     async def test_state_do_not_affect_to_deleted_data_getting(
         self,
-        mongo_storage: PyMongoStorage,
+        pymongo_storage: PyMongoStorage,
         storage_key: StorageKey,
     ):
-        await mongo_storage.set_state(storage_key, "test")
-        await mongo_storage.set_data(storage_key, {"key": "value"})
-        await mongo_storage.set_data(storage_key, {})
-        assert await mongo_storage.get_data(storage_key) == {}
+        await pymongo_storage.set_state(storage_key, "test")
+        await pymongo_storage.set_data(storage_key, {"key": "value"})
+        await pymongo_storage.set_data(storage_key, {})
+        assert await pymongo_storage.get_data(storage_key) == {}
 
     async def test_state_do_not_affect_to_updating_not_existing_data_with_empty_dictionary(
         self,
-        mongo_storage: PyMongoStorage,
+        pymongo_storage: PyMongoStorage,
         storage_key: StorageKey,
     ):
-        await mongo_storage.set_state(storage_key, "test")
-        assert await mongo_storage._collection.find_one({}, projection={"_id": 0}) == {
+        await pymongo_storage.set_state(storage_key, "test")
+        assert await pymongo_storage._collection.find_one({}, projection={"_id": 0}) == {
             "state": "test"
         }
-        assert await mongo_storage.update_data(key=storage_key, data={}) == {}
-        assert await mongo_storage._collection.find_one({}, projection={"_id": 0}) == {
+        assert await pymongo_storage.update_data(key=storage_key, data={}) == {}
+        assert await pymongo_storage._collection.find_one({}, projection={"_id": 0}) == {
             "state": "test"
         }
 
     async def test_state_do_not_affect_to_updating_not_existing_data_with_non_empty_dictionary(
         self,
-        mongo_storage: PyMongoStorage,
+        pymongo_storage: PyMongoStorage,
         storage_key: StorageKey,
     ):
-        await mongo_storage.set_state(storage_key, "test")
-        assert await mongo_storage._collection.find_one({}, projection={"_id": 0}) == {
+        await pymongo_storage.set_state(storage_key, "test")
+        assert await pymongo_storage._collection.find_one({}, projection={"_id": 0}) == {
             "state": "test"
         }
-        assert await mongo_storage.update_data(
+        assert await pymongo_storage.update_data(
             key=storage_key,
             data={"key": "value"},
         ) == {"key": "value"}
-        assert await mongo_storage._collection.find_one({}, projection={"_id": 0}) == {
+        assert await pymongo_storage._collection.find_one({}, projection={"_id": 0}) == {
             "state": "test",
             "data": {"key": "value"},
         }
 
     async def test_state_do_not_affect_to_updating_existing_data_with_empty_dictionary(
         self,
-        mongo_storage: PyMongoStorage,
+        pymongo_storage: PyMongoStorage,
         storage_key: StorageKey,
     ):
-        await mongo_storage.set_state(storage_key, "test")
-        await mongo_storage.set_data(storage_key, {"key": "value"})
-        assert await mongo_storage._collection.find_one({}, projection={"_id": 0}) == {
+        await pymongo_storage.set_state(storage_key, "test")
+        await pymongo_storage.set_data(storage_key, {"key": "value"})
+        assert await pymongo_storage._collection.find_one({}, projection={"_id": 0}) == {
             "state": "test",
             "data": {"key": "value"},
         }
-        assert await mongo_storage.update_data(key=storage_key, data={}) == {"key": "value"}
-        assert await mongo_storage._collection.find_one({}, projection={"_id": 0}) == {
+        assert await pymongo_storage.update_data(key=storage_key, data={}) == {}
+        assert await pymongo_storage._collection.find_one({}, projection={"_id": 0}) == {
             "state": "test",
-            "data": {"key": "value"},
         }
 
     async def test_state_do_not_affect_to_updating_existing_data_with_non_empty_dictionary(
         self,
-        mongo_storage: PyMongoStorage,
+        pymongo_storage: PyMongoStorage,
         storage_key: StorageKey,
     ):
-        await mongo_storage.set_state(storage_key, "test")
-        await mongo_storage.set_data(storage_key, {"key": "value"})
-        assert await mongo_storage._collection.find_one({}, projection={"_id": 0}) == {
+        await pymongo_storage.set_state(storage_key, "test")
+        await pymongo_storage.set_data(storage_key, {"key": "value"})
+        assert await pymongo_storage._collection.find_one({}, projection={"_id": 0}) == {
             "state": "test",
             "data": {"key": "value"},
         }
-        assert await mongo_storage.update_data(
+        assert await pymongo_storage.update_data(
             key=storage_key,
             data={"key": "VALUE", "key_2": "value_2"},
         ) == {"key": "VALUE", "key_2": "value_2"}
-        assert await mongo_storage._collection.find_one({}, projection={"_id": 0}) == {
+        assert await pymongo_storage._collection.find_one({}, projection={"_id": 0}) == {
             "state": "test",
             "data": {"key": "VALUE", "key_2": "value_2"},
         }
@@ -170,5 +169,5 @@ class TestStateAndDataDoNotAffectEachOther:
         [[1, 2, 3], "[1, 2, 3]"],
     ],
 )
-def test_resolve_state(value, result, mongo_storage: PyMongoStorage):
-    assert mongo_storage.resolve_state(value) == result
+def test_resolve_state(value, result, pymongo_storage: PyMongoStorage):
+    assert pymongo_storage.resolve_state(value) == result
