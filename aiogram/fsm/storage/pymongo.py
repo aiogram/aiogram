@@ -15,7 +15,7 @@ from aiogram.fsm.storage.base import (
 
 class PyMongoStorage(BaseStorage):
     """
-    MongoDB storage required :code:`PyMongo` package installed (:code:`pip install PyMongo`).
+    MongoDB storage required :code:`pymongo` package installed (:code:`pip install pymongo`).
     """
 
     def __init__(
@@ -46,7 +46,7 @@ class PyMongoStorage(BaseStorage):
         Create an instance of :class:`PyMongoStorage` with specifying the connection string
 
         :param url: for example :code:`mongodb://user:password@host:port`
-        :param connection_kwargs: see :code:`PyMongo` docs
+        :param connection_kwargs: see :code:`pymongo` docs
         :param kwargs: arguments to be passed to :class:`PyMongoStorage`
         :return: an instance of :class:`PyMongoStorage`
         """
