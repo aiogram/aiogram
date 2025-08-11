@@ -20,7 +20,7 @@ class PyMongoStorage(BaseStorage):
 
     def __init__(
         self,
-        client: AsyncMongoClient,
+        client: AsyncMongoClient[Any],
         key_builder: Optional[KeyBuilder] = None,
         db_name: str = "aiogram_fsm",
         collection_name: str = "states_and_data",
@@ -52,7 +52,7 @@ class PyMongoStorage(BaseStorage):
         """
         if connection_kwargs is None:
             connection_kwargs = {}
-        client = AsyncMongoClient(url, **connection_kwargs)
+        client: AsyncMongoClient[Any] = AsyncMongoClient(url, **connection_kwargs)
         return cls(client=client, **kwargs)
 
     async def close(self) -> None:
@@ -89,7 +89,7 @@ class PyMongoStorage(BaseStorage):
         document = await self._collection.find_one({"_id": document_id})
         if document is None:
             return None
-        return document.get("state")
+        return cast(Optional[str], document.get("state"))
 
     async def set_data(self, key: StorageKey, data: Mapping[str, Any]) -> None:
         if not isinstance(data, dict):
@@ -133,4 +133,4 @@ class PyMongoStorage(BaseStorage):
         )
         if not update_result:
             await self._collection.delete_one({"_id": document_id})
-        return update_result.get("data", {})
+        return cast(Dict[str, Any], update_result.get("data", {}))
