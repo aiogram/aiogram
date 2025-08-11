@@ -33,6 +33,47 @@ async def test_update_not_existing_data_with_empty_dictionary(
     assert await pymongo_storage._collection.find_one({}) is None
 
 
+async def test_update_not_existing_data_with_non_empty_dictionary(
+    pymongo_storage: PyMongoStorage,
+    storage_key: StorageKey,
+):
+    assert await pymongo_storage._collection.find_one({}) is None
+    assert await pymongo_storage.update_data(key=storage_key, data={"key": "value"}) == {
+        "key": "value"
+    }
+    assert await pymongo_storage._collection.find_one({}) == {
+        "_id": f"{PREFIX}:{CHAT_ID}:{USER_ID}",
+        "data": {"key": "value"},
+    }
+    await pymongo_storage._collection.delete_one({})
+
+
+async def test_update_existing_data_with_empty_dictionary(
+    pymongo_storage: PyMongoStorage,
+    storage_key: StorageKey,
+):
+    assert await pymongo_storage._collection.find_one({}) is None
+    await pymongo_storage.set_data(key=storage_key, data={"key": "value"})
+    assert await pymongo_storage.update_data(key=storage_key, data={}) == {}
+    assert await pymongo_storage._collection.find_one({}) is None
+
+
+async def test_update_existing_data_with_non_empty_dictionary(
+    pymongo_storage: PyMongoStorage,
+    storage_key: StorageKey,
+):
+    assert await pymongo_storage._collection.find_one({}) is None
+    await pymongo_storage.set_data(key=storage_key, data={"key": "value"})
+    assert await pymongo_storage.update_data(key=storage_key, data={"key": "new_value"}) == {
+        "key": "new_value"
+    }
+    assert await pymongo_storage._collection.find_one({}) == {
+        "_id": f"{PREFIX}:{CHAT_ID}:{USER_ID}",
+        "data": {"key": "new_value"},
+    }
+    await pymongo_storage._collection.delete_one({})
+
+
 async def test_document_life_cycle(
     pymongo_storage: PyMongoStorage,
     storage_key: StorageKey,
