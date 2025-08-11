@@ -64,7 +64,7 @@ redis = [
 ]
 mongo = [
     "motor>=3.3.2,<3.7.0",
-    "pymongo>=4.9.12",
+    "pymongo>4.5,<4.10",
 ]
 proxy = [
     "aiohttp-socks~=0.8.3",
