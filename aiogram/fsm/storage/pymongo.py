@@ -123,14 +123,23 @@ class PyMongoStorage(BaseStorage):
 
     async def update_data(self, key: StorageKey, data: Mapping[str, Any]) -> Dict[str, Any]:
         document_id = self._key_builder.build(key)
-        update_with = {f"data.{key}": value for key, value in data.items()}
-        update_result = await self._collection.find_one_and_update(
-            filter={"_id": document_id},
-            update={"$set": update_with},
-            upsert=True,
-            return_document=True,
-            projection={"_id": 0},
-        )
+        update_result = {}
+        if not data:
+            update_result = await self._collection.find_one_and_update(
+                filter={"_id": document_id},
+                update={"$unset": {"data": 1}},
+                upsert=True,
+                return_document=True,
+                projection={"_id": 0},
+            )
+        else:
+            update_result = await self._collection.find_one_and_update(
+                filter={"_id": document_id},
+                update={"$set": {"data": data}},
+                upsert=True,
+                return_document=True,
+                projection={"_id": 0},
+            )
         if not update_result:
             await self._collection.delete_one({"_id": document_id})
         return update_result.get("data", {})
