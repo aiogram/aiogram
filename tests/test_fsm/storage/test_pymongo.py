@@ -54,8 +54,12 @@ async def test_update_existing_data_with_empty_dictionary(
 ):
     assert await pymongo_storage._collection.find_one({}) is None
     await pymongo_storage.set_data(key=storage_key, data={"key": "value"})
-    assert await pymongo_storage.update_data(key=storage_key, data={}) == {}
-    assert await pymongo_storage._collection.find_one({}) is None
+    assert await pymongo_storage.update_data(key=storage_key, data={}) == {"key": "value"}
+    assert await pymongo_storage._collection.find_one({}) == {
+        "_id": f"{PREFIX}:{CHAT_ID}:{USER_ID}",
+        "data": {"key": "value"},
+    }
+    await pymongo_storage._collection.delete_one({})
 
 
 async def test_update_existing_data_with_non_empty_dictionary(
@@ -170,9 +174,10 @@ class TestStateAndDataDoNotAffectEachOther:
             "state": "test",
             "data": {"key": "value"},
         }
-        assert await pymongo_storage.update_data(key=storage_key, data={}) == {}
+        assert await pymongo_storage.update_data(key=storage_key, data={}) == {"key": "value"}
         assert await pymongo_storage._collection.find_one({}, projection={"_id": 0}) == {
             "state": "test",
+            "data": {"key": "value"},
         }
 
     async def test_state_do_not_affect_to_updating_existing_data_with_non_empty_dictionary(
