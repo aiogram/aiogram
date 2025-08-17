@@ -1,1 +1,0 @@
-Migrated `MongoStorage` from relying on deprecated `motor` package to using new async `PyMongo`. To use mongo storage with new async `PyMongo`, you need to install the `PyMongo` package instead of `motor` and just substitute deprecated `MongoStorage` with `PyMongoStorage` class, no other action needed.

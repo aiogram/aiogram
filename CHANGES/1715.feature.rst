@@ -1,1 +1,0 @@
-Support validating init data using only bot id.
