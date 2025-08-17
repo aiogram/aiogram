@@ -3652,6 +3652,7 @@ class Message(MaybeInaccessibleMessage):
             # because all entities are already prepared
             "parse_mode": parse_mode,
             "message_effect_id": message_effect_id or self.effect_id,
+            "link_preview_options": self.link_preview_options,
         }
 
         if self.text:
