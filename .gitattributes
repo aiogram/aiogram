@@ -1,0 +1,6 @@
+# Mark code-generated files from butcher tool as generated
+.butcher/**/*.json linguist-generated=true
+# .butcher/**/*.yml linguist-generated=true
+
+# These files are auto-generated and should be collapsed in PRs
+# .butcher/ linguist-generated=true
