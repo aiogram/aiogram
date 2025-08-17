@@ -24,7 +24,9 @@ class DeleteMessage(TelegramMethod[bool]):
 
     - If the bot is an administrator of a group, it can delete any message there.
 
-    - If the bot has *can_delete_messages* permission in a supergroup or a channel, it can delete any message there.
+    - If the bot has *can_delete_messages* administrator right in a supergroup or a channel, it can delete any message there.
+
+    - If the bot has *can_manage_direct_messages* administrator right in a channel, it can delete any message in the corresponding direct messages chat.
 
     Returns :code:`True` on success.
 

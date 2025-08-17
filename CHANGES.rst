@@ -16,6 +16,70 @@ Changelog
 
 .. towncrier release notes start
 
+3.22.0 (2025-08-17)
+====================
+
+Features
+--------
+
+- Support validating init data using only bot id.
+  `#1715 <https://github.com/aiogram/aiogram/issues/1715>`_
+- Added full support for the `Bot API 9.2 <https://core.telegram.org/bots/api-changelog#august-15-2025>`_:
+
+  **Direct Messages in Channels**
+
+  - Added the field :code:`is_direct_messages` to the classes :class:`aiogram.types.chat.Chat` and :class:`aiogram.types.chat_full_info.ChatFullInfo`, indicating whether the chat is a direct messages chat.
+  - Added the field :code:`parent_chat` to the class :class:`aiogram.types.chat_full_info.ChatFullInfo`, describing the parent channel for direct messages chats.
+  - Added the class :class:`aiogram.types.direct_messages_topic.DirectMessagesTopic` representing a direct messages topic.
+  - Added the field :code:`direct_messages_topic` to the class :class:`aiogram.types.message.Message`, describing the direct messages topic associated with a message.
+  - Added the parameter :code:`direct_messages_topic_id` to multiple sending methods for directing messages to specific direct message topics.
+
+  **Suggested Posts**
+
+  - Added the class :class:`aiogram.types.suggested_post_parameters.SuggestedPostParameters` representing parameters for suggested posts.
+  - Added the parameter :code:`suggested_post_parameters` to various sending methods, allowing bots to create suggested posts for channel approval.
+  - Added the method :class:`aiogram.methods.approve_suggested_post.ApproveSuggestedPost`, allowing bots to approve suggested posts in direct messages chats.
+  - Added the method :class:`aiogram.methods.decline_suggested_post.DeclineSuggestedPost`, allowing bots to decline suggested posts in direct messages chats.
+  - Added the field :code:`can_manage_direct_messages` to administrator-related classes :class:`aiogram.types.chat_administrator_rights.ChatAdministratorRights` and :class:`aiogram.types.chat_member_administrator.ChatMemberAdministrator`.
+  - Added the class :class:`aiogram.types.suggested_post_info.SuggestedPostInfo` representing information about a suggested post.
+  - Added the class :class:`aiogram.types.suggested_post_price.SuggestedPostPrice` representing the price for a suggested post.
+  - Added service message classes for suggested post events:
+
+    - :class:`aiogram.types.suggested_post_approved.SuggestedPostApproved` and the field :code:`suggested_post_approved` to :class:`aiogram.types.message.Message`
+    - :class:`aiogram.types.suggested_post_approval_failed.SuggestedPostApprovalFailed` and the field :code:`suggested_post_approval_failed` to :class:`aiogram.types.message.Message`
+    - :class:`aiogram.types.suggested_post_declined.SuggestedPostDeclined` and the field :code:`suggested_post_declined` to :class:`aiogram.types.message.Message`
+    - :class:`aiogram.types.suggested_post_paid.SuggestedPostPaid` and the field :code:`suggested_post_paid` to :class:`aiogram.types.message.Message`
+    - :class:`aiogram.types.suggested_post_refunded.SuggestedPostRefunded` and the field :code:`suggested_post_refunded` to :class:`aiogram.types.message.Message`
+
+  **Enhanced Checklists**
+
+  - Added the field :code:`checklist_task_id` to the class :class:`aiogram.types.reply_parameters.ReplyParameters`, allowing replies to specific checklist tasks.
+  - Added the field :code:`reply_to_checklist_task_id` to the class :class:`aiogram.types.message.Message`, indicating which checklist task a message is replying to.
+
+  **Gifts Improvements**
+
+  - Added the field :code:`publisher_chat` to the classes :class:`aiogram.types.gift.Gift` and :class:`aiogram.types.unique_gift.UniqueGift`, describing the chat that published the gift.
+
+  **Additional Features**
+
+  - Added the field :code:`is_paid_post` to the class :class:`aiogram.types.message.Message`, indicating whether a message is a paid post.
+  `#1720 <https://github.com/aiogram/aiogram/issues/1720>`_
+
+
+Bugfixes
+--------
+
+- Use `hmac.compare_digest` for validating WebApp data to prevent timing attacks.
+  `#1709 <https://github.com/aiogram/aiogram/issues/1709>`_
+
+
+Misc
+----
+
+- Migrated `MongoStorage` from relying on deprecated `motor` package to using new async `PyMongo`. To use mongo storage with new async `PyMongo`, you need to install the `PyMongo` package instead of `motor` and just substitute deprecated `MongoStorage` with `PyMongoStorage` class, no other action needed.
+  `#1705 <https://github.com/aiogram/aiogram/issues/1705>`_
+
+
 3.21.0 (2025-07-05)
 ====================
 

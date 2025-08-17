@@ -11,7 +11,7 @@ from .base import TelegramMethod
 
 class SendMediaGroup(TelegramMethod[list[Message]]):
     """
-    Use this method to send a group of photos, videos, documents or audios as an album. Documents and audio files can be only grouped in an album with messages of the same type. On success, an array of `Messages <https://core.telegram.org/bots/api#message>`_ that were sent is returned.
+    Use this method to send a group of photos, videos, documents or audios as an album. Documents and audio files can be only grouped in an album with messages of the same type. On success, an array of :class:`aiogram.types.message.Message` objects that were sent is returned.
 
     Source: https://core.telegram.org/bots/api#sendmediagroup
     """
@@ -27,6 +27,8 @@ class SendMediaGroup(TelegramMethod[list[Message]]):
     """Unique identifier of the business connection on behalf of which the message will be sent"""
     message_thread_id: Optional[int] = None
     """Unique identifier for the target message thread (topic) of the forum; for forum supergroups only"""
+    direct_messages_topic_id: Optional[int] = None
+    """Identifier of the direct messages topic to which the messages will be sent; required if the messages are sent to a direct messages chat"""
     disable_notification: Optional[bool] = None
     """Sends messages `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound."""
     protect_content: Optional[Union[bool, Default]] = Default("protect_content")
@@ -61,6 +63,7 @@ class SendMediaGroup(TelegramMethod[list[Message]]):
             media: list[MediaUnion],
             business_connection_id: Optional[str] = None,
             message_thread_id: Optional[int] = None,
+            direct_messages_topic_id: Optional[int] = None,
             disable_notification: Optional[bool] = None,
             protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
             allow_paid_broadcast: Optional[bool] = None,
@@ -79,6 +82,7 @@ class SendMediaGroup(TelegramMethod[list[Message]]):
                 media=media,
                 business_connection_id=business_connection_id,
                 message_thread_id=message_thread_id,
+                direct_messages_topic_id=direct_messages_topic_id,
                 disable_notification=disable_notification,
                 protect_content=protect_content,
                 allow_paid_broadcast=allow_paid_broadcast,

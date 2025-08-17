@@ -36,6 +36,14 @@
         "name": "message_thread_id"
       },
       {
+        "type": "Integer",
+        "required": false,
+        "description": "Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat",
+        "html_description": "<td>Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat</td>",
+        "rst_description": "Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat\n",
+        "name": "direct_messages_topic_id"
+      },
+      {
         "type": "String",
         "required": false,
         "description": "Emoji on which the dice throw animation is based. Currently, must be one of '', '', '', '', '', or ''. Dice can have values 1-6 for '', '' and '', values 1-5 for '' and '', and values 1-64 for ''. Defaults to ''",
@@ -74,6 +82,14 @@
         "html_description": "<td>Unique identifier of the message effect to be added to the message; for private chats only</td>",
         "rst_description": "Unique identifier of the message effect to be added to the message; for private chats only\n",
         "name": "message_effect_id"
+      },
+      {
+        "type": "SuggestedPostParameters",
+        "required": false,
+        "description": "A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined.",
+        "html_description": "<td>A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined.</td>",
+        "rst_description": "A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined.\n",
+        "name": "suggested_post_parameters"
       },
       {
         "type": "ReplyParameters",

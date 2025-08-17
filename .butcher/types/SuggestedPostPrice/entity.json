@@ -1,0 +1,33 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "suggestedpostprice",
+    "name": "SuggestedPostPrice",
+    "description": "Desribes price of a suggested post.",
+    "html_description": "<p>Desribes price of a suggested post.</p>",
+    "rst_description": "Desribes price of a suggested post.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Currency in which the post will be paid. Currently, must be one of 'XTR' for Telegram Stars or 'TON' for toncoins",
+        "html_description": "<td>Currency in which the post will be paid. Currently, must be one of &#8220;XTR&#8221; for Telegram Stars or &#8220;TON&#8221; for toncoins</td>",
+        "rst_description": "Currency in which the post will be paid. Currently, must be one of 'XTR' for Telegram Stars or 'TON' for toncoins\n",
+        "name": "currency",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "The amount of the currency that will be paid for the post in the smallest units of the currency, i.e. Telegram Stars or nanotoncoins. Currently, price in Telegram Stars must be between 5 and 100000, and price in nanotoncoins must be between 10000000 and 10000000000000.",
+        "html_description": "<td>The amount of the currency that will be paid for the post in the <em>smallest units</em> of the currency, i.e. Telegram Stars or nanotoncoins. Currently, price in Telegram Stars must be between 5 and 100000, and price in nanotoncoins must be between 10000000 and 10000000000000.</td>",
+        "rst_description": "The amount of the currency that will be paid for the post in the *smallest units* of the currency, i.e. Telegram Stars or nanotoncoins. Currently, price in Telegram Stars must be between 5 and 100000, and price in nanotoncoins must be between 10000000 and 10000000000000.\n",
+        "name": "amount",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

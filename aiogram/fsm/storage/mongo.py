@@ -15,6 +15,12 @@ from aiogram.fsm.storage.base import (
 
 class MongoStorage(BaseStorage):
     """
+
+    .. warning::
+        DEPRECATED: Use :class:`PyMongoStorage` instead.
+        This class will be removed in future versions.
+
+
     MongoDB storage required :code:`motor` package installed (:code:`pip install motor`)
     """
 

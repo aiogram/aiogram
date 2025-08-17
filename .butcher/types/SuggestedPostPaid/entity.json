@@ -1,0 +1,49 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "suggestedpostpaid",
+    "name": "SuggestedPostPaid",
+    "description": "Describes a service message about a successful payment for a suggested post.",
+    "html_description": "<p>Describes a service message about a successful payment for a suggested post.</p>",
+    "rst_description": "Describes a service message about a successful payment for a suggested post.",
+    "annotations": [
+      {
+        "type": "Message",
+        "description": "Message containing the suggested post. Note that the Message object in this field will not contain the reply_to_message field even if it itself is a reply.",
+        "html_description": "<td><em>Optional</em>. Message containing the suggested post. Note that the <a href=\"#message\">Message</a> object in this field will not contain the <em>reply_to_message</em> field even if it itself is a reply.</td>",
+        "rst_description": "*Optional*. Message containing the suggested post. Note that the :class:`aiogram.types.message.Message` object in this field will not contain the *reply_to_message* field even if it itself is a reply.\n",
+        "name": "suggested_post_message",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "Currency in which the payment was made. Currently, one of 'XTR' for Telegram Stars or 'TON' for toncoins",
+        "html_description": "<td>Currency in which the payment was made. Currently, one of &#8220;XTR&#8221; for Telegram Stars or &#8220;TON&#8221; for toncoins</td>",
+        "rst_description": "Currency in which the payment was made. Currently, one of 'XTR' for Telegram Stars or 'TON' for toncoins\n",
+        "name": "currency",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "The amount of the currency that was received by the channel in nanotoncoins; for payments in toncoins only",
+        "html_description": "<td><em>Optional</em>. The amount of the currency that was received by the channel in nanotoncoins; for payments in toncoins only</td>",
+        "rst_description": "*Optional*. The amount of the currency that was received by the channel in nanotoncoins; for payments in toncoins only\n",
+        "name": "amount",
+        "required": false
+      },
+      {
+        "type": "StarAmount",
+        "description": "The amount of Telegram Stars that was received by the channel; for payments in Telegram Stars only",
+        "html_description": "<td><em>Optional</em>. The amount of Telegram Stars that was received by the channel; for payments in Telegram Stars only</td>",
+        "rst_description": "*Optional*. The amount of Telegram Stars that was received by the channel; for payments in Telegram Stars only\n",
+        "name": "star_amount",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

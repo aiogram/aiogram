@@ -64,6 +64,7 @@ redis = [
 ]
 mongo = [
     "motor>=3.3.2,<3.7.0",
+    "pymongo>4.5,<4.11",
 ]
 proxy = [
     "aiohttp-socks~=0.8.3",
@@ -73,6 +74,9 @@ i18n = [
 ]
 cli = [
     "aiogram-cli>=1.1.0,<2.0.0",
+]
+signature = [
+    "cryptography>=43.0.0",
 ]
 test = [
     "pytest~=7.4.2",

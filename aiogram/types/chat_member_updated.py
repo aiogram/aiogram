@@ -42,6 +42,7 @@ if TYPE_CHECKING:
     from .message_entity import MessageEntity
     from .reply_markup_union import ReplyMarkupUnion
     from .reply_parameters import ReplyParameters
+    from .suggested_post_parameters import SuggestedPostParameters
     from .user import User
 
 
@@ -107,6 +108,7 @@ class ChatMemberUpdated(TelegramObject):
         text: str,
         business_connection_id: Optional[str] = None,
         message_thread_id: Optional[int] = None,
+        direct_messages_topic_id: Optional[int] = None,
         parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
         entities: Optional[list[MessageEntity]] = None,
         link_preview_options: Optional[Union[LinkPreviewOptions, Default]] = Default(
@@ -116,6 +118,7 @@ class ChatMemberUpdated(TelegramObject):
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
         allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
+        suggested_post_parameters: Optional[SuggestedPostParameters] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[ReplyMarkupUnion] = None,
         allow_sending_without_reply: Optional[bool] = None,
@@ -138,6 +141,7 @@ class ChatMemberUpdated(TelegramObject):
         :param text: Text of the message to be sent, 1-4096 characters after entities parsing
         :param business_connection_id: Unique identifier of the business connection on behalf of which the message will be sent
         :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
+        :param direct_messages_topic_id: Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat
         :param parse_mode: Mode for parsing entities in the message text. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.
         :param entities: A JSON-serialized list of special entities that appear in message text, which can be specified instead of *parse_mode*
         :param link_preview_options: Link preview generation options for the message
@@ -145,6 +149,7 @@ class ChatMemberUpdated(TelegramObject):
         :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param allow_paid_broadcast: Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
         :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
+        :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined.
         :param reply_parameters: Description of the message to reply to
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
@@ -162,6 +167,7 @@ class ChatMemberUpdated(TelegramObject):
             text=text,
             business_connection_id=business_connection_id,
             message_thread_id=message_thread_id,
+            direct_messages_topic_id=direct_messages_topic_id,
             parse_mode=parse_mode,
             entities=entities,
             link_preview_options=link_preview_options,
@@ -169,6 +175,7 @@ class ChatMemberUpdated(TelegramObject):
             protect_content=protect_content,
             allow_paid_broadcast=allow_paid_broadcast,
             message_effect_id=message_effect_id,
+            suggested_post_parameters=suggested_post_parameters,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -182,6 +189,7 @@ class ChatMemberUpdated(TelegramObject):
         animation: InputFileUnion,
         business_connection_id: Optional[str] = None,
         message_thread_id: Optional[int] = None,
+        direct_messages_topic_id: Optional[int] = None,
         duration: Optional[int] = None,
         width: Optional[int] = None,
         height: Optional[int] = None,
@@ -197,6 +205,7 @@ class ChatMemberUpdated(TelegramObject):
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
         allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
+        suggested_post_parameters: Optional[SuggestedPostParameters] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[ReplyMarkupUnion] = None,
         allow_sending_without_reply: Optional[bool] = None,
@@ -216,6 +225,7 @@ class ChatMemberUpdated(TelegramObject):
         :param animation: Animation to send. Pass a file_id as String to send an animation that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get an animation from the Internet, or upload a new animation using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`
         :param business_connection_id: Unique identifier of the business connection on behalf of which the message will be sent
         :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
+        :param direct_messages_topic_id: Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat
         :param duration: Duration of sent animation in seconds
         :param width: Animation width
         :param height: Animation height
@@ -229,6 +239,7 @@ class ChatMemberUpdated(TelegramObject):
         :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param allow_paid_broadcast: Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
         :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
+        :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined.
         :param reply_parameters: Description of the message to reply to
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
@@ -245,6 +256,7 @@ class ChatMemberUpdated(TelegramObject):
             animation=animation,
             business_connection_id=business_connection_id,
             message_thread_id=message_thread_id,
+            direct_messages_topic_id=direct_messages_topic_id,
             duration=duration,
             width=width,
             height=height,
@@ -258,6 +270,7 @@ class ChatMemberUpdated(TelegramObject):
             protect_content=protect_content,
             allow_paid_broadcast=allow_paid_broadcast,
             message_effect_id=message_effect_id,
+            suggested_post_parameters=suggested_post_parameters,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -270,6 +283,7 @@ class ChatMemberUpdated(TelegramObject):
         audio: InputFileUnion,
         business_connection_id: Optional[str] = None,
         message_thread_id: Optional[int] = None,
+        direct_messages_topic_id: Optional[int] = None,
         caption: Optional[str] = None,
         parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
         caption_entities: Optional[list[MessageEntity]] = None,
@@ -281,6 +295,7 @@ class ChatMemberUpdated(TelegramObject):
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
         allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
+        suggested_post_parameters: Optional[SuggestedPostParameters] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[ReplyMarkupUnion] = None,
         allow_sending_without_reply: Optional[bool] = None,
@@ -301,6 +316,7 @@ class ChatMemberUpdated(TelegramObject):
         :param audio: Audio file to send. Pass a file_id as String to send an audio file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get an audio file from the Internet, or upload a new one using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`
         :param business_connection_id: Unique identifier of the business connection on behalf of which the message will be sent
         :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
+        :param direct_messages_topic_id: Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat
         :param caption: Audio caption, 0-1024 characters after entities parsing
         :param parse_mode: Mode for parsing entities in the audio caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.
         :param caption_entities: A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*
@@ -312,6 +328,7 @@ class ChatMemberUpdated(TelegramObject):
         :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param allow_paid_broadcast: Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
         :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
+        :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined.
         :param reply_parameters: Description of the message to reply to
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
@@ -328,6 +345,7 @@ class ChatMemberUpdated(TelegramObject):
             audio=audio,
             business_connection_id=business_connection_id,
             message_thread_id=message_thread_id,
+            direct_messages_topic_id=direct_messages_topic_id,
             caption=caption,
             parse_mode=parse_mode,
             caption_entities=caption_entities,
@@ -339,6 +357,7 @@ class ChatMemberUpdated(TelegramObject):
             protect_content=protect_content,
             allow_paid_broadcast=allow_paid_broadcast,
             message_effect_id=message_effect_id,
+            suggested_post_parameters=suggested_post_parameters,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -352,12 +371,14 @@ class ChatMemberUpdated(TelegramObject):
         first_name: str,
         business_connection_id: Optional[str] = None,
         message_thread_id: Optional[int] = None,
+        direct_messages_topic_id: Optional[int] = None,
         last_name: Optional[str] = None,
         vcard: Optional[str] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
         allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
+        suggested_post_parameters: Optional[SuggestedPostParameters] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[ReplyMarkupUnion] = None,
         allow_sending_without_reply: Optional[bool] = None,
@@ -378,12 +399,14 @@ class ChatMemberUpdated(TelegramObject):
         :param first_name: Contact's first name
         :param business_connection_id: Unique identifier of the business connection on behalf of which the message will be sent
         :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
+        :param direct_messages_topic_id: Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat
         :param last_name: Contact's last name
         :param vcard: Additional data about the contact in the form of a `vCard <https://en.wikipedia.org/wiki/VCard>`_, 0-2048 bytes
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param allow_paid_broadcast: Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
         :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
+        :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined.
         :param reply_parameters: Description of the message to reply to
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
@@ -401,12 +424,14 @@ class ChatMemberUpdated(TelegramObject):
             first_name=first_name,
             business_connection_id=business_connection_id,
             message_thread_id=message_thread_id,
+            direct_messages_topic_id=direct_messages_topic_id,
             last_name=last_name,
             vcard=vcard,
             disable_notification=disable_notification,
             protect_content=protect_content,
             allow_paid_broadcast=allow_paid_broadcast,
             message_effect_id=message_effect_id,
+            suggested_post_parameters=suggested_post_parameters,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -419,6 +444,7 @@ class ChatMemberUpdated(TelegramObject):
         document: InputFileUnion,
         business_connection_id: Optional[str] = None,
         message_thread_id: Optional[int] = None,
+        direct_messages_topic_id: Optional[int] = None,
         thumbnail: Optional[InputFile] = None,
         caption: Optional[str] = None,
         parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
@@ -428,6 +454,7 @@ class ChatMemberUpdated(TelegramObject):
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
         allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
+        suggested_post_parameters: Optional[SuggestedPostParameters] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[ReplyMarkupUnion] = None,
         allow_sending_without_reply: Optional[bool] = None,
@@ -447,6 +474,7 @@ class ChatMemberUpdated(TelegramObject):
         :param document: File to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`
         :param business_connection_id: Unique identifier of the business connection on behalf of which the message will be sent
         :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
+        :param direct_messages_topic_id: Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat
         :param thumbnail: Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`
         :param caption: Document caption (may also be used when resending documents by *file_id*), 0-1024 characters after entities parsing
         :param parse_mode: Mode for parsing entities in the document caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.
@@ -456,6 +484,7 @@ class ChatMemberUpdated(TelegramObject):
         :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param allow_paid_broadcast: Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
         :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
+        :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined.
         :param reply_parameters: Description of the message to reply to
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
@@ -472,6 +501,7 @@ class ChatMemberUpdated(TelegramObject):
             document=document,
             business_connection_id=business_connection_id,
             message_thread_id=message_thread_id,
+            direct_messages_topic_id=direct_messages_topic_id,
             thumbnail=thumbnail,
             caption=caption,
             parse_mode=parse_mode,
@@ -481,6 +511,7 @@ class ChatMemberUpdated(TelegramObject):
             protect_content=protect_content,
             allow_paid_broadcast=allow_paid_broadcast,
             message_effect_id=message_effect_id,
+            suggested_post_parameters=suggested_post_parameters,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -555,6 +586,7 @@ class ChatMemberUpdated(TelegramObject):
         currency: str,
         prices: list[LabeledPrice],
         message_thread_id: Optional[int] = None,
+        direct_messages_topic_id: Optional[int] = None,
         provider_token: Optional[str] = None,
         max_tip_amount: Optional[int] = None,
         suggested_tip_amounts: Optional[list[int]] = None,
@@ -575,6 +607,7 @@ class ChatMemberUpdated(TelegramObject):
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
         allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
+        suggested_post_parameters: Optional[SuggestedPostParameters] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[InlineKeyboardMarkup] = None,
         allow_sending_without_reply: Optional[bool] = None,
@@ -597,6 +630,7 @@ class ChatMemberUpdated(TelegramObject):
         :param currency: Three-letter ISO 4217 currency code, see `more on currencies <https://core.telegram.org/bots/payments#supported-currencies>`_. Pass 'XTR' for payments in `Telegram Stars <https://t.me/BotNews/90>`_.
         :param prices: Price breakdown, a JSON-serialized list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.). Must contain exactly one item for payments in `Telegram Stars <https://t.me/BotNews/90>`_.
         :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
+        :param direct_messages_topic_id: Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat
         :param provider_token: Payment provider token, obtained via `@BotFather <https://t.me/botfather>`_. Pass an empty string for payments in `Telegram Stars <https://t.me/BotNews/90>`_.
         :param max_tip_amount: The maximum accepted amount for tips in the *smallest units* of the currency (integer, **not** float/double). For example, for a maximum tip of :code:`US$ 1.45` pass :code:`max_tip_amount = 145`. See the *exp* parameter in `currencies.json <https://core.telegram.org/bots/payments/currencies.json>`_, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies). Defaults to 0. Not supported for payments in `Telegram Stars <https://t.me/BotNews/90>`_.
         :param suggested_tip_amounts: A JSON-serialized array of suggested amounts of tips in the *smallest units* of the currency (integer, **not** float/double). At most 4 suggested tip amounts can be specified. The suggested tip amounts must be positive, passed in a strictly increased order and must not exceed *max_tip_amount*.
@@ -617,6 +651,7 @@ class ChatMemberUpdated(TelegramObject):
         :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param allow_paid_broadcast: Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
         :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
+        :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined.
         :param reply_parameters: Description of the message to reply to
         :param reply_markup: A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_. If empty, one 'Pay :code:`total price`' button will be shown. If not empty, the first button must be a Pay button.
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
@@ -636,6 +671,7 @@ class ChatMemberUpdated(TelegramObject):
             currency=currency,
             prices=prices,
             message_thread_id=message_thread_id,
+            direct_messages_topic_id=direct_messages_topic_id,
             provider_token=provider_token,
             max_tip_amount=max_tip_amount,
             suggested_tip_amounts=suggested_tip_amounts,
@@ -656,6 +692,7 @@ class ChatMemberUpdated(TelegramObject):
             protect_content=protect_content,
             allow_paid_broadcast=allow_paid_broadcast,
             message_effect_id=message_effect_id,
+            suggested_post_parameters=suggested_post_parameters,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -669,6 +706,7 @@ class ChatMemberUpdated(TelegramObject):
         longitude: float,
         business_connection_id: Optional[str] = None,
         message_thread_id: Optional[int] = None,
+        direct_messages_topic_id: Optional[int] = None,
         horizontal_accuracy: Optional[float] = None,
         live_period: Optional[int] = None,
         heading: Optional[int] = None,
@@ -677,6 +715,7 @@ class ChatMemberUpdated(TelegramObject):
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
         allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
+        suggested_post_parameters: Optional[SuggestedPostParameters] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[ReplyMarkupUnion] = None,
         allow_sending_without_reply: Optional[bool] = None,
@@ -697,6 +736,7 @@ class ChatMemberUpdated(TelegramObject):
         :param longitude: Longitude of the location
         :param business_connection_id: Unique identifier of the business connection on behalf of which the message will be sent
         :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
+        :param direct_messages_topic_id: Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat
         :param horizontal_accuracy: The radius of uncertainty for the location, measured in meters; 0-1500
         :param live_period: Period in seconds during which the location will be updated (see `Live Locations <https://telegram.org/blog/live-locations>`_, should be between 60 and 86400, or 0x7FFFFFFF for live locations that can be edited indefinitely.
         :param heading: For live locations, a direction in which the user is moving, in degrees. Must be between 1 and 360 if specified.
@@ -705,6 +745,7 @@ class ChatMemberUpdated(TelegramObject):
         :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param allow_paid_broadcast: Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
         :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
+        :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined.
         :param reply_parameters: Description of the message to reply to
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
@@ -722,6 +763,7 @@ class ChatMemberUpdated(TelegramObject):
             longitude=longitude,
             business_connection_id=business_connection_id,
             message_thread_id=message_thread_id,
+            direct_messages_topic_id=direct_messages_topic_id,
             horizontal_accuracy=horizontal_accuracy,
             live_period=live_period,
             heading=heading,
@@ -730,6 +772,7 @@ class ChatMemberUpdated(TelegramObject):
             protect_content=protect_content,
             allow_paid_broadcast=allow_paid_broadcast,
             message_effect_id=message_effect_id,
+            suggested_post_parameters=suggested_post_parameters,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -742,6 +785,7 @@ class ChatMemberUpdated(TelegramObject):
         media: list[MediaUnion],
         business_connection_id: Optional[str] = None,
         message_thread_id: Optional[int] = None,
+        direct_messages_topic_id: Optional[int] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
         allow_paid_broadcast: Optional[bool] = None,
@@ -757,13 +801,14 @@ class ChatMemberUpdated(TelegramObject):
 
         - :code:`chat_id`
 
-        Use this method to send a group of photos, videos, documents or audios as an album. Documents and audio files can be only grouped in an album with messages of the same type. On success, an array of `Messages <https://core.telegram.org/bots/api#message>`_ that were sent is returned.
+        Use this method to send a group of photos, videos, documents or audios as an album. Documents and audio files can be only grouped in an album with messages of the same type. On success, an array of :class:`aiogram.types.message.Message` objects that were sent is returned.
 
         Source: https://core.telegram.org/bots/api#sendmediagroup
 
         :param media: A JSON-serialized array describing messages to be sent, must include 2-10 items
         :param business_connection_id: Unique identifier of the business connection on behalf of which the message will be sent
         :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
+        :param direct_messages_topic_id: Identifier of the direct messages topic to which the messages will be sent; required if the messages are sent to a direct messages chat
         :param disable_notification: Sends messages `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent messages from forwarding and saving
         :param allow_paid_broadcast: Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
@@ -783,6 +828,7 @@ class ChatMemberUpdated(TelegramObject):
             media=media,
             business_connection_id=business_connection_id,
             message_thread_id=message_thread_id,
+            direct_messages_topic_id=direct_messages_topic_id,
             disable_notification=disable_notification,
             protect_content=protect_content,
             allow_paid_broadcast=allow_paid_broadcast,
@@ -798,6 +844,7 @@ class ChatMemberUpdated(TelegramObject):
         photo: InputFileUnion,
         business_connection_id: Optional[str] = None,
         message_thread_id: Optional[int] = None,
+        direct_messages_topic_id: Optional[int] = None,
         caption: Optional[str] = None,
         parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
         caption_entities: Optional[list[MessageEntity]] = None,
@@ -809,6 +856,7 @@ class ChatMemberUpdated(TelegramObject):
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
         allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
+        suggested_post_parameters: Optional[SuggestedPostParameters] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[ReplyMarkupUnion] = None,
         allow_sending_without_reply: Optional[bool] = None,
@@ -828,6 +876,7 @@ class ChatMemberUpdated(TelegramObject):
         :param photo: Photo to send. Pass a file_id as String to send a photo that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a photo from the Internet, or upload a new photo using multipart/form-data. The photo must be at most 10 MB in size. The photo's width and height must not exceed 10000 in total. Width and height ratio must be at most 20. :ref:`More information on Sending Files » <sending-files>`
         :param business_connection_id: Unique identifier of the business connection on behalf of which the message will be sent
         :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
+        :param direct_messages_topic_id: Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat
         :param caption: Photo caption (may also be used when resending photos by *file_id*), 0-1024 characters after entities parsing
         :param parse_mode: Mode for parsing entities in the photo caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.
         :param caption_entities: A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*
@@ -837,6 +886,7 @@ class ChatMemberUpdated(TelegramObject):
         :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param allow_paid_broadcast: Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
         :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
+        :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined.
         :param reply_parameters: Description of the message to reply to
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
@@ -853,6 +903,7 @@ class ChatMemberUpdated(TelegramObject):
             photo=photo,
             business_connection_id=business_connection_id,
             message_thread_id=message_thread_id,
+            direct_messages_topic_id=direct_messages_topic_id,
             caption=caption,
             parse_mode=parse_mode,
             caption_entities=caption_entities,
@@ -862,6 +913,7 @@ class ChatMemberUpdated(TelegramObject):
             protect_content=protect_content,
             allow_paid_broadcast=allow_paid_broadcast,
             message_effect_id=message_effect_id,
+            suggested_post_parameters=suggested_post_parameters,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -971,11 +1023,13 @@ class ChatMemberUpdated(TelegramObject):
         self,
         business_connection_id: Optional[str] = None,
         message_thread_id: Optional[int] = None,
+        direct_messages_topic_id: Optional[int] = None,
         emoji: Optional[str] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
         allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
+        suggested_post_parameters: Optional[SuggestedPostParameters] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[ReplyMarkupUnion] = None,
         allow_sending_without_reply: Optional[bool] = None,
@@ -994,11 +1048,13 @@ class ChatMemberUpdated(TelegramObject):
 
         :param business_connection_id: Unique identifier of the business connection on behalf of which the message will be sent
         :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
+        :param direct_messages_topic_id: Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat
         :param emoji: Emoji on which the dice throw animation is based. Currently, must be one of '🎲', '🎯', '🏀', '⚽', '🎳', or '🎰'. Dice can have values 1-6 for '🎲', '🎯' and '🎳', values 1-5 for '🏀' and '⚽', and values 1-64 for '🎰'. Defaults to '🎲'
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding
         :param allow_paid_broadcast: Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
         :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
+        :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined.
         :param reply_parameters: Description of the message to reply to
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
@@ -1014,11 +1070,13 @@ class ChatMemberUpdated(TelegramObject):
             chat_id=self.chat.id,
             business_connection_id=business_connection_id,
             message_thread_id=message_thread_id,
+            direct_messages_topic_id=direct_messages_topic_id,
             emoji=emoji,
             disable_notification=disable_notification,
             protect_content=protect_content,
             allow_paid_broadcast=allow_paid_broadcast,
             message_effect_id=message_effect_id,
+            suggested_post_parameters=suggested_post_parameters,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -1031,11 +1089,13 @@ class ChatMemberUpdated(TelegramObject):
         sticker: InputFileUnion,
         business_connection_id: Optional[str] = None,
         message_thread_id: Optional[int] = None,
+        direct_messages_topic_id: Optional[int] = None,
         emoji: Optional[str] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
         allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
+        suggested_post_parameters: Optional[SuggestedPostParameters] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[ReplyMarkupUnion] = None,
         allow_sending_without_reply: Optional[bool] = None,
@@ -1055,11 +1115,13 @@ class ChatMemberUpdated(TelegramObject):
         :param sticker: Sticker to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a .WEBP sticker from the Internet, or upload a new .WEBP, .TGS, or .WEBM sticker using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`. Video and animated stickers can't be sent via an HTTP URL.
         :param business_connection_id: Unique identifier of the business connection on behalf of which the message will be sent
         :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
+        :param direct_messages_topic_id: Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat
         :param emoji: Emoji associated with the sticker; only for just uploaded stickers
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param allow_paid_broadcast: Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
         :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
+        :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined.
         :param reply_parameters: Description of the message to reply to
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
@@ -1076,11 +1138,13 @@ class ChatMemberUpdated(TelegramObject):
             sticker=sticker,
             business_connection_id=business_connection_id,
             message_thread_id=message_thread_id,
+            direct_messages_topic_id=direct_messages_topic_id,
             emoji=emoji,
             disable_notification=disable_notification,
             protect_content=protect_content,
             allow_paid_broadcast=allow_paid_broadcast,
             message_effect_id=message_effect_id,
+            suggested_post_parameters=suggested_post_parameters,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -1096,6 +1160,7 @@ class ChatMemberUpdated(TelegramObject):
         address: str,
         business_connection_id: Optional[str] = None,
         message_thread_id: Optional[int] = None,
+        direct_messages_topic_id: Optional[int] = None,
         foursquare_id: Optional[str] = None,
         foursquare_type: Optional[str] = None,
         google_place_id: Optional[str] = None,
@@ -1104,6 +1169,7 @@ class ChatMemberUpdated(TelegramObject):
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
         allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
+        suggested_post_parameters: Optional[SuggestedPostParameters] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[ReplyMarkupUnion] = None,
         allow_sending_without_reply: Optional[bool] = None,
@@ -1126,6 +1192,7 @@ class ChatMemberUpdated(TelegramObject):
         :param address: Address of the venue
         :param business_connection_id: Unique identifier of the business connection on behalf of which the message will be sent
         :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
+        :param direct_messages_topic_id: Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat
         :param foursquare_id: Foursquare identifier of the venue
         :param foursquare_type: Foursquare type of the venue, if known. (For example, 'arts_entertainment/default', 'arts_entertainment/aquarium' or 'food/icecream'.)
         :param google_place_id: Google Places identifier of the venue
@@ -1134,6 +1201,7 @@ class ChatMemberUpdated(TelegramObject):
         :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param allow_paid_broadcast: Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
         :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
+        :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined.
         :param reply_parameters: Description of the message to reply to
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
@@ -1153,6 +1221,7 @@ class ChatMemberUpdated(TelegramObject):
             address=address,
             business_connection_id=business_connection_id,
             message_thread_id=message_thread_id,
+            direct_messages_topic_id=direct_messages_topic_id,
             foursquare_id=foursquare_id,
             foursquare_type=foursquare_type,
             google_place_id=google_place_id,
@@ -1161,6 +1230,7 @@ class ChatMemberUpdated(TelegramObject):
             protect_content=protect_content,
             allow_paid_broadcast=allow_paid_broadcast,
             message_effect_id=message_effect_id,
+            suggested_post_parameters=suggested_post_parameters,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -1173,6 +1243,7 @@ class ChatMemberUpdated(TelegramObject):
         video: InputFileUnion,
         business_connection_id: Optional[str] = None,
         message_thread_id: Optional[int] = None,
+        direct_messages_topic_id: Optional[int] = None,
         duration: Optional[int] = None,
         width: Optional[int] = None,
         height: Optional[int] = None,
@@ -1191,6 +1262,7 @@ class ChatMemberUpdated(TelegramObject):
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
         allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
+        suggested_post_parameters: Optional[SuggestedPostParameters] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[ReplyMarkupUnion] = None,
         allow_sending_without_reply: Optional[bool] = None,
@@ -1210,6 +1282,7 @@ class ChatMemberUpdated(TelegramObject):
         :param video: Video to send. Pass a file_id as String to send a video that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a video from the Internet, or upload a new video using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`
         :param business_connection_id: Unique identifier of the business connection on behalf of which the message will be sent
         :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
+        :param direct_messages_topic_id: Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat
         :param duration: Duration of sent video in seconds
         :param width: Video width
         :param height: Video height
@@ -1226,6 +1299,7 @@ class ChatMemberUpdated(TelegramObject):
         :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param allow_paid_broadcast: Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
         :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
+        :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined.
         :param reply_parameters: Description of the message to reply to
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
@@ -1242,6 +1316,7 @@ class ChatMemberUpdated(TelegramObject):
             video=video,
             business_connection_id=business_connection_id,
             message_thread_id=message_thread_id,
+            direct_messages_topic_id=direct_messages_topic_id,
             duration=duration,
             width=width,
             height=height,
@@ -1258,6 +1333,7 @@ class ChatMemberUpdated(TelegramObject):
             protect_content=protect_content,
             allow_paid_broadcast=allow_paid_broadcast,
             message_effect_id=message_effect_id,
+            suggested_post_parameters=suggested_post_parameters,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -1270,6 +1346,7 @@ class ChatMemberUpdated(TelegramObject):
         video_note: InputFileUnion,
         business_connection_id: Optional[str] = None,
         message_thread_id: Optional[int] = None,
+        direct_messages_topic_id: Optional[int] = None,
         duration: Optional[int] = None,
         length: Optional[int] = None,
         thumbnail: Optional[InputFile] = None,
@@ -1277,6 +1354,7 @@ class ChatMemberUpdated(TelegramObject):
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
         allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
+        suggested_post_parameters: Optional[SuggestedPostParameters] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[ReplyMarkupUnion] = None,
         allow_sending_without_reply: Optional[bool] = None,
@@ -1296,6 +1374,7 @@ class ChatMemberUpdated(TelegramObject):
         :param video_note: Video note to send. Pass a file_id as String to send a video note that exists on the Telegram servers (recommended) or upload a new video using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`. Sending video notes by a URL is currently unsupported
         :param business_connection_id: Unique identifier of the business connection on behalf of which the message will be sent
         :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
+        :param direct_messages_topic_id: Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat
         :param duration: Duration of sent video in seconds
         :param length: Video width and height, i.e. diameter of the video message
         :param thumbnail: Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`
@@ -1303,6 +1382,7 @@ class ChatMemberUpdated(TelegramObject):
         :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param allow_paid_broadcast: Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
         :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
+        :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined.
         :param reply_parameters: Description of the message to reply to
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
@@ -1319,6 +1399,7 @@ class ChatMemberUpdated(TelegramObject):
             video_note=video_note,
             business_connection_id=business_connection_id,
             message_thread_id=message_thread_id,
+            direct_messages_topic_id=direct_messages_topic_id,
             duration=duration,
             length=length,
             thumbnail=thumbnail,
@@ -1326,6 +1407,7 @@ class ChatMemberUpdated(TelegramObject):
             protect_content=protect_content,
             allow_paid_broadcast=allow_paid_broadcast,
             message_effect_id=message_effect_id,
+            suggested_post_parameters=suggested_post_parameters,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
             allow_sending_without_reply=allow_sending_without_reply,
@@ -1338,6 +1420,7 @@ class ChatMemberUpdated(TelegramObject):
         voice: InputFileUnion,
         business_connection_id: Optional[str] = None,
         message_thread_id: Optional[int] = None,
+        direct_messages_topic_id: Optional[int] = None,
         caption: Optional[str] = None,
         parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
         caption_entities: Optional[list[MessageEntity]] = None,
@@ -1346,6 +1429,7 @@ class ChatMemberUpdated(TelegramObject):
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
         allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
+        suggested_post_parameters: Optional[SuggestedPostParameters] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[ReplyMarkupUnion] = None,
         allow_sending_without_reply: Optional[bool] = None,
@@ -1365,6 +1449,7 @@ class ChatMemberUpdated(TelegramObject):
         :param voice: Audio file to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`
         :param business_connection_id: Unique identifier of the business connection on behalf of which the message will be sent
         :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
+        :param direct_messages_topic_id: Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat
         :param caption: Voice message caption, 0-1024 characters after entities parsing
         :param parse_mode: Mode for parsing entities in the voice message caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.
         :param caption_entities: A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*
@@ -1373,6 +1458,7 @@ class ChatMemberUpdated(TelegramObject):
         :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param allow_paid_broadcast: Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
         :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
+        :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined.
         :param reply_parameters: Description of the message to reply to
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
@@ -1389,6 +1475,7 @@ class ChatMemberUpdated(TelegramObject):
             voice=voice,
             business_connection_id=business_connection_id,
             message_thread_id=message_thread_id,
+            direct_messages_topic_id=direct_messages_topic_id,
             caption=caption,
             parse_mode=parse_mode,
             caption_entities=caption_entities,
@@ -1397,6 +1484,7 @@ class ChatMemberUpdated(TelegramObject):
             protect_content=protect_content,
             allow_paid_broadcast=allow_paid_broadcast,
             message_effect_id=message_effect_id,
+            suggested_post_parameters=suggested_post_parameters,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
             allow_sending_without_reply=allow_sending_without_reply,

@@ -1,0 +1,33 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "directmessagestopic",
+    "name": "DirectMessagesTopic",
+    "description": "Describes a topic of a direct messages chat.",
+    "html_description": "<p>Describes a topic of a direct messages chat.</p>",
+    "rst_description": "Describes a topic of a direct messages chat.",
+    "annotations": [
+      {
+        "type": "Integer",
+        "description": "Unique identifier of the topic",
+        "html_description": "<td>Unique identifier of the topic</td>",
+        "rst_description": "Unique identifier of the topic\n",
+        "name": "topic_id",
+        "required": true
+      },
+      {
+        "type": "User",
+        "description": "Information about the user that created the topic. Currently, it is always present",
+        "html_description": "<td><em>Optional</em>. Information about the user that created the topic. Currently, it is always present</td>",
+        "rst_description": "*Optional*. Information about the user that created the topic. Currently, it is always present\n",
+        "name": "user",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}
