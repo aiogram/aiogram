@@ -2,10 +2,10 @@ import base64
 from operator import itemgetter
 from urllib.parse import parse_qsl
 
-from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PublicKey
 from cryptography.exceptions import InvalidSignature
+from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PublicKey
 
-from .web_app import parse_webapp_init_data, WebAppInitData
+from .web_app import WebAppInitData, parse_webapp_init_data
 
 PRODUCTION_PUBLIC_KEY = bytes.fromhex(
     "e7bf03a2fa4602af4580703d88dda5bb59f32ed8b02a56c187fe7d34caed242d"
