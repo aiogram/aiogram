@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, Optional
 
 from .base import TelegramObject
+from .custom import DateTime
 
 if TYPE_CHECKING:
     from .suggested_post_price import SuggestedPostPrice
@@ -17,7 +18,7 @@ class SuggestedPostParameters(TelegramObject):
 
     price: Optional[SuggestedPostPrice] = None
     """*Optional*. Proposed price for the post. If the field is omitted, then the post is unpaid."""
-    send_date: Optional[int] = None
+    send_date: Optional[DateTime] = None
     """*Optional*. Proposed send date of the post. If specified, then the date must be between 300 second and 2678400 seconds (30 days) in the future. If the field is omitted, then the post can be published at any time within 30 days at the sole discretion of the user who approves it."""
 
     if TYPE_CHECKING:
@@ -28,7 +29,7 @@ class SuggestedPostParameters(TelegramObject):
             __pydantic__self__,
             *,
             price: Optional[SuggestedPostPrice] = None,
-            send_date: Optional[int] = None,
+            send_date: Optional[DateTime] = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, Optional
 
 from .base import TelegramObject
+from .custom import DateTime
 
 if TYPE_CHECKING:
     from .message import Message
@@ -16,7 +17,7 @@ class SuggestedPostApproved(TelegramObject):
     Source: https://core.telegram.org/bots/api#suggestedpostapproved
     """
 
-    send_date: int
+    send_date: DateTime
     """Date when the post will be published"""
     suggested_post_message: Optional[Message] = None
     """*Optional*. Message containing the suggested post. Note that the :class:`aiogram.types.message.Message` object in this field will not contain the *reply_to_message* field even if it itself is a reply."""
@@ -30,7 +31,7 @@ class SuggestedPostApproved(TelegramObject):
         def __init__(
             __pydantic__self__,
             *,
-            send_date: int,
+            send_date: DateTime,
             suggested_post_message: Optional[Message] = None,
             price: Optional[SuggestedPostPrice] = None,
             **__pydantic_kwargs: Any,
