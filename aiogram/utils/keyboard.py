@@ -211,12 +211,39 @@ class KeyboardBuilder(Generic[ButtonType], ABC):
         )
         return self
 
+    def _markup_constructor(self, sizes: list, buttons: list, repeat: bool) -> list:
+        """
+        Constructs the keyboard according to the specified parameters.
+
+        :param sizes:
+        :param buttons:
+        :param repeat:
+        :return:
+        """
+        markup = []
+        row: List[ButtonType] = []
+        validated_sizes = map(self._validate_size, sizes)
+        sizes_iter = repeat_all(validated_sizes) if repeat else repeat_last(validated_sizes)
+        size = next(sizes_iter)
+
+        for button in buttons:
+            if len(row) >= size:
+                markup.append(row)
+                size = next(sizes_iter)
+                row = []
+            row.append(button)
+
+        if row:
+            markup.append(row)
+        return markup
+
     def adjust(self, *sizes: int, repeat: bool = False) -> "KeyboardBuilder[ButtonType]":
         """
         Adjust previously added buttons to specific row sizes.
 
         By default, when the sum of passed sizes is lower than buttons count the last
         one size will be used for tail of the markup.
+        If size is negative - it will be used for the last buttons. Negative values are more important than positive ones.
         If repeat=True is passed - all sizes will be cycled when available more buttons
         count than all sizes
 
@@ -224,23 +251,31 @@ class KeyboardBuilder(Generic[ButtonType], ABC):
         :param repeat:
         :return:
         """
-        if not sizes:
-            sizes = (self.max_width,)
-
-        validated_sizes = map(self._validate_size, sizes)
-        sizes_iter = repeat_all(validated_sizes) if repeat else repeat_last(validated_sizes)
-        size = next(sizes_iter)
-
+        if sizes:
+            negative_sizes = [-size for size in sizes if size < 0]
+            positive_sizes = (
+                [size for size in sizes if size >= 0]
+                if len(negative_sizes) != len(sizes)
+                else (self.max_width,)
+            )
+        else:
+            positive_sizes = (self.max_width,)
+            negative_sizes = []
         markup = []
-        row: List[ButtonType] = []
-        for button in self.buttons:
-            if len(row) >= size:
-                markup.append(row)
-                size = next(sizes_iter)
-                row = []
-            row.append(button)
-        if row:
-            markup.append(row)
+        buttons = list(self.buttons)
+
+        if positive_sizes:
+            markup.extend(
+                self._markup_constructor(
+                    positive_sizes,
+                    buttons[: -sum(negative_sizes)] if negative_sizes else buttons,
+                    repeat,
+                )
+            )
+        if negative_sizes:
+            markup.extend(
+                self._markup_constructor(negative_sizes, buttons[-sum(negative_sizes) :], repeat)
+            )
         self._markup = markup
         return self
 
