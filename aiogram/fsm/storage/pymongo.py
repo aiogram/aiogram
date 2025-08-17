@@ -1,6 +1,6 @@
 from typing import Any, Dict, Mapping, Optional, cast
 
-from motor.motor_asyncio import AsyncIOMotorClient
+from pymongo import AsyncMongoClient
 
 from aiogram.exceptions import DataNotDictLikeError
 from aiogram.fsm.state import State
@@ -13,26 +13,20 @@ from aiogram.fsm.storage.base import (
 )
 
 
-class MongoStorage(BaseStorage):
+class PyMongoStorage(BaseStorage):
     """
-
-    .. warning::
-        DEPRECATED: Use :class:`PyMongoStorage` instead.
-        This class will be removed in future versions.
-
-
-    MongoDB storage required :code:`motor` package installed (:code:`pip install motor`)
+    MongoDB storage required :code:`pymongo` package installed (:code:`pip install pymongo`).
     """
 
     def __init__(
         self,
-        client: AsyncIOMotorClient,
+        client: AsyncMongoClient[Any],
         key_builder: Optional[KeyBuilder] = None,
         db_name: str = "aiogram_fsm",
         collection_name: str = "states_and_data",
     ) -> None:
         """
-        :param client: Instance of AsyncIOMotorClient
+        :param client: Instance of AsyncMongoClient
         :param key_builder: builder that helps to convert contextual key to string
         :param db_name: name of the MongoDB database for FSM
         :param collection_name: name of the collection for storing FSM states and data
@@ -47,23 +41,23 @@ class MongoStorage(BaseStorage):
     @classmethod
     def from_url(
         cls, url: str, connection_kwargs: Optional[Dict[str, Any]] = None, **kwargs: Any
-    ) -> "MongoStorage":
+    ) -> "PyMongoStorage":
         """
-        Create an instance of :class:`MongoStorage` with specifying the connection string
+        Create an instance of :class:`PyMongoStorage` with specifying the connection string
 
         :param url: for example :code:`mongodb://user:password@host:port`
-        :param connection_kwargs: see :code:`motor` docs
-        :param kwargs: arguments to be passed to :class:`MongoStorage`
-        :return: an instance of :class:`MongoStorage`
+        :param connection_kwargs: see :code:`pymongo` docs
+        :param kwargs: arguments to be passed to :class:`PyMongoStorage`
+        :return: an instance of :class:`PyMongoStorage`
         """
         if connection_kwargs is None:
             connection_kwargs = {}
-        client = AsyncIOMotorClient(url, **connection_kwargs)
+        client: AsyncMongoClient[Any] = AsyncMongoClient(url, **connection_kwargs)
         return cls(client=client, **kwargs)
 
     async def close(self) -> None:
         """Cleanup client resources and disconnect from MongoDB."""
-        self._client.close()
+        return await self._client.close()
 
     def resolve_state(self, value: StateType) -> Optional[str]:
         if value is None:
@@ -95,7 +89,7 @@ class MongoStorage(BaseStorage):
         document = await self._collection.find_one({"_id": document_id})
         if document is None:
             return None
-        return document.get("state")
+        return cast(Optional[str], document.get("state"))
 
     async def set_data(self, key: StorageKey, data: Mapping[str, Any]) -> None:
         if not isinstance(data, dict):
@@ -139,4 +133,4 @@ class MongoStorage(BaseStorage):
         )
         if not update_result:
             await self._collection.delete_one({"_id": document_id})
-        return update_result.get("data", {})
+        return cast(Dict[str, Any], update_result.get("data", {}))
