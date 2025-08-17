@@ -20,7 +20,7 @@ class SendGame(TelegramMethod[Message]):
     __api_method__ = "sendGame"
 
     chat_id: int
-    """Unique identifier for the target chat"""
+    """Unique identifier for the target chat. Games can't be sent to channel direct messages chats and channel chats."""
     game_short_name: str
     """Short name of the game, serves as the unique identifier for the game. Set up your games via `@BotFather <https://t.me/botfather>`_."""
     business_connection_id: Optional[str] = None

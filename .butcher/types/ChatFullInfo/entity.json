@@ -68,6 +68,14 @@
         "required": false
       },
       {
+        "type": "True",
+        "description": "True, if the chat is the direct messages chat of a channel",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the chat is the direct messages chat of a channel</td>",
+        "rst_description": "*Optional*. :code:`True`, if the chat is the direct messages chat of a channel\n",
+        "name": "is_direct_messages",
+        "required": false
+      },
+      {
         "type": "Integer",
         "description": "Identifier of the accent color for the chat name and backgrounds of the chat photo, reply header, and link preview. See accent colors for more details.",
         "html_description": "<td>Identifier of the accent color for the chat name and backgrounds of the chat photo, reply header, and link preview. See <a href=\"#accent-colors\">accent colors</a> for more details.</td>",
@@ -137,6 +145,14 @@
         "html_description": "<td><em>Optional</em>. For private chats, the personal channel of the user</td>",
         "rst_description": "*Optional*. For private chats, the personal channel of the user\n",
         "name": "personal_chat",
+        "required": false
+      },
+      {
+        "type": "Chat",
+        "description": "Information about the corresponding channel chat; for direct messages chats only",
+        "html_description": "<td><em>Optional</em>. Information about the corresponding channel chat; for direct messages chats only</td>",
+        "rst_description": "*Optional*. Information about the corresponding channel chat; for direct messages chats only\n",
+        "name": "parent_chat",
         "required": false
       },
       {

@@ -7,9 +7,9 @@
   "object": {
     "anchor": "sendmediagroup",
     "name": "sendMediaGroup",
-    "description": "Use this method to send a group of photos, videos, documents or audios as an album. Documents and audio files can be only grouped in an album with messages of the same type. On success, an array of Messages that were sent is returned.",
-    "html_description": "<p>Use this method to send a group of photos, videos, documents or audios as an album. Documents and audio files can be only grouped in an album with messages of the same type. On success, an array of <a href=\"#message\">Messages</a> that were sent is returned.</p>",
-    "rst_description": "Use this method to send a group of photos, videos, documents or audios as an album. Documents and audio files can be only grouped in an album with messages of the same type. On success, an array of `Messages <https://core.telegram.org/bots/api#message>`_ that were sent is returned.",
+    "description": "Use this method to send a group of photos, videos, documents or audios as an album. Documents and audio files can be only grouped in an album with messages of the same type. On success, an array of Message objects that were sent is returned.",
+    "html_description": "<p>Use this method to send a group of photos, videos, documents or audios as an album. Documents and audio files can be only grouped in an album with messages of the same type. On success, an array of <a href=\"#message\">Message</a> objects that were sent is returned.</p>",
+    "rst_description": "Use this method to send a group of photos, videos, documents or audios as an album. Documents and audio files can be only grouped in an album with messages of the same type. On success, an array of :class:`aiogram.types.message.Message` objects that were sent is returned.",
     "annotations": [
       {
         "type": "String",
@@ -34,6 +34,14 @@
         "html_description": "<td>Unique identifier for the target message thread (topic) of the forum; for forum supergroups only</td>",
         "rst_description": "Unique identifier for the target message thread (topic) of the forum; for forum supergroups only\n",
         "name": "message_thread_id"
+      },
+      {
+        "type": "Integer",
+        "required": false,
+        "description": "Identifier of the direct messages topic to which the messages will be sent; required if the messages are sent to a direct messages chat",
+        "html_description": "<td>Identifier of the direct messages topic to which the messages will be sent; required if the messages are sent to a direct messages chat</td>",
+        "rst_description": "Identifier of the direct messages topic to which the messages will be sent; required if the messages are sent to a direct messages chat\n",
+        "name": "direct_messages_topic_id"
       },
       {
         "type": "Array of InputMediaAudio, InputMediaDocument, InputMediaPhoto and InputMediaVideo",

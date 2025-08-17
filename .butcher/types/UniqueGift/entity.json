@@ -58,6 +58,14 @@
         "rst_description": "Backdrop of the gift\n",
         "name": "backdrop",
         "required": true
+      },
+      {
+        "type": "Chat",
+        "description": "Information about the chat that published the gift",
+        "html_description": "<td><em>Optional</em>. Information about the chat that published the gift</td>",
+        "rst_description": "*Optional*. Information about the chat that published the gift\n",
+        "name": "publisher_chat",
+        "required": false
       }
     ],
     "category": "types"

@@ -58,6 +58,14 @@
         "rst_description": "*Optional*. The number of remaining gifts of this type that can be sent; for limited gifts only\n",
         "name": "remaining_count",
         "required": false
+      },
+      {
+        "type": "Chat",
+        "description": "Information about the chat that published the gift",
+        "html_description": "<td><em>Optional</em>. Information about the chat that published the gift</td>",
+        "rst_description": "*Optional*. Information about the chat that published the gift\n",
+        "name": "publisher_chat",
+        "required": false
       }
     ],
     "category": "types"

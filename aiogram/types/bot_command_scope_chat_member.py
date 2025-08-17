@@ -19,7 +19,7 @@ class BotCommandScopeChatMember(BotCommandScope):
     type: Literal[BotCommandScopeType.CHAT_MEMBER] = BotCommandScopeType.CHAT_MEMBER
     """Scope type, must be *chat_member*"""
     chat_id: ChatIdUnion
-    """Unique identifier for the target chat or username of the target supergroup (in the format :code:`@supergroupusername`)"""
+    """Unique identifier for the target chat or username of the target supergroup (in the format :code:`@supergroupusername`). Channel direct messages chats and channel chats aren't supported."""
     user_id: int
     """Unique identifier of the target user"""
 

@@ -13,6 +13,7 @@ from ..types import (
     MessageEntity,
     ReplyMarkupUnion,
     ReplyParameters,
+    SuggestedPostParameters,
 )
 from .base import TelegramMethod
 
@@ -35,6 +36,8 @@ class SendDocument(TelegramMethod[Message]):
     """Unique identifier of the business connection on behalf of which the message will be sent"""
     message_thread_id: Optional[int] = None
     """Unique identifier for the target message thread (topic) of the forum; for forum supergroups only"""
+    direct_messages_topic_id: Optional[int] = None
+    """Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat"""
     thumbnail: Optional[InputFile] = None
     """Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`"""
     caption: Optional[str] = None
@@ -53,6 +56,8 @@ class SendDocument(TelegramMethod[Message]):
     """Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance"""
     message_effect_id: Optional[str] = None
     """Unique identifier of the message effect to be added to the message; for private chats only"""
+    suggested_post_parameters: Optional[SuggestedPostParameters] = None
+    """A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined."""
     reply_parameters: Optional[ReplyParameters] = None
     """Description of the message to reply to"""
     reply_markup: Optional[ReplyMarkupUnion] = None
@@ -81,6 +86,7 @@ class SendDocument(TelegramMethod[Message]):
             document: InputFileUnion,
             business_connection_id: Optional[str] = None,
             message_thread_id: Optional[int] = None,
+            direct_messages_topic_id: Optional[int] = None,
             thumbnail: Optional[InputFile] = None,
             caption: Optional[str] = None,
             parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
@@ -90,6 +96,7 @@ class SendDocument(TelegramMethod[Message]):
             protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
             allow_paid_broadcast: Optional[bool] = None,
             message_effect_id: Optional[str] = None,
+            suggested_post_parameters: Optional[SuggestedPostParameters] = None,
             reply_parameters: Optional[ReplyParameters] = None,
             reply_markup: Optional[ReplyMarkupUnion] = None,
             allow_sending_without_reply: Optional[bool] = None,
@@ -105,6 +112,7 @@ class SendDocument(TelegramMethod[Message]):
                 document=document,
                 business_connection_id=business_connection_id,
                 message_thread_id=message_thread_id,
+                direct_messages_topic_id=direct_messages_topic_id,
                 thumbnail=thumbnail,
                 caption=caption,
                 parse_mode=parse_mode,
@@ -114,6 +122,7 @@ class SendDocument(TelegramMethod[Message]):
                 protect_content=protect_content,
                 allow_paid_broadcast=allow_paid_broadcast,
                 message_effect_id=message_effect_id,
+                suggested_post_parameters=suggested_post_parameters,
                 reply_parameters=reply_parameters,
                 reply_markup=reply_markup,
                 allow_sending_without_reply=allow_sending_without_reply,

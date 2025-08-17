@@ -30,11 +30,11 @@ class InlineKeyboardButton(MutableTelegramObject):
     login_url: Optional[LoginUrl] = None
     """*Optional*. An HTTPS URL used to automatically authorize the user. Can be used as a replacement for the `Telegram Login Widget <https://core.telegram.org/widgets/login>`_."""
     switch_inline_query: Optional[str] = None
-    """*Optional*. If set, pressing the button will prompt the user to select one of their chats, open that chat and insert the bot's username and the specified inline query in the input field. May be empty, in which case just the bot's username will be inserted. Not supported for messages sent on behalf of a Telegram Business account."""
+    """*Optional*. If set, pressing the button will prompt the user to select one of their chats, open that chat and insert the bot's username and the specified inline query in the input field. May be empty, in which case just the bot's username will be inserted. Not supported for messages sent in channel direct messages chats and on behalf of a Telegram Business account."""
     switch_inline_query_current_chat: Optional[str] = None
     """*Optional*. If set, pressing the button will insert the bot's username and the specified inline query in the current chat's input field. May be empty, in which case only the bot's username will be inserted."""
     switch_inline_query_chosen_chat: Optional[SwitchInlineQueryChosenChat] = None
-    """*Optional*. If set, pressing the button will prompt the user to select one of their chats of the specified type, open that chat and insert the bot's username and the specified inline query in the input field. Not supported for messages sent on behalf of a Telegram Business account."""
+    """*Optional*. If set, pressing the button will prompt the user to select one of their chats of the specified type, open that chat and insert the bot's username and the specified inline query in the input field. Not supported for messages sent in channel direct messages chats and on behalf of a Telegram Business account."""
     copy_text: Optional[CopyTextButton] = None
     """*Optional*. Description of the button that copies the specified text to the clipboard."""
     callback_game: Optional[CallbackGame] = None

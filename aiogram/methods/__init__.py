@@ -5,6 +5,7 @@ from .answer_pre_checkout_query import AnswerPreCheckoutQuery
 from .answer_shipping_query import AnswerShippingQuery
 from .answer_web_app_query import AnswerWebAppQuery
 from .approve_chat_join_request import ApproveChatJoinRequest
+from .approve_suggested_post import ApproveSuggestedPost
 from .ban_chat_member import BanChatMember
 from .ban_chat_sender_chat import BanChatSenderChat
 from .base import Request, Response, TelegramMethod
@@ -20,6 +21,7 @@ from .create_forum_topic import CreateForumTopic
 from .create_invoice_link import CreateInvoiceLink
 from .create_new_sticker_set import CreateNewStickerSet
 from .decline_chat_join_request import DeclineChatJoinRequest
+from .decline_suggested_post import DeclineSuggestedPost
 from .delete_business_messages import DeleteBusinessMessages
 from .delete_chat_photo import DeleteChatPhoto
 from .delete_chat_sticker_set import DeleteChatStickerSet
@@ -164,6 +166,7 @@ __all__ = (
     "AnswerShippingQuery",
     "AnswerWebAppQuery",
     "ApproveChatJoinRequest",
+    "ApproveSuggestedPost",
     "BanChatMember",
     "BanChatSenderChat",
     "Close",
@@ -178,6 +181,7 @@ __all__ = (
     "CreateInvoiceLink",
     "CreateNewStickerSet",
     "DeclineChatJoinRequest",
+    "DeclineSuggestedPost",
     "DeleteBusinessMessages",
     "DeleteChatPhoto",
     "DeleteChatStickerSet",

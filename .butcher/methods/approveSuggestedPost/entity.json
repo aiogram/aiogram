@@ -1,0 +1,41 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Updating messages",
+    "anchor": "updating-messages"
+  },
+  "object": {
+    "anchor": "approvesuggestedpost",
+    "name": "approveSuggestedPost",
+    "description": "Use this method to approve a suggested post in a direct messages chat. The bot must have the 'can_post_messages' administrator right in the corresponding channel chat. Returns True on success.",
+    "html_description": "<p>Use this method to approve a suggested post in a direct messages chat. The bot must have the 'can_post_messages' administrator right in the corresponding channel chat. Returns <em>True</em> on success.</p>",
+    "rst_description": "Use this method to approve a suggested post in a direct messages chat. The bot must have the 'can_post_messages' administrator right in the corresponding channel chat. Returns :code:`True` on success.",
+    "annotations": [
+      {
+        "type": "Integer",
+        "required": true,
+        "description": "Unique identifier for the target direct messages chat",
+        "html_description": "<td>Unique identifier for the target direct messages chat</td>",
+        "rst_description": "Unique identifier for the target direct messages chat\n",
+        "name": "chat_id"
+      },
+      {
+        "type": "Integer",
+        "required": true,
+        "description": "Identifier of a suggested post message to approve",
+        "html_description": "<td>Identifier of a suggested post message to approve</td>",
+        "rst_description": "Identifier of a suggested post message to approve\n",
+        "name": "message_id"
+      },
+      {
+        "type": "Integer",
+        "required": false,
+        "description": "Point in time (Unix timestamp) when the post is expected to be published; omit if the date has already been specified when the suggested post was created. If specified, then the date must be not more than 2678400 seconds (30 days) in the future",
+        "html_description": "<td>Point in time (Unix timestamp) when the post is expected to be published; omit if the date has already been specified when the suggested post was created. If specified, then the date must be not more than 2678400 seconds (30 days) in the future</td>",
+        "rst_description": "Point in time (Unix timestamp) when the post is expected to be published; omit if the date has already been specified when the suggested post was created. If specified, then the date must be not more than 2678400 seconds (30 days) in the future\n",
+        "name": "send_date"
+      }
+    ],
+    "category": "methods"
+  }
+}

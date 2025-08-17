@@ -22,6 +22,8 @@ class ForwardMessages(TelegramMethod[list[MessageId]]):
     """A JSON-serialized list of 1-100 identifiers of messages in the chat *from_chat_id* to forward. The identifiers must be specified in a strictly increasing order."""
     message_thread_id: Optional[int] = None
     """Unique identifier for the target message thread (topic) of the forum; for forum supergroups only"""
+    direct_messages_topic_id: Optional[int] = None
+    """Identifier of the direct messages topic to which the messages will be forwarded; required if the messages are forwarded to a direct messages chat"""
     disable_notification: Optional[bool] = None
     """Sends the messages `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound."""
     protect_content: Optional[bool] = None
@@ -38,6 +40,7 @@ class ForwardMessages(TelegramMethod[list[MessageId]]):
             from_chat_id: ChatIdUnion,
             message_ids: list[int],
             message_thread_id: Optional[int] = None,
+            direct_messages_topic_id: Optional[int] = None,
             disable_notification: Optional[bool] = None,
             protect_content: Optional[bool] = None,
             **__pydantic_kwargs: Any,
@@ -51,6 +54,7 @@ class ForwardMessages(TelegramMethod[list[MessageId]]):
                 from_chat_id=from_chat_id,
                 message_ids=message_ids,
                 message_thread_id=message_thread_id,
+                direct_messages_topic_id=direct_messages_topic_id,
                 disable_notification=disable_notification,
                 protect_content=protect_content,
                 **__pydantic_kwargs,

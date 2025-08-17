@@ -78,6 +78,7 @@ Available types
     copy_text_button
     dice
     direct_message_price_changed
+    direct_messages_topic
     document
     external_reply_info
     file
@@ -178,6 +179,14 @@ Available types
     story_area_type_suggested_reaction
     story_area_type_unique_gift
     story_area_type_weather
+    suggested_post_approval_failed
+    suggested_post_approved
+    suggested_post_declined
+    suggested_post_info
+    suggested_post_paid
+    suggested_post_parameters
+    suggested_post_price
+    suggested_post_refunded
     switch_inline_query_chosen_chat
     text_quote
     unique_gift

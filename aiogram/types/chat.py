@@ -72,6 +72,8 @@ class Chat(TelegramObject):
     """*Optional*. Last name of the other party in a private chat"""
     is_forum: Optional[bool] = None
     """*Optional*. :code:`True`, if the supergroup chat is a forum (has `topics <https://telegram.org/blog/topics-in-groups-collectible-usernames#topics-in-groups>`_ enabled)"""
+    is_direct_messages: Optional[bool] = None
+    """*Optional*. :code:`True`, if the chat is the direct messages chat of a channel"""
     accent_color_id: Optional[int] = Field(None, json_schema_extra={"deprecated": True})
     """*Optional*. Identifier of the accent color for the chat name and backgrounds of the chat photo, reply header, and link preview. See `accent colors <https://core.telegram.org/bots/api#accent-colors>`_ for more details. Returned only in :class:`aiogram.methods.get_chat.GetChat`. Always returned in :class:`aiogram.methods.get_chat.GetChat`.
 
@@ -280,6 +282,7 @@ class Chat(TelegramObject):
             first_name: Optional[str] = None,
             last_name: Optional[str] = None,
             is_forum: Optional[bool] = None,
+            is_direct_messages: Optional[bool] = None,
             accent_color_id: Optional[int] = None,
             active_usernames: Optional[list[str]] = None,
             available_reactions: Optional[list[ReactionTypeUnion]] = None,
@@ -329,6 +332,7 @@ class Chat(TelegramObject):
                 first_name=first_name,
                 last_name=last_name,
                 is_forum=is_forum,
+                is_direct_messages=is_direct_messages,
                 accent_color_id=accent_color_id,
                 active_usernames=active_usernames,
                 available_reactions=available_reactions,
@@ -509,7 +513,9 @@ class Chat(TelegramObject):
 
         - If the bot is an administrator of a group, it can delete any message there.
 
-        - If the bot has *can_delete_messages* permission in a supergroup or a channel, it can delete any message there.
+        - If the bot has *can_delete_messages* administrator right in a supergroup or a channel, it can delete any message there.
+
+        - If the bot has *can_manage_direct_messages* administrator right in a channel, it can delete any message in the corresponding direct messages chat.
 
         Returns :code:`True` on success.
 
@@ -850,7 +856,7 @@ class Chat(TelegramObject):
 
         - :code:`chat_id`
 
-        Use this method to clear the list of pinned messages in a chat. If the chat is not a private chat, the bot must be an administrator in the chat for this to work and must have the 'can_pin_messages' administrator right in a supergroup or 'can_edit_messages' administrator right in a channel. Returns :code:`True` on success.
+        Use this method to clear the list of pinned messages in a chat. In private chats and channel direct messages chats, no additional rights are required to unpin all pinned messages. Conversely, the bot must be an administrator with the 'can_pin_messages' right or the 'can_edit_messages' right to unpin all pinned messages in groups and channels respectively. Returns :code:`True` on success.
 
         Source: https://core.telegram.org/bots/api#unpinallchatmessages
 
@@ -878,7 +884,7 @@ class Chat(TelegramObject):
 
         - :code:`chat_id`
 
-        Use this method to remove a message from the list of pinned messages in a chat. If the chat is not a private chat, the bot must be an administrator in the chat for this to work and must have the 'can_pin_messages' administrator right in a supergroup or 'can_edit_messages' administrator right in a channel. Returns :code:`True` on success.
+        Use this method to remove a message from the list of pinned messages in a chat. In private chats and channel direct messages chats, all messages can be unpinned. Conversely, the bot must be an administrator with the 'can_pin_messages' right or the 'can_edit_messages' right to unpin messages in groups and channels respectively. Returns :code:`True` on success.
 
         Source: https://core.telegram.org/bots/api#unpinchatmessage
 
@@ -911,7 +917,7 @@ class Chat(TelegramObject):
 
         - :code:`chat_id`
 
-        Use this method to add a message to the list of pinned messages in a chat. If the chat is not a private chat, the bot must be an administrator in the chat for this to work and must have the 'can_pin_messages' administrator right in a supergroup or 'can_edit_messages' administrator right in a channel. Returns :code:`True` on success.
+        Use this method to add a message to the list of pinned messages in a chat. In private chats and channel direct messages chats, all non-service messages can be pinned. Conversely, the bot must be an administrator with the 'can_pin_messages' right or the 'can_edit_messages' right to pin messages in groups and channels respectively. Returns :code:`True` on success.
 
         Source: https://core.telegram.org/bots/api#pinchatmessage
 
@@ -1015,6 +1021,7 @@ class Chat(TelegramObject):
         can_edit_messages: Optional[bool] = None,
         can_pin_messages: Optional[bool] = None,
         can_manage_topics: Optional[bool] = None,
+        can_manage_direct_messages: Optional[bool] = None,
         **kwargs: Any,
     ) -> PromoteChatMember:
         """
@@ -1043,6 +1050,7 @@ class Chat(TelegramObject):
         :param can_edit_messages: Pass :code:`True` if the administrator can edit messages of other users and can pin messages; for channels only
         :param can_pin_messages: Pass :code:`True` if the administrator can pin messages; for supergroups only
         :param can_manage_topics: Pass :code:`True` if the user is allowed to create, rename, close, and reopen forum topics; for supergroups only
+        :param can_manage_direct_messages: Pass :code:`True` if the administrator can manage direct messages within the channel and decline suggested posts; for channels only
         :return: instance of method :class:`aiogram.methods.promote_chat_member.PromoteChatMember`
         """
         # DO NOT EDIT MANUALLY!!!
@@ -1068,6 +1076,7 @@ class Chat(TelegramObject):
             can_edit_messages=can_edit_messages,
             can_pin_messages=can_pin_messages,
             can_manage_topics=can_manage_topics,
+            can_manage_direct_messages=can_manage_direct_messages,
             **kwargs,
         ).as_(self._bot)
 

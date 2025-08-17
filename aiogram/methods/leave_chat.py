@@ -17,7 +17,7 @@ class LeaveChat(TelegramMethod[bool]):
     __api_method__ = "leaveChat"
 
     chat_id: ChatIdUnion
-    """Unique identifier for the target chat or username of the target supergroup or channel (in the format :code:`@channelusername`)"""
+    """Unique identifier for the target chat or username of the target supergroup or channel (in the format :code:`@channelusername`). Channel direct messages chats aren't supported; leave the corresponding channel instead."""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!

@@ -52,6 +52,8 @@ class ChatMemberAdministrator(ChatMember):
     """*Optional*. :code:`True`, if the user is allowed to pin messages; for groups and supergroups only"""
     can_manage_topics: Optional[bool] = None
     """*Optional*. :code:`True`, if the user is allowed to create, rename, close, and reopen forum topics; for supergroups only"""
+    can_manage_direct_messages: Optional[bool] = None
+    """*Optional*. :code:`True`, if the administrator can manage direct messages of the channel and decline suggested posts; for channels only"""
     custom_title: Optional[str] = None
     """*Optional*. Custom title for this user"""
 
@@ -80,6 +82,7 @@ class ChatMemberAdministrator(ChatMember):
             can_edit_messages: Optional[bool] = None,
             can_pin_messages: Optional[bool] = None,
             can_manage_topics: Optional[bool] = None,
+            can_manage_direct_messages: Optional[bool] = None,
             custom_title: Optional[str] = None,
             **__pydantic_kwargs: Any,
         ) -> None:
@@ -106,6 +109,7 @@ class ChatMemberAdministrator(ChatMember):
                 can_edit_messages=can_edit_messages,
                 can_pin_messages=can_pin_messages,
                 can_manage_topics=can_manage_topics,
+                can_manage_direct_messages=can_manage_direct_messages,
                 custom_title=custom_title,
                 **__pydantic_kwargs,
             )

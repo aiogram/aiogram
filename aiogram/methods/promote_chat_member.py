@@ -50,6 +50,8 @@ class PromoteChatMember(TelegramMethod[bool]):
     """Pass :code:`True` if the administrator can pin messages; for supergroups only"""
     can_manage_topics: Optional[bool] = None
     """Pass :code:`True` if the user is allowed to create, rename, close, and reopen forum topics; for supergroups only"""
+    can_manage_direct_messages: Optional[bool] = None
+    """Pass :code:`True` if the administrator can manage direct messages within the channel and decline suggested posts; for channels only"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!
@@ -75,6 +77,7 @@ class PromoteChatMember(TelegramMethod[bool]):
             can_edit_messages: Optional[bool] = None,
             can_pin_messages: Optional[bool] = None,
             can_manage_topics: Optional[bool] = None,
+            can_manage_direct_messages: Optional[bool] = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!
@@ -99,5 +102,6 @@ class PromoteChatMember(TelegramMethod[bool]):
                 can_edit_messages=can_edit_messages,
                 can_pin_messages=can_pin_messages,
                 can_manage_topics=can_manage_topics,
+                can_manage_direct_messages=can_manage_direct_messages,
                 **__pydantic_kwargs,
             )

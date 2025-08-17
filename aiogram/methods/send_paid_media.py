@@ -9,6 +9,7 @@ from ..types import (
     MessageEntity,
     ReplyMarkupUnion,
     ReplyParameters,
+    SuggestedPostParameters,
 )
 from .base import TelegramMethod
 
@@ -31,6 +32,10 @@ class SendPaidMedia(TelegramMethod[Message]):
     """A JSON-serialized array describing the media to be sent; up to 10 items"""
     business_connection_id: Optional[str] = None
     """Unique identifier of the business connection on behalf of which the message will be sent"""
+    message_thread_id: Optional[int] = None
+    """Unique identifier for the target message thread (topic) of the forum; for forum supergroups only"""
+    direct_messages_topic_id: Optional[int] = None
+    """Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat"""
     payload: Optional[str] = None
     """Bot-defined paid media payload, 0-128 bytes. This will not be displayed to the user, use it for your internal processes."""
     caption: Optional[str] = None
@@ -47,6 +52,8 @@ class SendPaidMedia(TelegramMethod[Message]):
     """Protects the contents of the sent message from forwarding and saving"""
     allow_paid_broadcast: Optional[bool] = None
     """Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance"""
+    suggested_post_parameters: Optional[SuggestedPostParameters] = None
+    """A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined."""
     reply_parameters: Optional[ReplyParameters] = None
     """Description of the message to reply to"""
     reply_markup: Optional[ReplyMarkupUnion] = None
@@ -63,6 +70,8 @@ class SendPaidMedia(TelegramMethod[Message]):
             star_count: int,
             media: list[InputPaidMediaUnion],
             business_connection_id: Optional[str] = None,
+            message_thread_id: Optional[int] = None,
+            direct_messages_topic_id: Optional[int] = None,
             payload: Optional[str] = None,
             caption: Optional[str] = None,
             parse_mode: Optional[str] = None,
@@ -71,6 +80,7 @@ class SendPaidMedia(TelegramMethod[Message]):
             disable_notification: Optional[bool] = None,
             protect_content: Optional[bool] = None,
             allow_paid_broadcast: Optional[bool] = None,
+            suggested_post_parameters: Optional[SuggestedPostParameters] = None,
             reply_parameters: Optional[ReplyParameters] = None,
             reply_markup: Optional[ReplyMarkupUnion] = None,
             **__pydantic_kwargs: Any,
@@ -84,6 +94,8 @@ class SendPaidMedia(TelegramMethod[Message]):
                 star_count=star_count,
                 media=media,
                 business_connection_id=business_connection_id,
+                message_thread_id=message_thread_id,
+                direct_messages_topic_id=direct_messages_topic_id,
                 payload=payload,
                 caption=caption,
                 parse_mode=parse_mode,
@@ -92,6 +104,7 @@ class SendPaidMedia(TelegramMethod[Message]):
                 disable_notification=disable_notification,
                 protect_content=protect_content,
                 allow_paid_broadcast=allow_paid_broadcast,
+                suggested_post_parameters=suggested_post_parameters,
                 reply_parameters=reply_parameters,
                 reply_markup=reply_markup,
                 **__pydantic_kwargs,

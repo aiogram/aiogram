@@ -44,3 +44,7 @@ extract:
     - effect_id
     - show_caption_above_media
     - paid_star_count
+    - direct_messages_topic
+    - reply_to_checklist_task_id
+    - suggested_post_info
+    - is_paid_post

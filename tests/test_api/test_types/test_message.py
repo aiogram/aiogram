@@ -91,6 +91,12 @@ from aiogram.types import (
     Sticker,
     Story,
     SuccessfulPayment,
+    SuggestedPostApprovalFailed,
+    SuggestedPostApproved,
+    SuggestedPostDeclined,
+    SuggestedPostPaid,
+    SuggestedPostPrice,
+    SuggestedPostRefunded,
     UniqueGift,
     UniqueGiftBackdrop,
     UniqueGiftBackdropColors,
@@ -759,6 +765,45 @@ TEST_MESSAGE_PAID_MESSAGE_PRICE_CHANGED = Message(
         paid_message_star_count=100,
     ),
 )
+TEST_MESSAGE_SUGGESTED_POST_APPROVED = Message(
+    message_id=42,
+    date=datetime.datetime.now(),
+    chat=Chat(id=42, type="private"),
+    from_user=User(id=42, is_bot=False, first_name="Test"),
+    suggested_post_approved=SuggestedPostApproved(
+        send_date=1234567890,
+    ),
+)
+TEST_MESSAGE_SUGGESTED_POST_APPROVAL_FAILED = Message(
+    message_id=42,
+    date=datetime.datetime.now(),
+    chat=Chat(id=42, type="private"),
+    from_user=User(id=42, is_bot=False, first_name="Test"),
+    suggested_post_approval_failed=SuggestedPostApprovalFailed(
+        price=SuggestedPostPrice(currency="XTR", amount=100),
+    ),
+)
+TEST_MESSAGE_SUGGESTED_POST_DECLINED = Message(
+    message_id=42,
+    date=datetime.datetime.now(),
+    chat=Chat(id=42, type="private"),
+    from_user=User(id=42, is_bot=False, first_name="Test"),
+    suggested_post_declined=SuggestedPostDeclined(),
+)
+TEST_MESSAGE_SUGGESTED_POST_PAID = Message(
+    message_id=42,
+    date=datetime.datetime.now(),
+    chat=Chat(id=42, type="private"),
+    from_user=User(id=42, is_bot=False, first_name="Test"),
+    suggested_post_paid=SuggestedPostPaid(currency="XTR"),
+)
+TEST_MESSAGE_SUGGESTED_POST_REFUNDED = Message(
+    message_id=42,
+    date=datetime.datetime.now(),
+    chat=Chat(id=42, type="private"),
+    from_user=User(id=42, is_bot=False, first_name="Test"),
+    suggested_post_refunded=SuggestedPostRefunded(reason="post_deleted"),
+)
 
 MESSAGES_AND_CONTENT_TYPES = [
     [TEST_MESSAGE_TEXT, ContentType.TEXT],
@@ -830,6 +875,11 @@ MESSAGES_AND_CONTENT_TYPES = [
     [TEST_MESSAGE_GIFT, ContentType.GIFT],
     [TEST_MESSAGE_UNIQUE_GIFT, ContentType.UNIQUE_GIFT],
     [TEST_MESSAGE_PAID_MESSAGE_PRICE_CHANGED, ContentType.PAID_MESSAGE_PRICE_CHANGED],
+    [TEST_MESSAGE_SUGGESTED_POST_APPROVED, ContentType.SUGGESTED_POST_APPROVED],
+    [TEST_MESSAGE_SUGGESTED_POST_APPROVAL_FAILED, ContentType.SUGGESTED_POST_APPROVAL_FAILED],
+    [TEST_MESSAGE_SUGGESTED_POST_DECLINED, ContentType.SUGGESTED_POST_DECLINED],
+    [TEST_MESSAGE_SUGGESTED_POST_PAID, ContentType.SUGGESTED_POST_PAID],
+    [TEST_MESSAGE_SUGGESTED_POST_REFUNDED, ContentType.SUGGESTED_POST_REFUNDED],
     [TEST_MESSAGE_UNKNOWN, ContentType.UNKNOWN],
 ]
 
@@ -898,6 +948,11 @@ MESSAGES_AND_COPY_METHODS = [
     [TEST_MESSAGE_GIFT, None],
     [TEST_MESSAGE_UNIQUE_GIFT, None],
     [TEST_MESSAGE_PAID_MESSAGE_PRICE_CHANGED, None],
+    [TEST_MESSAGE_SUGGESTED_POST_APPROVED, None],
+    [TEST_MESSAGE_SUGGESTED_POST_APPROVAL_FAILED, None],
+    [TEST_MESSAGE_SUGGESTED_POST_DECLINED, None],
+    [TEST_MESSAGE_SUGGESTED_POST_PAID, None],
+    [TEST_MESSAGE_SUGGESTED_POST_REFUNDED, None],
     [TEST_MESSAGE_UNKNOWN, None],
 ]
 

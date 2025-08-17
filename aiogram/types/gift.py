@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING, Any, Optional
 from .base import TelegramObject
 
 if TYPE_CHECKING:
+    from .chat import Chat
     from .sticker import Sticker
 
 
@@ -27,6 +28,8 @@ class Gift(TelegramObject):
     """*Optional*. The total number of the gifts of this type that can be sent; for limited gifts only"""
     remaining_count: Optional[int] = None
     """*Optional*. The number of remaining gifts of this type that can be sent; for limited gifts only"""
+    publisher_chat: Optional[Chat] = None
+    """*Optional*. Information about the chat that published the gift"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!
@@ -41,6 +44,7 @@ class Gift(TelegramObject):
             upgrade_star_count: Optional[int] = None,
             total_count: Optional[int] = None,
             remaining_count: Optional[int] = None,
+            publisher_chat: Optional[Chat] = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!
@@ -54,5 +58,6 @@ class Gift(TelegramObject):
                 upgrade_star_count=upgrade_star_count,
                 total_count=total_count,
                 remaining_count=remaining_count,
+                publisher_chat=publisher_chat,
                 **__pydantic_kwargs,
             )

@@ -1,8 +1,8 @@
 {
   "meta": {},
   "group": {
-    "title": "Updating messages",
-    "anchor": "updating-messages"
+    "title": "Available methods",
+    "anchor": "available-methods"
   },
   "object": {
     "anchor": "verifychat",
@@ -14,9 +14,9 @@
       {
         "type": "Integer or String",
         "required": true,
-        "description": "Unique identifier for the target chat or username of the target channel (in the format @channelusername)",
-        "html_description": "<td>Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)</td>",
-        "rst_description": "Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)\n",
+        "description": "Unique identifier for the target chat or username of the target channel (in the format @channelusername). Channel direct messages chats can't be verified.",
+        "html_description": "<td>Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>). Channel direct messages chats can't be verified.</td>",
+        "rst_description": "Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`). Channel direct messages chats can't be verified.\n",
         "name": "chat_id"
       },
       {
