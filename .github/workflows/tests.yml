@@ -29,11 +29,11 @@ jobs:
           - macos-latest
           - windows-latest
         python-version:
-          - '3.9'
-          - '3.10'
-          - '3.11'
-          - '3.12'
-          - '3.13'
+          - "3.9"
+          - "3.10"
+          - "3.11"
+          - "3.12"
+          - "3.13"
 
     defaults:
       # Windows sucks. Force use bash instead of PowerShell
@@ -63,7 +63,7 @@ jobs:
 
       - name: Install project dependencies
         run: |
-          pip install -e .[dev,test,redis,mongo,proxy,i18n,fast]
+          pip install -e .[dev,test,redis,mongo,proxy,i18n,fast,signature]
 
       - name: Lint code
         run: |
@@ -81,7 +81,7 @@ jobs:
         if: ${{ env.IS_UBUNTU == 'true' }}
         uses: supercharge/mongodb-github-action@1.10.0
         with:
-          mongodb-version: '7.0'
+          mongodb-version: "7.0"
           mongodb-username: mongo
           mongodb-password: mongo
           mongodb-port: 27017
@@ -111,8 +111,8 @@ jobs:
           - macos-latest
           # - windows-latest
         python-version:
-          - 'pypy3.9'
-          - 'pypy3.10'
+          - "pypy3.9"
+          - "pypy3.10"
 
     defaults:
       # Windows sucks. Force use bash instead of PowerShell
@@ -134,7 +134,7 @@ jobs:
 
       - name: Install project dependencies
         run: |
-          pip install -e .[dev,test,redis,mongo,proxy,i18n,fast]
+          pip install -e .[dev,test,redis,mongo,proxy,i18n,fast,signature]
 
       - name: Run tests
         run: |

@@ -74,6 +74,9 @@ i18n = [
 cli = [
     "aiogram-cli>=1.1.0,<2.0.0",
 ]
+signature = [
+    "cryptography>=43.0.0",
+]
 test = [
     "pytest~=7.4.2",
     "pytest-html~=4.0.2",
