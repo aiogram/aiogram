@@ -19,7 +19,7 @@ class ChecklistTasksAdded(TelegramObject):
     tasks: list[ChecklistTask]
     """List of tasks added to the checklist"""
     checklist_message: Optional[Message] = None
-    """*Optional*. Message containing the checklist to which the tasks were added. Note that the Message object in this field will not contain the *reply_to_message* field even if it itself is a reply."""
+    """*Optional*. Message containing the checklist to which the tasks were added. Note that the :class:`aiogram.types.message.Message` object in this field will not contain the *reply_to_message* field even if it itself is a reply."""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!

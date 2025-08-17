@@ -52,7 +52,7 @@
         "required": false
       },
       {
-        "type": "True",
+        "type": "Boolean",
         "description": "Pass True if other users can mark tasks as done or not done in the checklist",
         "html_description": "<td><em>Optional</em>. Pass <em>True</em> if other users can mark tasks as done or not done in the checklist</td>",
         "rst_description": "*Optional*. Pass :code:`True` if other users can mark tasks as done or not done in the checklist\n",

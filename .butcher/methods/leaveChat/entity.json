@@ -14,9 +14,9 @@
       {
         "type": "Integer or String",
         "required": true,
-        "description": "Unique identifier for the target chat or username of the target supergroup or channel (in the format @channelusername)",
-        "html_description": "<td>Unique identifier for the target chat or username of the target supergroup or channel (in the format <code>@channelusername</code>)</td>",
-        "rst_description": "Unique identifier for the target chat or username of the target supergroup or channel (in the format :code:`@channelusername`)\n",
+        "description": "Unique identifier for the target chat or username of the target supergroup or channel (in the format @channelusername). Channel direct messages chats aren't supported; leave the corresponding channel instead.",
+        "html_description": "<td>Unique identifier for the target chat or username of the target supergroup or channel (in the format <code>@channelusername</code>). Channel direct messages chats aren't supported; leave the corresponding channel instead.</td>",
+        "rst_description": "Unique identifier for the target chat or username of the target supergroup or channel (in the format :code:`@channelusername`). Channel direct messages chats aren't supported; leave the corresponding channel instead.\n",
         "name": "chat_id"
       }
     ],

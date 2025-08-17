@@ -21,9 +21,9 @@
       },
       {
         "type": "Integer or String",
-        "description": "If the message to be replied to is from a different chat, unique identifier for the chat or username of the channel (in the format @channelusername). Not supported for messages sent on behalf of a business account.",
-        "html_description": "<td><em>Optional</em>. If the message to be replied to is from a different chat, unique identifier for the chat or username of the channel (in the format <code>@channelusername</code>). Not supported for messages sent on behalf of a business account.</td>",
-        "rst_description": "*Optional*. If the message to be replied to is from a different chat, unique identifier for the chat or username of the channel (in the format :code:`@channelusername`). Not supported for messages sent on behalf of a business account.\n",
+        "description": "If the message to be replied to is from a different chat, unique identifier for the chat or username of the channel (in the format @channelusername). Not supported for messages sent on behalf of a business account and messages from channel direct messages chats.",
+        "html_description": "<td><em>Optional</em>. If the message to be replied to is from a different chat, unique identifier for the chat or username of the channel (in the format <code>@channelusername</code>). Not supported for messages sent on behalf of a business account and messages from channel direct messages chats.</td>",
+        "rst_description": "*Optional*. If the message to be replied to is from a different chat, unique identifier for the chat or username of the channel (in the format :code:`@channelusername`). Not supported for messages sent on behalf of a business account and messages from channel direct messages chats.\n",
         "name": "chat_id",
         "required": false
       },
@@ -65,6 +65,14 @@
         "html_description": "<td><em>Optional</em>. Position of the quote in the original message in UTF-16 code units</td>",
         "rst_description": "*Optional*. Position of the quote in the original message in UTF-16 code units\n",
         "name": "quote_position",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "Identifier of the specific checklist task to be replied to",
+        "html_description": "<td><em>Optional</em>. Identifier of the specific checklist task to be replied to</td>",
+        "rst_description": "*Optional*. Identifier of the specific checklist task to be replied to\n",
+        "name": "checklist_task_id",
         "required": false
       }
     ],

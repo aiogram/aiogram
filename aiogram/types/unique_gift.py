@@ -1,10 +1,11 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, Optional
 
 from .base import TelegramObject
 
 if TYPE_CHECKING:
+    from .chat import Chat
     from .unique_gift_backdrop import UniqueGiftBackdrop
     from .unique_gift_model import UniqueGiftModel
     from .unique_gift_symbol import UniqueGiftSymbol
@@ -29,6 +30,8 @@ class UniqueGift(TelegramObject):
     """Symbol of the gift"""
     backdrop: UniqueGiftBackdrop
     """Backdrop of the gift"""
+    publisher_chat: Optional[Chat] = None
+    """*Optional*. Information about the chat that published the gift"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!
@@ -43,6 +46,7 @@ class UniqueGift(TelegramObject):
             model: UniqueGiftModel,
             symbol: UniqueGiftSymbol,
             backdrop: UniqueGiftBackdrop,
+            publisher_chat: Optional[Chat] = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!
@@ -56,5 +60,6 @@ class UniqueGift(TelegramObject):
                 model=model,
                 symbol=symbol,
                 backdrop=backdrop,
+                publisher_chat=publisher_chat,
                 **__pydantic_kwargs,
             )

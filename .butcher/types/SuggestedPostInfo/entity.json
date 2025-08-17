@@ -1,0 +1,41 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "suggestedpostinfo",
+    "name": "SuggestedPostInfo",
+    "description": "Contains information about a suggested post.",
+    "html_description": "<p>Contains information about a suggested post.</p>",
+    "rst_description": "Contains information about a suggested post.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "State of the suggested post. Currently, it can be one of 'pending', 'approved', 'declined'.",
+        "html_description": "<td>State of the suggested post. Currently, it can be one of &#8220;pending&#8221;, &#8220;approved&#8221;, &#8220;declined&#8221;.</td>",
+        "rst_description": "State of the suggested post. Currently, it can be one of 'pending', 'approved', 'declined'.\n",
+        "name": "state",
+        "required": true
+      },
+      {
+        "type": "SuggestedPostPrice",
+        "description": "Proposed price of the post. If the field is omitted, then the post is unpaid.",
+        "html_description": "<td><em>Optional</em>. Proposed price of the post. If the field is omitted, then the post is unpaid.</td>",
+        "rst_description": "*Optional*. Proposed price of the post. If the field is omitted, then the post is unpaid.\n",
+        "name": "price",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "Proposed send date of the post. If the field is omitted, then the post can be published at any time within 30 days at the sole discretion of the user or administrator who approves it.",
+        "html_description": "<td><em>Optional</em>. Proposed send date of the post. If the field is omitted, then the post can be published at any time within 30 days at the sole discretion of the user or administrator who approves it.</td>",
+        "rst_description": "*Optional*. Proposed send date of the post. If the field is omitted, then the post can be published at any time within 30 days at the sole discretion of the user or administrator who approves it.\n",
+        "name": "send_date",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

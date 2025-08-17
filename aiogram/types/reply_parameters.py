@@ -20,7 +20,7 @@ class ReplyParameters(TelegramObject):
     message_id: int
     """Identifier of the message that will be replied to in the current chat, or in the chat *chat_id* if it is specified"""
     chat_id: Optional[ChatIdUnion] = None
-    """*Optional*. If the message to be replied to is from a different chat, unique identifier for the chat or username of the channel (in the format :code:`@channelusername`). Not supported for messages sent on behalf of a business account."""
+    """*Optional*. If the message to be replied to is from a different chat, unique identifier for the chat or username of the channel (in the format :code:`@channelusername`). Not supported for messages sent on behalf of a business account and messages from channel direct messages chats."""
     allow_sending_without_reply: Optional[Union[bool, Default]] = Default(
         "allow_sending_without_reply"
     )
@@ -33,6 +33,8 @@ class ReplyParameters(TelegramObject):
     """*Optional*. A JSON-serialized list of special entities that appear in the quote. It can be specified instead of *quote_parse_mode*."""
     quote_position: Optional[int] = None
     """*Optional*. Position of the quote in the original message in UTF-16 code units"""
+    checklist_task_id: Optional[int] = None
+    """*Optional*. Identifier of the specific checklist task to be replied to"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!
@@ -50,6 +52,7 @@ class ReplyParameters(TelegramObject):
             quote_parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
             quote_entities: Optional[list[MessageEntity]] = None,
             quote_position: Optional[int] = None,
+            checklist_task_id: Optional[int] = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!
@@ -64,5 +67,6 @@ class ReplyParameters(TelegramObject):
                 quote_parse_mode=quote_parse_mode,
                 quote_entities=quote_entities,
                 quote_position=quote_position,
+                checklist_task_id=checklist_task_id,
                 **__pydantic_kwargs,
             )

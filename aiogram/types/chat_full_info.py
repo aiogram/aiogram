@@ -47,6 +47,8 @@ class ChatFullInfo(Chat):
     """*Optional*. Last name of the other party in a private chat"""
     is_forum: Optional[bool] = None
     """*Optional*. :code:`True`, if the supergroup chat is a forum (has `topics <https://telegram.org/blog/topics-in-groups-collectible-usernames#topics-in-groups>`_ enabled)"""
+    is_direct_messages: Optional[bool] = None
+    """*Optional*. :code:`True`, if the chat is the direct messages chat of a channel"""
     photo: Optional[ChatPhoto] = None
     """*Optional*. Chat photo"""
     active_usernames: Optional[list[str]] = None
@@ -61,6 +63,8 @@ class ChatFullInfo(Chat):
     """*Optional*. For private chats with business accounts, the opening hours of the business"""
     personal_chat: Optional[Chat] = None
     """*Optional*. For private chats, the personal channel of the user"""
+    parent_chat: Optional[Chat] = None
+    """*Optional*. Information about the corresponding channel chat; for direct messages chats only"""
     available_reactions: Optional[list[ReactionTypeUnion]] = None
     """*Optional*. List of available reactions allowed in the chat. If omitted, then all `emoji reactions <https://core.telegram.org/bots/api#reactiontypeemoji>`_ are allowed."""
     background_custom_emoji_id: Optional[str] = None
@@ -140,6 +144,7 @@ class ChatFullInfo(Chat):
             first_name: Optional[str] = None,
             last_name: Optional[str] = None,
             is_forum: Optional[bool] = None,
+            is_direct_messages: Optional[bool] = None,
             photo: Optional[ChatPhoto] = None,
             active_usernames: Optional[list[str]] = None,
             birthdate: Optional[Birthdate] = None,
@@ -147,6 +152,7 @@ class ChatFullInfo(Chat):
             business_location: Optional[BusinessLocation] = None,
             business_opening_hours: Optional[BusinessOpeningHours] = None,
             personal_chat: Optional[Chat] = None,
+            parent_chat: Optional[Chat] = None,
             available_reactions: Optional[list[ReactionTypeUnion]] = None,
             background_custom_emoji_id: Optional[str] = None,
             profile_accent_color_id: Optional[int] = None,
@@ -193,6 +199,7 @@ class ChatFullInfo(Chat):
                 first_name=first_name,
                 last_name=last_name,
                 is_forum=is_forum,
+                is_direct_messages=is_direct_messages,
                 photo=photo,
                 active_usernames=active_usernames,
                 birthdate=birthdate,
@@ -200,6 +207,7 @@ class ChatFullInfo(Chat):
                 business_location=business_location,
                 business_opening_hours=business_opening_hours,
                 personal_chat=personal_chat,
+                parent_chat=parent_chat,
                 available_reactions=available_reactions,
                 background_custom_emoji_id=background_custom_emoji_id,
                 profile_accent_color_id=profile_accent_color_id,

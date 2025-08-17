@@ -146,6 +146,14 @@
         "html_description": "<td>Pass <em>True</em> if the user is allowed to create, rename, close, and reopen forum topics; for supergroups only</td>",
         "rst_description": "Pass :code:`True` if the user is allowed to create, rename, close, and reopen forum topics; for supergroups only\n",
         "name": "can_manage_topics"
+      },
+      {
+        "type": "Boolean",
+        "required": false,
+        "description": "Pass True if the administrator can manage direct messages within the channel and decline suggested posts; for channels only",
+        "html_description": "<td>Pass <em>True</em> if the administrator can manage direct messages within the channel and decline suggested posts; for channels only</td>",
+        "rst_description": "Pass :code:`True` if the administrator can manage direct messages within the channel and decline suggested posts; for channels only\n",
+        "name": "can_manage_direct_messages"
       }
     ],
     "category": "methods"

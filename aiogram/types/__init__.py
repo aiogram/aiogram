@@ -81,6 +81,7 @@ from .custom import DateTime
 from .date_time_union import DateTimeUnion
 from .dice import Dice
 from .direct_message_price_changed import DirectMessagePriceChanged
+from .direct_messages_topic import DirectMessagesTopic
 from .document import Document
 from .downloadable import Downloadable
 from .encrypted_credentials import EncryptedCredentials
@@ -273,6 +274,14 @@ from .story_area_type_union import StoryAreaTypeUnion
 from .story_area_type_unique_gift import StoryAreaTypeUniqueGift
 from .story_area_type_weather import StoryAreaTypeWeather
 from .successful_payment import SuccessfulPayment
+from .suggested_post_approval_failed import SuggestedPostApprovalFailed
+from .suggested_post_approved import SuggestedPostApproved
+from .suggested_post_declined import SuggestedPostDeclined
+from .suggested_post_info import SuggestedPostInfo
+from .suggested_post_paid import SuggestedPostPaid
+from .suggested_post_parameters import SuggestedPostParameters
+from .suggested_post_price import SuggestedPostPrice
+from .suggested_post_refunded import SuggestedPostRefunded
 from .switch_inline_query_chosen_chat import SwitchInlineQueryChosenChat
 from .text_quote import TextQuote
 from .transaction_partner import TransactionPartner
@@ -390,6 +399,7 @@ __all__ = (
     "DateTimeUnion",
     "Dice",
     "DirectMessagePriceChanged",
+    "DirectMessagesTopic",
     "Document",
     "Downloadable",
     "EncryptedCredentials",
@@ -581,6 +591,14 @@ __all__ = (
     "StoryAreaTypeUniqueGift",
     "StoryAreaTypeWeather",
     "SuccessfulPayment",
+    "SuggestedPostApprovalFailed",
+    "SuggestedPostApproved",
+    "SuggestedPostDeclined",
+    "SuggestedPostInfo",
+    "SuggestedPostPaid",
+    "SuggestedPostParameters",
+    "SuggestedPostPrice",
+    "SuggestedPostRefunded",
     "SwitchInlineQueryChosenChat",
     "TelegramObject",
     "TextQuote",

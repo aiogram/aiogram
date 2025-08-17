@@ -28,6 +28,14 @@
         "name": "message_thread_id"
       },
       {
+        "type": "Integer",
+        "required": false,
+        "description": "Identifier of the direct messages topic to which the messages will be forwarded; required if the messages are forwarded to a direct messages chat",
+        "html_description": "<td>Identifier of the direct messages topic to which the messages will be forwarded; required if the messages are forwarded to a direct messages chat</td>",
+        "rst_description": "Identifier of the direct messages topic to which the messages will be forwarded; required if the messages are forwarded to a direct messages chat\n",
+        "name": "direct_messages_topic_id"
+      },
+      {
         "type": "Integer or String",
         "required": true,
         "description": "Unique identifier for the chat where the original messages were sent (or channel username in the format @channelusername)",

@@ -41,23 +41,30 @@ Available methods
     close
     close_forum_topic
     close_general_forum_topic
+    convert_gift_to_stars
     copy_message
     copy_messages
     create_chat_invite_link
     create_chat_subscription_invite_link
     create_forum_topic
     decline_chat_join_request
+    delete_business_messages
     delete_chat_photo
     delete_chat_sticker_set
     delete_forum_topic
     delete_my_commands
+    delete_story
     edit_chat_invite_link
     edit_chat_subscription_invite_link
     edit_forum_topic
     edit_general_forum_topic
+    edit_story
     export_chat_invite_link
     forward_message
     forward_messages
+    get_available_gifts
+    get_business_account_gifts
+    get_business_account_star_balance
     get_business_connection
     get_chat
     get_chat_administrators
@@ -74,11 +81,17 @@ Available methods
     get_my_short_description
     get_user_chat_boosts
     get_user_profile_photos
+    gift_premium_subscription
     hide_general_forum_topic
     leave_chat
     log_out
     pin_chat_message
+    post_story
     promote_chat_member
+    read_business_message
+    remove_business_account_profile_photo
+    remove_chat_verification
+    remove_user_verification
     reopen_forum_topic
     reopen_general_forum_topic
     restrict_chat_member
@@ -90,6 +103,7 @@ Available methods
     send_contact
     send_dice
     send_document
+    send_gift
     send_location
     send_media_group
     send_message
@@ -100,6 +114,11 @@ Available methods
     send_video
     send_video_note
     send_voice
+    set_business_account_bio
+    set_business_account_gift_settings
+    set_business_account_name
+    set_business_account_profile_photo
+    set_business_account_username
     set_chat_administrator_custom_title
     set_chat_description
     set_chat_menu_button
@@ -114,6 +133,8 @@ Available methods
     set_my_name
     set_my_short_description
     set_user_emoji_status
+    transfer_business_account_stars
+    transfer_gift
     unban_chat_member
     unban_chat_sender_chat
     unhide_general_forum_topic
@@ -121,6 +142,9 @@ Available methods
     unpin_all_forum_topic_messages
     unpin_all_general_forum_topic_messages
     unpin_chat_message
+    upgrade_gift
+    verify_chat
+    verify_user
 
 Updating messages
 =================
@@ -128,40 +152,18 @@ Updating messages
 .. toctree::
     :maxdepth: 1
 
-    convert_gift_to_stars
-    delete_business_messages
+    approve_suggested_post
+    decline_suggested_post
     delete_message
     delete_messages
-    delete_story
     edit_message_caption
     edit_message_checklist
     edit_message_live_location
     edit_message_media
     edit_message_reply_markup
     edit_message_text
-    edit_story
-    get_available_gifts
-    get_business_account_gifts
-    get_business_account_star_balance
-    gift_premium_subscription
-    post_story
-    read_business_message
-    remove_business_account_profile_photo
-    remove_chat_verification
-    remove_user_verification
-    send_gift
-    set_business_account_bio
-    set_business_account_gift_settings
-    set_business_account_name
-    set_business_account_profile_photo
-    set_business_account_username
     stop_message_live_location
     stop_poll
-    transfer_business_account_stars
-    transfer_gift
-    upgrade_gift
-    verify_chat
-    verify_user
 
 Inline mode
 ===========

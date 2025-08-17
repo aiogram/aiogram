@@ -22,9 +22,9 @@
       {
         "type": "Integer",
         "required": true,
-        "description": "Unique identifier for the target chat",
-        "html_description": "<td>Unique identifier for the target chat</td>",
-        "rst_description": "Unique identifier for the target chat\n",
+        "description": "Unique identifier for the target chat. Games can't be sent to channel direct messages chats and channel chats.",
+        "html_description": "<td>Unique identifier for the target chat. Games can't be sent to channel direct messages chats and channel chats.</td>",
+        "rst_description": "Unique identifier for the target chat. Games can't be sent to channel direct messages chats and channel chats.\n",
         "name": "chat_id"
       },
       {

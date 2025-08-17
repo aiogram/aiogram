@@ -28,6 +28,14 @@
         "name": "message_thread_id"
       },
       {
+        "type": "Integer",
+        "required": false,
+        "description": "Identifier of the direct messages topic to which the message will be forwarded; required if the message is forwarded to a direct messages chat",
+        "html_description": "<td>Identifier of the direct messages topic to which the message will be forwarded; required if the message is forwarded to a direct messages chat</td>",
+        "rst_description": "Identifier of the direct messages topic to which the message will be forwarded; required if the message is forwarded to a direct messages chat\n",
+        "name": "direct_messages_topic_id"
+      },
+      {
         "type": "Integer or String",
         "required": true,
         "description": "Unique identifier for the chat where the original message was sent (or channel username in the format @channelusername)",
@@ -58,6 +66,14 @@
         "html_description": "<td>Protects the contents of the forwarded message from forwarding and saving</td>",
         "rst_description": "Protects the contents of the forwarded message from forwarding and saving\n",
         "name": "protect_content"
+      },
+      {
+        "type": "SuggestedPostParameters",
+        "required": false,
+        "description": "A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only",
+        "html_description": "<td>A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only</td>",
+        "rst_description": "A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only\n",
+        "name": "suggested_post_parameters"
       },
       {
         "type": "Integer",

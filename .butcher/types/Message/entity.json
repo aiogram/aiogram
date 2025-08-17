@@ -28,6 +28,14 @@
         "required": false
       },
       {
+        "type": "DirectMessagesTopic",
+        "description": "Information about the direct messages chat topic that contains the message",
+        "html_description": "<td><em>Optional</em>. Information about the direct messages chat topic that contains the message</td>",
+        "rst_description": "*Optional*. Information about the direct messages chat topic that contains the message\n",
+        "name": "direct_messages_topic",
+        "required": false
+      },
+      {
         "type": "User",
         "description": "Sender of the message; may be empty for messages sent to channels. For backward compatibility, if the message was sent on behalf of a chat, the field contains a fake sender user in non-channel chats",
         "html_description": "<td><em>Optional</em>. Sender of the message; may be empty for messages sent to channels. For backward compatibility, if the message was sent on behalf of a chat, the field contains a fake sender user in non-channel chats</td>",
@@ -110,8 +118,8 @@
       {
         "type": "Message",
         "description": "For replies in the same chat and message thread, the original message. Note that the Message object in this field will not contain further reply_to_message fields even if it itself is a reply.",
-        "html_description": "<td><em>Optional</em>. For replies in the same chat and message thread, the original message. Note that the Message object in this field will not contain further <em>reply_to_message</em> fields even if it itself is a reply.</td>",
-        "rst_description": "*Optional*. For replies in the same chat and message thread, the original message. Note that the Message object in this field will not contain further *reply_to_message* fields even if it itself is a reply.\n",
+        "html_description": "<td><em>Optional</em>. For replies in the same chat and message thread, the original message. Note that the <a href=\"#message\">Message</a> object in this field will not contain further <em>reply_to_message</em> fields even if it itself is a reply.</td>",
+        "rst_description": "*Optional*. For replies in the same chat and message thread, the original message. Note that the :class:`aiogram.types.message.Message` object in this field will not contain further *reply_to_message* fields even if it itself is a reply.\n",
         "name": "reply_to_message",
         "required": false
       },
@@ -137,6 +145,14 @@
         "html_description": "<td><em>Optional</em>. For replies to a story, the original story</td>",
         "rst_description": "*Optional*. For replies to a story, the original story\n",
         "name": "reply_to_story",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "Identifier of the specific checklist task that is being replied to",
+        "html_description": "<td><em>Optional</em>. Identifier of the specific checklist task that is being replied to</td>",
+        "rst_description": "*Optional*. Identifier of the specific checklist task that is being replied to\n",
+        "name": "reply_to_checklist_task_id",
         "required": false
       },
       {
@@ -169,6 +185,14 @@
         "html_description": "<td><em>Optional</em>. <em>True</em>, if the message was sent by an implicit action, for example, as an away or a greeting business message, or as a scheduled message</td>",
         "rst_description": "*Optional*. :code:`True`, if the message was sent by an implicit action, for example, as an away or a greeting business message, or as a scheduled message\n",
         "name": "is_from_offline",
+        "required": false
+      },
+      {
+        "type": "True",
+        "description": "True, if the message is a paid post. Note that such posts must not be deleted for 24 hours to receive the payment and can't be edited.",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the message is a paid post. Note that such posts must not be deleted for 24 hours to receive the payment and can't be edited.</td>",
+        "rst_description": "*Optional*. :code:`True`, if the message is a paid post. Note that such posts must not be deleted for 24 hours to receive the payment and can't be edited.\n",
+        "name": "is_paid_post",
         "required": false
       },
       {
@@ -217,6 +241,14 @@
         "html_description": "<td><em>Optional</em>. Options used for link preview generation for the message, if it is a text message and link preview options were changed</td>",
         "rst_description": "*Optional*. Options used for link preview generation for the message, if it is a text message and link preview options were changed\n",
         "name": "link_preview_options",
+        "required": false
+      },
+      {
+        "type": "SuggestedPostInfo",
+        "description": "Information about suggested post parameters if the message is a suggested post in a channel direct messages chat. If the message is an approved or declined suggested post, then it can't be edited.",
+        "html_description": "<td><em>Optional</em>. Information about suggested post parameters if the message is a suggested post in a channel direct messages chat. If the message is an approved or declined suggested post, then it can't be edited.</td>",
+        "rst_description": "*Optional*. Information about suggested post parameters if the message is a suggested post in a channel direct messages chat. If the message is an approved or declined suggested post, then it can't be edited.\n",
+        "name": "suggested_post_info",
         "required": false
       },
       {
@@ -486,8 +518,8 @@
       {
         "type": "MaybeInaccessibleMessage",
         "description": "Specified message was pinned. Note that the Message object in this field will not contain further reply_to_message fields even if it itself is a reply.",
-        "html_description": "<td><em>Optional</em>. Specified message was pinned. Note that the Message object in this field will not contain further <em>reply_to_message</em> fields even if it itself is a reply.</td>",
-        "rst_description": "*Optional*. Specified message was pinned. Note that the Message object in this field will not contain further *reply_to_message* fields even if it itself is a reply.\n",
+        "html_description": "<td><em>Optional</em>. Specified message was pinned. Note that the <a href=\"#message\">Message</a> object in this field will not contain further <em>reply_to_message</em> fields even if it itself is a reply.</td>",
+        "rst_description": "*Optional*. Specified message was pinned. Note that the :class:`aiogram.types.message.Message` object in this field will not contain further *reply_to_message* fields even if it itself is a reply.\n",
         "name": "pinned_message",
         "required": false
       },
@@ -705,6 +737,46 @@
         "html_description": "<td><em>Optional</em>. Service message: the price for paid messages has changed in the chat</td>",
         "rst_description": "*Optional*. Service message: the price for paid messages has changed in the chat\n",
         "name": "paid_message_price_changed",
+        "required": false
+      },
+      {
+        "type": "SuggestedPostApproved",
+        "description": "Service message: a suggested post was approved",
+        "html_description": "<td><em>Optional</em>. Service message: a suggested post was approved</td>",
+        "rst_description": "*Optional*. Service message: a suggested post was approved\n",
+        "name": "suggested_post_approved",
+        "required": false
+      },
+      {
+        "type": "SuggestedPostApprovalFailed",
+        "description": "Service message: approval of a suggested post has failed",
+        "html_description": "<td><em>Optional</em>. Service message: approval of a suggested post has failed</td>",
+        "rst_description": "*Optional*. Service message: approval of a suggested post has failed\n",
+        "name": "suggested_post_approval_failed",
+        "required": false
+      },
+      {
+        "type": "SuggestedPostDeclined",
+        "description": "Service message: a suggested post was declined",
+        "html_description": "<td><em>Optional</em>. Service message: a suggested post was declined</td>",
+        "rst_description": "*Optional*. Service message: a suggested post was declined\n",
+        "name": "suggested_post_declined",
+        "required": false
+      },
+      {
+        "type": "SuggestedPostPaid",
+        "description": "Service message: payment for a suggested post was received",
+        "html_description": "<td><em>Optional</em>. Service message: payment for a suggested post was received</td>",
+        "rst_description": "*Optional*. Service message: payment for a suggested post was received\n",
+        "name": "suggested_post_paid",
+        "required": false
+      },
+      {
+        "type": "SuggestedPostRefunded",
+        "description": "Service message: payment for a suggested post was refunded",
+        "html_description": "<td><em>Optional</em>. Service message: payment for a suggested post was refunded</td>",
+        "rst_description": "*Optional*. Service message: payment for a suggested post was refunded\n",
+        "name": "suggested_post_refunded",
         "required": false
       },
       {

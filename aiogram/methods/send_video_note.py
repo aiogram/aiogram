@@ -12,6 +12,7 @@ from ..types import (
     Message,
     ReplyMarkupUnion,
     ReplyParameters,
+    SuggestedPostParameters,
 )
 from .base import TelegramMethod
 
@@ -34,6 +35,8 @@ class SendVideoNote(TelegramMethod[Message]):
     """Unique identifier of the business connection on behalf of which the message will be sent"""
     message_thread_id: Optional[int] = None
     """Unique identifier for the target message thread (topic) of the forum; for forum supergroups only"""
+    direct_messages_topic_id: Optional[int] = None
+    """Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat"""
     duration: Optional[int] = None
     """Duration of sent video in seconds"""
     length: Optional[int] = None
@@ -48,6 +51,8 @@ class SendVideoNote(TelegramMethod[Message]):
     """Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance"""
     message_effect_id: Optional[str] = None
     """Unique identifier of the message effect to be added to the message; for private chats only"""
+    suggested_post_parameters: Optional[SuggestedPostParameters] = None
+    """A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined."""
     reply_parameters: Optional[ReplyParameters] = None
     """Description of the message to reply to"""
     reply_markup: Optional[ReplyMarkupUnion] = None
@@ -76,6 +81,7 @@ class SendVideoNote(TelegramMethod[Message]):
             video_note: InputFileUnion,
             business_connection_id: Optional[str] = None,
             message_thread_id: Optional[int] = None,
+            direct_messages_topic_id: Optional[int] = None,
             duration: Optional[int] = None,
             length: Optional[int] = None,
             thumbnail: Optional[InputFile] = None,
@@ -83,6 +89,7 @@ class SendVideoNote(TelegramMethod[Message]):
             protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
             allow_paid_broadcast: Optional[bool] = None,
             message_effect_id: Optional[str] = None,
+            suggested_post_parameters: Optional[SuggestedPostParameters] = None,
             reply_parameters: Optional[ReplyParameters] = None,
             reply_markup: Optional[ReplyMarkupUnion] = None,
             allow_sending_without_reply: Optional[bool] = None,
@@ -98,6 +105,7 @@ class SendVideoNote(TelegramMethod[Message]):
                 video_note=video_note,
                 business_connection_id=business_connection_id,
                 message_thread_id=message_thread_id,
+                direct_messages_topic_id=direct_messages_topic_id,
                 duration=duration,
                 length=length,
                 thumbnail=thumbnail,
@@ -105,6 +113,7 @@ class SendVideoNote(TelegramMethod[Message]):
                 protect_content=protect_content,
                 allow_paid_broadcast=allow_paid_broadcast,
                 message_effect_id=message_effect_id,
+                suggested_post_parameters=suggested_post_parameters,
                 reply_parameters=reply_parameters,
                 reply_markup=reply_markup,
                 allow_sending_without_reply=allow_sending_without_reply,

@@ -1,0 +1,33 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "suggestedpostrefunded",
+    "name": "SuggestedPostRefunded",
+    "description": "Describes a service message about a payment refund for a suggested post.",
+    "html_description": "<p>Describes a service message about a payment refund for a suggested post.</p>",
+    "rst_description": "Describes a service message about a payment refund for a suggested post.",
+    "annotations": [
+      {
+        "type": "Message",
+        "description": "Message containing the suggested post. Note that the Message object in this field will not contain the reply_to_message field even if it itself is a reply.",
+        "html_description": "<td><em>Optional</em>. Message containing the suggested post. Note that the <a href=\"#message\">Message</a> object in this field will not contain the <em>reply_to_message</em> field even if it itself is a reply.</td>",
+        "rst_description": "*Optional*. Message containing the suggested post. Note that the :class:`aiogram.types.message.Message` object in this field will not contain the *reply_to_message* field even if it itself is a reply.\n",
+        "name": "suggested_post_message",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "Reason for the refund. Currently, one of 'post_deleted' if the post was deleted within 24 hours of being posted or removed from scheduled messages without being posted, or 'payment_refunded' if the payer refunded their payment.",
+        "html_description": "<td>Reason for the refund. Currently, one of &#8220;post_deleted&#8221; if the post was deleted within 24 hours of being posted or removed from scheduled messages without being posted, or &#8220;payment_refunded&#8221; if the payer refunded their payment.</td>",
+        "rst_description": "Reason for the refund. Currently, one of 'post_deleted' if the post was deleted within 24 hours of being posted or removed from scheduled messages without being posted, or 'payment_refunded' if the payer refunded their payment.\n",
+        "name": "reason",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}
