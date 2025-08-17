@@ -47,24 +47,26 @@ class CallbackData(BaseModel):
 
     This class should be used as super-class of user-defined callbacks.
 
-    The class-keyword :code:`prefix` is required to define prefix
-    and also the argument :code:`sep` can be passed to define separator (default is :code:`:`).
+    An optional class-keyword :code:`prefix` can be passed to define prefix.
+    If no prefix is provided, the class name will be used as the prefix.
+
+    An optional argument :code:`sep` can be passed to define the separator
+    (default is :code:`:`).
     """
 
     if TYPE_CHECKING:
         __separator__: ClassVar[str]
         """Data separator (default is :code:`:`)"""
         __prefix__: ClassVar[str]
-        """Callback prefix"""
+        """Callback prefix (default is class name)"""
 
     def __init_subclass__(cls, **kwargs: Any) -> None:
-        if "prefix" not in kwargs:
-            raise ValueError(
-                f"prefix required, usage example: "
-                f"`class {cls.__name__}(CallbackData, prefix='my_callback'): ...`"
-            )
+        # If no prefix is provided explicitly, default to the class name
+        prefix = kwargs.pop("prefix", None)
+        if prefix is None:
+            prefix = cls.__name__
         cls.__separator__ = kwargs.pop("sep", ":")
-        cls.__prefix__ = kwargs.pop("prefix")
+        cls.__prefix__ = prefix
         if cls.__separator__ in cls.__prefix__:
             raise ValueError(
                 f"Separator symbol {cls.__separator__!r} can not be used "
