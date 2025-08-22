@@ -26,7 +26,11 @@ class CallableObject:
 
     def __post_init__(self) -> None:
         callback = inspect.unwrap(self.callback)
-        self.awaitable = inspect.isawaitable(callback) or inspect.iscoroutinefunction(callback)
+        self.awaitable = (
+            inspect.isawaitable(callback)
+            or inspect.iscoroutinefunction(callback)
+            or inspect.iscoroutinefunction(getattr(callback, "__call__", None))
+        )
         spec = inspect.getfullargspec(callback)
         self.params = {*spec.args, *spec.kwonlyargs}
         self.varkw = spec.varkw is not None
@@ -41,7 +45,12 @@ class CallableObject:
         wrapped = partial(self.callback, *args, **self._prepare_kwargs(kwargs))
         if self.awaitable:
             return await wrapped()
-        return await asyncio.to_thread(wrapped)
+        
+        result = await asyncio.to_thread(wrapped)
+        if inspect.isawaitable(result):
+            return await result
+            
+        return result
 
 
 @dataclass
