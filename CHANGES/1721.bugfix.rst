@@ -1,0 +1,9 @@
+Bug Fixes
+=========
+
+CallableObject Improvements
+---------------------------
+
+- Correctly detects and awaits coroutine-returning sync callables
+- Supports callable classes with a sync __call__ method
+- Ensures sync functions still run safely in asyncio.to_thread
