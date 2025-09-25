@@ -1,1 +1,1 @@
-Added dispatcher key to event data in dispatcher.feed_update, removed redundant unpacking of workflow_data in dispatcher.start_polling.
+Added dispatcher key to event data in `Dispatcher.feed_update`, removed redundant unpacking of `workflow_data` in `Dispatcher.start_polling`.
