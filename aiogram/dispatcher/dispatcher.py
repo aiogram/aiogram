@@ -162,6 +162,7 @@ class Dispatcher(Router):
                     **self.workflow_data,
                     **kwargs,
                     "bot": bot,
+                    "dispatcher": self,
                 },
             )
             handled = response is not UNHANDLED
@@ -554,9 +555,7 @@ class Dispatcher(Router):
                     )
 
             workflow_data = {
-                "dispatcher": self,
                 "bots": bots,
-                **self.workflow_data,
                 **kwargs,
             }
             if "bot" in workflow_data:
