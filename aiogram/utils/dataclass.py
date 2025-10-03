@@ -48,7 +48,6 @@ def dataclass_kwargs(
         params["frozen"] = frozen
 
     # Added in 3.10
-    # if sys.version_info >= (3, 10):
     if match_args is not None:
         params["match_args"] = match_args
     if kw_only is not None:
