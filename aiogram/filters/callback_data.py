@@ -127,7 +127,7 @@ class CallbackData(BaseModel):
             msg = f"Bad prefix ({prefix!r} != {cls.__prefix__!r})"
             raise ValueError(msg)
         payload = {}
-        for k, v in zip(names, parts, strict=True):  # type: str, str | None
+        for k, v in zip(names, parts, strict=True):  # type: str, str
             if (
                 (field := cls.model_fields.get(k))
                 and v == ""
