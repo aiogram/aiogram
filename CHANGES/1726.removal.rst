@@ -1,0 +1,7 @@
+Due to EOL of Py3.9 - this PR is presented.
+https://devguide.python.org/versions/
+
+PR change type annotation to much prettier py3.10+ style, droping `List`, `Set`, etc ugly type-hints, replacing them with `list`, `set`, etc.
+Also this PR provide some code refactor like concatenating nested `if` expression
+
+In the end - some requirements bumped, first due to security reasons.
