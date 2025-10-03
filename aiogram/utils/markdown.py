@@ -137,7 +137,7 @@ def strikethrough(*content: Any, sep: str = " ") -> str:
     :return:
     """
     return markdown_decoration.strikethrough(
-        value=markdown_decoration.quote(_join(*content, sep=sep))
+        value=markdown_decoration.quote(_join(*content, sep=sep)),
     )
 
 
@@ -183,7 +183,7 @@ def blockquote(*content: Any, sep: str = "\n") -> str:
     :return:
     """
     return markdown_decoration.blockquote(
-        value=markdown_decoration.quote(_join(*content, sep=sep))
+        value=markdown_decoration.quote(_join(*content, sep=sep)),
     )
 
 

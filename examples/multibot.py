@@ -1,7 +1,7 @@
 import logging
 import sys
 from os import getenv
-from typing import Any, Dict, Union
+from typing import Any
 
 from aiohttp import web
 from finite_state_machine import form_router
@@ -34,7 +34,7 @@ REDIS_DSN = "redis://127.0.0.1:6479"
 OTHER_BOTS_URL = f"{BASE_URL}{OTHER_BOTS_PATH}"
 
 
-def is_bot_token(value: str) -> Union[bool, Dict[str, Any]]:
+def is_bot_token(value: str) -> bool | dict[str, Any]:
     try:
         validate_token(value)
     except TokenValidationError:
@@ -54,11 +54,11 @@ async def command_add_bot(message: Message, command: CommandObject, bot: Bot) ->
     return await message.answer(f"Bot @{bot_user.username} successful added")
 
 
-async def on_startup(dispatcher: Dispatcher, bot: Bot):
+async def on_startup(dispatcher: Dispatcher, bot: Bot) -> None:
     await bot.set_webhook(f"{BASE_URL}{MAIN_BOT_PATH}")
 
 
-def main():
+def main() -> None:
     logging.basicConfig(level=logging.INFO, stream=sys.stdout)
     session = AiohttpSession()
     bot_settings = {"session": session, "parse_mode": ParseMode.HTML}

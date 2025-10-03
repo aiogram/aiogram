@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from abc import ABC, abstractmethod
-from typing import Any, Awaitable, Callable, Dict, Optional, Set
+from typing import TYPE_CHECKING, Any
 
 try:
     from babel import Locale, UnknownLocaleError
@@ -11,9 +13,13 @@ except ImportError:  # pragma: no cover
 
 
 from aiogram import BaseMiddleware, Router
-from aiogram.fsm.context import FSMContext
-from aiogram.types import TelegramObject, User
-from aiogram.utils.i18n.core import I18n
+
+if TYPE_CHECKING:
+    from collections.abc import Awaitable, Callable
+
+    from aiogram.fsm.context import FSMContext
+    from aiogram.types import TelegramObject, User
+    from aiogram.utils.i18n.core import I18n
 
 
 class I18nMiddleware(BaseMiddleware, ABC):
@@ -24,7 +30,7 @@ class I18nMiddleware(BaseMiddleware, ABC):
     def __init__(
         self,
         i18n: I18n,
-        i18n_key: Optional[str] = "i18n",
+        i18n_key: str | None = "i18n",
         middleware_key: str = "i18n_middleware",
     ) -> None:
         """
@@ -39,7 +45,9 @@ class I18nMiddleware(BaseMiddleware, ABC):
         self.middleware_key = middleware_key
 
     def setup(
-        self: BaseMiddleware, router: Router, exclude: Optional[Set[str]] = None
+        self: BaseMiddleware,
+        router: Router,
+        exclude: set[str] | None = None,
     ) -> BaseMiddleware:
         """
         Register middleware for all events in the Router
@@ -59,9 +67,9 @@ class I18nMiddleware(BaseMiddleware, ABC):
 
     async def __call__(
         self,
-        handler: Callable[[TelegramObject, Dict[str, Any]], Awaitable[Any]],
+        handler: Callable[[TelegramObject, dict[str, Any]], Awaitable[Any]],
         event: TelegramObject,
-        data: Dict[str, Any],
+        data: dict[str, Any],
     ) -> Any:
         current_locale = await self.get_locale(event=event, data=data) or self.i18n.default_locale
 
@@ -74,7 +82,7 @@ class I18nMiddleware(BaseMiddleware, ABC):
             return await handler(event, data)
 
     @abstractmethod
-    async def get_locale(self, event: TelegramObject, data: Dict[str, Any]) -> str:
+    async def get_locale(self, event: TelegramObject, data: dict[str, Any]) -> str:
         """
         Detect current user locale based on event and context.
 
@@ -84,7 +92,6 @@ class I18nMiddleware(BaseMiddleware, ABC):
         :param data:
         :return:
         """
-        pass
 
 
 class SimpleI18nMiddleware(I18nMiddleware):
@@ -97,27 +104,29 @@ class SimpleI18nMiddleware(I18nMiddleware):
     def __init__(
         self,
         i18n: I18n,
-        i18n_key: Optional[str] = "i18n",
+        i18n_key: str | None = "i18n",
         middleware_key: str = "i18n_middleware",
     ) -> None:
         super().__init__(i18n=i18n, i18n_key=i18n_key, middleware_key=middleware_key)
 
         if Locale is None:  # pragma: no cover
-            raise RuntimeError(
+            msg = (
                 f"{type(self).__name__} can be used only when Babel installed\n"
                 "Just install Babel (`pip install Babel`) "
                 "or aiogram with i18n support (`pip install aiogram[i18n]`)"
             )
+            raise RuntimeError(msg)
 
-    async def get_locale(self, event: TelegramObject, data: Dict[str, Any]) -> str:
+    async def get_locale(self, event: TelegramObject, data: dict[str, Any]) -> str:
         if Locale is None:  # pragma: no cover
-            raise RuntimeError(
+            msg = (
                 f"{type(self).__name__} can be used only when Babel installed\n"
                 "Just install Babel (`pip install Babel`) "
                 "or aiogram with i18n support (`pip install aiogram[i18n]`)"
             )
+            raise RuntimeError(msg)
 
-        event_from_user: Optional[User] = data.get("event_from_user", None)
+        event_from_user: User | None = data.get("event_from_user")
         if event_from_user is None or event_from_user.language_code is None:
             return self.i18n.default_locale
         try:
@@ -139,13 +148,13 @@ class ConstI18nMiddleware(I18nMiddleware):
         self,
         locale: str,
         i18n: I18n,
-        i18n_key: Optional[str] = "i18n",
+        i18n_key: str | None = "i18n",
         middleware_key: str = "i18n_middleware",
     ) -> None:
         super().__init__(i18n=i18n, i18n_key=i18n_key, middleware_key=middleware_key)
         self.locale = locale
 
-    async def get_locale(self, event: TelegramObject, data: Dict[str, Any]) -> str:
+    async def get_locale(self, event: TelegramObject, data: dict[str, Any]) -> str:
         return self.locale
 
 
@@ -158,14 +167,14 @@ class FSMI18nMiddleware(SimpleI18nMiddleware):
         self,
         i18n: I18n,
         key: str = "locale",
-        i18n_key: Optional[str] = "i18n",
+        i18n_key: str | None = "i18n",
         middleware_key: str = "i18n_middleware",
     ) -> None:
         super().__init__(i18n=i18n, i18n_key=i18n_key, middleware_key=middleware_key)
         self.key = key
 
-    async def get_locale(self, event: TelegramObject, data: Dict[str, Any]) -> str:
-        fsm_context: Optional[FSMContext] = data.get("state")
+    async def get_locale(self, event: TelegramObject, data: dict[str, Any]) -> str:
+        fsm_context: FSMContext | None = data.get("state")
         locale = None
         if fsm_context:
             fsm_data = await fsm_context.get_data()

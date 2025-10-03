@@ -75,11 +75,13 @@ async def handle_set_age(message: types.Message, command: CommandObject) -> None
     # To get the command arguments you can use `command.args` property.
     age = command.args
     if not age:
-        raise InvalidAge("No age provided. Please provide your age as a command argument.")
+        msg = "No age provided. Please provide your age as a command argument."
+        raise InvalidAge(msg)
 
     # If the age is invalid, raise an exception.
     if not age.isdigit():
-        raise InvalidAge("Age should be a number")
+        msg = "Age should be a number"
+        raise InvalidAge(msg)
 
     # If the age is valid, send a message to the user.
     age = int(age)
@@ -95,7 +97,8 @@ async def handle_set_name(message: types.Message, command: CommandObject) -> Non
     # To get the command arguments you can use `command.args` property.
     name = command.args
     if not name:
-        raise InvalidName("Invalid name. Please provide your name as a command argument.")
+        msg = "Invalid name. Please provide your name as a command argument."
+        raise InvalidName(msg)
 
     # If the name is valid, send a message to the user.
     await message.reply(text=f"Your name is {name}")

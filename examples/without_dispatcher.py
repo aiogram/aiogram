@@ -15,7 +15,7 @@ def create_parser() -> ArgumentParser:
     return parser
 
 
-async def main():
+async def main() -> None:
     parser = create_parser()
     ns = parser.parse_args()
 

@@ -35,25 +35,25 @@ class DefaultBotProperties:
     Default bot properties.
     """
 
-    parse_mode: Optional[str] = None
+    parse_mode: str | None = None
     """Default parse mode for messages."""
-    disable_notification: Optional[bool] = None
+    disable_notification: bool | None = None
     """Sends the message silently. Users will receive a notification with no sound."""
-    protect_content: Optional[bool] = None
+    protect_content: bool | None = None
     """Protects content from copying."""
-    allow_sending_without_reply: Optional[bool] = None
+    allow_sending_without_reply: bool | None = None
     """Allows to send messages without reply."""
-    link_preview: Optional[LinkPreviewOptions] = None
+    link_preview: LinkPreviewOptions | None = None
     """Link preview settings."""
-    link_preview_is_disabled: Optional[bool] = None
+    link_preview_is_disabled: bool | None = None
     """Disables link preview."""
-    link_preview_prefer_small_media: Optional[bool] = None
+    link_preview_prefer_small_media: bool | None = None
     """Prefer small media in link preview."""
-    link_preview_prefer_large_media: Optional[bool] = None
+    link_preview_prefer_large_media: bool | None = None
     """Prefer large media in link preview."""
-    link_preview_show_above_text: Optional[bool] = None
+    link_preview_show_above_text: bool | None = None
     """Show link preview above text."""
-    show_caption_above_media: Optional[bool] = None
+    show_caption_above_media: bool | None = None
     """Show caption above media."""
 
     def __post_init__(self) -> None:
@@ -63,11 +63,11 @@ class DefaultBotProperties:
                 self.link_preview_prefer_small_media,
                 self.link_preview_prefer_large_media,
                 self.link_preview_show_above_text,
-            )
+            ),
         )
 
         if has_any_link_preview_option and self.link_preview is None:
-            from ..types import LinkPreviewOptions
+            from aiogram.types import LinkPreviewOptions
 
             self.link_preview = LinkPreviewOptions(
                 is_disabled=self.link_preview_is_disabled,

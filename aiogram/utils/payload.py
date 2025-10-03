@@ -61,13 +61,18 @@ Encoding and decoding with your own methods:
 
 """
 
+from __future__ import annotations
+
 from base64 import urlsafe_b64decode, urlsafe_b64encode
-from typing import Callable, Optional
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
 
 
 def encode_payload(
     payload: str,
-    encoder: Optional[Callable[[bytes], bytes]] = None,
+    encoder: Callable[[bytes], bytes] | None = None,
 ) -> str:
     """Encode payload with encoder.
 
@@ -85,7 +90,7 @@ def encode_payload(
 
 def decode_payload(
     payload: str,
-    decoder: Optional[Callable[[bytes], bytes]] = None,
+    decoder: Callable[[bytes], bytes] | None = None,
 ) -> str:
     """Decode URL-safe base64url payload with decoder."""
     original_payload = _decode_b64(payload)

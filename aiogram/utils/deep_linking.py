@@ -1,22 +1,24 @@
 from __future__ import annotations
 
 __all__ = [
-    "create_start_link",
-    "create_startgroup_link",
-    "create_startapp_link",
     "create_deep_link",
+    "create_start_link",
+    "create_startapp_link",
+    "create_startgroup_link",
     "create_telegram_link",
-    "encode_payload",
     "decode_payload",
+    "encode_payload",
 ]
 
 import re
-from typing import TYPE_CHECKING, Callable, Literal, Optional, cast
+from typing import TYPE_CHECKING, Literal, Optional, cast
 
 from aiogram.utils.link import create_telegram_link
 from aiogram.utils.payload import decode_payload, encode_payload
 
 if TYPE_CHECKING:
+    from collections.abc import Callable
+
     from aiogram import Bot
 
 BAD_PATTERN = re.compile(r"[^a-zA-Z0-9-_]")
@@ -26,7 +28,7 @@ async def create_start_link(
     bot: Bot,
     payload: str,
     encode: bool = False,
-    encoder: Optional[Callable[[bytes], bytes]] = None,
+    encoder: Callable[[bytes], bytes] | None = None,
 ) -> str:
     """
     Create 'start' deep link with your payload.
@@ -53,7 +55,7 @@ async def create_startgroup_link(
     bot: Bot,
     payload: str,
     encode: bool = False,
-    encoder: Optional[Callable[[bytes], bytes]] = None,
+    encoder: Callable[[bytes], bytes] | None = None,
 ) -> str:
     """
     Create 'startgroup' deep link with your payload.
@@ -80,8 +82,8 @@ async def create_startapp_link(
     bot: Bot,
     payload: str,
     encode: bool = False,
-    app_name: Optional[str] = None,
-    encoder: Optional[Callable[[bytes], bytes]] = None,
+    app_name: str | None = None,
+    encoder: Callable[[bytes], bytes] | None = None,
 ) -> str:
     """
     Create 'startapp' deep link with your payload.
@@ -115,9 +117,9 @@ def create_deep_link(
     username: str,
     link_type: Literal["start", "startgroup", "startapp"],
     payload: str,
-    app_name: Optional[str] = None,
+    app_name: str | None = None,
     encode: bool = False,
-    encoder: Optional[Callable[[bytes], bytes]] = None,
+    encoder: Callable[[bytes], bytes] | None = None,
 ) -> str:
     """
     Create deep link.
@@ -137,13 +139,15 @@ def create_deep_link(
         payload = encode_payload(payload, encoder=encoder)
 
     if re.search(BAD_PATTERN, payload):
-        raise ValueError(
+        msg = (
             "Wrong payload! Only A-Z, a-z, 0-9, _ and - are allowed. "
             "Pass `encode=True` or encode payload manually."
         )
+        raise ValueError(msg)
 
     if len(payload) > 64:
-        raise ValueError("Payload must be up to 64 characters long.")
+        msg = "Payload must be up to 64 characters long."
+        raise ValueError(msg)
 
     if not app_name:
         deep_link = create_telegram_link(username, **{cast(str, link_type): payload})

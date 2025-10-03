@@ -6,7 +6,7 @@ build-backend = "hatchling.build"
 name = "aiogram"
 description = 'Modern and fully asynchronous framework for Telegram Bot API'
 readme = "README.rst"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 license = "MIT"
 authors = [
     { name = "Alex Root Junior", email = "jroot.junior@gmail.com" },
@@ -30,7 +30,6 @@ classifiers = [
     "Typing :: Typed",
     "Intended Audience :: Developers",
     "Intended Audience :: System Administrators",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
@@ -60,7 +59,7 @@ fast = [
     "aiodns>=3.0.0",
 ]
 redis = [
-    "redis[hiredis]>=5.0.1,<5.3.0",
+    "redis[hiredis]>=6.2.0,<7",
 ]
 mongo = [
     "motor>=3.3.2,<3.7.0",
@@ -76,7 +75,7 @@ cli = [
     "aiogram-cli>=1.1.0,<2.0.0",
 ]
 signature = [
-    "cryptography>=43.0.0",
+    "cryptography>=46.0.0",
 ]
 test = [
     "pytest~=7.4.2",
@@ -88,8 +87,8 @@ test = [
     "pytest-cov~=4.1.0",
     "pytest-aiohttp~=1.0.5",
     "aresponses~=2.1.6",
-    "pytz~=2023.3",
-    "pycryptodomex~=3.19.0",
+    "pytz~=2025.2",
+    "pycryptodomex~=3.23.0",
 ]
 docs = [
     "Sphinx~=8.0.2",
@@ -105,12 +104,12 @@ docs = [
     "sphinxcontrib-towncrier~=0.4.0a0",
 ]
 dev = [
-    "black~=24.4.2",
-    "isort~=5.13.2",
-    "ruff~=0.5.1",
-    "mypy~=1.10.0",
+    "black~=25.9.0",
+    "isort~=6.1.0",
+    "ruff~=0.13.3",
+    "mypy~=1.10.1",
     "toml~=0.10.2",
-    "pre-commit~=3.5",
+    "pre-commit~=4.3.0",
     "packaging~=24.1",
     "motor-types~=1.0.0b4",
 ]
@@ -200,9 +199,8 @@ cov-mongo = [
 ]
 view-cov = "google-chrome-stable reports/py{matrix:python}/coverage/index.html"
 
-
 [[tool.hatch.envs.test.matrix]]
-python = ["39", "310", "311", "312", "313"]
+python = ["310", "311", "312", "313"]
 
 [tool.ruff]
 line-length = 99
@@ -219,7 +217,6 @@ exclude = [
     "scripts",
     "*.egg-info",
 ]
-target-version = "py39"
 
 [tool.ruff.lint]
 select = [
@@ -227,13 +224,13 @@ select = [
     "C4",
     "E",
     "F",
-    "T10",
-    "T20",
     "Q",
     "RET",
+    "T10",
+    "T20",
 ]
 ignore = [
-    "F401"
+    "F401",
 ]
 
 [tool.ruff.lint.isort]
@@ -280,7 +277,7 @@ exclude_lines = [
 
 [tool.mypy]
 plugins = "pydantic.mypy"
-python_version = "3.9"
+python_version = "3.10"
 show_error_codes = true
 show_error_context = true
 pretty = true
@@ -315,7 +312,7 @@ disallow_untyped_defs = true
 
 [tool.black]
 line-length = 99
-target-version = ['py39', 'py310', 'py311', 'py312', 'py313']
+target-version = ['py310', 'py311', 'py312', 'py313']
 exclude = '''
 (
     \.eggs

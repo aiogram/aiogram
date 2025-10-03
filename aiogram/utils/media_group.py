@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Literal, Optional, Union, overload
+from typing import Any, Literal, overload
 
 from aiogram.enums import InputMediaType
 from aiogram.types import (
@@ -12,12 +12,7 @@ from aiogram.types import (
     MessageEntity,
 )
 
-MediaType = Union[
-    InputMediaAudio,
-    InputMediaPhoto,
-    InputMediaVideo,
-    InputMediaDocument,
-]
+MediaType = InputMediaAudio | InputMediaPhoto | InputMediaVideo | InputMediaDocument
 
 MAX_MEDIA_GROUP_SIZE = 10
 
@@ -27,9 +22,9 @@ class MediaGroupBuilder:
 
     def __init__(
         self,
-        media: Optional[List[MediaType]] = None,
-        caption: Optional[str] = None,
-        caption_entities: Optional[List[MessageEntity]] = None,
+        media: list[MediaType] | None = None,
+        caption: str | None = None,
+        caption_entities: list[MessageEntity] | None = None,
     ) -> None:
         """
         Helper class for building media groups.
@@ -39,7 +34,7 @@ class MediaGroupBuilder:
         :param caption_entities: List of special entities in the caption,
             like usernames, URLs, etc. (optional)
         """
-        self._media: List[MediaType] = []
+        self._media: list[MediaType] = []
         self.caption = caption
         self.caption_entities = caption_entities
 
@@ -47,14 +42,16 @@ class MediaGroupBuilder:
 
     def _add(self, media: MediaType) -> None:
         if not isinstance(media, InputMedia):
-            raise ValueError("Media must be instance of InputMedia")
+            msg = "Media must be instance of InputMedia"
+            raise ValueError(msg)
 
         if len(self._media) >= MAX_MEDIA_GROUP_SIZE:
-            raise ValueError("Media group can't contain more than 10 elements")
+            msg = "Media group can't contain more than 10 elements"
+            raise ValueError(msg)
 
         self._media.append(media)
 
-    def _extend(self, media: List[MediaType]) -> None:
+    def _extend(self, media: list[MediaType]) -> None:
         for m in media:
             self._add(m)
 
@@ -63,13 +60,13 @@ class MediaGroupBuilder:
         self,
         *,
         type: Literal[InputMediaType.AUDIO],
-        media: Union[str, InputFile],
-        caption: Optional[str] = None,
-        parse_mode: Optional[str] = UNSET_PARSE_MODE,
-        caption_entities: Optional[List[MessageEntity]] = None,
-        duration: Optional[int] = None,
-        performer: Optional[str] = None,
-        title: Optional[str] = None,
+        media: str | InputFile,
+        caption: str | None = None,
+        parse_mode: str | None = UNSET_PARSE_MODE,
+        caption_entities: list[MessageEntity] | None = None,
+        duration: int | None = None,
+        performer: str | None = None,
+        title: str | None = None,
         **kwargs: Any,
     ) -> None:
         pass
@@ -79,11 +76,11 @@ class MediaGroupBuilder:
         self,
         *,
         type: Literal[InputMediaType.PHOTO],
-        media: Union[str, InputFile],
-        caption: Optional[str] = None,
-        parse_mode: Optional[str] = UNSET_PARSE_MODE,
-        caption_entities: Optional[List[MessageEntity]] = None,
-        has_spoiler: Optional[bool] = None,
+        media: str | InputFile,
+        caption: str | None = None,
+        parse_mode: str | None = UNSET_PARSE_MODE,
+        caption_entities: list[MessageEntity] | None = None,
+        has_spoiler: bool | None = None,
         **kwargs: Any,
     ) -> None:
         pass
@@ -93,16 +90,16 @@ class MediaGroupBuilder:
         self,
         *,
         type: Literal[InputMediaType.VIDEO],
-        media: Union[str, InputFile],
-        thumbnail: Optional[Union[InputFile, str]] = None,
-        caption: Optional[str] = None,
-        parse_mode: Optional[str] = UNSET_PARSE_MODE,
-        caption_entities: Optional[List[MessageEntity]] = None,
-        width: Optional[int] = None,
-        height: Optional[int] = None,
-        duration: Optional[int] = None,
-        supports_streaming: Optional[bool] = None,
-        has_spoiler: Optional[bool] = None,
+        media: str | InputFile,
+        thumbnail: InputFile | str | None = None,
+        caption: str | None = None,
+        parse_mode: str | None = UNSET_PARSE_MODE,
+        caption_entities: list[MessageEntity] | None = None,
+        width: int | None = None,
+        height: int | None = None,
+        duration: int | None = None,
+        supports_streaming: bool | None = None,
+        has_spoiler: bool | None = None,
         **kwargs: Any,
     ) -> None:
         pass
@@ -112,12 +109,12 @@ class MediaGroupBuilder:
         self,
         *,
         type: Literal[InputMediaType.DOCUMENT],
-        media: Union[str, InputFile],
-        thumbnail: Optional[Union[InputFile, str]] = None,
-        caption: Optional[str] = None,
-        parse_mode: Optional[str] = UNSET_PARSE_MODE,
-        caption_entities: Optional[List[MessageEntity]] = None,
-        disable_content_type_detection: Optional[bool] = None,
+        media: str | InputFile,
+        thumbnail: InputFile | str | None = None,
+        caption: str | None = None,
+        parse_mode: str | None = UNSET_PARSE_MODE,
+        caption_entities: list[MessageEntity] | None = None,
+        disable_content_type_detection: bool | None = None,
         **kwargs: Any,
     ) -> None:
         pass
@@ -140,18 +137,19 @@ class MediaGroupBuilder:
         elif type_ == InputMediaType.DOCUMENT:
             self.add_document(**kwargs)
         else:
-            raise ValueError(f"Unknown media type: {type_!r}")
+            msg = f"Unknown media type: {type_!r}"
+            raise ValueError(msg)
 
     def add_audio(
         self,
-        media: Union[str, InputFile],
-        thumbnail: Optional[InputFile] = None,
-        caption: Optional[str] = None,
-        parse_mode: Optional[str] = UNSET_PARSE_MODE,
-        caption_entities: Optional[List[MessageEntity]] = None,
-        duration: Optional[int] = None,
-        performer: Optional[str] = None,
-        title: Optional[str] = None,
+        media: str | InputFile,
+        thumbnail: InputFile | None = None,
+        caption: str | None = None,
+        parse_mode: str | None = UNSET_PARSE_MODE,
+        caption_entities: list[MessageEntity] | None = None,
+        duration: int | None = None,
+        performer: str | None = None,
+        title: str | None = None,
         **kwargs: Any,
     ) -> None:
         """
@@ -189,16 +187,16 @@ class MediaGroupBuilder:
                 performer=performer,
                 title=title,
                 **kwargs,
-            )
+            ),
         )
 
     def add_photo(
         self,
-        media: Union[str, InputFile],
-        caption: Optional[str] = None,
-        parse_mode: Optional[str] = UNSET_PARSE_MODE,
-        caption_entities: Optional[List[MessageEntity]] = None,
-        has_spoiler: Optional[bool] = None,
+        media: str | InputFile,
+        caption: str | None = None,
+        parse_mode: str | None = UNSET_PARSE_MODE,
+        caption_entities: list[MessageEntity] | None = None,
+        has_spoiler: bool | None = None,
         **kwargs: Any,
     ) -> None:
         """
@@ -228,21 +226,21 @@ class MediaGroupBuilder:
                 caption_entities=caption_entities,
                 has_spoiler=has_spoiler,
                 **kwargs,
-            )
+            ),
         )
 
     def add_video(
         self,
-        media: Union[str, InputFile],
-        thumbnail: Optional[InputFile] = None,
-        caption: Optional[str] = None,
-        parse_mode: Optional[str] = UNSET_PARSE_MODE,
-        caption_entities: Optional[List[MessageEntity]] = None,
-        width: Optional[int] = None,
-        height: Optional[int] = None,
-        duration: Optional[int] = None,
-        supports_streaming: Optional[bool] = None,
-        has_spoiler: Optional[bool] = None,
+        media: str | InputFile,
+        thumbnail: InputFile | None = None,
+        caption: str | None = None,
+        parse_mode: str | None = UNSET_PARSE_MODE,
+        caption_entities: list[MessageEntity] | None = None,
+        width: int | None = None,
+        height: int | None = None,
+        duration: int | None = None,
+        supports_streaming: bool | None = None,
+        has_spoiler: bool | None = None,
         **kwargs: Any,
     ) -> None:
         """
@@ -290,17 +288,17 @@ class MediaGroupBuilder:
                 supports_streaming=supports_streaming,
                 has_spoiler=has_spoiler,
                 **kwargs,
-            )
+            ),
         )
 
     def add_document(
         self,
-        media: Union[str, InputFile],
-        thumbnail: Optional[InputFile] = None,
-        caption: Optional[str] = None,
-        parse_mode: Optional[str] = UNSET_PARSE_MODE,
-        caption_entities: Optional[List[MessageEntity]] = None,
-        disable_content_type_detection: Optional[bool] = None,
+        media: str | InputFile,
+        thumbnail: InputFile | None = None,
+        caption: str | None = None,
+        parse_mode: str | None = UNSET_PARSE_MODE,
+        caption_entities: list[MessageEntity] | None = None,
+        disable_content_type_detection: bool | None = None,
         **kwargs: Any,
     ) -> None:
         """
@@ -342,10 +340,10 @@ class MediaGroupBuilder:
                 caption_entities=caption_entities,
                 disable_content_type_detection=disable_content_type_detection,
                 **kwargs,
-            )
+            ),
         )
 
-    def build(self) -> List[MediaType]:
+    def build(self) -> list[MediaType]:
         """
         Builds a list of media objects for a media group.
 
@@ -353,7 +351,7 @@ class MediaGroupBuilder:
 
         :return: List of media objects.
         """
-        update_first_media: Dict[str, Any] = {"caption": self.caption}
+        update_first_media: dict[str, Any] = {"caption": self.caption}
         if self.caption_entities is not None:
             update_first_media["caption_entities"] = self.caption_entities
             update_first_media["parse_mode"] = None

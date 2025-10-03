@@ -9,16 +9,16 @@ from typing import Any, Union
 
 
 def dataclass_kwargs(
-    init: Union[bool, None] = None,
-    repr: Union[bool, None] = None,
-    eq: Union[bool, None] = None,
-    order: Union[bool, None] = None,
-    unsafe_hash: Union[bool, None] = None,
-    frozen: Union[bool, None] = None,
-    match_args: Union[bool, None] = None,
-    kw_only: Union[bool, None] = None,
-    slots: Union[bool, None] = None,
-    weakref_slot: Union[bool, None] = None,
+    init: bool | None = None,
+    repr: bool | None = None,
+    eq: bool | None = None,
+    order: bool | None = None,
+    unsafe_hash: bool | None = None,
+    frozen: bool | None = None,
+    match_args: bool | None = None,
+    kw_only: bool | None = None,
+    slots: bool | None = None,
+    weakref_slot: bool | None = None,
 ) -> dict[str, Any]:
     """
     Generates a dictionary of keyword arguments that can be passed to a Python
@@ -48,13 +48,13 @@ def dataclass_kwargs(
         params["frozen"] = frozen
 
     # Added in 3.10
-    if sys.version_info >= (3, 10):
-        if match_args is not None:
-            params["match_args"] = match_args
-        if kw_only is not None:
-            params["kw_only"] = kw_only
-        if slots is not None:
-            params["slots"] = slots
+    # if sys.version_info >= (3, 10):
+    if match_args is not None:
+        params["match_args"] = match_args
+    if kw_only is not None:
+        params["kw_only"] = kw_only
+    if slots is not None:
+        params["slots"] = slots
 
     # Added in 3.11
     if sys.version_info >= (3, 11):

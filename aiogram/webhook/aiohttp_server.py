@@ -2,7 +2,8 @@ import asyncio
 import secrets
 from abc import ABC, abstractmethod
 from asyncio import Transport
-from typing import Any, Awaitable, Callable, Dict, Optional, Set, Tuple, cast
+from collections.abc import Awaitable, Callable
+from typing import TYPE_CHECKING, Any, cast
 
 from aiohttp import JsonPayload, MultipartWriter, Payload, web
 from aiohttp.typedefs import Handler
@@ -12,8 +13,10 @@ from aiohttp.web_middlewares import middleware
 from aiogram import Bot, Dispatcher, loggers
 from aiogram.methods import TelegramMethod
 from aiogram.methods.base import TelegramType
-from aiogram.types import InputFile
 from aiogram.webhook.security import IPFilter
+
+if TYPE_CHECKING:
+    from aiogram.types import InputFile
 
 
 def setup_application(app: Application, dispatcher: Dispatcher, /, **kwargs: Any) -> None:
@@ -42,7 +45,7 @@ def setup_application(app: Application, dispatcher: Dispatcher, /, **kwargs: Any
     app.on_shutdown.append(on_shutdown)
 
 
-def check_ip(ip_filter: IPFilter, request: web.Request) -> Tuple[str, bool]:
+def check_ip(ip_filter: IPFilter, request: web.Request) -> tuple[str, bool]:
     # Try to resolve client IP over reverse proxy
     if forwarded_for := request.headers.get("X-Forwarded-For", ""):
         # Get the left-most ip when there is multiple ips
@@ -98,7 +101,7 @@ class BaseRequestHandler(ABC):
         self.dispatcher = dispatcher
         self.handle_in_background = handle_in_background
         self.data = data
-        self._background_feed_update_tasks: Set[asyncio.Task[Any]] = set()
+        self._background_feed_update_tasks: set[asyncio.Task[Any]] = set()
 
     def register(self, app: Application, /, path: str, **kwargs: Any) -> None:
         """
@@ -128,13 +131,12 @@ class BaseRequestHandler(ABC):
         :param request:
         :return: Bot instance
         """
-        pass
 
     @abstractmethod
     def verify_secret(self, telegram_secret_token: str, bot: Bot) -> bool:
         pass
 
-    async def _background_feed_update(self, bot: Bot, update: Dict[str, Any]) -> None:
+    async def _background_feed_update(self, bot: Bot, update: dict[str, Any]) -> None:
         result = await self.dispatcher.feed_raw_update(bot=bot, update=update, **self.data)
         if isinstance(result, TelegramMethod):
             await self.dispatcher.silent_call_request(bot=bot, result=result)
@@ -142,15 +144,18 @@ class BaseRequestHandler(ABC):
     async def _handle_request_background(self, bot: Bot, request: web.Request) -> web.Response:
         feed_update_task = asyncio.create_task(
             self._background_feed_update(
-                bot=bot, update=await request.json(loads=bot.session.json_loads)
-            )
+                bot=bot,
+                update=await request.json(loads=bot.session.json_loads),
+            ),
         )
         self._background_feed_update_tasks.add(feed_update_task)
         feed_update_task.add_done_callback(self._background_feed_update_tasks.discard)
         return web.json_response({}, dumps=bot.session.json_dumps)
 
     def _build_response_writer(
-        self, bot: Bot, result: Optional[TelegramMethod[TelegramType]]
+        self,
+        bot: Bot,
+        result: TelegramMethod[TelegramType] | None,
     ) -> Payload:
         if not result:
             # we need to return something "empty"
@@ -166,7 +171,7 @@ class BaseRequestHandler(ABC):
         payload = writer.append(result.__api_method__)
         payload.set_content_disposition("form-data", name="method")
 
-        files: Dict[str, InputFile] = {}
+        files: dict[str, InputFile] = {}
         for key, value in result.model_dump(warnings=False).items():
             value = bot.session.prepare_value(value, bot=bot, files=files)
             if not value:
@@ -185,7 +190,7 @@ class BaseRequestHandler(ABC):
         return writer
 
     async def _handle_request(self, bot: Bot, request: web.Request) -> web.Response:
-        result: Optional[TelegramMethod[Any]] = await self.dispatcher.feed_webhook_update(
+        result: TelegramMethod[Any] | None = await self.dispatcher.feed_webhook_update(
             bot,
             await request.json(loads=bot.session.json_loads),
             **self.data,
@@ -209,7 +214,7 @@ class SimpleRequestHandler(BaseRequestHandler):
         dispatcher: Dispatcher,
         bot: Bot,
         handle_in_background: bool = True,
-        secret_token: Optional[str] = None,
+        secret_token: str | None = None,
         **data: Any,
     ) -> None:
         """
@@ -244,7 +249,7 @@ class TokenBasedRequestHandler(BaseRequestHandler):
         self,
         dispatcher: Dispatcher,
         handle_in_background: bool = True,
-        bot_settings: Optional[Dict[str, Any]] = None,
+        bot_settings: dict[str, Any] | None = None,
         **data: Any,
     ) -> None:
         """
@@ -265,7 +270,7 @@ class TokenBasedRequestHandler(BaseRequestHandler):
         if bot_settings is None:
             bot_settings = {}
         self.bot_settings = bot_settings
-        self.bots: Dict[str, Bot] = {}
+        self.bots: dict[str, Bot] = {}
 
     def verify_secret(self, telegram_secret_token: str, bot: Bot) -> bool:
         return True
@@ -283,7 +288,8 @@ class TokenBasedRequestHandler(BaseRequestHandler):
         :param kwargs:
         """
         if "{bot_token}" not in path:
-            raise ValueError("Path should contains '{bot_token}' substring")
+            msg = "Path should contains '{bot_token}' substring"
+            raise ValueError(msg)
         super().register(app, path=path, **kwargs)
 
     async def resolve_bot(self, request: web.Request) -> Bot:

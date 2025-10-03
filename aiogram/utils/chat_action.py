@@ -2,9 +2,10 @@ import asyncio
 import logging
 import time
 from asyncio import Event, Lock
+from collections.abc import Awaitable, Callable
 from contextlib import suppress
 from types import TracebackType
-from typing import Any, Awaitable, Callable, Dict, Optional, Type, Union
+from typing import Any
 
 from aiogram import BaseMiddleware, Bot
 from aiogram.dispatcher.flags import get_flag
@@ -32,8 +33,8 @@ class ChatActionSender:
         self,
         *,
         bot: Bot,
-        chat_id: Union[str, int],
-        message_thread_id: Optional[int] = None,
+        chat_id: str | int,
+        message_thread_id: int | None = None,
         action: str = "typing",
         interval: float = DEFAULT_INTERVAL,
         initial_sleep: float = DEFAULT_INITIAL_SLEEP,
@@ -56,7 +57,7 @@ class ChatActionSender:
         self._lock = Lock()
         self._close_event = Event()
         self._closed_event = Event()
-        self._task: Optional[asyncio.Task[Any]] = None
+        self._task: asyncio.Task[Any] | None = None
 
     @property
     def running(self) -> bool:
@@ -108,7 +109,8 @@ class ChatActionSender:
             self._close_event.clear()
             self._closed_event.clear()
             if self.running:
-                raise RuntimeError("Already running")
+                msg = "Already running"
+                raise RuntimeError(msg)
             self._task = asyncio.create_task(self._worker())
 
     async def _stop(self) -> None:
@@ -126,18 +128,18 @@ class ChatActionSender:
 
     async def __aexit__(
         self,
-        exc_type: Optional[Type[BaseException]],
-        exc_value: Optional[BaseException],
-        traceback: Optional[TracebackType],
+        exc_type: type[BaseException] | None,
+        exc_value: BaseException | None,
+        traceback: TracebackType | None,
     ) -> Any:
         await self._stop()
 
     @classmethod
     def typing(
         cls,
-        chat_id: Union[int, str],
+        chat_id: int | str,
         bot: Bot,
-        message_thread_id: Optional[int] = None,
+        message_thread_id: int | None = None,
         interval: float = DEFAULT_INTERVAL,
         initial_sleep: float = DEFAULT_INITIAL_SLEEP,
     ) -> "ChatActionSender":
@@ -154,9 +156,9 @@ class ChatActionSender:
     @classmethod
     def upload_photo(
         cls,
-        chat_id: Union[int, str],
+        chat_id: int | str,
         bot: Bot,
-        message_thread_id: Optional[int] = None,
+        message_thread_id: int | None = None,
         interval: float = DEFAULT_INTERVAL,
         initial_sleep: float = DEFAULT_INITIAL_SLEEP,
     ) -> "ChatActionSender":
@@ -173,9 +175,9 @@ class ChatActionSender:
     @classmethod
     def record_video(
         cls,
-        chat_id: Union[int, str],
+        chat_id: int | str,
         bot: Bot,
-        message_thread_id: Optional[int] = None,
+        message_thread_id: int | None = None,
         interval: float = DEFAULT_INTERVAL,
         initial_sleep: float = DEFAULT_INITIAL_SLEEP,
     ) -> "ChatActionSender":
@@ -192,9 +194,9 @@ class ChatActionSender:
     @classmethod
     def upload_video(
         cls,
-        chat_id: Union[int, str],
+        chat_id: int | str,
         bot: Bot,
-        message_thread_id: Optional[int] = None,
+        message_thread_id: int | None = None,
         interval: float = DEFAULT_INTERVAL,
         initial_sleep: float = DEFAULT_INITIAL_SLEEP,
     ) -> "ChatActionSender":
@@ -211,9 +213,9 @@ class ChatActionSender:
     @classmethod
     def record_voice(
         cls,
-        chat_id: Union[int, str],
+        chat_id: int | str,
         bot: Bot,
-        message_thread_id: Optional[int] = None,
+        message_thread_id: int | None = None,
         interval: float = DEFAULT_INTERVAL,
         initial_sleep: float = DEFAULT_INITIAL_SLEEP,
     ) -> "ChatActionSender":
@@ -230,9 +232,9 @@ class ChatActionSender:
     @classmethod
     def upload_voice(
         cls,
-        chat_id: Union[int, str],
+        chat_id: int | str,
         bot: Bot,
-        message_thread_id: Optional[int] = None,
+        message_thread_id: int | None = None,
         interval: float = DEFAULT_INTERVAL,
         initial_sleep: float = DEFAULT_INITIAL_SLEEP,
     ) -> "ChatActionSender":
@@ -249,9 +251,9 @@ class ChatActionSender:
     @classmethod
     def upload_document(
         cls,
-        chat_id: Union[int, str],
+        chat_id: int | str,
         bot: Bot,
-        message_thread_id: Optional[int] = None,
+        message_thread_id: int | None = None,
         interval: float = DEFAULT_INTERVAL,
         initial_sleep: float = DEFAULT_INITIAL_SLEEP,
     ) -> "ChatActionSender":
@@ -268,9 +270,9 @@ class ChatActionSender:
     @classmethod
     def choose_sticker(
         cls,
-        chat_id: Union[int, str],
+        chat_id: int | str,
         bot: Bot,
-        message_thread_id: Optional[int] = None,
+        message_thread_id: int | None = None,
         interval: float = DEFAULT_INTERVAL,
         initial_sleep: float = DEFAULT_INITIAL_SLEEP,
     ) -> "ChatActionSender":
@@ -287,9 +289,9 @@ class ChatActionSender:
     @classmethod
     def find_location(
         cls,
-        chat_id: Union[int, str],
+        chat_id: int | str,
         bot: Bot,
-        message_thread_id: Optional[int] = None,
+        message_thread_id: int | None = None,
         interval: float = DEFAULT_INTERVAL,
         initial_sleep: float = DEFAULT_INITIAL_SLEEP,
     ) -> "ChatActionSender":
@@ -306,9 +308,9 @@ class ChatActionSender:
     @classmethod
     def record_video_note(
         cls,
-        chat_id: Union[int, str],
+        chat_id: int | str,
         bot: Bot,
-        message_thread_id: Optional[int] = None,
+        message_thread_id: int | None = None,
         interval: float = DEFAULT_INTERVAL,
         initial_sleep: float = DEFAULT_INITIAL_SLEEP,
     ) -> "ChatActionSender":
@@ -325,9 +327,9 @@ class ChatActionSender:
     @classmethod
     def upload_video_note(
         cls,
-        chat_id: Union[int, str],
+        chat_id: int | str,
         bot: Bot,
-        message_thread_id: Optional[int] = None,
+        message_thread_id: int | None = None,
         interval: float = DEFAULT_INTERVAL,
         initial_sleep: float = DEFAULT_INITIAL_SLEEP,
     ) -> "ChatActionSender":
@@ -349,9 +351,9 @@ class ChatActionMiddleware(BaseMiddleware):
 
     async def __call__(
         self,
-        handler: Callable[[TelegramObject, Dict[str, Any]], Awaitable[Any]],
+        handler: Callable[[TelegramObject, dict[str, Any]], Awaitable[Any]],
         event: TelegramObject,
-        data: Dict[str, Any],
+        data: dict[str, Any],
     ) -> Any:
         if not isinstance(event, Message):
             return await handler(event, data)

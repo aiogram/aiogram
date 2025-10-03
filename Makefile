@@ -39,7 +39,7 @@ install: clean
 lint:
 	isort --check-only $(code_dir)
 	black --check --diff $(code_dir)
-	ruff check $(package_dir) $(examples_dir)
+	ruff check --show-fixes --preview $(package_dir) $(examples_dir)
 	mypy $(package_dir)
 
 .PHONY: reformat
@@ -131,3 +131,7 @@ release:
 	git add .
 	git commit -m "Release $(shell poetry version -s)"
 	git tag v$(shell hatch version -s)
+
+.PHONY: outdated
+outdated:
+	uv tree --universal --outdated

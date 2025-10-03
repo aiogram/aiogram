@@ -1,31 +1,21 @@
 from __future__ import annotations
 
 import re
+from collections.abc import Iterable, Sequence
 from dataclasses import dataclass, field, replace
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    Dict,
-    Iterable,
-    Match,
-    Optional,
-    Pattern,
-    Sequence,
-    Union,
-    cast,
-)
-
-from magic_filter import MagicFilter
+from re import Match, Pattern
+from typing import TYPE_CHECKING, Any, cast
 
 from aiogram.filters.base import Filter
 from aiogram.types import BotCommand, Message
 from aiogram.utils.deep_linking import decode_payload
 
 if TYPE_CHECKING:
+    from magic_filter import MagicFilter
+
     from aiogram import Bot
 
-# TODO: rm type ignore after py3.8 support expiration or mypy bug fix
-CommandPatternType = Union[str, re.Pattern, BotCommand]  # type: ignore[type-arg]
+CommandPatternType = str | re.Pattern[str] | BotCommand
 
 
 class CommandException(Exception):
@@ -41,20 +31,20 @@ class Command(Filter):
 
     __slots__ = (
         "commands",
-        "prefix",
         "ignore_case",
         "ignore_mention",
         "magic",
+        "prefix",
     )
 
     def __init__(
         self,
         *values: CommandPatternType,
-        commands: Optional[Union[Sequence[CommandPatternType], CommandPatternType]] = None,
+        commands: Sequence[CommandPatternType] | CommandPatternType | None = None,
         prefix: str = "/",
         ignore_case: bool = False,
         ignore_mention: bool = False,
-        magic: Optional[MagicFilter] = None,
+        magic: MagicFilter | None = None,
     ):
         """
         List of commands (string or compiled regexp patterns)
@@ -74,26 +64,29 @@ class Command(Filter):
             commands = [commands]
 
         if not isinstance(commands, Iterable):
-            raise ValueError(
+            msg = (
                 "Command filter only supports str, re.Pattern, BotCommand object"
                 " or their Iterable"
             )
+            raise ValueError(msg)
 
         items = []
         for command in (*values, *commands):
             if isinstance(command, BotCommand):
                 command = command.command
             if not isinstance(command, (str, re.Pattern)):
-                raise ValueError(
+                msg = (
                     "Command filter only supports str, re.Pattern, BotCommand object"
                     " or their Iterable"
                 )
+                raise ValueError(msg)
             if ignore_case and isinstance(command, str):
                 command = command.casefold()
             items.append(command)
 
         if not items:
-            raise ValueError("At least one command should be specified")
+            msg = "At least one command should be specified"
+            raise ValueError(msg)
 
         self.commands = tuple(items)
         self.prefix = prefix
@@ -110,11 +103,11 @@ class Command(Filter):
             magic=self.magic,
         )
 
-    def update_handler_flags(self, flags: Dict[str, Any]) -> None:
+    def update_handler_flags(self, flags: dict[str, Any]) -> None:
         commands = flags.setdefault("commands", [])
         commands.append(self)
 
-    async def __call__(self, message: Message, bot: Bot) -> Union[bool, Dict[str, Any]]:
+    async def __call__(self, message: Message, bot: Bot) -> bool | dict[str, Any]:
         if not isinstance(message, Message):
             return False
 
@@ -137,7 +130,8 @@ class Command(Filter):
         try:
             full_command, *args = text.split(maxsplit=1)
         except ValueError:
-            raise CommandException("not enough values to unpack")
+            msg = "not enough values to unpack"
+            raise CommandException(msg)
 
         # Separate command into valuable parts
         # "/command@mention" -> "/", ("command", "@", "mention")
@@ -151,13 +145,15 @@ class Command(Filter):
 
     def validate_prefix(self, command: CommandObject) -> None:
         if command.prefix not in self.prefix:
-            raise CommandException("Invalid command prefix")
+            msg = "Invalid command prefix"
+            raise CommandException(msg)
 
     async def validate_mention(self, bot: Bot, command: CommandObject) -> None:
         if command.mention and not self.ignore_mention:
             me = await bot.me()
             if me.username and command.mention.lower() != me.username.lower():
-                raise CommandException("Mention did not match")
+                msg = "Mention did not match"
+                raise CommandException(msg)
 
     def validate_command(self, command: CommandObject) -> CommandObject:
         for allowed_command in cast(Sequence[CommandPatternType], self.commands):
@@ -174,7 +170,8 @@ class Command(Filter):
 
             if command_name == allowed_command:  # String
                 return command
-        raise CommandException("Command did not match pattern")
+        msg = "Command did not match pattern"
+        raise CommandException(msg)
 
     async def parse_command(self, text: str, bot: Bot) -> CommandObject:
         """
@@ -196,7 +193,8 @@ class Command(Filter):
             return command
         result = self.magic.resolve(command)
         if not result:
-            raise CommandException("Rejected via magic filter")
+            msg = "Rejected via magic filter"
+            raise CommandException(msg)
         return replace(command, magic_result=result)
 
 
@@ -211,13 +209,13 @@ class CommandObject:
     """Command prefix"""
     command: str = ""
     """Command without prefix and mention"""
-    mention: Optional[str] = None
+    mention: str | None = None
     """Mention (if available)"""
-    args: Optional[str] = field(repr=False, default=None)
+    args: str | None = field(repr=False, default=None)
     """Command argument"""
-    regexp_match: Optional[Match[str]] = field(repr=False, default=None)
+    regexp_match: Match[str] | None = field(repr=False, default=None)
     """Will be presented match result if the command is presented as regexp in filter"""
-    magic_result: Optional[Any] = field(repr=False, default=None)
+    magic_result: Any | None = field(repr=False, default=None)
 
     @property
     def mentioned(self) -> bool:
@@ -246,7 +244,7 @@ class CommandStart(Command):
         deep_link_encoded: bool = False,
         ignore_case: bool = False,
         ignore_mention: bool = False,
-        magic: Optional[MagicFilter] = None,
+        magic: MagicFilter | None = None,
     ):
         super().__init__(
             "start",
@@ -287,12 +285,14 @@ class CommandStart(Command):
         if not self.deep_link:
             return command
         if not command.args:
-            raise CommandException("Deep-link was missing")
+            msg = "Deep-link was missing"
+            raise CommandException(msg)
         args = command.args
         if self.deep_link_encoded:
             try:
                 args = decode_payload(args)
             except UnicodeDecodeError as e:
-                raise CommandException(f"Failed to decode Base64: {e}")
+                msg = f"Failed to decode Base64: {e}"
+                raise CommandException(msg)
             return replace(command, args=args)
         return command

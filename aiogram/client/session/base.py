@@ -4,23 +4,16 @@ import abc
 import datetime
 import json
 import secrets
+from collections.abc import AsyncGenerator, Callable
 from enum import Enum
 from http import HTTPStatus
-from types import TracebackType
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    AsyncGenerator,
-    Callable,
-    Dict,
-    Final,
-    Optional,
-    Type,
-    cast,
-)
+from typing import TYPE_CHECKING, Any, Final, cast
 
 from pydantic import ValidationError
+from typing_extensions import Self
 
+from aiogram.client.default import Default
+from aiogram.client.telegram import PRODUCTION, TelegramAPIServer
 from aiogram.exceptions import (
     ClientDecodeError,
     RestartingTelegram,
@@ -35,16 +28,16 @@ from aiogram.exceptions import (
     TelegramServerError,
     TelegramUnauthorizedError,
 )
+from aiogram.methods import Response, TelegramMethod
+from aiogram.methods.base import TelegramType
+from aiogram.types import InputFile, TelegramObject
 
-from ...methods import Response, TelegramMethod
-from ...methods.base import TelegramType
-from ...types import InputFile, TelegramObject
-from ..default import Default
-from ..telegram import PRODUCTION, TelegramAPIServer
 from .middlewares.manager import RequestMiddlewareManager
 
 if TYPE_CHECKING:
-    from ..bot import Bot
+    from types import TracebackType
+
+    from aiogram.client.bot import Bot
 
 _JsonLoads = Callable[..., Any]
 _JsonDumps = Callable[..., str]
@@ -81,24 +74,30 @@ class BaseSession(abc.ABC):
         self.middleware = RequestMiddlewareManager()
 
     def check_response(
-        self, bot: Bot, method: TelegramMethod[TelegramType], status_code: int, content: str
+        self,
+        bot: Bot,
+        method: TelegramMethod[TelegramType],
+        status_code: int,
+        content: str,
     ) -> Response[TelegramType]:
         """
         Check response status
         """
         try:
             json_data = self.json_loads(content)
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             # Handled error type can't be classified as specific error
             # in due to decoder can be customized and raise any exception
 
-            raise ClientDecodeError("Failed to decode object", e, content)
+            msg = "Failed to decode object"
+            raise ClientDecodeError(msg, e, content)
 
         try:
             response_type = Response[method.__returning__]  # type: ignore
             response = response_type.model_validate(json_data, context={"bot": bot})
         except ValidationError as e:
-            raise ClientDecodeError("Failed to deserialize object", e, json_data)
+            msg = "Failed to deserialize object"
+            raise ClientDecodeError(msg, e, json_data)
 
         if HTTPStatus.OK <= status_code <= HTTPStatus.IM_USED and response.ok:
             return response
@@ -108,7 +107,9 @@ class BaseSession(abc.ABC):
         if parameters := response.parameters:
             if parameters.retry_after:
                 raise TelegramRetryAfter(
-                    method=method, message=description, retry_after=parameters.retry_after
+                    method=method,
+                    message=description,
+                    retry_after=parameters.retry_after,
                 )
             if parameters.migrate_to_chat_id:
                 raise TelegramMigrateToChat(
@@ -143,14 +144,13 @@ class BaseSession(abc.ABC):
         """
         Close client session
         """
-        pass
 
     @abc.abstractmethod
     async def make_request(
         self,
         bot: Bot,
         method: TelegramMethod[TelegramType],
-        timeout: Optional[int] = None,
+        timeout: int | None = None,
     ) -> TelegramType:  # pragma: no cover
         """
         Make request to Telegram Bot API
@@ -161,13 +161,12 @@ class BaseSession(abc.ABC):
         :return:
         :raise TelegramApiError:
         """
-        pass
 
     @abc.abstractmethod
     async def stream_content(
         self,
         url: str,
-        headers: Optional[Dict[str, Any]] = None,
+        headers: dict[str, Any] | None = None,
         timeout: int = 30,
         chunk_size: int = 65536,
         raise_for_status: bool = True,
@@ -181,7 +180,7 @@ class BaseSession(abc.ABC):
         self,
         value: Any,
         bot: Bot,
-        files: Dict[str, Any],
+        files: dict[str, Any],
         _dumps_json: bool = True,
     ) -> Any:
         """
@@ -204,7 +203,10 @@ class BaseSession(abc.ABC):
                 for key, item in value.items()
                 if (
                     prepared_item := self.prepare_value(
-                        item, bot=bot, files=files, _dumps_json=False
+                        item,
+                        bot=bot,
+                        files=files,
+                        _dumps_json=False,
                     )
                 )
                 is not None
@@ -218,7 +220,10 @@ class BaseSession(abc.ABC):
                 for item in value
                 if (
                     prepared_item := self.prepare_value(
-                        item, bot=bot, files=files, _dumps_json=False
+                        item,
+                        bot=bot,
+                        files=files,
+                        _dumps_json=False,
                     )
                 )
                 is not None
@@ -227,7 +232,7 @@ class BaseSession(abc.ABC):
                 return self.json_dumps(value)
             return value
         if isinstance(value, datetime.timedelta):
-            now = datetime.datetime.now()
+            now = datetime.datetime.now()  # noqa: DTZ005
             return str(round((now + value).timestamp()))
         if isinstance(value, datetime.datetime):
             return str(round(value.timestamp()))
@@ -248,18 +253,18 @@ class BaseSession(abc.ABC):
         self,
         bot: Bot,
         method: TelegramMethod[TelegramType],
-        timeout: Optional[int] = None,
+        timeout: int | None = None,
     ) -> TelegramType:
         middleware = self.middleware.wrap_middlewares(self.make_request, timeout=timeout)
         return cast(TelegramType, await middleware(bot, method))
 
-    async def __aenter__(self) -> BaseSession:
+    async def __aenter__(self) -> Self:
         return self
 
     async def __aexit__(
         self,
-        exc_type: Optional[Type[BaseException]],
-        exc_value: Optional[BaseException],
-        traceback: Optional[TracebackType],
+        exc_type: type[BaseException] | None,
+        exc_value: BaseException | None,
+        traceback: TracebackType | None,
     ) -> None:
         await self.close()
