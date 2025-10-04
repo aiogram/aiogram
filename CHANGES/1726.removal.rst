@@ -1,7 +1,7 @@
-Due to EOL of Py3.9 - this PR is presented.
-https://devguide.python.org/versions/
+This PR updates the codebase following the end of life for Python 3.9.
 
-PR change type annotation to much prettier py3.10+ style, droping `List`, `Set`, etc ugly type-hints, replacing them with `list`, `set`, etc.
-Also this PR provide some code refactor like concatenating nested `if` expression
+Reference: https://devguide.python.org/versions/
 
-In the end - some requirements bumped, first due to security reasons.
+- Updated type annotations to Python 3.10+ style, replacing deprecated ``List``, ``Set``, etc., with built-in ``list``, ``set``, and related types.
+- Refactored code by simplifying nested ``if`` expressions.
+- Updated several dependencies, including security-related upgrades.
