@@ -1,0 +1,1 @@
+Added a new guide on testing bots with pytest examples.
