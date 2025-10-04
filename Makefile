@@ -131,7 +131,3 @@ release:
 	git add .
 	git commit -m "Release $(shell poetry version -s)"
 	git tag v$(shell hatch version -s)
-
-.PHONY: outdated
-outdated:
-	uv tree --universal --outdated
