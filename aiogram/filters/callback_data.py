@@ -1,12 +1,11 @@
 from __future__ import annotations
 
-import sys
 import types
 import typing
 from decimal import Decimal
 from enum import Enum
 from fractions import Fraction
-from typing import TYPE_CHECKING, Any, ClassVar, Literal, TypeVar, Union
+from typing import TYPE_CHECKING, Any, ClassVar, Literal, TypeVar
 from uuid import UUID
 
 from pydantic import BaseModel
