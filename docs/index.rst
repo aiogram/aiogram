@@ -27,3 +27,4 @@ Contents
     utils/index
     changelog
     contributing
+    guide/testing
