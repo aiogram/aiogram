@@ -22,3 +22,9 @@ reports
 
 dev/
 .venv/
+
+venv/
+.venv/
+__pycache__/
+.DS_Store
+docker-compose.yml
