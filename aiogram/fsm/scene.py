@@ -195,15 +195,23 @@ class ActionContainer:
             await wizard.back()
 
 
-@dataclass
 class HandlerContainer:
-    name: str
-    handler: CallbackType
-    filters: tuple[CallbackType, ...]
-    after: After | None = None
+    __slots__ = ("name", "handler", "filters", "after")
+
+    def __init__(
+        self,
+        name: str,
+        handler: CallbackType,
+        filters: tuple[CallbackType, ...],
+        after: After | None = None,
+    ) -> None:
+        self.name = name
+        self.handler = handler
+        self.filters = filters
+        self.after = after
 
 
-@dataclass()
+@dataclass
 class SceneConfig:
     state: str | None
     """Scene state"""
