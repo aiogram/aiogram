@@ -195,20 +195,12 @@ class ActionContainer:
             await wizard.back()
 
 
+@dataclass(slots=True)
 class HandlerContainer:
-    __slots__ = ("name", "handler", "filters", "after")
-
-    def __init__(
-        self,
-        name: str,
-        handler: CallbackType,
-        filters: tuple[CallbackType, ...],
-        after: After | None = None,
-    ) -> None:
-        self.name = name
-        self.handler = handler
-        self.filters = filters
-        self.after = after
+    name: str
+    handler: CallbackType
+    filters: tuple[CallbackType, ...]
+    after: After | None = None
 
 
 @dataclass
