@@ -12,7 +12,7 @@ class MessageHandler(BaseHandler[Message], ABC):
     """
 
     @property
-    def from_user(self) -> Optional[User]:
+    def from_user(self) -> User | None:
         return self.event.from_user
 
     @property
@@ -22,7 +22,7 @@ class MessageHandler(BaseHandler[Message], ABC):
 
 class MessageHandlerCommandMixin(BaseHandlerMixin[Message]):
     @property
-    def command(self) -> Optional[CommandObject]:
+    def command(self) -> CommandObject | None:
         if "command" in self.data:
             return cast(CommandObject, self.data["command"])
         return None

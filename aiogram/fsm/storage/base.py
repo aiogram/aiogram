@@ -1,20 +1,12 @@
 from abc import ABC, abstractmethod
+from collections.abc import AsyncGenerator, Mapping
 from contextlib import asynccontextmanager
 from dataclasses import dataclass
-from typing import (
-    Any,
-    AsyncGenerator,
-    Dict,
-    Literal,
-    Mapping,
-    Optional,
-    Union,
-    overload,
-)
+from typing import Any, Literal, overload
 
 from aiogram.fsm.state import State
 
-StateType = Optional[Union[str, State]]
+StateType = str | State | None
 
 DEFAULT_DESTINY = "default"
 
@@ -24,8 +16,8 @@ class StorageKey:
     bot_id: int
     chat_id: int
     user_id: int
-    thread_id: Optional[int] = None
-    business_connection_id: Optional[str] = None
+    thread_id: int | None = None
+    business_connection_id: str | None = None
     destiny: str = DEFAULT_DESTINY
 
 
@@ -36,7 +28,7 @@ class KeyBuilder(ABC):
     def build(
         self,
         key: StorageKey,
-        part: Optional[Literal["data", "state", "lock"]] = None,
+        part: Literal["data", "state", "lock"] | None = None,
     ) -> str:
         """
         Build key to be used in storage's db queries
@@ -45,7 +37,6 @@ class KeyBuilder(ABC):
         :param part: part of the record
         :return: key to be used in storage's db queries
         """
-        pass
 
 
 class DefaultKeyBuilder(KeyBuilder):
@@ -84,7 +75,7 @@ class DefaultKeyBuilder(KeyBuilder):
     def build(
         self,
         key: StorageKey,
-        part: Optional[Literal["data", "state", "lock"]] = None,
+        part: Literal["data", "state", "lock"] | None = None,
     ) -> str:
         parts = [self.prefix]
         if self.with_bot_id:
@@ -121,17 +112,15 @@ class BaseStorage(ABC):
         :param key: storage key
         :param state: new state
         """
-        pass
 
     @abstractmethod
-    async def get_state(self, key: StorageKey) -> Optional[str]:
+    async def get_state(self, key: StorageKey) -> str | None:
         """
         Get key state
 
         :param key: storage key
         :return: current state
         """
-        pass
 
     @abstractmethod
     async def set_data(self, key: StorageKey, data: Mapping[str, Any]) -> None:
@@ -141,20 +130,18 @@ class BaseStorage(ABC):
         :param key: storage key
         :param data: new data
         """
-        pass
 
     @abstractmethod
-    async def get_data(self, key: StorageKey) -> Dict[str, Any]:
+    async def get_data(self, key: StorageKey) -> dict[str, Any]:
         """
         Get current data for key
 
         :param key: storage key
         :return: current data
         """
-        pass
 
     @overload
-    async def get_value(self, storage_key: StorageKey, dict_key: str) -> Optional[Any]:
+    async def get_value(self, storage_key: StorageKey, dict_key: str) -> Any | None:
         """
         Get single value from data by key
 
@@ -162,7 +149,6 @@ class BaseStorage(ABC):
         :param dict_key: value key
         :return: value stored in key of dict or ``None``
         """
-        pass
 
     @overload
     async def get_value(self, storage_key: StorageKey, dict_key: str, default: Any) -> Any:
@@ -174,15 +160,17 @@ class BaseStorage(ABC):
         :param default: default value to return
         :return: value stored in key of dict or default
         """
-        pass
 
     async def get_value(
-        self, storage_key: StorageKey, dict_key: str, default: Optional[Any] = None
-    ) -> Optional[Any]:
+        self,
+        storage_key: StorageKey,
+        dict_key: str,
+        default: Any | None = None,
+    ) -> Any | None:
         data = await self.get_data(storage_key)
         return data.get(dict_key, default)
 
-    async def update_data(self, key: StorageKey, data: Mapping[str, Any]) -> Dict[str, Any]:
+    async def update_data(self, key: StorageKey, data: Mapping[str, Any]) -> dict[str, Any]:
         """
         Update date in the storage for key (like dict.update)
 
@@ -200,7 +188,6 @@ class BaseStorage(ABC):
         """
         Close storage (database connection, file or etc.)
         """
-        pass
 
 
 class BaseEventIsolation(ABC):

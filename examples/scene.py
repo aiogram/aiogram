@@ -34,11 +34,11 @@ class CancellableScene(Scene):
     """
 
     @on.message(F.text.casefold() == BUTTON_CANCEL.text.casefold(), after=After.exit())
-    async def handle_cancel(self, message: Message):
+    async def handle_cancel(self, message: Message) -> None:
         await message.answer("Cancelled.", reply_markup=ReplyKeyboardRemove())
 
     @on.message(F.text.casefold() == BUTTON_BACK.text.casefold(), after=After.back())
-    async def handle_back(self, message: Message):
+    async def handle_back(self, message: Message) -> None:
         await message.answer("Back.")
 
 
@@ -48,7 +48,7 @@ class LanguageScene(CancellableScene, state="language"):
     """
 
     @on.message.enter()
-    async def on_enter(self, message: Message):
+    async def on_enter(self, message: Message) -> None:
         await message.answer(
             "What language do you prefer?",
             reply_markup=ReplyKeyboardMarkup(
@@ -58,14 +58,14 @@ class LanguageScene(CancellableScene, state="language"):
         )
 
     @on.message(F.text.casefold() == "python", after=After.exit())
-    async def process_python(self, message: Message):
+    async def process_python(self, message: Message) -> None:
         await message.answer(
-            "Python, you say? That's the language that makes my circuits light up! 😉"
+            "Python, you say? That's the language that makes my circuits light up! 😉",
         )
         await self.input_language(message)
 
     @on.message(after=After.exit())
-    async def input_language(self, message: Message):
+    async def input_language(self, message: Message) -> None:
         data: FSMData = await self.wizard.get_data()
         await self.show_results(message, language=message.text, **data)
 
@@ -83,7 +83,7 @@ class LikeBotsScene(CancellableScene, state="like_bots"):
     """
 
     @on.message.enter()
-    async def on_enter(self, message: Message):
+    async def on_enter(self, message: Message) -> None:
         await message.answer(
             "Did you like to write bots?",
             reply_markup=ReplyKeyboardMarkup(
@@ -96,18 +96,18 @@ class LikeBotsScene(CancellableScene, state="like_bots"):
         )
 
     @on.message(F.text.casefold() == "yes", after=After.goto(LanguageScene))
-    async def process_like_write_bots(self, message: Message):
+    async def process_like_write_bots(self, message: Message) -> None:
         await message.reply("Cool! I'm too!")
 
     @on.message(F.text.casefold() == "no", after=After.exit())
-    async def process_dont_like_write_bots(self, message: Message):
+    async def process_dont_like_write_bots(self, message: Message) -> None:
         await message.answer(
             "Not bad not terrible.\nSee you soon.",
             reply_markup=ReplyKeyboardRemove(),
         )
 
     @on.message()
-    async def input_like_bots(self, message: Message):
+    async def input_like_bots(self, message: Message) -> None:
         await message.answer("I don't understand you :(")
 
 
@@ -117,25 +117,25 @@ class NameScene(CancellableScene, state="name"):
     """
 
     @on.message.enter()  # Marker for handler that should be called when a user enters the scene.
-    async def on_enter(self, message: Message):
+    async def on_enter(self, message: Message) -> None:
         await message.answer(
             "Hi there! What's your name?",
             reply_markup=ReplyKeyboardMarkup(keyboard=[[BUTTON_CANCEL]], resize_keyboard=True),
         )
 
     @on.callback_query.enter()  # different types of updates that start the scene also supported.
-    async def on_enter_callback(self, callback_query: CallbackQuery):
+    async def on_enter_callback(self, callback_query: CallbackQuery) -> None:
         await callback_query.answer()
         await self.on_enter(callback_query.message)
 
     @on.message.leave()  # Marker for handler that should be called when a user leaves the scene.
-    async def on_leave(self, message: Message):
+    async def on_leave(self, message: Message) -> None:
         data: FSMData = await self.wizard.get_data()
         name = data.get("name", "Anonymous")
         await message.answer(f"Nice to meet you, {html.quote(name)}!")
 
     @on.message(after=After.goto(LikeBotsScene))
-    async def input_name(self, message: Message):
+    async def input_name(self, message: Message) -> None:
         await self.wizard.update_data(name=message.text)
 
 
@@ -154,22 +154,22 @@ class DefaultScene(
     start_demo = on.message(F.text.casefold() == "demo", after=After.goto(NameScene))
 
     @on.message(Command("demo"))
-    async def demo(self, message: Message):
+    async def demo(self, message: Message) -> None:
         await message.answer(
             "Demo started",
             reply_markup=InlineKeyboardMarkup(
-                inline_keyboard=[[InlineKeyboardButton(text="Go to form", callback_data="start")]]
+                inline_keyboard=[[InlineKeyboardButton(text="Go to form", callback_data="start")]],
             ),
         )
 
     @on.callback_query(F.data == "start", after=After.goto(NameScene))
-    async def demo_callback(self, callback_query: CallbackQuery):
+    async def demo_callback(self, callback_query: CallbackQuery) -> None:
         await callback_query.answer(cache_time=0)
         await callback_query.message.delete_reply_markup()
 
     @on.message.enter()  # Mark that this handler should be called when a user enters the scene.
     @on.message()
-    async def default_handler(self, message: Message):
+    async def default_handler(self, message: Message) -> None:
         await message.answer(
             "Start demo?\nYou can also start demo via command /demo",
             reply_markup=ReplyKeyboardMarkup(

@@ -1,40 +1,30 @@
 from __future__ import annotations
 
-import sys
 import types
 import typing
 from decimal import Decimal
 from enum import Enum
 from fractions import Fraction
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    ClassVar,
-    Dict,
-    Literal,
-    Optional,
-    Type,
-    TypeVar,
-    Union,
-)
+from typing import TYPE_CHECKING, Any, ClassVar, Literal, TypeVar
 from uuid import UUID
 
-from magic_filter import MagicFilter
 from pydantic import BaseModel
-from pydantic.fields import FieldInfo
 from pydantic_core import PydanticUndefined
+from typing_extensions import Self
 
 from aiogram.filters.base import Filter
 from aiogram.types import CallbackQuery
+
+if TYPE_CHECKING:
+    from magic_filter import MagicFilter
+    from pydantic.fields import FieldInfo
 
 T = TypeVar("T", bound="CallbackData")
 
 MAX_CALLBACK_LENGTH: int = 64
 
 
-_UNION_TYPES = {typing.Union}
-if sys.version_info >= (3, 10):  # pragma: no cover
-    _UNION_TYPES.add(types.UnionType)
+_UNION_TYPES = {typing.Union, types.UnionType}
 
 
 class CallbackDataException(Exception):
@@ -59,17 +49,19 @@ class CallbackData(BaseModel):
 
     def __init_subclass__(cls, **kwargs: Any) -> None:
         if "prefix" not in kwargs:
-            raise ValueError(
+            msg = (
                 f"prefix required, usage example: "
                 f"`class {cls.__name__}(CallbackData, prefix='my_callback'): ...`"
             )
+            raise ValueError(msg)
         cls.__separator__ = kwargs.pop("sep", ":")
         cls.__prefix__ = kwargs.pop("prefix")
         if cls.__separator__ in cls.__prefix__:
-            raise ValueError(
+            msg = (
                 f"Separator symbol {cls.__separator__!r} can not be used "
                 f"inside prefix {cls.__prefix__!r}"
             )
+            raise ValueError(msg)
         super().__init_subclass__(**kwargs)
 
     def _encode_value(self, key: str, value: Any) -> str:
@@ -83,10 +75,11 @@ class CallbackData(BaseModel):
             return str(int(value))
         if isinstance(value, (int, str, float, Decimal, Fraction)):
             return str(value)
-        raise ValueError(
+        msg = (
             f"Attribute {key}={value!r} of type {type(value).__name__!r}"
             f" can not be packed to callback data"
         )
+        raise ValueError(msg)
 
     def pack(self) -> str:
         """
@@ -98,21 +91,23 @@ class CallbackData(BaseModel):
         for key, value in self.model_dump(mode="python").items():
             encoded = self._encode_value(key, value)
             if self.__separator__ in encoded:
-                raise ValueError(
+                msg = (
                     f"Separator symbol {self.__separator__!r} can not be used "
                     f"in value {key}={encoded!r}"
                 )
+                raise ValueError(msg)
             result.append(encoded)
         callback_data = self.__separator__.join(result)
         if len(callback_data.encode()) > MAX_CALLBACK_LENGTH:
-            raise ValueError(
+            msg = (
                 f"Resulted callback data is too long! "
                 f"len({callback_data!r}.encode()) > {MAX_CALLBACK_LENGTH}"
             )
+            raise ValueError(msg)
         return callback_data
 
     @classmethod
-    def unpack(cls: Type[T], value: str) -> T:
+    def unpack(cls, value: str) -> Self:
         """
         Parse callback data string
 
@@ -122,22 +117,28 @@ class CallbackData(BaseModel):
         prefix, *parts = value.split(cls.__separator__)
         names = cls.model_fields.keys()
         if len(parts) != len(names):
-            raise TypeError(
+            msg = (
                 f"Callback data {cls.__name__!r} takes {len(names)} arguments "
                 f"but {len(parts)} were given"
             )
+            raise TypeError(msg)
         if prefix != cls.__prefix__:
-            raise ValueError(f"Bad prefix ({prefix!r} != {cls.__prefix__!r})")
+            msg = f"Bad prefix ({prefix!r} != {cls.__prefix__!r})"
+            raise ValueError(msg)
         payload = {}
-        for k, v in zip(names, parts):  # type: str, Optional[str]
-            if field := cls.model_fields.get(k):
-                if v == "" and _check_field_is_nullable(field) and field.default != "":
-                    v = field.default if field.default is not PydanticUndefined else None
+        for k, v in zip(names, parts, strict=True):  # type: str, str
+            if (
+                (field := cls.model_fields.get(k))
+                and v == ""
+                and _check_field_is_nullable(field)
+                and field.default != ""
+            ):
+                v = field.default if field.default is not PydanticUndefined else None
             payload[k] = v
         return cls(**payload)
 
     @classmethod
-    def filter(cls, rule: Optional[MagicFilter] = None) -> CallbackQueryFilter:
+    def filter(cls, rule: MagicFilter | None = None) -> CallbackQueryFilter:
         """
         Generates a filter for callback query with rule
 
@@ -163,8 +164,8 @@ class CallbackQueryFilter(Filter):
     def __init__(
         self,
         *,
-        callback_data: Type[CallbackData],
-        rule: Optional[MagicFilter] = None,
+        callback_data: type[CallbackData],
+        rule: MagicFilter | None = None,
     ):
         """
         :param callback_data: Expected type of callback data
@@ -179,7 +180,7 @@ class CallbackQueryFilter(Filter):
             rule=self.rule,
         )
 
-    async def __call__(self, query: CallbackQuery) -> Union[Literal[False], Dict[str, Any]]:
+    async def __call__(self, query: CallbackQuery) -> Literal[False] | dict[str, Any]:
         if not isinstance(query, CallbackQuery) or not query.data:
             return False
         try:
@@ -204,5 +205,5 @@ def _check_field_is_nullable(field: FieldInfo) -> bool:
         return True
 
     return typing.get_origin(field.annotation) in _UNION_TYPES and type(None) in typing.get_args(
-        field.annotation
+        field.annotation,
     )

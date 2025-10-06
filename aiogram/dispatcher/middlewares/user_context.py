@@ -1,5 +1,6 @@
+from collections.abc import Awaitable, Callable
 from dataclasses import dataclass
-from typing import Any, Awaitable, Callable, Dict, Optional
+from typing import Any
 
 from aiogram.dispatcher.middlewares.base import BaseMiddleware
 from aiogram.types import (
@@ -20,29 +21,30 @@ EVENT_THREAD_ID_KEY = "event_thread_id"
 
 @dataclass(frozen=True)
 class EventContext:
-    chat: Optional[Chat] = None
-    user: Optional[User] = None
-    thread_id: Optional[int] = None
-    business_connection_id: Optional[str] = None
+    chat: Chat | None = None
+    user: User | None = None
+    thread_id: int | None = None
+    business_connection_id: str | None = None
 
     @property
-    def user_id(self) -> Optional[int]:
+    def user_id(self) -> int | None:
         return self.user.id if self.user else None
 
     @property
-    def chat_id(self) -> Optional[int]:
+    def chat_id(self) -> int | None:
         return self.chat.id if self.chat else None
 
 
 class UserContextMiddleware(BaseMiddleware):
     async def __call__(
         self,
-        handler: Callable[[TelegramObject, Dict[str, Any]], Awaitable[Any]],
+        handler: Callable[[TelegramObject, dict[str, Any]], Awaitable[Any]],
         event: TelegramObject,
-        data: Dict[str, Any],
+        data: dict[str, Any],
     ) -> Any:
         if not isinstance(event, Update):
-            raise RuntimeError("UserContextMiddleware got an unexpected event type!")
+            msg = "UserContextMiddleware got an unexpected event type!"
+            raise RuntimeError(msg)
         event_context = data[EVENT_CONTEXT_KEY] = self.resolve_event_context(event=event)
 
         # Backward compatibility
@@ -116,13 +118,15 @@ class UserContextMiddleware(BaseMiddleware):
             )
         if event.my_chat_member:
             return EventContext(
-                chat=event.my_chat_member.chat, user=event.my_chat_member.from_user
+                chat=event.my_chat_member.chat,
+                user=event.my_chat_member.from_user,
             )
         if event.chat_member:
             return EventContext(chat=event.chat_member.chat, user=event.chat_member.from_user)
         if event.chat_join_request:
             return EventContext(
-                chat=event.chat_join_request.chat, user=event.chat_join_request.from_user
+                chat=event.chat_join_request.chat,
+                user=event.chat_join_request.from_user,
             )
         if event.message_reaction:
             return EventContext(

@@ -35,7 +35,7 @@ aiogram
     :alt: Codecov
 
 **aiogram** is a modern and fully asynchronous framework for
-`Telegram Bot API <https://core.telegram.org/bots/api>`_ written in Python 3.8+ using
+`Telegram Bot API <https://core.telegram.org/bots/api>`_ written in Python 3.10+ using
 `asyncio <https://docs.python.org/3/library/asyncio.html>`_ and
 `aiohttp <https://github.com/aio-libs/aiohttp>`_.
 

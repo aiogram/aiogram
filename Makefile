@@ -39,7 +39,7 @@ install: clean
 lint:
 	isort --check-only $(code_dir)
 	black --check --diff $(code_dir)
-	ruff check $(package_dir) $(examples_dir)
+	ruff check --show-fixes --preview $(package_dir) $(examples_dir)
 	mypy $(package_dir)
 
 .PHONY: reformat

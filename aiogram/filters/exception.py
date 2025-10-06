@@ -1,5 +1,6 @@
 import re
-from typing import Any, Dict, Pattern, Type, Union, cast
+from re import Pattern
+from typing import Any, cast
 
 from aiogram.filters.base import Filter
 from aiogram.types import TelegramObject
@@ -13,15 +14,16 @@ class ExceptionTypeFilter(Filter):
 
     __slots__ = ("exceptions",)
 
-    def __init__(self, *exceptions: Type[Exception]):
+    def __init__(self, *exceptions: type[Exception]):
         """
         :param exceptions: Exception type(s)
         """
         if not exceptions:
-            raise ValueError("At least one exception type is required")
+            msg = "At least one exception type is required"
+            raise ValueError(msg)
         self.exceptions = exceptions
 
-    async def __call__(self, obj: TelegramObject) -> Union[bool, Dict[str, Any]]:
+    async def __call__(self, obj: TelegramObject) -> bool | dict[str, Any]:
         return isinstance(cast(ErrorEvent, obj).exception, self.exceptions)
 
 
@@ -32,7 +34,7 @@ class ExceptionMessageFilter(Filter):
 
     __slots__ = ("pattern",)
 
-    def __init__(self, pattern: Union[str, Pattern[str]]):
+    def __init__(self, pattern: str | Pattern[str]):
         """
         :param pattern: Regexp pattern
         """
@@ -48,7 +50,7 @@ class ExceptionMessageFilter(Filter):
     async def __call__(
         self,
         obj: TelegramObject,
-    ) -> Union[bool, Dict[str, Any]]:
+    ) -> bool | dict[str, Any]:
         result = self.pattern.match(str(cast(ErrorEvent, obj).exception))
         if not result:
             return False

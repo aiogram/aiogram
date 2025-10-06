@@ -8,13 +8,15 @@ from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PublicKey
 from .web_app import WebAppInitData, parse_webapp_init_data
 
 PRODUCTION_PUBLIC_KEY = bytes.fromhex(
-    "e7bf03a2fa4602af4580703d88dda5bb59f32ed8b02a56c187fe7d34caed242d"
+    "e7bf03a2fa4602af4580703d88dda5bb59f32ed8b02a56c187fe7d34caed242d",
 )
 TEST_PUBLIC_KEY = bytes.fromhex("40055058a4ee38156a06562e52eece92a771bcd8346a8c4615cb7376eddf72ec")
 
 
 def check_webapp_signature(
-    bot_id: int, init_data: str, public_key_bytes: bytes = PRODUCTION_PUBLIC_KEY
+    bot_id: int,
+    init_data: str,
+    public_key_bytes: bytes = PRODUCTION_PUBLIC_KEY,
 ) -> bool:
     """
     Check incoming WebApp init data signature without bot token using only bot id.
@@ -49,13 +51,16 @@ def check_webapp_signature(
 
     try:
         public_key.verify(signature, message)
-        return True
     except InvalidSignature:
         return False
+    else:
+        return True
 
 
 def safe_check_webapp_init_data_from_signature(
-    bot_id: int, init_data: str, public_key_bytes: bytes = PRODUCTION_PUBLIC_KEY
+    bot_id: int,
+    init_data: str,
+    public_key_bytes: bytes = PRODUCTION_PUBLIC_KEY,
 ) -> WebAppInitData:
     """
     Validate raw WebApp init data using only bot id and return it as WebAppInitData object
@@ -67,4 +72,5 @@ def safe_check_webapp_init_data_from_signature(
     """
     if check_webapp_signature(bot_id, init_data, public_key_bytes):
         return parse_webapp_init_data(init_data)
-    raise ValueError("Invalid init data signature")
+    msg = "Invalid init data signature"
+    raise ValueError(msg)

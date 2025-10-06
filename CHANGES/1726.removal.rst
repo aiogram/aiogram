@@ -1,0 +1,7 @@
+This PR updates the codebase following the end of life for Python 3.9.
+
+Reference: https://devguide.python.org/versions/
+
+- Updated type annotations to Python 3.10+ style, replacing deprecated ``List``, ``Set``, etc., with built-in ``list``, ``set``, and related types.
+- Refactored code by simplifying nested ``if`` expressions.
+- Updated several dependencies, including security-related upgrades.

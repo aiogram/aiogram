@@ -1,23 +1,27 @@
+from __future__ import annotations
+
 import gettext
-import os
 from contextlib import contextmanager
 from contextvars import ContextVar
 from pathlib import Path
-from typing import Dict, Generator, Optional, Tuple, Union
+from typing import TYPE_CHECKING
 
 from aiogram.utils.i18n.lazy_proxy import LazyProxy
 from aiogram.utils.mixins import ContextInstanceMixin
+
+if TYPE_CHECKING:
+    from collections.abc import Generator
 
 
 class I18n(ContextInstanceMixin["I18n"]):
     def __init__(
         self,
         *,
-        path: Union[str, Path],
+        path: str | Path,
         default_locale: str = "en",
         domain: str = "messages",
     ) -> None:
-        self.path = path
+        self.path = Path(path)
         self.default_locale = default_locale
         self.domain = domain
         self.ctx_locale = ContextVar("aiogram_ctx_locale", default=default_locale)
@@ -43,7 +47,7 @@ class I18n(ContextInstanceMixin["I18n"]):
             self.ctx_locale.reset(ctx_token)
 
     @contextmanager
-    def context(self) -> Generator["I18n", None, None]:
+    def context(self) -> Generator[I18n, None, None]:
         """
         Use I18n context
         """
@@ -53,24 +57,25 @@ class I18n(ContextInstanceMixin["I18n"]):
         finally:
             self.reset_current(token)
 
-    def find_locales(self) -> Dict[str, gettext.GNUTranslations]:
+    def find_locales(self) -> dict[str, gettext.GNUTranslations]:
         """
         Load all compiled locales from path
 
         :return: dict with locales
         """
-        translations: Dict[str, gettext.GNUTranslations] = {}
+        translations: dict[str, gettext.GNUTranslations] = {}
 
-        for name in os.listdir(self.path):
-            if not os.path.isdir(os.path.join(self.path, name)):
+        for name in self.path.iterdir():
+            if not (self.path / name).is_dir():
                 continue
-            mo_path = os.path.join(self.path, name, "LC_MESSAGES", self.domain + ".mo")
+            mo_path = self.path / name / "LC_MESSAGES" / (self.domain + ".mo")
 
-            if os.path.exists(mo_path):
-                with open(mo_path, "rb") as fp:
-                    translations[name] = gettext.GNUTranslations(fp)
-            elif os.path.exists(mo_path[:-2] + "po"):  # pragma: no cover
-                raise RuntimeError(f"Found locale '{name}' but this language is not compiled!")
+            if mo_path.exists():
+                with mo_path.open("rb") as fp:
+                    translations[name.name] = gettext.GNUTranslations(fp)
+            elif mo_path.with_suffix(".po").exists():  # pragma: no cover
+                msg = f"Found locale '{name.name}' but this language is not compiled!"
+                raise RuntimeError(msg)
 
         return translations
 
@@ -81,7 +86,7 @@ class I18n(ContextInstanceMixin["I18n"]):
         self.locales = self.find_locales()
 
     @property
-    def available_locales(self) -> Tuple[str, ...]:
+    def available_locales(self) -> tuple[str, ...]:
         """
         list of loaded locales
 
@@ -90,7 +95,11 @@ class I18n(ContextInstanceMixin["I18n"]):
         return tuple(self.locales.keys())
 
     def gettext(
-        self, singular: str, plural: Optional[str] = None, n: int = 1, locale: Optional[str] = None
+        self,
+        singular: str,
+        plural: str | None = None,
+        n: int = 1,
+        locale: str | None = None,
     ) -> str:
         """
         Get text
@@ -107,7 +116,7 @@ class I18n(ContextInstanceMixin["I18n"]):
         if locale not in self.locales:
             if n == 1:
                 return singular
-            return plural if plural else singular
+            return plural or singular
 
         translator = self.locales[locale]
 
@@ -116,8 +125,17 @@ class I18n(ContextInstanceMixin["I18n"]):
         return translator.ngettext(singular, plural, n)
 
     def lazy_gettext(
-        self, singular: str, plural: Optional[str] = None, n: int = 1, locale: Optional[str] = None
+        self,
+        singular: str,
+        plural: str | None = None,
+        n: int = 1,
+        locale: str | None = None,
     ) -> LazyProxy:
         return LazyProxy(
-            self.gettext, singular=singular, plural=plural, n=n, locale=locale, enable_cache=False
+            self.gettext,
+            singular=singular,
+            plural=plural,
+            n=n,
+            locale=locale,
+            enable_cache=False,
         )

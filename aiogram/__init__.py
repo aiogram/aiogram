@@ -24,18 +24,18 @@ F = MagicFilter()
 flags = FlagGenerator()
 
 __all__ = (
+    "BaseMiddleware",
+    "Bot",
+    "Dispatcher",
+    "F",
+    "Router",
     "__api_version__",
     "__version__",
-    "types",
-    "methods",
     "enums",
-    "Bot",
-    "session",
-    "Dispatcher",
-    "Router",
-    "BaseMiddleware",
-    "F",
+    "flags",
     "html",
     "md",
-    "flags",
+    "methods",
+    "session",
+    "types",
 )

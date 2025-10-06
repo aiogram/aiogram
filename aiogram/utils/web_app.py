@@ -1,9 +1,10 @@
 import hashlib
 import hmac
 import json
+from collections.abc import Callable
 from datetime import datetime
 from operator import itemgetter
-from typing import Any, Callable, Optional
+from typing import Any
 from urllib.parse import parse_qsl
 
 from aiogram.types import TelegramObject
@@ -25,9 +26,9 @@ class WebAppChat(TelegramObject):
     """Type of chat, can be either “group”, “supergroup” or “channel”"""
     title: str
     """Title of the chat"""
-    username: Optional[str] = None
+    username: str | None = None
     """Username of the chat"""
-    photo_url: Optional[str] = None
+    photo_url: str | None = None
     """URL of the chat’s photo. The photo can be in .jpeg or .svg formats.
     Only returned for Web Apps launched from the attachment menu."""
 
@@ -44,23 +45,23 @@ class WebAppUser(TelegramObject):
     and some programming languages may have difficulty/silent defects in interpreting it.
     It has at most 52 significant bits, so a 64-bit integer or a double-precision float type
     is safe for storing this identifier."""
-    is_bot: Optional[bool] = None
+    is_bot: bool | None = None
     """True, if this user is a bot. Returns in the receiver field only."""
     first_name: str
     """First name of the user or bot."""
-    last_name: Optional[str] = None
+    last_name: str | None = None
     """Last name of the user or bot."""
-    username: Optional[str] = None
+    username: str | None = None
     """Username of the user or bot."""
-    language_code: Optional[str] = None
+    language_code: str | None = None
     """IETF language tag of the user's language. Returns in user field only."""
-    is_premium: Optional[bool] = None
+    is_premium: bool | None = None
     """True, if this user is a Telegram Premium user."""
-    added_to_attachment_menu: Optional[bool] = None
+    added_to_attachment_menu: bool | None = None
     """True, if this user added the bot to the attachment menu."""
-    allows_write_to_pm: Optional[bool] = None
+    allows_write_to_pm: bool | None = None
     """True, if this user allowed the bot to message them."""
-    photo_url: Optional[str] = None
+    photo_url: str | None = None
     """URL of the user’s profile photo. The photo can be in .jpeg or .svg formats.
     Only returned for Web Apps launched from the attachment menu."""
 
@@ -73,33 +74,33 @@ class WebAppInitData(TelegramObject):
     Source: https://core.telegram.org/bots/webapps#webappinitdata
     """
 
-    query_id: Optional[str] = None
+    query_id: str | None = None
     """A unique identifier for the Web App session, required for sending messages
     via the answerWebAppQuery method."""
-    user: Optional[WebAppUser] = None
+    user: WebAppUser | None = None
     """An object containing data about the current user."""
-    receiver: Optional[WebAppUser] = None
+    receiver: WebAppUser | None = None
     """An object containing data about the chat partner of the current user in the chat where
     the bot was launched via the attachment menu.
     Returned only for Web Apps launched via the attachment menu."""
-    chat: Optional[WebAppChat] = None
+    chat: WebAppChat | None = None
     """An object containing data about the chat where the bot was launched via the attachment menu.
     Returned for supergroups, channels, and group chats – only for Web Apps launched via the
     attachment menu."""
-    chat_type: Optional[str] = None
+    chat_type: str | None = None
     """Type of the chat from which the Web App was opened.
     Can be either “sender” for a private chat with the user opening the link,
     “private”, “group”, “supergroup”, or “channel”.
     Returned only for Web Apps launched from direct links."""
-    chat_instance: Optional[str] = None
+    chat_instance: str | None = None
     """Global identifier, uniquely corresponding to the chat from which the Web App was opened.
     Returned only for Web Apps launched from a direct link."""
-    start_param: Optional[str] = None
+    start_param: str | None = None
     """The value of the startattach parameter, passed via link.
     Only returned for Web Apps when launched from the attachment menu via link.
     The value of the start_param parameter will also be passed in the GET-parameter
     tgWebAppStartParam, so the Web App can load the correct interface right away."""
-    can_send_after: Optional[int] = None
+    can_send_after: int | None = None
     """Time in seconds, after which a message can be sent via the answerWebAppQuery method."""
     auth_date: datetime
     """Unix time when the form was opened."""
@@ -132,7 +133,9 @@ def check_webapp_signature(token: str, init_data: str) -> bool:
     )
     secret_key = hmac.new(key=b"WebAppData", msg=token.encode(), digestmod=hashlib.sha256)
     calculated_hash = hmac.new(
-        key=secret_key.digest(), msg=data_check_string.encode(), digestmod=hashlib.sha256
+        key=secret_key.digest(),
+        msg=data_check_string.encode(),
+        digestmod=hashlib.sha256,
     ).hexdigest()
     return hmac.compare_digest(calculated_hash, hash_)
 
@@ -180,4 +183,5 @@ def safe_parse_webapp_init_data(
     """
     if check_webapp_signature(token, init_data):
         return parse_webapp_init_data(init_data, loads=loads)
-    raise ValueError("Invalid init data signature")
+    msg = "Invalid init data signature"
+    raise ValueError(msg)

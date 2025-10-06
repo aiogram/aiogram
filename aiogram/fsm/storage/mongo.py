@@ -1,4 +1,5 @@
-from typing import Any, Dict, Mapping, Optional, cast
+from collections.abc import Mapping
+from typing import Any, cast
 
 from motor.motor_asyncio import AsyncIOMotorClient
 
@@ -27,7 +28,7 @@ class MongoStorage(BaseStorage):
     def __init__(
         self,
         client: AsyncIOMotorClient,
-        key_builder: Optional[KeyBuilder] = None,
+        key_builder: KeyBuilder | None = None,
         db_name: str = "aiogram_fsm",
         collection_name: str = "states_and_data",
     ) -> None:
@@ -46,7 +47,10 @@ class MongoStorage(BaseStorage):
 
     @classmethod
     def from_url(
-        cls, url: str, connection_kwargs: Optional[Dict[str, Any]] = None, **kwargs: Any
+        cls,
+        url: str,
+        connection_kwargs: dict[str, Any] | None = None,
+        **kwargs: Any,
     ) -> "MongoStorage":
         """
         Create an instance of :class:`MongoStorage` with specifying the connection string
@@ -65,7 +69,7 @@ class MongoStorage(BaseStorage):
         """Cleanup client resources and disconnect from MongoDB."""
         self._client.close()
 
-    def resolve_state(self, value: StateType) -> Optional[str]:
+    def resolve_state(self, value: StateType) -> str | None:
         if value is None:
             return None
         if isinstance(value, State):
@@ -90,7 +94,7 @@ class MongoStorage(BaseStorage):
                 upsert=True,
             )
 
-    async def get_state(self, key: StorageKey) -> Optional[str]:
+    async def get_state(self, key: StorageKey) -> str | None:
         document_id = self._key_builder.build(key)
         document = await self._collection.find_one({"_id": document_id})
         if document is None:
@@ -99,9 +103,8 @@ class MongoStorage(BaseStorage):
 
     async def set_data(self, key: StorageKey, data: Mapping[str, Any]) -> None:
         if not isinstance(data, dict):
-            raise DataNotDictLikeError(
-                f"Data must be a dict or dict-like object, got {type(data).__name__}"
-            )
+            msg = f"Data must be a dict or dict-like object, got {type(data).__name__}"
+            raise DataNotDictLikeError(msg)
 
         document_id = self._key_builder.build(key)
         if not data:
@@ -120,14 +123,14 @@ class MongoStorage(BaseStorage):
                 upsert=True,
             )
 
-    async def get_data(self, key: StorageKey) -> Dict[str, Any]:
+    async def get_data(self, key: StorageKey) -> dict[str, Any]:
         document_id = self._key_builder.build(key)
         document = await self._collection.find_one({"_id": document_id})
         if document is None or not document.get("data"):
             return {}
-        return cast(Dict[str, Any], document["data"])
+        return cast(dict[str, Any], document["data"])
 
-    async def update_data(self, key: StorageKey, data: Mapping[str, Any]) -> Dict[str, Any]:
+    async def update_data(self, key: StorageKey, data: Mapping[str, Any]) -> dict[str, Any]:
         document_id = self._key_builder.build(key)
         update_with = {f"data.{key}": value for key, value in data.items()}
         update_result = await self._collection.find_one_and_update(

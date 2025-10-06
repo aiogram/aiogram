@@ -7,7 +7,7 @@ BRANCH = "dev-3.x"
 BASE_PAGE_URL = f"{BASE_DOCS_URL}/en/{BRANCH}/"
 
 
-def _format_url(url: str, *path: str, fragment_: Optional[str] = None, **query: Any) -> str:
+def _format_url(url: str, *path: str, fragment_: str | None = None, **query: Any) -> str:
     url = urljoin(url, "/".join(path), allow_fragments=True)
     if query:
         url += "?" + urlencode(query)
@@ -16,7 +16,7 @@ def _format_url(url: str, *path: str, fragment_: Optional[str] = None, **query: 
     return url
 
 
-def docs_url(*path: str, fragment_: Optional[str] = None, **query: Any) -> str:
+def docs_url(*path: str, fragment_: str | None = None, **query: Any) -> str:
     return _format_url(BASE_PAGE_URL, *path, fragment_=fragment_, **query)
 
 
@@ -30,7 +30,7 @@ def create_telegram_link(*path: str, **kwargs: Any) -> str:
 
 def create_channel_bot_link(
     username: str,
-    parameter: Optional[str] = None,
+    parameter: str | None = None,
     change_info: bool = False,
     post_messages: bool = False,
     edit_messages: bool = False,

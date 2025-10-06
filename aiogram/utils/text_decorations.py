@@ -3,20 +3,23 @@ from __future__ import annotations
 import html
 import re
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, Generator, List, Optional, Pattern, cast
+from typing import TYPE_CHECKING, cast
 
 from aiogram.enums import MessageEntityType
 
 if TYPE_CHECKING:
+    from collections.abc import Generator
+    from re import Pattern
+
     from aiogram.types import MessageEntity
 
 __all__ = (
     "HtmlDecoration",
     "MarkdownDecoration",
     "TextDecoration",
+    "add_surrogates",
     "html_decoration",
     "markdown_decoration",
-    "add_surrogates",
     "remove_surrogates",
 )
 
@@ -80,7 +83,7 @@ class TextDecoration(ABC):
         # API it will be here too
         return self.quote(text)
 
-    def unparse(self, text: str, entities: Optional[List[MessageEntity]] = None) -> str:
+    def unparse(self, text: str, entities: list[MessageEntity] | None = None) -> str:
         """
         Unparse message entities
 
@@ -92,15 +95,15 @@ class TextDecoration(ABC):
             self._unparse_entities(
                 add_surrogates(text),
                 sorted(entities, key=lambda item: item.offset) if entities else [],
-            )
+            ),
         )
 
     def _unparse_entities(
         self,
         text: bytes,
-        entities: List[MessageEntity],
-        offset: Optional[int] = None,
-        length: Optional[int] = None,
+        entities: list[MessageEntity],
+        offset: int | None = None,
+        length: int | None = None,
     ) -> Generator[str, None, None]:
         if offset is None:
             offset = 0
@@ -115,7 +118,7 @@ class TextDecoration(ABC):
             offset = entity.offset * 2 + entity.length * 2
 
             sub_entities = list(
-                filter(lambda e: e.offset * 2 < (offset or 0), entities[index + 1 :])
+                filter(lambda e: e.offset * 2 < (offset or 0), entities[index + 1 :]),
             )
             yield self.apply_entity(
                 entity,

@@ -1,13 +1,11 @@
-version: "3.9"
-
 services:
   redis:
-    image: redis:6-alpine
+    image: redis:8-alpine
     ports:
       - "${REDIS_PORT-6379}:6379"
 
   mongo:
-    image: mongo:7.0.6
+    image: mongo:8.0.14
     environment:
       MONGO_INITDB_ROOT_USERNAME: mongo
       MONGO_INITDB_ROOT_PASSWORD: mongo

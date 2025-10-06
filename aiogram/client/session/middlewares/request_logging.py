@@ -1,5 +1,5 @@
 import logging
-from typing import TYPE_CHECKING, Any, List, Optional, Type
+from typing import TYPE_CHECKING, Any
 
 from aiogram import loggers
 from aiogram.methods import TelegramMethod
@@ -8,19 +8,19 @@ from aiogram.methods.base import Response, TelegramType
 from .base import BaseRequestMiddleware, NextRequestMiddlewareType
 
 if TYPE_CHECKING:
-    from ...bot import Bot
+    from aiogram.client.bot import Bot
 
 logger = logging.getLogger(__name__)
 
 
 class RequestLogging(BaseRequestMiddleware):
-    def __init__(self, ignore_methods: Optional[List[Type[TelegramMethod[Any]]]] = None):
+    def __init__(self, ignore_methods: list[type[TelegramMethod[Any]]] | None = None):
         """
         Middleware for logging outgoing requests
 
         :param ignore_methods: methods to ignore in logging middleware
         """
-        self.ignore_methods = ignore_methods if ignore_methods else []
+        self.ignore_methods = ignore_methods or []
 
     async def __call__(
         self,

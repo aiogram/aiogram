@@ -1,5 +1,4 @@
 from abc import ABC
-from typing import List
 
 from aiogram.handlers import BaseHandler
 from aiogram.types import Poll, PollOption
@@ -15,5 +14,5 @@ class PollHandler(BaseHandler[Poll], ABC):
         return self.event.question
 
     @property
-    def options(self) -> List[PollOption]:
+    def options(self) -> list[PollOption]:
         return self.event.options
