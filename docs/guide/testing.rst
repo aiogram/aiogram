@@ -4,85 +4,69 @@ Testing your bot (pytest)
 This guide shows how to test your handlers **without using the real Telegram API**.
 We will use `pytest` and `pytest-asyncio`.
 
-Installation::
+Configure pytest once (no need to mark every test):
 
-   pip install -U pytest pytest-asyncio
+.. code-block:: toml
 
-Simple echo handler
--------------------
+   # pyproject.toml
+   [tool.pytest.ini_options]
+   asyncio_mode = "auto"
 
-**Handler:**
+
+Example: testing a simple handler:
 
 .. code-block:: python
 
-   # app/bot.py
+   from unittest.mock import AsyncMock
+   from aiogram import Router, F
    from aiogram.types import Message
 
-   async def echo_handler(message: Message):
-       await message.answer(message.text)
+   router = Router()
 
-**Test:**
+   @router.message(F.text == "/start")
+   async def start(message: Message):
+       await message.answer("Hello!")
 
-.. code-block:: python
+   async def test_start_handler():
+       # Bot and message stubs
+       bot = AsyncMock()
+       msg = Message(
+           message_id=1,
+           date=None,
+           chat={"id": 1, "type": "private"},
+           text="/start",
+       )
 
-   # tests/test_echo.py
-   import pytest
-   from app.bot import echo_handler
+       # Emulate answer() call
+       message = AsyncMock(spec=Message)
+       message.answer = AsyncMock()
 
-   @pytest.mark.asyncio
-   async def test_echo_handler():
-       sent = []
+       # Run handler
+       await start(message)
 
-       class DummyMessage:
-           def __init__(self, text):
-               self.text = text
-           async def answer(self, text):
-               sent.append(text)
+       # Assert: answer called with expected payload
+       message.answer.assert_awaited_once_with("Hello!")
 
-       msg = DummyMessage("hello")
-       await echo_handler(msg)
 
-       assert sent == ["hello"]
+Mocking Bot API
+===============
 
-Callback query example
-----------------------
-
-**Handler:**
-
-.. code-block:: python
-
-   # app/callbacks.py
-   from aiogram.types import CallbackQuery
-
-   async def ping_pong(cb: CallbackQuery):
-       if cb.data == "ping":
-           await cb.message.edit_text("pong")
-           await cb.answer()
-
-**Test:**
+To assert Bot API calls, patch the method and verify arguments:
 
 .. code-block:: python
 
-   # tests/test_callbacks.py
-   import pytest
-   from app.callbacks import ping_pong
+   from unittest.mock import AsyncMock, patch
+   from aiogram import Bot
 
-   @pytest.mark.asyncio
-   async def test_ping_pong():
-       calls = {"edited": None, "answered": False}
+   async def test_bot_send_message():
+       bot = Bot("42:TEST", parse_mode=None)
 
-       class DummyMsg:
-           async def edit_text(self, text):
-               calls["edited"] = text
+       with patch.object(Bot, "send_message", new_callable=AsyncMock) as send_msg:
+           await bot.send_message(123, "ping")
+           send_msg.assert_awaited_once_with(123, "ping")
 
-       class DummyCb:
-           data = "ping"
-           message = DummyMsg()
-           async def answer(self):
-               calls["answered"] = True
+See also
+--------
 
-       cb = DummyCb()
-       await ping_pong(cb)
-
-       assert calls["edited"] == "pong"
-       assert calls["answered"] is True
+- :ref:`aiogram.utils.magic_filter`
+- :ref:`pytest documentation <https://docs.pytest.org/en/latest/>`
