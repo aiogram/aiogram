@@ -19,6 +19,7 @@ from aiogram.fsm.storage.memory import (
 from aiogram.fsm.storage.mongo import MongoStorage
 from aiogram.fsm.storage.pymongo import PyMongoStorage
 from aiogram.fsm.storage.redis import RedisStorage
+from aiogram.fsm.storage.sqlite import SqliteStorage
 from tests.mocked_bot import MockedBot
 
 DATA_DIR = Path(__file__).parent / "data"
@@ -140,6 +141,16 @@ async def memory_storage():
         yield storage
     finally:
         await storage.close()
+
+
+@pytest.fixture()
+async def sqlite_storage():
+    storage = await SqliteStorage.connect("aiogram_fsm_test.sqlite")
+    try:
+        yield storage
+    finally:
+        await storage.close()
+        Path("aiogram_fsm_test.sqlite").unlink()
 
 
 @pytest.fixture()

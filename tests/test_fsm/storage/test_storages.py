@@ -13,6 +13,7 @@ from aiogram.fsm.storage.base import BaseStorage, StorageKey
         pytest.lazy_fixture("mongo_storage"),
         pytest.lazy_fixture("pymongo_storage"),
         pytest.lazy_fixture("memory_storage"),
+        pytest.lazy_fixture("sqlite_storage"),
     ],
 )
 class TestStorages:
