@@ -75,7 +75,7 @@ jobs:
         if: ${{ env.IS_WINDOWS == 'false' }}
         uses: shogo82148/actions-setup-redis@v1
         with:
-          redis-version: "8.2.2"
+          redis-version: "8"
 
       - name: Setup mongodb
         if: ${{ env.IS_UBUNTU == 'true' }}
