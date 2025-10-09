@@ -682,4 +682,3 @@ class Dispatcher(Router):
                 else:
                     uvloop.install()
                     return asyncio.run(coro)
-        return None
