@@ -84,10 +84,10 @@ test = [
     "pytest-mock==3.15.1",
     "pytest-mypy==1.0.1",
     "pytest-cov==7.0.0",
-    "pytest-aiohttp~=1.1.0",
-    "aresponses~=3.0.0",
-    "pytz~=2025.2",
-    "pycryptodomex~=3.23.0",
+    "pytest-aiohttp==1.1.0",
+    "aresponses==3.0.0",
+    "pytz==2025.2",
+    "pycryptodomex==3.23.0",
 ]
 docs = [
     "Sphinx~=8.0.2",
@@ -103,14 +103,14 @@ docs = [
     "sphinxcontrib-towncrier~=0.4.0a0",
 ]
 dev = [
-    "black~=25.9.0",
-    "isort~=6.1.0",
-    "ruff~=0.14.0",
-    "mypy~=1.10.1",
-    "toml~=0.10.2",
-    "pre-commit~=4.3.0",
-    "packaging~=25.0",
-    "motor-types~=1.0.0b4",
+    "black==25.9.0",
+    "isort==6.1.0",
+    "ruff==0.14.0",
+    "mypy==1.10.1",
+    "toml==0.10.2",
+    "pre-commit==4.3.0",
+    "packaging==25.0",
+    "motor-types==1.0.0b4",
 ]
 
 [project.urls]
