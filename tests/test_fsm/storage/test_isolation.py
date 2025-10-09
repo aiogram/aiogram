@@ -8,11 +8,8 @@ from aiogram.fsm.storage.redis import RedisEventIsolation, RedisStorage
 
 @pytest.mark.parametrize(
     "isolation",
-    [
-        pytest.lazy_fixture("redis_isolation"),
-        pytest.lazy_fixture("lock_isolation"),
-        pytest.lazy_fixture("disabled_isolation"),
-    ],
+    ["redis_isolation", "lock_isolation", "disabled_isolation"],
+    indirect=True,
 )
 class TestIsolations:
     async def test_lock(

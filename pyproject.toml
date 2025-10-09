@@ -6,7 +6,7 @@ build-backend = "hatchling.build"
 name = "aiogram"
 description = 'Modern and fully asynchronous framework for Telegram Bot API'
 readme = "README.rst"
-requires-python = ">=3.10"
+requires-python = ">=3.10,<3.15"
 license = "MIT"
 authors = [
     { name = "Alex Root Junior", email = "jroot.junior@gmail.com" },
@@ -34,6 +34,7 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Programming Language :: Python :: Implementation :: PyPy",
     "Topic :: Software Development :: Libraries :: Application Frameworks",
     "Topic :: Software Development :: Libraries :: Python Modules",
@@ -41,7 +42,7 @@ classifiers = [
 ]
 dependencies = [
     "magic-filter>=1.0.12,<1.1",
-    "aiohttp>=3.9.0,<3.13",
+    "aiohttp>=3.9.0,<3.14",
     "pydantic>=2.4.1,<2.13",
     "aiofiles>=23.2.1,<24.2",
     "certifi>=2023.7.22",
@@ -62,11 +63,11 @@ redis = [
     "redis[hiredis]>=6.2.0,<7",
 ]
 mongo = [
-    "motor>=3.3.2,<3.7.0",
-    "pymongo>4.5,<4.11",
+    "motor>=3.3.2,<3.8",
+    "pymongo>4.5,<4.16",
 ]
 proxy = [
-    "aiohttp-socks~=0.8.3",
+    "aiohttp-socks~=0.10.1",
 ]
 i18n = [
     "Babel>=2.13.0,<3",
@@ -78,15 +79,13 @@ signature = [
     "cryptography>=46.0.0",
 ]
 test = [
-    "pytest~=7.4.2",
-    "pytest-html~=4.0.2",
-    "pytest-asyncio~=0.21.1",
-    "pytest-lazy-fixture~=0.6.3",
-    "pytest-mock~=3.12.0",
-    "pytest-mypy~=0.10.3",
-    "pytest-cov~=4.1.0",
-    "pytest-aiohttp~=1.0.5",
-    "aresponses~=2.1.6",
+    "pytest==8.4.2",
+    "pytest-html==4.1.1",
+    "pytest-mock==3.15.1",
+    "pytest-mypy==1.0.1",
+    "pytest-cov==7.0.0",
+    "pytest-aiohttp~=1.1.0",
+    "aresponses~=3.0.0",
     "pytz~=2025.2",
     "pycryptodomex~=3.23.0",
 ]
@@ -106,11 +105,11 @@ docs = [
 dev = [
     "black~=25.9.0",
     "isort~=6.1.0",
-    "ruff~=0.13.3",
+    "ruff~=0.14.0",
     "mypy~=1.10.1",
     "toml~=0.10.2",
     "pre-commit~=4.3.0",
-    "packaging~=24.1",
+    "packaging~=25.0",
     "motor-types~=1.0.0b4",
 ]
 
