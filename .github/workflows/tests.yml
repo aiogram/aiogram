@@ -33,6 +33,7 @@ jobs:
           - "3.11"
           - "3.12"
           - "3.13"
+          - "3.14"
 
     defaults:
       # Windows sucks. Force use bash instead of PowerShell
@@ -74,13 +75,13 @@ jobs:
         if: ${{ env.IS_WINDOWS == 'false' }}
         uses: shogo82148/actions-setup-redis@v1
         with:
-          redis-version: 6
+          redis-version: "8"
 
       - name: Setup mongodb
         if: ${{ env.IS_UBUNTU == 'true' }}
-        uses: supercharge/mongodb-github-action@1.10.0
+        uses: supercharge/mongodb-github-action@1.12.0
         with:
-          mongodb-version: "7.0"
+          mongodb-version: "8"
           mongodb-username: mongo
           mongodb-password: mongo
           mongodb-port: 27017

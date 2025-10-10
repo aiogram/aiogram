@@ -3,6 +3,7 @@ from __future__ import annotations
 import asyncio
 import contextvars
 import signal
+import sys
 import warnings
 from asyncio import CancelledError, Event, Future, Lock
 from collections.abc import AsyncGenerator, Awaitable
@@ -656,16 +657,28 @@ class Dispatcher(Router):
         :return:
         """
         with suppress(KeyboardInterrupt):
-            return asyncio.run(
-                self.start_polling(
-                    *bots,
-                    **kwargs,
-                    polling_timeout=polling_timeout,
-                    handle_as_tasks=handle_as_tasks,
-                    backoff_config=backoff_config,
-                    allowed_updates=allowed_updates,
-                    handle_signals=handle_signals,
-                    close_bot_session=close_bot_session,
-                    tasks_concurrency_limit=tasks_concurrency_limit,
-                ),
+            coro = self.start_polling(
+                *bots,
+                **kwargs,
+                polling_timeout=polling_timeout,
+                handle_as_tasks=handle_as_tasks,
+                backoff_config=backoff_config,
+                allowed_updates=allowed_updates,
+                handle_signals=handle_signals,
+                close_bot_session=close_bot_session,
+                tasks_concurrency_limit=tasks_concurrency_limit,
             )
+
+            try:
+                import uvloop
+
+            except ImportError:
+                return asyncio.run(coro)
+
+            else:
+                if sys.version_info >= (3, 11):
+                    with asyncio.Runner(loop_factory=uvloop.new_event_loop) as runner:
+                        return runner.run(coro)
+                else:
+                    uvloop.install()
+                    return asyncio.run(coro)

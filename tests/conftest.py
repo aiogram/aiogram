@@ -39,7 +39,7 @@ def pytest_configure(config):
     config.addinivalue_line("markers", "redis: marked tests require redis connection to run")
     config.addinivalue_line("markers", "mongo: marked tests require mongo connection to run")
 
-    if sys.platform == "win32":
+    if sys.platform == "win32" and sys.version_info < (3, 14):
         asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
     else:
         asyncio.set_event_loop_policy(asyncio.DefaultEventLoopPolicy())
@@ -184,6 +184,16 @@ async def dispatcher():
         yield dp
     finally:
         await dp.emit_shutdown()
+
+
+@pytest.fixture()
+def storage(request):
+    return request.getfixturevalue(request.param)
+
+
+@pytest.fixture()
+def isolation(request):
+    return request.getfixturevalue(request.param)
 
 
 # @pytest.fixture(scope="session")

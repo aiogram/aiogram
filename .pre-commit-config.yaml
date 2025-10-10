@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.6.0
+    rev: v6.0.0
     hooks:
       - id: "trailing-whitespace"
       - id: "check-case-conflict"
@@ -20,6 +20,6 @@ repos:
         files: &files '^(aiogram|tests|examples)'
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: 'v0.13.3'
+    rev: 'v0.14.0'
     hooks:
       - id: ruff
