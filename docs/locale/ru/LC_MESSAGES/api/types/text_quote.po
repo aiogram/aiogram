@@ -1,0 +1,61 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2025, aiogram Team
+# This file is distributed under the same license as the aiogram package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: aiogram \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-01 19:31+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ru\n"
+"Language-Team: ru <LL@li.org>\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../api/types/text_quote.rst:3
+msgid "TextQuote"
+msgstr ""
+
+#: aiogram.types.text_quote.TextQuote:1 of
+msgid ""
+"This object contains information about the quoted part of a message that "
+"is replied to by the given message."
+msgstr ""
+
+#: aiogram.types.text_quote.TextQuote:3 of
+msgid "Source: https://core.telegram.org/bots/api#textquote"
+msgstr ""
+
+#: ../../docstring aiogram.types.text_quote.TextQuote.text:1 of
+msgid ""
+"Text of the quoted part of a message that is replied to by the given "
+"message"
+msgstr ""
+
+#: ../../docstring aiogram.types.text_quote.TextQuote.position:1 of
+msgid ""
+"Approximate quote position in the original message in UTF-16 code units "
+"as specified by the sender"
+msgstr ""
+
+#: ../../docstring aiogram.types.text_quote.TextQuote.entities:1 of
+msgid ""
+"*Optional*. Special entities that appear in the quote. Currently, only "
+"*bold*, *italic*, *underline*, *strikethrough*, *spoiler*, and "
+"*custom_emoji* entities are kept in quotes."
+msgstr ""
+
+#: ../../docstring aiogram.types.text_quote.TextQuote.is_manual:1 of
+msgid ""
+"*Optional*. :code:`True`, if the quote was chosen manually by the message"
+" sender. Otherwise, the quote was added automatically by the server."
+msgstr ""
+

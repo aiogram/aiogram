@@ -1,0 +1,185 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2025, aiogram Team
+# This file is distributed under the same license as the aiogram package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: aiogram \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-01 19:31+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ru\n"
+"Language-Team: ru <LL@li.org>\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../api/types/chat_member_administrator.rst:3
+msgid "ChatMemberAdministrator"
+msgstr ""
+
+#: aiogram.types.chat_member_administrator.ChatMemberAdministrator:1 of
+msgid ""
+"Represents a `chat member "
+"<https://core.telegram.org/bots/api#chatmember>`_ that has some "
+"additional privileges."
+msgstr ""
+
+#: aiogram.types.chat_member_administrator.ChatMemberAdministrator:3 of
+msgid "Source: https://core.telegram.org/bots/api#chatmemberadministrator"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.chat_member_administrator.ChatMemberAdministrator.status:1 of
+msgid "The member's status in the chat, always 'administrator'"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.chat_member_administrator.ChatMemberAdministrator.user:1 of
+msgid "Information about the user"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.chat_member_administrator.ChatMemberAdministrator.can_be_edited:1
+#: of
+msgid ""
+":code:`True`, if the bot is allowed to edit administrator privileges of "
+"that user"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.chat_member_administrator.ChatMemberAdministrator.is_anonymous:1
+#: of
+msgid ":code:`True`, if the user's presence in the chat is hidden"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.chat_member_administrator.ChatMemberAdministrator.can_manage_chat:1
+#: of
+msgid ""
+":code:`True`, if the administrator can access the chat event log, get "
+"boost list, see hidden supergroup and channel members, report spam "
+"messages, ignore slow mode, and send messages to the chat without paying "
+"Telegram Stars. Implied by any other administrator privilege."
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.chat_member_administrator.ChatMemberAdministrator.can_delete_messages:1
+#: of
+msgid ":code:`True`, if the administrator can delete messages of other users"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.chat_member_administrator.ChatMemberAdministrator.can_manage_video_chats:1
+#: of
+msgid ":code:`True`, if the administrator can manage video chats"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.chat_member_administrator.ChatMemberAdministrator.can_restrict_members:1
+#: of
+msgid ""
+":code:`True`, if the administrator can restrict, ban or unban chat "
+"members, or access supergroup statistics"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.chat_member_administrator.ChatMemberAdministrator.can_promote_members:1
+#: of
+msgid ""
+":code:`True`, if the administrator can add new administrators with a "
+"subset of their own privileges or demote administrators that they have "
+"promoted, directly or indirectly (promoted by administrators that were "
+"appointed by the user)"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.chat_member_administrator.ChatMemberAdministrator.can_change_info:1
+#: of
+msgid ""
+":code:`True`, if the user is allowed to change the chat title, photo and "
+"other settings"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.chat_member_administrator.ChatMemberAdministrator.can_invite_users:1
+#: of
+msgid ":code:`True`, if the user is allowed to invite new users to the chat"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.chat_member_administrator.ChatMemberAdministrator.can_post_stories:1
+#: of
+msgid ":code:`True`, if the administrator can post stories to the chat"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.chat_member_administrator.ChatMemberAdministrator.can_edit_stories:1
+#: of
+msgid ""
+":code:`True`, if the administrator can edit stories posted by other "
+"users, post stories to the chat page, pin chat stories, and access the "
+"chat's story archive"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.chat_member_administrator.ChatMemberAdministrator.can_delete_stories:1
+#: of
+msgid ""
+":code:`True`, if the administrator can delete stories posted by other "
+"users"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.chat_member_administrator.ChatMemberAdministrator.can_post_messages:1
+#: of
+msgid ""
+"*Optional*. :code:`True`, if the administrator can post messages in the "
+"channel, approve suggested posts, or access channel statistics; for "
+"channels only"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.chat_member_administrator.ChatMemberAdministrator.can_edit_messages:1
+#: of
+msgid ""
+"*Optional*. :code:`True`, if the administrator can edit messages of other"
+" users and can pin messages; for channels only"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.chat_member_administrator.ChatMemberAdministrator.can_pin_messages:1
+#: of
+msgid ""
+"*Optional*. :code:`True`, if the user is allowed to pin messages; for "
+"groups and supergroups only"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.chat_member_administrator.ChatMemberAdministrator.can_manage_topics:1
+#: of
+msgid ""
+"*Optional*. :code:`True`, if the user is allowed to create, rename, "
+"close, and reopen forum topics; for supergroups only"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.chat_member_administrator.ChatMemberAdministrator.can_manage_direct_messages:1
+#: of
+msgid ""
+"*Optional*. :code:`True`, if the administrator can manage direct messages"
+" of the channel and decline suggested posts; for channels only"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.chat_member_administrator.ChatMemberAdministrator.custom_title:1
+#: of
+msgid "*Optional*. Custom title for this user"
+msgstr ""
+

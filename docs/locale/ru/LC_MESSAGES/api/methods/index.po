@@ -1,0 +1,62 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2025, aiogram Team
+# This file is distributed under the same license as the aiogram package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: aiogram \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-01 19:31+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ru\n"
+"Language-Team: ru <LL@li.org>\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../api/methods/index.rst:3
+msgid "Methods"
+msgstr ""
+
+#: ../../api/methods/index.rst:5
+msgid "Here is list of all available API methods:"
+msgstr ""
+
+#: ../../api/methods/index.rst:9
+msgid "Stickers"
+msgstr ""
+
+#: ../../api/methods/index.rst:32
+msgid "Available methods"
+msgstr ""
+
+#: ../../api/methods/index.rst:150
+msgid "Updating messages"
+msgstr ""
+
+#: ../../api/methods/index.rst:169
+msgid "Inline mode"
+msgstr ""
+
+#: ../../api/methods/index.rst:179
+msgid "Games"
+msgstr ""
+
+#: ../../api/methods/index.rst:189
+msgid "Payments"
+msgstr ""
+
+#: ../../api/methods/index.rst:204
+msgid "Getting updates"
+msgstr ""
+
+#: ../../api/methods/index.rst:215
+msgid "Telegram Passport"
+msgstr ""
+

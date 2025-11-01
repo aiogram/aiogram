@@ -1,0 +1,772 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2025, aiogram Team
+# This file is distributed under the same license as the aiogram package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: aiogram \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-01 19:31+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ru\n"
+"Language-Team: ru <LL@li.org>\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../dispatcher/finite_state_machine/scene.rst:5
+msgid "Scenes Wizard"
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:11
+msgid "This feature is experimental and may be changed in future versions."
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:13
+msgid ""
+"**aiogram's** basics API is easy to use and powerful, allowing the "
+"implementation of simple interactions such as triggering a command or "
+"message for a response. However, certain tasks require a dialogue between"
+" the user and the bot. This is where Scenes come into play."
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:20
+msgid "Understanding Scenes"
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:22
+msgid ""
+"A Scene in **aiogram** is like an abstract, isolated namespace or room "
+"that a user can be ushered into via the code. When a user is within a "
+"Scene, most other global commands or message handlers are bypassed, "
+"unless they are specifically designed to function outside of the Scenes. "
+"This helps in creating an experience of focused interactions. Scenes "
+"provide a structure for more complex interactions, effectively isolating "
+"and managing contexts for different stages of the conversation. They "
+"allow you to control and manage the flow of the conversation in a more "
+"organized manner."
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:31
+msgid "Scene Lifecycle"
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:33
+msgid ""
+"Each Scene can be \"entered\", \"left\" or \"exited\", allowing for clear"
+" transitions between different stages of the conversation. For instance, "
+"in a multi-step form filling interaction, each step could be a Scene - "
+"the bot guides the user from one Scene to the next as they provide the "
+"required information."
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:39
+msgid "Scene Listeners"
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:41
+msgid ""
+"Scenes have their own hooks which are command or message listeners that "
+"only act while the user is within the Scene. These hooks react to user "
+"actions while the user is 'inside' the Scene, providing the responses or "
+"actions appropriate for that context. When the user is ushered from one "
+"Scene to another, the actions and responses change accordingly as the "
+"user is now interacting with the set of listeners inside the new Scene. "
+"These 'Scene-specific' hooks or listeners, detached from the global "
+"listening context, allow for more streamlined and organized bot-user "
+"interactions."
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:52
+msgid "Scene Interactions"
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:54
+msgid ""
+"Each Scene is like a self-contained world, with interactions defined "
+"within the scope of that Scene. As such, only the handlers defined within"
+" the specific Scene will react to user's input during the lifecycle of "
+"that Scene."
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:60
+msgid "Scene Benefits"
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:62
+msgid ""
+"Scenes can help manage more complex interaction workflows and enable more"
+" interactive and dynamic dialogs between the user and the bot. This "
+"offers great flexibility in handling multi-step interactions or "
+"conversations with the users."
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:67
+msgid "How to use Scenes"
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:69
+msgid ""
+"For example we have a quiz bot, which asks the user a series of questions"
+" and then displays the results."
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:71
+msgid ""
+"Lets start with the data models, in this example simple data models are "
+"used to represent the questions and answers, in real life you would "
+"probably use a database to store the data."
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:74
+msgid "Questions list"
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:79
+msgid ""
+"Then, we need to create a Scene class that will represent the quiz game "
+"scene:"
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:83
+msgid ""
+"Keyword argument passed into class definition describes the scene name - "
+"is the same as state of the scene."
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:85
+msgid "Quiz Scene"
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:93
+msgid "Also we need to define a handler that helps to start the quiz game:"
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:95
+msgid "Start command handler"
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:100
+msgid "Once the scene is defined, we need to register it in the SceneRegistry:"
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:102
+msgid "Registering the scene"
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:107
+msgid ""
+"So, now we can implement the quiz game logic, each question is sent to "
+"the user one by one, and the user's answer is checked at the end of all "
+"questions."
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:110
+msgid "Now we need to write an entry point for the question handler:"
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:112
+msgid "Question handler entry point"
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:118
+msgid ""
+"Once scene is entered, we should expect the user's answer, so we need to "
+"write a handler for it, this handler should expect the text message, save"
+" the answer and retake the question handler for the next question:"
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:122
+msgid "Answer handler"
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:127
+msgid ""
+"When user answer with unknown message, we should expect the text message "
+"again:"
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:129
+msgid "Unknown message handler"
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:134
+msgid ""
+"When all questions are answered, we should show the results to the user, "
+"as you can see in the code below, we use `await self.wizard.exit()` to "
+"exit from the scene when questions list is over in the "
+"`QuizScene.on_enter` handler."
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:137
+msgid ""
+"Thats means that we need to write an exit handler to show the results to "
+"the user:"
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:139
+msgid "Show results handler"
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:144
+msgid ""
+"Also we can implement a actions to exit from the quiz game or go back to "
+"the previous question:"
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:146
+msgid "Exit handler"
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:151
+msgid "Back handler"
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:156
+msgid "Now we can run the bot and test the quiz game:"
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:158
+msgid "Run the bot"
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:163
+msgid "Complete them all"
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:165
+msgid "Quiz Example"
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:171
+msgid "Components"
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:173
+msgid ":class:`aiogram.fsm.scene.Scene` - represents a scene, contains handlers"
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:174
+msgid ""
+":class:`aiogram.fsm.scene.SceneRegistry` - container for all scenes in "
+"the bot, used to register scenes and resolve them by name"
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:175
+msgid ""
+":class:`aiogram.fsm.scene.ScenesManager` - manages scenes for each user, "
+"used to enter, leave and resolve current scene for user"
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:176
+msgid ""
+":class:`aiogram.fsm.scene.SceneConfig` - scene configuration, used to "
+"configure scene"
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:177
+msgid ""
+":class:`aiogram.fsm.scene.SceneWizard` - scene wizard, used to interact "
+"with user in scene from active scene handler"
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:178
+msgid "Markers - marker for scene handlers, used to mark scene handlers"
+msgstr ""
+
+#: aiogram.fsm.scene.Scene:1 of
+msgid "Represents a scene in a conversation flow."
+msgstr ""
+
+#: aiogram.fsm.scene.Scene:3 of
+msgid ""
+"A scene is a specific state in a conversation where certain actions can "
+"take place."
+msgstr ""
+
+#: aiogram.fsm.scene.Scene:5 of
+msgid ""
+"Each scene has a set of filters that determine when it should be "
+"triggered, and a set of handlers that define the actions to be executed "
+"when the scene is active."
+msgstr ""
+
+#: aiogram.fsm.scene.Scene:9 of
+msgid ""
+"This class is not meant to be used directly. Instead, it should be "
+"subclassed to define custom scenes."
+msgstr ""
+
+#: aiogram.fsm.scene.Scene.add_to_router:1 of
+msgid "Adds the scene to the given router."
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst
+msgid "Parameters"
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst
+msgid "Returns"
+msgstr ""
+
+#: aiogram.fsm.scene.Scene.as_handler:1 of
+msgid ""
+"Create an entry point handler for the scene, can be used to simplify the "
+"handler that starts the scene."
+msgstr ""
+
+#: aiogram.fsm.scene.Scene.as_router:1 of
+msgid "Returns the scene as a router."
+msgstr ""
+
+#: aiogram.fsm.scene.Scene.as_router:3 of
+msgid "new router"
+msgstr ""
+
+#: aiogram.fsm.scene.SceneRegistry:1 of
+msgid "A class that represents a registry for scenes in a Telegram bot."
+msgstr ""
+
+#: aiogram.fsm.scene.SceneRegistry.add:1 of
+msgid ""
+"This method adds the specified scenes to the registry and optionally "
+"registers it to the router."
+msgstr ""
+
+#: aiogram.fsm.scene.SceneRegistry.add:4 of
+msgid ""
+"If a scene with the same state already exists in the registry, a "
+"SceneException is raised."
+msgstr ""
+
+#: aiogram.fsm.scene.SceneRegistry.add:8 of
+msgid ""
+"If the router is not specified, the scenes will not be registered to the "
+"router. You will need to include the scenes manually to the router or use"
+" the register method."
+msgstr ""
+
+#: aiogram.fsm.scene.SceneRegistry.add:11 of
+msgid ""
+"A variable length parameter that accepts one or more types of scenes. "
+"These scenes are instances of the Scene class."
+msgstr ""
+
+#: aiogram.fsm.scene.SceneRegistry.add:13 of
+msgid ""
+"An optional parameter that specifies the router to which the scenes "
+"should be added."
+msgstr ""
+
+#: aiogram.fsm.scene.SceneRegistry.add:15
+#: aiogram.fsm.scene.SceneRegistry.register:4
+#: aiogram.fsm.scene.SceneWizard.back:4
+#: aiogram.fsm.scene.SceneWizard.clear_data:3
+#: aiogram.fsm.scene.SceneWizard.enter:6 aiogram.fsm.scene.SceneWizard.exit:4
+#: aiogram.fsm.scene.SceneWizard.goto:9 aiogram.fsm.scene.SceneWizard.leave:6
+#: aiogram.fsm.scene.SceneWizard.retake:4
+#: aiogram.fsm.scene.SceneWizard.set_data:4
+#: aiogram.fsm.scene.ScenesManager.close:4
+#: aiogram.fsm.scene.ScenesManager.enter:7 of
+msgid "None"
+msgstr ""
+
+#: aiogram.fsm.scene.SceneRegistry.get:1 of
+msgid ""
+"This method returns the registered Scene object for the specified scene. "
+"The scene parameter can be either a Scene object, State object or a "
+"string representing the name of the scene. If a Scene object is provided,"
+" the state attribute of the SceneConfig object associated with the Scene "
+"object will be used as the scene name. If a State object is provided, the"
+" state attribute of the State object will be used as the scene name. If "
+"None or an invalid type is provided, a SceneException will be raised."
+msgstr ""
+
+#: aiogram.fsm.scene.SceneRegistry.get:8 of
+msgid ""
+"If the specified scene is not registered in the SceneRegistry object, a "
+"SceneException will be raised."
+msgstr ""
+
+#: aiogram.fsm.scene.SceneRegistry.get:11 of
+msgid ""
+"A Scene object, State object or a string representing the name of the "
+"scene."
+msgstr ""
+
+#: aiogram.fsm.scene.SceneRegistry.get:12 of
+msgid "The registered Scene object corresponding to the given scene parameter."
+msgstr ""
+
+#: aiogram.fsm.scene.SceneRegistry.register:1 of
+msgid "Registers one or more scenes to the SceneRegistry."
+msgstr ""
+
+#: aiogram.fsm.scene.SceneRegistry.register:3 of
+msgid "One or more scene classes to register."
+msgstr ""
+
+#: aiogram.fsm.scene.ScenesManager:1 of
+msgid ""
+"The ScenesManager class is responsible for managing scenes in an "
+"application. It provides methods for entering and exiting scenes, as well"
+" as retrieving the active scene."
+msgstr ""
+
+#: aiogram.fsm.scene.ScenesManager.close:1 of
+msgid ""
+"Close method is used to exit the currently active scene in the "
+"ScenesManager."
+msgstr ""
+
+#: aiogram.fsm.scene.ScenesManager.close:3 of
+msgid "Additional keyword arguments passed to the scene's exit method."
+msgstr ""
+
+#: aiogram.fsm.scene.ScenesManager.enter:1 of
+msgid "Enters the specified scene."
+msgstr ""
+
+#: aiogram.fsm.scene.ScenesManager.enter:3 of
+msgid "Optional Type[Scene], State or str representing the scene type to enter."
+msgstr ""
+
+#: aiogram.fsm.scene.ScenesManager.enter:4 of
+msgid ""
+"Optional bool indicating whether to check if there is an active scene to "
+"exit before entering the new scene. Defaults to True."
+msgstr ""
+
+#: aiogram.fsm.scene.ScenesManager.enter:6 of
+msgid "Additional keyword arguments to pass to the scene's wizard.enter() method."
+msgstr ""
+
+#: ../../docstring aiogram.fsm.scene.SceneConfig.actions:1 of
+msgid "Scene actions"
+msgstr ""
+
+#: aiogram.utils.class_attrs_resolver.get_sorted_mro_attrs_resolver:1 of
+msgid "Attributes resolver."
+msgstr ""
+
+#: aiogram.utils.class_attrs_resolver.get_sorted_mro_attrs_resolver:4 of
+msgid "This attribute should only be changed when you know what you are doing."
+msgstr ""
+
+#: ../../docstring aiogram.fsm.scene.SceneConfig.callback_query_without_state:1
+#: of
+msgid "Allow callback query without state"
+msgstr ""
+
+#: ../../docstring aiogram.fsm.scene.SceneConfig.handlers:1 of
+msgid "Scene handlers"
+msgstr ""
+
+#: ../../docstring aiogram.fsm.scene.SceneConfig.reset_data_on_enter:1 of
+msgid "Reset scene data on enter"
+msgstr ""
+
+#: ../../docstring aiogram.fsm.scene.SceneConfig.reset_history_on_enter:1 of
+msgid "Reset scene history on enter"
+msgstr ""
+
+#: ../../docstring aiogram.fsm.scene.SceneConfig.state:1 of
+msgid "Scene state"
+msgstr ""
+
+#: aiogram.fsm.scene.SceneWizard:1 of
+msgid "A class that represents a wizard for managing scenes in a Telegram bot."
+msgstr ""
+
+#: aiogram.fsm.scene.SceneWizard:3 of
+msgid ""
+"Instance of this class is passed to each scene as a parameter. So, you "
+"can use it to transition between scenes, get and set data, etc."
+msgstr ""
+
+#: aiogram.fsm.scene.SceneWizard:8 of
+msgid ""
+"This class is not meant to be used directly. Instead, it should be used "
+"as a parameter in the scene constructor."
+msgstr ""
+
+#: aiogram.fsm.scene.SceneWizard.back:1 of
+msgid "This method is used to go back to the previous scene."
+msgstr ""
+
+#: aiogram.fsm.scene.SceneWizard.back:3 of
+msgid "Keyword arguments that can be passed to the method."
+msgstr ""
+
+#: aiogram.fsm.scene.SceneWizard.clear_data:1 of
+msgid "Clears the data."
+msgstr ""
+
+#: aiogram.fsm.scene.SceneWizard.enter:1 of
+msgid ""
+"Enter method is used to transition into a scene in the SceneWizard class."
+" It sets the state, clears data and history if specified, and triggers "
+"entering event of the scene."
+msgstr ""
+
+#: aiogram.fsm.scene.SceneWizard.enter:5 aiogram.fsm.scene.SceneWizard.exit:3
+#: aiogram.fsm.scene.SceneWizard.leave:5 of
+msgid "Additional keyword arguments."
+msgstr ""
+
+#: aiogram.fsm.scene.SceneWizard.exit:1 of
+msgid "Exit the current scene and enter the default scene/state."
+msgstr ""
+
+#: aiogram.fsm.scene.SceneWizard.get_data:1 of
+msgid "This method returns the data stored in the current state."
+msgstr ""
+
+#: aiogram.fsm.scene.SceneWizard.get_data:3 of
+msgid "A dictionary containing the data stored in the scene state."
+msgstr ""
+
+#: aiogram.fsm.scene.SceneWizard.goto:1 of
+msgid ""
+"The `goto` method transitions to a new scene. It first calls the `leave` "
+"method to perform any necessary cleanup in the current scene, then calls "
+"the `enter` event to enter the specified scene."
+msgstr ""
+
+#: aiogram.fsm.scene.SceneWizard.goto:5 of
+msgid ""
+"The scene to transition to. Can be either a `Scene` instance `State` "
+"instance or a string representing the scene."
+msgstr ""
+
+#: aiogram.fsm.scene.SceneWizard.goto:7 of
+msgid ""
+"Additional keyword arguments to pass to the `enter` method of the scene "
+"manager."
+msgstr ""
+
+#: aiogram.fsm.scene.SceneWizard.leave:1 of
+msgid ""
+"Leaves the current scene. This method is used to exit a scene and "
+"transition to the next scene."
+msgstr ""
+
+#: aiogram.fsm.scene.SceneWizard.leave:4 of
+msgid "Whether to include history in the snapshot. Defaults to True."
+msgstr ""
+
+#: aiogram.fsm.scene.SceneWizard.retake:1 of
+msgid "This method allows to re-enter the current scene."
+msgstr ""
+
+#: aiogram.fsm.scene.SceneWizard.retake:3 of
+msgid "Additional keyword arguments to pass to the scene."
+msgstr ""
+
+#: aiogram.fsm.scene.SceneWizard.set_data:1 of
+msgid "Sets custom data in the current state."
+msgstr ""
+
+#: aiogram.fsm.scene.SceneWizard.set_data:3 of
+msgid "A mapping containing the custom data to be set in the current state."
+msgstr ""
+
+#: aiogram.fsm.scene.SceneWizard.update_data:1 of
+msgid "This method updates the data stored in the current state"
+msgstr ""
+
+#: aiogram.fsm.scene.SceneWizard.update_data:3 of
+msgid "Optional mapping of data to update."
+msgstr ""
+
+#: aiogram.fsm.scene.SceneWizard.update_data:4 of
+msgid "Additional key-value pairs of data to update."
+msgstr ""
+
+#: aiogram.fsm.scene.SceneWizard.update_data:5 of
+msgid "Dictionary of updated data"
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:197
+msgid "Markers"
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:199
+msgid ""
+"Markers are similar to the Router event registering mechanism, but they "
+"are used to mark scene handlers in the Scene class."
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:202
+msgid ""
+"It can be imported from :code:`from aiogram.fsm.scene import on` and "
+"should be used as decorator."
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:204
+msgid "Allowed event types:"
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:206
+msgid "message"
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:207
+msgid "edited_message"
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:208
+msgid "channel_post"
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:209
+msgid "edited_channel_post"
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:210
+msgid "inline_query"
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:211
+msgid "chosen_inline_result"
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:212
+msgid "callback_query"
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:213
+msgid "shipping_query"
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:214
+msgid "pre_checkout_query"
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:215
+msgid "poll"
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:216
+msgid "poll_answer"
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:217
+msgid "my_chat_member"
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:218
+msgid "chat_member"
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:219
+msgid "chat_join_request"
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:221
+msgid "Each event type can be filtered in the same way as in the Router."
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:223
+msgid ""
+"Also each event type can be marked as scene entry point, exit point or "
+"leave point."
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:225
+msgid ""
+"If you want to mark the scene can be entered from message or inline "
+"query, you should use :code:`on.message` or :code:`on.inline_query` "
+"marker:"
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:240
+msgid "Scene has only three points for transitions:"
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:242
+msgid "enter point - when user enters to the scene"
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:243
+msgid "leave point - when user leaves the scene and the enter another scene"
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:244
+msgid "exit point - when user exits from the scene"
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:247
+msgid "How to enter the scene"
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:249
+msgid ""
+"There are several ways to enter a scene in aiogram. Each approach has "
+"specific use cases and advantages"
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:251
+msgid "**Directly using the scene's entry point as a handler:**"
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:253
+msgid ""
+"You can convert a scene's entry point to a handler and register it like "
+"any other handler:"
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:259
+msgid "**From a regular handler using ScenesManager:**"
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:261
+msgid "Enter a scene from any regular handler by using the ScenesManager:"
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:265
+msgid ""
+"When using ScenesManager, you need to explicitly pass all dependencies "
+"required by the scene's entry point handler as arguments to the enter "
+"method."
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:274
+msgid "**From another scene using After.goto marker:**"
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:276
+msgid ""
+"Transition to another scene after a handler is executed using the After "
+"marker:"
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:292
+msgid "**Using explicit transition with wizard.goto:**"
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:294
+msgid ""
+"For more control over the transition, use the wizard.goto method from "
+"within a scene handler:"
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:298
+msgid ""
+"Dependencies will be injected into the handler normally and then extended"
+" with the arguments specified in the goto method."
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:314
+msgid ""
+"Each method offers different levels of control and integration with your "
+"application's architecture. Choose the approach that best fits your "
+"specific use case and coding style."
+msgstr ""
+

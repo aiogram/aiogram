@@ -1,0 +1,187 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2025, aiogram Team
+# This file is distributed under the same license as the aiogram package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: aiogram \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-01 19:31+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ru\n"
+"Language-Team: ru <LL@li.org>\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../dispatcher/middlewares.rst:5
+msgid "Middlewares"
+msgstr ""
+
+#: ../../dispatcher/middlewares.rst:7
+msgid ""
+"**aiogram** provides powerful mechanism for customizing event handlers "
+"via middlewares."
+msgstr ""
+
+#: ../../dispatcher/middlewares.rst:9
+msgid ""
+"Middlewares in bot framework seems like Middlewares mechanism in web-"
+"frameworks like `aiohttp "
+"<https://docs.aiohttp.org/en/stable/web_advanced.html#aiohttp-web-"
+"middlewares>`_, `fastapi "
+"<https://fastapi.tiangolo.com/tutorial/middleware/>`_, `Django "
+"<https://docs.djangoproject.com/en/3.0/topics/http/middleware/>`_ or "
+"etc.) with small difference - here is implemented two layers of "
+"middlewares (before and after filters)."
+msgstr ""
+
+#: ../../dispatcher/middlewares.rst:17
+msgid ""
+"Middleware is function that triggered on every event received from "
+"Telegram Bot API in many points on processing pipeline."
+msgstr ""
+
+#: ../../dispatcher/middlewares.rst:21
+msgid "Base theory"
+msgstr ""
+
+#: ../../dispatcher/middlewares.rst:23
+msgid "As many books and other literature in internet says:"
+msgstr ""
+
+#: ../../dispatcher/middlewares.rst:25
+msgid ""
+"Middleware is reusable software that leverages patterns and frameworks to"
+" bridge the gap between the functional requirements of applications and "
+"the underlying operating systems, network protocol stacks, and databases."
+msgstr ""
+
+#: ../../dispatcher/middlewares.rst:29
+msgid ""
+"Middleware can modify, extend or reject processing event in many places "
+"of pipeline."
+msgstr ""
+
+#: ../../dispatcher/middlewares.rst:32
+msgid "Basics"
+msgstr ""
+
+#: ../../dispatcher/middlewares.rst:34
+msgid ""
+"Middleware instance can be applied for every type of Telegram Event "
+"(Update, Message, etc.) in two places"
+msgstr ""
+
+#: ../../dispatcher/middlewares.rst:36
+msgid ""
+"Outer scope - before processing filters "
+"(:code:`<router>.<event>.outer_middleware(...)`)"
+msgstr ""
+
+#: ../../dispatcher/middlewares.rst:37
+msgid ""
+"Inner scope - after processing filters but before handler "
+"(:code:`<router>.<event>.middleware(...)`)"
+msgstr ""
+
+#: ../../dispatcher/middlewares.rst:39
+msgid "Middleware basics"
+msgstr ""
+
+#: ../../dispatcher/middlewares.rst:44
+msgid ""
+"Middleware should be subclass of :code:`BaseMiddleware` (:code:`from "
+"aiogram import BaseMiddleware`) or any async callable"
+msgstr ""
+
+#: ../../dispatcher/middlewares.rst:47
+msgid "Arguments specification"
+msgstr ""
+
+#: aiogram.dispatcher.middlewares.base.BaseMiddleware:1 of
+msgid "Bases: :py:class:`~abc.ABC`"
+msgstr ""
+
+#: aiogram.dispatcher.middlewares.base.BaseMiddleware:1 of
+msgid "Generic middleware class"
+msgstr ""
+
+#: aiogram.dispatcher.middlewares.base.BaseMiddleware.__call__:1 of
+msgid "Execute middleware"
+msgstr ""
+
+#: ../../dispatcher/middlewares.rst
+msgid "Parameters"
+msgstr ""
+
+#: aiogram.dispatcher.middlewares.base.BaseMiddleware.__call__:3 of
+msgid "Wrapped handler in middlewares chain"
+msgstr ""
+
+#: aiogram.dispatcher.middlewares.base.BaseMiddleware.__call__:4 of
+msgid "Incoming event (Subclass of :class:`aiogram.types.base.TelegramObject`)"
+msgstr ""
+
+#: aiogram.dispatcher.middlewares.base.BaseMiddleware.__call__:5 of
+msgid "Contextual data. Will be mapped to handler arguments"
+msgstr ""
+
+#: ../../dispatcher/middlewares.rst
+msgid "Returns"
+msgstr ""
+
+#: aiogram.dispatcher.middlewares.base.BaseMiddleware.__call__:6 of
+msgid ":class:`Any`"
+msgstr ""
+
+#: ../../dispatcher/middlewares.rst:58
+msgid "Examples"
+msgstr ""
+
+#: ../../dispatcher/middlewares.rst:62
+msgid ""
+"Middleware should always call :code:`await handler(event, data)` to "
+"propagate event for next middleware/handler. If you want to stop "
+"processing event in middleware you should not call :code:`await "
+"handler(event, data)`."
+msgstr ""
+
+#: ../../dispatcher/middlewares.rst:67
+msgid "Class-based"
+msgstr ""
+
+#: ../../dispatcher/middlewares.rst:88
+msgid "and then"
+msgstr ""
+
+#: ../../dispatcher/middlewares.rst:97
+msgid "Function-based"
+msgstr ""
+
+#: ../../dispatcher/middlewares.rst:112
+msgid "Facts"
+msgstr ""
+
+#: ../../dispatcher/middlewares.rst:114
+msgid "Middlewares from outer scope will be called on every incoming event"
+msgstr ""
+
+#: ../../dispatcher/middlewares.rst:115
+msgid "Middlewares from inner scope will be called only when filters pass"
+msgstr ""
+
+#: ../../dispatcher/middlewares.rst:116
+msgid ""
+"Inner middlewares is always calls for "
+":class:`aiogram.types.update.Update` event type in due to all incoming "
+"updates going to specific event type handler through built in update "
+"handler"
+msgstr ""
+

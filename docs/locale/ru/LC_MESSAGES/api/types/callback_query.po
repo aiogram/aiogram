@@ -1,0 +1,173 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2025, aiogram Team
+# This file is distributed under the same license as the aiogram package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: aiogram \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-01 19:31+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ru\n"
+"Language-Team: ru <LL@li.org>\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../api/types/callback_query.rst:3
+msgid "CallbackQuery"
+msgstr ""
+
+#: aiogram.types.callback_query.CallbackQuery:1 of
+msgid ""
+"This object represents an incoming callback query from a callback button "
+"in an `inline keyboard <https://core.telegram.org/bots/features#inline-"
+"keyboards>`_. If the button that originated the query was attached to a "
+"message sent by the bot, the field *message* will be present. If the "
+"button was attached to a message sent via the bot (in `inline mode "
+"<https://core.telegram.org/bots/api#inline-mode>`_), the field "
+"*inline_message_id* will be present. Exactly one of the fields *data* or "
+"*game_short_name* will be present."
+msgstr ""
+
+#: aiogram.types.callback_query.CallbackQuery:3 of
+msgid ""
+"**NOTE:** After the user presses a callback button, Telegram clients will"
+" display a progress bar until you call "
+":class:`aiogram.methods.answer_callback_query.AnswerCallbackQuery`. It "
+"is, therefore, necessary to react by calling "
+":class:`aiogram.methods.answer_callback_query.AnswerCallbackQuery` even "
+"if no notification to the user is needed (e.g., without specifying any of"
+" the optional parameters)."
+msgstr ""
+
+#: aiogram.types.callback_query.CallbackQuery:5 of
+msgid "Source: https://core.telegram.org/bots/api#callbackquery"
+msgstr ""
+
+#: ../../docstring aiogram.types.callback_query.CallbackQuery.id:1 of
+msgid "Unique identifier for this query"
+msgstr ""
+
+#: ../../docstring aiogram.types.callback_query.CallbackQuery.from_user:1 of
+msgid "Sender"
+msgstr ""
+
+#: ../../docstring aiogram.types.callback_query.CallbackQuery.chat_instance:1
+#: of
+msgid ""
+"Global identifier, uniquely corresponding to the chat to which the "
+"message with the callback button was sent. Useful for high scores in "
+":class:`aiogram.methods.games.Games`."
+msgstr ""
+
+#: ../../docstring aiogram.types.callback_query.CallbackQuery.message:1 of
+msgid ""
+"*Optional*. Message sent by the bot with the callback button that "
+"originated the query"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.callback_query.CallbackQuery.inline_message_id:1 of
+msgid ""
+"*Optional*. Identifier of the message sent via the bot in inline mode, "
+"that originated the query."
+msgstr ""
+
+#: ../../docstring aiogram.types.callback_query.CallbackQuery.data:1 of
+msgid ""
+"*Optional*. Data associated with the callback button. Be aware that the "
+"message originated the query can contain no callback buttons with this "
+"data."
+msgstr ""
+
+#: ../../docstring aiogram.types.callback_query.CallbackQuery.game_short_name:1
+#: of
+msgid ""
+"*Optional*. Short name of a `Game "
+"<https://core.telegram.org/bots/api#games>`_ to be returned, serves as "
+"the unique identifier for the game"
+msgstr ""
+
+#: aiogram.types.callback_query.CallbackQuery.answer:1 of
+msgid ""
+"Shortcut for method "
+":class:`aiogram.methods.answer_callback_query.AnswerCallbackQuery` will "
+"automatically fill method attributes:"
+msgstr ""
+
+#: aiogram.types.callback_query.CallbackQuery.answer:4 of
+msgid ":code:`callback_query_id`"
+msgstr ""
+
+#: aiogram.types.callback_query.CallbackQuery.answer:6 of
+msgid ""
+"Use this method to send answers to callback queries sent from `inline "
+"keyboards <https://core.telegram.org/bots/features#inline-keyboards>`_. "
+"The answer will be displayed to the user as a notification at the top of "
+"the chat screen or as an alert. On success, :code:`True` is returned."
+msgstr ""
+
+#: aiogram.types.callback_query.CallbackQuery.answer:8 of
+msgid ""
+"Alternatively, the user can be redirected to the specified Game URL. For "
+"this option to work, you must first create a game for your bot via "
+"`@BotFather <https://t.me/botfather>`_ and accept the terms. Otherwise, "
+"you may use links like :code:`t.me/your_bot?start=XXXX` that open your "
+"bot with a parameter."
+msgstr ""
+
+#: aiogram.types.callback_query.CallbackQuery.answer:10 of
+msgid "Source: https://core.telegram.org/bots/api#answercallbackquery"
+msgstr ""
+
+#: ../../api/types/callback_query.rst
+msgid "Parameters"
+msgstr ""
+
+#: aiogram.types.callback_query.CallbackQuery.answer:12 of
+msgid ""
+"Text of the notification. If not specified, nothing will be shown to the "
+"user, 0-200 characters"
+msgstr ""
+
+#: aiogram.types.callback_query.CallbackQuery.answer:13 of
+msgid ""
+"If :code:`True`, an alert will be shown by the client instead of a "
+"notification at the top of the chat screen. Defaults to *false*."
+msgstr ""
+
+#: aiogram.types.callback_query.CallbackQuery.answer:14 of
+msgid ""
+"URL that will be opened by the user's client. If you have created a "
+":class:`aiogram.types.game.Game` and accepted the conditions via "
+"`@BotFather <https://t.me/botfather>`_, specify the URL that opens your "
+"game - note that this will only work if the query comes from a "
+"`https://core.telegram.org/bots/api#inlinekeyboardbutton "
+"<https://core.telegram.org/bots/api#inlinekeyboardbutton>`_ "
+"*callback_game* button."
+msgstr ""
+
+#: aiogram.types.callback_query.CallbackQuery.answer:15 of
+msgid ""
+"The maximum amount of time in seconds that the result of the callback "
+"query may be cached client-side. Telegram apps will support caching "
+"starting in version 3.14. Defaults to 0."
+msgstr ""
+
+#: ../../api/types/callback_query.rst
+msgid "Returns"
+msgstr ""
+
+#: aiogram.types.callback_query.CallbackQuery.answer:16 of
+msgid ""
+"instance of method "
+":class:`aiogram.methods.answer_callback_query.AnswerCallbackQuery`"
+msgstr ""
+

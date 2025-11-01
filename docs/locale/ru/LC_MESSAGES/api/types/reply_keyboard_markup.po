@@ -1,0 +1,93 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2025, aiogram Team
+# This file is distributed under the same license as the aiogram package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: aiogram \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-01 19:31+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ru\n"
+"Language-Team: ru <LL@li.org>\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../api/types/reply_keyboard_markup.rst:3
+msgid "ReplyKeyboardMarkup"
+msgstr ""
+
+#: aiogram.types.reply_keyboard_markup.ReplyKeyboardMarkup:1 of
+msgid ""
+"This object represents a `custom keyboard "
+"<https://core.telegram.org/bots/features#keyboards>`_ with reply options "
+"(see `Introduction to bots "
+"<https://core.telegram.org/bots/features#keyboards>`_ for details and "
+"examples). Not supported in channels and for messages sent on behalf of a"
+" Telegram Business account."
+msgstr ""
+
+#: aiogram.types.reply_keyboard_markup.ReplyKeyboardMarkup:3 of
+msgid "Source: https://core.telegram.org/bots/api#replykeyboardmarkup"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.reply_keyboard_markup.ReplyKeyboardMarkup.keyboard:1 of
+msgid ""
+"Array of button rows, each represented by an Array of "
+":class:`aiogram.types.keyboard_button.KeyboardButton` objects"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.reply_keyboard_markup.ReplyKeyboardMarkup.is_persistent:1 of
+msgid ""
+"*Optional*. Requests clients to always show the keyboard when the regular"
+" keyboard is hidden. Defaults to *false*, in which case the custom "
+"keyboard can be hidden and opened with a keyboard icon."
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.reply_keyboard_markup.ReplyKeyboardMarkup.resize_keyboard:1 of
+msgid ""
+"*Optional*. Requests clients to resize the keyboard vertically for "
+"optimal fit (e.g., make the keyboard smaller if there are just two rows "
+"of buttons). Defaults to *false*, in which case the custom keyboard is "
+"always of the same height as the app's standard keyboard."
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.reply_keyboard_markup.ReplyKeyboardMarkup.one_time_keyboard:1
+#: of
+msgid ""
+"*Optional*. Requests clients to hide the keyboard as soon as it's been "
+"used. The keyboard will still be available, but clients will "
+"automatically display the usual letter-keyboard in the chat - the user "
+"can press a special button in the input field to see the custom keyboard "
+"again. Defaults to *false*."
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.reply_keyboard_markup.ReplyKeyboardMarkup.input_field_placeholder:1
+#: of
+msgid ""
+"*Optional*. The placeholder to be shown in the input field when the "
+"keyboard is active; 1-64 characters"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.reply_keyboard_markup.ReplyKeyboardMarkup.selective:1 of
+msgid ""
+"*Optional*. Use this parameter if you want to show the keyboard to "
+"specific users only. Targets: 1) users that are @mentioned in the *text* "
+"of the :class:`aiogram.types.message.Message` object; 2) if the bot's "
+"message is a reply to a message in the same chat and forum topic, sender "
+"of the original message."
+msgstr ""
+

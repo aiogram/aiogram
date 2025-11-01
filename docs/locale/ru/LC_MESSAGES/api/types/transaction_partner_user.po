@@ -1,0 +1,111 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2025, aiogram Team
+# This file is distributed under the same license as the aiogram package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: aiogram \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-01 19:31+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ru\n"
+"Language-Team: ru <LL@li.org>\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../api/types/transaction_partner_user.rst:3
+msgid "TransactionPartnerUser"
+msgstr ""
+
+#: aiogram.types.transaction_partner_user.TransactionPartnerUser:1 of
+msgid "Describes a transaction with a user."
+msgstr ""
+
+#: aiogram.types.transaction_partner_user.TransactionPartnerUser:3 of
+msgid "Source: https://core.telegram.org/bots/api#transactionpartneruser"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.transaction_partner_user.TransactionPartnerUser.type:1 of
+msgid "Type of the transaction partner, always 'user'"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.transaction_partner_user.TransactionPartnerUser.transaction_type:1
+#: of
+msgid ""
+"Type of the transaction, currently one of 'invoice_payment' for payments "
+"via invoices, 'paid_media_payment' for payments for paid media, "
+"'gift_purchase' for gifts sent by the bot, 'premium_purchase' for "
+"Telegram Premium subscriptions gifted by the bot, "
+"'business_account_transfer' for direct transfers from managed business "
+"accounts"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.transaction_partner_user.TransactionPartnerUser.user:1 of
+msgid "Information about the user"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.transaction_partner_user.TransactionPartnerUser.affiliate:1 of
+msgid ""
+"*Optional*. Information about the affiliate that received a commission "
+"via this transaction. Can be available only for 'invoice_payment' and "
+"'paid_media_payment' transactions."
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.transaction_partner_user.TransactionPartnerUser.invoice_payload:1
+#: of
+msgid ""
+"*Optional*. Bot-specified invoice payload. Can be available only for "
+"'invoice_payment' transactions."
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.transaction_partner_user.TransactionPartnerUser.subscription_period:1
+#: of
+msgid ""
+"*Optional*. The duration of the paid subscription. Can be available only "
+"for 'invoice_payment' transactions."
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.transaction_partner_user.TransactionPartnerUser.paid_media:1
+#: of
+msgid ""
+"*Optional*. Information about the paid media bought by the user; for "
+"'paid_media_payment' transactions only"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.transaction_partner_user.TransactionPartnerUser.paid_media_payload:1
+#: of
+msgid ""
+"*Optional*. Bot-specified paid media payload. Can be available only for "
+"'paid_media_payment' transactions."
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.transaction_partner_user.TransactionPartnerUser.gift:1 of
+msgid ""
+"*Optional*. The gift sent to the user by the bot; for 'gift_purchase' "
+"transactions only"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.transaction_partner_user.TransactionPartnerUser.premium_subscription_duration:1
+#: of
+msgid ""
+"*Optional*. Number of months the gifted Telegram Premium subscription "
+"will be active for; for 'premium_purchase' transactions only"
+msgstr ""
+

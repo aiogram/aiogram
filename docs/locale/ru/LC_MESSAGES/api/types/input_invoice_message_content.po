@@ -1,0 +1,208 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2025, aiogram Team
+# This file is distributed under the same license as the aiogram package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: aiogram \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-01 19:31+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ru\n"
+"Language-Team: ru <LL@li.org>\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../api/types/input_invoice_message_content.rst:3
+msgid "InputInvoiceMessageContent"
+msgstr ""
+
+#: aiogram.types.input_invoice_message_content.InputInvoiceMessageContent:1 of
+msgid ""
+"Represents the `content "
+"<https://core.telegram.org/bots/api#inputmessagecontent>`_ of an invoice "
+"message to be sent as the result of an inline query."
+msgstr ""
+
+#: aiogram.types.input_invoice_message_content.InputInvoiceMessageContent:3 of
+msgid "Source: https://core.telegram.org/bots/api#inputinvoicemessagecontent"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.input_invoice_message_content.InputInvoiceMessageContent.title:1
+#: of
+msgid "Product name, 1-32 characters"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.input_invoice_message_content.InputInvoiceMessageContent.description:1
+#: of
+msgid "Product description, 1-255 characters"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.input_invoice_message_content.InputInvoiceMessageContent.payload:1
+#: of
+msgid ""
+"Bot-defined invoice payload, 1-128 bytes. This will not be displayed to "
+"the user, use it for your internal processes."
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.input_invoice_message_content.InputInvoiceMessageContent.currency:1
+#: of
+msgid ""
+"Three-letter ISO 4217 currency code, see `more on currencies "
+"<https://core.telegram.org/bots/payments#supported-currencies>`_. Pass "
+"'XTR' for payments in `Telegram Stars <https://t.me/BotNews/90>`_."
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.input_invoice_message_content.InputInvoiceMessageContent.prices:1
+#: of
+msgid ""
+"Price breakdown, a JSON-serialized list of components (e.g. product "
+"price, tax, discount, delivery cost, delivery tax, bonus, etc.). Must "
+"contain exactly one item for payments in `Telegram Stars "
+"<https://t.me/BotNews/90>`_."
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.input_invoice_message_content.InputInvoiceMessageContent.provider_token:1
+#: of
+msgid ""
+"*Optional*. Payment provider token, obtained via `@BotFather "
+"<https://t.me/botfather>`_. Pass an empty string for payments in "
+"`Telegram Stars <https://t.me/BotNews/90>`_."
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.input_invoice_message_content.InputInvoiceMessageContent.max_tip_amount:1
+#: of
+msgid ""
+"*Optional*. The maximum accepted amount for tips in the *smallest units* "
+"of the currency (integer, **not** float/double). For example, for a "
+"maximum tip of :code:`US$ 1.45` pass :code:`max_tip_amount = 145`. See "
+"the *exp* parameter in `currencies.json "
+"<https://core.telegram.org/bots/payments/currencies.json>`_, it shows the"
+" number of digits past the decimal point for each currency (2 for the "
+"majority of currencies). Defaults to 0. Not supported for payments in "
+"`Telegram Stars <https://t.me/BotNews/90>`_."
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.input_invoice_message_content.InputInvoiceMessageContent.suggested_tip_amounts:1
+#: of
+msgid ""
+"*Optional*. A JSON-serialized array of suggested amounts of tip in the "
+"*smallest units* of the currency (integer, **not** float/double). At most"
+" 4 suggested tip amounts can be specified. The suggested tip amounts must"
+" be positive, passed in a strictly increased order and must not exceed "
+"*max_tip_amount*."
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.input_invoice_message_content.InputInvoiceMessageContent.provider_data:1
+#: of
+msgid ""
+"*Optional*. A JSON-serialized object for data about the invoice, which "
+"will be shared with the payment provider. A detailed description of the "
+"required fields should be provided by the payment provider."
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.input_invoice_message_content.InputInvoiceMessageContent.photo_url:1
+#: of
+msgid ""
+"*Optional*. URL of the product photo for the invoice. Can be a photo of "
+"the goods or a marketing image for a service."
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.input_invoice_message_content.InputInvoiceMessageContent.photo_size:1
+#: of
+msgid "*Optional*. Photo size in bytes"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.input_invoice_message_content.InputInvoiceMessageContent.photo_width:1
+#: of
+msgid "*Optional*. Photo width"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.input_invoice_message_content.InputInvoiceMessageContent.photo_height:1
+#: of
+msgid "*Optional*. Photo height"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.input_invoice_message_content.InputInvoiceMessageContent.need_name:1
+#: of
+msgid ""
+"*Optional*. Pass :code:`True` if you require the user's full name to "
+"complete the order. Ignored for payments in `Telegram Stars "
+"<https://t.me/BotNews/90>`_."
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.input_invoice_message_content.InputInvoiceMessageContent.need_phone_number:1
+#: of
+msgid ""
+"*Optional*. Pass :code:`True` if you require the user's phone number to "
+"complete the order. Ignored for payments in `Telegram Stars "
+"<https://t.me/BotNews/90>`_."
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.input_invoice_message_content.InputInvoiceMessageContent.need_email:1
+#: of
+msgid ""
+"*Optional*. Pass :code:`True` if you require the user's email address to "
+"complete the order. Ignored for payments in `Telegram Stars "
+"<https://t.me/BotNews/90>`_."
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.input_invoice_message_content.InputInvoiceMessageContent.need_shipping_address:1
+#: of
+msgid ""
+"*Optional*. Pass :code:`True` if you require the user's shipping address "
+"to complete the order. Ignored for payments in `Telegram Stars "
+"<https://t.me/BotNews/90>`_."
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.input_invoice_message_content.InputInvoiceMessageContent.send_phone_number_to_provider:1
+#: of
+msgid ""
+"*Optional*. Pass :code:`True` if the user's phone number should be sent "
+"to the provider. Ignored for payments in `Telegram Stars "
+"<https://t.me/BotNews/90>`_."
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.input_invoice_message_content.InputInvoiceMessageContent.send_email_to_provider:1
+#: of
+msgid ""
+"*Optional*. Pass :code:`True` if the user's email address should be sent "
+"to the provider. Ignored for payments in `Telegram Stars "
+"<https://t.me/BotNews/90>`_."
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.input_invoice_message_content.InputInvoiceMessageContent.is_flexible:1
+#: of
+msgid ""
+"*Optional*. Pass :code:`True` if the final price depends on the shipping "
+"method. Ignored for payments in `Telegram Stars "
+"<https://t.me/BotNews/90>`_."
+msgstr ""
+

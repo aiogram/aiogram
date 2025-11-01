@@ -1,0 +1,391 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2025, aiogram Team
+# This file is distributed under the same license as the aiogram package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: aiogram \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-01 19:31+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ru\n"
+"Language-Team: ru <LL@li.org>\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../contributing.rst:3
+msgid "Contributing"
+msgstr "Помощь в разработке"
+
+#: ../../contributing.rst:5
+msgid "You're welcome to contribute to aiogram!"
+msgstr "Будем рады вашему вкладу в aiogram!"
+
+#: ../../contributing.rst:7
+msgid ""
+"*aiogram* is an open-source project, and anyone can contribute to it in "
+"any possible way"
+msgstr ""
+"*aiogram* - проект с открытым исходным кодом и каждый может внести свой вклад"
+
+#: ../../contributing.rst:11
+msgid "Developing"
+msgstr "Разработка"
+
+#: ../../contributing.rst:13
+msgid ""
+"Before making any changes in the framework code, it is necessary to fork "
+"the project and clone the project to your PC and know how to do a pull-"
+"request."
+msgstr ""
+"Перед какими-либо изменениями в коде фреймворка необходимо сделать fork "
+"проекта, клонировать его на свой ПК и знать, как делать pull-request."
+
+#: ../../contributing.rst:16
+msgid ""
+"How to work with pull-request you can read in the `GitHub docs "
+"<https://docs.github.com/en/pull-requests/collaborating-with-pull-"
+"requests/proposing-changes-to-your-work-with-pull-requests/creating-a"
+"-pull-request>`_"
+msgstr ""
+"Вы можете прочитать о том, как сделать pull-request в `Документации "
+"GitHub <https://docs.github.com/en/pull-requests/collaborating-with-pull-"
+"requests/proposing-changes-to-your-work-with-pull-requests/creating-a"
+"-pull-request>`_"
+
+#: ../../contributing.rst:18
+msgid ""
+"Also in due to this project is written in Python, you will need Python to"
+" be installed (is recommended to use latest Python versions, but any "
+"version starting from 3.8 can be used)"
+msgstr ""
+"Также, так как проект написан на Python, вам будет нужен установленный Python "
+"(рекомендуется использовать последнюю версию, но подходит любая версия, стартуя от 3.8)"
+
+#: ../../contributing.rst:23
+msgid "Use virtualenv"
+msgstr "Использование виртуального окружения"
+
+#: ../../contributing.rst:25
+msgid ""
+"You can create a virtual environment in a directory using :code:`venv` "
+"module (it should be pre-installed by default):"
+msgstr ""
+"Вы можете создать виртуальное окружение в директории, используя "
+"команду :code:`python -m venv .venv`:"
+
+#: ../../contributing.rst:31
+msgid ""
+"This action will create a :code:`.venv` directory with the Python "
+"binaries and then you will be able to install packages into that isolated"
+" environment."
+msgstr ""
+"Это действие приведёт к созданию директории :code:`.venv` с бинарными "
+"файлами Python, после чего вы сможете устанавливать пакеты в этом "
+"изолированном окружении."
+
+#: ../../contributing.rst:36
+msgid "Activate the environment"
+msgstr "Активация окружения"
+
+#: ../../contributing.rst:38 ../../contributing.rst:77
+msgid "Linux / macOS:"
+msgstr "Linux / macOS:"
+
+#: ../../contributing.rst:44
+msgid "Windows cmd"
+msgstr "Командная строка Windows"
+
+#: ../../contributing.rst:50
+msgid "Windows PowerShell"
+msgstr "Windows PowerShell"
+
+#: ../../contributing.rst:56
+msgid ""
+"To check it worked, use described command, it should show the :code:`pip`"
+" version and location inside the isolated environment"
+msgstr ""
+"Для проверки окружения используйте данную команду. Она выводит версию :code:`pip` "
+"и локацию внутри изолированного окружения
+
+#: ../../contributing.rst:64
+msgid ""
+"Also make sure you have the latest pip version in your virtual "
+"environment to avoid errors on next steps:"
+msgstr ""
+"Также убедитесь, что вы используете последнюю версию pip в вашем "
+"виртуальном окружении для избежания ошибок на следующих шагах:"
+
+#: ../../contributing.rst:73
+msgid "Setup project"
+msgstr "Настройка проекта"
+
+#: ../../contributing.rst:75
+msgid ""
+"After activating the environment install `aiogram` from sources and their"
+" dependencies."
+msgstr ""
+"После активации окружения установите `aiogram` и зависимости"
+
+#: ../../contributing.rst:83
+msgid "Windows:"
+msgstr "Windows:"
+
+#: ../../contributing.rst:89
+msgid ""
+"It will install :code:`aiogram` in editable mode into your virtual "
+"environment and all dependencies."
+msgstr ""
+"Это установит :code:`aiogram` и зависимости в вашем виртуальном окружении"
+
+#: ../../contributing.rst:92
+msgid "Making changes in code"
+msgstr "Изменения в коде"
+
+#: ../../contributing.rst:94
+msgid ""
+"At this point you can make any changes in the code that you want, it can "
+"be any fixes, implementing new features or experimenting."
+msgstr ""
+"Вы можете делать любые изменения в коде, включая багфиксы, рефакторинг, "
+"внедрение новых функций или экспериментирование"
+
+#: ../../contributing.rst:99
+msgid "Format the code (code-style)"
+msgstr "Форматирование кода (стиль кода)"
+
+#: ../../contributing.rst:101
+msgid ""
+"Note that this project is Black-formatted, so you should follow that "
+"code-style, too be sure You're correctly doing this let's reformat the "
+"code automatically:"
+msgstr ""
+"Проект форматирован по стандарту Black. Убедитесь, что вы следуете "
+"данному стилю кода. Чтобы правильно это сделать, реформатируйте код "
+"автоматически:"
+
+#: ../../contributing.rst:111
+msgid "Run tests"
+msgstr "Запуск тестов"
+
+#: ../../contributing.rst:113
+msgid "All changes should be tested:"
+msgstr "Все изменения должны быть протестированы:"
+
+#: ../../contributing.rst:119
+msgid ""
+"Also if you are doing something with Redis-storage or/and MongoDB-"
+"storage, you will need to test everything works with Redis or/and "
+"MongoDB:"
+msgstr ""
+"Также, если вы изменяете что-то, связанное с хранилищем Redis и/или "
+"MongoDB, вам нужно будет протестировать всё, что связано с Redis и/или "
+"MongoDB"
+
+#: ../../contributing.rst:127
+msgid "Docs"
+msgstr "Документация"
+
+#: ../../contributing.rst:129
+msgid ""
+"We are using `Sphinx` to render docs in different languages, all sources "
+"located in `docs` directory, you can change the sources and to test it "
+"you can start live-preview server and look what you are doing:"
+msgstr ""
+"Мы используем `Sphinx` для отображения документации на других языках, все "
+"файлы хранятся в директории `docs`. Вы можете изменять исходный код и, чтобы "
+"протестировать сервер с отображением и посмотреть, что изменилось:
+
+#: ../../contributing.rst:138
+msgid "Docs translations"
+msgstr "Переводы документации"
+
+#: ../../contributing.rst:140
+msgid ""
+"Translation of the documentation is very necessary and cannot be done "
+"without the help of the community from all over the world, so you are "
+"welcome to translate the documentation into different languages."
+msgstr ""
+"Переводы документации очень важны и не могут быть сделаны без поддержки "
+"людей со всего мира, поэтому мы были бы очень рады вашим переводам "
+"документации на другие языки"
+
+#: ../../contributing.rst:144
+msgid "Before start, let's up to date all texts:"
+msgstr "Перед началом скопируйте все тексты:"
+
+#: ../../contributing.rst:152
+msgid ""
+"Change the :code:`<language_code>` in example below to the target "
+"language code, after that you can modify texts inside "
+":code:`docs/locale/<language_code>/LC_MESSAGES` as :code:`*.po` files by "
+"using any text-editor or specialized utilites for GNU Gettext, for "
+"example via `poedit <https://poedit.net/>`_."
+msgstr ""
+"Измените :code:`<language_code>` в примере на требуемый язык, после чего "
+"вы сможете модифицировать текст внутри :code:`docs/locale/<language_code>/ "
+"LC_MESSAGES` как :code:`*.po` файлы через любой текстовый редактор или "
+"специализированное ПО для GNU Gettext, например, `poedit <https://poedit.net/>`_." 
+
+#: ../../contributing.rst:157
+msgid "To view results:"
+msgstr "Для просмотра результатов:"
+
+#: ../../contributing.rst:165
+msgid "Describe changes"
+msgstr "Описание изменений"
+
+#: ../../contributing.rst:167
+msgid ""
+"Describe your changes in one or more sentences so that bot developers "
+"know what's changed in their favorite framework - create "
+"`<code>.<category>.rst` file and write the description."
+msgstr ""
+"Опишите свои изменения в нескольких предложениях, чтобы разработчики "
+"ботов знали, что изменилось в их любимом фреймворке - создайте файл "
+"`<code>.<category>.rst` и напишите описание."
+
+#: ../../contributing.rst:170
+msgid ""
+":code:`<code>` is Issue or Pull-request number, after release link to "
+"this issue will be published to the *Changelog* page."
+msgstr ""
+":code:`<code>` - номер  Issue или Pull-request, после релиза ссылка на "
+"этот issue будет опубликована в *Changelog*."
+
+#: ../../contributing.rst:173
+msgid ":code:`<category>` is a changes category marker, it can be one of:"
+msgstr ":code:`<category>` - маркер категории изменений, один из:"
+
+#: ../../contributing.rst:175
+msgid ":code:`feature` - when you are implementing new feature"
+msgstr ":code:`feature` - если вы внедрили новый функционал"
+
+#: ../../contributing.rst:176
+msgid ":code:`bugfix` - when you fix a bug"
+msgstr ":code:`bugfix` - если вы пофиксили баг"
+
+#: ../../contributing.rst:177
+msgid ":code:`doc` - when you improve the docs"
+msgstr ":code:`doc` - если вы улучшили документацию"
+
+#: ../../contributing.rst:178
+msgid ":code:`removal` - when you remove something from the framework"
+msgstr ":code:`removal` - если вы удалили что-либо из фреймворка"
+
+#: ../../contributing.rst:179
+msgid ""
+":code:`misc` - when changed something inside the Core or project "
+"configuration"
+msgstr ":code:`misc` - если вы изменили что-либо в основе или "
+"конфигурации проекта"
+
+#: ../../contributing.rst:181
+msgid ""
+"If you have troubles with changing category feel free to ask Core-"
+"contributors to help with choosing it."
+msgstr ""
+"Если у вас возникли проблемы с выбором категории, не стесняйтесь "
+"спрашивать главных разработчиков для помощи с выбором"
+
+#: ../../contributing.rst:184
+msgid "Complete"
+msgstr "Финальные действия"
+
+#: ../../contributing.rst:186
+msgid ""
+"After you have made all your changes, publish them to the repository and "
+"create a pull request as mentioned at the beginning of the article and "
+"wait for a review of these changes."
+msgstr ""
+"После того, как вы сделали изменения, опубликуйте их в свой репозиторий и "
+"создайте pull request с упоминанем основных разработчиков и ждите рассмотрения "
+"этих изменений"
+
+#: ../../contributing.rst:191
+msgid "Star on GitHub"
+msgstr "Stars на GitHub"
+
+#: ../../contributing.rst:193
+msgid ""
+"You can \"star\" repository on GitHub - "
+"https://github.com/aiogram/aiogram (click the star button at the top "
+"right)"
+msgstr ""
+"Вы можете поставить \"звезду\" репозиторию на GitHub - "
+"https://github.com/aiogram/aiogram (нажмите на кнопку звезды сверху справа)"
+
+#: ../../contributing.rst:195
+msgid ""
+"Adding stars makes it easier for other people to find this project and "
+"understand how useful it is."
+msgstr ""
+"Звёзды помогают другим людям находить этот проект и понимать его ценность"
+
+#: ../../contributing.rst:198
+msgid "Guides"
+msgstr "Инструкции"
+
+#: ../../contributing.rst:200
+msgid ""
+"You can write guides how to develop Bots on top of aiogram and publish it"
+" into YouTube, Medium, GitHub Books, any Courses platform or any other "
+"platform that you know."
+msgstr ""
+"Вы можете записывать инструкции по разработке ботов на aiogram и публиковать "
+"их на YouTube, Medium, GitHub Books, любые платформы с курсами и на другие "
+"платформы"
+
+#: ../../contributing.rst:203
+msgid ""
+"This will help more people learn about the framework and learn how to use"
+" it"
+msgstr ""
+"Это поможет большему количеству людей узнать об фреймворке и как его "
+"использовать"
+
+#: ../../contributing.rst:207
+msgid "Take answers"
+msgstr "Отвечайте на вопросы"
+
+#: ../../contributing.rst:209
+msgid ""
+"The developers is always asks for any question in our chats or any other "
+"platforms like GitHub Discussions, StackOverflow and others, feel free to"
+" answer to this questions."
+msgstr ""
+"Разработчики постоянно задают вопросы в наших чатах и других различных "
+"платформах, таких как GitHub Discussions, StackOverflow и других, не "
+"стесняйтесь отвечать на них"
+
+#: ../../contributing.rst:213
+msgid "Funding"
+msgstr "Поддержка"
+
+#: ../../contributing.rst:215
+msgid ""
+"The development of the project is free and not financed by commercial "
+"organizations, it is my personal initiative (`@JRootJunior "
+"<https://t.me/JRootJunior>`_) and I am engaged in the development of the "
+"project in my free time."
+msgstr ""
+"Разработка проекта бесплатна и не финансируется коммерческими "
+"организациями, это моя личная инициатива (`@JRootJunior "
+"<https://t.me/JRootJunior>`_) и я занимаюсь разработкой в свободное время"
+
+#: ../../contributing.rst:219
+msgid ""
+"So, if you want to financially support the project, or, for example, give"
+" me a pizza or a beer, you can do it on `OpenCollective "
+"<https://opencollective.com/aiogram>`_."
+msgstr ""
+"Так что если хотите финансово поддержать проект или, например, дать мне пиццу"
+" или пиво, вы можете сделать это на платформе `OpenCollective "
+"<https://opencollective.com/aiogram>`_."

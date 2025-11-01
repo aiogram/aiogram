@@ -1,0 +1,76 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2025, aiogram Team
+# This file is distributed under the same license as the aiogram package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: aiogram \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-01 19:31+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ru\n"
+"Language-Team: ru <LL@li.org>\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../api/types/star_transaction.rst:3
+msgid "StarTransaction"
+msgstr ""
+
+#: aiogram.types.star_transaction.StarTransaction:1 of
+msgid ""
+"Describes a Telegram Star transaction. Note that if the buyer initiates a"
+" chargeback with the payment provider from whom they acquired Stars "
+"(e.g., Apple, Google) following this transaction, the refunded Stars will"
+" be deducted from the bot's balance. This is outside of Telegram's "
+"control."
+msgstr ""
+
+#: aiogram.types.star_transaction.StarTransaction:3 of
+msgid "Source: https://core.telegram.org/bots/api#startransaction"
+msgstr ""
+
+#: ../../docstring aiogram.types.star_transaction.StarTransaction.id:1 of
+msgid ""
+"Unique identifier of the transaction. Coincides with the identifier of "
+"the original transaction for refund transactions. Coincides with "
+"*SuccessfulPayment.telegram_payment_charge_id* for successful incoming "
+"payments from users."
+msgstr ""
+
+#: ../../docstring aiogram.types.star_transaction.StarTransaction.amount:1 of
+msgid "Integer amount of Telegram Stars transferred by the transaction"
+msgstr ""
+
+#: ../../docstring aiogram.types.star_transaction.StarTransaction.date:1 of
+msgid "Date the transaction was created in Unix time"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.star_transaction.StarTransaction.nanostar_amount:1 of
+msgid ""
+"*Optional*. The number of 1/1000000000 shares of Telegram Stars "
+"transferred by the transaction; from 0 to 999999999"
+msgstr ""
+
+#: ../../docstring aiogram.types.star_transaction.StarTransaction.source:1 of
+msgid ""
+"*Optional*. Source of an incoming transaction (e.g., a user purchasing "
+"goods or services, Fragment refunding a failed withdrawal). Only for "
+"incoming transactions"
+msgstr ""
+
+#: ../../docstring aiogram.types.star_transaction.StarTransaction.receiver:1 of
+msgid ""
+"*Optional*. Receiver of an outgoing transaction (e.g., a user for a "
+"purchase refund, Fragment for a withdrawal). Only for outgoing "
+"transactions"
+msgstr ""
+

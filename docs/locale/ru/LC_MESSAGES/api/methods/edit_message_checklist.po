@@ -1,0 +1,104 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2025, aiogram Team
+# This file is distributed under the same license as the aiogram package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: aiogram \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-01 19:31+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ru\n"
+"Language-Team: ru <LL@li.org>\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../api/methods/edit_message_checklist.rst:3
+msgid "editMessageChecklist"
+msgstr ""
+
+#: ../../api/methods/edit_message_checklist.rst:5
+msgid "Returns: :obj:`Message`"
+msgstr ""
+
+#: aiogram.methods.edit_message_checklist.EditMessageChecklist:1 of
+msgid ""
+"Use this method to edit a checklist on behalf of a connected business "
+"account. On success, the edited :class:`aiogram.types.message.Message` is"
+" returned."
+msgstr ""
+
+#: aiogram.methods.edit_message_checklist.EditMessageChecklist:3 of
+msgid "Source: https://core.telegram.org/bots/api#editmessagechecklist"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.edit_message_checklist.EditMessageChecklist.business_connection_id:1
+#: of
+msgid ""
+"Unique identifier of the business connection on behalf of which the "
+"message will be sent"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.edit_message_checklist.EditMessageChecklist.chat_id:1 of
+msgid "Unique identifier for the target chat"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.edit_message_checklist.EditMessageChecklist.message_id:1 of
+msgid "Unique identifier for the target message"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.edit_message_checklist.EditMessageChecklist.checklist:1 of
+msgid "A JSON-serialized object for the new checklist"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.edit_message_checklist.EditMessageChecklist.reply_markup:1
+#: of
+msgid "A JSON-serialized object for the new inline keyboard for the message"
+msgstr ""
+
+#: ../../api/methods/edit_message_checklist.rst:15
+msgid "Usage"
+msgstr ""
+
+#: ../../api/methods/edit_message_checklist.rst:18
+msgid "As bot method"
+msgstr ""
+
+#: ../../api/methods/edit_message_checklist.rst:26
+msgid "Method as object"
+msgstr ""
+
+#: ../../api/methods/edit_message_checklist.rst:28
+msgid "Imports:"
+msgstr ""
+
+#: ../../api/methods/edit_message_checklist.rst:30
+msgid ""
+":code:`from aiogram.methods.edit_message_checklist import "
+"EditMessageChecklist`"
+msgstr ""
+
+#: ../../api/methods/edit_message_checklist.rst:31
+msgid "alias: :code:`from aiogram.methods import EditMessageChecklist`"
+msgstr ""
+
+#: ../../api/methods/edit_message_checklist.rst:34
+msgid "With specific bot"
+msgstr ""
+
+#: ../../api/methods/edit_message_checklist.rst:41
+msgid "As reply into Webhook in handler"
+msgstr ""
+

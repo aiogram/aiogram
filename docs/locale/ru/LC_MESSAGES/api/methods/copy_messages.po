@@ -1,0 +1,131 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2025, aiogram Team
+# This file is distributed under the same license as the aiogram package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: aiogram \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-01 19:31+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ru\n"
+"Language-Team: ru <LL@li.org>\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../api/methods/copy_messages.rst:3
+msgid "copyMessages"
+msgstr ""
+
+#: ../../api/methods/copy_messages.rst:5
+msgid "Returns: :obj:`list[MessageId]`"
+msgstr ""
+
+#: aiogram.methods.copy_messages.CopyMessages:1 of
+msgid ""
+"Use this method to copy messages of any kind. If some of the specified "
+"messages can't be found or copied, they are skipped. Service messages, "
+"paid media messages, giveaway messages, giveaway winners messages, and "
+"invoice messages can't be copied. A quiz "
+":class:`aiogram.methods.poll.Poll` can be copied only if the value of the"
+" field *correct_option_id* is known to the bot. The method is analogous "
+"to the method :class:`aiogram.methods.forward_messages.ForwardMessages`, "
+"but the copied messages don't have a link to the original message. Album "
+"grouping is kept for copied messages. On success, an array of "
+":class:`aiogram.types.message_id.MessageId` of the sent messages is "
+"returned."
+msgstr ""
+
+#: aiogram.methods.copy_messages.CopyMessages:3 of
+msgid "Source: https://core.telegram.org/bots/api#copymessages"
+msgstr ""
+
+#: ../../docstring aiogram.methods.copy_messages.CopyMessages.chat_id:1 of
+msgid ""
+"Unique identifier for the target chat or username of the target channel "
+"(in the format :code:`@channelusername`)"
+msgstr ""
+
+#: ../../docstring aiogram.methods.copy_messages.CopyMessages.from_chat_id:1 of
+msgid ""
+"Unique identifier for the chat where the original messages were sent (or "
+"channel username in the format :code:`@channelusername`)"
+msgstr ""
+
+#: ../../docstring aiogram.methods.copy_messages.CopyMessages.message_ids:1 of
+msgid ""
+"A JSON-serialized list of 1-100 identifiers of messages in the chat "
+"*from_chat_id* to copy. The identifiers must be specified in a strictly "
+"increasing order."
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.copy_messages.CopyMessages.message_thread_id:1 of
+msgid ""
+"Unique identifier for the target message thread (topic) of the forum; for"
+" forum supergroups only"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.copy_messages.CopyMessages.direct_messages_topic_id:1 of
+msgid ""
+"Identifier of the direct messages topic to which the messages will be "
+"sent; required if the messages are sent to a direct messages chat"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.copy_messages.CopyMessages.disable_notification:1 of
+msgid ""
+"Sends the messages `silently <https://telegram.org/blog/channels-2-0"
+"#silent-messages>`_. Users will receive a notification with no sound."
+msgstr ""
+
+#: ../../docstring aiogram.methods.copy_messages.CopyMessages.protect_content:1
+#: of
+msgid "Protects the contents of the sent messages from forwarding and saving"
+msgstr ""
+
+#: ../../docstring aiogram.methods.copy_messages.CopyMessages.remove_caption:1
+#: of
+msgid "Pass :code:`True` to copy the messages without their captions"
+msgstr ""
+
+#: ../../api/methods/copy_messages.rst:15
+msgid "Usage"
+msgstr ""
+
+#: ../../api/methods/copy_messages.rst:18
+msgid "As bot method"
+msgstr ""
+
+#: ../../api/methods/copy_messages.rst:26
+msgid "Method as object"
+msgstr ""
+
+#: ../../api/methods/copy_messages.rst:28
+msgid "Imports:"
+msgstr ""
+
+#: ../../api/methods/copy_messages.rst:30
+msgid ":code:`from aiogram.methods.copy_messages import CopyMessages`"
+msgstr ""
+
+#: ../../api/methods/copy_messages.rst:31
+msgid "alias: :code:`from aiogram.methods import CopyMessages`"
+msgstr ""
+
+#: ../../api/methods/copy_messages.rst:34
+msgid "With specific bot"
+msgstr ""
+
+#: ../../api/methods/copy_messages.rst:41
+msgid "As reply into Webhook in handler"
+msgstr ""
+

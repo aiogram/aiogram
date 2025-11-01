@@ -1,0 +1,131 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2025, aiogram Team
+# This file is distributed under the same license as the aiogram package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: aiogram \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-01 19:31+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ru\n"
+"Language-Team: ru <LL@li.org>\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../api/types/inline_query_result_photo.rst:3
+msgid "InlineQueryResultPhoto"
+msgstr ""
+
+#: aiogram.types.inline_query_result_photo.InlineQueryResultPhoto:1 of
+msgid ""
+"Represents a link to a photo. By default, this photo will be sent by the "
+"user with optional caption. Alternatively, you can use "
+"*input_message_content* to send a message with the specified content "
+"instead of the photo."
+msgstr ""
+
+#: aiogram.types.inline_query_result_photo.InlineQueryResultPhoto:3 of
+msgid "Source: https://core.telegram.org/bots/api#inlinequeryresultphoto"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.inline_query_result_photo.InlineQueryResultPhoto.type:1 of
+msgid "Type of the result, must be *photo*"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.inline_query_result_photo.InlineQueryResultPhoto.id:1 of
+msgid "Unique identifier for this result, 1-64 bytes"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.inline_query_result_photo.InlineQueryResultPhoto.photo_url:1
+#: of
+msgid ""
+"A valid URL of the photo. Photo must be in **JPEG** format. Photo size "
+"must not exceed 5MB"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.inline_query_result_photo.InlineQueryResultPhoto.thumbnail_url:1
+#: of
+msgid "URL of the thumbnail for the photo"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.inline_query_result_photo.InlineQueryResultPhoto.photo_width:1
+#: of
+msgid "*Optional*. Width of the photo"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.inline_query_result_photo.InlineQueryResultPhoto.photo_height:1
+#: of
+msgid "*Optional*. Height of the photo"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.inline_query_result_photo.InlineQueryResultPhoto.title:1 of
+msgid "*Optional*. Title for the result"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.inline_query_result_photo.InlineQueryResultPhoto.description:1
+#: of
+msgid "*Optional*. Short description of the result"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.inline_query_result_photo.InlineQueryResultPhoto.caption:1 of
+msgid ""
+"*Optional*. Caption of the photo to be sent, 0-1024 characters after "
+"entities parsing"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.inline_query_result_photo.InlineQueryResultPhoto.parse_mode:1
+#: of
+msgid ""
+"*Optional*. Mode for parsing entities in the photo caption. See "
+"`formatting options <https://core.telegram.org/bots/api#formatting-"
+"options>`_ for more details."
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.inline_query_result_photo.InlineQueryResultPhoto.caption_entities:1
+#: of
+msgid ""
+"*Optional*. List of special entities that appear in the caption, which "
+"can be specified instead of *parse_mode*"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.inline_query_result_photo.InlineQueryResultPhoto.show_caption_above_media:1
+#: of
+msgid ""
+"*Optional*. Pass :code:`True`, if the caption must be shown above the "
+"message media"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.inline_query_result_photo.InlineQueryResultPhoto.reply_markup:1
+#: of
+msgid ""
+"*Optional*. `Inline keyboard <https://core.telegram.org/bots/features"
+"#inline-keyboards>`_ attached to the message"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.inline_query_result_photo.InlineQueryResultPhoto.input_message_content:1
+#: of
+msgid "*Optional*. Content of the message to be sent instead of the photo"
+msgstr ""
+

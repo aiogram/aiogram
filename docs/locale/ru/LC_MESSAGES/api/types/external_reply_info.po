@@ -1,0 +1,180 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2025, aiogram Team
+# This file is distributed under the same license as the aiogram package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: aiogram \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-01 19:31+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ru\n"
+"Language-Team: ru <LL@li.org>\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../api/types/external_reply_info.rst:3
+msgid "ExternalReplyInfo"
+msgstr ""
+
+#: aiogram.types.external_reply_info.ExternalReplyInfo:1 of
+msgid ""
+"This object contains information about a message that is being replied "
+"to, which may come from another chat or forum topic."
+msgstr ""
+
+#: aiogram.types.external_reply_info.ExternalReplyInfo:3 of
+msgid "Source: https://core.telegram.org/bots/api#externalreplyinfo"
+msgstr ""
+
+#: ../../docstring aiogram.types.external_reply_info.ExternalReplyInfo.origin:1
+#: of
+msgid "Origin of the message replied to by the given message"
+msgstr ""
+
+#: ../../docstring aiogram.types.external_reply_info.ExternalReplyInfo.chat:1
+#: of
+msgid ""
+"*Optional*. Chat the original message belongs to. Available only if the "
+"chat is a supergroup or a channel."
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.external_reply_info.ExternalReplyInfo.message_id:1 of
+msgid ""
+"*Optional*. Unique message identifier inside the original chat. Available"
+" only if the original chat is a supergroup or a channel."
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.external_reply_info.ExternalReplyInfo.link_preview_options:1
+#: of
+msgid ""
+"*Optional*. Options used for link preview generation for the original "
+"message, if it is a text message"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.external_reply_info.ExternalReplyInfo.animation:1 of
+msgid "*Optional*. Message is an animation, information about the animation"
+msgstr ""
+
+#: ../../docstring aiogram.types.external_reply_info.ExternalReplyInfo.audio:1
+#: of
+msgid "*Optional*. Message is an audio file, information about the file"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.external_reply_info.ExternalReplyInfo.document:1 of
+msgid "*Optional*. Message is a general file, information about the file"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.external_reply_info.ExternalReplyInfo.paid_media:1 of
+msgid "*Optional*. Message contains paid media; information about the paid media"
+msgstr ""
+
+#: ../../docstring aiogram.types.external_reply_info.ExternalReplyInfo.photo:1
+#: of
+msgid "*Optional*. Message is a photo, available sizes of the photo"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.external_reply_info.ExternalReplyInfo.sticker:1 of
+msgid "*Optional*. Message is a sticker, information about the sticker"
+msgstr ""
+
+#: ../../docstring aiogram.types.external_reply_info.ExternalReplyInfo.story:1
+#: of
+msgid "*Optional*. Message is a forwarded story"
+msgstr ""
+
+#: ../../docstring aiogram.types.external_reply_info.ExternalReplyInfo.video:1
+#: of
+msgid "*Optional*. Message is a video, information about the video"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.external_reply_info.ExternalReplyInfo.video_note:1 of
+msgid ""
+"*Optional*. Message is a `video note <https://telegram.org/blog/video-"
+"messages-and-telescope>`_, information about the video message"
+msgstr ""
+
+#: ../../docstring aiogram.types.external_reply_info.ExternalReplyInfo.voice:1
+#: of
+msgid "*Optional*. Message is a voice message, information about the file"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.external_reply_info.ExternalReplyInfo.has_media_spoiler:1 of
+msgid ""
+"*Optional*. :code:`True`, if the message media is covered by a spoiler "
+"animation"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.external_reply_info.ExternalReplyInfo.checklist:1 of
+msgid "*Optional*. Message is a checklist"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.external_reply_info.ExternalReplyInfo.contact:1 of
+msgid "*Optional*. Message is a shared contact, information about the contact"
+msgstr ""
+
+#: ../../docstring aiogram.types.external_reply_info.ExternalReplyInfo.dice:1
+#: of
+msgid "*Optional*. Message is a dice with random value"
+msgstr ""
+
+#: ../../docstring aiogram.types.external_reply_info.ExternalReplyInfo.game:1
+#: of
+msgid ""
+"*Optional*. Message is a game, information about the game. `More about "
+"games » <https://core.telegram.org/bots/api#games>`_"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.external_reply_info.ExternalReplyInfo.giveaway:1 of
+msgid ""
+"*Optional*. Message is a scheduled giveaway, information about the "
+"giveaway"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.external_reply_info.ExternalReplyInfo.giveaway_winners:1 of
+msgid "*Optional*. A giveaway with public winners was completed"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.external_reply_info.ExternalReplyInfo.invoice:1 of
+msgid ""
+"*Optional*. Message is an invoice for a `payment "
+"<https://core.telegram.org/bots/api#payments>`_, information about the "
+"invoice. `More about payments » "
+"<https://core.telegram.org/bots/api#payments>`_"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.external_reply_info.ExternalReplyInfo.location:1 of
+msgid "*Optional*. Message is a shared location, information about the location"
+msgstr ""
+
+#: ../../docstring aiogram.types.external_reply_info.ExternalReplyInfo.poll:1
+#: of
+msgid "*Optional*. Message is a native poll, information about the poll"
+msgstr ""
+
+#: ../../docstring aiogram.types.external_reply_info.ExternalReplyInfo.venue:1
+#: of
+msgid "*Optional*. Message is a venue, information about the venue"
+msgstr ""
+

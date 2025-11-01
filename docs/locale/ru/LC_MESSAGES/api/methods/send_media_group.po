@@ -1,0 +1,194 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2025, aiogram Team
+# This file is distributed under the same license as the aiogram package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: aiogram \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-01 19:31+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ru\n"
+"Language-Team: ru <LL@li.org>\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../api/methods/send_media_group.rst:3
+msgid "sendMediaGroup"
+msgstr ""
+
+#: ../../api/methods/send_media_group.rst:5
+msgid "Returns: :obj:`list[Message]`"
+msgstr ""
+
+#: aiogram.methods.send_media_group.SendMediaGroup:1 of
+msgid ""
+"Use this method to send a group of photos, videos, documents or audios as"
+" an album. Documents and audio files can be only grouped in an album with"
+" messages of the same type. On success, an array of "
+":class:`aiogram.types.message.Message` objects that were sent is "
+"returned."
+msgstr ""
+
+#: aiogram.methods.send_media_group.SendMediaGroup:3 of
+msgid "Source: https://core.telegram.org/bots/api#sendmediagroup"
+msgstr ""
+
+#: ../../docstring aiogram.methods.send_media_group.SendMediaGroup.chat_id:1 of
+msgid ""
+"Unique identifier for the target chat or username of the target channel "
+"(in the format :code:`@channelusername`)"
+msgstr ""
+
+#: ../../docstring aiogram.methods.send_media_group.SendMediaGroup.media:1 of
+msgid ""
+"A JSON-serialized array describing messages to be sent, must include 2-10"
+" items"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.send_media_group.SendMediaGroup.business_connection_id:1 of
+msgid ""
+"Unique identifier of the business connection on behalf of which the "
+"message will be sent"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.send_media_group.SendMediaGroup.message_thread_id:1 of
+msgid ""
+"Unique identifier for the target message thread (topic) of the forum; for"
+" forum supergroups only"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.send_media_group.SendMediaGroup.direct_messages_topic_id:1
+#: of
+msgid ""
+"Identifier of the direct messages topic to which the messages will be "
+"sent; required if the messages are sent to a direct messages chat"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.send_media_group.SendMediaGroup.disable_notification:1 of
+msgid ""
+"Sends messages `silently <https://telegram.org/blog/channels-2-0#silent-"
+"messages>`_. Users will receive a notification with no sound."
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.send_media_group.SendMediaGroup.protect_content:1 of
+msgid "Protects the contents of the sent messages from forwarding and saving"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.send_media_group.SendMediaGroup.allow_paid_broadcast:1 of
+msgid ""
+"Pass :code:`True` to allow up to 1000 messages per second, ignoring "
+"`broadcasting limits <https://core.telegram.org/bots/faq#how-can-i"
+"-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 "
+"Telegram Stars per message. The relevant Stars will be withdrawn from the"
+" bot's balance"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.send_media_group.SendMediaGroup.message_effect_id:1 of
+msgid ""
+"Unique identifier of the message effect to be added to the message; for "
+"private chats only"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.send_media_group.SendMediaGroup.reply_parameters:1 of
+msgid "Description of the message to reply to"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.send_media_group.SendMediaGroup.allow_sending_without_reply:1
+#: of
+msgid ""
+"Pass :code:`True` if the message should be sent even if the specified "
+"replied-to message is not found"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.send_media_group.SendMediaGroup.allow_sending_without_reply:3
+#: aiogram.methods.send_media_group.SendMediaGroup.reply_to_message_id:3 of
+msgid "https://core.telegram.org/bots/api-changelog#december-29-2023"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.send_media_group.SendMediaGroup.reply_to_message_id:1 of
+msgid "If the messages are a reply, ID of the original message"
+msgstr ""
+
+#: ../../api/methods/send_media_group.rst:15
+msgid "Usage"
+msgstr ""
+
+#: ../../api/methods/send_media_group.rst:18
+msgid "As bot method"
+msgstr ""
+
+#: ../../api/methods/send_media_group.rst:26
+msgid "Method as object"
+msgstr ""
+
+#: ../../api/methods/send_media_group.rst:28
+msgid "Imports:"
+msgstr ""
+
+#: ../../api/methods/send_media_group.rst:30
+msgid ":code:`from aiogram.methods.send_media_group import SendMediaGroup`"
+msgstr ""
+
+#: ../../api/methods/send_media_group.rst:31
+msgid "alias: :code:`from aiogram.methods import SendMediaGroup`"
+msgstr ""
+
+#: ../../api/methods/send_media_group.rst:34
+msgid "With specific bot"
+msgstr ""
+
+#: ../../api/methods/send_media_group.rst:41
+msgid "As reply into Webhook in handler"
+msgstr ""
+
+#: ../../api/methods/send_media_group.rst:49
+msgid "As shortcut from received object"
+msgstr ""
+
+#: ../../api/methods/send_media_group.rst:51
+msgid ":meth:`aiogram.types.message.Message.answer_media_group`"
+msgstr ""
+
+#: ../../api/methods/send_media_group.rst:52
+msgid ":meth:`aiogram.types.message.Message.reply_media_group`"
+msgstr ""
+
+#: ../../api/methods/send_media_group.rst:53
+msgid ":meth:`aiogram.types.chat_join_request.ChatJoinRequest.answer_media_group`"
+msgstr ""
+
+#: ../../api/methods/send_media_group.rst:54
+msgid ":meth:`aiogram.types.chat_join_request.ChatJoinRequest.answer_media_group_pm`"
+msgstr ""
+
+#: ../../api/methods/send_media_group.rst:55
+msgid ":meth:`aiogram.types.chat_member_updated.ChatMemberUpdated.answer_media_group`"
+msgstr ""
+
+#: ../../api/methods/send_media_group.rst:56
+msgid ":meth:`aiogram.types.inaccessible_message.InaccessibleMessage.answer_media_group`"
+msgstr ""
+
+#: ../../api/methods/send_media_group.rst:57
+msgid ":meth:`aiogram.types.inaccessible_message.InaccessibleMessage.reply_media_group`"
+msgstr ""
+

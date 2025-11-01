@@ -1,0 +1,158 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2025, aiogram Team
+# This file is distributed under the same license as the aiogram package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: aiogram \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-01 19:31+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ru\n"
+"Language-Team: ru <LL@li.org>\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../api/methods/edit_message_text.rst:3
+msgid "editMessageText"
+msgstr ""
+
+#: ../../api/methods/edit_message_text.rst:5
+msgid "Returns: :obj:`Union[Message, bool]`"
+msgstr ""
+
+#: aiogram.methods.edit_message_text.EditMessageText:1 of
+msgid ""
+"Use this method to edit text and `game "
+"<https://core.telegram.org/bots/api#games>`_ messages. On success, if the"
+" edited message is not an inline message, the edited "
+":class:`aiogram.types.message.Message` is returned, otherwise "
+":code:`True` is returned. Note that business messages that were not sent "
+"by the bot and do not contain an inline keyboard can only be edited "
+"within **48 hours** from the time they were sent."
+msgstr ""
+
+#: aiogram.methods.edit_message_text.EditMessageText:3 of
+msgid "Source: https://core.telegram.org/bots/api#editmessagetext"
+msgstr ""
+
+#: ../../docstring aiogram.methods.edit_message_text.EditMessageText.text:1 of
+msgid "New text of the message, 1-4096 characters after entities parsing"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.edit_message_text.EditMessageText.business_connection_id:1
+#: of
+msgid ""
+"Unique identifier of the business connection on behalf of which the "
+"message to be edited was sent"
+msgstr ""
+
+#: ../../docstring aiogram.methods.edit_message_text.EditMessageText.chat_id:1
+#: of
+msgid ""
+"Required if *inline_message_id* is not specified. Unique identifier for "
+"the target chat or username of the target channel (in the format "
+":code:`@channelusername`)"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.edit_message_text.EditMessageText.message_id:1 of
+msgid ""
+"Required if *inline_message_id* is not specified. Identifier of the "
+"message to edit"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.edit_message_text.EditMessageText.inline_message_id:1 of
+msgid ""
+"Required if *chat_id* and *message_id* are not specified. Identifier of "
+"the inline message"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.edit_message_text.EditMessageText.parse_mode:1 of
+msgid ""
+"Mode for parsing entities in the message text. See `formatting options "
+"<https://core.telegram.org/bots/api#formatting-options>`_ for more "
+"details."
+msgstr ""
+
+#: ../../docstring aiogram.methods.edit_message_text.EditMessageText.entities:1
+#: of
+msgid ""
+"A JSON-serialized list of special entities that appear in message text, "
+"which can be specified instead of *parse_mode*"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.edit_message_text.EditMessageText.link_preview_options:1 of
+msgid "Link preview generation options for the message"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.edit_message_text.EditMessageText.reply_markup:1 of
+msgid ""
+"A JSON-serialized object for an `inline keyboard "
+"<https://core.telegram.org/bots/features#inline-keyboards>`_."
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.edit_message_text.EditMessageText.disable_web_page_preview:1
+#: of
+msgid "Disables link previews for links in this message"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.edit_message_text.EditMessageText.disable_web_page_preview:3
+#: of
+msgid "https://core.telegram.org/bots/api-changelog#december-29-2023"
+msgstr ""
+
+#: ../../api/methods/edit_message_text.rst:15
+msgid "Usage"
+msgstr ""
+
+#: ../../api/methods/edit_message_text.rst:18
+msgid "As bot method"
+msgstr ""
+
+#: ../../api/methods/edit_message_text.rst:26
+msgid "Method as object"
+msgstr ""
+
+#: ../../api/methods/edit_message_text.rst:28
+msgid "Imports:"
+msgstr ""
+
+#: ../../api/methods/edit_message_text.rst:30
+msgid ":code:`from aiogram.methods.edit_message_text import EditMessageText`"
+msgstr ""
+
+#: ../../api/methods/edit_message_text.rst:31
+msgid "alias: :code:`from aiogram.methods import EditMessageText`"
+msgstr ""
+
+#: ../../api/methods/edit_message_text.rst:34
+msgid "With specific bot"
+msgstr ""
+
+#: ../../api/methods/edit_message_text.rst:41
+msgid "As reply into Webhook in handler"
+msgstr ""
+
+#: ../../api/methods/edit_message_text.rst:49
+msgid "As shortcut from received object"
+msgstr ""
+
+#: ../../api/methods/edit_message_text.rst:51
+msgid ":meth:`aiogram.types.message.Message.edit_text`"
+msgstr ""
+

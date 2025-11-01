@@ -1,0 +1,1855 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2025, aiogram Team
+# This file is distributed under the same license as the aiogram package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: aiogram \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-01 19:31+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ru\n"
+"Language-Team: ru <LL@li.org>\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../api/types/inaccessible_message.rst:3
+msgid "InaccessibleMessage"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage:1 of
+msgid ""
+"This object describes a message that was deleted or is otherwise "
+"inaccessible to the bot."
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage:3 of
+msgid "Source: https://core.telegram.org/bots/api#inaccessiblemessage"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.inaccessible_message.InaccessibleMessage.chat:1 of
+msgid "Chat the message belonged to"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.inaccessible_message.InaccessibleMessage.message_id:1 of
+msgid "Unique message identifier inside the chat"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.inaccessible_message.InaccessibleMessage.date:1 of
+msgid ""
+"Always 0. The field can be used to differentiate regular and inaccessible"
+" messages."
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer:1
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply:1 of
+msgid ""
+"Shortcut for method :class:`aiogram.methods.send_message.SendMessage` "
+"will automatically fill method attributes:"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer:4
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_animation:4
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_audio:4
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_contact:4
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_dice:4
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_document:4
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_game:4
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_invoice:4
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_location:4
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_media_group:4
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_paid_media:4
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_photo:4
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_poll:4
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_sticker:4
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_venue:4
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_video:4
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_video_note:4
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_voice:4
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply:4
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_animation:4
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_audio:4
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_contact:4
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_dice:4
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_document:4
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_game:4
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_invoice:4
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_location:4
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_media_group:4
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_paid_media:4
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_photo:4
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_poll:4
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_sticker:4
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_venue:4
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_video:4
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_video_note:4
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_voice:4 of
+msgid ":code:`chat_id`"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer:6
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply:7 of
+msgid ""
+"Use this method to send text messages. On success, the sent "
+":class:`aiogram.types.message.Message` is returned."
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer:8
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply:9 of
+msgid "Source: https://core.telegram.org/bots/api#sendmessage"
+msgstr ""
+
+#: ../../api/types/inaccessible_message.rst
+msgid "Parameters"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer:10
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply:11 of
+msgid "Text of the message to be sent, 1-4096 characters after entities parsing"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer:11
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_animation:11
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_audio:12
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_contact:12
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_dice:10
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_document:11
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_game:11
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_location:12
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_media_group:11
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_paid_media:12
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_photo:11
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_poll:12
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_sticker:11
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_venue:14
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_video:11
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_video_note:11
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_voice:11
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply:12
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_animation:12
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_audio:13
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_contact:13
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_dice:11
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_document:12
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_game:12
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_location:13
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_media_group:12
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_paid_media:13
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_photo:12
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_poll:13
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_sticker:12
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_venue:15
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_video:12
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_video_note:12
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_voice:12 of
+msgid ""
+"Unique identifier of the business connection on behalf of which the "
+"message will be sent"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer:12
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_animation:12
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_audio:13
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_contact:13
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_dice:11
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_document:12
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_game:12
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_invoice:15
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_location:13
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_media_group:12
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_paid_media:13
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_photo:12
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_poll:13
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_sticker:12
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_venue:15
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_video:12
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_video_note:12
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_voice:12
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply:13
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_animation:13
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_audio:14
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_contact:14
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_dice:12
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_document:13
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_game:13
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_invoice:16
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_location:14
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_media_group:13
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_paid_media:14
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_photo:13
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_poll:14
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_sticker:13
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_venue:16
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_video:13
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_video_note:13
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_voice:13 of
+msgid ""
+"Unique identifier for the target message thread (topic) of the forum; for"
+" forum supergroups only"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer:13
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_animation:13
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_audio:14
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_contact:14
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_dice:12
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_document:13
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_invoice:16
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_location:14
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_paid_media:14
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_photo:13
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_sticker:13
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_venue:16
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_video:13
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_video_note:13
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_voice:13
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply:14
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_animation:14
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_audio:15
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_contact:15
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_dice:13
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_document:14
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_invoice:17
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_location:15
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_paid_media:15
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_photo:14
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_sticker:14
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_venue:17
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_video:14
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_video_note:14
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_voice:14 of
+msgid ""
+"Identifier of the direct messages topic to which the message will be "
+"sent; required if the message is sent to a direct messages chat"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer:14
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply:15 of
+msgid ""
+"Mode for parsing entities in the message text. See `formatting options "
+"<https://core.telegram.org/bots/api#formatting-options>`_ for more "
+"details."
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer:15
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply:16 of
+msgid ""
+"A JSON-serialized list of special entities that appear in message text, "
+"which can be specified instead of *parse_mode*"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer:16
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply:17 of
+msgid "Link preview generation options for the message"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer:17
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_animation:23
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_audio:22
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_contact:17
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_dice:14
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_document:19
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_game:13
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_invoice:33
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_location:19
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_paid_media:20
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_photo:19
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_poll:26
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_sticker:15
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_venue:21
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_video:26
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_video_note:17
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_voice:18
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply:18
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_animation:24
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_audio:23
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_contact:18
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_dice:15
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_document:20
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_game:14
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_invoice:34
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_location:20
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_paid_media:21
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_photo:20
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_poll:27
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_sticker:16
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_venue:22
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_video:27
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_video_note:18
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_voice:19 of
+msgid ""
+"Sends the message `silently <https://telegram.org/blog/channels-2-0"
+"#silent-messages>`_. Users will receive a notification with no sound."
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer:18
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_animation:24
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_audio:23
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_contact:18
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_document:20
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_game:14
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_invoice:34
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_location:20
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_paid_media:21
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_photo:20
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_poll:27
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_sticker:16
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_venue:22
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_video:27
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_video_note:18
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_voice:19
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply:19
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_animation:25
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_audio:24
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_contact:19
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_document:21
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_game:15
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_invoice:35
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_location:21
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_paid_media:22
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_photo:21
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_poll:28
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_sticker:17
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_venue:23
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_video:28
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_video_note:19
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_voice:20 of
+msgid "Protects the contents of the sent message from forwarding and saving"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer:19
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_animation:25
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_audio:24
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_contact:19
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_dice:16
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_document:21
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_game:15
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_invoice:35
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_location:21
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_media_group:16
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_paid_media:22
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_photo:21
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_poll:28
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_sticker:17
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_venue:23
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_video:28
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_video_note:19
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_voice:20
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply:20
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_animation:26
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_audio:25
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_contact:20
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_dice:17
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_document:22
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_game:16
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_invoice:36
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_location:22
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_media_group:17
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_paid_media:23
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_photo:22
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_poll:29
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_sticker:18
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_venue:24
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_video:29
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_video_note:20
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_voice:21 of
+msgid ""
+"Pass :code:`True` to allow up to 1000 messages per second, ignoring "
+"`broadcasting limits <https://core.telegram.org/bots/faq#how-can-i"
+"-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 "
+"Telegram Stars per message. The relevant Stars will be withdrawn from the"
+" bot's balance"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer:20
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_animation:26
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_audio:25
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_contact:20
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_dice:17
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_document:22
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_game:16
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_invoice:36
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_location:22
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_media_group:17
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_photo:22
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_poll:29
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_sticker:18
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_venue:24
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_video:29
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_video_note:20
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_voice:21
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply:21
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_animation:27
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_audio:26
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_contact:21
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_dice:18
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_document:23
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_game:17
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_invoice:37
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_location:23
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_media_group:18
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_photo:23
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_poll:30
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_sticker:19
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_venue:25
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_video:30
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_video_note:21
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_voice:22 of
+msgid ""
+"Unique identifier of the message effect to be added to the message; for "
+"private chats only"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer:21
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_animation:27
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_audio:26
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_contact:21
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_dice:18
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_document:23
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_invoice:37
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_location:23
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_paid_media:23
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_photo:23
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_sticker:19
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_venue:25
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_video:30
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_video_note:21
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_voice:22
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply:22
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_animation:28
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_audio:27
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_contact:22
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_dice:19
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_document:24
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_invoice:38
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_location:24
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_paid_media:24
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_photo:24
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_sticker:20
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_venue:26
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_video:31
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_video_note:22
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_voice:23 of
+msgid ""
+"A JSON-serialized object containing the parameters of the suggested post "
+"to send; for direct messages chats only. If the message is sent as a "
+"reply to another suggested post, then that suggested post is "
+"automatically declined."
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer:22
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_animation:28
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_audio:27
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_contact:22
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_dice:19
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_document:24
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_game:17
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_invoice:38
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_location:24
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_media_group:18
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_paid_media:24
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_photo:24
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_poll:30
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_sticker:20
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_venue:26
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_video:31
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_video_note:22
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_voice:23 of
+msgid "Description of the message to reply to"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer:23
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_animation:29
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_audio:28
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_contact:23
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_dice:20
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_document:25
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_location:25
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_paid_media:25
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_photo:25
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_poll:31
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_sticker:21
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_venue:27
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_video:32
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_video_note:23
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_voice:24
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply:23
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_animation:29
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_audio:28
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_contact:23
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_dice:20
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_document:25
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_location:25
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_paid_media:25
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_photo:25
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_poll:31
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_sticker:21
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_venue:27
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_video:32
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_video_note:23
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_voice:24 of
+msgid ""
+"Additional interface options. A JSON-serialized object for an `inline "
+"keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, "
+"`custom reply keyboard "
+"<https://core.telegram.org/bots/features#keyboards>`_, instructions to "
+"remove a reply keyboard or to force a reply from the user"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer:24
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_animation:30
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_audio:29
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_contact:24
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_dice:21
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_document:26
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_game:19
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_invoice:40
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_location:26
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_media_group:19
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_photo:26
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_poll:32
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_sticker:22
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_venue:28
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_video:33
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_video_note:24
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_voice:25
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply:24
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_animation:30
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_audio:29
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_contact:24
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_dice:21
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_document:26
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_game:19
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_invoice:40
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_location:26
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_media_group:19
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_photo:26
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_poll:32
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_sticker:22
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_venue:28
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_video:33
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_video_note:24
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_voice:25 of
+msgid ""
+"Pass :code:`True` if the message should be sent even if the specified "
+"replied-to message is not found"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer:25
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply:25 of
+msgid "Disables link previews for links in this message"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer:26
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_animation:31
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_audio:30
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_contact:25
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_dice:22
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_document:27
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_game:20
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_invoice:41
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_location:27
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_photo:27
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_poll:33
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_sticker:23
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_venue:29
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_video:34
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_video_note:25
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_voice:26 of
+msgid "If the message is a reply, ID of the original message"
+msgstr ""
+
+#: ../../api/types/inaccessible_message.rst
+msgid "Returns"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer:27
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply:26 of
+msgid "instance of method :class:`aiogram.methods.send_message.SendMessage`"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply:5
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_animation:5
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_audio:5
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_contact:5
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_dice:5
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_document:5
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_game:5
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_invoice:5
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_location:5
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_media_group:5
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_paid_media:5
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_photo:5
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_poll:5
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_sticker:5
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_venue:5
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_video:5
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_video_note:5
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_voice:5 of
+msgid ":code:`reply_parameters`"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_animation:1
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_animation:1 of
+msgid ""
+"Shortcut for method :class:`aiogram.methods.send_animation.SendAnimation`"
+" will automatically fill method attributes:"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_animation:6
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_animation:7 of
+msgid ""
+"Use this method to send animation files (GIF or H.264/MPEG-4 AVC video "
+"without sound). On success, the sent "
+":class:`aiogram.types.message.Message` is returned. Bots can currently "
+"send animation files of up to 50 MB in size, this limit may be changed in"
+" the future."
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_animation:8
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_animation:9 of
+msgid "Source: https://core.telegram.org/bots/api#sendanimation"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_animation:10
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_animation:11 of
+msgid ""
+"Animation to send. Pass a file_id as String to send an animation that "
+"exists on the Telegram servers (recommended), pass an HTTP URL as a "
+"String for Telegram to get an animation from the Internet, or upload a "
+"new animation using multipart/form-data. :ref:`More information on "
+"Sending Files » <sending-files>`"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_animation:14
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_animation:15 of
+msgid "Duration of sent animation in seconds"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_animation:15
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_animation:16 of
+msgid "Animation width"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_animation:16
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_animation:17 of
+msgid "Animation height"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_animation:17
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_audio:21
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_document:14
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_video:17
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_video_note:16
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_animation:18
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_audio:22
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_document:15
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_video:18
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_video_note:17
+#: of
+msgid ""
+"Thumbnail of the file sent; can be ignored if thumbnail generation for "
+"the file is supported server-side. The thumbnail should be in JPEG format"
+" and less than 200 kB in size. A thumbnail's width and height should not "
+"exceed 320. Ignored if the file is not uploaded using multipart/form-"
+"data. Thumbnails can't be reused and can be only uploaded as a new file, "
+"so you can pass 'attach://<file_attach_name>' if the thumbnail was "
+"uploaded using multipart/form-data under <file_attach_name>. :ref:`More "
+"information on Sending Files » <sending-files>`"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_animation:18
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_animation:19 of
+msgid ""
+"Animation caption (may also be used when resending animation by "
+"*file_id*), 0-1024 characters after entities parsing"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_animation:19
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_animation:20 of
+msgid ""
+"Mode for parsing entities in the animation caption. See `formatting "
+"options <https://core.telegram.org/bots/api#formatting-options>`_ for "
+"more details."
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_animation:20
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_audio:17
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_document:17
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_paid_media:18
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_photo:16
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_video:22
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_voice:16
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_animation:21
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_audio:18
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_document:18
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_paid_media:19
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_photo:17
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_video:23
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_voice:17 of
+msgid ""
+"A JSON-serialized list of special entities that appear in the caption, "
+"which can be specified instead of *parse_mode*"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_animation:21
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_paid_media:19
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_photo:17
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_video:23
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_animation:22
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_paid_media:20
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_photo:18
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_video:24 of
+msgid "Pass :code:`True`, if the caption must be shown above the message media"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_animation:22
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_animation:23 of
+msgid ""
+"Pass :code:`True` if the animation needs to be covered with a spoiler "
+"animation"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_animation:32
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_animation:31 of
+msgid "instance of method :class:`aiogram.methods.send_animation.SendAnimation`"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_audio:1
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_audio:1 of
+msgid ""
+"Shortcut for method :class:`aiogram.methods.send_audio.SendAudio` will "
+"automatically fill method attributes:"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_audio:6
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_audio:7 of
+msgid ""
+"Use this method to send audio files, if you want Telegram clients to "
+"display them in the music player. Your audio must be in the .MP3 or .M4A "
+"format. On success, the sent :class:`aiogram.types.message.Message` is "
+"returned. Bots can currently send audio files of up to 50 MB in size, "
+"this limit may be changed in the future. For sending voice messages, use "
+"the :class:`aiogram.methods.send_voice.SendVoice` method instead."
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_audio:9
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_audio:10 of
+msgid "Source: https://core.telegram.org/bots/api#sendaudio"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_audio:11
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_audio:12 of
+msgid ""
+"Audio file to send. Pass a file_id as String to send an audio file that "
+"exists on the Telegram servers (recommended), pass an HTTP URL as a "
+"String for Telegram to get an audio file from the Internet, or upload a "
+"new one using multipart/form-data. :ref:`More information on Sending "
+"Files » <sending-files>`"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_audio:15
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_audio:16 of
+msgid "Audio caption, 0-1024 characters after entities parsing"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_audio:16
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_audio:17 of
+msgid ""
+"Mode for parsing entities in the audio caption. See `formatting options "
+"<https://core.telegram.org/bots/api#formatting-options>`_ for more "
+"details."
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_audio:18
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_audio:19 of
+msgid "Duration of the audio in seconds"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_audio:19
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_audio:20 of
+msgid "Performer"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_audio:20
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_audio:21 of
+msgid "Track name"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_audio:31
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_audio:30 of
+msgid "instance of method :class:`aiogram.methods.send_audio.SendAudio`"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_contact:1
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_contact:1 of
+msgid ""
+"Shortcut for method :class:`aiogram.methods.send_contact.SendContact` "
+"will automatically fill method attributes:"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_contact:6
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_contact:7 of
+msgid ""
+"Use this method to send phone contacts. On success, the sent "
+":class:`aiogram.types.message.Message` is returned."
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_contact:8
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_contact:9 of
+msgid "Source: https://core.telegram.org/bots/api#sendcontact"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_contact:10
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_contact:11 of
+msgid "Contact's phone number"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_contact:11
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_contact:12 of
+msgid "Contact's first name"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_contact:15
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_contact:16 of
+msgid "Contact's last name"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_contact:16
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_contact:17 of
+msgid ""
+"Additional data about the contact in the form of a `vCard "
+"<https://en.wikipedia.org/wiki/VCard>`_, 0-2048 bytes"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_contact:26
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_contact:25 of
+msgid "instance of method :class:`aiogram.methods.send_contact.SendContact`"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_document:1
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_document:1 of
+msgid ""
+"Shortcut for method :class:`aiogram.methods.send_document.SendDocument` "
+"will automatically fill method attributes:"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_document:6
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_document:7 of
+msgid ""
+"Use this method to send general files. On success, the sent "
+":class:`aiogram.types.message.Message` is returned. Bots can currently "
+"send files of any type of up to 50 MB in size, this limit may be changed "
+"in the future."
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_document:8
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_document:9 of
+msgid "Source: https://core.telegram.org/bots/api#senddocument"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_document:10
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_document:11 of
+msgid ""
+"File to send. Pass a file_id as String to send a file that exists on the "
+"Telegram servers (recommended), pass an HTTP URL as a String for Telegram"
+" to get a file from the Internet, or upload a new one using multipart"
+"/form-data. :ref:`More information on Sending Files » <sending-files>`"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_document:15
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_document:16 of
+msgid ""
+"Document caption (may also be used when resending documents by "
+"*file_id*), 0-1024 characters after entities parsing"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_document:16
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_document:17 of
+msgid ""
+"Mode for parsing entities in the document caption. See `formatting "
+"options <https://core.telegram.org/bots/api#formatting-options>`_ for "
+"more details."
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_document:18
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_document:19 of
+msgid ""
+"Disables automatic server-side content type detection for files uploaded "
+"using multipart/form-data"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_document:28
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_document:27 of
+msgid "instance of method :class:`aiogram.methods.send_document.SendDocument`"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_game:1
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_game:1 of
+msgid ""
+"Shortcut for method :class:`aiogram.methods.send_game.SendGame` will "
+"automatically fill method attributes:"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_game:6
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_game:7 of
+msgid ""
+"Use this method to send a game. On success, the sent "
+":class:`aiogram.types.message.Message` is returned."
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_game:8
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_game:9 of
+msgid "Source: https://core.telegram.org/bots/api#sendgame"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_game:10
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_game:11 of
+msgid ""
+"Short name of the game, serves as the unique identifier for the game. Set"
+" up your games via `@BotFather <https://t.me/botfather>`_."
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_game:18
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_game:18 of
+msgid ""
+"A JSON-serialized object for an `inline keyboard "
+"<https://core.telegram.org/bots/features#inline-keyboards>`_. If empty, "
+"one 'Play game_title' button will be shown. If not empty, the first "
+"button must launch the game."
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_game:21
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_game:20 of
+msgid "instance of method :class:`aiogram.methods.send_game.SendGame`"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_invoice:1
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_invoice:1 of
+msgid ""
+"Shortcut for method :class:`aiogram.methods.send_invoice.SendInvoice` "
+"will automatically fill method attributes:"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_invoice:6
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_invoice:7 of
+msgid ""
+"Use this method to send invoices. On success, the sent "
+":class:`aiogram.types.message.Message` is returned."
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_invoice:8
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_invoice:9 of
+msgid "Source: https://core.telegram.org/bots/api#sendinvoice"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_invoice:10
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_invoice:11 of
+msgid "Product name, 1-32 characters"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_invoice:11
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_invoice:12 of
+msgid "Product description, 1-255 characters"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_invoice:12
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_invoice:13 of
+msgid ""
+"Bot-defined invoice payload, 1-128 bytes. This will not be displayed to "
+"the user, use it for your internal processes."
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_invoice:13
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_invoice:14 of
+msgid ""
+"Three-letter ISO 4217 currency code, see `more on currencies "
+"<https://core.telegram.org/bots/payments#supported-currencies>`_. Pass "
+"'XTR' for payments in `Telegram Stars <https://t.me/BotNews/90>`_."
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_invoice:14
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_invoice:15 of
+msgid ""
+"Price breakdown, a JSON-serialized list of components (e.g. product "
+"price, tax, discount, delivery cost, delivery tax, bonus, etc.). Must "
+"contain exactly one item for payments in `Telegram Stars "
+"<https://t.me/BotNews/90>`_."
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_invoice:17
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_invoice:18 of
+msgid ""
+"Payment provider token, obtained via `@BotFather "
+"<https://t.me/botfather>`_. Pass an empty string for payments in "
+"`Telegram Stars <https://t.me/BotNews/90>`_."
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_invoice:18
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_invoice:19 of
+msgid ""
+"The maximum accepted amount for tips in the *smallest units* of the "
+"currency (integer, **not** float/double). For example, for a maximum tip "
+"of :code:`US$ 1.45` pass :code:`max_tip_amount = 145`. See the *exp* "
+"parameter in `currencies.json "
+"<https://core.telegram.org/bots/payments/currencies.json>`_, it shows the"
+" number of digits past the decimal point for each currency (2 for the "
+"majority of currencies). Defaults to 0. Not supported for payments in "
+"`Telegram Stars <https://t.me/BotNews/90>`_."
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_invoice:19
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_invoice:20 of
+msgid ""
+"A JSON-serialized array of suggested amounts of tips in the *smallest "
+"units* of the currency (integer, **not** float/double). At most 4 "
+"suggested tip amounts can be specified. The suggested tip amounts must be"
+" positive, passed in a strictly increased order and must not exceed "
+"*max_tip_amount*."
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_invoice:20
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_invoice:21 of
+msgid ""
+"Unique deep-linking parameter. If left empty, **forwarded copies** of the"
+" sent message will have a *Pay* button, allowing multiple users to pay "
+"directly from the forwarded message, using the same invoice. If non-"
+"empty, forwarded copies of the sent message will have a *URL* button with"
+" a deep link to the bot (instead of a *Pay* button), with the value used "
+"as the start parameter"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_invoice:21
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_invoice:22 of
+msgid ""
+"JSON-serialized data about the invoice, which will be shared with the "
+"payment provider. A detailed description of required fields should be "
+"provided by the payment provider."
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_invoice:22
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_invoice:23 of
+msgid ""
+"URL of the product photo for the invoice. Can be a photo of the goods or "
+"a marketing image for a service. People like it better when they see what"
+" they are paying for."
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_invoice:23
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_invoice:24 of
+msgid "Photo size in bytes"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_invoice:24
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_invoice:25 of
+msgid "Photo width"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_invoice:25
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_invoice:26 of
+msgid "Photo height"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_invoice:26
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_invoice:27 of
+msgid ""
+"Pass :code:`True` if you require the user's full name to complete the "
+"order. Ignored for payments in `Telegram Stars "
+"<https://t.me/BotNews/90>`_."
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_invoice:27
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_invoice:28 of
+msgid ""
+"Pass :code:`True` if you require the user's phone number to complete the "
+"order. Ignored for payments in `Telegram Stars "
+"<https://t.me/BotNews/90>`_."
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_invoice:28
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_invoice:29 of
+msgid ""
+"Pass :code:`True` if you require the user's email address to complete the"
+" order. Ignored for payments in `Telegram Stars "
+"<https://t.me/BotNews/90>`_."
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_invoice:29
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_invoice:30 of
+msgid ""
+"Pass :code:`True` if you require the user's shipping address to complete "
+"the order. Ignored for payments in `Telegram Stars "
+"<https://t.me/BotNews/90>`_."
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_invoice:30
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_invoice:31 of
+msgid ""
+"Pass :code:`True` if the user's phone number should be sent to the "
+"provider. Ignored for payments in `Telegram Stars "
+"<https://t.me/BotNews/90>`_."
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_invoice:31
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_invoice:32 of
+msgid ""
+"Pass :code:`True` if the user's email address should be sent to the "
+"provider. Ignored for payments in `Telegram Stars "
+"<https://t.me/BotNews/90>`_."
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_invoice:32
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_invoice:33 of
+msgid ""
+"Pass :code:`True` if the final price depends on the shipping method. "
+"Ignored for payments in `Telegram Stars <https://t.me/BotNews/90>`_."
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_invoice:39
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_invoice:39 of
+msgid ""
+"A JSON-serialized object for an `inline keyboard "
+"<https://core.telegram.org/bots/features#inline-keyboards>`_. If empty, "
+"one 'Pay :code:`total price`' button will be shown. If not empty, the "
+"first button must be a Pay button."
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_invoice:42
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_invoice:41 of
+msgid "instance of method :class:`aiogram.methods.send_invoice.SendInvoice`"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_location:1
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_location:1 of
+msgid ""
+"Shortcut for method :class:`aiogram.methods.send_location.SendLocation` "
+"will automatically fill method attributes:"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_location:6
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_location:7 of
+msgid ""
+"Use this method to send point on the map. On success, the sent "
+":class:`aiogram.types.message.Message` is returned."
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_location:8
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_location:9 of
+msgid "Source: https://core.telegram.org/bots/api#sendlocation"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_location:10
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_location:11 of
+msgid "Latitude of the location"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_location:11
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_location:12 of
+msgid "Longitude of the location"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_location:15
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_location:16 of
+msgid "The radius of uncertainty for the location, measured in meters; 0-1500"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_location:16
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_location:17 of
+msgid ""
+"Period in seconds during which the location will be updated (see `Live "
+"Locations <https://telegram.org/blog/live-locations>`_, should be between"
+" 60 and 86400, or 0x7FFFFFFF for live locations that can be edited "
+"indefinitely."
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_location:17
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_location:18 of
+msgid ""
+"For live locations, a direction in which the user is moving, in degrees. "
+"Must be between 1 and 360 if specified."
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_location:18
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_location:19 of
+msgid ""
+"For live locations, a maximum distance for proximity alerts about "
+"approaching another chat member, in meters. Must be between 1 and 100000 "
+"if specified."
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_location:28
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_location:27 of
+msgid "instance of method :class:`aiogram.methods.send_location.SendLocation`"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_media_group:1
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_media_group:1
+#: of
+msgid ""
+"Shortcut for method "
+":class:`aiogram.methods.send_media_group.SendMediaGroup` will "
+"automatically fill method attributes:"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_media_group:6
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_media_group:7
+#: of
+msgid ""
+"Use this method to send a group of photos, videos, documents or audios as"
+" an album. Documents and audio files can be only grouped in an album with"
+" messages of the same type. On success, an array of "
+":class:`aiogram.types.message.Message` objects that were sent is "
+"returned."
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_media_group:8
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_media_group:9
+#: of
+msgid "Source: https://core.telegram.org/bots/api#sendmediagroup"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_media_group:10
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_media_group:11
+#: of
+msgid ""
+"A JSON-serialized array describing messages to be sent, must include 2-10"
+" items"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_media_group:13
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_media_group:14
+#: of
+msgid ""
+"Identifier of the direct messages topic to which the messages will be "
+"sent; required if the messages are sent to a direct messages chat"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_media_group:14
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_media_group:15
+#: of
+msgid ""
+"Sends messages `silently <https://telegram.org/blog/channels-2-0#silent-"
+"messages>`_. Users will receive a notification with no sound."
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_media_group:15
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_media_group:16
+#: of
+msgid "Protects the contents of the sent messages from forwarding and saving"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_media_group:20
+#: of
+msgid "If the messages are a reply, ID of the original message"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_media_group:21
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_media_group:20
+#: of
+msgid ""
+"instance of method "
+":class:`aiogram.methods.send_media_group.SendMediaGroup`"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_photo:1
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_photo:1 of
+msgid ""
+"Shortcut for method :class:`aiogram.methods.send_photo.SendPhoto` will "
+"automatically fill method attributes:"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_photo:6
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_photo:7 of
+msgid ""
+"Use this method to send photos. On success, the sent "
+":class:`aiogram.types.message.Message` is returned."
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_photo:8
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_photo:9 of
+msgid "Source: https://core.telegram.org/bots/api#sendphoto"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_photo:10
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_photo:11 of
+msgid ""
+"Photo to send. Pass a file_id as String to send a photo that exists on "
+"the Telegram servers (recommended), pass an HTTP URL as a String for "
+"Telegram to get a photo from the Internet, or upload a new photo using "
+"multipart/form-data. The photo must be at most 10 MB in size. The photo's"
+" width and height must not exceed 10000 in total. Width and height ratio "
+"must be at most 20. :ref:`More information on Sending Files » <sending-"
+"files>`"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_photo:14
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_photo:15 of
+msgid ""
+"Photo caption (may also be used when resending photos by *file_id*), "
+"0-1024 characters after entities parsing"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_photo:15
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_photo:16 of
+msgid ""
+"Mode for parsing entities in the photo caption. See `formatting options "
+"<https://core.telegram.org/bots/api#formatting-options>`_ for more "
+"details."
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_photo:18
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_photo:19 of
+msgid ""
+"Pass :code:`True` if the photo needs to be covered with a spoiler "
+"animation"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_photo:28
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_photo:27 of
+msgid "instance of method :class:`aiogram.methods.send_photo.SendPhoto`"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_poll:1
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_poll:1 of
+msgid ""
+"Shortcut for method :class:`aiogram.methods.send_poll.SendPoll` will "
+"automatically fill method attributes:"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_poll:6
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_poll:7 of
+msgid ""
+"Use this method to send a native poll. On success, the sent "
+":class:`aiogram.types.message.Message` is returned."
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_poll:8
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_poll:9 of
+msgid "Source: https://core.telegram.org/bots/api#sendpoll"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_poll:10
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_poll:11 of
+msgid "Poll question, 1-300 characters"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_poll:11
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_poll:12 of
+msgid "A JSON-serialized list of 2-12 answer options"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_poll:14
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_poll:15 of
+msgid ""
+"Mode for parsing entities in the question. See `formatting options "
+"<https://core.telegram.org/bots/api#formatting-options>`_ for more "
+"details. Currently, only custom emoji entities are allowed"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_poll:15
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_poll:16 of
+msgid ""
+"A JSON-serialized list of special entities that appear in the poll "
+"question. It can be specified instead of *question_parse_mode*"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_poll:16
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_poll:17 of
+msgid ":code:`True`, if the poll needs to be anonymous, defaults to :code:`True`"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_poll:17
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_poll:18 of
+msgid "Poll type, 'quiz' or 'regular', defaults to 'regular'"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_poll:18
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_poll:19 of
+msgid ""
+":code:`True`, if the poll allows multiple answers, ignored for polls in "
+"quiz mode, defaults to :code:`False`"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_poll:19
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_poll:20 of
+msgid ""
+"0-based identifier of the correct answer option, required for polls in "
+"quiz mode"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_poll:20
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_poll:21 of
+msgid ""
+"Text that is shown when a user chooses an incorrect answer or taps on the"
+" lamp icon in a quiz-style poll, 0-200 characters with at most 2 line "
+"feeds after entities parsing"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_poll:21
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_poll:22 of
+msgid ""
+"Mode for parsing entities in the explanation. See `formatting options "
+"<https://core.telegram.org/bots/api#formatting-options>`_ for more "
+"details."
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_poll:22
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_poll:23 of
+msgid ""
+"A JSON-serialized list of special entities that appear in the poll "
+"explanation. It can be specified instead of *explanation_parse_mode*"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_poll:23
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_poll:24 of
+msgid ""
+"Amount of time in seconds the poll will be active after creation, 5-600. "
+"Can't be used together with *close_date*."
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_poll:24
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_poll:25 of
+msgid ""
+"Point in time (Unix timestamp) when the poll will be automatically "
+"closed. Must be at least 5 and no more than 600 seconds in the future. "
+"Can't be used together with *open_period*."
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_poll:25
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_poll:26 of
+msgid ""
+"Pass :code:`True` if the poll needs to be immediately closed. This can be"
+" useful for poll preview."
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_poll:34
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_poll:33 of
+msgid "instance of method :class:`aiogram.methods.send_poll.SendPoll`"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_dice:1
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_dice:1 of
+msgid ""
+"Shortcut for method :class:`aiogram.methods.send_dice.SendDice` will "
+"automatically fill method attributes:"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_dice:6
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_dice:7 of
+msgid ""
+"Use this method to send an animated emoji that will display a random "
+"value. On success, the sent :class:`aiogram.types.message.Message` is "
+"returned."
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_dice:8
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_dice:9 of
+msgid "Source: https://core.telegram.org/bots/api#senddice"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_dice:13
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_dice:14 of
+msgid ""
+"Emoji on which the dice throw animation is based. Currently, must be one "
+"of '🎲', '🎯', '🏀', '⚽', '🎳', or '🎰'. Dice can have values 1-6 for '🎲', '🎯'"
+" and '🎳', values 1-5 for '🏀' and '⚽', and values 1-64 for '🎰'. Defaults "
+"to '🎲'"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_dice:15
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_dice:16 of
+msgid "Protects the contents of the sent message from forwarding"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_dice:23
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_dice:22 of
+msgid "instance of method :class:`aiogram.methods.send_dice.SendDice`"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_sticker:1
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_sticker:1 of
+msgid ""
+"Shortcut for method :class:`aiogram.methods.send_sticker.SendSticker` "
+"will automatically fill method attributes:"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_sticker:6
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_sticker:7 of
+msgid ""
+"Use this method to send static .WEBP, `animated "
+"<https://telegram.org/blog/animated-stickers>`_ .TGS, or `video "
+"<https://telegram.org/blog/video-stickers-better-reactions>`_ .WEBM "
+"stickers. On success, the sent :class:`aiogram.types.message.Message` is "
+"returned."
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_sticker:8
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_sticker:9 of
+msgid "Source: https://core.telegram.org/bots/api#sendsticker"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_sticker:10
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_sticker:11 of
+msgid ""
+"Sticker to send. Pass a file_id as String to send a file that exists on "
+"the Telegram servers (recommended), pass an HTTP URL as a String for "
+"Telegram to get a .WEBP sticker from the Internet, or upload a new .WEBP,"
+" .TGS, or .WEBM sticker using multipart/form-data. :ref:`More information"
+" on Sending Files » <sending-files>`. Video and animated stickers can't "
+"be sent via an HTTP URL."
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_sticker:14
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_sticker:15 of
+msgid "Emoji associated with the sticker; only for just uploaded stickers"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_sticker:24
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_sticker:23 of
+msgid "instance of method :class:`aiogram.methods.send_sticker.SendSticker`"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_venue:1
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_venue:1 of
+msgid ""
+"Shortcut for method :class:`aiogram.methods.send_venue.SendVenue` will "
+"automatically fill method attributes:"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_venue:6
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_venue:7 of
+msgid ""
+"Use this method to send information about a venue. On success, the sent "
+":class:`aiogram.types.message.Message` is returned."
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_venue:8
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_venue:9 of
+msgid "Source: https://core.telegram.org/bots/api#sendvenue"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_venue:10
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_venue:11 of
+msgid "Latitude of the venue"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_venue:11
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_venue:12 of
+msgid "Longitude of the venue"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_venue:12
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_venue:13 of
+msgid "Name of the venue"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_venue:13
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_venue:14 of
+msgid "Address of the venue"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_venue:17
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_venue:18 of
+msgid "Foursquare identifier of the venue"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_venue:18
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_venue:19 of
+msgid ""
+"Foursquare type of the venue, if known. (For example, "
+"'arts_entertainment/default', 'arts_entertainment/aquarium' or "
+"'food/icecream'.)"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_venue:19
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_venue:20 of
+msgid "Google Places identifier of the venue"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_venue:20
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_venue:21 of
+msgid ""
+"Google Places type of the venue. (See `supported types "
+"<https://developers.google.com/places/web-service/supported_types>`_.)"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_venue:30
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_venue:29 of
+msgid "instance of method :class:`aiogram.methods.send_venue.SendVenue`"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_video:1
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_video:1 of
+msgid ""
+"Shortcut for method :class:`aiogram.methods.send_video.SendVideo` will "
+"automatically fill method attributes:"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_video:6
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_video:7 of
+msgid ""
+"Use this method to send video files, Telegram clients support MPEG4 "
+"videos (other formats may be sent as "
+":class:`aiogram.types.document.Document`). On success, the sent "
+":class:`aiogram.types.message.Message` is returned. Bots can currently "
+"send video files of up to 50 MB in size, this limit may be changed in the"
+" future."
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_video:8
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_video:9 of
+msgid "Source: https://core.telegram.org/bots/api#sendvideo"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_video:10
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_video:11 of
+msgid ""
+"Video to send. Pass a file_id as String to send a video that exists on "
+"the Telegram servers (recommended), pass an HTTP URL as a String for "
+"Telegram to get a video from the Internet, or upload a new video using "
+"multipart/form-data. :ref:`More information on Sending Files » <sending-"
+"files>`"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_video:14
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_video_note:14
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_video:15
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_video_note:15
+#: of
+msgid "Duration of sent video in seconds"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_video:15
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_video:16 of
+msgid "Video width"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_video:16
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_video:17 of
+msgid "Video height"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_video:18
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_video:19 of
+msgid ""
+"Cover for the video in the message. Pass a file_id to send a file that "
+"exists on the Telegram servers (recommended), pass an HTTP URL for "
+"Telegram to get a file from the Internet, or pass "
+"'attach://<file_attach_name>' to upload a new one using multipart/form-"
+"data under <file_attach_name> name. :ref:`More information on Sending "
+"Files » <sending-files>`"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_video:19
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_video:20 of
+msgid "Start timestamp for the video in the message"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_video:20
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_video:21 of
+msgid ""
+"Video caption (may also be used when resending videos by *file_id*), "
+"0-1024 characters after entities parsing"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_video:21
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_video:22 of
+msgid ""
+"Mode for parsing entities in the video caption. See `formatting options "
+"<https://core.telegram.org/bots/api#formatting-options>`_ for more "
+"details."
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_video:24
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_video:25 of
+msgid ""
+"Pass :code:`True` if the video needs to be covered with a spoiler "
+"animation"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_video:25
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_video:26 of
+msgid "Pass :code:`True` if the uploaded video is suitable for streaming"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_video:35
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_video:34 of
+msgid "instance of method :class:`aiogram.methods.send_video.SendVideo`"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_video_note:1
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_video_note:1 of
+msgid ""
+"Shortcut for method "
+":class:`aiogram.methods.send_video_note.SendVideoNote` will automatically"
+" fill method attributes:"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_video_note:6
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_video_note:7 of
+msgid ""
+"As of `v.4.0 <https://telegram.org/blog/video-messages-and-telescope>`_, "
+"Telegram clients support rounded square MPEG4 videos of up to 1 minute "
+"long. Use this method to send video messages. On success, the sent "
+":class:`aiogram.types.message.Message` is returned."
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_video_note:8
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_video_note:9 of
+msgid "Source: https://core.telegram.org/bots/api#sendvideonote"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_video_note:10
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_video_note:11
+#: of
+msgid ""
+"Video note to send. Pass a file_id as String to send a video note that "
+"exists on the Telegram servers (recommended) or upload a new video using "
+"multipart/form-data. :ref:`More information on Sending Files » <sending-"
+"files>`. Sending video notes by a URL is currently unsupported"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_video_note:15
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_video_note:16
+#: of
+msgid "Video width and height, i.e. diameter of the video message"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_video_note:26
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_video_note:25
+#: of
+msgid "instance of method :class:`aiogram.methods.send_video_note.SendVideoNote`"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_voice:1
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_voice:1 of
+msgid ""
+"Shortcut for method :class:`aiogram.methods.send_voice.SendVoice` will "
+"automatically fill method attributes:"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_voice:6
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_voice:7 of
+msgid ""
+"Use this method to send audio files, if you want Telegram clients to "
+"display the file as a playable voice message. For this to work, your "
+"audio must be in an .OGG file encoded with OPUS, or in .MP3 format, or in"
+" .M4A format (other formats may be sent as "
+":class:`aiogram.types.audio.Audio` or "
+":class:`aiogram.types.document.Document`). On success, the sent "
+":class:`aiogram.types.message.Message` is returned. Bots can currently "
+"send voice messages of up to 50 MB in size, this limit may be changed in "
+"the future."
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_voice:8
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_voice:9 of
+msgid "Source: https://core.telegram.org/bots/api#sendvoice"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_voice:10
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_voice:11 of
+msgid ""
+"Audio file to send. Pass a file_id as String to send a file that exists "
+"on the Telegram servers (recommended), pass an HTTP URL as a String for "
+"Telegram to get a file from the Internet, or upload a new one using "
+"multipart/form-data. :ref:`More information on Sending Files » <sending-"
+"files>`"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_voice:14
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_voice:15 of
+msgid "Voice message caption, 0-1024 characters after entities parsing"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_voice:15
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_voice:16 of
+msgid ""
+"Mode for parsing entities in the voice message caption. See `formatting "
+"options <https://core.telegram.org/bots/api#formatting-options>`_ for "
+"more details."
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_voice:17
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_voice:18 of
+msgid "Duration of the voice message in seconds"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_voice:27
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_voice:26 of
+msgid "instance of method :class:`aiogram.methods.send_voice.SendVoice`"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_paid_media:1
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_paid_media:1 of
+msgid ""
+"Shortcut for method "
+":class:`aiogram.methods.send_paid_media.SendPaidMedia` will automatically"
+" fill method attributes:"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_paid_media:6
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_paid_media:7 of
+msgid ""
+"Use this method to send paid media. On success, the sent "
+":class:`aiogram.types.message.Message` is returned."
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_paid_media:8
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_paid_media:9 of
+msgid "Source: https://core.telegram.org/bots/api#sendpaidmedia"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_paid_media:10
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_paid_media:11
+#: of
+msgid ""
+"The number of Telegram Stars that must be paid to buy access to the "
+"media; 1-10000"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_paid_media:11
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_paid_media:12
+#: of
+msgid "A JSON-serialized array describing the media to be sent; up to 10 items"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_paid_media:15
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_paid_media:16
+#: of
+msgid ""
+"Bot-defined paid media payload, 0-128 bytes. This will not be displayed "
+"to the user, use it for your internal processes."
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_paid_media:16
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_paid_media:17
+#: of
+msgid "Media caption, 0-1024 characters after entities parsing"
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_paid_media:17
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_paid_media:18
+#: of
+msgid ""
+"Mode for parsing entities in the media caption. See `formatting options "
+"<https://core.telegram.org/bots/api#formatting-options>`_ for more "
+"details."
+msgstr ""
+
+#: aiogram.types.inaccessible_message.InaccessibleMessage.answer_paid_media:26
+#: aiogram.types.inaccessible_message.InaccessibleMessage.reply_paid_media:26
+#: of
+msgid "instance of method :class:`aiogram.methods.send_paid_media.SendPaidMedia`"
+msgstr ""
+

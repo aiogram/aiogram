@@ -1,0 +1,176 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2025, aiogram Team
+# This file is distributed under the same license as the aiogram package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: aiogram \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-01 19:31+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ru\n"
+"Language-Team: ru <LL@li.org>\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../dispatcher/filters/index.rst:5
+msgid "Filtering events"
+msgstr ""
+
+#: ../../dispatcher/filters/index.rst:7
+msgid ""
+"Filters is needed for routing updates to the specific handler. Searching "
+"of handler is always stops on first match set of filters are pass. By "
+"default, all handlers has empty set of filters, so all updates will be "
+"passed to first handler that has empty set of filters."
+msgstr ""
+
+#: ../../dispatcher/filters/index.rst:11
+msgid "*aiogram* has some builtin useful filters or you can write own filters."
+msgstr ""
+
+#: ../../dispatcher/filters/index.rst:14
+msgid "Builtin filters"
+msgstr ""
+
+#: ../../dispatcher/filters/index.rst:16
+msgid "Here is list of builtin filters:"
+msgstr ""
+
+#: ../../dispatcher/filters/index.rst:29
+msgid "Writing own filters"
+msgstr ""
+
+#: ../../dispatcher/filters/index.rst:31
+msgid "Filters can be:"
+msgstr ""
+
+#: ../../dispatcher/filters/index.rst:33
+msgid "Asynchronous function (:code:`async def my_filter(*args, **kwargs): pass`)"
+msgstr ""
+
+#: ../../dispatcher/filters/index.rst:34
+msgid "Synchronous function (:code:`def my_filter(*args, **kwargs): pass`)"
+msgstr ""
+
+#: ../../dispatcher/filters/index.rst:35
+msgid "Anonymous function (:code:`lambda event: True`)"
+msgstr ""
+
+#: ../../dispatcher/filters/index.rst:36
+msgid "Any awaitable object"
+msgstr ""
+
+#: ../../dispatcher/filters/index.rst:37
+msgid "Subclass of :class:`aiogram.filters.base.Filter`"
+msgstr ""
+
+#: ../../dispatcher/filters/index.rst:38
+msgid "Instances of :ref:`MagicFilter <magic-filters>`"
+msgstr ""
+
+#: ../../dispatcher/filters/index.rst:40
+msgid ""
+"and should return bool or dict. If the dictionary is passed as result of "
+"filter - resulted data will be propagated to the next filters and handler"
+" as keywords arguments."
+msgstr ""
+
+#: ../../dispatcher/filters/index.rst:45
+msgid "Base class for own filters"
+msgstr ""
+
+#: aiogram.filters.base.Filter:1 of
+msgid ""
+"If you want to register own filters like builtin filters you will need to"
+" write subclass of this class with overriding the :code:`__call__` method"
+" and adding filter attributes."
+msgstr ""
+
+#: aiogram.filters.base.Filter.__call__:1 of
+msgid "This method should be overridden."
+msgstr ""
+
+#: aiogram.filters.base.Filter.__call__:3 of
+msgid "Accepts incoming event and should return boolean or dict."
+msgstr ""
+
+#: ../../dispatcher/filters/index.rst
+msgid "Returns"
+msgstr ""
+
+#: aiogram.filters.base.Filter.__call__:5 of
+msgid ":class:`bool` or :class:`Dict[str, Any]`"
+msgstr ""
+
+#: aiogram.filters.base.Filter.update_handler_flags:1 of
+msgid ""
+"Also if you want to extend handler flags with using this filter you "
+"should implement this method"
+msgstr ""
+
+#: ../../dispatcher/filters/index.rst
+msgid "Parameters"
+msgstr ""
+
+#: aiogram.filters.base.Filter.update_handler_flags:4 of
+msgid "existing flags, can be updated directly"
+msgstr ""
+
+#: ../../dispatcher/filters/index.rst:53
+msgid "Own filter example"
+msgstr ""
+
+#: ../../dispatcher/filters/index.rst:55
+msgid "For example if you need to make simple text filter:"
+msgstr ""
+
+#: ../../dispatcher/filters/index.rst:62
+msgid "Combining Filters"
+msgstr ""
+
+#: ../../dispatcher/filters/index.rst:64
+msgid "In general, all filters can be combined in two ways"
+msgstr ""
+
+#: ../../dispatcher/filters/index.rst:68
+msgid "Recommended way"
+msgstr ""
+
+#: ../../dispatcher/filters/index.rst:70
+msgid ""
+"If you specify multiple filters in a row, it will be checked with an "
+"\"and\" condition:"
+msgstr ""
+
+#: ../../dispatcher/filters/index.rst:77
+msgid ""
+"Also, if you want to use two alternative ways to run the same handler "
+"(\"or\" condition) you can register the handler twice or more times as "
+"you like"
+msgstr ""
+
+#: ../../dispatcher/filters/index.rst:86
+msgid ""
+"Also sometimes you will need to invert the filter result, for example you"
+" have an *IsAdmin* filter and you want to check if the user is not an "
+"admin"
+msgstr ""
+
+#: ../../dispatcher/filters/index.rst:95
+msgid "Another possible way"
+msgstr ""
+
+#: ../../dispatcher/filters/index.rst:97
+msgid ""
+"An alternative way is to combine using special functions (:func:`and_f`, "
+":func:`or_f`, :func:`invert_f` from :code:`aiogram.filters` module):"
+msgstr ""
+

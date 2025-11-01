@@ -1,0 +1,188 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2025, aiogram Team
+# This file is distributed under the same license as the aiogram package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: aiogram \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-01 19:31+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ru\n"
+"Language-Team: ru <LL@li.org>\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../api/download_file.rst:3
+msgid "How to download file?"
+msgstr ""
+
+#: ../../api/download_file.rst:6
+msgid "Download file manually"
+msgstr ""
+
+#: ../../api/download_file.rst:8
+msgid ""
+"First, you must get the `file_id` of the file you want to download. "
+"Information about files sent to the bot is contained in `Message "
+"<types/message.html>`__."
+msgstr ""
+
+#: ../../api/download_file.rst:11
+msgid "For example, download the document that came to the bot."
+msgstr ""
+
+#: ../../api/download_file.rst:17
+msgid ""
+"Then use the `getFile <methods/get_file.html>`__ method to get "
+"`file_path`."
+msgstr ""
+
+#: ../../api/download_file.rst:24
+msgid ""
+"After that, use the `download_file <#download-file>`__ method from the "
+"bot object."
+msgstr ""
+
+#: ../../api/download_file.rst:27
+msgid "download_file(...)"
+msgstr ""
+
+#: ../../api/download_file.rst:29
+msgid "Download file by `file_path` to destination."
+msgstr ""
+
+#: ../../api/download_file.rst:31 ../../api/download_file.rst:79
+msgid ""
+"If you want to automatically create destination (:obj:`io.BytesIO`) use "
+"default value of destination and handle result of this method."
+msgstr ""
+
+#: aiogram.client.bot.Bot.download_file:1 of
+msgid "Download file by file_path to destination."
+msgstr ""
+
+#: aiogram.client.bot.Bot.download:3 aiogram.client.bot.Bot.download_file:3 of
+msgid ""
+"If you want to automatically create destination (:class:`io.BytesIO`) use"
+" default value of destination and handle result of this method."
+msgstr ""
+
+#: ../../api/download_file.rst
+msgid "Parameters"
+msgstr ""
+
+#: aiogram.client.bot.Bot.download_file:6 of
+msgid ""
+"File path on Telegram server (You can get it from "
+":obj:`aiogram.types.File`)"
+msgstr ""
+
+#: aiogram.client.bot.Bot.download:7 aiogram.client.bot.Bot.download_file:7 of
+msgid ""
+"Filename, file path or instance of :class:`io.IOBase`. For e.g. "
+":class:`io.BytesIO`, defaults to None"
+msgstr ""
+
+#: aiogram.client.bot.Bot.download:8 aiogram.client.bot.Bot.download_file:8 of
+msgid "Total timeout in seconds, defaults to 30"
+msgstr ""
+
+#: aiogram.client.bot.Bot.download:9 aiogram.client.bot.Bot.download_file:9 of
+msgid "File chunks size, defaults to 64 kb"
+msgstr ""
+
+#: aiogram.client.bot.Bot.download:10 aiogram.client.bot.Bot.download_file:10
+#: of
+msgid ""
+"Go to start of file when downloading is finished. Used only for "
+"destination with :class:`typing.BinaryIO` type, defaults to True"
+msgstr ""
+
+#: ../../api/download_file.rst:36
+msgid ""
+"There are two options where you can download the file: to **disk** or to "
+"**binary I/O object**."
+msgstr ""
+
+#: ../../api/download_file.rst:39
+msgid "Download file to disk"
+msgstr ""
+
+#: ../../api/download_file.rst:41
+msgid ""
+"To download file to disk, you must specify the file name or path where to"
+" download the file. In this case, the function will return nothing."
+msgstr ""
+
+#: ../../api/download_file.rst:49
+msgid "Download file to binary I/O object"
+msgstr ""
+
+#: ../../api/download_file.rst:51
+msgid ""
+"To download file to binary I/O object, you must specify an object with "
+"the :obj:`typing.BinaryIO` type or use the default (:obj:`None`) value."
+msgstr ""
+
+#: ../../api/download_file.rst:54
+msgid "In the first case, the function will return your object:"
+msgstr ""
+
+#: ../../api/download_file.rst:62
+msgid ""
+"If you leave the default value, an :obj:`io.BytesIO` object will be "
+"created and returned."
+msgstr ""
+
+#: ../../api/download_file.rst:70
+msgid "Download file in short way"
+msgstr ""
+
+#: ../../api/download_file.rst:72
+msgid ""
+"Getting `file_path` manually every time is boring, so you should use the "
+"`download <#download>`__ method."
+msgstr ""
+
+#: ../../api/download_file.rst:75
+msgid "download(...)"
+msgstr ""
+
+#: ../../api/download_file.rst:77
+msgid "Download file by `file_id` or `Downloadable` object to destination."
+msgstr ""
+
+#: aiogram.client.bot.Bot.download:1 of
+msgid "Download file by file_id or Downloadable object to destination."
+msgstr ""
+
+#: aiogram.client.bot.Bot.download:6 of
+msgid "file_id or Downloadable object"
+msgstr ""
+
+#: ../../api/download_file.rst:84
+msgid ""
+"It differs from `download_file <#download-file>`__ **only** in that it "
+"accepts `file_id` or an `Downloadable` object (object that contains the "
+"`file_id` attribute) instead of `file_path`."
+msgstr ""
+
+#: ../../api/download_file.rst:87
+msgid ""
+"You can download a file to `disk <#download-file-to-disk>`__ or to a "
+"`binary I/O <#download-file-to-binary-io-object>`__ object in the same "
+"way."
+msgstr ""
+
+#: ../../api/download_file.rst:89
+msgid "Example:"
+msgstr ""
+

@@ -1,0 +1,132 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2025, aiogram Team
+# This file is distributed under the same license as the aiogram package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: aiogram \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-01 19:31+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ru\n"
+"Language-Team: ru <LL@li.org>\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../api/types/inline_keyboard_button.rst:3
+msgid "InlineKeyboardButton"
+msgstr ""
+
+#: aiogram.types.inline_keyboard_button.InlineKeyboardButton:1 of
+msgid ""
+"This object represents one button of an inline keyboard. Exactly one of "
+"the optional fields must be used to specify type of the button."
+msgstr ""
+
+#: aiogram.types.inline_keyboard_button.InlineKeyboardButton:3 of
+msgid "Source: https://core.telegram.org/bots/api#inlinekeyboardbutton"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.inline_keyboard_button.InlineKeyboardButton.text:1 of
+msgid "Label text on the button"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.inline_keyboard_button.InlineKeyboardButton.url:1 of
+msgid ""
+"*Optional*. HTTP or tg:// URL to be opened when the button is pressed. "
+"Links :code:`tg://user?id=<user_id>` can be used to mention a user by "
+"their identifier without using a username, if this is allowed by their "
+"privacy settings."
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.inline_keyboard_button.InlineKeyboardButton.callback_data:1 of
+msgid ""
+"*Optional*. Data to be sent in a `callback query "
+"<https://core.telegram.org/bots/api#callbackquery>`_ to the bot when the "
+"button is pressed, 1-64 bytes"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.inline_keyboard_button.InlineKeyboardButton.web_app:1 of
+msgid ""
+"*Optional*. Description of the `Web App "
+"<https://core.telegram.org/bots/webapps>`_ that will be launched when the"
+" user presses the button. The Web App will be able to send an arbitrary "
+"message on behalf of the user using the method "
+":class:`aiogram.methods.answer_web_app_query.AnswerWebAppQuery`. "
+"Available only in private chats between a user and the bot. Not supported"
+" for messages sent on behalf of a Telegram Business account."
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.inline_keyboard_button.InlineKeyboardButton.login_url:1 of
+msgid ""
+"*Optional*. An HTTPS URL used to automatically authorize the user. Can be"
+" used as a replacement for the `Telegram Login Widget "
+"<https://core.telegram.org/widgets/login>`_."
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.inline_keyboard_button.InlineKeyboardButton.switch_inline_query:1
+#: of
+msgid ""
+"*Optional*. If set, pressing the button will prompt the user to select "
+"one of their chats, open that chat and insert the bot's username and the "
+"specified inline query in the input field. May be empty, in which case "
+"just the bot's username will be inserted. Not supported for messages sent"
+" in channel direct messages chats and on behalf of a Telegram Business "
+"account."
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.inline_keyboard_button.InlineKeyboardButton.switch_inline_query_current_chat:1
+#: of
+msgid ""
+"*Optional*. If set, pressing the button will insert the bot's username "
+"and the specified inline query in the current chat's input field. May be "
+"empty, in which case only the bot's username will be inserted."
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.inline_keyboard_button.InlineKeyboardButton.switch_inline_query_chosen_chat:1
+#: of
+msgid ""
+"*Optional*. If set, pressing the button will prompt the user to select "
+"one of their chats of the specified type, open that chat and insert the "
+"bot's username and the specified inline query in the input field. Not "
+"supported for messages sent in channel direct messages chats and on "
+"behalf of a Telegram Business account."
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.inline_keyboard_button.InlineKeyboardButton.copy_text:1 of
+msgid ""
+"*Optional*. Description of the button that copies the specified text to "
+"the clipboard."
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.inline_keyboard_button.InlineKeyboardButton.callback_game:1 of
+msgid ""
+"*Optional*. Description of the game that will be launched when the user "
+"presses the button."
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.inline_keyboard_button.InlineKeyboardButton.pay:1 of
+msgid ""
+"*Optional*. Specify :code:`True`, to send a `Pay button "
+"<https://core.telegram.org/bots/api#payments>`_. Substrings '⭐' and 'XTR'"
+" in the buttons's text will be replaced with a Telegram Star icon."
+msgstr ""
+

@@ -1,0 +1,340 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2025, aiogram Team
+# This file is distributed under the same license as the aiogram package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: aiogram \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-01 19:31+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ru\n"
+"Language-Team: ru <LL@li.org>\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../api/methods/send_invoice.rst:3
+msgid "sendInvoice"
+msgstr ""
+
+#: ../../api/methods/send_invoice.rst:5
+msgid "Returns: :obj:`Message`"
+msgstr ""
+
+#: aiogram.methods.send_invoice.SendInvoice:1 of
+msgid ""
+"Use this method to send invoices. On success, the sent "
+":class:`aiogram.types.message.Message` is returned."
+msgstr ""
+
+#: aiogram.methods.send_invoice.SendInvoice:3 of
+msgid "Source: https://core.telegram.org/bots/api#sendinvoice"
+msgstr ""
+
+#: ../../docstring aiogram.methods.send_invoice.SendInvoice.chat_id:1 of
+msgid ""
+"Unique identifier for the target chat or username of the target channel "
+"(in the format :code:`@channelusername`)"
+msgstr ""
+
+#: ../../docstring aiogram.methods.send_invoice.SendInvoice.title:1 of
+msgid "Product name, 1-32 characters"
+msgstr ""
+
+#: ../../docstring aiogram.methods.send_invoice.SendInvoice.description:1 of
+msgid "Product description, 1-255 characters"
+msgstr ""
+
+#: ../../docstring aiogram.methods.send_invoice.SendInvoice.payload:1 of
+msgid ""
+"Bot-defined invoice payload, 1-128 bytes. This will not be displayed to "
+"the user, use it for your internal processes."
+msgstr ""
+
+#: ../../docstring aiogram.methods.send_invoice.SendInvoice.currency:1 of
+msgid ""
+"Three-letter ISO 4217 currency code, see `more on currencies "
+"<https://core.telegram.org/bots/payments#supported-currencies>`_. Pass "
+"'XTR' for payments in `Telegram Stars <https://t.me/BotNews/90>`_."
+msgstr ""
+
+#: ../../docstring aiogram.methods.send_invoice.SendInvoice.prices:1 of
+msgid ""
+"Price breakdown, a JSON-serialized list of components (e.g. product "
+"price, tax, discount, delivery cost, delivery tax, bonus, etc.). Must "
+"contain exactly one item for payments in `Telegram Stars "
+"<https://t.me/BotNews/90>`_."
+msgstr ""
+
+#: ../../docstring aiogram.methods.send_invoice.SendInvoice.message_thread_id:1
+#: of
+msgid ""
+"Unique identifier for the target message thread (topic) of the forum; for"
+" forum supergroups only"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.send_invoice.SendInvoice.direct_messages_topic_id:1 of
+msgid ""
+"Identifier of the direct messages topic to which the message will be "
+"sent; required if the message is sent to a direct messages chat"
+msgstr ""
+
+#: ../../docstring aiogram.methods.send_invoice.SendInvoice.provider_token:1 of
+msgid ""
+"Payment provider token, obtained via `@BotFather "
+"<https://t.me/botfather>`_. Pass an empty string for payments in "
+"`Telegram Stars <https://t.me/BotNews/90>`_."
+msgstr ""
+
+#: ../../docstring aiogram.methods.send_invoice.SendInvoice.max_tip_amount:1 of
+msgid ""
+"The maximum accepted amount for tips in the *smallest units* of the "
+"currency (integer, **not** float/double). For example, for a maximum tip "
+"of :code:`US$ 1.45` pass :code:`max_tip_amount = 145`. See the *exp* "
+"parameter in `currencies.json "
+"<https://core.telegram.org/bots/payments/currencies.json>`_, it shows the"
+" number of digits past the decimal point for each currency (2 for the "
+"majority of currencies). Defaults to 0. Not supported for payments in "
+"`Telegram Stars <https://t.me/BotNews/90>`_."
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.send_invoice.SendInvoice.suggested_tip_amounts:1 of
+msgid ""
+"A JSON-serialized array of suggested amounts of tips in the *smallest "
+"units* of the currency (integer, **not** float/double). At most 4 "
+"suggested tip amounts can be specified. The suggested tip amounts must be"
+" positive, passed in a strictly increased order and must not exceed "
+"*max_tip_amount*."
+msgstr ""
+
+#: ../../docstring aiogram.methods.send_invoice.SendInvoice.start_parameter:1
+#: of
+msgid ""
+"Unique deep-linking parameter. If left empty, **forwarded copies** of the"
+" sent message will have a *Pay* button, allowing multiple users to pay "
+"directly from the forwarded message, using the same invoice. If non-"
+"empty, forwarded copies of the sent message will have a *URL* button with"
+" a deep link to the bot (instead of a *Pay* button), with the value used "
+"as the start parameter"
+msgstr ""
+
+#: ../../docstring aiogram.methods.send_invoice.SendInvoice.provider_data:1 of
+msgid ""
+"JSON-serialized data about the invoice, which will be shared with the "
+"payment provider. A detailed description of required fields should be "
+"provided by the payment provider."
+msgstr ""
+
+#: ../../docstring aiogram.methods.send_invoice.SendInvoice.photo_url:1 of
+msgid ""
+"URL of the product photo for the invoice. Can be a photo of the goods or "
+"a marketing image for a service. People like it better when they see what"
+" they are paying for."
+msgstr ""
+
+#: ../../docstring aiogram.methods.send_invoice.SendInvoice.photo_size:1 of
+msgid "Photo size in bytes"
+msgstr ""
+
+#: ../../docstring aiogram.methods.send_invoice.SendInvoice.photo_width:1 of
+msgid "Photo width"
+msgstr ""
+
+#: ../../docstring aiogram.methods.send_invoice.SendInvoice.photo_height:1 of
+msgid "Photo height"
+msgstr ""
+
+#: ../../docstring aiogram.methods.send_invoice.SendInvoice.need_name:1 of
+msgid ""
+"Pass :code:`True` if you require the user's full name to complete the "
+"order. Ignored for payments in `Telegram Stars "
+"<https://t.me/BotNews/90>`_."
+msgstr ""
+
+#: ../../docstring aiogram.methods.send_invoice.SendInvoice.need_phone_number:1
+#: of
+msgid ""
+"Pass :code:`True` if you require the user's phone number to complete the "
+"order. Ignored for payments in `Telegram Stars "
+"<https://t.me/BotNews/90>`_."
+msgstr ""
+
+#: ../../docstring aiogram.methods.send_invoice.SendInvoice.need_email:1 of
+msgid ""
+"Pass :code:`True` if you require the user's email address to complete the"
+" order. Ignored for payments in `Telegram Stars "
+"<https://t.me/BotNews/90>`_."
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.send_invoice.SendInvoice.need_shipping_address:1 of
+msgid ""
+"Pass :code:`True` if you require the user's shipping address to complete "
+"the order. Ignored for payments in `Telegram Stars "
+"<https://t.me/BotNews/90>`_."
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.send_invoice.SendInvoice.send_phone_number_to_provider:1 of
+msgid ""
+"Pass :code:`True` if the user's phone number should be sent to the "
+"provider. Ignored for payments in `Telegram Stars "
+"<https://t.me/BotNews/90>`_."
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.send_invoice.SendInvoice.send_email_to_provider:1 of
+msgid ""
+"Pass :code:`True` if the user's email address should be sent to the "
+"provider. Ignored for payments in `Telegram Stars "
+"<https://t.me/BotNews/90>`_."
+msgstr ""
+
+#: ../../docstring aiogram.methods.send_invoice.SendInvoice.is_flexible:1 of
+msgid ""
+"Pass :code:`True` if the final price depends on the shipping method. "
+"Ignored for payments in `Telegram Stars <https://t.me/BotNews/90>`_."
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.send_invoice.SendInvoice.disable_notification:1 of
+msgid ""
+"Sends the message `silently <https://telegram.org/blog/channels-2-0"
+"#silent-messages>`_. Users will receive a notification with no sound."
+msgstr ""
+
+#: ../../docstring aiogram.methods.send_invoice.SendInvoice.protect_content:1
+#: of
+msgid "Protects the contents of the sent message from forwarding and saving"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.send_invoice.SendInvoice.allow_paid_broadcast:1 of
+msgid ""
+"Pass :code:`True` to allow up to 1000 messages per second, ignoring "
+"`broadcasting limits <https://core.telegram.org/bots/faq#how-can-i"
+"-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 "
+"Telegram Stars per message. The relevant Stars will be withdrawn from the"
+" bot's balance"
+msgstr ""
+
+#: ../../docstring aiogram.methods.send_invoice.SendInvoice.message_effect_id:1
+#: of
+msgid ""
+"Unique identifier of the message effect to be added to the message; for "
+"private chats only"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.send_invoice.SendInvoice.suggested_post_parameters:1 of
+msgid ""
+"A JSON-serialized object containing the parameters of the suggested post "
+"to send; for direct messages chats only. If the message is sent as a "
+"reply to another suggested post, then that suggested post is "
+"automatically declined."
+msgstr ""
+
+#: ../../docstring aiogram.methods.send_invoice.SendInvoice.reply_parameters:1
+#: of
+msgid "Description of the message to reply to"
+msgstr ""
+
+#: ../../docstring aiogram.methods.send_invoice.SendInvoice.reply_markup:1 of
+msgid ""
+"A JSON-serialized object for an `inline keyboard "
+"<https://core.telegram.org/bots/features#inline-keyboards>`_. If empty, "
+"one 'Pay :code:`total price`' button will be shown. If not empty, the "
+"first button must be a Pay button."
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.send_invoice.SendInvoice.allow_sending_without_reply:1 of
+msgid ""
+"Pass :code:`True` if the message should be sent even if the specified "
+"replied-to message is not found"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.send_invoice.SendInvoice.allow_sending_without_reply:3
+#: aiogram.methods.send_invoice.SendInvoice.reply_to_message_id:3 of
+msgid "https://core.telegram.org/bots/api-changelog#december-29-2023"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.send_invoice.SendInvoice.reply_to_message_id:1 of
+msgid "If the message is a reply, ID of the original message"
+msgstr ""
+
+#: ../../api/methods/send_invoice.rst:15
+msgid "Usage"
+msgstr ""
+
+#: ../../api/methods/send_invoice.rst:18
+msgid "As bot method"
+msgstr ""
+
+#: ../../api/methods/send_invoice.rst:26
+msgid "Method as object"
+msgstr ""
+
+#: ../../api/methods/send_invoice.rst:28
+msgid "Imports:"
+msgstr ""
+
+#: ../../api/methods/send_invoice.rst:30
+msgid ":code:`from aiogram.methods.send_invoice import SendInvoice`"
+msgstr ""
+
+#: ../../api/methods/send_invoice.rst:31
+msgid "alias: :code:`from aiogram.methods import SendInvoice`"
+msgstr ""
+
+#: ../../api/methods/send_invoice.rst:34
+msgid "With specific bot"
+msgstr ""
+
+#: ../../api/methods/send_invoice.rst:41
+msgid "As reply into Webhook in handler"
+msgstr ""
+
+#: ../../api/methods/send_invoice.rst:49
+msgid "As shortcut from received object"
+msgstr ""
+
+#: ../../api/methods/send_invoice.rst:51
+msgid ":meth:`aiogram.types.message.Message.answer_invoice`"
+msgstr ""
+
+#: ../../api/methods/send_invoice.rst:52
+msgid ":meth:`aiogram.types.message.Message.reply_invoice`"
+msgstr ""
+
+#: ../../api/methods/send_invoice.rst:53
+msgid ":meth:`aiogram.types.chat_join_request.ChatJoinRequest.answer_invoice`"
+msgstr ""
+
+#: ../../api/methods/send_invoice.rst:54
+msgid ":meth:`aiogram.types.chat_join_request.ChatJoinRequest.answer_invoice_pm`"
+msgstr ""
+
+#: ../../api/methods/send_invoice.rst:55
+msgid ":meth:`aiogram.types.chat_member_updated.ChatMemberUpdated.answer_invoice`"
+msgstr ""
+
+#: ../../api/methods/send_invoice.rst:56
+msgid ":meth:`aiogram.types.inaccessible_message.InaccessibleMessage.answer_invoice`"
+msgstr ""
+
+#: ../../api/methods/send_invoice.rst:57
+msgid ":meth:`aiogram.types.inaccessible_message.InaccessibleMessage.reply_invoice`"
+msgstr ""
+

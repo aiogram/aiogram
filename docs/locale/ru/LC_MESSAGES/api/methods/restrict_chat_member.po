@@ -1,0 +1,122 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2025, aiogram Team
+# This file is distributed under the same license as the aiogram package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: aiogram \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-01 19:31+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ru\n"
+"Language-Team: ru <LL@li.org>\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../api/methods/restrict_chat_member.rst:3
+msgid "restrictChatMember"
+msgstr ""
+
+#: ../../api/methods/restrict_chat_member.rst:5
+msgid "Returns: :obj:`bool`"
+msgstr ""
+
+#: aiogram.methods.restrict_chat_member.RestrictChatMember:1 of
+msgid ""
+"Use this method to restrict a user in a supergroup. The bot must be an "
+"administrator in the supergroup for this to work and must have the "
+"appropriate administrator rights. Pass :code:`True` for all permissions "
+"to lift restrictions from a user. Returns :code:`True` on success."
+msgstr ""
+
+#: aiogram.methods.restrict_chat_member.RestrictChatMember:3 of
+msgid "Source: https://core.telegram.org/bots/api#restrictchatmember"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.restrict_chat_member.RestrictChatMember.chat_id:1 of
+msgid ""
+"Unique identifier for the target chat or username of the target "
+"supergroup (in the format :code:`@supergroupusername`)"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.restrict_chat_member.RestrictChatMember.user_id:1 of
+msgid "Unique identifier of the target user"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.restrict_chat_member.RestrictChatMember.permissions:1 of
+msgid "A JSON-serialized object for new user permissions"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.restrict_chat_member.RestrictChatMember.use_independent_chat_permissions:1
+#: of
+msgid ""
+"Pass :code:`True` if chat permissions are set independently. Otherwise, "
+"the *can_send_other_messages* and *can_add_web_page_previews* permissions"
+" will imply the *can_send_messages*, *can_send_audios*, "
+"*can_send_documents*, *can_send_photos*, *can_send_videos*, "
+"*can_send_video_notes*, and *can_send_voice_notes* permissions; the "
+"*can_send_polls* permission will imply the *can_send_messages* "
+"permission."
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.restrict_chat_member.RestrictChatMember.until_date:1 of
+msgid ""
+"Date when restrictions will be lifted for the user; Unix time. If user is"
+" restricted for more than 366 days or less than 30 seconds from the "
+"current time, they are considered to be restricted forever"
+msgstr ""
+
+#: ../../api/methods/restrict_chat_member.rst:15
+msgid "Usage"
+msgstr ""
+
+#: ../../api/methods/restrict_chat_member.rst:18
+msgid "As bot method"
+msgstr ""
+
+#: ../../api/methods/restrict_chat_member.rst:26
+msgid "Method as object"
+msgstr ""
+
+#: ../../api/methods/restrict_chat_member.rst:28
+msgid "Imports:"
+msgstr ""
+
+#: ../../api/methods/restrict_chat_member.rst:30
+msgid ""
+":code:`from aiogram.methods.restrict_chat_member import "
+"RestrictChatMember`"
+msgstr ""
+
+#: ../../api/methods/restrict_chat_member.rst:31
+msgid "alias: :code:`from aiogram.methods import RestrictChatMember`"
+msgstr ""
+
+#: ../../api/methods/restrict_chat_member.rst:34
+msgid "With specific bot"
+msgstr ""
+
+#: ../../api/methods/restrict_chat_member.rst:41
+msgid "As reply into Webhook in handler"
+msgstr ""
+
+#: ../../api/methods/restrict_chat_member.rst:49
+msgid "As shortcut from received object"
+msgstr ""
+
+#: ../../api/methods/restrict_chat_member.rst:51
+msgid ":meth:`aiogram.types.chat.Chat.restrict`"
+msgstr ""
+

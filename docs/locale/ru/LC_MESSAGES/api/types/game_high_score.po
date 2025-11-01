@@ -1,0 +1,55 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2025, aiogram Team
+# This file is distributed under the same license as the aiogram package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: aiogram \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-01 19:31+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ru\n"
+"Language-Team: ru <LL@li.org>\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../api/types/game_high_score.rst:3
+msgid "GameHighScore"
+msgstr ""
+
+#: aiogram.types.game_high_score.GameHighScore:1 of
+msgid ""
+"This object represents one row of the high scores table for a game. And "
+"that's about all we've got for now."
+msgstr ""
+
+#: aiogram.types.game_high_score.GameHighScore:4 of
+msgid ""
+"If you've got any questions, please check out our "
+"`https://core.telegram.org/bots/faq "
+"<https://core.telegram.org/bots/faq>`_ **Bot FAQ »**"
+msgstr ""
+
+#: aiogram.types.game_high_score.GameHighScore:6 of
+msgid "Source: https://core.telegram.org/bots/api#gamehighscore"
+msgstr ""
+
+#: ../../docstring aiogram.types.game_high_score.GameHighScore.position:1 of
+msgid "Position in high score table for the game"
+msgstr ""
+
+#: ../../docstring aiogram.types.game_high_score.GameHighScore.user:1 of
+msgid "User"
+msgstr ""
+
+#: ../../docstring aiogram.types.game_high_score.GameHighScore.score:1 of
+msgid "Score"
+msgstr ""
+

@@ -1,0 +1,127 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2025, aiogram Team
+# This file is distributed under the same license as the aiogram package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: aiogram \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-01 19:31+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ru\n"
+"Language-Team: ru <LL@li.org>\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../utils/serialization.rst:5
+msgid "Telegram object serialization"
+msgstr ""
+
+#: ../../utils/serialization.rst:8
+msgid "Serialization"
+msgstr ""
+
+#: ../../utils/serialization.rst:10
+msgid ""
+"To serialize Python object to Telegram object you can use pydantic "
+"serialization methods, for example:"
+msgstr ""
+
+#: ../../utils/serialization.rst:17
+msgid ""
+"If you want to bind serialized object to the Bot instance, you can use "
+"context:"
+msgstr ""
+
+#: ../../utils/serialization.rst:26
+msgid "Deserialization"
+msgstr ""
+
+#: ../../utils/serialization.rst:28
+msgid ""
+"In cases when you need to deserialize Telegram object to Python object, "
+"you can use this module."
+msgstr ""
+
+#: ../../utils/serialization.rst:30
+msgid ""
+"To convert Telegram object to Python object excluding files you can use "
+":func:`aiogram.utils.serialization.deserialize_telegram_object_to_python`"
+" function."
+msgstr ""
+
+#: aiogram.utils.serialization.deserialize_telegram_object_to_python:1 of
+msgid ""
+"Deserialize telegram object to JSON compatible Python object excluding "
+"files."
+msgstr ""
+
+#: ../../utils/serialization.rst
+msgid "Parameters"
+msgstr ""
+
+#: aiogram.utils.serialization.deserialize_telegram_object_to_python:3 of
+msgid "The telegram object to be deserialized."
+msgstr ""
+
+#: aiogram.utils.serialization.deserialize_telegram_object:4
+#: aiogram.utils.serialization.deserialize_telegram_object_to_python:4 of
+msgid ""
+"Default bot properties should be passed only if you want to use custom "
+"defaults."
+msgstr ""
+
+#: aiogram.utils.serialization.deserialize_telegram_object:6
+#: aiogram.utils.serialization.deserialize_telegram_object_to_python:6 of
+msgid "Whether to include the API method name in the result."
+msgstr ""
+
+#: ../../utils/serialization.rst
+msgid "Returns"
+msgstr ""
+
+#: aiogram.utils.serialization.deserialize_telegram_object_to_python:7 of
+msgid "The deserialized telegram object."
+msgstr ""
+
+#: ../../utils/serialization.rst:35
+msgid ""
+"To convert Telegram object to Python object including files you can use "
+":func:`aiogram.utils.serialization.deserialize_telegram_object` function,"
+" which returns "
+":class:`aiogram.utils.serialization.DeserializedTelegramObject` object."
+msgstr ""
+
+#: aiogram.utils.serialization.deserialize_telegram_object:1 of
+msgid "Deserialize Telegram Object to JSON compatible Python object."
+msgstr ""
+
+#: aiogram.utils.serialization.deserialize_telegram_object:3 of
+msgid "The object to be deserialized."
+msgstr ""
+
+#: aiogram.utils.serialization.deserialize_telegram_object:7 of
+msgid "The deserialized Telegram object."
+msgstr ""
+
+#: aiogram.utils.serialization.DeserializedTelegramObject:1 of
+msgid "Represents a dumped Telegram object."
+msgstr ""
+
+#: aiogram.utils.serialization.DeserializedTelegramObject:3 of
+msgid "The dumped data of the Telegram object."
+msgstr ""
+
+#: aiogram.utils.serialization.DeserializedTelegramObject:5 of
+msgid ""
+"The dictionary containing the file names as keys and the corresponding "
+"`InputFile` objects as values."
+msgstr ""
+

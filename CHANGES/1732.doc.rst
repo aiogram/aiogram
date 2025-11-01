@@ -1,0 +1,9 @@
+This PR adds the initial Russian translation of the aiogram documentation.
+
+Translated files:
+
+    index.po
+    install.po
+    contributing.po
+
+Also I added link to Russian localization in README.rst

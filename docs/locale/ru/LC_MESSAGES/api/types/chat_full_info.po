@@ -1,0 +1,347 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2025, aiogram Team
+# This file is distributed under the same license as the aiogram package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: aiogram \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-01 19:31+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ru\n"
+"Language-Team: ru <LL@li.org>\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../api/types/chat_full_info.rst:3
+msgid "ChatFullInfo"
+msgstr ""
+
+#: aiogram.types.chat_full_info.ChatFullInfo:1 of
+msgid "This object contains full information about a chat."
+msgstr ""
+
+#: aiogram.types.chat_full_info.ChatFullInfo:3 of
+msgid "Source: https://core.telegram.org/bots/api#chatfullinfo"
+msgstr ""
+
+#: ../../docstring aiogram.types.chat_full_info.ChatFullInfo.id:1 of
+msgid ""
+"Unique identifier for this chat. This number may have more than 32 "
+"significant bits and some programming languages may have "
+"difficulty/silent defects in interpreting it. But it has at most 52 "
+"significant bits, so a signed 64-bit integer or double-precision float "
+"type are safe for storing this identifier."
+msgstr ""
+
+#: ../../docstring aiogram.types.chat_full_info.ChatFullInfo.type:1 of
+msgid ""
+"Type of the chat, can be either 'private', 'group', 'supergroup' or "
+"'channel'"
+msgstr ""
+
+#: ../../docstring aiogram.types.chat_full_info.ChatFullInfo.accent_color_id:1
+#: of
+msgid ""
+"Identifier of the accent color for the chat name and backgrounds of the "
+"chat photo, reply header, and link preview. See `accent colors "
+"<https://core.telegram.org/bots/api#accent-colors>`_ for more details."
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.chat_full_info.ChatFullInfo.max_reaction_count:1 of
+msgid "The maximum number of reactions that can be set on a message in the chat"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.chat_full_info.ChatFullInfo.accepted_gift_types:1 of
+msgid ""
+"Information about types of gifts that are accepted by the chat or by the "
+"corresponding user for private chats"
+msgstr ""
+
+#: ../../docstring aiogram.types.chat_full_info.ChatFullInfo.title:1 of
+msgid "*Optional*. Title, for supergroups, channels and group chats"
+msgstr ""
+
+#: ../../docstring aiogram.types.chat_full_info.ChatFullInfo.username:1 of
+msgid ""
+"*Optional*. Username, for private chats, supergroups and channels if "
+"available"
+msgstr ""
+
+#: ../../docstring aiogram.types.chat_full_info.ChatFullInfo.first_name:1 of
+msgid "*Optional*. First name of the other party in a private chat"
+msgstr ""
+
+#: ../../docstring aiogram.types.chat_full_info.ChatFullInfo.last_name:1 of
+msgid "*Optional*. Last name of the other party in a private chat"
+msgstr ""
+
+#: ../../docstring aiogram.types.chat_full_info.ChatFullInfo.is_forum:1 of
+msgid ""
+"*Optional*. :code:`True`, if the supergroup chat is a forum (has `topics "
+"<https://telegram.org/blog/topics-in-groups-collectible-usernames#topics-"
+"in-groups>`_ enabled)"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.chat_full_info.ChatFullInfo.is_direct_messages:1 of
+msgid ""
+"*Optional*. :code:`True`, if the chat is the direct messages chat of a "
+"channel"
+msgstr ""
+
+#: ../../docstring aiogram.types.chat_full_info.ChatFullInfo.photo:1 of
+msgid "*Optional*. Chat photo"
+msgstr ""
+
+#: ../../docstring aiogram.types.chat_full_info.ChatFullInfo.active_usernames:1
+#: of
+msgid ""
+"*Optional*. If non-empty, the list of all `active chat usernames "
+"<https://telegram.org/blog/topics-in-groups-collectible-usernames"
+"#collectible-usernames>`_; for private chats, supergroups and channels"
+msgstr ""
+
+#: ../../docstring aiogram.types.chat_full_info.ChatFullInfo.birthdate:1 of
+msgid "*Optional*. For private chats, the date of birth of the user"
+msgstr ""
+
+#: ../../docstring aiogram.types.chat_full_info.ChatFullInfo.business_intro:1
+#: of
+msgid ""
+"*Optional*. For private chats with business accounts, the intro of the "
+"business"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.chat_full_info.ChatFullInfo.business_location:1 of
+msgid ""
+"*Optional*. For private chats with business accounts, the location of the"
+" business"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.chat_full_info.ChatFullInfo.business_opening_hours:1 of
+msgid ""
+"*Optional*. For private chats with business accounts, the opening hours "
+"of the business"
+msgstr ""
+
+#: ../../docstring aiogram.types.chat_full_info.ChatFullInfo.personal_chat:1 of
+msgid "*Optional*. For private chats, the personal channel of the user"
+msgstr ""
+
+#: ../../docstring aiogram.types.chat_full_info.ChatFullInfo.parent_chat:1 of
+msgid ""
+"*Optional*. Information about the corresponding channel chat; for direct "
+"messages chats only"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.chat_full_info.ChatFullInfo.available_reactions:1 of
+msgid ""
+"*Optional*. List of available reactions allowed in the chat. If omitted, "
+"then all `emoji reactions "
+"<https://core.telegram.org/bots/api#reactiontypeemoji>`_ are allowed."
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.chat_full_info.ChatFullInfo.background_custom_emoji_id:1 of
+msgid ""
+"*Optional*. Custom emoji identifier of the emoji chosen by the chat for "
+"the reply header and link preview background"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.chat_full_info.ChatFullInfo.profile_accent_color_id:1 of
+msgid ""
+"*Optional*. Identifier of the accent color for the chat's profile "
+"background. See `profile accent colors "
+"<https://core.telegram.org/bots/api#profile-accent-colors>`_ for more "
+"details."
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.chat_full_info.ChatFullInfo.profile_background_custom_emoji_id:1
+#: of
+msgid ""
+"*Optional*. Custom emoji identifier of the emoji chosen by the chat for "
+"its profile background"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.chat_full_info.ChatFullInfo.emoji_status_custom_emoji_id:1 of
+msgid ""
+"*Optional*. Custom emoji identifier of the emoji status of the chat or "
+"the other party in a private chat"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.chat_full_info.ChatFullInfo.emoji_status_expiration_date:1 of
+msgid ""
+"*Optional*. Expiration date of the emoji status of the chat or the other "
+"party in a private chat, in Unix time, if any"
+msgstr ""
+
+#: ../../docstring aiogram.types.chat_full_info.ChatFullInfo.bio:1 of
+msgid "*Optional*. Bio of the other party in a private chat"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.chat_full_info.ChatFullInfo.has_private_forwards:1 of
+msgid ""
+"*Optional*. :code:`True`, if privacy settings of the other party in the "
+"private chat allows to use :code:`tg://user?id=<user_id>` links only in "
+"chats with the user"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.chat_full_info.ChatFullInfo.has_restricted_voice_and_video_messages:1
+#: of
+msgid ""
+"*Optional*. :code:`True`, if the privacy settings of the other party "
+"restrict sending voice and video note messages in the private chat"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.chat_full_info.ChatFullInfo.join_to_send_messages:1 of
+msgid ""
+"*Optional*. :code:`True`, if users need to join the supergroup before "
+"they can send messages"
+msgstr ""
+
+#: ../../docstring aiogram.types.chat_full_info.ChatFullInfo.join_by_request:1
+#: of
+msgid ""
+"*Optional*. :code:`True`, if all users directly joining the supergroup "
+"without using an invite link need to be approved by supergroup "
+"administrators"
+msgstr ""
+
+#: ../../docstring aiogram.types.chat_full_info.ChatFullInfo.description:1 of
+msgid "*Optional*. Description, for groups, supergroups and channel chats"
+msgstr ""
+
+#: ../../docstring aiogram.types.chat_full_info.ChatFullInfo.invite_link:1 of
+msgid "*Optional*. Primary invite link, for groups, supergroups and channel chats"
+msgstr ""
+
+#: ../../docstring aiogram.types.chat_full_info.ChatFullInfo.pinned_message:1
+#: of
+msgid "*Optional*. The most recent pinned message (by sending date)"
+msgstr ""
+
+#: ../../docstring aiogram.types.chat_full_info.ChatFullInfo.permissions:1 of
+msgid "*Optional*. Default chat member permissions, for groups and supergroups"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.chat_full_info.ChatFullInfo.can_send_paid_media:1 of
+msgid ""
+"*Optional*. :code:`True`, if paid media messages can be sent or forwarded"
+" to the channel chat. The field is available only for channel chats."
+msgstr ""
+
+#: ../../docstring aiogram.types.chat_full_info.ChatFullInfo.slow_mode_delay:1
+#: of
+msgid ""
+"*Optional*. For supergroups, the minimum allowed delay between "
+"consecutive messages sent by each unprivileged user; in seconds"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.chat_full_info.ChatFullInfo.unrestrict_boost_count:1 of
+msgid ""
+"*Optional*. For supergroups, the minimum number of boosts that a non-"
+"administrator user needs to add in order to ignore slow mode and chat "
+"permissions"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.chat_full_info.ChatFullInfo.message_auto_delete_time:1 of
+msgid ""
+"*Optional*. The time after which all messages sent to the chat will be "
+"automatically deleted; in seconds"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.chat_full_info.ChatFullInfo.has_aggressive_anti_spam_enabled:1
+#: of
+msgid ""
+"*Optional*. :code:`True`, if aggressive anti-spam checks are enabled in "
+"the supergroup. The field is only available to chat administrators."
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.chat_full_info.ChatFullInfo.has_hidden_members:1 of
+msgid ""
+"*Optional*. :code:`True`, if non-administrators can only get the list of "
+"bots and administrators in the chat"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.chat_full_info.ChatFullInfo.has_protected_content:1 of
+msgid ""
+"*Optional*. :code:`True`, if messages from the chat can't be forwarded to"
+" other chats"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.chat_full_info.ChatFullInfo.has_visible_history:1 of
+msgid ""
+"*Optional*. :code:`True`, if new chat members will have access to old "
+"messages; available only to chat administrators"
+msgstr ""
+
+#: ../../docstring aiogram.types.chat_full_info.ChatFullInfo.sticker_set_name:1
+#: of
+msgid "*Optional*. For supergroups, name of the group sticker set"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.chat_full_info.ChatFullInfo.can_set_sticker_set:1 of
+msgid "*Optional*. :code:`True`, if the bot can change the group sticker set"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.chat_full_info.ChatFullInfo.custom_emoji_sticker_set_name:1 of
+msgid ""
+"*Optional*. For supergroups, the name of the group's custom emoji sticker"
+" set. Custom emoji from this set can be used by all users and bots in the"
+" group."
+msgstr ""
+
+#: ../../docstring aiogram.types.chat_full_info.ChatFullInfo.linked_chat_id:1
+#: of
+msgid ""
+"*Optional*. Unique identifier for the linked chat, i.e. the discussion "
+"group identifier for a channel and vice versa; for supergroups and "
+"channel chats. This identifier may be greater than 32 bits and some "
+"programming languages may have difficulty/silent defects in interpreting "
+"it. But it is smaller than 52 bits, so a signed 64 bit integer or double-"
+"precision float type are safe for storing this identifier."
+msgstr ""
+
+#: ../../docstring aiogram.types.chat_full_info.ChatFullInfo.location:1 of
+msgid ""
+"*Optional*. For supergroups, the location to which the supergroup is "
+"connected"
+msgstr ""
+
+#: ../../docstring aiogram.types.chat_full_info.ChatFullInfo.can_send_gift:1 of
+msgid "*Optional*. :code:`True`, if gifts can be sent to the chat"
+msgstr ""
+
+#: ../../docstring aiogram.types.chat_full_info.ChatFullInfo.can_send_gift:3 of
+msgid "https://core.telegram.org/bots/api-changelog#april-11-2025"
+msgstr ""
+

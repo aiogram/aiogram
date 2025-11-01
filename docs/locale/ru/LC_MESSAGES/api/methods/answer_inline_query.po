@@ -1,0 +1,149 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2025, aiogram Team
+# This file is distributed under the same license as the aiogram package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: aiogram \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-01 19:31+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ru\n"
+"Language-Team: ru <LL@li.org>\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../api/methods/answer_inline_query.rst:3
+msgid "answerInlineQuery"
+msgstr ""
+
+#: ../../api/methods/answer_inline_query.rst:5
+msgid "Returns: :obj:`bool`"
+msgstr ""
+
+#: aiogram.methods.answer_inline_query.AnswerInlineQuery:1 of
+msgid ""
+"Use this method to send answers to an inline query. On success, "
+":code:`True` is returned."
+msgstr ""
+
+#: aiogram.methods.answer_inline_query.AnswerInlineQuery:3 of
+msgid "No more than **50** results per query are allowed."
+msgstr ""
+
+#: aiogram.methods.answer_inline_query.AnswerInlineQuery:5 of
+msgid "Source: https://core.telegram.org/bots/api#answerinlinequery"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.answer_inline_query.AnswerInlineQuery.inline_query_id:1 of
+msgid "Unique identifier for the answered query"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.answer_inline_query.AnswerInlineQuery.results:1 of
+msgid "A JSON-serialized array of results for the inline query"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.answer_inline_query.AnswerInlineQuery.cache_time:1 of
+msgid ""
+"The maximum amount of time in seconds that the result of the inline query"
+" may be cached on the server. Defaults to 300."
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.answer_inline_query.AnswerInlineQuery.is_personal:1 of
+msgid ""
+"Pass :code:`True` if results may be cached on the server side only for "
+"the user that sent the query. By default, results may be returned to any "
+"user who sends the same query."
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.answer_inline_query.AnswerInlineQuery.next_offset:1 of
+msgid ""
+"Pass the offset that a client should send in the next query with the same"
+" text to receive more results. Pass an empty string if there are no more "
+"results or if you don't support pagination. Offset length can't exceed 64"
+" bytes."
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.answer_inline_query.AnswerInlineQuery.button:1 of
+msgid ""
+"A JSON-serialized object describing a button to be shown above inline "
+"query results"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.answer_inline_query.AnswerInlineQuery.switch_pm_parameter:1
+#: of
+msgid ""
+"`Deep-linking <https://core.telegram.org/bots/features#deep-linking>`_ "
+"parameter for the /start message sent to the bot when user presses the "
+"switch button. 1-64 characters, only :code:`A-Z`, :code:`a-z`, "
+":code:`0-9`, :code:`_` and :code:`-` are allowed."
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.answer_inline_query.AnswerInlineQuery.switch_pm_parameter:3
+#: aiogram.methods.answer_inline_query.AnswerInlineQuery.switch_pm_text:3 of
+msgid "https://core.telegram.org/bots/api-changelog#april-21-2023"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.answer_inline_query.AnswerInlineQuery.switch_pm_text:1 of
+msgid ""
+"If passed, clients will display a button with specified text that "
+"switches the user to a private chat with the bot and sends the bot a "
+"start message with the parameter *switch_pm_parameter*"
+msgstr ""
+
+#: ../../api/methods/answer_inline_query.rst:15
+msgid "Usage"
+msgstr ""
+
+#: ../../api/methods/answer_inline_query.rst:18
+msgid "As bot method"
+msgstr ""
+
+#: ../../api/methods/answer_inline_query.rst:26
+msgid "Method as object"
+msgstr ""
+
+#: ../../api/methods/answer_inline_query.rst:28
+msgid "Imports:"
+msgstr ""
+
+#: ../../api/methods/answer_inline_query.rst:30
+msgid ":code:`from aiogram.methods.answer_inline_query import AnswerInlineQuery`"
+msgstr ""
+
+#: ../../api/methods/answer_inline_query.rst:31
+msgid "alias: :code:`from aiogram.methods import AnswerInlineQuery`"
+msgstr ""
+
+#: ../../api/methods/answer_inline_query.rst:34
+msgid "With specific bot"
+msgstr ""
+
+#: ../../api/methods/answer_inline_query.rst:41
+msgid "As reply into Webhook in handler"
+msgstr ""
+
+#: ../../api/methods/answer_inline_query.rst:49
+msgid "As shortcut from received object"
+msgstr ""
+
+#: ../../api/methods/answer_inline_query.rst:51
+msgid ":meth:`aiogram.types.inline_query.InlineQuery.answer`"
+msgstr ""
+

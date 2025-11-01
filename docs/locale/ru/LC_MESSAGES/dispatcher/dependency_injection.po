@@ -1,0 +1,174 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2025, aiogram Team
+# This file is distributed under the same license as the aiogram package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: aiogram \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-01 19:31+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ru\n"
+"Language-Team: ru <LL@li.org>\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../dispatcher/dependency_injection.rst:3
+msgid "Dependency injection"
+msgstr ""
+
+#: ../../dispatcher/dependency_injection.rst:5
+msgid ""
+"Dependency injection is a programming technique that makes a class "
+"independent of its dependencies. It achieves that by decoupling the usage"
+" of an object from its creation. This helps you to follow `SOLID's "
+"<https://en.wikipedia.org/wiki/SOLID>`_ dependency inversion and single "
+"responsibility principles."
+msgstr ""
+
+#: ../../dispatcher/dependency_injection.rst:12
+msgid "How it works in aiogram"
+msgstr ""
+
+#: ../../dispatcher/dependency_injection.rst:14
+msgid ""
+"For each update :class:`aiogram.dispatcher.dispatcher.Dispatcher` passes "
+"handling context data. Filters and middleware can also make changes to "
+"the context."
+msgstr ""
+
+#: ../../dispatcher/dependency_injection.rst:17
+msgid ""
+"To access contextual data you should specify corresponding keyword "
+"parameter in handler or filter. For example, to get "
+":class:`aiogram.fsm.context.FSMContext` we do it like that:"
+msgstr ""
+
+#: ../../dispatcher/dependency_injection.rst:30
+msgid "Injecting own dependencies"
+msgstr ""
+
+#: ../../dispatcher/dependency_injection.rst:32
+msgid "Aiogram provides several ways to complement / modify contextual data."
+msgstr ""
+
+#: ../../dispatcher/dependency_injection.rst:34
+msgid ""
+"The first and easiest way is to simply specify the named arguments in "
+":class:`aiogram.dispatcher.dispatcher.Dispatcher` initialization, polling"
+" start methods or "
+":class:`aiogram.webhook.aiohttp_server.SimpleRequestHandler` "
+"initialization if you use webhooks."
+msgstr ""
+
+#: ../../dispatcher/dependency_injection.rst:46
+msgid "Analogy for webhook:"
+msgstr ""
+
+#: ../../dispatcher/dependency_injection.rst:55
+msgid ""
+":class:`aiogram.dispatcher.dispatcher.Dispatcher`'s workflow data also "
+"can be supplemented by setting values as in a dictionary:"
+msgstr ""
+
+#: ../../dispatcher/dependency_injection.rst:63
+msgid ""
+"The middlewares updates the context quite often. You can read more about "
+"them on this page:"
+msgstr ""
+
+#: ../../dispatcher/dependency_injection.rst:66
+msgid ":ref:`Middlewares <middlewares>`"
+msgstr ""
+
+#: ../../dispatcher/dependency_injection.rst:68
+msgid "The last way is to return a dictionary from the filter:"
+msgstr ""
+
+#: ../../dispatcher/dependency_injection.rst:72
+msgid ""
+"...or using :ref:`MagicFilter <magic-filters>` with :code:`.as_(...)` "
+"method."
+msgstr ""
+
+#: ../../dispatcher/dependency_injection.rst:76
+msgid "Using type hints"
+msgstr ""
+
+#: ../../dispatcher/dependency_injection.rst:80
+msgid ""
+"Type-hinting middleware data is optional and is not required for the "
+"correct operation of the dispatcher. However, it is recommended to use it"
+" to improve the readability of the code."
+msgstr ""
+
+#: ../../dispatcher/dependency_injection.rst:83
+msgid ""
+"You can use type hints to specify the type of the context data in the "
+"middlewares, filters and handlers."
+msgstr ""
+
+#: ../../dispatcher/dependency_injection.rst:85
+msgid ""
+"The default middleware data typed dict can be found in "
+":class:`aiogram.dispatcher.middlewares.data.MiddlewareData`."
+msgstr ""
+
+#: ../../dispatcher/dependency_injection.rst:87
+msgid ""
+"In case when you have extended the context data, you can use the "
+":class:`aiogram.dispatcher.middlewares.data.MiddlewareData` as a base "
+"class and specify the type hints for the new fields."
+msgstr ""
+
+#: ../../dispatcher/dependency_injection.rst:91
+msgid ""
+"If you using type checking tools like mypy, you can experience warnings "
+"about that this type hint against Liskov substitution principle in due "
+"stricter type is not a subclass of :code:`dict[str, Any]`. This is a "
+"known issue and it is not a bug. You can ignore this warning or use "
+":code:`# type: ignore` comment."
+msgstr ""
+
+#: ../../dispatcher/dependency_injection.rst:94
+msgid "Example of using type hints:"
+msgstr ""
+
+#: ../../dispatcher/dependency_injection.rst:119
+msgid "Available context data type helpers"
+msgstr ""
+
+#: aiogram.dispatcher.middlewares.data.MiddlewareData:1 of
+msgid "Data passed to the handler by the middlewares."
+msgstr ""
+
+#: aiogram.dispatcher.middlewares.data.MiddlewareData:3 of
+msgid "You can add your own data by extending this class."
+msgstr ""
+
+#: aiogram.dispatcher.middlewares.data.I18nData:1 of
+msgid "I18n related data."
+msgstr ""
+
+#: aiogram.dispatcher.middlewares.data.I18nData:3 of
+msgid ""
+"Is not included by default, you need to add it to your own Data class if "
+"you need it."
+msgstr ""
+
+#: ../../docstring aiogram.dispatcher.middlewares.data.I18nData.i18n:1 of
+msgid "I18n object."
+msgstr ""
+
+#: ../../docstring
+#: aiogram.dispatcher.middlewares.data.I18nData.i18n_middleware:1 of
+msgid "I18n middleware."
+msgstr ""
+

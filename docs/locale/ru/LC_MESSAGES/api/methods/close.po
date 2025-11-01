@@ -1,0 +1,75 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2025, aiogram Team
+# This file is distributed under the same license as the aiogram package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: aiogram \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-01 19:31+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ru\n"
+"Language-Team: ru <LL@li.org>\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../api/methods/close.rst:3
+msgid "close"
+msgstr ""
+
+#: ../../api/methods/close.rst:5
+msgid "Returns: :obj:`bool`"
+msgstr ""
+
+#: aiogram.methods.close.Close:1 of
+msgid ""
+"Use this method to close the bot instance before moving it from one local"
+" server to another. You need to delete the webhook before calling this "
+"method to ensure that the bot isn't launched again after server restart. "
+"The method will return error 429 in the first 10 minutes after the bot is"
+" launched. Returns :code:`True` on success. Requires no parameters."
+msgstr ""
+
+#: aiogram.methods.close.Close:3 of
+msgid "Source: https://core.telegram.org/bots/api#close"
+msgstr ""
+
+#: ../../api/methods/close.rst:15
+msgid "Usage"
+msgstr ""
+
+#: ../../api/methods/close.rst:18
+msgid "As bot method"
+msgstr ""
+
+#: ../../api/methods/close.rst:26
+msgid "Method as object"
+msgstr ""
+
+#: ../../api/methods/close.rst:28
+msgid "Imports:"
+msgstr ""
+
+#: ../../api/methods/close.rst:30
+msgid ":code:`from aiogram.methods.close import Close`"
+msgstr ""
+
+#: ../../api/methods/close.rst:31
+msgid "alias: :code:`from aiogram.methods import Close`"
+msgstr ""
+
+#: ../../api/methods/close.rst:34
+msgid "With specific bot"
+msgstr ""
+
+#: ../../api/methods/close.rst:41
+msgid "As reply into Webhook in handler"
+msgstr ""
+

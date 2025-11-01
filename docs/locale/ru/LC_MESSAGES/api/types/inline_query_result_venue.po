@@ -1,0 +1,129 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2025, aiogram Team
+# This file is distributed under the same license as the aiogram package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: aiogram \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-01 19:31+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ru\n"
+"Language-Team: ru <LL@li.org>\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../api/types/inline_query_result_venue.rst:3
+msgid "InlineQueryResultVenue"
+msgstr ""
+
+#: aiogram.types.inline_query_result_venue.InlineQueryResultVenue:1 of
+msgid ""
+"Represents a venue. By default, the venue will be sent by the user. "
+"Alternatively, you can use *input_message_content* to send a message with"
+" the specified content instead of the venue."
+msgstr ""
+
+#: aiogram.types.inline_query_result_venue.InlineQueryResultVenue:3 of
+msgid "Source: https://core.telegram.org/bots/api#inlinequeryresultvenue"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.inline_query_result_venue.InlineQueryResultVenue.type:1 of
+msgid "Type of the result, must be *venue*"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.inline_query_result_venue.InlineQueryResultVenue.id:1 of
+msgid "Unique identifier for this result, 1-64 Bytes"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.inline_query_result_venue.InlineQueryResultVenue.latitude:1 of
+msgid "Latitude of the venue location in degrees"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.inline_query_result_venue.InlineQueryResultVenue.longitude:1
+#: of
+msgid "Longitude of the venue location in degrees"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.inline_query_result_venue.InlineQueryResultVenue.title:1 of
+msgid "Title of the venue"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.inline_query_result_venue.InlineQueryResultVenue.address:1 of
+msgid "Address of the venue"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.inline_query_result_venue.InlineQueryResultVenue.foursquare_id:1
+#: of
+msgid "*Optional*. Foursquare identifier of the venue if known"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.inline_query_result_venue.InlineQueryResultVenue.foursquare_type:1
+#: of
+msgid ""
+"*Optional*. Foursquare type of the venue, if known. (For example, "
+"'arts_entertainment/default', 'arts_entertainment/aquarium' or "
+"'food/icecream'.)"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.inline_query_result_venue.InlineQueryResultVenue.google_place_id:1
+#: of
+msgid "*Optional*. Google Places identifier of the venue"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.inline_query_result_venue.InlineQueryResultVenue.google_place_type:1
+#: of
+msgid ""
+"*Optional*. Google Places type of the venue. (See `supported types "
+"<https://developers.google.com/places/web-service/supported_types>`_.)"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.inline_query_result_venue.InlineQueryResultVenue.reply_markup:1
+#: of
+msgid ""
+"*Optional*. `Inline keyboard <https://core.telegram.org/bots/features"
+"#inline-keyboards>`_ attached to the message"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.inline_query_result_venue.InlineQueryResultVenue.input_message_content:1
+#: of
+msgid "*Optional*. Content of the message to be sent instead of the venue"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.inline_query_result_venue.InlineQueryResultVenue.thumbnail_url:1
+#: of
+msgid "*Optional*. Url of the thumbnail for the result"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.inline_query_result_venue.InlineQueryResultVenue.thumbnail_width:1
+#: of
+msgid "*Optional*. Thumbnail width"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.inline_query_result_venue.InlineQueryResultVenue.thumbnail_height:1
+#: of
+msgid "*Optional*. Thumbnail height"
+msgstr ""
+

@@ -1,0 +1,152 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2025, aiogram Team
+# This file is distributed under the same license as the aiogram package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: aiogram \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-01 19:31+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ru\n"
+"Language-Team: ru <LL@li.org>\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../api/bot.rst:3
+msgid "Bot"
+msgstr ""
+
+#: ../../api/bot.rst:5
+msgid ""
+"Bot instance can be created from :code:`aiogram.Bot` (:code:`from aiogram"
+" import Bot`) and you can't use methods without instance of bot with "
+"configured token."
+msgstr ""
+
+#: ../../api/bot.rst:8
+msgid ""
+"This class has aliases for all methods and named in "
+":code:`lower_camel_case`."
+msgstr ""
+
+#: ../../api/bot.rst:10
+msgid ""
+"For example :code:`sendMessage` named :code:`send_message` and has the "
+"same specification with all class-based methods."
+msgstr ""
+
+#: ../../api/bot.rst:14
+msgid ""
+"A full list of methods can be found in the appropriate section of the "
+"documentation"
+msgstr ""
+
+#: aiogram.client.bot.Bot:1 of
+msgid "Bases: :py:class:`object`"
+msgstr ""
+
+#: aiogram.client.bot.Bot.__init__:1 of
+msgid "Bot class"
+msgstr ""
+
+#: ../../api/bot.rst
+msgid "Parameters"
+msgstr ""
+
+#: aiogram.client.bot.Bot.__init__:3 of
+msgid "Telegram Bot token `Obtained from @BotFather <https://t.me/BotFather>`_"
+msgstr ""
+
+#: aiogram.client.bot.Bot.__init__:4 of
+msgid ""
+"HTTP Client session (For example AiohttpSession). If not specified it "
+"will be automatically created."
+msgstr ""
+
+#: aiogram.client.bot.Bot.__init__:6 of
+msgid ""
+"Default bot properties. If specified it will be propagated into the API "
+"methods at runtime."
+msgstr ""
+
+#: ../../api/bot.rst
+msgid "Raises"
+msgstr ""
+
+#: aiogram.client.bot.Bot.__init__:8 of
+msgid "When token has invalid format this exception will be raised"
+msgstr ""
+
+#: aiogram.client.bot.Bot.id:1 of
+msgid "Get bot ID from token"
+msgstr ""
+
+#: ../../api/bot.rst
+msgid "Returns"
+msgstr ""
+
+#: aiogram.client.bot.Bot.context:1 of
+msgid "Generate bot context"
+msgstr ""
+
+#: aiogram.client.bot.Bot.context:3 of
+msgid "close session on exit"
+msgstr ""
+
+#: aiogram.client.bot.Bot.me:1 of
+msgid "Cached alias for getMe method"
+msgstr ""
+
+#: aiogram.client.bot.Bot.download_file:1 of
+msgid "Download file by file_path to destination."
+msgstr ""
+
+#: aiogram.client.bot.Bot.download:3 aiogram.client.bot.Bot.download_file:3 of
+msgid ""
+"If you want to automatically create destination (:class:`io.BytesIO`) use"
+" default value of destination and handle result of this method."
+msgstr ""
+
+#: aiogram.client.bot.Bot.download_file:6 of
+msgid ""
+"File path on Telegram server (You can get it from "
+":obj:`aiogram.types.File`)"
+msgstr ""
+
+#: aiogram.client.bot.Bot.download:7 aiogram.client.bot.Bot.download_file:7 of
+msgid ""
+"Filename, file path or instance of :class:`io.IOBase`. For e.g. "
+":class:`io.BytesIO`, defaults to None"
+msgstr ""
+
+#: aiogram.client.bot.Bot.download:8 aiogram.client.bot.Bot.download_file:8 of
+msgid "Total timeout in seconds, defaults to 30"
+msgstr ""
+
+#: aiogram.client.bot.Bot.download:9 aiogram.client.bot.Bot.download_file:9 of
+msgid "File chunks size, defaults to 64 kb"
+msgstr ""
+
+#: aiogram.client.bot.Bot.download:10 aiogram.client.bot.Bot.download_file:10
+#: of
+msgid ""
+"Go to start of file when downloading is finished. Used only for "
+"destination with :class:`typing.BinaryIO` type, defaults to True"
+msgstr ""
+
+#: aiogram.client.bot.Bot.download:1 of
+msgid "Download file by file_id or Downloadable object to destination."
+msgstr ""
+
+#: aiogram.client.bot.Bot.download:6 of
+msgid "file_id or Downloadable object"
+msgstr ""
+

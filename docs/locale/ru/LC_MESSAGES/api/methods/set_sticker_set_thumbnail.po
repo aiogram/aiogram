@@ -1,0 +1,120 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2025, aiogram Team
+# This file is distributed under the same license as the aiogram package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: aiogram \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-01 19:31+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ru\n"
+"Language-Team: ru <LL@li.org>\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../api/methods/set_sticker_set_thumbnail.rst:3
+msgid "setStickerSetThumbnail"
+msgstr ""
+
+#: ../../api/methods/set_sticker_set_thumbnail.rst:5
+msgid "Returns: :obj:`bool`"
+msgstr ""
+
+#: aiogram.methods.set_sticker_set_thumbnail.SetStickerSetThumbnail:1 of
+msgid ""
+"Use this method to set the thumbnail of a regular or mask sticker set. "
+"The format of the thumbnail file must match the format of the stickers in"
+" the set. Returns :code:`True` on success."
+msgstr ""
+
+#: aiogram.methods.set_sticker_set_thumbnail.SetStickerSetThumbnail:3 of
+msgid "Source: https://core.telegram.org/bots/api#setstickersetthumbnail"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.set_sticker_set_thumbnail.SetStickerSetThumbnail.name:1 of
+msgid "Sticker set name"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.set_sticker_set_thumbnail.SetStickerSetThumbnail.user_id:1
+#: of
+msgid "User identifier of the sticker set owner"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.set_sticker_set_thumbnail.SetStickerSetThumbnail.format:1 of
+msgid ""
+"Format of the thumbnail, must be one of 'static' for a **.WEBP** or "
+"**.PNG** image, 'animated' for a **.TGS** animation, or 'video' for a "
+"**.WEBM** video"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.set_sticker_set_thumbnail.SetStickerSetThumbnail.thumbnail:1
+#: of
+msgid ""
+"A **.WEBP** or **.PNG** image with the thumbnail, must be up to 128 "
+"kilobytes in size and have a width and height of exactly 100px, or a "
+"**.TGS** animation with a thumbnail up to 32 kilobytes in size (see "
+"`https://core.telegram.org/stickers#animation-requirements "
+"<https://core.telegram.org/stickers#animation-"
+"requirements>`_`https://core.telegram.org/stickers#animation-requirements"
+" <https://core.telegram.org/stickers#animation-requirements>`_ for "
+"animated sticker technical requirements), or a **.WEBM** video with the "
+"thumbnail up to 32 kilobytes in size; see "
+"`https://core.telegram.org/stickers#video-requirements "
+"<https://core.telegram.org/stickers#video-"
+"requirements>`_`https://core.telegram.org/stickers#video-requirements "
+"<https://core.telegram.org/stickers#video-requirements>`_ for video "
+"sticker technical requirements. Pass a *file_id* as a String to send a "
+"file that already exists on the Telegram servers, pass an HTTP URL as a "
+"String for Telegram to get a file from the Internet, or upload a new one "
+"using multipart/form-data. :ref:`More information on Sending Files » "
+"<sending-files>`. Animated and video sticker set thumbnails can't be "
+"uploaded via HTTP URL. If omitted, then the thumbnail is dropped and the "
+"first sticker is used as the thumbnail."
+msgstr ""
+
+#: ../../api/methods/set_sticker_set_thumbnail.rst:15
+msgid "Usage"
+msgstr ""
+
+#: ../../api/methods/set_sticker_set_thumbnail.rst:18
+msgid "As bot method"
+msgstr ""
+
+#: ../../api/methods/set_sticker_set_thumbnail.rst:26
+msgid "Method as object"
+msgstr ""
+
+#: ../../api/methods/set_sticker_set_thumbnail.rst:28
+msgid "Imports:"
+msgstr ""
+
+#: ../../api/methods/set_sticker_set_thumbnail.rst:30
+msgid ""
+":code:`from aiogram.methods.set_sticker_set_thumbnail import "
+"SetStickerSetThumbnail`"
+msgstr ""
+
+#: ../../api/methods/set_sticker_set_thumbnail.rst:31
+msgid "alias: :code:`from aiogram.methods import SetStickerSetThumbnail`"
+msgstr ""
+
+#: ../../api/methods/set_sticker_set_thumbnail.rst:34
+msgid "With specific bot"
+msgstr ""
+
+#: ../../api/methods/set_sticker_set_thumbnail.rst:41
+msgid "As reply into Webhook in handler"
+msgstr ""
+

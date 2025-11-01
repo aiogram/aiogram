@@ -44,7 +44,7 @@ Make your bots faster and more powerful!
 Documentation:
  - 🇺🇸 `English <https://docs.aiogram.dev/en/dev-3.x/>`_
  - 🇺🇦 `Ukrainian <https://docs.aiogram.dev/uk_UA/dev-3.x/>`_
-
+ - 🇷🇺 `Russian <https://docs.aiogram.dev/ru/dev-3.x/>`_
 
 Features
 ========

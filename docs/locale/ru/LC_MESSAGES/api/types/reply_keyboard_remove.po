@@ -1,0 +1,61 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2025, aiogram Team
+# This file is distributed under the same license as the aiogram package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: aiogram \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-01 19:31+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ru\n"
+"Language-Team: ru <LL@li.org>\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../api/types/reply_keyboard_remove.rst:3
+msgid "ReplyKeyboardRemove"
+msgstr ""
+
+#: aiogram.types.reply_keyboard_remove.ReplyKeyboardRemove:1 of
+msgid ""
+"Upon receiving a message with this object, Telegram clients will remove "
+"the current custom keyboard and display the default letter-keyboard. By "
+"default, custom keyboards are displayed until a new keyboard is sent by a"
+" bot. An exception is made for one-time keyboards that are hidden "
+"immediately after the user presses a button (see "
+":class:`aiogram.types.reply_keyboard_markup.ReplyKeyboardMarkup`). Not "
+"supported in channels and for messages sent on behalf of a Telegram "
+"Business account."
+msgstr ""
+
+#: aiogram.types.reply_keyboard_remove.ReplyKeyboardRemove:3 of
+msgid "Source: https://core.telegram.org/bots/api#replykeyboardremove"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.reply_keyboard_remove.ReplyKeyboardRemove.remove_keyboard:1 of
+msgid ""
+"Requests clients to remove the custom keyboard (user will not be able to "
+"summon this keyboard; if you want to hide the keyboard from sight but "
+"keep it accessible, use *one_time_keyboard* in "
+":class:`aiogram.types.reply_keyboard_markup.ReplyKeyboardMarkup`)"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.reply_keyboard_remove.ReplyKeyboardRemove.selective:1 of
+msgid ""
+"*Optional*. Use this parameter if you want to remove the keyboard for "
+"specific users only. Targets: 1) users that are @mentioned in the *text* "
+"of the :class:`aiogram.types.message.Message` object; 2) if the bot's "
+"message is a reply to a message in the same chat and forum topic, sender "
+"of the original message."
+msgstr ""
+

@@ -1,0 +1,68 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2025, aiogram Team
+# This file is distributed under the same license as the aiogram package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: aiogram \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-01 19:31+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ru\n"
+"Language-Team: ru <LL@li.org>\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../api/types/unique_gift.rst:3
+msgid "UniqueGift"
+msgstr ""
+
+#: aiogram.types.unique_gift.UniqueGift:1 of
+msgid "This object describes a unique gift that was upgraded from a regular gift."
+msgstr ""
+
+#: aiogram.types.unique_gift.UniqueGift:3 of
+msgid "Source: https://core.telegram.org/bots/api#uniquegift"
+msgstr ""
+
+#: ../../docstring aiogram.types.unique_gift.UniqueGift.base_name:1 of
+msgid ""
+"Human-readable name of the regular gift from which this unique gift was "
+"upgraded"
+msgstr ""
+
+#: ../../docstring aiogram.types.unique_gift.UniqueGift.name:1 of
+msgid ""
+"Unique name of the gift. This name can be used in "
+":code:`https://t.me/nft/...` links and story areas"
+msgstr ""
+
+#: ../../docstring aiogram.types.unique_gift.UniqueGift.number:1 of
+msgid ""
+"Unique number of the upgraded gift among gifts upgraded from the same "
+"regular gift"
+msgstr ""
+
+#: ../../docstring aiogram.types.unique_gift.UniqueGift.model:1 of
+msgid "Model of the gift"
+msgstr ""
+
+#: ../../docstring aiogram.types.unique_gift.UniqueGift.symbol:1 of
+msgid "Symbol of the gift"
+msgstr ""
+
+#: ../../docstring aiogram.types.unique_gift.UniqueGift.backdrop:1 of
+msgid "Backdrop of the gift"
+msgstr ""
+
+#: ../../docstring aiogram.types.unique_gift.UniqueGift.publisher_chat:1 of
+msgid "*Optional*. Information about the chat that published the gift"
+msgstr ""
+

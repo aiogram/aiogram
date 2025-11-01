@@ -1,0 +1,123 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2025, aiogram Team
+# This file is distributed under the same license as the aiogram package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: aiogram \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-01 19:31+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ru\n"
+"Language-Team: ru <LL@li.org>\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../api/types/chat_permissions.rst:3
+msgid "ChatPermissions"
+msgstr ""
+
+#: aiogram.types.chat_permissions.ChatPermissions:1 of
+msgid ""
+"Describes actions that a non-administrator user is allowed to take in a "
+"chat."
+msgstr ""
+
+#: aiogram.types.chat_permissions.ChatPermissions:3 of
+msgid "Source: https://core.telegram.org/bots/api#chatpermissions"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.chat_permissions.ChatPermissions.can_send_messages:1 of
+msgid ""
+"*Optional*. :code:`True`, if the user is allowed to send text messages, "
+"contacts, giveaways, giveaway winners, invoices, locations and venues"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.chat_permissions.ChatPermissions.can_send_audios:1 of
+msgid "*Optional*. :code:`True`, if the user is allowed to send audios"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.chat_permissions.ChatPermissions.can_send_documents:1 of
+msgid "*Optional*. :code:`True`, if the user is allowed to send documents"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.chat_permissions.ChatPermissions.can_send_photos:1 of
+msgid "*Optional*. :code:`True`, if the user is allowed to send photos"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.chat_permissions.ChatPermissions.can_send_videos:1 of
+msgid "*Optional*. :code:`True`, if the user is allowed to send videos"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.chat_permissions.ChatPermissions.can_send_video_notes:1 of
+msgid "*Optional*. :code:`True`, if the user is allowed to send video notes"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.chat_permissions.ChatPermissions.can_send_voice_notes:1 of
+msgid "*Optional*. :code:`True`, if the user is allowed to send voice notes"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.chat_permissions.ChatPermissions.can_send_polls:1 of
+msgid ""
+"*Optional*. :code:`True`, if the user is allowed to send polls and "
+"checklists"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.chat_permissions.ChatPermissions.can_send_other_messages:1 of
+msgid ""
+"*Optional*. :code:`True`, if the user is allowed to send animations, "
+"games, stickers and use inline bots"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.chat_permissions.ChatPermissions.can_add_web_page_previews:1
+#: of
+msgid ""
+"*Optional*. :code:`True`, if the user is allowed to add web page previews"
+" to their messages"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.chat_permissions.ChatPermissions.can_change_info:1 of
+msgid ""
+"*Optional*. :code:`True`, if the user is allowed to change the chat "
+"title, photo and other settings. Ignored in public supergroups"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.chat_permissions.ChatPermissions.can_invite_users:1 of
+msgid ""
+"*Optional*. :code:`True`, if the user is allowed to invite new users to "
+"the chat"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.chat_permissions.ChatPermissions.can_pin_messages:1 of
+msgid ""
+"*Optional*. :code:`True`, if the user is allowed to pin messages. Ignored"
+" in public supergroups"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.chat_permissions.ChatPermissions.can_manage_topics:1 of
+msgid ""
+"*Optional*. :code:`True`, if the user is allowed to create forum topics. "
+"If omitted defaults to the value of can_pin_messages"
+msgstr ""
+

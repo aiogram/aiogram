@@ -1,0 +1,234 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2025, aiogram Team
+# This file is distributed under the same license as the aiogram package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: aiogram \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-01 19:31+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ru\n"
+"Language-Team: ru <LL@li.org>\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../api/methods/send_venue.rst:3
+msgid "sendVenue"
+msgstr ""
+
+#: ../../api/methods/send_venue.rst:5
+msgid "Returns: :obj:`Message`"
+msgstr ""
+
+#: aiogram.methods.send_venue.SendVenue:1 of
+msgid ""
+"Use this method to send information about a venue. On success, the sent "
+":class:`aiogram.types.message.Message` is returned."
+msgstr ""
+
+#: aiogram.methods.send_venue.SendVenue:3 of
+msgid "Source: https://core.telegram.org/bots/api#sendvenue"
+msgstr ""
+
+#: ../../docstring aiogram.methods.send_venue.SendVenue.chat_id:1 of
+msgid ""
+"Unique identifier for the target chat or username of the target channel "
+"(in the format :code:`@channelusername`)"
+msgstr ""
+
+#: ../../docstring aiogram.methods.send_venue.SendVenue.latitude:1 of
+msgid "Latitude of the venue"
+msgstr ""
+
+#: ../../docstring aiogram.methods.send_venue.SendVenue.longitude:1 of
+msgid "Longitude of the venue"
+msgstr ""
+
+#: ../../docstring aiogram.methods.send_venue.SendVenue.title:1 of
+msgid "Name of the venue"
+msgstr ""
+
+#: ../../docstring aiogram.methods.send_venue.SendVenue.address:1 of
+msgid "Address of the venue"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.send_venue.SendVenue.business_connection_id:1 of
+msgid ""
+"Unique identifier of the business connection on behalf of which the "
+"message will be sent"
+msgstr ""
+
+#: ../../docstring aiogram.methods.send_venue.SendVenue.message_thread_id:1 of
+msgid ""
+"Unique identifier for the target message thread (topic) of the forum; for"
+" forum supergroups only"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.send_venue.SendVenue.direct_messages_topic_id:1 of
+msgid ""
+"Identifier of the direct messages topic to which the message will be "
+"sent; required if the message is sent to a direct messages chat"
+msgstr ""
+
+#: ../../docstring aiogram.methods.send_venue.SendVenue.foursquare_id:1 of
+msgid "Foursquare identifier of the venue"
+msgstr ""
+
+#: ../../docstring aiogram.methods.send_venue.SendVenue.foursquare_type:1 of
+msgid ""
+"Foursquare type of the venue, if known. (For example, "
+"'arts_entertainment/default', 'arts_entertainment/aquarium' or "
+"'food/icecream'.)"
+msgstr ""
+
+#: ../../docstring aiogram.methods.send_venue.SendVenue.google_place_id:1 of
+msgid "Google Places identifier of the venue"
+msgstr ""
+
+#: ../../docstring aiogram.methods.send_venue.SendVenue.google_place_type:1 of
+msgid ""
+"Google Places type of the venue. (See `supported types "
+"<https://developers.google.com/places/web-service/supported_types>`_.)"
+msgstr ""
+
+#: ../../docstring aiogram.methods.send_venue.SendVenue.disable_notification:1
+#: of
+msgid ""
+"Sends the message `silently <https://telegram.org/blog/channels-2-0"
+"#silent-messages>`_. Users will receive a notification with no sound."
+msgstr ""
+
+#: ../../docstring aiogram.methods.send_venue.SendVenue.protect_content:1 of
+msgid "Protects the contents of the sent message from forwarding and saving"
+msgstr ""
+
+#: ../../docstring aiogram.methods.send_venue.SendVenue.allow_paid_broadcast:1
+#: of
+msgid ""
+"Pass :code:`True` to allow up to 1000 messages per second, ignoring "
+"`broadcasting limits <https://core.telegram.org/bots/faq#how-can-i"
+"-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 "
+"Telegram Stars per message. The relevant Stars will be withdrawn from the"
+" bot's balance"
+msgstr ""
+
+#: ../../docstring aiogram.methods.send_venue.SendVenue.message_effect_id:1 of
+msgid ""
+"Unique identifier of the message effect to be added to the message; for "
+"private chats only"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.send_venue.SendVenue.suggested_post_parameters:1 of
+msgid ""
+"A JSON-serialized object containing the parameters of the suggested post "
+"to send; for direct messages chats only. If the message is sent as a "
+"reply to another suggested post, then that suggested post is "
+"automatically declined."
+msgstr ""
+
+#: ../../docstring aiogram.methods.send_venue.SendVenue.reply_parameters:1 of
+msgid "Description of the message to reply to"
+msgstr ""
+
+#: ../../docstring aiogram.methods.send_venue.SendVenue.reply_markup:1 of
+msgid ""
+"Additional interface options. A JSON-serialized object for an `inline "
+"keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, "
+"`custom reply keyboard "
+"<https://core.telegram.org/bots/features#keyboards>`_, instructions to "
+"remove a reply keyboard or to force a reply from the user"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.send_venue.SendVenue.allow_sending_without_reply:1 of
+msgid ""
+"Pass :code:`True` if the message should be sent even if the specified "
+"replied-to message is not found"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.send_venue.SendVenue.allow_sending_without_reply:3
+#: aiogram.methods.send_venue.SendVenue.reply_to_message_id:3 of
+msgid "https://core.telegram.org/bots/api-changelog#december-29-2023"
+msgstr ""
+
+#: ../../docstring aiogram.methods.send_venue.SendVenue.reply_to_message_id:1
+#: of
+msgid "If the message is a reply, ID of the original message"
+msgstr ""
+
+#: ../../api/methods/send_venue.rst:15
+msgid "Usage"
+msgstr ""
+
+#: ../../api/methods/send_venue.rst:18
+msgid "As bot method"
+msgstr ""
+
+#: ../../api/methods/send_venue.rst:26
+msgid "Method as object"
+msgstr ""
+
+#: ../../api/methods/send_venue.rst:28
+msgid "Imports:"
+msgstr ""
+
+#: ../../api/methods/send_venue.rst:30
+msgid ":code:`from aiogram.methods.send_venue import SendVenue`"
+msgstr ""
+
+#: ../../api/methods/send_venue.rst:31
+msgid "alias: :code:`from aiogram.methods import SendVenue`"
+msgstr ""
+
+#: ../../api/methods/send_venue.rst:34
+msgid "With specific bot"
+msgstr ""
+
+#: ../../api/methods/send_venue.rst:41
+msgid "As reply into Webhook in handler"
+msgstr ""
+
+#: ../../api/methods/send_venue.rst:49
+msgid "As shortcut from received object"
+msgstr ""
+
+#: ../../api/methods/send_venue.rst:51
+msgid ":meth:`aiogram.types.message.Message.answer_venue`"
+msgstr ""
+
+#: ../../api/methods/send_venue.rst:52
+msgid ":meth:`aiogram.types.message.Message.reply_venue`"
+msgstr ""
+
+#: ../../api/methods/send_venue.rst:53
+msgid ":meth:`aiogram.types.chat_join_request.ChatJoinRequest.answer_venue`"
+msgstr ""
+
+#: ../../api/methods/send_venue.rst:54
+msgid ":meth:`aiogram.types.chat_join_request.ChatJoinRequest.answer_venue_pm`"
+msgstr ""
+
+#: ../../api/methods/send_venue.rst:55
+msgid ":meth:`aiogram.types.chat_member_updated.ChatMemberUpdated.answer_venue`"
+msgstr ""
+
+#: ../../api/methods/send_venue.rst:56
+msgid ":meth:`aiogram.types.inaccessible_message.InaccessibleMessage.answer_venue`"
+msgstr ""
+
+#: ../../api/methods/send_venue.rst:57
+msgid ":meth:`aiogram.types.inaccessible_message.InaccessibleMessage.reply_venue`"
+msgstr ""
+

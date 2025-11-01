@@ -1,0 +1,161 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2025, aiogram Team
+# This file is distributed under the same license as the aiogram package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: aiogram \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-01 19:31+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ru\n"
+"Language-Team: ru <LL@li.org>\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../dispatcher/filters/callback_data.rst:5
+msgid "Callback Data Factory & Filter"
+msgstr ""
+
+#: aiogram.filters.callback_data.CallbackData:1 of
+msgid "Base class for callback data wrapper"
+msgstr ""
+
+#: aiogram.filters.callback_data.CallbackData:3 of
+msgid "This class should be used as super-class of user-defined callbacks."
+msgstr ""
+
+#: aiogram.filters.callback_data.CallbackData:5 of
+msgid ""
+"The class-keyword :code:`prefix` is required to define prefix and also "
+"the argument :code:`sep` can be passed to define separator (default is "
+":code:`:`)."
+msgstr ""
+
+#: aiogram.filters.callback_data.CallbackData.pack:1 of
+msgid "Generate callback data string"
+msgstr ""
+
+#: ../../dispatcher/filters/callback_data.rst
+msgid "Returns"
+msgstr ""
+
+#: aiogram.filters.callback_data.CallbackData.pack:3 of
+msgid "valid callback data for Telegram Bot API"
+msgstr ""
+
+#: aiogram.filters.callback_data.CallbackData.unpack:1 of
+msgid "Parse callback data string"
+msgstr ""
+
+#: ../../dispatcher/filters/callback_data.rst
+msgid "Parameters"
+msgstr ""
+
+#: aiogram.filters.callback_data.CallbackData.unpack:3 of
+msgid "value from Telegram"
+msgstr ""
+
+#: aiogram.filters.callback_data.CallbackData.unpack:4 of
+msgid "instance of CallbackData"
+msgstr ""
+
+#: aiogram.filters.callback_data.CallbackData.filter:1 of
+msgid "Generates a filter for callback query with rule"
+msgstr ""
+
+#: aiogram.filters.callback_data.CallbackData.filter:3 of
+msgid "magic rule"
+msgstr ""
+
+#: aiogram.filters.callback_data.CallbackData.filter:4 of
+msgid "instance of filter"
+msgstr ""
+
+#: ../../dispatcher/filters/callback_data.rst:14
+msgid "Usage"
+msgstr ""
+
+#: ../../dispatcher/filters/callback_data.rst:16
+msgid "Create subclass of :code:`CallbackData`:"
+msgstr ""
+
+#: ../../dispatcher/filters/callback_data.rst:24
+msgid "After that you can generate any callback based on this class, for example:"
+msgstr ""
+
+#: ../../dispatcher/filters/callback_data.rst:32
+msgid ""
+"So... Now you can use this class to generate any callbacks with defined "
+"structure"
+msgstr ""
+
+#: ../../dispatcher/filters/callback_data.rst:44
+msgid "... and handle by specific rules"
+msgstr ""
+
+#: ../../dispatcher/filters/callback_data.rst:55
+msgid "Also can be used in :doc:`Keyboard builder </utils/keyboard>`:"
+msgstr ""
+
+#: ../../dispatcher/filters/callback_data.rst:66
+msgid "Another abstract example:"
+msgstr ""
+
+#: ../../dispatcher/filters/callback_data.rst:104
+msgid "Known limitations"
+msgstr ""
+
+#: ../../dispatcher/filters/callback_data.rst:106
+msgid "Allowed types and their subclasses:"
+msgstr ""
+
+#: ../../dispatcher/filters/callback_data.rst:108
+msgid ":code:`str`"
+msgstr ""
+
+#: ../../dispatcher/filters/callback_data.rst:109
+msgid ":code:`int`"
+msgstr ""
+
+#: ../../dispatcher/filters/callback_data.rst:110
+msgid ":code:`bool`"
+msgstr ""
+
+#: ../../dispatcher/filters/callback_data.rst:111
+msgid ":code:`float`"
+msgstr ""
+
+#: ../../dispatcher/filters/callback_data.rst:112
+msgid ":code:`Decimal`  (:code:`from decimal import Decimal`)"
+msgstr ""
+
+#: ../../dispatcher/filters/callback_data.rst:113
+msgid ":code:`Fraction`  (:code:`from fractions import Fraction`)"
+msgstr ""
+
+#: ../../dispatcher/filters/callback_data.rst:114
+msgid ":code:`UUID` (:code:`from uuid import UUID`)"
+msgstr ""
+
+#: ../../dispatcher/filters/callback_data.rst:115
+msgid ":code:`Enum` (:code:`from enum import Enum`, only for string enums)"
+msgstr ""
+
+#: ../../dispatcher/filters/callback_data.rst:116
+msgid ":code:`IntEnum` (:code:`from enum import IntEnum`, only for int enums)"
+msgstr ""
+
+#: ../../dispatcher/filters/callback_data.rst:121
+msgid ""
+"Note that the integer Enum's should be always is subclasses of "
+":code:`IntEnum` in due to parsing issues."
+msgstr ""
+

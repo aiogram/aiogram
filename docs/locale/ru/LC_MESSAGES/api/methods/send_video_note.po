@@ -1,0 +1,234 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2025, aiogram Team
+# This file is distributed under the same license as the aiogram package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: aiogram \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-01 19:31+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ru\n"
+"Language-Team: ru <LL@li.org>\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../api/methods/send_video_note.rst:3
+msgid "sendVideoNote"
+msgstr ""
+
+#: ../../api/methods/send_video_note.rst:5
+msgid "Returns: :obj:`Message`"
+msgstr ""
+
+#: aiogram.methods.send_video_note.SendVideoNote:1 of
+msgid ""
+"As of `v.4.0 <https://telegram.org/blog/video-messages-and-telescope>`_, "
+"Telegram clients support rounded square MPEG4 videos of up to 1 minute "
+"long. Use this method to send video messages. On success, the sent "
+":class:`aiogram.types.message.Message` is returned."
+msgstr ""
+
+#: aiogram.methods.send_video_note.SendVideoNote:3 of
+msgid "Source: https://core.telegram.org/bots/api#sendvideonote"
+msgstr ""
+
+#: ../../docstring aiogram.methods.send_video_note.SendVideoNote.chat_id:1 of
+msgid ""
+"Unique identifier for the target chat or username of the target channel "
+"(in the format :code:`@channelusername`)"
+msgstr ""
+
+#: ../../docstring aiogram.methods.send_video_note.SendVideoNote.video_note:1
+#: of
+msgid ""
+"Video note to send. Pass a file_id as String to send a video note that "
+"exists on the Telegram servers (recommended) or upload a new video using "
+"multipart/form-data. :ref:`More information on Sending Files » <sending-"
+"files>`. Sending video notes by a URL is currently unsupported"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.send_video_note.SendVideoNote.business_connection_id:1 of
+msgid ""
+"Unique identifier of the business connection on behalf of which the "
+"message will be sent"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.send_video_note.SendVideoNote.message_thread_id:1 of
+msgid ""
+"Unique identifier for the target message thread (topic) of the forum; for"
+" forum supergroups only"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.send_video_note.SendVideoNote.direct_messages_topic_id:1 of
+msgid ""
+"Identifier of the direct messages topic to which the message will be "
+"sent; required if the message is sent to a direct messages chat"
+msgstr ""
+
+#: ../../docstring aiogram.methods.send_video_note.SendVideoNote.duration:1 of
+msgid "Duration of sent video in seconds"
+msgstr ""
+
+#: ../../docstring aiogram.methods.send_video_note.SendVideoNote.length:1 of
+msgid "Video width and height, i.e. diameter of the video message"
+msgstr ""
+
+#: ../../docstring aiogram.methods.send_video_note.SendVideoNote.thumbnail:1 of
+msgid ""
+"Thumbnail of the file sent; can be ignored if thumbnail generation for "
+"the file is supported server-side. The thumbnail should be in JPEG format"
+" and less than 200 kB in size. A thumbnail's width and height should not "
+"exceed 320. Ignored if the file is not uploaded using multipart/form-"
+"data. Thumbnails can't be reused and can be only uploaded as a new file, "
+"so you can pass 'attach://<file_attach_name>' if the thumbnail was "
+"uploaded using multipart/form-data under <file_attach_name>. :ref:`More "
+"information on Sending Files » <sending-files>`"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.send_video_note.SendVideoNote.disable_notification:1 of
+msgid ""
+"Sends the message `silently <https://telegram.org/blog/channels-2-0"
+"#silent-messages>`_. Users will receive a notification with no sound."
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.send_video_note.SendVideoNote.protect_content:1 of
+msgid "Protects the contents of the sent message from forwarding and saving"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.send_video_note.SendVideoNote.allow_paid_broadcast:1 of
+msgid ""
+"Pass :code:`True` to allow up to 1000 messages per second, ignoring "
+"`broadcasting limits <https://core.telegram.org/bots/faq#how-can-i"
+"-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 "
+"Telegram Stars per message. The relevant Stars will be withdrawn from the"
+" bot's balance"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.send_video_note.SendVideoNote.message_effect_id:1 of
+msgid ""
+"Unique identifier of the message effect to be added to the message; for "
+"private chats only"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.send_video_note.SendVideoNote.suggested_post_parameters:1 of
+msgid ""
+"A JSON-serialized object containing the parameters of the suggested post "
+"to send; for direct messages chats only. If the message is sent as a "
+"reply to another suggested post, then that suggested post is "
+"automatically declined."
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.send_video_note.SendVideoNote.reply_parameters:1 of
+msgid "Description of the message to reply to"
+msgstr ""
+
+#: ../../docstring aiogram.methods.send_video_note.SendVideoNote.reply_markup:1
+#: of
+msgid ""
+"Additional interface options. A JSON-serialized object for an `inline "
+"keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, "
+"`custom reply keyboard "
+"<https://core.telegram.org/bots/features#keyboards>`_, instructions to "
+"remove a reply keyboard or to force a reply from the user"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.send_video_note.SendVideoNote.allow_sending_without_reply:1
+#: of
+msgid ""
+"Pass :code:`True` if the message should be sent even if the specified "
+"replied-to message is not found"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.send_video_note.SendVideoNote.allow_sending_without_reply:3
+#: aiogram.methods.send_video_note.SendVideoNote.reply_to_message_id:3 of
+msgid "https://core.telegram.org/bots/api-changelog#december-29-2023"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.send_video_note.SendVideoNote.reply_to_message_id:1 of
+msgid "If the message is a reply, ID of the original message"
+msgstr ""
+
+#: ../../api/methods/send_video_note.rst:15
+msgid "Usage"
+msgstr ""
+
+#: ../../api/methods/send_video_note.rst:18
+msgid "As bot method"
+msgstr ""
+
+#: ../../api/methods/send_video_note.rst:26
+msgid "Method as object"
+msgstr ""
+
+#: ../../api/methods/send_video_note.rst:28
+msgid "Imports:"
+msgstr ""
+
+#: ../../api/methods/send_video_note.rst:30
+msgid ":code:`from aiogram.methods.send_video_note import SendVideoNote`"
+msgstr ""
+
+#: ../../api/methods/send_video_note.rst:31
+msgid "alias: :code:`from aiogram.methods import SendVideoNote`"
+msgstr ""
+
+#: ../../api/methods/send_video_note.rst:34
+msgid "With specific bot"
+msgstr ""
+
+#: ../../api/methods/send_video_note.rst:41
+msgid "As reply into Webhook in handler"
+msgstr ""
+
+#: ../../api/methods/send_video_note.rst:49
+msgid "As shortcut from received object"
+msgstr ""
+
+#: ../../api/methods/send_video_note.rst:51
+msgid ":meth:`aiogram.types.message.Message.answer_video_note`"
+msgstr ""
+
+#: ../../api/methods/send_video_note.rst:52
+msgid ":meth:`aiogram.types.message.Message.reply_video_note`"
+msgstr ""
+
+#: ../../api/methods/send_video_note.rst:53
+msgid ":meth:`aiogram.types.chat_join_request.ChatJoinRequest.answer_video_note`"
+msgstr ""
+
+#: ../../api/methods/send_video_note.rst:54
+msgid ":meth:`aiogram.types.chat_join_request.ChatJoinRequest.answer_video_note_pm`"
+msgstr ""
+
+#: ../../api/methods/send_video_note.rst:55
+msgid ":meth:`aiogram.types.chat_member_updated.ChatMemberUpdated.answer_video_note`"
+msgstr ""
+
+#: ../../api/methods/send_video_note.rst:56
+msgid ":meth:`aiogram.types.inaccessible_message.InaccessibleMessage.answer_video_note`"
+msgstr ""
+
+#: ../../api/methods/send_video_note.rst:57
+msgid ":meth:`aiogram.types.inaccessible_message.InaccessibleMessage.reply_video_note`"
+msgstr ""
+

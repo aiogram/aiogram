@@ -1,0 +1,3057 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2025, aiogram Team
+# This file is distributed under the same license as the aiogram package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: aiogram \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-01 19:31+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ru\n"
+"Language-Team: ru <LL@li.org>\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../api/types/message.rst:3
+msgid "Message"
+msgstr ""
+
+#: aiogram.types.message.Message:1 of
+msgid "This object represents a message."
+msgstr ""
+
+#: aiogram.types.message.Message:3 of
+msgid "Source: https://core.telegram.org/bots/api#message"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.message_id:1 of
+msgid ""
+"Unique message identifier inside this chat. In specific instances (e.g., "
+"message containing a video sent to a big chat), the server might "
+"automatically schedule a message instead of sending it immediately. In "
+"such cases, this field will be 0 and the relevant message will be "
+"unusable until it is actually sent"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.date:1 of
+msgid ""
+"Date the message was sent in Unix time. It is always a positive number, "
+"representing a valid date."
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.chat:1 of
+msgid "Chat the message belongs to"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.message_thread_id:1 of
+msgid ""
+"*Optional*. Unique identifier of a message thread to which the message "
+"belongs; for supergroups only"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.direct_messages_topic:1 of
+msgid ""
+"*Optional*. Information about the direct messages chat topic that "
+"contains the message"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.from_user:1 of
+msgid ""
+"*Optional*. Sender of the message; may be empty for messages sent to "
+"channels. For backward compatibility, if the message was sent on behalf "
+"of a chat, the field contains a fake sender user in non-channel chats"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.sender_chat:1 of
+msgid ""
+"*Optional*. Sender of the message when sent on behalf of a chat. For "
+"example, the supergroup itself for messages sent by its anonymous "
+"administrators or a linked channel for messages automatically forwarded "
+"to the channel's discussion group. For backward compatibility, if the "
+"message was sent on behalf of a chat, the field *from* contains a fake "
+"sender user in non-channel chats."
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.sender_boost_count:1 of
+msgid ""
+"*Optional*. If the sender of the message boosted the chat, the number of "
+"boosts added by the user"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.sender_business_bot:1 of
+msgid ""
+"*Optional*. The bot that actually sent the message on behalf of the "
+"business account. Available only for outgoing messages sent on behalf of "
+"the connected business account."
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.business_connection_id:1 of
+msgid ""
+"*Optional*. Unique identifier of the business connection from which the "
+"message was received. If non-empty, the message belongs to a chat of the "
+"corresponding business account that is independent from any potential bot"
+" chat which might share the same identifier."
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.forward_origin:1 of
+msgid "*Optional*. Information about the original message for forwarded messages"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.is_topic_message:1 of
+msgid "*Optional*. :code:`True`, if the message is sent to a forum topic"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.is_automatic_forward:1 of
+msgid ""
+"*Optional*. :code:`True`, if the message is a channel post that was "
+"automatically forwarded to the connected discussion group"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.reply_to_message:1 of
+msgid ""
+"*Optional*. For replies in the same chat and message thread, the original"
+" message. Note that the :class:`aiogram.types.message.Message` object in "
+"this field will not contain further *reply_to_message* fields even if it "
+"itself is a reply."
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.external_reply:1 of
+msgid ""
+"*Optional*. Information about the message that is being replied to, which"
+" may come from another chat or forum topic"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.quote:1 of
+msgid ""
+"*Optional*. For replies that quote part of the original message, the "
+"quoted part of the message"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.reply_to_story:1 of
+msgid "*Optional*. For replies to a story, the original story"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.reply_to_checklist_task_id:1
+#: of
+msgid ""
+"*Optional*. Identifier of the specific checklist task that is being "
+"replied to"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.via_bot:1 of
+msgid "*Optional*. Bot through which the message was sent"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.edit_date:1 of
+msgid "*Optional*. Date the message was last edited in Unix time"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.has_protected_content:1 of
+msgid "*Optional*. :code:`True`, if the message can't be forwarded"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.is_from_offline:1 of
+msgid ""
+"*Optional*. :code:`True`, if the message was sent by an implicit action, "
+"for example, as an away or a greeting business message, or as a scheduled"
+" message"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.is_paid_post:1 of
+msgid ""
+"*Optional*. :code:`True`, if the message is a paid post. Note that such "
+"posts must not be deleted for 24 hours to receive the payment and can't "
+"be edited."
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.media_group_id:1 of
+msgid ""
+"*Optional*. The unique identifier of a media message group this message "
+"belongs to"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.author_signature:1 of
+msgid ""
+"*Optional*. Signature of the post author for messages in channels, or the"
+" custom title of an anonymous group administrator"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.paid_star_count:1 of
+msgid ""
+"*Optional*. The number of Telegram Stars that were paid by the sender of "
+"the message to send it"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.text:1 of
+msgid "*Optional*. For text messages, the actual UTF-8 text of the message"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.entities:1 of
+msgid ""
+"*Optional*. For text messages, special entities like usernames, URLs, bot"
+" commands, etc. that appear in the text"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.link_preview_options:1 of
+msgid ""
+"*Optional*. Options used for link preview generation for the message, if "
+"it is a text message and link preview options were changed"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.suggested_post_info:1 of
+msgid ""
+"*Optional*. Information about suggested post parameters if the message is"
+" a suggested post in a channel direct messages chat. If the message is an"
+" approved or declined suggested post, then it can't be edited."
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.effect_id:1 of
+msgid "*Optional*. Unique identifier of the message effect added to the message"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.animation:1 of
+msgid ""
+"*Optional*. Message is an animation, information about the animation. For"
+" backward compatibility, when this field is set, the *document* field "
+"will also be set"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.audio:1 of
+msgid "*Optional*. Message is an audio file, information about the file"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.document:1 of
+msgid "*Optional*. Message is a general file, information about the file"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.paid_media:1 of
+msgid "*Optional*. Message contains paid media; information about the paid media"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.photo:1 of
+msgid "*Optional*. Message is a photo, available sizes of the photo"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.sticker:1 of
+msgid "*Optional*. Message is a sticker, information about the sticker"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.story:1 of
+msgid "*Optional*. Message is a forwarded story"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.video:1 of
+msgid "*Optional*. Message is a video, information about the video"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.video_note:1 of
+msgid ""
+"*Optional*. Message is a `video note <https://telegram.org/blog/video-"
+"messages-and-telescope>`_, information about the video message"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.voice:1 of
+msgid "*Optional*. Message is a voice message, information about the file"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.caption:1 of
+msgid ""
+"*Optional*. Caption for the animation, audio, document, paid media, "
+"photo, video or voice"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.caption_entities:1 of
+msgid ""
+"*Optional*. For messages with a caption, special entities like usernames,"
+" URLs, bot commands, etc. that appear in the caption"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.show_caption_above_media:1 of
+msgid ""
+"*Optional*. :code:`True`, if the caption must be shown above the message "
+"media"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.has_media_spoiler:1 of
+msgid ""
+"*Optional*. :code:`True`, if the message media is covered by a spoiler "
+"animation"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.checklist:1 of
+msgid "*Optional*. Message is a checklist"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.contact:1 of
+msgid "*Optional*. Message is a shared contact, information about the contact"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.dice:1 of
+msgid "*Optional*. Message is a dice with random value"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.game:1 of
+msgid ""
+"*Optional*. Message is a game, information about the game. `More about "
+"games » <https://core.telegram.org/bots/api#games>`_"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.poll:1 of
+msgid "*Optional*. Message is a native poll, information about the poll"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.venue:1 of
+msgid ""
+"*Optional*. Message is a venue, information about the venue. For backward"
+" compatibility, when this field is set, the *location* field will also be"
+" set"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.location:1 of
+msgid "*Optional*. Message is a shared location, information about the location"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.new_chat_members:1 of
+msgid ""
+"*Optional*. New members that were added to the group or supergroup and "
+"information about them (the bot itself may be one of these members)"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.left_chat_member:1 of
+msgid ""
+"*Optional*. A member was removed from the group, information about them "
+"(this member may be the bot itself)"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.new_chat_title:1 of
+msgid "*Optional*. A chat title was changed to this value"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.new_chat_photo:1 of
+msgid "*Optional*. A chat photo was change to this value"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.delete_chat_photo:1 of
+msgid "*Optional*. Service message: the chat photo was deleted"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.group_chat_created:1 of
+msgid "*Optional*. Service message: the group has been created"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.supergroup_chat_created:1 of
+msgid ""
+"*Optional*. Service message: the supergroup has been created. This field "
+"can't be received in a message coming through updates, because bot can't "
+"be a member of a supergroup when it is created. It can only be found in "
+"reply_to_message if someone replies to a very first message in a directly"
+" created supergroup."
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.channel_chat_created:1 of
+msgid ""
+"*Optional*. Service message: the channel has been created. This field "
+"can't be received in a message coming through updates, because bot can't "
+"be a member of a channel when it is created. It can only be found in "
+"reply_to_message if someone replies to a very first message in a channel."
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.message.Message.message_auto_delete_timer_changed:1 of
+msgid ""
+"*Optional*. Service message: auto-delete timer settings changed in the "
+"chat"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.migrate_to_chat_id:1 of
+msgid ""
+"*Optional*. The group has been migrated to a supergroup with the "
+"specified identifier. This number may have more than 32 significant bits "
+"and some programming languages may have difficulty/silent defects in "
+"interpreting it. But it has at most 52 significant bits, so a signed "
+"64-bit integer or double-precision float type are safe for storing this "
+"identifier."
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.migrate_from_chat_id:1 of
+msgid ""
+"*Optional*. The supergroup has been migrated from a group with the "
+"specified identifier. This number may have more than 32 significant bits "
+"and some programming languages may have difficulty/silent defects in "
+"interpreting it. But it has at most 52 significant bits, so a signed "
+"64-bit integer or double-precision float type are safe for storing this "
+"identifier."
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.pinned_message:1 of
+msgid ""
+"*Optional*. Specified message was pinned. Note that the "
+":class:`aiogram.types.message.Message` object in this field will not "
+"contain further *reply_to_message* fields even if it itself is a reply."
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.invoice:1 of
+msgid ""
+"*Optional*. Message is an invoice for a `payment "
+"<https://core.telegram.org/bots/api#payments>`_, information about the "
+"invoice. `More about payments » "
+"<https://core.telegram.org/bots/api#payments>`_"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.successful_payment:1 of
+msgid ""
+"*Optional*. Message is a service message about a successful payment, "
+"information about the payment. `More about payments » "
+"<https://core.telegram.org/bots/api#payments>`_"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.refunded_payment:1 of
+msgid ""
+"*Optional*. Message is a service message about a refunded payment, "
+"information about the payment. `More about payments » "
+"<https://core.telegram.org/bots/api#payments>`_"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.users_shared:1 of
+msgid "*Optional*. Service message: users were shared with the bot"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.chat_shared:1 of
+msgid "*Optional*. Service message: a chat was shared with the bot"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.gift:1 of
+msgid "*Optional*. Service message: a regular gift was sent or received"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.unique_gift:1 of
+msgid "*Optional*. Service message: a unique gift was sent or received"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.connected_website:1 of
+msgid ""
+"*Optional*. The domain name of the website on which the user has logged "
+"in. `More about Telegram Login » "
+"<https://core.telegram.org/widgets/login>`_"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.write_access_allowed:1 of
+msgid ""
+"*Optional*. Service message: the user allowed the bot to write messages "
+"after adding it to the attachment or side menu, launching a Web App from "
+"a link, or accepting an explicit request from a Web App sent by the "
+"method `requestWriteAccess <https://core.telegram.org/bots/webapps"
+"#initializing-mini-apps>`_"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.passport_data:1 of
+msgid "*Optional*. Telegram Passport data"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.proximity_alert_triggered:1 of
+msgid ""
+"*Optional*. Service message. A user in the chat triggered another user's "
+"proximity alert while sharing Live Location."
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.boost_added:1 of
+msgid "*Optional*. Service message: user boosted the chat"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.chat_background_set:1 of
+msgid "*Optional*. Service message: chat background set"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.checklist_tasks_done:1 of
+msgid ""
+"*Optional*. Service message: some tasks in a checklist were marked as "
+"done or not done"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.checklist_tasks_added:1 of
+msgid "*Optional*. Service message: tasks were added to a checklist"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.direct_message_price_changed:1
+#: of
+msgid ""
+"*Optional*. Service message: the price for paid messages in the "
+"corresponding direct messages chat of a channel has changed"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.forum_topic_created:1 of
+msgid "*Optional*. Service message: forum topic created"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.forum_topic_edited:1 of
+msgid "*Optional*. Service message: forum topic edited"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.forum_topic_closed:1 of
+msgid "*Optional*. Service message: forum topic closed"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.forum_topic_reopened:1 of
+msgid "*Optional*. Service message: forum topic reopened"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.general_forum_topic_hidden:1
+#: of
+msgid "*Optional*. Service message: the 'General' forum topic hidden"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.general_forum_topic_unhidden:1
+#: of
+msgid "*Optional*. Service message: the 'General' forum topic unhidden"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.giveaway_created:1 of
+msgid "*Optional*. Service message: a scheduled giveaway was created"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.giveaway:1 of
+msgid "*Optional*. The message is a scheduled giveaway message"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.giveaway_winners:1 of
+msgid "*Optional*. A giveaway with public winners was completed"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.giveaway_completed:1 of
+msgid ""
+"*Optional*. Service message: a giveaway without public winners was "
+"completed"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.paid_message_price_changed:1
+#: of
+msgid ""
+"*Optional*. Service message: the price for paid messages has changed in "
+"the chat"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.suggested_post_approved:1 of
+msgid "*Optional*. Service message: a suggested post was approved"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.message.Message.suggested_post_approval_failed:1 of
+msgid "*Optional*. Service message: approval of a suggested post has failed"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.suggested_post_declined:1 of
+msgid "*Optional*. Service message: a suggested post was declined"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.suggested_post_paid:1 of
+msgid "*Optional*. Service message: payment for a suggested post was received"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.suggested_post_refunded:1 of
+msgid "*Optional*. Service message: payment for a suggested post was refunded"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.video_chat_scheduled:1 of
+msgid "*Optional*. Service message: video chat scheduled"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.video_chat_started:1 of
+msgid "*Optional*. Service message: video chat started"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.video_chat_ended:1 of
+msgid "*Optional*. Service message: video chat ended"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.message.Message.video_chat_participants_invited:1 of
+msgid "*Optional*. Service message: new participants invited to a video chat"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.web_app_data:1 of
+msgid "*Optional*. Service message: data sent by a Web App"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.reply_markup:1 of
+msgid ""
+"*Optional*. Inline keyboard attached to the message. :code:`login_url` "
+"buttons are represented as ordinary :code:`url` buttons."
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.forward_date:1 of
+msgid ""
+"*Optional*. For forwarded messages, date the original message was sent in"
+" Unix time"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.forward_date:3
+#: aiogram.types.message.Message.forward_from:3
+#: aiogram.types.message.Message.forward_from_chat:3
+#: aiogram.types.message.Message.forward_from_message_id:3
+#: aiogram.types.message.Message.forward_sender_name:3
+#: aiogram.types.message.Message.forward_signature:3
+#: aiogram.types.message.Message.user_shared:3 of
+msgid "https://core.telegram.org/bots/api-changelog#december-29-2023"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.forward_from:1 of
+msgid "*Optional*. For forwarded messages, sender of the original message"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.forward_from_chat:1 of
+msgid ""
+"*Optional*. For messages forwarded from channels or from anonymous "
+"administrators, information about the original sender chat"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.forward_from_message_id:1 of
+msgid ""
+"*Optional*. For messages forwarded from channels, identifier of the "
+"original message in the channel"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.forward_sender_name:1 of
+msgid ""
+"*Optional*. Sender's name for messages forwarded from users who disallow "
+"adding a link to their account in forwarded messages"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.forward_signature:1 of
+msgid ""
+"*Optional*. For forwarded messages that were originally sent in channels "
+"or by an anonymous chat administrator, signature of the message sender if"
+" present"
+msgstr ""
+
+#: ../../docstring aiogram.types.message.Message.user_shared:1 of
+msgid "*Optional*. Service message: a user was shared with the bot"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_animation:1
+#: aiogram.types.message.Message.reply_animation:1 of
+msgid ""
+"Shortcut for method :class:`aiogram.methods.send_animation.SendAnimation`"
+" will automatically fill method attributes:"
+msgstr ""
+
+#: aiogram.types.message.Message.answer:4
+#: aiogram.types.message.Message.answer_animation:4
+#: aiogram.types.message.Message.answer_audio:4
+#: aiogram.types.message.Message.answer_contact:4
+#: aiogram.types.message.Message.answer_dice:4
+#: aiogram.types.message.Message.answer_document:4
+#: aiogram.types.message.Message.answer_game:4
+#: aiogram.types.message.Message.answer_invoice:4
+#: aiogram.types.message.Message.answer_location:4
+#: aiogram.types.message.Message.answer_media_group:4
+#: aiogram.types.message.Message.answer_paid_media:4
+#: aiogram.types.message.Message.answer_photo:4
+#: aiogram.types.message.Message.answer_poll:4
+#: aiogram.types.message.Message.answer_sticker:4
+#: aiogram.types.message.Message.answer_venue:4
+#: aiogram.types.message.Message.answer_video:4
+#: aiogram.types.message.Message.answer_video_note:4
+#: aiogram.types.message.Message.answer_voice:4
+#: aiogram.types.message.Message.delete:4
+#: aiogram.types.message.Message.delete_reply_markup:4
+#: aiogram.types.message.Message.edit_caption:4
+#: aiogram.types.message.Message.edit_live_location:4
+#: aiogram.types.message.Message.edit_media:4
+#: aiogram.types.message.Message.edit_reply_markup:4
+#: aiogram.types.message.Message.edit_text:4
+#: aiogram.types.message.Message.pin:4 aiogram.types.message.Message.react:4
+#: aiogram.types.message.Message.reply:4
+#: aiogram.types.message.Message.reply_animation:4
+#: aiogram.types.message.Message.reply_audio:4
+#: aiogram.types.message.Message.reply_contact:4
+#: aiogram.types.message.Message.reply_dice:4
+#: aiogram.types.message.Message.reply_document:4
+#: aiogram.types.message.Message.reply_game:4
+#: aiogram.types.message.Message.reply_invoice:4
+#: aiogram.types.message.Message.reply_location:4
+#: aiogram.types.message.Message.reply_media_group:4
+#: aiogram.types.message.Message.reply_paid_media:4
+#: aiogram.types.message.Message.reply_photo:4
+#: aiogram.types.message.Message.reply_poll:4
+#: aiogram.types.message.Message.reply_sticker:4
+#: aiogram.types.message.Message.reply_venue:4
+#: aiogram.types.message.Message.reply_video:4
+#: aiogram.types.message.Message.reply_video_note:4
+#: aiogram.types.message.Message.reply_voice:4
+#: aiogram.types.message.Message.stop_live_location:4
+#: aiogram.types.message.Message.unpin:4 of
+msgid ":code:`chat_id`"
+msgstr ""
+
+#: aiogram.types.message.Message.answer:5
+#: aiogram.types.message.Message.answer_animation:5
+#: aiogram.types.message.Message.answer_audio:5
+#: aiogram.types.message.Message.answer_contact:5
+#: aiogram.types.message.Message.answer_dice:5
+#: aiogram.types.message.Message.answer_document:5
+#: aiogram.types.message.Message.answer_game:5
+#: aiogram.types.message.Message.answer_invoice:5
+#: aiogram.types.message.Message.answer_location:5
+#: aiogram.types.message.Message.answer_media_group:5
+#: aiogram.types.message.Message.answer_paid_media:5
+#: aiogram.types.message.Message.answer_photo:5
+#: aiogram.types.message.Message.answer_poll:5
+#: aiogram.types.message.Message.answer_sticker:5
+#: aiogram.types.message.Message.answer_venue:5
+#: aiogram.types.message.Message.answer_video:5
+#: aiogram.types.message.Message.answer_video_note:5
+#: aiogram.types.message.Message.answer_voice:5
+#: aiogram.types.message.Message.reply:5
+#: aiogram.types.message.Message.reply_animation:5
+#: aiogram.types.message.Message.reply_audio:5
+#: aiogram.types.message.Message.reply_contact:5
+#: aiogram.types.message.Message.reply_dice:5
+#: aiogram.types.message.Message.reply_document:5
+#: aiogram.types.message.Message.reply_game:5
+#: aiogram.types.message.Message.reply_invoice:5
+#: aiogram.types.message.Message.reply_location:5
+#: aiogram.types.message.Message.reply_media_group:5
+#: aiogram.types.message.Message.reply_paid_media:5
+#: aiogram.types.message.Message.reply_photo:5
+#: aiogram.types.message.Message.reply_poll:5
+#: aiogram.types.message.Message.reply_sticker:5
+#: aiogram.types.message.Message.reply_venue:5
+#: aiogram.types.message.Message.reply_video:5
+#: aiogram.types.message.Message.reply_video_note:5
+#: aiogram.types.message.Message.reply_voice:5 of
+msgid ":code:`message_thread_id`"
+msgstr ""
+
+#: aiogram.types.message.Message.answer:6
+#: aiogram.types.message.Message.answer_animation:6
+#: aiogram.types.message.Message.answer_audio:6
+#: aiogram.types.message.Message.answer_contact:6
+#: aiogram.types.message.Message.answer_dice:6
+#: aiogram.types.message.Message.answer_document:6
+#: aiogram.types.message.Message.answer_game:6
+#: aiogram.types.message.Message.answer_invoice:6
+#: aiogram.types.message.Message.answer_location:6
+#: aiogram.types.message.Message.answer_media_group:6
+#: aiogram.types.message.Message.answer_paid_media:6
+#: aiogram.types.message.Message.answer_photo:6
+#: aiogram.types.message.Message.answer_poll:6
+#: aiogram.types.message.Message.answer_sticker:6
+#: aiogram.types.message.Message.answer_venue:6
+#: aiogram.types.message.Message.answer_video:6
+#: aiogram.types.message.Message.answer_video_note:6
+#: aiogram.types.message.Message.answer_voice:6
+#: aiogram.types.message.Message.delete:6
+#: aiogram.types.message.Message.delete_reply_markup:6
+#: aiogram.types.message.Message.edit_caption:6
+#: aiogram.types.message.Message.edit_live_location:6
+#: aiogram.types.message.Message.edit_media:6
+#: aiogram.types.message.Message.edit_reply_markup:6
+#: aiogram.types.message.Message.edit_text:6
+#: aiogram.types.message.Message.pin:6 aiogram.types.message.Message.react:6
+#: aiogram.types.message.Message.reply:6
+#: aiogram.types.message.Message.reply_animation:6
+#: aiogram.types.message.Message.reply_audio:6
+#: aiogram.types.message.Message.reply_contact:6
+#: aiogram.types.message.Message.reply_dice:6
+#: aiogram.types.message.Message.reply_document:6
+#: aiogram.types.message.Message.reply_game:6
+#: aiogram.types.message.Message.reply_invoice:6
+#: aiogram.types.message.Message.reply_location:6
+#: aiogram.types.message.Message.reply_media_group:6
+#: aiogram.types.message.Message.reply_paid_media:6
+#: aiogram.types.message.Message.reply_photo:6
+#: aiogram.types.message.Message.reply_poll:6
+#: aiogram.types.message.Message.reply_sticker:6
+#: aiogram.types.message.Message.reply_venue:6
+#: aiogram.types.message.Message.reply_video:6
+#: aiogram.types.message.Message.reply_video_note:6
+#: aiogram.types.message.Message.reply_voice:6
+#: aiogram.types.message.Message.stop_live_location:6
+#: aiogram.types.message.Message.unpin:6 of
+msgid ":code:`business_connection_id`"
+msgstr ""
+
+#: aiogram.types.message.Message.reply:7
+#: aiogram.types.message.Message.reply_animation:7
+#: aiogram.types.message.Message.reply_audio:7
+#: aiogram.types.message.Message.reply_contact:7
+#: aiogram.types.message.Message.reply_dice:7
+#: aiogram.types.message.Message.reply_document:7
+#: aiogram.types.message.Message.reply_game:7
+#: aiogram.types.message.Message.reply_invoice:7
+#: aiogram.types.message.Message.reply_location:7
+#: aiogram.types.message.Message.reply_media_group:7
+#: aiogram.types.message.Message.reply_paid_media:7
+#: aiogram.types.message.Message.reply_photo:7
+#: aiogram.types.message.Message.reply_poll:7
+#: aiogram.types.message.Message.reply_sticker:7
+#: aiogram.types.message.Message.reply_venue:7
+#: aiogram.types.message.Message.reply_video:7
+#: aiogram.types.message.Message.reply_video_note:7
+#: aiogram.types.message.Message.reply_voice:7 of
+msgid ":code:`reply_parameters`"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_animation:8
+#: aiogram.types.message.Message.reply_animation:9 of
+msgid ""
+"Use this method to send animation files (GIF or H.264/MPEG-4 AVC video "
+"without sound). On success, the sent "
+":class:`aiogram.types.message.Message` is returned. Bots can currently "
+"send animation files of up to 50 MB in size, this limit may be changed in"
+" the future."
+msgstr ""
+
+#: aiogram.types.message.Message.answer_animation:10
+#: aiogram.types.message.Message.reply_animation:11 of
+msgid "Source: https://core.telegram.org/bots/api#sendanimation"
+msgstr ""
+
+#: ../../api/types/message.rst
+msgid "Parameters"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_animation:12
+#: aiogram.types.message.Message.reply_animation:13 of
+msgid ""
+"Animation to send. Pass a file_id as String to send an animation that "
+"exists on the Telegram servers (recommended), pass an HTTP URL as a "
+"String for Telegram to get an animation from the Internet, or upload a "
+"new animation using multipart/form-data. :ref:`More information on "
+"Sending Files » <sending-files>`"
+msgstr ""
+
+#: aiogram.types.message.Message.answer:13
+#: aiogram.types.message.Message.answer_animation:13
+#: aiogram.types.message.Message.answer_audio:14
+#: aiogram.types.message.Message.answer_contact:14
+#: aiogram.types.message.Message.answer_dice:12
+#: aiogram.types.message.Message.answer_document:13
+#: aiogram.types.message.Message.answer_invoice:17
+#: aiogram.types.message.Message.answer_location:14
+#: aiogram.types.message.Message.answer_paid_media:14
+#: aiogram.types.message.Message.answer_photo:13
+#: aiogram.types.message.Message.answer_sticker:13
+#: aiogram.types.message.Message.answer_venue:16
+#: aiogram.types.message.Message.answer_video:13
+#: aiogram.types.message.Message.answer_video_note:13
+#: aiogram.types.message.Message.answer_voice:13
+#: aiogram.types.message.Message.copy_to:13
+#: aiogram.types.message.Message.reply:14
+#: aiogram.types.message.Message.reply_animation:14
+#: aiogram.types.message.Message.reply_audio:15
+#: aiogram.types.message.Message.reply_contact:15
+#: aiogram.types.message.Message.reply_dice:13
+#: aiogram.types.message.Message.reply_document:14
+#: aiogram.types.message.Message.reply_invoice:18
+#: aiogram.types.message.Message.reply_location:15
+#: aiogram.types.message.Message.reply_paid_media:15
+#: aiogram.types.message.Message.reply_photo:14
+#: aiogram.types.message.Message.reply_sticker:14
+#: aiogram.types.message.Message.reply_venue:17
+#: aiogram.types.message.Message.reply_video:14
+#: aiogram.types.message.Message.reply_video_note:14
+#: aiogram.types.message.Message.reply_voice:14 of
+msgid ""
+"Identifier of the direct messages topic to which the message will be "
+"sent; required if the message is sent to a direct messages chat"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_animation:14
+#: aiogram.types.message.Message.reply_animation:15 of
+msgid "Duration of sent animation in seconds"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_animation:15
+#: aiogram.types.message.Message.reply_animation:16 of
+msgid "Animation width"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_animation:16
+#: aiogram.types.message.Message.reply_animation:17 of
+msgid "Animation height"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_animation:17
+#: aiogram.types.message.Message.answer_audio:21
+#: aiogram.types.message.Message.answer_document:14
+#: aiogram.types.message.Message.answer_video:17
+#: aiogram.types.message.Message.answer_video_note:16
+#: aiogram.types.message.Message.reply_animation:18
+#: aiogram.types.message.Message.reply_audio:22
+#: aiogram.types.message.Message.reply_document:15
+#: aiogram.types.message.Message.reply_video:18
+#: aiogram.types.message.Message.reply_video_note:17 of
+msgid ""
+"Thumbnail of the file sent; can be ignored if thumbnail generation for "
+"the file is supported server-side. The thumbnail should be in JPEG format"
+" and less than 200 kB in size. A thumbnail's width and height should not "
+"exceed 320. Ignored if the file is not uploaded using multipart/form-"
+"data. Thumbnails can't be reused and can be only uploaded as a new file, "
+"so you can pass 'attach://<file_attach_name>' if the thumbnail was "
+"uploaded using multipart/form-data under <file_attach_name>. :ref:`More "
+"information on Sending Files » <sending-files>`"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_animation:18
+#: aiogram.types.message.Message.reply_animation:19 of
+msgid ""
+"Animation caption (may also be used when resending animation by "
+"*file_id*), 0-1024 characters after entities parsing"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_animation:19
+#: aiogram.types.message.Message.reply_animation:20 of
+msgid ""
+"Mode for parsing entities in the animation caption. See `formatting "
+"options <https://core.telegram.org/bots/api#formatting-options>`_ for "
+"more details."
+msgstr ""
+
+#: aiogram.types.message.Message.answer_animation:20
+#: aiogram.types.message.Message.answer_audio:17
+#: aiogram.types.message.Message.answer_document:17
+#: aiogram.types.message.Message.answer_paid_media:18
+#: aiogram.types.message.Message.answer_photo:16
+#: aiogram.types.message.Message.answer_video:22
+#: aiogram.types.message.Message.answer_voice:16
+#: aiogram.types.message.Message.edit_caption:15
+#: aiogram.types.message.Message.reply_animation:21
+#: aiogram.types.message.Message.reply_audio:18
+#: aiogram.types.message.Message.reply_document:18
+#: aiogram.types.message.Message.reply_paid_media:19
+#: aiogram.types.message.Message.reply_photo:17
+#: aiogram.types.message.Message.reply_video:23
+#: aiogram.types.message.Message.reply_voice:17 of
+msgid ""
+"A JSON-serialized list of special entities that appear in the caption, "
+"which can be specified instead of *parse_mode*"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_animation:21
+#: aiogram.types.message.Message.answer_paid_media:19
+#: aiogram.types.message.Message.answer_photo:17
+#: aiogram.types.message.Message.answer_video:23
+#: aiogram.types.message.Message.reply_animation:22
+#: aiogram.types.message.Message.reply_paid_media:20
+#: aiogram.types.message.Message.reply_photo:18
+#: aiogram.types.message.Message.reply_video:24 of
+msgid "Pass :code:`True`, if the caption must be shown above the message media"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_animation:22
+#: aiogram.types.message.Message.reply_animation:23 of
+msgid ""
+"Pass :code:`True` if the animation needs to be covered with a spoiler "
+"animation"
+msgstr ""
+
+#: aiogram.types.message.Message.answer:17
+#: aiogram.types.message.Message.answer_animation:23
+#: aiogram.types.message.Message.answer_audio:22
+#: aiogram.types.message.Message.answer_contact:17
+#: aiogram.types.message.Message.answer_dice:14
+#: aiogram.types.message.Message.answer_document:19
+#: aiogram.types.message.Message.answer_game:13
+#: aiogram.types.message.Message.answer_invoice:34
+#: aiogram.types.message.Message.answer_location:19
+#: aiogram.types.message.Message.answer_paid_media:20
+#: aiogram.types.message.Message.answer_photo:19
+#: aiogram.types.message.Message.answer_poll:26
+#: aiogram.types.message.Message.answer_sticker:15
+#: aiogram.types.message.Message.answer_venue:21
+#: aiogram.types.message.Message.answer_video:26
+#: aiogram.types.message.Message.answer_video_note:17
+#: aiogram.types.message.Message.answer_voice:18
+#: aiogram.types.message.Message.copy_to:19
+#: aiogram.types.message.Message.forward:15
+#: aiogram.types.message.Message.reply:18
+#: aiogram.types.message.Message.reply_animation:24
+#: aiogram.types.message.Message.reply_audio:23
+#: aiogram.types.message.Message.reply_contact:18
+#: aiogram.types.message.Message.reply_dice:15
+#: aiogram.types.message.Message.reply_document:20
+#: aiogram.types.message.Message.reply_game:14
+#: aiogram.types.message.Message.reply_invoice:35
+#: aiogram.types.message.Message.reply_location:20
+#: aiogram.types.message.Message.reply_paid_media:21
+#: aiogram.types.message.Message.reply_photo:20
+#: aiogram.types.message.Message.reply_poll:27
+#: aiogram.types.message.Message.reply_sticker:16
+#: aiogram.types.message.Message.reply_venue:22
+#: aiogram.types.message.Message.reply_video:27
+#: aiogram.types.message.Message.reply_video_note:18
+#: aiogram.types.message.Message.reply_voice:19 of
+msgid ""
+"Sends the message `silently <https://telegram.org/blog/channels-2-0"
+"#silent-messages>`_. Users will receive a notification with no sound."
+msgstr ""
+
+#: aiogram.types.message.Message.answer:18
+#: aiogram.types.message.Message.answer_animation:24
+#: aiogram.types.message.Message.answer_audio:23
+#: aiogram.types.message.Message.answer_contact:18
+#: aiogram.types.message.Message.answer_document:20
+#: aiogram.types.message.Message.answer_game:14
+#: aiogram.types.message.Message.answer_invoice:35
+#: aiogram.types.message.Message.answer_location:20
+#: aiogram.types.message.Message.answer_paid_media:21
+#: aiogram.types.message.Message.answer_photo:20
+#: aiogram.types.message.Message.answer_poll:27
+#: aiogram.types.message.Message.answer_sticker:16
+#: aiogram.types.message.Message.answer_venue:22
+#: aiogram.types.message.Message.answer_video:27
+#: aiogram.types.message.Message.answer_video_note:18
+#: aiogram.types.message.Message.answer_voice:19
+#: aiogram.types.message.Message.copy_to:20
+#: aiogram.types.message.Message.reply:19
+#: aiogram.types.message.Message.reply_animation:25
+#: aiogram.types.message.Message.reply_audio:24
+#: aiogram.types.message.Message.reply_contact:19
+#: aiogram.types.message.Message.reply_document:21
+#: aiogram.types.message.Message.reply_game:15
+#: aiogram.types.message.Message.reply_invoice:36
+#: aiogram.types.message.Message.reply_location:21
+#: aiogram.types.message.Message.reply_paid_media:22
+#: aiogram.types.message.Message.reply_photo:21
+#: aiogram.types.message.Message.reply_poll:28
+#: aiogram.types.message.Message.reply_sticker:17
+#: aiogram.types.message.Message.reply_venue:23
+#: aiogram.types.message.Message.reply_video:28
+#: aiogram.types.message.Message.reply_video_note:19
+#: aiogram.types.message.Message.reply_voice:20 of
+msgid "Protects the contents of the sent message from forwarding and saving"
+msgstr ""
+
+#: aiogram.types.message.Message.answer:19
+#: aiogram.types.message.Message.answer_animation:25
+#: aiogram.types.message.Message.answer_audio:24
+#: aiogram.types.message.Message.answer_contact:19
+#: aiogram.types.message.Message.answer_dice:16
+#: aiogram.types.message.Message.answer_document:21
+#: aiogram.types.message.Message.answer_game:15
+#: aiogram.types.message.Message.answer_invoice:36
+#: aiogram.types.message.Message.answer_location:21
+#: aiogram.types.message.Message.answer_media_group:16
+#: aiogram.types.message.Message.answer_paid_media:22
+#: aiogram.types.message.Message.answer_photo:21
+#: aiogram.types.message.Message.answer_poll:28
+#: aiogram.types.message.Message.answer_sticker:17
+#: aiogram.types.message.Message.answer_venue:23
+#: aiogram.types.message.Message.answer_video:28
+#: aiogram.types.message.Message.answer_video_note:19
+#: aiogram.types.message.Message.answer_voice:20
+#: aiogram.types.message.Message.copy_to:21
+#: aiogram.types.message.Message.reply:20
+#: aiogram.types.message.Message.reply_animation:26
+#: aiogram.types.message.Message.reply_audio:25
+#: aiogram.types.message.Message.reply_contact:20
+#: aiogram.types.message.Message.reply_dice:17
+#: aiogram.types.message.Message.reply_document:22
+#: aiogram.types.message.Message.reply_game:16
+#: aiogram.types.message.Message.reply_invoice:37
+#: aiogram.types.message.Message.reply_location:22
+#: aiogram.types.message.Message.reply_media_group:17
+#: aiogram.types.message.Message.reply_paid_media:23
+#: aiogram.types.message.Message.reply_photo:22
+#: aiogram.types.message.Message.reply_poll:29
+#: aiogram.types.message.Message.reply_sticker:18
+#: aiogram.types.message.Message.reply_venue:24
+#: aiogram.types.message.Message.reply_video:29
+#: aiogram.types.message.Message.reply_video_note:20
+#: aiogram.types.message.Message.reply_voice:21 of
+msgid ""
+"Pass :code:`True` to allow up to 1000 messages per second, ignoring "
+"`broadcasting limits <https://core.telegram.org/bots/faq#how-can-i"
+"-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 "
+"Telegram Stars per message. The relevant Stars will be withdrawn from the"
+" bot's balance"
+msgstr ""
+
+#: aiogram.types.message.Message.answer:20
+#: aiogram.types.message.Message.answer_animation:26
+#: aiogram.types.message.Message.answer_audio:25
+#: aiogram.types.message.Message.answer_contact:20
+#: aiogram.types.message.Message.answer_dice:17
+#: aiogram.types.message.Message.answer_document:22
+#: aiogram.types.message.Message.answer_game:16
+#: aiogram.types.message.Message.answer_invoice:37
+#: aiogram.types.message.Message.answer_location:22
+#: aiogram.types.message.Message.answer_media_group:17
+#: aiogram.types.message.Message.answer_photo:22
+#: aiogram.types.message.Message.answer_poll:29
+#: aiogram.types.message.Message.answer_sticker:18
+#: aiogram.types.message.Message.answer_venue:24
+#: aiogram.types.message.Message.answer_video:29
+#: aiogram.types.message.Message.answer_video_note:20
+#: aiogram.types.message.Message.answer_voice:21
+#: aiogram.types.message.Message.reply:21
+#: aiogram.types.message.Message.reply_animation:27
+#: aiogram.types.message.Message.reply_audio:26
+#: aiogram.types.message.Message.reply_contact:21
+#: aiogram.types.message.Message.reply_dice:18
+#: aiogram.types.message.Message.reply_document:23
+#: aiogram.types.message.Message.reply_game:17
+#: aiogram.types.message.Message.reply_invoice:38
+#: aiogram.types.message.Message.reply_location:23
+#: aiogram.types.message.Message.reply_media_group:18
+#: aiogram.types.message.Message.reply_photo:23
+#: aiogram.types.message.Message.reply_poll:30
+#: aiogram.types.message.Message.reply_sticker:19
+#: aiogram.types.message.Message.reply_venue:25
+#: aiogram.types.message.Message.reply_video:30
+#: aiogram.types.message.Message.reply_video_note:21
+#: aiogram.types.message.Message.reply_voice:22 of
+msgid ""
+"Unique identifier of the message effect to be added to the message; for "
+"private chats only"
+msgstr ""
+
+#: aiogram.types.message.Message.answer:21
+#: aiogram.types.message.Message.answer_animation:27
+#: aiogram.types.message.Message.answer_audio:26
+#: aiogram.types.message.Message.answer_contact:21
+#: aiogram.types.message.Message.answer_dice:18
+#: aiogram.types.message.Message.answer_document:23
+#: aiogram.types.message.Message.answer_invoice:38
+#: aiogram.types.message.Message.answer_location:23
+#: aiogram.types.message.Message.answer_paid_media:23
+#: aiogram.types.message.Message.answer_photo:23
+#: aiogram.types.message.Message.answer_sticker:19
+#: aiogram.types.message.Message.answer_venue:25
+#: aiogram.types.message.Message.answer_video:30
+#: aiogram.types.message.Message.answer_video_note:21
+#: aiogram.types.message.Message.answer_voice:22
+#: aiogram.types.message.Message.copy_to:22
+#: aiogram.types.message.Message.reply:22
+#: aiogram.types.message.Message.reply_animation:28
+#: aiogram.types.message.Message.reply_audio:27
+#: aiogram.types.message.Message.reply_contact:22
+#: aiogram.types.message.Message.reply_dice:19
+#: aiogram.types.message.Message.reply_document:24
+#: aiogram.types.message.Message.reply_invoice:39
+#: aiogram.types.message.Message.reply_location:24
+#: aiogram.types.message.Message.reply_paid_media:24
+#: aiogram.types.message.Message.reply_photo:24
+#: aiogram.types.message.Message.reply_sticker:20
+#: aiogram.types.message.Message.reply_venue:26
+#: aiogram.types.message.Message.reply_video:31
+#: aiogram.types.message.Message.reply_video_note:22
+#: aiogram.types.message.Message.reply_voice:23 of
+msgid ""
+"A JSON-serialized object containing the parameters of the suggested post "
+"to send; for direct messages chats only. If the message is sent as a "
+"reply to another suggested post, then that suggested post is "
+"automatically declined."
+msgstr ""
+
+#: aiogram.types.message.Message.answer:23
+#: aiogram.types.message.Message.answer_animation:29
+#: aiogram.types.message.Message.answer_audio:28
+#: aiogram.types.message.Message.answer_contact:23
+#: aiogram.types.message.Message.answer_dice:20
+#: aiogram.types.message.Message.answer_document:25
+#: aiogram.types.message.Message.answer_location:25
+#: aiogram.types.message.Message.answer_paid_media:25
+#: aiogram.types.message.Message.answer_photo:25
+#: aiogram.types.message.Message.answer_poll:31
+#: aiogram.types.message.Message.answer_sticker:21
+#: aiogram.types.message.Message.answer_venue:27
+#: aiogram.types.message.Message.answer_video:32
+#: aiogram.types.message.Message.answer_video_note:23
+#: aiogram.types.message.Message.answer_voice:24
+#: aiogram.types.message.Message.copy_to:24
+#: aiogram.types.message.Message.reply:23
+#: aiogram.types.message.Message.reply_animation:29
+#: aiogram.types.message.Message.reply_audio:28
+#: aiogram.types.message.Message.reply_contact:23
+#: aiogram.types.message.Message.reply_dice:20
+#: aiogram.types.message.Message.reply_document:25
+#: aiogram.types.message.Message.reply_location:25
+#: aiogram.types.message.Message.reply_paid_media:25
+#: aiogram.types.message.Message.reply_photo:25
+#: aiogram.types.message.Message.reply_poll:31
+#: aiogram.types.message.Message.reply_sticker:21
+#: aiogram.types.message.Message.reply_venue:27
+#: aiogram.types.message.Message.reply_video:32
+#: aiogram.types.message.Message.reply_video_note:23
+#: aiogram.types.message.Message.reply_voice:24 of
+msgid ""
+"Additional interface options. A JSON-serialized object for an `inline "
+"keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, "
+"`custom reply keyboard "
+"<https://core.telegram.org/bots/features#keyboards>`_, instructions to "
+"remove a reply keyboard or to force a reply from the user"
+msgstr ""
+
+#: aiogram.types.message.Message.answer:24
+#: aiogram.types.message.Message.answer_animation:30
+#: aiogram.types.message.Message.answer_audio:29
+#: aiogram.types.message.Message.answer_contact:24
+#: aiogram.types.message.Message.answer_dice:21
+#: aiogram.types.message.Message.answer_document:26
+#: aiogram.types.message.Message.answer_game:19
+#: aiogram.types.message.Message.answer_invoice:41
+#: aiogram.types.message.Message.answer_location:26
+#: aiogram.types.message.Message.answer_media_group:19
+#: aiogram.types.message.Message.answer_photo:26
+#: aiogram.types.message.Message.answer_poll:32
+#: aiogram.types.message.Message.answer_sticker:22
+#: aiogram.types.message.Message.answer_venue:28
+#: aiogram.types.message.Message.answer_video:33
+#: aiogram.types.message.Message.answer_video_note:24
+#: aiogram.types.message.Message.answer_voice:25
+#: aiogram.types.message.Message.copy_to:25
+#: aiogram.types.message.Message.reply:24
+#: aiogram.types.message.Message.reply_animation:30
+#: aiogram.types.message.Message.reply_audio:29
+#: aiogram.types.message.Message.reply_contact:24
+#: aiogram.types.message.Message.reply_dice:21
+#: aiogram.types.message.Message.reply_document:26
+#: aiogram.types.message.Message.reply_game:19
+#: aiogram.types.message.Message.reply_invoice:41
+#: aiogram.types.message.Message.reply_location:26
+#: aiogram.types.message.Message.reply_media_group:19
+#: aiogram.types.message.Message.reply_photo:26
+#: aiogram.types.message.Message.reply_poll:32
+#: aiogram.types.message.Message.reply_sticker:22
+#: aiogram.types.message.Message.reply_venue:28
+#: aiogram.types.message.Message.reply_video:33
+#: aiogram.types.message.Message.reply_video_note:24
+#: aiogram.types.message.Message.reply_voice:25 of
+msgid ""
+"Pass :code:`True` if the message should be sent even if the specified "
+"replied-to message is not found"
+msgstr ""
+
+#: ../../api/types/message.rst
+msgid "Returns"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_animation:32
+#: aiogram.types.message.Message.reply_animation:31 of
+msgid "instance of method :class:`aiogram.methods.send_animation.SendAnimation`"
+msgstr ""
+
+#: aiogram.types.message.Message.answer:22
+#: aiogram.types.message.Message.answer_animation:28
+#: aiogram.types.message.Message.answer_audio:27
+#: aiogram.types.message.Message.answer_contact:22
+#: aiogram.types.message.Message.answer_dice:19
+#: aiogram.types.message.Message.answer_document:24
+#: aiogram.types.message.Message.answer_game:17
+#: aiogram.types.message.Message.answer_invoice:39
+#: aiogram.types.message.Message.answer_location:24
+#: aiogram.types.message.Message.answer_media_group:18
+#: aiogram.types.message.Message.answer_paid_media:24
+#: aiogram.types.message.Message.answer_photo:24
+#: aiogram.types.message.Message.answer_poll:30
+#: aiogram.types.message.Message.answer_sticker:20
+#: aiogram.types.message.Message.answer_venue:26
+#: aiogram.types.message.Message.answer_video:31
+#: aiogram.types.message.Message.answer_video_note:22
+#: aiogram.types.message.Message.answer_voice:23
+#: aiogram.types.message.Message.copy_to:23 of
+msgid "Description of the message to reply to"
+msgstr ""
+
+#: aiogram.types.message.Message.answer:26
+#: aiogram.types.message.Message.answer_animation:31
+#: aiogram.types.message.Message.answer_audio:30
+#: aiogram.types.message.Message.answer_contact:25
+#: aiogram.types.message.Message.answer_dice:22
+#: aiogram.types.message.Message.answer_document:27
+#: aiogram.types.message.Message.answer_game:20
+#: aiogram.types.message.Message.answer_invoice:42
+#: aiogram.types.message.Message.answer_location:27
+#: aiogram.types.message.Message.answer_photo:27
+#: aiogram.types.message.Message.answer_poll:33
+#: aiogram.types.message.Message.answer_sticker:23
+#: aiogram.types.message.Message.answer_venue:29
+#: aiogram.types.message.Message.answer_video:34
+#: aiogram.types.message.Message.answer_video_note:25
+#: aiogram.types.message.Message.answer_voice:26
+#: aiogram.types.message.Message.copy_to:26 of
+msgid "If the message is a reply, ID of the original message"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_audio:1
+#: aiogram.types.message.Message.reply_audio:1 of
+msgid ""
+"Shortcut for method :class:`aiogram.methods.send_audio.SendAudio` will "
+"automatically fill method attributes:"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_audio:8
+#: aiogram.types.message.Message.reply_audio:9 of
+msgid ""
+"Use this method to send audio files, if you want Telegram clients to "
+"display them in the music player. Your audio must be in the .MP3 or .M4A "
+"format. On success, the sent :class:`aiogram.types.message.Message` is "
+"returned. Bots can currently send audio files of up to 50 MB in size, "
+"this limit may be changed in the future. For sending voice messages, use "
+"the :class:`aiogram.methods.send_voice.SendVoice` method instead."
+msgstr ""
+
+#: aiogram.types.message.Message.answer_audio:11
+#: aiogram.types.message.Message.reply_audio:12 of
+msgid "Source: https://core.telegram.org/bots/api#sendaudio"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_audio:13
+#: aiogram.types.message.Message.reply_audio:14 of
+msgid ""
+"Audio file to send. Pass a file_id as String to send an audio file that "
+"exists on the Telegram servers (recommended), pass an HTTP URL as a "
+"String for Telegram to get an audio file from the Internet, or upload a "
+"new one using multipart/form-data. :ref:`More information on Sending "
+"Files » <sending-files>`"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_audio:15
+#: aiogram.types.message.Message.reply_audio:16 of
+msgid "Audio caption, 0-1024 characters after entities parsing"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_audio:16
+#: aiogram.types.message.Message.reply_audio:17 of
+msgid ""
+"Mode for parsing entities in the audio caption. See `formatting options "
+"<https://core.telegram.org/bots/api#formatting-options>`_ for more "
+"details."
+msgstr ""
+
+#: aiogram.types.message.Message.answer_audio:18
+#: aiogram.types.message.Message.reply_audio:19 of
+msgid "Duration of the audio in seconds"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_audio:19
+#: aiogram.types.message.Message.reply_audio:20 of
+msgid "Performer"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_audio:20
+#: aiogram.types.message.Message.reply_audio:21 of
+msgid "Track name"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_audio:31
+#: aiogram.types.message.Message.reply_audio:30 of
+msgid "instance of method :class:`aiogram.methods.send_audio.SendAudio`"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_contact:1
+#: aiogram.types.message.Message.reply_contact:1 of
+msgid ""
+"Shortcut for method :class:`aiogram.methods.send_contact.SendContact` "
+"will automatically fill method attributes:"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_contact:8
+#: aiogram.types.message.Message.reply_contact:9 of
+msgid ""
+"Use this method to send phone contacts. On success, the sent "
+":class:`aiogram.types.message.Message` is returned."
+msgstr ""
+
+#: aiogram.types.message.Message.answer_contact:10
+#: aiogram.types.message.Message.reply_contact:11 of
+msgid "Source: https://core.telegram.org/bots/api#sendcontact"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_contact:12
+#: aiogram.types.message.Message.reply_contact:13 of
+msgid "Contact's phone number"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_contact:13
+#: aiogram.types.message.Message.reply_contact:14 of
+msgid "Contact's first name"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_contact:15
+#: aiogram.types.message.Message.reply_contact:16 of
+msgid "Contact's last name"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_contact:16
+#: aiogram.types.message.Message.reply_contact:17 of
+msgid ""
+"Additional data about the contact in the form of a `vCard "
+"<https://en.wikipedia.org/wiki/VCard>`_, 0-2048 bytes"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_contact:26
+#: aiogram.types.message.Message.reply_contact:25 of
+msgid "instance of method :class:`aiogram.methods.send_contact.SendContact`"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_document:1
+#: aiogram.types.message.Message.reply_document:1 of
+msgid ""
+"Shortcut for method :class:`aiogram.methods.send_document.SendDocument` "
+"will automatically fill method attributes:"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_document:8
+#: aiogram.types.message.Message.reply_document:9 of
+msgid ""
+"Use this method to send general files. On success, the sent "
+":class:`aiogram.types.message.Message` is returned. Bots can currently "
+"send files of any type of up to 50 MB in size, this limit may be changed "
+"in the future."
+msgstr ""
+
+#: aiogram.types.message.Message.answer_document:10
+#: aiogram.types.message.Message.reply_document:11 of
+msgid "Source: https://core.telegram.org/bots/api#senddocument"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_document:12
+#: aiogram.types.message.Message.reply_document:13 of
+msgid ""
+"File to send. Pass a file_id as String to send a file that exists on the "
+"Telegram servers (recommended), pass an HTTP URL as a String for Telegram"
+" to get a file from the Internet, or upload a new one using multipart"
+"/form-data. :ref:`More information on Sending Files » <sending-files>`"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_document:15
+#: aiogram.types.message.Message.reply_document:16 of
+msgid ""
+"Document caption (may also be used when resending documents by "
+"*file_id*), 0-1024 characters after entities parsing"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_document:16
+#: aiogram.types.message.Message.reply_document:17 of
+msgid ""
+"Mode for parsing entities in the document caption. See `formatting "
+"options <https://core.telegram.org/bots/api#formatting-options>`_ for "
+"more details."
+msgstr ""
+
+#: aiogram.types.message.Message.answer_document:18
+#: aiogram.types.message.Message.reply_document:19 of
+msgid ""
+"Disables automatic server-side content type detection for files uploaded "
+"using multipart/form-data"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_document:28
+#: aiogram.types.message.Message.reply_document:27 of
+msgid "instance of method :class:`aiogram.methods.send_document.SendDocument`"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_game:1
+#: aiogram.types.message.Message.reply_game:1 of
+msgid ""
+"Shortcut for method :class:`aiogram.methods.send_game.SendGame` will "
+"automatically fill method attributes:"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_game:8
+#: aiogram.types.message.Message.reply_game:9 of
+msgid ""
+"Use this method to send a game. On success, the sent "
+":class:`aiogram.types.message.Message` is returned."
+msgstr ""
+
+#: aiogram.types.message.Message.answer_game:10
+#: aiogram.types.message.Message.reply_game:11 of
+msgid "Source: https://core.telegram.org/bots/api#sendgame"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_game:12
+#: aiogram.types.message.Message.reply_game:13 of
+msgid ""
+"Short name of the game, serves as the unique identifier for the game. Set"
+" up your games via `@BotFather <https://t.me/botfather>`_."
+msgstr ""
+
+#: aiogram.types.message.Message.answer_game:18
+#: aiogram.types.message.Message.reply_game:18 of
+msgid ""
+"A JSON-serialized object for an `inline keyboard "
+"<https://core.telegram.org/bots/features#inline-keyboards>`_. If empty, "
+"one 'Play game_title' button will be shown. If not empty, the first "
+"button must launch the game."
+msgstr ""
+
+#: aiogram.types.message.Message.answer_game:21
+#: aiogram.types.message.Message.reply_game:20 of
+msgid "instance of method :class:`aiogram.methods.send_game.SendGame`"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_invoice:1
+#: aiogram.types.message.Message.reply_invoice:1 of
+msgid ""
+"Shortcut for method :class:`aiogram.methods.send_invoice.SendInvoice` "
+"will automatically fill method attributes:"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_invoice:8
+#: aiogram.types.message.Message.reply_invoice:9 of
+msgid ""
+"Use this method to send invoices. On success, the sent "
+":class:`aiogram.types.message.Message` is returned."
+msgstr ""
+
+#: aiogram.types.message.Message.answer_invoice:10
+#: aiogram.types.message.Message.reply_invoice:11 of
+msgid "Source: https://core.telegram.org/bots/api#sendinvoice"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_invoice:12
+#: aiogram.types.message.Message.reply_invoice:13 of
+msgid "Product name, 1-32 characters"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_invoice:13
+#: aiogram.types.message.Message.reply_invoice:14 of
+msgid "Product description, 1-255 characters"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_invoice:14
+#: aiogram.types.message.Message.reply_invoice:15 of
+msgid ""
+"Bot-defined invoice payload, 1-128 bytes. This will not be displayed to "
+"the user, use it for your internal processes."
+msgstr ""
+
+#: aiogram.types.message.Message.answer_invoice:15
+#: aiogram.types.message.Message.reply_invoice:16 of
+msgid ""
+"Three-letter ISO 4217 currency code, see `more on currencies "
+"<https://core.telegram.org/bots/payments#supported-currencies>`_. Pass "
+"'XTR' for payments in `Telegram Stars <https://t.me/BotNews/90>`_."
+msgstr ""
+
+#: aiogram.types.message.Message.answer_invoice:16
+#: aiogram.types.message.Message.reply_invoice:17 of
+msgid ""
+"Price breakdown, a JSON-serialized list of components (e.g. product "
+"price, tax, discount, delivery cost, delivery tax, bonus, etc.). Must "
+"contain exactly one item for payments in `Telegram Stars "
+"<https://t.me/BotNews/90>`_."
+msgstr ""
+
+#: aiogram.types.message.Message.answer_invoice:18
+#: aiogram.types.message.Message.reply_invoice:19 of
+msgid ""
+"Payment provider token, obtained via `@BotFather "
+"<https://t.me/botfather>`_. Pass an empty string for payments in "
+"`Telegram Stars <https://t.me/BotNews/90>`_."
+msgstr ""
+
+#: aiogram.types.message.Message.answer_invoice:19
+#: aiogram.types.message.Message.reply_invoice:20 of
+msgid ""
+"The maximum accepted amount for tips in the *smallest units* of the "
+"currency (integer, **not** float/double). For example, for a maximum tip "
+"of :code:`US$ 1.45` pass :code:`max_tip_amount = 145`. See the *exp* "
+"parameter in `currencies.json "
+"<https://core.telegram.org/bots/payments/currencies.json>`_, it shows the"
+" number of digits past the decimal point for each currency (2 for the "
+"majority of currencies). Defaults to 0. Not supported for payments in "
+"`Telegram Stars <https://t.me/BotNews/90>`_."
+msgstr ""
+
+#: aiogram.types.message.Message.answer_invoice:20
+#: aiogram.types.message.Message.reply_invoice:21 of
+msgid ""
+"A JSON-serialized array of suggested amounts of tips in the *smallest "
+"units* of the currency (integer, **not** float/double). At most 4 "
+"suggested tip amounts can be specified. The suggested tip amounts must be"
+" positive, passed in a strictly increased order and must not exceed "
+"*max_tip_amount*."
+msgstr ""
+
+#: aiogram.types.message.Message.answer_invoice:21
+#: aiogram.types.message.Message.reply_invoice:22 of
+msgid ""
+"Unique deep-linking parameter. If left empty, **forwarded copies** of the"
+" sent message will have a *Pay* button, allowing multiple users to pay "
+"directly from the forwarded message, using the same invoice. If non-"
+"empty, forwarded copies of the sent message will have a *URL* button with"
+" a deep link to the bot (instead of a *Pay* button), with the value used "
+"as the start parameter"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_invoice:22
+#: aiogram.types.message.Message.reply_invoice:23 of
+msgid ""
+"JSON-serialized data about the invoice, which will be shared with the "
+"payment provider. A detailed description of required fields should be "
+"provided by the payment provider."
+msgstr ""
+
+#: aiogram.types.message.Message.answer_invoice:23
+#: aiogram.types.message.Message.reply_invoice:24 of
+msgid ""
+"URL of the product photo for the invoice. Can be a photo of the goods or "
+"a marketing image for a service. People like it better when they see what"
+" they are paying for."
+msgstr ""
+
+#: aiogram.types.message.Message.answer_invoice:24
+#: aiogram.types.message.Message.reply_invoice:25 of
+msgid "Photo size in bytes"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_invoice:25
+#: aiogram.types.message.Message.reply_invoice:26 of
+msgid "Photo width"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_invoice:26
+#: aiogram.types.message.Message.reply_invoice:27 of
+msgid "Photo height"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_invoice:27
+#: aiogram.types.message.Message.reply_invoice:28 of
+msgid ""
+"Pass :code:`True` if you require the user's full name to complete the "
+"order. Ignored for payments in `Telegram Stars "
+"<https://t.me/BotNews/90>`_."
+msgstr ""
+
+#: aiogram.types.message.Message.answer_invoice:28
+#: aiogram.types.message.Message.reply_invoice:29 of
+msgid ""
+"Pass :code:`True` if you require the user's phone number to complete the "
+"order. Ignored for payments in `Telegram Stars "
+"<https://t.me/BotNews/90>`_."
+msgstr ""
+
+#: aiogram.types.message.Message.answer_invoice:29
+#: aiogram.types.message.Message.reply_invoice:30 of
+msgid ""
+"Pass :code:`True` if you require the user's email address to complete the"
+" order. Ignored for payments in `Telegram Stars "
+"<https://t.me/BotNews/90>`_."
+msgstr ""
+
+#: aiogram.types.message.Message.answer_invoice:30
+#: aiogram.types.message.Message.reply_invoice:31 of
+msgid ""
+"Pass :code:`True` if you require the user's shipping address to complete "
+"the order. Ignored for payments in `Telegram Stars "
+"<https://t.me/BotNews/90>`_."
+msgstr ""
+
+#: aiogram.types.message.Message.answer_invoice:31
+#: aiogram.types.message.Message.reply_invoice:32 of
+msgid ""
+"Pass :code:`True` if the user's phone number should be sent to the "
+"provider. Ignored for payments in `Telegram Stars "
+"<https://t.me/BotNews/90>`_."
+msgstr ""
+
+#: aiogram.types.message.Message.answer_invoice:32
+#: aiogram.types.message.Message.reply_invoice:33 of
+msgid ""
+"Pass :code:`True` if the user's email address should be sent to the "
+"provider. Ignored for payments in `Telegram Stars "
+"<https://t.me/BotNews/90>`_."
+msgstr ""
+
+#: aiogram.types.message.Message.answer_invoice:33
+#: aiogram.types.message.Message.reply_invoice:34 of
+msgid ""
+"Pass :code:`True` if the final price depends on the shipping method. "
+"Ignored for payments in `Telegram Stars <https://t.me/BotNews/90>`_."
+msgstr ""
+
+#: aiogram.types.message.Message.answer_invoice:40
+#: aiogram.types.message.Message.reply_invoice:40 of
+msgid ""
+"A JSON-serialized object for an `inline keyboard "
+"<https://core.telegram.org/bots/features#inline-keyboards>`_. If empty, "
+"one 'Pay :code:`total price`' button will be shown. If not empty, the "
+"first button must be a Pay button."
+msgstr ""
+
+#: aiogram.types.message.Message.answer_invoice:43
+#: aiogram.types.message.Message.reply_invoice:42 of
+msgid "instance of method :class:`aiogram.methods.send_invoice.SendInvoice`"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_location:1
+#: aiogram.types.message.Message.reply_location:1 of
+msgid ""
+"Shortcut for method :class:`aiogram.methods.send_location.SendLocation` "
+"will automatically fill method attributes:"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_location:8
+#: aiogram.types.message.Message.reply_location:9 of
+msgid ""
+"Use this method to send point on the map. On success, the sent "
+":class:`aiogram.types.message.Message` is returned."
+msgstr ""
+
+#: aiogram.types.message.Message.answer_location:10
+#: aiogram.types.message.Message.reply_location:11 of
+msgid "Source: https://core.telegram.org/bots/api#sendlocation"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_location:12
+#: aiogram.types.message.Message.reply_location:13 of
+msgid "Latitude of the location"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_location:13
+#: aiogram.types.message.Message.reply_location:14 of
+msgid "Longitude of the location"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_location:15
+#: aiogram.types.message.Message.edit_live_location:16
+#: aiogram.types.message.Message.reply_location:16 of
+msgid "The radius of uncertainty for the location, measured in meters; 0-1500"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_location:16
+#: aiogram.types.message.Message.reply_location:17 of
+msgid ""
+"Period in seconds during which the location will be updated (see `Live "
+"Locations <https://telegram.org/blog/live-locations>`_, should be between"
+" 60 and 86400, or 0x7FFFFFFF for live locations that can be edited "
+"indefinitely."
+msgstr ""
+
+#: aiogram.types.message.Message.answer_location:17
+#: aiogram.types.message.Message.reply_location:18 of
+msgid ""
+"For live locations, a direction in which the user is moving, in degrees. "
+"Must be between 1 and 360 if specified."
+msgstr ""
+
+#: aiogram.types.message.Message.answer_location:18
+#: aiogram.types.message.Message.reply_location:19 of
+msgid ""
+"For live locations, a maximum distance for proximity alerts about "
+"approaching another chat member, in meters. Must be between 1 and 100000 "
+"if specified."
+msgstr ""
+
+#: aiogram.types.message.Message.answer_location:28
+#: aiogram.types.message.Message.reply_location:27 of
+msgid "instance of method :class:`aiogram.methods.send_location.SendLocation`"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_media_group:1
+#: aiogram.types.message.Message.reply_media_group:1 of
+msgid ""
+"Shortcut for method "
+":class:`aiogram.methods.send_media_group.SendMediaGroup` will "
+"automatically fill method attributes:"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_media_group:8
+#: aiogram.types.message.Message.reply_media_group:9 of
+msgid ""
+"Use this method to send a group of photos, videos, documents or audios as"
+" an album. Documents and audio files can be only grouped in an album with"
+" messages of the same type. On success, an array of "
+":class:`aiogram.types.message.Message` objects that were sent is "
+"returned."
+msgstr ""
+
+#: aiogram.types.message.Message.answer_media_group:10
+#: aiogram.types.message.Message.reply_media_group:11 of
+msgid "Source: https://core.telegram.org/bots/api#sendmediagroup"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_media_group:12
+#: aiogram.types.message.Message.reply_media_group:13 of
+msgid ""
+"A JSON-serialized array describing messages to be sent, must include 2-10"
+" items"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_media_group:13
+#: aiogram.types.message.Message.reply_media_group:14 of
+msgid ""
+"Identifier of the direct messages topic to which the messages will be "
+"sent; required if the messages are sent to a direct messages chat"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_media_group:14
+#: aiogram.types.message.Message.reply_media_group:15 of
+msgid ""
+"Sends messages `silently <https://telegram.org/blog/channels-2-0#silent-"
+"messages>`_. Users will receive a notification with no sound."
+msgstr ""
+
+#: aiogram.types.message.Message.answer_media_group:15
+#: aiogram.types.message.Message.reply_media_group:16 of
+msgid "Protects the contents of the sent messages from forwarding and saving"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_media_group:21
+#: aiogram.types.message.Message.reply_media_group:20 of
+msgid ""
+"instance of method "
+":class:`aiogram.methods.send_media_group.SendMediaGroup`"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_media_group:20 of
+msgid "If the messages are a reply, ID of the original message"
+msgstr ""
+
+#: aiogram.types.message.Message.answer:1 aiogram.types.message.Message.reply:1
+#: of
+msgid ""
+"Shortcut for method :class:`aiogram.methods.send_message.SendMessage` "
+"will automatically fill method attributes:"
+msgstr ""
+
+#: aiogram.types.message.Message.answer:8 aiogram.types.message.Message.reply:9
+#: of
+msgid ""
+"Use this method to send text messages. On success, the sent "
+":class:`aiogram.types.message.Message` is returned."
+msgstr ""
+
+#: aiogram.types.message.Message.answer:10
+#: aiogram.types.message.Message.reply:11 of
+msgid "Source: https://core.telegram.org/bots/api#sendmessage"
+msgstr ""
+
+#: aiogram.types.message.Message.answer:12
+#: aiogram.types.message.Message.reply:13 of
+msgid "Text of the message to be sent, 1-4096 characters after entities parsing"
+msgstr ""
+
+#: aiogram.types.message.Message.answer:14
+#: aiogram.types.message.Message.edit_text:14
+#: aiogram.types.message.Message.reply:15 of
+msgid ""
+"Mode for parsing entities in the message text. See `formatting options "
+"<https://core.telegram.org/bots/api#formatting-options>`_ for more "
+"details."
+msgstr ""
+
+#: aiogram.types.message.Message.answer:15
+#: aiogram.types.message.Message.edit_text:15
+#: aiogram.types.message.Message.reply:16 of
+msgid ""
+"A JSON-serialized list of special entities that appear in message text, "
+"which can be specified instead of *parse_mode*"
+msgstr ""
+
+#: aiogram.types.message.Message.answer:16
+#: aiogram.types.message.Message.edit_text:16
+#: aiogram.types.message.Message.reply:17 of
+msgid "Link preview generation options for the message"
+msgstr ""
+
+#: aiogram.types.message.Message.answer:25
+#: aiogram.types.message.Message.edit_text:18
+#: aiogram.types.message.Message.reply:25 of
+msgid "Disables link previews for links in this message"
+msgstr ""
+
+#: aiogram.types.message.Message.answer:27
+#: aiogram.types.message.Message.reply:26 of
+msgid "instance of method :class:`aiogram.methods.send_message.SendMessage`"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_photo:1
+#: aiogram.types.message.Message.reply_photo:1 of
+msgid ""
+"Shortcut for method :class:`aiogram.methods.send_photo.SendPhoto` will "
+"automatically fill method attributes:"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_photo:8
+#: aiogram.types.message.Message.reply_photo:9 of
+msgid ""
+"Use this method to send photos. On success, the sent "
+":class:`aiogram.types.message.Message` is returned."
+msgstr ""
+
+#: aiogram.types.message.Message.answer_photo:10
+#: aiogram.types.message.Message.reply_photo:11 of
+msgid "Source: https://core.telegram.org/bots/api#sendphoto"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_photo:12
+#: aiogram.types.message.Message.reply_photo:13 of
+msgid ""
+"Photo to send. Pass a file_id as String to send a photo that exists on "
+"the Telegram servers (recommended), pass an HTTP URL as a String for "
+"Telegram to get a photo from the Internet, or upload a new photo using "
+"multipart/form-data. The photo must be at most 10 MB in size. The photo's"
+" width and height must not exceed 10000 in total. Width and height ratio "
+"must be at most 20. :ref:`More information on Sending Files » <sending-"
+"files>`"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_photo:14
+#: aiogram.types.message.Message.reply_photo:15 of
+msgid ""
+"Photo caption (may also be used when resending photos by *file_id*), "
+"0-1024 characters after entities parsing"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_photo:15
+#: aiogram.types.message.Message.reply_photo:16 of
+msgid ""
+"Mode for parsing entities in the photo caption. See `formatting options "
+"<https://core.telegram.org/bots/api#formatting-options>`_ for more "
+"details."
+msgstr ""
+
+#: aiogram.types.message.Message.answer_photo:18
+#: aiogram.types.message.Message.reply_photo:19 of
+msgid ""
+"Pass :code:`True` if the photo needs to be covered with a spoiler "
+"animation"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_photo:28
+#: aiogram.types.message.Message.reply_photo:27 of
+msgid "instance of method :class:`aiogram.methods.send_photo.SendPhoto`"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_poll:1
+#: aiogram.types.message.Message.reply_poll:1 of
+msgid ""
+"Shortcut for method :class:`aiogram.methods.send_poll.SendPoll` will "
+"automatically fill method attributes:"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_poll:8
+#: aiogram.types.message.Message.reply_poll:9 of
+msgid ""
+"Use this method to send a native poll. On success, the sent "
+":class:`aiogram.types.message.Message` is returned."
+msgstr ""
+
+#: aiogram.types.message.Message.answer_poll:10
+#: aiogram.types.message.Message.reply_poll:11 of
+msgid "Source: https://core.telegram.org/bots/api#sendpoll"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_poll:12
+#: aiogram.types.message.Message.reply_poll:13 of
+msgid "Poll question, 1-300 characters"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_poll:13
+#: aiogram.types.message.Message.reply_poll:14 of
+msgid "A JSON-serialized list of 2-12 answer options"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_poll:14
+#: aiogram.types.message.Message.reply_poll:15 of
+msgid ""
+"Mode for parsing entities in the question. See `formatting options "
+"<https://core.telegram.org/bots/api#formatting-options>`_ for more "
+"details. Currently, only custom emoji entities are allowed"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_poll:15
+#: aiogram.types.message.Message.reply_poll:16 of
+msgid ""
+"A JSON-serialized list of special entities that appear in the poll "
+"question. It can be specified instead of *question_parse_mode*"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_poll:16
+#: aiogram.types.message.Message.reply_poll:17 of
+msgid ":code:`True`, if the poll needs to be anonymous, defaults to :code:`True`"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_poll:17
+#: aiogram.types.message.Message.reply_poll:18 of
+msgid "Poll type, 'quiz' or 'regular', defaults to 'regular'"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_poll:18
+#: aiogram.types.message.Message.reply_poll:19 of
+msgid ""
+":code:`True`, if the poll allows multiple answers, ignored for polls in "
+"quiz mode, defaults to :code:`False`"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_poll:19
+#: aiogram.types.message.Message.reply_poll:20 of
+msgid ""
+"0-based identifier of the correct answer option, required for polls in "
+"quiz mode"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_poll:20
+#: aiogram.types.message.Message.reply_poll:21 of
+msgid ""
+"Text that is shown when a user chooses an incorrect answer or taps on the"
+" lamp icon in a quiz-style poll, 0-200 characters with at most 2 line "
+"feeds after entities parsing"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_poll:21
+#: aiogram.types.message.Message.reply_poll:22 of
+msgid ""
+"Mode for parsing entities in the explanation. See `formatting options "
+"<https://core.telegram.org/bots/api#formatting-options>`_ for more "
+"details."
+msgstr ""
+
+#: aiogram.types.message.Message.answer_poll:22
+#: aiogram.types.message.Message.reply_poll:23 of
+msgid ""
+"A JSON-serialized list of special entities that appear in the poll "
+"explanation. It can be specified instead of *explanation_parse_mode*"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_poll:23
+#: aiogram.types.message.Message.reply_poll:24 of
+msgid ""
+"Amount of time in seconds the poll will be active after creation, 5-600. "
+"Can't be used together with *close_date*."
+msgstr ""
+
+#: aiogram.types.message.Message.answer_poll:24
+#: aiogram.types.message.Message.reply_poll:25 of
+msgid ""
+"Point in time (Unix timestamp) when the poll will be automatically "
+"closed. Must be at least 5 and no more than 600 seconds in the future. "
+"Can't be used together with *open_period*."
+msgstr ""
+
+#: aiogram.types.message.Message.answer_poll:25
+#: aiogram.types.message.Message.reply_poll:26 of
+msgid ""
+"Pass :code:`True` if the poll needs to be immediately closed. This can be"
+" useful for poll preview."
+msgstr ""
+
+#: aiogram.types.message.Message.answer_poll:34
+#: aiogram.types.message.Message.reply_poll:33 of
+msgid "instance of method :class:`aiogram.methods.send_poll.SendPoll`"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_dice:1
+#: aiogram.types.message.Message.reply_dice:1 of
+msgid ""
+"Shortcut for method :class:`aiogram.methods.send_dice.SendDice` will "
+"automatically fill method attributes:"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_dice:8
+#: aiogram.types.message.Message.reply_dice:9 of
+msgid ""
+"Use this method to send an animated emoji that will display a random "
+"value. On success, the sent :class:`aiogram.types.message.Message` is "
+"returned."
+msgstr ""
+
+#: aiogram.types.message.Message.answer_dice:10
+#: aiogram.types.message.Message.reply_dice:11 of
+msgid "Source: https://core.telegram.org/bots/api#senddice"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_dice:13
+#: aiogram.types.message.Message.reply_dice:14 of
+msgid ""
+"Emoji on which the dice throw animation is based. Currently, must be one "
+"of '🎲', '🎯', '🏀', '⚽', '🎳', or '🎰'. Dice can have values 1-6 for '🎲', '🎯'"
+" and '🎳', values 1-5 for '🏀' and '⚽', and values 1-64 for '🎰'. Defaults "
+"to '🎲'"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_dice:15
+#: aiogram.types.message.Message.reply_dice:16 of
+msgid "Protects the contents of the sent message from forwarding"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_dice:23
+#: aiogram.types.message.Message.reply_dice:22 of
+msgid "instance of method :class:`aiogram.methods.send_dice.SendDice`"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_sticker:1
+#: aiogram.types.message.Message.reply_sticker:1 of
+msgid ""
+"Shortcut for method :class:`aiogram.methods.send_sticker.SendSticker` "
+"will automatically fill method attributes:"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_sticker:8
+#: aiogram.types.message.Message.reply_sticker:9 of
+msgid ""
+"Use this method to send static .WEBP, `animated "
+"<https://telegram.org/blog/animated-stickers>`_ .TGS, or `video "
+"<https://telegram.org/blog/video-stickers-better-reactions>`_ .WEBM "
+"stickers. On success, the sent :class:`aiogram.types.message.Message` is "
+"returned."
+msgstr ""
+
+#: aiogram.types.message.Message.answer_sticker:10
+#: aiogram.types.message.Message.reply_sticker:11 of
+msgid "Source: https://core.telegram.org/bots/api#sendsticker"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_sticker:12
+#: aiogram.types.message.Message.reply_sticker:13 of
+msgid ""
+"Sticker to send. Pass a file_id as String to send a file that exists on "
+"the Telegram servers (recommended), pass an HTTP URL as a String for "
+"Telegram to get a .WEBP sticker from the Internet, or upload a new .WEBP,"
+" .TGS, or .WEBM sticker using multipart/form-data. :ref:`More information"
+" on Sending Files » <sending-files>`. Video and animated stickers can't "
+"be sent via an HTTP URL."
+msgstr ""
+
+#: aiogram.types.message.Message.answer_sticker:14
+#: aiogram.types.message.Message.reply_sticker:15 of
+msgid "Emoji associated with the sticker; only for just uploaded stickers"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_sticker:24
+#: aiogram.types.message.Message.reply_sticker:23 of
+msgid "instance of method :class:`aiogram.methods.send_sticker.SendSticker`"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_venue:1
+#: aiogram.types.message.Message.reply_venue:1 of
+msgid ""
+"Shortcut for method :class:`aiogram.methods.send_venue.SendVenue` will "
+"automatically fill method attributes:"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_venue:8
+#: aiogram.types.message.Message.reply_venue:9 of
+msgid ""
+"Use this method to send information about a venue. On success, the sent "
+":class:`aiogram.types.message.Message` is returned."
+msgstr ""
+
+#: aiogram.types.message.Message.answer_venue:10
+#: aiogram.types.message.Message.reply_venue:11 of
+msgid "Source: https://core.telegram.org/bots/api#sendvenue"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_venue:12
+#: aiogram.types.message.Message.reply_venue:13 of
+msgid "Latitude of the venue"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_venue:13
+#: aiogram.types.message.Message.reply_venue:14 of
+msgid "Longitude of the venue"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_venue:14
+#: aiogram.types.message.Message.reply_venue:15 of
+msgid "Name of the venue"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_venue:15
+#: aiogram.types.message.Message.reply_venue:16 of
+msgid "Address of the venue"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_venue:17
+#: aiogram.types.message.Message.reply_venue:18 of
+msgid "Foursquare identifier of the venue"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_venue:18
+#: aiogram.types.message.Message.reply_venue:19 of
+msgid ""
+"Foursquare type of the venue, if known. (For example, "
+"'arts_entertainment/default', 'arts_entertainment/aquarium' or "
+"'food/icecream'.)"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_venue:19
+#: aiogram.types.message.Message.reply_venue:20 of
+msgid "Google Places identifier of the venue"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_venue:20
+#: aiogram.types.message.Message.reply_venue:21 of
+msgid ""
+"Google Places type of the venue. (See `supported types "
+"<https://developers.google.com/places/web-service/supported_types>`_.)"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_venue:30
+#: aiogram.types.message.Message.reply_venue:29 of
+msgid "instance of method :class:`aiogram.methods.send_venue.SendVenue`"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_video:1
+#: aiogram.types.message.Message.reply_video:1 of
+msgid ""
+"Shortcut for method :class:`aiogram.methods.send_video.SendVideo` will "
+"automatically fill method attributes:"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_video:8
+#: aiogram.types.message.Message.reply_video:9 of
+msgid ""
+"Use this method to send video files, Telegram clients support MPEG4 "
+"videos (other formats may be sent as "
+":class:`aiogram.types.document.Document`). On success, the sent "
+":class:`aiogram.types.message.Message` is returned. Bots can currently "
+"send video files of up to 50 MB in size, this limit may be changed in the"
+" future."
+msgstr ""
+
+#: aiogram.types.message.Message.answer_video:10
+#: aiogram.types.message.Message.reply_video:11 of
+msgid "Source: https://core.telegram.org/bots/api#sendvideo"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_video:12
+#: aiogram.types.message.Message.reply_video:13 of
+msgid ""
+"Video to send. Pass a file_id as String to send a video that exists on "
+"the Telegram servers (recommended), pass an HTTP URL as a String for "
+"Telegram to get a video from the Internet, or upload a new video using "
+"multipart/form-data. :ref:`More information on Sending Files » <sending-"
+"files>`"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_video:14
+#: aiogram.types.message.Message.answer_video_note:14
+#: aiogram.types.message.Message.reply_video:15
+#: aiogram.types.message.Message.reply_video_note:15 of
+msgid "Duration of sent video in seconds"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_video:15
+#: aiogram.types.message.Message.reply_video:16 of
+msgid "Video width"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_video:16
+#: aiogram.types.message.Message.reply_video:17 of
+msgid "Video height"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_video:18
+#: aiogram.types.message.Message.reply_video:19 of
+msgid ""
+"Cover for the video in the message. Pass a file_id to send a file that "
+"exists on the Telegram servers (recommended), pass an HTTP URL for "
+"Telegram to get a file from the Internet, or pass "
+"'attach://<file_attach_name>' to upload a new one using multipart/form-"
+"data under <file_attach_name> name. :ref:`More information on Sending "
+"Files » <sending-files>`"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_video:19
+#: aiogram.types.message.Message.reply_video:20 of
+msgid "Start timestamp for the video in the message"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_video:20
+#: aiogram.types.message.Message.reply_video:21 of
+msgid ""
+"Video caption (may also be used when resending videos by *file_id*), "
+"0-1024 characters after entities parsing"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_video:21
+#: aiogram.types.message.Message.reply_video:22 of
+msgid ""
+"Mode for parsing entities in the video caption. See `formatting options "
+"<https://core.telegram.org/bots/api#formatting-options>`_ for more "
+"details."
+msgstr ""
+
+#: aiogram.types.message.Message.answer_video:24
+#: aiogram.types.message.Message.reply_video:25 of
+msgid ""
+"Pass :code:`True` if the video needs to be covered with a spoiler "
+"animation"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_video:25
+#: aiogram.types.message.Message.reply_video:26 of
+msgid "Pass :code:`True` if the uploaded video is suitable for streaming"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_video:35
+#: aiogram.types.message.Message.reply_video:34 of
+msgid "instance of method :class:`aiogram.methods.send_video.SendVideo`"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_video_note:1
+#: aiogram.types.message.Message.reply_video_note:1 of
+msgid ""
+"Shortcut for method "
+":class:`aiogram.methods.send_video_note.SendVideoNote` will automatically"
+" fill method attributes:"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_video_note:8
+#: aiogram.types.message.Message.reply_video_note:9 of
+msgid ""
+"As of `v.4.0 <https://telegram.org/blog/video-messages-and-telescope>`_, "
+"Telegram clients support rounded square MPEG4 videos of up to 1 minute "
+"long. Use this method to send video messages. On success, the sent "
+":class:`aiogram.types.message.Message` is returned."
+msgstr ""
+
+#: aiogram.types.message.Message.answer_video_note:10
+#: aiogram.types.message.Message.reply_video_note:11 of
+msgid "Source: https://core.telegram.org/bots/api#sendvideonote"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_video_note:12
+#: aiogram.types.message.Message.reply_video_note:13 of
+msgid ""
+"Video note to send. Pass a file_id as String to send a video note that "
+"exists on the Telegram servers (recommended) or upload a new video using "
+"multipart/form-data. :ref:`More information on Sending Files » <sending-"
+"files>`. Sending video notes by a URL is currently unsupported"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_video_note:15
+#: aiogram.types.message.Message.reply_video_note:16 of
+msgid "Video width and height, i.e. diameter of the video message"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_video_note:26
+#: aiogram.types.message.Message.reply_video_note:25 of
+msgid "instance of method :class:`aiogram.methods.send_video_note.SendVideoNote`"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_voice:1
+#: aiogram.types.message.Message.reply_voice:1 of
+msgid ""
+"Shortcut for method :class:`aiogram.methods.send_voice.SendVoice` will "
+"automatically fill method attributes:"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_voice:8
+#: aiogram.types.message.Message.reply_voice:9 of
+msgid ""
+"Use this method to send audio files, if you want Telegram clients to "
+"display the file as a playable voice message. For this to work, your "
+"audio must be in an .OGG file encoded with OPUS, or in .MP3 format, or in"
+" .M4A format (other formats may be sent as "
+":class:`aiogram.types.audio.Audio` or "
+":class:`aiogram.types.document.Document`). On success, the sent "
+":class:`aiogram.types.message.Message` is returned. Bots can currently "
+"send voice messages of up to 50 MB in size, this limit may be changed in "
+"the future."
+msgstr ""
+
+#: aiogram.types.message.Message.answer_voice:10
+#: aiogram.types.message.Message.reply_voice:11 of
+msgid "Source: https://core.telegram.org/bots/api#sendvoice"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_voice:12
+#: aiogram.types.message.Message.reply_voice:13 of
+msgid ""
+"Audio file to send. Pass a file_id as String to send a file that exists "
+"on the Telegram servers (recommended), pass an HTTP URL as a String for "
+"Telegram to get a file from the Internet, or upload a new one using "
+"multipart/form-data. :ref:`More information on Sending Files » <sending-"
+"files>`"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_voice:14
+#: aiogram.types.message.Message.reply_voice:15 of
+msgid "Voice message caption, 0-1024 characters after entities parsing"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_voice:15
+#: aiogram.types.message.Message.reply_voice:16 of
+msgid ""
+"Mode for parsing entities in the voice message caption. See `formatting "
+"options <https://core.telegram.org/bots/api#formatting-options>`_ for "
+"more details."
+msgstr ""
+
+#: aiogram.types.message.Message.answer_voice:17
+#: aiogram.types.message.Message.reply_voice:18 of
+msgid "Duration of the voice message in seconds"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_voice:27
+#: aiogram.types.message.Message.reply_voice:26 of
+msgid "instance of method :class:`aiogram.methods.send_voice.SendVoice`"
+msgstr ""
+
+#: aiogram.types.message.Message.send_copy:1 of
+msgid "Send copy of a message."
+msgstr ""
+
+#: aiogram.types.message.Message.send_copy:3 of
+msgid ""
+"Is similar to :meth:`aiogram.client.bot.Bot.copy_message` but returning "
+"the sent message instead of :class:`aiogram.types.message_id.MessageId`"
+msgstr ""
+
+#: aiogram.types.message.Message.send_copy:8 of
+msgid ""
+"This method doesn't use the API method named `copyMessage` and "
+"historically implemented before the similar method is added to API"
+msgstr ""
+
+#: aiogram.types.message.Message.copy_to:1 of
+msgid ""
+"Shortcut for method :class:`aiogram.methods.copy_message.CopyMessage` "
+"will automatically fill method attributes:"
+msgstr ""
+
+#: aiogram.types.message.Message.copy_to:4
+#: aiogram.types.message.Message.forward:4 of
+msgid ":code:`from_chat_id`"
+msgstr ""
+
+#: aiogram.types.message.Message.copy_to:5
+#: aiogram.types.message.Message.delete:5
+#: aiogram.types.message.Message.delete_reply_markup:5
+#: aiogram.types.message.Message.edit_caption:5
+#: aiogram.types.message.Message.edit_live_location:5
+#: aiogram.types.message.Message.edit_media:5
+#: aiogram.types.message.Message.edit_reply_markup:5
+#: aiogram.types.message.Message.edit_text:5
+#: aiogram.types.message.Message.forward:5 aiogram.types.message.Message.pin:5
+#: aiogram.types.message.Message.react:5
+#: aiogram.types.message.Message.stop_live_location:5
+#: aiogram.types.message.Message.unpin:5 of
+msgid ":code:`message_id`"
+msgstr ""
+
+#: aiogram.types.message.Message.copy_to:7 of
+msgid ""
+"Use this method to copy messages of any kind. Service messages, paid "
+"media messages, giveaway messages, giveaway winners messages, and invoice"
+" messages can't be copied. A quiz :class:`aiogram.methods.poll.Poll` can "
+"be copied only if the value of the field *correct_option_id* is known to "
+"the bot. The method is analogous to the method "
+":class:`aiogram.methods.forward_message.ForwardMessage`, but the copied "
+"message doesn't have a link to the original message. Returns the "
+":class:`aiogram.types.message_id.MessageId` of the sent message on "
+"success."
+msgstr ""
+
+#: aiogram.types.message.Message.copy_to:9 of
+msgid "Source: https://core.telegram.org/bots/api#copymessage"
+msgstr ""
+
+#: aiogram.types.message.Message.copy_to:11
+#: aiogram.types.message.Message.forward:11 of
+msgid ""
+"Unique identifier for the target chat or username of the target channel "
+"(in the format :code:`@channelusername`)"
+msgstr ""
+
+#: aiogram.types.message.Message.copy_to:12
+#: aiogram.types.message.Message.forward:12 of
+msgid ""
+"Unique identifier for the target message thread (topic) of the forum; for"
+" forum supergroups only"
+msgstr ""
+
+#: aiogram.types.message.Message.copy_to:14 of
+msgid "New start timestamp for the copied video in the message"
+msgstr ""
+
+#: aiogram.types.message.Message.copy_to:15 of
+msgid ""
+"New caption for media, 0-1024 characters after entities parsing. If not "
+"specified, the original caption is kept"
+msgstr ""
+
+#: aiogram.types.message.Message.copy_to:16 of
+msgid ""
+"Mode for parsing entities in the new caption. See `formatting options "
+"<https://core.telegram.org/bots/api#formatting-options>`_ for more "
+"details."
+msgstr ""
+
+#: aiogram.types.message.Message.copy_to:17 of
+msgid ""
+"A JSON-serialized list of special entities that appear in the new "
+"caption, which can be specified instead of *parse_mode*"
+msgstr ""
+
+#: aiogram.types.message.Message.copy_to:18 of
+msgid ""
+"Pass :code:`True`, if the caption must be shown above the message media. "
+"Ignored if a new caption isn't specified."
+msgstr ""
+
+#: aiogram.types.message.Message.copy_to:27 of
+msgid "instance of method :class:`aiogram.methods.copy_message.CopyMessage`"
+msgstr ""
+
+#: aiogram.types.message.Message.edit_text:1 of
+msgid ""
+"Shortcut for method "
+":class:`aiogram.methods.edit_message_text.EditMessageText` will "
+"automatically fill method attributes:"
+msgstr ""
+
+#: aiogram.types.message.Message.edit_text:8 of
+msgid ""
+"Use this method to edit text and `game "
+"<https://core.telegram.org/bots/api#games>`_ messages. On success, if the"
+" edited message is not an inline message, the edited "
+":class:`aiogram.types.message.Message` is returned, otherwise "
+":code:`True` is returned. Note that business messages that were not sent "
+"by the bot and do not contain an inline keyboard can only be edited "
+"within **48 hours** from the time they were sent."
+msgstr ""
+
+#: aiogram.types.message.Message.edit_text:10 of
+msgid "Source: https://core.telegram.org/bots/api#editmessagetext"
+msgstr ""
+
+#: aiogram.types.message.Message.edit_text:12 of
+msgid "New text of the message, 1-4096 characters after entities parsing"
+msgstr ""
+
+#: aiogram.types.message.Message.delete_reply_markup:13
+#: aiogram.types.message.Message.edit_caption:12
+#: aiogram.types.message.Message.edit_live_location:14
+#: aiogram.types.message.Message.edit_media:13
+#: aiogram.types.message.Message.edit_reply_markup:12
+#: aiogram.types.message.Message.edit_text:13
+#: aiogram.types.message.Message.stop_live_location:12 of
+msgid ""
+"Required if *chat_id* and *message_id* are not specified. Identifier of "
+"the inline message"
+msgstr ""
+
+#: aiogram.types.message.Message.edit_caption:17
+#: aiogram.types.message.Message.edit_reply_markup:13
+#: aiogram.types.message.Message.edit_text:17 of
+msgid ""
+"A JSON-serialized object for an `inline keyboard "
+"<https://core.telegram.org/bots/features#inline-keyboards>`_."
+msgstr ""
+
+#: aiogram.types.message.Message.edit_text:19 of
+msgid ""
+"instance of method "
+":class:`aiogram.methods.edit_message_text.EditMessageText`"
+msgstr ""
+
+#: aiogram.types.message.Message.forward:1 of
+msgid ""
+"Shortcut for method "
+":class:`aiogram.methods.forward_message.ForwardMessage` will "
+"automatically fill method attributes:"
+msgstr ""
+
+#: aiogram.types.message.Message.forward:7 of
+msgid ""
+"Use this method to forward messages of any kind. Service messages and "
+"messages with protected content can't be forwarded. On success, the sent "
+":class:`aiogram.types.message.Message` is returned."
+msgstr ""
+
+#: aiogram.types.message.Message.forward:9 of
+msgid "Source: https://core.telegram.org/bots/api#forwardmessage"
+msgstr ""
+
+#: aiogram.types.message.Message.forward:13 of
+msgid ""
+"Identifier of the direct messages topic to which the message will be "
+"forwarded; required if the message is forwarded to a direct messages chat"
+msgstr ""
+
+#: aiogram.types.message.Message.forward:14 of
+msgid "New start timestamp for the forwarded video in the message"
+msgstr ""
+
+#: aiogram.types.message.Message.forward:16 of
+msgid "Protects the contents of the forwarded message from forwarding and saving"
+msgstr ""
+
+#: aiogram.types.message.Message.forward:17 of
+msgid ""
+"A JSON-serialized object containing the parameters of the suggested post "
+"to send; for direct messages chats only"
+msgstr ""
+
+#: aiogram.types.message.Message.forward:18 of
+msgid "instance of method :class:`aiogram.methods.forward_message.ForwardMessage`"
+msgstr ""
+
+#: aiogram.types.message.Message.edit_media:1 of
+msgid ""
+"Shortcut for method "
+":class:`aiogram.methods.edit_message_media.EditMessageMedia` will "
+"automatically fill method attributes:"
+msgstr ""
+
+#: aiogram.types.message.Message.edit_media:8 of
+msgid ""
+"Use this method to edit animation, audio, document, photo, or video "
+"messages, or to add media to text messages. If a message is part of a "
+"message album, then it can be edited only to an audio for audio albums, "
+"only to a document for document albums and to a photo or a video "
+"otherwise. When an inline message is edited, a new file can't be "
+"uploaded; use a previously uploaded file via its file_id or specify a "
+"URL. On success, if the edited message is not an inline message, the "
+"edited :class:`aiogram.types.message.Message` is returned, otherwise "
+":code:`True` is returned. Note that business messages that were not sent "
+"by the bot and do not contain an inline keyboard can only be edited "
+"within **48 hours** from the time they were sent."
+msgstr ""
+
+#: aiogram.types.message.Message.edit_media:10 of
+msgid "Source: https://core.telegram.org/bots/api#editmessagemedia"
+msgstr ""
+
+#: aiogram.types.message.Message.edit_media:12 of
+msgid "A JSON-serialized object for a new media content of the message"
+msgstr ""
+
+#: aiogram.types.message.Message.edit_live_location:19
+#: aiogram.types.message.Message.edit_media:14
+#: aiogram.types.message.Message.stop_live_location:13 of
+msgid ""
+"A JSON-serialized object for a new `inline keyboard "
+"<https://core.telegram.org/bots/features#inline-keyboards>`_."
+msgstr ""
+
+#: aiogram.types.message.Message.edit_media:15 of
+msgid ""
+"instance of method "
+":class:`aiogram.methods.edit_message_media.EditMessageMedia`"
+msgstr ""
+
+#: aiogram.types.message.Message.delete_reply_markup:1
+#: aiogram.types.message.Message.edit_reply_markup:1 of
+msgid ""
+"Shortcut for method "
+":class:`aiogram.methods.edit_message_reply_markup.EditMessageReplyMarkup`"
+" will automatically fill method attributes:"
+msgstr ""
+
+#: aiogram.types.message.Message.delete_reply_markup:9
+#: aiogram.types.message.Message.edit_reply_markup:8 of
+msgid ""
+"Use this method to edit only the reply markup of messages. On success, if"
+" the edited message is not an inline message, the edited "
+":class:`aiogram.types.message.Message` is returned, otherwise "
+":code:`True` is returned. Note that business messages that were not sent "
+"by the bot and do not contain an inline keyboard can only be edited "
+"within **48 hours** from the time they were sent."
+msgstr ""
+
+#: aiogram.types.message.Message.delete_reply_markup:11
+#: aiogram.types.message.Message.edit_reply_markup:10 of
+msgid "Source: https://core.telegram.org/bots/api#editmessagereplymarkup"
+msgstr ""
+
+#: aiogram.types.message.Message.delete_reply_markup:14
+#: aiogram.types.message.Message.edit_reply_markup:14 of
+msgid ""
+"instance of method "
+":class:`aiogram.methods.edit_message_reply_markup.EditMessageReplyMarkup`"
+msgstr ""
+
+#: aiogram.types.message.Message.delete_reply_markup:7 of
+msgid ":code:`reply_markup`"
+msgstr ""
+
+#: aiogram.types.message.Message.edit_live_location:1 of
+msgid ""
+"Shortcut for method "
+":class:`aiogram.methods.edit_message_live_location.EditMessageLiveLocation`"
+" will automatically fill method attributes:"
+msgstr ""
+
+#: aiogram.types.message.Message.edit_live_location:8 of
+msgid ""
+"Use this method to edit live location messages. A location can be edited "
+"until its *live_period* expires or editing is explicitly disabled by a "
+"call to "
+":class:`aiogram.methods.stop_message_live_location.StopMessageLiveLocation`."
+" On success, if the edited message is not an inline message, the edited "
+":class:`aiogram.types.message.Message` is returned, otherwise "
+":code:`True` is returned."
+msgstr ""
+
+#: aiogram.types.message.Message.edit_live_location:10 of
+msgid "Source: https://core.telegram.org/bots/api#editmessagelivelocation"
+msgstr ""
+
+#: aiogram.types.message.Message.edit_live_location:12 of
+msgid "Latitude of new location"
+msgstr ""
+
+#: aiogram.types.message.Message.edit_live_location:13 of
+msgid "Longitude of new location"
+msgstr ""
+
+#: aiogram.types.message.Message.edit_live_location:15 of
+msgid ""
+"New period in seconds during which the location can be updated, starting "
+"from the message send date. If 0x7FFFFFFF is specified, then the location"
+" can be updated forever. Otherwise, the new value must not exceed the "
+"current *live_period* by more than a day, and the live location "
+"expiration date must remain within the next 90 days. If not specified, "
+"then *live_period* remains unchanged"
+msgstr ""
+
+#: aiogram.types.message.Message.edit_live_location:17 of
+msgid ""
+"Direction in which the user is moving, in degrees. Must be between 1 and "
+"360 if specified."
+msgstr ""
+
+#: aiogram.types.message.Message.edit_live_location:18 of
+msgid ""
+"The maximum distance for proximity alerts about approaching another chat "
+"member, in meters. Must be between 1 and 100000 if specified."
+msgstr ""
+
+#: aiogram.types.message.Message.edit_live_location:20 of
+msgid ""
+"instance of method "
+":class:`aiogram.methods.edit_message_live_location.EditMessageLiveLocation`"
+msgstr ""
+
+#: aiogram.types.message.Message.stop_live_location:1 of
+msgid ""
+"Shortcut for method "
+":class:`aiogram.methods.stop_message_live_location.StopMessageLiveLocation`"
+" will automatically fill method attributes:"
+msgstr ""
+
+#: aiogram.types.message.Message.stop_live_location:8 of
+msgid ""
+"Use this method to stop updating a live location message before "
+"*live_period* expires. On success, if the message is not an inline "
+"message, the edited :class:`aiogram.types.message.Message` is returned, "
+"otherwise :code:`True` is returned."
+msgstr ""
+
+#: aiogram.types.message.Message.stop_live_location:10 of
+msgid "Source: https://core.telegram.org/bots/api#stopmessagelivelocation"
+msgstr ""
+
+#: aiogram.types.message.Message.stop_live_location:14 of
+msgid ""
+"instance of method "
+":class:`aiogram.methods.stop_message_live_location.StopMessageLiveLocation`"
+msgstr ""
+
+#: aiogram.types.message.Message.edit_caption:1 of
+msgid ""
+"Shortcut for method "
+":class:`aiogram.methods.edit_message_caption.EditMessageCaption` will "
+"automatically fill method attributes:"
+msgstr ""
+
+#: aiogram.types.message.Message.edit_caption:8 of
+msgid ""
+"Use this method to edit captions of messages. On success, if the edited "
+"message is not an inline message, the edited "
+":class:`aiogram.types.message.Message` is returned, otherwise "
+":code:`True` is returned. Note that business messages that were not sent "
+"by the bot and do not contain an inline keyboard can only be edited "
+"within **48 hours** from the time they were sent."
+msgstr ""
+
+#: aiogram.types.message.Message.edit_caption:10 of
+msgid "Source: https://core.telegram.org/bots/api#editmessagecaption"
+msgstr ""
+
+#: aiogram.types.message.Message.edit_caption:13 of
+msgid "New caption of the message, 0-1024 characters after entities parsing"
+msgstr ""
+
+#: aiogram.types.message.Message.edit_caption:14 of
+msgid ""
+"Mode for parsing entities in the message caption. See `formatting options"
+" <https://core.telegram.org/bots/api#formatting-options>`_ for more "
+"details."
+msgstr ""
+
+#: aiogram.types.message.Message.edit_caption:16 of
+msgid ""
+"Pass :code:`True`, if the caption must be shown above the message media. "
+"Supported only for animation, photo and video messages."
+msgstr ""
+
+#: aiogram.types.message.Message.edit_caption:18 of
+msgid ""
+"instance of method "
+":class:`aiogram.methods.edit_message_caption.EditMessageCaption`"
+msgstr ""
+
+#: aiogram.types.message.Message.delete:1 of
+msgid ""
+"Shortcut for method :class:`aiogram.methods.delete_message.DeleteMessage`"
+" will automatically fill method attributes:"
+msgstr ""
+
+#: aiogram.types.message.Message.delete:8 of
+msgid ""
+"Use this method to delete a message, including service messages, with the"
+" following limitations:"
+msgstr ""
+
+#: aiogram.types.message.Message.delete:10 of
+msgid "A message can only be deleted if it was sent less than 48 hours ago."
+msgstr ""
+
+#: aiogram.types.message.Message.delete:12 of
+msgid ""
+"Service messages about a supergroup, channel, or forum topic creation "
+"can't be deleted."
+msgstr ""
+
+#: aiogram.types.message.Message.delete:14 of
+msgid ""
+"A dice message in a private chat can only be deleted if it was sent more "
+"than 24 hours ago."
+msgstr ""
+
+#: aiogram.types.message.Message.delete:16 of
+msgid ""
+"Bots can delete outgoing messages in private chats, groups, and "
+"supergroups."
+msgstr ""
+
+#: aiogram.types.message.Message.delete:18 of
+msgid "Bots can delete incoming messages in private chats."
+msgstr ""
+
+#: aiogram.types.message.Message.delete:20 of
+msgid ""
+"Bots granted *can_post_messages* permissions can delete outgoing messages"
+" in channels."
+msgstr ""
+
+#: aiogram.types.message.Message.delete:22 of
+msgid ""
+"If the bot is an administrator of a group, it can delete any message "
+"there."
+msgstr ""
+
+#: aiogram.types.message.Message.delete:24 of
+msgid ""
+"If the bot has *can_delete_messages* administrator right in a supergroup "
+"or a channel, it can delete any message there."
+msgstr ""
+
+#: aiogram.types.message.Message.delete:26 of
+msgid ""
+"If the bot has *can_manage_direct_messages* administrator right in a "
+"channel, it can delete any message in the corresponding direct messages "
+"chat."
+msgstr ""
+
+#: aiogram.types.message.Message.delete:28 of
+msgid "Returns :code:`True` on success."
+msgstr ""
+
+#: aiogram.types.message.Message.delete:30 of
+msgid "Source: https://core.telegram.org/bots/api#deletemessage"
+msgstr ""
+
+#: aiogram.types.message.Message.delete:32 of
+msgid "instance of method :class:`aiogram.methods.delete_message.DeleteMessage`"
+msgstr ""
+
+#: aiogram.types.message.Message.pin:1 of
+msgid ""
+"Shortcut for method "
+":class:`aiogram.methods.pin_chat_message.PinChatMessage` will "
+"automatically fill method attributes:"
+msgstr ""
+
+#: aiogram.types.message.Message.pin:8 of
+msgid ""
+"Use this method to add a message to the list of pinned messages in a "
+"chat. In private chats and channel direct messages chats, all non-service"
+" messages can be pinned. Conversely, the bot must be an administrator "
+"with the 'can_pin_messages' right or the 'can_edit_messages' right to pin"
+" messages in groups and channels respectively. Returns :code:`True` on "
+"success."
+msgstr ""
+
+#: aiogram.types.message.Message.pin:10 of
+msgid "Source: https://core.telegram.org/bots/api#pinchatmessage"
+msgstr ""
+
+#: aiogram.types.message.Message.pin:12 of
+msgid ""
+"Pass :code:`True` if it is not necessary to send a notification to all "
+"chat members about the new pinned message. Notifications are always "
+"disabled in channels and private chats."
+msgstr ""
+
+#: aiogram.types.message.Message.pin:13 of
+msgid ""
+"instance of method "
+":class:`aiogram.methods.pin_chat_message.PinChatMessage`"
+msgstr ""
+
+#: aiogram.types.message.Message.unpin:1 of
+msgid ""
+"Shortcut for method "
+":class:`aiogram.methods.unpin_chat_message.UnpinChatMessage` will "
+"automatically fill method attributes:"
+msgstr ""
+
+#: aiogram.types.message.Message.unpin:8 of
+msgid ""
+"Use this method to remove a message from the list of pinned messages in a"
+" chat. In private chats and channel direct messages chats, all messages "
+"can be unpinned. Conversely, the bot must be an administrator with the "
+"'can_pin_messages' right or the 'can_edit_messages' right to unpin "
+"messages in groups and channels respectively. Returns :code:`True` on "
+"success."
+msgstr ""
+
+#: aiogram.types.message.Message.unpin:10 of
+msgid "Source: https://core.telegram.org/bots/api#unpinchatmessage"
+msgstr ""
+
+#: aiogram.types.message.Message.unpin:12 of
+msgid ""
+"instance of method "
+":class:`aiogram.methods.unpin_chat_message.UnpinChatMessage`"
+msgstr ""
+
+#: aiogram.types.message.Message.get_url:1 of
+#, python-brace-format
+msgid ""
+"Returns message URL. Cannot be used in private (one-to-one) chats. If "
+"chat has a username, returns URL like https://t.me/username/message_id "
+"Otherwise (or if {force_private} flag is set), returns "
+"https://t.me/c/shifted_chat_id/message_id"
+msgstr ""
+
+#: aiogram.types.message.Message.get_url:5 of
+msgid "if set, a private URL is returned even for a public chat"
+msgstr ""
+
+#: aiogram.types.message.Message.get_url:6 of
+msgid ""
+"if set, adds chat thread id to URL and returns like "
+"https://t.me/username/thread_id/message_id"
+msgstr ""
+
+#: aiogram.types.message.Message.get_url:7 of
+msgid "string with full message URL"
+msgstr ""
+
+#: aiogram.types.message.Message.react:1 of
+msgid ""
+"Shortcut for method "
+":class:`aiogram.methods.set_message_reaction.SetMessageReaction` will "
+"automatically fill method attributes:"
+msgstr ""
+
+#: aiogram.types.message.Message.react:8 of
+msgid ""
+"Use this method to change the chosen reactions on a message. Service "
+"messages of some types can't be reacted to. Automatically forwarded "
+"messages from a channel to its discussion group have the same available "
+"reactions as messages in the channel. Bots can't use paid reactions. "
+"Returns :code:`True` on success."
+msgstr ""
+
+#: aiogram.types.message.Message.react:10 of
+msgid "Source: https://core.telegram.org/bots/api#setmessagereaction"
+msgstr ""
+
+#: aiogram.types.message.Message.react:12 of
+msgid ""
+"A JSON-serialized list of reaction types to set on the message. "
+"Currently, as non-premium users, bots can set up to one reaction per "
+"message. A custom emoji reaction can be used if it is either already "
+"present on the message or explicitly allowed by chat administrators. Paid"
+" reactions can't be used by bots."
+msgstr ""
+
+#: aiogram.types.message.Message.react:13 of
+msgid "Pass :code:`True` to set the reaction with a big animation"
+msgstr ""
+
+#: aiogram.types.message.Message.react:14 of
+msgid ""
+"instance of method "
+":class:`aiogram.methods.set_message_reaction.SetMessageReaction`"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_paid_media:1
+#: aiogram.types.message.Message.reply_paid_media:1 of
+msgid ""
+"Shortcut for method "
+":class:`aiogram.methods.send_paid_media.SendPaidMedia` will automatically"
+" fill method attributes:"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_paid_media:8
+#: aiogram.types.message.Message.reply_paid_media:9 of
+msgid ""
+"Use this method to send paid media. On success, the sent "
+":class:`aiogram.types.message.Message` is returned."
+msgstr ""
+
+#: aiogram.types.message.Message.answer_paid_media:10
+#: aiogram.types.message.Message.reply_paid_media:11 of
+msgid "Source: https://core.telegram.org/bots/api#sendpaidmedia"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_paid_media:12
+#: aiogram.types.message.Message.reply_paid_media:13 of
+msgid ""
+"The number of Telegram Stars that must be paid to buy access to the "
+"media; 1-10000"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_paid_media:13
+#: aiogram.types.message.Message.reply_paid_media:14 of
+msgid "A JSON-serialized array describing the media to be sent; up to 10 items"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_paid_media:15
+#: aiogram.types.message.Message.reply_paid_media:16 of
+msgid ""
+"Bot-defined paid media payload, 0-128 bytes. This will not be displayed "
+"to the user, use it for your internal processes."
+msgstr ""
+
+#: aiogram.types.message.Message.answer_paid_media:16
+#: aiogram.types.message.Message.reply_paid_media:17 of
+msgid "Media caption, 0-1024 characters after entities parsing"
+msgstr ""
+
+#: aiogram.types.message.Message.answer_paid_media:17
+#: aiogram.types.message.Message.reply_paid_media:18 of
+msgid ""
+"Mode for parsing entities in the media caption. See `formatting options "
+"<https://core.telegram.org/bots/api#formatting-options>`_ for more "
+"details."
+msgstr ""
+
+#: aiogram.types.message.Message.answer_paid_media:26
+#: aiogram.types.message.Message.reply_paid_media:26 of
+msgid "instance of method :class:`aiogram.methods.send_paid_media.SendPaidMedia`"
+msgstr ""
+

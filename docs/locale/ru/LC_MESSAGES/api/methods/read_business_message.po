@@ -1,0 +1,95 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2025, aiogram Team
+# This file is distributed under the same license as the aiogram package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: aiogram \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-01 19:31+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ru\n"
+"Language-Team: ru <LL@li.org>\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../api/methods/read_business_message.rst:3
+msgid "readBusinessMessage"
+msgstr ""
+
+#: ../../api/methods/read_business_message.rst:5
+msgid "Returns: :obj:`bool`"
+msgstr ""
+
+#: aiogram.methods.read_business_message.ReadBusinessMessage:1 of
+msgid ""
+"Marks incoming message as read on behalf of a business account. Requires "
+"the *can_read_messages* business bot right. Returns :code:`True` on "
+"success."
+msgstr ""
+
+#: aiogram.methods.read_business_message.ReadBusinessMessage:3 of
+msgid "Source: https://core.telegram.org/bots/api#readbusinessmessage"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.read_business_message.ReadBusinessMessage.business_connection_id:1
+#: of
+msgid ""
+"Unique identifier of the business connection on behalf of which to read "
+"the message"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.read_business_message.ReadBusinessMessage.chat_id:1 of
+msgid ""
+"Unique identifier of the chat in which the message was received. The chat"
+" must have been active in the last 24 hours."
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.read_business_message.ReadBusinessMessage.message_id:1 of
+msgid "Unique identifier of the message to mark as read"
+msgstr ""
+
+#: ../../api/methods/read_business_message.rst:15
+msgid "Usage"
+msgstr ""
+
+#: ../../api/methods/read_business_message.rst:18
+msgid "As bot method"
+msgstr ""
+
+#: ../../api/methods/read_business_message.rst:26
+msgid "Method as object"
+msgstr ""
+
+#: ../../api/methods/read_business_message.rst:28
+msgid "Imports:"
+msgstr ""
+
+#: ../../api/methods/read_business_message.rst:30
+msgid ""
+":code:`from aiogram.methods.read_business_message import "
+"ReadBusinessMessage`"
+msgstr ""
+
+#: ../../api/methods/read_business_message.rst:31
+msgid "alias: :code:`from aiogram.methods import ReadBusinessMessage`"
+msgstr ""
+
+#: ../../api/methods/read_business_message.rst:34
+msgid "With specific bot"
+msgstr ""
+
+#: ../../api/methods/read_business_message.rst:41
+msgid "As reply into Webhook in handler"
+msgstr ""
+

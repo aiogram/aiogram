@@ -1,0 +1,179 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2025, aiogram Team
+# This file is distributed under the same license as the aiogram package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: aiogram \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-11-01 19:31+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: ru\n"
+"Language-Team: ru <LL@li.org>\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: ../../dispatcher/filters/magic_filters.rst:5
+msgid "Magic filters"
+msgstr ""
+
+#: ../../dispatcher/filters/magic_filters.rst:9
+msgid "This page still in progress. Has many incorrectly worded sentences."
+msgstr ""
+
+#: ../../dispatcher/filters/magic_filters.rst:11
+msgid "Is external package maintained by *aiogram* core team."
+msgstr ""
+
+#: ../../dispatcher/filters/magic_filters.rst:13
+msgid ""
+"By default installs with *aiogram* and also is available on `PyPi - "
+"magic-filter <https://pypi.org/project/magic-filter/>`_. That's mean you "
+"can install it and use with any other libraries and in own projects "
+"without depending *aiogram* installed."
+msgstr ""
+
+#: ../../dispatcher/filters/magic_filters.rst:17
+msgid "Usage"
+msgstr ""
+
+#: ../../dispatcher/filters/magic_filters.rst:19
+msgid ""
+"The **magic_filter** package implements class shortly named "
+":class:`magic_filter.F` that's mean :code:`F` can be imported from "
+":code:`aiogram` or :code:`magic_filter`. :class:`F` is alias for "
+":class:`MagicFilter`."
+msgstr ""
+
+#: ../../dispatcher/filters/magic_filters.rst:23
+msgid ""
+"Note that *aiogram* has an small extension over magic-filter and if you "
+"want to use this extension you should import magic from *aiogram* instead"
+" of *magic_filter* package"
+msgstr ""
+
+#: ../../dispatcher/filters/magic_filters.rst:25
+msgid ""
+"The :class:`MagicFilter` object is callable, supports :ref:`some actions "
+"<magic-filter-possible-actions>` and memorize the attributes chain and "
+"the action which should be checked on demand."
+msgstr ""
+
+#: ../../dispatcher/filters/magic_filters.rst:28
+msgid ""
+"So that's mean you can chain attribute getters, describe simple data "
+"validations and then call the resulted object passing single object as "
+"argument, for example make attributes chain :code:`F.foo.bar.baz` then "
+"add action ':code:`F.foo.bar.baz == 'spam'` and then call the resulted "
+"object - :code:`(F.foo.bar.baz == 'spam').resolve(obj)`"
+msgstr ""
+
+#: ../../dispatcher/filters/magic_filters.rst:36
+msgid "Possible actions"
+msgstr ""
+
+#: ../../dispatcher/filters/magic_filters.rst:38
+msgid ""
+"Magic filter object supports some of basic logical operations over object"
+" attributes"
+msgstr ""
+
+#: ../../dispatcher/filters/magic_filters.rst:41
+msgid "Exists or not None"
+msgstr ""
+
+#: ../../dispatcher/filters/magic_filters.rst:43
+msgid "Default actions."
+msgstr ""
+
+#: ../../dispatcher/filters/magic_filters.rst:50
+msgid "Equals"
+msgstr ""
+
+#: ../../dispatcher/filters/magic_filters.rst:59
+msgid "Is one of"
+msgstr ""
+
+#: ../../dispatcher/filters/magic_filters.rst:61
+msgid ""
+"Can be used as method named :code:`in_` or as matmul operator :code:`@` "
+"with any iterable"
+msgstr ""
+
+#: ../../dispatcher/filters/magic_filters.rst:69
+msgid "Contains"
+msgstr ""
+
+#: ../../dispatcher/filters/magic_filters.rst:76
+msgid "String startswith/endswith"
+msgstr ""
+
+#: ../../dispatcher/filters/magic_filters.rst:78
+msgid "Can be applied only for text attributes"
+msgstr ""
+
+#: ../../dispatcher/filters/magic_filters.rst:86
+msgid "Regexp"
+msgstr ""
+
+#: ../../dispatcher/filters/magic_filters.rst:93
+msgid "Custom function"
+msgstr ""
+
+#: ../../dispatcher/filters/magic_filters.rst:95
+msgid "Accepts any callable. Callback will be called when filter checks result"
+msgstr ""
+
+#: ../../dispatcher/filters/magic_filters.rst:102
+msgid "Inverting result"
+msgstr ""
+
+#: ../../dispatcher/filters/magic_filters.rst:104
+msgid ""
+"Any of available operation can be inverted by bitwise inversion - "
+":code:`~`"
+msgstr ""
+
+#: ../../dispatcher/filters/magic_filters.rst:112
+msgid "Combining"
+msgstr ""
+
+#: ../../dispatcher/filters/magic_filters.rst:114
+msgid ""
+"All operations can be combined via bitwise and/or operators - "
+":code:`&`/:code:`|`"
+msgstr ""
+
+#: ../../dispatcher/filters/magic_filters.rst:124
+msgid "Attribute modifiers - string manipulations"
+msgstr ""
+
+#: ../../dispatcher/filters/magic_filters.rst:126
+msgid "Make text upper- or lower-case"
+msgstr ""
+
+#: ../../dispatcher/filters/magic_filters.rst:128
+msgid "Can be used only with string attributes."
+msgstr ""
+
+#: ../../dispatcher/filters/magic_filters.rst:138
+msgid "Get filter result as handler argument"
+msgstr ""
+
+#: ../../dispatcher/filters/magic_filters.rst:140
+msgid ""
+"This part is not available in *magic-filter* directly but can be used "
+"with *aiogram*"
+msgstr ""
+
+#: ../../dispatcher/filters/magic_filters.rst:153
+msgid "Usage in *aiogram*"
+msgstr ""
+
