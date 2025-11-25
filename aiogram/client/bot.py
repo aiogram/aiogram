@@ -533,6 +533,9 @@ class Bot:
             
             await self.limiter.wait(chat_id=str(chat_id), chat_type=chat_type, is_broadcast=is_broadcast)
         
+        if hasattr(method, "allow_paid_broadcast") and method.allow_paid_broadcast is None:
+            method.allow_paid_broadcast = self.default.paid_broadcast
+        
         return await self.session(self, method, timeout=request_timeout)
 
     def __hash__(self) -> int:

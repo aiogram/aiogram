@@ -56,6 +56,8 @@ class DefaultBotProperties:
     show_caption_above_media: Optional[bool] = None
     """Show caption above media."""
     max_sends_per_secods: Optional[int] = None
+    """How many messages can bot send per second."""
+    paid_broadcast: Optional[bool] = None
 
     def __post_init__(self) -> None:
         has_any_link_preview_option = any(
