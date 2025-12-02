@@ -79,7 +79,7 @@ signature = [
     "cryptography>=46.0.0",
 ]
 test = [
-    "pytest==8.4.2",
+    "pytest==9.0.1",
     "pytest-html==4.1.1",
     "pytest-mock==3.15.1",
     "pytest-mypy==1.0.1",
@@ -103,13 +103,13 @@ docs = [
     "sphinxcontrib-towncrier~=0.4.0a0",
 ]
 dev = [
-    "black==25.9.0",
-    "isort==6.1.0",
-    "ruff==0.14.0",
+    "black~=25.9",
+    "isort~=7.0",
+    "ruff~=0.14",
     "mypy==1.10.1",
-    "toml==0.10.2",
-    "pre-commit==4.3.0",
-    "packaging==25.0",
+    "toml~=0.10.2",
+    "pre-commit~=4.3",
+    "packaging~=25.0",
     "motor-types==1.0.0b4",
 ]
 
@@ -255,6 +255,11 @@ testpaths = [
 filterwarnings = [
     "error",
     "ignore::pytest.PytestUnraisableExceptionWarning",
+
+    # Remove when uvloop fixes the issue
+    # https://github.com/MagicStack/uvloop/issues/703
+    # https://github.com/MagicStack/uvloop/pull/705
+    "ignore:.*asyncio.iscoroutinefunction.*:DeprecationWarning"
 ]
 
 [tool.coverage.run]
