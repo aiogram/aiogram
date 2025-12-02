@@ -44,7 +44,7 @@ dependencies = [
     "magic-filter>=1.0.12,<1.1",
     "aiohttp>=3.9.0,<3.14",
     "pydantic>=2.4.1,<2.13",
-    "aiofiles>=23.2.1,<24.2",
+    "aiofiles>=23.2.1,<26.0",
     "certifi>=2023.7.22",
     "typing-extensions>=4.7.0,<=5.0",
 ]
@@ -60,7 +60,7 @@ fast = [
     "aiodns>=3.0.0",
 ]
 redis = [
-    "redis[hiredis]>=6.2.0,<7",
+    "redis[hiredis]>=6.2.0,<8",
 ]
 mongo = [
     "motor>=3.3.2,<3.8",
