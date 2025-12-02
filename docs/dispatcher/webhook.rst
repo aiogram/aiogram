@@ -115,7 +115,7 @@ or :meth:`aiogram.dispatcher.dispatcher.Dispatcher.feed_update` methods.
 .. code-block:: python
 
     update = Update.model_validate(await request.json(), context={"bot": bot})
-    await dispatcher.feed_update(update)
+    await dispatcher.feed_update(bot, update)
 
 
 .. note::
