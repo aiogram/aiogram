@@ -1,5 +1,5 @@
 from abc import ABC
-from typing import TYPE_CHECKING, Any, Dict, Union
+from typing import TYPE_CHECKING, Any
 
 from aiogram.filters import Filter
 
@@ -17,7 +17,7 @@ class _InvertFilter(_LogicFilter):
     def __init__(self, target: "FilterObject") -> None:
         self.target = target
 
-    async def __call__(self, *args: Any, **kwargs: Any) -> Union[bool, Dict[str, Any]]:
+    async def __call__(self, *args: Any, **kwargs: Any) -> bool | dict[str, Any]:
         return not bool(await self.target.call(*args, **kwargs))
 
 
@@ -27,7 +27,7 @@ class _AndFilter(_LogicFilter):
     def __init__(self, *targets: "FilterObject") -> None:
         self.targets = targets
 
-    async def __call__(self, *args: Any, **kwargs: Any) -> Union[bool, Dict[str, Any]]:
+    async def __call__(self, *args: Any, **kwargs: Any) -> bool | dict[str, Any]:
         final_result = {}
 
         for target in self.targets:
@@ -48,7 +48,7 @@ class _OrFilter(_LogicFilter):
     def __init__(self, *targets: "FilterObject") -> None:
         self.targets = targets
 
-    async def __call__(self, *args: Any, **kwargs: Any) -> Union[bool, Dict[str, Any]]:
+    async def __call__(self, *args: Any, **kwargs: Any) -> bool | dict[str, Any]:
         for target in self.targets:
             result = await target.call(*args, **kwargs)
             if not result:

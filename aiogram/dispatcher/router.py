@@ -1,11 +1,14 @@
 from __future__ import annotations
 
-from typing import Any, Dict, Final, Generator, List, Optional, Set
+from collections.abc import Generator
+from typing import TYPE_CHECKING, Any, Final
 
-from ..types import TelegramObject
 from .event.bases import REJECTED, UNHANDLED
 from .event.event import EventObserver
 from .event.telegram import TelegramEventObserver
+
+if TYPE_CHECKING:
+    from aiogram.types import TelegramObject
 
 INTERNAL_UPDATE_TYPES: Final[frozenset[str]] = frozenset({"update", "error"})
 
@@ -21,31 +24,34 @@ class Router:
     - By decorator - :obj:`@router.<event_type>(<filters, ...>)`
     """
 
-    def __init__(self, *, name: Optional[str] = None) -> None:
+    def __init__(self, *, name: str | None = None) -> None:
         """
         :param name: Optional router name, can be useful for debugging
         """
 
         self.name = name or hex(id(self))
 
-        self._parent_router: Optional[Router] = None
-        self.sub_routers: List[Router] = []
+        self._parent_router: Router | None = None
+        self.sub_routers: list[Router] = []
 
         # Observers
         self.message = TelegramEventObserver(router=self, event_name="message")
         self.edited_message = TelegramEventObserver(router=self, event_name="edited_message")
         self.channel_post = TelegramEventObserver(router=self, event_name="channel_post")
         self.edited_channel_post = TelegramEventObserver(
-            router=self, event_name="edited_channel_post"
+            router=self,
+            event_name="edited_channel_post",
         )
         self.inline_query = TelegramEventObserver(router=self, event_name="inline_query")
         self.chosen_inline_result = TelegramEventObserver(
-            router=self, event_name="chosen_inline_result"
+            router=self,
+            event_name="chosen_inline_result",
         )
         self.callback_query = TelegramEventObserver(router=self, event_name="callback_query")
         self.shipping_query = TelegramEventObserver(router=self, event_name="shipping_query")
         self.pre_checkout_query = TelegramEventObserver(
-            router=self, event_name="pre_checkout_query"
+            router=self,
+            event_name="pre_checkout_query",
         )
         self.poll = TelegramEventObserver(router=self, event_name="poll")
         self.poll_answer = TelegramEventObserver(router=self, event_name="poll_answer")
@@ -54,24 +60,30 @@ class Router:
         self.chat_join_request = TelegramEventObserver(router=self, event_name="chat_join_request")
         self.message_reaction = TelegramEventObserver(router=self, event_name="message_reaction")
         self.message_reaction_count = TelegramEventObserver(
-            router=self, event_name="message_reaction_count"
+            router=self,
+            event_name="message_reaction_count",
         )
         self.chat_boost = TelegramEventObserver(router=self, event_name="chat_boost")
         self.removed_chat_boost = TelegramEventObserver(
-            router=self, event_name="removed_chat_boost"
+            router=self,
+            event_name="removed_chat_boost",
         )
         self.deleted_business_messages = TelegramEventObserver(
-            router=self, event_name="deleted_business_messages"
+            router=self,
+            event_name="deleted_business_messages",
         )
         self.business_connection = TelegramEventObserver(
-            router=self, event_name="business_connection"
+            router=self,
+            event_name="business_connection",
         )
         self.edited_business_message = TelegramEventObserver(
-            router=self, event_name="edited_business_message"
+            router=self,
+            event_name="edited_business_message",
         )
         self.business_message = TelegramEventObserver(router=self, event_name="business_message")
         self.purchased_paid_media = TelegramEventObserver(
-            router=self, event_name="purchased_paid_media"
+            router=self,
+            event_name="purchased_paid_media",
         )
 
         self.errors = self.error = TelegramEventObserver(router=self, event_name="error")
@@ -79,7 +91,7 @@ class Router:
         self.startup = EventObserver()
         self.shutdown = EventObserver()
 
-        self.observers: Dict[str, TelegramEventObserver] = {
+        self.observers: dict[str, TelegramEventObserver] = {
             "message": self.message,
             "edited_message": self.edited_message,
             "channel_post": self.channel_post,
@@ -112,7 +124,7 @@ class Router:
     def __repr__(self) -> str:
         return f"<{self}>"
 
-    def resolve_used_update_types(self, skip_events: Optional[Set[str]] = None) -> List[str]:
+    def resolve_used_update_types(self, skip_events: set[str] | None = None) -> list[str]:
         """
         Resolve registered event names
 
@@ -121,7 +133,7 @@ class Router:
         :param skip_events: skip specified event names
         :return: set of registered names
         """
-        handlers_in_use: Set[str] = set()
+        handlers_in_use: set[str] = set()
         if skip_events is None:
             skip_events = set()
         skip_events = {*skip_events, *INTERNAL_UPDATE_TYPES}
@@ -139,7 +151,10 @@ class Router:
 
         async def _wrapped(telegram_event: TelegramObject, **data: Any) -> Any:
             return await self._propagate_event(
-                observer=observer, update_type=update_type, event=telegram_event, **data
+                observer=observer,
+                update_type=update_type,
+                event=telegram_event,
+                **data,
             )
 
         if observer:
@@ -148,7 +163,7 @@ class Router:
 
     async def _propagate_event(
         self,
-        observer: Optional[TelegramEventObserver],
+        observer: TelegramEventObserver | None,
         update_type: str,
         event: TelegramObject,
         **kwargs: Any,
@@ -179,7 +194,7 @@ class Router:
 
     @property
     def chain_head(self) -> Generator[Router, None, None]:
-        router: Optional[Router] = self
+        router: Router | None = self
         while router:
             yield router
             router = router.parent_router
@@ -191,7 +206,7 @@ class Router:
             yield from router.chain_tail
 
     @property
-    def parent_router(self) -> Optional[Router]:
+    def parent_router(self) -> Router | None:
         return self._parent_router
 
     @parent_router.setter
@@ -206,16 +221,20 @@ class Router:
         :param router:
         """
         if not isinstance(router, Router):
-            raise ValueError(f"router should be instance of Router not {type(router).__name__!r}")
+            msg = f"router should be instance of Router not {type(router).__name__!r}"
+            raise ValueError(msg)
         if self._parent_router:
-            raise RuntimeError(f"Router is already attached to {self._parent_router!r}")
+            msg = f"Router is already attached to {self._parent_router!r}"
+            raise RuntimeError(msg)
         if self == router:
-            raise RuntimeError("Self-referencing routers is not allowed")
+            msg = "Self-referencing routers is not allowed"
+            raise RuntimeError(msg)
 
-        parent: Optional[Router] = router
+        parent: Router | None = router
         while parent is not None:
             if parent == self:
-                raise RuntimeError("Circular referencing of Router is not allowed")
+                msg = "Circular referencing of Router is not allowed"
+                raise RuntimeError(msg)
 
             parent = parent.parent_router
 
@@ -230,7 +249,8 @@ class Router:
         :return:
         """
         if not routers:
-            raise ValueError("At least one router must be provided")
+            msg = "At least one router must be provided"
+            raise ValueError(msg)
         for router in routers:
             self.include_router(router)
 
@@ -242,9 +262,8 @@ class Router:
         :return:
         """
         if not isinstance(router, Router):
-            raise ValueError(
-                f"router should be instance of Router not {type(router).__class__.__name__}"
-            )
+            msg = f"router should be instance of Router not {type(router).__class__.__name__}"
+            raise ValueError(msg)
         router.parent_router = self
         return router
 

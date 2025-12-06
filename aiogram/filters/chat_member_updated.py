@@ -1,4 +1,6 @@
-from typing import Any, Dict, Optional, TypeVar, Union
+from typing import Any, TypeVar, Union
+
+from typing_extensions import Self
 
 from aiogram.filters.base import Filter
 from aiogram.types import ChatMember, ChatMemberUpdated
@@ -10,11 +12,11 @@ TransitionT = TypeVar("TransitionT", bound="_MemberStatusTransition")
 
 class _MemberStatusMarker:
     __slots__ = (
-        "name",
         "is_member",
+        "name",
     )
 
-    def __init__(self, name: str, *, is_member: Optional[bool] = None) -> None:
+    def __init__(self, name: str, *, is_member: bool | None = None) -> None:
         self.name = name
         self.is_member = is_member
 
@@ -22,53 +24,59 @@ class _MemberStatusMarker:
         result = self.name.upper()
         if self.is_member is not None:
             result = ("+" if self.is_member else "-") + result
-        return result  # noqa: RET504
+        return result
 
-    def __pos__(self: MarkerT) -> MarkerT:
+    def __pos__(self) -> Self:
         return type(self)(name=self.name, is_member=True)
 
-    def __neg__(self: MarkerT) -> MarkerT:
+    def __neg__(self) -> Self:
         return type(self)(name=self.name, is_member=False)
 
     def __or__(
-        self, other: Union["_MemberStatusMarker", "_MemberStatusGroupMarker"]
+        self,
+        other: Union["_MemberStatusMarker", "_MemberStatusGroupMarker"],
     ) -> "_MemberStatusGroupMarker":
         if isinstance(other, _MemberStatusMarker):
             return _MemberStatusGroupMarker(self, other)
         if isinstance(other, _MemberStatusGroupMarker):
             return other | self
-        raise TypeError(
+        msg = (
             f"unsupported operand type(s) for |: "
             f"{type(self).__name__!r} and {type(other).__name__!r}"
         )
+        raise TypeError(msg)
 
     __ror__ = __or__
 
     def __rshift__(
-        self, other: Union["_MemberStatusMarker", "_MemberStatusGroupMarker"]
+        self,
+        other: Union["_MemberStatusMarker", "_MemberStatusGroupMarker"],
     ) -> "_MemberStatusTransition":
         old = _MemberStatusGroupMarker(self)
         if isinstance(other, _MemberStatusMarker):
             return _MemberStatusTransition(old=old, new=_MemberStatusGroupMarker(other))
         if isinstance(other, _MemberStatusGroupMarker):
             return _MemberStatusTransition(old=old, new=other)
-        raise TypeError(
+        msg = (
             f"unsupported operand type(s) for >>: "
             f"{type(self).__name__!r} and {type(other).__name__!r}"
         )
+        raise TypeError(msg)
 
     def __lshift__(
-        self, other: Union["_MemberStatusMarker", "_MemberStatusGroupMarker"]
+        self,
+        other: Union["_MemberStatusMarker", "_MemberStatusGroupMarker"],
     ) -> "_MemberStatusTransition":
         new = _MemberStatusGroupMarker(self)
         if isinstance(other, _MemberStatusMarker):
             return _MemberStatusTransition(old=_MemberStatusGroupMarker(other), new=new)
         if isinstance(other, _MemberStatusGroupMarker):
             return _MemberStatusTransition(old=other, new=new)
-        raise TypeError(
+        msg = (
             f"unsupported operand type(s) for <<: "
             f"{type(self).__name__!r} and {type(other).__name__!r}"
         )
+        raise TypeError(msg)
 
     def __hash__(self) -> int:
         return hash((self.name, self.is_member))
@@ -87,44 +95,51 @@ class _MemberStatusGroupMarker:
 
     def __init__(self, *statuses: _MemberStatusMarker) -> None:
         if not statuses:
-            raise ValueError("Member status group should have at least one status included")
+            msg = "Member status group should have at least one status included"
+            raise ValueError(msg)
         self.statuses = frozenset(statuses)
 
     def __or__(
-        self: MarkerGroupT, other: Union["_MemberStatusMarker", "_MemberStatusGroupMarker"]
-    ) -> MarkerGroupT:
+        self,
+        other: Union["_MemberStatusMarker", "_MemberStatusGroupMarker"],
+    ) -> Self:
         if isinstance(other, _MemberStatusMarker):
             return type(self)(*self.statuses, other)
         if isinstance(other, _MemberStatusGroupMarker):
             return type(self)(*self.statuses, *other.statuses)
-        raise TypeError(
+        msg = (
             f"unsupported operand type(s) for |: "
             f"{type(self).__name__!r} and {type(other).__name__!r}"
         )
+        raise TypeError(msg)
 
     def __rshift__(
-        self, other: Union["_MemberStatusMarker", "_MemberStatusGroupMarker"]
+        self,
+        other: Union["_MemberStatusMarker", "_MemberStatusGroupMarker"],
     ) -> "_MemberStatusTransition":
         if isinstance(other, _MemberStatusMarker):
             return _MemberStatusTransition(old=self, new=_MemberStatusGroupMarker(other))
         if isinstance(other, _MemberStatusGroupMarker):
             return _MemberStatusTransition(old=self, new=other)
-        raise TypeError(
+        msg = (
             f"unsupported operand type(s) for >>: "
             f"{type(self).__name__!r} and {type(other).__name__!r}"
         )
+        raise TypeError(msg)
 
     def __lshift__(
-        self, other: Union["_MemberStatusMarker", "_MemberStatusGroupMarker"]
+        self,
+        other: Union["_MemberStatusMarker", "_MemberStatusGroupMarker"],
     ) -> "_MemberStatusTransition":
         if isinstance(other, _MemberStatusMarker):
             return _MemberStatusTransition(old=_MemberStatusGroupMarker(other), new=self)
         if isinstance(other, _MemberStatusGroupMarker):
             return _MemberStatusTransition(old=other, new=self)
-        raise TypeError(
+        msg = (
             f"unsupported operand type(s) for <<: "
             f"{type(self).__name__!r} and {type(other).__name__!r}"
         )
+        raise TypeError(msg)
 
     def __str__(self) -> str:
         result = " | ".join(map(str, sorted(self.statuses, key=str)))
@@ -138,8 +153,8 @@ class _MemberStatusGroupMarker:
 
 class _MemberStatusTransition:
     __slots__ = (
-        "old",
         "new",
+        "old",
     )
 
     def __init__(self, *, old: _MemberStatusGroupMarker, new: _MemberStatusGroupMarker) -> None:
@@ -149,7 +164,7 @@ class _MemberStatusTransition:
     def __str__(self) -> str:
         return f"{self.old} >> {self.new}"
 
-    def __invert__(self: TransitionT) -> TransitionT:
+    def __invert__(self) -> Self:
         return type(self)(old=self.new, new=self.old)
 
     def check(self, *, old: ChatMember, new: ChatMember) -> bool:
@@ -177,11 +192,9 @@ class ChatMemberUpdatedFilter(Filter):
 
     def __init__(
         self,
-        member_status_changed: Union[
-            _MemberStatusMarker,
-            _MemberStatusGroupMarker,
-            _MemberStatusTransition,
-        ],
+        member_status_changed: (
+            _MemberStatusMarker | _MemberStatusGroupMarker | _MemberStatusTransition
+        ),
     ):
         self.member_status_changed = member_status_changed
 
@@ -190,7 +203,7 @@ class ChatMemberUpdatedFilter(Filter):
             member_status_changed=self.member_status_changed,
         )
 
-    async def __call__(self, member_updated: ChatMemberUpdated) -> Union[bool, Dict[str, Any]]:
+    async def __call__(self, member_updated: ChatMemberUpdated) -> bool | dict[str, Any]:
         old = member_updated.old_chat_member
         new = member_updated.new_chat_member
         rule = self.member_status_changed

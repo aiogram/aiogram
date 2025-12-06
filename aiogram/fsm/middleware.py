@@ -1,4 +1,5 @@
-from typing import Any, Awaitable, Callable, Dict, Optional, cast
+from collections.abc import Awaitable, Callable
+from typing import Any, cast
 
 from aiogram import Bot
 from aiogram.dispatcher.middlewares.base import BaseMiddleware
@@ -27,9 +28,9 @@ class FSMContextMiddleware(BaseMiddleware):
 
     async def __call__(
         self,
-        handler: Callable[[TelegramObject, Dict[str, Any]], Awaitable[Any]],
+        handler: Callable[[TelegramObject, dict[str, Any]], Awaitable[Any]],
         event: TelegramObject,
-        data: Dict[str, Any],
+        data: dict[str, Any],
     ) -> Any:
         bot: Bot = cast(Bot, data["bot"])
         context = self.resolve_event_context(bot, data)
@@ -45,9 +46,9 @@ class FSMContextMiddleware(BaseMiddleware):
     def resolve_event_context(
         self,
         bot: Bot,
-        data: Dict[str, Any],
+        data: dict[str, Any],
         destiny: str = DEFAULT_DESTINY,
-    ) -> Optional[FSMContext]:
+    ) -> FSMContext | None:
         event_context: EventContext = cast(EventContext, data.get(EVENT_CONTEXT_KEY))
         return self.resolve_context(
             bot=bot,
@@ -61,12 +62,12 @@ class FSMContextMiddleware(BaseMiddleware):
     def resolve_context(
         self,
         bot: Bot,
-        chat_id: Optional[int],
-        user_id: Optional[int],
-        thread_id: Optional[int] = None,
-        business_connection_id: Optional[str] = None,
+        chat_id: int | None,
+        user_id: int | None,
+        thread_id: int | None = None,
+        business_connection_id: str | None = None,
         destiny: str = DEFAULT_DESTINY,
-    ) -> Optional[FSMContext]:
+    ) -> FSMContext | None:
         if chat_id is None:
             chat_id = user_id
 
@@ -92,8 +93,8 @@ class FSMContextMiddleware(BaseMiddleware):
         bot: Bot,
         chat_id: int,
         user_id: int,
-        thread_id: Optional[int] = None,
-        business_connection_id: Optional[str] = None,
+        thread_id: int | None = None,
+        business_connection_id: str | None = None,
         destiny: str = DEFAULT_DESTINY,
     ) -> FSMContext:
         return FSMContext(

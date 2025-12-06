@@ -1,7 +1,6 @@
-from typing import Tuple, Type, Union
+from typing import Annotated
 
 from pydantic import Field, TypeAdapter
-from typing_extensions import Annotated
 
 from aiogram.types import (
     ChatMember,
@@ -13,22 +12,22 @@ from aiogram.types import (
     ChatMemberRestricted,
 )
 
-ChatMemberUnion = Union[
-    ChatMemberOwner,
-    ChatMemberAdministrator,
-    ChatMemberMember,
-    ChatMemberRestricted,
-    ChatMemberLeft,
-    ChatMemberBanned,
-]
+ChatMemberUnion = (
+    ChatMemberOwner
+    | ChatMemberAdministrator
+    | ChatMemberMember
+    | ChatMemberRestricted
+    | ChatMemberLeft
+    | ChatMemberBanned
+)
 
-ChatMemberCollection = Tuple[Type[ChatMember], ...]
+ChatMemberCollection = tuple[type[ChatMember], ...]
 
 ChatMemberAdapter: TypeAdapter[ChatMemberUnion] = TypeAdapter(
     Annotated[
         ChatMemberUnion,
         Field(discriminator="status"),
-    ]
+    ],
 )
 
 ADMINS: ChatMemberCollection = (ChatMemberOwner, ChatMemberAdministrator)

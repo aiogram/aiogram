@@ -33,7 +33,7 @@ async def command_start_handler(message: Message) -> None:
     await message.answer(
         f"Hello, {hbold(message.from_user.full_name)}!",
         reply_markup=InlineKeyboardMarkup(
-            inline_keyboard=[[InlineKeyboardButton(text="Tap me, bro", callback_data="*")]]
+            inline_keyboard=[[InlineKeyboardButton(text="Tap me, bro", callback_data="*")]],
         ),
     )
 
@@ -43,7 +43,7 @@ async def chat_member_update(chat_member: ChatMemberUpdated, bot: Bot) -> None:
     await bot.send_message(
         chat_member.chat.id,
         f"Member {hcode(chat_member.from_user.id)} was changed "
-        + f"from {chat_member.old_chat_member.status} to {chat_member.new_chat_member.status}",
+        f"from {chat_member.old_chat_member.status} to {chat_member.new_chat_member.status}",
     )
 
 

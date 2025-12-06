@@ -3,29 +3,34 @@ from __future__ import annotations
 import asyncio
 import contextvars
 import signal
+import sys
 import warnings
 from asyncio import CancelledError, Event, Future, Lock
+from collections.abc import AsyncGenerator, Awaitable
 from contextlib import suppress
-from typing import Any, AsyncGenerator, Awaitable, Dict, List, Optional, Set, Union
+from typing import TYPE_CHECKING, Any
 
-from .. import loggers
-from ..client.bot import Bot
-from ..exceptions import TelegramAPIError
-from ..fsm.middleware import FSMContextMiddleware
-from ..fsm.storage.base import BaseEventIsolation, BaseStorage
-from ..fsm.storage.memory import DisabledEventIsolation, MemoryStorage
-from ..fsm.strategy import FSMStrategy
-from ..methods import GetUpdates, TelegramMethod
-from ..methods.base import TelegramType
-from ..types import Update, User
-from ..types.base import UNSET, UNSET_TYPE
-from ..types.update import UpdateTypeLookupError
-from ..utils.backoff import Backoff, BackoffConfig
+from aiogram import loggers
+from aiogram.exceptions import TelegramAPIError
+from aiogram.fsm.middleware import FSMContextMiddleware
+from aiogram.fsm.storage.base import BaseEventIsolation, BaseStorage
+from aiogram.fsm.storage.memory import DisabledEventIsolation, MemoryStorage
+from aiogram.fsm.strategy import FSMStrategy
+from aiogram.methods import GetUpdates, TelegramMethod
+from aiogram.types import Update, User
+from aiogram.types.base import UNSET, UNSET_TYPE
+from aiogram.types.update import UpdateTypeLookupError
+from aiogram.utils.backoff import Backoff, BackoffConfig
+
 from .event.bases import UNHANDLED, SkipHandler
 from .event.telegram import TelegramEventObserver
 from .middlewares.error import ErrorsMiddleware
 from .middlewares.user_context import UserContextMiddleware
 from .router import Router
+
+if TYPE_CHECKING:
+    from aiogram.client.bot import Bot
+    from aiogram.methods.base import TelegramType
 
 DEFAULT_BACKOFF_CONFIG = BackoffConfig(min_delay=1.0, max_delay=5.0, factor=1.3, jitter=0.1)
 
@@ -38,11 +43,11 @@ class Dispatcher(Router):
     def __init__(
         self,
         *,  # * - Preventing to pass instance of Bot to the FSM storage
-        storage: Optional[BaseStorage] = None,
+        storage: BaseStorage | None = None,
         fsm_strategy: FSMStrategy = FSMStrategy.USER_IN_CHAT,
-        events_isolation: Optional[BaseEventIsolation] = None,
+        events_isolation: BaseEventIsolation | None = None,
         disable_fsm: bool = False,
-        name: Optional[str] = None,
+        name: str | None = None,
         **kwargs: Any,
     ) -> None:
         """
@@ -55,18 +60,18 @@ class Dispatcher(Router):
             then you should not use storage and events isolation
         :param kwargs: Other arguments, will be passed as keyword arguments to handlers
         """
-        super(Dispatcher, self).__init__(name=name)
+        super().__init__(name=name)
 
         if storage and not isinstance(storage, BaseStorage):
-            raise TypeError(
-                f"FSM storage should be instance of 'BaseStorage' not {type(storage).__name__}"
-            )
+            msg = f"FSM storage should be instance of 'BaseStorage' not {type(storage).__name__}"
+            raise TypeError(msg)
 
         # Telegram API provides originally only one event type - Update
         # For making easily interactions with events here is registered handler which helps
         # to separate Update to different event types like Message, CallbackQuery etc.
         self.update = self.observers["update"] = TelegramEventObserver(
-            router=self, event_name="update"
+            router=self,
+            event_name="update",
         )
         self.update.register(self._listen_update)
 
@@ -91,11 +96,11 @@ class Dispatcher(Router):
             self.update.outer_middleware(self.fsm)
         self.shutdown.register(self.fsm.close)
 
-        self.workflow_data: Dict[str, Any] = kwargs
+        self.workflow_data: dict[str, Any] = kwargs
         self._running_lock = Lock()
-        self._stop_signal: Optional[Event] = None
-        self._stopped_signal: Optional[Event] = None
-        self._handle_update_tasks: Set[asyncio.Task[Any]] = set()
+        self._stop_signal: Event | None = None
+        self._stopped_signal: Event | None = None
+        self._handle_update_tasks: set[asyncio.Task[Any]] = set()
 
     def __getitem__(self, item: str) -> Any:
         return self.workflow_data[item]
@@ -106,7 +111,7 @@ class Dispatcher(Router):
     def __delitem__(self, key: str) -> None:
         del self.workflow_data[key]
 
-    def get(self, key: str, /, default: Optional[Any] = None) -> Optional[Any]:
+    def get(self, key: str, /, default: Any | None = None) -> Any | None:
         return self.workflow_data.get(key, default)
 
     @property
@@ -114,13 +119,13 @@ class Dispatcher(Router):
         return self.fsm.storage
 
     @property
-    def parent_router(self) -> Optional[Router]:
+    def parent_router(self) -> Router | None:
         """
         Dispatcher has no parent router and can't be included to any other routers or dispatchers
 
         :return:
         """
-        return None  # noqa: RET501
+        return None
 
     @parent_router.setter
     def parent_router(self, value: Router) -> None:
@@ -130,7 +135,8 @@ class Dispatcher(Router):
         :param value:
         :return:
         """
-        raise RuntimeError("Dispatcher can not be attached to another Router.")
+        msg = "Dispatcher can not be attached to another Router."
+        raise RuntimeError(msg)
 
     async def feed_update(self, bot: Bot, update: Update, **kwargs: Any) -> Any:
         """
@@ -177,7 +183,7 @@ class Dispatcher(Router):
                 bot.id,
             )
 
-    async def feed_raw_update(self, bot: Bot, update: Dict[str, Any], **kwargs: Any) -> Any:
+    async def feed_raw_update(self, bot: Bot, update: dict[str, Any], **kwargs: Any) -> Any:
         """
         Main entry point for incoming updates with automatic Dict->Update serializer
 
@@ -194,7 +200,7 @@ class Dispatcher(Router):
         bot: Bot,
         polling_timeout: int = 30,
         backoff_config: BackoffConfig = DEFAULT_BACKOFF_CONFIG,
-        allowed_updates: Optional[List[str]] = None,
+        allowed_updates: list[str] | None = None,
     ) -> AsyncGenerator[Update, None]:
         """
         Endless updates reader with correctly handling any server-side or connection errors.
@@ -212,7 +218,7 @@ class Dispatcher(Router):
         while True:
             try:
                 updates = await bot(get_updates, **kwargs)
-            except Exception as e:
+            except Exception as e:  # noqa: BLE001
                 failed = True
                 # In cases when Telegram Bot API was inaccessible don't need to stop polling
                 # process because some developers can't make auto-restarting of the script
@@ -268,6 +274,7 @@ class Dispatcher(Router):
                 "installed not latest version of aiogram framework"
                 f"\nUpdate: {update.model_dump_json(exclude_unset=True)}",
                 RuntimeWarning,
+                stacklevel=2,
             )
             raise SkipHandler() from e
 
@@ -294,7 +301,11 @@ class Dispatcher(Router):
             loggers.event.error("Failed to make answer: %s: %s", e.__class__.__name__, e)
 
     async def _process_update(
-        self, bot: Bot, update: Update, call_answer: bool = True, **kwargs: Any
+        self,
+        bot: Bot,
+        update: Update,
+        call_answer: bool = True,
+        **kwargs: Any,
     ) -> bool:
         """
         Propagate update to event listeners
@@ -309,9 +320,8 @@ class Dispatcher(Router):
             response = await self.feed_update(bot, update, **kwargs)
             if call_answer and isinstance(response, TelegramMethod):
                 await self.silent_call_request(bot=bot, result=response)
-            return response is not UNHANDLED
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             loggers.event.exception(
                 "Cause exception while process update id=%d by bot id=%d\n%s: %s",
                 update.update_id,
@@ -321,8 +331,13 @@ class Dispatcher(Router):
             )
             return True  # because update was processed but unsuccessful
 
+        else:
+            return response is not UNHANDLED
+
     async def _process_with_semaphore(
-        self, handle_update: Awaitable[bool], semaphore: asyncio.Semaphore
+        self,
+        handle_update: Awaitable[bool],
+        semaphore: asyncio.Semaphore,
     ) -> bool:
         """
         Process update with semaphore to limit concurrent tasks
@@ -342,8 +357,8 @@ class Dispatcher(Router):
         polling_timeout: int = 30,
         handle_as_tasks: bool = True,
         backoff_config: BackoffConfig = DEFAULT_BACKOFF_CONFIG,
-        allowed_updates: Optional[List[str]] = None,
-        tasks_concurrency_limit: Optional[int] = None,
+        allowed_updates: list[str] | None = None,
+        tasks_concurrency_limit: int | None = None,
         **kwargs: Any,
     ) -> None:
         """
@@ -361,7 +376,10 @@ class Dispatcher(Router):
         """
         user: User = await bot.me()
         loggers.dispatcher.info(
-            "Run polling for bot @%s id=%d - %r", user.username, bot.id, user.full_name
+            "Run polling for bot @%s id=%d - %r",
+            user.username,
+            bot.id,
+            user.full_name,
         )
 
         # Create semaphore if tasks_concurrency_limit is specified
@@ -382,7 +400,7 @@ class Dispatcher(Router):
                         # Use semaphore to limit concurrent tasks
                         await semaphore.acquire()
                         handle_update_task = asyncio.create_task(
-                            self._process_with_semaphore(handle_update, semaphore)
+                            self._process_with_semaphore(handle_update, semaphore),
                         )
                     else:
                         handle_update_task = asyncio.create_task(handle_update)
@@ -393,7 +411,10 @@ class Dispatcher(Router):
                     await handle_update
         finally:
             loggers.dispatcher.info(
-                "Polling stopped for bot @%s id=%d - %r", user.username, bot.id, user.full_name
+                "Polling stopped for bot @%s id=%d - %r",
+                user.username,
+                bot.id,
+                user.full_name,
             )
 
     async def _feed_webhook_update(self, bot: Bot, update: Update, **kwargs: Any) -> Any:
@@ -413,8 +434,12 @@ class Dispatcher(Router):
             raise
 
     async def feed_webhook_update(
-        self, bot: Bot, update: Union[Update, Dict[str, Any]], _timeout: float = 55, **kwargs: Any
-    ) -> Optional[TelegramMethod[TelegramType]]:
+        self,
+        bot: Bot,
+        update: Update | dict[str, Any],
+        _timeout: float = 55,
+        **kwargs: Any,
+    ) -> TelegramMethod[TelegramType] | None:
         if not isinstance(update, Update):  # Allow to use raw updates
             update = Update.model_validate(update, context={"bot": bot})
 
@@ -429,7 +454,7 @@ class Dispatcher(Router):
         timeout_handle = loop.call_later(_timeout, release_waiter)
 
         process_updates: Future[Any] = asyncio.ensure_future(
-            self._feed_webhook_update(bot=bot, update=update, **kwargs)
+            self._feed_webhook_update(bot=bot, update=update, **kwargs),
         )
         process_updates.add_done_callback(release_waiter, context=ctx)
 
@@ -440,11 +465,9 @@ class Dispatcher(Router):
                 "For preventing this situation response into webhook returned immediately "
                 "and handler is moved to background and still processing update.",
                 RuntimeWarning,
+                stacklevel=2,
             )
-            try:
-                result = task.result()
-            except Exception as e:
-                raise e
+            result = task.result()
             if isinstance(result, TelegramMethod):
                 asyncio.ensure_future(self.silent_call_request(bot=bot, result=result))
 
@@ -478,7 +501,8 @@ class Dispatcher(Router):
         :return:
         """
         if not self._running_lock.locked():
-            raise RuntimeError("Polling is not started")
+            msg = "Polling is not started"
+            raise RuntimeError(msg)
         if not self._stop_signal or not self._stopped_signal:
             return
         self._stop_signal.set()
@@ -499,10 +523,10 @@ class Dispatcher(Router):
         polling_timeout: int = 10,
         handle_as_tasks: bool = True,
         backoff_config: BackoffConfig = DEFAULT_BACKOFF_CONFIG,
-        allowed_updates: Optional[Union[List[str], UNSET_TYPE]] = UNSET,
+        allowed_updates: list[str] | UNSET_TYPE | None = UNSET,
         handle_signals: bool = True,
         close_bot_session: bool = True,
-        tasks_concurrency_limit: Optional[int] = None,
+        tasks_concurrency_limit: int | None = None,
         **kwargs: Any,
     ) -> None:
         """
@@ -522,12 +546,14 @@ class Dispatcher(Router):
         :return:
         """
         if not bots:
-            raise ValueError("At least one bot instance is required to start polling")
+            msg = "At least one bot instance is required to start polling"
+            raise ValueError(msg)
         if "bot" in kwargs:
-            raise ValueError(
+            msg = (
                 "Keyword argument 'bot' is not acceptable, "
                 "the bot instance should be passed as positional argument"
             )
+            raise ValueError(msg)
 
         async with self._running_lock:  # Prevent to run this method twice at a once
             if self._stop_signal is None:
@@ -547,10 +573,14 @@ class Dispatcher(Router):
                     # Signals handling is not supported on Windows
                     # It also can't be covered on Windows
                     loop.add_signal_handler(
-                        signal.SIGTERM, self._signal_stop_polling, signal.SIGTERM
+                        signal.SIGTERM,
+                        self._signal_stop_polling,
+                        signal.SIGTERM,
                     )
                     loop.add_signal_handler(
-                        signal.SIGINT, self._signal_stop_polling, signal.SIGINT
+                        signal.SIGINT,
+                        self._signal_stop_polling,
+                        signal.SIGINT,
                     )
 
             workflow_data = {
@@ -565,7 +595,7 @@ class Dispatcher(Router):
             await self.emit_startup(bot=bots[-1], **workflow_data)
             loggers.dispatcher.info("Start polling")
             try:
-                tasks: List[asyncio.Task[Any]] = [
+                tasks: list[asyncio.Task[Any]] = [
                     asyncio.create_task(
                         self._polling(
                             bot=bot,
@@ -575,7 +605,7 @@ class Dispatcher(Router):
                             allowed_updates=allowed_updates,
                             tasks_concurrency_limit=tasks_concurrency_limit,
                             **workflow_data,
-                        )
+                        ),
                     )
                     for bot in bots
                 ]
@@ -605,10 +635,10 @@ class Dispatcher(Router):
         polling_timeout: int = 10,
         handle_as_tasks: bool = True,
         backoff_config: BackoffConfig = DEFAULT_BACKOFF_CONFIG,
-        allowed_updates: Optional[Union[List[str], UNSET_TYPE]] = UNSET,
+        allowed_updates: list[str] | UNSET_TYPE | None = UNSET,
         handle_signals: bool = True,
         close_bot_session: bool = True,
-        tasks_concurrency_limit: Optional[int] = None,
+        tasks_concurrency_limit: int | None = None,
         **kwargs: Any,
     ) -> None:
         """
@@ -627,16 +657,28 @@ class Dispatcher(Router):
         :return:
         """
         with suppress(KeyboardInterrupt):
-            return asyncio.run(
-                self.start_polling(
-                    *bots,
-                    **kwargs,
-                    polling_timeout=polling_timeout,
-                    handle_as_tasks=handle_as_tasks,
-                    backoff_config=backoff_config,
-                    allowed_updates=allowed_updates,
-                    handle_signals=handle_signals,
-                    close_bot_session=close_bot_session,
-                    tasks_concurrency_limit=tasks_concurrency_limit,
-                )
+            coro = self.start_polling(
+                *bots,
+                **kwargs,
+                polling_timeout=polling_timeout,
+                handle_as_tasks=handle_as_tasks,
+                backoff_config=backoff_config,
+                allowed_updates=allowed_updates,
+                handle_signals=handle_signals,
+                close_bot_session=close_bot_session,
+                tasks_concurrency_limit=tasks_concurrency_limit,
             )
+
+            try:
+                import uvloop
+
+            except ImportError:
+                return asyncio.run(coro)
+
+            else:
+                if sys.version_info >= (3, 11):
+                    with asyncio.Runner(loop_factory=uvloop.new_event_loop) as runner:
+                        return runner.run(coro)
+                else:
+                    uvloop.install()
+                    return asyncio.run(coro)

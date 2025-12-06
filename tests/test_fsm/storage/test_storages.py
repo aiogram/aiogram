@@ -8,12 +8,8 @@ from aiogram.fsm.storage.base import BaseStorage, StorageKey
 
 @pytest.mark.parametrize(
     "storage",
-    [
-        pytest.lazy_fixture("redis_storage"),
-        pytest.lazy_fixture("mongo_storage"),
-        pytest.lazy_fixture("pymongo_storage"),
-        pytest.lazy_fixture("memory_storage"),
-    ],
+    ["memory_storage", "redis_storage", "mongo_storage", "pymongo_storage"],
+    indirect=True,
 )
 class TestStorages:
     async def test_set_state(self, storage: BaseStorage, storage_key: StorageKey):

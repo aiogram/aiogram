@@ -4,19 +4,7 @@ from abc import ABC
 from copy import deepcopy
 from itertools import chain
 from itertools import cycle as repeat_all
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    Generator,
-    Generic,
-    Iterable,
-    List,
-    Optional,
-    Type,
-    TypeVar,
-    Union,
-    cast,
-)
+from typing import TYPE_CHECKING, Any, Generic, TypeVar, cast
 
 from aiogram.filters.callback_data import CallbackData
 from aiogram.types import (
@@ -34,11 +22,14 @@ from aiogram.types import (
     WebAppInfo,
 )
 
+if TYPE_CHECKING:
+    from collections.abc import Generator, Iterable
+
 ButtonType = TypeVar("ButtonType", InlineKeyboardButton, KeyboardButton)
 T = TypeVar("T")
 
 
-class KeyboardBuilder(Generic[ButtonType], ABC):
+class KeyboardBuilder(ABC, Generic[ButtonType]):
     """
     Generic keyboard builder that helps to adjust your markup with defined shape of lines.
 
@@ -50,16 +41,19 @@ class KeyboardBuilder(Generic[ButtonType], ABC):
     max_buttons: int = 0
 
     def __init__(
-        self, button_type: Type[ButtonType], markup: Optional[List[List[ButtonType]]] = None
+        self,
+        button_type: type[ButtonType],
+        markup: list[list[ButtonType]] | None = None,
     ) -> None:
         if not issubclass(button_type, (InlineKeyboardButton, KeyboardButton)):
-            raise ValueError(f"Button type {button_type} are not allowed here")
-        self._button_type: Type[ButtonType] = button_type
+            msg = f"Button type {button_type} are not allowed here"
+            raise ValueError(msg)
+        self._button_type: type[ButtonType] = button_type
         if markup:
             self._validate_markup(markup)
         else:
             markup = []
-        self._markup: List[List[ButtonType]] = markup
+        self._markup: list[list[ButtonType]] = markup
 
     @property
     def buttons(self) -> Generator[ButtonType, None, None]:
@@ -79,9 +73,8 @@ class KeyboardBuilder(Generic[ButtonType], ABC):
         """
         allowed = self._button_type
         if not isinstance(button, allowed):
-            raise ValueError(
-                f"{button!r} should be type {allowed.__name__!r} not {type(button).__name__!r}"
-            )
+            msg = f"{button!r} should be type {allowed.__name__!r} not {type(button).__name__!r}"
+            raise ValueError(msg)
         return True
 
     def _validate_buttons(self, *buttons: ButtonType) -> bool:
@@ -93,7 +86,7 @@ class KeyboardBuilder(Generic[ButtonType], ABC):
         """
         return all(map(self._validate_button, buttons))
 
-    def _validate_row(self, row: List[ButtonType]) -> bool:
+    def _validate_row(self, row: list[ButtonType]) -> bool:
         """
         Check that row of buttons are correct
         Row can be only list of allowed button types and has length 0 <= n <= 8
@@ -102,16 +95,18 @@ class KeyboardBuilder(Generic[ButtonType], ABC):
         :return:
         """
         if not isinstance(row, list):
-            raise ValueError(
+            msg = (
                 f"Row {row!r} should be type 'List[{self._button_type.__name__}]' "
                 f"not type {type(row).__name__}"
             )
+            raise ValueError(msg)
         if len(row) > self.max_width:
-            raise ValueError(f"Row {row!r} is too long (max width: {self.max_width})")
+            msg = f"Row {row!r} is too long (max width: {self.max_width})"
+            raise ValueError(msg)
         self._validate_buttons(*row)
         return True
 
-    def _validate_markup(self, markup: List[List[ButtonType]]) -> bool:
+    def _validate_markup(self, markup: list[list[ButtonType]]) -> bool:
         """
         Check that passed markup has correct data structure
         Markup is list of lists of buttons
@@ -121,15 +116,17 @@ class KeyboardBuilder(Generic[ButtonType], ABC):
         """
         count = 0
         if not isinstance(markup, list):
-            raise ValueError(
+            msg = (
                 f"Markup should be type 'List[List[{self._button_type.__name__}]]' "
                 f"not type {type(markup).__name__!r}"
             )
+            raise ValueError(msg)
         for row in markup:
             self._validate_row(row)
             count += len(row)
         if count > self.max_buttons:
-            raise ValueError(f"Too much buttons detected Max allowed count - {self.max_buttons}")
+            msg = f"Too much buttons detected Max allowed count - {self.max_buttons}"
+            raise ValueError(msg)
         return True
 
     def _validate_size(self, size: Any) -> int:
@@ -140,14 +137,14 @@ class KeyboardBuilder(Generic[ButtonType], ABC):
         :return:
         """
         if not isinstance(size, int):
-            raise ValueError("Only int sizes are allowed")
+            msg = "Only int sizes are allowed"
+            raise ValueError(msg)
         if size not in range(self.min_width, self.max_width + 1):
-            raise ValueError(
-                f"Row size {size} is not allowed, range: [{self.min_width}, {self.max_width}]"
-            )
+            msg = f"Row size {size} is not allowed, range: [{self.min_width}, {self.max_width}]"
+            raise ValueError(msg)
         return size
 
-    def export(self) -> List[List[ButtonType]]:
+    def export(self) -> list[list[ButtonType]]:
         """
         Export configured markup as list of lists of buttons
 
@@ -161,7 +158,7 @@ class KeyboardBuilder(Generic[ButtonType], ABC):
         """
         return deepcopy(self._markup)
 
-    def add(self, *buttons: ButtonType) -> "KeyboardBuilder[ButtonType]":
+    def add(self, *buttons: ButtonType) -> KeyboardBuilder[ButtonType]:
         """
         Add one or many buttons to markup.
 
@@ -189,9 +186,7 @@ class KeyboardBuilder(Generic[ButtonType], ABC):
         self._markup = markup
         return self
 
-    def row(
-        self, *buttons: ButtonType, width: Optional[int] = None
-    ) -> "KeyboardBuilder[ButtonType]":
+    def row(self, *buttons: ButtonType, width: int | None = None) -> KeyboardBuilder[ButtonType]:
         """
         Add row to markup
 
@@ -211,7 +206,7 @@ class KeyboardBuilder(Generic[ButtonType], ABC):
         )
         return self
 
-    def adjust(self, *sizes: int, repeat: bool = False) -> "KeyboardBuilder[ButtonType]":
+    def adjust(self, *sizes: int, repeat: bool = False) -> KeyboardBuilder[ButtonType]:
         """
         Adjust previously added buttons to specific row sizes.
 
@@ -232,7 +227,7 @@ class KeyboardBuilder(Generic[ButtonType], ABC):
         size = next(sizes_iter)
 
         markup = []
-        row: List[ButtonType] = []
+        row: list[ButtonType] = []
         for button in self.buttons:
             if len(row) >= size:
                 markup.append(row)
@@ -244,33 +239,35 @@ class KeyboardBuilder(Generic[ButtonType], ABC):
         self._markup = markup
         return self
 
-    def _button(self, **kwargs: Any) -> "KeyboardBuilder[ButtonType]":
+    def _button(self, **kwargs: Any) -> KeyboardBuilder[ButtonType]:
         """
         Add button to markup
 
         :param kwargs:
         :return:
         """
-        if isinstance(callback_data := kwargs.get("callback_data", None), CallbackData):
+        if isinstance(callback_data := kwargs.get("callback_data"), CallbackData):
             kwargs["callback_data"] = callback_data.pack()
         button = self._button_type(**kwargs)
         return self.add(button)
 
-    def as_markup(self, **kwargs: Any) -> Union[InlineKeyboardMarkup, ReplyKeyboardMarkup]:
+    def as_markup(self, **kwargs: Any) -> InlineKeyboardMarkup | ReplyKeyboardMarkup:
         if self._button_type is KeyboardButton:
-            keyboard = cast(List[List[KeyboardButton]], self.export())  # type: ignore
+            keyboard = cast(list[list[KeyboardButton]], self.export())  # type: ignore
             return ReplyKeyboardMarkup(keyboard=keyboard, **kwargs)
-        inline_keyboard = cast(List[List[InlineKeyboardButton]], self.export())  # type: ignore
+        inline_keyboard = cast(list[list[InlineKeyboardButton]], self.export())  # type: ignore
         return InlineKeyboardMarkup(inline_keyboard=inline_keyboard)
 
-    def attach(self, builder: "KeyboardBuilder[ButtonType]") -> "KeyboardBuilder[ButtonType]":
+    def attach(self, builder: KeyboardBuilder[ButtonType]) -> KeyboardBuilder[ButtonType]:
         if not isinstance(builder, KeyboardBuilder):
-            raise ValueError(f"Only KeyboardBuilder can be attached, not {type(builder).__name__}")
+            msg = f"Only KeyboardBuilder can be attached, not {type(builder).__name__}"
+            raise ValueError(msg)
         if builder._button_type is not self._button_type:
-            raise ValueError(
+            msg = (
                 f"Only builders with same button type can be attached, "
                 f"not {self._button_type.__name__} and {builder._button_type.__name__}"
             )
+            raise ValueError(msg)
         self._markup.extend(builder.export())
         return self
 
@@ -306,18 +303,18 @@ class InlineKeyboardBuilder(KeyboardBuilder[InlineKeyboardButton]):
         self,
         *,
         text: str,
-        url: Optional[str] = None,
-        callback_data: Optional[Union[str, CallbackData]] = None,
-        web_app: Optional[WebAppInfo] = None,
-        login_url: Optional[LoginUrl] = None,
-        switch_inline_query: Optional[str] = None,
-        switch_inline_query_current_chat: Optional[str] = None,
-        switch_inline_query_chosen_chat: Optional[SwitchInlineQueryChosenChat] = None,
-        copy_text: Optional[CopyTextButton] = None,
-        callback_game: Optional[CallbackGame] = None,
-        pay: Optional[bool] = None,
+        url: str | None = None,
+        callback_data: str | CallbackData | None = None,
+        web_app: WebAppInfo | None = None,
+        login_url: LoginUrl | None = None,
+        switch_inline_query: str | None = None,
+        switch_inline_query_current_chat: str | None = None,
+        switch_inline_query_chosen_chat: SwitchInlineQueryChosenChat | None = None,
+        copy_text: CopyTextButton | None = None,
+        callback_game: CallbackGame | None = None,
+        pay: bool | None = None,
         **kwargs: Any,
-    ) -> "InlineKeyboardBuilder":
+    ) -> InlineKeyboardBuilder:
         return cast(
             InlineKeyboardBuilder,
             self._button(
@@ -340,10 +337,10 @@ class InlineKeyboardBuilder(KeyboardBuilder[InlineKeyboardButton]):
         """Construct an InlineKeyboardMarkup"""
         return cast(InlineKeyboardMarkup, super().as_markup(**kwargs))
 
-    def __init__(self, markup: Optional[List[List[InlineKeyboardButton]]] = None) -> None:
+    def __init__(self, markup: list[list[InlineKeyboardButton]] | None = None) -> None:
         super().__init__(button_type=InlineKeyboardButton, markup=markup)
 
-    def copy(self: "InlineKeyboardBuilder") -> "InlineKeyboardBuilder":
+    def copy(self: InlineKeyboardBuilder) -> InlineKeyboardBuilder:
         """
         Make full copy of current builder with markup
 
@@ -353,8 +350,9 @@ class InlineKeyboardBuilder(KeyboardBuilder[InlineKeyboardButton]):
 
     @classmethod
     def from_markup(
-        cls: Type["InlineKeyboardBuilder"], markup: InlineKeyboardMarkup
-    ) -> "InlineKeyboardBuilder":
+        cls: type[InlineKeyboardBuilder],
+        markup: InlineKeyboardMarkup,
+    ) -> InlineKeyboardBuilder:
         """
         Create builder from existing markup
 
@@ -377,14 +375,14 @@ class ReplyKeyboardBuilder(KeyboardBuilder[KeyboardButton]):
         self,
         *,
         text: str,
-        request_users: Optional[KeyboardButtonRequestUsers] = None,
-        request_chat: Optional[KeyboardButtonRequestChat] = None,
-        request_contact: Optional[bool] = None,
-        request_location: Optional[bool] = None,
-        request_poll: Optional[KeyboardButtonPollType] = None,
-        web_app: Optional[WebAppInfo] = None,
+        request_users: KeyboardButtonRequestUsers | None = None,
+        request_chat: KeyboardButtonRequestChat | None = None,
+        request_contact: bool | None = None,
+        request_location: bool | None = None,
+        request_poll: KeyboardButtonPollType | None = None,
+        web_app: WebAppInfo | None = None,
         **kwargs: Any,
-    ) -> "ReplyKeyboardBuilder":
+    ) -> ReplyKeyboardBuilder:
         return cast(
             ReplyKeyboardBuilder,
             self._button(
@@ -403,10 +401,10 @@ class ReplyKeyboardBuilder(KeyboardBuilder[KeyboardButton]):
         """Construct a ReplyKeyboardMarkup"""
         return cast(ReplyKeyboardMarkup, super().as_markup(**kwargs))
 
-    def __init__(self, markup: Optional[List[List[KeyboardButton]]] = None) -> None:
+    def __init__(self, markup: list[list[KeyboardButton]] | None = None) -> None:
         super().__init__(button_type=KeyboardButton, markup=markup)
 
-    def copy(self: "ReplyKeyboardBuilder") -> "ReplyKeyboardBuilder":
+    def copy(self: ReplyKeyboardBuilder) -> ReplyKeyboardBuilder:
         """
         Make full copy of current builder with markup
 
@@ -415,7 +413,7 @@ class ReplyKeyboardBuilder(KeyboardBuilder[KeyboardButton]):
         return ReplyKeyboardBuilder(markup=self.export())
 
     @classmethod
-    def from_markup(cls, markup: ReplyKeyboardMarkup) -> "ReplyKeyboardBuilder":
+    def from_markup(cls, markup: ReplyKeyboardMarkup) -> ReplyKeyboardBuilder:
         """
         Create builder from existing markup
 

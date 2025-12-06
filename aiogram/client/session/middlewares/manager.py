@@ -1,7 +1,8 @@
 from __future__ import annotations
 
+from collections.abc import Callable, Sequence
 from functools import partial
-from typing import Any, Callable, List, Optional, Sequence, Union, cast, overload
+from typing import Any, cast, overload
 
 from aiogram.client.session.middlewares.base import (
     NextRequestMiddlewareType,
@@ -12,7 +13,7 @@ from aiogram.methods.base import TelegramType
 
 class RequestMiddlewareManager(Sequence[RequestMiddlewareType]):
     def __init__(self) -> None:
-        self._middlewares: List[RequestMiddlewareType] = []
+        self._middlewares: list[RequestMiddlewareType] = []
 
     def register(
         self,
@@ -26,11 +27,8 @@ class RequestMiddlewareManager(Sequence[RequestMiddlewareType]):
 
     def __call__(
         self,
-        middleware: Optional[RequestMiddlewareType] = None,
-    ) -> Union[
-        Callable[[RequestMiddlewareType], RequestMiddlewareType],
-        RequestMiddlewareType,
-    ]:
+        middleware: RequestMiddlewareType | None = None,
+    ) -> Callable[[RequestMiddlewareType], RequestMiddlewareType] | RequestMiddlewareType:
         if middleware is None:
             return self.register
         return self.register(middleware)
@@ -44,8 +42,9 @@ class RequestMiddlewareManager(Sequence[RequestMiddlewareType]):
         pass
 
     def __getitem__(
-        self, item: Union[int, slice]
-    ) -> Union[RequestMiddlewareType, Sequence[RequestMiddlewareType]]:
+        self,
+        item: int | slice,
+    ) -> RequestMiddlewareType | Sequence[RequestMiddlewareType]:
         return self._middlewares[item]
 
     def __len__(self) -> int:

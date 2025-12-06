@@ -18,14 +18,14 @@ TOKEN = getenv("BOT_TOKEN")
 APP_BASE_URL = getenv("APP_BASE_URL")
 
 
-async def on_startup(bot: Bot, base_url: str):
+async def on_startup(bot: Bot, base_url: str) -> None:
     await bot.set_webhook(f"{base_url}/webhook")
     await bot.set_chat_menu_button(
-        menu_button=MenuButtonWebApp(text="Open Menu", web_app=WebAppInfo(url=f"{base_url}/demo"))
+        menu_button=MenuButtonWebApp(text="Open Menu", web_app=WebAppInfo(url=f"{base_url}/demo")),
     )
 
 
-def main():
+def main() -> None:
     bot = Bot(token=TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
     dispatcher = Dispatcher()
     dispatcher["base_url"] = APP_BASE_URL

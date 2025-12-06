@@ -1,16 +1,8 @@
+from __future__ import annotations
+
 import textwrap
-from typing import (
-    Any,
-    ClassVar,
-    Dict,
-    Generator,
-    Iterable,
-    Iterator,
-    List,
-    Optional,
-    Tuple,
-    Type,
-)
+from collections.abc import Generator, Iterable, Iterator
+from typing import TYPE_CHECKING, Any, ClassVar
 
 from typing_extensions import Self
 
@@ -35,7 +27,7 @@ class Text(Iterable[NodeType]):
     Simple text element
     """
 
-    type: ClassVar[Optional[str]] = None
+    type: ClassVar[str | None] = None
 
     __slots__ = ("_body", "_params")
 
@@ -44,16 +36,16 @@ class Text(Iterable[NodeType]):
         *body: NodeType,
         **params: Any,
     ) -> None:
-        self._body: Tuple[NodeType, ...] = body
-        self._params: Dict[str, Any] = params
+        self._body: tuple[NodeType, ...] = body
+        self._params: dict[str, Any] = params
 
     @classmethod
-    def from_entities(cls, text: str, entities: List[MessageEntity]) -> "Text":
+    def from_entities(cls, text: str, entities: list[MessageEntity]) -> Text:
         return cls(
             *_unparse_entities(
                 text=add_surrogates(text),
                 entities=sorted(entities, key=lambda item: item.offset) if entities else [],
-            )
+            ),
         )
 
     def render(
@@ -62,7 +54,7 @@ class Text(Iterable[NodeType]):
         _offset: int = 0,
         _sort: bool = True,
         _collect_entities: bool = True,
-    ) -> Tuple[str, List[MessageEntity]]:
+    ) -> tuple[str, list[MessageEntity]]:
         """
         Render elements tree as text with entities list
 
@@ -108,7 +100,7 @@ class Text(Iterable[NodeType]):
         entities_key: str = "entities",
         replace_parse_mode: bool = True,
         parse_mode_key: str = "parse_mode",
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """
         Render element tree as keyword arguments for usage in an API call, for example:
 
@@ -124,7 +116,7 @@ class Text(Iterable[NodeType]):
         :return:
         """
         text_value, entities_value = self.render()
-        result: Dict[str, Any] = {
+        result: dict[str, Any] = {
             text_key: text_value,
             entities_key: entities_value,
         }
@@ -132,7 +124,7 @@ class Text(Iterable[NodeType]):
             result[parse_mode_key] = None
         return result
 
-    def as_caption_kwargs(self, *, replace_parse_mode: bool = True) -> Dict[str, Any]:
+    def as_caption_kwargs(self, *, replace_parse_mode: bool = True) -> dict[str, Any]:
         """
         Shortcut for :meth:`as_kwargs` for usage with API calls that take
         ``caption`` as a parameter.
@@ -151,7 +143,7 @@ class Text(Iterable[NodeType]):
             replace_parse_mode=replace_parse_mode,
         )
 
-    def as_poll_question_kwargs(self, *, replace_parse_mode: bool = True) -> Dict[str, Any]:
+    def as_poll_question_kwargs(self, *, replace_parse_mode: bool = True) -> dict[str, Any]:
         """
         Shortcut for :meth:`as_kwargs` for usage with
         method :class:`aiogram.methods.send_poll.SendPoll`.
@@ -171,7 +163,7 @@ class Text(Iterable[NodeType]):
             replace_parse_mode=replace_parse_mode,
         )
 
-    def as_poll_explanation_kwargs(self, *, replace_parse_mode: bool = True) -> Dict[str, Any]:
+    def as_poll_explanation_kwargs(self, *, replace_parse_mode: bool = True) -> dict[str, Any]:
         """
         Shortcut for :meth:`as_kwargs` for usage with
         method :class:`aiogram.methods.send_poll.SendPoll`.
@@ -196,7 +188,7 @@ class Text(Iterable[NodeType]):
             replace_parse_mode=replace_parse_mode,
         )
 
-    def as_gift_text_kwargs(self, *, replace_parse_mode: bool = True) -> Dict[str, Any]:
+    def as_gift_text_kwargs(self, *, replace_parse_mode: bool = True) -> dict[str, Any]:
         """
         Shortcut for :meth:`as_kwargs` for usage with
         method :class:`aiogram.methods.send_gift.SendGift`.
@@ -252,7 +244,7 @@ class Text(Iterable[NodeType]):
             args_str = textwrap.indent("\n" + args_str + "\n", "    ")
         return f"{type(self).__name__}({args_str})"
 
-    def __add__(self, other: NodeType) -> "Text":
+    def __add__(self, other: NodeType) -> Text:
         if isinstance(other, Text) and other.type == self.type and self._params == other._params:
             return type(self)(*self, *other, **self._params)
         if type(self) is Text and isinstance(other, str):
@@ -266,9 +258,10 @@ class Text(Iterable[NodeType]):
         text, _ = self.render(_collect_entities=False)
         return sizeof(text)
 
-    def __getitem__(self, item: slice) -> "Text":
+    def __getitem__(self, item: slice) -> Text:
         if not isinstance(item, slice):
-            raise TypeError("Can only be sliced")
+            msg = "Can only be sliced"
+            raise TypeError(msg)
         if (item.start is None or item.start == 0) and item.stop is None:
             return self.replace(*self._body)
         start = 0 if item.start is None else item.start
@@ -313,9 +306,11 @@ class HashTag(Text):
 
     def __init__(self, *body: NodeType, **params: Any) -> None:
         if len(body) != 1:
-            raise ValueError("Hashtag can contain only one element")
+            msg = "Hashtag can contain only one element"
+            raise ValueError(msg)
         if not isinstance(body[0], str):
-            raise ValueError("Hashtag can contain only string")
+            msg = "Hashtag can contain only string"
+            raise ValueError(msg)
         if not body[0].startswith("#"):
             body = ("#" + body[0],)
         super().__init__(*body, **params)
@@ -337,9 +332,11 @@ class CashTag(Text):
 
     def __init__(self, *body: NodeType, **params: Any) -> None:
         if len(body) != 1:
-            raise ValueError("Cashtag can contain only one element")
+            msg = "Cashtag can contain only one element"
+            raise ValueError(msg)
         if not isinstance(body[0], str):
-            raise ValueError("Cashtag can contain only string")
+            msg = "Cashtag can contain only string"
+            raise ValueError(msg)
         if not body[0].startswith("$"):
             body = ("$" + body[0],)
         super().__init__(*body, **params)
@@ -469,7 +466,7 @@ class Pre(Text):
 
     type = MessageEntityType.PRE
 
-    def __init__(self, *body: NodeType, language: Optional[str] = None, **params: Any) -> None:
+    def __init__(self, *body: NodeType, language: str | None = None, **params: Any) -> None:
         super().__init__(*body, language=language, **params)
 
 
@@ -537,7 +534,7 @@ class ExpandableBlockQuote(Text):
     type = MessageEntityType.EXPANDABLE_BLOCKQUOTE
 
 
-NODE_TYPES: Dict[Optional[str], Type[Text]] = {
+NODE_TYPES: dict[str | None, type[Text]] = {
     Text.type: Text,
     HashTag.type: HashTag,
     CashTag.type: CashTag,
@@ -570,15 +567,16 @@ def _apply_entity(entity: MessageEntity, *nodes: NodeType) -> NodeType:
     """
     node_type = NODE_TYPES.get(entity.type, Text)
     return node_type(
-        *nodes, **entity.model_dump(exclude={"type", "offset", "length"}, warnings=False)
+        *nodes,
+        **entity.model_dump(exclude={"type", "offset", "length"}, warnings=False),
     )
 
 
 def _unparse_entities(
     text: bytes,
-    entities: List[MessageEntity],
-    offset: Optional[int] = None,
-    length: Optional[int] = None,
+    entities: list[MessageEntity],
+    offset: int | None = None,
+    length: int | None = None,
 ) -> Generator[NodeType, None, None]:
     if offset is None:
         offset = 0
@@ -615,8 +613,7 @@ def as_line(*items: NodeType, end: str = "\n", sep: str = "") -> Text:
         nodes = []
         for item in items[:-1]:
             nodes.extend([item, sep])
-        nodes.append(items[-1])
-        nodes.append(end)
+        nodes.extend([items[-1], end])
     else:
         nodes = [*items, end]
     return Text(*nodes)

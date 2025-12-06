@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, Any, Dict, Generic, TypeVar, cast
+from typing import TYPE_CHECKING, Any, Generic, TypeVar, cast
 
 from aiogram.types import Update
 
@@ -14,7 +14,7 @@ T = TypeVar("T")
 class BaseHandlerMixin(Generic[T]):
     if TYPE_CHECKING:
         event: T
-        data: Dict[str, Any]
+        data: dict[str, Any]
 
 
 class BaseHandler(BaseHandlerMixin[T], ABC):
@@ -24,7 +24,7 @@ class BaseHandler(BaseHandlerMixin[T], ABC):
 
     def __init__(self, event: T, **kwargs: Any) -> None:
         self.event: T = event
-        self.data: Dict[str, Any] = kwargs
+        self.data: dict[str, Any] = kwargs
 
     @property
     def bot(self) -> Bot:
@@ -32,7 +32,8 @@ class BaseHandler(BaseHandlerMixin[T], ABC):
 
         if "bot" in self.data:
             return cast(Bot, self.data["bot"])
-        raise RuntimeError("Bot instance not found in the context")
+        msg = "Bot instance not found in the context"
+        raise RuntimeError(msg)
 
     @property
     def update(self) -> Update:

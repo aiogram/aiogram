@@ -2,45 +2,35 @@ from __future__ import annotations
 
 import asyncio
 import ssl
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    AsyncGenerator,
-    Dict,
-    Iterable,
-    List,
-    Optional,
-    Tuple,
-    Type,
-    Union,
-    cast,
-)
+from collections.abc import AsyncGenerator, Iterable
+from typing import TYPE_CHECKING, Any, cast
 
 import certifi
 from aiohttp import BasicAuth, ClientError, ClientSession, FormData, TCPConnector
 from aiohttp.hdrs import USER_AGENT
 from aiohttp.http import SERVER_SOFTWARE
+from typing_extensions import Self
 
 from aiogram.__meta__ import __version__
-from aiogram.methods import TelegramMethod
+from aiogram.exceptions import TelegramNetworkError
+from aiogram.methods.base import TelegramType
 
-from ...exceptions import TelegramNetworkError
-from ...methods.base import TelegramType
-from ...types import InputFile
 from .base import BaseSession
 
 if TYPE_CHECKING:
-    from ..bot import Bot
+    from aiogram.client.bot import Bot
+    from aiogram.methods import TelegramMethod
+    from aiogram.types import InputFile
 
-_ProxyBasic = Union[str, Tuple[str, BasicAuth]]
+_ProxyBasic = str | tuple[str, BasicAuth]
 _ProxyChain = Iterable[_ProxyBasic]
-_ProxyType = Union[_ProxyChain, _ProxyBasic]
+_ProxyType = _ProxyChain | _ProxyBasic
 
 
-def _retrieve_basic(basic: _ProxyBasic) -> Dict[str, Any]:
+def _retrieve_basic(basic: _ProxyBasic) -> dict[str, Any]:
     from aiohttp_socks.utils import parse_proxy_url
 
-    proxy_auth: Optional[BasicAuth] = None
+    proxy_auth: BasicAuth | None = None
 
     if isinstance(basic, str):
         proxy_url = basic
@@ -62,7 +52,7 @@ def _retrieve_basic(basic: _ProxyBasic) -> Dict[str, Any]:
     }
 
 
-def _prepare_connector(chain_or_plain: _ProxyType) -> Tuple[Type["TCPConnector"], Dict[str, Any]]:
+def _prepare_connector(chain_or_plain: _ProxyType) -> tuple[type[TCPConnector], dict[str, Any]]:
     from aiohttp_socks import ChainProxyConnector, ProxyConnector, ProxyInfo
 
     # since tuple is Iterable(compatible with _ProxyChain) object, we assume that
@@ -74,17 +64,13 @@ def _prepare_connector(chain_or_plain: _ProxyType) -> Tuple[Type["TCPConnector"]
         return ProxyConnector, _retrieve_basic(chain_or_plain)
 
     chain_or_plain = cast(_ProxyChain, chain_or_plain)
-    infos: List[ProxyInfo] = []
-    for basic in chain_or_plain:
-        infos.append(ProxyInfo(**_retrieve_basic(basic)))
+    infos: list[ProxyInfo] = [ProxyInfo(**_retrieve_basic(basic)) for basic in chain_or_plain]
 
     return ChainProxyConnector, {"proxy_infos": infos}
 
 
 class AiohttpSession(BaseSession):
-    def __init__(
-        self, proxy: Optional[_ProxyType] = None, limit: int = 100, **kwargs: Any
-    ) -> None:
+    def __init__(self, proxy: _ProxyType | None = None, limit: int = 100, **kwargs: Any) -> None:
         """
         Client session based on aiohttp.
 
@@ -94,31 +80,32 @@ class AiohttpSession(BaseSession):
         """
         super().__init__(**kwargs)
 
-        self._session: Optional[ClientSession] = None
-        self._connector_type: Type[TCPConnector] = TCPConnector
-        self._connector_init: Dict[str, Any] = {
+        self._session: ClientSession | None = None
+        self._connector_type: type[TCPConnector] = TCPConnector
+        self._connector_init: dict[str, Any] = {
             "ssl": ssl.create_default_context(cafile=certifi.where()),
             "limit": limit,
             "ttl_dns_cache": 3600,  # Workaround for https://github.com/aiogram/aiogram/issues/1500
         }
         self._should_reset_connector = True  # flag determines connector state
-        self._proxy: Optional[_ProxyType] = None
+        self._proxy: _ProxyType | None = None
 
         if proxy is not None:
             try:
                 self._setup_proxy_connector(proxy)
             except ImportError as exc:  # pragma: no cover
-                raise RuntimeError(
+                msg = (
                     "In order to use aiohttp client for proxy requests, install "
                     "https://pypi.org/project/aiohttp-socks/"
-                ) from exc
+                )
+                raise RuntimeError(msg) from exc
 
     def _setup_proxy_connector(self, proxy: _ProxyType) -> None:
         self._connector_type, self._connector_init = _prepare_connector(proxy)
         self._proxy = proxy
 
     @property
-    def proxy(self) -> Optional[_ProxyType]:
+    def proxy(self) -> _ProxyType | None:
         return self._proxy
 
     @proxy.setter
@@ -151,7 +138,7 @@ class AiohttpSession(BaseSession):
 
     def build_form_data(self, bot: Bot, method: TelegramMethod[TelegramType]) -> FormData:
         form = FormData(quote_fields=False)
-        files: Dict[str, InputFile] = {}
+        files: dict[str, InputFile] = {}
         for key, value in method.model_dump(warnings=False).items():
             value = self.prepare_value(value, bot=bot, files=files)
             if not value:
@@ -166,7 +153,10 @@ class AiohttpSession(BaseSession):
         return form
 
     async def make_request(
-        self, bot: Bot, method: TelegramMethod[TelegramType], timeout: Optional[int] = None
+        self,
+        bot: Bot,
+        method: TelegramMethod[TelegramType],
+        timeout: int | None = None,
     ) -> TelegramType:
         session = await self.create_session()
 
@@ -175,7 +165,9 @@ class AiohttpSession(BaseSession):
 
         try:
             async with session.post(
-                url, data=form, timeout=self.timeout if timeout is None else timeout
+                url,
+                data=form,
+                timeout=self.timeout if timeout is None else timeout,
             ) as resp:
                 raw_result = await resp.text()
         except asyncio.TimeoutError:
@@ -183,14 +175,17 @@ class AiohttpSession(BaseSession):
         except ClientError as e:
             raise TelegramNetworkError(method=method, message=f"{type(e).__name__}: {e}")
         response = self.check_response(
-            bot=bot, method=method, status_code=resp.status, content=raw_result
+            bot=bot,
+            method=method,
+            status_code=resp.status,
+            content=raw_result,
         )
         return cast(TelegramType, response.result)
 
     async def stream_content(
         self,
         url: str,
-        headers: Optional[Dict[str, Any]] = None,
+        headers: dict[str, Any] | None = None,
         timeout: int = 30,
         chunk_size: int = 65536,
         raise_for_status: bool = True,
@@ -201,11 +196,14 @@ class AiohttpSession(BaseSession):
         session = await self.create_session()
 
         async with session.get(
-            url, timeout=timeout, headers=headers, raise_for_status=raise_for_status
+            url,
+            timeout=timeout,
+            headers=headers,
+            raise_for_status=raise_for_status,
         ) as resp:
             async for chunk in resp.content.iter_chunked(chunk_size):
                 yield chunk
 
-    async def __aenter__(self) -> AiohttpSession:
+    async def __aenter__(self) -> Self:
         await self.create_session()
         return self

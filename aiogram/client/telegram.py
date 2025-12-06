@@ -1,24 +1,24 @@
 from abc import ABC, abstractmethod
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Union
+from typing import Any
 
 
 class FilesPathWrapper(ABC):
     @abstractmethod
-    def to_local(self, path: Union[Path, str]) -> Union[Path, str]:
+    def to_local(self, path: Path | str) -> Path | str:
         pass
 
     @abstractmethod
-    def to_server(self, path: Union[Path, str]) -> Union[Path, str]:
+    def to_server(self, path: Path | str) -> Path | str:
         pass
 
 
 class BareFilesPathWrapper(FilesPathWrapper):
-    def to_local(self, path: Union[Path, str]) -> Union[Path, str]:
+    def to_local(self, path: Path | str) -> Path | str:
         return path
 
-    def to_server(self, path: Union[Path, str]) -> Union[Path, str]:
+    def to_server(self, path: Path | str) -> Path | str:
         return path
 
 
@@ -29,15 +29,18 @@ class SimpleFilesPathWrapper(FilesPathWrapper):
 
     @classmethod
     def _resolve(
-        cls, base1: Union[Path, str], base2: Union[Path, str], value: Union[Path, str]
+        cls,
+        base1: Path | str,
+        base2: Path | str,
+        value: Path | str,
     ) -> Path:
         relative = Path(value).relative_to(base1)
         return base2 / relative
 
-    def to_local(self, path: Union[Path, str]) -> Union[Path, str]:
+    def to_local(self, path: Path | str) -> Path | str:
         return self._resolve(base1=self.server_path, base2=self.local_path, value=path)
 
-    def to_server(self, path: Union[Path, str]) -> Union[Path, str]:
+    def to_server(self, path: Path | str) -> Path | str:
         return self._resolve(base1=self.local_path, base2=self.server_path, value=path)
 
 
@@ -54,7 +57,7 @@ class TelegramAPIServer:
     is_local: bool = False
     """Mark this server is
     in `local mode <https://core.telegram.org/bots/api#using-a-local-bot-api-server>`_."""
-    wrap_local_file: FilesPathWrapper = BareFilesPathWrapper()
+    wrap_local_file: FilesPathWrapper = field(default=BareFilesPathWrapper())
     """Callback to wrap files path in local mode"""
 
     def api_url(self, token: str, method: str) -> str:
@@ -67,7 +70,7 @@ class TelegramAPIServer:
         """
         return self.base.format(token=token, method=method)
 
-    def file_url(self, token: str, path: Union[str, Path]) -> str:
+    def file_url(self, token: str, path: str | Path) -> str:
         """
         Generate URL for downloading files
 

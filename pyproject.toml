@@ -6,7 +6,7 @@ build-backend = "hatchling.build"
 name = "aiogram"
 description = 'Modern and fully asynchronous framework for Telegram Bot API'
 readme = "README.rst"
-requires-python = ">=3.9"
+requires-python = ">=3.10,<3.15"
 license = "MIT"
 authors = [
     { name = "Alex Root Junior", email = "jroot.junior@gmail.com" },
@@ -30,11 +30,11 @@ classifiers = [
     "Typing :: Typed",
     "Intended Audience :: Developers",
     "Intended Audience :: System Administrators",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Programming Language :: Python :: Implementation :: PyPy",
     "Topic :: Software Development :: Libraries :: Application Frameworks",
     "Topic :: Software Development :: Libraries :: Python Modules",
@@ -42,9 +42,9 @@ classifiers = [
 ]
 dependencies = [
     "magic-filter>=1.0.12,<1.1",
-    "aiohttp>=3.9.0,<3.13",
-    "pydantic>=2.4.1,<2.12",
-    "aiofiles>=23.2.1,<24.2",
+    "aiohttp>=3.9.0,<3.14",
+    "pydantic>=2.4.1,<2.13",
+    "aiofiles>=23.2.1,<26.0",
     "certifi>=2023.7.22",
     "typing-extensions>=4.7.0,<=5.0",
 ]
@@ -60,14 +60,14 @@ fast = [
     "aiodns>=3.0.0",
 ]
 redis = [
-    "redis[hiredis]>=5.0.1,<5.3.0",
+    "redis[hiredis]>=6.2.0,<8",
 ]
 mongo = [
-    "motor>=3.3.2,<3.7.0",
-    "pymongo>4.5,<4.11",
+    "motor>=3.3.2,<3.8",
+    "pymongo>4.5,<4.16",
 ]
 proxy = [
-    "aiohttp-socks~=0.8.3",
+    "aiohttp-socks~=0.10.1",
 ]
 i18n = [
     "Babel>=2.13.0,<3",
@@ -76,20 +76,18 @@ cli = [
     "aiogram-cli>=1.1.0,<2.0.0",
 ]
 signature = [
-    "cryptography>=43.0.0",
+    "cryptography>=46.0.0",
 ]
 test = [
-    "pytest~=7.4.2",
-    "pytest-html~=4.0.2",
-    "pytest-asyncio~=0.21.1",
-    "pytest-lazy-fixture~=0.6.3",
-    "pytest-mock~=3.12.0",
-    "pytest-mypy~=0.10.3",
-    "pytest-cov~=4.1.0",
-    "pytest-aiohttp~=1.0.5",
-    "aresponses~=2.1.6",
-    "pytz~=2023.3",
-    "pycryptodomex~=3.19.0",
+    "pytest==9.0.1",
+    "pytest-html==4.1.1",
+    "pytest-mock==3.15.1",
+    "pytest-mypy==1.0.1",
+    "pytest-cov==7.0.0",
+    "pytest-aiohttp==1.1.0",
+    "aresponses==3.0.0",
+    "pytz==2025.2",
+    "pycryptodomex==3.23.0",
 ]
 docs = [
     "Sphinx~=8.0.2",
@@ -105,14 +103,14 @@ docs = [
     "sphinxcontrib-towncrier~=0.4.0a0",
 ]
 dev = [
-    "black~=24.4.2",
-    "isort~=5.13.2",
-    "ruff~=0.5.1",
-    "mypy~=1.10.0",
+    "black~=25.9",
+    "isort~=7.0",
+    "ruff~=0.14",
+    "mypy==1.10.1",
     "toml~=0.10.2",
-    "pre-commit~=3.5",
-    "packaging~=24.1",
-    "motor-types~=1.0.0b4",
+    "pre-commit~=4.3",
+    "packaging~=25.0",
+    "motor-types==1.0.0b4",
 ]
 
 [project.urls]
@@ -200,9 +198,8 @@ cov-mongo = [
 ]
 view-cov = "google-chrome-stable reports/py{matrix:python}/coverage/index.html"
 
-
 [[tool.hatch.envs.test.matrix]]
-python = ["39", "310", "311", "312", "313"]
+python = ["310", "311", "312", "313"]
 
 [tool.ruff]
 line-length = 99
@@ -219,7 +216,6 @@ exclude = [
     "scripts",
     "*.egg-info",
 ]
-target-version = "py39"
 
 [tool.ruff.lint]
 select = [
@@ -227,13 +223,13 @@ select = [
     "C4",
     "E",
     "F",
-    "T10",
-    "T20",
     "Q",
     "RET",
+    "T10",
+    "T20",
 ]
 ignore = [
-    "F401"
+    "F401",
 ]
 
 [tool.ruff.lint.isort]
@@ -259,6 +255,11 @@ testpaths = [
 filterwarnings = [
     "error",
     "ignore::pytest.PytestUnraisableExceptionWarning",
+
+    # Remove when uvloop fixes the issue
+    # https://github.com/MagicStack/uvloop/issues/703
+    # https://github.com/MagicStack/uvloop/pull/705
+    "ignore:.*asyncio.iscoroutinefunction.*:DeprecationWarning"
 ]
 
 [tool.coverage.run]
@@ -280,7 +281,7 @@ exclude_lines = [
 
 [tool.mypy]
 plugins = "pydantic.mypy"
-python_version = "3.9"
+python_version = "3.10"
 show_error_codes = true
 show_error_context = true
 pretty = true
@@ -315,7 +316,7 @@ disallow_untyped_defs = true
 
 [tool.black]
 line-length = 99
-target-version = ['py39', 'py310', 'py311', 'py312', 'py313']
+target-version = ['py310', 'py311', 'py312', 'py313']
 exclude = '''
 (
     \.eggs
