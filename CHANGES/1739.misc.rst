@@ -1,1 +1,0 @@
-This PR temporary silents warn when `uvloop` uses deprecated `asyncio.iscoroutinefunction` function in py3.14+

@@ -16,6 +16,43 @@ Changelog
 
 .. towncrier release notes start
 
+3.23.0 (2025-12-07)
+====================
+
+Features
+--------
+
+- This PR updates the codebase to support Python 3.14.
+
+  - Updated project dep `aiohttp`
+  - Updated development deps
+  - Fixed tests to support Py3.14
+  - Refactored `uvloop` using due to deprecation of `asyncio.set_event_loop_police`
+  `#1730 <https://github.com/aiogram/aiogram/issues/1730>`_
+
+
+Deprecations and Removals
+-------------------------
+
+- This PR updates the codebase following the end of life for Python 3.9.
+
+  Reference: https://devguide.python.org/versions/
+
+  - Updated type annotations to Python 3.10+ style, replacing deprecated ``List``, ``Set``, etc., with built-in ``list``, ``set``, and related types.
+  - Refactored code by simplifying nested ``if`` expressions.
+  - Updated several dependencies, including security-related upgrades.
+  `#1726 <https://github.com/aiogram/aiogram/issues/1726>`_
+
+
+Misc
+----
+
+- Updated pydantic to 2.12, which supports Python 3.14
+  `#1729 <https://github.com/aiogram/aiogram/issues/1729>`_
+- Temporary silents warn when `uvloop` uses deprecated `asyncio.iscoroutinefunction` function in py3.14+ in tests
+  `#1739 <https://github.com/aiogram/aiogram/issues/1739>`_
+
+
 3.22.0 (2025-08-17)
 ====================
 

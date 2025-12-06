@@ -1,6 +1,0 @@
-This PR updates the codebase to support Python 3.14.
-
-- Updated project dep `aiohttp`
-- Updated development deps
-- Fixed tests to support Py3.14
-- Refactored `uvloop` using due to deprecation of `asyncio.set_event_loop_police`
