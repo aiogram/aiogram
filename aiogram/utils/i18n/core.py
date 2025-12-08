@@ -21,7 +21,7 @@ class I18n(ContextInstanceMixin["I18n"]):
         default_locale: str = "en",
         domain: str = "messages",
     ) -> None:
-        self.path = Path(path)
+        self.path = Path(path).resolve()
         self.default_locale = default_locale
         self.domain = domain
         self.ctx_locale = ContextVar("aiogram_ctx_locale", default=default_locale)
@@ -66,9 +66,9 @@ class I18n(ContextInstanceMixin["I18n"]):
         translations: dict[str, gettext.GNUTranslations] = {}
 
         for name in self.path.iterdir():
-            if not (self.path / name).is_dir():
+            if not name.is_dir():
                 continue
-            mo_path = self.path / name / "LC_MESSAGES" / (self.domain + ".mo")
+            mo_path = name / "LC_MESSAGES" / (self.domain + ".mo")
 
             if mo_path.exists():
                 with mo_path.open("rb") as fp:

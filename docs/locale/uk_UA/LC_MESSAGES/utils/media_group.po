@@ -288,4 +288,3 @@ msgstr ""
 #: aiogram.utils.media_group.MediaGroupBuilder.build:5 of
 msgid "List of media objects."
 msgstr ""
-

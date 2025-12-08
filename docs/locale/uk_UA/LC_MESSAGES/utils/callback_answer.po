@@ -202,4 +202,3 @@ msgstr ""
 #: aiogram.utils.callback_answer.CallbackAnswer.cache_time:1 of
 msgid "Response cache time"
 msgstr ""
-
