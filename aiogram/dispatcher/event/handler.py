@@ -17,6 +17,12 @@ from aiogram.utils.warnings import Recommendation
 
 CallbackType = Callable[..., Any]
 
+_ACCEPTED_PARAM_KINDS = {
+    inspect.Parameter.POSITIONAL_ONLY,
+    inspect.Parameter.POSITIONAL_OR_KEYWORD,
+    inspect.Parameter.KEYWORD_ONLY,
+}
+
 
 @dataclass
 class CallableObject:
@@ -42,19 +48,16 @@ class CallableObject:
             self.varkw = False
             return
 
-        self.params = {
-            p.name
-            for p in signature.parameters.values()
-            if p.kind
-            in (
-                inspect.Parameter.POSITIONAL_ONLY,
-                inspect.Parameter.POSITIONAL_OR_KEYWORD,
-                inspect.Parameter.KEYWORD_ONLY,
-            )
-        }
-        self.varkw = any(
-            p.kind == inspect.Parameter.VAR_KEYWORD for p in signature.parameters.values()
-        )
+        params: set[str] = set()
+        varkw: bool = False
+
+        for p in signature.parameters.values():
+            if p.kind in _ACCEPTED_PARAM_KINDS:
+                params.add(p.name)
+            elif p.kind == inspect.Parameter.VAR_KEYWORD:
+                varkw = True
+        self.params = params
+        self.varkw = varkw
 
     def _prepare_kwargs(self, kwargs: dict[str, Any]) -> dict[str, Any]:
         if self.varkw:
