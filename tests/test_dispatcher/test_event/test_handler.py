@@ -57,8 +57,8 @@ class TestCallableObject:
             pytest.param(callback1, {"foo", "bar", "baz"}),
             pytest.param(callback2, {"foo", "bar", "baz"}),
             pytest.param(callback3, {"foo"}),
-            pytest.param(TestFilter(), {"self", "foo", "bar", "baz"}),
-            pytest.param(SyncCallable(), {"self", "foo", "bar", "baz"}),
+            pytest.param(TestFilter(), {"foo", "bar", "baz"}),
+            pytest.param(SyncCallable(), {"foo", "bar", "baz"}),
         ],
     )
     def test_init_args_spec(self, callback: Callable, args: Set[str]):
