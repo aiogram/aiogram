@@ -103,4 +103,3 @@ msgstr ""
 #: ../../api/methods/set_chat_permissions.rst:50
 msgid ":meth:`aiogram.types.chat.Chat.set_permissions`"
 msgstr ""
-
