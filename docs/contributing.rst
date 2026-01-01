@@ -88,6 +88,88 @@ Windows:
 
 It will install :code:`aiogram` in editable mode into your virtual environment and all dependencies.
 
+Alternative: Using uv (Modern Approach)
+----------------------------------------
+
+As an alternative to the traditional :code:`pip` and :code:`venv` workflow, you can use `uv <https://github.com/astral-sh/uv>`_ -
+a modern, fast Python package manager that handles virtual environments, dependency resolution, and package installation.
+
+**Benefits of using uv:**
+
+- 10-100x faster dependency resolution than pip
+- Automatic virtual environment management
+- Reproducible builds with lockfile
+- Single tool for all package management needs
+
+**Installing uv:**
+
+Linux / macOS:
+
+.. code-block:: bash
+
+    curl -LsSf https://astral.sh/uv/install.sh | sh
+
+Windows:
+
+.. code-block:: powershell
+
+    powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+
+Or using pip:
+
+.. code-block:: bash
+
+    pip install uv
+
+**Setup project with uv:**
+
+Instead of manually creating and activating a virtual environment, :code:`uv` handles this automatically:
+
+.. code-block:: bash
+
+    # Clone the repository
+    git clone https://github.com/aiogram/aiogram.git
+    cd aiogram
+
+    # Install all dependencies (creates .venv automatically)
+    uv sync --all-extras --group dev --group test
+
+    # Install pre-commit hooks
+    uv run pre-commit install
+
+That's it! The :code:`uv sync` command creates a virtual environment in :code:`.venv/`,
+installs all dependencies including optional extras and development tools, and generates
+a :code:`uv.lock` file for reproducible builds.
+
+**Running commands with uv:**
+
+When using :code:`uv`, prefix commands with :code:`uv run` to execute them in the managed environment:
+
+.. code-block:: bash
+
+    # Format code
+    uv run black aiogram tests examples
+    uv run isort aiogram tests examples
+
+    # Run tests
+    uv run pytest tests
+
+    # Run linting
+    uv run ruff check aiogram examples
+    uv run mypy aiogram
+
+    # Start documentation server
+    uv run sphinx-autobuild --watch aiogram/ docs/ docs/_build/
+
+Or use the Makefile commands which now support :code:`uv`:
+
+.. code-block:: bash
+
+    make install    # Uses uv sync
+    make lint       # Uses uv run
+    make reformat   # Uses uv run
+    make test       # Uses uv run
+
 Making changes in code
 ----------------------
 
@@ -101,10 +183,25 @@ Format the code (code-style)
 Note that this project is Black-formatted, so you should follow that code-style,
 too be sure You're correctly doing this let's reformat the code automatically:
 
+Using traditional approach:
+
 .. code-block:: bash
 
     black aiogram tests examples
     isort aiogram tests examples
+
+Or with uv:
+
+.. code-block:: bash
+
+    uv run black aiogram tests examples
+    uv run isort aiogram tests examples
+
+Or simply use Makefile:
+
+.. code-block:: bash
+
+    make reformat
 
 
 Run tests
@@ -112,16 +209,38 @@ Run tests
 
 All changes should be tested:
 
+Using traditional approach:
+
 .. code-block:: bash
 
     pytest tests
 
+Or with uv:
+
+.. code-block:: bash
+
+    uv run pytest tests
+
+Or use Makefile:
+
+.. code-block:: bash
+
+    make test
+
 Also if you are doing something with Redis-storage or/and MongoDB-storage,
 you will need to test everything works with Redis or/and MongoDB:
+
+Using traditional approach:
 
 .. code-block:: bash
 
     pytest --redis redis://<host>:<port>/<db> --mongo mongodb://<user>:<password>@<host>:<port> tests
+
+Or with uv:
+
+.. code-block:: bash
+
+    uv run pytest --redis redis://<host>:<port>/<db> --mongo mongodb://<user>:<password>@<host>:<port> tests
 
 Docs
 ----
@@ -129,9 +248,23 @@ Docs
 We are using `Sphinx` to render docs in different languages, all sources located in `docs` directory,
 you can change the sources and to test it you can start live-preview server and look what you are doing:
 
+Using traditional approach:
+
 .. code-block:: bash
 
     sphinx-autobuild --watch aiogram/ docs/ docs/_build/
+
+Or with uv:
+
+.. code-block:: bash
+
+    uv run --extra docs sphinx-autobuild --watch aiogram/ docs/ docs/_build/
+
+Or use Makefile:
+
+.. code-block:: bash
+
+    make docs-serve
 
 
 Docs translations
@@ -143,11 +276,26 @@ into different languages.
 
 Before start, let's up to date all texts:
 
+Using traditional approach:
+
 .. code-block:: bash
 
     cd docs
     make gettext
     sphinx-intl update -p _build/gettext -l <language_code>
+
+Or with uv:
+
+.. code-block:: bash
+
+    uv run --extra docs bash -c 'cd docs && make gettext'
+    uv run --extra docs bash -c 'cd docs && sphinx-intl update -p _build/gettext -l <language_code>'
+
+Or use Makefile:
+
+.. code-block:: bash
+
+    make docs-gettext
 
 Change the :code:`<language_code>` in example below to the target language code, after that
 you can modify texts inside :code:`docs/locale/<language_code>/LC_MESSAGES` as :code:`*.po` files
@@ -156,9 +304,17 @@ for example via `poedit <https://poedit.net/>`_.
 
 To view results:
 
+Using traditional approach:
+
 .. code-block:: bash
 
     sphinx-autobuild --watch aiogram/ docs/ docs/_build/ -D language=<language_code>
+
+Or with uv:
+
+.. code-block:: bash
+
+    uv run --extra docs sphinx-autobuild --watch aiogram/ docs/ docs/_build/ -D language=<language_code>
 
 
 Describe changes

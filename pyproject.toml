@@ -78,17 +78,6 @@ cli = [
 signature = [
     "cryptography>=46.0.0",
 ]
-test = [
-    "pytest==9.0.1",
-    "pytest-html==4.1.1",
-    "pytest-mock==3.15.1",
-    "pytest-mypy==1.0.1",
-    "pytest-cov==7.0.0",
-    "pytest-aiohttp==1.1.0",
-    "aresponses==3.0.0",
-    "pytz==2025.2",
-    "pycryptodomex==3.23.0",
-]
 docs = [
     "Sphinx~=8.0.2",
     "sphinx-intl~=2.2.0",
@@ -102,6 +91,8 @@ docs = [
     "markdown-include~=0.8.1",
     "sphinxcontrib-towncrier~=0.4.0a0",
 ]
+
+[dependency-groups]
 dev = [
     "black~=25.9",
     "isort~=7.0",
@@ -112,94 +103,22 @@ dev = [
     "packaging~=25.0",
     "motor-types==1.0.0b4",
 ]
+test = [
+    "pytest==9.0.1",
+    "pytest-html==4.1.1",
+    "pytest-mock==3.15.1",
+    "pytest-mypy==1.0.1",
+    "pytest-cov==7.0.0",
+    "pytest-aiohttp==1.1.0",
+    "aresponses==3.0.0",
+    "pytz==2025.2",
+    "pycryptodomex==3.23.0",
+]
 
 [project.urls]
 Homepage = "https://aiogram.dev/"
 Documentation = "https://docs.aiogram.dev/"
 Repository = "https://github.com/aiogram/aiogram/"
-
-[tool.hatch.envs.default]
-features = [
-    "dev",
-    "fast",
-    "redis",
-    "mongo",
-    "proxy",
-    "i18n",
-    "cli",
-]
-post-install-commands = [
-    "pre-commit install",
-]
-
-[tool.hatch.envs.default.scripts]
-reformat = [
-    "black aiogram tests examples",
-    "isort aiogram tests examples",
-]
-lint = "ruff check aiogram tests examples"
-
-[tool.hatch.envs.docs]
-features = [
-    "fast",
-    "redis",
-    "mongo",
-    "proxy",
-    "i18n",
-    "docs",
-    "cli",
-]
-[tool.hatch.envs.docs.scripts]
-serve = "sphinx-autobuild --watch aiogram/ --watch CHANGES.rst --watch README.rst docs/ docs/_build/ {args}"
-
-[tool.hatch.envs.dev]
-python = "3.12"
-features = [
-    "dev",
-    "fast",
-    "redis",
-    "mongo",
-    "proxy",
-    "i18n",
-    "test",
-    "cli",
-]
-
-[tool.hatch.envs.dev.scripts]
-update = [
-    "butcher parse",
-    "butcher refresh",
-    "butcher apply all",
-]
-
-[tool.hatch.envs.test]
-features = [
-    "fast",
-    "redis",
-    "mongo",
-    "proxy",
-    "i18n",
-    "test",
-    "cli",
-]
-
-[tool.hatch.envs.test.scripts]
-cov = [
-    "pytest --cov-config pyproject.toml --cov=aiogram --html=reports/py{matrix:python}/tests/index.html {args}",
-    "coverage html -d reports/py{matrix:python}/coverage",
-]
-cov-redis = [
-    "pytest --cov-config pyproject.toml --cov=aiogram --html=reports/py{matrix:python}/tests/index.html --redis {env:REDIS_DNS:'redis://localhost:6379'} {args}",
-    "coverage html -d reports/py{matrix:python}/coverage",
-]
-cov-mongo = [
-    "pytest --cov-config pyproject.toml --cov=aiogram --html=reports/py{matrix:python}/tests/index.html --mongo {env:MONGO_DNS:'mongodb://mongo:mongo@localhost:27017'} {args}",
-    "coverage html -d reports/py{matrix:python}/coverage",
-]
-view-cov = "google-chrome-stable reports/py{matrix:python}/coverage/index.html"
-
-[[tool.hatch.envs.test.matrix]]
-python = ["310", "311", "312", "313"]
 
 [tool.ruff]
 line-length = 99
@@ -277,6 +196,8 @@ exclude_lines = [
     "if TYPE_CHECKING:",
     "@abstractmethod",
     "@overload",
+    "if sys.version_info",
+    "except ImportError:"
 ]
 
 [tool.mypy]

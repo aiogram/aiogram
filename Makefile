@@ -28,8 +28,8 @@ clean:
 
 .PHONY: install
 install: clean
-	pip install -e ."[dev,test,docs]" -U --upgrade-strategy=eager
-	pre-commit install
+	uv sync --all-extras --group dev --group test
+	uv run pre-commit install
 
 # =================================================================================================
 # Code quality
@@ -37,15 +37,15 @@ install: clean
 
 .PHONY: lint
 lint:
-	isort --check-only $(code_dir)
-	black --check --diff $(code_dir)
-	ruff check --show-fixes --preview $(package_dir) $(examples_dir)
-	mypy $(package_dir)
+	uv run isort --check-only $(code_dir)
+	uv run black --check --diff $(code_dir)
+	uv run ruff check --show-fixes --preview $(package_dir) $(examples_dir)
+	uv run mypy $(package_dir)
 
 .PHONY: reformat
 reformat:
-	black $(code_dir)
-	isort $(code_dir)
+	uv run black $(code_dir)
+	uv run isort $(code_dir)
 
 # =================================================================================================
 # Tests
@@ -56,18 +56,18 @@ test-run-services:
 
 .PHONY: test
 test: test-run-services
-	pytest --cov=aiogram --cov-config .coveragerc tests/ --redis $(redis_connection) --mongo $(mongo_connection)
+	uv run pytest --cov=aiogram --cov-config .coveragerc tests/ --redis $(redis_connection) --mongo $(mongo_connection)
 
 .PHONY: test-coverage
 test-coverage: test-run-services
 	mkdir -p $(reports_dir)/tests/
-	pytest --cov=aiogram --cov-config .coveragerc --html=$(reports_dir)/tests/index.html tests/ --redis $(redis_connection) --mongo $(mongo_connection)
-	coverage html -d $(reports_dir)/coverage
+	uv run pytest --cov=aiogram --cov-config .coveragerc --html=$(reports_dir)/tests/index.html tests/ --redis $(redis_connection) --mongo $(mongo_connection)
+	uv run coverage html -d $(reports_dir)/coverage
 
 .PHONY: test-coverage-view
 test-coverage-view:
-	coverage html -d $(reports_dir)/coverage
-	python -c "import webbrowser; webbrowser.open('file://$(shell pwd)/reports/coverage/index.html')"
+	uv run coverage html -d $(reports_dir)/coverage
+	uv run python -c "import webbrowser; webbrowser.open('file://$(shell pwd)/reports/coverage/index.html')"
 
 # =================================================================================================
 # Docs
@@ -79,12 +79,12 @@ locales_pot := _build/gettext
 docs_dir := docs
 
 docs-gettext:
-	hatch run docs:bash -c 'cd $(docs_dir) && make gettext'
-	hatch run docs:bash -c 'cd $(docs_dir) && sphinx-intl update -p $(locales_pot) $(addprefix -l , $(locales))'
+	uv run --extra docs bash -c 'cd $(docs_dir) && make gettext'
+	uv run --extra docs bash -c 'cd $(docs_dir) && sphinx-intl update -p $(locales_pot) $(addprefix -l , $(locales))'
 .PHONY: docs-gettext
 
 docs-serve:
-	hatch run docs:sphinx-autobuild --watch aiogram/ --watch CHANGES.rst --watch README.rst docs/ docs/_build/ $(OPTS)
+	uv run --extra docs sphinx-autobuild --watch aiogram/ --watch CHANGES.rst --watch README.rst docs/ docs/_build/ $(OPTS)
 .PHONY: docs-serve
 
 $(locale_targets): docs-serve-%:
@@ -97,31 +97,31 @@ $(locale_targets): docs-serve-%:
 
 .PHONY: build
 build: clean
-	hatch build
+	uv build
 
 .PHONY: bump
 bump:
-	hatch version $(args)
-	python scripts/bump_versions.py
+	uv run python scripts/bump_version.py $(args)
+	uv run python scripts/bump_versions.py
 
 update-api:
-	butcher parse
-	butcher refresh
-	butcher apply all
+	uv run --extra cli butcher parse
+	uv run --extra cli butcher refresh
+	uv run --extra cli butcher apply all
 	@$(MAKE) bump
 
 .PHONY: towncrier-build
 towncrier-build:
-	hatch run docs:towncrier build --yes
+	uv run --extra docs towncrier build --yes
 
 .PHONY: towncrier-draft
 towncrier-draft:
-	hatch run docs:towncrier build --draft
+	uv run --extra docs towncrier build --draft
 
 .PHONY: towncrier-draft-github
 towncrier-draft-github:
 	mkdir -p dist
-	hatch run docs:towncrier build --draft | pandoc - -o dist/release.md
+	uv run --extra docs towncrier build --draft | pandoc - -o dist/release.md
 
 .PHONY: prepare-release
 prepare-release: bump towncrier-build
@@ -129,5 +129,5 @@ prepare-release: bump towncrier-build
 .PHONY: release
 release:
 	git add .
-	git commit -m "Release $(shell poetry version -s)"
-	git tag v$(shell hatch version -s)
+	git commit -m "Release $(shell uv run python -c 'from aiogram import __version__; print(__version__)')"
+	git tag v$(shell uv run python -c 'from aiogram import __version__; print(__version__)')
