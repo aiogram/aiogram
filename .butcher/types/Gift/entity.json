@@ -44,19 +44,67 @@
         "required": false
       },
       {
+        "type": "True",
+        "description": "True, if the gift can only be purchased by Telegram Premium subscribers",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the gift can only be purchased by Telegram Premium subscribers</td>",
+        "rst_description": "*Optional*. :code:`True`, if the gift can only be purchased by Telegram Premium subscribers\n",
+        "name": "is_premium",
+        "required": false
+      },
+      {
+        "type": "True",
+        "description": "True, if the gift can be used (after being upgraded) to customize a user's appearance",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the gift can be used (after being upgraded) to customize a user's appearance</td>",
+        "rst_description": "*Optional*. :code:`True`, if the gift can be used (after being upgraded) to customize a user's appearance\n",
+        "name": "has_colors",
+        "required": false
+      },
+      {
         "type": "Integer",
-        "description": "The total number of the gifts of this type that can be sent; for limited gifts only",
-        "html_description": "<td><em>Optional</em>. The total number of the gifts of this type that can be sent; for limited gifts only</td>",
-        "rst_description": "*Optional*. The total number of the gifts of this type that can be sent; for limited gifts only\n",
+        "description": "The total number of gifts of this type that can be sent by all users; for limited gifts only",
+        "html_description": "<td><em>Optional</em>. The total number of gifts of this type that can be sent by all users; for limited gifts only</td>",
+        "rst_description": "*Optional*. The total number of gifts of this type that can be sent by all users; for limited gifts only\n",
         "name": "total_count",
         "required": false
       },
       {
         "type": "Integer",
-        "description": "The number of remaining gifts of this type that can be sent; for limited gifts only",
-        "html_description": "<td><em>Optional</em>. The number of remaining gifts of this type that can be sent; for limited gifts only</td>",
-        "rst_description": "*Optional*. The number of remaining gifts of this type that can be sent; for limited gifts only\n",
+        "description": "The number of remaining gifts of this type that can be sent by all users; for limited gifts only",
+        "html_description": "<td><em>Optional</em>. The number of remaining gifts of this type that can be sent by all users; for limited gifts only</td>",
+        "rst_description": "*Optional*. The number of remaining gifts of this type that can be sent by all users; for limited gifts only\n",
         "name": "remaining_count",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "The total number of gifts of this type that can be sent by the bot; for limited gifts only",
+        "html_description": "<td><em>Optional</em>. The total number of gifts of this type that can be sent by the bot; for limited gifts only</td>",
+        "rst_description": "*Optional*. The total number of gifts of this type that can be sent by the bot; for limited gifts only\n",
+        "name": "personal_total_count",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "The number of remaining gifts of this type that can be sent by the bot; for limited gifts only",
+        "html_description": "<td><em>Optional</em>. The number of remaining gifts of this type that can be sent by the bot; for limited gifts only</td>",
+        "rst_description": "*Optional*. The number of remaining gifts of this type that can be sent by the bot; for limited gifts only\n",
+        "name": "personal_remaining_count",
+        "required": false
+      },
+      {
+        "type": "GiftBackground",
+        "description": "Background of the gift",
+        "html_description": "<td><em>Optional</em>. Background of the gift</td>",
+        "rst_description": "*Optional*. Background of the gift\n",
+        "name": "background",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "The total number of different unique gifts that can be obtained by upgrading the gift",
+        "html_description": "<td><em>Optional</em>. The total number of different unique gifts that can be obtained by upgrading the gift</td>",
+        "rst_description": "*Optional*. The total number of different unique gifts that can be obtained by upgrading the gift\n",
+        "name": "unique_gift_variant_count",
         "required": false
       },
       {

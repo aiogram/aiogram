@@ -18,6 +18,8 @@ if TYPE_CHECKING:
     from .chat_photo import ChatPhoto
     from .message import Message
     from .reaction_type_union import ReactionTypeUnion
+    from .unique_gift_colors import UniqueGiftColors
+    from .user_rating import UserRating
 
 
 class ChatFullInfo(Chat):
@@ -121,6 +123,12 @@ class ChatFullInfo(Chat):
     """*Optional*. Unique identifier for the linked chat, i.e. the discussion group identifier for a channel and vice versa; for supergroups and channel chats. This identifier may be greater than 32 bits and some programming languages may have difficulty/silent defects in interpreting it. But it is smaller than 52 bits, so a signed 64 bit integer or double-precision float type are safe for storing this identifier."""
     location: Optional[ChatLocation] = None
     """*Optional*. For supergroups, the location to which the supergroup is connected"""
+    rating: Optional[UserRating] = None
+    """*Optional*. For private chats, the rating of the user if any"""
+    unique_gift_colors: Optional[UniqueGiftColors] = None
+    """*Optional*. The color scheme based on a unique gift that must be used for the chat's name, message replies and link previews"""
+    paid_message_star_count: Optional[int] = None
+    """*Optional*. The number of Telegram Stars a general user have to pay to send a message to the chat"""
     can_send_gift: Optional[bool] = Field(None, json_schema_extra={"deprecated": True})
     """*Optional*. :code:`True`, if gifts can be sent to the chat
 
@@ -181,6 +189,9 @@ class ChatFullInfo(Chat):
             custom_emoji_sticker_set_name: Optional[str] = None,
             linked_chat_id: Optional[int] = None,
             location: Optional[ChatLocation] = None,
+            rating: Optional[UserRating] = None,
+            unique_gift_colors: Optional[UniqueGiftColors] = None,
+            paid_message_star_count: Optional[int] = None,
             can_send_gift: Optional[bool] = None,
             **__pydantic_kwargs: Any,
         ) -> None:
@@ -236,6 +247,9 @@ class ChatFullInfo(Chat):
                 custom_emoji_sticker_set_name=custom_emoji_sticker_set_name,
                 linked_chat_id=linked_chat_id,
                 location=location,
+                rating=rating,
+                unique_gift_colors=unique_gift_colors,
+                paid_message_star_count=paid_message_star_count,
                 can_send_gift=can_send_gift,
                 **__pydantic_kwargs,
             )

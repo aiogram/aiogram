@@ -13,6 +13,14 @@
     "annotations": [
       {
         "type": "String",
+        "description": "Identifier of the regular gift from which the gift was upgraded",
+        "html_description": "<td>Identifier of the regular gift from which the gift was upgraded</td>",
+        "rst_description": "Identifier of the regular gift from which the gift was upgraded\n",
+        "name": "gift_id",
+        "required": true
+      },
+      {
+        "type": "String",
         "description": "Human-readable name of the regular gift from which this unique gift was upgraded",
         "html_description": "<td>Human-readable name of the regular gift from which this unique gift was upgraded</td>",
         "rst_description": "Human-readable name of the regular gift from which this unique gift was upgraded\n",
@@ -58,6 +66,30 @@
         "rst_description": "Backdrop of the gift\n",
         "name": "backdrop",
         "required": true
+      },
+      {
+        "type": "True",
+        "description": "True, if the original regular gift was exclusively purchaseable by Telegram Premium subscribers",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the original regular gift was exclusively purchaseable by Telegram Premium subscribers</td>",
+        "rst_description": "*Optional*. :code:`True`, if the original regular gift was exclusively purchaseable by Telegram Premium subscribers\n",
+        "name": "is_premium",
+        "required": false
+      },
+      {
+        "type": "True",
+        "description": "True, if the gift is assigned from the TON blockchain and can't be resold or transferred in Telegram",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the gift is assigned from the TON blockchain and can't be resold or transferred in Telegram</td>",
+        "rst_description": "*Optional*. :code:`True`, if the gift is assigned from the TON blockchain and can't be resold or transferred in Telegram\n",
+        "name": "is_from_blockchain",
+        "required": false
+      },
+      {
+        "type": "UniqueGiftColors",
+        "description": "The color scheme that can be used by the gift's owner for the chat's name, replies to messages and link previews; for business account gifts and gifts that are currently on sale only",
+        "html_description": "<td><em>Optional</em>. The color scheme that can be used by the gift's owner for the chat's name, replies to messages and link previews; for business account gifts and gifts that are currently on sale only</td>",
+        "rst_description": "*Optional*. The color scheme that can be used by the gift's owner for the chat's name, replies to messages and link previews; for business account gifts and gifts that are currently on sale only\n",
+        "name": "colors",
+        "required": false
       },
       {
         "type": "Chat",

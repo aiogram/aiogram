@@ -144,7 +144,7 @@ class Message(MaybeInaccessibleMessage):
     chat: Chat
     """Chat the message belongs to"""
     message_thread_id: Optional[int] = None
-    """*Optional*. Unique identifier of a message thread to which the message belongs; for supergroups only"""
+    """*Optional*. Unique identifier of a message thread or forum topic to which the message belongs; for supergroups and private chats only"""
     direct_messages_topic: Optional[DirectMessagesTopic] = None
     """*Optional*. Information about the direct messages chat topic that contains the message"""
     from_user: Optional[User] = Field(None, alias="from")
@@ -160,7 +160,7 @@ class Message(MaybeInaccessibleMessage):
     forward_origin: Optional[MessageOriginUnion] = None
     """*Optional*. Information about the original message for forwarded messages"""
     is_topic_message: Optional[bool] = None
-    """*Optional*. :code:`True`, if the message is sent to a forum topic"""
+    """*Optional*. :code:`True`, if the message is sent to a topic in a forum supergroup or a private chat with the bot"""
     is_automatic_forward: Optional[bool] = None
     """*Optional*. :code:`True`, if the message is a channel post that was automatically forwarded to the connected discussion group"""
     reply_to_message: Optional[Message] = None
@@ -279,6 +279,8 @@ class Message(MaybeInaccessibleMessage):
     """*Optional*. Service message: a regular gift was sent or received"""
     unique_gift: Optional[UniqueGiftInfo] = None
     """*Optional*. Service message: a unique gift was sent or received"""
+    gift_upgrade_sent: Optional[GiftInfo] = None
+    """*Optional*. Service message: upgrade of a gift was purchased after the gift was sent"""
     connected_website: Optional[str] = None
     """*Optional*. The domain name of the website on which the user has logged in. `More about Telegram Login » <https://core.telegram.org/widgets/login>`_"""
     write_access_allowed: Optional[WriteAccessAllowed] = None
@@ -455,6 +457,7 @@ class Message(MaybeInaccessibleMessage):
             chat_shared: Optional[ChatShared] = None,
             gift: Optional[GiftInfo] = None,
             unique_gift: Optional[UniqueGiftInfo] = None,
+            gift_upgrade_sent: Optional[GiftInfo] = None,
             connected_website: Optional[str] = None,
             write_access_allowed: Optional[WriteAccessAllowed] = None,
             passport_data: Optional[PassportData] = None,
@@ -571,6 +574,7 @@ class Message(MaybeInaccessibleMessage):
                 chat_shared=chat_shared,
                 gift=gift,
                 unique_gift=unique_gift,
+                gift_upgrade_sent=gift_upgrade_sent,
                 connected_website=connected_website,
                 write_access_allowed=write_access_allowed,
                 passport_data=passport_data,
@@ -3781,6 +3785,7 @@ class Message(MaybeInaccessibleMessage):
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
         allow_paid_broadcast: Optional[bool] = None,
+        message_effect_id: Optional[str] = None,
         suggested_post_parameters: Optional[SuggestedPostParameters] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[ReplyMarkupUnion] = None,
@@ -3800,7 +3805,7 @@ class Message(MaybeInaccessibleMessage):
         Source: https://core.telegram.org/bots/api#copymessage
 
         :param chat_id: Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
-        :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
+        :param message_thread_id: Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only
         :param direct_messages_topic_id: Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat
         :param video_start_timestamp: New start timestamp for the copied video in the message
         :param caption: New caption for media, 0-1024 characters after entities parsing. If not specified, the original caption is kept
@@ -3810,6 +3815,7 @@ class Message(MaybeInaccessibleMessage):
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param allow_paid_broadcast: Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
+        :param message_effect_id: Unique identifier of the message effect to be added to the message; only available when copying to private chats
         :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined.
         :param reply_parameters: Description of the message to reply to
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
@@ -3840,6 +3846,7 @@ class Message(MaybeInaccessibleMessage):
             disable_notification=disable_notification,
             protect_content=protect_content,
             allow_paid_broadcast=allow_paid_broadcast,
+            message_effect_id=message_effect_id,
             suggested_post_parameters=suggested_post_parameters,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
@@ -3915,6 +3922,7 @@ class Message(MaybeInaccessibleMessage):
         video_start_timestamp: Optional[DateTimeUnion] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+        message_effect_id: Optional[str] = None,
         suggested_post_parameters: Optional[SuggestedPostParameters] = None,
         **kwargs: Any,
     ) -> ForwardMessage:
@@ -3930,11 +3938,12 @@ class Message(MaybeInaccessibleMessage):
         Source: https://core.telegram.org/bots/api#forwardmessage
 
         :param chat_id: Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)
-        :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
+        :param message_thread_id: Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only
         :param direct_messages_topic_id: Identifier of the direct messages topic to which the message will be forwarded; required if the message is forwarded to a direct messages chat
         :param video_start_timestamp: New start timestamp for the forwarded video in the message
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the forwarded message from forwarding and saving
+        :param message_effect_id: Unique identifier of the message effect to be added to the message; only available when forwarding to private chats
         :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only
         :return: instance of method :class:`aiogram.methods.forward_message.ForwardMessage`
         """
@@ -3956,6 +3965,7 @@ class Message(MaybeInaccessibleMessage):
             video_start_timestamp=video_start_timestamp,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            message_effect_id=message_effect_id,
             suggested_post_parameters=suggested_post_parameters,
             **kwargs,
         ).as_(self._bot)
@@ -4458,7 +4468,7 @@ class Message(MaybeInaccessibleMessage):
 
         Source: https://core.telegram.org/bots/api#sendpaidmedia
 
-        :param star_count: The number of Telegram Stars that must be paid to buy access to the media; 1-10000
+        :param star_count: The number of Telegram Stars that must be paid to buy access to the media; 1-25000
         :param media: A JSON-serialized array describing the media to be sent; up to 10 items
         :param direct_messages_topic_id: Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat
         :param payload: Bot-defined paid media payload, 0-128 bytes. This will not be displayed to the user, use it for your internal processes.
@@ -4534,7 +4544,7 @@ class Message(MaybeInaccessibleMessage):
 
         Source: https://core.telegram.org/bots/api#sendpaidmedia
 
-        :param star_count: The number of Telegram Stars that must be paid to buy access to the media; 1-10000
+        :param star_count: The number of Telegram Stars that must be paid to buy access to the media; 1-25000
         :param media: A JSON-serialized array describing the media to be sent; up to 10 items
         :param direct_messages_topic_id: Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat
         :param payload: Bot-defined paid media payload, 0-128 bytes. This will not be displayed to the user, use it for your internal processes.

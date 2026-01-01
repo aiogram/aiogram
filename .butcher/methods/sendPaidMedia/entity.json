@@ -30,9 +30,9 @@
       {
         "type": "Integer",
         "required": false,
-        "description": "Unique identifier for the target message thread (topic) of the forum; for forum supergroups only",
-        "html_description": "<td>Unique identifier for the target message thread (topic) of the forum; for forum supergroups only</td>",
-        "rst_description": "Unique identifier for the target message thread (topic) of the forum; for forum supergroups only\n",
+        "description": "Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only",
+        "html_description": "<td>Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only</td>",
+        "rst_description": "Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only\n",
         "name": "message_thread_id"
       },
       {
@@ -46,9 +46,9 @@
       {
         "type": "Integer",
         "required": true,
-        "description": "The number of Telegram Stars that must be paid to buy access to the media; 1-10000",
-        "html_description": "<td>The number of Telegram Stars that must be paid to buy access to the media; 1-10000</td>",
-        "rst_description": "The number of Telegram Stars that must be paid to buy access to the media; 1-10000\n",
+        "description": "The number of Telegram Stars that must be paid to buy access to the media; 1-25000",
+        "html_description": "<td>The number of Telegram Stars that must be paid to buy access to the media; 1-25000</td>",
+        "rst_description": "The number of Telegram Stars that must be paid to buy access to the media; 1-25000\n",
         "name": "star_count"
       },
       {

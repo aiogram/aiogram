@@ -21,18 +21,26 @@
       },
       {
         "type": "String",
-        "description": "Origin of the gift. Currently, either 'upgrade' for gifts upgraded from regular gifts, 'transfer' for gifts transferred from other users or channels, or 'resale' for gifts bought from other users",
-        "html_description": "<td>Origin of the gift. Currently, either &#8220;upgrade&#8221; for gifts upgraded from regular gifts, &#8220;transfer&#8221; for gifts transferred from other users or channels, or &#8220;resale&#8221; for gifts bought from other users</td>",
-        "rst_description": "Origin of the gift. Currently, either 'upgrade' for gifts upgraded from regular gifts, 'transfer' for gifts transferred from other users or channels, or 'resale' for gifts bought from other users\n",
+        "description": "Origin of the gift. Currently, either 'upgrade' for gifts upgraded from regular gifts, 'transfer' for gifts transferred from other users or channels, 'resale' for gifts bought from other users, 'gifted_upgrade' for upgrades purchased after the gift was sent, or 'offer' for gifts bought or sold through gift purchase offers",
+        "html_description": "<td>Origin of the gift. Currently, either &#8220;upgrade&#8221; for gifts upgraded from regular gifts, &#8220;transfer&#8221; for gifts transferred from other users or channels, &#8220;resale&#8221; for gifts bought from other users, &#8220;gifted_upgrade&#8221; for upgrades purchased after the gift was sent, or &#8220;offer&#8221; for gifts bought or sold through gift purchase offers</td>",
+        "rst_description": "Origin of the gift. Currently, either 'upgrade' for gifts upgraded from regular gifts, 'transfer' for gifts transferred from other users or channels, 'resale' for gifts bought from other users, 'gifted_upgrade' for upgrades purchased after the gift was sent, or 'offer' for gifts bought or sold through gift purchase offers\n",
         "name": "origin",
         "required": true
       },
       {
+        "type": "String",
+        "description": "For gifts bought from other users, the currency in which the payment for the gift was done. Currently, one of 'XTR' for Telegram Stars or 'TON' for toncoins.",
+        "html_description": "<td><em>Optional</em>. For gifts bought from other users, the currency in which the payment for the gift was done. Currently, one of &#8220;XTR&#8221; for Telegram Stars or &#8220;TON&#8221; for toncoins.</td>",
+        "rst_description": "*Optional*. For gifts bought from other users, the currency in which the payment for the gift was done. Currently, one of 'XTR' for Telegram Stars or 'TON' for toncoins.\n",
+        "name": "last_resale_currency",
+        "required": false
+      },
+      {
         "type": "Integer",
-        "description": "For gifts bought from other users, the price paid for the gift",
-        "html_description": "<td><em>Optional</em>. For gifts bought from other users, the price paid for the gift</td>",
-        "rst_description": "*Optional*. For gifts bought from other users, the price paid for the gift\n",
-        "name": "last_resale_star_count",
+        "description": "For gifts bought from other users, the price paid for the gift in either Telegram Stars or nanotoncoins",
+        "html_description": "<td><em>Optional</em>. For gifts bought from other users, the price paid for the gift in either Telegram Stars or nanotoncoins</td>",
+        "rst_description": "*Optional*. For gifts bought from other users, the price paid for the gift in either Telegram Stars or nanotoncoins\n",
+        "name": "last_resale_amount",
         "required": false
       },
       {
@@ -58,6 +66,18 @@
         "rst_description": "*Optional*. Point in time (Unix timestamp) when the gift can be transferred. If it is in the past, then the gift can be transferred now\n",
         "name": "next_transfer_date",
         "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "For gifts bought from other users, the price paid for the gift",
+        "html_description": "<td><em>Optional</em>. For gifts bought from other users, the price paid for the gift</td>",
+        "rst_description": "*Optional*. For gifts bought from other users, the price paid for the gift\n",
+        "name": "last_resale_star_count",
+        "required": false,
+        "deprecated": {
+          "version": "9.3",
+          "release_date": "2025-12-31"
+        }
       }
     ],
     "category": "types"

@@ -34,7 +34,7 @@ class CopyMessage(TelegramMethod[MessageId]):
     message_id: int
     """Message identifier in the chat specified in *from_chat_id*"""
     message_thread_id: Optional[int] = None
-    """Unique identifier for the target message thread (topic) of the forum; for forum supergroups only"""
+    """Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only"""
     direct_messages_topic_id: Optional[int] = None
     """Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat"""
     video_start_timestamp: Optional[DateTimeUnion] = None
@@ -53,6 +53,8 @@ class CopyMessage(TelegramMethod[MessageId]):
     """Protects the contents of the sent message from forwarding and saving"""
     allow_paid_broadcast: Optional[bool] = None
     """Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance"""
+    message_effect_id: Optional[str] = None
+    """Unique identifier of the message effect to be added to the message; only available when copying to private chats"""
     suggested_post_parameters: Optional[SuggestedPostParameters] = None
     """A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined."""
     reply_parameters: Optional[ReplyParameters] = None
@@ -94,6 +96,7 @@ class CopyMessage(TelegramMethod[MessageId]):
             disable_notification: Optional[bool] = None,
             protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
             allow_paid_broadcast: Optional[bool] = None,
+            message_effect_id: Optional[str] = None,
             suggested_post_parameters: Optional[SuggestedPostParameters] = None,
             reply_parameters: Optional[ReplyParameters] = None,
             reply_markup: Optional[ReplyMarkupUnion] = None,
@@ -119,6 +122,7 @@ class CopyMessage(TelegramMethod[MessageId]):
                 disable_notification=disable_notification,
                 protect_content=protect_content,
                 allow_paid_broadcast=allow_paid_broadcast,
+                message_effect_id=message_effect_id,
                 suggested_post_parameters=suggested_post_parameters,
                 reply_parameters=reply_parameters,
                 reply_markup=reply_markup,

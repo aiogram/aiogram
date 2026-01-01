@@ -1,0 +1,89 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available methods",
+    "anchor": "available-methods"
+  },
+  "object": {
+    "anchor": "getusergifts",
+    "name": "getUserGifts",
+    "description": "Returns the gifts owned and hosted by a user. Returns OwnedGifts on success.",
+    "html_description": "<p>Returns the gifts owned and hosted by a user. Returns <a href=\"#ownedgifts\">OwnedGifts</a> on success.</p>",
+    "rst_description": "Returns the gifts owned and hosted by a user. Returns :class:`aiogram.types.owned_gifts.OwnedGifts` on success.",
+    "annotations": [
+      {
+        "type": "Integer",
+        "required": true,
+        "description": "Unique identifier of the user",
+        "html_description": "<td>Unique identifier of the user</td>",
+        "rst_description": "Unique identifier of the user\n",
+        "name": "user_id"
+      },
+      {
+        "type": "Boolean",
+        "required": false,
+        "description": "Pass True to exclude gifts that can be purchased an unlimited number of times",
+        "html_description": "<td>Pass <em>True</em> to exclude gifts that can be purchased an unlimited number of times</td>",
+        "rst_description": "Pass :code:`True` to exclude gifts that can be purchased an unlimited number of times\n",
+        "name": "exclude_unlimited"
+      },
+      {
+        "type": "Boolean",
+        "required": false,
+        "description": "Pass True to exclude gifts that can be purchased a limited number of times and can be upgraded to unique",
+        "html_description": "<td>Pass <em>True</em> to exclude gifts that can be purchased a limited number of times and can be upgraded to unique</td>",
+        "rst_description": "Pass :code:`True` to exclude gifts that can be purchased a limited number of times and can be upgraded to unique\n",
+        "name": "exclude_limited_upgradable"
+      },
+      {
+        "type": "Boolean",
+        "required": false,
+        "description": "Pass True to exclude gifts that can be purchased a limited number of times and can't be upgraded to unique",
+        "html_description": "<td>Pass <em>True</em> to exclude gifts that can be purchased a limited number of times and can't be upgraded to unique</td>",
+        "rst_description": "Pass :code:`True` to exclude gifts that can be purchased a limited number of times and can't be upgraded to unique\n",
+        "name": "exclude_limited_non_upgradable"
+      },
+      {
+        "type": "Boolean",
+        "required": false,
+        "description": "Pass True to exclude gifts that were assigned from the TON blockchain and can't be resold or transferred in Telegram",
+        "html_description": "<td>Pass <em>True</em> to exclude gifts that were assigned from the TON blockchain and can't be resold or transferred in Telegram</td>",
+        "rst_description": "Pass :code:`True` to exclude gifts that were assigned from the TON blockchain and can't be resold or transferred in Telegram\n",
+        "name": "exclude_from_blockchain"
+      },
+      {
+        "type": "Boolean",
+        "required": false,
+        "description": "Pass True to exclude unique gifts",
+        "html_description": "<td>Pass <em>True</em> to exclude unique gifts</td>",
+        "rst_description": "Pass :code:`True` to exclude unique gifts\n",
+        "name": "exclude_unique"
+      },
+      {
+        "type": "Boolean",
+        "required": false,
+        "description": "Pass True to sort results by gift price instead of send date. Sorting is applied before pagination.",
+        "html_description": "<td>Pass <em>True</em> to sort results by gift price instead of send date. Sorting is applied before pagination.</td>",
+        "rst_description": "Pass :code:`True` to sort results by gift price instead of send date. Sorting is applied before pagination.\n",
+        "name": "sort_by_price"
+      },
+      {
+        "type": "String",
+        "required": false,
+        "description": "Offset of the first entry to return as received from the previous request; use an empty string to get the first chunk of results",
+        "html_description": "<td>Offset of the first entry to return as received from the previous request; use an empty string to get the first chunk of results</td>",
+        "rst_description": "Offset of the first entry to return as received from the previous request; use an empty string to get the first chunk of results\n",
+        "name": "offset"
+      },
+      {
+        "type": "Integer",
+        "required": false,
+        "description": "The maximum number of gifts to be returned; 1-100. Defaults to 100",
+        "html_description": "<td>The maximum number of gifts to be returned; 1-100. Defaults to 100</td>",
+        "rst_description": "The maximum number of gifts to be returned; 1-100. Defaults to 100\n",
+        "name": "limit"
+      }
+    ],
+    "category": "methods"
+  }
+}

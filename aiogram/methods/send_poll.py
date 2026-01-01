@@ -36,7 +36,7 @@ class SendPoll(TelegramMethod[Message]):
     business_connection_id: Optional[str] = None
     """Unique identifier of the business connection on behalf of which the message will be sent"""
     message_thread_id: Optional[int] = None
-    """Unique identifier for the target message thread (topic) of the forum; for forum supergroups only"""
+    """Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only"""
     question_parse_mode: Optional[Union[str, Default]] = Default("parse_mode")
     """Mode for parsing entities in the question. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details. Currently, only custom emoji entities are allowed"""
     question_entities: Optional[list[MessageEntity]] = None

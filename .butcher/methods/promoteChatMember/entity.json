@@ -62,9 +62,9 @@
       {
         "type": "Boolean",
         "required": false,
-        "description": "Pass True if the administrator can restrict, ban or unban chat members, or access supergroup statistics",
-        "html_description": "<td>Pass <em>True</em> if the administrator can restrict, ban or unban chat members, or access supergroup statistics</td>",
-        "rst_description": "Pass :code:`True` if the administrator can restrict, ban or unban chat members, or access supergroup statistics\n",
+        "description": "Pass True if the administrator can restrict, ban or unban chat members, or access supergroup statistics. For backward compatibility, defaults to True for promotions of channel administrators",
+        "html_description": "<td>Pass <em>True</em> if the administrator can restrict, ban or unban chat members, or access supergroup statistics. For backward compatibility, defaults to <em>True</em> for promotions of channel administrators</td>",
+        "rst_description": "Pass :code:`True` if the administrator can restrict, ban or unban chat members, or access supergroup statistics. For backward compatibility, defaults to :code:`True` for promotions of channel administrators\n",
         "name": "can_restrict_members"
       },
       {

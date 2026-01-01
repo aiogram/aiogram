@@ -21,7 +21,7 @@ class InputChecklist(TelegramObject):
     tasks: list[InputChecklistTask]
     """List of 1-30 tasks in the checklist"""
     parse_mode: Optional[str] = None
-    """Optional. Mode for parsing entities in the title. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details."""
+    """*Optional*. Mode for parsing entities in the title. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details."""
     title_entities: Optional[list[MessageEntity]] = None
     """*Optional*. List of special entities that appear in the title, which can be specified instead of parse_mode. Currently, only *bold*, *italic*, *underline*, *strikethrough*, *spoiler*, and *custom_emoji* entities are allowed."""
     others_can_add_tasks: Optional[bool] = None

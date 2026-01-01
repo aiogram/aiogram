@@ -27,13 +27,13 @@ class SendPaidMedia(TelegramMethod[Message]):
     chat_id: ChatIdUnion
     """Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`). If the chat is a channel, all Telegram Star proceeds from this media will be credited to the chat's balance. Otherwise, they will be credited to the bot's balance."""
     star_count: int
-    """The number of Telegram Stars that must be paid to buy access to the media; 1-10000"""
+    """The number of Telegram Stars that must be paid to buy access to the media; 1-25000"""
     media: list[InputPaidMediaUnion]
     """A JSON-serialized array describing the media to be sent; up to 10 items"""
     business_connection_id: Optional[str] = None
     """Unique identifier of the business connection on behalf of which the message will be sent"""
     message_thread_id: Optional[int] = None
-    """Unique identifier for the target message thread (topic) of the forum; for forum supergroups only"""
+    """Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only"""
     direct_messages_topic_id: Optional[int] = None
     """Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat"""
     payload: Optional[str] = None

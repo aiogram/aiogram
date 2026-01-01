@@ -20,6 +20,8 @@ class ForumTopic(TelegramObject):
     """Color of the topic icon in RGB format"""
     icon_custom_emoji_id: Optional[str] = None
     """*Optional*. Unique identifier of the custom emoji shown as the topic icon"""
+    is_name_implicit: Optional[bool] = None
+    """*Optional*. :code:`True`, if the name of the topic wasn't specified explicitly by its creator and likely needs to be changed by the bot"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!
@@ -32,6 +34,7 @@ class ForumTopic(TelegramObject):
             name: str,
             icon_color: int,
             icon_custom_emoji_id: Optional[str] = None,
+            is_name_implicit: Optional[bool] = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!
@@ -43,5 +46,6 @@ class ForumTopic(TelegramObject):
                 name=name,
                 icon_color=icon_color,
                 icon_custom_emoji_id=icon_custom_emoji_id,
+                is_name_implicit=is_name_implicit,
                 **__pydantic_kwargs,
             )

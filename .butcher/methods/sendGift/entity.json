@@ -30,9 +30,9 @@
       {
         "type": "String",
         "required": true,
-        "description": "Identifier of the gift",
-        "html_description": "<td>Identifier of the gift</td>",
-        "rst_description": "Identifier of the gift\n",
+        "description": "Identifier of the gift; limited gifts can't be sent to channel chats",
+        "html_description": "<td>Identifier of the gift; limited gifts can't be sent to channel chats</td>",
+        "rst_description": "Identifier of the gift; limited gifts can't be sent to channel chats\n",
         "name": "gift_id"
       },
       {

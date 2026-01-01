@@ -91,6 +91,7 @@ Available types
     general_forum_topic_hidden
     general_forum_topic_unhidden
     gift
+    gift_background
     gift_info
     gifts
     giveaway
@@ -192,12 +193,14 @@ Available types
     unique_gift
     unique_gift_backdrop
     unique_gift_backdrop_colors
+    unique_gift_colors
     unique_gift_info
     unique_gift_model
     unique_gift_symbol
     user
     user_chat_boosts
     user_profile_photos
+    user_rating
     user_shared
     users_shared
     venue

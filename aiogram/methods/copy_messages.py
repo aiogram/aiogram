@@ -21,7 +21,7 @@ class CopyMessages(TelegramMethod[list[MessageId]]):
     message_ids: list[int]
     """A JSON-serialized list of 1-100 identifiers of messages in the chat *from_chat_id* to copy. The identifiers must be specified in a strictly increasing order."""
     message_thread_id: Optional[int] = None
-    """Unique identifier for the target message thread (topic) of the forum; for forum supergroups only"""
+    """Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only"""
     direct_messages_topic_id: Optional[int] = None
     """Identifier of the direct messages topic to which the messages will be sent; required if the messages are sent to a direct messages chat"""
     disable_notification: Optional[bool] = None

@@ -27,7 +27,7 @@ class SendChatAction(TelegramMethod[bool]):
     business_connection_id: Optional[str] = None
     """Unique identifier of the business connection on behalf of which the action will be sent"""
     message_thread_id: Optional[int] = None
-    """Unique identifier for the target message thread; for supergroups only"""
+    """Unique identifier for the target message thread or topic of a forum; for supergroups and private chats of bots with forum topic mode enabled only"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!

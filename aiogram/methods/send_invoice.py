@@ -39,7 +39,7 @@ class SendInvoice(TelegramMethod[Message]):
     prices: list[LabeledPrice]
     """Price breakdown, a JSON-serialized list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.). Must contain exactly one item for payments in `Telegram Stars <https://t.me/BotNews/90>`_."""
     message_thread_id: Optional[int] = None
-    """Unique identifier for the target message thread (topic) of the forum; for forum supergroups only"""
+    """Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only"""
     direct_messages_topic_id: Optional[int] = None
     """Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat"""
     provider_token: Optional[str] = None

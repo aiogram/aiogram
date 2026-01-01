@@ -42,9 +42,13 @@ class OwnedGiftRegular(OwnedGift):
     was_refunded: Optional[bool] = None
     """*Optional*. :code:`True`, if the gift was refunded and isn't available anymore"""
     convert_star_count: Optional[int] = None
-    """*Optional*. Number of Telegram Stars that can be claimed by the receiver instead of the gift; omitted if the gift cannot be converted to Telegram Stars"""
+    """*Optional*. Number of Telegram Stars that can be claimed by the receiver instead of the gift; omitted if the gift cannot be converted to Telegram Stars; for gifts received on behalf of business accounts only"""
     prepaid_upgrade_star_count: Optional[int] = None
-    """*Optional*. Number of Telegram Stars that were paid by the sender for the ability to upgrade the gift"""
+    """*Optional*. Number of Telegram Stars that were paid for the ability to upgrade the gift"""
+    is_upgrade_separate: Optional[bool] = None
+    """*Optional*. :code:`True`, if the gift's upgrade was purchased after the gift was sent; for gifts received on behalf of business accounts only"""
+    unique_gift_number: Optional[int] = None
+    """*Optional*. Unique number reserved for this gift when upgraded. See the *number* field in :class:`aiogram.types.unique_gift.UniqueGift`"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!
@@ -66,6 +70,8 @@ class OwnedGiftRegular(OwnedGift):
             was_refunded: Optional[bool] = None,
             convert_star_count: Optional[int] = None,
             prepaid_upgrade_star_count: Optional[int] = None,
+            is_upgrade_separate: Optional[bool] = None,
+            unique_gift_number: Optional[int] = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!
@@ -86,5 +92,7 @@ class OwnedGiftRegular(OwnedGift):
                 was_refunded=was_refunded,
                 convert_star_count=convert_star_count,
                 prepaid_upgrade_star_count=prepaid_upgrade_star_count,
+                is_upgrade_separate=is_upgrade_separate,
+                unique_gift_number=unique_gift_number,
                 **__pydantic_kwargs,
             )

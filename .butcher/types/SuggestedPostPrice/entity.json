@@ -7,9 +7,9 @@
   "object": {
     "anchor": "suggestedpostprice",
     "name": "SuggestedPostPrice",
-    "description": "Desribes price of a suggested post.",
-    "html_description": "<p>Desribes price of a suggested post.</p>",
-    "rst_description": "Desribes price of a suggested post.",
+    "description": "Describes the price of a suggested post.",
+    "html_description": "<p>Describes the price of a suggested post.</p>",
+    "rst_description": "Describes the price of a suggested post.",
     "annotations": [
       {
         "type": "String",

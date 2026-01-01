@@ -68,6 +68,7 @@ Available methods
     get_business_connection
     get_chat
     get_chat_administrators
+    get_chat_gifts
     get_chat_member
     get_chat_member_count
     get_chat_menu_button
@@ -80,6 +81,7 @@ Available methods
     get_my_name
     get_my_short_description
     get_user_chat_boosts
+    get_user_gifts
     get_user_profile_photos
     gift_premium_subscription
     hide_general_forum_topic
@@ -94,6 +96,7 @@ Available methods
     remove_user_verification
     reopen_forum_topic
     reopen_general_forum_topic
+    repost_story
     restrict_chat_member
     revoke_chat_invite_link
     send_animation
@@ -107,6 +110,7 @@ Available methods
     send_location
     send_media_group
     send_message
+    send_message_draft
     send_paid_media
     send_photo
     send_poll
