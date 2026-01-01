@@ -16,7 +16,6 @@ from aiogram.methods import (
     PinChatMessage,
     SendAnimation,
     SendAudio,
-    SendChecklist,
     SendContact,
     SendDice,
     SendDocument,
@@ -661,6 +660,7 @@ TEST_MESSAGE_UNIQUE_GIFT = Message(
     from_user=User(id=42, is_bot=False, first_name="Test"),
     unique_gift=UniqueGiftInfo(
         gift=UniqueGift(
+            gift_id="test_gift_id",
             base_name="test_gift",
             name="test_unique_gift",
             number=1,
@@ -702,6 +702,33 @@ TEST_MESSAGE_UNIQUE_GIFT = Message(
             ),
         ),
         origin="upgrade",
+    ),
+)
+TEST_MESSAGE_GIFT_UPGRADE_SENT = Message(
+    message_id=42,
+    chat=Chat(id=42, type="private"),
+    from_user=User(id=42, is_bot=False, first_name="Test"),
+    date=datetime.datetime.now(),
+    gift_upgrade_sent=GiftInfo(
+        gift=Gift(
+            id="test_gift_id",
+            sticker=Sticker(
+                file_id="test_file_id",
+                file_unique_id="test_file_unique_id",
+                type="regular",
+                width=512,
+                height=512,
+                is_animated=False,
+                is_video=False,
+            ),
+            star_count=100,
+        ),
+        owned_gift_id="test_owned_gift_id",
+        convert_star_count=50,
+        prepaid_upgrade_star_count=25,
+        can_be_upgraded=True,
+        text="Test gift message",
+        is_private=False,
     ),
 )
 TEST_MESSAGE_CHECKLIST = Message(
@@ -874,6 +901,7 @@ MESSAGES_AND_CONTENT_TYPES = [
     [TEST_REFUND_PAYMENT, ContentType.REFUNDED_PAYMENT],
     [TEST_MESSAGE_GIFT, ContentType.GIFT],
     [TEST_MESSAGE_UNIQUE_GIFT, ContentType.UNIQUE_GIFT],
+    [TEST_MESSAGE_GIFT_UPGRADE_SENT, ContentType.GIFT_UPGRADE_SENT],
     [TEST_MESSAGE_PAID_MESSAGE_PRICE_CHANGED, ContentType.PAID_MESSAGE_PRICE_CHANGED],
     [TEST_MESSAGE_SUGGESTED_POST_APPROVED, ContentType.SUGGESTED_POST_APPROVED],
     [TEST_MESSAGE_SUGGESTED_POST_APPROVAL_FAILED, ContentType.SUGGESTED_POST_APPROVAL_FAILED],
@@ -947,6 +975,7 @@ MESSAGES_AND_COPY_METHODS = [
     [TEST_REFUND_PAYMENT, None],
     [TEST_MESSAGE_GIFT, None],
     [TEST_MESSAGE_UNIQUE_GIFT, None],
+    [TEST_MESSAGE_GIFT_UPGRADE_SENT, None],
     [TEST_MESSAGE_PAID_MESSAGE_PRICE_CHANGED, None],
     [TEST_MESSAGE_SUGGESTED_POST_APPROVED, None],
     [TEST_MESSAGE_SUGGESTED_POST_APPROVAL_FAILED, None],

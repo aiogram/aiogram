@@ -742,6 +742,8 @@ class Message(MaybeInaccessibleMessage):
             return ContentType.GIFT
         if self.unique_gift:
             return ContentType.UNIQUE_GIFT
+        if self.gift_upgrade_sent:
+            return ContentType.GIFT_UPGRADE_SENT
         if self.paid_message_price_changed:
             return ContentType.PAID_MESSAGE_PRICE_CHANGED
         if self.suggested_post_approved:
