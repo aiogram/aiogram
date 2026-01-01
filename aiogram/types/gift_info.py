@@ -23,7 +23,9 @@ class GiftInfo(TelegramObject):
     convert_star_count: Optional[int] = None
     """*Optional*. Number of Telegram Stars that can be claimed by the receiver by converting the gift; omitted if conversion to Telegram Stars is impossible"""
     prepaid_upgrade_star_count: Optional[int] = None
-    """*Optional*. Number of Telegram Stars that were prepaid by the sender for the ability to upgrade the gift"""
+    """*Optional*. Number of Telegram Stars that were prepaid for the ability to upgrade the gift"""
+    is_upgrade_separate: Optional[bool] = None
+    """*Optional*. :code:`True`, if the gift's upgrade was purchased after the gift was sent"""
     can_be_upgraded: Optional[bool] = None
     """*Optional*. :code:`True`, if the gift can be upgraded to a unique gift"""
     text: Optional[str] = None
@@ -32,6 +34,8 @@ class GiftInfo(TelegramObject):
     """*Optional*. Special entities that appear in the text"""
     is_private: Optional[bool] = None
     """*Optional*. :code:`True`, if the sender and gift text are shown only to the gift receiver; otherwise, everyone will be able to see them"""
+    unique_gift_number: Optional[int] = None
+    """*Optional*. Unique number reserved for this gift when upgraded. See the *number* field in :class:`aiogram.types.unique_gift.UniqueGift`"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!
@@ -44,10 +48,12 @@ class GiftInfo(TelegramObject):
             owned_gift_id: Optional[str] = None,
             convert_star_count: Optional[int] = None,
             prepaid_upgrade_star_count: Optional[int] = None,
+            is_upgrade_separate: Optional[bool] = None,
             can_be_upgraded: Optional[bool] = None,
             text: Optional[str] = None,
             entities: Optional[list[MessageEntity]] = None,
             is_private: Optional[bool] = None,
+            unique_gift_number: Optional[int] = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!
@@ -59,9 +65,11 @@ class GiftInfo(TelegramObject):
                 owned_gift_id=owned_gift_id,
                 convert_star_count=convert_star_count,
                 prepaid_upgrade_star_count=prepaid_upgrade_star_count,
+                is_upgrade_separate=is_upgrade_separate,
                 can_be_upgraded=can_be_upgraded,
                 text=text,
                 entities=entities,
                 is_private=is_private,
+                unique_gift_number=unique_gift_number,
                 **__pydantic_kwargs,
             )

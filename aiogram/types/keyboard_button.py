@@ -25,9 +25,9 @@ class KeyboardButton(MutableTelegramObject):
     text: str
     """Text of the button. If none of the optional fields are used, it will be sent as a message when the button is pressed"""
     request_users: Optional[KeyboardButtonRequestUsers] = None
-    """*Optional.* If specified, pressing the button will open a list of suitable users. Identifiers of selected users will be sent to the bot in a 'users_shared' service message. Available in private chats only."""
+    """*Optional*. If specified, pressing the button will open a list of suitable users. Identifiers of selected users will be sent to the bot in a 'users_shared' service message. Available in private chats only."""
     request_chat: Optional[KeyboardButtonRequestChat] = None
-    """*Optional.* If specified, pressing the button will open a list of suitable chats. Tapping on a chat will send its identifier to the bot in a 'chat_shared' service message. Available in private chats only."""
+    """*Optional*. If specified, pressing the button will open a list of suitable chats. Tapping on a chat will send its identifier to the bot in a 'chat_shared' service message. Available in private chats only."""
     request_contact: Optional[bool] = None
     """*Optional*. If :code:`True`, the user's phone number will be sent as a contact when the button is pressed. Available in private chats only."""
     request_location: Optional[bool] = None

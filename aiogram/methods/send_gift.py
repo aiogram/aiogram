@@ -18,7 +18,7 @@ class SendGift(TelegramMethod[bool]):
     __api_method__ = "sendGift"
 
     gift_id: str
-    """Identifier of the gift"""
+    """Identifier of the gift; limited gifts can't be sent to channel chats"""
     user_id: Optional[int] = None
     """Required if *chat_id* is not specified. Unique identifier of the target user who will receive the gift."""
     chat_id: Optional[ChatIdUnion] = None

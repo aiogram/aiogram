@@ -37,10 +37,18 @@
       },
       {
         "type": "User",
-        "description": "User that completed the task; omitted if the task wasn't completed",
-        "html_description": "<td><em>Optional</em>. User that completed the task; omitted if the task wasn't completed</td>",
-        "rst_description": "*Optional*. User that completed the task; omitted if the task wasn't completed\n",
+        "description": "User that completed the task; omitted if the task wasn't completed by a user",
+        "html_description": "<td><em>Optional</em>. User that completed the task; omitted if the task wasn't completed by a user</td>",
+        "rst_description": "*Optional*. User that completed the task; omitted if the task wasn't completed by a user\n",
         "name": "completed_by_user",
+        "required": false
+      },
+      {
+        "type": "Chat",
+        "description": "Chat that completed the task; omitted if the task wasn't completed by a chat",
+        "html_description": "<td><em>Optional</em>. Chat that completed the task; omitted if the task wasn't completed by a chat</td>",
+        "rst_description": "*Optional*. Chat that completed the task; omitted if the task wasn't completed by a chat\n",
+        "name": "completed_by_chat",
         "required": false
       },
       {

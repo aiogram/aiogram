@@ -43,6 +43,8 @@ class User(TelegramObject):
     """*Optional*. :code:`True`, if the bot can be connected to a Telegram Business account to receive its messages. Returned only in :class:`aiogram.methods.get_me.GetMe`."""
     has_main_web_app: Optional[bool] = None
     """*Optional*. :code:`True`, if the bot has a main Web App. Returned only in :class:`aiogram.methods.get_me.GetMe`."""
+    has_topics_enabled: Optional[bool] = None
+    """*Optional*. :code:`True`, if the bot has forum topic mode enabled in private chats. Returned only in :class:`aiogram.methods.get_me.GetMe`."""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!
@@ -64,6 +66,7 @@ class User(TelegramObject):
             supports_inline_queries: Optional[bool] = None,
             can_connect_to_business: Optional[bool] = None,
             has_main_web_app: Optional[bool] = None,
+            has_topics_enabled: Optional[bool] = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!
@@ -84,6 +87,7 @@ class User(TelegramObject):
                 supports_inline_queries=supports_inline_queries,
                 can_connect_to_business=can_connect_to_business,
                 has_main_web_app=has_main_web_app,
+                has_topics_enabled=has_topics_enabled,
                 **__pydantic_kwargs,
             )
 

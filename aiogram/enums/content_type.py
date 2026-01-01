@@ -45,6 +45,7 @@ class ContentType(str, Enum):
     CHAT_SHARED = "chat_shared"
     GIFT = "gift"
     UNIQUE_GIFT = "unique_gift"
+    GIFT_UPGRADE_SENT = "gift_upgrade_sent"
     CONNECTED_WEBSITE = "connected_website"
     WRITE_ACCESS_ALLOWED = "write_access_allowed"
     PASSPORT_DATA = "passport_data"

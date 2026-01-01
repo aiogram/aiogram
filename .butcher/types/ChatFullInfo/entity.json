@@ -388,6 +388,30 @@
         "required": false
       },
       {
+        "type": "UserRating",
+        "description": "For private chats, the rating of the user if any",
+        "html_description": "<td><em>Optional</em>. For private chats, the rating of the user if any</td>",
+        "rst_description": "*Optional*. For private chats, the rating of the user if any\n",
+        "name": "rating",
+        "required": false
+      },
+      {
+        "type": "UniqueGiftColors",
+        "description": "The color scheme based on a unique gift that must be used for the chat's name, message replies and link previews",
+        "html_description": "<td><em>Optional</em>. The color scheme based on a unique gift that must be used for the chat's name, message replies and link previews</td>",
+        "rst_description": "*Optional*. The color scheme based on a unique gift that must be used for the chat's name, message replies and link previews\n",
+        "name": "unique_gift_colors",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "The number of Telegram Stars a general user have to pay to send a message to the chat",
+        "html_description": "<td><em>Optional</em>. The number of Telegram Stars a general user have to pay to send a message to the chat</td>",
+        "rst_description": "*Optional*. The number of Telegram Stars a general user have to pay to send a message to the chat\n",
+        "name": "paid_message_star_count",
+        "required": false
+      },
+      {
         "type": "True",
         "description": "True, if gifts can be sent to the chat",
         "html_description": "<td><em>Optional</em>. <em>True</em>, if gifts can be sent to the chat</td>",

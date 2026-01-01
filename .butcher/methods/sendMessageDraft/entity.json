@@ -1,0 +1,65 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available methods",
+    "anchor": "available-methods"
+  },
+  "object": {
+    "anchor": "sendmessagedraft",
+    "name": "sendMessageDraft",
+    "description": "Use this method to stream a partial message to a user while the message is being generated; supported only for bots with forum topic mode enabled. Returns True on success.",
+    "html_description": "<p>Use this method to stream a partial message to a user while the message is being generated; supported only for bots with forum topic mode enabled. Returns <em>True</em> on success.</p>",
+    "rst_description": "Use this method to stream a partial message to a user while the message is being generated; supported only for bots with forum topic mode enabled. Returns :code:`True` on success.",
+    "annotations": [
+      {
+        "type": "Integer",
+        "required": true,
+        "description": "Unique identifier for the target private chat",
+        "html_description": "<td>Unique identifier for the target private chat</td>",
+        "rst_description": "Unique identifier for the target private chat\n",
+        "name": "chat_id"
+      },
+      {
+        "type": "Integer",
+        "required": false,
+        "description": "Unique identifier for the target message thread",
+        "html_description": "<td>Unique identifier for the target message thread</td>",
+        "rst_description": "Unique identifier for the target message thread\n",
+        "name": "message_thread_id"
+      },
+      {
+        "type": "Integer",
+        "required": true,
+        "description": "Unique identifier of the message draft; must be non-zero. Changes of drafts with the same identifier are animated",
+        "html_description": "<td>Unique identifier of the message draft; must be non-zero. Changes of drafts with the same identifier are animated</td>",
+        "rst_description": "Unique identifier of the message draft; must be non-zero. Changes of drafts with the same identifier are animated\n",
+        "name": "draft_id"
+      },
+      {
+        "type": "String",
+        "required": true,
+        "description": "Text of the message to be sent, 1-4096 characters after entities parsing",
+        "html_description": "<td>Text of the message to be sent, 1-4096 characters after entities parsing</td>",
+        "rst_description": "Text of the message to be sent, 1-4096 characters after entities parsing\n",
+        "name": "text"
+      },
+      {
+        "type": "String",
+        "required": false,
+        "description": "Mode for parsing entities in the message text. See formatting options for more details.",
+        "html_description": "<td>Mode for parsing entities in the message text. See <a href=\"#formatting-options\">formatting options</a> for more details.</td>",
+        "rst_description": "Mode for parsing entities in the message text. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.\n",
+        "name": "parse_mode"
+      },
+      {
+        "type": "Array of MessageEntity",
+        "required": false,
+        "description": "A JSON-serialized list of special entities that appear in message text, which can be specified instead of parse_mode",
+        "html_description": "<td>A JSON-serialized list of special entities that appear in message text, which can be specified instead of <em>parse_mode</em></td>",
+        "rst_description": "A JSON-serialized list of special entities that appear in message text, which can be specified instead of *parse_mode*\n",
+        "name": "entities"
+      }
+    ],
+    "category": "methods"
+  }
+}

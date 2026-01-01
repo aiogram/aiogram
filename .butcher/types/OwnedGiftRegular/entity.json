@@ -101,18 +101,34 @@
       },
       {
         "type": "Integer",
-        "description": "Number of Telegram Stars that can be claimed by the receiver instead of the gift; omitted if the gift cannot be converted to Telegram Stars",
-        "html_description": "<td><em>Optional</em>. Number of Telegram Stars that can be claimed by the receiver instead of the gift; omitted if the gift cannot be converted to Telegram Stars</td>",
-        "rst_description": "*Optional*. Number of Telegram Stars that can be claimed by the receiver instead of the gift; omitted if the gift cannot be converted to Telegram Stars\n",
+        "description": "Number of Telegram Stars that can be claimed by the receiver instead of the gift; omitted if the gift cannot be converted to Telegram Stars; for gifts received on behalf of business accounts only",
+        "html_description": "<td><em>Optional</em>. Number of Telegram Stars that can be claimed by the receiver instead of the gift; omitted if the gift cannot be converted to Telegram Stars; for gifts received on behalf of business accounts only</td>",
+        "rst_description": "*Optional*. Number of Telegram Stars that can be claimed by the receiver instead of the gift; omitted if the gift cannot be converted to Telegram Stars; for gifts received on behalf of business accounts only\n",
         "name": "convert_star_count",
         "required": false
       },
       {
         "type": "Integer",
-        "description": "Number of Telegram Stars that were paid by the sender for the ability to upgrade the gift",
-        "html_description": "<td><em>Optional</em>. Number of Telegram Stars that were paid by the sender for the ability to upgrade the gift</td>",
-        "rst_description": "*Optional*. Number of Telegram Stars that were paid by the sender for the ability to upgrade the gift\n",
+        "description": "Number of Telegram Stars that were paid for the ability to upgrade the gift",
+        "html_description": "<td><em>Optional</em>. Number of Telegram Stars that were paid for the ability to upgrade the gift</td>",
+        "rst_description": "*Optional*. Number of Telegram Stars that were paid for the ability to upgrade the gift\n",
         "name": "prepaid_upgrade_star_count",
+        "required": false
+      },
+      {
+        "type": "True",
+        "description": "True, if the gift's upgrade was purchased after the gift was sent; for gifts received on behalf of business accounts only",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the gift's upgrade was purchased after the gift was sent; for gifts received on behalf of business accounts only</td>",
+        "rst_description": "*Optional*. :code:`True`, if the gift's upgrade was purchased after the gift was sent; for gifts received on behalf of business accounts only\n",
+        "name": "is_upgrade_separate",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "Unique number reserved for this gift when upgraded. See the number field in UniqueGift",
+        "html_description": "<td><em>Optional</em>. Unique number reserved for this gift when upgraded. See the <em>number</em> field in <a href=\"#uniquegift\">UniqueGift</a></td>",
+        "rst_description": "*Optional*. Unique number reserved for this gift when upgraded. See the *number* field in :class:`aiogram.types.unique_gift.UniqueGift`\n",
+        "name": "unique_gift_number",
         "required": false
       }
     ],

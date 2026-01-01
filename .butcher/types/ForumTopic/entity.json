@@ -42,6 +42,14 @@
         "rst_description": "*Optional*. Unique identifier of the custom emoji shown as the topic icon\n",
         "name": "icon_custom_emoji_id",
         "required": false
+      },
+      {
+        "type": "True",
+        "description": "True, if the name of the topic wasn't specified explicitly by its creator and likely needs to be changed by the bot",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the name of the topic wasn't specified explicitly by its creator and likely needs to be changed by the bot</td>",
+        "rst_description": "*Optional*. :code:`True`, if the name of the topic wasn't specified explicitly by its creator and likely needs to be changed by the bot\n",
+        "name": "is_name_implicit",
+        "required": false
       }
     ],
     "category": "types"

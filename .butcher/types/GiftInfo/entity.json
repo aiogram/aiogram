@@ -37,10 +37,18 @@
       },
       {
         "type": "Integer",
-        "description": "Number of Telegram Stars that were prepaid by the sender for the ability to upgrade the gift",
-        "html_description": "<td><em>Optional</em>. Number of Telegram Stars that were prepaid by the sender for the ability to upgrade the gift</td>",
-        "rst_description": "*Optional*. Number of Telegram Stars that were prepaid by the sender for the ability to upgrade the gift\n",
+        "description": "Number of Telegram Stars that were prepaid for the ability to upgrade the gift",
+        "html_description": "<td><em>Optional</em>. Number of Telegram Stars that were prepaid for the ability to upgrade the gift</td>",
+        "rst_description": "*Optional*. Number of Telegram Stars that were prepaid for the ability to upgrade the gift\n",
         "name": "prepaid_upgrade_star_count",
+        "required": false
+      },
+      {
+        "type": "True",
+        "description": "True, if the gift's upgrade was purchased after the gift was sent",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the gift's upgrade was purchased after the gift was sent</td>",
+        "rst_description": "*Optional*. :code:`True`, if the gift's upgrade was purchased after the gift was sent\n",
+        "name": "is_upgrade_separate",
         "required": false
       },
       {
@@ -73,6 +81,14 @@
         "html_description": "<td><em>Optional</em>. <em>True</em>, if the sender and gift text are shown only to the gift receiver; otherwise, everyone will be able to see them</td>",
         "rst_description": "*Optional*. :code:`True`, if the sender and gift text are shown only to the gift receiver; otherwise, everyone will be able to see them\n",
         "name": "is_private",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "Unique number reserved for this gift when upgraded. See the number field in UniqueGift",
+        "html_description": "<td><em>Optional</em>. Unique number reserved for this gift when upgraded. See the <em>number</em> field in <a href=\"#uniquegift\">UniqueGift</a></td>",
+        "rst_description": "*Optional*. Unique number reserved for this gift when upgraded. See the *number* field in :class:`aiogram.types.unique_gift.UniqueGift`\n",
+        "name": "unique_gift_number",
         "required": false
       }
     ],

@@ -19,6 +19,7 @@ class TestGetChat:
                     limited_gifts=True,
                     unique_gifts=True,
                     premium_subscription=True,
+                    gifts_from_channels=True,
                 ),
             ),
         )

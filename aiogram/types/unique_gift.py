@@ -7,6 +7,7 @@ from .base import TelegramObject
 if TYPE_CHECKING:
     from .chat import Chat
     from .unique_gift_backdrop import UniqueGiftBackdrop
+    from .unique_gift_colors import UniqueGiftColors
     from .unique_gift_model import UniqueGiftModel
     from .unique_gift_symbol import UniqueGiftSymbol
 
@@ -18,6 +19,8 @@ class UniqueGift(TelegramObject):
     Source: https://core.telegram.org/bots/api#uniquegift
     """
 
+    gift_id: str
+    """Identifier of the regular gift from which the gift was upgraded"""
     base_name: str
     """Human-readable name of the regular gift from which this unique gift was upgraded"""
     name: str
@@ -30,6 +33,12 @@ class UniqueGift(TelegramObject):
     """Symbol of the gift"""
     backdrop: UniqueGiftBackdrop
     """Backdrop of the gift"""
+    is_premium: Optional[bool] = None
+    """*Optional*. :code:`True`, if the original regular gift was exclusively purchaseable by Telegram Premium subscribers"""
+    is_from_blockchain: Optional[bool] = None
+    """*Optional*. :code:`True`, if the gift is assigned from the TON blockchain and can't be resold or transferred in Telegram"""
+    colors: Optional[UniqueGiftColors] = None
+    """*Optional*. The color scheme that can be used by the gift's owner for the chat's name, replies to messages and link previews; for business account gifts and gifts that are currently on sale only"""
     publisher_chat: Optional[Chat] = None
     """*Optional*. Information about the chat that published the gift"""
 
@@ -40,12 +49,16 @@ class UniqueGift(TelegramObject):
         def __init__(
             __pydantic__self__,
             *,
+            gift_id: str,
             base_name: str,
             name: str,
             number: int,
             model: UniqueGiftModel,
             symbol: UniqueGiftSymbol,
             backdrop: UniqueGiftBackdrop,
+            is_premium: Optional[bool] = None,
+            is_from_blockchain: Optional[bool] = None,
+            colors: Optional[UniqueGiftColors] = None,
             publisher_chat: Optional[Chat] = None,
             **__pydantic_kwargs: Any,
         ) -> None:
@@ -54,12 +67,16 @@ class UniqueGift(TelegramObject):
             # Is needed only for type checking and IDE support without any additional plugins
 
             super().__init__(
+                gift_id=gift_id,
                 base_name=base_name,
                 name=name,
                 number=number,
                 model=model,
                 symbol=symbol,
                 backdrop=backdrop,
+                is_premium=is_premium,
+                is_from_blockchain=is_from_blockchain,
+                colors=colors,
                 publisher_chat=publisher_chat,
                 **__pydantic_kwargs,
             )

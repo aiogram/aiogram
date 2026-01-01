@@ -24,7 +24,7 @@ class ForwardMessage(TelegramMethod[Message]):
     message_id: int
     """Message identifier in the chat specified in *from_chat_id*"""
     message_thread_id: Optional[int] = None
-    """Unique identifier for the target message thread (topic) of the forum; for forum supergroups only"""
+    """Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only"""
     direct_messages_topic_id: Optional[int] = None
     """Identifier of the direct messages topic to which the message will be forwarded; required if the message is forwarded to a direct messages chat"""
     video_start_timestamp: Optional[DateTimeUnion] = None
@@ -33,6 +33,8 @@ class ForwardMessage(TelegramMethod[Message]):
     """Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound."""
     protect_content: Optional[Union[bool, Default]] = Default("protect_content")
     """Protects the contents of the forwarded message from forwarding and saving"""
+    message_effect_id: Optional[str] = None
+    """Unique identifier of the message effect to be added to the message; only available when forwarding to private chats"""
     suggested_post_parameters: Optional[SuggestedPostParameters] = None
     """A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only"""
 
@@ -51,6 +53,7 @@ class ForwardMessage(TelegramMethod[Message]):
             video_start_timestamp: Optional[DateTimeUnion] = None,
             disable_notification: Optional[bool] = None,
             protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
+            message_effect_id: Optional[str] = None,
             suggested_post_parameters: Optional[SuggestedPostParameters] = None,
             **__pydantic_kwargs: Any,
         ) -> None:
@@ -67,6 +70,7 @@ class ForwardMessage(TelegramMethod[Message]):
                 video_start_timestamp=video_start_timestamp,
                 disable_notification=disable_notification,
                 protect_content=protect_content,
+                message_effect_id=message_effect_id,
                 suggested_post_parameters=suggested_post_parameters,
                 **__pydantic_kwargs,
             )

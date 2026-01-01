@@ -26,7 +26,7 @@ class SendGame(TelegramMethod[Message]):
     business_connection_id: Optional[str] = None
     """Unique identifier of the business connection on behalf of which the message will be sent"""
     message_thread_id: Optional[int] = None
-    """Unique identifier for the target message thread (topic) of the forum; for forum supergroups only"""
+    """Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only"""
     disable_notification: Optional[bool] = None
     """Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound."""
     protect_content: Optional[Union[bool, Default]] = Default("protect_content")

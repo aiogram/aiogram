@@ -22,16 +22,16 @@
       {
         "type": "KeyboardButtonRequestUsers",
         "description": "If specified, pressing the button will open a list of suitable users. Identifiers of selected users will be sent to the bot in a 'users_shared' service message. Available in private chats only.",
-        "html_description": "<td><em>Optional.</em> If specified, pressing the button will open a list of suitable users. Identifiers of selected users will be sent to the bot in a &#8220;users_shared&#8221; service message. Available in private chats only.</td>",
-        "rst_description": "*Optional.* If specified, pressing the button will open a list of suitable users. Identifiers of selected users will be sent to the bot in a 'users_shared' service message. Available in private chats only.\n",
+        "html_description": "<td><em>Optional</em>. If specified, pressing the button will open a list of suitable users. Identifiers of selected users will be sent to the bot in a &#8220;users_shared&#8221; service message. Available in private chats only.</td>",
+        "rst_description": "*Optional*. If specified, pressing the button will open a list of suitable users. Identifiers of selected users will be sent to the bot in a 'users_shared' service message. Available in private chats only.\n",
         "name": "request_users",
         "required": false
       },
       {
         "type": "KeyboardButtonRequestChat",
         "description": "If specified, pressing the button will open a list of suitable chats. Tapping on a chat will send its identifier to the bot in a 'chat_shared' service message. Available in private chats only.",
-        "html_description": "<td><em>Optional.</em> If specified, pressing the button will open a list of suitable chats. Tapping on a chat will send its identifier to the bot in a &#8220;chat_shared&#8221; service message. Available in private chats only.</td>",
-        "rst_description": "*Optional.* If specified, pressing the button will open a list of suitable chats. Tapping on a chat will send its identifier to the bot in a 'chat_shared' service message. Available in private chats only.\n",
+        "html_description": "<td><em>Optional</em>. If specified, pressing the button will open a list of suitable chats. Tapping on a chat will send its identifier to the bot in a &#8220;chat_shared&#8221; service message. Available in private chats only.</td>",
+        "rst_description": "*Optional*. If specified, pressing the button will open a list of suitable chats. Tapping on a chat will send its identifier to the bot in a 'chat_shared' service message. Available in private chats only.\n",
         "name": "request_chat",
         "required": false
       },

@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING, Any, Optional
 from .base import TelegramObject
 
 if TYPE_CHECKING:
+    from .chat import Chat
     from .message_entity import MessageEntity
     from .user import User
 
@@ -23,7 +24,9 @@ class ChecklistTask(TelegramObject):
     text_entities: Optional[list[MessageEntity]] = None
     """*Optional*. Special entities that appear in the task text"""
     completed_by_user: Optional[User] = None
-    """*Optional*. User that completed the task; omitted if the task wasn't completed"""
+    """*Optional*. User that completed the task; omitted if the task wasn't completed by a user"""
+    completed_by_chat: Optional[Chat] = None
+    """*Optional*. Chat that completed the task; omitted if the task wasn't completed by a chat"""
     completion_date: Optional[int] = None
     """*Optional*. Point in time (Unix timestamp) when the task was completed; 0 if the task wasn't completed"""
 
@@ -38,6 +41,7 @@ class ChecklistTask(TelegramObject):
             text: str,
             text_entities: Optional[list[MessageEntity]] = None,
             completed_by_user: Optional[User] = None,
+            completed_by_chat: Optional[Chat] = None,
             completion_date: Optional[int] = None,
             **__pydantic_kwargs: Any,
         ) -> None:
@@ -50,6 +54,7 @@ class ChecklistTask(TelegramObject):
                 text=text,
                 text_entities=text_entities,
                 completed_by_user=completed_by_user,
+                completed_by_chat=completed_by_chat,
                 completion_date=completion_date,
                 **__pydantic_kwargs,
             )
