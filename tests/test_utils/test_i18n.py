@@ -1,3 +1,4 @@
+from pathlib import Path
 from typing import Any, Dict
 
 import pytest
@@ -26,6 +27,10 @@ def i18n_fixture() -> I18n:
 class TestI18nCore:
     def test_init(self, i18n: I18n):
         assert set(i18n.available_locales) == {"en", "uk"}
+
+    def test_init_relative(self):
+        i18n_relative = I18n(path="tests/data/locales")
+        assert set(i18n_relative.available_locales) == {"en", "uk"}
 
     def test_reload(self, i18n: I18n):
         i18n.reload()

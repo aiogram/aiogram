@@ -58,18 +58,21 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-          cache: "pip"
-          cache-dependency-path: pyproject.toml
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
 
       - name: Install project dependencies
         run: |
-          pip install -e .[dev,test,redis,mongo,proxy,i18n,fast,signature]
+          uv sync --all-extras --group dev --group test
 
       - name: Lint code
         run: |
-          ruff check --output-format=github aiogram examples
-          mypy aiogram
-          black --check --diff aiogram tests
+          uv run ruff check --output-format=github aiogram examples
+          uv run mypy aiogram
+          uv run black --check --diff aiogram tests
 
       - name: Setup redis
         if: ${{ env.IS_WINDOWS == 'false' }}
@@ -91,10 +94,10 @@ jobs:
           flags="$flags --cov=aiogram --cov-config .coveragerc --cov-report=xml"
           [[ "$IS_WINDOWS" == "false" ]] && flags="$flags --redis redis://localhost:6379/0"
           [[ "$IS_UBUNTU" == "true" ]] && flags="$flags --mongo mongodb://mongo:mongo@localhost:27017"
-          pytest $flags
+          uv run pytest $flags
 
       - name: Upload coverage data
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: coverage.xml
@@ -123,20 +126,23 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Set up Python ${{ matrix.python-version }} on ${{ matrix.os }}
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python-version }}
-          cache: "pip"
-          cache-dependency-path: pyproject.toml
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
 
       - name: Install project dependencies
         run: |
-          pip install -e .[dev,test,redis,mongo,proxy,i18n,fast,signature]
+          uv sync --all-extras --group dev --group test
 
       - name: Run tests
         run: |
           flags=""
-          pytest $flags
+          uv run pytest $flags
