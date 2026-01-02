@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from .base import TelegramMethod
 
@@ -17,7 +17,7 @@ class SetCustomEmojiStickerSetThumbnail(TelegramMethod[bool]):
 
     name: str
     """Sticker set name"""
-    custom_emoji_id: Optional[str] = None
+    custom_emoji_id: str | None = None
     """Custom emoji identifier of a sticker from the sticker set; pass an empty string to drop the thumbnail and use the first sticker as the thumbnail."""
 
     if TYPE_CHECKING:
@@ -28,7 +28,7 @@ class SetCustomEmojiStickerSetThumbnail(TelegramMethod[bool]):
             __pydantic__self__,
             *,
             name: str,
-            custom_emoji_id: Optional[str] = None,
+            custom_emoji_id: str | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

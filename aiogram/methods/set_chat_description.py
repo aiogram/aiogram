@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from ..types import ChatIdUnion
 from .base import TelegramMethod
@@ -18,7 +18,7 @@ class SetChatDescription(TelegramMethod[bool]):
 
     chat_id: ChatIdUnion
     """Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)"""
-    description: Optional[str] = None
+    description: str | None = None
     """New chat description, 0-255 characters"""
 
     if TYPE_CHECKING:
@@ -29,7 +29,7 @@ class SetChatDescription(TelegramMethod[bool]):
             __pydantic__self__,
             *,
             chat_id: ChatIdUnion,
-            description: Optional[str] = None,
+            description: str | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

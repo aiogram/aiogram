@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from .base import TelegramObject
 
@@ -17,7 +17,7 @@ class DirectMessagesTopic(TelegramObject):
 
     topic_id: int
     """Unique identifier of the topic. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier."""
-    user: Optional[User] = None
+    user: User | None = None
     """*Optional*. Information about the user that created the topic. Currently, it is always present"""
 
     if TYPE_CHECKING:
@@ -28,7 +28,7 @@ class DirectMessagesTopic(TelegramObject):
             __pydantic__self__,
             *,
             topic_id: int,
-            user: Optional[User] = None,
+            user: User | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

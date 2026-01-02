@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Literal, Optional
+from typing import TYPE_CHECKING, Any, Literal
 
 from ..enums import InlineQueryResultType
 from .inline_query_result import InlineQueryResult
@@ -29,23 +29,23 @@ class InlineQueryResultVenue(InlineQueryResult):
     """Title of the venue"""
     address: str
     """Address of the venue"""
-    foursquare_id: Optional[str] = None
+    foursquare_id: str | None = None
     """*Optional*. Foursquare identifier of the venue if known"""
-    foursquare_type: Optional[str] = None
+    foursquare_type: str | None = None
     """*Optional*. Foursquare type of the venue, if known. (For example, 'arts_entertainment/default', 'arts_entertainment/aquarium' or 'food/icecream'.)"""
-    google_place_id: Optional[str] = None
+    google_place_id: str | None = None
     """*Optional*. Google Places identifier of the venue"""
-    google_place_type: Optional[str] = None
+    google_place_type: str | None = None
     """*Optional*. Google Places type of the venue. (See `supported types <https://developers.google.com/places/web-service/supported_types>`_.)"""
-    reply_markup: Optional[InlineKeyboardMarkup] = None
+    reply_markup: InlineKeyboardMarkup | None = None
     """*Optional*. `Inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_ attached to the message"""
-    input_message_content: Optional[InputMessageContentUnion] = None
+    input_message_content: InputMessageContentUnion | None = None
     """*Optional*. Content of the message to be sent instead of the venue"""
-    thumbnail_url: Optional[str] = None
+    thumbnail_url: str | None = None
     """*Optional*. Url of the thumbnail for the result"""
-    thumbnail_width: Optional[int] = None
+    thumbnail_width: int | None = None
     """*Optional*. Thumbnail width"""
-    thumbnail_height: Optional[int] = None
+    thumbnail_height: int | None = None
     """*Optional*. Thumbnail height"""
 
     if TYPE_CHECKING:
@@ -61,15 +61,15 @@ class InlineQueryResultVenue(InlineQueryResult):
             longitude: float,
             title: str,
             address: str,
-            foursquare_id: Optional[str] = None,
-            foursquare_type: Optional[str] = None,
-            google_place_id: Optional[str] = None,
-            google_place_type: Optional[str] = None,
-            reply_markup: Optional[InlineKeyboardMarkup] = None,
-            input_message_content: Optional[InputMessageContentUnion] = None,
-            thumbnail_url: Optional[str] = None,
-            thumbnail_width: Optional[int] = None,
-            thumbnail_height: Optional[int] = None,
+            foursquare_id: str | None = None,
+            foursquare_type: str | None = None,
+            google_place_id: str | None = None,
+            google_place_type: str | None = None,
+            reply_markup: InlineKeyboardMarkup | None = None,
+            input_message_content: InputMessageContentUnion | None = None,
+            thumbnail_url: str | None = None,
+            thumbnail_width: int | None = None,
+            thumbnail_height: int | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from .base import TelegramMethod
 
@@ -19,7 +19,7 @@ class DeclineSuggestedPost(TelegramMethod[bool]):
     """Unique identifier for the target direct messages chat"""
     message_id: int
     """Identifier of a suggested post message to decline"""
-    comment: Optional[str] = None
+    comment: str | None = None
     """Comment for the creator of the suggested post; 0-128 characters"""
 
     if TYPE_CHECKING:
@@ -31,7 +31,7 @@ class DeclineSuggestedPost(TelegramMethod[bool]):
             *,
             chat_id: int,
             message_id: int,
-            comment: Optional[str] = None,
+            comment: str | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

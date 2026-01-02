@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from ..types import ShippingOption
 from .base import TelegramMethod
@@ -20,9 +20,9 @@ class AnswerShippingQuery(TelegramMethod[bool]):
     """Unique identifier for the query to be answered"""
     ok: bool
     """Pass :code:`True` if delivery to the specified address is possible and :code:`False` if there are any problems (for example, if delivery to the specified address is not possible)"""
-    shipping_options: Optional[list[ShippingOption]] = None
+    shipping_options: list[ShippingOption] | None = None
     """Required if *ok* is :code:`True`. A JSON-serialized array of available shipping options."""
-    error_message: Optional[str] = None
+    error_message: str | None = None
     """Required if *ok* is :code:`False`. Error message in human readable form that explains why it is impossible to complete the order (e.g. 'Sorry, delivery to your desired address is unavailable'). Telegram will display this message to the user."""
 
     if TYPE_CHECKING:
@@ -34,8 +34,8 @@ class AnswerShippingQuery(TelegramMethod[bool]):
             *,
             shipping_query_id: str,
             ok: bool,
-            shipping_options: Optional[list[ShippingOption]] = None,
-            error_message: Optional[str] = None,
+            shipping_options: list[ShippingOption] | None = None,
+            error_message: str | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

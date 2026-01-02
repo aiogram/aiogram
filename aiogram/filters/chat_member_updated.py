@@ -1,4 +1,6 @@
-from typing import Any, TypeVar, Union
+from __future__ import annotations
+
+from typing import Any, TypeVar
 
 from typing_extensions import Self
 
@@ -34,7 +36,7 @@ class _MemberStatusMarker:
 
     def __or__(
         self,
-        other: Union["_MemberStatusMarker", "_MemberStatusGroupMarker"],
+        other: _MemberStatusMarker | _MemberStatusGroupMarker,
     ) -> "_MemberStatusGroupMarker":
         if isinstance(other, _MemberStatusMarker):
             return _MemberStatusGroupMarker(self, other)
@@ -50,7 +52,7 @@ class _MemberStatusMarker:
 
     def __rshift__(
         self,
-        other: Union["_MemberStatusMarker", "_MemberStatusGroupMarker"],
+        other: _MemberStatusMarker | _MemberStatusGroupMarker,
     ) -> "_MemberStatusTransition":
         old = _MemberStatusGroupMarker(self)
         if isinstance(other, _MemberStatusMarker):
@@ -65,7 +67,7 @@ class _MemberStatusMarker:
 
     def __lshift__(
         self,
-        other: Union["_MemberStatusMarker", "_MemberStatusGroupMarker"],
+        other: _MemberStatusMarker | _MemberStatusGroupMarker,
     ) -> "_MemberStatusTransition":
         new = _MemberStatusGroupMarker(self)
         if isinstance(other, _MemberStatusMarker):
@@ -101,7 +103,7 @@ class _MemberStatusGroupMarker:
 
     def __or__(
         self,
-        other: Union["_MemberStatusMarker", "_MemberStatusGroupMarker"],
+        other: _MemberStatusMarker | _MemberStatusGroupMarker,
     ) -> Self:
         if isinstance(other, _MemberStatusMarker):
             return type(self)(*self.statuses, other)
@@ -115,7 +117,7 @@ class _MemberStatusGroupMarker:
 
     def __rshift__(
         self,
-        other: Union["_MemberStatusMarker", "_MemberStatusGroupMarker"],
+        other: _MemberStatusMarker | _MemberStatusGroupMarker,
     ) -> "_MemberStatusTransition":
         if isinstance(other, _MemberStatusMarker):
             return _MemberStatusTransition(old=self, new=_MemberStatusGroupMarker(other))
@@ -129,7 +131,7 @@ class _MemberStatusGroupMarker:
 
     def __lshift__(
         self,
-        other: Union["_MemberStatusMarker", "_MemberStatusGroupMarker"],
+        other: _MemberStatusMarker | _MemberStatusGroupMarker,
     ) -> "_MemberStatusTransition":
         if isinstance(other, _MemberStatusMarker):
             return _MemberStatusTransition(old=_MemberStatusGroupMarker(other), new=self)

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from pydantic import Field
 
@@ -39,97 +39,97 @@ class ChatFullInfo(Chat):
     """The maximum number of reactions that can be set on a message in the chat"""
     accepted_gift_types: AcceptedGiftTypes
     """Information about types of gifts that are accepted by the chat or by the corresponding user for private chats"""
-    title: Optional[str] = None
+    title: str | None = None
     """*Optional*. Title, for supergroups, channels and group chats"""
-    username: Optional[str] = None
+    username: str | None = None
     """*Optional*. Username, for private chats, supergroups and channels if available"""
-    first_name: Optional[str] = None
+    first_name: str | None = None
     """*Optional*. First name of the other party in a private chat"""
-    last_name: Optional[str] = None
+    last_name: str | None = None
     """*Optional*. Last name of the other party in a private chat"""
-    is_forum: Optional[bool] = None
+    is_forum: bool | None = None
     """*Optional*. :code:`True`, if the supergroup chat is a forum (has `topics <https://telegram.org/blog/topics-in-groups-collectible-usernames#topics-in-groups>`_ enabled)"""
-    is_direct_messages: Optional[bool] = None
+    is_direct_messages: bool | None = None
     """*Optional*. :code:`True`, if the chat is the direct messages chat of a channel"""
-    photo: Optional[ChatPhoto] = None
+    photo: ChatPhoto | None = None
     """*Optional*. Chat photo"""
-    active_usernames: Optional[list[str]] = None
+    active_usernames: list[str] | None = None
     """*Optional*. If non-empty, the list of all `active chat usernames <https://telegram.org/blog/topics-in-groups-collectible-usernames#collectible-usernames>`_; for private chats, supergroups and channels"""
-    birthdate: Optional[Birthdate] = None
+    birthdate: Birthdate | None = None
     """*Optional*. For private chats, the date of birth of the user"""
-    business_intro: Optional[BusinessIntro] = None
+    business_intro: BusinessIntro | None = None
     """*Optional*. For private chats with business accounts, the intro of the business"""
-    business_location: Optional[BusinessLocation] = None
+    business_location: BusinessLocation | None = None
     """*Optional*. For private chats with business accounts, the location of the business"""
-    business_opening_hours: Optional[BusinessOpeningHours] = None
+    business_opening_hours: BusinessOpeningHours | None = None
     """*Optional*. For private chats with business accounts, the opening hours of the business"""
-    personal_chat: Optional[Chat] = None
+    personal_chat: Chat | None = None
     """*Optional*. For private chats, the personal channel of the user"""
-    parent_chat: Optional[Chat] = None
+    parent_chat: Chat | None = None
     """*Optional*. Information about the corresponding channel chat; for direct messages chats only"""
-    available_reactions: Optional[list[ReactionTypeUnion]] = None
+    available_reactions: list[ReactionTypeUnion] | None = None
     """*Optional*. List of available reactions allowed in the chat. If omitted, then all `emoji reactions <https://core.telegram.org/bots/api#reactiontypeemoji>`_ are allowed."""
-    background_custom_emoji_id: Optional[str] = None
+    background_custom_emoji_id: str | None = None
     """*Optional*. Custom emoji identifier of the emoji chosen by the chat for the reply header and link preview background"""
-    profile_accent_color_id: Optional[int] = None
+    profile_accent_color_id: int | None = None
     """*Optional*. Identifier of the accent color for the chat's profile background. See `profile accent colors <https://core.telegram.org/bots/api#profile-accent-colors>`_ for more details."""
-    profile_background_custom_emoji_id: Optional[str] = None
+    profile_background_custom_emoji_id: str | None = None
     """*Optional*. Custom emoji identifier of the emoji chosen by the chat for its profile background"""
-    emoji_status_custom_emoji_id: Optional[str] = None
+    emoji_status_custom_emoji_id: str | None = None
     """*Optional*. Custom emoji identifier of the emoji status of the chat or the other party in a private chat"""
-    emoji_status_expiration_date: Optional[DateTime] = None
+    emoji_status_expiration_date: DateTime | None = None
     """*Optional*. Expiration date of the emoji status of the chat or the other party in a private chat, in Unix time, if any"""
-    bio: Optional[str] = None
+    bio: str | None = None
     """*Optional*. Bio of the other party in a private chat"""
-    has_private_forwards: Optional[bool] = None
+    has_private_forwards: bool | None = None
     """*Optional*. :code:`True`, if privacy settings of the other party in the private chat allows to use :code:`tg://user?id=<user_id>` links only in chats with the user"""
-    has_restricted_voice_and_video_messages: Optional[bool] = None
+    has_restricted_voice_and_video_messages: bool | None = None
     """*Optional*. :code:`True`, if the privacy settings of the other party restrict sending voice and video note messages in the private chat"""
-    join_to_send_messages: Optional[bool] = None
+    join_to_send_messages: bool | None = None
     """*Optional*. :code:`True`, if users need to join the supergroup before they can send messages"""
-    join_by_request: Optional[bool] = None
+    join_by_request: bool | None = None
     """*Optional*. :code:`True`, if all users directly joining the supergroup without using an invite link need to be approved by supergroup administrators"""
-    description: Optional[str] = None
+    description: str | None = None
     """*Optional*. Description, for groups, supergroups and channel chats"""
-    invite_link: Optional[str] = None
+    invite_link: str | None = None
     """*Optional*. Primary invite link, for groups, supergroups and channel chats"""
-    pinned_message: Optional[Message] = None
+    pinned_message: Message | None = None
     """*Optional*. The most recent pinned message (by sending date)"""
-    permissions: Optional[ChatPermissions] = None
+    permissions: ChatPermissions | None = None
     """*Optional*. Default chat member permissions, for groups and supergroups"""
-    can_send_paid_media: Optional[bool] = None
+    can_send_paid_media: bool | None = None
     """*Optional*. :code:`True`, if paid media messages can be sent or forwarded to the channel chat. The field is available only for channel chats."""
-    slow_mode_delay: Optional[int] = None
+    slow_mode_delay: int | None = None
     """*Optional*. For supergroups, the minimum allowed delay between consecutive messages sent by each unprivileged user; in seconds"""
-    unrestrict_boost_count: Optional[int] = None
+    unrestrict_boost_count: int | None = None
     """*Optional*. For supergroups, the minimum number of boosts that a non-administrator user needs to add in order to ignore slow mode and chat permissions"""
-    message_auto_delete_time: Optional[int] = None
+    message_auto_delete_time: int | None = None
     """*Optional*. The time after which all messages sent to the chat will be automatically deleted; in seconds"""
-    has_aggressive_anti_spam_enabled: Optional[bool] = None
+    has_aggressive_anti_spam_enabled: bool | None = None
     """*Optional*. :code:`True`, if aggressive anti-spam checks are enabled in the supergroup. The field is only available to chat administrators."""
-    has_hidden_members: Optional[bool] = None
+    has_hidden_members: bool | None = None
     """*Optional*. :code:`True`, if non-administrators can only get the list of bots and administrators in the chat"""
-    has_protected_content: Optional[bool] = None
+    has_protected_content: bool | None = None
     """*Optional*. :code:`True`, if messages from the chat can't be forwarded to other chats"""
-    has_visible_history: Optional[bool] = None
+    has_visible_history: bool | None = None
     """*Optional*. :code:`True`, if new chat members will have access to old messages; available only to chat administrators"""
-    sticker_set_name: Optional[str] = None
+    sticker_set_name: str | None = None
     """*Optional*. For supergroups, name of the group sticker set"""
-    can_set_sticker_set: Optional[bool] = None
+    can_set_sticker_set: bool | None = None
     """*Optional*. :code:`True`, if the bot can change the group sticker set"""
-    custom_emoji_sticker_set_name: Optional[str] = None
+    custom_emoji_sticker_set_name: str | None = None
     """*Optional*. For supergroups, the name of the group's custom emoji sticker set. Custom emoji from this set can be used by all users and bots in the group."""
-    linked_chat_id: Optional[int] = None
+    linked_chat_id: int | None = None
     """*Optional*. Unique identifier for the linked chat, i.e. the discussion group identifier for a channel and vice versa; for supergroups and channel chats. This identifier may be greater than 32 bits and some programming languages may have difficulty/silent defects in interpreting it. But it is smaller than 52 bits, so a signed 64 bit integer or double-precision float type are safe for storing this identifier."""
-    location: Optional[ChatLocation] = None
+    location: ChatLocation | None = None
     """*Optional*. For supergroups, the location to which the supergroup is connected"""
-    rating: Optional[UserRating] = None
+    rating: UserRating | None = None
     """*Optional*. For private chats, the rating of the user if any"""
-    unique_gift_colors: Optional[UniqueGiftColors] = None
+    unique_gift_colors: UniqueGiftColors | None = None
     """*Optional*. The color scheme based on a unique gift that must be used for the chat's name, message replies and link previews"""
-    paid_message_star_count: Optional[int] = None
+    paid_message_star_count: int | None = None
     """*Optional*. The number of Telegram Stars a general user have to pay to send a message to the chat"""
-    can_send_gift: Optional[bool] = Field(None, json_schema_extra={"deprecated": True})
+    can_send_gift: bool | None = Field(None, json_schema_extra={"deprecated": True})
     """*Optional*. :code:`True`, if gifts can be sent to the chat
 
 .. deprecated:: API:9.0
@@ -147,52 +147,52 @@ class ChatFullInfo(Chat):
             accent_color_id: int,
             max_reaction_count: int,
             accepted_gift_types: AcceptedGiftTypes,
-            title: Optional[str] = None,
-            username: Optional[str] = None,
-            first_name: Optional[str] = None,
-            last_name: Optional[str] = None,
-            is_forum: Optional[bool] = None,
-            is_direct_messages: Optional[bool] = None,
-            photo: Optional[ChatPhoto] = None,
-            active_usernames: Optional[list[str]] = None,
-            birthdate: Optional[Birthdate] = None,
-            business_intro: Optional[BusinessIntro] = None,
-            business_location: Optional[BusinessLocation] = None,
-            business_opening_hours: Optional[BusinessOpeningHours] = None,
-            personal_chat: Optional[Chat] = None,
-            parent_chat: Optional[Chat] = None,
-            available_reactions: Optional[list[ReactionTypeUnion]] = None,
-            background_custom_emoji_id: Optional[str] = None,
-            profile_accent_color_id: Optional[int] = None,
-            profile_background_custom_emoji_id: Optional[str] = None,
-            emoji_status_custom_emoji_id: Optional[str] = None,
-            emoji_status_expiration_date: Optional[DateTime] = None,
-            bio: Optional[str] = None,
-            has_private_forwards: Optional[bool] = None,
-            has_restricted_voice_and_video_messages: Optional[bool] = None,
-            join_to_send_messages: Optional[bool] = None,
-            join_by_request: Optional[bool] = None,
-            description: Optional[str] = None,
-            invite_link: Optional[str] = None,
-            pinned_message: Optional[Message] = None,
-            permissions: Optional[ChatPermissions] = None,
-            can_send_paid_media: Optional[bool] = None,
-            slow_mode_delay: Optional[int] = None,
-            unrestrict_boost_count: Optional[int] = None,
-            message_auto_delete_time: Optional[int] = None,
-            has_aggressive_anti_spam_enabled: Optional[bool] = None,
-            has_hidden_members: Optional[bool] = None,
-            has_protected_content: Optional[bool] = None,
-            has_visible_history: Optional[bool] = None,
-            sticker_set_name: Optional[str] = None,
-            can_set_sticker_set: Optional[bool] = None,
-            custom_emoji_sticker_set_name: Optional[str] = None,
-            linked_chat_id: Optional[int] = None,
-            location: Optional[ChatLocation] = None,
-            rating: Optional[UserRating] = None,
-            unique_gift_colors: Optional[UniqueGiftColors] = None,
-            paid_message_star_count: Optional[int] = None,
-            can_send_gift: Optional[bool] = None,
+            title: str | None = None,
+            username: str | None = None,
+            first_name: str | None = None,
+            last_name: str | None = None,
+            is_forum: bool | None = None,
+            is_direct_messages: bool | None = None,
+            photo: ChatPhoto | None = None,
+            active_usernames: list[str] | None = None,
+            birthdate: Birthdate | None = None,
+            business_intro: BusinessIntro | None = None,
+            business_location: BusinessLocation | None = None,
+            business_opening_hours: BusinessOpeningHours | None = None,
+            personal_chat: Chat | None = None,
+            parent_chat: Chat | None = None,
+            available_reactions: list[ReactionTypeUnion] | None = None,
+            background_custom_emoji_id: str | None = None,
+            profile_accent_color_id: int | None = None,
+            profile_background_custom_emoji_id: str | None = None,
+            emoji_status_custom_emoji_id: str | None = None,
+            emoji_status_expiration_date: DateTime | None = None,
+            bio: str | None = None,
+            has_private_forwards: bool | None = None,
+            has_restricted_voice_and_video_messages: bool | None = None,
+            join_to_send_messages: bool | None = None,
+            join_by_request: bool | None = None,
+            description: str | None = None,
+            invite_link: str | None = None,
+            pinned_message: Message | None = None,
+            permissions: ChatPermissions | None = None,
+            can_send_paid_media: bool | None = None,
+            slow_mode_delay: int | None = None,
+            unrestrict_boost_count: int | None = None,
+            message_auto_delete_time: int | None = None,
+            has_aggressive_anti_spam_enabled: bool | None = None,
+            has_hidden_members: bool | None = None,
+            has_protected_content: bool | None = None,
+            has_visible_history: bool | None = None,
+            sticker_set_name: str | None = None,
+            can_set_sticker_set: bool | None = None,
+            custom_emoji_sticker_set_name: str | None = None,
+            linked_chat_id: int | None = None,
+            location: ChatLocation | None = None,
+            rating: UserRating | None = None,
+            unique_gift_colors: UniqueGiftColors | None = None,
+            paid_message_star_count: int | None = None,
+            can_send_gift: bool | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

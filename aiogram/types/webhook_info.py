@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from .base import TelegramObject
 from .custom import DateTime
@@ -19,17 +19,17 @@ class WebhookInfo(TelegramObject):
     """:code:`True`, if a custom certificate was provided for webhook certificate checks"""
     pending_update_count: int
     """Number of updates awaiting delivery"""
-    ip_address: Optional[str] = None
+    ip_address: str | None = None
     """*Optional*. Currently used webhook IP address"""
-    last_error_date: Optional[DateTime] = None
+    last_error_date: DateTime | None = None
     """*Optional*. Unix time for the most recent error that happened when trying to deliver an update via webhook"""
-    last_error_message: Optional[str] = None
+    last_error_message: str | None = None
     """*Optional*. Error message in human-readable format for the most recent error that happened when trying to deliver an update via webhook"""
-    last_synchronization_error_date: Optional[DateTime] = None
+    last_synchronization_error_date: DateTime | None = None
     """*Optional*. Unix time of the most recent error that happened when trying to synchronize available updates with Telegram datacenters"""
-    max_connections: Optional[int] = None
+    max_connections: int | None = None
     """*Optional*. The maximum allowed number of simultaneous HTTPS connections to the webhook for update delivery"""
-    allowed_updates: Optional[list[str]] = None
+    allowed_updates: list[str] | None = None
     """*Optional*. A list of update types the bot is subscribed to. Defaults to all update types except *chat_member*"""
 
     if TYPE_CHECKING:
@@ -42,12 +42,12 @@ class WebhookInfo(TelegramObject):
             url: str,
             has_custom_certificate: bool,
             pending_update_count: int,
-            ip_address: Optional[str] = None,
-            last_error_date: Optional[DateTime] = None,
-            last_error_message: Optional[str] = None,
-            last_synchronization_error_date: Optional[DateTime] = None,
-            max_connections: Optional[int] = None,
-            allowed_updates: Optional[list[str]] = None,
+            ip_address: str | None = None,
+            last_error_date: DateTime | None = None,
+            last_error_message: str | None = None,
+            last_synchronization_error_date: DateTime | None = None,
+            max_connections: int | None = None,
+            allowed_updates: list[str] | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

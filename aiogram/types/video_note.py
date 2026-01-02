@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from .base import TelegramObject
 
@@ -23,9 +23,9 @@ class VideoNote(TelegramObject):
     """Video width and height (diameter of the video message) as defined by the sender"""
     duration: int
     """Duration of the video in seconds as defined by the sender"""
-    thumbnail: Optional[PhotoSize] = None
+    thumbnail: PhotoSize | None = None
     """*Optional*. Video thumbnail"""
-    file_size: Optional[int] = None
+    file_size: int | None = None
     """*Optional*. File size in bytes"""
 
     if TYPE_CHECKING:
@@ -39,8 +39,8 @@ class VideoNote(TelegramObject):
             file_unique_id: str,
             length: int,
             duration: int,
-            thumbnail: Optional[PhotoSize] = None,
-            file_size: Optional[int] = None,
+            thumbnail: PhotoSize | None = None,
+            file_size: int | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

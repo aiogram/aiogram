@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from .base import TelegramMethod
 
@@ -15,9 +15,9 @@ class SetMyDescription(TelegramMethod[bool]):
     __returning__ = bool
     __api_method__ = "setMyDescription"
 
-    description: Optional[str] = None
+    description: str | None = None
     """New bot description; 0-512 characters. Pass an empty string to remove the dedicated description for the given language."""
-    language_code: Optional[str] = None
+    language_code: str | None = None
     """A two-letter ISO 639-1 language code. If empty, the description will be applied to all users for whose language there is no dedicated description."""
 
     if TYPE_CHECKING:
@@ -27,8 +27,8 @@ class SetMyDescription(TelegramMethod[bool]):
         def __init__(
             __pydantic__self__,
             *,
-            description: Optional[str] = None,
-            language_code: Optional[str] = None,
+            description: str | None = None,
+            language_code: str | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

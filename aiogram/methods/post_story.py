@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from ..types import InputStoryContentUnion, MessageEntity, Story, StoryArea
 from .base import TelegramMethod
@@ -22,17 +22,17 @@ class PostStory(TelegramMethod[Story]):
     """Content of the story"""
     active_period: int
     """Period after which the story is moved to the archive, in seconds; must be one of :code:`6 * 3600`, :code:`12 * 3600`, :code:`86400`, or :code:`2 * 86400`"""
-    caption: Optional[str] = None
+    caption: str | None = None
     """Caption of the story, 0-2048 characters after entities parsing"""
-    parse_mode: Optional[str] = None
+    parse_mode: str | None = None
     """Mode for parsing entities in the story caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details."""
-    caption_entities: Optional[list[MessageEntity]] = None
+    caption_entities: list[MessageEntity] | None = None
     """A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*"""
-    areas: Optional[list[StoryArea]] = None
+    areas: list[StoryArea] | None = None
     """A JSON-serialized list of clickable areas to be shown on the story"""
-    post_to_chat_page: Optional[bool] = None
+    post_to_chat_page: bool | None = None
     """Pass :code:`True` to keep the story accessible after it expires"""
-    protect_content: Optional[bool] = None
+    protect_content: bool | None = None
     """Pass :code:`True` if the content of the story must be protected from forwarding and screenshotting"""
 
     if TYPE_CHECKING:
@@ -45,12 +45,12 @@ class PostStory(TelegramMethod[Story]):
             business_connection_id: str,
             content: InputStoryContentUnion,
             active_period: int,
-            caption: Optional[str] = None,
-            parse_mode: Optional[str] = None,
-            caption_entities: Optional[list[MessageEntity]] = None,
-            areas: Optional[list[StoryArea]] = None,
-            post_to_chat_page: Optional[bool] = None,
-            protect_content: Optional[bool] = None,
+            caption: str | None = None,
+            parse_mode: str | None = None,
+            caption_entities: list[MessageEntity] | None = None,
+            areas: list[StoryArea] | None = None,
+            post_to_chat_page: bool | None = None,
+            protect_content: bool | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

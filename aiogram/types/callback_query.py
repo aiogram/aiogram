@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from pydantic import Field
 
@@ -27,13 +27,13 @@ class CallbackQuery(TelegramObject):
     """Sender"""
     chat_instance: str
     """Global identifier, uniquely corresponding to the chat to which the message with the callback button was sent. Useful for high scores in :class:`aiogram.methods.games.Games`."""
-    message: Optional[MaybeInaccessibleMessageUnion] = None
+    message: MaybeInaccessibleMessageUnion | None = None
     """*Optional*. Message sent by the bot with the callback button that originated the query"""
-    inline_message_id: Optional[str] = None
+    inline_message_id: str | None = None
     """*Optional*. Identifier of the message sent via the bot in inline mode, that originated the query."""
-    data: Optional[str] = None
+    data: str | None = None
     """*Optional*. Data associated with the callback button. Be aware that the message originated the query can contain no callback buttons with this data."""
-    game_short_name: Optional[str] = None
+    game_short_name: str | None = None
     """*Optional*. Short name of a `Game <https://core.telegram.org/bots/api#games>`_ to be returned, serves as the unique identifier for the game"""
 
     if TYPE_CHECKING:
@@ -46,10 +46,10 @@ class CallbackQuery(TelegramObject):
             id: str,
             from_user: User,
             chat_instance: str,
-            message: Optional[MaybeInaccessibleMessageUnion] = None,
-            inline_message_id: Optional[str] = None,
-            data: Optional[str] = None,
-            game_short_name: Optional[str] = None,
+            message: MaybeInaccessibleMessageUnion | None = None,
+            inline_message_id: str | None = None,
+            data: str | None = None,
+            game_short_name: str | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!
@@ -69,10 +69,10 @@ class CallbackQuery(TelegramObject):
 
     def answer(
         self,
-        text: Optional[str] = None,
-        show_alert: Optional[bool] = None,
-        url: Optional[str] = None,
-        cache_time: Optional[int] = None,
+        text: str | None = None,
+        show_alert: bool | None = None,
+        url: str | None = None,
+        cache_time: int | None = None,
         **kwargs: Any,
     ) -> AnswerCallbackQuery:
         """

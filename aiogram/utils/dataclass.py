@@ -5,7 +5,7 @@ DO NOT USE THIS MODULE DIRECTLY. IT IS INTENDED FOR INTERNAL USE ONLY.
 """
 
 import sys
-from typing import Any, Union
+from typing import Any
 
 
 def dataclass_kwargs(

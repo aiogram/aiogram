@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from .base import TelegramObject
 from .custom import DateTime
@@ -33,17 +33,17 @@ class Poll(TelegramObject):
     """Poll type, currently can be 'regular' or 'quiz'"""
     allows_multiple_answers: bool
     """:code:`True`, if the poll allows multiple answers"""
-    question_entities: Optional[list[MessageEntity]] = None
+    question_entities: list[MessageEntity] | None = None
     """*Optional*. Special entities that appear in the *question*. Currently, only custom emoji entities are allowed in poll questions"""
-    correct_option_id: Optional[int] = None
+    correct_option_id: int | None = None
     """*Optional*. 0-based identifier of the correct answer option. Available only for polls in the quiz mode, which are closed, or was sent (not forwarded) by the bot or to the private chat with the bot."""
-    explanation: Optional[str] = None
+    explanation: str | None = None
     """*Optional*. Text that is shown when a user chooses an incorrect answer or taps on the lamp icon in a quiz-style poll, 0-200 characters"""
-    explanation_entities: Optional[list[MessageEntity]] = None
+    explanation_entities: list[MessageEntity] | None = None
     """*Optional*. Special entities like usernames, URLs, bot commands, etc. that appear in the *explanation*"""
-    open_period: Optional[int] = None
+    open_period: int | None = None
     """*Optional*. Amount of time in seconds the poll will be active after creation"""
-    close_date: Optional[DateTime] = None
+    close_date: DateTime | None = None
     """*Optional*. Point in time (Unix timestamp) when the poll will be automatically closed"""
 
     if TYPE_CHECKING:
@@ -61,12 +61,12 @@ class Poll(TelegramObject):
             is_anonymous: bool,
             type: str,
             allows_multiple_answers: bool,
-            question_entities: Optional[list[MessageEntity]] = None,
-            correct_option_id: Optional[int] = None,
-            explanation: Optional[str] = None,
-            explanation_entities: Optional[list[MessageEntity]] = None,
-            open_period: Optional[int] = None,
-            close_date: Optional[DateTime] = None,
+            question_entities: list[MessageEntity] | None = None,
+            correct_option_id: int | None = None,
+            explanation: str | None = None,
+            explanation_entities: list[MessageEntity] | None = None,
+            open_period: int | None = None,
+            close_date: DateTime | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

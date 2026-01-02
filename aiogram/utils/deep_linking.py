@@ -11,7 +11,7 @@ __all__ = [
 ]
 
 import re
-from typing import TYPE_CHECKING, Literal, Optional, cast
+from typing import TYPE_CHECKING, Literal, cast
 
 from aiogram.utils.link import create_telegram_link
 from aiogram.utils.payload import decode_payload, encode_payload

@@ -24,7 +24,7 @@ class DeserializedTelegramObject:
     :type data: Any
     :param files: The dictionary containing the file names as keys
         and the corresponding `InputFile` objects as values.
-    :type files: Dict[str, InputFile]
+    :type files: dict[str, InputFile]
     """
 
     data: Any

@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from .base import TelegramMethod
 
@@ -13,9 +13,9 @@ class SetMyName(TelegramMethod[bool]):
     __returning__ = bool
     __api_method__ = "setMyName"
 
-    name: Optional[str] = None
+    name: str | None = None
     """New bot name; 0-64 characters. Pass an empty string to remove the dedicated name for the given language."""
-    language_code: Optional[str] = None
+    language_code: str | None = None
     """A two-letter ISO 639-1 language code. If empty, the name will be shown to all users for whose language there is no dedicated name."""
 
     if TYPE_CHECKING:
@@ -25,8 +25,8 @@ class SetMyName(TelegramMethod[bool]):
         def __init__(
             __pydantic__self__,
             *,
-            name: Optional[str] = None,
-            language_code: Optional[str] = None,
+            name: str | None = None,
+            language_code: str | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

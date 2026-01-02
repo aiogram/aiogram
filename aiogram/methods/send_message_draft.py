@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from ..types import MessageEntity
 from .base import TelegramMethod
@@ -22,11 +22,11 @@ class SendMessageDraft(TelegramMethod[bool]):
     """Unique identifier of the message draft; must be non-zero. Changes of drafts with the same identifier are animated"""
     text: str
     """Text of the message to be sent, 1-4096 characters after entities parsing"""
-    message_thread_id: Optional[int] = None
+    message_thread_id: int | None = None
     """Unique identifier for the target message thread"""
-    parse_mode: Optional[str] = None
+    parse_mode: str | None = None
     """Mode for parsing entities in the message text. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details."""
-    entities: Optional[list[MessageEntity]] = None
+    entities: list[MessageEntity] | None = None
     """A JSON-serialized list of special entities that appear in message text, which can be specified instead of *parse_mode*"""
 
     if TYPE_CHECKING:
@@ -39,9 +39,9 @@ class SendMessageDraft(TelegramMethod[bool]):
             chat_id: int,
             draft_id: int,
             text: str,
-            message_thread_id: Optional[int] = None,
-            parse_mode: Optional[str] = None,
-            entities: Optional[list[MessageEntity]] = None,
+            message_thread_id: int | None = None,
+            parse_mode: str | None = None,
+            entities: list[MessageEntity] | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

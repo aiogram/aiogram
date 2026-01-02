@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from ..utils.text_decorations import add_surrogates, remove_surrogates
 from .base import MutableTelegramObject
@@ -22,13 +22,13 @@ class MessageEntity(MutableTelegramObject):
     """Offset in `UTF-16 code units <https://core.telegram.org/api/entities#entity-length>`_ to the start of the entity"""
     length: int
     """Length of the entity in `UTF-16 code units <https://core.telegram.org/api/entities#entity-length>`_"""
-    url: Optional[str] = None
+    url: str | None = None
     """*Optional*. For 'text_link' only, URL that will be opened after user taps on the text"""
-    user: Optional[User] = None
+    user: User | None = None
     """*Optional*. For 'text_mention' only, the mentioned user"""
-    language: Optional[str] = None
+    language: str | None = None
     """*Optional*. For 'pre' only, the programming language of the entity text"""
-    custom_emoji_id: Optional[str] = None
+    custom_emoji_id: str | None = None
     """*Optional*. For 'custom_emoji' only, unique identifier of the custom emoji. Use :class:`aiogram.methods.get_custom_emoji_stickers.GetCustomEmojiStickers` to get full information about the sticker"""
 
     if TYPE_CHECKING:
@@ -41,10 +41,10 @@ class MessageEntity(MutableTelegramObject):
             type: str,
             offset: int,
             length: int,
-            url: Optional[str] = None,
-            user: Optional[User] = None,
-            language: Optional[str] = None,
-            custom_emoji_id: Optional[str] = None,
+            url: str | None = None,
+            user: User | None = None,
+            language: str | None = None,
+            custom_emoji_id: str | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

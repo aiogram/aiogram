@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from .base import TelegramObject
 
@@ -19,7 +19,7 @@ class OwnedGifts(TelegramObject):
     """The total number of gifts owned by the user or the chat"""
     gifts: list[OwnedGiftUnion]
     """The list of gifts"""
-    next_offset: Optional[str] = None
+    next_offset: str | None = None
     """*Optional*. Offset for the next request. If empty, then there are no more results"""
 
     if TYPE_CHECKING:
@@ -31,7 +31,7 @@ class OwnedGifts(TelegramObject):
             *,
             total_count: int,
             gifts: list[OwnedGiftUnion],
-            next_offset: Optional[str] = None,
+            next_offset: str | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

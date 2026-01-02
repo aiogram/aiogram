@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Literal, Optional
+from typing import TYPE_CHECKING, Any, Literal
 
 from aiogram.enums import StoryAreaTypeType
 
@@ -23,7 +23,7 @@ class StoryAreaTypeLocation(StoryAreaType):
     """Location latitude in degrees"""
     longitude: float
     """Location longitude in degrees"""
-    address: Optional[LocationAddress] = None
+    address: LocationAddress | None = None
     """*Optional*. Address of the location"""
 
     if TYPE_CHECKING:
@@ -36,7 +36,7 @@ class StoryAreaTypeLocation(StoryAreaType):
             type: Literal[StoryAreaTypeType.LOCATION] = StoryAreaTypeType.LOCATION,
             latitude: float,
             longitude: float,
-            address: Optional[LocationAddress] = None,
+            address: LocationAddress | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

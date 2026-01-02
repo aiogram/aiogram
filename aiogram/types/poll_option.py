@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from .base import TelegramObject
 
@@ -19,7 +19,7 @@ class PollOption(TelegramObject):
     """Option text, 1-100 characters"""
     voter_count: int
     """Number of users that voted for this option"""
-    text_entities: Optional[list[MessageEntity]] = None
+    text_entities: list[MessageEntity] | None = None
     """*Optional*. Special entities that appear in the option *text*. Currently, only custom emoji entities are allowed in poll option texts"""
 
     if TYPE_CHECKING:
@@ -31,7 +31,7 @@ class PollOption(TelegramObject):
             *,
             text: str,
             voter_count: int,
-            text_entities: Optional[list[MessageEntity]] = None,
+            text_entities: list[MessageEntity] | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

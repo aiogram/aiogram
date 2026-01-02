@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from .base import TelegramObject
 from .custom import DateTime
@@ -18,9 +18,9 @@ class SuggestedPostInfo(TelegramObject):
 
     state: str
     """State of the suggested post. Currently, it can be one of 'pending', 'approved', 'declined'."""
-    price: Optional[SuggestedPostPrice] = None
+    price: SuggestedPostPrice | None = None
     """*Optional*. Proposed price of the post. If the field is omitted, then the post is unpaid."""
-    send_date: Optional[DateTime] = None
+    send_date: DateTime | None = None
     """*Optional*. Proposed send date of the post. If the field is omitted, then the post can be published at any time within 30 days at the sole discretion of the user or administrator who approves it."""
 
     if TYPE_CHECKING:
@@ -31,8 +31,8 @@ class SuggestedPostInfo(TelegramObject):
             __pydantic__self__,
             *,
             state: str,
-            price: Optional[SuggestedPostPrice] = None,
-            send_date: Optional[DateTime] = None,
+            price: SuggestedPostPrice | None = None,
+            send_date: DateTime | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

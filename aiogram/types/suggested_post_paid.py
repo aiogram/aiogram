@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from .base import TelegramObject
 
@@ -18,11 +18,11 @@ class SuggestedPostPaid(TelegramObject):
 
     currency: str
     """Currency in which the payment was made. Currently, one of 'XTR' for Telegram Stars or 'TON' for toncoins"""
-    suggested_post_message: Optional[Message] = None
+    suggested_post_message: Message | None = None
     """*Optional*. Message containing the suggested post. Note that the :class:`aiogram.types.message.Message` object in this field will not contain the *reply_to_message* field even if it itself is a reply."""
-    amount: Optional[int] = None
+    amount: int | None = None
     """*Optional*. The amount of the currency that was received by the channel in nanotoncoins; for payments in toncoins only"""
-    star_amount: Optional[StarAmount] = None
+    star_amount: StarAmount | None = None
     """*Optional*. The amount of Telegram Stars that was received by the channel; for payments in Telegram Stars only"""
 
     if TYPE_CHECKING:
@@ -33,9 +33,9 @@ class SuggestedPostPaid(TelegramObject):
             __pydantic__self__,
             *,
             currency: str,
-            suggested_post_message: Optional[Message] = None,
-            amount: Optional[int] = None,
-            star_amount: Optional[StarAmount] = None,
+            suggested_post_message: Message | None = None,
+            amount: int | None = None,
+            star_amount: StarAmount | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

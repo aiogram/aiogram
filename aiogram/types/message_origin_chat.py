@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Literal, Optional
+from typing import TYPE_CHECKING, Any, Literal
 
 from ..enums import MessageOriginType
 from .custom import DateTime
@@ -23,7 +23,7 @@ class MessageOriginChat(MessageOrigin):
     """Date the message was sent originally in Unix time"""
     sender_chat: Chat
     """Chat that sent the message originally"""
-    author_signature: Optional[str] = None
+    author_signature: str | None = None
     """*Optional*. For messages originally sent by an anonymous chat administrator, original message author signature"""
 
     if TYPE_CHECKING:
@@ -36,7 +36,7 @@ class MessageOriginChat(MessageOrigin):
             type: Literal[MessageOriginType.CHAT] = MessageOriginType.CHAT,
             date: DateTime,
             sender_chat: Chat,
-            author_signature: Optional[str] = None,
+            author_signature: str | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

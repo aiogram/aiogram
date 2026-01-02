@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Any, Literal, Optional
+from typing import TYPE_CHECKING, Any, Literal
 
 from .base import TelegramObject
 
@@ -18,7 +18,7 @@ class RefundedPayment(TelegramObject):
     """Bot-specified invoice payload"""
     telegram_payment_charge_id: str
     """Telegram payment identifier"""
-    provider_payment_charge_id: Optional[str] = None
+    provider_payment_charge_id: str | None = None
     """*Optional*. Provider payment identifier"""
 
     if TYPE_CHECKING:
@@ -32,7 +32,7 @@ class RefundedPayment(TelegramObject):
             total_amount: int,
             invoice_payload: str,
             telegram_payment_charge_id: str,
-            provider_payment_charge_id: Optional[str] = None,
+            provider_payment_charge_id: str | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

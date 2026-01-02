@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from .base import TelegramObject
 
@@ -33,13 +33,13 @@ class UniqueGift(TelegramObject):
     """Symbol of the gift"""
     backdrop: UniqueGiftBackdrop
     """Backdrop of the gift"""
-    is_premium: Optional[bool] = None
+    is_premium: bool | None = None
     """*Optional*. :code:`True`, if the original regular gift was exclusively purchaseable by Telegram Premium subscribers"""
-    is_from_blockchain: Optional[bool] = None
+    is_from_blockchain: bool | None = None
     """*Optional*. :code:`True`, if the gift is assigned from the TON blockchain and can't be resold or transferred in Telegram"""
-    colors: Optional[UniqueGiftColors] = None
+    colors: UniqueGiftColors | None = None
     """*Optional*. The color scheme that can be used by the gift's owner for the chat's name, replies to messages and link previews; for business account gifts and gifts that are currently on sale only"""
-    publisher_chat: Optional[Chat] = None
+    publisher_chat: Chat | None = None
     """*Optional*. Information about the chat that published the gift"""
 
     if TYPE_CHECKING:
@@ -56,10 +56,10 @@ class UniqueGift(TelegramObject):
             model: UniqueGiftModel,
             symbol: UniqueGiftSymbol,
             backdrop: UniqueGiftBackdrop,
-            is_premium: Optional[bool] = None,
-            is_from_blockchain: Optional[bool] = None,
-            colors: Optional[UniqueGiftColors] = None,
-            publisher_chat: Optional[Chat] = None,
+            is_premium: bool | None = None,
+            is_from_blockchain: bool | None = None,
+            colors: UniqueGiftColors | None = None,
+            publisher_chat: Chat | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

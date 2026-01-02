@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Literal, Optional
+from typing import TYPE_CHECKING, Any, Literal
 
 from ..enums import TransactionPartnerType
 from .transaction_partner import TransactionPartner
@@ -18,7 +18,7 @@ class TransactionPartnerFragment(TransactionPartner):
 
     type: Literal[TransactionPartnerType.FRAGMENT] = TransactionPartnerType.FRAGMENT
     """Type of the transaction partner, always 'fragment'"""
-    withdrawal_state: Optional[RevenueWithdrawalStateUnion] = None
+    withdrawal_state: RevenueWithdrawalStateUnion | None = None
     """*Optional*. State of the transaction if the transaction is outgoing"""
 
     if TYPE_CHECKING:
@@ -29,7 +29,7 @@ class TransactionPartnerFragment(TransactionPartner):
             __pydantic__self__,
             *,
             type: Literal[TransactionPartnerType.FRAGMENT] = TransactionPartnerType.FRAGMENT,
-            withdrawal_state: Optional[RevenueWithdrawalStateUnion] = None,
+            withdrawal_state: RevenueWithdrawalStateUnion | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

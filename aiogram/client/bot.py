@@ -9,10 +9,7 @@ from typing import (
     AsyncGenerator,
     AsyncIterator,
     BinaryIO,
-    Optional,
-    Type,
     TypeVar,
-    Union,
     cast,
 )
 
@@ -259,8 +256,8 @@ class Bot:
     def __init__(
         self,
         token: str,
-        session: Optional[BaseSession] = None,
-        default: Optional[DefaultBotProperties] = None,
+        session: BaseSession | None = None,
+        default: DefaultBotProperties | None = None,
         **kwargs: Any,
     ) -> None:
         """
@@ -311,16 +308,16 @@ class Bot:
         self.default = default
 
         self.__token = token
-        self._me: Optional[User] = None
+        self._me: User | None = None
 
     async def __aenter__(self) -> "Bot":
         return self
 
     async def __aexit__(
         self,
-        exc_type: Optional[Type[BaseException]],
-        exc_value: Optional[BaseException],
-        traceback: Optional[TracebackType],
+        exc_type: type[BaseException] | None,
+        exc_value: BaseException | None,
+        traceback: TracebackType | None,
     ) -> None:
         await self.session.close()
 
@@ -374,7 +371,7 @@ class Bot:
 
     @classmethod
     async def __download_file(
-        cls, destination: Union[str, pathlib.Path], stream: AsyncGenerator[bytes, None]
+        cls, destination: str | pathlib.Path, stream: AsyncGenerator[bytes, None]
     ) -> None:
         async with aiofiles.open(destination, "wb") as f:
             async for chunk in stream:
@@ -382,7 +379,7 @@ class Bot:
 
     @classmethod
     async def __aiofiles_reader(
-        cls, file: Union[str, pathlib.Path], chunk_size: int = 65536
+        cls, file: str | pathlib.Path, chunk_size: int = 65536
     ) -> AsyncGenerator[bytes, None]:
         async with aiofiles.open(file, "rb") as f:
             while chunk := await f.read(chunk_size):
@@ -390,12 +387,12 @@ class Bot:
 
     async def download_file(
         self,
-        file_path: Union[str, pathlib.Path],
-        destination: Optional[Union[BinaryIO, pathlib.Path, str]] = None,
+        file_path: str | pathlib.Path,
+        destination: BinaryIO | pathlib.Path | str | None = None,
         timeout: int = 30,
         chunk_size: int = 65536,
         seek: bool = True,
-    ) -> Optional[BinaryIO]:
+    ) -> BinaryIO | None:
         """
         Download file by file_path to destination.
 
@@ -439,12 +436,12 @@ class Bot:
 
     async def download(
         self,
-        file: Union[str, Downloadable],
-        destination: Optional[Union[BinaryIO, pathlib.Path, str]] = None,
+        file: str | Downloadable,
+        destination: BinaryIO | pathlib.Path | str | None = None,
         timeout: int = 30,
         chunk_size: int = 65536,
         seek: bool = True,
-    ) -> Optional[BinaryIO]:
+    ) -> BinaryIO | None:
         """
         Download file by file_id or Downloadable object to destination.
 
@@ -461,7 +458,7 @@ class Bot:
             file_id = file
         else:
             # type is ignored in due to:
-            # Incompatible types in assignment (expression has type "Optional[Any]", variable has type "str")
+            # Incompatible types in assignment (expression has type "Any | None", variable has type "str")
             file_id = getattr(file, "file_id", None)  # type: ignore
             if file_id is None:
                 raise TypeError("file can only be of the string or Downloadable type")
@@ -477,9 +474,7 @@ class Bot:
             file_path, destination=destination, timeout=timeout, chunk_size=chunk_size, seek=seek
         )
 
-    async def __call__(
-        self, method: TelegramMethod[T], request_timeout: Optional[int] = None
-    ) -> T:
+    async def __call__(self, method: TelegramMethod[T], request_timeout: int | None = None) -> T:
         """
         Call API method
 
@@ -512,7 +507,7 @@ class Bot:
         user_id: int,
         name: str,
         sticker: InputSticker,
-        request_timeout: Optional[int] = None,
+        request_timeout: int | None = None,
     ) -> bool:
         """
         Use this method to add a new sticker to a set created by the bot. Emoji sticker sets can have up to 200 stickers. Other sticker sets can have up to 120 stickers. Returns :code:`True` on success.
@@ -536,11 +531,11 @@ class Bot:
     async def answer_callback_query(
         self,
         callback_query_id: str,
-        text: Optional[str] = None,
-        show_alert: Optional[bool] = None,
-        url: Optional[str] = None,
-        cache_time: Optional[int] = None,
-        request_timeout: Optional[int] = None,
+        text: str | None = None,
+        show_alert: bool | None = None,
+        url: str | None = None,
+        cache_time: int | None = None,
+        request_timeout: int | None = None,
     ) -> bool:
         """
         Use this method to send answers to callback queries sent from `inline keyboards <https://core.telegram.org/bots/features#inline-keyboards>`_. The answer will be displayed to the user as a notification at the top of the chat screen or as an alert. On success, :code:`True` is returned.
@@ -571,13 +566,13 @@ class Bot:
         self,
         inline_query_id: str,
         results: list[InlineQueryResultUnion],
-        cache_time: Optional[int] = None,
-        is_personal: Optional[bool] = None,
-        next_offset: Optional[str] = None,
-        button: Optional[InlineQueryResultsButton] = None,
-        switch_pm_parameter: Optional[str] = None,
-        switch_pm_text: Optional[str] = None,
-        request_timeout: Optional[int] = None,
+        cache_time: int | None = None,
+        is_personal: bool | None = None,
+        next_offset: str | None = None,
+        button: InlineQueryResultsButton | None = None,
+        switch_pm_parameter: str | None = None,
+        switch_pm_text: str | None = None,
+        request_timeout: int | None = None,
     ) -> bool:
         """
         Use this method to send answers to an inline query. On success, :code:`True` is returned.
@@ -614,8 +609,8 @@ class Bot:
         self,
         pre_checkout_query_id: str,
         ok: bool,
-        error_message: Optional[str] = None,
-        request_timeout: Optional[int] = None,
+        error_message: str | None = None,
+        request_timeout: int | None = None,
     ) -> bool:
         """
         Once the user has confirmed their payment and shipping details, the Bot API sends the final confirmation in the form of an :class:`aiogram.types.update.Update` with the field *pre_checkout_query*. Use this method to respond to such pre-checkout queries. On success, :code:`True` is returned. **Note:** The Bot API must receive an answer within 10 seconds after the pre-checkout query was sent.
@@ -640,9 +635,9 @@ class Bot:
         self,
         shipping_query_id: str,
         ok: bool,
-        shipping_options: Optional[list[ShippingOption]] = None,
-        error_message: Optional[str] = None,
-        request_timeout: Optional[int] = None,
+        shipping_options: list[ShippingOption] | None = None,
+        error_message: str | None = None,
+        request_timeout: int | None = None,
     ) -> bool:
         """
         If you sent an invoice requesting a shipping address and the parameter *is_flexible* was specified, the Bot API will send an :class:`aiogram.types.update.Update` with a *shipping_query* field to the bot. Use this method to reply to shipping queries. On success, :code:`True` is returned.
@@ -669,7 +664,7 @@ class Bot:
         self,
         web_app_query_id: str,
         result: InlineQueryResultUnion,
-        request_timeout: Optional[int] = None,
+        request_timeout: int | None = None,
     ) -> SentWebAppMessage:
         """
         Use this method to set the result of an interaction with a `Web App <https://core.telegram.org/bots/webapps>`_ and send a corresponding message on behalf of the user to the chat from which the query originated. On success, a :class:`aiogram.types.sent_web_app_message.SentWebAppMessage` object is returned.
@@ -692,7 +687,7 @@ class Bot:
         self,
         chat_id: ChatIdUnion,
         user_id: int,
-        request_timeout: Optional[int] = None,
+        request_timeout: int | None = None,
     ) -> bool:
         """
         Use this method to approve a chat join request. The bot must be an administrator in the chat for this to work and must have the *can_invite_users* administrator right. Returns :code:`True` on success.
@@ -715,9 +710,9 @@ class Bot:
         self,
         chat_id: ChatIdUnion,
         user_id: int,
-        until_date: Optional[DateTimeUnion] = None,
-        revoke_messages: Optional[bool] = None,
-        request_timeout: Optional[int] = None,
+        until_date: DateTimeUnion | None = None,
+        revoke_messages: bool | None = None,
+        request_timeout: int | None = None,
     ) -> bool:
         """
         Use this method to ban a user in a group, a supergroup or a channel. In the case of supergroups and channels, the user will not be able to return to the chat on their own using invite links, etc., unless `unbanned <https://core.telegram.org/bots/api#unbanchatmember>`_ first. The bot must be an administrator in the chat for this to work and must have the appropriate administrator rights. Returns :code:`True` on success.
@@ -744,7 +739,7 @@ class Bot:
         self,
         chat_id: ChatIdUnion,
         sender_chat_id: int,
-        request_timeout: Optional[int] = None,
+        request_timeout: int | None = None,
     ) -> bool:
         """
         Use this method to ban a channel chat in a supergroup or a channel. Until the chat is `unbanned <https://core.telegram.org/bots/api#unbanchatsenderchat>`_, the owner of the banned chat won't be able to send messages on behalf of **any of their channels**. The bot must be an administrator in the supergroup or channel for this to work and must have the appropriate administrator rights. Returns :code:`True` on success.
@@ -765,7 +760,7 @@ class Bot:
 
     async def close(
         self,
-        request_timeout: Optional[int] = None,
+        request_timeout: int | None = None,
     ) -> bool:
         """
         Use this method to close the bot instance before moving it from one local server to another. You need to delete the webhook before calling this method to ensure that the bot isn't launched again after server restart. The method will return error 429 in the first 10 minutes after the bot is launched. Returns :code:`True` on success. Requires no parameters.
@@ -783,7 +778,7 @@ class Bot:
         self,
         chat_id: ChatIdUnion,
         message_thread_id: int,
-        request_timeout: Optional[int] = None,
+        request_timeout: int | None = None,
     ) -> bool:
         """
         Use this method to close an open topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the *can_manage_topics* administrator rights, unless it is the creator of the topic. Returns :code:`True` on success.
@@ -807,25 +802,23 @@ class Bot:
         chat_id: ChatIdUnion,
         from_chat_id: ChatIdUnion,
         message_id: int,
-        message_thread_id: Optional[int] = None,
-        direct_messages_topic_id: Optional[int] = None,
-        video_start_timestamp: Optional[DateTimeUnion] = None,
-        caption: Optional[str] = None,
-        parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
-        caption_entities: Optional[list[MessageEntity]] = None,
-        show_caption_above_media: Optional[Union[bool, Default]] = Default(
-            "show_caption_above_media"
-        ),
-        disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
-        allow_paid_broadcast: Optional[bool] = None,
-        message_effect_id: Optional[str] = None,
-        suggested_post_parameters: Optional[SuggestedPostParameters] = None,
-        reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[ReplyMarkupUnion] = None,
-        allow_sending_without_reply: Optional[bool] = None,
-        reply_to_message_id: Optional[int] = None,
-        request_timeout: Optional[int] = None,
+        message_thread_id: int | None = None,
+        direct_messages_topic_id: int | None = None,
+        video_start_timestamp: DateTimeUnion | None = None,
+        caption: str | None = None,
+        parse_mode: str | Default | None = Default("parse_mode"),
+        caption_entities: list[MessageEntity] | None = None,
+        show_caption_above_media: bool | Default | None = Default("show_caption_above_media"),
+        disable_notification: bool | None = None,
+        protect_content: bool | Default | None = Default("protect_content"),
+        allow_paid_broadcast: bool | None = None,
+        message_effect_id: str | None = None,
+        suggested_post_parameters: SuggestedPostParameters | None = None,
+        reply_parameters: ReplyParameters | None = None,
+        reply_markup: ReplyMarkupUnion | None = None,
+        allow_sending_without_reply: bool | None = None,
+        reply_to_message_id: int | None = None,
+        request_timeout: int | None = None,
     ) -> MessageId:
         """
         Use this method to copy messages of any kind. Service messages, paid media messages, giveaway messages, giveaway winners messages, and invoice messages can't be copied. A quiz :class:`aiogram.methods.poll.Poll` can be copied only if the value of the field *correct_option_id* is known to the bot. The method is analogous to the method :class:`aiogram.methods.forward_message.ForwardMessage`, but the copied message doesn't have a link to the original message. Returns the :class:`aiogram.types.message_id.MessageId` of the sent message on success.
@@ -881,11 +874,11 @@ class Bot:
     async def create_chat_invite_link(
         self,
         chat_id: ChatIdUnion,
-        name: Optional[str] = None,
-        expire_date: Optional[DateTimeUnion] = None,
-        member_limit: Optional[int] = None,
-        creates_join_request: Optional[bool] = None,
-        request_timeout: Optional[int] = None,
+        name: str | None = None,
+        expire_date: DateTimeUnion | None = None,
+        member_limit: int | None = None,
+        creates_join_request: bool | None = None,
+        request_timeout: int | None = None,
     ) -> ChatInviteLink:
         """
         Use this method to create an additional invite link for a chat. The bot must be an administrator in the chat for this to work and must have the appropriate administrator rights. The link can be revoked using the method :class:`aiogram.methods.revoke_chat_invite_link.RevokeChatInviteLink`. Returns the new invite link as :class:`aiogram.types.chat_invite_link.ChatInviteLink` object.
@@ -914,9 +907,9 @@ class Bot:
         self,
         chat_id: ChatIdUnion,
         name: str,
-        icon_color: Optional[int] = None,
-        icon_custom_emoji_id: Optional[str] = None,
-        request_timeout: Optional[int] = None,
+        icon_color: int | None = None,
+        icon_custom_emoji_id: str | None = None,
+        request_timeout: int | None = None,
     ) -> ForumTopic:
         """
         Use this method to create a topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the *can_manage_topics* administrator rights. Returns information about the created topic as a :class:`aiogram.types.forum_topic.ForumTopic` object.
@@ -946,24 +939,24 @@ class Bot:
         payload: str,
         currency: str,
         prices: list[LabeledPrice],
-        business_connection_id: Optional[str] = None,
-        provider_token: Optional[str] = None,
-        subscription_period: Optional[int] = None,
-        max_tip_amount: Optional[int] = None,
-        suggested_tip_amounts: Optional[list[int]] = None,
-        provider_data: Optional[str] = None,
-        photo_url: Optional[str] = None,
-        photo_size: Optional[int] = None,
-        photo_width: Optional[int] = None,
-        photo_height: Optional[int] = None,
-        need_name: Optional[bool] = None,
-        need_phone_number: Optional[bool] = None,
-        need_email: Optional[bool] = None,
-        need_shipping_address: Optional[bool] = None,
-        send_phone_number_to_provider: Optional[bool] = None,
-        send_email_to_provider: Optional[bool] = None,
-        is_flexible: Optional[bool] = None,
-        request_timeout: Optional[int] = None,
+        business_connection_id: str | None = None,
+        provider_token: str | None = None,
+        subscription_period: int | None = None,
+        max_tip_amount: int | None = None,
+        suggested_tip_amounts: list[int] | None = None,
+        provider_data: str | None = None,
+        photo_url: str | None = None,
+        photo_size: int | None = None,
+        photo_width: int | None = None,
+        photo_height: int | None = None,
+        need_name: bool | None = None,
+        need_phone_number: bool | None = None,
+        need_email: bool | None = None,
+        need_shipping_address: bool | None = None,
+        send_phone_number_to_provider: bool | None = None,
+        send_email_to_provider: bool | None = None,
+        is_flexible: bool | None = None,
+        request_timeout: int | None = None,
     ) -> str:
         """
         Use this method to create a link for an invoice. Returns the created invoice link as *String* on success.
@@ -1028,10 +1021,10 @@ class Bot:
         name: str,
         title: str,
         stickers: list[InputSticker],
-        sticker_type: Optional[str] = None,
-        needs_repainting: Optional[bool] = None,
-        sticker_format: Optional[str] = None,
-        request_timeout: Optional[int] = None,
+        sticker_type: str | None = None,
+        needs_repainting: bool | None = None,
+        sticker_format: str | None = None,
+        request_timeout: int | None = None,
     ) -> bool:
         """
         Use this method to create a new sticker set owned by a user. The bot will be able to edit the sticker set thus created. Returns :code:`True` on success.
@@ -1064,7 +1057,7 @@ class Bot:
         self,
         chat_id: ChatIdUnion,
         user_id: int,
-        request_timeout: Optional[int] = None,
+        request_timeout: int | None = None,
     ) -> bool:
         """
         Use this method to decline a chat join request. The bot must be an administrator in the chat for this to work and must have the *can_invite_users* administrator right. Returns :code:`True` on success.
@@ -1086,7 +1079,7 @@ class Bot:
     async def delete_chat_photo(
         self,
         chat_id: ChatIdUnion,
-        request_timeout: Optional[int] = None,
+        request_timeout: int | None = None,
     ) -> bool:
         """
         Use this method to delete a chat photo. Photos can't be changed for private chats. The bot must be an administrator in the chat for this to work and must have the appropriate administrator rights. Returns :code:`True` on success.
@@ -1106,7 +1099,7 @@ class Bot:
     async def delete_chat_sticker_set(
         self,
         chat_id: ChatIdUnion,
-        request_timeout: Optional[int] = None,
+        request_timeout: int | None = None,
     ) -> bool:
         """
         Use this method to delete a group sticker set from a supergroup. The bot must be an administrator in the chat for this to work and must have the appropriate administrator rights. Use the field *can_set_sticker_set* optionally returned in :class:`aiogram.methods.get_chat.GetChat` requests to check if the bot can use this method. Returns :code:`True` on success.
@@ -1127,7 +1120,7 @@ class Bot:
         self,
         chat_id: ChatIdUnion,
         message_thread_id: int,
-        request_timeout: Optional[int] = None,
+        request_timeout: int | None = None,
     ) -> bool:
         """
         Use this method to delete a forum topic along with all its messages in a forum supergroup chat or a private chat with a user. In the case of a supergroup chat the bot must be an administrator in the chat for this to work and must have the *can_delete_messages* administrator rights. Returns :code:`True` on success.
@@ -1150,7 +1143,7 @@ class Bot:
         self,
         chat_id: ChatIdUnion,
         message_id: int,
-        request_timeout: Optional[int] = None,
+        request_timeout: int | None = None,
     ) -> bool:
         """
         Use this method to delete a message, including service messages, with the following limitations:
@@ -1191,9 +1184,9 @@ class Bot:
 
     async def delete_my_commands(
         self,
-        scope: Optional[BotCommandScopeUnion] = None,
-        language_code: Optional[str] = None,
-        request_timeout: Optional[int] = None,
+        scope: BotCommandScopeUnion | None = None,
+        language_code: str | None = None,
+        request_timeout: int | None = None,
     ) -> bool:
         """
         Use this method to delete the list of the bot's commands for the given scope and user language. After deletion, `higher level commands <https://core.telegram.org/bots/api#determining-list-of-commands>`_ will be shown to affected users. Returns :code:`True` on success.
@@ -1215,7 +1208,7 @@ class Bot:
     async def delete_sticker_from_set(
         self,
         sticker: str,
-        request_timeout: Optional[int] = None,
+        request_timeout: int | None = None,
     ) -> bool:
         """
         Use this method to delete a sticker from a set created by the bot. Returns :code:`True` on success.
@@ -1234,8 +1227,8 @@ class Bot:
 
     async def delete_webhook(
         self,
-        drop_pending_updates: Optional[bool] = None,
-        request_timeout: Optional[int] = None,
+        drop_pending_updates: bool | None = None,
+        request_timeout: int | None = None,
     ) -> bool:
         """
         Use this method to remove webhook integration if you decide to switch back to :class:`aiogram.methods.get_updates.GetUpdates`. Returns :code:`True` on success.
@@ -1256,11 +1249,11 @@ class Bot:
         self,
         chat_id: ChatIdUnion,
         invite_link: str,
-        name: Optional[str] = None,
-        expire_date: Optional[DateTimeUnion] = None,
-        member_limit: Optional[int] = None,
-        creates_join_request: Optional[bool] = None,
-        request_timeout: Optional[int] = None,
+        name: str | None = None,
+        expire_date: DateTimeUnion | None = None,
+        member_limit: int | None = None,
+        creates_join_request: bool | None = None,
+        request_timeout: int | None = None,
     ) -> ChatInviteLink:
         """
         Use this method to edit a non-primary invite link created by the bot. The bot must be an administrator in the chat for this to work and must have the appropriate administrator rights. Returns the edited invite link as a :class:`aiogram.types.chat_invite_link.ChatInviteLink` object.
@@ -1291,9 +1284,9 @@ class Bot:
         self,
         chat_id: ChatIdUnion,
         message_thread_id: int,
-        name: Optional[str] = None,
-        icon_custom_emoji_id: Optional[str] = None,
-        request_timeout: Optional[int] = None,
+        name: str | None = None,
+        icon_custom_emoji_id: str | None = None,
+        request_timeout: int | None = None,
     ) -> bool:
         """
         Use this method to edit name and icon of a topic in a forum supergroup chat or a private chat with a user. In the case of a supergroup chat the bot must be an administrator in the chat for this to work and must have the *can_manage_topics* administrator rights, unless it is the creator of the topic. Returns :code:`True` on success.
@@ -1318,19 +1311,17 @@ class Bot:
 
     async def edit_message_caption(
         self,
-        business_connection_id: Optional[str] = None,
-        chat_id: Optional[ChatIdUnion] = None,
-        message_id: Optional[int] = None,
-        inline_message_id: Optional[str] = None,
-        caption: Optional[str] = None,
-        parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
-        caption_entities: Optional[list[MessageEntity]] = None,
-        show_caption_above_media: Optional[Union[bool, Default]] = Default(
-            "show_caption_above_media"
-        ),
-        reply_markup: Optional[InlineKeyboardMarkup] = None,
-        request_timeout: Optional[int] = None,
-    ) -> Union[Message, bool]:
+        business_connection_id: str | None = None,
+        chat_id: ChatIdUnion | None = None,
+        message_id: int | None = None,
+        inline_message_id: str | None = None,
+        caption: str | None = None,
+        parse_mode: str | Default | None = Default("parse_mode"),
+        caption_entities: list[MessageEntity] | None = None,
+        show_caption_above_media: bool | Default | None = Default("show_caption_above_media"),
+        reply_markup: InlineKeyboardMarkup | None = None,
+        request_timeout: int | None = None,
+    ) -> Message | bool:
         """
         Use this method to edit captions of messages. On success, if the edited message is not an inline message, the edited :class:`aiogram.types.message.Message` is returned, otherwise :code:`True` is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within **48 hours** from the time they were sent.
 
@@ -1366,17 +1357,17 @@ class Bot:
         self,
         latitude: float,
         longitude: float,
-        business_connection_id: Optional[str] = None,
-        chat_id: Optional[ChatIdUnion] = None,
-        message_id: Optional[int] = None,
-        inline_message_id: Optional[str] = None,
-        live_period: Optional[int] = None,
-        horizontal_accuracy: Optional[float] = None,
-        heading: Optional[int] = None,
-        proximity_alert_radius: Optional[int] = None,
-        reply_markup: Optional[InlineKeyboardMarkup] = None,
-        request_timeout: Optional[int] = None,
-    ) -> Union[Message, bool]:
+        business_connection_id: str | None = None,
+        chat_id: ChatIdUnion | None = None,
+        message_id: int | None = None,
+        inline_message_id: str | None = None,
+        live_period: int | None = None,
+        horizontal_accuracy: float | None = None,
+        heading: int | None = None,
+        proximity_alert_radius: int | None = None,
+        reply_markup: InlineKeyboardMarkup | None = None,
+        request_timeout: int | None = None,
+    ) -> Message | bool:
         """
         Use this method to edit live location messages. A location can be edited until its *live_period* expires or editing is explicitly disabled by a call to :class:`aiogram.methods.stop_message_live_location.StopMessageLiveLocation`. On success, if the edited message is not an inline message, the edited :class:`aiogram.types.message.Message` is returned, otherwise :code:`True` is returned.
 
@@ -1415,13 +1406,13 @@ class Bot:
     async def edit_message_media(
         self,
         media: InputMediaUnion,
-        business_connection_id: Optional[str] = None,
-        chat_id: Optional[ChatIdUnion] = None,
-        message_id: Optional[int] = None,
-        inline_message_id: Optional[str] = None,
-        reply_markup: Optional[InlineKeyboardMarkup] = None,
-        request_timeout: Optional[int] = None,
-    ) -> Union[Message, bool]:
+        business_connection_id: str | None = None,
+        chat_id: ChatIdUnion | None = None,
+        message_id: int | None = None,
+        inline_message_id: str | None = None,
+        reply_markup: InlineKeyboardMarkup | None = None,
+        request_timeout: int | None = None,
+    ) -> Message | bool:
         """
         Use this method to edit animation, audio, document, photo, or video messages, or to add media to text messages. If a message is part of a message album, then it can be edited only to an audio for audio albums, only to a document for document albums and to a photo or a video otherwise. When an inline message is edited, a new file can't be uploaded; use a previously uploaded file via its file_id or specify a URL. On success, if the edited message is not an inline message, the edited :class:`aiogram.types.message.Message` is returned, otherwise :code:`True` is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within **48 hours** from the time they were sent.
 
@@ -1449,13 +1440,13 @@ class Bot:
 
     async def edit_message_reply_markup(
         self,
-        business_connection_id: Optional[str] = None,
-        chat_id: Optional[ChatIdUnion] = None,
-        message_id: Optional[int] = None,
-        inline_message_id: Optional[str] = None,
-        reply_markup: Optional[InlineKeyboardMarkup] = None,
-        request_timeout: Optional[int] = None,
-    ) -> Union[Message, bool]:
+        business_connection_id: str | None = None,
+        chat_id: ChatIdUnion | None = None,
+        message_id: int | None = None,
+        inline_message_id: str | None = None,
+        reply_markup: InlineKeyboardMarkup | None = None,
+        request_timeout: int | None = None,
+    ) -> Message | bool:
         """
         Use this method to edit only the reply markup of messages. On success, if the edited message is not an inline message, the edited :class:`aiogram.types.message.Message` is returned, otherwise :code:`True` is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within **48 hours** from the time they were sent.
 
@@ -1482,21 +1473,17 @@ class Bot:
     async def edit_message_text(
         self,
         text: str,
-        business_connection_id: Optional[str] = None,
-        chat_id: Optional[ChatIdUnion] = None,
-        message_id: Optional[int] = None,
-        inline_message_id: Optional[str] = None,
-        parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
-        entities: Optional[list[MessageEntity]] = None,
-        link_preview_options: Optional[Union[LinkPreviewOptions, Default]] = Default(
-            "link_preview"
-        ),
-        reply_markup: Optional[InlineKeyboardMarkup] = None,
-        disable_web_page_preview: Optional[Union[bool, Default]] = Default(
-            "link_preview_is_disabled"
-        ),
-        request_timeout: Optional[int] = None,
-    ) -> Union[Message, bool]:
+        business_connection_id: str | None = None,
+        chat_id: ChatIdUnion | None = None,
+        message_id: int | None = None,
+        inline_message_id: str | None = None,
+        parse_mode: str | Default | None = Default("parse_mode"),
+        entities: list[MessageEntity] | None = None,
+        link_preview_options: LinkPreviewOptions | Default | None = Default("link_preview"),
+        reply_markup: InlineKeyboardMarkup | None = None,
+        disable_web_page_preview: bool | Default | None = Default("link_preview_is_disabled"),
+        request_timeout: int | None = None,
+    ) -> Message | bool:
         """
         Use this method to edit text and `game <https://core.telegram.org/bots/api#games>`_ messages. On success, if the edited message is not an inline message, the edited :class:`aiogram.types.message.Message` is returned, otherwise :code:`True` is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within **48 hours** from the time they were sent.
 
@@ -1533,7 +1520,7 @@ class Bot:
     async def export_chat_invite_link(
         self,
         chat_id: ChatIdUnion,
-        request_timeout: Optional[int] = None,
+        request_timeout: int | None = None,
     ) -> str:
         """
         Use this method to generate a new primary invite link for a chat; any previously generated primary link is revoked. The bot must be an administrator in the chat for this to work and must have the appropriate administrator rights. Returns the new invite link as *String* on success.
@@ -1557,14 +1544,14 @@ class Bot:
         chat_id: ChatIdUnion,
         from_chat_id: ChatIdUnion,
         message_id: int,
-        message_thread_id: Optional[int] = None,
-        direct_messages_topic_id: Optional[int] = None,
-        video_start_timestamp: Optional[DateTimeUnion] = None,
-        disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
-        message_effect_id: Optional[str] = None,
-        suggested_post_parameters: Optional[SuggestedPostParameters] = None,
-        request_timeout: Optional[int] = None,
+        message_thread_id: int | None = None,
+        direct_messages_topic_id: int | None = None,
+        video_start_timestamp: DateTimeUnion | None = None,
+        disable_notification: bool | None = None,
+        protect_content: bool | Default | None = Default("protect_content"),
+        message_effect_id: str | None = None,
+        suggested_post_parameters: SuggestedPostParameters | None = None,
+        request_timeout: int | None = None,
     ) -> Message:
         """
         Use this method to forward messages of any kind. Service messages and messages with protected content can't be forwarded. On success, the sent :class:`aiogram.types.message.Message` is returned.
@@ -1602,7 +1589,7 @@ class Bot:
     async def get_chat(
         self,
         chat_id: ChatIdUnion,
-        request_timeout: Optional[int] = None,
+        request_timeout: int | None = None,
     ) -> ChatFullInfo:
         """
         Use this method to get up-to-date information about the chat. Returns a :class:`aiogram.types.chat_full_info.ChatFullInfo` object on success.
@@ -1622,7 +1609,7 @@ class Bot:
     async def get_chat_administrators(
         self,
         chat_id: ChatIdUnion,
-        request_timeout: Optional[int] = None,
+        request_timeout: int | None = None,
     ) -> list[ResultChatMemberUnion]:
         """
         Use this method to get a list of administrators in a chat, which aren't bots. Returns an Array of :class:`aiogram.types.chat_member.ChatMember` objects.
@@ -1643,7 +1630,7 @@ class Bot:
         self,
         chat_id: ChatIdUnion,
         user_id: int,
-        request_timeout: Optional[int] = None,
+        request_timeout: int | None = None,
     ) -> ResultChatMemberUnion:
         """
         Use this method to get information about a member of a chat. The method is only guaranteed to work for other users if the bot is an administrator in the chat. Returns a :class:`aiogram.types.chat_member.ChatMember` object on success.
@@ -1665,7 +1652,7 @@ class Bot:
     async def get_chat_member_count(
         self,
         chat_id: ChatIdUnion,
-        request_timeout: Optional[int] = None,
+        request_timeout: int | None = None,
     ) -> int:
         """
         Use this method to get the number of members in a chat. Returns *Int* on success.
@@ -1684,8 +1671,8 @@ class Bot:
 
     async def get_chat_menu_button(
         self,
-        chat_id: Optional[int] = None,
-        request_timeout: Optional[int] = None,
+        chat_id: int | None = None,
+        request_timeout: int | None = None,
     ) -> ResultMenuButtonUnion:
         """
         Use this method to get the current value of the bot's menu button in a private chat, or the default menu button. Returns :class:`aiogram.types.menu_button.MenuButton` on success.
@@ -1705,7 +1692,7 @@ class Bot:
     async def get_custom_emoji_stickers(
         self,
         custom_emoji_ids: list[str],
-        request_timeout: Optional[int] = None,
+        request_timeout: int | None = None,
     ) -> list[Sticker]:
         """
         Use this method to get information about custom emoji stickers by their identifiers. Returns an Array of :class:`aiogram.types.sticker.Sticker` objects.
@@ -1725,7 +1712,7 @@ class Bot:
     async def get_file(
         self,
         file_id: str,
-        request_timeout: Optional[int] = None,
+        request_timeout: int | None = None,
     ) -> File:
         """
         Use this method to get basic information about a file and prepare it for downloading. For the moment, bots can download files of up to 20MB in size. On success, a :class:`aiogram.types.file.File` object is returned. The file can then be downloaded via the link :code:`https://api.telegram.org/file/bot<token>/<file_path>`, where :code:`<file_path>` is taken from the response. It is guaranteed that the link will be valid for at least 1 hour. When the link expires, a new one can be requested by calling :class:`aiogram.methods.get_file.GetFile` again.
@@ -1745,7 +1732,7 @@ class Bot:
 
     async def get_forum_topic_icon_stickers(
         self,
-        request_timeout: Optional[int] = None,
+        request_timeout: int | None = None,
     ) -> list[Sticker]:
         """
         Use this method to get custom emoji stickers, which can be used as a forum topic icon by any user. Requires no parameters. Returns an Array of :class:`aiogram.types.sticker.Sticker` objects.
@@ -1762,10 +1749,10 @@ class Bot:
     async def get_game_high_scores(
         self,
         user_id: int,
-        chat_id: Optional[int] = None,
-        message_id: Optional[int] = None,
-        inline_message_id: Optional[str] = None,
-        request_timeout: Optional[int] = None,
+        chat_id: int | None = None,
+        message_id: int | None = None,
+        inline_message_id: str | None = None,
+        request_timeout: int | None = None,
     ) -> list[GameHighScore]:
         """
         Use this method to get data for high score tables. Will return the score of the specified user and several of their neighbors in a game. Returns an Array of :class:`aiogram.types.game_high_score.GameHighScore` objects.
@@ -1792,7 +1779,7 @@ class Bot:
 
     async def get_me(
         self,
-        request_timeout: Optional[int] = None,
+        request_timeout: int | None = None,
     ) -> User:
         """
         A simple method for testing your bot's authentication token. Requires no parameters. Returns basic information about the bot in form of a :class:`aiogram.types.user.User` object.
@@ -1808,9 +1795,9 @@ class Bot:
 
     async def get_my_commands(
         self,
-        scope: Optional[BotCommandScopeUnion] = None,
-        language_code: Optional[str] = None,
-        request_timeout: Optional[int] = None,
+        scope: BotCommandScopeUnion | None = None,
+        language_code: str | None = None,
+        request_timeout: int | None = None,
     ) -> list[BotCommand]:
         """
         Use this method to get the current list of the bot's commands for the given scope and user language. Returns an Array of :class:`aiogram.types.bot_command.BotCommand` objects. If commands aren't set, an empty list is returned.
@@ -1831,8 +1818,8 @@ class Bot:
 
     async def get_my_default_administrator_rights(
         self,
-        for_channels: Optional[bool] = None,
-        request_timeout: Optional[int] = None,
+        for_channels: bool | None = None,
+        request_timeout: int | None = None,
     ) -> ChatAdministratorRights:
         """
         Use this method to get the current default administrator rights of the bot. Returns :class:`aiogram.types.chat_administrator_rights.ChatAdministratorRights` on success.
@@ -1852,7 +1839,7 @@ class Bot:
     async def get_sticker_set(
         self,
         name: str,
-        request_timeout: Optional[int] = None,
+        request_timeout: int | None = None,
     ) -> StickerSet:
         """
         Use this method to get a sticker set. On success, a :class:`aiogram.types.sticker_set.StickerSet` object is returned.
@@ -1871,11 +1858,11 @@ class Bot:
 
     async def get_updates(
         self,
-        offset: Optional[int] = None,
-        limit: Optional[int] = None,
-        timeout: Optional[int] = None,
-        allowed_updates: Optional[list[str]] = None,
-        request_timeout: Optional[int] = None,
+        offset: int | None = None,
+        limit: int | None = None,
+        timeout: int | None = None,
+        allowed_updates: list[str] | None = None,
+        request_timeout: int | None = None,
     ) -> list[Update]:
         """
         Use this method to receive incoming updates using long polling (`wiki <https://en.wikipedia.org/wiki/Push_technology#Long_polling>`_). Returns an Array of :class:`aiogram.types.update.Update` objects.
@@ -1907,9 +1894,9 @@ class Bot:
     async def get_user_profile_photos(
         self,
         user_id: int,
-        offset: Optional[int] = None,
-        limit: Optional[int] = None,
-        request_timeout: Optional[int] = None,
+        offset: int | None = None,
+        limit: int | None = None,
+        request_timeout: int | None = None,
     ) -> UserProfilePhotos:
         """
         Use this method to get a list of profile pictures for a user. Returns a :class:`aiogram.types.user_profile_photos.UserProfilePhotos` object.
@@ -1932,7 +1919,7 @@ class Bot:
 
     async def get_webhook_info(
         self,
-        request_timeout: Optional[int] = None,
+        request_timeout: int | None = None,
     ) -> WebhookInfo:
         """
         Use this method to get current webhook status. Requires no parameters. On success, returns a :class:`aiogram.types.webhook_info.WebhookInfo` object. If the bot is using :class:`aiogram.methods.get_updates.GetUpdates`, will return an object with the *url* field empty.
@@ -1949,7 +1936,7 @@ class Bot:
     async def leave_chat(
         self,
         chat_id: ChatIdUnion,
-        request_timeout: Optional[int] = None,
+        request_timeout: int | None = None,
     ) -> bool:
         """
         Use this method for your bot to leave a group, supergroup or channel. Returns :code:`True` on success.
@@ -1968,7 +1955,7 @@ class Bot:
 
     async def log_out(
         self,
-        request_timeout: Optional[int] = None,
+        request_timeout: int | None = None,
     ) -> bool:
         """
         Use this method to log out from the cloud Bot API server before launching the bot locally. You **must** log out the bot before running it locally, otherwise there is no guarantee that the bot will receive updates. After a successful call, you can immediately log in on a local server, but will not be able to log in back to the cloud Bot API server for 10 minutes. Returns :code:`True` on success. Requires no parameters.
@@ -1986,9 +1973,9 @@ class Bot:
         self,
         chat_id: ChatIdUnion,
         message_id: int,
-        business_connection_id: Optional[str] = None,
-        disable_notification: Optional[bool] = None,
-        request_timeout: Optional[int] = None,
+        business_connection_id: str | None = None,
+        disable_notification: bool | None = None,
+        request_timeout: int | None = None,
     ) -> bool:
         """
         Use this method to add a message to the list of pinned messages in a chat. In private chats and channel direct messages chats, all non-service messages can be pinned. Conversely, the bot must be an administrator with the 'can_pin_messages' right or the 'can_edit_messages' right to pin messages in groups and channels respectively. Returns :code:`True` on success.
@@ -2015,23 +2002,23 @@ class Bot:
         self,
         chat_id: ChatIdUnion,
         user_id: int,
-        is_anonymous: Optional[bool] = None,
-        can_manage_chat: Optional[bool] = None,
-        can_delete_messages: Optional[bool] = None,
-        can_manage_video_chats: Optional[bool] = None,
-        can_restrict_members: Optional[bool] = None,
-        can_promote_members: Optional[bool] = None,
-        can_change_info: Optional[bool] = None,
-        can_invite_users: Optional[bool] = None,
-        can_post_stories: Optional[bool] = None,
-        can_edit_stories: Optional[bool] = None,
-        can_delete_stories: Optional[bool] = None,
-        can_post_messages: Optional[bool] = None,
-        can_edit_messages: Optional[bool] = None,
-        can_pin_messages: Optional[bool] = None,
-        can_manage_topics: Optional[bool] = None,
-        can_manage_direct_messages: Optional[bool] = None,
-        request_timeout: Optional[int] = None,
+        is_anonymous: bool | None = None,
+        can_manage_chat: bool | None = None,
+        can_delete_messages: bool | None = None,
+        can_manage_video_chats: bool | None = None,
+        can_restrict_members: bool | None = None,
+        can_promote_members: bool | None = None,
+        can_change_info: bool | None = None,
+        can_invite_users: bool | None = None,
+        can_post_stories: bool | None = None,
+        can_edit_stories: bool | None = None,
+        can_delete_stories: bool | None = None,
+        can_post_messages: bool | None = None,
+        can_edit_messages: bool | None = None,
+        can_pin_messages: bool | None = None,
+        can_manage_topics: bool | None = None,
+        can_manage_direct_messages: bool | None = None,
+        request_timeout: int | None = None,
     ) -> bool:
         """
         Use this method to promote or demote a user in a supergroup or a channel. The bot must be an administrator in the chat for this to work and must have the appropriate administrator rights. Pass :code:`False` for all boolean parameters to demote a user. Returns :code:`True` on success.
@@ -2086,7 +2073,7 @@ class Bot:
         self,
         chat_id: ChatIdUnion,
         message_thread_id: int,
-        request_timeout: Optional[int] = None,
+        request_timeout: int | None = None,
     ) -> bool:
         """
         Use this method to reopen a closed topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the *can_manage_topics* administrator rights, unless it is the creator of the topic. Returns :code:`True` on success.
@@ -2110,9 +2097,9 @@ class Bot:
         chat_id: ChatIdUnion,
         user_id: int,
         permissions: ChatPermissions,
-        use_independent_chat_permissions: Optional[bool] = None,
-        until_date: Optional[DateTimeUnion] = None,
-        request_timeout: Optional[int] = None,
+        use_independent_chat_permissions: bool | None = None,
+        until_date: DateTimeUnion | None = None,
+        request_timeout: int | None = None,
     ) -> bool:
         """
         Use this method to restrict a user in a supergroup. The bot must be an administrator in the supergroup for this to work and must have the appropriate administrator rights. Pass :code:`True` for all permissions to lift restrictions from a user. Returns :code:`True` on success.
@@ -2141,7 +2128,7 @@ class Bot:
         self,
         chat_id: ChatIdUnion,
         invite_link: str,
-        request_timeout: Optional[int] = None,
+        request_timeout: int | None = None,
     ) -> ChatInviteLink:
         """
         Use this method to revoke an invite link created by the bot. If the primary link is revoked, a new link is automatically generated. The bot must be an administrator in the chat for this to work and must have the appropriate administrator rights. Returns the revoked invite link as :class:`aiogram.types.chat_invite_link.ChatInviteLink` object.
@@ -2164,30 +2151,28 @@ class Bot:
         self,
         chat_id: ChatIdUnion,
         animation: InputFileUnion,
-        business_connection_id: Optional[str] = None,
-        message_thread_id: Optional[int] = None,
-        direct_messages_topic_id: Optional[int] = None,
-        duration: Optional[int] = None,
-        width: Optional[int] = None,
-        height: Optional[int] = None,
-        thumbnail: Optional[InputFile] = None,
-        caption: Optional[str] = None,
-        parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
-        caption_entities: Optional[list[MessageEntity]] = None,
-        show_caption_above_media: Optional[Union[bool, Default]] = Default(
-            "show_caption_above_media"
-        ),
-        has_spoiler: Optional[bool] = None,
-        disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
-        allow_paid_broadcast: Optional[bool] = None,
-        message_effect_id: Optional[str] = None,
-        suggested_post_parameters: Optional[SuggestedPostParameters] = None,
-        reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[ReplyMarkupUnion] = None,
-        allow_sending_without_reply: Optional[bool] = None,
-        reply_to_message_id: Optional[int] = None,
-        request_timeout: Optional[int] = None,
+        business_connection_id: str | None = None,
+        message_thread_id: int | None = None,
+        direct_messages_topic_id: int | None = None,
+        duration: int | None = None,
+        width: int | None = None,
+        height: int | None = None,
+        thumbnail: InputFile | None = None,
+        caption: str | None = None,
+        parse_mode: str | Default | None = Default("parse_mode"),
+        caption_entities: list[MessageEntity] | None = None,
+        show_caption_above_media: bool | Default | None = Default("show_caption_above_media"),
+        has_spoiler: bool | None = None,
+        disable_notification: bool | None = None,
+        protect_content: bool | Default | None = Default("protect_content"),
+        allow_paid_broadcast: bool | None = None,
+        message_effect_id: str | None = None,
+        suggested_post_parameters: SuggestedPostParameters | None = None,
+        reply_parameters: ReplyParameters | None = None,
+        reply_markup: ReplyMarkupUnion | None = None,
+        allow_sending_without_reply: bool | None = None,
+        reply_to_message_id: int | None = None,
+        request_timeout: int | None = None,
     ) -> Message:
         """
         Use this method to send animation files (GIF or H.264/MPEG-4 AVC video without sound). On success, the sent :class:`aiogram.types.message.Message` is returned. Bots can currently send animation files of up to 50 MB in size, this limit may be changed in the future.
@@ -2252,26 +2237,26 @@ class Bot:
         self,
         chat_id: ChatIdUnion,
         audio: InputFileUnion,
-        business_connection_id: Optional[str] = None,
-        message_thread_id: Optional[int] = None,
-        direct_messages_topic_id: Optional[int] = None,
-        caption: Optional[str] = None,
-        parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
-        caption_entities: Optional[list[MessageEntity]] = None,
-        duration: Optional[int] = None,
-        performer: Optional[str] = None,
-        title: Optional[str] = None,
-        thumbnail: Optional[InputFile] = None,
-        disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
-        allow_paid_broadcast: Optional[bool] = None,
-        message_effect_id: Optional[str] = None,
-        suggested_post_parameters: Optional[SuggestedPostParameters] = None,
-        reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[ReplyMarkupUnion] = None,
-        allow_sending_without_reply: Optional[bool] = None,
-        reply_to_message_id: Optional[int] = None,
-        request_timeout: Optional[int] = None,
+        business_connection_id: str | None = None,
+        message_thread_id: int | None = None,
+        direct_messages_topic_id: int | None = None,
+        caption: str | None = None,
+        parse_mode: str | Default | None = Default("parse_mode"),
+        caption_entities: list[MessageEntity] | None = None,
+        duration: int | None = None,
+        performer: str | None = None,
+        title: str | None = None,
+        thumbnail: InputFile | None = None,
+        disable_notification: bool | None = None,
+        protect_content: bool | Default | None = Default("protect_content"),
+        allow_paid_broadcast: bool | None = None,
+        message_effect_id: str | None = None,
+        suggested_post_parameters: SuggestedPostParameters | None = None,
+        reply_parameters: ReplyParameters | None = None,
+        reply_markup: ReplyMarkupUnion | None = None,
+        allow_sending_without_reply: bool | None = None,
+        reply_to_message_id: int | None = None,
+        request_timeout: int | None = None,
     ) -> Message:
         """
         Use this method to send audio files, if you want Telegram clients to display them in the music player. Your audio must be in the .MP3 or .M4A format. On success, the sent :class:`aiogram.types.message.Message` is returned. Bots can currently send audio files of up to 50 MB in size, this limit may be changed in the future.
@@ -2333,9 +2318,9 @@ class Bot:
         self,
         chat_id: ChatIdUnion,
         action: str,
-        business_connection_id: Optional[str] = None,
-        message_thread_id: Optional[int] = None,
-        request_timeout: Optional[int] = None,
+        business_connection_id: str | None = None,
+        message_thread_id: int | None = None,
+        request_timeout: int | None = None,
     ) -> bool:
         """
         Use this method when you need to tell the user that something is happening on the bot's side. The status is set for 5 seconds or less (when a message arrives from your bot, Telegram clients clear its typing status). Returns :code:`True` on success.
@@ -2367,21 +2352,21 @@ class Bot:
         chat_id: ChatIdUnion,
         phone_number: str,
         first_name: str,
-        business_connection_id: Optional[str] = None,
-        message_thread_id: Optional[int] = None,
-        direct_messages_topic_id: Optional[int] = None,
-        last_name: Optional[str] = None,
-        vcard: Optional[str] = None,
-        disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
-        allow_paid_broadcast: Optional[bool] = None,
-        message_effect_id: Optional[str] = None,
-        suggested_post_parameters: Optional[SuggestedPostParameters] = None,
-        reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[ReplyMarkupUnion] = None,
-        allow_sending_without_reply: Optional[bool] = None,
-        reply_to_message_id: Optional[int] = None,
-        request_timeout: Optional[int] = None,
+        business_connection_id: str | None = None,
+        message_thread_id: int | None = None,
+        direct_messages_topic_id: int | None = None,
+        last_name: str | None = None,
+        vcard: str | None = None,
+        disable_notification: bool | None = None,
+        protect_content: bool | Default | None = Default("protect_content"),
+        allow_paid_broadcast: bool | None = None,
+        message_effect_id: str | None = None,
+        suggested_post_parameters: SuggestedPostParameters | None = None,
+        reply_parameters: ReplyParameters | None = None,
+        reply_markup: ReplyMarkupUnion | None = None,
+        allow_sending_without_reply: bool | None = None,
+        reply_to_message_id: int | None = None,
+        request_timeout: int | None = None,
     ) -> Message:
         """
         Use this method to send phone contacts. On success, the sent :class:`aiogram.types.message.Message` is returned.
@@ -2433,20 +2418,20 @@ class Bot:
     async def send_dice(
         self,
         chat_id: ChatIdUnion,
-        business_connection_id: Optional[str] = None,
-        message_thread_id: Optional[int] = None,
-        direct_messages_topic_id: Optional[int] = None,
-        emoji: Optional[str] = None,
-        disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
-        allow_paid_broadcast: Optional[bool] = None,
-        message_effect_id: Optional[str] = None,
-        suggested_post_parameters: Optional[SuggestedPostParameters] = None,
-        reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[ReplyMarkupUnion] = None,
-        allow_sending_without_reply: Optional[bool] = None,
-        reply_to_message_id: Optional[int] = None,
-        request_timeout: Optional[int] = None,
+        business_connection_id: str | None = None,
+        message_thread_id: int | None = None,
+        direct_messages_topic_id: int | None = None,
+        emoji: str | None = None,
+        disable_notification: bool | None = None,
+        protect_content: bool | Default | None = Default("protect_content"),
+        allow_paid_broadcast: bool | None = None,
+        message_effect_id: str | None = None,
+        suggested_post_parameters: SuggestedPostParameters | None = None,
+        reply_parameters: ReplyParameters | None = None,
+        reply_markup: ReplyMarkupUnion | None = None,
+        allow_sending_without_reply: bool | None = None,
+        reply_to_message_id: int | None = None,
+        request_timeout: int | None = None,
     ) -> Message:
         """
         Use this method to send an animated emoji that will display a random value. On success, the sent :class:`aiogram.types.message.Message` is returned.
@@ -2493,24 +2478,24 @@ class Bot:
         self,
         chat_id: ChatIdUnion,
         document: InputFileUnion,
-        business_connection_id: Optional[str] = None,
-        message_thread_id: Optional[int] = None,
-        direct_messages_topic_id: Optional[int] = None,
-        thumbnail: Optional[InputFile] = None,
-        caption: Optional[str] = None,
-        parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
-        caption_entities: Optional[list[MessageEntity]] = None,
-        disable_content_type_detection: Optional[bool] = None,
-        disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
-        allow_paid_broadcast: Optional[bool] = None,
-        message_effect_id: Optional[str] = None,
-        suggested_post_parameters: Optional[SuggestedPostParameters] = None,
-        reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[ReplyMarkupUnion] = None,
-        allow_sending_without_reply: Optional[bool] = None,
-        reply_to_message_id: Optional[int] = None,
-        request_timeout: Optional[int] = None,
+        business_connection_id: str | None = None,
+        message_thread_id: int | None = None,
+        direct_messages_topic_id: int | None = None,
+        thumbnail: InputFile | None = None,
+        caption: str | None = None,
+        parse_mode: str | Default | None = Default("parse_mode"),
+        caption_entities: list[MessageEntity] | None = None,
+        disable_content_type_detection: bool | None = None,
+        disable_notification: bool | None = None,
+        protect_content: bool | Default | None = Default("protect_content"),
+        allow_paid_broadcast: bool | None = None,
+        message_effect_id: str | None = None,
+        suggested_post_parameters: SuggestedPostParameters | None = None,
+        reply_parameters: ReplyParameters | None = None,
+        reply_markup: ReplyMarkupUnion | None = None,
+        allow_sending_without_reply: bool | None = None,
+        reply_to_message_id: int | None = None,
+        request_timeout: int | None = None,
     ) -> Message:
         """
         Use this method to send general files. On success, the sent :class:`aiogram.types.message.Message` is returned. Bots can currently send files of any type of up to 50 MB in size, this limit may be changed in the future.
@@ -2567,17 +2552,17 @@ class Bot:
         self,
         chat_id: int,
         game_short_name: str,
-        business_connection_id: Optional[str] = None,
-        message_thread_id: Optional[int] = None,
-        disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
-        allow_paid_broadcast: Optional[bool] = None,
-        message_effect_id: Optional[str] = None,
-        reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[InlineKeyboardMarkup] = None,
-        allow_sending_without_reply: Optional[bool] = None,
-        reply_to_message_id: Optional[int] = None,
-        request_timeout: Optional[int] = None,
+        business_connection_id: str | None = None,
+        message_thread_id: int | None = None,
+        disable_notification: bool | None = None,
+        protect_content: bool | Default | None = Default("protect_content"),
+        allow_paid_broadcast: bool | None = None,
+        message_effect_id: str | None = None,
+        reply_parameters: ReplyParameters | None = None,
+        reply_markup: InlineKeyboardMarkup | None = None,
+        allow_sending_without_reply: bool | None = None,
+        reply_to_message_id: int | None = None,
+        request_timeout: int | None = None,
     ) -> Message:
         """
         Use this method to send a game. On success, the sent :class:`aiogram.types.message.Message` is returned.
@@ -2624,34 +2609,34 @@ class Bot:
         payload: str,
         currency: str,
         prices: list[LabeledPrice],
-        message_thread_id: Optional[int] = None,
-        direct_messages_topic_id: Optional[int] = None,
-        provider_token: Optional[str] = None,
-        max_tip_amount: Optional[int] = None,
-        suggested_tip_amounts: Optional[list[int]] = None,
-        start_parameter: Optional[str] = None,
-        provider_data: Optional[str] = None,
-        photo_url: Optional[str] = None,
-        photo_size: Optional[int] = None,
-        photo_width: Optional[int] = None,
-        photo_height: Optional[int] = None,
-        need_name: Optional[bool] = None,
-        need_phone_number: Optional[bool] = None,
-        need_email: Optional[bool] = None,
-        need_shipping_address: Optional[bool] = None,
-        send_phone_number_to_provider: Optional[bool] = None,
-        send_email_to_provider: Optional[bool] = None,
-        is_flexible: Optional[bool] = None,
-        disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
-        allow_paid_broadcast: Optional[bool] = None,
-        message_effect_id: Optional[str] = None,
-        suggested_post_parameters: Optional[SuggestedPostParameters] = None,
-        reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[InlineKeyboardMarkup] = None,
-        allow_sending_without_reply: Optional[bool] = None,
-        reply_to_message_id: Optional[int] = None,
-        request_timeout: Optional[int] = None,
+        message_thread_id: int | None = None,
+        direct_messages_topic_id: int | None = None,
+        provider_token: str | None = None,
+        max_tip_amount: int | None = None,
+        suggested_tip_amounts: list[int] | None = None,
+        start_parameter: str | None = None,
+        provider_data: str | None = None,
+        photo_url: str | None = None,
+        photo_size: int | None = None,
+        photo_width: int | None = None,
+        photo_height: int | None = None,
+        need_name: bool | None = None,
+        need_phone_number: bool | None = None,
+        need_email: bool | None = None,
+        need_shipping_address: bool | None = None,
+        send_phone_number_to_provider: bool | None = None,
+        send_email_to_provider: bool | None = None,
+        is_flexible: bool | None = None,
+        disable_notification: bool | None = None,
+        protect_content: bool | Default | None = Default("protect_content"),
+        allow_paid_broadcast: bool | None = None,
+        message_effect_id: str | None = None,
+        suggested_post_parameters: SuggestedPostParameters | None = None,
+        reply_parameters: ReplyParameters | None = None,
+        reply_markup: InlineKeyboardMarkup | None = None,
+        allow_sending_without_reply: bool | None = None,
+        reply_to_message_id: int | None = None,
+        request_timeout: int | None = None,
     ) -> Message:
         """
         Use this method to send invoices. On success, the sent :class:`aiogram.types.message.Message` is returned.
@@ -2737,23 +2722,23 @@ class Bot:
         chat_id: ChatIdUnion,
         latitude: float,
         longitude: float,
-        business_connection_id: Optional[str] = None,
-        message_thread_id: Optional[int] = None,
-        direct_messages_topic_id: Optional[int] = None,
-        horizontal_accuracy: Optional[float] = None,
-        live_period: Optional[int] = None,
-        heading: Optional[int] = None,
-        proximity_alert_radius: Optional[int] = None,
-        disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
-        allow_paid_broadcast: Optional[bool] = None,
-        message_effect_id: Optional[str] = None,
-        suggested_post_parameters: Optional[SuggestedPostParameters] = None,
-        reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[ReplyMarkupUnion] = None,
-        allow_sending_without_reply: Optional[bool] = None,
-        reply_to_message_id: Optional[int] = None,
-        request_timeout: Optional[int] = None,
+        business_connection_id: str | None = None,
+        message_thread_id: int | None = None,
+        direct_messages_topic_id: int | None = None,
+        horizontal_accuracy: float | None = None,
+        live_period: int | None = None,
+        heading: int | None = None,
+        proximity_alert_radius: int | None = None,
+        disable_notification: bool | None = None,
+        protect_content: bool | Default | None = Default("protect_content"),
+        allow_paid_broadcast: bool | None = None,
+        message_effect_id: str | None = None,
+        suggested_post_parameters: SuggestedPostParameters | None = None,
+        reply_parameters: ReplyParameters | None = None,
+        reply_markup: ReplyMarkupUnion | None = None,
+        allow_sending_without_reply: bool | None = None,
+        reply_to_message_id: int | None = None,
+        request_timeout: int | None = None,
     ) -> Message:
         """
         Use this method to send point on the map. On success, the sent :class:`aiogram.types.message.Message` is returned.
@@ -2810,17 +2795,17 @@ class Bot:
         self,
         chat_id: ChatIdUnion,
         media: list[MediaUnion],
-        business_connection_id: Optional[str] = None,
-        message_thread_id: Optional[int] = None,
-        direct_messages_topic_id: Optional[int] = None,
-        disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
-        allow_paid_broadcast: Optional[bool] = None,
-        message_effect_id: Optional[str] = None,
-        reply_parameters: Optional[ReplyParameters] = None,
-        allow_sending_without_reply: Optional[bool] = None,
-        reply_to_message_id: Optional[int] = None,
-        request_timeout: Optional[int] = None,
+        business_connection_id: str | None = None,
+        message_thread_id: int | None = None,
+        direct_messages_topic_id: int | None = None,
+        disable_notification: bool | None = None,
+        protect_content: bool | Default | None = Default("protect_content"),
+        allow_paid_broadcast: bool | None = None,
+        message_effect_id: str | None = None,
+        reply_parameters: ReplyParameters | None = None,
+        allow_sending_without_reply: bool | None = None,
+        reply_to_message_id: int | None = None,
+        request_timeout: int | None = None,
     ) -> list[Message]:
         """
         Use this method to send a group of photos, videos, documents or audios as an album. Documents and audio files can be only grouped in an album with messages of the same type. On success, an array of :class:`aiogram.types.message.Message` objects that were sent is returned.
@@ -2863,27 +2848,23 @@ class Bot:
         self,
         chat_id: ChatIdUnion,
         text: str,
-        business_connection_id: Optional[str] = None,
-        message_thread_id: Optional[int] = None,
-        direct_messages_topic_id: Optional[int] = None,
-        parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
-        entities: Optional[list[MessageEntity]] = None,
-        link_preview_options: Optional[Union[LinkPreviewOptions, Default]] = Default(
-            "link_preview"
-        ),
-        disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
-        allow_paid_broadcast: Optional[bool] = None,
-        message_effect_id: Optional[str] = None,
-        suggested_post_parameters: Optional[SuggestedPostParameters] = None,
-        reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[ReplyMarkupUnion] = None,
-        allow_sending_without_reply: Optional[bool] = None,
-        disable_web_page_preview: Optional[Union[bool, Default]] = Default(
-            "link_preview_is_disabled"
-        ),
-        reply_to_message_id: Optional[int] = None,
-        request_timeout: Optional[int] = None,
+        business_connection_id: str | None = None,
+        message_thread_id: int | None = None,
+        direct_messages_topic_id: int | None = None,
+        parse_mode: str | Default | None = Default("parse_mode"),
+        entities: list[MessageEntity] | None = None,
+        link_preview_options: LinkPreviewOptions | Default | None = Default("link_preview"),
+        disable_notification: bool | None = None,
+        protect_content: bool | Default | None = Default("protect_content"),
+        allow_paid_broadcast: bool | None = None,
+        message_effect_id: str | None = None,
+        suggested_post_parameters: SuggestedPostParameters | None = None,
+        reply_parameters: ReplyParameters | None = None,
+        reply_markup: ReplyMarkupUnion | None = None,
+        allow_sending_without_reply: bool | None = None,
+        disable_web_page_preview: bool | Default | None = Default("link_preview_is_disabled"),
+        reply_to_message_id: int | None = None,
+        request_timeout: int | None = None,
     ) -> Message:
         """
         Use this method to send text messages. On success, the sent :class:`aiogram.types.message.Message` is returned.
@@ -2938,26 +2919,24 @@ class Bot:
         self,
         chat_id: ChatIdUnion,
         photo: InputFileUnion,
-        business_connection_id: Optional[str] = None,
-        message_thread_id: Optional[int] = None,
-        direct_messages_topic_id: Optional[int] = None,
-        caption: Optional[str] = None,
-        parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
-        caption_entities: Optional[list[MessageEntity]] = None,
-        show_caption_above_media: Optional[Union[bool, Default]] = Default(
-            "show_caption_above_media"
-        ),
-        has_spoiler: Optional[bool] = None,
-        disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
-        allow_paid_broadcast: Optional[bool] = None,
-        message_effect_id: Optional[str] = None,
-        suggested_post_parameters: Optional[SuggestedPostParameters] = None,
-        reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[ReplyMarkupUnion] = None,
-        allow_sending_without_reply: Optional[bool] = None,
-        reply_to_message_id: Optional[int] = None,
-        request_timeout: Optional[int] = None,
+        business_connection_id: str | None = None,
+        message_thread_id: int | None = None,
+        direct_messages_topic_id: int | None = None,
+        caption: str | None = None,
+        parse_mode: str | Default | None = Default("parse_mode"),
+        caption_entities: list[MessageEntity] | None = None,
+        show_caption_above_media: bool | Default | None = Default("show_caption_above_media"),
+        has_spoiler: bool | None = None,
+        disable_notification: bool | None = None,
+        protect_content: bool | Default | None = Default("protect_content"),
+        allow_paid_broadcast: bool | None = None,
+        message_effect_id: str | None = None,
+        suggested_post_parameters: SuggestedPostParameters | None = None,
+        reply_parameters: ReplyParameters | None = None,
+        reply_markup: ReplyMarkupUnion | None = None,
+        allow_sending_without_reply: bool | None = None,
+        reply_to_message_id: int | None = None,
+        request_timeout: int | None = None,
     ) -> Message:
         """
         Use this method to send photos. On success, the sent :class:`aiogram.types.message.Message` is returned.
@@ -3015,29 +2994,29 @@ class Bot:
         chat_id: ChatIdUnion,
         question: str,
         options: list[InputPollOptionUnion],
-        business_connection_id: Optional[str] = None,
-        message_thread_id: Optional[int] = None,
-        question_parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
-        question_entities: Optional[list[MessageEntity]] = None,
-        is_anonymous: Optional[bool] = None,
-        type: Optional[str] = None,
-        allows_multiple_answers: Optional[bool] = None,
-        correct_option_id: Optional[int] = None,
-        explanation: Optional[str] = None,
-        explanation_parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
-        explanation_entities: Optional[list[MessageEntity]] = None,
-        open_period: Optional[int] = None,
-        close_date: Optional[DateTimeUnion] = None,
-        is_closed: Optional[bool] = None,
-        disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
-        allow_paid_broadcast: Optional[bool] = None,
-        message_effect_id: Optional[str] = None,
-        reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[ReplyMarkupUnion] = None,
-        allow_sending_without_reply: Optional[bool] = None,
-        reply_to_message_id: Optional[int] = None,
-        request_timeout: Optional[int] = None,
+        business_connection_id: str | None = None,
+        message_thread_id: int | None = None,
+        question_parse_mode: str | Default | None = Default("parse_mode"),
+        question_entities: list[MessageEntity] | None = None,
+        is_anonymous: bool | None = None,
+        type: str | None = None,
+        allows_multiple_answers: bool | None = None,
+        correct_option_id: int | None = None,
+        explanation: str | None = None,
+        explanation_parse_mode: str | Default | None = Default("parse_mode"),
+        explanation_entities: list[MessageEntity] | None = None,
+        open_period: int | None = None,
+        close_date: DateTimeUnion | None = None,
+        is_closed: bool | None = None,
+        disable_notification: bool | None = None,
+        protect_content: bool | Default | None = Default("protect_content"),
+        allow_paid_broadcast: bool | None = None,
+        message_effect_id: str | None = None,
+        reply_parameters: ReplyParameters | None = None,
+        reply_markup: ReplyMarkupUnion | None = None,
+        allow_sending_without_reply: bool | None = None,
+        reply_to_message_id: int | None = None,
+        request_timeout: int | None = None,
     ) -> Message:
         """
         Use this method to send a native poll. On success, the sent :class:`aiogram.types.message.Message` is returned.
@@ -3106,20 +3085,20 @@ class Bot:
         self,
         chat_id: ChatIdUnion,
         sticker: InputFileUnion,
-        business_connection_id: Optional[str] = None,
-        message_thread_id: Optional[int] = None,
-        direct_messages_topic_id: Optional[int] = None,
-        emoji: Optional[str] = None,
-        disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
-        allow_paid_broadcast: Optional[bool] = None,
-        message_effect_id: Optional[str] = None,
-        suggested_post_parameters: Optional[SuggestedPostParameters] = None,
-        reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[ReplyMarkupUnion] = None,
-        allow_sending_without_reply: Optional[bool] = None,
-        reply_to_message_id: Optional[int] = None,
-        request_timeout: Optional[int] = None,
+        business_connection_id: str | None = None,
+        message_thread_id: int | None = None,
+        direct_messages_topic_id: int | None = None,
+        emoji: str | None = None,
+        disable_notification: bool | None = None,
+        protect_content: bool | Default | None = Default("protect_content"),
+        allow_paid_broadcast: bool | None = None,
+        message_effect_id: str | None = None,
+        suggested_post_parameters: SuggestedPostParameters | None = None,
+        reply_parameters: ReplyParameters | None = None,
+        reply_markup: ReplyMarkupUnion | None = None,
+        allow_sending_without_reply: bool | None = None,
+        reply_to_message_id: int | None = None,
+        request_timeout: int | None = None,
     ) -> Message:
         """
         Use this method to send static .WEBP, `animated <https://telegram.org/blog/animated-stickers>`_ .TGS, or `video <https://telegram.org/blog/video-stickers-better-reactions>`_ .WEBM stickers. On success, the sent :class:`aiogram.types.message.Message` is returned.
@@ -3171,23 +3150,23 @@ class Bot:
         longitude: float,
         title: str,
         address: str,
-        business_connection_id: Optional[str] = None,
-        message_thread_id: Optional[int] = None,
-        direct_messages_topic_id: Optional[int] = None,
-        foursquare_id: Optional[str] = None,
-        foursquare_type: Optional[str] = None,
-        google_place_id: Optional[str] = None,
-        google_place_type: Optional[str] = None,
-        disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
-        allow_paid_broadcast: Optional[bool] = None,
-        message_effect_id: Optional[str] = None,
-        suggested_post_parameters: Optional[SuggestedPostParameters] = None,
-        reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[ReplyMarkupUnion] = None,
-        allow_sending_without_reply: Optional[bool] = None,
-        reply_to_message_id: Optional[int] = None,
-        request_timeout: Optional[int] = None,
+        business_connection_id: str | None = None,
+        message_thread_id: int | None = None,
+        direct_messages_topic_id: int | None = None,
+        foursquare_id: str | None = None,
+        foursquare_type: str | None = None,
+        google_place_id: str | None = None,
+        google_place_type: str | None = None,
+        disable_notification: bool | None = None,
+        protect_content: bool | Default | None = Default("protect_content"),
+        allow_paid_broadcast: bool | None = None,
+        message_effect_id: str | None = None,
+        suggested_post_parameters: SuggestedPostParameters | None = None,
+        reply_parameters: ReplyParameters | None = None,
+        reply_markup: ReplyMarkupUnion | None = None,
+        allow_sending_without_reply: bool | None = None,
+        reply_to_message_id: int | None = None,
+        request_timeout: int | None = None,
     ) -> Message:
         """
         Use this method to send information about a venue. On success, the sent :class:`aiogram.types.message.Message` is returned.
@@ -3248,33 +3227,31 @@ class Bot:
         self,
         chat_id: ChatIdUnion,
         video: InputFileUnion,
-        business_connection_id: Optional[str] = None,
-        message_thread_id: Optional[int] = None,
-        direct_messages_topic_id: Optional[int] = None,
-        duration: Optional[int] = None,
-        width: Optional[int] = None,
-        height: Optional[int] = None,
-        thumbnail: Optional[InputFile] = None,
-        cover: Optional[InputFileUnion] = None,
-        start_timestamp: Optional[DateTimeUnion] = None,
-        caption: Optional[str] = None,
-        parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
-        caption_entities: Optional[list[MessageEntity]] = None,
-        show_caption_above_media: Optional[Union[bool, Default]] = Default(
-            "show_caption_above_media"
-        ),
-        has_spoiler: Optional[bool] = None,
-        supports_streaming: Optional[bool] = None,
-        disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
-        allow_paid_broadcast: Optional[bool] = None,
-        message_effect_id: Optional[str] = None,
-        suggested_post_parameters: Optional[SuggestedPostParameters] = None,
-        reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[ReplyMarkupUnion] = None,
-        allow_sending_without_reply: Optional[bool] = None,
-        reply_to_message_id: Optional[int] = None,
-        request_timeout: Optional[int] = None,
+        business_connection_id: str | None = None,
+        message_thread_id: int | None = None,
+        direct_messages_topic_id: int | None = None,
+        duration: int | None = None,
+        width: int | None = None,
+        height: int | None = None,
+        thumbnail: InputFile | None = None,
+        cover: InputFileUnion | None = None,
+        start_timestamp: DateTimeUnion | None = None,
+        caption: str | None = None,
+        parse_mode: str | Default | None = Default("parse_mode"),
+        caption_entities: list[MessageEntity] | None = None,
+        show_caption_above_media: bool | Default | None = Default("show_caption_above_media"),
+        has_spoiler: bool | None = None,
+        supports_streaming: bool | None = None,
+        disable_notification: bool | None = None,
+        protect_content: bool | Default | None = Default("protect_content"),
+        allow_paid_broadcast: bool | None = None,
+        message_effect_id: str | None = None,
+        suggested_post_parameters: SuggestedPostParameters | None = None,
+        reply_parameters: ReplyParameters | None = None,
+        reply_markup: ReplyMarkupUnion | None = None,
+        allow_sending_without_reply: bool | None = None,
+        reply_to_message_id: int | None = None,
+        request_timeout: int | None = None,
     ) -> Message:
         """
         Use this method to send video files, Telegram clients support MPEG4 videos (other formats may be sent as :class:`aiogram.types.document.Document`). On success, the sent :class:`aiogram.types.message.Message` is returned. Bots can currently send video files of up to 50 MB in size, this limit may be changed in the future.
@@ -3345,22 +3322,22 @@ class Bot:
         self,
         chat_id: ChatIdUnion,
         video_note: InputFileUnion,
-        business_connection_id: Optional[str] = None,
-        message_thread_id: Optional[int] = None,
-        direct_messages_topic_id: Optional[int] = None,
-        duration: Optional[int] = None,
-        length: Optional[int] = None,
-        thumbnail: Optional[InputFile] = None,
-        disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
-        allow_paid_broadcast: Optional[bool] = None,
-        message_effect_id: Optional[str] = None,
-        suggested_post_parameters: Optional[SuggestedPostParameters] = None,
-        reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[ReplyMarkupUnion] = None,
-        allow_sending_without_reply: Optional[bool] = None,
-        reply_to_message_id: Optional[int] = None,
-        request_timeout: Optional[int] = None,
+        business_connection_id: str | None = None,
+        message_thread_id: int | None = None,
+        direct_messages_topic_id: int | None = None,
+        duration: int | None = None,
+        length: int | None = None,
+        thumbnail: InputFile | None = None,
+        disable_notification: bool | None = None,
+        protect_content: bool | Default | None = Default("protect_content"),
+        allow_paid_broadcast: bool | None = None,
+        message_effect_id: str | None = None,
+        suggested_post_parameters: SuggestedPostParameters | None = None,
+        reply_parameters: ReplyParameters | None = None,
+        reply_markup: ReplyMarkupUnion | None = None,
+        allow_sending_without_reply: bool | None = None,
+        reply_to_message_id: int | None = None,
+        request_timeout: int | None = None,
     ) -> Message:
         """
         As of `v.4.0 <https://telegram.org/blog/video-messages-and-telescope>`_, Telegram clients support rounded square MPEG4 videos of up to 1 minute long. Use this method to send video messages. On success, the sent :class:`aiogram.types.message.Message` is returned.
@@ -3413,23 +3390,23 @@ class Bot:
         self,
         chat_id: ChatIdUnion,
         voice: InputFileUnion,
-        business_connection_id: Optional[str] = None,
-        message_thread_id: Optional[int] = None,
-        direct_messages_topic_id: Optional[int] = None,
-        caption: Optional[str] = None,
-        parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
-        caption_entities: Optional[list[MessageEntity]] = None,
-        duration: Optional[int] = None,
-        disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
-        allow_paid_broadcast: Optional[bool] = None,
-        message_effect_id: Optional[str] = None,
-        suggested_post_parameters: Optional[SuggestedPostParameters] = None,
-        reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[ReplyMarkupUnion] = None,
-        allow_sending_without_reply: Optional[bool] = None,
-        reply_to_message_id: Optional[int] = None,
-        request_timeout: Optional[int] = None,
+        business_connection_id: str | None = None,
+        message_thread_id: int | None = None,
+        direct_messages_topic_id: int | None = None,
+        caption: str | None = None,
+        parse_mode: str | Default | None = Default("parse_mode"),
+        caption_entities: list[MessageEntity] | None = None,
+        duration: int | None = None,
+        disable_notification: bool | None = None,
+        protect_content: bool | Default | None = Default("protect_content"),
+        allow_paid_broadcast: bool | None = None,
+        message_effect_id: str | None = None,
+        suggested_post_parameters: SuggestedPostParameters | None = None,
+        reply_parameters: ReplyParameters | None = None,
+        reply_markup: ReplyMarkupUnion | None = None,
+        allow_sending_without_reply: bool | None = None,
+        reply_to_message_id: int | None = None,
+        request_timeout: int | None = None,
     ) -> Message:
         """
         Use this method to send audio files, if you want Telegram clients to display the file as a playable voice message. For this to work, your audio must be in an .OGG file encoded with OPUS, or in .MP3 format, or in .M4A format (other formats may be sent as :class:`aiogram.types.audio.Audio` or :class:`aiogram.types.document.Document`). On success, the sent :class:`aiogram.types.message.Message` is returned. Bots can currently send voice messages of up to 50 MB in size, this limit may be changed in the future.
@@ -3485,7 +3462,7 @@ class Bot:
         chat_id: ChatIdUnion,
         user_id: int,
         custom_title: str,
-        request_timeout: Optional[int] = None,
+        request_timeout: int | None = None,
     ) -> bool:
         """
         Use this method to set a custom title for an administrator in a supergroup promoted by the bot. Returns :code:`True` on success.
@@ -3509,8 +3486,8 @@ class Bot:
     async def set_chat_description(
         self,
         chat_id: ChatIdUnion,
-        description: Optional[str] = None,
-        request_timeout: Optional[int] = None,
+        description: str | None = None,
+        request_timeout: int | None = None,
     ) -> bool:
         """
         Use this method to change the description of a group, a supergroup or a channel. The bot must be an administrator in the chat for this to work and must have the appropriate administrator rights. Returns :code:`True` on success.
@@ -3531,9 +3508,9 @@ class Bot:
 
     async def set_chat_menu_button(
         self,
-        chat_id: Optional[int] = None,
-        menu_button: Optional[MenuButtonUnion] = None,
-        request_timeout: Optional[int] = None,
+        chat_id: int | None = None,
+        menu_button: MenuButtonUnion | None = None,
+        request_timeout: int | None = None,
     ) -> bool:
         """
         Use this method to change the bot's menu button in a private chat, or the default menu button. Returns :code:`True` on success.
@@ -3556,8 +3533,8 @@ class Bot:
         self,
         chat_id: ChatIdUnion,
         permissions: ChatPermissions,
-        use_independent_chat_permissions: Optional[bool] = None,
-        request_timeout: Optional[int] = None,
+        use_independent_chat_permissions: bool | None = None,
+        request_timeout: int | None = None,
     ) -> bool:
         """
         Use this method to set default chat permissions for all members. The bot must be an administrator in the group or a supergroup for this to work and must have the *can_restrict_members* administrator rights. Returns :code:`True` on success.
@@ -3582,7 +3559,7 @@ class Bot:
         self,
         chat_id: ChatIdUnion,
         photo: InputFile,
-        request_timeout: Optional[int] = None,
+        request_timeout: int | None = None,
     ) -> bool:
         """
         Use this method to set a new profile photo for the chat. Photos can't be changed for private chats. The bot must be an administrator in the chat for this to work and must have the appropriate administrator rights. Returns :code:`True` on success.
@@ -3605,7 +3582,7 @@ class Bot:
         self,
         chat_id: ChatIdUnion,
         sticker_set_name: str,
-        request_timeout: Optional[int] = None,
+        request_timeout: int | None = None,
     ) -> bool:
         """
         Use this method to set a new group sticker set for a supergroup. The bot must be an administrator in the chat for this to work and must have the appropriate administrator rights. Use the field *can_set_sticker_set* optionally returned in :class:`aiogram.methods.get_chat.GetChat` requests to check if the bot can use this method. Returns :code:`True` on success.
@@ -3628,7 +3605,7 @@ class Bot:
         self,
         chat_id: ChatIdUnion,
         title: str,
-        request_timeout: Optional[int] = None,
+        request_timeout: int | None = None,
     ) -> bool:
         """
         Use this method to change the title of a chat. Titles can't be changed for private chats. The bot must be an administrator in the chat for this to work and must have the appropriate administrator rights. Returns :code:`True` on success.
@@ -3651,13 +3628,13 @@ class Bot:
         self,
         user_id: int,
         score: int,
-        force: Optional[bool] = None,
-        disable_edit_message: Optional[bool] = None,
-        chat_id: Optional[int] = None,
-        message_id: Optional[int] = None,
-        inline_message_id: Optional[str] = None,
-        request_timeout: Optional[int] = None,
-    ) -> Union[Message, bool]:
+        force: bool | None = None,
+        disable_edit_message: bool | None = None,
+        chat_id: int | None = None,
+        message_id: int | None = None,
+        inline_message_id: str | None = None,
+        request_timeout: int | None = None,
+    ) -> Message | bool:
         """
         Use this method to set the score of the specified user in a game message. On success, if the message is not an inline message, the :class:`aiogram.types.message.Message` is returned, otherwise :code:`True` is returned. Returns an error, if the new score is not greater than the user's current score in the chat and *force* is :code:`False`.
 
@@ -3688,9 +3665,9 @@ class Bot:
     async def set_my_commands(
         self,
         commands: list[BotCommand],
-        scope: Optional[BotCommandScopeUnion] = None,
-        language_code: Optional[str] = None,
-        request_timeout: Optional[int] = None,
+        scope: BotCommandScopeUnion | None = None,
+        language_code: str | None = None,
+        request_timeout: int | None = None,
     ) -> bool:
         """
         Use this method to change the list of the bot's commands. See `this manual <https://core.telegram.org/bots/features#commands>`_ for more details about bot commands. Returns :code:`True` on success.
@@ -3713,9 +3690,9 @@ class Bot:
 
     async def set_my_default_administrator_rights(
         self,
-        rights: Optional[ChatAdministratorRights] = None,
-        for_channels: Optional[bool] = None,
-        request_timeout: Optional[int] = None,
+        rights: ChatAdministratorRights | None = None,
+        for_channels: bool | None = None,
+        request_timeout: int | None = None,
     ) -> bool:
         """
         Use this method to change the default administrator rights requested by the bot when it's added as an administrator to groups or channels. These rights will be suggested to users, but they are free to modify the list before adding the bot. Returns :code:`True` on success.
@@ -3738,7 +3715,7 @@ class Bot:
         self,
         user_id: int,
         errors: list[PassportElementErrorUnion],
-        request_timeout: Optional[int] = None,
+        request_timeout: int | None = None,
     ) -> bool:
         """
         Informs a user that some of the Telegram Passport elements they provided contains errors. The user will not be able to re-submit their Passport to you until the errors are fixed (the contents of the field for which you returned the error must change). Returns :code:`True` on success.
@@ -3762,7 +3739,7 @@ class Bot:
         self,
         sticker: str,
         position: int,
-        request_timeout: Optional[int] = None,
+        request_timeout: int | None = None,
     ) -> bool:
         """
         Use this method to move a sticker in a set created by the bot to a specific position. Returns :code:`True` on success.
@@ -3784,13 +3761,13 @@ class Bot:
     async def set_webhook(
         self,
         url: str,
-        certificate: Optional[InputFile] = None,
-        ip_address: Optional[str] = None,
-        max_connections: Optional[int] = None,
-        allowed_updates: Optional[list[str]] = None,
-        drop_pending_updates: Optional[bool] = None,
-        secret_token: Optional[str] = None,
-        request_timeout: Optional[int] = None,
+        certificate: InputFile | None = None,
+        ip_address: str | None = None,
+        max_connections: int | None = None,
+        allowed_updates: list[str] | None = None,
+        drop_pending_updates: bool | None = None,
+        secret_token: str | None = None,
+        request_timeout: int | None = None,
     ) -> bool:
         """
         Use this method to specify a URL and receive incoming updates via an outgoing webhook. Whenever there is an update for the bot, we will send an HTTPS POST request to the specified URL, containing a JSON-serialized :class:`aiogram.types.update.Update`. In case of an unsuccessful request (a request with response `HTTP status code <https://en.wikipedia.org/wiki/List_of_HTTP_status_codes>`_ different from :code:`2XY`), we will repeat the request and give up after a reasonable amount of attempts. Returns :code:`True` on success.
@@ -3831,13 +3808,13 @@ class Bot:
 
     async def stop_message_live_location(
         self,
-        business_connection_id: Optional[str] = None,
-        chat_id: Optional[ChatIdUnion] = None,
-        message_id: Optional[int] = None,
-        inline_message_id: Optional[str] = None,
-        reply_markup: Optional[InlineKeyboardMarkup] = None,
-        request_timeout: Optional[int] = None,
-    ) -> Union[Message, bool]:
+        business_connection_id: str | None = None,
+        chat_id: ChatIdUnion | None = None,
+        message_id: int | None = None,
+        inline_message_id: str | None = None,
+        reply_markup: InlineKeyboardMarkup | None = None,
+        request_timeout: int | None = None,
+    ) -> Message | bool:
         """
         Use this method to stop updating a live location message before *live_period* expires. On success, if the message is not an inline message, the edited :class:`aiogram.types.message.Message` is returned, otherwise :code:`True` is returned.
 
@@ -3865,9 +3842,9 @@ class Bot:
         self,
         chat_id: ChatIdUnion,
         message_id: int,
-        business_connection_id: Optional[str] = None,
-        reply_markup: Optional[InlineKeyboardMarkup] = None,
-        request_timeout: Optional[int] = None,
+        business_connection_id: str | None = None,
+        reply_markup: InlineKeyboardMarkup | None = None,
+        request_timeout: int | None = None,
     ) -> Poll:
         """
         Use this method to stop a poll which was sent by the bot. On success, the stopped :class:`aiogram.types.poll.Poll` is returned.
@@ -3894,8 +3871,8 @@ class Bot:
         self,
         chat_id: ChatIdUnion,
         user_id: int,
-        only_if_banned: Optional[bool] = None,
-        request_timeout: Optional[int] = None,
+        only_if_banned: bool | None = None,
+        request_timeout: int | None = None,
     ) -> bool:
         """
         Use this method to unban a previously banned user in a supergroup or channel. The user will **not** return to the group or channel automatically, but will be able to join via link, etc. The bot must be an administrator for this to work. By default, this method guarantees that after the call the user is not a member of the chat, but will be able to join it. So if the user is a member of the chat they will also be **removed** from the chat. If you don't want this, use the parameter *only_if_banned*. Returns :code:`True` on success.
@@ -3920,7 +3897,7 @@ class Bot:
         self,
         chat_id: ChatIdUnion,
         sender_chat_id: int,
-        request_timeout: Optional[int] = None,
+        request_timeout: int | None = None,
     ) -> bool:
         """
         Use this method to unban a previously banned channel chat in a supergroup or channel. The bot must be an administrator for this to work and must have the appropriate administrator rights. Returns :code:`True` on success.
@@ -3942,7 +3919,7 @@ class Bot:
     async def unpin_all_chat_messages(
         self,
         chat_id: ChatIdUnion,
-        request_timeout: Optional[int] = None,
+        request_timeout: int | None = None,
     ) -> bool:
         """
         Use this method to clear the list of pinned messages in a chat. In private chats and channel direct messages chats, no additional rights are required to unpin all pinned messages. Conversely, the bot must be an administrator with the 'can_pin_messages' right or the 'can_edit_messages' right to unpin all pinned messages in groups and channels respectively. Returns :code:`True` on success.
@@ -3963,7 +3940,7 @@ class Bot:
         self,
         chat_id: ChatIdUnion,
         message_thread_id: int,
-        request_timeout: Optional[int] = None,
+        request_timeout: int | None = None,
     ) -> bool:
         """
         Use this method to clear the list of pinned messages in a forum topic in a forum supergroup chat or a private chat with a user. In the case of a supergroup chat the bot must be an administrator in the chat for this to work and must have the *can_pin_messages* administrator right in the supergroup. Returns :code:`True` on success.
@@ -3985,9 +3962,9 @@ class Bot:
     async def unpin_chat_message(
         self,
         chat_id: ChatIdUnion,
-        business_connection_id: Optional[str] = None,
-        message_id: Optional[int] = None,
-        request_timeout: Optional[int] = None,
+        business_connection_id: str | None = None,
+        message_id: int | None = None,
+        request_timeout: int | None = None,
     ) -> bool:
         """
         Use this method to remove a message from the list of pinned messages in a chat. In private chats and channel direct messages chats, all messages can be unpinned. Conversely, the bot must be an administrator with the 'can_pin_messages' right or the 'can_edit_messages' right to unpin messages in groups and channels respectively. Returns :code:`True` on success.
@@ -4013,7 +3990,7 @@ class Bot:
         user_id: int,
         sticker: InputFile,
         sticker_format: str,
-        request_timeout: Optional[int] = None,
+        request_timeout: int | None = None,
     ) -> File:
         """
         Use this method to upload a file with a sticker for later use in the :class:`aiogram.methods.create_new_sticker_set.CreateNewStickerSet`, :class:`aiogram.methods.add_sticker_to_set.AddStickerToSet`, or :class:`aiogram.methods.replace_sticker_in_set.ReplaceStickerInSet` methods (the file can be used multiple times). Returns the uploaded :class:`aiogram.types.file.File` on success.
@@ -4037,7 +4014,7 @@ class Bot:
     async def close_general_forum_topic(
         self,
         chat_id: ChatIdUnion,
-        request_timeout: Optional[int] = None,
+        request_timeout: int | None = None,
     ) -> bool:
         """
         Use this method to close an open 'General' topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the *can_manage_topics* administrator rights. Returns :code:`True` on success.
@@ -4058,7 +4035,7 @@ class Bot:
         self,
         chat_id: ChatIdUnion,
         name: str,
-        request_timeout: Optional[int] = None,
+        request_timeout: int | None = None,
     ) -> bool:
         """
         Use this method to edit the name of the 'General' topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the *can_manage_topics* administrator rights. Returns :code:`True` on success.
@@ -4080,7 +4057,7 @@ class Bot:
     async def hide_general_forum_topic(
         self,
         chat_id: ChatIdUnion,
-        request_timeout: Optional[int] = None,
+        request_timeout: int | None = None,
     ) -> bool:
         """
         Use this method to hide the 'General' topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the *can_manage_topics* administrator rights. The topic will be automatically closed if it was open. Returns :code:`True` on success.
@@ -4100,7 +4077,7 @@ class Bot:
     async def reopen_general_forum_topic(
         self,
         chat_id: ChatIdUnion,
-        request_timeout: Optional[int] = None,
+        request_timeout: int | None = None,
     ) -> bool:
         """
         Use this method to reopen a closed 'General' topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the *can_manage_topics* administrator rights. The topic will be automatically unhidden if it was hidden. Returns :code:`True` on success.
@@ -4120,7 +4097,7 @@ class Bot:
     async def unhide_general_forum_topic(
         self,
         chat_id: ChatIdUnion,
-        request_timeout: Optional[int] = None,
+        request_timeout: int | None = None,
     ) -> bool:
         """
         Use this method to unhide the 'General' topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the *can_manage_topics* administrator rights. Returns :code:`True` on success.
@@ -4140,7 +4117,7 @@ class Bot:
     async def delete_sticker_set(
         self,
         name: str,
-        request_timeout: Optional[int] = None,
+        request_timeout: int | None = None,
     ) -> bool:
         """
         Use this method to delete a sticker set that was created by the bot. Returns :code:`True` on success.
@@ -4159,8 +4136,8 @@ class Bot:
 
     async def get_my_description(
         self,
-        language_code: Optional[str] = None,
-        request_timeout: Optional[int] = None,
+        language_code: str | None = None,
+        request_timeout: int | None = None,
     ) -> BotDescription:
         """
         Use this method to get the current bot description for the given user language. Returns :class:`aiogram.types.bot_description.BotDescription` on success.
@@ -4179,8 +4156,8 @@ class Bot:
 
     async def get_my_short_description(
         self,
-        language_code: Optional[str] = None,
-        request_timeout: Optional[int] = None,
+        language_code: str | None = None,
+        request_timeout: int | None = None,
     ) -> BotShortDescription:
         """
         Use this method to get the current bot short description for the given user language. Returns :class:`aiogram.types.bot_short_description.BotShortDescription` on success.
@@ -4200,8 +4177,8 @@ class Bot:
     async def set_custom_emoji_sticker_set_thumbnail(
         self,
         name: str,
-        custom_emoji_id: Optional[str] = None,
-        request_timeout: Optional[int] = None,
+        custom_emoji_id: str | None = None,
+        request_timeout: int | None = None,
     ) -> bool:
         """
         Use this method to set the thumbnail of a custom emoji sticker set. Returns :code:`True` on success.
@@ -4222,9 +4199,9 @@ class Bot:
 
     async def set_my_description(
         self,
-        description: Optional[str] = None,
-        language_code: Optional[str] = None,
-        request_timeout: Optional[int] = None,
+        description: str | None = None,
+        language_code: str | None = None,
+        request_timeout: int | None = None,
     ) -> bool:
         """
         Use this method to change the bot's description, which is shown in the chat with the bot if the chat is empty. Returns :code:`True` on success.
@@ -4245,9 +4222,9 @@ class Bot:
 
     async def set_my_short_description(
         self,
-        short_description: Optional[str] = None,
-        language_code: Optional[str] = None,
-        request_timeout: Optional[int] = None,
+        short_description: str | None = None,
+        language_code: str | None = None,
+        request_timeout: int | None = None,
     ) -> bool:
         """
         Use this method to change the bot's short description, which is shown on the bot's profile page and is sent together with the link when users share the bot. Returns :code:`True` on success.
@@ -4270,7 +4247,7 @@ class Bot:
         self,
         sticker: str,
         emoji_list: list[str],
-        request_timeout: Optional[int] = None,
+        request_timeout: int | None = None,
     ) -> bool:
         """
         Use this method to change the list of emoji assigned to a regular or custom emoji sticker. The sticker must belong to a sticker set created by the bot. Returns :code:`True` on success.
@@ -4292,8 +4269,8 @@ class Bot:
     async def set_sticker_keywords(
         self,
         sticker: str,
-        keywords: Optional[list[str]] = None,
-        request_timeout: Optional[int] = None,
+        keywords: list[str] | None = None,
+        request_timeout: int | None = None,
     ) -> bool:
         """
         Use this method to change search keywords assigned to a regular or custom emoji sticker. The sticker must belong to a sticker set created by the bot. Returns :code:`True` on success.
@@ -4315,8 +4292,8 @@ class Bot:
     async def set_sticker_mask_position(
         self,
         sticker: str,
-        mask_position: Optional[MaskPosition] = None,
-        request_timeout: Optional[int] = None,
+        mask_position: MaskPosition | None = None,
+        request_timeout: int | None = None,
     ) -> bool:
         """
         Use this method to change the `mask position <https://core.telegram.org/bots/api#maskposition>`_ of a mask sticker. The sticker must belong to a sticker set that was created by the bot. Returns :code:`True` on success.
@@ -4340,8 +4317,8 @@ class Bot:
         name: str,
         user_id: int,
         format: str,
-        thumbnail: Optional[InputFileUnion] = None,
-        request_timeout: Optional[int] = None,
+        thumbnail: InputFileUnion | None = None,
+        request_timeout: int | None = None,
     ) -> bool:
         """
         Use this method to set the thumbnail of a regular or mask sticker set. The format of the thumbnail file must match the format of the stickers in the set. Returns :code:`True` on success.
@@ -4368,7 +4345,7 @@ class Bot:
         self,
         name: str,
         title: str,
-        request_timeout: Optional[int] = None,
+        request_timeout: int | None = None,
     ) -> bool:
         """
         Use this method to set the title of a created sticker set. Returns :code:`True` on success.
@@ -4389,8 +4366,8 @@ class Bot:
 
     async def get_my_name(
         self,
-        language_code: Optional[str] = None,
-        request_timeout: Optional[int] = None,
+        language_code: str | None = None,
+        request_timeout: int | None = None,
     ) -> BotName:
         """
         Use this method to get the current bot name for the given user language. Returns :class:`aiogram.types.bot_name.BotName` on success.
@@ -4409,9 +4386,9 @@ class Bot:
 
     async def set_my_name(
         self,
-        name: Optional[str] = None,
-        language_code: Optional[str] = None,
-        request_timeout: Optional[int] = None,
+        name: str | None = None,
+        language_code: str | None = None,
+        request_timeout: int | None = None,
     ) -> bool:
         """
         Use this method to change the bot's name. Returns :code:`True` on success.
@@ -4433,7 +4410,7 @@ class Bot:
     async def unpin_all_general_forum_topic_messages(
         self,
         chat_id: ChatIdUnion,
-        request_timeout: Optional[int] = None,
+        request_timeout: int | None = None,
     ) -> bool:
         """
         Use this method to clear the list of pinned messages in a General forum topic. The bot must be an administrator in the chat for this to work and must have the *can_pin_messages* administrator right in the supergroup. Returns :code:`True` on success.
@@ -4455,12 +4432,12 @@ class Bot:
         chat_id: ChatIdUnion,
         from_chat_id: ChatIdUnion,
         message_ids: list[int],
-        message_thread_id: Optional[int] = None,
-        direct_messages_topic_id: Optional[int] = None,
-        disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
-        remove_caption: Optional[bool] = None,
-        request_timeout: Optional[int] = None,
+        message_thread_id: int | None = None,
+        direct_messages_topic_id: int | None = None,
+        disable_notification: bool | None = None,
+        protect_content: bool | None = None,
+        remove_caption: bool | None = None,
+        request_timeout: int | None = None,
     ) -> list[MessageId]:
         """
         Use this method to copy messages of any kind. If some of the specified messages can't be found or copied, they are skipped. Service messages, paid media messages, giveaway messages, giveaway winners messages, and invoice messages can't be copied. A quiz :class:`aiogram.methods.poll.Poll` can be copied only if the value of the field *correct_option_id* is known to the bot. The method is analogous to the method :class:`aiogram.methods.forward_messages.ForwardMessages`, but the copied messages don't have a link to the original message. Album grouping is kept for copied messages. On success, an array of :class:`aiogram.types.message_id.MessageId` of the sent messages is returned.
@@ -4495,7 +4472,7 @@ class Bot:
         self,
         chat_id: ChatIdUnion,
         message_ids: list[int],
-        request_timeout: Optional[int] = None,
+        request_timeout: int | None = None,
     ) -> bool:
         """
         Use this method to delete multiple messages simultaneously. If some of the specified messages can't be found, they are skipped. Returns :code:`True` on success.
@@ -4519,11 +4496,11 @@ class Bot:
         chat_id: ChatIdUnion,
         from_chat_id: ChatIdUnion,
         message_ids: list[int],
-        message_thread_id: Optional[int] = None,
-        direct_messages_topic_id: Optional[int] = None,
-        disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
-        request_timeout: Optional[int] = None,
+        message_thread_id: int | None = None,
+        direct_messages_topic_id: int | None = None,
+        disable_notification: bool | None = None,
+        protect_content: bool | None = None,
+        request_timeout: int | None = None,
     ) -> list[MessageId]:
         """
         Use this method to forward multiple messages of any kind. If some of the specified messages can't be found or forwarded, they are skipped. Service messages and messages with protected content can't be forwarded. Album grouping is kept for forwarded messages. On success, an array of :class:`aiogram.types.message_id.MessageId` of the sent messages is returned.
@@ -4556,7 +4533,7 @@ class Bot:
         self,
         chat_id: ChatIdUnion,
         user_id: int,
-        request_timeout: Optional[int] = None,
+        request_timeout: int | None = None,
     ) -> UserChatBoosts:
         """
         Use this method to get the list of boosts added to a chat by a user. Requires administrator rights in the chat. Returns a :class:`aiogram.types.user_chat_boosts.UserChatBoosts` object.
@@ -4579,9 +4556,9 @@ class Bot:
         self,
         chat_id: ChatIdUnion,
         message_id: int,
-        reaction: Optional[list[ReactionTypeUnion]] = None,
-        is_big: Optional[bool] = None,
-        request_timeout: Optional[int] = None,
+        reaction: list[ReactionTypeUnion] | None = None,
+        is_big: bool | None = None,
+        request_timeout: int | None = None,
     ) -> bool:
         """
         Use this method to change the chosen reactions on a message. Service messages of some types can't be reacted to. Automatically forwarded messages from a channel to its discussion group have the same available reactions as messages in the channel. Bots can't use paid reactions. Returns :code:`True` on success.
@@ -4607,7 +4584,7 @@ class Bot:
     async def get_business_connection(
         self,
         business_connection_id: str,
-        request_timeout: Optional[int] = None,
+        request_timeout: int | None = None,
     ) -> BusinessConnection:
         """
         Use this method to get information about the connection of the bot with a business account. Returns a :class:`aiogram.types.business_connection.BusinessConnection` object on success.
@@ -4630,7 +4607,7 @@ class Bot:
         name: str,
         old_sticker: str,
         sticker: InputSticker,
-        request_timeout: Optional[int] = None,
+        request_timeout: int | None = None,
     ) -> bool:
         """
         Use this method to replace an existing sticker in a sticker set with a new one. The method is equivalent to calling :class:`aiogram.methods.delete_sticker_from_set.DeleteStickerFromSet`, then :class:`aiogram.methods.add_sticker_to_set.AddStickerToSet`, then :class:`aiogram.methods.set_sticker_position_in_set.SetStickerPositionInSet`. Returns :code:`True` on success.
@@ -4657,7 +4634,7 @@ class Bot:
         self,
         user_id: int,
         telegram_payment_charge_id: str,
-        request_timeout: Optional[int] = None,
+        request_timeout: int | None = None,
     ) -> bool:
         """
         Refunds a successful payment in `Telegram Stars <https://t.me/BotNews/90>`_. Returns :code:`True` on success.
@@ -4678,9 +4655,9 @@ class Bot:
 
     async def get_star_transactions(
         self,
-        offset: Optional[int] = None,
-        limit: Optional[int] = None,
-        request_timeout: Optional[int] = None,
+        offset: int | None = None,
+        limit: int | None = None,
+        request_timeout: int | None = None,
     ) -> StarTransactions:
         """
         Returns the bot's Telegram Star transactions in chronological order. On success, returns a :class:`aiogram.types.star_transactions.StarTransactions` object.
@@ -4704,21 +4681,21 @@ class Bot:
         chat_id: ChatIdUnion,
         star_count: int,
         media: list[InputPaidMediaUnion],
-        business_connection_id: Optional[str] = None,
-        message_thread_id: Optional[int] = None,
-        direct_messages_topic_id: Optional[int] = None,
-        payload: Optional[str] = None,
-        caption: Optional[str] = None,
-        parse_mode: Optional[str] = None,
-        caption_entities: Optional[list[MessageEntity]] = None,
-        show_caption_above_media: Optional[bool] = None,
-        disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
-        allow_paid_broadcast: Optional[bool] = None,
-        suggested_post_parameters: Optional[SuggestedPostParameters] = None,
-        reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[ReplyMarkupUnion] = None,
-        request_timeout: Optional[int] = None,
+        business_connection_id: str | None = None,
+        message_thread_id: int | None = None,
+        direct_messages_topic_id: int | None = None,
+        payload: str | None = None,
+        caption: str | None = None,
+        parse_mode: str | None = None,
+        caption_entities: list[MessageEntity] | None = None,
+        show_caption_above_media: bool | None = None,
+        disable_notification: bool | None = None,
+        protect_content: bool | None = None,
+        allow_paid_broadcast: bool | None = None,
+        suggested_post_parameters: SuggestedPostParameters | None = None,
+        reply_parameters: ReplyParameters | None = None,
+        reply_markup: ReplyMarkupUnion | None = None,
+        request_timeout: int | None = None,
     ) -> Message:
         """
         Use this method to send paid media. On success, the sent :class:`aiogram.types.message.Message` is returned.
@@ -4772,8 +4749,8 @@ class Bot:
         chat_id: ChatIdUnion,
         subscription_period: DateTimeUnion,
         subscription_price: int,
-        name: Optional[str] = None,
-        request_timeout: Optional[int] = None,
+        name: str | None = None,
+        request_timeout: int | None = None,
     ) -> ChatInviteLink:
         """
         Use this method to create a `subscription invite link <https://telegram.org/blog/superchannels-star-reactions-subscriptions#star-subscriptions>`_ for a channel chat. The bot must have the *can_invite_users* administrator rights. The link can be edited using the method :class:`aiogram.methods.edit_chat_subscription_invite_link.EditChatSubscriptionInviteLink` or revoked using the method :class:`aiogram.methods.revoke_chat_invite_link.RevokeChatInviteLink`. Returns the new invite link as a :class:`aiogram.types.chat_invite_link.ChatInviteLink` object.
@@ -4800,8 +4777,8 @@ class Bot:
         self,
         chat_id: ChatIdUnion,
         invite_link: str,
-        name: Optional[str] = None,
-        request_timeout: Optional[int] = None,
+        name: str | None = None,
+        request_timeout: int | None = None,
     ) -> ChatInviteLink:
         """
         Use this method to edit a subscription invite link created by the bot. The bot must have the *can_invite_users* administrator rights. Returns the edited invite link as a :class:`aiogram.types.chat_invite_link.ChatInviteLink` object.
@@ -4827,7 +4804,7 @@ class Bot:
         user_id: int,
         telegram_payment_charge_id: str,
         is_canceled: bool,
-        request_timeout: Optional[int] = None,
+        request_timeout: int | None = None,
     ) -> bool:
         """
         Allows the bot to cancel or re-enable extension of a subscription paid in Telegram Stars. Returns :code:`True` on success.
@@ -4850,7 +4827,7 @@ class Bot:
 
     async def get_available_gifts(
         self,
-        request_timeout: Optional[int] = None,
+        request_timeout: int | None = None,
     ) -> Gifts:
         """
         Returns the list of gifts that can be sent by the bot to users and channel chats. Requires no parameters. Returns a :class:`aiogram.types.gifts.Gifts` object.
@@ -4868,11 +4845,11 @@ class Bot:
         self,
         user_id: int,
         result: InlineQueryResultUnion,
-        allow_user_chats: Optional[bool] = None,
-        allow_bot_chats: Optional[bool] = None,
-        allow_group_chats: Optional[bool] = None,
-        allow_channel_chats: Optional[bool] = None,
-        request_timeout: Optional[int] = None,
+        allow_user_chats: bool | None = None,
+        allow_bot_chats: bool | None = None,
+        allow_group_chats: bool | None = None,
+        allow_channel_chats: bool | None = None,
+        request_timeout: int | None = None,
     ) -> PreparedInlineMessage:
         """
         Stores a message that can be sent by a user of a Mini App. Returns a :class:`aiogram.types.prepared_inline_message.PreparedInlineMessage` object.
@@ -4902,13 +4879,13 @@ class Bot:
     async def send_gift(
         self,
         gift_id: str,
-        user_id: Optional[int] = None,
-        chat_id: Optional[ChatIdUnion] = None,
-        pay_for_upgrade: Optional[bool] = None,
-        text: Optional[str] = None,
-        text_parse_mode: Optional[str] = None,
-        text_entities: Optional[list[MessageEntity]] = None,
-        request_timeout: Optional[int] = None,
+        user_id: int | None = None,
+        chat_id: ChatIdUnion | None = None,
+        pay_for_upgrade: bool | None = None,
+        text: str | None = None,
+        text_parse_mode: str | None = None,
+        text_entities: list[MessageEntity] | None = None,
+        request_timeout: int | None = None,
     ) -> bool:
         """
         Sends a gift to the given user or channel chat. The gift can't be converted to Telegram Stars by the receiver. Returns :code:`True` on success.
@@ -4940,9 +4917,9 @@ class Bot:
     async def set_user_emoji_status(
         self,
         user_id: int,
-        emoji_status_custom_emoji_id: Optional[str] = None,
-        emoji_status_expiration_date: Optional[DateTimeUnion] = None,
-        request_timeout: Optional[int] = None,
+        emoji_status_custom_emoji_id: str | None = None,
+        emoji_status_expiration_date: DateTimeUnion | None = None,
+        request_timeout: int | None = None,
     ) -> bool:
         """
         Changes the emoji status for a given user that previously allowed the bot to manage their emoji status via the Mini App method `requestEmojiStatusAccess <https://core.telegram.org/bots/webapps#initializing-mini-apps>`_. Returns :code:`True` on success.
@@ -4966,7 +4943,7 @@ class Bot:
     async def remove_chat_verification(
         self,
         chat_id: ChatIdUnion,
-        request_timeout: Optional[int] = None,
+        request_timeout: int | None = None,
     ) -> bool:
         """
         Removes verification from a chat that is currently verified `on behalf of the organization <https://telegram.org/verify#third-party-verification>`_ represented by the bot. Returns :code:`True` on success.
@@ -4986,7 +4963,7 @@ class Bot:
     async def remove_user_verification(
         self,
         user_id: int,
-        request_timeout: Optional[int] = None,
+        request_timeout: int | None = None,
     ) -> bool:
         """
         Removes verification from a user who is currently verified `on behalf of the organization <https://telegram.org/verify#third-party-verification>`_ represented by the bot. Returns :code:`True` on success.
@@ -5006,8 +4983,8 @@ class Bot:
     async def verify_chat(
         self,
         chat_id: ChatIdUnion,
-        custom_description: Optional[str] = None,
-        request_timeout: Optional[int] = None,
+        custom_description: str | None = None,
+        request_timeout: int | None = None,
     ) -> bool:
         """
         Verifies a chat `on behalf of the organization <https://telegram.org/verify#third-party-verification>`_ which is represented by the bot. Returns :code:`True` on success.
@@ -5029,8 +5006,8 @@ class Bot:
     async def verify_user(
         self,
         user_id: int,
-        custom_description: Optional[str] = None,
-        request_timeout: Optional[int] = None,
+        custom_description: str | None = None,
+        request_timeout: int | None = None,
     ) -> bool:
         """
         Verifies a user `on behalf of the organization <https://telegram.org/verify#third-party-verification>`_ which is represented by the bot. Returns :code:`True` on success.
@@ -5053,7 +5030,7 @@ class Bot:
         self,
         business_connection_id: str,
         owned_gift_id: str,
-        request_timeout: Optional[int] = None,
+        request_timeout: int | None = None,
     ) -> bool:
         """
         Converts a given regular gift to Telegram Stars. Requires the *can_convert_gifts_to_stars* business bot right. Returns :code:`True` on success.
@@ -5076,7 +5053,7 @@ class Bot:
         self,
         business_connection_id: str,
         message_ids: list[int],
-        request_timeout: Optional[int] = None,
+        request_timeout: int | None = None,
     ) -> bool:
         """
         Delete messages on behalf of a business account. Requires the *can_delete_sent_messages* business bot right to delete messages sent by the bot itself, or the *can_delete_all_messages* business bot right to delete any message. Returns :code:`True` on success.
@@ -5099,7 +5076,7 @@ class Bot:
         self,
         business_connection_id: str,
         story_id: int,
-        request_timeout: Optional[int] = None,
+        request_timeout: int | None = None,
     ) -> bool:
         """
         Deletes a story previously posted by the bot on behalf of a managed business account. Requires the *can_manage_stories* business bot right. Returns :code:`True` on success.
@@ -5123,11 +5100,11 @@ class Bot:
         business_connection_id: str,
         story_id: int,
         content: InputStoryContentUnion,
-        caption: Optional[str] = None,
-        parse_mode: Optional[str] = None,
-        caption_entities: Optional[list[MessageEntity]] = None,
-        areas: Optional[list[StoryArea]] = None,
-        request_timeout: Optional[int] = None,
+        caption: str | None = None,
+        parse_mode: str | None = None,
+        caption_entities: list[MessageEntity] | None = None,
+        areas: list[StoryArea] | None = None,
+        request_timeout: int | None = None,
     ) -> Story:
         """
         Edits a story previously posted by the bot on behalf of a managed business account. Requires the *can_manage_stories* business bot right. Returns :class:`aiogram.types.story.Story` on success.
@@ -5159,18 +5136,18 @@ class Bot:
     async def get_business_account_gifts(
         self,
         business_connection_id: str,
-        exclude_unsaved: Optional[bool] = None,
-        exclude_saved: Optional[bool] = None,
-        exclude_unlimited: Optional[bool] = None,
-        exclude_limited_upgradable: Optional[bool] = None,
-        exclude_limited_non_upgradable: Optional[bool] = None,
-        exclude_unique: Optional[bool] = None,
-        exclude_from_blockchain: Optional[bool] = None,
-        sort_by_price: Optional[bool] = None,
-        offset: Optional[str] = None,
-        limit: Optional[int] = None,
-        exclude_limited: Optional[bool] = None,
-        request_timeout: Optional[int] = None,
+        exclude_unsaved: bool | None = None,
+        exclude_saved: bool | None = None,
+        exclude_unlimited: bool | None = None,
+        exclude_limited_upgradable: bool | None = None,
+        exclude_limited_non_upgradable: bool | None = None,
+        exclude_unique: bool | None = None,
+        exclude_from_blockchain: bool | None = None,
+        sort_by_price: bool | None = None,
+        offset: str | None = None,
+        limit: int | None = None,
+        exclude_limited: bool | None = None,
+        request_timeout: int | None = None,
     ) -> OwnedGifts:
         """
         Returns the gifts received and owned by a managed business account. Requires the *can_view_gifts_and_stars* business bot right. Returns :class:`aiogram.types.owned_gifts.OwnedGifts` on success.
@@ -5212,7 +5189,7 @@ class Bot:
     async def get_business_account_star_balance(
         self,
         business_connection_id: str,
-        request_timeout: Optional[int] = None,
+        request_timeout: int | None = None,
     ) -> StarAmount:
         """
         Returns the amount of Telegram Stars owned by a managed business account. Requires the *can_view_gifts_and_stars* business bot right. Returns :class:`aiogram.types.star_amount.StarAmount` on success.
@@ -5234,10 +5211,10 @@ class Bot:
         user_id: int,
         month_count: int,
         star_count: int,
-        text: Optional[str] = None,
-        text_parse_mode: Optional[str] = None,
-        text_entities: Optional[list[MessageEntity]] = None,
-        request_timeout: Optional[int] = None,
+        text: str | None = None,
+        text_parse_mode: str | None = None,
+        text_entities: list[MessageEntity] | None = None,
+        request_timeout: int | None = None,
     ) -> bool:
         """
         Gifts a Telegram Premium subscription to the given user. Returns :code:`True` on success.
@@ -5269,13 +5246,13 @@ class Bot:
         business_connection_id: str,
         content: InputStoryContentUnion,
         active_period: int,
-        caption: Optional[str] = None,
-        parse_mode: Optional[str] = None,
-        caption_entities: Optional[list[MessageEntity]] = None,
-        areas: Optional[list[StoryArea]] = None,
-        post_to_chat_page: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
-        request_timeout: Optional[int] = None,
+        caption: str | None = None,
+        parse_mode: str | None = None,
+        caption_entities: list[MessageEntity] | None = None,
+        areas: list[StoryArea] | None = None,
+        post_to_chat_page: bool | None = None,
+        protect_content: bool | None = None,
+        request_timeout: int | None = None,
     ) -> Story:
         """
         Posts a story on behalf of a managed business account. Requires the *can_manage_stories* business bot right. Returns :class:`aiogram.types.story.Story` on success.
@@ -5313,7 +5290,7 @@ class Bot:
         business_connection_id: str,
         chat_id: int,
         message_id: int,
-        request_timeout: Optional[int] = None,
+        request_timeout: int | None = None,
     ) -> bool:
         """
         Marks incoming message as read on behalf of a business account. Requires the *can_read_messages* business bot right. Returns :code:`True` on success.
@@ -5337,8 +5314,8 @@ class Bot:
     async def remove_business_account_profile_photo(
         self,
         business_connection_id: str,
-        is_public: Optional[bool] = None,
-        request_timeout: Optional[int] = None,
+        is_public: bool | None = None,
+        request_timeout: int | None = None,
     ) -> bool:
         """
         Removes the current profile photo of a managed business account. Requires the *can_edit_profile_photo* business bot right. Returns :code:`True` on success.
@@ -5360,8 +5337,8 @@ class Bot:
     async def set_business_account_bio(
         self,
         business_connection_id: str,
-        bio: Optional[str] = None,
-        request_timeout: Optional[int] = None,
+        bio: str | None = None,
+        request_timeout: int | None = None,
     ) -> bool:
         """
         Changes the bio of a managed business account. Requires the *can_change_bio* business bot right. Returns :code:`True` on success.
@@ -5385,7 +5362,7 @@ class Bot:
         business_connection_id: str,
         show_gift_button: bool,
         accepted_gift_types: AcceptedGiftTypes,
-        request_timeout: Optional[int] = None,
+        request_timeout: int | None = None,
     ) -> bool:
         """
         Changes the privacy settings pertaining to incoming gifts in a managed business account. Requires the *can_change_gift_settings* business bot right. Returns :code:`True` on success.
@@ -5410,8 +5387,8 @@ class Bot:
         self,
         business_connection_id: str,
         first_name: str,
-        last_name: Optional[str] = None,
-        request_timeout: Optional[int] = None,
+        last_name: str | None = None,
+        request_timeout: int | None = None,
     ) -> bool:
         """
         Changes the first and last name of a managed business account. Requires the *can_change_name* business bot right. Returns :code:`True` on success.
@@ -5436,8 +5413,8 @@ class Bot:
         self,
         business_connection_id: str,
         photo: InputProfilePhotoUnion,
-        is_public: Optional[bool] = None,
-        request_timeout: Optional[int] = None,
+        is_public: bool | None = None,
+        request_timeout: int | None = None,
     ) -> bool:
         """
         Changes the profile photo of a managed business account. Requires the *can_edit_profile_photo* business bot right. Returns :code:`True` on success.
@@ -5461,8 +5438,8 @@ class Bot:
     async def set_business_account_username(
         self,
         business_connection_id: str,
-        username: Optional[str] = None,
-        request_timeout: Optional[int] = None,
+        username: str | None = None,
+        request_timeout: int | None = None,
     ) -> bool:
         """
         Changes the username of a managed business account. Requires the *can_change_username* business bot right. Returns :code:`True` on success.
@@ -5485,7 +5462,7 @@ class Bot:
         self,
         business_connection_id: str,
         star_count: int,
-        request_timeout: Optional[int] = None,
+        request_timeout: int | None = None,
     ) -> bool:
         """
         Transfers Telegram Stars from the business account balance to the bot's balance. Requires the *can_transfer_stars* business bot right. Returns :code:`True` on success.
@@ -5509,8 +5486,8 @@ class Bot:
         business_connection_id: str,
         owned_gift_id: str,
         new_owner_chat_id: int,
-        star_count: Optional[int] = None,
-        request_timeout: Optional[int] = None,
+        star_count: int | None = None,
+        request_timeout: int | None = None,
     ) -> bool:
         """
         Transfers an owned unique gift to another user. Requires the *can_transfer_and_upgrade_gifts* business bot right. Requires *can_transfer_stars* business bot right if the transfer is paid. Returns :code:`True` on success.
@@ -5537,9 +5514,9 @@ class Bot:
         self,
         business_connection_id: str,
         owned_gift_id: str,
-        keep_original_details: Optional[bool] = None,
-        star_count: Optional[int] = None,
-        request_timeout: Optional[int] = None,
+        keep_original_details: bool | None = None,
+        star_count: int | None = None,
+        request_timeout: int | None = None,
     ) -> bool:
         """
         Upgrades a given regular gift to a unique gift. Requires the *can_transfer_and_upgrade_gifts* business bot right. Additionally requires the *can_transfer_stars* business bot right if the upgrade is paid. Returns :code:`True` on success.
@@ -5568,8 +5545,8 @@ class Bot:
         chat_id: int,
         message_id: int,
         checklist: InputChecklist,
-        reply_markup: Optional[InlineKeyboardMarkup] = None,
-        request_timeout: Optional[int] = None,
+        reply_markup: InlineKeyboardMarkup | None = None,
+        request_timeout: int | None = None,
     ) -> Message:
         """
         Use this method to edit a checklist on behalf of a connected business account. On success, the edited :class:`aiogram.types.message.Message` is returned.
@@ -5596,7 +5573,7 @@ class Bot:
 
     async def get_my_star_balance(
         self,
-        request_timeout: Optional[int] = None,
+        request_timeout: int | None = None,
     ) -> StarAmount:
         """
         A method to get the current Telegram Stars balance of the bot. Requires no parameters. On success, returns a :class:`aiogram.types.star_amount.StarAmount` object.
@@ -5615,12 +5592,12 @@ class Bot:
         business_connection_id: str,
         chat_id: int,
         checklist: InputChecklist,
-        disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
-        message_effect_id: Optional[str] = None,
-        reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[InlineKeyboardMarkup] = None,
-        request_timeout: Optional[int] = None,
+        disable_notification: bool | None = None,
+        protect_content: bool | None = None,
+        message_effect_id: str | None = None,
+        reply_parameters: ReplyParameters | None = None,
+        reply_markup: InlineKeyboardMarkup | None = None,
+        request_timeout: int | None = None,
     ) -> Message:
         """
         Use this method to send a checklist on behalf of a connected business account. On success, the sent :class:`aiogram.types.message.Message` is returned.
@@ -5655,8 +5632,8 @@ class Bot:
         self,
         chat_id: int,
         message_id: int,
-        send_date: Optional[DateTimeUnion] = None,
-        request_timeout: Optional[int] = None,
+        send_date: DateTimeUnion | None = None,
+        request_timeout: int | None = None,
     ) -> bool:
         """
         Use this method to approve a suggested post in a direct messages chat. The bot must have the 'can_post_messages' administrator right in the corresponding channel chat. Returns :code:`True` on success.
@@ -5681,8 +5658,8 @@ class Bot:
         self,
         chat_id: int,
         message_id: int,
-        comment: Optional[str] = None,
-        request_timeout: Optional[int] = None,
+        comment: str | None = None,
+        request_timeout: int | None = None,
     ) -> bool:
         """
         Use this method to decline a suggested post in a direct messages chat. The bot must have the 'can_manage_direct_messages' administrator right in the corresponding channel chat. Returns :code:`True` on success.
@@ -5706,17 +5683,17 @@ class Bot:
     async def get_chat_gifts(
         self,
         chat_id: ChatIdUnion,
-        exclude_unsaved: Optional[bool] = None,
-        exclude_saved: Optional[bool] = None,
-        exclude_unlimited: Optional[bool] = None,
-        exclude_limited_upgradable: Optional[bool] = None,
-        exclude_limited_non_upgradable: Optional[bool] = None,
-        exclude_from_blockchain: Optional[bool] = None,
-        exclude_unique: Optional[bool] = None,
-        sort_by_price: Optional[bool] = None,
-        offset: Optional[str] = None,
-        limit: Optional[int] = None,
-        request_timeout: Optional[int] = None,
+        exclude_unsaved: bool | None = None,
+        exclude_saved: bool | None = None,
+        exclude_unlimited: bool | None = None,
+        exclude_limited_upgradable: bool | None = None,
+        exclude_limited_non_upgradable: bool | None = None,
+        exclude_from_blockchain: bool | None = None,
+        exclude_unique: bool | None = None,
+        sort_by_price: bool | None = None,
+        offset: str | None = None,
+        limit: int | None = None,
+        request_timeout: int | None = None,
     ) -> OwnedGifts:
         """
         Returns the gifts owned by a chat. Returns :class:`aiogram.types.owned_gifts.OwnedGifts` on success.
@@ -5756,15 +5733,15 @@ class Bot:
     async def get_user_gifts(
         self,
         user_id: int,
-        exclude_unlimited: Optional[bool] = None,
-        exclude_limited_upgradable: Optional[bool] = None,
-        exclude_limited_non_upgradable: Optional[bool] = None,
-        exclude_from_blockchain: Optional[bool] = None,
-        exclude_unique: Optional[bool] = None,
-        sort_by_price: Optional[bool] = None,
-        offset: Optional[str] = None,
-        limit: Optional[int] = None,
-        request_timeout: Optional[int] = None,
+        exclude_unlimited: bool | None = None,
+        exclude_limited_upgradable: bool | None = None,
+        exclude_limited_non_upgradable: bool | None = None,
+        exclude_from_blockchain: bool | None = None,
+        exclude_unique: bool | None = None,
+        sort_by_price: bool | None = None,
+        offset: str | None = None,
+        limit: int | None = None,
+        request_timeout: int | None = None,
     ) -> OwnedGifts:
         """
         Returns the gifts owned and hosted by a user. Returns :class:`aiogram.types.owned_gifts.OwnedGifts` on success.
@@ -5803,9 +5780,9 @@ class Bot:
         from_chat_id: int,
         from_story_id: int,
         active_period: int,
-        post_to_chat_page: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
-        request_timeout: Optional[int] = None,
+        post_to_chat_page: bool | None = None,
+        protect_content: bool | None = None,
+        request_timeout: int | None = None,
     ) -> Story:
         """
         Reposts a story on behalf of a business account from another business account. Both business accounts must be managed by the same bot, and the story on the source account must have been posted (or reposted) by the bot. Requires the *can_manage_stories* business bot right for both business accounts. Returns :class:`aiogram.types.story.Story` on success.
@@ -5837,10 +5814,10 @@ class Bot:
         chat_id: int,
         draft_id: int,
         text: str,
-        message_thread_id: Optional[int] = None,
-        parse_mode: Optional[str] = None,
-        entities: Optional[list[MessageEntity]] = None,
-        request_timeout: Optional[int] = None,
+        message_thread_id: int | None = None,
+        parse_mode: str | None = None,
+        entities: list[MessageEntity] | None = None,
+        request_timeout: int | None = None,
     ) -> bool:
         """
         Use this method to stream a partial message to a user while the message is being generated; supported only for bots with forum topic mode enabled. Returns :code:`True` on success.

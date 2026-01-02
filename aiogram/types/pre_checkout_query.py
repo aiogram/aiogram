@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from pydantic import Field
 
@@ -29,9 +29,9 @@ class PreCheckoutQuery(TelegramObject):
     """Total price in the *smallest units* of the currency (integer, **not** float/double). For example, for a price of :code:`US$ 1.45` pass :code:`amount = 145`. See the *exp* parameter in `currencies.json <https://core.telegram.org/bots/payments/currencies.json>`_, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies)."""
     invoice_payload: str
     """Bot-specified invoice payload"""
-    shipping_option_id: Optional[str] = None
+    shipping_option_id: str | None = None
     """*Optional*. Identifier of the shipping option chosen by the user"""
-    order_info: Optional[OrderInfo] = None
+    order_info: OrderInfo | None = None
     """*Optional*. Order information provided by the user"""
 
     if TYPE_CHECKING:
@@ -46,8 +46,8 @@ class PreCheckoutQuery(TelegramObject):
             currency: str,
             total_amount: int,
             invoice_payload: str,
-            shipping_option_id: Optional[str] = None,
-            order_info: Optional[OrderInfo] = None,
+            shipping_option_id: str | None = None,
+            order_info: OrderInfo | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!
@@ -68,7 +68,7 @@ class PreCheckoutQuery(TelegramObject):
     def answer(
         self,
         ok: bool,
-        error_message: Optional[str] = None,
+        error_message: str | None = None,
         **kwargs: Any,
     ) -> AnswerPreCheckoutQuery:
         """

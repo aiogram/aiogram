@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from ..types import InlineKeyboardMarkup, InputChecklist, Message, ReplyParameters
 from .base import TelegramMethod
@@ -22,15 +22,15 @@ class SendChecklist(TelegramMethod[Message]):
     """Unique identifier for the target chat"""
     checklist: InputChecklist
     """A JSON-serialized object for the checklist to send"""
-    disable_notification: Optional[bool] = None
+    disable_notification: bool | None = None
     """Sends the message silently. Users will receive a notification with no sound."""
-    protect_content: Optional[bool] = None
+    protect_content: bool | None = None
     """Protects the contents of the sent message from forwarding and saving"""
-    message_effect_id: Optional[str] = None
+    message_effect_id: str | None = None
     """Unique identifier of the message effect to be added to the message"""
-    reply_parameters: Optional[ReplyParameters] = None
+    reply_parameters: ReplyParameters | None = None
     """A JSON-serialized object for description of the message to reply to"""
-    reply_markup: Optional[InlineKeyboardMarkup] = None
+    reply_markup: InlineKeyboardMarkup | None = None
     """A JSON-serialized object for an inline keyboard"""
 
     if TYPE_CHECKING:
@@ -43,11 +43,11 @@ class SendChecklist(TelegramMethod[Message]):
             business_connection_id: str,
             chat_id: int,
             checklist: InputChecklist,
-            disable_notification: Optional[bool] = None,
-            protect_content: Optional[bool] = None,
-            message_effect_id: Optional[str] = None,
-            reply_parameters: Optional[ReplyParameters] = None,
-            reply_markup: Optional[InlineKeyboardMarkup] = None,
+            disable_notification: bool | None = None,
+            protect_content: bool | None = None,
+            message_effect_id: str | None = None,
+            reply_parameters: ReplyParameters | None = None,
+            reply_markup: InlineKeyboardMarkup | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

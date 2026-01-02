@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
+from typing import TYPE_CHECKING, Any
 
 from pydantic import Field
 
@@ -143,237 +143,237 @@ class Message(MaybeInaccessibleMessage):
     """Date the message was sent in Unix time. It is always a positive number, representing a valid date."""
     chat: Chat
     """Chat the message belongs to"""
-    message_thread_id: Optional[int] = None
+    message_thread_id: int | None = None
     """*Optional*. Unique identifier of a message thread or forum topic to which the message belongs; for supergroups and private chats only"""
-    direct_messages_topic: Optional[DirectMessagesTopic] = None
+    direct_messages_topic: DirectMessagesTopic | None = None
     """*Optional*. Information about the direct messages chat topic that contains the message"""
-    from_user: Optional[User] = Field(None, alias="from")
+    from_user: User | None = Field(None, alias="from")
     """*Optional*. Sender of the message; may be empty for messages sent to channels. For backward compatibility, if the message was sent on behalf of a chat, the field contains a fake sender user in non-channel chats"""
-    sender_chat: Optional[Chat] = None
+    sender_chat: Chat | None = None
     """*Optional*. Sender of the message when sent on behalf of a chat. For example, the supergroup itself for messages sent by its anonymous administrators or a linked channel for messages automatically forwarded to the channel's discussion group. For backward compatibility, if the message was sent on behalf of a chat, the field *from* contains a fake sender user in non-channel chats."""
-    sender_boost_count: Optional[int] = None
+    sender_boost_count: int | None = None
     """*Optional*. If the sender of the message boosted the chat, the number of boosts added by the user"""
-    sender_business_bot: Optional[User] = None
+    sender_business_bot: User | None = None
     """*Optional*. The bot that actually sent the message on behalf of the business account. Available only for outgoing messages sent on behalf of the connected business account."""
-    business_connection_id: Optional[str] = None
+    business_connection_id: str | None = None
     """*Optional*. Unique identifier of the business connection from which the message was received. If non-empty, the message belongs to a chat of the corresponding business account that is independent from any potential bot chat which might share the same identifier."""
-    forward_origin: Optional[MessageOriginUnion] = None
+    forward_origin: MessageOriginUnion | None = None
     """*Optional*. Information about the original message for forwarded messages"""
-    is_topic_message: Optional[bool] = None
+    is_topic_message: bool | None = None
     """*Optional*. :code:`True`, if the message is sent to a topic in a forum supergroup or a private chat with the bot"""
-    is_automatic_forward: Optional[bool] = None
+    is_automatic_forward: bool | None = None
     """*Optional*. :code:`True`, if the message is a channel post that was automatically forwarded to the connected discussion group"""
-    reply_to_message: Optional[Message] = None
+    reply_to_message: Message | None = None
     """*Optional*. For replies in the same chat and message thread, the original message. Note that the :class:`aiogram.types.message.Message` object in this field will not contain further *reply_to_message* fields even if it itself is a reply."""
-    external_reply: Optional[ExternalReplyInfo] = None
+    external_reply: ExternalReplyInfo | None = None
     """*Optional*. Information about the message that is being replied to, which may come from another chat or forum topic"""
-    quote: Optional[TextQuote] = None
+    quote: TextQuote | None = None
     """*Optional*. For replies that quote part of the original message, the quoted part of the message"""
-    reply_to_story: Optional[Story] = None
+    reply_to_story: Story | None = None
     """*Optional*. For replies to a story, the original story"""
-    reply_to_checklist_task_id: Optional[int] = None
+    reply_to_checklist_task_id: int | None = None
     """*Optional*. Identifier of the specific checklist task that is being replied to"""
-    via_bot: Optional[User] = None
+    via_bot: User | None = None
     """*Optional*. Bot through which the message was sent"""
-    edit_date: Optional[int] = None
+    edit_date: int | None = None
     """*Optional*. Date the message was last edited in Unix time"""
-    has_protected_content: Optional[bool] = None
+    has_protected_content: bool | None = None
     """*Optional*. :code:`True`, if the message can't be forwarded"""
-    is_from_offline: Optional[bool] = None
+    is_from_offline: bool | None = None
     """*Optional*. :code:`True`, if the message was sent by an implicit action, for example, as an away or a greeting business message, or as a scheduled message"""
-    is_paid_post: Optional[bool] = None
+    is_paid_post: bool | None = None
     """*Optional*. :code:`True`, if the message is a paid post. Note that such posts must not be deleted for 24 hours to receive the payment and can't be edited."""
-    media_group_id: Optional[str] = None
+    media_group_id: str | None = None
     """*Optional*. The unique identifier of a media message group this message belongs to"""
-    author_signature: Optional[str] = None
+    author_signature: str | None = None
     """*Optional*. Signature of the post author for messages in channels, or the custom title of an anonymous group administrator"""
-    paid_star_count: Optional[int] = None
+    paid_star_count: int | None = None
     """*Optional*. The number of Telegram Stars that were paid by the sender of the message to send it"""
-    text: Optional[str] = None
+    text: str | None = None
     """*Optional*. For text messages, the actual UTF-8 text of the message"""
-    entities: Optional[list[MessageEntity]] = None
+    entities: list[MessageEntity] | None = None
     """*Optional*. For text messages, special entities like usernames, URLs, bot commands, etc. that appear in the text"""
-    link_preview_options: Optional[LinkPreviewOptions] = None
+    link_preview_options: LinkPreviewOptions | None = None
     """*Optional*. Options used for link preview generation for the message, if it is a text message and link preview options were changed"""
-    suggested_post_info: Optional[SuggestedPostInfo] = None
+    suggested_post_info: SuggestedPostInfo | None = None
     """*Optional*. Information about suggested post parameters if the message is a suggested post in a channel direct messages chat. If the message is an approved or declined suggested post, then it can't be edited."""
-    effect_id: Optional[str] = None
+    effect_id: str | None = None
     """*Optional*. Unique identifier of the message effect added to the message"""
-    animation: Optional[Animation] = None
+    animation: Animation | None = None
     """*Optional*. Message is an animation, information about the animation. For backward compatibility, when this field is set, the *document* field will also be set"""
-    audio: Optional[Audio] = None
+    audio: Audio | None = None
     """*Optional*. Message is an audio file, information about the file"""
-    document: Optional[Document] = None
+    document: Document | None = None
     """*Optional*. Message is a general file, information about the file"""
-    paid_media: Optional[PaidMediaInfo] = None
+    paid_media: PaidMediaInfo | None = None
     """*Optional*. Message contains paid media; information about the paid media"""
-    photo: Optional[list[PhotoSize]] = None
+    photo: list[PhotoSize] | None = None
     """*Optional*. Message is a photo, available sizes of the photo"""
-    sticker: Optional[Sticker] = None
+    sticker: Sticker | None = None
     """*Optional*. Message is a sticker, information about the sticker"""
-    story: Optional[Story] = None
+    story: Story | None = None
     """*Optional*. Message is a forwarded story"""
-    video: Optional[Video] = None
+    video: Video | None = None
     """*Optional*. Message is a video, information about the video"""
-    video_note: Optional[VideoNote] = None
+    video_note: VideoNote | None = None
     """*Optional*. Message is a `video note <https://telegram.org/blog/video-messages-and-telescope>`_, information about the video message"""
-    voice: Optional[Voice] = None
+    voice: Voice | None = None
     """*Optional*. Message is a voice message, information about the file"""
-    caption: Optional[str] = None
+    caption: str | None = None
     """*Optional*. Caption for the animation, audio, document, paid media, photo, video or voice"""
-    caption_entities: Optional[list[MessageEntity]] = None
+    caption_entities: list[MessageEntity] | None = None
     """*Optional*. For messages with a caption, special entities like usernames, URLs, bot commands, etc. that appear in the caption"""
-    show_caption_above_media: Optional[bool] = None
+    show_caption_above_media: bool | None = None
     """*Optional*. :code:`True`, if the caption must be shown above the message media"""
-    has_media_spoiler: Optional[bool] = None
+    has_media_spoiler: bool | None = None
     """*Optional*. :code:`True`, if the message media is covered by a spoiler animation"""
-    checklist: Optional[Checklist] = None
+    checklist: Checklist | None = None
     """*Optional*. Message is a checklist"""
-    contact: Optional[Contact] = None
+    contact: Contact | None = None
     """*Optional*. Message is a shared contact, information about the contact"""
-    dice: Optional[Dice] = None
+    dice: Dice | None = None
     """*Optional*. Message is a dice with random value"""
-    game: Optional[Game] = None
+    game: Game | None = None
     """*Optional*. Message is a game, information about the game. `More about games » <https://core.telegram.org/bots/api#games>`_"""
-    poll: Optional[Poll] = None
+    poll: Poll | None = None
     """*Optional*. Message is a native poll, information about the poll"""
-    venue: Optional[Venue] = None
+    venue: Venue | None = None
     """*Optional*. Message is a venue, information about the venue. For backward compatibility, when this field is set, the *location* field will also be set"""
-    location: Optional[Location] = None
+    location: Location | None = None
     """*Optional*. Message is a shared location, information about the location"""
-    new_chat_members: Optional[list[User]] = None
+    new_chat_members: list[User] | None = None
     """*Optional*. New members that were added to the group or supergroup and information about them (the bot itself may be one of these members)"""
-    left_chat_member: Optional[User] = None
+    left_chat_member: User | None = None
     """*Optional*. A member was removed from the group, information about them (this member may be the bot itself)"""
-    new_chat_title: Optional[str] = None
+    new_chat_title: str | None = None
     """*Optional*. A chat title was changed to this value"""
-    new_chat_photo: Optional[list[PhotoSize]] = None
+    new_chat_photo: list[PhotoSize] | None = None
     """*Optional*. A chat photo was change to this value"""
-    delete_chat_photo: Optional[bool] = None
+    delete_chat_photo: bool | None = None
     """*Optional*. Service message: the chat photo was deleted"""
-    group_chat_created: Optional[bool] = None
+    group_chat_created: bool | None = None
     """*Optional*. Service message: the group has been created"""
-    supergroup_chat_created: Optional[bool] = None
+    supergroup_chat_created: bool | None = None
     """*Optional*. Service message: the supergroup has been created. This field can't be received in a message coming through updates, because bot can't be a member of a supergroup when it is created. It can only be found in reply_to_message if someone replies to a very first message in a directly created supergroup."""
-    channel_chat_created: Optional[bool] = None
+    channel_chat_created: bool | None = None
     """*Optional*. Service message: the channel has been created. This field can't be received in a message coming through updates, because bot can't be a member of a channel when it is created. It can only be found in reply_to_message if someone replies to a very first message in a channel."""
-    message_auto_delete_timer_changed: Optional[MessageAutoDeleteTimerChanged] = None
+    message_auto_delete_timer_changed: MessageAutoDeleteTimerChanged | None = None
     """*Optional*. Service message: auto-delete timer settings changed in the chat"""
-    migrate_to_chat_id: Optional[int] = None
+    migrate_to_chat_id: int | None = None
     """*Optional*. The group has been migrated to a supergroup with the specified identifier. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this identifier."""
-    migrate_from_chat_id: Optional[int] = None
+    migrate_from_chat_id: int | None = None
     """*Optional*. The supergroup has been migrated from a group with the specified identifier. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this identifier."""
-    pinned_message: Optional[MaybeInaccessibleMessageUnion] = None
+    pinned_message: MaybeInaccessibleMessageUnion | None = None
     """*Optional*. Specified message was pinned. Note that the :class:`aiogram.types.message.Message` object in this field will not contain further *reply_to_message* fields even if it itself is a reply."""
-    invoice: Optional[Invoice] = None
+    invoice: Invoice | None = None
     """*Optional*. Message is an invoice for a `payment <https://core.telegram.org/bots/api#payments>`_, information about the invoice. `More about payments » <https://core.telegram.org/bots/api#payments>`_"""
-    successful_payment: Optional[SuccessfulPayment] = None
+    successful_payment: SuccessfulPayment | None = None
     """*Optional*. Message is a service message about a successful payment, information about the payment. `More about payments » <https://core.telegram.org/bots/api#payments>`_"""
-    refunded_payment: Optional[RefundedPayment] = None
+    refunded_payment: RefundedPayment | None = None
     """*Optional*. Message is a service message about a refunded payment, information about the payment. `More about payments » <https://core.telegram.org/bots/api#payments>`_"""
-    users_shared: Optional[UsersShared] = None
+    users_shared: UsersShared | None = None
     """*Optional*. Service message: users were shared with the bot"""
-    chat_shared: Optional[ChatShared] = None
+    chat_shared: ChatShared | None = None
     """*Optional*. Service message: a chat was shared with the bot"""
-    gift: Optional[GiftInfo] = None
+    gift: GiftInfo | None = None
     """*Optional*. Service message: a regular gift was sent or received"""
-    unique_gift: Optional[UniqueGiftInfo] = None
+    unique_gift: UniqueGiftInfo | None = None
     """*Optional*. Service message: a unique gift was sent or received"""
-    gift_upgrade_sent: Optional[GiftInfo] = None
+    gift_upgrade_sent: GiftInfo | None = None
     """*Optional*. Service message: upgrade of a gift was purchased after the gift was sent"""
-    connected_website: Optional[str] = None
+    connected_website: str | None = None
     """*Optional*. The domain name of the website on which the user has logged in. `More about Telegram Login » <https://core.telegram.org/widgets/login>`_"""
-    write_access_allowed: Optional[WriteAccessAllowed] = None
+    write_access_allowed: WriteAccessAllowed | None = None
     """*Optional*. Service message: the user allowed the bot to write messages after adding it to the attachment or side menu, launching a Web App from a link, or accepting an explicit request from a Web App sent by the method `requestWriteAccess <https://core.telegram.org/bots/webapps#initializing-mini-apps>`_"""
-    passport_data: Optional[PassportData] = None
+    passport_data: PassportData | None = None
     """*Optional*. Telegram Passport data"""
-    proximity_alert_triggered: Optional[ProximityAlertTriggered] = None
+    proximity_alert_triggered: ProximityAlertTriggered | None = None
     """*Optional*. Service message. A user in the chat triggered another user's proximity alert while sharing Live Location."""
-    boost_added: Optional[ChatBoostAdded] = None
+    boost_added: ChatBoostAdded | None = None
     """*Optional*. Service message: user boosted the chat"""
-    chat_background_set: Optional[ChatBackground] = None
+    chat_background_set: ChatBackground | None = None
     """*Optional*. Service message: chat background set"""
-    checklist_tasks_done: Optional[ChecklistTasksDone] = None
+    checklist_tasks_done: ChecklistTasksDone | None = None
     """*Optional*. Service message: some tasks in a checklist were marked as done or not done"""
-    checklist_tasks_added: Optional[ChecklistTasksAdded] = None
+    checklist_tasks_added: ChecklistTasksAdded | None = None
     """*Optional*. Service message: tasks were added to a checklist"""
-    direct_message_price_changed: Optional[DirectMessagePriceChanged] = None
+    direct_message_price_changed: DirectMessagePriceChanged | None = None
     """*Optional*. Service message: the price for paid messages in the corresponding direct messages chat of a channel has changed"""
-    forum_topic_created: Optional[ForumTopicCreated] = None
+    forum_topic_created: ForumTopicCreated | None = None
     """*Optional*. Service message: forum topic created"""
-    forum_topic_edited: Optional[ForumTopicEdited] = None
+    forum_topic_edited: ForumTopicEdited | None = None
     """*Optional*. Service message: forum topic edited"""
-    forum_topic_closed: Optional[ForumTopicClosed] = None
+    forum_topic_closed: ForumTopicClosed | None = None
     """*Optional*. Service message: forum topic closed"""
-    forum_topic_reopened: Optional[ForumTopicReopened] = None
+    forum_topic_reopened: ForumTopicReopened | None = None
     """*Optional*. Service message: forum topic reopened"""
-    general_forum_topic_hidden: Optional[GeneralForumTopicHidden] = None
+    general_forum_topic_hidden: GeneralForumTopicHidden | None = None
     """*Optional*. Service message: the 'General' forum topic hidden"""
-    general_forum_topic_unhidden: Optional[GeneralForumTopicUnhidden] = None
+    general_forum_topic_unhidden: GeneralForumTopicUnhidden | None = None
     """*Optional*. Service message: the 'General' forum topic unhidden"""
-    giveaway_created: Optional[GiveawayCreated] = None
+    giveaway_created: GiveawayCreated | None = None
     """*Optional*. Service message: a scheduled giveaway was created"""
-    giveaway: Optional[Giveaway] = None
+    giveaway: Giveaway | None = None
     """*Optional*. The message is a scheduled giveaway message"""
-    giveaway_winners: Optional[GiveawayWinners] = None
+    giveaway_winners: GiveawayWinners | None = None
     """*Optional*. A giveaway with public winners was completed"""
-    giveaway_completed: Optional[GiveawayCompleted] = None
+    giveaway_completed: GiveawayCompleted | None = None
     """*Optional*. Service message: a giveaway without public winners was completed"""
-    paid_message_price_changed: Optional[PaidMessagePriceChanged] = None
+    paid_message_price_changed: PaidMessagePriceChanged | None = None
     """*Optional*. Service message: the price for paid messages has changed in the chat"""
-    suggested_post_approved: Optional[SuggestedPostApproved] = None
+    suggested_post_approved: SuggestedPostApproved | None = None
     """*Optional*. Service message: a suggested post was approved"""
-    suggested_post_approval_failed: Optional[SuggestedPostApprovalFailed] = None
+    suggested_post_approval_failed: SuggestedPostApprovalFailed | None = None
     """*Optional*. Service message: approval of a suggested post has failed"""
-    suggested_post_declined: Optional[SuggestedPostDeclined] = None
+    suggested_post_declined: SuggestedPostDeclined | None = None
     """*Optional*. Service message: a suggested post was declined"""
-    suggested_post_paid: Optional[SuggestedPostPaid] = None
+    suggested_post_paid: SuggestedPostPaid | None = None
     """*Optional*. Service message: payment for a suggested post was received"""
-    suggested_post_refunded: Optional[SuggestedPostRefunded] = None
+    suggested_post_refunded: SuggestedPostRefunded | None = None
     """*Optional*. Service message: payment for a suggested post was refunded"""
-    video_chat_scheduled: Optional[VideoChatScheduled] = None
+    video_chat_scheduled: VideoChatScheduled | None = None
     """*Optional*. Service message: video chat scheduled"""
-    video_chat_started: Optional[VideoChatStarted] = None
+    video_chat_started: VideoChatStarted | None = None
     """*Optional*. Service message: video chat started"""
-    video_chat_ended: Optional[VideoChatEnded] = None
+    video_chat_ended: VideoChatEnded | None = None
     """*Optional*. Service message: video chat ended"""
-    video_chat_participants_invited: Optional[VideoChatParticipantsInvited] = None
+    video_chat_participants_invited: VideoChatParticipantsInvited | None = None
     """*Optional*. Service message: new participants invited to a video chat"""
-    web_app_data: Optional[WebAppData] = None
+    web_app_data: WebAppData | None = None
     """*Optional*. Service message: data sent by a Web App"""
-    reply_markup: Optional[InlineKeyboardMarkup] = None
+    reply_markup: InlineKeyboardMarkup | None = None
     """*Optional*. Inline keyboard attached to the message. :code:`login_url` buttons are represented as ordinary :code:`url` buttons."""
-    forward_date: Optional[DateTime] = Field(None, json_schema_extra={"deprecated": True})
+    forward_date: DateTime | None = Field(None, json_schema_extra={"deprecated": True})
     """*Optional*. For forwarded messages, date the original message was sent in Unix time
 
 .. deprecated:: API:7.0
    https://core.telegram.org/bots/api-changelog#december-29-2023"""
-    forward_from: Optional[User] = Field(None, json_schema_extra={"deprecated": True})
+    forward_from: User | None = Field(None, json_schema_extra={"deprecated": True})
     """*Optional*. For forwarded messages, sender of the original message
 
 .. deprecated:: API:7.0
    https://core.telegram.org/bots/api-changelog#december-29-2023"""
-    forward_from_chat: Optional[Chat] = Field(None, json_schema_extra={"deprecated": True})
+    forward_from_chat: Chat | None = Field(None, json_schema_extra={"deprecated": True})
     """*Optional*. For messages forwarded from channels or from anonymous administrators, information about the original sender chat
 
 .. deprecated:: API:7.0
    https://core.telegram.org/bots/api-changelog#december-29-2023"""
-    forward_from_message_id: Optional[int] = Field(None, json_schema_extra={"deprecated": True})
+    forward_from_message_id: int | None = Field(None, json_schema_extra={"deprecated": True})
     """*Optional*. For messages forwarded from channels, identifier of the original message in the channel
 
 .. deprecated:: API:7.0
    https://core.telegram.org/bots/api-changelog#december-29-2023"""
-    forward_sender_name: Optional[str] = Field(None, json_schema_extra={"deprecated": True})
+    forward_sender_name: str | None = Field(None, json_schema_extra={"deprecated": True})
     """*Optional*. Sender's name for messages forwarded from users who disallow adding a link to their account in forwarded messages
 
 .. deprecated:: API:7.0
    https://core.telegram.org/bots/api-changelog#december-29-2023"""
-    forward_signature: Optional[str] = Field(None, json_schema_extra={"deprecated": True})
+    forward_signature: str | None = Field(None, json_schema_extra={"deprecated": True})
     """*Optional*. For forwarded messages that were originally sent in channels or by an anonymous chat administrator, signature of the message sender if present
 
 .. deprecated:: API:7.0
    https://core.telegram.org/bots/api-changelog#december-29-2023"""
-    user_shared: Optional[UserShared] = Field(None, json_schema_extra={"deprecated": True})
+    user_shared: UserShared | None = Field(None, json_schema_extra={"deprecated": True})
     """*Optional*. Service message: a user was shared with the bot
 
 .. deprecated:: API:7.0
@@ -389,113 +389,113 @@ class Message(MaybeInaccessibleMessage):
             message_id: int,
             date: DateTime,
             chat: Chat,
-            message_thread_id: Optional[int] = None,
-            direct_messages_topic: Optional[DirectMessagesTopic] = None,
-            from_user: Optional[User] = None,
-            sender_chat: Optional[Chat] = None,
-            sender_boost_count: Optional[int] = None,
-            sender_business_bot: Optional[User] = None,
-            business_connection_id: Optional[str] = None,
-            forward_origin: Optional[MessageOriginUnion] = None,
-            is_topic_message: Optional[bool] = None,
-            is_automatic_forward: Optional[bool] = None,
-            reply_to_message: Optional[Message] = None,
-            external_reply: Optional[ExternalReplyInfo] = None,
-            quote: Optional[TextQuote] = None,
-            reply_to_story: Optional[Story] = None,
-            reply_to_checklist_task_id: Optional[int] = None,
-            via_bot: Optional[User] = None,
-            edit_date: Optional[int] = None,
-            has_protected_content: Optional[bool] = None,
-            is_from_offline: Optional[bool] = None,
-            is_paid_post: Optional[bool] = None,
-            media_group_id: Optional[str] = None,
-            author_signature: Optional[str] = None,
-            paid_star_count: Optional[int] = None,
-            text: Optional[str] = None,
-            entities: Optional[list[MessageEntity]] = None,
-            link_preview_options: Optional[LinkPreviewOptions] = None,
-            suggested_post_info: Optional[SuggestedPostInfo] = None,
-            effect_id: Optional[str] = None,
-            animation: Optional[Animation] = None,
-            audio: Optional[Audio] = None,
-            document: Optional[Document] = None,
-            paid_media: Optional[PaidMediaInfo] = None,
-            photo: Optional[list[PhotoSize]] = None,
-            sticker: Optional[Sticker] = None,
-            story: Optional[Story] = None,
-            video: Optional[Video] = None,
-            video_note: Optional[VideoNote] = None,
-            voice: Optional[Voice] = None,
-            caption: Optional[str] = None,
-            caption_entities: Optional[list[MessageEntity]] = None,
-            show_caption_above_media: Optional[bool] = None,
-            has_media_spoiler: Optional[bool] = None,
-            checklist: Optional[Checklist] = None,
-            contact: Optional[Contact] = None,
-            dice: Optional[Dice] = None,
-            game: Optional[Game] = None,
-            poll: Optional[Poll] = None,
-            venue: Optional[Venue] = None,
-            location: Optional[Location] = None,
-            new_chat_members: Optional[list[User]] = None,
-            left_chat_member: Optional[User] = None,
-            new_chat_title: Optional[str] = None,
-            new_chat_photo: Optional[list[PhotoSize]] = None,
-            delete_chat_photo: Optional[bool] = None,
-            group_chat_created: Optional[bool] = None,
-            supergroup_chat_created: Optional[bool] = None,
-            channel_chat_created: Optional[bool] = None,
-            message_auto_delete_timer_changed: Optional[MessageAutoDeleteTimerChanged] = None,
-            migrate_to_chat_id: Optional[int] = None,
-            migrate_from_chat_id: Optional[int] = None,
-            pinned_message: Optional[MaybeInaccessibleMessageUnion] = None,
-            invoice: Optional[Invoice] = None,
-            successful_payment: Optional[SuccessfulPayment] = None,
-            refunded_payment: Optional[RefundedPayment] = None,
-            users_shared: Optional[UsersShared] = None,
-            chat_shared: Optional[ChatShared] = None,
-            gift: Optional[GiftInfo] = None,
-            unique_gift: Optional[UniqueGiftInfo] = None,
-            gift_upgrade_sent: Optional[GiftInfo] = None,
-            connected_website: Optional[str] = None,
-            write_access_allowed: Optional[WriteAccessAllowed] = None,
-            passport_data: Optional[PassportData] = None,
-            proximity_alert_triggered: Optional[ProximityAlertTriggered] = None,
-            boost_added: Optional[ChatBoostAdded] = None,
-            chat_background_set: Optional[ChatBackground] = None,
-            checklist_tasks_done: Optional[ChecklistTasksDone] = None,
-            checklist_tasks_added: Optional[ChecklistTasksAdded] = None,
-            direct_message_price_changed: Optional[DirectMessagePriceChanged] = None,
-            forum_topic_created: Optional[ForumTopicCreated] = None,
-            forum_topic_edited: Optional[ForumTopicEdited] = None,
-            forum_topic_closed: Optional[ForumTopicClosed] = None,
-            forum_topic_reopened: Optional[ForumTopicReopened] = None,
-            general_forum_topic_hidden: Optional[GeneralForumTopicHidden] = None,
-            general_forum_topic_unhidden: Optional[GeneralForumTopicUnhidden] = None,
-            giveaway_created: Optional[GiveawayCreated] = None,
-            giveaway: Optional[Giveaway] = None,
-            giveaway_winners: Optional[GiveawayWinners] = None,
-            giveaway_completed: Optional[GiveawayCompleted] = None,
-            paid_message_price_changed: Optional[PaidMessagePriceChanged] = None,
-            suggested_post_approved: Optional[SuggestedPostApproved] = None,
-            suggested_post_approval_failed: Optional[SuggestedPostApprovalFailed] = None,
-            suggested_post_declined: Optional[SuggestedPostDeclined] = None,
-            suggested_post_paid: Optional[SuggestedPostPaid] = None,
-            suggested_post_refunded: Optional[SuggestedPostRefunded] = None,
-            video_chat_scheduled: Optional[VideoChatScheduled] = None,
-            video_chat_started: Optional[VideoChatStarted] = None,
-            video_chat_ended: Optional[VideoChatEnded] = None,
-            video_chat_participants_invited: Optional[VideoChatParticipantsInvited] = None,
-            web_app_data: Optional[WebAppData] = None,
-            reply_markup: Optional[InlineKeyboardMarkup] = None,
-            forward_date: Optional[DateTime] = None,
-            forward_from: Optional[User] = None,
-            forward_from_chat: Optional[Chat] = None,
-            forward_from_message_id: Optional[int] = None,
-            forward_sender_name: Optional[str] = None,
-            forward_signature: Optional[str] = None,
-            user_shared: Optional[UserShared] = None,
+            message_thread_id: int | None = None,
+            direct_messages_topic: DirectMessagesTopic | None = None,
+            from_user: User | None = None,
+            sender_chat: Chat | None = None,
+            sender_boost_count: int | None = None,
+            sender_business_bot: User | None = None,
+            business_connection_id: str | None = None,
+            forward_origin: MessageOriginUnion | None = None,
+            is_topic_message: bool | None = None,
+            is_automatic_forward: bool | None = None,
+            reply_to_message: Message | None = None,
+            external_reply: ExternalReplyInfo | None = None,
+            quote: TextQuote | None = None,
+            reply_to_story: Story | None = None,
+            reply_to_checklist_task_id: int | None = None,
+            via_bot: User | None = None,
+            edit_date: int | None = None,
+            has_protected_content: bool | None = None,
+            is_from_offline: bool | None = None,
+            is_paid_post: bool | None = None,
+            media_group_id: str | None = None,
+            author_signature: str | None = None,
+            paid_star_count: int | None = None,
+            text: str | None = None,
+            entities: list[MessageEntity] | None = None,
+            link_preview_options: LinkPreviewOptions | None = None,
+            suggested_post_info: SuggestedPostInfo | None = None,
+            effect_id: str | None = None,
+            animation: Animation | None = None,
+            audio: Audio | None = None,
+            document: Document | None = None,
+            paid_media: PaidMediaInfo | None = None,
+            photo: list[PhotoSize] | None = None,
+            sticker: Sticker | None = None,
+            story: Story | None = None,
+            video: Video | None = None,
+            video_note: VideoNote | None = None,
+            voice: Voice | None = None,
+            caption: str | None = None,
+            caption_entities: list[MessageEntity] | None = None,
+            show_caption_above_media: bool | None = None,
+            has_media_spoiler: bool | None = None,
+            checklist: Checklist | None = None,
+            contact: Contact | None = None,
+            dice: Dice | None = None,
+            game: Game | None = None,
+            poll: Poll | None = None,
+            venue: Venue | None = None,
+            location: Location | None = None,
+            new_chat_members: list[User] | None = None,
+            left_chat_member: User | None = None,
+            new_chat_title: str | None = None,
+            new_chat_photo: list[PhotoSize] | None = None,
+            delete_chat_photo: bool | None = None,
+            group_chat_created: bool | None = None,
+            supergroup_chat_created: bool | None = None,
+            channel_chat_created: bool | None = None,
+            message_auto_delete_timer_changed: MessageAutoDeleteTimerChanged | None = None,
+            migrate_to_chat_id: int | None = None,
+            migrate_from_chat_id: int | None = None,
+            pinned_message: MaybeInaccessibleMessageUnion | None = None,
+            invoice: Invoice | None = None,
+            successful_payment: SuccessfulPayment | None = None,
+            refunded_payment: RefundedPayment | None = None,
+            users_shared: UsersShared | None = None,
+            chat_shared: ChatShared | None = None,
+            gift: GiftInfo | None = None,
+            unique_gift: UniqueGiftInfo | None = None,
+            gift_upgrade_sent: GiftInfo | None = None,
+            connected_website: str | None = None,
+            write_access_allowed: WriteAccessAllowed | None = None,
+            passport_data: PassportData | None = None,
+            proximity_alert_triggered: ProximityAlertTriggered | None = None,
+            boost_added: ChatBoostAdded | None = None,
+            chat_background_set: ChatBackground | None = None,
+            checklist_tasks_done: ChecklistTasksDone | None = None,
+            checklist_tasks_added: ChecklistTasksAdded | None = None,
+            direct_message_price_changed: DirectMessagePriceChanged | None = None,
+            forum_topic_created: ForumTopicCreated | None = None,
+            forum_topic_edited: ForumTopicEdited | None = None,
+            forum_topic_closed: ForumTopicClosed | None = None,
+            forum_topic_reopened: ForumTopicReopened | None = None,
+            general_forum_topic_hidden: GeneralForumTopicHidden | None = None,
+            general_forum_topic_unhidden: GeneralForumTopicUnhidden | None = None,
+            giveaway_created: GiveawayCreated | None = None,
+            giveaway: Giveaway | None = None,
+            giveaway_winners: GiveawayWinners | None = None,
+            giveaway_completed: GiveawayCompleted | None = None,
+            paid_message_price_changed: PaidMessagePriceChanged | None = None,
+            suggested_post_approved: SuggestedPostApproved | None = None,
+            suggested_post_approval_failed: SuggestedPostApprovalFailed | None = None,
+            suggested_post_declined: SuggestedPostDeclined | None = None,
+            suggested_post_paid: SuggestedPostPaid | None = None,
+            suggested_post_refunded: SuggestedPostRefunded | None = None,
+            video_chat_scheduled: VideoChatScheduled | None = None,
+            video_chat_started: VideoChatStarted | None = None,
+            video_chat_ended: VideoChatEnded | None = None,
+            video_chat_participants_invited: VideoChatParticipantsInvited | None = None,
+            web_app_data: WebAppData | None = None,
+            reply_markup: InlineKeyboardMarkup | None = None,
+            forward_date: DateTime | None = None,
+            forward_from: User | None = None,
+            forward_from_chat: Chat | None = None,
+            forward_from_message_id: int | None = None,
+            forward_sender_name: str | None = None,
+            forward_signature: str | None = None,
+            user_shared: UserShared | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!
@@ -773,13 +773,13 @@ class Message(MaybeInaccessibleMessage):
 
     def as_reply_parameters(
         self,
-        allow_sending_without_reply: Optional[Union[bool, Default]] = Default(
+        allow_sending_without_reply: bool | Default | None = Default(
             "allow_sending_without_reply"
         ),
-        quote: Optional[str] = None,
-        quote_parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
-        quote_entities: Optional[List[MessageEntity]] = None,
-        quote_position: Optional[int] = None,
+        quote: str | None = None,
+        quote_parse_mode: str | Default | None = Default("parse_mode"),
+        quote_entities: list[MessageEntity] | None = None,
+        quote_position: int | None = None,
     ) -> ReplyParameters:
         return ReplyParameters(
             message_id=self.message_id,
@@ -794,25 +794,23 @@ class Message(MaybeInaccessibleMessage):
     def reply_animation(
         self,
         animation: InputFileUnion,
-        direct_messages_topic_id: Optional[int] = None,
-        duration: Optional[int] = None,
-        width: Optional[int] = None,
-        height: Optional[int] = None,
-        thumbnail: Optional[InputFile] = None,
-        caption: Optional[str] = None,
-        parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
-        caption_entities: Optional[list[MessageEntity]] = None,
-        show_caption_above_media: Optional[Union[bool, Default]] = Default(
-            "show_caption_above_media"
-        ),
-        has_spoiler: Optional[bool] = None,
-        disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
-        allow_paid_broadcast: Optional[bool] = None,
-        message_effect_id: Optional[str] = None,
-        suggested_post_parameters: Optional[SuggestedPostParameters] = None,
-        reply_markup: Optional[ReplyMarkupUnion] = None,
-        allow_sending_without_reply: Optional[bool] = None,
+        direct_messages_topic_id: int | None = None,
+        duration: int | None = None,
+        width: int | None = None,
+        height: int | None = None,
+        thumbnail: InputFile | None = None,
+        caption: str | None = None,
+        parse_mode: str | Default | None = Default("parse_mode"),
+        caption_entities: list[MessageEntity] | None = None,
+        show_caption_above_media: bool | Default | None = Default("show_caption_above_media"),
+        has_spoiler: bool | None = None,
+        disable_notification: bool | None = None,
+        protect_content: bool | Default | None = Default("protect_content"),
+        allow_paid_broadcast: bool | None = None,
+        message_effect_id: str | None = None,
+        suggested_post_parameters: SuggestedPostParameters | None = None,
+        reply_markup: ReplyMarkupUnion | None = None,
+        allow_sending_without_reply: bool | None = None,
         **kwargs: Any,
     ) -> SendAnimation:
         """
@@ -886,27 +884,25 @@ class Message(MaybeInaccessibleMessage):
     def answer_animation(
         self,
         animation: InputFileUnion,
-        direct_messages_topic_id: Optional[int] = None,
-        duration: Optional[int] = None,
-        width: Optional[int] = None,
-        height: Optional[int] = None,
-        thumbnail: Optional[InputFile] = None,
-        caption: Optional[str] = None,
-        parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
-        caption_entities: Optional[list[MessageEntity]] = None,
-        show_caption_above_media: Optional[Union[bool, Default]] = Default(
-            "show_caption_above_media"
-        ),
-        has_spoiler: Optional[bool] = None,
-        disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
-        allow_paid_broadcast: Optional[bool] = None,
-        message_effect_id: Optional[str] = None,
-        suggested_post_parameters: Optional[SuggestedPostParameters] = None,
-        reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[ReplyMarkupUnion] = None,
-        allow_sending_without_reply: Optional[bool] = None,
-        reply_to_message_id: Optional[int] = None,
+        direct_messages_topic_id: int | None = None,
+        duration: int | None = None,
+        width: int | None = None,
+        height: int | None = None,
+        thumbnail: InputFile | None = None,
+        caption: str | None = None,
+        parse_mode: str | Default | None = Default("parse_mode"),
+        caption_entities: list[MessageEntity] | None = None,
+        show_caption_above_media: bool | Default | None = Default("show_caption_above_media"),
+        has_spoiler: bool | None = None,
+        disable_notification: bool | None = None,
+        protect_content: bool | Default | None = Default("protect_content"),
+        allow_paid_broadcast: bool | None = None,
+        message_effect_id: str | None = None,
+        suggested_post_parameters: SuggestedPostParameters | None = None,
+        reply_parameters: ReplyParameters | None = None,
+        reply_markup: ReplyMarkupUnion | None = None,
+        allow_sending_without_reply: bool | None = None,
+        reply_to_message_id: int | None = None,
         **kwargs: Any,
     ) -> SendAnimation:
         """
@@ -982,21 +978,21 @@ class Message(MaybeInaccessibleMessage):
     def reply_audio(
         self,
         audio: InputFileUnion,
-        direct_messages_topic_id: Optional[int] = None,
-        caption: Optional[str] = None,
-        parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
-        caption_entities: Optional[list[MessageEntity]] = None,
-        duration: Optional[int] = None,
-        performer: Optional[str] = None,
-        title: Optional[str] = None,
-        thumbnail: Optional[InputFile] = None,
-        disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
-        allow_paid_broadcast: Optional[bool] = None,
-        message_effect_id: Optional[str] = None,
-        suggested_post_parameters: Optional[SuggestedPostParameters] = None,
-        reply_markup: Optional[ReplyMarkupUnion] = None,
-        allow_sending_without_reply: Optional[bool] = None,
+        direct_messages_topic_id: int | None = None,
+        caption: str | None = None,
+        parse_mode: str | Default | None = Default("parse_mode"),
+        caption_entities: list[MessageEntity] | None = None,
+        duration: int | None = None,
+        performer: str | None = None,
+        title: str | None = None,
+        thumbnail: InputFile | None = None,
+        disable_notification: bool | None = None,
+        protect_content: bool | Default | None = Default("protect_content"),
+        allow_paid_broadcast: bool | None = None,
+        message_effect_id: str | None = None,
+        suggested_post_parameters: SuggestedPostParameters | None = None,
+        reply_markup: ReplyMarkupUnion | None = None,
+        allow_sending_without_reply: bool | None = None,
         **kwargs: Any,
     ) -> SendAudio:
         """
@@ -1067,23 +1063,23 @@ class Message(MaybeInaccessibleMessage):
     def answer_audio(
         self,
         audio: InputFileUnion,
-        direct_messages_topic_id: Optional[int] = None,
-        caption: Optional[str] = None,
-        parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
-        caption_entities: Optional[list[MessageEntity]] = None,
-        duration: Optional[int] = None,
-        performer: Optional[str] = None,
-        title: Optional[str] = None,
-        thumbnail: Optional[InputFile] = None,
-        disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
-        allow_paid_broadcast: Optional[bool] = None,
-        message_effect_id: Optional[str] = None,
-        suggested_post_parameters: Optional[SuggestedPostParameters] = None,
-        reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[ReplyMarkupUnion] = None,
-        allow_sending_without_reply: Optional[bool] = None,
-        reply_to_message_id: Optional[int] = None,
+        direct_messages_topic_id: int | None = None,
+        caption: str | None = None,
+        parse_mode: str | Default | None = Default("parse_mode"),
+        caption_entities: list[MessageEntity] | None = None,
+        duration: int | None = None,
+        performer: str | None = None,
+        title: str | None = None,
+        thumbnail: InputFile | None = None,
+        disable_notification: bool | None = None,
+        protect_content: bool | Default | None = Default("protect_content"),
+        allow_paid_broadcast: bool | None = None,
+        message_effect_id: str | None = None,
+        suggested_post_parameters: SuggestedPostParameters | None = None,
+        reply_parameters: ReplyParameters | None = None,
+        reply_markup: ReplyMarkupUnion | None = None,
+        allow_sending_without_reply: bool | None = None,
+        reply_to_message_id: int | None = None,
         **kwargs: Any,
     ) -> SendAudio:
         """
@@ -1157,16 +1153,16 @@ class Message(MaybeInaccessibleMessage):
         self,
         phone_number: str,
         first_name: str,
-        direct_messages_topic_id: Optional[int] = None,
-        last_name: Optional[str] = None,
-        vcard: Optional[str] = None,
-        disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
-        allow_paid_broadcast: Optional[bool] = None,
-        message_effect_id: Optional[str] = None,
-        suggested_post_parameters: Optional[SuggestedPostParameters] = None,
-        reply_markup: Optional[ReplyMarkupUnion] = None,
-        allow_sending_without_reply: Optional[bool] = None,
+        direct_messages_topic_id: int | None = None,
+        last_name: str | None = None,
+        vcard: str | None = None,
+        disable_notification: bool | None = None,
+        protect_content: bool | Default | None = Default("protect_content"),
+        allow_paid_broadcast: bool | None = None,
+        message_effect_id: str | None = None,
+        suggested_post_parameters: SuggestedPostParameters | None = None,
+        reply_markup: ReplyMarkupUnion | None = None,
+        allow_sending_without_reply: bool | None = None,
         **kwargs: Any,
     ) -> SendContact:
         """
@@ -1229,18 +1225,18 @@ class Message(MaybeInaccessibleMessage):
         self,
         phone_number: str,
         first_name: str,
-        direct_messages_topic_id: Optional[int] = None,
-        last_name: Optional[str] = None,
-        vcard: Optional[str] = None,
-        disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
-        allow_paid_broadcast: Optional[bool] = None,
-        message_effect_id: Optional[str] = None,
-        suggested_post_parameters: Optional[SuggestedPostParameters] = None,
-        reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[ReplyMarkupUnion] = None,
-        allow_sending_without_reply: Optional[bool] = None,
-        reply_to_message_id: Optional[int] = None,
+        direct_messages_topic_id: int | None = None,
+        last_name: str | None = None,
+        vcard: str | None = None,
+        disable_notification: bool | None = None,
+        protect_content: bool | Default | None = Default("protect_content"),
+        allow_paid_broadcast: bool | None = None,
+        message_effect_id: str | None = None,
+        suggested_post_parameters: SuggestedPostParameters | None = None,
+        reply_parameters: ReplyParameters | None = None,
+        reply_markup: ReplyMarkupUnion | None = None,
+        allow_sending_without_reply: bool | None = None,
+        reply_to_message_id: int | None = None,
         **kwargs: Any,
     ) -> SendContact:
         """
@@ -1304,19 +1300,19 @@ class Message(MaybeInaccessibleMessage):
     def reply_document(
         self,
         document: InputFileUnion,
-        direct_messages_topic_id: Optional[int] = None,
-        thumbnail: Optional[InputFile] = None,
-        caption: Optional[str] = None,
-        parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
-        caption_entities: Optional[list[MessageEntity]] = None,
-        disable_content_type_detection: Optional[bool] = None,
-        disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
-        allow_paid_broadcast: Optional[bool] = None,
-        message_effect_id: Optional[str] = None,
-        suggested_post_parameters: Optional[SuggestedPostParameters] = None,
-        reply_markup: Optional[ReplyMarkupUnion] = None,
-        allow_sending_without_reply: Optional[bool] = None,
+        direct_messages_topic_id: int | None = None,
+        thumbnail: InputFile | None = None,
+        caption: str | None = None,
+        parse_mode: str | Default | None = Default("parse_mode"),
+        caption_entities: list[MessageEntity] | None = None,
+        disable_content_type_detection: bool | None = None,
+        disable_notification: bool | None = None,
+        protect_content: bool | Default | None = Default("protect_content"),
+        allow_paid_broadcast: bool | None = None,
+        message_effect_id: str | None = None,
+        suggested_post_parameters: SuggestedPostParameters | None = None,
+        reply_markup: ReplyMarkupUnion | None = None,
+        allow_sending_without_reply: bool | None = None,
         **kwargs: Any,
     ) -> SendDocument:
         """
@@ -1382,21 +1378,21 @@ class Message(MaybeInaccessibleMessage):
     def answer_document(
         self,
         document: InputFileUnion,
-        direct_messages_topic_id: Optional[int] = None,
-        thumbnail: Optional[InputFile] = None,
-        caption: Optional[str] = None,
-        parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
-        caption_entities: Optional[list[MessageEntity]] = None,
-        disable_content_type_detection: Optional[bool] = None,
-        disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
-        allow_paid_broadcast: Optional[bool] = None,
-        message_effect_id: Optional[str] = None,
-        suggested_post_parameters: Optional[SuggestedPostParameters] = None,
-        reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[ReplyMarkupUnion] = None,
-        allow_sending_without_reply: Optional[bool] = None,
-        reply_to_message_id: Optional[int] = None,
+        direct_messages_topic_id: int | None = None,
+        thumbnail: InputFile | None = None,
+        caption: str | None = None,
+        parse_mode: str | Default | None = Default("parse_mode"),
+        caption_entities: list[MessageEntity] | None = None,
+        disable_content_type_detection: bool | None = None,
+        disable_notification: bool | None = None,
+        protect_content: bool | Default | None = Default("protect_content"),
+        allow_paid_broadcast: bool | None = None,
+        message_effect_id: str | None = None,
+        suggested_post_parameters: SuggestedPostParameters | None = None,
+        reply_parameters: ReplyParameters | None = None,
+        reply_markup: ReplyMarkupUnion | None = None,
+        allow_sending_without_reply: bool | None = None,
+        reply_to_message_id: int | None = None,
         **kwargs: Any,
     ) -> SendDocument:
         """
@@ -1464,12 +1460,12 @@ class Message(MaybeInaccessibleMessage):
     def reply_game(
         self,
         game_short_name: str,
-        disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
-        allow_paid_broadcast: Optional[bool] = None,
-        message_effect_id: Optional[str] = None,
-        reply_markup: Optional[InlineKeyboardMarkup] = None,
-        allow_sending_without_reply: Optional[bool] = None,
+        disable_notification: bool | None = None,
+        protect_content: bool | Default | None = Default("protect_content"),
+        allow_paid_broadcast: bool | None = None,
+        message_effect_id: str | None = None,
+        reply_markup: InlineKeyboardMarkup | None = None,
+        allow_sending_without_reply: bool | None = None,
         **kwargs: Any,
     ) -> SendGame:
         """
@@ -1521,14 +1517,14 @@ class Message(MaybeInaccessibleMessage):
     def answer_game(
         self,
         game_short_name: str,
-        disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
-        allow_paid_broadcast: Optional[bool] = None,
-        message_effect_id: Optional[str] = None,
-        reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[InlineKeyboardMarkup] = None,
-        allow_sending_without_reply: Optional[bool] = None,
-        reply_to_message_id: Optional[int] = None,
+        disable_notification: bool | None = None,
+        protect_content: bool | Default | None = Default("protect_content"),
+        allow_paid_broadcast: bool | None = None,
+        message_effect_id: str | None = None,
+        reply_parameters: ReplyParameters | None = None,
+        reply_markup: InlineKeyboardMarkup | None = None,
+        allow_sending_without_reply: bool | None = None,
+        reply_to_message_id: int | None = None,
         **kwargs: Any,
     ) -> SendGame:
         """
@@ -1586,30 +1582,30 @@ class Message(MaybeInaccessibleMessage):
         payload: str,
         currency: str,
         prices: list[LabeledPrice],
-        direct_messages_topic_id: Optional[int] = None,
-        provider_token: Optional[str] = None,
-        max_tip_amount: Optional[int] = None,
-        suggested_tip_amounts: Optional[list[int]] = None,
-        start_parameter: Optional[str] = None,
-        provider_data: Optional[str] = None,
-        photo_url: Optional[str] = None,
-        photo_size: Optional[int] = None,
-        photo_width: Optional[int] = None,
-        photo_height: Optional[int] = None,
-        need_name: Optional[bool] = None,
-        need_phone_number: Optional[bool] = None,
-        need_email: Optional[bool] = None,
-        need_shipping_address: Optional[bool] = None,
-        send_phone_number_to_provider: Optional[bool] = None,
-        send_email_to_provider: Optional[bool] = None,
-        is_flexible: Optional[bool] = None,
-        disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
-        allow_paid_broadcast: Optional[bool] = None,
-        message_effect_id: Optional[str] = None,
-        suggested_post_parameters: Optional[SuggestedPostParameters] = None,
-        reply_markup: Optional[InlineKeyboardMarkup] = None,
-        allow_sending_without_reply: Optional[bool] = None,
+        direct_messages_topic_id: int | None = None,
+        provider_token: str | None = None,
+        max_tip_amount: int | None = None,
+        suggested_tip_amounts: list[int] | None = None,
+        start_parameter: str | None = None,
+        provider_data: str | None = None,
+        photo_url: str | None = None,
+        photo_size: int | None = None,
+        photo_width: int | None = None,
+        photo_height: int | None = None,
+        need_name: bool | None = None,
+        need_phone_number: bool | None = None,
+        need_email: bool | None = None,
+        need_shipping_address: bool | None = None,
+        send_phone_number_to_provider: bool | None = None,
+        send_email_to_provider: bool | None = None,
+        is_flexible: bool | None = None,
+        disable_notification: bool | None = None,
+        protect_content: bool | Default | None = Default("protect_content"),
+        allow_paid_broadcast: bool | None = None,
+        message_effect_id: str | None = None,
+        suggested_post_parameters: SuggestedPostParameters | None = None,
+        reply_markup: InlineKeyboardMarkup | None = None,
+        allow_sending_without_reply: bool | None = None,
         **kwargs: Any,
     ) -> SendInvoice:
         """
@@ -1709,32 +1705,32 @@ class Message(MaybeInaccessibleMessage):
         payload: str,
         currency: str,
         prices: list[LabeledPrice],
-        direct_messages_topic_id: Optional[int] = None,
-        provider_token: Optional[str] = None,
-        max_tip_amount: Optional[int] = None,
-        suggested_tip_amounts: Optional[list[int]] = None,
-        start_parameter: Optional[str] = None,
-        provider_data: Optional[str] = None,
-        photo_url: Optional[str] = None,
-        photo_size: Optional[int] = None,
-        photo_width: Optional[int] = None,
-        photo_height: Optional[int] = None,
-        need_name: Optional[bool] = None,
-        need_phone_number: Optional[bool] = None,
-        need_email: Optional[bool] = None,
-        need_shipping_address: Optional[bool] = None,
-        send_phone_number_to_provider: Optional[bool] = None,
-        send_email_to_provider: Optional[bool] = None,
-        is_flexible: Optional[bool] = None,
-        disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
-        allow_paid_broadcast: Optional[bool] = None,
-        message_effect_id: Optional[str] = None,
-        suggested_post_parameters: Optional[SuggestedPostParameters] = None,
-        reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[InlineKeyboardMarkup] = None,
-        allow_sending_without_reply: Optional[bool] = None,
-        reply_to_message_id: Optional[int] = None,
+        direct_messages_topic_id: int | None = None,
+        provider_token: str | None = None,
+        max_tip_amount: int | None = None,
+        suggested_tip_amounts: list[int] | None = None,
+        start_parameter: str | None = None,
+        provider_data: str | None = None,
+        photo_url: str | None = None,
+        photo_size: int | None = None,
+        photo_width: int | None = None,
+        photo_height: int | None = None,
+        need_name: bool | None = None,
+        need_phone_number: bool | None = None,
+        need_email: bool | None = None,
+        need_shipping_address: bool | None = None,
+        send_phone_number_to_provider: bool | None = None,
+        send_email_to_provider: bool | None = None,
+        is_flexible: bool | None = None,
+        disable_notification: bool | None = None,
+        protect_content: bool | Default | None = Default("protect_content"),
+        allow_paid_broadcast: bool | None = None,
+        message_effect_id: str | None = None,
+        suggested_post_parameters: SuggestedPostParameters | None = None,
+        reply_parameters: ReplyParameters | None = None,
+        reply_markup: InlineKeyboardMarkup | None = None,
+        allow_sending_without_reply: bool | None = None,
+        reply_to_message_id: int | None = None,
         **kwargs: Any,
     ) -> SendInvoice:
         """
@@ -1833,18 +1829,18 @@ class Message(MaybeInaccessibleMessage):
         self,
         latitude: float,
         longitude: float,
-        direct_messages_topic_id: Optional[int] = None,
-        horizontal_accuracy: Optional[float] = None,
-        live_period: Optional[int] = None,
-        heading: Optional[int] = None,
-        proximity_alert_radius: Optional[int] = None,
-        disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
-        allow_paid_broadcast: Optional[bool] = None,
-        message_effect_id: Optional[str] = None,
-        suggested_post_parameters: Optional[SuggestedPostParameters] = None,
-        reply_markup: Optional[ReplyMarkupUnion] = None,
-        allow_sending_without_reply: Optional[bool] = None,
+        direct_messages_topic_id: int | None = None,
+        horizontal_accuracy: float | None = None,
+        live_period: int | None = None,
+        heading: int | None = None,
+        proximity_alert_radius: int | None = None,
+        disable_notification: bool | None = None,
+        protect_content: bool | Default | None = Default("protect_content"),
+        allow_paid_broadcast: bool | None = None,
+        message_effect_id: str | None = None,
+        suggested_post_parameters: SuggestedPostParameters | None = None,
+        reply_markup: ReplyMarkupUnion | None = None,
+        allow_sending_without_reply: bool | None = None,
         **kwargs: Any,
     ) -> SendLocation:
         """
@@ -1911,20 +1907,20 @@ class Message(MaybeInaccessibleMessage):
         self,
         latitude: float,
         longitude: float,
-        direct_messages_topic_id: Optional[int] = None,
-        horizontal_accuracy: Optional[float] = None,
-        live_period: Optional[int] = None,
-        heading: Optional[int] = None,
-        proximity_alert_radius: Optional[int] = None,
-        disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
-        allow_paid_broadcast: Optional[bool] = None,
-        message_effect_id: Optional[str] = None,
-        suggested_post_parameters: Optional[SuggestedPostParameters] = None,
-        reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[ReplyMarkupUnion] = None,
-        allow_sending_without_reply: Optional[bool] = None,
-        reply_to_message_id: Optional[int] = None,
+        direct_messages_topic_id: int | None = None,
+        horizontal_accuracy: float | None = None,
+        live_period: int | None = None,
+        heading: int | None = None,
+        proximity_alert_radius: int | None = None,
+        disable_notification: bool | None = None,
+        protect_content: bool | Default | None = Default("protect_content"),
+        allow_paid_broadcast: bool | None = None,
+        message_effect_id: str | None = None,
+        suggested_post_parameters: SuggestedPostParameters | None = None,
+        reply_parameters: ReplyParameters | None = None,
+        reply_markup: ReplyMarkupUnion | None = None,
+        allow_sending_without_reply: bool | None = None,
+        reply_to_message_id: int | None = None,
         **kwargs: Any,
     ) -> SendLocation:
         """
@@ -1992,12 +1988,12 @@ class Message(MaybeInaccessibleMessage):
     def reply_media_group(
         self,
         media: list[MediaUnion],
-        direct_messages_topic_id: Optional[int] = None,
-        disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
-        allow_paid_broadcast: Optional[bool] = None,
-        message_effect_id: Optional[str] = None,
-        allow_sending_without_reply: Optional[bool] = None,
+        direct_messages_topic_id: int | None = None,
+        disable_notification: bool | None = None,
+        protect_content: bool | Default | None = Default("protect_content"),
+        allow_paid_broadcast: bool | None = None,
+        message_effect_id: str | None = None,
+        allow_sending_without_reply: bool | None = None,
         **kwargs: Any,
     ) -> SendMediaGroup:
         """
@@ -2049,14 +2045,14 @@ class Message(MaybeInaccessibleMessage):
     def answer_media_group(
         self,
         media: list[MediaUnion],
-        direct_messages_topic_id: Optional[int] = None,
-        disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
-        allow_paid_broadcast: Optional[bool] = None,
-        message_effect_id: Optional[str] = None,
-        reply_parameters: Optional[ReplyParameters] = None,
-        allow_sending_without_reply: Optional[bool] = None,
-        reply_to_message_id: Optional[int] = None,
+        direct_messages_topic_id: int | None = None,
+        disable_notification: bool | None = None,
+        protect_content: bool | Default | None = Default("protect_content"),
+        allow_paid_broadcast: bool | None = None,
+        message_effect_id: str | None = None,
+        reply_parameters: ReplyParameters | None = None,
+        allow_sending_without_reply: bool | None = None,
+        reply_to_message_id: int | None = None,
         **kwargs: Any,
     ) -> SendMediaGroup:
         """
@@ -2110,22 +2106,18 @@ class Message(MaybeInaccessibleMessage):
     def reply(
         self,
         text: str,
-        direct_messages_topic_id: Optional[int] = None,
-        parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
-        entities: Optional[list[MessageEntity]] = None,
-        link_preview_options: Optional[Union[LinkPreviewOptions, Default]] = Default(
-            "link_preview"
-        ),
-        disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
-        allow_paid_broadcast: Optional[bool] = None,
-        message_effect_id: Optional[str] = None,
-        suggested_post_parameters: Optional[SuggestedPostParameters] = None,
-        reply_markup: Optional[ReplyMarkupUnion] = None,
-        allow_sending_without_reply: Optional[bool] = None,
-        disable_web_page_preview: Optional[Union[bool, Default]] = Default(
-            "link_preview_is_disabled"
-        ),
+        direct_messages_topic_id: int | None = None,
+        parse_mode: str | Default | None = Default("parse_mode"),
+        entities: list[MessageEntity] | None = None,
+        link_preview_options: LinkPreviewOptions | Default | None = Default("link_preview"),
+        disable_notification: bool | None = None,
+        protect_content: bool | Default | None = Default("protect_content"),
+        allow_paid_broadcast: bool | None = None,
+        message_effect_id: str | None = None,
+        suggested_post_parameters: SuggestedPostParameters | None = None,
+        reply_markup: ReplyMarkupUnion | None = None,
+        allow_sending_without_reply: bool | None = None,
+        disable_web_page_preview: bool | Default | None = Default("link_preview_is_disabled"),
         **kwargs: Any,
     ) -> SendMessage:
         """
@@ -2189,24 +2181,20 @@ class Message(MaybeInaccessibleMessage):
     def answer(
         self,
         text: str,
-        direct_messages_topic_id: Optional[int] = None,
-        parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
-        entities: Optional[list[MessageEntity]] = None,
-        link_preview_options: Optional[Union[LinkPreviewOptions, Default]] = Default(
-            "link_preview"
-        ),
-        disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
-        allow_paid_broadcast: Optional[bool] = None,
-        message_effect_id: Optional[str] = None,
-        suggested_post_parameters: Optional[SuggestedPostParameters] = None,
-        reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[ReplyMarkupUnion] = None,
-        allow_sending_without_reply: Optional[bool] = None,
-        disable_web_page_preview: Optional[Union[bool, Default]] = Default(
-            "link_preview_is_disabled"
-        ),
-        reply_to_message_id: Optional[int] = None,
+        direct_messages_topic_id: int | None = None,
+        parse_mode: str | Default | None = Default("parse_mode"),
+        entities: list[MessageEntity] | None = None,
+        link_preview_options: LinkPreviewOptions | Default | None = Default("link_preview"),
+        disable_notification: bool | None = None,
+        protect_content: bool | Default | None = Default("protect_content"),
+        allow_paid_broadcast: bool | None = None,
+        message_effect_id: str | None = None,
+        suggested_post_parameters: SuggestedPostParameters | None = None,
+        reply_parameters: ReplyParameters | None = None,
+        reply_markup: ReplyMarkupUnion | None = None,
+        allow_sending_without_reply: bool | None = None,
+        disable_web_page_preview: bool | Default | None = Default("link_preview_is_disabled"),
+        reply_to_message_id: int | None = None,
         **kwargs: Any,
     ) -> SendMessage:
         """
@@ -2272,21 +2260,19 @@ class Message(MaybeInaccessibleMessage):
     def reply_photo(
         self,
         photo: InputFileUnion,
-        direct_messages_topic_id: Optional[int] = None,
-        caption: Optional[str] = None,
-        parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
-        caption_entities: Optional[list[MessageEntity]] = None,
-        show_caption_above_media: Optional[Union[bool, Default]] = Default(
-            "show_caption_above_media"
-        ),
-        has_spoiler: Optional[bool] = None,
-        disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
-        allow_paid_broadcast: Optional[bool] = None,
-        message_effect_id: Optional[str] = None,
-        suggested_post_parameters: Optional[SuggestedPostParameters] = None,
-        reply_markup: Optional[ReplyMarkupUnion] = None,
-        allow_sending_without_reply: Optional[bool] = None,
+        direct_messages_topic_id: int | None = None,
+        caption: str | None = None,
+        parse_mode: str | Default | None = Default("parse_mode"),
+        caption_entities: list[MessageEntity] | None = None,
+        show_caption_above_media: bool | Default | None = Default("show_caption_above_media"),
+        has_spoiler: bool | None = None,
+        disable_notification: bool | None = None,
+        protect_content: bool | Default | None = Default("protect_content"),
+        allow_paid_broadcast: bool | None = None,
+        message_effect_id: str | None = None,
+        suggested_post_parameters: SuggestedPostParameters | None = None,
+        reply_markup: ReplyMarkupUnion | None = None,
+        allow_sending_without_reply: bool | None = None,
         **kwargs: Any,
     ) -> SendPhoto:
         """
@@ -2352,23 +2338,21 @@ class Message(MaybeInaccessibleMessage):
     def answer_photo(
         self,
         photo: InputFileUnion,
-        direct_messages_topic_id: Optional[int] = None,
-        caption: Optional[str] = None,
-        parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
-        caption_entities: Optional[list[MessageEntity]] = None,
-        show_caption_above_media: Optional[Union[bool, Default]] = Default(
-            "show_caption_above_media"
-        ),
-        has_spoiler: Optional[bool] = None,
-        disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
-        allow_paid_broadcast: Optional[bool] = None,
-        message_effect_id: Optional[str] = None,
-        suggested_post_parameters: Optional[SuggestedPostParameters] = None,
-        reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[ReplyMarkupUnion] = None,
-        allow_sending_without_reply: Optional[bool] = None,
-        reply_to_message_id: Optional[int] = None,
+        direct_messages_topic_id: int | None = None,
+        caption: str | None = None,
+        parse_mode: str | Default | None = Default("parse_mode"),
+        caption_entities: list[MessageEntity] | None = None,
+        show_caption_above_media: bool | Default | None = Default("show_caption_above_media"),
+        has_spoiler: bool | None = None,
+        disable_notification: bool | None = None,
+        protect_content: bool | Default | None = Default("protect_content"),
+        allow_paid_broadcast: bool | None = None,
+        message_effect_id: str | None = None,
+        suggested_post_parameters: SuggestedPostParameters | None = None,
+        reply_parameters: ReplyParameters | None = None,
+        reply_markup: ReplyMarkupUnion | None = None,
+        allow_sending_without_reply: bool | None = None,
+        reply_to_message_id: int | None = None,
         **kwargs: Any,
     ) -> SendPhoto:
         """
@@ -2437,24 +2421,24 @@ class Message(MaybeInaccessibleMessage):
         self,
         question: str,
         options: list[InputPollOptionUnion],
-        question_parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
-        question_entities: Optional[list[MessageEntity]] = None,
-        is_anonymous: Optional[bool] = None,
-        type: Optional[str] = None,
-        allows_multiple_answers: Optional[bool] = None,
-        correct_option_id: Optional[int] = None,
-        explanation: Optional[str] = None,
-        explanation_parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
-        explanation_entities: Optional[list[MessageEntity]] = None,
-        open_period: Optional[int] = None,
-        close_date: Optional[DateTimeUnion] = None,
-        is_closed: Optional[bool] = None,
-        disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
-        allow_paid_broadcast: Optional[bool] = None,
-        message_effect_id: Optional[str] = None,
-        reply_markup: Optional[ReplyMarkupUnion] = None,
-        allow_sending_without_reply: Optional[bool] = None,
+        question_parse_mode: str | Default | None = Default("parse_mode"),
+        question_entities: list[MessageEntity] | None = None,
+        is_anonymous: bool | None = None,
+        type: str | None = None,
+        allows_multiple_answers: bool | None = None,
+        correct_option_id: int | None = None,
+        explanation: str | None = None,
+        explanation_parse_mode: str | Default | None = Default("parse_mode"),
+        explanation_entities: list[MessageEntity] | None = None,
+        open_period: int | None = None,
+        close_date: DateTimeUnion | None = None,
+        is_closed: bool | None = None,
+        disable_notification: bool | None = None,
+        protect_content: bool | Default | None = Default("protect_content"),
+        allow_paid_broadcast: bool | None = None,
+        message_effect_id: str | None = None,
+        reply_markup: ReplyMarkupUnion | None = None,
+        allow_sending_without_reply: bool | None = None,
         **kwargs: Any,
     ) -> SendPoll:
         """
@@ -2533,26 +2517,26 @@ class Message(MaybeInaccessibleMessage):
         self,
         question: str,
         options: list[InputPollOptionUnion],
-        question_parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
-        question_entities: Optional[list[MessageEntity]] = None,
-        is_anonymous: Optional[bool] = None,
-        type: Optional[str] = None,
-        allows_multiple_answers: Optional[bool] = None,
-        correct_option_id: Optional[int] = None,
-        explanation: Optional[str] = None,
-        explanation_parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
-        explanation_entities: Optional[list[MessageEntity]] = None,
-        open_period: Optional[int] = None,
-        close_date: Optional[DateTimeUnion] = None,
-        is_closed: Optional[bool] = None,
-        disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
-        allow_paid_broadcast: Optional[bool] = None,
-        message_effect_id: Optional[str] = None,
-        reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[ReplyMarkupUnion] = None,
-        allow_sending_without_reply: Optional[bool] = None,
-        reply_to_message_id: Optional[int] = None,
+        question_parse_mode: str | Default | None = Default("parse_mode"),
+        question_entities: list[MessageEntity] | None = None,
+        is_anonymous: bool | None = None,
+        type: str | None = None,
+        allows_multiple_answers: bool | None = None,
+        correct_option_id: int | None = None,
+        explanation: str | None = None,
+        explanation_parse_mode: str | Default | None = Default("parse_mode"),
+        explanation_entities: list[MessageEntity] | None = None,
+        open_period: int | None = None,
+        close_date: DateTimeUnion | None = None,
+        is_closed: bool | None = None,
+        disable_notification: bool | None = None,
+        protect_content: bool | Default | None = Default("protect_content"),
+        allow_paid_broadcast: bool | None = None,
+        message_effect_id: str | None = None,
+        reply_parameters: ReplyParameters | None = None,
+        reply_markup: ReplyMarkupUnion | None = None,
+        allow_sending_without_reply: bool | None = None,
+        reply_to_message_id: int | None = None,
         **kwargs: Any,
     ) -> SendPoll:
         """
@@ -2631,15 +2615,15 @@ class Message(MaybeInaccessibleMessage):
 
     def reply_dice(
         self,
-        direct_messages_topic_id: Optional[int] = None,
-        emoji: Optional[str] = None,
-        disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
-        allow_paid_broadcast: Optional[bool] = None,
-        message_effect_id: Optional[str] = None,
-        suggested_post_parameters: Optional[SuggestedPostParameters] = None,
-        reply_markup: Optional[ReplyMarkupUnion] = None,
-        allow_sending_without_reply: Optional[bool] = None,
+        direct_messages_topic_id: int | None = None,
+        emoji: str | None = None,
+        disable_notification: bool | None = None,
+        protect_content: bool | Default | None = Default("protect_content"),
+        allow_paid_broadcast: bool | None = None,
+        message_effect_id: str | None = None,
+        suggested_post_parameters: SuggestedPostParameters | None = None,
+        reply_markup: ReplyMarkupUnion | None = None,
+        allow_sending_without_reply: bool | None = None,
         **kwargs: Any,
     ) -> SendDice:
         """
@@ -2694,17 +2678,17 @@ class Message(MaybeInaccessibleMessage):
 
     def answer_dice(
         self,
-        direct_messages_topic_id: Optional[int] = None,
-        emoji: Optional[str] = None,
-        disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
-        allow_paid_broadcast: Optional[bool] = None,
-        message_effect_id: Optional[str] = None,
-        suggested_post_parameters: Optional[SuggestedPostParameters] = None,
-        reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[ReplyMarkupUnion] = None,
-        allow_sending_without_reply: Optional[bool] = None,
-        reply_to_message_id: Optional[int] = None,
+        direct_messages_topic_id: int | None = None,
+        emoji: str | None = None,
+        disable_notification: bool | None = None,
+        protect_content: bool | Default | None = Default("protect_content"),
+        allow_paid_broadcast: bool | None = None,
+        message_effect_id: str | None = None,
+        suggested_post_parameters: SuggestedPostParameters | None = None,
+        reply_parameters: ReplyParameters | None = None,
+        reply_markup: ReplyMarkupUnion | None = None,
+        allow_sending_without_reply: bool | None = None,
+        reply_to_message_id: int | None = None,
         **kwargs: Any,
     ) -> SendDice:
         """
@@ -2762,15 +2746,15 @@ class Message(MaybeInaccessibleMessage):
     def reply_sticker(
         self,
         sticker: InputFileUnion,
-        direct_messages_topic_id: Optional[int] = None,
-        emoji: Optional[str] = None,
-        disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
-        allow_paid_broadcast: Optional[bool] = None,
-        message_effect_id: Optional[str] = None,
-        suggested_post_parameters: Optional[SuggestedPostParameters] = None,
-        reply_markup: Optional[ReplyMarkupUnion] = None,
-        allow_sending_without_reply: Optional[bool] = None,
+        direct_messages_topic_id: int | None = None,
+        emoji: str | None = None,
+        disable_notification: bool | None = None,
+        protect_content: bool | Default | None = Default("protect_content"),
+        allow_paid_broadcast: bool | None = None,
+        message_effect_id: str | None = None,
+        suggested_post_parameters: SuggestedPostParameters | None = None,
+        reply_markup: ReplyMarkupUnion | None = None,
+        allow_sending_without_reply: bool | None = None,
         **kwargs: Any,
     ) -> SendSticker:
         """
@@ -2828,17 +2812,17 @@ class Message(MaybeInaccessibleMessage):
     def answer_sticker(
         self,
         sticker: InputFileUnion,
-        direct_messages_topic_id: Optional[int] = None,
-        emoji: Optional[str] = None,
-        disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
-        allow_paid_broadcast: Optional[bool] = None,
-        message_effect_id: Optional[str] = None,
-        suggested_post_parameters: Optional[SuggestedPostParameters] = None,
-        reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[ReplyMarkupUnion] = None,
-        allow_sending_without_reply: Optional[bool] = None,
-        reply_to_message_id: Optional[int] = None,
+        direct_messages_topic_id: int | None = None,
+        emoji: str | None = None,
+        disable_notification: bool | None = None,
+        protect_content: bool | Default | None = Default("protect_content"),
+        allow_paid_broadcast: bool | None = None,
+        message_effect_id: str | None = None,
+        suggested_post_parameters: SuggestedPostParameters | None = None,
+        reply_parameters: ReplyParameters | None = None,
+        reply_markup: ReplyMarkupUnion | None = None,
+        allow_sending_without_reply: bool | None = None,
+        reply_to_message_id: int | None = None,
         **kwargs: Any,
     ) -> SendSticker:
         """
@@ -2901,18 +2885,18 @@ class Message(MaybeInaccessibleMessage):
         longitude: float,
         title: str,
         address: str,
-        direct_messages_topic_id: Optional[int] = None,
-        foursquare_id: Optional[str] = None,
-        foursquare_type: Optional[str] = None,
-        google_place_id: Optional[str] = None,
-        google_place_type: Optional[str] = None,
-        disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
-        allow_paid_broadcast: Optional[bool] = None,
-        message_effect_id: Optional[str] = None,
-        suggested_post_parameters: Optional[SuggestedPostParameters] = None,
-        reply_markup: Optional[ReplyMarkupUnion] = None,
-        allow_sending_without_reply: Optional[bool] = None,
+        direct_messages_topic_id: int | None = None,
+        foursquare_id: str | None = None,
+        foursquare_type: str | None = None,
+        google_place_id: str | None = None,
+        google_place_type: str | None = None,
+        disable_notification: bool | None = None,
+        protect_content: bool | Default | None = Default("protect_content"),
+        allow_paid_broadcast: bool | None = None,
+        message_effect_id: str | None = None,
+        suggested_post_parameters: SuggestedPostParameters | None = None,
+        reply_markup: ReplyMarkupUnion | None = None,
+        allow_sending_without_reply: bool | None = None,
         **kwargs: Any,
     ) -> SendVenue:
         """
@@ -2985,20 +2969,20 @@ class Message(MaybeInaccessibleMessage):
         longitude: float,
         title: str,
         address: str,
-        direct_messages_topic_id: Optional[int] = None,
-        foursquare_id: Optional[str] = None,
-        foursquare_type: Optional[str] = None,
-        google_place_id: Optional[str] = None,
-        google_place_type: Optional[str] = None,
-        disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
-        allow_paid_broadcast: Optional[bool] = None,
-        message_effect_id: Optional[str] = None,
-        suggested_post_parameters: Optional[SuggestedPostParameters] = None,
-        reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[ReplyMarkupUnion] = None,
-        allow_sending_without_reply: Optional[bool] = None,
-        reply_to_message_id: Optional[int] = None,
+        direct_messages_topic_id: int | None = None,
+        foursquare_id: str | None = None,
+        foursquare_type: str | None = None,
+        google_place_id: str | None = None,
+        google_place_type: str | None = None,
+        disable_notification: bool | None = None,
+        protect_content: bool | Default | None = Default("protect_content"),
+        allow_paid_broadcast: bool | None = None,
+        message_effect_id: str | None = None,
+        suggested_post_parameters: SuggestedPostParameters | None = None,
+        reply_parameters: ReplyParameters | None = None,
+        reply_markup: ReplyMarkupUnion | None = None,
+        allow_sending_without_reply: bool | None = None,
+        reply_to_message_id: int | None = None,
         **kwargs: Any,
     ) -> SendVenue:
         """
@@ -3070,28 +3054,26 @@ class Message(MaybeInaccessibleMessage):
     def reply_video(
         self,
         video: InputFileUnion,
-        direct_messages_topic_id: Optional[int] = None,
-        duration: Optional[int] = None,
-        width: Optional[int] = None,
-        height: Optional[int] = None,
-        thumbnail: Optional[InputFile] = None,
-        cover: Optional[InputFileUnion] = None,
-        start_timestamp: Optional[DateTimeUnion] = None,
-        caption: Optional[str] = None,
-        parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
-        caption_entities: Optional[list[MessageEntity]] = None,
-        show_caption_above_media: Optional[Union[bool, Default]] = Default(
-            "show_caption_above_media"
-        ),
-        has_spoiler: Optional[bool] = None,
-        supports_streaming: Optional[bool] = None,
-        disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
-        allow_paid_broadcast: Optional[bool] = None,
-        message_effect_id: Optional[str] = None,
-        suggested_post_parameters: Optional[SuggestedPostParameters] = None,
-        reply_markup: Optional[ReplyMarkupUnion] = None,
-        allow_sending_without_reply: Optional[bool] = None,
+        direct_messages_topic_id: int | None = None,
+        duration: int | None = None,
+        width: int | None = None,
+        height: int | None = None,
+        thumbnail: InputFile | None = None,
+        cover: InputFileUnion | None = None,
+        start_timestamp: DateTimeUnion | None = None,
+        caption: str | None = None,
+        parse_mode: str | Default | None = Default("parse_mode"),
+        caption_entities: list[MessageEntity] | None = None,
+        show_caption_above_media: bool | Default | None = Default("show_caption_above_media"),
+        has_spoiler: bool | None = None,
+        supports_streaming: bool | None = None,
+        disable_notification: bool | None = None,
+        protect_content: bool | Default | None = Default("protect_content"),
+        allow_paid_broadcast: bool | None = None,
+        message_effect_id: str | None = None,
+        suggested_post_parameters: SuggestedPostParameters | None = None,
+        reply_markup: ReplyMarkupUnion | None = None,
+        allow_sending_without_reply: bool | None = None,
         **kwargs: Any,
     ) -> SendVideo:
         """
@@ -3171,30 +3153,28 @@ class Message(MaybeInaccessibleMessage):
     def answer_video(
         self,
         video: InputFileUnion,
-        direct_messages_topic_id: Optional[int] = None,
-        duration: Optional[int] = None,
-        width: Optional[int] = None,
-        height: Optional[int] = None,
-        thumbnail: Optional[InputFile] = None,
-        cover: Optional[InputFileUnion] = None,
-        start_timestamp: Optional[DateTimeUnion] = None,
-        caption: Optional[str] = None,
-        parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
-        caption_entities: Optional[list[MessageEntity]] = None,
-        show_caption_above_media: Optional[Union[bool, Default]] = Default(
-            "show_caption_above_media"
-        ),
-        has_spoiler: Optional[bool] = None,
-        supports_streaming: Optional[bool] = None,
-        disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
-        allow_paid_broadcast: Optional[bool] = None,
-        message_effect_id: Optional[str] = None,
-        suggested_post_parameters: Optional[SuggestedPostParameters] = None,
-        reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[ReplyMarkupUnion] = None,
-        allow_sending_without_reply: Optional[bool] = None,
-        reply_to_message_id: Optional[int] = None,
+        direct_messages_topic_id: int | None = None,
+        duration: int | None = None,
+        width: int | None = None,
+        height: int | None = None,
+        thumbnail: InputFile | None = None,
+        cover: InputFileUnion | None = None,
+        start_timestamp: DateTimeUnion | None = None,
+        caption: str | None = None,
+        parse_mode: str | Default | None = Default("parse_mode"),
+        caption_entities: list[MessageEntity] | None = None,
+        show_caption_above_media: bool | Default | None = Default("show_caption_above_media"),
+        has_spoiler: bool | None = None,
+        supports_streaming: bool | None = None,
+        disable_notification: bool | None = None,
+        protect_content: bool | Default | None = Default("protect_content"),
+        allow_paid_broadcast: bool | None = None,
+        message_effect_id: str | None = None,
+        suggested_post_parameters: SuggestedPostParameters | None = None,
+        reply_parameters: ReplyParameters | None = None,
+        reply_markup: ReplyMarkupUnion | None = None,
+        allow_sending_without_reply: bool | None = None,
+        reply_to_message_id: int | None = None,
         **kwargs: Any,
     ) -> SendVideo:
         """
@@ -3276,17 +3256,17 @@ class Message(MaybeInaccessibleMessage):
     def reply_video_note(
         self,
         video_note: InputFileUnion,
-        direct_messages_topic_id: Optional[int] = None,
-        duration: Optional[int] = None,
-        length: Optional[int] = None,
-        thumbnail: Optional[InputFile] = None,
-        disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
-        allow_paid_broadcast: Optional[bool] = None,
-        message_effect_id: Optional[str] = None,
-        suggested_post_parameters: Optional[SuggestedPostParameters] = None,
-        reply_markup: Optional[ReplyMarkupUnion] = None,
-        allow_sending_without_reply: Optional[bool] = None,
+        direct_messages_topic_id: int | None = None,
+        duration: int | None = None,
+        length: int | None = None,
+        thumbnail: InputFile | None = None,
+        disable_notification: bool | None = None,
+        protect_content: bool | Default | None = Default("protect_content"),
+        allow_paid_broadcast: bool | None = None,
+        message_effect_id: str | None = None,
+        suggested_post_parameters: SuggestedPostParameters | None = None,
+        reply_markup: ReplyMarkupUnion | None = None,
+        allow_sending_without_reply: bool | None = None,
         **kwargs: Any,
     ) -> SendVideoNote:
         """
@@ -3348,19 +3328,19 @@ class Message(MaybeInaccessibleMessage):
     def answer_video_note(
         self,
         video_note: InputFileUnion,
-        direct_messages_topic_id: Optional[int] = None,
-        duration: Optional[int] = None,
-        length: Optional[int] = None,
-        thumbnail: Optional[InputFile] = None,
-        disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
-        allow_paid_broadcast: Optional[bool] = None,
-        message_effect_id: Optional[str] = None,
-        suggested_post_parameters: Optional[SuggestedPostParameters] = None,
-        reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[ReplyMarkupUnion] = None,
-        allow_sending_without_reply: Optional[bool] = None,
-        reply_to_message_id: Optional[int] = None,
+        direct_messages_topic_id: int | None = None,
+        duration: int | None = None,
+        length: int | None = None,
+        thumbnail: InputFile | None = None,
+        disable_notification: bool | None = None,
+        protect_content: bool | Default | None = Default("protect_content"),
+        allow_paid_broadcast: bool | None = None,
+        message_effect_id: str | None = None,
+        suggested_post_parameters: SuggestedPostParameters | None = None,
+        reply_parameters: ReplyParameters | None = None,
+        reply_markup: ReplyMarkupUnion | None = None,
+        allow_sending_without_reply: bool | None = None,
+        reply_to_message_id: int | None = None,
         **kwargs: Any,
     ) -> SendVideoNote:
         """
@@ -3424,18 +3404,18 @@ class Message(MaybeInaccessibleMessage):
     def reply_voice(
         self,
         voice: InputFileUnion,
-        direct_messages_topic_id: Optional[int] = None,
-        caption: Optional[str] = None,
-        parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
-        caption_entities: Optional[list[MessageEntity]] = None,
-        duration: Optional[int] = None,
-        disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
-        allow_paid_broadcast: Optional[bool] = None,
-        message_effect_id: Optional[str] = None,
-        suggested_post_parameters: Optional[SuggestedPostParameters] = None,
-        reply_markup: Optional[ReplyMarkupUnion] = None,
-        allow_sending_without_reply: Optional[bool] = None,
+        direct_messages_topic_id: int | None = None,
+        caption: str | None = None,
+        parse_mode: str | Default | None = Default("parse_mode"),
+        caption_entities: list[MessageEntity] | None = None,
+        duration: int | None = None,
+        disable_notification: bool | None = None,
+        protect_content: bool | Default | None = Default("protect_content"),
+        allow_paid_broadcast: bool | None = None,
+        message_effect_id: str | None = None,
+        suggested_post_parameters: SuggestedPostParameters | None = None,
+        reply_markup: ReplyMarkupUnion | None = None,
+        allow_sending_without_reply: bool | None = None,
         **kwargs: Any,
     ) -> SendVoice:
         """
@@ -3499,20 +3479,20 @@ class Message(MaybeInaccessibleMessage):
     def answer_voice(
         self,
         voice: InputFileUnion,
-        direct_messages_topic_id: Optional[int] = None,
-        caption: Optional[str] = None,
-        parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
-        caption_entities: Optional[list[MessageEntity]] = None,
-        duration: Optional[int] = None,
-        disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
-        allow_paid_broadcast: Optional[bool] = None,
-        message_effect_id: Optional[str] = None,
-        suggested_post_parameters: Optional[SuggestedPostParameters] = None,
-        reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[ReplyMarkupUnion] = None,
-        allow_sending_without_reply: Optional[bool] = None,
-        reply_to_message_id: Optional[int] = None,
+        direct_messages_topic_id: int | None = None,
+        caption: str | None = None,
+        parse_mode: str | Default | None = Default("parse_mode"),
+        caption_entities: list[MessageEntity] | None = None,
+        duration: int | None = None,
+        disable_notification: bool | None = None,
+        protect_content: bool | Default | None = Default("protect_content"),
+        allow_paid_broadcast: bool | None = None,
+        message_effect_id: str | None = None,
+        suggested_post_parameters: SuggestedPostParameters | None = None,
+        reply_parameters: ReplyParameters | None = None,
+        reply_markup: ReplyMarkupUnion | None = None,
+        allow_sending_without_reply: bool | None = None,
+        reply_to_message_id: int | None = None,
         **kwargs: Any,
     ) -> SendVoice:
         """
@@ -3577,33 +3557,33 @@ class Message(MaybeInaccessibleMessage):
 
     def send_copy(  # noqa: C901
         self: Message,
-        chat_id: Union[str, int],
-        disable_notification: Optional[bool] = None,
-        reply_to_message_id: Optional[int] = None,
-        reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Union[InlineKeyboardMarkup, ReplyKeyboardMarkup, None] = None,
-        allow_sending_without_reply: Optional[bool] = None,
-        message_thread_id: Optional[int] = None,
-        business_connection_id: Optional[str] = None,
-        parse_mode: Optional[str] = None,
-        message_effect_id: Optional[str] = None,
-    ) -> Union[
-        ForwardMessage,
-        SendAnimation,
-        SendAudio,
-        SendContact,
-        SendDocument,
-        SendLocation,
-        SendMessage,
-        SendPhoto,
-        SendPoll,
-        SendDice,
-        SendSticker,
-        SendVenue,
-        SendVideo,
-        SendVideoNote,
-        SendVoice,
-    ]:
+        chat_id: ChatIdUnion,
+        disable_notification: bool | None = None,
+        reply_to_message_id: int | None = None,
+        reply_parameters: ReplyParameters | None = None,
+        reply_markup: InlineKeyboardMarkup | ReplyKeyboardMarkup | None = None,
+        allow_sending_without_reply: bool | None = None,
+        message_thread_id: int | None = None,
+        business_connection_id: str | None = None,
+        parse_mode: str | None = None,
+        message_effect_id: str | None = None,
+    ) -> (
+        ForwardMessage
+        | SendAnimation
+        | SendAudio
+        | SendContact
+        | SendDocument
+        | SendLocation
+        | SendMessage
+        | SendPhoto
+        | SendPoll
+        | SendDice
+        | SendSticker
+        | SendVenue
+        | SendVideo
+        | SendVideoNote
+        | SendVoice
+    ):
         """
         Send copy of a message.
 
@@ -3645,7 +3625,7 @@ class Message(MaybeInaccessibleMessage):
             SendVoice,
         )
 
-        kwargs: Dict[str, Any] = {
+        kwargs: dict[str, Any] = {
             "chat_id": chat_id,
             "reply_markup": reply_markup or self.reply_markup,
             "disable_notification": disable_notification,
@@ -3775,24 +3755,22 @@ class Message(MaybeInaccessibleMessage):
     def copy_to(
         self,
         chat_id: ChatIdUnion,
-        message_thread_id: Optional[int] = None,
-        direct_messages_topic_id: Optional[int] = None,
-        video_start_timestamp: Optional[DateTimeUnion] = None,
-        caption: Optional[str] = None,
-        parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
-        caption_entities: Optional[list[MessageEntity]] = None,
-        show_caption_above_media: Optional[Union[bool, Default]] = Default(
-            "show_caption_above_media"
-        ),
-        disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
-        allow_paid_broadcast: Optional[bool] = None,
-        message_effect_id: Optional[str] = None,
-        suggested_post_parameters: Optional[SuggestedPostParameters] = None,
-        reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[ReplyMarkupUnion] = None,
-        allow_sending_without_reply: Optional[bool] = None,
-        reply_to_message_id: Optional[int] = None,
+        message_thread_id: int | None = None,
+        direct_messages_topic_id: int | None = None,
+        video_start_timestamp: DateTimeUnion | None = None,
+        caption: str | None = None,
+        parse_mode: str | Default | None = Default("parse_mode"),
+        caption_entities: list[MessageEntity] | None = None,
+        show_caption_above_media: bool | Default | None = Default("show_caption_above_media"),
+        disable_notification: bool | None = None,
+        protect_content: bool | Default | None = Default("protect_content"),
+        allow_paid_broadcast: bool | None = None,
+        message_effect_id: str | None = None,
+        suggested_post_parameters: SuggestedPostParameters | None = None,
+        reply_parameters: ReplyParameters | None = None,
+        reply_markup: ReplyMarkupUnion | None = None,
+        allow_sending_without_reply: bool | None = None,
+        reply_to_message_id: int | None = None,
         **kwargs: Any,
     ) -> CopyMessage:
         """
@@ -3860,16 +3838,12 @@ class Message(MaybeInaccessibleMessage):
     def edit_text(
         self,
         text: str,
-        inline_message_id: Optional[str] = None,
-        parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
-        entities: Optional[list[MessageEntity]] = None,
-        link_preview_options: Optional[Union[LinkPreviewOptions, Default]] = Default(
-            "link_preview"
-        ),
-        reply_markup: Optional[InlineKeyboardMarkup] = None,
-        disable_web_page_preview: Optional[Union[bool, Default]] = Default(
-            "link_preview_is_disabled"
-        ),
+        inline_message_id: str | None = None,
+        parse_mode: str | Default | None = Default("parse_mode"),
+        entities: list[MessageEntity] | None = None,
+        link_preview_options: LinkPreviewOptions | Default | None = Default("link_preview"),
+        reply_markup: InlineKeyboardMarkup | None = None,
+        disable_web_page_preview: bool | Default | None = Default("link_preview_is_disabled"),
         **kwargs: Any,
     ) -> EditMessageText:
         """
@@ -3919,13 +3893,13 @@ class Message(MaybeInaccessibleMessage):
     def forward(
         self,
         chat_id: ChatIdUnion,
-        message_thread_id: Optional[int] = None,
-        direct_messages_topic_id: Optional[int] = None,
-        video_start_timestamp: Optional[DateTimeUnion] = None,
-        disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
-        message_effect_id: Optional[str] = None,
-        suggested_post_parameters: Optional[SuggestedPostParameters] = None,
+        message_thread_id: int | None = None,
+        direct_messages_topic_id: int | None = None,
+        video_start_timestamp: DateTimeUnion | None = None,
+        disable_notification: bool | None = None,
+        protect_content: bool | Default | None = Default("protect_content"),
+        message_effect_id: str | None = None,
+        suggested_post_parameters: SuggestedPostParameters | None = None,
         **kwargs: Any,
     ) -> ForwardMessage:
         """
@@ -3975,8 +3949,8 @@ class Message(MaybeInaccessibleMessage):
     def edit_media(
         self,
         media: InputMediaUnion,
-        inline_message_id: Optional[str] = None,
-        reply_markup: Optional[InlineKeyboardMarkup] = None,
+        inline_message_id: str | None = None,
+        reply_markup: InlineKeyboardMarkup | None = None,
         **kwargs: Any,
     ) -> EditMessageMedia:
         """
@@ -4017,8 +3991,8 @@ class Message(MaybeInaccessibleMessage):
 
     def edit_reply_markup(
         self,
-        inline_message_id: Optional[str] = None,
-        reply_markup: Optional[InlineKeyboardMarkup] = None,
+        inline_message_id: str | None = None,
+        reply_markup: InlineKeyboardMarkup | None = None,
         **kwargs: Any,
     ) -> EditMessageReplyMarkup:
         """
@@ -4057,7 +4031,7 @@ class Message(MaybeInaccessibleMessage):
 
     def delete_reply_markup(
         self,
-        inline_message_id: Optional[str] = None,
+        inline_message_id: str | None = None,
         **kwargs: Any,
     ) -> EditMessageReplyMarkup:
         """
@@ -4098,12 +4072,12 @@ class Message(MaybeInaccessibleMessage):
         self,
         latitude: float,
         longitude: float,
-        inline_message_id: Optional[str] = None,
-        live_period: Optional[int] = None,
-        horizontal_accuracy: Optional[float] = None,
-        heading: Optional[int] = None,
-        proximity_alert_radius: Optional[int] = None,
-        reply_markup: Optional[InlineKeyboardMarkup] = None,
+        inline_message_id: str | None = None,
+        live_period: int | None = None,
+        horizontal_accuracy: float | None = None,
+        heading: int | None = None,
+        proximity_alert_radius: int | None = None,
+        reply_markup: InlineKeyboardMarkup | None = None,
         **kwargs: Any,
     ) -> EditMessageLiveLocation:
         """
@@ -4154,8 +4128,8 @@ class Message(MaybeInaccessibleMessage):
 
     def stop_live_location(
         self,
-        inline_message_id: Optional[str] = None,
-        reply_markup: Optional[InlineKeyboardMarkup] = None,
+        inline_message_id: str | None = None,
+        reply_markup: InlineKeyboardMarkup | None = None,
         **kwargs: Any,
     ) -> StopMessageLiveLocation:
         """
@@ -4194,14 +4168,12 @@ class Message(MaybeInaccessibleMessage):
 
     def edit_caption(
         self,
-        inline_message_id: Optional[str] = None,
-        caption: Optional[str] = None,
-        parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
-        caption_entities: Optional[list[MessageEntity]] = None,
-        show_caption_above_media: Optional[Union[bool, Default]] = Default(
-            "show_caption_above_media"
-        ),
-        reply_markup: Optional[InlineKeyboardMarkup] = None,
+        inline_message_id: str | None = None,
+        caption: str | None = None,
+        parse_mode: str | Default | None = Default("parse_mode"),
+        caption_entities: list[MessageEntity] | None = None,
+        show_caption_above_media: bool | Default | None = Default("show_caption_above_media"),
+        reply_markup: InlineKeyboardMarkup | None = None,
         **kwargs: Any,
     ) -> EditMessageCaption:
         """
@@ -4302,7 +4274,7 @@ class Message(MaybeInaccessibleMessage):
 
     def pin(
         self,
-        disable_notification: Optional[bool] = None,
+        disable_notification: bool | None = None,
         **kwargs: Any,
     ) -> PinChatMessage:
         """
@@ -4371,9 +4343,7 @@ class Message(MaybeInaccessibleMessage):
             **kwargs,
         ).as_(self._bot)
 
-    def get_url(
-        self, force_private: bool = False, include_thread_id: bool = False
-    ) -> Optional[str]:
+    def get_url(self, force_private: bool = False, include_thread_id: bool = False) -> str | None:
         """
         Returns message URL. Cannot be used in private (one-to-one) chats.
         If chat has a username, returns URL like https://t.me/username/message_id
@@ -4402,8 +4372,8 @@ class Message(MaybeInaccessibleMessage):
 
     def react(
         self,
-        reaction: Optional[list[ReactionTypeUnion]] = None,
-        is_big: Optional[bool] = None,
+        reaction: list[ReactionTypeUnion] | None = None,
+        is_big: bool | None = None,
         **kwargs: Any,
     ) -> SetMessageReaction:
         """
@@ -4444,18 +4414,18 @@ class Message(MaybeInaccessibleMessage):
         self,
         star_count: int,
         media: list[InputPaidMediaUnion],
-        direct_messages_topic_id: Optional[int] = None,
-        payload: Optional[str] = None,
-        caption: Optional[str] = None,
-        parse_mode: Optional[str] = None,
-        caption_entities: Optional[list[MessageEntity]] = None,
-        show_caption_above_media: Optional[bool] = None,
-        disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
-        allow_paid_broadcast: Optional[bool] = None,
-        suggested_post_parameters: Optional[SuggestedPostParameters] = None,
-        reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[ReplyMarkupUnion] = None,
+        direct_messages_topic_id: int | None = None,
+        payload: str | None = None,
+        caption: str | None = None,
+        parse_mode: str | None = None,
+        caption_entities: list[MessageEntity] | None = None,
+        show_caption_above_media: bool | None = None,
+        disable_notification: bool | None = None,
+        protect_content: bool | None = None,
+        allow_paid_broadcast: bool | None = None,
+        suggested_post_parameters: SuggestedPostParameters | None = None,
+        reply_parameters: ReplyParameters | None = None,
+        reply_markup: ReplyMarkupUnion | None = None,
         **kwargs: Any,
     ) -> SendPaidMedia:
         """
@@ -4520,17 +4490,17 @@ class Message(MaybeInaccessibleMessage):
         self,
         star_count: int,
         media: list[InputPaidMediaUnion],
-        direct_messages_topic_id: Optional[int] = None,
-        payload: Optional[str] = None,
-        caption: Optional[str] = None,
-        parse_mode: Optional[str] = None,
-        caption_entities: Optional[list[MessageEntity]] = None,
-        show_caption_above_media: Optional[bool] = None,
-        disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
-        allow_paid_broadcast: Optional[bool] = None,
-        suggested_post_parameters: Optional[SuggestedPostParameters] = None,
-        reply_markup: Optional[ReplyMarkupUnion] = None,
+        direct_messages_topic_id: int | None = None,
+        payload: str | None = None,
+        caption: str | None = None,
+        parse_mode: str | None = None,
+        caption_entities: list[MessageEntity] | None = None,
+        show_caption_above_media: bool | None = None,
+        disable_notification: bool | None = None,
+        protect_content: bool | None = None,
+        allow_paid_broadcast: bool | None = None,
+        suggested_post_parameters: SuggestedPostParameters | None = None,
+        reply_markup: ReplyMarkupUnion | None = None,
         **kwargs: Any,
     ) -> SendPaidMedia:
         """

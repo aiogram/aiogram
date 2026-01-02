@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from ..types import StarTransactions
 from .base import TelegramMethod
@@ -16,9 +16,9 @@ class GetStarTransactions(TelegramMethod[StarTransactions]):
     __returning__ = StarTransactions
     __api_method__ = "getStarTransactions"
 
-    offset: Optional[int] = None
+    offset: int | None = None
     """Number of transactions to skip in the response"""
-    limit: Optional[int] = None
+    limit: int | None = None
     """The maximum number of transactions to be retrieved. Values between 1-100 are accepted. Defaults to 100."""
 
     if TYPE_CHECKING:
@@ -28,8 +28,8 @@ class GetStarTransactions(TelegramMethod[StarTransactions]):
         def __init__(
             __pydantic__self__,
             *,
-            offset: Optional[int] = None,
-            limit: Optional[int] = None,
+            offset: int | None = None,
+            limit: int | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!
