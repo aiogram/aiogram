@@ -1,5 +1,5 @@
 from __future__ import annotations
 
-from typing import Union
+from typing import TypeAlias
 
-ChatIdUnion = Union[int, str]
+ChatIdUnion: TypeAlias = int | str

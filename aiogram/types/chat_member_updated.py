@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional, Union
+from typing import TYPE_CHECKING, Any
 
 from pydantic import Field
 
@@ -63,11 +63,11 @@ class ChatMemberUpdated(TelegramObject):
     """Previous information about the chat member"""
     new_chat_member: ChatMemberUnion
     """New information about the chat member"""
-    invite_link: Optional[ChatInviteLink] = None
+    invite_link: ChatInviteLink | None = None
     """*Optional*. Chat invite link, which was used by the user to join the chat; for joining by invite link events only."""
-    via_join_request: Optional[bool] = None
+    via_join_request: bool | None = None
     """*Optional*. :code:`True`, if the user joined the chat after sending a direct join request without using an invite link and being approved by an administrator"""
-    via_chat_folder_invite_link: Optional[bool] = None
+    via_chat_folder_invite_link: bool | None = None
     """*Optional*. :code:`True`, if the user joined the chat via a chat folder invite link"""
 
     if TYPE_CHECKING:
@@ -82,9 +82,9 @@ class ChatMemberUpdated(TelegramObject):
             date: DateTime,
             old_chat_member: ChatMemberUnion,
             new_chat_member: ChatMemberUnion,
-            invite_link: Optional[ChatInviteLink] = None,
-            via_join_request: Optional[bool] = None,
-            via_chat_folder_invite_link: Optional[bool] = None,
+            invite_link: ChatInviteLink | None = None,
+            via_join_request: bool | None = None,
+            via_chat_folder_invite_link: bool | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!
@@ -106,26 +106,22 @@ class ChatMemberUpdated(TelegramObject):
     def answer(
         self,
         text: str,
-        business_connection_id: Optional[str] = None,
-        message_thread_id: Optional[int] = None,
-        direct_messages_topic_id: Optional[int] = None,
-        parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
-        entities: Optional[list[MessageEntity]] = None,
-        link_preview_options: Optional[Union[LinkPreviewOptions, Default]] = Default(
-            "link_preview"
-        ),
-        disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
-        allow_paid_broadcast: Optional[bool] = None,
-        message_effect_id: Optional[str] = None,
-        suggested_post_parameters: Optional[SuggestedPostParameters] = None,
-        reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[ReplyMarkupUnion] = None,
-        allow_sending_without_reply: Optional[bool] = None,
-        disable_web_page_preview: Optional[Union[bool, Default]] = Default(
-            "link_preview_is_disabled"
-        ),
-        reply_to_message_id: Optional[int] = None,
+        business_connection_id: str | None = None,
+        message_thread_id: int | None = None,
+        direct_messages_topic_id: int | None = None,
+        parse_mode: str | Default | None = Default("parse_mode"),
+        entities: list[MessageEntity] | None = None,
+        link_preview_options: LinkPreviewOptions | Default | None = Default("link_preview"),
+        disable_notification: bool | None = None,
+        protect_content: bool | Default | None = Default("protect_content"),
+        allow_paid_broadcast: bool | None = None,
+        message_effect_id: str | None = None,
+        suggested_post_parameters: SuggestedPostParameters | None = None,
+        reply_parameters: ReplyParameters | None = None,
+        reply_markup: ReplyMarkupUnion | None = None,
+        allow_sending_without_reply: bool | None = None,
+        disable_web_page_preview: bool | Default | None = Default("link_preview_is_disabled"),
+        reply_to_message_id: int | None = None,
         **kwargs: Any,
     ) -> SendMessage:
         """
@@ -140,7 +136,7 @@ class ChatMemberUpdated(TelegramObject):
 
         :param text: Text of the message to be sent, 1-4096 characters after entities parsing
         :param business_connection_id: Unique identifier of the business connection on behalf of which the message will be sent
-        :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
+        :param message_thread_id: Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only
         :param direct_messages_topic_id: Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat
         :param parse_mode: Mode for parsing entities in the message text. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.
         :param entities: A JSON-serialized list of special entities that appear in message text, which can be specified instead of *parse_mode*
@@ -187,29 +183,27 @@ class ChatMemberUpdated(TelegramObject):
     def answer_animation(
         self,
         animation: InputFileUnion,
-        business_connection_id: Optional[str] = None,
-        message_thread_id: Optional[int] = None,
-        direct_messages_topic_id: Optional[int] = None,
-        duration: Optional[int] = None,
-        width: Optional[int] = None,
-        height: Optional[int] = None,
-        thumbnail: Optional[InputFile] = None,
-        caption: Optional[str] = None,
-        parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
-        caption_entities: Optional[list[MessageEntity]] = None,
-        show_caption_above_media: Optional[Union[bool, Default]] = Default(
-            "show_caption_above_media"
-        ),
-        has_spoiler: Optional[bool] = None,
-        disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
-        allow_paid_broadcast: Optional[bool] = None,
-        message_effect_id: Optional[str] = None,
-        suggested_post_parameters: Optional[SuggestedPostParameters] = None,
-        reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[ReplyMarkupUnion] = None,
-        allow_sending_without_reply: Optional[bool] = None,
-        reply_to_message_id: Optional[int] = None,
+        business_connection_id: str | None = None,
+        message_thread_id: int | None = None,
+        direct_messages_topic_id: int | None = None,
+        duration: int | None = None,
+        width: int | None = None,
+        height: int | None = None,
+        thumbnail: InputFile | None = None,
+        caption: str | None = None,
+        parse_mode: str | Default | None = Default("parse_mode"),
+        caption_entities: list[MessageEntity] | None = None,
+        show_caption_above_media: bool | Default | None = Default("show_caption_above_media"),
+        has_spoiler: bool | None = None,
+        disable_notification: bool | None = None,
+        protect_content: bool | Default | None = Default("protect_content"),
+        allow_paid_broadcast: bool | None = None,
+        message_effect_id: str | None = None,
+        suggested_post_parameters: SuggestedPostParameters | None = None,
+        reply_parameters: ReplyParameters | None = None,
+        reply_markup: ReplyMarkupUnion | None = None,
+        allow_sending_without_reply: bool | None = None,
+        reply_to_message_id: int | None = None,
         **kwargs: Any,
     ) -> SendAnimation:
         """
@@ -224,7 +218,7 @@ class ChatMemberUpdated(TelegramObject):
 
         :param animation: Animation to send. Pass a file_id as String to send an animation that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get an animation from the Internet, or upload a new animation using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`
         :param business_connection_id: Unique identifier of the business connection on behalf of which the message will be sent
-        :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
+        :param message_thread_id: Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only
         :param direct_messages_topic_id: Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat
         :param duration: Duration of sent animation in seconds
         :param width: Animation width
@@ -281,25 +275,25 @@ class ChatMemberUpdated(TelegramObject):
     def answer_audio(
         self,
         audio: InputFileUnion,
-        business_connection_id: Optional[str] = None,
-        message_thread_id: Optional[int] = None,
-        direct_messages_topic_id: Optional[int] = None,
-        caption: Optional[str] = None,
-        parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
-        caption_entities: Optional[list[MessageEntity]] = None,
-        duration: Optional[int] = None,
-        performer: Optional[str] = None,
-        title: Optional[str] = None,
-        thumbnail: Optional[InputFile] = None,
-        disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
-        allow_paid_broadcast: Optional[bool] = None,
-        message_effect_id: Optional[str] = None,
-        suggested_post_parameters: Optional[SuggestedPostParameters] = None,
-        reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[ReplyMarkupUnion] = None,
-        allow_sending_without_reply: Optional[bool] = None,
-        reply_to_message_id: Optional[int] = None,
+        business_connection_id: str | None = None,
+        message_thread_id: int | None = None,
+        direct_messages_topic_id: int | None = None,
+        caption: str | None = None,
+        parse_mode: str | Default | None = Default("parse_mode"),
+        caption_entities: list[MessageEntity] | None = None,
+        duration: int | None = None,
+        performer: str | None = None,
+        title: str | None = None,
+        thumbnail: InputFile | None = None,
+        disable_notification: bool | None = None,
+        protect_content: bool | Default | None = Default("protect_content"),
+        allow_paid_broadcast: bool | None = None,
+        message_effect_id: str | None = None,
+        suggested_post_parameters: SuggestedPostParameters | None = None,
+        reply_parameters: ReplyParameters | None = None,
+        reply_markup: ReplyMarkupUnion | None = None,
+        allow_sending_without_reply: bool | None = None,
+        reply_to_message_id: int | None = None,
         **kwargs: Any,
     ) -> SendAudio:
         """
@@ -315,7 +309,7 @@ class ChatMemberUpdated(TelegramObject):
 
         :param audio: Audio file to send. Pass a file_id as String to send an audio file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get an audio file from the Internet, or upload a new one using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`
         :param business_connection_id: Unique identifier of the business connection on behalf of which the message will be sent
-        :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
+        :param message_thread_id: Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only
         :param direct_messages_topic_id: Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat
         :param caption: Audio caption, 0-1024 characters after entities parsing
         :param parse_mode: Mode for parsing entities in the audio caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.
@@ -369,20 +363,20 @@ class ChatMemberUpdated(TelegramObject):
         self,
         phone_number: str,
         first_name: str,
-        business_connection_id: Optional[str] = None,
-        message_thread_id: Optional[int] = None,
-        direct_messages_topic_id: Optional[int] = None,
-        last_name: Optional[str] = None,
-        vcard: Optional[str] = None,
-        disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
-        allow_paid_broadcast: Optional[bool] = None,
-        message_effect_id: Optional[str] = None,
-        suggested_post_parameters: Optional[SuggestedPostParameters] = None,
-        reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[ReplyMarkupUnion] = None,
-        allow_sending_without_reply: Optional[bool] = None,
-        reply_to_message_id: Optional[int] = None,
+        business_connection_id: str | None = None,
+        message_thread_id: int | None = None,
+        direct_messages_topic_id: int | None = None,
+        last_name: str | None = None,
+        vcard: str | None = None,
+        disable_notification: bool | None = None,
+        protect_content: bool | Default | None = Default("protect_content"),
+        allow_paid_broadcast: bool | None = None,
+        message_effect_id: str | None = None,
+        suggested_post_parameters: SuggestedPostParameters | None = None,
+        reply_parameters: ReplyParameters | None = None,
+        reply_markup: ReplyMarkupUnion | None = None,
+        allow_sending_without_reply: bool | None = None,
+        reply_to_message_id: int | None = None,
         **kwargs: Any,
     ) -> SendContact:
         """
@@ -398,7 +392,7 @@ class ChatMemberUpdated(TelegramObject):
         :param phone_number: Contact's phone number
         :param first_name: Contact's first name
         :param business_connection_id: Unique identifier of the business connection on behalf of which the message will be sent
-        :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
+        :param message_thread_id: Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only
         :param direct_messages_topic_id: Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat
         :param last_name: Contact's last name
         :param vcard: Additional data about the contact in the form of a `vCard <https://en.wikipedia.org/wiki/VCard>`_, 0-2048 bytes
@@ -442,23 +436,23 @@ class ChatMemberUpdated(TelegramObject):
     def answer_document(
         self,
         document: InputFileUnion,
-        business_connection_id: Optional[str] = None,
-        message_thread_id: Optional[int] = None,
-        direct_messages_topic_id: Optional[int] = None,
-        thumbnail: Optional[InputFile] = None,
-        caption: Optional[str] = None,
-        parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
-        caption_entities: Optional[list[MessageEntity]] = None,
-        disable_content_type_detection: Optional[bool] = None,
-        disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
-        allow_paid_broadcast: Optional[bool] = None,
-        message_effect_id: Optional[str] = None,
-        suggested_post_parameters: Optional[SuggestedPostParameters] = None,
-        reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[ReplyMarkupUnion] = None,
-        allow_sending_without_reply: Optional[bool] = None,
-        reply_to_message_id: Optional[int] = None,
+        business_connection_id: str | None = None,
+        message_thread_id: int | None = None,
+        direct_messages_topic_id: int | None = None,
+        thumbnail: InputFile | None = None,
+        caption: str | None = None,
+        parse_mode: str | Default | None = Default("parse_mode"),
+        caption_entities: list[MessageEntity] | None = None,
+        disable_content_type_detection: bool | None = None,
+        disable_notification: bool | None = None,
+        protect_content: bool | Default | None = Default("protect_content"),
+        allow_paid_broadcast: bool | None = None,
+        message_effect_id: str | None = None,
+        suggested_post_parameters: SuggestedPostParameters | None = None,
+        reply_parameters: ReplyParameters | None = None,
+        reply_markup: ReplyMarkupUnion | None = None,
+        allow_sending_without_reply: bool | None = None,
+        reply_to_message_id: int | None = None,
         **kwargs: Any,
     ) -> SendDocument:
         """
@@ -473,7 +467,7 @@ class ChatMemberUpdated(TelegramObject):
 
         :param document: File to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`
         :param business_connection_id: Unique identifier of the business connection on behalf of which the message will be sent
-        :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
+        :param message_thread_id: Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only
         :param direct_messages_topic_id: Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat
         :param thumbnail: Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`
         :param caption: Document caption (may also be used when resending documents by *file_id*), 0-1024 characters after entities parsing
@@ -522,16 +516,16 @@ class ChatMemberUpdated(TelegramObject):
     def answer_game(
         self,
         game_short_name: str,
-        business_connection_id: Optional[str] = None,
-        message_thread_id: Optional[int] = None,
-        disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
-        allow_paid_broadcast: Optional[bool] = None,
-        message_effect_id: Optional[str] = None,
-        reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[InlineKeyboardMarkup] = None,
-        allow_sending_without_reply: Optional[bool] = None,
-        reply_to_message_id: Optional[int] = None,
+        business_connection_id: str | None = None,
+        message_thread_id: int | None = None,
+        disable_notification: bool | None = None,
+        protect_content: bool | Default | None = Default("protect_content"),
+        allow_paid_broadcast: bool | None = None,
+        message_effect_id: str | None = None,
+        reply_parameters: ReplyParameters | None = None,
+        reply_markup: InlineKeyboardMarkup | None = None,
+        allow_sending_without_reply: bool | None = None,
+        reply_to_message_id: int | None = None,
         **kwargs: Any,
     ) -> SendGame:
         """
@@ -546,7 +540,7 @@ class ChatMemberUpdated(TelegramObject):
 
         :param game_short_name: Short name of the game, serves as the unique identifier for the game. Set up your games via `@BotFather <https://t.me/botfather>`_.
         :param business_connection_id: Unique identifier of the business connection on behalf of which the message will be sent
-        :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
+        :param message_thread_id: Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param allow_paid_broadcast: Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
@@ -585,33 +579,33 @@ class ChatMemberUpdated(TelegramObject):
         payload: str,
         currency: str,
         prices: list[LabeledPrice],
-        message_thread_id: Optional[int] = None,
-        direct_messages_topic_id: Optional[int] = None,
-        provider_token: Optional[str] = None,
-        max_tip_amount: Optional[int] = None,
-        suggested_tip_amounts: Optional[list[int]] = None,
-        start_parameter: Optional[str] = None,
-        provider_data: Optional[str] = None,
-        photo_url: Optional[str] = None,
-        photo_size: Optional[int] = None,
-        photo_width: Optional[int] = None,
-        photo_height: Optional[int] = None,
-        need_name: Optional[bool] = None,
-        need_phone_number: Optional[bool] = None,
-        need_email: Optional[bool] = None,
-        need_shipping_address: Optional[bool] = None,
-        send_phone_number_to_provider: Optional[bool] = None,
-        send_email_to_provider: Optional[bool] = None,
-        is_flexible: Optional[bool] = None,
-        disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
-        allow_paid_broadcast: Optional[bool] = None,
-        message_effect_id: Optional[str] = None,
-        suggested_post_parameters: Optional[SuggestedPostParameters] = None,
-        reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[InlineKeyboardMarkup] = None,
-        allow_sending_without_reply: Optional[bool] = None,
-        reply_to_message_id: Optional[int] = None,
+        message_thread_id: int | None = None,
+        direct_messages_topic_id: int | None = None,
+        provider_token: str | None = None,
+        max_tip_amount: int | None = None,
+        suggested_tip_amounts: list[int] | None = None,
+        start_parameter: str | None = None,
+        provider_data: str | None = None,
+        photo_url: str | None = None,
+        photo_size: int | None = None,
+        photo_width: int | None = None,
+        photo_height: int | None = None,
+        need_name: bool | None = None,
+        need_phone_number: bool | None = None,
+        need_email: bool | None = None,
+        need_shipping_address: bool | None = None,
+        send_phone_number_to_provider: bool | None = None,
+        send_email_to_provider: bool | None = None,
+        is_flexible: bool | None = None,
+        disable_notification: bool | None = None,
+        protect_content: bool | Default | None = Default("protect_content"),
+        allow_paid_broadcast: bool | None = None,
+        message_effect_id: str | None = None,
+        suggested_post_parameters: SuggestedPostParameters | None = None,
+        reply_parameters: ReplyParameters | None = None,
+        reply_markup: InlineKeyboardMarkup | None = None,
+        allow_sending_without_reply: bool | None = None,
+        reply_to_message_id: int | None = None,
         **kwargs: Any,
     ) -> SendInvoice:
         """
@@ -629,7 +623,7 @@ class ChatMemberUpdated(TelegramObject):
         :param payload: Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use it for your internal processes.
         :param currency: Three-letter ISO 4217 currency code, see `more on currencies <https://core.telegram.org/bots/payments#supported-currencies>`_. Pass 'XTR' for payments in `Telegram Stars <https://t.me/BotNews/90>`_.
         :param prices: Price breakdown, a JSON-serialized list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.). Must contain exactly one item for payments in `Telegram Stars <https://t.me/BotNews/90>`_.
-        :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
+        :param message_thread_id: Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only
         :param direct_messages_topic_id: Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat
         :param provider_token: Payment provider token, obtained via `@BotFather <https://t.me/botfather>`_. Pass an empty string for payments in `Telegram Stars <https://t.me/BotNews/90>`_.
         :param max_tip_amount: The maximum accepted amount for tips in the *smallest units* of the currency (integer, **not** float/double). For example, for a maximum tip of :code:`US$ 1.45` pass :code:`max_tip_amount = 145`. See the *exp* parameter in `currencies.json <https://core.telegram.org/bots/payments/currencies.json>`_, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies). Defaults to 0. Not supported for payments in `Telegram Stars <https://t.me/BotNews/90>`_.
@@ -704,22 +698,22 @@ class ChatMemberUpdated(TelegramObject):
         self,
         latitude: float,
         longitude: float,
-        business_connection_id: Optional[str] = None,
-        message_thread_id: Optional[int] = None,
-        direct_messages_topic_id: Optional[int] = None,
-        horizontal_accuracy: Optional[float] = None,
-        live_period: Optional[int] = None,
-        heading: Optional[int] = None,
-        proximity_alert_radius: Optional[int] = None,
-        disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
-        allow_paid_broadcast: Optional[bool] = None,
-        message_effect_id: Optional[str] = None,
-        suggested_post_parameters: Optional[SuggestedPostParameters] = None,
-        reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[ReplyMarkupUnion] = None,
-        allow_sending_without_reply: Optional[bool] = None,
-        reply_to_message_id: Optional[int] = None,
+        business_connection_id: str | None = None,
+        message_thread_id: int | None = None,
+        direct_messages_topic_id: int | None = None,
+        horizontal_accuracy: float | None = None,
+        live_period: int | None = None,
+        heading: int | None = None,
+        proximity_alert_radius: int | None = None,
+        disable_notification: bool | None = None,
+        protect_content: bool | Default | None = Default("protect_content"),
+        allow_paid_broadcast: bool | None = None,
+        message_effect_id: str | None = None,
+        suggested_post_parameters: SuggestedPostParameters | None = None,
+        reply_parameters: ReplyParameters | None = None,
+        reply_markup: ReplyMarkupUnion | None = None,
+        allow_sending_without_reply: bool | None = None,
+        reply_to_message_id: int | None = None,
         **kwargs: Any,
     ) -> SendLocation:
         """
@@ -735,7 +729,7 @@ class ChatMemberUpdated(TelegramObject):
         :param latitude: Latitude of the location
         :param longitude: Longitude of the location
         :param business_connection_id: Unique identifier of the business connection on behalf of which the message will be sent
-        :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
+        :param message_thread_id: Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only
         :param direct_messages_topic_id: Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat
         :param horizontal_accuracy: The radius of uncertainty for the location, measured in meters; 0-1500
         :param live_period: Period in seconds during which the location will be updated (see `Live Locations <https://telegram.org/blog/live-locations>`_, should be between 60 and 86400, or 0x7FFFFFFF for live locations that can be edited indefinitely.
@@ -783,16 +777,16 @@ class ChatMemberUpdated(TelegramObject):
     def answer_media_group(
         self,
         media: list[MediaUnion],
-        business_connection_id: Optional[str] = None,
-        message_thread_id: Optional[int] = None,
-        direct_messages_topic_id: Optional[int] = None,
-        disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
-        allow_paid_broadcast: Optional[bool] = None,
-        message_effect_id: Optional[str] = None,
-        reply_parameters: Optional[ReplyParameters] = None,
-        allow_sending_without_reply: Optional[bool] = None,
-        reply_to_message_id: Optional[int] = None,
+        business_connection_id: str | None = None,
+        message_thread_id: int | None = None,
+        direct_messages_topic_id: int | None = None,
+        disable_notification: bool | None = None,
+        protect_content: bool | Default | None = Default("protect_content"),
+        allow_paid_broadcast: bool | None = None,
+        message_effect_id: str | None = None,
+        reply_parameters: ReplyParameters | None = None,
+        allow_sending_without_reply: bool | None = None,
+        reply_to_message_id: int | None = None,
         **kwargs: Any,
     ) -> SendMediaGroup:
         """
@@ -807,7 +801,7 @@ class ChatMemberUpdated(TelegramObject):
 
         :param media: A JSON-serialized array describing messages to be sent, must include 2-10 items
         :param business_connection_id: Unique identifier of the business connection on behalf of which the message will be sent
-        :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
+        :param message_thread_id: Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only
         :param direct_messages_topic_id: Identifier of the direct messages topic to which the messages will be sent; required if the messages are sent to a direct messages chat
         :param disable_notification: Sends messages `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent messages from forwarding and saving
@@ -842,25 +836,23 @@ class ChatMemberUpdated(TelegramObject):
     def answer_photo(
         self,
         photo: InputFileUnion,
-        business_connection_id: Optional[str] = None,
-        message_thread_id: Optional[int] = None,
-        direct_messages_topic_id: Optional[int] = None,
-        caption: Optional[str] = None,
-        parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
-        caption_entities: Optional[list[MessageEntity]] = None,
-        show_caption_above_media: Optional[Union[bool, Default]] = Default(
-            "show_caption_above_media"
-        ),
-        has_spoiler: Optional[bool] = None,
-        disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
-        allow_paid_broadcast: Optional[bool] = None,
-        message_effect_id: Optional[str] = None,
-        suggested_post_parameters: Optional[SuggestedPostParameters] = None,
-        reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[ReplyMarkupUnion] = None,
-        allow_sending_without_reply: Optional[bool] = None,
-        reply_to_message_id: Optional[int] = None,
+        business_connection_id: str | None = None,
+        message_thread_id: int | None = None,
+        direct_messages_topic_id: int | None = None,
+        caption: str | None = None,
+        parse_mode: str | Default | None = Default("parse_mode"),
+        caption_entities: list[MessageEntity] | None = None,
+        show_caption_above_media: bool | Default | None = Default("show_caption_above_media"),
+        has_spoiler: bool | None = None,
+        disable_notification: bool | None = None,
+        protect_content: bool | Default | None = Default("protect_content"),
+        allow_paid_broadcast: bool | None = None,
+        message_effect_id: str | None = None,
+        suggested_post_parameters: SuggestedPostParameters | None = None,
+        reply_parameters: ReplyParameters | None = None,
+        reply_markup: ReplyMarkupUnion | None = None,
+        allow_sending_without_reply: bool | None = None,
+        reply_to_message_id: int | None = None,
         **kwargs: Any,
     ) -> SendPhoto:
         """
@@ -875,7 +867,7 @@ class ChatMemberUpdated(TelegramObject):
 
         :param photo: Photo to send. Pass a file_id as String to send a photo that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a photo from the Internet, or upload a new photo using multipart/form-data. The photo must be at most 10 MB in size. The photo's width and height must not exceed 10000 in total. Width and height ratio must be at most 20. :ref:`More information on Sending Files » <sending-files>`
         :param business_connection_id: Unique identifier of the business connection on behalf of which the message will be sent
-        :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
+        :param message_thread_id: Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only
         :param direct_messages_topic_id: Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat
         :param caption: Photo caption (may also be used when resending photos by *file_id*), 0-1024 characters after entities parsing
         :param parse_mode: Mode for parsing entities in the photo caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.
@@ -925,28 +917,28 @@ class ChatMemberUpdated(TelegramObject):
         self,
         question: str,
         options: list[InputPollOptionUnion],
-        business_connection_id: Optional[str] = None,
-        message_thread_id: Optional[int] = None,
-        question_parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
-        question_entities: Optional[list[MessageEntity]] = None,
-        is_anonymous: Optional[bool] = None,
-        type: Optional[str] = None,
-        allows_multiple_answers: Optional[bool] = None,
-        correct_option_id: Optional[int] = None,
-        explanation: Optional[str] = None,
-        explanation_parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
-        explanation_entities: Optional[list[MessageEntity]] = None,
-        open_period: Optional[int] = None,
-        close_date: Optional[DateTimeUnion] = None,
-        is_closed: Optional[bool] = None,
-        disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
-        allow_paid_broadcast: Optional[bool] = None,
-        message_effect_id: Optional[str] = None,
-        reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[ReplyMarkupUnion] = None,
-        allow_sending_without_reply: Optional[bool] = None,
-        reply_to_message_id: Optional[int] = None,
+        business_connection_id: str | None = None,
+        message_thread_id: int | None = None,
+        question_parse_mode: str | Default | None = Default("parse_mode"),
+        question_entities: list[MessageEntity] | None = None,
+        is_anonymous: bool | None = None,
+        type: str | None = None,
+        allows_multiple_answers: bool | None = None,
+        correct_option_id: int | None = None,
+        explanation: str | None = None,
+        explanation_parse_mode: str | Default | None = Default("parse_mode"),
+        explanation_entities: list[MessageEntity] | None = None,
+        open_period: int | None = None,
+        close_date: DateTimeUnion | None = None,
+        is_closed: bool | None = None,
+        disable_notification: bool | None = None,
+        protect_content: bool | Default | None = Default("protect_content"),
+        allow_paid_broadcast: bool | None = None,
+        message_effect_id: str | None = None,
+        reply_parameters: ReplyParameters | None = None,
+        reply_markup: ReplyMarkupUnion | None = None,
+        allow_sending_without_reply: bool | None = None,
+        reply_to_message_id: int | None = None,
         **kwargs: Any,
     ) -> SendPoll:
         """
@@ -962,7 +954,7 @@ class ChatMemberUpdated(TelegramObject):
         :param question: Poll question, 1-300 characters
         :param options: A JSON-serialized list of 2-12 answer options
         :param business_connection_id: Unique identifier of the business connection on behalf of which the message will be sent
-        :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
+        :param message_thread_id: Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only
         :param question_parse_mode: Mode for parsing entities in the question. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details. Currently, only custom emoji entities are allowed
         :param question_entities: A JSON-serialized list of special entities that appear in the poll question. It can be specified instead of *question_parse_mode*
         :param is_anonymous: :code:`True`, if the poll needs to be anonymous, defaults to :code:`True`
@@ -1021,19 +1013,19 @@ class ChatMemberUpdated(TelegramObject):
 
     def answer_dice(
         self,
-        business_connection_id: Optional[str] = None,
-        message_thread_id: Optional[int] = None,
-        direct_messages_topic_id: Optional[int] = None,
-        emoji: Optional[str] = None,
-        disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
-        allow_paid_broadcast: Optional[bool] = None,
-        message_effect_id: Optional[str] = None,
-        suggested_post_parameters: Optional[SuggestedPostParameters] = None,
-        reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[ReplyMarkupUnion] = None,
-        allow_sending_without_reply: Optional[bool] = None,
-        reply_to_message_id: Optional[int] = None,
+        business_connection_id: str | None = None,
+        message_thread_id: int | None = None,
+        direct_messages_topic_id: int | None = None,
+        emoji: str | None = None,
+        disable_notification: bool | None = None,
+        protect_content: bool | Default | None = Default("protect_content"),
+        allow_paid_broadcast: bool | None = None,
+        message_effect_id: str | None = None,
+        suggested_post_parameters: SuggestedPostParameters | None = None,
+        reply_parameters: ReplyParameters | None = None,
+        reply_markup: ReplyMarkupUnion | None = None,
+        allow_sending_without_reply: bool | None = None,
+        reply_to_message_id: int | None = None,
         **kwargs: Any,
     ) -> SendDice:
         """
@@ -1047,7 +1039,7 @@ class ChatMemberUpdated(TelegramObject):
         Source: https://core.telegram.org/bots/api#senddice
 
         :param business_connection_id: Unique identifier of the business connection on behalf of which the message will be sent
-        :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
+        :param message_thread_id: Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only
         :param direct_messages_topic_id: Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat
         :param emoji: Emoji on which the dice throw animation is based. Currently, must be one of '🎲', '🎯', '🏀', '⚽', '🎳', or '🎰'. Dice can have values 1-6 for '🎲', '🎯' and '🎳', values 1-5 for '🏀' and '⚽', and values 1-64 for '🎰'. Defaults to '🎲'
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
@@ -1087,19 +1079,19 @@ class ChatMemberUpdated(TelegramObject):
     def answer_sticker(
         self,
         sticker: InputFileUnion,
-        business_connection_id: Optional[str] = None,
-        message_thread_id: Optional[int] = None,
-        direct_messages_topic_id: Optional[int] = None,
-        emoji: Optional[str] = None,
-        disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
-        allow_paid_broadcast: Optional[bool] = None,
-        message_effect_id: Optional[str] = None,
-        suggested_post_parameters: Optional[SuggestedPostParameters] = None,
-        reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[ReplyMarkupUnion] = None,
-        allow_sending_without_reply: Optional[bool] = None,
-        reply_to_message_id: Optional[int] = None,
+        business_connection_id: str | None = None,
+        message_thread_id: int | None = None,
+        direct_messages_topic_id: int | None = None,
+        emoji: str | None = None,
+        disable_notification: bool | None = None,
+        protect_content: bool | Default | None = Default("protect_content"),
+        allow_paid_broadcast: bool | None = None,
+        message_effect_id: str | None = None,
+        suggested_post_parameters: SuggestedPostParameters | None = None,
+        reply_parameters: ReplyParameters | None = None,
+        reply_markup: ReplyMarkupUnion | None = None,
+        allow_sending_without_reply: bool | None = None,
+        reply_to_message_id: int | None = None,
         **kwargs: Any,
     ) -> SendSticker:
         """
@@ -1114,7 +1106,7 @@ class ChatMemberUpdated(TelegramObject):
 
         :param sticker: Sticker to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a .WEBP sticker from the Internet, or upload a new .WEBP, .TGS, or .WEBM sticker using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`. Video and animated stickers can't be sent via an HTTP URL.
         :param business_connection_id: Unique identifier of the business connection on behalf of which the message will be sent
-        :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
+        :param message_thread_id: Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only
         :param direct_messages_topic_id: Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat
         :param emoji: Emoji associated with the sticker; only for just uploaded stickers
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
@@ -1158,22 +1150,22 @@ class ChatMemberUpdated(TelegramObject):
         longitude: float,
         title: str,
         address: str,
-        business_connection_id: Optional[str] = None,
-        message_thread_id: Optional[int] = None,
-        direct_messages_topic_id: Optional[int] = None,
-        foursquare_id: Optional[str] = None,
-        foursquare_type: Optional[str] = None,
-        google_place_id: Optional[str] = None,
-        google_place_type: Optional[str] = None,
-        disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
-        allow_paid_broadcast: Optional[bool] = None,
-        message_effect_id: Optional[str] = None,
-        suggested_post_parameters: Optional[SuggestedPostParameters] = None,
-        reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[ReplyMarkupUnion] = None,
-        allow_sending_without_reply: Optional[bool] = None,
-        reply_to_message_id: Optional[int] = None,
+        business_connection_id: str | None = None,
+        message_thread_id: int | None = None,
+        direct_messages_topic_id: int | None = None,
+        foursquare_id: str | None = None,
+        foursquare_type: str | None = None,
+        google_place_id: str | None = None,
+        google_place_type: str | None = None,
+        disable_notification: bool | None = None,
+        protect_content: bool | Default | None = Default("protect_content"),
+        allow_paid_broadcast: bool | None = None,
+        message_effect_id: str | None = None,
+        suggested_post_parameters: SuggestedPostParameters | None = None,
+        reply_parameters: ReplyParameters | None = None,
+        reply_markup: ReplyMarkupUnion | None = None,
+        allow_sending_without_reply: bool | None = None,
+        reply_to_message_id: int | None = None,
         **kwargs: Any,
     ) -> SendVenue:
         """
@@ -1191,7 +1183,7 @@ class ChatMemberUpdated(TelegramObject):
         :param title: Name of the venue
         :param address: Address of the venue
         :param business_connection_id: Unique identifier of the business connection on behalf of which the message will be sent
-        :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
+        :param message_thread_id: Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only
         :param direct_messages_topic_id: Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat
         :param foursquare_id: Foursquare identifier of the venue
         :param foursquare_type: Foursquare type of the venue, if known. (For example, 'arts_entertainment/default', 'arts_entertainment/aquarium' or 'food/icecream'.)
@@ -1241,32 +1233,30 @@ class ChatMemberUpdated(TelegramObject):
     def answer_video(
         self,
         video: InputFileUnion,
-        business_connection_id: Optional[str] = None,
-        message_thread_id: Optional[int] = None,
-        direct_messages_topic_id: Optional[int] = None,
-        duration: Optional[int] = None,
-        width: Optional[int] = None,
-        height: Optional[int] = None,
-        thumbnail: Optional[InputFile] = None,
-        cover: Optional[InputFileUnion] = None,
-        start_timestamp: Optional[DateTimeUnion] = None,
-        caption: Optional[str] = None,
-        parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
-        caption_entities: Optional[list[MessageEntity]] = None,
-        show_caption_above_media: Optional[Union[bool, Default]] = Default(
-            "show_caption_above_media"
-        ),
-        has_spoiler: Optional[bool] = None,
-        supports_streaming: Optional[bool] = None,
-        disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
-        allow_paid_broadcast: Optional[bool] = None,
-        message_effect_id: Optional[str] = None,
-        suggested_post_parameters: Optional[SuggestedPostParameters] = None,
-        reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[ReplyMarkupUnion] = None,
-        allow_sending_without_reply: Optional[bool] = None,
-        reply_to_message_id: Optional[int] = None,
+        business_connection_id: str | None = None,
+        message_thread_id: int | None = None,
+        direct_messages_topic_id: int | None = None,
+        duration: int | None = None,
+        width: int | None = None,
+        height: int | None = None,
+        thumbnail: InputFile | None = None,
+        cover: InputFileUnion | None = None,
+        start_timestamp: DateTimeUnion | None = None,
+        caption: str | None = None,
+        parse_mode: str | Default | None = Default("parse_mode"),
+        caption_entities: list[MessageEntity] | None = None,
+        show_caption_above_media: bool | Default | None = Default("show_caption_above_media"),
+        has_spoiler: bool | None = None,
+        supports_streaming: bool | None = None,
+        disable_notification: bool | None = None,
+        protect_content: bool | Default | None = Default("protect_content"),
+        allow_paid_broadcast: bool | None = None,
+        message_effect_id: str | None = None,
+        suggested_post_parameters: SuggestedPostParameters | None = None,
+        reply_parameters: ReplyParameters | None = None,
+        reply_markup: ReplyMarkupUnion | None = None,
+        allow_sending_without_reply: bool | None = None,
+        reply_to_message_id: int | None = None,
         **kwargs: Any,
     ) -> SendVideo:
         """
@@ -1281,7 +1271,7 @@ class ChatMemberUpdated(TelegramObject):
 
         :param video: Video to send. Pass a file_id as String to send a video that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a video from the Internet, or upload a new video using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`
         :param business_connection_id: Unique identifier of the business connection on behalf of which the message will be sent
-        :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
+        :param message_thread_id: Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only
         :param direct_messages_topic_id: Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat
         :param duration: Duration of sent video in seconds
         :param width: Video width
@@ -1344,21 +1334,21 @@ class ChatMemberUpdated(TelegramObject):
     def answer_video_note(
         self,
         video_note: InputFileUnion,
-        business_connection_id: Optional[str] = None,
-        message_thread_id: Optional[int] = None,
-        direct_messages_topic_id: Optional[int] = None,
-        duration: Optional[int] = None,
-        length: Optional[int] = None,
-        thumbnail: Optional[InputFile] = None,
-        disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
-        allow_paid_broadcast: Optional[bool] = None,
-        message_effect_id: Optional[str] = None,
-        suggested_post_parameters: Optional[SuggestedPostParameters] = None,
-        reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[ReplyMarkupUnion] = None,
-        allow_sending_without_reply: Optional[bool] = None,
-        reply_to_message_id: Optional[int] = None,
+        business_connection_id: str | None = None,
+        message_thread_id: int | None = None,
+        direct_messages_topic_id: int | None = None,
+        duration: int | None = None,
+        length: int | None = None,
+        thumbnail: InputFile | None = None,
+        disable_notification: bool | None = None,
+        protect_content: bool | Default | None = Default("protect_content"),
+        allow_paid_broadcast: bool | None = None,
+        message_effect_id: str | None = None,
+        suggested_post_parameters: SuggestedPostParameters | None = None,
+        reply_parameters: ReplyParameters | None = None,
+        reply_markup: ReplyMarkupUnion | None = None,
+        allow_sending_without_reply: bool | None = None,
+        reply_to_message_id: int | None = None,
         **kwargs: Any,
     ) -> SendVideoNote:
         """
@@ -1373,7 +1363,7 @@ class ChatMemberUpdated(TelegramObject):
 
         :param video_note: Video note to send. Pass a file_id as String to send a video note that exists on the Telegram servers (recommended) or upload a new video using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`. Sending video notes by a URL is currently unsupported
         :param business_connection_id: Unique identifier of the business connection on behalf of which the message will be sent
-        :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
+        :param message_thread_id: Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only
         :param direct_messages_topic_id: Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat
         :param duration: Duration of sent video in seconds
         :param length: Video width and height, i.e. diameter of the video message
@@ -1418,22 +1408,22 @@ class ChatMemberUpdated(TelegramObject):
     def answer_voice(
         self,
         voice: InputFileUnion,
-        business_connection_id: Optional[str] = None,
-        message_thread_id: Optional[int] = None,
-        direct_messages_topic_id: Optional[int] = None,
-        caption: Optional[str] = None,
-        parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
-        caption_entities: Optional[list[MessageEntity]] = None,
-        duration: Optional[int] = None,
-        disable_notification: Optional[bool] = None,
-        protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
-        allow_paid_broadcast: Optional[bool] = None,
-        message_effect_id: Optional[str] = None,
-        suggested_post_parameters: Optional[SuggestedPostParameters] = None,
-        reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[ReplyMarkupUnion] = None,
-        allow_sending_without_reply: Optional[bool] = None,
-        reply_to_message_id: Optional[int] = None,
+        business_connection_id: str | None = None,
+        message_thread_id: int | None = None,
+        direct_messages_topic_id: int | None = None,
+        caption: str | None = None,
+        parse_mode: str | Default | None = Default("parse_mode"),
+        caption_entities: list[MessageEntity] | None = None,
+        duration: int | None = None,
+        disable_notification: bool | None = None,
+        protect_content: bool | Default | None = Default("protect_content"),
+        allow_paid_broadcast: bool | None = None,
+        message_effect_id: str | None = None,
+        suggested_post_parameters: SuggestedPostParameters | None = None,
+        reply_parameters: ReplyParameters | None = None,
+        reply_markup: ReplyMarkupUnion | None = None,
+        allow_sending_without_reply: bool | None = None,
+        reply_to_message_id: int | None = None,
         **kwargs: Any,
     ) -> SendVoice:
         """
@@ -1448,7 +1438,7 @@ class ChatMemberUpdated(TelegramObject):
 
         :param voice: Audio file to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`
         :param business_connection_id: Unique identifier of the business connection on behalf of which the message will be sent
-        :param message_thread_id: Unique identifier for the target message thread (topic) of the forum; for forum supergroups only
+        :param message_thread_id: Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only
         :param direct_messages_topic_id: Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat
         :param caption: Voice message caption, 0-1024 characters after entities parsing
         :param parse_mode: Mode for parsing entities in the voice message caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.

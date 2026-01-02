@@ -1,0 +1,49 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "userrating",
+    "name": "UserRating",
+    "description": "This object describes the rating of a user based on their Telegram Star spendings.",
+    "html_description": "<p>This object describes the rating of a user based on their Telegram Star spendings.</p>",
+    "rst_description": "This object describes the rating of a user based on their Telegram Star spendings.",
+    "annotations": [
+      {
+        "type": "Integer",
+        "description": "Current level of the user, indicating their reliability when purchasing digital goods and services. A higher level suggests a more trustworthy customer; a negative level is likely reason for concern.",
+        "html_description": "<td>Current level of the user, indicating their reliability when purchasing digital goods and services. A higher level suggests a more trustworthy customer; a negative level is likely reason for concern.</td>",
+        "rst_description": "Current level of the user, indicating their reliability when purchasing digital goods and services. A higher level suggests a more trustworthy customer; a negative level is likely reason for concern.\n",
+        "name": "level",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "Numerical value of the user's rating; the higher the rating, the better",
+        "html_description": "<td>Numerical value of the user's rating; the higher the rating, the better</td>",
+        "rst_description": "Numerical value of the user's rating; the higher the rating, the better\n",
+        "name": "rating",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "The rating value required to get the current level",
+        "html_description": "<td>The rating value required to get the current level</td>",
+        "rst_description": "The rating value required to get the current level\n",
+        "name": "current_level_rating",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "The rating value required to get to the next level; omitted if the maximum level was reached",
+        "html_description": "<td><em>Optional</em>. The rating value required to get to the next level; omitted if the maximum level was reached</td>",
+        "rst_description": "*Optional*. The rating value required to get to the next level; omitted if the maximum level was reached\n",
+        "name": "next_level_rating",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

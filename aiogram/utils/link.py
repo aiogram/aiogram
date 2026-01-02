@@ -1,4 +1,4 @@
-from typing import Any, Optional
+from typing import Any
 from urllib.parse import urlencode, urljoin
 
 BASE_DOCS_URL = "https://docs.aiogram.dev/"

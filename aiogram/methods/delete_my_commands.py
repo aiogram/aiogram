@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from ..types import BotCommandScopeUnion
 from .base import TelegramMethod
@@ -16,9 +16,9 @@ class DeleteMyCommands(TelegramMethod[bool]):
     __returning__ = bool
     __api_method__ = "deleteMyCommands"
 
-    scope: Optional[BotCommandScopeUnion] = None
+    scope: BotCommandScopeUnion | None = None
     """A JSON-serialized object, describing scope of users for which the commands are relevant. Defaults to :class:`aiogram.types.bot_command_scope_default.BotCommandScopeDefault`."""
-    language_code: Optional[str] = None
+    language_code: str | None = None
     """A two-letter ISO 639-1 language code. If empty, commands will be applied to all users from the given scope, for whose language there are no dedicated commands"""
 
     if TYPE_CHECKING:
@@ -28,8 +28,8 @@ class DeleteMyCommands(TelegramMethod[bool]):
         def __init__(
             __pydantic__self__,
             *,
-            scope: Optional[BotCommandScopeUnion] = None,
-            language_code: Optional[str] = None,
+            scope: BotCommandScopeUnion | None = None,
+            language_code: str | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

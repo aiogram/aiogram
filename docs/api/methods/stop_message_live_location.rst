@@ -2,7 +2,7 @@
 stopMessageLiveLocation
 #######################
 
-Returns: :obj:`Union[Message, bool]`
+Returns: :obj:`Message | bool`
 
 .. automodule:: aiogram.methods.stop_message_live_location
     :members:
@@ -19,7 +19,7 @@ As bot method
 
 .. code-block::
 
-    result: Union[Message, bool] = await bot.stop_message_live_location(...)
+    result: Message | bool = await bot.stop_message_live_location(...)
 
 
 Method as object
@@ -35,7 +35,7 @@ With specific bot
 
 .. code-block:: python
 
-    result: Union[Message, bool] = await bot(StopMessageLiveLocation(...))
+    result: Message | bool = await bot(StopMessageLiveLocation(...))
 
 As reply into Webhook in handler
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

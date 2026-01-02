@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Literal, Optional, Union
+from typing import TYPE_CHECKING, Any, Literal
 
 from ..client.default import Default
 from ..enums import InlineQueryResultType
@@ -27,17 +27,17 @@ class InlineQueryResultCachedDocument(InlineQueryResult):
     """Title for the result"""
     document_file_id: str
     """A valid file identifier for the file"""
-    description: Optional[str] = None
+    description: str | None = None
     """*Optional*. Short description of the result"""
-    caption: Optional[str] = None
+    caption: str | None = None
     """*Optional*. Caption of the document to be sent, 0-1024 characters after entities parsing"""
-    parse_mode: Optional[Union[str, Default]] = Default("parse_mode")
+    parse_mode: str | Default | None = Default("parse_mode")
     """*Optional*. Mode for parsing entities in the document caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details."""
-    caption_entities: Optional[list[MessageEntity]] = None
+    caption_entities: list[MessageEntity] | None = None
     """*Optional*. List of special entities that appear in the caption, which can be specified instead of *parse_mode*"""
-    reply_markup: Optional[InlineKeyboardMarkup] = None
+    reply_markup: InlineKeyboardMarkup | None = None
     """*Optional*. `Inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_ attached to the message"""
-    input_message_content: Optional[InputMessageContentUnion] = None
+    input_message_content: InputMessageContentUnion | None = None
     """*Optional*. Content of the message to be sent instead of the file"""
 
     if TYPE_CHECKING:
@@ -51,12 +51,12 @@ class InlineQueryResultCachedDocument(InlineQueryResult):
             id: str,
             title: str,
             document_file_id: str,
-            description: Optional[str] = None,
-            caption: Optional[str] = None,
-            parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
-            caption_entities: Optional[list[MessageEntity]] = None,
-            reply_markup: Optional[InlineKeyboardMarkup] = None,
-            input_message_content: Optional[InputMessageContentUnion] = None,
+            description: str | None = None,
+            caption: str | None = None,
+            parse_mode: str | Default | None = Default("parse_mode"),
+            caption_entities: list[MessageEntity] | None = None,
+            reply_markup: InlineKeyboardMarkup | None = None,
+            input_message_content: InputMessageContentUnion | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

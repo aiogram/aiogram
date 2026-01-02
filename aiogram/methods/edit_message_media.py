@@ -1,32 +1,32 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional, Union
+from typing import TYPE_CHECKING, Any
 
 from ..types import ChatIdUnion, InlineKeyboardMarkup, InputMediaUnion, Message
 from .base import TelegramMethod
 
 
-class EditMessageMedia(TelegramMethod[Union[Message, bool]]):
+class EditMessageMedia(TelegramMethod[Message | bool]):
     """
     Use this method to edit animation, audio, document, photo, or video messages, or to add media to text messages. If a message is part of a message album, then it can be edited only to an audio for audio albums, only to a document for document albums and to a photo or a video otherwise. When an inline message is edited, a new file can't be uploaded; use a previously uploaded file via its file_id or specify a URL. On success, if the edited message is not an inline message, the edited :class:`aiogram.types.message.Message` is returned, otherwise :code:`True` is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within **48 hours** from the time they were sent.
 
     Source: https://core.telegram.org/bots/api#editmessagemedia
     """
 
-    __returning__ = Union[Message, bool]
+    __returning__ = Message | bool
     __api_method__ = "editMessageMedia"
 
     media: InputMediaUnion
     """A JSON-serialized object for a new media content of the message"""
-    business_connection_id: Optional[str] = None
+    business_connection_id: str | None = None
     """Unique identifier of the business connection on behalf of which the message to be edited was sent"""
-    chat_id: Optional[ChatIdUnion] = None
+    chat_id: ChatIdUnion | None = None
     """Required if *inline_message_id* is not specified. Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)"""
-    message_id: Optional[int] = None
+    message_id: int | None = None
     """Required if *inline_message_id* is not specified. Identifier of the message to edit"""
-    inline_message_id: Optional[str] = None
+    inline_message_id: str | None = None
     """Required if *chat_id* and *message_id* are not specified. Identifier of the inline message"""
-    reply_markup: Optional[InlineKeyboardMarkup] = None
+    reply_markup: InlineKeyboardMarkup | None = None
     """A JSON-serialized object for a new `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_."""
 
     if TYPE_CHECKING:
@@ -37,11 +37,11 @@ class EditMessageMedia(TelegramMethod[Union[Message, bool]]):
             __pydantic__self__,
             *,
             media: InputMediaUnion,
-            business_connection_id: Optional[str] = None,
-            chat_id: Optional[ChatIdUnion] = None,
-            message_id: Optional[int] = None,
-            inline_message_id: Optional[str] = None,
-            reply_markup: Optional[InlineKeyboardMarkup] = None,
+            business_connection_id: str | None = None,
+            chat_id: ChatIdUnion | None = None,
+            message_id: int | None = None,
+            inline_message_id: str | None = None,
+            reply_markup: InlineKeyboardMarkup | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

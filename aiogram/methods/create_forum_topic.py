@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from ..types import ChatIdUnion, ForumTopic
 from .base import TelegramMethod
@@ -20,9 +20,9 @@ class CreateForumTopic(TelegramMethod[ForumTopic]):
     """Unique identifier for the target chat or username of the target supergroup (in the format :code:`@supergroupusername`)"""
     name: str
     """Topic name, 1-128 characters"""
-    icon_color: Optional[int] = None
+    icon_color: int | None = None
     """Color of the topic icon in RGB format. Currently, must be one of 7322096 (0x6FB9F0), 16766590 (0xFFD67E), 13338331 (0xCB86DB), 9367192 (0x8EEE98), 16749490 (0xFF93B2), or 16478047 (0xFB6F5F)"""
-    icon_custom_emoji_id: Optional[str] = None
+    icon_custom_emoji_id: str | None = None
     """Unique identifier of the custom emoji shown as the topic icon. Use :class:`aiogram.methods.get_forum_topic_icon_stickers.GetForumTopicIconStickers` to get all allowed custom emoji identifiers."""
 
     if TYPE_CHECKING:
@@ -34,8 +34,8 @@ class CreateForumTopic(TelegramMethod[ForumTopic]):
             *,
             chat_id: ChatIdUnion,
             name: str,
-            icon_color: Optional[int] = None,
-            icon_custom_emoji_id: Optional[str] = None,
+            icon_color: int | None = None,
+            icon_custom_emoji_id: str | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

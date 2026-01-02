@@ -679,6 +679,6 @@ class Dispatcher(Router):
                 if sys.version_info >= (3, 11):
                     with asyncio.Runner(loop_factory=uvloop.new_event_loop) as runner:
                         return runner.run(coro)
-                else:
+                else:  # pragma: no cover
                     uvloop.install()
                     return asyncio.run(coro)

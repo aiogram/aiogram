@@ -54,6 +54,7 @@ from .get_business_account_star_balance import GetBusinessAccountStarBalance
 from .get_business_connection import GetBusinessConnection
 from .get_chat import GetChat
 from .get_chat_administrators import GetChatAdministrators
+from .get_chat_gifts import GetChatGifts
 from .get_chat_member import GetChatMember
 from .get_chat_member_count import GetChatMemberCount
 from .get_chat_menu_button import GetChatMenuButton
@@ -72,6 +73,7 @@ from .get_star_transactions import GetStarTransactions
 from .get_sticker_set import GetStickerSet
 from .get_updates import GetUpdates
 from .get_user_chat_boosts import GetUserChatBoosts
+from .get_user_gifts import GetUserGifts
 from .get_user_profile_photos import GetUserProfilePhotos
 from .get_webhook_info import GetWebhookInfo
 from .gift_premium_subscription import GiftPremiumSubscription
@@ -89,6 +91,7 @@ from .remove_user_verification import RemoveUserVerification
 from .reopen_forum_topic import ReopenForumTopic
 from .reopen_general_forum_topic import ReopenGeneralForumTopic
 from .replace_sticker_in_set import ReplaceStickerInSet
+from .repost_story import RepostStory
 from .restrict_chat_member import RestrictChatMember
 from .revoke_chat_invite_link import RevokeChatInviteLink
 from .save_prepared_inline_message import SavePreparedInlineMessage
@@ -105,6 +108,7 @@ from .send_invoice import SendInvoice
 from .send_location import SendLocation
 from .send_media_group import SendMediaGroup
 from .send_message import SendMessage
+from .send_message_draft import SendMessageDraft
 from .send_paid_media import SendPaidMedia
 from .send_photo import SendPhoto
 from .send_poll import SendPoll
@@ -214,6 +218,7 @@ __all__ = (
     "GetBusinessConnection",
     "GetChat",
     "GetChatAdministrators",
+    "GetChatGifts",
     "GetChatMember",
     "GetChatMemberCount",
     "GetChatMenuButton",
@@ -232,6 +237,7 @@ __all__ = (
     "GetStickerSet",
     "GetUpdates",
     "GetUserChatBoosts",
+    "GetUserGifts",
     "GetUserProfilePhotos",
     "GetWebhookInfo",
     "GiftPremiumSubscription",
@@ -249,6 +255,7 @@ __all__ = (
     "ReopenForumTopic",
     "ReopenGeneralForumTopic",
     "ReplaceStickerInSet",
+    "RepostStory",
     "Request",
     "Response",
     "RestrictChatMember",
@@ -267,6 +274,7 @@ __all__ = (
     "SendLocation",
     "SendMediaGroup",
     "SendMessage",
+    "SendMessageDraft",
     "SendPaidMedia",
     "SendPhoto",
     "SendPoll",

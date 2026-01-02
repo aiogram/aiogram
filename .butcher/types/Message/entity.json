@@ -21,9 +21,9 @@
       },
       {
         "type": "Integer",
-        "description": "Unique identifier of a message thread to which the message belongs; for supergroups only",
-        "html_description": "<td><em>Optional</em>. Unique identifier of a message thread to which the message belongs; for supergroups only</td>",
-        "rst_description": "*Optional*. Unique identifier of a message thread to which the message belongs; for supergroups only\n",
+        "description": "Unique identifier of a message thread or forum topic to which the message belongs; for supergroups and private chats only",
+        "html_description": "<td><em>Optional</em>. Unique identifier of a message thread or forum topic to which the message belongs; for supergroups and private chats only</td>",
+        "rst_description": "*Optional*. Unique identifier of a message thread or forum topic to which the message belongs; for supergroups and private chats only\n",
         "name": "message_thread_id",
         "required": false
       },
@@ -101,9 +101,9 @@
       },
       {
         "type": "True",
-        "description": "True, if the message is sent to a forum topic",
-        "html_description": "<td><em>Optional</em>. <em>True</em>, if the message is sent to a forum topic</td>",
-        "rst_description": "*Optional*. :code:`True`, if the message is sent to a forum topic\n",
+        "description": "True, if the message is sent to a topic in a forum supergroup or a private chat with the bot",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the message is sent to a topic in a forum supergroup or a private chat with the bot</td>",
+        "rst_description": "*Optional*. :code:`True`, if the message is sent to a topic in a forum supergroup or a private chat with the bot\n",
         "name": "is_topic_message",
         "required": false
       },
@@ -577,6 +577,14 @@
         "html_description": "<td><em>Optional</em>. Service message: a unique gift was sent or received</td>",
         "rst_description": "*Optional*. Service message: a unique gift was sent or received\n",
         "name": "unique_gift",
+        "required": false
+      },
+      {
+        "type": "GiftInfo",
+        "description": "Service message: upgrade of a gift was purchased after the gift was sent",
+        "html_description": "<td><em>Optional</em>. Service message: upgrade of a gift was purchased after the gift was sent</td>",
+        "rst_description": "*Optional*. Service message: upgrade of a gift was purchased after the gift was sent\n",
+        "name": "gift_upgrade_sent",
         "required": false
       },
       {

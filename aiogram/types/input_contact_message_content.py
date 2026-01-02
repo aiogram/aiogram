@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from .input_message_content import InputMessageContent
 
@@ -16,9 +16,9 @@ class InputContactMessageContent(InputMessageContent):
     """Contact's phone number"""
     first_name: str
     """Contact's first name"""
-    last_name: Optional[str] = None
+    last_name: str | None = None
     """*Optional*. Contact's last name"""
-    vcard: Optional[str] = None
+    vcard: str | None = None
     """*Optional*. Additional data about the contact in the form of a `vCard <https://en.wikipedia.org/wiki/VCard>`_, 0-2048 bytes"""
 
     if TYPE_CHECKING:
@@ -30,8 +30,8 @@ class InputContactMessageContent(InputMessageContent):
             *,
             phone_number: str,
             first_name: str,
-            last_name: Optional[str] = None,
-            vcard: Optional[str] = None,
+            last_name: str | None = None,
+            vcard: str | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

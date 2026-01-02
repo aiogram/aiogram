@@ -4,7 +4,7 @@ import io
 import os
 from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, AsyncGenerator, Dict, Optional, Union
+from typing import TYPE_CHECKING, Any, AsyncGenerator
 
 import aiofiles
 
@@ -21,7 +21,7 @@ class InputFile(ABC):
     Source: https://core.telegram.org/bots/api#inputfile
     """
 
-    def __init__(self, filename: Optional[str] = None, chunk_size: int = DEFAULT_CHUNK_SIZE):
+    def __init__(self, filename: str | None = None, chunk_size: int = DEFAULT_CHUNK_SIZE):
         """
         Base class for input files. Should not be used directly.
         Look at :class:`BufferedInputFile`, :class:`FSInputFile` :class:`URLInputFile`
@@ -53,8 +53,8 @@ class BufferedInputFile(InputFile):
     @classmethod
     def from_file(
         cls,
-        path: Union[str, Path],
-        filename: Optional[str] = None,
+        path: str | Path,
+        filename: str | None = None,
         chunk_size: int = DEFAULT_CHUNK_SIZE,
     ) -> BufferedInputFile:
         """
@@ -81,8 +81,8 @@ class BufferedInputFile(InputFile):
 class FSInputFile(InputFile):
     def __init__(
         self,
-        path: Union[str, Path],
-        filename: Optional[str] = None,
+        path: str | Path,
+        filename: str | None = None,
         chunk_size: int = DEFAULT_CHUNK_SIZE,
     ):
         """
@@ -109,11 +109,11 @@ class URLInputFile(InputFile):
     def __init__(
         self,
         url: str,
-        headers: Optional[Dict[str, Any]] = None,
-        filename: Optional[str] = None,
+        headers: dict[str, Any] | None = None,
+        filename: str | None = None,
         chunk_size: int = DEFAULT_CHUNK_SIZE,
         timeout: int = 30,
-        bot: Optional["Bot"] = None,
+        bot: Bot | None = None,
     ):
         """
         Represents object for streaming files from internet

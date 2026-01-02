@@ -1,5 +1,6 @@
 import asyncio
 import inspect
+import sys
 import warnings
 from collections.abc import Callable
 from dataclasses import dataclass, field
@@ -16,6 +17,12 @@ from aiogram.utils.warnings import Recommendation
 
 CallbackType = Callable[..., Any]
 
+_ACCEPTED_PARAM_KINDS = {
+    inspect.Parameter.POSITIONAL_ONLY,
+    inspect.Parameter.POSITIONAL_OR_KEYWORD,
+    inspect.Parameter.KEYWORD_ONLY,
+}
+
 
 @dataclass
 class CallableObject:
@@ -27,9 +34,30 @@ class CallableObject:
     def __post_init__(self) -> None:
         callback = inspect.unwrap(self.callback)
         self.awaitable = inspect.isawaitable(callback) or inspect.iscoroutinefunction(callback)
-        spec = inspect.getfullargspec(callback)
-        self.params = {*spec.args, *spec.kwonlyargs}
-        self.varkw = spec.varkw is not None
+
+        kwargs: dict[str, Any] = {}
+        if sys.version_info >= (3, 14):
+            import annotationlib
+
+            kwargs["annotation_format"] = annotationlib.Format.FORWARDREF
+
+        try:
+            signature = inspect.signature(callback, **kwargs)
+        except (ValueError, TypeError):  # pragma: no cover
+            self.params = set()
+            self.varkw = False
+            return
+
+        params: set[str] = set()
+        varkw: bool = False
+
+        for p in signature.parameters.values():
+            if p.kind in _ACCEPTED_PARAM_KINDS:
+                params.add(p.name)
+            elif p.kind == inspect.Parameter.VAR_KEYWORD:
+                varkw = True
+        self.params = params
+        self.varkw = varkw
 
     def _prepare_kwargs(self, kwargs: dict[str, Any]) -> dict[str, Any]:
         if self.varkw:

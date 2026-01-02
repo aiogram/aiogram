@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from .base import TelegramMethod
 
@@ -17,7 +17,7 @@ class RemoveBusinessAccountProfilePhoto(TelegramMethod[bool]):
 
     business_connection_id: str
     """Unique identifier of the business connection"""
-    is_public: Optional[bool] = None
+    is_public: bool | None = None
     """Pass :code:`True` to remove the public photo, which is visible even if the main photo is hidden by the business account's privacy settings. After the main photo is removed, the previous profile photo (if present) becomes the main photo."""
 
     if TYPE_CHECKING:
@@ -28,7 +28,7 @@ class RemoveBusinessAccountProfilePhoto(TelegramMethod[bool]):
             __pydantic__self__,
             *,
             business_connection_id: str,
-            is_public: Optional[bool] = None,
+            is_public: bool | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

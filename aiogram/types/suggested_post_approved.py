@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from .base import TelegramObject
 from .custom import DateTime
@@ -19,9 +19,9 @@ class SuggestedPostApproved(TelegramObject):
 
     send_date: DateTime
     """Date when the post will be published"""
-    suggested_post_message: Optional[Message] = None
+    suggested_post_message: Message | None = None
     """*Optional*. Message containing the suggested post. Note that the :class:`aiogram.types.message.Message` object in this field will not contain the *reply_to_message* field even if it itself is a reply."""
-    price: Optional[SuggestedPostPrice] = None
+    price: SuggestedPostPrice | None = None
     """*Optional*. Amount paid for the post"""
 
     if TYPE_CHECKING:
@@ -32,8 +32,8 @@ class SuggestedPostApproved(TelegramObject):
             __pydantic__self__,
             *,
             send_date: DateTime,
-            suggested_post_message: Optional[Message] = None,
-            price: Optional[SuggestedPostPrice] = None,
+            suggested_post_message: Message | None = None,
+            price: SuggestedPostPrice | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

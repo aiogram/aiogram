@@ -100,6 +100,7 @@ from .game_high_score import GameHighScore
 from .general_forum_topic_hidden import GeneralForumTopicHidden
 from .general_forum_topic_unhidden import GeneralForumTopicUnhidden
 from .gift import Gift
+from .gift_background import GiftBackground
 from .gift_info import GiftInfo
 from .gifts import Gifts
 from .giveaway import Giveaway
@@ -296,6 +297,7 @@ from .transaction_partner_user import TransactionPartnerUser
 from .unique_gift import UniqueGift
 from .unique_gift_backdrop import UniqueGiftBackdrop
 from .unique_gift_backdrop_colors import UniqueGiftBackdropColors
+from .unique_gift_colors import UniqueGiftColors
 from .unique_gift_info import UniqueGiftInfo
 from .unique_gift_model import UniqueGiftModel
 from .unique_gift_symbol import UniqueGiftSymbol
@@ -303,6 +305,7 @@ from .update import Update
 from .user import User
 from .user_chat_boosts import UserChatBoosts
 from .user_profile_photos import UserProfilePhotos
+from .user_rating import UserRating
 from .user_shared import UserShared
 from .users_shared import UsersShared
 from .venue import Venue
@@ -419,6 +422,7 @@ __all__ = (
     "GeneralForumTopicHidden",
     "GeneralForumTopicUnhidden",
     "Gift",
+    "GiftBackground",
     "GiftInfo",
     "Gifts",
     "Giveaway",
@@ -616,6 +620,7 @@ __all__ = (
     "UniqueGift",
     "UniqueGiftBackdrop",
     "UniqueGiftBackdropColors",
+    "UniqueGiftColors",
     "UniqueGiftInfo",
     "UniqueGiftModel",
     "UniqueGiftSymbol",
@@ -623,6 +628,7 @@ __all__ = (
     "User",
     "UserChatBoosts",
     "UserProfilePhotos",
+    "UserRating",
     "UserShared",
     "UsersShared",
     "Venue",

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Literal, Optional
+from typing import TYPE_CHECKING, Any, Literal
 
 from ..enums import ChatBoostSourceType
 from .chat_boost_source import ChatBoostSource
@@ -20,11 +20,11 @@ class ChatBoostSourceGiveaway(ChatBoostSource):
     """Source of the boost, always 'giveaway'"""
     giveaway_message_id: int
     """Identifier of a message in the chat with the giveaway; the message could have been deleted already. May be 0 if the message isn't sent yet."""
-    user: Optional[User] = None
+    user: User | None = None
     """*Optional*. User that won the prize in the giveaway if any; for Telegram Premium giveaways only"""
-    prize_star_count: Optional[int] = None
+    prize_star_count: int | None = None
     """*Optional*. The number of Telegram Stars to be split between giveaway winners; for Telegram Star giveaways only"""
-    is_unclaimed: Optional[bool] = None
+    is_unclaimed: bool | None = None
     """*Optional*. :code:`True`, if the giveaway was completed, but there was no user to win the prize"""
 
     if TYPE_CHECKING:
@@ -36,9 +36,9 @@ class ChatBoostSourceGiveaway(ChatBoostSource):
             *,
             source: Literal[ChatBoostSourceType.GIVEAWAY] = ChatBoostSourceType.GIVEAWAY,
             giveaway_message_id: int,
-            user: Optional[User] = None,
-            prize_star_count: Optional[int] = None,
-            is_unclaimed: Optional[bool] = None,
+            user: User | None = None,
+            prize_star_count: int | None = None,
+            is_unclaimed: bool | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

@@ -16,6 +16,96 @@ Changelog
 
 .. towncrier release notes start
 
+3.24.0 (2026-01-02)
+====================
+
+Features
+--------
+
+- Added full support for Telegram Bot API 9.3
+
+  **Topics in Private Chats**
+
+  Bot API 9.3 introduces forum topics functionality for private chats:
+
+  - Added new ``sendMessageDraft`` method for streaming partial messages while being generated (requires forum topic mode enabled)
+  - Added ``has_topics_enabled`` field to the ``User`` class to determine if forum topic mode is enabled in private chats
+  - Added ``message_thread_id`` and ``is_topic_message`` fields to the ``Message`` class for private chat topic support
+  - Added ``message_thread_id`` parameter support to messaging methods: ``sendMessage``, ``sendPhoto``, ``sendVideo``, ``sendAnimation``, ``sendAudio``, ``sendDocument``, ``sendPaidMedia``, ``sendSticker``, ``sendVideoNote``, ``sendVoice``, ``sendLocation``, ``sendVenue``, ``sendContact``, ``sendPoll``, ``sendDice``, ``sendInvoice``, ``sendGame``, ``sendMediaGroup``, ``copyMessage``, ``copyMessages``, ``forwardMessage``, ``forwardMessages``
+  - Updated ``sendChatAction`` to support ``message_thread_id`` parameter in private chats
+  - Updated ``editForumTopic``, ``deleteForumTopic``, ``unpinAllForumTopicMessages`` methods to manage private chat topics
+  - Added ``is_name_implicit`` field to ``ForumTopic`` class
+
+  **Gifts System Enhancements**
+
+  Enhanced gifts functionality with new methods and extended capabilities:
+
+  - Added ``getUserGifts`` method to retrieve gifts owned and hosted by a user
+  - Added ``getChatGifts`` method to retrieve gifts owned by a chat
+  - Updated ``UniqueGiftInfo`` class: replaced ``last_resale_star_count`` with ``last_resale_currency`` and ``last_resale_amount`` fields, added "gifted_upgrade" and "offer" as origin values
+  - Updated ``getBusinessAccountGifts`` method: replaced ``exclude_limited`` parameter with ``exclude_limited_upgradable`` and ``exclude_limited_non_upgradable``, added ``exclude_from_blockchain`` parameter
+  - Added new fields to ``Gift`` class: ``personal_total_count``, ``personal_remaining_count``, ``is_premium``, ``has_colors``, ``unique_gift_variant_count``, ``gift_background``
+  - Added new fields to ``UniqueGift`` class: ``gift_id``, ``is_from_blockchain``, ``is_premium``, ``colors``
+  - Added new fields to gift info classes: ``is_upgrade_separate``, ``unique_gift_number``
+  - Added ``gift_upgrade_sent`` field to the ``Message`` class
+  - Added ``gifts_from_channels`` field to the ``AcceptedGiftTypes`` class
+  - Added new ``UniqueGiftColors`` class for color schemes in user names and link previews
+  - Added new ``GiftBackground`` class for gift background styling
+
+  **Business Accounts & Stories**
+
+  - Added ``repostStory`` method to enable reposting stories across managed business accounts
+
+  **Miscellaneous Updates**
+
+  - Bots can now disable main usernames and set ``can_restrict_members`` rights in channels
+  - Maximum paid media price increased to 25000 Telegram Stars
+  - Added new ``UserRating`` class
+  - Added ``rating``, ``paid_message_star_count``, ``unique_gift_colors`` fields to the ``ChatFullInfo`` class
+  - Added support for ``message_effect_id`` parameter in forward/copy operations
+  - Added ``completed_by_chat`` field to the ``ChecklistTask`` class
+  `#1747 <https://github.com/aiogram/aiogram/issues/1747>`_
+
+
+Bugfixes
+--------
+
+- Fixed I18n initialization with relative path
+  `#1740 <https://github.com/aiogram/aiogram/issues/1740>`_
+- Fixed dependency injection for arguments that have "ForwardRef" annotations in Py3.14+
+  since `inspect.getfullargspec(callback)` can't process callback if it's arguments have "ForwardRef" annotations
+  `#1741 <https://github.com/aiogram/aiogram/issues/1741>`_
+
+
+Misc
+----
+
+- Migrated from ``hatch`` to ``uv`` for dependency management and development workflows.
+
+  This change improves developer experience with significantly faster dependency resolution (10-100x faster than pip), automatic virtual environment management, and reproducible builds through lockfile support.
+
+  **What changed for contributors:**
+
+  - Install dependencies with ``uv sync --all-extras --group dev --group test`` instead of ``pip install -e .[dev,test,docs]``
+  - Run commands with ``uv run`` prefix (e.g., ``uv run pytest``, ``uv run black``)
+  - All Makefile commands now use ``uv`` internally (``make install``, ``make test``, ``make lint``, etc.)
+  - Version bumping now uses a custom ``scripts/bump_version.py`` script instead of ``hatch version``
+
+  **What stayed the same:**
+
+  - Build backend remains ``hatchling`` (no changes to package building)
+  - Dynamic version reading from ``aiogram/__meta__.py`` still works
+  - All GitHub Actions CI/CD workflows updated to use ``uv``
+  - ReadTheDocs builds continue to work without changes
+  - Development dependencies (``dev``, ``test``) moved to ``[dependency-groups]`` section
+  - Documentation dependencies (``docs``) remain in ``[project.optional-dependencies]`` for compatibility
+
+  Contributors can use either the traditional ``pip``/``venv`` workflow or the new ``uv`` workflow - both are documented in the contributing guide.
+  `#1748 <https://github.com/aiogram/aiogram/issues/1748>`_
+- Updated type hints in the codebase to Python 3.10+ style unions and optionals.
+  `#1749 <https://github.com/aiogram/aiogram/issues/1749>`_
+
+
 3.23.0 (2025-12-07)
 ====================
 

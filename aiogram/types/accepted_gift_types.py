@@ -20,6 +20,8 @@ class AcceptedGiftTypes(TelegramObject):
     """:code:`True`, if unique gifts or gifts that can be upgraded to unique for free are accepted"""
     premium_subscription: bool
     """:code:`True`, if a Telegram Premium subscription is accepted"""
+    gifts_from_channels: bool
+    """:code:`True`, if transfers of unique gifts from channels are accepted"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!
@@ -32,6 +34,7 @@ class AcceptedGiftTypes(TelegramObject):
             limited_gifts: bool,
             unique_gifts: bool,
             premium_subscription: bool,
+            gifts_from_channels: bool,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!
@@ -43,5 +46,6 @@ class AcceptedGiftTypes(TelegramObject):
                 limited_gifts=limited_gifts,
                 unique_gifts=unique_gifts,
                 premium_subscription=premium_subscription,
+                gifts_from_channels=gifts_from_channels,
                 **__pydantic_kwargs,
             )

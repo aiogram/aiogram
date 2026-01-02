@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from .base import TelegramObject
 
@@ -20,11 +20,11 @@ class AffiliateInfo(TelegramObject):
     """The number of Telegram Stars received by the affiliate for each 1000 Telegram Stars received by the bot from referred users"""
     amount: int
     """Integer amount of Telegram Stars received by the affiliate from the transaction, rounded to 0; can be negative for refunds"""
-    affiliate_user: Optional[User] = None
+    affiliate_user: User | None = None
     """*Optional*. The bot or the user that received an affiliate commission if it was received by a bot or a user"""
-    affiliate_chat: Optional[Chat] = None
+    affiliate_chat: Chat | None = None
     """*Optional*. The chat that received an affiliate commission if it was received by a chat"""
-    nanostar_amount: Optional[int] = None
+    nanostar_amount: int | None = None
     """*Optional*. The number of 1/1000000000 shares of Telegram Stars received by the affiliate; from -999999999 to 999999999; can be negative for refunds"""
 
     if TYPE_CHECKING:
@@ -36,9 +36,9 @@ class AffiliateInfo(TelegramObject):
             *,
             commission_per_mille: int,
             amount: int,
-            affiliate_user: Optional[User] = None,
-            affiliate_chat: Optional[Chat] = None,
-            nanostar_amount: Optional[int] = None,
+            affiliate_user: User | None = None,
+            affiliate_chat: Chat | None = None,
+            nanostar_amount: int | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

@@ -7,7 +7,7 @@ from .base import TelegramObject
 
 class SuggestedPostPrice(TelegramObject):
     """
-    Desribes price of a suggested post.
+    Describes the price of a suggested post.
 
     Source: https://core.telegram.org/bots/api#suggestedpostprice
     """

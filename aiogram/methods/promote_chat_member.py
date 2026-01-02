@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from ..types import ChatIdUnion
 from .base import TelegramMethod
@@ -20,37 +20,37 @@ class PromoteChatMember(TelegramMethod[bool]):
     """Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)"""
     user_id: int
     """Unique identifier of the target user"""
-    is_anonymous: Optional[bool] = None
+    is_anonymous: bool | None = None
     """Pass :code:`True` if the administrator's presence in the chat is hidden"""
-    can_manage_chat: Optional[bool] = None
+    can_manage_chat: bool | None = None
     """Pass :code:`True` if the administrator can access the chat event log, get boost list, see hidden supergroup and channel members, report spam messages, ignore slow mode, and send messages to the chat without paying Telegram Stars. Implied by any other administrator privilege."""
-    can_delete_messages: Optional[bool] = None
+    can_delete_messages: bool | None = None
     """Pass :code:`True` if the administrator can delete messages of other users"""
-    can_manage_video_chats: Optional[bool] = None
+    can_manage_video_chats: bool | None = None
     """Pass :code:`True` if the administrator can manage video chats"""
-    can_restrict_members: Optional[bool] = None
-    """Pass :code:`True` if the administrator can restrict, ban or unban chat members, or access supergroup statistics"""
-    can_promote_members: Optional[bool] = None
+    can_restrict_members: bool | None = None
+    """Pass :code:`True` if the administrator can restrict, ban or unban chat members, or access supergroup statistics. For backward compatibility, defaults to :code:`True` for promotions of channel administrators"""
+    can_promote_members: bool | None = None
     """Pass :code:`True` if the administrator can add new administrators with a subset of their own privileges or demote administrators that they have promoted, directly or indirectly (promoted by administrators that were appointed by him)"""
-    can_change_info: Optional[bool] = None
+    can_change_info: bool | None = None
     """Pass :code:`True` if the administrator can change chat title, photo and other settings"""
-    can_invite_users: Optional[bool] = None
+    can_invite_users: bool | None = None
     """Pass :code:`True` if the administrator can invite new users to the chat"""
-    can_post_stories: Optional[bool] = None
+    can_post_stories: bool | None = None
     """Pass :code:`True` if the administrator can post stories to the chat"""
-    can_edit_stories: Optional[bool] = None
+    can_edit_stories: bool | None = None
     """Pass :code:`True` if the administrator can edit stories posted by other users, post stories to the chat page, pin chat stories, and access the chat's story archive"""
-    can_delete_stories: Optional[bool] = None
+    can_delete_stories: bool | None = None
     """Pass :code:`True` if the administrator can delete stories posted by other users"""
-    can_post_messages: Optional[bool] = None
+    can_post_messages: bool | None = None
     """Pass :code:`True` if the administrator can post messages in the channel, approve suggested posts, or access channel statistics; for channels only"""
-    can_edit_messages: Optional[bool] = None
+    can_edit_messages: bool | None = None
     """Pass :code:`True` if the administrator can edit messages of other users and can pin messages; for channels only"""
-    can_pin_messages: Optional[bool] = None
+    can_pin_messages: bool | None = None
     """Pass :code:`True` if the administrator can pin messages; for supergroups only"""
-    can_manage_topics: Optional[bool] = None
+    can_manage_topics: bool | None = None
     """Pass :code:`True` if the user is allowed to create, rename, close, and reopen forum topics; for supergroups only"""
-    can_manage_direct_messages: Optional[bool] = None
+    can_manage_direct_messages: bool | None = None
     """Pass :code:`True` if the administrator can manage direct messages within the channel and decline suggested posts; for channels only"""
 
     if TYPE_CHECKING:
@@ -62,22 +62,22 @@ class PromoteChatMember(TelegramMethod[bool]):
             *,
             chat_id: ChatIdUnion,
             user_id: int,
-            is_anonymous: Optional[bool] = None,
-            can_manage_chat: Optional[bool] = None,
-            can_delete_messages: Optional[bool] = None,
-            can_manage_video_chats: Optional[bool] = None,
-            can_restrict_members: Optional[bool] = None,
-            can_promote_members: Optional[bool] = None,
-            can_change_info: Optional[bool] = None,
-            can_invite_users: Optional[bool] = None,
-            can_post_stories: Optional[bool] = None,
-            can_edit_stories: Optional[bool] = None,
-            can_delete_stories: Optional[bool] = None,
-            can_post_messages: Optional[bool] = None,
-            can_edit_messages: Optional[bool] = None,
-            can_pin_messages: Optional[bool] = None,
-            can_manage_topics: Optional[bool] = None,
-            can_manage_direct_messages: Optional[bool] = None,
+            is_anonymous: bool | None = None,
+            can_manage_chat: bool | None = None,
+            can_delete_messages: bool | None = None,
+            can_manage_video_chats: bool | None = None,
+            can_restrict_members: bool | None = None,
+            can_promote_members: bool | None = None,
+            can_change_info: bool | None = None,
+            can_invite_users: bool | None = None,
+            can_post_stories: bool | None = None,
+            can_edit_stories: bool | None = None,
+            can_delete_stories: bool | None = None,
+            can_post_messages: bool | None = None,
+            can_edit_messages: bool | None = None,
+            can_pin_messages: bool | None = None,
+            can_manage_topics: bool | None = None,
+            can_manage_direct_messages: bool | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

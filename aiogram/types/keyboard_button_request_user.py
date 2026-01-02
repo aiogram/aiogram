@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from aiogram.types import TelegramObject
 
@@ -15,9 +15,9 @@ class KeyboardButtonRequestUser(TelegramObject):
 
     request_id: int
     """Signed 32-bit identifier of the request, which will be received back in the :class:`aiogram.types.user_shared.UserShared` object. Must be unique within the message"""
-    user_is_bot: Optional[bool] = None
+    user_is_bot: bool | None = None
     """*Optional*. Pass :code:`True` to request a bot, pass :code:`False` to request a regular user. If not specified, no additional restrictions are applied."""
-    user_is_premium: Optional[bool] = None
+    user_is_premium: bool | None = None
     """*Optional*. Pass :code:`True` to request a premium user, pass :code:`False` to request a non-premium user. If not specified, no additional restrictions are applied."""
 
     if TYPE_CHECKING:
@@ -28,8 +28,8 @@ class KeyboardButtonRequestUser(TelegramObject):
             __pydantic__self__,
             *,
             request_id: int,
-            user_is_bot: Optional[bool] = None,
-            user_is_premium: Optional[bool] = None,
+            user_is_bot: bool | None = None,
+            user_is_premium: bool | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

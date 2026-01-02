@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from aiogram.types import TelegramObject
 
@@ -12,17 +12,17 @@ class KeyboardButtonRequestUsers(TelegramObject):
 
     request_id: int
     """Signed 32-bit identifier of the request that will be received back in the :class:`aiogram.types.users_shared.UsersShared` object. Must be unique within the message"""
-    user_is_bot: Optional[bool] = None
+    user_is_bot: bool | None = None
     """*Optional*. Pass :code:`True` to request bots, pass :code:`False` to request regular users. If not specified, no additional restrictions are applied."""
-    user_is_premium: Optional[bool] = None
+    user_is_premium: bool | None = None
     """*Optional*. Pass :code:`True` to request premium users, pass :code:`False` to request non-premium users. If not specified, no additional restrictions are applied."""
-    max_quantity: Optional[int] = None
+    max_quantity: int | None = None
     """*Optional*. The maximum number of users to be selected; 1-10. Defaults to 1."""
-    request_name: Optional[bool] = None
+    request_name: bool | None = None
     """*Optional*. Pass :code:`True` to request the users' first and last names"""
-    request_username: Optional[bool] = None
+    request_username: bool | None = None
     """*Optional*. Pass :code:`True` to request the users' usernames"""
-    request_photo: Optional[bool] = None
+    request_photo: bool | None = None
     """*Optional*. Pass :code:`True` to request the users' photos"""
 
     if TYPE_CHECKING:
@@ -33,12 +33,12 @@ class KeyboardButtonRequestUsers(TelegramObject):
             __pydantic__self__,
             *,
             request_id: int,
-            user_is_bot: Optional[bool] = None,
-            user_is_premium: Optional[bool] = None,
-            max_quantity: Optional[int] = None,
-            request_name: Optional[bool] = None,
-            request_username: Optional[bool] = None,
-            request_photo: Optional[bool] = None,
+            user_is_bot: bool | None = None,
+            user_is_premium: bool | None = None,
+            max_quantity: int | None = None,
+            request_name: bool | None = None,
+            request_username: bool | None = None,
+            request_photo: bool | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

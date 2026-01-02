@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from .base import TelegramObject
 
@@ -22,9 +22,9 @@ class InputSticker(TelegramObject):
     """Format of the added sticker, must be one of 'static' for a **.WEBP** or **.PNG** image, 'animated' for a **.TGS** animation, 'video' for a **.WEBM** video"""
     emoji_list: list[str]
     """List of 1-20 emoji associated with the sticker"""
-    mask_position: Optional[MaskPosition] = None
+    mask_position: MaskPosition | None = None
     """*Optional*. Position where the mask should be placed on faces. For 'mask' stickers only."""
-    keywords: Optional[list[str]] = None
+    keywords: list[str] | None = None
     """*Optional*. List of 0-20 search keywords for the sticker with total length of up to 64 characters. For 'regular' and 'custom_emoji' stickers only."""
 
     if TYPE_CHECKING:
@@ -37,8 +37,8 @@ class InputSticker(TelegramObject):
             sticker: InputFileUnion,
             format: str,
             emoji_list: list[str],
-            mask_position: Optional[MaskPosition] = None,
-            keywords: Optional[list[str]] = None,
+            mask_position: MaskPosition | None = None,
+            keywords: list[str] | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

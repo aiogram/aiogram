@@ -46,10 +46,18 @@
       {
         "type": "Boolean",
         "required": false,
-        "description": "Pass True to exclude gifts that can be purchased a limited number of times",
-        "html_description": "<td>Pass <em>True</em> to exclude gifts that can be purchased a limited number of times</td>",
-        "rst_description": "Pass :code:`True` to exclude gifts that can be purchased a limited number of times\n",
-        "name": "exclude_limited"
+        "description": "Pass True to exclude gifts that can be purchased a limited number of times and can be upgraded to unique",
+        "html_description": "<td>Pass <em>True</em> to exclude gifts that can be purchased a limited number of times and can be upgraded to unique</td>",
+        "rst_description": "Pass :code:`True` to exclude gifts that can be purchased a limited number of times and can be upgraded to unique\n",
+        "name": "exclude_limited_upgradable"
+      },
+      {
+        "type": "Boolean",
+        "required": false,
+        "description": "Pass True to exclude gifts that can be purchased a limited number of times and can't be upgraded to unique",
+        "html_description": "<td>Pass <em>True</em> to exclude gifts that can be purchased a limited number of times and can't be upgraded to unique</td>",
+        "rst_description": "Pass :code:`True` to exclude gifts that can be purchased a limited number of times and can't be upgraded to unique\n",
+        "name": "exclude_limited_non_upgradable"
       },
       {
         "type": "Boolean",
@@ -58,6 +66,14 @@
         "html_description": "<td>Pass <em>True</em> to exclude unique gifts</td>",
         "rst_description": "Pass :code:`True` to exclude unique gifts\n",
         "name": "exclude_unique"
+      },
+      {
+        "type": "Boolean",
+        "required": false,
+        "description": "Pass True to exclude gifts that were assigned from the TON blockchain and can't be resold or transferred in Telegram",
+        "html_description": "<td>Pass <em>True</em> to exclude gifts that were assigned from the TON blockchain and can't be resold or transferred in Telegram</td>",
+        "rst_description": "Pass :code:`True` to exclude gifts that were assigned from the TON blockchain and can't be resold or transferred in Telegram\n",
+        "name": "exclude_from_blockchain"
       },
       {
         "type": "Boolean",
@@ -82,6 +98,18 @@
         "html_description": "<td>The maximum number of gifts to be returned; 1-100. Defaults to 100</td>",
         "rst_description": "The maximum number of gifts to be returned; 1-100. Defaults to 100\n",
         "name": "limit"
+      },
+      {
+        "type": "Boolean",
+        "required": false,
+        "description": "Pass True to exclude gifts that can be purchased a limited number of times",
+        "html_description": "<td>Pass <em>True</em> to exclude gifts that can be purchased a limited number of times</td>",
+        "rst_description": "Pass :code:`True` to exclude gifts that can be purchased a limited number of times\n",
+        "name": "exclude_limited",
+        "deprecated": {
+          "version": "9.3",
+          "release_date": "2025-12-31"
+        }
       }
     ],
     "category": "methods"

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from ..types import MaskPosition
 from .base import TelegramMethod
@@ -18,7 +18,7 @@ class SetStickerMaskPosition(TelegramMethod[bool]):
 
     sticker: str
     """File identifier of the sticker"""
-    mask_position: Optional[MaskPosition] = None
+    mask_position: MaskPosition | None = None
     """A JSON-serialized object with the position where the mask should be placed on faces. Omit the parameter to remove the mask position."""
 
     if TYPE_CHECKING:
@@ -29,7 +29,7 @@ class SetStickerMaskPosition(TelegramMethod[bool]):
             __pydantic__self__,
             *,
             sticker: str,
-            mask_position: Optional[MaskPosition] = None,
+            mask_position: MaskPosition | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

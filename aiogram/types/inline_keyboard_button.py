@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from .base import MutableTelegramObject
 
@@ -21,25 +21,25 @@ class InlineKeyboardButton(MutableTelegramObject):
 
     text: str
     """Label text on the button"""
-    url: Optional[str] = None
+    url: str | None = None
     """*Optional*. HTTP or tg:// URL to be opened when the button is pressed. Links :code:`tg://user?id=<user_id>` can be used to mention a user by their identifier without using a username, if this is allowed by their privacy settings."""
-    callback_data: Optional[str] = None
+    callback_data: str | None = None
     """*Optional*. Data to be sent in a `callback query <https://core.telegram.org/bots/api#callbackquery>`_ to the bot when the button is pressed, 1-64 bytes"""
-    web_app: Optional[WebAppInfo] = None
+    web_app: WebAppInfo | None = None
     """*Optional*. Description of the `Web App <https://core.telegram.org/bots/webapps>`_ that will be launched when the user presses the button. The Web App will be able to send an arbitrary message on behalf of the user using the method :class:`aiogram.methods.answer_web_app_query.AnswerWebAppQuery`. Available only in private chats between a user and the bot. Not supported for messages sent on behalf of a Telegram Business account."""
-    login_url: Optional[LoginUrl] = None
+    login_url: LoginUrl | None = None
     """*Optional*. An HTTPS URL used to automatically authorize the user. Can be used as a replacement for the `Telegram Login Widget <https://core.telegram.org/widgets/login>`_."""
-    switch_inline_query: Optional[str] = None
+    switch_inline_query: str | None = None
     """*Optional*. If set, pressing the button will prompt the user to select one of their chats, open that chat and insert the bot's username and the specified inline query in the input field. May be empty, in which case just the bot's username will be inserted. Not supported for messages sent in channel direct messages chats and on behalf of a Telegram Business account."""
-    switch_inline_query_current_chat: Optional[str] = None
+    switch_inline_query_current_chat: str | None = None
     """*Optional*. If set, pressing the button will insert the bot's username and the specified inline query in the current chat's input field. May be empty, in which case only the bot's username will be inserted."""
-    switch_inline_query_chosen_chat: Optional[SwitchInlineQueryChosenChat] = None
+    switch_inline_query_chosen_chat: SwitchInlineQueryChosenChat | None = None
     """*Optional*. If set, pressing the button will prompt the user to select one of their chats of the specified type, open that chat and insert the bot's username and the specified inline query in the input field. Not supported for messages sent in channel direct messages chats and on behalf of a Telegram Business account."""
-    copy_text: Optional[CopyTextButton] = None
+    copy_text: CopyTextButton | None = None
     """*Optional*. Description of the button that copies the specified text to the clipboard."""
-    callback_game: Optional[CallbackGame] = None
+    callback_game: CallbackGame | None = None
     """*Optional*. Description of the game that will be launched when the user presses the button."""
-    pay: Optional[bool] = None
+    pay: bool | None = None
     """*Optional*. Specify :code:`True`, to send a `Pay button <https://core.telegram.org/bots/api#payments>`_. Substrings '⭐' and 'XTR' in the buttons's text will be replaced with a Telegram Star icon."""
 
     if TYPE_CHECKING:
@@ -50,16 +50,16 @@ class InlineKeyboardButton(MutableTelegramObject):
             __pydantic__self__,
             *,
             text: str,
-            url: Optional[str] = None,
-            callback_data: Optional[str] = None,
-            web_app: Optional[WebAppInfo] = None,
-            login_url: Optional[LoginUrl] = None,
-            switch_inline_query: Optional[str] = None,
-            switch_inline_query_current_chat: Optional[str] = None,
-            switch_inline_query_chosen_chat: Optional[SwitchInlineQueryChosenChat] = None,
-            copy_text: Optional[CopyTextButton] = None,
-            callback_game: Optional[CallbackGame] = None,
-            pay: Optional[bool] = None,
+            url: str | None = None,
+            callback_data: str | None = None,
+            web_app: WebAppInfo | None = None,
+            login_url: LoginUrl | None = None,
+            switch_inline_query: str | None = None,
+            switch_inline_query_current_chat: str | None = None,
+            switch_inline_query_chosen_chat: SwitchInlineQueryChosenChat | None = None,
+            copy_text: CopyTextButton | None = None,
+            callback_game: CallbackGame | None = None,
+            pay: bool | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

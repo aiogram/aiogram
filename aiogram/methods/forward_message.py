@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional, Union
+from typing import TYPE_CHECKING, Any
 
 from ..client.default import Default
 from ..types import ChatIdUnion, DateTimeUnion, Message, SuggestedPostParameters
@@ -23,17 +23,19 @@ class ForwardMessage(TelegramMethod[Message]):
     """Unique identifier for the chat where the original message was sent (or channel username in the format :code:`@channelusername`)"""
     message_id: int
     """Message identifier in the chat specified in *from_chat_id*"""
-    message_thread_id: Optional[int] = None
-    """Unique identifier for the target message thread (topic) of the forum; for forum supergroups only"""
-    direct_messages_topic_id: Optional[int] = None
+    message_thread_id: int | None = None
+    """Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only"""
+    direct_messages_topic_id: int | None = None
     """Identifier of the direct messages topic to which the message will be forwarded; required if the message is forwarded to a direct messages chat"""
-    video_start_timestamp: Optional[DateTimeUnion] = None
+    video_start_timestamp: DateTimeUnion | None = None
     """New start timestamp for the forwarded video in the message"""
-    disable_notification: Optional[bool] = None
+    disable_notification: bool | None = None
     """Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound."""
-    protect_content: Optional[Union[bool, Default]] = Default("protect_content")
+    protect_content: bool | Default | None = Default("protect_content")
     """Protects the contents of the forwarded message from forwarding and saving"""
-    suggested_post_parameters: Optional[SuggestedPostParameters] = None
+    message_effect_id: str | None = None
+    """Unique identifier of the message effect to be added to the message; only available when forwarding to private chats"""
+    suggested_post_parameters: SuggestedPostParameters | None = None
     """A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only"""
 
     if TYPE_CHECKING:
@@ -46,12 +48,13 @@ class ForwardMessage(TelegramMethod[Message]):
             chat_id: ChatIdUnion,
             from_chat_id: ChatIdUnion,
             message_id: int,
-            message_thread_id: Optional[int] = None,
-            direct_messages_topic_id: Optional[int] = None,
-            video_start_timestamp: Optional[DateTimeUnion] = None,
-            disable_notification: Optional[bool] = None,
-            protect_content: Optional[Union[bool, Default]] = Default("protect_content"),
-            suggested_post_parameters: Optional[SuggestedPostParameters] = None,
+            message_thread_id: int | None = None,
+            direct_messages_topic_id: int | None = None,
+            video_start_timestamp: DateTimeUnion | None = None,
+            disable_notification: bool | None = None,
+            protect_content: bool | Default | None = Default("protect_content"),
+            message_effect_id: str | None = None,
+            suggested_post_parameters: SuggestedPostParameters | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!
@@ -67,6 +70,7 @@ class ForwardMessage(TelegramMethod[Message]):
                 video_start_timestamp=video_start_timestamp,
                 disable_notification=disable_notification,
                 protect_content=protect_content,
+                message_effect_id=message_effect_id,
                 suggested_post_parameters=suggested_post_parameters,
                 **__pydantic_kwargs,
             )

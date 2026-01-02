@@ -96,7 +96,7 @@ class KeyboardBuilder(ABC, Generic[ButtonType]):
         """
         if not isinstance(row, list):
             msg = (
-                f"Row {row!r} should be type 'List[{self._button_type.__name__}]' "
+                f"Row {row!r} should be type 'list[{self._button_type.__name__}]' "
                 f"not type {type(row).__name__}"
             )
             raise ValueError(msg)
@@ -117,7 +117,7 @@ class KeyboardBuilder(ABC, Generic[ButtonType]):
         count = 0
         if not isinstance(markup, list):
             msg = (
-                f"Markup should be type 'List[List[{self._button_type.__name__}]]' "
+                f"Markup should be type 'list[list[{self._button_type.__name__}]]' "
                 f"not type {type(markup).__name__!r}"
             )
             raise ValueError(msg)

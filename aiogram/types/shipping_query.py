@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from pydantic import Field
 
@@ -57,8 +57,8 @@ class ShippingQuery(TelegramObject):
     def answer(
         self,
         ok: bool,
-        shipping_options: Optional[list[ShippingOption]] = None,
-        error_message: Optional[str] = None,
+        shipping_options: list[ShippingOption] | None = None,
+        error_message: str | None = None,
         **kwargs: Any,
     ) -> AnswerShippingQuery:
         """

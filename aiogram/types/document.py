@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from .base import TelegramObject
 
@@ -19,13 +19,13 @@ class Document(TelegramObject):
     """Identifier for this file, which can be used to download or reuse the file"""
     file_unique_id: str
     """Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file."""
-    thumbnail: Optional[PhotoSize] = None
+    thumbnail: PhotoSize | None = None
     """*Optional*. Document thumbnail as defined by the sender"""
-    file_name: Optional[str] = None
+    file_name: str | None = None
     """*Optional*. Original filename as defined by the sender"""
-    mime_type: Optional[str] = None
+    mime_type: str | None = None
     """*Optional*. MIME type of the file as defined by the sender"""
-    file_size: Optional[int] = None
+    file_size: int | None = None
     """*Optional*. File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value."""
 
     if TYPE_CHECKING:
@@ -37,10 +37,10 @@ class Document(TelegramObject):
             *,
             file_id: str,
             file_unique_id: str,
-            thumbnail: Optional[PhotoSize] = None,
-            file_name: Optional[str] = None,
-            mime_type: Optional[str] = None,
-            file_size: Optional[int] = None,
+            thumbnail: PhotoSize | None = None,
+            file_name: str | None = None,
+            mime_type: str | None = None,
+            file_size: int | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

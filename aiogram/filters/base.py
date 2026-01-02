@@ -27,7 +27,7 @@ class Filter(ABC):  # noqa: B024
 
             Accepts incoming event and should return boolean or dict.
 
-            :return: :class:`bool` or :class:`Dict[str, Any]`
+            :return: :class:`bool` or :class:`dict[str, Any]`
             """
 
     def __invert__(self) -> "_InvertFilter":

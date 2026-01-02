@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Literal, Optional
+from typing import TYPE_CHECKING, Any, Literal
 
 from ..enums import MessageOriginType
 from .custom import DateTime
@@ -25,7 +25,7 @@ class MessageOriginChannel(MessageOrigin):
     """Channel chat to which the message was originally sent"""
     message_id: int
     """Unique message identifier inside the chat"""
-    author_signature: Optional[str] = None
+    author_signature: str | None = None
     """*Optional*. Signature of the original post author"""
 
     if TYPE_CHECKING:
@@ -39,7 +39,7 @@ class MessageOriginChannel(MessageOrigin):
             date: DateTime,
             chat: Chat,
             message_id: int,
-            author_signature: Optional[str] = None,
+            author_signature: str | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

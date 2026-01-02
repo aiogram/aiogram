@@ -22,9 +22,9 @@
       {
         "type": "Integer",
         "required": false,
-        "description": "Unique identifier for the target message thread (topic) of the forum; for forum supergroups only",
-        "html_description": "<td>Unique identifier for the target message thread (topic) of the forum; for forum supergroups only</td>",
-        "rst_description": "Unique identifier for the target message thread (topic) of the forum; for forum supergroups only\n",
+        "description": "Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only",
+        "html_description": "<td>Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only</td>",
+        "rst_description": "Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only\n",
         "name": "message_thread_id"
       },
       {
@@ -114,6 +114,14 @@
         "html_description": "<td>Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href=\"https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once\">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance</td>",
         "rst_description": "Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance\n",
         "name": "allow_paid_broadcast"
+      },
+      {
+        "type": "String",
+        "required": false,
+        "description": "Unique identifier of the message effect to be added to the message; only available when copying to private chats",
+        "html_description": "<td>Unique identifier of the message effect to be added to the message; only available when copying to private chats</td>",
+        "rst_description": "Unique identifier of the message effect to be added to the message; only available when copying to private chats\n",
+        "name": "message_effect_id"
       },
       {
         "type": "SuggestedPostParameters",

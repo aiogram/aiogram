@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from ..types import ChatIdUnion, ChatInviteLink, DateTimeUnion
 from .base import TelegramMethod
@@ -18,13 +18,13 @@ class CreateChatInviteLink(TelegramMethod[ChatInviteLink]):
 
     chat_id: ChatIdUnion
     """Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)"""
-    name: Optional[str] = None
+    name: str | None = None
     """Invite link name; 0-32 characters"""
-    expire_date: Optional[DateTimeUnion] = None
+    expire_date: DateTimeUnion | None = None
     """Point in time (Unix timestamp) when the link will expire"""
-    member_limit: Optional[int] = None
+    member_limit: int | None = None
     """The maximum number of users that can be members of the chat simultaneously after joining the chat via this invite link; 1-99999"""
-    creates_join_request: Optional[bool] = None
+    creates_join_request: bool | None = None
     """:code:`True`, if users joining the chat via the link need to be approved by chat administrators. If :code:`True`, *member_limit* can't be specified"""
 
     if TYPE_CHECKING:
@@ -35,10 +35,10 @@ class CreateChatInviteLink(TelegramMethod[ChatInviteLink]):
             __pydantic__self__,
             *,
             chat_id: ChatIdUnion,
-            name: Optional[str] = None,
-            expire_date: Optional[DateTimeUnion] = None,
-            member_limit: Optional[int] = None,
-            creates_join_request: Optional[bool] = None,
+            name: str | None = None,
+            expire_date: DateTimeUnion | None = None,
+            member_limit: int | None = None,
+            creates_join_request: bool | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

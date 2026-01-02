@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from .base import TelegramObject
 
@@ -18,9 +18,9 @@ class File(TelegramObject):
     """Identifier for this file, which can be used to download or reuse the file"""
     file_unique_id: str
     """Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file."""
-    file_size: Optional[int] = None
+    file_size: int | None = None
     """*Optional*. File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value."""
-    file_path: Optional[str] = None
+    file_path: str | None = None
     """*Optional*. File path. Use :code:`https://api.telegram.org/file/bot<token>/<file_path>` to get the file."""
 
     if TYPE_CHECKING:
@@ -32,8 +32,8 @@ class File(TelegramObject):
             *,
             file_id: str,
             file_unique_id: str,
-            file_size: Optional[int] = None,
-            file_path: Optional[str] = None,
+            file_size: int | None = None,
+            file_path: str | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

@@ -1,6 +1,8 @@
+from __future__ import annotations
+
 from collections.abc import Callable
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Any, Union, cast, overload
+from typing import TYPE_CHECKING, Any, cast, overload
 
 from magic_filter import AttrDict, MagicFilter
 
@@ -42,7 +44,7 @@ class FlagDecorator:
         self,
         value: Any | None = None,
         **kwargs: Any,
-    ) -> Union[Callable[..., Any], "FlagDecorator"]:
+    ) -> Callable[..., Any] | FlagDecorator:
         if value and kwargs:
             msg = "The arguments `value` and **kwargs can not be used together"
             raise ValueError(msg)
@@ -86,7 +88,7 @@ def extract_flags_from_object(obj: Any) -> dict[str, Any]:
     return cast(dict[str, Any], obj.aiogram_flag)
 
 
-def extract_flags(handler: Union["HandlerObject", dict[str, Any]]) -> dict[str, Any]:
+def extract_flags(handler: HandlerObject | dict[str, Any]) -> dict[str, Any]:
     """
     Extract flags from handler or middleware context data
 
@@ -101,7 +103,7 @@ def extract_flags(handler: Union["HandlerObject", dict[str, Any]]) -> dict[str, 
 
 
 def get_flag(
-    handler: Union["HandlerObject", dict[str, Any]],
+    handler: HandlerObject | dict[str, Any],
     name: str,
     *,
     default: Any | None = None,
@@ -118,7 +120,7 @@ def get_flag(
     return flags.get(name, default)
 
 
-def check_flags(handler: Union["HandlerObject", dict[str, Any]], magic: MagicFilter) -> Any:
+def check_flags(handler: HandlerObject | dict[str, Any], magic: MagicFilter) -> Any:
     """
     Check flags via magic filter
 

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from ..utils import markdown
 from ..utils.link import create_tg_link
@@ -23,26 +23,28 @@ class User(TelegramObject):
     """:code:`True`, if this user is a bot"""
     first_name: str
     """User's or bot's first name"""
-    last_name: Optional[str] = None
+    last_name: str | None = None
     """*Optional*. User's or bot's last name"""
-    username: Optional[str] = None
+    username: str | None = None
     """*Optional*. User's or bot's username"""
-    language_code: Optional[str] = None
+    language_code: str | None = None
     """*Optional*. `IETF language tag <https://en.wikipedia.org/wiki/IETF_language_tag>`_ of the user's language"""
-    is_premium: Optional[bool] = None
+    is_premium: bool | None = None
     """*Optional*. :code:`True`, if this user is a Telegram Premium user"""
-    added_to_attachment_menu: Optional[bool] = None
+    added_to_attachment_menu: bool | None = None
     """*Optional*. :code:`True`, if this user added the bot to the attachment menu"""
-    can_join_groups: Optional[bool] = None
+    can_join_groups: bool | None = None
     """*Optional*. :code:`True`, if the bot can be invited to groups. Returned only in :class:`aiogram.methods.get_me.GetMe`."""
-    can_read_all_group_messages: Optional[bool] = None
+    can_read_all_group_messages: bool | None = None
     """*Optional*. :code:`True`, if `privacy mode <https://core.telegram.org/bots/features#privacy-mode>`_ is disabled for the bot. Returned only in :class:`aiogram.methods.get_me.GetMe`."""
-    supports_inline_queries: Optional[bool] = None
+    supports_inline_queries: bool | None = None
     """*Optional*. :code:`True`, if the bot supports inline queries. Returned only in :class:`aiogram.methods.get_me.GetMe`."""
-    can_connect_to_business: Optional[bool] = None
+    can_connect_to_business: bool | None = None
     """*Optional*. :code:`True`, if the bot can be connected to a Telegram Business account to receive its messages. Returned only in :class:`aiogram.methods.get_me.GetMe`."""
-    has_main_web_app: Optional[bool] = None
+    has_main_web_app: bool | None = None
     """*Optional*. :code:`True`, if the bot has a main Web App. Returned only in :class:`aiogram.methods.get_me.GetMe`."""
+    has_topics_enabled: bool | None = None
+    """*Optional*. :code:`True`, if the bot has forum topic mode enabled in private chats. Returned only in :class:`aiogram.methods.get_me.GetMe`."""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!
@@ -54,16 +56,17 @@ class User(TelegramObject):
             id: int,
             is_bot: bool,
             first_name: str,
-            last_name: Optional[str] = None,
-            username: Optional[str] = None,
-            language_code: Optional[str] = None,
-            is_premium: Optional[bool] = None,
-            added_to_attachment_menu: Optional[bool] = None,
-            can_join_groups: Optional[bool] = None,
-            can_read_all_group_messages: Optional[bool] = None,
-            supports_inline_queries: Optional[bool] = None,
-            can_connect_to_business: Optional[bool] = None,
-            has_main_web_app: Optional[bool] = None,
+            last_name: str | None = None,
+            username: str | None = None,
+            language_code: str | None = None,
+            is_premium: bool | None = None,
+            added_to_attachment_menu: bool | None = None,
+            can_join_groups: bool | None = None,
+            can_read_all_group_messages: bool | None = None,
+            supports_inline_queries: bool | None = None,
+            can_connect_to_business: bool | None = None,
+            has_main_web_app: bool | None = None,
+            has_topics_enabled: bool | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!
@@ -84,6 +87,7 @@ class User(TelegramObject):
                 supports_inline_queries=supports_inline_queries,
                 can_connect_to_business=can_connect_to_business,
                 has_main_web_app=has_main_web_app,
+                has_topics_enabled=has_topics_enabled,
                 **__pydantic_kwargs,
             )
 
@@ -97,20 +101,20 @@ class User(TelegramObject):
     def url(self) -> str:
         return create_tg_link("user", id=self.id)
 
-    def mention_markdown(self, name: Optional[str] = None) -> str:
+    def mention_markdown(self, name: str | None = None) -> str:
         if name is None:
             name = self.full_name
         return markdown.link(name, self.url)
 
-    def mention_html(self, name: Optional[str] = None) -> str:
+    def mention_html(self, name: str | None = None) -> str:
         if name is None:
             name = self.full_name
         return markdown.hlink(name, self.url)
 
     def get_profile_photos(
         self,
-        offset: Optional[int] = None,
-        limit: Optional[int] = None,
+        offset: int | None = None,
+        limit: int | None = None,
         **kwargs: Any,
     ) -> GetUserProfilePhotos:
         """

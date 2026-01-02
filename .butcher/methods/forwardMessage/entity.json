@@ -22,9 +22,9 @@
       {
         "type": "Integer",
         "required": false,
-        "description": "Unique identifier for the target message thread (topic) of the forum; for forum supergroups only",
-        "html_description": "<td>Unique identifier for the target message thread (topic) of the forum; for forum supergroups only</td>",
-        "rst_description": "Unique identifier for the target message thread (topic) of the forum; for forum supergroups only\n",
+        "description": "Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only",
+        "html_description": "<td>Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only</td>",
+        "rst_description": "Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only\n",
         "name": "message_thread_id"
       },
       {
@@ -66,6 +66,14 @@
         "html_description": "<td>Protects the contents of the forwarded message from forwarding and saving</td>",
         "rst_description": "Protects the contents of the forwarded message from forwarding and saving\n",
         "name": "protect_content"
+      },
+      {
+        "type": "String",
+        "required": false,
+        "description": "Unique identifier of the message effect to be added to the message; only available when forwarding to private chats",
+        "html_description": "<td>Unique identifier of the message effect to be added to the message; only available when forwarding to private chats</td>",
+        "rst_description": "Unique identifier of the message effect to be added to the message; only available when forwarding to private chats\n",
+        "name": "message_effect_id"
       },
       {
         "type": "SuggestedPostParameters",

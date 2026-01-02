@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from .base import TelegramObject
 
@@ -18,20 +18,24 @@ class GiftInfo(TelegramObject):
 
     gift: Gift
     """Information about the gift"""
-    owned_gift_id: Optional[str] = None
+    owned_gift_id: str | None = None
     """*Optional*. Unique identifier of the received gift for the bot; only present for gifts received on behalf of business accounts"""
-    convert_star_count: Optional[int] = None
+    convert_star_count: int | None = None
     """*Optional*. Number of Telegram Stars that can be claimed by the receiver by converting the gift; omitted if conversion to Telegram Stars is impossible"""
-    prepaid_upgrade_star_count: Optional[int] = None
-    """*Optional*. Number of Telegram Stars that were prepaid by the sender for the ability to upgrade the gift"""
-    can_be_upgraded: Optional[bool] = None
+    prepaid_upgrade_star_count: int | None = None
+    """*Optional*. Number of Telegram Stars that were prepaid for the ability to upgrade the gift"""
+    is_upgrade_separate: bool | None = None
+    """*Optional*. :code:`True`, if the gift's upgrade was purchased after the gift was sent"""
+    can_be_upgraded: bool | None = None
     """*Optional*. :code:`True`, if the gift can be upgraded to a unique gift"""
-    text: Optional[str] = None
+    text: str | None = None
     """*Optional*. Text of the message that was added to the gift"""
-    entities: Optional[list[MessageEntity]] = None
+    entities: list[MessageEntity] | None = None
     """*Optional*. Special entities that appear in the text"""
-    is_private: Optional[bool] = None
+    is_private: bool | None = None
     """*Optional*. :code:`True`, if the sender and gift text are shown only to the gift receiver; otherwise, everyone will be able to see them"""
+    unique_gift_number: int | None = None
+    """*Optional*. Unique number reserved for this gift when upgraded. See the *number* field in :class:`aiogram.types.unique_gift.UniqueGift`"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!
@@ -41,13 +45,15 @@ class GiftInfo(TelegramObject):
             __pydantic__self__,
             *,
             gift: Gift,
-            owned_gift_id: Optional[str] = None,
-            convert_star_count: Optional[int] = None,
-            prepaid_upgrade_star_count: Optional[int] = None,
-            can_be_upgraded: Optional[bool] = None,
-            text: Optional[str] = None,
-            entities: Optional[list[MessageEntity]] = None,
-            is_private: Optional[bool] = None,
+            owned_gift_id: str | None = None,
+            convert_star_count: int | None = None,
+            prepaid_upgrade_star_count: int | None = None,
+            is_upgrade_separate: bool | None = None,
+            can_be_upgraded: bool | None = None,
+            text: str | None = None,
+            entities: list[MessageEntity] | None = None,
+            is_private: bool | None = None,
+            unique_gift_number: int | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!
@@ -59,9 +65,11 @@ class GiftInfo(TelegramObject):
                 owned_gift_id=owned_gift_id,
                 convert_star_count=convert_star_count,
                 prepaid_upgrade_star_count=prepaid_upgrade_star_count,
+                is_upgrade_separate=is_upgrade_separate,
                 can_be_upgraded=can_be_upgraded,
                 text=text,
                 entities=entities,
                 is_private=is_private,
+                unique_gift_number=unique_gift_number,
                 **__pydantic_kwargs,
             )

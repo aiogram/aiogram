@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from aiogram.types import TelegramObject
 
@@ -10,11 +10,11 @@ class WriteAccessAllowed(TelegramObject):
     Source: https://core.telegram.org/bots/api#writeaccessallowed
     """
 
-    from_request: Optional[bool] = None
+    from_request: bool | None = None
     """*Optional*. :code:`True`, if the access was granted after the user accepted an explicit request from a Web App sent by the method `requestWriteAccess <https://core.telegram.org/bots/webapps#initializing-mini-apps>`_"""
-    web_app_name: Optional[str] = None
+    web_app_name: str | None = None
     """*Optional*. Name of the Web App, if the access was granted when the Web App was launched from a link"""
-    from_attachment_menu: Optional[bool] = None
+    from_attachment_menu: bool | None = None
     """*Optional*. :code:`True`, if the access was granted when the bot was added to the attachment or side menu"""
 
     if TYPE_CHECKING:
@@ -24,9 +24,9 @@ class WriteAccessAllowed(TelegramObject):
         def __init__(
             __pydantic__self__,
             *,
-            from_request: Optional[bool] = None,
-            web_app_name: Optional[str] = None,
-            from_attachment_menu: Optional[bool] = None,
+            from_request: bool | None = None,
+            web_app_name: str | None = None,
+            from_attachment_menu: bool | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

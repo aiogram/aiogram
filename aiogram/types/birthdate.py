@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from .base import TelegramObject
 
@@ -16,7 +16,7 @@ class Birthdate(TelegramObject):
     """Day of the user's birth; 1-31"""
     month: int
     """Month of the user's birth; 1-12"""
-    year: Optional[int] = None
+    year: int | None = None
     """*Optional*. Year of the user's birth"""
 
     if TYPE_CHECKING:
@@ -28,7 +28,7 @@ class Birthdate(TelegramObject):
             *,
             day: int,
             month: int,
-            year: Optional[int] = None,
+            year: int | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

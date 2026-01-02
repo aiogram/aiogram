@@ -30,9 +30,9 @@
       {
         "type": "Integer",
         "required": false,
-        "description": "Unique identifier for the target message thread; for supergroups only",
-        "html_description": "<td>Unique identifier for the target message thread; for supergroups only</td>",
-        "rst_description": "Unique identifier for the target message thread; for supergroups only\n",
+        "description": "Unique identifier for the target message thread or topic of a forum; for supergroups and private chats of bots with forum topic mode enabled only",
+        "html_description": "<td>Unique identifier for the target message thread or topic of a forum; for supergroups and private chats of bots with forum topic mode enabled only</td>",
+        "rst_description": "Unique identifier for the target message thread or topic of a forum; for supergroups and private chats of bots with forum topic mode enabled only\n",
         "name": "message_thread_id"
       },
       {

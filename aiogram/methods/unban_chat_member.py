@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from ..types import ChatIdUnion
 from .base import TelegramMethod
@@ -20,7 +20,7 @@ class UnbanChatMember(TelegramMethod[bool]):
     """Unique identifier for the target group or username of the target supergroup or channel (in the format :code:`@channelusername`)"""
     user_id: int
     """Unique identifier of the target user"""
-    only_if_banned: Optional[bool] = None
+    only_if_banned: bool | None = None
     """Do nothing if the user is not banned"""
 
     if TYPE_CHECKING:
@@ -32,7 +32,7 @@ class UnbanChatMember(TelegramMethod[bool]):
             *,
             chat_id: ChatIdUnion,
             user_id: int,
-            only_if_banned: Optional[bool] = None,
+            only_if_banned: bool | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

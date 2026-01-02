@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional, Union
+from typing import TYPE_CHECKING, Any
 
 from pydantic import Field
 
@@ -21,13 +21,13 @@ class InputTextMessageContent(InputMessageContent):
 
     message_text: str
     """Text of the message to be sent, 1-4096 characters"""
-    parse_mode: Optional[Union[str, Default]] = Default("parse_mode")
+    parse_mode: str | Default | None = Default("parse_mode")
     """*Optional*. Mode for parsing entities in the message text. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details."""
-    entities: Optional[list[MessageEntity]] = None
+    entities: list[MessageEntity] | None = None
     """*Optional*. List of special entities that appear in message text, which can be specified instead of *parse_mode*"""
-    link_preview_options: Optional[Union[LinkPreviewOptions, Default]] = Default("link_preview")
+    link_preview_options: LinkPreviewOptions | Default | None = Default("link_preview")
     """*Optional*. Link preview generation options for the message"""
-    disable_web_page_preview: Optional[bool] = Field(None, json_schema_extra={"deprecated": True})
+    disable_web_page_preview: bool | None = Field(None, json_schema_extra={"deprecated": True})
     """*Optional*. Disables link previews for links in the sent message
 
 .. deprecated:: API:7.0
@@ -41,12 +41,10 @@ class InputTextMessageContent(InputMessageContent):
             __pydantic__self__,
             *,
             message_text: str,
-            parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
-            entities: Optional[list[MessageEntity]] = None,
-            link_preview_options: Optional[Union[LinkPreviewOptions, Default]] = Default(
-                "link_preview"
-            ),
-            disable_web_page_preview: Optional[bool] = None,
+            parse_mode: str | Default | None = Default("parse_mode"),
+            entities: list[MessageEntity] | None = None,
+            link_preview_options: LinkPreviewOptions | Default | None = Default("link_preview"),
+            disable_web_page_preview: bool | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

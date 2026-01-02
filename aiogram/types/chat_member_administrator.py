@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Literal, Optional
+from typing import TYPE_CHECKING, Any, Literal
 
 from ..enums import ChatMemberStatus
 from .chat_member import ChatMember
@@ -44,17 +44,17 @@ class ChatMemberAdministrator(ChatMember):
     """:code:`True`, if the administrator can edit stories posted by other users, post stories to the chat page, pin chat stories, and access the chat's story archive"""
     can_delete_stories: bool
     """:code:`True`, if the administrator can delete stories posted by other users"""
-    can_post_messages: Optional[bool] = None
+    can_post_messages: bool | None = None
     """*Optional*. :code:`True`, if the administrator can post messages in the channel, approve suggested posts, or access channel statistics; for channels only"""
-    can_edit_messages: Optional[bool] = None
+    can_edit_messages: bool | None = None
     """*Optional*. :code:`True`, if the administrator can edit messages of other users and can pin messages; for channels only"""
-    can_pin_messages: Optional[bool] = None
+    can_pin_messages: bool | None = None
     """*Optional*. :code:`True`, if the user is allowed to pin messages; for groups and supergroups only"""
-    can_manage_topics: Optional[bool] = None
+    can_manage_topics: bool | None = None
     """*Optional*. :code:`True`, if the user is allowed to create, rename, close, and reopen forum topics; for supergroups only"""
-    can_manage_direct_messages: Optional[bool] = None
+    can_manage_direct_messages: bool | None = None
     """*Optional*. :code:`True`, if the administrator can manage direct messages of the channel and decline suggested posts; for channels only"""
-    custom_title: Optional[str] = None
+    custom_title: str | None = None
     """*Optional*. Custom title for this user"""
 
     if TYPE_CHECKING:
@@ -78,12 +78,12 @@ class ChatMemberAdministrator(ChatMember):
             can_post_stories: bool,
             can_edit_stories: bool,
             can_delete_stories: bool,
-            can_post_messages: Optional[bool] = None,
-            can_edit_messages: Optional[bool] = None,
-            can_pin_messages: Optional[bool] = None,
-            can_manage_topics: Optional[bool] = None,
-            can_manage_direct_messages: Optional[bool] = None,
-            custom_title: Optional[str] = None,
+            can_post_messages: bool | None = None,
+            can_edit_messages: bool | None = None,
+            can_pin_messages: bool | None = None,
+            can_manage_topics: bool | None = None,
+            can_manage_direct_messages: bool | None = None,
+            custom_title: str | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

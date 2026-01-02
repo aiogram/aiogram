@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Literal, Optional
+from typing import TYPE_CHECKING, Any, Literal
 
 from ..enums import TransactionPartnerType
 from .transaction_partner import TransactionPartner
@@ -22,7 +22,7 @@ class TransactionPartnerAffiliateProgram(TransactionPartner):
     """Type of the transaction partner, always 'affiliate_program'"""
     commission_per_mille: int
     """The number of Telegram Stars received by the bot for each 1000 Telegram Stars received by the affiliate program sponsor from referred users"""
-    sponsor_user: Optional[User] = None
+    sponsor_user: User | None = None
     """*Optional*. Information about the bot that sponsored the affiliate program"""
 
     if TYPE_CHECKING:
@@ -36,7 +36,7 @@ class TransactionPartnerAffiliateProgram(TransactionPartner):
                 TransactionPartnerType.AFFILIATE_PROGRAM
             ] = TransactionPartnerType.AFFILIATE_PROGRAM,
             commission_per_mille: int,
-            sponsor_user: Optional[User] = None,
+            sponsor_user: User | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

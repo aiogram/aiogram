@@ -1,4 +1,4 @@
-from typing import Any, Optional
+from typing import Any
 
 from aiogram.methods import TelegramMethod
 from aiogram.methods.base import TelegramType

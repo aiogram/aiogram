@@ -2,7 +2,7 @@
 editMessageMedia
 ################
 
-Returns: :obj:`Union[Message, bool]`
+Returns: :obj:`Message | bool`
 
 .. automodule:: aiogram.methods.edit_message_media
     :members:
@@ -19,7 +19,7 @@ As bot method
 
 .. code-block::
 
-    result: Union[Message, bool] = await bot.edit_message_media(...)
+    result: Message | bool = await bot.edit_message_media(...)
 
 
 Method as object
@@ -35,7 +35,7 @@ With specific bot
 
 .. code-block:: python
 
-    result: Union[Message, bool] = await bot(EditMessageMedia(...))
+    result: Message | bool = await bot(EditMessageMedia(...))
 
 As reply into Webhook in handler
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

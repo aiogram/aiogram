@@ -13,9 +13,9 @@
     "annotations": [
       {
         "type": "Integer",
-        "description": "Unique identifier of the topic",
-        "html_description": "<td>Unique identifier of the topic</td>",
-        "rst_description": "Unique identifier of the topic\n",
+        "description": "Unique identifier of the topic. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier.",
+        "html_description": "<td>Unique identifier of the topic. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier.</td>",
+        "rst_description": "Unique identifier of the topic. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier.\n",
         "name": "topic_id",
         "required": true
       },

@@ -65,8 +65,7 @@ class Command(Filter):
 
         if not isinstance(commands, Iterable):
             msg = (
-                "Command filter only supports str, re.Pattern, BotCommand object"
-                " or their Iterable"
+                "Command filter only supports str, re.Pattern, BotCommand object or their Iterable"
             )
             raise ValueError(msg)
 

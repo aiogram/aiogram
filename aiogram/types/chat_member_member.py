@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Literal, Optional
+from typing import TYPE_CHECKING, Any, Literal
 
 from ..enums import ChatMemberStatus
 from .chat_member import ChatMember
@@ -21,7 +21,7 @@ class ChatMemberMember(ChatMember):
     """The member's status in the chat, always 'member'"""
     user: User
     """Information about the user"""
-    until_date: Optional[DateTime] = None
+    until_date: DateTime | None = None
     """*Optional*. Date when the user's subscription will expire; Unix time"""
 
     if TYPE_CHECKING:
@@ -33,7 +33,7 @@ class ChatMemberMember(ChatMember):
             *,
             status: Literal[ChatMemberStatus.MEMBER] = ChatMemberStatus.MEMBER,
             user: User,
-            until_date: Optional[DateTime] = None,
+            until_date: DateTime | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

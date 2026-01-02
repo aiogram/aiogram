@@ -1,7 +1,7 @@
 {
   "api": {
-    "version": "9.2",
-    "release_date": "2025-08-15"
+    "version": "9.3",
+    "release_date": "2025-12-31"
   },
   "items": [
     {
@@ -544,6 +544,14 @@
               "rst_description": "*Optional*. :code:`True`, if the bot has a main Web App. Returned only in :class:`aiogram.methods.get_me.GetMe`.\n",
               "name": "has_main_web_app",
               "required": false
+            },
+            {
+              "type": "Boolean",
+              "description": "True, if the bot has forum topic mode enabled in private chats. Returned only in getMe.",
+              "html_description": "<td><em>Optional</em>. <em>True</em>, if the bot has forum topic mode enabled in private chats. Returned only in <a href=\"#getme\">getMe</a>.</td>",
+              "rst_description": "*Optional*. :code:`True`, if the bot has forum topic mode enabled in private chats. Returned only in :class:`aiogram.methods.get_me.GetMe`.\n",
+              "name": "has_topics_enabled",
+              "required": false
             }
           ],
           "category": "types"
@@ -1004,6 +1012,30 @@
               "rst_description": "*Optional*. For supergroups, the location to which the supergroup is connected\n",
               "name": "location",
               "required": false
+            },
+            {
+              "type": "UserRating",
+              "description": "For private chats, the rating of the user if any",
+              "html_description": "<td><em>Optional</em>. For private chats, the rating of the user if any</td>",
+              "rst_description": "*Optional*. For private chats, the rating of the user if any\n",
+              "name": "rating",
+              "required": false
+            },
+            {
+              "type": "UniqueGiftColors",
+              "description": "The color scheme based on a unique gift that must be used for the chat's name, message replies and link previews",
+              "html_description": "<td><em>Optional</em>. The color scheme based on a unique gift that must be used for the chat's name, message replies and link previews</td>",
+              "rst_description": "*Optional*. The color scheme based on a unique gift that must be used for the chat's name, message replies and link previews\n",
+              "name": "unique_gift_colors",
+              "required": false
+            },
+            {
+              "type": "Integer",
+              "description": "The number of Telegram Stars a general user have to pay to send a message to the chat",
+              "html_description": "<td><em>Optional</em>. The number of Telegram Stars a general user have to pay to send a message to the chat</td>",
+              "rst_description": "*Optional*. The number of Telegram Stars a general user have to pay to send a message to the chat\n",
+              "name": "paid_message_star_count",
+              "required": false
             }
           ],
           "category": "types"
@@ -1025,9 +1057,9 @@
             },
             {
               "type": "Integer",
-              "description": "Unique identifier of a message thread to which the message belongs; for supergroups only",
-              "html_description": "<td><em>Optional</em>. Unique identifier of a message thread to which the message belongs; for supergroups only</td>",
-              "rst_description": "*Optional*. Unique identifier of a message thread to which the message belongs; for supergroups only\n",
+              "description": "Unique identifier of a message thread or forum topic to which the message belongs; for supergroups and private chats only",
+              "html_description": "<td><em>Optional</em>. Unique identifier of a message thread or forum topic to which the message belongs; for supergroups and private chats only</td>",
+              "rst_description": "*Optional*. Unique identifier of a message thread or forum topic to which the message belongs; for supergroups and private chats only\n",
               "name": "message_thread_id",
               "required": false
             },
@@ -1105,9 +1137,9 @@
             },
             {
               "type": "True",
-              "description": "True, if the message is sent to a forum topic",
-              "html_description": "<td><em>Optional</em>. <em>True</em>, if the message is sent to a forum topic</td>",
-              "rst_description": "*Optional*. :code:`True`, if the message is sent to a forum topic\n",
+              "description": "True, if the message is sent to a topic in a forum supergroup or a private chat with the bot",
+              "html_description": "<td><em>Optional</em>. <em>True</em>, if the message is sent to a topic in a forum supergroup or a private chat with the bot</td>",
+              "rst_description": "*Optional*. :code:`True`, if the message is sent to a topic in a forum supergroup or a private chat with the bot\n",
               "name": "is_topic_message",
               "required": false
             },
@@ -1581,6 +1613,14 @@
               "html_description": "<td><em>Optional</em>. Service message: a unique gift was sent or received</td>",
               "rst_description": "*Optional*. Service message: a unique gift was sent or received\n",
               "name": "unique_gift",
+              "required": false
+            },
+            {
+              "type": "GiftInfo",
+              "description": "Service message: upgrade of a gift was purchased after the gift was sent",
+              "html_description": "<td><em>Optional</em>. Service message: upgrade of a gift was purchased after the gift was sent</td>",
+              "rst_description": "*Optional*. Service message: upgrade of a gift was purchased after the gift was sent\n",
+              "name": "gift_upgrade_sent",
               "required": false
             },
             {
@@ -3430,10 +3470,18 @@
             },
             {
               "type": "User",
-              "description": "User that completed the task; omitted if the task wasn't completed",
-              "html_description": "<td><em>Optional</em>. User that completed the task; omitted if the task wasn't completed</td>",
-              "rst_description": "*Optional*. User that completed the task; omitted if the task wasn't completed\n",
+              "description": "User that completed the task; omitted if the task wasn't completed by a user",
+              "html_description": "<td><em>Optional</em>. User that completed the task; omitted if the task wasn't completed by a user</td>",
+              "rst_description": "*Optional*. User that completed the task; omitted if the task wasn't completed by a user\n",
               "name": "completed_by_user",
+              "required": false
+            },
+            {
+              "type": "Chat",
+              "description": "Chat that completed the task; omitted if the task wasn't completed by a chat",
+              "html_description": "<td><em>Optional</em>. Chat that completed the task; omitted if the task wasn't completed by a chat</td>",
+              "rst_description": "*Optional*. Chat that completed the task; omitted if the task wasn't completed by a chat\n",
+              "name": "completed_by_chat",
               "required": false
             },
             {
@@ -3523,8 +3571,8 @@
             {
               "type": "String",
               "description": "Mode for parsing entities in the text. See formatting options for more details.",
-              "html_description": "<td>Optional. Mode for parsing entities in the text. See <a href=\"https://core.telegram.org/bots/api#formatting-options\">formatting options</a> for more details.</td>",
-              "rst_description": "Optional. Mode for parsing entities in the text. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.\n",
+              "html_description": "<td><em>Optional</em>. Mode for parsing entities in the text. See <a href=\"https://core.telegram.org/bots/api#formatting-options\">formatting options</a> for more details.</td>",
+              "rst_description": "*Optional*. Mode for parsing entities in the text. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.\n",
               "name": "parse_mode",
               "required": false
             },
@@ -3557,8 +3605,8 @@
             {
               "type": "String",
               "description": "Mode for parsing entities in the title. See formatting options for more details.",
-              "html_description": "<td>Optional. Mode for parsing entities in the title. See <a href=\"#formatting-options\">formatting options</a> for more details.</td>",
-              "rst_description": "Optional. Mode for parsing entities in the title. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.\n",
+              "html_description": "<td><em>Optional</em>. Mode for parsing entities in the title. See <a href=\"#formatting-options\">formatting options</a> for more details.</td>",
+              "rst_description": "*Optional*. Mode for parsing entities in the title. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.\n",
               "name": "parse_mode",
               "required": false
             },
@@ -4204,6 +4252,14 @@
               "html_description": "<td><em>Optional</em>. Unique identifier of the custom emoji shown as the topic icon</td>",
               "rst_description": "*Optional*. Unique identifier of the custom emoji shown as the topic icon\n",
               "name": "icon_custom_emoji_id",
+              "required": false
+            },
+            {
+              "type": "True",
+              "description": "True, if the name of the topic wasn't specified explicitly by its creator and likely needs to be changed by the bot",
+              "html_description": "<td><em>Optional</em>. <em>True</em>, if the name of the topic wasn't specified explicitly by its creator and likely needs to be changed by the bot</td>",
+              "rst_description": "*Optional*. :code:`True`, if the name of the topic wasn't specified explicitly by its creator and likely needs to be changed by the bot\n",
+              "name": "is_name_implicit",
               "required": false
             }
           ],
@@ -4993,9 +5049,9 @@
         {
           "anchor": "suggestedpostprice",
           "name": "SuggestedPostPrice",
-          "description": "Desribes price of a suggested post.",
-          "html_description": "<p>Desribes price of a suggested post.</p>",
-          "rst_description": "Desribes price of a suggested post.",
+          "description": "Describes the price of a suggested post.",
+          "html_description": "<p>Describes the price of a suggested post.</p>",
+          "rst_description": "Describes the price of a suggested post.",
           "annotations": [
             {
               "type": "String",
@@ -5085,9 +5141,9 @@
           "annotations": [
             {
               "type": "Integer",
-              "description": "Unique identifier of the topic",
-              "html_description": "<td>Unique identifier of the topic</td>",
-              "rst_description": "Unique identifier of the topic\n",
+              "description": "Unique identifier of the topic. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier.",
+              "html_description": "<td>Unique identifier of the topic. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier.</td>",
+              "rst_description": "Unique identifier of the topic. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier.\n",
               "name": "topic_id",
               "required": true
             },
@@ -5264,16 +5320,16 @@
             {
               "type": "KeyboardButtonRequestUsers",
               "description": "If specified, pressing the button will open a list of suitable users. Identifiers of selected users will be sent to the bot in a 'users_shared' service message. Available in private chats only.",
-              "html_description": "<td><em>Optional.</em> If specified, pressing the button will open a list of suitable users. Identifiers of selected users will be sent to the bot in a &#8220;users_shared&#8221; service message. Available in private chats only.</td>",
-              "rst_description": "*Optional.* If specified, pressing the button will open a list of suitable users. Identifiers of selected users will be sent to the bot in a 'users_shared' service message. Available in private chats only.\n",
+              "html_description": "<td><em>Optional</em>. If specified, pressing the button will open a list of suitable users. Identifiers of selected users will be sent to the bot in a &#8220;users_shared&#8221; service message. Available in private chats only.</td>",
+              "rst_description": "*Optional*. If specified, pressing the button will open a list of suitable users. Identifiers of selected users will be sent to the bot in a 'users_shared' service message. Available in private chats only.\n",
               "name": "request_users",
               "required": false
             },
             {
               "type": "KeyboardButtonRequestChat",
               "description": "If specified, pressing the button will open a list of suitable chats. Tapping on a chat will send its identifier to the bot in a 'chat_shared' service message. Available in private chats only.",
-              "html_description": "<td><em>Optional.</em> If specified, pressing the button will open a list of suitable chats. Tapping on a chat will send its identifier to the bot in a &#8220;chat_shared&#8221; service message. Available in private chats only.</td>",
-              "rst_description": "*Optional.* If specified, pressing the button will open a list of suitable chats. Tapping on a chat will send its identifier to the bot in a 'chat_shared' service message. Available in private chats only.\n",
+              "html_description": "<td><em>Optional</em>. If specified, pressing the button will open a list of suitable chats. Tapping on a chat will send its identifier to the bot in a &#8220;chat_shared&#8221; service message. Available in private chats only.</td>",
+              "rst_description": "*Optional*. If specified, pressing the button will open a list of suitable chats. Tapping on a chat will send its identifier to the bot in a 'chat_shared' service message. Available in private chats only.\n",
               "name": "request_chat",
               "required": false
             },
@@ -6994,6 +7050,48 @@
           "category": "types"
         },
         {
+          "anchor": "userrating",
+          "name": "UserRating",
+          "description": "This object describes the rating of a user based on their Telegram Star spendings.",
+          "html_description": "<p>This object describes the rating of a user based on their Telegram Star spendings.</p>",
+          "rst_description": "This object describes the rating of a user based on their Telegram Star spendings.",
+          "annotations": [
+            {
+              "type": "Integer",
+              "description": "Current level of the user, indicating their reliability when purchasing digital goods and services. A higher level suggests a more trustworthy customer; a negative level is likely reason for concern.",
+              "html_description": "<td>Current level of the user, indicating their reliability when purchasing digital goods and services. A higher level suggests a more trustworthy customer; a negative level is likely reason for concern.</td>",
+              "rst_description": "Current level of the user, indicating their reliability when purchasing digital goods and services. A higher level suggests a more trustworthy customer; a negative level is likely reason for concern.\n",
+              "name": "level",
+              "required": true
+            },
+            {
+              "type": "Integer",
+              "description": "Numerical value of the user's rating; the higher the rating, the better",
+              "html_description": "<td>Numerical value of the user's rating; the higher the rating, the better</td>",
+              "rst_description": "Numerical value of the user's rating; the higher the rating, the better\n",
+              "name": "rating",
+              "required": true
+            },
+            {
+              "type": "Integer",
+              "description": "The rating value required to get the current level",
+              "html_description": "<td>The rating value required to get the current level</td>",
+              "rst_description": "The rating value required to get the current level\n",
+              "name": "current_level_rating",
+              "required": true
+            },
+            {
+              "type": "Integer",
+              "description": "The rating value required to get to the next level; omitted if the maximum level was reached",
+              "html_description": "<td><em>Optional</em>. The rating value required to get to the next level; omitted if the maximum level was reached</td>",
+              "rst_description": "*Optional*. The rating value required to get to the next level; omitted if the maximum level was reached\n",
+              "name": "next_level_rating",
+              "required": false
+            }
+          ],
+          "category": "types"
+        },
+        {
           "anchor": "storyareaposition",
           "name": "StoryAreaPosition",
           "description": "Describes the position of a clickable area within a story.",
@@ -7583,6 +7681,48 @@
               "rst_description": "*Optional*. Unique identifier of the custom emoji shown as the topic icon\n",
               "name": "icon_custom_emoji_id",
               "required": false
+            },
+            {
+              "type": "True",
+              "description": "True, if the name of the topic wasn't specified explicitly by its creator and likely needs to be changed by the bot",
+              "html_description": "<td><em>Optional</em>. <em>True</em>, if the name of the topic wasn't specified explicitly by its creator and likely needs to be changed by the bot</td>",
+              "rst_description": "*Optional*. :code:`True`, if the name of the topic wasn't specified explicitly by its creator and likely needs to be changed by the bot\n",
+              "name": "is_name_implicit",
+              "required": false
+            }
+          ],
+          "category": "types"
+        },
+        {
+          "anchor": "giftbackground",
+          "name": "GiftBackground",
+          "description": "This object describes the background of a gift.",
+          "html_description": "<p>This object describes the background of a gift.</p>",
+          "rst_description": "This object describes the background of a gift.",
+          "annotations": [
+            {
+              "type": "Integer",
+              "description": "Center color of the background in RGB format",
+              "html_description": "<td>Center color of the background in RGB format</td>",
+              "rst_description": "Center color of the background in RGB format\n",
+              "name": "center_color",
+              "required": true
+            },
+            {
+              "type": "Integer",
+              "description": "Edge color of the background in RGB format",
+              "html_description": "<td>Edge color of the background in RGB format</td>",
+              "rst_description": "Edge color of the background in RGB format\n",
+              "name": "edge_color",
+              "required": true
+            },
+            {
+              "type": "Integer",
+              "description": "Text color of the background in RGB format",
+              "html_description": "<td>Text color of the background in RGB format</td>",
+              "rst_description": "Text color of the background in RGB format\n",
+              "name": "text_color",
+              "required": true
             }
           ],
           "category": "types"
@@ -7627,19 +7767,67 @@
               "required": false
             },
             {
+              "type": "True",
+              "description": "True, if the gift can only be purchased by Telegram Premium subscribers",
+              "html_description": "<td><em>Optional</em>. <em>True</em>, if the gift can only be purchased by Telegram Premium subscribers</td>",
+              "rst_description": "*Optional*. :code:`True`, if the gift can only be purchased by Telegram Premium subscribers\n",
+              "name": "is_premium",
+              "required": false
+            },
+            {
+              "type": "True",
+              "description": "True, if the gift can be used (after being upgraded) to customize a user's appearance",
+              "html_description": "<td><em>Optional</em>. <em>True</em>, if the gift can be used (after being upgraded) to customize a user's appearance</td>",
+              "rst_description": "*Optional*. :code:`True`, if the gift can be used (after being upgraded) to customize a user's appearance\n",
+              "name": "has_colors",
+              "required": false
+            },
+            {
               "type": "Integer",
-              "description": "The total number of the gifts of this type that can be sent; for limited gifts only",
-              "html_description": "<td><em>Optional</em>. The total number of the gifts of this type that can be sent; for limited gifts only</td>",
-              "rst_description": "*Optional*. The total number of the gifts of this type that can be sent; for limited gifts only\n",
+              "description": "The total number of gifts of this type that can be sent by all users; for limited gifts only",
+              "html_description": "<td><em>Optional</em>. The total number of gifts of this type that can be sent by all users; for limited gifts only</td>",
+              "rst_description": "*Optional*. The total number of gifts of this type that can be sent by all users; for limited gifts only\n",
               "name": "total_count",
               "required": false
             },
             {
               "type": "Integer",
-              "description": "The number of remaining gifts of this type that can be sent; for limited gifts only",
-              "html_description": "<td><em>Optional</em>. The number of remaining gifts of this type that can be sent; for limited gifts only</td>",
-              "rst_description": "*Optional*. The number of remaining gifts of this type that can be sent; for limited gifts only\n",
+              "description": "The number of remaining gifts of this type that can be sent by all users; for limited gifts only",
+              "html_description": "<td><em>Optional</em>. The number of remaining gifts of this type that can be sent by all users; for limited gifts only</td>",
+              "rst_description": "*Optional*. The number of remaining gifts of this type that can be sent by all users; for limited gifts only\n",
               "name": "remaining_count",
+              "required": false
+            },
+            {
+              "type": "Integer",
+              "description": "The total number of gifts of this type that can be sent by the bot; for limited gifts only",
+              "html_description": "<td><em>Optional</em>. The total number of gifts of this type that can be sent by the bot; for limited gifts only</td>",
+              "rst_description": "*Optional*. The total number of gifts of this type that can be sent by the bot; for limited gifts only\n",
+              "name": "personal_total_count",
+              "required": false
+            },
+            {
+              "type": "Integer",
+              "description": "The number of remaining gifts of this type that can be sent by the bot; for limited gifts only",
+              "html_description": "<td><em>Optional</em>. The number of remaining gifts of this type that can be sent by the bot; for limited gifts only</td>",
+              "rst_description": "*Optional*. The number of remaining gifts of this type that can be sent by the bot; for limited gifts only\n",
+              "name": "personal_remaining_count",
+              "required": false
+            },
+            {
+              "type": "GiftBackground",
+              "description": "Background of the gift",
+              "html_description": "<td><em>Optional</em>. Background of the gift</td>",
+              "rst_description": "*Optional*. Background of the gift\n",
+              "name": "background",
+              "required": false
+            },
+            {
+              "type": "Integer",
+              "description": "The total number of different unique gifts that can be obtained by upgrading the gift",
+              "html_description": "<td><em>Optional</em>. The total number of different unique gifts that can be obtained by upgrading the gift</td>",
+              "rst_description": "*Optional*. The total number of different unique gifts that can be obtained by upgrading the gift\n",
+              "name": "unique_gift_variant_count",
               "required": false
             },
             {
@@ -7816,12 +8004,78 @@
           "category": "types"
         },
         {
+          "anchor": "uniquegiftcolors",
+          "name": "UniqueGiftColors",
+          "description": "This object contains information about the color scheme for a user's name, message replies and link previews based on a unique gift.",
+          "html_description": "<p>This object contains information about the color scheme for a user's name, message replies and link previews based on a unique gift.</p>",
+          "rst_description": "This object contains information about the color scheme for a user's name, message replies and link previews based on a unique gift.",
+          "annotations": [
+            {
+              "type": "String",
+              "description": "Custom emoji identifier of the unique gift's model",
+              "html_description": "<td>Custom emoji identifier of the unique gift's model</td>",
+              "rst_description": "Custom emoji identifier of the unique gift's model\n",
+              "name": "model_custom_emoji_id",
+              "required": true
+            },
+            {
+              "type": "String",
+              "description": "Custom emoji identifier of the unique gift's symbol",
+              "html_description": "<td>Custom emoji identifier of the unique gift's symbol</td>",
+              "rst_description": "Custom emoji identifier of the unique gift's symbol\n",
+              "name": "symbol_custom_emoji_id",
+              "required": true
+            },
+            {
+              "type": "Integer",
+              "description": "Main color used in light themes; RGB format",
+              "html_description": "<td>Main color used in light themes; RGB format</td>",
+              "rst_description": "Main color used in light themes; RGB format\n",
+              "name": "light_theme_main_color",
+              "required": true
+            },
+            {
+              "type": "Array of Integer",
+              "description": "List of 1-3 additional colors used in light themes; RGB format",
+              "html_description": "<td>List of 1-3 additional colors used in light themes; RGB format</td>",
+              "rst_description": "List of 1-3 additional colors used in light themes; RGB format\n",
+              "name": "light_theme_other_colors",
+              "required": true
+            },
+            {
+              "type": "Integer",
+              "description": "Main color used in dark themes; RGB format",
+              "html_description": "<td>Main color used in dark themes; RGB format</td>",
+              "rst_description": "Main color used in dark themes; RGB format\n",
+              "name": "dark_theme_main_color",
+              "required": true
+            },
+            {
+              "type": "Array of Integer",
+              "description": "List of 1-3 additional colors used in dark themes; RGB format",
+              "html_description": "<td>List of 1-3 additional colors used in dark themes; RGB format</td>",
+              "rst_description": "List of 1-3 additional colors used in dark themes; RGB format\n",
+              "name": "dark_theme_other_colors",
+              "required": true
+            }
+          ],
+          "category": "types"
+        },
+        {
           "anchor": "uniquegift",
           "name": "UniqueGift",
           "description": "This object describes a unique gift that was upgraded from a regular gift.",
           "html_description": "<p>This object describes a unique gift that was upgraded from a regular gift.</p>",
           "rst_description": "This object describes a unique gift that was upgraded from a regular gift.",
           "annotations": [
+            {
+              "type": "String",
+              "description": "Identifier of the regular gift from which the gift was upgraded",
+              "html_description": "<td>Identifier of the regular gift from which the gift was upgraded</td>",
+              "rst_description": "Identifier of the regular gift from which the gift was upgraded\n",
+              "name": "gift_id",
+              "required": true
+            },
             {
               "type": "String",
               "description": "Human-readable name of the regular gift from which this unique gift was upgraded",
@@ -7871,6 +8125,30 @@
               "required": true
             },
             {
+              "type": "True",
+              "description": "True, if the original regular gift was exclusively purchaseable by Telegram Premium subscribers",
+              "html_description": "<td><em>Optional</em>. <em>True</em>, if the original regular gift was exclusively purchaseable by Telegram Premium subscribers</td>",
+              "rst_description": "*Optional*. :code:`True`, if the original regular gift was exclusively purchaseable by Telegram Premium subscribers\n",
+              "name": "is_premium",
+              "required": false
+            },
+            {
+              "type": "True",
+              "description": "True, if the gift is assigned from the TON blockchain and can't be resold or transferred in Telegram",
+              "html_description": "<td><em>Optional</em>. <em>True</em>, if the gift is assigned from the TON blockchain and can't be resold or transferred in Telegram</td>",
+              "rst_description": "*Optional*. :code:`True`, if the gift is assigned from the TON blockchain and can't be resold or transferred in Telegram\n",
+              "name": "is_from_blockchain",
+              "required": false
+            },
+            {
+              "type": "UniqueGiftColors",
+              "description": "The color scheme that can be used by the gift's owner for the chat's name, replies to messages and link previews; for business account gifts and gifts that are currently on sale only",
+              "html_description": "<td><em>Optional</em>. The color scheme that can be used by the gift's owner for the chat's name, replies to messages and link previews; for business account gifts and gifts that are currently on sale only</td>",
+              "rst_description": "*Optional*. The color scheme that can be used by the gift's owner for the chat's name, replies to messages and link previews; for business account gifts and gifts that are currently on sale only\n",
+              "name": "colors",
+              "required": false
+            },
+            {
               "type": "Chat",
               "description": "Information about the chat that published the gift",
               "html_description": "<td><em>Optional</em>. Information about the chat that published the gift</td>",
@@ -7914,10 +8192,18 @@
             },
             {
               "type": "Integer",
-              "description": "Number of Telegram Stars that were prepaid by the sender for the ability to upgrade the gift",
-              "html_description": "<td><em>Optional</em>. Number of Telegram Stars that were prepaid by the sender for the ability to upgrade the gift</td>",
-              "rst_description": "*Optional*. Number of Telegram Stars that were prepaid by the sender for the ability to upgrade the gift\n",
+              "description": "Number of Telegram Stars that were prepaid for the ability to upgrade the gift",
+              "html_description": "<td><em>Optional</em>. Number of Telegram Stars that were prepaid for the ability to upgrade the gift</td>",
+              "rst_description": "*Optional*. Number of Telegram Stars that were prepaid for the ability to upgrade the gift\n",
               "name": "prepaid_upgrade_star_count",
+              "required": false
+            },
+            {
+              "type": "True",
+              "description": "True, if the gift's upgrade was purchased after the gift was sent",
+              "html_description": "<td><em>Optional</em>. <em>True</em>, if the gift's upgrade was purchased after the gift was sent</td>",
+              "rst_description": "*Optional*. :code:`True`, if the gift's upgrade was purchased after the gift was sent\n",
+              "name": "is_upgrade_separate",
               "required": false
             },
             {
@@ -7951,6 +8237,14 @@
               "rst_description": "*Optional*. :code:`True`, if the sender and gift text are shown only to the gift receiver; otherwise, everyone will be able to see them\n",
               "name": "is_private",
               "required": false
+            },
+            {
+              "type": "Integer",
+              "description": "Unique number reserved for this gift when upgraded. See the number field in UniqueGift",
+              "html_description": "<td><em>Optional</em>. Unique number reserved for this gift when upgraded. See the <em>number</em> field in <a href=\"#uniquegift\">UniqueGift</a></td>",
+              "rst_description": "*Optional*. Unique number reserved for this gift when upgraded. See the *number* field in :class:`aiogram.types.unique_gift.UniqueGift`\n",
+              "name": "unique_gift_number",
+              "required": false
             }
           ],
           "category": "types"
@@ -7972,18 +8266,26 @@
             },
             {
               "type": "String",
-              "description": "Origin of the gift. Currently, either 'upgrade' for gifts upgraded from regular gifts, 'transfer' for gifts transferred from other users or channels, or 'resale' for gifts bought from other users",
-              "html_description": "<td>Origin of the gift. Currently, either &#8220;upgrade&#8221; for gifts upgraded from regular gifts, &#8220;transfer&#8221; for gifts transferred from other users or channels, or &#8220;resale&#8221; for gifts bought from other users</td>",
-              "rst_description": "Origin of the gift. Currently, either 'upgrade' for gifts upgraded from regular gifts, 'transfer' for gifts transferred from other users or channels, or 'resale' for gifts bought from other users\n",
+              "description": "Origin of the gift. Currently, either 'upgrade' for gifts upgraded from regular gifts, 'transfer' for gifts transferred from other users or channels, 'resale' for gifts bought from other users, 'gifted_upgrade' for upgrades purchased after the gift was sent, or 'offer' for gifts bought or sold through gift purchase offers",
+              "html_description": "<td>Origin of the gift. Currently, either &#8220;upgrade&#8221; for gifts upgraded from regular gifts, &#8220;transfer&#8221; for gifts transferred from other users or channels, &#8220;resale&#8221; for gifts bought from other users, &#8220;gifted_upgrade&#8221; for upgrades purchased after the gift was sent, or &#8220;offer&#8221; for gifts bought or sold through gift purchase offers</td>",
+              "rst_description": "Origin of the gift. Currently, either 'upgrade' for gifts upgraded from regular gifts, 'transfer' for gifts transferred from other users or channels, 'resale' for gifts bought from other users, 'gifted_upgrade' for upgrades purchased after the gift was sent, or 'offer' for gifts bought or sold through gift purchase offers\n",
               "name": "origin",
               "required": true
             },
             {
+              "type": "String",
+              "description": "For gifts bought from other users, the currency in which the payment for the gift was done. Currently, one of 'XTR' for Telegram Stars or 'TON' for toncoins.",
+              "html_description": "<td><em>Optional</em>. For gifts bought from other users, the currency in which the payment for the gift was done. Currently, one of &#8220;XTR&#8221; for Telegram Stars or &#8220;TON&#8221; for toncoins.</td>",
+              "rst_description": "*Optional*. For gifts bought from other users, the currency in which the payment for the gift was done. Currently, one of 'XTR' for Telegram Stars or 'TON' for toncoins.\n",
+              "name": "last_resale_currency",
+              "required": false
+            },
+            {
               "type": "Integer",
-              "description": "For gifts bought from other users, the price paid for the gift",
-              "html_description": "<td><em>Optional</em>. For gifts bought from other users, the price paid for the gift</td>",
-              "rst_description": "*Optional*. For gifts bought from other users, the price paid for the gift\n",
-              "name": "last_resale_star_count",
+              "description": "For gifts bought from other users, the price paid for the gift in either Telegram Stars or nanotoncoins",
+              "html_description": "<td><em>Optional</em>. For gifts bought from other users, the price paid for the gift in either Telegram Stars or nanotoncoins</td>",
+              "rst_description": "*Optional*. For gifts bought from other users, the price paid for the gift in either Telegram Stars or nanotoncoins\n",
+              "name": "last_resale_amount",
               "required": false
             },
             {
@@ -8119,18 +8421,34 @@
             },
             {
               "type": "Integer",
-              "description": "Number of Telegram Stars that can be claimed by the receiver instead of the gift; omitted if the gift cannot be converted to Telegram Stars",
-              "html_description": "<td><em>Optional</em>. Number of Telegram Stars that can be claimed by the receiver instead of the gift; omitted if the gift cannot be converted to Telegram Stars</td>",
-              "rst_description": "*Optional*. Number of Telegram Stars that can be claimed by the receiver instead of the gift; omitted if the gift cannot be converted to Telegram Stars\n",
+              "description": "Number of Telegram Stars that can be claimed by the receiver instead of the gift; omitted if the gift cannot be converted to Telegram Stars; for gifts received on behalf of business accounts only",
+              "html_description": "<td><em>Optional</em>. Number of Telegram Stars that can be claimed by the receiver instead of the gift; omitted if the gift cannot be converted to Telegram Stars; for gifts received on behalf of business accounts only</td>",
+              "rst_description": "*Optional*. Number of Telegram Stars that can be claimed by the receiver instead of the gift; omitted if the gift cannot be converted to Telegram Stars; for gifts received on behalf of business accounts only\n",
               "name": "convert_star_count",
               "required": false
             },
             {
               "type": "Integer",
-              "description": "Number of Telegram Stars that were paid by the sender for the ability to upgrade the gift",
-              "html_description": "<td><em>Optional</em>. Number of Telegram Stars that were paid by the sender for the ability to upgrade the gift</td>",
-              "rst_description": "*Optional*. Number of Telegram Stars that were paid by the sender for the ability to upgrade the gift\n",
+              "description": "Number of Telegram Stars that were paid for the ability to upgrade the gift",
+              "html_description": "<td><em>Optional</em>. Number of Telegram Stars that were paid for the ability to upgrade the gift</td>",
+              "rst_description": "*Optional*. Number of Telegram Stars that were paid for the ability to upgrade the gift\n",
               "name": "prepaid_upgrade_star_count",
+              "required": false
+            },
+            {
+              "type": "True",
+              "description": "True, if the gift's upgrade was purchased after the gift was sent; for gifts received on behalf of business accounts only",
+              "html_description": "<td><em>Optional</em>. <em>True</em>, if the gift's upgrade was purchased after the gift was sent; for gifts received on behalf of business accounts only</td>",
+              "rst_description": "*Optional*. :code:`True`, if the gift's upgrade was purchased after the gift was sent; for gifts received on behalf of business accounts only\n",
+              "name": "is_upgrade_separate",
+              "required": false
+            },
+            {
+              "type": "Integer",
+              "description": "Unique number reserved for this gift when upgraded. See the number field in UniqueGift",
+              "html_description": "<td><em>Optional</em>. Unique number reserved for this gift when upgraded. See the <em>number</em> field in <a href=\"#uniquegift\">UniqueGift</a></td>",
+              "rst_description": "*Optional*. Unique number reserved for this gift when upgraded. See the *number* field in :class:`aiogram.types.unique_gift.UniqueGift`\n",
+              "name": "unique_gift_number",
               "required": false
             }
           ],
@@ -8289,6 +8607,14 @@
               "html_description": "<td><em>True</em>, if a Telegram Premium subscription is accepted</td>",
               "rst_description": ":code:`True`, if a Telegram Premium subscription is accepted\n",
               "name": "premium_subscription",
+              "required": true
+            },
+            {
+              "type": "Boolean",
+              "description": "True, if transfers of unique gifts from channels are accepted",
+              "html_description": "<td><em>True</em>, if transfers of unique gifts from channels are accepted</td>",
+              "rst_description": ":code:`True`, if transfers of unique gifts from channels are accepted\n",
+              "name": "gifts_from_channels",
               "required": true
             }
           ],
@@ -9908,9 +10234,9 @@
             {
               "type": "Integer",
               "required": false,
-              "description": "Unique identifier for the target message thread (topic) of the forum; for forum supergroups only",
-              "html_description": "<td>Unique identifier for the target message thread (topic) of the forum; for forum supergroups only</td>",
-              "rst_description": "Unique identifier for the target message thread (topic) of the forum; for forum supergroups only\n",
+              "description": "Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only",
+              "html_description": "<td>Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only</td>",
+              "rst_description": "Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only\n",
               "name": "message_thread_id"
             },
             {
@@ -10030,9 +10356,9 @@
             {
               "type": "Integer",
               "required": false,
-              "description": "Unique identifier for the target message thread (topic) of the forum; for forum supergroups only",
-              "html_description": "<td>Unique identifier for the target message thread (topic) of the forum; for forum supergroups only</td>",
-              "rst_description": "Unique identifier for the target message thread (topic) of the forum; for forum supergroups only\n",
+              "description": "Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only",
+              "html_description": "<td>Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only</td>",
+              "rst_description": "Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only\n",
               "name": "message_thread_id"
             },
             {
@@ -10076,6 +10402,14 @@
               "name": "protect_content"
             },
             {
+              "type": "String",
+              "required": false,
+              "description": "Unique identifier of the message effect to be added to the message; only available when forwarding to private chats",
+              "html_description": "<td>Unique identifier of the message effect to be added to the message; only available when forwarding to private chats</td>",
+              "rst_description": "Unique identifier of the message effect to be added to the message; only available when forwarding to private chats\n",
+              "name": "message_effect_id"
+            },
+            {
               "type": "SuggestedPostParameters",
               "required": false,
               "description": "A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only",
@@ -10112,9 +10446,9 @@
             {
               "type": "Integer",
               "required": false,
-              "description": "Unique identifier for the target message thread (topic) of the forum; for forum supergroups only",
-              "html_description": "<td>Unique identifier for the target message thread (topic) of the forum; for forum supergroups only</td>",
-              "rst_description": "Unique identifier for the target message thread (topic) of the forum; for forum supergroups only\n",
+              "description": "Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only",
+              "html_description": "<td>Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only</td>",
+              "rst_description": "Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only\n",
               "name": "message_thread_id"
             },
             {
@@ -10178,9 +10512,9 @@
             {
               "type": "Integer",
               "required": false,
-              "description": "Unique identifier for the target message thread (topic) of the forum; for forum supergroups only",
-              "html_description": "<td>Unique identifier for the target message thread (topic) of the forum; for forum supergroups only</td>",
-              "rst_description": "Unique identifier for the target message thread (topic) of the forum; for forum supergroups only\n",
+              "description": "Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only",
+              "html_description": "<td>Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only</td>",
+              "rst_description": "Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only\n",
               "name": "message_thread_id"
             },
             {
@@ -10272,6 +10606,14 @@
               "name": "allow_paid_broadcast"
             },
             {
+              "type": "String",
+              "required": false,
+              "description": "Unique identifier of the message effect to be added to the message; only available when copying to private chats",
+              "html_description": "<td>Unique identifier of the message effect to be added to the message; only available when copying to private chats</td>",
+              "rst_description": "Unique identifier of the message effect to be added to the message; only available when copying to private chats\n",
+              "name": "message_effect_id"
+            },
+            {
               "type": "SuggestedPostParameters",
               "required": false,
               "description": "A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined.",
@@ -10316,9 +10658,9 @@
             {
               "type": "Integer",
               "required": false,
-              "description": "Unique identifier for the target message thread (topic) of the forum; for forum supergroups only",
-              "html_description": "<td>Unique identifier for the target message thread (topic) of the forum; for forum supergroups only</td>",
-              "rst_description": "Unique identifier for the target message thread (topic) of the forum; for forum supergroups only\n",
+              "description": "Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only",
+              "html_description": "<td>Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only</td>",
+              "rst_description": "Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only\n",
               "name": "message_thread_id"
             },
             {
@@ -10398,9 +10740,9 @@
             {
               "type": "Integer",
               "required": false,
-              "description": "Unique identifier for the target message thread (topic) of the forum; for forum supergroups only",
-              "html_description": "<td>Unique identifier for the target message thread (topic) of the forum; for forum supergroups only</td>",
-              "rst_description": "Unique identifier for the target message thread (topic) of the forum; for forum supergroups only\n",
+              "description": "Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only",
+              "html_description": "<td>Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only</td>",
+              "rst_description": "Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only\n",
               "name": "message_thread_id"
             },
             {
@@ -10544,9 +10886,9 @@
             {
               "type": "Integer",
               "required": false,
-              "description": "Unique identifier for the target message thread (topic) of the forum; for forum supergroups only",
-              "html_description": "<td>Unique identifier for the target message thread (topic) of the forum; for forum supergroups only</td>",
-              "rst_description": "Unique identifier for the target message thread (topic) of the forum; for forum supergroups only\n",
+              "description": "Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only",
+              "html_description": "<td>Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only</td>",
+              "rst_description": "Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only\n",
               "name": "message_thread_id"
             },
             {
@@ -10706,9 +11048,9 @@
             {
               "type": "Integer",
               "required": false,
-              "description": "Unique identifier for the target message thread (topic) of the forum; for forum supergroups only",
-              "html_description": "<td>Unique identifier for the target message thread (topic) of the forum; for forum supergroups only</td>",
-              "rst_description": "Unique identifier for the target message thread (topic) of the forum; for forum supergroups only\n",
+              "description": "Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only",
+              "html_description": "<td>Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only</td>",
+              "rst_description": "Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only\n",
               "name": "message_thread_id"
             },
             {
@@ -10852,9 +11194,9 @@
             {
               "type": "Integer",
               "required": false,
-              "description": "Unique identifier for the target message thread (topic) of the forum; for forum supergroups only",
-              "html_description": "<td>Unique identifier for the target message thread (topic) of the forum; for forum supergroups only</td>",
-              "rst_description": "Unique identifier for the target message thread (topic) of the forum; for forum supergroups only\n",
+              "description": "Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only",
+              "html_description": "<td>Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only</td>",
+              "rst_description": "Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only\n",
               "name": "message_thread_id"
             },
             {
@@ -11054,9 +11396,9 @@
             {
               "type": "Integer",
               "required": false,
-              "description": "Unique identifier for the target message thread (topic) of the forum; for forum supergroups only",
-              "html_description": "<td>Unique identifier for the target message thread (topic) of the forum; for forum supergroups only</td>",
-              "rst_description": "Unique identifier for the target message thread (topic) of the forum; for forum supergroups only\n",
+              "description": "Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only",
+              "html_description": "<td>Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only</td>",
+              "rst_description": "Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only\n",
               "name": "message_thread_id"
             },
             {
@@ -11232,9 +11574,9 @@
             {
               "type": "Integer",
               "required": false,
-              "description": "Unique identifier for the target message thread (topic) of the forum; for forum supergroups only",
-              "html_description": "<td>Unique identifier for the target message thread (topic) of the forum; for forum supergroups only</td>",
-              "rst_description": "Unique identifier for the target message thread (topic) of the forum; for forum supergroups only\n",
+              "description": "Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only",
+              "html_description": "<td>Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only</td>",
+              "rst_description": "Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only\n",
               "name": "message_thread_id"
             },
             {
@@ -11370,9 +11712,9 @@
             {
               "type": "Integer",
               "required": false,
-              "description": "Unique identifier for the target message thread (topic) of the forum; for forum supergroups only",
-              "html_description": "<td>Unique identifier for the target message thread (topic) of the forum; for forum supergroups only</td>",
-              "rst_description": "Unique identifier for the target message thread (topic) of the forum; for forum supergroups only\n",
+              "description": "Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only",
+              "html_description": "<td>Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only</td>",
+              "rst_description": "Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only\n",
               "name": "message_thread_id"
             },
             {
@@ -11500,9 +11842,9 @@
             {
               "type": "Integer",
               "required": false,
-              "description": "Unique identifier for the target message thread (topic) of the forum; for forum supergroups only",
-              "html_description": "<td>Unique identifier for the target message thread (topic) of the forum; for forum supergroups only</td>",
-              "rst_description": "Unique identifier for the target message thread (topic) of the forum; for forum supergroups only\n",
+              "description": "Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only",
+              "html_description": "<td>Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only</td>",
+              "rst_description": "Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only\n",
               "name": "message_thread_id"
             },
             {
@@ -11516,9 +11858,9 @@
             {
               "type": "Integer",
               "required": true,
-              "description": "The number of Telegram Stars that must be paid to buy access to the media; 1-10000",
-              "html_description": "<td>The number of Telegram Stars that must be paid to buy access to the media; 1-10000</td>",
-              "rst_description": "The number of Telegram Stars that must be paid to buy access to the media; 1-10000\n",
+              "description": "The number of Telegram Stars that must be paid to buy access to the media; 1-25000",
+              "html_description": "<td>The number of Telegram Stars that must be paid to buy access to the media; 1-25000</td>",
+              "rst_description": "The number of Telegram Stars that must be paid to buy access to the media; 1-25000\n",
               "name": "star_count"
             },
             {
@@ -11646,9 +11988,9 @@
             {
               "type": "Integer",
               "required": false,
-              "description": "Unique identifier for the target message thread (topic) of the forum; for forum supergroups only",
-              "html_description": "<td>Unique identifier for the target message thread (topic) of the forum; for forum supergroups only</td>",
-              "rst_description": "Unique identifier for the target message thread (topic) of the forum; for forum supergroups only\n",
+              "description": "Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only",
+              "html_description": "<td>Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only</td>",
+              "rst_description": "Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only\n",
               "name": "message_thread_id"
             },
             {
@@ -11736,9 +12078,9 @@
             {
               "type": "Integer",
               "required": false,
-              "description": "Unique identifier for the target message thread (topic) of the forum; for forum supergroups only",
-              "html_description": "<td>Unique identifier for the target message thread (topic) of the forum; for forum supergroups only</td>",
-              "rst_description": "Unique identifier for the target message thread (topic) of the forum; for forum supergroups only\n",
+              "description": "Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only",
+              "html_description": "<td>Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only</td>",
+              "rst_description": "Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only\n",
               "name": "message_thread_id"
             },
             {
@@ -11882,9 +12224,9 @@
             {
               "type": "Integer",
               "required": false,
-              "description": "Unique identifier for the target message thread (topic) of the forum; for forum supergroups only",
-              "html_description": "<td>Unique identifier for the target message thread (topic) of the forum; for forum supergroups only</td>",
-              "rst_description": "Unique identifier for the target message thread (topic) of the forum; for forum supergroups only\n",
+              "description": "Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only",
+              "html_description": "<td>Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only</td>",
+              "rst_description": "Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only\n",
               "name": "message_thread_id"
             },
             {
@@ -12044,9 +12386,9 @@
             {
               "type": "Integer",
               "required": false,
-              "description": "Unique identifier for the target message thread (topic) of the forum; for forum supergroups only",
-              "html_description": "<td>Unique identifier for the target message thread (topic) of the forum; for forum supergroups only</td>",
-              "rst_description": "Unique identifier for the target message thread (topic) of the forum; for forum supergroups only\n",
+              "description": "Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only",
+              "html_description": "<td>Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only</td>",
+              "rst_description": "Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only\n",
               "name": "message_thread_id"
             },
             {
@@ -12174,9 +12516,9 @@
             {
               "type": "Integer",
               "required": false,
-              "description": "Unique identifier for the target message thread (topic) of the forum; for forum supergroups only",
-              "html_description": "<td>Unique identifier for the target message thread (topic) of the forum; for forum supergroups only</td>",
-              "rst_description": "Unique identifier for the target message thread (topic) of the forum; for forum supergroups only\n",
+              "description": "Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only",
+              "html_description": "<td>Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only</td>",
+              "rst_description": "Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only\n",
               "name": "message_thread_id"
             },
             {
@@ -12442,9 +12784,9 @@
             {
               "type": "Integer",
               "required": false,
-              "description": "Unique identifier for the target message thread (topic) of the forum; for forum supergroups only",
-              "html_description": "<td>Unique identifier for the target message thread (topic) of the forum; for forum supergroups only</td>",
-              "rst_description": "Unique identifier for the target message thread (topic) of the forum; for forum supergroups only\n",
+              "description": "Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only",
+              "html_description": "<td>Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only</td>",
+              "rst_description": "Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only\n",
               "name": "message_thread_id"
             },
             {
@@ -12523,6 +12865,64 @@
           "category": "methods"
         },
         {
+          "anchor": "sendmessagedraft",
+          "name": "sendMessageDraft",
+          "description": "Use this method to stream a partial message to a user while the message is being generated; supported only for bots with forum topic mode enabled. Returns True on success.",
+          "html_description": "<p>Use this method to stream a partial message to a user while the message is being generated; supported only for bots with forum topic mode enabled. Returns <em>True</em> on success.</p>",
+          "rst_description": "Use this method to stream a partial message to a user while the message is being generated; supported only for bots with forum topic mode enabled. Returns :code:`True` on success.",
+          "annotations": [
+            {
+              "type": "Integer",
+              "required": true,
+              "description": "Unique identifier for the target private chat",
+              "html_description": "<td>Unique identifier for the target private chat</td>",
+              "rst_description": "Unique identifier for the target private chat\n",
+              "name": "chat_id"
+            },
+            {
+              "type": "Integer",
+              "required": false,
+              "description": "Unique identifier for the target message thread",
+              "html_description": "<td>Unique identifier for the target message thread</td>",
+              "rst_description": "Unique identifier for the target message thread\n",
+              "name": "message_thread_id"
+            },
+            {
+              "type": "Integer",
+              "required": true,
+              "description": "Unique identifier of the message draft; must be non-zero. Changes of drafts with the same identifier are animated",
+              "html_description": "<td>Unique identifier of the message draft; must be non-zero. Changes of drafts with the same identifier are animated</td>",
+              "rst_description": "Unique identifier of the message draft; must be non-zero. Changes of drafts with the same identifier are animated\n",
+              "name": "draft_id"
+            },
+            {
+              "type": "String",
+              "required": true,
+              "description": "Text of the message to be sent, 1-4096 characters after entities parsing",
+              "html_description": "<td>Text of the message to be sent, 1-4096 characters after entities parsing</td>",
+              "rst_description": "Text of the message to be sent, 1-4096 characters after entities parsing\n",
+              "name": "text"
+            },
+            {
+              "type": "String",
+              "required": false,
+              "description": "Mode for parsing entities in the message text. See formatting options for more details.",
+              "html_description": "<td>Mode for parsing entities in the message text. See <a href=\"#formatting-options\">formatting options</a> for more details.</td>",
+              "rst_description": "Mode for parsing entities in the message text. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.\n",
+              "name": "parse_mode"
+            },
+            {
+              "type": "Array of MessageEntity",
+              "required": false,
+              "description": "A JSON-serialized list of special entities that appear in message text, which can be specified instead of parse_mode",
+              "html_description": "<td>A JSON-serialized list of special entities that appear in message text, which can be specified instead of <em>parse_mode</em></td>",
+              "rst_description": "A JSON-serialized list of special entities that appear in message text, which can be specified instead of *parse_mode*\n",
+              "name": "entities"
+            }
+          ],
+          "category": "methods"
+        },
+        {
           "anchor": "sendchataction",
           "name": "sendChatAction",
           "description": "Use this method when you need to tell the user that something is happening on the bot's side. The status is set for 5 seconds or less (when a message arrives from your bot, Telegram clients clear its typing status). Returns True on success.\nExample: The ImageBot needs some time to process a request and upload the image. Instead of sending a text message along the lines of 'Retrieving image, please wait…', the bot may use sendChatAction with action = upload_photo. The user will see a 'sending photo' status for the bot.\nWe only recommend using this method when a response from the bot will take a noticeable amount of time to arrive.",
@@ -12548,9 +12948,9 @@
             {
               "type": "Integer",
               "required": false,
-              "description": "Unique identifier for the target message thread; for supergroups only",
-              "html_description": "<td>Unique identifier for the target message thread; for supergroups only</td>",
-              "rst_description": "Unique identifier for the target message thread; for supergroups only\n",
+              "description": "Unique identifier for the target message thread or topic of a forum; for supergroups and private chats of bots with forum topic mode enabled only",
+              "html_description": "<td>Unique identifier for the target message thread or topic of a forum; for supergroups and private chats of bots with forum topic mode enabled only</td>",
+              "rst_description": "Unique identifier for the target message thread or topic of a forum; for supergroups and private chats of bots with forum topic mode enabled only\n",
               "name": "message_thread_id"
             },
             {
@@ -12876,9 +13276,9 @@
             {
               "type": "Boolean",
               "required": false,
-              "description": "Pass True if the administrator can restrict, ban or unban chat members, or access supergroup statistics",
-              "html_description": "<td>Pass <em>True</em> if the administrator can restrict, ban or unban chat members, or access supergroup statistics</td>",
-              "rst_description": "Pass :code:`True` if the administrator can restrict, ban or unban chat members, or access supergroup statistics\n",
+              "description": "Pass True if the administrator can restrict, ban or unban chat members, or access supergroup statistics. For backward compatibility, defaults to True for promotions of channel administrators",
+              "html_description": "<td>Pass <em>True</em> if the administrator can restrict, ban or unban chat members, or access supergroup statistics. For backward compatibility, defaults to <em>True</em> for promotions of channel administrators</td>",
+              "rst_description": "Pass :code:`True` if the administrator can restrict, ban or unban chat members, or access supergroup statistics. For backward compatibility, defaults to :code:`True` for promotions of channel administrators\n",
               "name": "can_restrict_members"
             },
             {
@@ -13758,9 +14158,9 @@
         {
           "anchor": "editforumtopic",
           "name": "editForumTopic",
-          "description": "Use this method to edit name and icon of a topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the can_manage_topics administrator rights, unless it is the creator of the topic. Returns True on success.",
-          "html_description": "<p>Use this method to edit name and icon of a topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the <em>can_manage_topics</em> administrator rights, unless it is the creator of the topic. Returns <em>True</em> on success.</p>",
-          "rst_description": "Use this method to edit name and icon of a topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the *can_manage_topics* administrator rights, unless it is the creator of the topic. Returns :code:`True` on success.",
+          "description": "Use this method to edit name and icon of a topic in a forum supergroup chat or a private chat with a user. In the case of a supergroup chat the bot must be an administrator in the chat for this to work and must have the can_manage_topics administrator rights, unless it is the creator of the topic. Returns True on success.",
+          "html_description": "<p>Use this method to edit name and icon of a topic in a forum supergroup chat or a private chat with a user. In the case of a supergroup chat the bot must be an administrator in the chat for this to work and must have the <em>can_manage_topics</em> administrator rights, unless it is the creator of the topic. Returns <em>True</em> on success.</p>",
+          "rst_description": "Use this method to edit name and icon of a topic in a forum supergroup chat or a private chat with a user. In the case of a supergroup chat the bot must be an administrator in the chat for this to work and must have the *can_manage_topics* administrator rights, unless it is the creator of the topic. Returns :code:`True` on success.",
           "annotations": [
             {
               "type": "Integer or String",
@@ -13852,9 +14252,9 @@
         {
           "anchor": "deleteforumtopic",
           "name": "deleteForumTopic",
-          "description": "Use this method to delete a forum topic along with all its messages in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the can_delete_messages administrator rights. Returns True on success.",
-          "html_description": "<p>Use this method to delete a forum topic along with all its messages in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the <em>can_delete_messages</em> administrator rights. Returns <em>True</em> on success.</p>",
-          "rst_description": "Use this method to delete a forum topic along with all its messages in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the *can_delete_messages* administrator rights. Returns :code:`True` on success.",
+          "description": "Use this method to delete a forum topic along with all its messages in a forum supergroup chat or a private chat with a user. In the case of a supergroup chat the bot must be an administrator in the chat for this to work and must have the can_delete_messages administrator rights. Returns True on success.",
+          "html_description": "<p>Use this method to delete a forum topic along with all its messages in a forum supergroup chat or a private chat with a user. In the case of a supergroup chat the bot must be an administrator in the chat for this to work and must have the <em>can_delete_messages</em> administrator rights. Returns <em>True</em> on success.</p>",
+          "rst_description": "Use this method to delete a forum topic along with all its messages in a forum supergroup chat or a private chat with a user. In the case of a supergroup chat the bot must be an administrator in the chat for this to work and must have the *can_delete_messages* administrator rights. Returns :code:`True` on success.",
           "annotations": [
             {
               "type": "Integer or String",
@@ -13878,9 +14278,9 @@
         {
           "anchor": "unpinallforumtopicmessages",
           "name": "unpinAllForumTopicMessages",
-          "description": "Use this method to clear the list of pinned messages in a forum topic. The bot must be an administrator in the chat for this to work and must have the can_pin_messages administrator right in the supergroup. Returns True on success.",
-          "html_description": "<p>Use this method to clear the list of pinned messages in a forum topic. The bot must be an administrator in the chat for this to work and must have the <em>can_pin_messages</em> administrator right in the supergroup. Returns <em>True</em> on success.</p>",
-          "rst_description": "Use this method to clear the list of pinned messages in a forum topic. The bot must be an administrator in the chat for this to work and must have the *can_pin_messages* administrator right in the supergroup. Returns :code:`True` on success.",
+          "description": "Use this method to clear the list of pinned messages in a forum topic in a forum supergroup chat or a private chat with a user. In the case of a supergroup chat the bot must be an administrator in the chat for this to work and must have the can_pin_messages administrator right in the supergroup. Returns True on success.",
+          "html_description": "<p>Use this method to clear the list of pinned messages in a forum topic in a forum supergroup chat or a private chat with a user. In the case of a supergroup chat the bot must be an administrator in the chat for this to work and must have the <em>can_pin_messages</em> administrator right in the supergroup. Returns <em>True</em> on success.</p>",
+          "rst_description": "Use this method to clear the list of pinned messages in a forum topic in a forum supergroup chat or a private chat with a user. In the case of a supergroup chat the bot must be an administrator in the chat for this to work and must have the *can_pin_messages* administrator right in the supergroup. Returns :code:`True` on success.",
           "annotations": [
             {
               "type": "Integer or String",
@@ -14452,9 +14852,9 @@
             {
               "type": "String",
               "required": true,
-              "description": "Identifier of the gift",
-              "html_description": "<td>Identifier of the gift</td>",
-              "rst_description": "Identifier of the gift\n",
+              "description": "Identifier of the gift; limited gifts can't be sent to channel chats",
+              "html_description": "<td>Identifier of the gift; limited gifts can't be sent to channel chats</td>",
+              "rst_description": "Identifier of the gift; limited gifts can't be sent to channel chats\n",
               "name": "gift_id"
             },
             {
@@ -14964,10 +15364,108 @@
             {
               "type": "Boolean",
               "required": false,
-              "description": "Pass True to exclude gifts that can be purchased a limited number of times",
-              "html_description": "<td>Pass <em>True</em> to exclude gifts that can be purchased a limited number of times</td>",
-              "rst_description": "Pass :code:`True` to exclude gifts that can be purchased a limited number of times\n",
-              "name": "exclude_limited"
+              "description": "Pass True to exclude gifts that can be purchased a limited number of times and can be upgraded to unique",
+              "html_description": "<td>Pass <em>True</em> to exclude gifts that can be purchased a limited number of times and can be upgraded to unique</td>",
+              "rst_description": "Pass :code:`True` to exclude gifts that can be purchased a limited number of times and can be upgraded to unique\n",
+              "name": "exclude_limited_upgradable"
+            },
+            {
+              "type": "Boolean",
+              "required": false,
+              "description": "Pass True to exclude gifts that can be purchased a limited number of times and can't be upgraded to unique",
+              "html_description": "<td>Pass <em>True</em> to exclude gifts that can be purchased a limited number of times and can't be upgraded to unique</td>",
+              "rst_description": "Pass :code:`True` to exclude gifts that can be purchased a limited number of times and can't be upgraded to unique\n",
+              "name": "exclude_limited_non_upgradable"
+            },
+            {
+              "type": "Boolean",
+              "required": false,
+              "description": "Pass True to exclude unique gifts",
+              "html_description": "<td>Pass <em>True</em> to exclude unique gifts</td>",
+              "rst_description": "Pass :code:`True` to exclude unique gifts\n",
+              "name": "exclude_unique"
+            },
+            {
+              "type": "Boolean",
+              "required": false,
+              "description": "Pass True to exclude gifts that were assigned from the TON blockchain and can't be resold or transferred in Telegram",
+              "html_description": "<td>Pass <em>True</em> to exclude gifts that were assigned from the TON blockchain and can't be resold or transferred in Telegram</td>",
+              "rst_description": "Pass :code:`True` to exclude gifts that were assigned from the TON blockchain and can't be resold or transferred in Telegram\n",
+              "name": "exclude_from_blockchain"
+            },
+            {
+              "type": "Boolean",
+              "required": false,
+              "description": "Pass True to sort results by gift price instead of send date. Sorting is applied before pagination.",
+              "html_description": "<td>Pass <em>True</em> to sort results by gift price instead of send date. Sorting is applied before pagination.</td>",
+              "rst_description": "Pass :code:`True` to sort results by gift price instead of send date. Sorting is applied before pagination.\n",
+              "name": "sort_by_price"
+            },
+            {
+              "type": "String",
+              "required": false,
+              "description": "Offset of the first entry to return as received from the previous request; use empty string to get the first chunk of results",
+              "html_description": "<td>Offset of the first entry to return as received from the previous request; use empty string to get the first chunk of results</td>",
+              "rst_description": "Offset of the first entry to return as received from the previous request; use empty string to get the first chunk of results\n",
+              "name": "offset"
+            },
+            {
+              "type": "Integer",
+              "required": false,
+              "description": "The maximum number of gifts to be returned; 1-100. Defaults to 100",
+              "html_description": "<td>The maximum number of gifts to be returned; 1-100. Defaults to 100</td>",
+              "rst_description": "The maximum number of gifts to be returned; 1-100. Defaults to 100\n",
+              "name": "limit"
+            }
+          ],
+          "category": "methods"
+        },
+        {
+          "anchor": "getusergifts",
+          "name": "getUserGifts",
+          "description": "Returns the gifts owned and hosted by a user. Returns OwnedGifts on success.",
+          "html_description": "<p>Returns the gifts owned and hosted by a user. Returns <a href=\"#ownedgifts\">OwnedGifts</a> on success.</p>",
+          "rst_description": "Returns the gifts owned and hosted by a user. Returns :class:`aiogram.types.owned_gifts.OwnedGifts` on success.",
+          "annotations": [
+            {
+              "type": "Integer",
+              "required": true,
+              "description": "Unique identifier of the user",
+              "html_description": "<td>Unique identifier of the user</td>",
+              "rst_description": "Unique identifier of the user\n",
+              "name": "user_id"
+            },
+            {
+              "type": "Boolean",
+              "required": false,
+              "description": "Pass True to exclude gifts that can be purchased an unlimited number of times",
+              "html_description": "<td>Pass <em>True</em> to exclude gifts that can be purchased an unlimited number of times</td>",
+              "rst_description": "Pass :code:`True` to exclude gifts that can be purchased an unlimited number of times\n",
+              "name": "exclude_unlimited"
+            },
+            {
+              "type": "Boolean",
+              "required": false,
+              "description": "Pass True to exclude gifts that can be purchased a limited number of times and can be upgraded to unique",
+              "html_description": "<td>Pass <em>True</em> to exclude gifts that can be purchased a limited number of times and can be upgraded to unique</td>",
+              "rst_description": "Pass :code:`True` to exclude gifts that can be purchased a limited number of times and can be upgraded to unique\n",
+              "name": "exclude_limited_upgradable"
+            },
+            {
+              "type": "Boolean",
+              "required": false,
+              "description": "Pass True to exclude gifts that can be purchased a limited number of times and can't be upgraded to unique",
+              "html_description": "<td>Pass <em>True</em> to exclude gifts that can be purchased a limited number of times and can't be upgraded to unique</td>",
+              "rst_description": "Pass :code:`True` to exclude gifts that can be purchased a limited number of times and can't be upgraded to unique\n",
+              "name": "exclude_limited_non_upgradable"
+            },
+            {
+              "type": "Boolean",
+              "required": false,
+              "description": "Pass True to exclude gifts that were assigned from the TON blockchain and can't be resold or transferred in Telegram",
+              "html_description": "<td>Pass <em>True</em> to exclude gifts that were assigned from the TON blockchain and can't be resold or transferred in Telegram</td>",
+              "rst_description": "Pass :code:`True` to exclude gifts that were assigned from the TON blockchain and can't be resold or transferred in Telegram\n",
+              "name": "exclude_from_blockchain"
             },
             {
               "type": "Boolean",
@@ -14988,9 +15486,107 @@
             {
               "type": "String",
               "required": false,
-              "description": "Offset of the first entry to return as received from the previous request; use empty string to get the first chunk of results",
-              "html_description": "<td>Offset of the first entry to return as received from the previous request; use empty string to get the first chunk of results</td>",
-              "rst_description": "Offset of the first entry to return as received from the previous request; use empty string to get the first chunk of results\n",
+              "description": "Offset of the first entry to return as received from the previous request; use an empty string to get the first chunk of results",
+              "html_description": "<td>Offset of the first entry to return as received from the previous request; use an empty string to get the first chunk of results</td>",
+              "rst_description": "Offset of the first entry to return as received from the previous request; use an empty string to get the first chunk of results\n",
+              "name": "offset"
+            },
+            {
+              "type": "Integer",
+              "required": false,
+              "description": "The maximum number of gifts to be returned; 1-100. Defaults to 100",
+              "html_description": "<td>The maximum number of gifts to be returned; 1-100. Defaults to 100</td>",
+              "rst_description": "The maximum number of gifts to be returned; 1-100. Defaults to 100\n",
+              "name": "limit"
+            }
+          ],
+          "category": "methods"
+        },
+        {
+          "anchor": "getchatgifts",
+          "name": "getChatGifts",
+          "description": "Returns the gifts owned by a chat. Returns OwnedGifts on success.",
+          "html_description": "<p>Returns the gifts owned by a chat. Returns <a href=\"#ownedgifts\">OwnedGifts</a> on success.</p>",
+          "rst_description": "Returns the gifts owned by a chat. Returns :class:`aiogram.types.owned_gifts.OwnedGifts` on success.",
+          "annotations": [
+            {
+              "type": "Integer or String",
+              "required": true,
+              "description": "Unique identifier for the target chat or username of the target channel (in the format @channelusername)",
+              "html_description": "<td>Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)</td>",
+              "rst_description": "Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)\n",
+              "name": "chat_id"
+            },
+            {
+              "type": "Boolean",
+              "required": false,
+              "description": "Pass True to exclude gifts that aren't saved to the chat's profile page. Always True, unless the bot has the can_post_messages administrator right in the channel.",
+              "html_description": "<td>Pass <em>True</em> to exclude gifts that aren't saved to the chat's profile page. Always <em>True</em>, unless the bot has the <em>can_post_messages</em> administrator right in the channel.</td>",
+              "rst_description": "Pass :code:`True` to exclude gifts that aren't saved to the chat's profile page. Always :code:`True`, unless the bot has the *can_post_messages* administrator right in the channel.\n",
+              "name": "exclude_unsaved"
+            },
+            {
+              "type": "Boolean",
+              "required": false,
+              "description": "Pass True to exclude gifts that are saved to the chat's profile page. Always False, unless the bot has the can_post_messages administrator right in the channel.",
+              "html_description": "<td>Pass <em>True</em> to exclude gifts that are saved to the chat's profile page. Always <em>False</em>, unless the bot has the <em>can_post_messages</em> administrator right in the channel.</td>",
+              "rst_description": "Pass :code:`True` to exclude gifts that are saved to the chat's profile page. Always :code:`False`, unless the bot has the *can_post_messages* administrator right in the channel.\n",
+              "name": "exclude_saved"
+            },
+            {
+              "type": "Boolean",
+              "required": false,
+              "description": "Pass True to exclude gifts that can be purchased an unlimited number of times",
+              "html_description": "<td>Pass <em>True</em> to exclude gifts that can be purchased an unlimited number of times</td>",
+              "rst_description": "Pass :code:`True` to exclude gifts that can be purchased an unlimited number of times\n",
+              "name": "exclude_unlimited"
+            },
+            {
+              "type": "Boolean",
+              "required": false,
+              "description": "Pass True to exclude gifts that can be purchased a limited number of times and can be upgraded to unique",
+              "html_description": "<td>Pass <em>True</em> to exclude gifts that can be purchased a limited number of times and can be upgraded to unique</td>",
+              "rst_description": "Pass :code:`True` to exclude gifts that can be purchased a limited number of times and can be upgraded to unique\n",
+              "name": "exclude_limited_upgradable"
+            },
+            {
+              "type": "Boolean",
+              "required": false,
+              "description": "Pass True to exclude gifts that can be purchased a limited number of times and can't be upgraded to unique",
+              "html_description": "<td>Pass <em>True</em> to exclude gifts that can be purchased a limited number of times and can't be upgraded to unique</td>",
+              "rst_description": "Pass :code:`True` to exclude gifts that can be purchased a limited number of times and can't be upgraded to unique\n",
+              "name": "exclude_limited_non_upgradable"
+            },
+            {
+              "type": "Boolean",
+              "required": false,
+              "description": "Pass True to exclude gifts that were assigned from the TON blockchain and can't be resold or transferred in Telegram",
+              "html_description": "<td>Pass <em>True</em> to exclude gifts that were assigned from the TON blockchain and can't be resold or transferred in Telegram</td>",
+              "rst_description": "Pass :code:`True` to exclude gifts that were assigned from the TON blockchain and can't be resold or transferred in Telegram\n",
+              "name": "exclude_from_blockchain"
+            },
+            {
+              "type": "Boolean",
+              "required": false,
+              "description": "Pass True to exclude unique gifts",
+              "html_description": "<td>Pass <em>True</em> to exclude unique gifts</td>",
+              "rst_description": "Pass :code:`True` to exclude unique gifts\n",
+              "name": "exclude_unique"
+            },
+            {
+              "type": "Boolean",
+              "required": false,
+              "description": "Pass True to sort results by gift price instead of send date. Sorting is applied before pagination.",
+              "html_description": "<td>Pass <em>True</em> to sort results by gift price instead of send date. Sorting is applied before pagination.</td>",
+              "rst_description": "Pass :code:`True` to sort results by gift price instead of send date. Sorting is applied before pagination.\n",
+              "name": "sort_by_price"
+            },
+            {
+              "type": "String",
+              "required": false,
+              "description": "Offset of the first entry to return as received from the previous request; use an empty string to get the first chunk of results",
+              "html_description": "<td>Offset of the first entry to return as received from the previous request; use an empty string to get the first chunk of results</td>",
+              "rst_description": "Offset of the first entry to return as received from the previous request; use an empty string to get the first chunk of results\n",
               "name": "offset"
             },
             {
@@ -15176,6 +15772,64 @@
               "html_description": "<td>A JSON-serialized list of clickable areas to be shown on the story</td>",
               "rst_description": "A JSON-serialized list of clickable areas to be shown on the story\n",
               "name": "areas"
+            },
+            {
+              "type": "Boolean",
+              "required": false,
+              "description": "Pass True to keep the story accessible after it expires",
+              "html_description": "<td>Pass <em>True</em> to keep the story accessible after it expires</td>",
+              "rst_description": "Pass :code:`True` to keep the story accessible after it expires\n",
+              "name": "post_to_chat_page"
+            },
+            {
+              "type": "Boolean",
+              "required": false,
+              "description": "Pass True if the content of the story must be protected from forwarding and screenshotting",
+              "html_description": "<td>Pass <em>True</em> if the content of the story must be protected from forwarding and screenshotting</td>",
+              "rst_description": "Pass :code:`True` if the content of the story must be protected from forwarding and screenshotting\n",
+              "name": "protect_content"
+            }
+          ],
+          "category": "methods"
+        },
+        {
+          "anchor": "repoststory",
+          "name": "repostStory",
+          "description": "Reposts a story on behalf of a business account from another business account. Both business accounts must be managed by the same bot, and the story on the source account must have been posted (or reposted) by the bot. Requires the can_manage_stories business bot right for both business accounts. Returns Story on success.",
+          "html_description": "<p>Reposts a story on behalf of a business account from another business account. Both business accounts must be managed by the same bot, and the story on the source account must have been posted (or reposted) by the bot. Requires the <em>can_manage_stories</em> business bot right for both business accounts. Returns <a href=\"#story\">Story</a> on success.</p>",
+          "rst_description": "Reposts a story on behalf of a business account from another business account. Both business accounts must be managed by the same bot, and the story on the source account must have been posted (or reposted) by the bot. Requires the *can_manage_stories* business bot right for both business accounts. Returns :class:`aiogram.types.story.Story` on success.",
+          "annotations": [
+            {
+              "type": "String",
+              "required": true,
+              "description": "Unique identifier of the business connection",
+              "html_description": "<td>Unique identifier of the business connection</td>",
+              "rst_description": "Unique identifier of the business connection\n",
+              "name": "business_connection_id"
+            },
+            {
+              "type": "Integer",
+              "required": true,
+              "description": "Unique identifier of the chat which posted the story that should be reposted",
+              "html_description": "<td>Unique identifier of the chat which posted the story that should be reposted</td>",
+              "rst_description": "Unique identifier of the chat which posted the story that should be reposted\n",
+              "name": "from_chat_id"
+            },
+            {
+              "type": "Integer",
+              "required": true,
+              "description": "Unique identifier of the story that should be reposted",
+              "html_description": "<td>Unique identifier of the story that should be reposted</td>",
+              "rst_description": "Unique identifier of the story that should be reposted\n",
+              "name": "from_story_id"
+            },
+            {
+              "type": "Integer",
+              "required": true,
+              "description": "Period after which the story is moved to the archive, in seconds; must be one of 6 * 3600, 12 * 3600, 86400, or 2 * 86400",
+              "html_description": "<td>Period after which the story is moved to the archive, in seconds; must be one of <code>6 * 3600</code>, <code>12 * 3600</code>, <code>86400</code>, or <code>2 * 86400</code></td>",
+              "rst_description": "Period after which the story is moved to the archive, in seconds; must be one of :code:`6 * 3600`, :code:`12 * 3600`, :code:`86400`, or :code:`2 * 86400`\n",
+              "name": "active_period"
             },
             {
               "type": "Boolean",
@@ -16232,9 +16886,9 @@
             {
               "type": "Integer",
               "required": false,
-              "description": "Unique identifier for the target message thread (topic) of the forum; for forum supergroups only",
-              "html_description": "<td>Unique identifier for the target message thread (topic) of the forum; for forum supergroups only</td>",
-              "rst_description": "Unique identifier for the target message thread (topic) of the forum; for forum supergroups only\n",
+              "description": "Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only",
+              "html_description": "<td>Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only</td>",
+              "rst_description": "Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only\n",
               "name": "message_thread_id"
             },
             {
@@ -19506,9 +20160,9 @@
             {
               "type": "Integer",
               "required": false,
-              "description": "Unique identifier for the target message thread (topic) of the forum; for forum supergroups only",
-              "html_description": "<td>Unique identifier for the target message thread (topic) of the forum; for forum supergroups only</td>",
-              "rst_description": "Unique identifier for the target message thread (topic) of the forum; for forum supergroups only\n",
+              "description": "Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only",
+              "html_description": "<td>Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only</td>",
+              "rst_description": "Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only\n",
               "name": "message_thread_id"
             },
             {
@@ -21700,9 +22354,9 @@
             {
               "type": "Integer",
               "required": false,
-              "description": "Unique identifier for the target message thread (topic) of the forum; for forum supergroups only",
-              "html_description": "<td>Unique identifier for the target message thread (topic) of the forum; for forum supergroups only</td>",
-              "rst_description": "Unique identifier for the target message thread (topic) of the forum; for forum supergroups only\n",
+              "description": "Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only",
+              "html_description": "<td>Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only</td>",
+              "rst_description": "Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only\n",
               "name": "message_thread_id"
             },
             {

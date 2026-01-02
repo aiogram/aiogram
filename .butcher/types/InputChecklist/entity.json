@@ -22,8 +22,8 @@
       {
         "type": "String",
         "description": "Mode for parsing entities in the title. See formatting options for more details.",
-        "html_description": "<td>Optional. Mode for parsing entities in the title. See <a href=\"#formatting-options\">formatting options</a> for more details.</td>",
-        "rst_description": "Optional. Mode for parsing entities in the title. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.\n",
+        "html_description": "<td><em>Optional</em>. Mode for parsing entities in the title. See <a href=\"#formatting-options\">formatting options</a> for more details.</td>",
+        "rst_description": "*Optional*. Mode for parsing entities in the title. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.\n",
         "name": "parse_mode",
         "required": false
       },

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from .base import TelegramObject
 
@@ -18,8 +18,10 @@ class ForumTopic(TelegramObject):
     """Name of the topic"""
     icon_color: int
     """Color of the topic icon in RGB format"""
-    icon_custom_emoji_id: Optional[str] = None
+    icon_custom_emoji_id: str | None = None
     """*Optional*. Unique identifier of the custom emoji shown as the topic icon"""
+    is_name_implicit: bool | None = None
+    """*Optional*. :code:`True`, if the name of the topic wasn't specified explicitly by its creator and likely needs to be changed by the bot"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!
@@ -31,7 +33,8 @@ class ForumTopic(TelegramObject):
             message_thread_id: int,
             name: str,
             icon_color: int,
-            icon_custom_emoji_id: Optional[str] = None,
+            icon_custom_emoji_id: str | None = None,
+            is_name_implicit: bool | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!
@@ -43,5 +46,6 @@ class ForumTopic(TelegramObject):
                 name=name,
                 icon_color=icon_color,
                 icon_custom_emoji_id=icon_custom_emoji_id,
+                is_name_implicit=is_name_implicit,
                 **__pydantic_kwargs,
             )
