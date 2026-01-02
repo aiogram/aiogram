@@ -3,10 +3,11 @@ from __future__ import annotations
 import io
 import os
 from abc import ABC, abstractmethod
+from typing import TYPE_CHECKING, Any, Dict, Union, Optional, AsyncGenerator
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, AsyncGenerator, Dict, Optional, Union
 
 import aiofiles
+from yarl import URL
 
 if TYPE_CHECKING:
     from aiogram.client.bot import Bot
@@ -108,7 +109,7 @@ class FSInputFile(InputFile):
 class URLInputFile(InputFile):
     def __init__(
         self,
-        url: str,
+        url: Union[str, URL],
         headers: Optional[Dict[str, Any]] = None,
         filename: Optional[str] = None,
         chunk_size: int = DEFAULT_CHUNK_SIZE,
@@ -118,7 +119,9 @@ class URLInputFile(InputFile):
         """
         Represents object for streaming files from internet
 
-        :param url: URL in internet
+        :param url: Public URL or web resource address as string or yarl.URL object.
+                   When using yarl.URL, you can control URL encoding with `URL(url, encoded=True)`
+                   to specify that the URL components are already percent-encoded.
         :param headers: HTTP Headers
         :param filename: Filename to be propagated to telegram.
         :param chunk_size: Uploading chunk size
