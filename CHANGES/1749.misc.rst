@@ -1,1 +1,0 @@
-Updated type hints in the codebase to Python 3.10+ style unions and optionals.

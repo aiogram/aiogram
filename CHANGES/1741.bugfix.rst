@@ -1,3 +1,0 @@
-`inspect.getfullargspec(callback)` can't process callback if it's arguments have "ForwardRef" annotations in Py3.14+
-
-This PR replaces the old way with `inspect.signature(callback)` and add `annotation_format = annotationlib.Format.FORWARDREF` argument to it if runtime python version >=3.14.
