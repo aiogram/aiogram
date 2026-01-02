@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from .base import TelegramMethod
 
@@ -17,7 +17,7 @@ class VerifyUser(TelegramMethod[bool]):
 
     user_id: int
     """Unique identifier of the target user"""
-    custom_description: Optional[str] = None
+    custom_description: str | None = None
     """Custom description for the verification; 0-70 characters. Must be empty if the organization isn't allowed to provide a custom verification description."""
 
     if TYPE_CHECKING:
@@ -28,7 +28,7 @@ class VerifyUser(TelegramMethod[bool]):
             __pydantic__self__,
             *,
             user_id: int,
-            custom_description: Optional[str] = None,
+            custom_description: str | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

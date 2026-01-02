@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from .base import TelegramObject
 
@@ -17,11 +17,11 @@ class LoginUrl(TelegramObject):
 
     url: str
     """An HTTPS URL to be opened with user authorization data added to the query string when the button is pressed. If the user refuses to provide authorization data, the original URL without information about the user will be opened. The data added is the same as described in `Receiving authorization data <https://core.telegram.org/widgets/login#receiving-authorization-data>`_."""
-    forward_text: Optional[str] = None
+    forward_text: str | None = None
     """*Optional*. New text of the button in forwarded messages."""
-    bot_username: Optional[str] = None
+    bot_username: str | None = None
     """*Optional*. Username of a bot, which will be used for user authorization. See `Setting up a bot <https://core.telegram.org/widgets/login#setting-up-a-bot>`_ for more details. If not specified, the current bot's username will be assumed. The *url*'s domain must be the same as the domain linked with the bot. See `Linking your domain to the bot <https://core.telegram.org/widgets/login#linking-your-domain-to-the-bot>`_ for more details."""
-    request_write_access: Optional[bool] = None
+    request_write_access: bool | None = None
     """*Optional*. Pass :code:`True` to request the permission for your bot to send messages to the user."""
 
     if TYPE_CHECKING:
@@ -32,9 +32,9 @@ class LoginUrl(TelegramObject):
             __pydantic__self__,
             *,
             url: str,
-            forward_text: Optional[str] = None,
-            bot_username: Optional[str] = None,
-            request_write_access: Optional[bool] = None,
+            forward_text: str | None = None,
+            bot_username: str | None = None,
+            request_write_access: bool | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

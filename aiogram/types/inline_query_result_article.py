@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Literal, Optional
+from typing import TYPE_CHECKING, Any, Literal
 
 from pydantic import Field
 
@@ -27,19 +27,19 @@ class InlineQueryResultArticle(InlineQueryResult):
     """Title of the result"""
     input_message_content: InputMessageContentUnion
     """Content of the message to be sent"""
-    reply_markup: Optional[InlineKeyboardMarkup] = None
+    reply_markup: InlineKeyboardMarkup | None = None
     """*Optional*. `Inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_ attached to the message"""
-    url: Optional[str] = None
+    url: str | None = None
     """*Optional*. URL of the result"""
-    description: Optional[str] = None
+    description: str | None = None
     """*Optional*. Short description of the result"""
-    thumbnail_url: Optional[str] = None
+    thumbnail_url: str | None = None
     """*Optional*. Url of the thumbnail for the result"""
-    thumbnail_width: Optional[int] = None
+    thumbnail_width: int | None = None
     """*Optional*. Thumbnail width"""
-    thumbnail_height: Optional[int] = None
+    thumbnail_height: int | None = None
     """*Optional*. Thumbnail height"""
-    hide_url: Optional[bool] = Field(None, json_schema_extra={"deprecated": True})
+    hide_url: bool | None = Field(None, json_schema_extra={"deprecated": True})
     """*Optional*. Pass :code:`True` if you don't want the URL to be shown in the message
 
 .. deprecated:: API:8.2
@@ -56,13 +56,13 @@ class InlineQueryResultArticle(InlineQueryResult):
             id: str,
             title: str,
             input_message_content: InputMessageContentUnion,
-            reply_markup: Optional[InlineKeyboardMarkup] = None,
-            url: Optional[str] = None,
-            description: Optional[str] = None,
-            thumbnail_url: Optional[str] = None,
-            thumbnail_width: Optional[int] = None,
-            thumbnail_height: Optional[int] = None,
-            hide_url: Optional[bool] = None,
+            reply_markup: InlineKeyboardMarkup | None = None,
+            url: str | None = None,
+            description: str | None = None,
+            thumbnail_url: str | None = None,
+            thumbnail_width: int | None = None,
+            thumbnail_height: int | None = None,
+            hide_url: bool | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

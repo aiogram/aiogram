@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from .base import TelegramObject
 
@@ -39,53 +39,53 @@ class ExternalReplyInfo(TelegramObject):
 
     origin: MessageOriginUnion
     """Origin of the message replied to by the given message"""
-    chat: Optional[Chat] = None
+    chat: Chat | None = None
     """*Optional*. Chat the original message belongs to. Available only if the chat is a supergroup or a channel."""
-    message_id: Optional[int] = None
+    message_id: int | None = None
     """*Optional*. Unique message identifier inside the original chat. Available only if the original chat is a supergroup or a channel."""
-    link_preview_options: Optional[LinkPreviewOptions] = None
+    link_preview_options: LinkPreviewOptions | None = None
     """*Optional*. Options used for link preview generation for the original message, if it is a text message"""
-    animation: Optional[Animation] = None
+    animation: Animation | None = None
     """*Optional*. Message is an animation, information about the animation"""
-    audio: Optional[Audio] = None
+    audio: Audio | None = None
     """*Optional*. Message is an audio file, information about the file"""
-    document: Optional[Document] = None
+    document: Document | None = None
     """*Optional*. Message is a general file, information about the file"""
-    paid_media: Optional[PaidMediaInfo] = None
+    paid_media: PaidMediaInfo | None = None
     """*Optional*. Message contains paid media; information about the paid media"""
-    photo: Optional[list[PhotoSize]] = None
+    photo: list[PhotoSize] | None = None
     """*Optional*. Message is a photo, available sizes of the photo"""
-    sticker: Optional[Sticker] = None
+    sticker: Sticker | None = None
     """*Optional*. Message is a sticker, information about the sticker"""
-    story: Optional[Story] = None
+    story: Story | None = None
     """*Optional*. Message is a forwarded story"""
-    video: Optional[Video] = None
+    video: Video | None = None
     """*Optional*. Message is a video, information about the video"""
-    video_note: Optional[VideoNote] = None
+    video_note: VideoNote | None = None
     """*Optional*. Message is a `video note <https://telegram.org/blog/video-messages-and-telescope>`_, information about the video message"""
-    voice: Optional[Voice] = None
+    voice: Voice | None = None
     """*Optional*. Message is a voice message, information about the file"""
-    has_media_spoiler: Optional[bool] = None
+    has_media_spoiler: bool | None = None
     """*Optional*. :code:`True`, if the message media is covered by a spoiler animation"""
-    checklist: Optional[Checklist] = None
+    checklist: Checklist | None = None
     """*Optional*. Message is a checklist"""
-    contact: Optional[Contact] = None
+    contact: Contact | None = None
     """*Optional*. Message is a shared contact, information about the contact"""
-    dice: Optional[Dice] = None
+    dice: Dice | None = None
     """*Optional*. Message is a dice with random value"""
-    game: Optional[Game] = None
+    game: Game | None = None
     """*Optional*. Message is a game, information about the game. `More about games » <https://core.telegram.org/bots/api#games>`_"""
-    giveaway: Optional[Giveaway] = None
+    giveaway: Giveaway | None = None
     """*Optional*. Message is a scheduled giveaway, information about the giveaway"""
-    giveaway_winners: Optional[GiveawayWinners] = None
+    giveaway_winners: GiveawayWinners | None = None
     """*Optional*. A giveaway with public winners was completed"""
-    invoice: Optional[Invoice] = None
+    invoice: Invoice | None = None
     """*Optional*. Message is an invoice for a `payment <https://core.telegram.org/bots/api#payments>`_, information about the invoice. `More about payments » <https://core.telegram.org/bots/api#payments>`_"""
-    location: Optional[Location] = None
+    location: Location | None = None
     """*Optional*. Message is a shared location, information about the location"""
-    poll: Optional[Poll] = None
+    poll: Poll | None = None
     """*Optional*. Message is a native poll, information about the poll"""
-    venue: Optional[Venue] = None
+    venue: Venue | None = None
     """*Optional*. Message is a venue, information about the venue"""
 
     if TYPE_CHECKING:
@@ -96,30 +96,30 @@ class ExternalReplyInfo(TelegramObject):
             __pydantic__self__,
             *,
             origin: MessageOriginUnion,
-            chat: Optional[Chat] = None,
-            message_id: Optional[int] = None,
-            link_preview_options: Optional[LinkPreviewOptions] = None,
-            animation: Optional[Animation] = None,
-            audio: Optional[Audio] = None,
-            document: Optional[Document] = None,
-            paid_media: Optional[PaidMediaInfo] = None,
-            photo: Optional[list[PhotoSize]] = None,
-            sticker: Optional[Sticker] = None,
-            story: Optional[Story] = None,
-            video: Optional[Video] = None,
-            video_note: Optional[VideoNote] = None,
-            voice: Optional[Voice] = None,
-            has_media_spoiler: Optional[bool] = None,
-            checklist: Optional[Checklist] = None,
-            contact: Optional[Contact] = None,
-            dice: Optional[Dice] = None,
-            game: Optional[Game] = None,
-            giveaway: Optional[Giveaway] = None,
-            giveaway_winners: Optional[GiveawayWinners] = None,
-            invoice: Optional[Invoice] = None,
-            location: Optional[Location] = None,
-            poll: Optional[Poll] = None,
-            venue: Optional[Venue] = None,
+            chat: Chat | None = None,
+            message_id: int | None = None,
+            link_preview_options: LinkPreviewOptions | None = None,
+            animation: Animation | None = None,
+            audio: Audio | None = None,
+            document: Document | None = None,
+            paid_media: PaidMediaInfo | None = None,
+            photo: list[PhotoSize] | None = None,
+            sticker: Sticker | None = None,
+            story: Story | None = None,
+            video: Video | None = None,
+            video_note: VideoNote | None = None,
+            voice: Voice | None = None,
+            has_media_spoiler: bool | None = None,
+            checklist: Checklist | None = None,
+            contact: Contact | None = None,
+            dice: Dice | None = None,
+            game: Game | None = None,
+            giveaway: Giveaway | None = None,
+            giveaway_winners: GiveawayWinners | None = None,
+            invoice: Invoice | None = None,
+            location: Location | None = None,
+            poll: Poll | None = None,
+            venue: Venue | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

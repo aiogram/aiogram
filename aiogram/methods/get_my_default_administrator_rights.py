@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from ..types import ChatAdministratorRights
 from .base import TelegramMethod
@@ -16,7 +16,7 @@ class GetMyDefaultAdministratorRights(TelegramMethod[ChatAdministratorRights]):
     __returning__ = ChatAdministratorRights
     __api_method__ = "getMyDefaultAdministratorRights"
 
-    for_channels: Optional[bool] = None
+    for_channels: bool | None = None
     """Pass :code:`True` to get default administrator rights of the bot in channels. Otherwise, default administrator rights of the bot for groups and supergroups will be returned."""
 
     if TYPE_CHECKING:
@@ -24,7 +24,7 @@ class GetMyDefaultAdministratorRights(TelegramMethod[ChatAdministratorRights]):
         # This section was auto-generated via `butcher`
 
         def __init__(
-            __pydantic__self__, *, for_channels: Optional[bool] = None, **__pydantic_kwargs: Any
+            __pydantic__self__, *, for_channels: bool | None = None, **__pydantic_kwargs: Any
         ) -> None:
             # DO NOT EDIT MANUALLY!!!
             # This method was auto-generated via `butcher`

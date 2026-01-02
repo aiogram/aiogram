@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from .base import TelegramObject
 from .custom import DateTime
@@ -22,11 +22,11 @@ class StarTransaction(TelegramObject):
     """Integer amount of Telegram Stars transferred by the transaction"""
     date: DateTime
     """Date the transaction was created in Unix time"""
-    nanostar_amount: Optional[int] = None
+    nanostar_amount: int | None = None
     """*Optional*. The number of 1/1000000000 shares of Telegram Stars transferred by the transaction; from 0 to 999999999"""
-    source: Optional[TransactionPartnerUnion] = None
+    source: TransactionPartnerUnion | None = None
     """*Optional*. Source of an incoming transaction (e.g., a user purchasing goods or services, Fragment refunding a failed withdrawal). Only for incoming transactions"""
-    receiver: Optional[TransactionPartnerUnion] = None
+    receiver: TransactionPartnerUnion | None = None
     """*Optional*. Receiver of an outgoing transaction (e.g., a user for a purchase refund, Fragment for a withdrawal). Only for outgoing transactions"""
 
     if TYPE_CHECKING:
@@ -39,9 +39,9 @@ class StarTransaction(TelegramObject):
             id: str,
             amount: int,
             date: DateTime,
-            nanostar_amount: Optional[int] = None,
-            source: Optional[TransactionPartnerUnion] = None,
-            receiver: Optional[TransactionPartnerUnion] = None,
+            nanostar_amount: int | None = None,
+            source: TransactionPartnerUnion | None = None,
+            receiver: TransactionPartnerUnion | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

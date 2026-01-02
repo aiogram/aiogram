@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from ..types import ChatIdUnion, InlineKeyboardMarkup, Poll
 from .base import TelegramMethod
@@ -20,9 +20,9 @@ class StopPoll(TelegramMethod[Poll]):
     """Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)"""
     message_id: int
     """Identifier of the original message with the poll"""
-    business_connection_id: Optional[str] = None
+    business_connection_id: str | None = None
     """Unique identifier of the business connection on behalf of which the message to be edited was sent"""
-    reply_markup: Optional[InlineKeyboardMarkup] = None
+    reply_markup: InlineKeyboardMarkup | None = None
     """A JSON-serialized object for a new message `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_."""
 
     if TYPE_CHECKING:
@@ -34,8 +34,8 @@ class StopPoll(TelegramMethod[Poll]):
             *,
             chat_id: ChatIdUnion,
             message_id: int,
-            business_connection_id: Optional[str] = None,
-            reply_markup: Optional[InlineKeyboardMarkup] = None,
+            business_connection_id: str | None = None,
+            reply_markup: InlineKeyboardMarkup | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

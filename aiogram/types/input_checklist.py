@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from .base import TelegramObject
 
@@ -20,13 +20,13 @@ class InputChecklist(TelegramObject):
     """Title of the checklist; 1-255 characters after entities parsing"""
     tasks: list[InputChecklistTask]
     """List of 1-30 tasks in the checklist"""
-    parse_mode: Optional[str] = None
+    parse_mode: str | None = None
     """*Optional*. Mode for parsing entities in the title. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details."""
-    title_entities: Optional[list[MessageEntity]] = None
+    title_entities: list[MessageEntity] | None = None
     """*Optional*. List of special entities that appear in the title, which can be specified instead of parse_mode. Currently, only *bold*, *italic*, *underline*, *strikethrough*, *spoiler*, and *custom_emoji* entities are allowed."""
-    others_can_add_tasks: Optional[bool] = None
+    others_can_add_tasks: bool | None = None
     """*Optional*. Pass :code:`True` if other users can add tasks to the checklist"""
-    others_can_mark_tasks_as_done: Optional[bool] = None
+    others_can_mark_tasks_as_done: bool | None = None
     """*Optional*. Pass :code:`True` if other users can mark tasks as done or not done in the checklist"""
 
     if TYPE_CHECKING:
@@ -38,10 +38,10 @@ class InputChecklist(TelegramObject):
             *,
             title: str,
             tasks: list[InputChecklistTask],
-            parse_mode: Optional[str] = None,
-            title_entities: Optional[list[MessageEntity]] = None,
-            others_can_add_tasks: Optional[bool] = None,
-            others_can_mark_tasks_as_done: Optional[bool] = None,
+            parse_mode: str | None = None,
+            title_entities: list[MessageEntity] | None = None,
+            others_can_add_tasks: bool | None = None,
+            others_can_mark_tasks_as_done: bool | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

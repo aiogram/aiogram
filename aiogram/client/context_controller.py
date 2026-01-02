@@ -1,4 +1,6 @@
-from typing import TYPE_CHECKING, Any, Optional
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any
 
 from pydantic import BaseModel, PrivateAttr
 from typing_extensions import Self
@@ -8,12 +10,12 @@ if TYPE_CHECKING:
 
 
 class BotContextController(BaseModel):
-    _bot: Optional["Bot"] = PrivateAttr()
+    _bot: Bot | None = PrivateAttr()
 
     def model_post_init(self, __context: Any) -> None:  # noqa: PYI063
         self._bot = __context.get("bot") if __context else None
 
-    def as_(self, bot: Optional["Bot"]) -> Self:
+    def as_(self, bot: Bot | None) -> Self:
         """
         Bind object to a bot instance.
 
@@ -24,7 +26,7 @@ class BotContextController(BaseModel):
         return self
 
     @property
-    def bot(self) -> Optional["Bot"]:
+    def bot(self) -> Bot | None:
         """
         Get bot instance.
 

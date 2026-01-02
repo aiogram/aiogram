@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from .base import TelegramObject
 
@@ -18,7 +18,7 @@ class UserRating(TelegramObject):
     """Numerical value of the user's rating; the higher the rating, the better"""
     current_level_rating: int
     """The rating value required to get the current level"""
-    next_level_rating: Optional[int] = None
+    next_level_rating: int | None = None
     """*Optional*. The rating value required to get to the next level; omitted if the maximum level was reached"""
 
     if TYPE_CHECKING:
@@ -31,7 +31,7 @@ class UserRating(TelegramObject):
             level: int,
             rating: int,
             current_level_rating: int,
-            next_level_rating: Optional[int] = None,
+            next_level_rating: int | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from ..types import ChatIdUnion, ChatPermissions, DateTimeUnion
 from .base import TelegramMethod
@@ -22,9 +22,9 @@ class RestrictChatMember(TelegramMethod[bool]):
     """Unique identifier of the target user"""
     permissions: ChatPermissions
     """A JSON-serialized object for new user permissions"""
-    use_independent_chat_permissions: Optional[bool] = None
+    use_independent_chat_permissions: bool | None = None
     """Pass :code:`True` if chat permissions are set independently. Otherwise, the *can_send_other_messages* and *can_add_web_page_previews* permissions will imply the *can_send_messages*, *can_send_audios*, *can_send_documents*, *can_send_photos*, *can_send_videos*, *can_send_video_notes*, and *can_send_voice_notes* permissions; the *can_send_polls* permission will imply the *can_send_messages* permission."""
-    until_date: Optional[DateTimeUnion] = None
+    until_date: DateTimeUnion | None = None
     """Date when restrictions will be lifted for the user; Unix time. If user is restricted for more than 366 days or less than 30 seconds from the current time, they are considered to be restricted forever"""
 
     if TYPE_CHECKING:
@@ -37,8 +37,8 @@ class RestrictChatMember(TelegramMethod[bool]):
             chat_id: ChatIdUnion,
             user_id: int,
             permissions: ChatPermissions,
-            use_independent_chat_permissions: Optional[bool] = None,
-            until_date: Optional[DateTimeUnion] = None,
+            use_independent_chat_permissions: bool | None = None,
+            until_date: DateTimeUnion | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

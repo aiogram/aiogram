@@ -1,5 +1,5 @@
 from abc import ABC
-from typing import Optional, cast
+from typing import cast
 
 from aiogram.filters import CommandObject
 from aiogram.handlers.base import BaseHandler, BaseHandlerMixin

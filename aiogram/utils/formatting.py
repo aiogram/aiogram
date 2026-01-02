@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import textwrap
 from collections.abc import Generator, Iterable, Iterator
-from typing import TYPE_CHECKING, Any, ClassVar
+from typing import Any, ClassVar
 
 from typing_extensions import Self
 

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
 import datetime
-from typing import Union
+from typing import TypeAlias
 
-DateTimeUnion = Union[datetime.datetime, datetime.timedelta, int]
+DateTimeUnion: TypeAlias = datetime.datetime | datetime.timedelta | int

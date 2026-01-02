@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from ..types import MessageEntity
 from .base import TelegramMethod
@@ -22,11 +22,11 @@ class GiftPremiumSubscription(TelegramMethod[bool]):
     """Number of months the Telegram Premium subscription will be active for the user; must be one of 3, 6, or 12"""
     star_count: int
     """Number of Telegram Stars to pay for the Telegram Premium subscription; must be 1000 for 3 months, 1500 for 6 months, and 2500 for 12 months"""
-    text: Optional[str] = None
+    text: str | None = None
     """Text that will be shown along with the service message about the subscription; 0-128 characters"""
-    text_parse_mode: Optional[str] = None
+    text_parse_mode: str | None = None
     """Mode for parsing entities in the text. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details. Entities other than 'bold', 'italic', 'underline', 'strikethrough', 'spoiler', and 'custom_emoji' are ignored."""
-    text_entities: Optional[list[MessageEntity]] = None
+    text_entities: list[MessageEntity] | None = None
     """A JSON-serialized list of special entities that appear in the gift text. It can be specified instead of *text_parse_mode*. Entities other than 'bold', 'italic', 'underline', 'strikethrough', 'spoiler', and 'custom_emoji' are ignored."""
 
     if TYPE_CHECKING:
@@ -39,9 +39,9 @@ class GiftPremiumSubscription(TelegramMethod[bool]):
             user_id: int,
             month_count: int,
             star_count: int,
-            text: Optional[str] = None,
-            text_parse_mode: Optional[str] = None,
-            text_entities: Optional[list[MessageEntity]] = None,
+            text: str | None = None,
+            text_parse_mode: str | None = None,
+            text_entities: list[MessageEntity] | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

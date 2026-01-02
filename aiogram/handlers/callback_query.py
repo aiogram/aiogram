@@ -1,5 +1,4 @@
 from abc import ABC
-from typing import Optional
 
 from aiogram.handlers import BaseHandler
 from aiogram.types import CallbackQuery, MaybeInaccessibleMessage, User

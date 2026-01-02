@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Literal, Optional
+from typing import TYPE_CHECKING, Any, Literal
 
 from ..enums import InlineQueryResultType
 from .inline_query_result import InlineQueryResult
@@ -22,7 +22,7 @@ class InlineQueryResultGame(InlineQueryResult):
     """Unique identifier for this result, 1-64 bytes"""
     game_short_name: str
     """Short name of the game"""
-    reply_markup: Optional[InlineKeyboardMarkup] = None
+    reply_markup: InlineKeyboardMarkup | None = None
     """*Optional*. `Inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_ attached to the message"""
 
     if TYPE_CHECKING:
@@ -35,7 +35,7 @@ class InlineQueryResultGame(InlineQueryResult):
             type: Literal[InlineQueryResultType.GAME] = InlineQueryResultType.GAME,
             id: str,
             game_short_name: str,
-            reply_markup: Optional[InlineKeyboardMarkup] = None,
+            reply_markup: InlineKeyboardMarkup | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

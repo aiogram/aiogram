@@ -5,10 +5,8 @@ from typing import (
     TYPE_CHECKING,
     Any,
     ClassVar,
-    Dict,
     Generator,
     Generic,
-    Optional,
     TypeVar,
 )
 
@@ -31,16 +29,16 @@ class Request(BaseModel):
 
     method: str
 
-    data: Dict[str, Optional[Any]]
-    files: Optional[Dict[str, InputFile]]
+    data: dict[str, Any | None]
+    files: dict[str, InputFile] | None
 
 
 class Response(BaseModel, Generic[TelegramType]):
     ok: bool
-    result: Optional[TelegramType] = None
-    description: Optional[str] = None
-    error_code: Optional[int] = None
-    parameters: Optional[ResponseParameters] = None
+    result: TelegramType | None = None
+    description: str | None = None
+    error_code: int | None = None
+    parameters: ResponseParameters | None = None
 
 
 class TelegramMethod(BotContextController, BaseModel, Generic[TelegramType], ABC):
@@ -52,7 +50,7 @@ class TelegramMethod(BotContextController, BaseModel, Generic[TelegramType], ABC
 
     @model_validator(mode="before")
     @classmethod
-    def remove_unset(cls, values: Dict[str, Any]) -> Dict[str, Any]:
+    def remove_unset(cls, values: dict[str, Any]) -> dict[str, Any]:
         """
         Remove UNSET before fields validation.
 

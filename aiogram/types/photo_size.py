@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from .base import TelegramObject
 
@@ -20,7 +20,7 @@ class PhotoSize(TelegramObject):
     """Photo width"""
     height: int
     """Photo height"""
-    file_size: Optional[int] = None
+    file_size: int | None = None
     """*Optional*. File size in bytes"""
 
     if TYPE_CHECKING:
@@ -34,7 +34,7 @@ class PhotoSize(TelegramObject):
             file_unique_id: str,
             width: int,
             height: int,
-            file_size: Optional[int] = None,
+            file_size: int | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

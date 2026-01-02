@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from .base import TelegramObject
 
@@ -15,9 +15,9 @@ class SuggestedPostDeclined(TelegramObject):
     Source: https://core.telegram.org/bots/api#suggestedpostdeclined
     """
 
-    suggested_post_message: Optional[Message] = None
+    suggested_post_message: Message | None = None
     """*Optional*. Message containing the suggested post. Note that the :class:`aiogram.types.message.Message` object in this field will not contain the *reply_to_message* field even if it itself is a reply."""
-    comment: Optional[str] = None
+    comment: str | None = None
     """*Optional*. Comment with which the post was declined"""
 
     if TYPE_CHECKING:
@@ -27,8 +27,8 @@ class SuggestedPostDeclined(TelegramObject):
         def __init__(
             __pydantic__self__,
             *,
-            suggested_post_message: Optional[Message] = None,
-            comment: Optional[str] = None,
+            suggested_post_message: Message | None = None,
+            comment: str | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from ..types import InputProfilePhotoUnion
 from .base import TelegramMethod
@@ -20,7 +20,7 @@ class SetBusinessAccountProfilePhoto(TelegramMethod[bool]):
     """Unique identifier of the business connection"""
     photo: InputProfilePhotoUnion
     """The new profile photo to set"""
-    is_public: Optional[bool] = None
+    is_public: bool | None = None
     """Pass :code:`True` to set the public photo, which will be visible even if the main photo is hidden by the business account's privacy settings. An account can have only one public photo."""
 
     if TYPE_CHECKING:
@@ -32,7 +32,7 @@ class SetBusinessAccountProfilePhoto(TelegramMethod[bool]):
             *,
             business_connection_id: str,
             photo: InputProfilePhotoUnion,
-            is_public: Optional[bool] = None,
+            is_public: bool | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

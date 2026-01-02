@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Literal, Optional, Union
+from typing import TYPE_CHECKING, Any, Literal
 
 from ..client.default import Default
 from ..enums import InlineQueryResultType
@@ -27,17 +27,17 @@ class InlineQueryResultVoice(InlineQueryResult):
     """A valid URL for the voice recording"""
     title: str
     """Recording title"""
-    caption: Optional[str] = None
+    caption: str | None = None
     """*Optional*. Caption, 0-1024 characters after entities parsing"""
-    parse_mode: Optional[Union[str, Default]] = Default("parse_mode")
+    parse_mode: str | Default | None = Default("parse_mode")
     """*Optional*. Mode for parsing entities in the voice message caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details."""
-    caption_entities: Optional[list[MessageEntity]] = None
+    caption_entities: list[MessageEntity] | None = None
     """*Optional*. List of special entities that appear in the caption, which can be specified instead of *parse_mode*"""
-    voice_duration: Optional[int] = None
+    voice_duration: int | None = None
     """*Optional*. Recording duration in seconds"""
-    reply_markup: Optional[InlineKeyboardMarkup] = None
+    reply_markup: InlineKeyboardMarkup | None = None
     """*Optional*. `Inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_ attached to the message"""
-    input_message_content: Optional[InputMessageContentUnion] = None
+    input_message_content: InputMessageContentUnion | None = None
     """*Optional*. Content of the message to be sent instead of the voice recording"""
 
     if TYPE_CHECKING:
@@ -51,12 +51,12 @@ class InlineQueryResultVoice(InlineQueryResult):
             id: str,
             voice_url: str,
             title: str,
-            caption: Optional[str] = None,
-            parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
-            caption_entities: Optional[list[MessageEntity]] = None,
-            voice_duration: Optional[int] = None,
-            reply_markup: Optional[InlineKeyboardMarkup] = None,
-            input_message_content: Optional[InputMessageContentUnion] = None,
+            caption: str | None = None,
+            parse_mode: str | Default | None = Default("parse_mode"),
+            caption_entities: list[MessageEntity] | None = None,
+            voice_duration: int | None = None,
+            reply_markup: InlineKeyboardMarkup | None = None,
+            input_message_content: InputMessageContentUnion | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

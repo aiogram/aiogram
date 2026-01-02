@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Literal, Optional, Union
+from typing import TYPE_CHECKING, Any, Literal
 
 from ..client.default import Default
 from ..enums import InlineQueryResultType
@@ -27,27 +27,27 @@ class InlineQueryResultGif(InlineQueryResult):
     """A valid URL for the GIF file"""
     thumbnail_url: str
     """URL of the static (JPEG or GIF) or animated (MPEG4) thumbnail for the result"""
-    gif_width: Optional[int] = None
+    gif_width: int | None = None
     """*Optional*. Width of the GIF"""
-    gif_height: Optional[int] = None
+    gif_height: int | None = None
     """*Optional*. Height of the GIF"""
-    gif_duration: Optional[int] = None
+    gif_duration: int | None = None
     """*Optional*. Duration of the GIF in seconds"""
-    thumbnail_mime_type: Optional[str] = None
+    thumbnail_mime_type: str | None = None
     """*Optional*. MIME type of the thumbnail, must be one of 'image/jpeg', 'image/gif', or 'video/mp4'. Defaults to 'image/jpeg'"""
-    title: Optional[str] = None
+    title: str | None = None
     """*Optional*. Title for the result"""
-    caption: Optional[str] = None
+    caption: str | None = None
     """*Optional*. Caption of the GIF file to be sent, 0-1024 characters after entities parsing"""
-    parse_mode: Optional[Union[str, Default]] = Default("parse_mode")
+    parse_mode: str | Default | None = Default("parse_mode")
     """*Optional*. Mode for parsing entities in the caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details."""
-    caption_entities: Optional[list[MessageEntity]] = None
+    caption_entities: list[MessageEntity] | None = None
     """*Optional*. List of special entities that appear in the caption, which can be specified instead of *parse_mode*"""
-    show_caption_above_media: Optional[Union[bool, Default]] = Default("show_caption_above_media")
+    show_caption_above_media: bool | Default | None = Default("show_caption_above_media")
     """*Optional*. Pass :code:`True`, if the caption must be shown above the message media"""
-    reply_markup: Optional[InlineKeyboardMarkup] = None
+    reply_markup: InlineKeyboardMarkup | None = None
     """*Optional*. `Inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_ attached to the message"""
-    input_message_content: Optional[InputMessageContentUnion] = None
+    input_message_content: InputMessageContentUnion | None = None
     """*Optional*. Content of the message to be sent instead of the GIF animation"""
 
     if TYPE_CHECKING:
@@ -61,19 +61,17 @@ class InlineQueryResultGif(InlineQueryResult):
             id: str,
             gif_url: str,
             thumbnail_url: str,
-            gif_width: Optional[int] = None,
-            gif_height: Optional[int] = None,
-            gif_duration: Optional[int] = None,
-            thumbnail_mime_type: Optional[str] = None,
-            title: Optional[str] = None,
-            caption: Optional[str] = None,
-            parse_mode: Optional[Union[str, Default]] = Default("parse_mode"),
-            caption_entities: Optional[list[MessageEntity]] = None,
-            show_caption_above_media: Optional[Union[bool, Default]] = Default(
-                "show_caption_above_media"
-            ),
-            reply_markup: Optional[InlineKeyboardMarkup] = None,
-            input_message_content: Optional[InputMessageContentUnion] = None,
+            gif_width: int | None = None,
+            gif_height: int | None = None,
+            gif_duration: int | None = None,
+            thumbnail_mime_type: str | None = None,
+            title: str | None = None,
+            caption: str | None = None,
+            parse_mode: str | Default | None = Default("parse_mode"),
+            caption_entities: list[MessageEntity] | None = None,
+            show_caption_above_media: bool | Default | None = Default("show_caption_above_media"),
+            reply_markup: InlineKeyboardMarkup | None = None,
+            input_message_content: InputMessageContentUnion | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

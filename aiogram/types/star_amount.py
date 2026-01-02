@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from .base import TelegramObject
 
@@ -14,7 +14,7 @@ class StarAmount(TelegramObject):
 
     amount: int
     """Integer amount of Telegram Stars, rounded to 0; can be negative"""
-    nanostar_amount: Optional[int] = None
+    nanostar_amount: int | None = None
     """*Optional*. The number of 1/1000000000 shares of Telegram Stars; from -999999999 to 999999999; can be negative if and only if *amount* is non-positive"""
 
     if TYPE_CHECKING:
@@ -25,7 +25,7 @@ class StarAmount(TelegramObject):
             __pydantic__self__,
             *,
             amount: int,
-            nanostar_amount: Optional[int] = None,
+            nanostar_amount: int | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

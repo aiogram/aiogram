@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from ..types import ChatIdUnion
 from .base import TelegramMethod
@@ -24,9 +24,9 @@ class SendChatAction(TelegramMethod[bool]):
     """Unique identifier for the target chat or username of the target supergroup (in the format :code:`@supergroupusername`). Channel chats and channel direct messages chats aren't supported."""
     action: str
     """Type of action to broadcast. Choose one, depending on what the user is about to receive: *typing* for `text messages <https://core.telegram.org/bots/api#sendmessage>`_, *upload_photo* for `photos <https://core.telegram.org/bots/api#sendphoto>`_, *record_video* or *upload_video* for `videos <https://core.telegram.org/bots/api#sendvideo>`_, *record_voice* or *upload_voice* for `voice notes <https://core.telegram.org/bots/api#sendvoice>`_, *upload_document* for `general files <https://core.telegram.org/bots/api#senddocument>`_, *choose_sticker* for `stickers <https://core.telegram.org/bots/api#sendsticker>`_, *find_location* for `location data <https://core.telegram.org/bots/api#sendlocation>`_, *record_video_note* or *upload_video_note* for `video notes <https://core.telegram.org/bots/api#sendvideonote>`_."""
-    business_connection_id: Optional[str] = None
+    business_connection_id: str | None = None
     """Unique identifier of the business connection on behalf of which the action will be sent"""
-    message_thread_id: Optional[int] = None
+    message_thread_id: int | None = None
     """Unique identifier for the target message thread or topic of a forum; for supergroups and private chats of bots with forum topic mode enabled only"""
 
     if TYPE_CHECKING:
@@ -38,8 +38,8 @@ class SendChatAction(TelegramMethod[bool]):
             *,
             chat_id: ChatIdUnion,
             action: str,
-            business_connection_id: Optional[str] = None,
-            message_thread_id: Optional[int] = None,
+            business_connection_id: str | None = None,
+            message_thread_id: int | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Literal, Optional
+from typing import TYPE_CHECKING, Any, Literal
 
 from ..enums import InlineQueryResultType
 from .inline_query_result import InlineQueryResult
@@ -27,23 +27,23 @@ class InlineQueryResultLocation(InlineQueryResult):
     """Location longitude in degrees"""
     title: str
     """Location title"""
-    horizontal_accuracy: Optional[float] = None
+    horizontal_accuracy: float | None = None
     """*Optional*. The radius of uncertainty for the location, measured in meters; 0-1500"""
-    live_period: Optional[int] = None
+    live_period: int | None = None
     """*Optional*. Period in seconds during which the location can be updated, should be between 60 and 86400, or 0x7FFFFFFF for live locations that can be edited indefinitely."""
-    heading: Optional[int] = None
+    heading: int | None = None
     """*Optional*. For live locations, a direction in which the user is moving, in degrees. Must be between 1 and 360 if specified."""
-    proximity_alert_radius: Optional[int] = None
+    proximity_alert_radius: int | None = None
     """*Optional*. For live locations, a maximum distance for proximity alerts about approaching another chat member, in meters. Must be between 1 and 100000 if specified."""
-    reply_markup: Optional[InlineKeyboardMarkup] = None
+    reply_markup: InlineKeyboardMarkup | None = None
     """*Optional*. `Inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_ attached to the message"""
-    input_message_content: Optional[InputMessageContentUnion] = None
+    input_message_content: InputMessageContentUnion | None = None
     """*Optional*. Content of the message to be sent instead of the location"""
-    thumbnail_url: Optional[str] = None
+    thumbnail_url: str | None = None
     """*Optional*. Url of the thumbnail for the result"""
-    thumbnail_width: Optional[int] = None
+    thumbnail_width: int | None = None
     """*Optional*. Thumbnail width"""
-    thumbnail_height: Optional[int] = None
+    thumbnail_height: int | None = None
     """*Optional*. Thumbnail height"""
 
     if TYPE_CHECKING:
@@ -58,15 +58,15 @@ class InlineQueryResultLocation(InlineQueryResult):
             latitude: float,
             longitude: float,
             title: str,
-            horizontal_accuracy: Optional[float] = None,
-            live_period: Optional[int] = None,
-            heading: Optional[int] = None,
-            proximity_alert_radius: Optional[int] = None,
-            reply_markup: Optional[InlineKeyboardMarkup] = None,
-            input_message_content: Optional[InputMessageContentUnion] = None,
-            thumbnail_url: Optional[str] = None,
-            thumbnail_width: Optional[int] = None,
-            thumbnail_height: Optional[int] = None,
+            horizontal_accuracy: float | None = None,
+            live_period: int | None = None,
+            heading: int | None = None,
+            proximity_alert_radius: int | None = None,
+            reply_markup: InlineKeyboardMarkup | None = None,
+            input_message_content: InputMessageContentUnion | None = None,
+            thumbnail_url: str | None = None,
+            thumbnail_width: int | None = None,
+            thumbnail_height: int | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

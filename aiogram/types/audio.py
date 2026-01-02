@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from .base import TelegramObject
 
@@ -21,17 +21,17 @@ class Audio(TelegramObject):
     """Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file."""
     duration: int
     """Duration of the audio in seconds as defined by the sender"""
-    performer: Optional[str] = None
+    performer: str | None = None
     """*Optional*. Performer of the audio as defined by the sender or by audio tags"""
-    title: Optional[str] = None
+    title: str | None = None
     """*Optional*. Title of the audio as defined by the sender or by audio tags"""
-    file_name: Optional[str] = None
+    file_name: str | None = None
     """*Optional*. Original filename as defined by the sender"""
-    mime_type: Optional[str] = None
+    mime_type: str | None = None
     """*Optional*. MIME type of the file as defined by the sender"""
-    file_size: Optional[int] = None
+    file_size: int | None = None
     """*Optional*. File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value."""
-    thumbnail: Optional[PhotoSize] = None
+    thumbnail: PhotoSize | None = None
     """*Optional*. Thumbnail of the album cover to which the music file belongs"""
 
     if TYPE_CHECKING:
@@ -44,12 +44,12 @@ class Audio(TelegramObject):
             file_id: str,
             file_unique_id: str,
             duration: int,
-            performer: Optional[str] = None,
-            title: Optional[str] = None,
-            file_name: Optional[str] = None,
-            mime_type: Optional[str] = None,
-            file_size: Optional[int] = None,
-            thumbnail: Optional[PhotoSize] = None,
+            performer: str | None = None,
+            title: str | None = None,
+            file_name: str | None = None,
+            mime_type: str | None = None,
+            file_size: int | None = None,
+            thumbnail: PhotoSize | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

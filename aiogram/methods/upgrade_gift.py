@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from .base import TelegramMethod
 
@@ -19,9 +19,9 @@ class UpgradeGift(TelegramMethod[bool]):
     """Unique identifier of the business connection"""
     owned_gift_id: str
     """Unique identifier of the regular gift that should be upgraded to a unique one"""
-    keep_original_details: Optional[bool] = None
+    keep_original_details: bool | None = None
     """Pass :code:`True` to keep the original gift text, sender and receiver in the upgraded gift"""
-    star_count: Optional[int] = None
+    star_count: int | None = None
     """The amount of Telegram Stars that will be paid for the upgrade from the business account balance. If :code:`gift.prepaid_upgrade_star_count > 0`, then pass 0, otherwise, the *can_transfer_stars* business bot right is required and :code:`gift.upgrade_star_count` must be passed."""
 
     if TYPE_CHECKING:
@@ -33,8 +33,8 @@ class UpgradeGift(TelegramMethod[bool]):
             *,
             business_connection_id: str,
             owned_gift_id: str,
-            keep_original_details: Optional[bool] = None,
-            star_count: Optional[int] = None,
+            keep_original_details: bool | None = None,
+            star_count: int | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

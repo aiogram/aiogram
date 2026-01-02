@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Literal, Optional
+from typing import TYPE_CHECKING, Any, Literal
 
 from ..enums import InlineQueryResultType
 from .inline_query_result import InlineQueryResult
@@ -25,19 +25,19 @@ class InlineQueryResultContact(InlineQueryResult):
     """Contact's phone number"""
     first_name: str
     """Contact's first name"""
-    last_name: Optional[str] = None
+    last_name: str | None = None
     """*Optional*. Contact's last name"""
-    vcard: Optional[str] = None
+    vcard: str | None = None
     """*Optional*. Additional data about the contact in the form of a `vCard <https://en.wikipedia.org/wiki/VCard>`_, 0-2048 bytes"""
-    reply_markup: Optional[InlineKeyboardMarkup] = None
+    reply_markup: InlineKeyboardMarkup | None = None
     """*Optional*. `Inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_ attached to the message"""
-    input_message_content: Optional[InputMessageContentUnion] = None
+    input_message_content: InputMessageContentUnion | None = None
     """*Optional*. Content of the message to be sent instead of the contact"""
-    thumbnail_url: Optional[str] = None
+    thumbnail_url: str | None = None
     """*Optional*. Url of the thumbnail for the result"""
-    thumbnail_width: Optional[int] = None
+    thumbnail_width: int | None = None
     """*Optional*. Thumbnail width"""
-    thumbnail_height: Optional[int] = None
+    thumbnail_height: int | None = None
     """*Optional*. Thumbnail height"""
 
     if TYPE_CHECKING:
@@ -51,13 +51,13 @@ class InlineQueryResultContact(InlineQueryResult):
             id: str,
             phone_number: str,
             first_name: str,
-            last_name: Optional[str] = None,
-            vcard: Optional[str] = None,
-            reply_markup: Optional[InlineKeyboardMarkup] = None,
-            input_message_content: Optional[InputMessageContentUnion] = None,
-            thumbnail_url: Optional[str] = None,
-            thumbnail_width: Optional[int] = None,
-            thumbnail_height: Optional[int] = None,
+            last_name: str | None = None,
+            vcard: str | None = None,
+            reply_markup: InlineKeyboardMarkup | None = None,
+            input_message_content: InputMessageContentUnion | None = None,
+            thumbnail_url: str | None = None,
+            thumbnail_width: int | None = None,
+            thumbnail_height: int | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

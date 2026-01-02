@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from .base import TelegramObject
 from .custom import DateTime
@@ -16,9 +16,9 @@ class SuggestedPostParameters(TelegramObject):
     Source: https://core.telegram.org/bots/api#suggestedpostparameters
     """
 
-    price: Optional[SuggestedPostPrice] = None
+    price: SuggestedPostPrice | None = None
     """*Optional*. Proposed price for the post. If the field is omitted, then the post is unpaid."""
-    send_date: Optional[DateTime] = None
+    send_date: DateTime | None = None
     """*Optional*. Proposed send date of the post. If specified, then the date must be between 300 second and 2678400 seconds (30 days) in the future. If the field is omitted, then the post can be published at any time within 30 days at the sole discretion of the user who approves it."""
 
     if TYPE_CHECKING:
@@ -28,8 +28,8 @@ class SuggestedPostParameters(TelegramObject):
         def __init__(
             __pydantic__self__,
             *,
-            price: Optional[SuggestedPostPrice] = None,
-            send_date: Optional[DateTime] = None,
+            price: SuggestedPostPrice | None = None,
+            send_date: DateTime | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

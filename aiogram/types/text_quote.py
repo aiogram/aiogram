@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from .base import TelegramObject
 
@@ -19,9 +19,9 @@ class TextQuote(TelegramObject):
     """Text of the quoted part of a message that is replied to by the given message"""
     position: int
     """Approximate quote position in the original message in UTF-16 code units as specified by the sender"""
-    entities: Optional[list[MessageEntity]] = None
+    entities: list[MessageEntity] | None = None
     """*Optional*. Special entities that appear in the quote. Currently, only *bold*, *italic*, *underline*, *strikethrough*, *spoiler*, and *custom_emoji* entities are kept in quotes."""
-    is_manual: Optional[bool] = None
+    is_manual: bool | None = None
     """*Optional*. :code:`True`, if the quote was chosen manually by the message sender. Otherwise, the quote was added automatically by the server."""
 
     if TYPE_CHECKING:
@@ -33,8 +33,8 @@ class TextQuote(TelegramObject):
             *,
             text: str,
             position: int,
-            entities: Optional[list[MessageEntity]] = None,
-            is_manual: Optional[bool] = None,
+            entities: list[MessageEntity] | None = None,
+            is_manual: bool | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

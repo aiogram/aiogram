@@ -1,4 +1,4 @@
-from typing import Any, Dict
+from typing import Any
 from unittest.mock import sentinel
 
 from pydantic import BaseModel, ConfigDict, model_validator
@@ -20,7 +20,7 @@ class TelegramObject(BotContextController, BaseModel):
 
     @model_validator(mode="before")
     @classmethod
-    def remove_unset(cls, values: Dict[str, Any]) -> Dict[str, Any]:
+    def remove_unset(cls, values: dict[str, Any]) -> dict[str, Any]:
         """
         Remove UNSET before fields validation.
 

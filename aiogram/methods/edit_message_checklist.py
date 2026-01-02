@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from ..types import InlineKeyboardMarkup, InputChecklist, Message
 from .base import TelegramMethod
@@ -24,7 +24,7 @@ class EditMessageChecklist(TelegramMethod[Message]):
     """Unique identifier for the target message"""
     checklist: InputChecklist
     """A JSON-serialized object for the new checklist"""
-    reply_markup: Optional[InlineKeyboardMarkup] = None
+    reply_markup: InlineKeyboardMarkup | None = None
     """A JSON-serialized object for the new inline keyboard for the message"""
 
     if TYPE_CHECKING:
@@ -38,7 +38,7 @@ class EditMessageChecklist(TelegramMethod[Message]):
             chat_id: int,
             message_id: int,
             checklist: InputChecklist,
-            reply_markup: Optional[InlineKeyboardMarkup] = None,
+            reply_markup: InlineKeyboardMarkup | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

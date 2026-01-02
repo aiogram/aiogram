@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from .base import TelegramObject
 
@@ -14,7 +14,7 @@ class DirectMessagePriceChanged(TelegramObject):
 
     are_direct_messages_enabled: bool
     """:code:`True`, if direct messages are enabled for the channel chat; false otherwise"""
-    direct_message_star_count: Optional[int] = None
+    direct_message_star_count: int | None = None
     """*Optional*. The new number of Telegram Stars that must be paid by users for each direct message sent to the channel. Does not apply to users who have been exempted by administrators. Defaults to 0."""
 
     if TYPE_CHECKING:
@@ -25,7 +25,7 @@ class DirectMessagePriceChanged(TelegramObject):
             __pydantic__self__,
             *,
             are_direct_messages_enabled: bool,
-            direct_message_star_count: Optional[int] = None,
+            direct_message_star_count: int | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

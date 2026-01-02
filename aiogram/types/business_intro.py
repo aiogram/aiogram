@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from .base import TelegramObject
 
@@ -15,11 +15,11 @@ class BusinessIntro(TelegramObject):
     Source: https://core.telegram.org/bots/api#businessintro
     """
 
-    title: Optional[str] = None
+    title: str | None = None
     """*Optional*. Title text of the business intro"""
-    message: Optional[str] = None
+    message: str | None = None
     """*Optional*. Message text of the business intro"""
-    sticker: Optional[Sticker] = None
+    sticker: Sticker | None = None
     """*Optional*. Sticker of the business intro"""
 
     if TYPE_CHECKING:
@@ -29,9 +29,9 @@ class BusinessIntro(TelegramObject):
         def __init__(
             __pydantic__self__,
             *,
-            title: Optional[str] = None,
-            message: Optional[str] = None,
-            sticker: Optional[Sticker] = None,
+            title: str | None = None,
+            message: str | None = None,
+            sticker: Sticker | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

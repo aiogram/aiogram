@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from .base import TelegramMethod
 
@@ -19,7 +19,7 @@ class SetBusinessAccountName(TelegramMethod[bool]):
     """Unique identifier of the business connection"""
     first_name: str
     """The new value of the first name for the business account; 1-64 characters"""
-    last_name: Optional[str] = None
+    last_name: str | None = None
     """The new value of the last name for the business account; 0-64 characters"""
 
     if TYPE_CHECKING:
@@ -31,7 +31,7 @@ class SetBusinessAccountName(TelegramMethod[bool]):
             *,
             business_connection_id: str,
             first_name: str,
-            last_name: Optional[str] = None,
+            last_name: str | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

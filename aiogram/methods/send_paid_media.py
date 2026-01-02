@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from ..types import (
     ChatIdUnion,
@@ -30,33 +30,33 @@ class SendPaidMedia(TelegramMethod[Message]):
     """The number of Telegram Stars that must be paid to buy access to the media; 1-25000"""
     media: list[InputPaidMediaUnion]
     """A JSON-serialized array describing the media to be sent; up to 10 items"""
-    business_connection_id: Optional[str] = None
+    business_connection_id: str | None = None
     """Unique identifier of the business connection on behalf of which the message will be sent"""
-    message_thread_id: Optional[int] = None
+    message_thread_id: int | None = None
     """Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only"""
-    direct_messages_topic_id: Optional[int] = None
+    direct_messages_topic_id: int | None = None
     """Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat"""
-    payload: Optional[str] = None
+    payload: str | None = None
     """Bot-defined paid media payload, 0-128 bytes. This will not be displayed to the user, use it for your internal processes."""
-    caption: Optional[str] = None
+    caption: str | None = None
     """Media caption, 0-1024 characters after entities parsing"""
-    parse_mode: Optional[str] = None
+    parse_mode: str | None = None
     """Mode for parsing entities in the media caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details."""
-    caption_entities: Optional[list[MessageEntity]] = None
+    caption_entities: list[MessageEntity] | None = None
     """A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*"""
-    show_caption_above_media: Optional[bool] = None
+    show_caption_above_media: bool | None = None
     """Pass :code:`True`, if the caption must be shown above the message media"""
-    disable_notification: Optional[bool] = None
+    disable_notification: bool | None = None
     """Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound."""
-    protect_content: Optional[bool] = None
+    protect_content: bool | None = None
     """Protects the contents of the sent message from forwarding and saving"""
-    allow_paid_broadcast: Optional[bool] = None
+    allow_paid_broadcast: bool | None = None
     """Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance"""
-    suggested_post_parameters: Optional[SuggestedPostParameters] = None
+    suggested_post_parameters: SuggestedPostParameters | None = None
     """A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined."""
-    reply_parameters: Optional[ReplyParameters] = None
+    reply_parameters: ReplyParameters | None = None
     """Description of the message to reply to"""
-    reply_markup: Optional[ReplyMarkupUnion] = None
+    reply_markup: ReplyMarkupUnion | None = None
     """Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user"""
 
     if TYPE_CHECKING:
@@ -69,20 +69,20 @@ class SendPaidMedia(TelegramMethod[Message]):
             chat_id: ChatIdUnion,
             star_count: int,
             media: list[InputPaidMediaUnion],
-            business_connection_id: Optional[str] = None,
-            message_thread_id: Optional[int] = None,
-            direct_messages_topic_id: Optional[int] = None,
-            payload: Optional[str] = None,
-            caption: Optional[str] = None,
-            parse_mode: Optional[str] = None,
-            caption_entities: Optional[list[MessageEntity]] = None,
-            show_caption_above_media: Optional[bool] = None,
-            disable_notification: Optional[bool] = None,
-            protect_content: Optional[bool] = None,
-            allow_paid_broadcast: Optional[bool] = None,
-            suggested_post_parameters: Optional[SuggestedPostParameters] = None,
-            reply_parameters: Optional[ReplyParameters] = None,
-            reply_markup: Optional[ReplyMarkupUnion] = None,
+            business_connection_id: str | None = None,
+            message_thread_id: int | None = None,
+            direct_messages_topic_id: int | None = None,
+            payload: str | None = None,
+            caption: str | None = None,
+            parse_mode: str | None = None,
+            caption_entities: list[MessageEntity] | None = None,
+            show_caption_above_media: bool | None = None,
+            disable_notification: bool | None = None,
+            protect_content: bool | None = None,
+            allow_paid_broadcast: bool | None = None,
+            suggested_post_parameters: SuggestedPostParameters | None = None,
+            reply_parameters: ReplyParameters | None = None,
+            reply_markup: ReplyMarkupUnion | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

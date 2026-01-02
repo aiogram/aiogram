@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from .base import TelegramMethod
 
@@ -21,7 +21,7 @@ class TransferGift(TelegramMethod[bool]):
     """Unique identifier of the regular gift that should be transferred"""
     new_owner_chat_id: int
     """Unique identifier of the chat which will own the gift. The chat must be active in the last 24 hours."""
-    star_count: Optional[int] = None
+    star_count: int | None = None
     """The amount of Telegram Stars that will be paid for the transfer from the business account balance. If positive, then the *can_transfer_stars* business bot right is required."""
 
     if TYPE_CHECKING:
@@ -34,7 +34,7 @@ class TransferGift(TelegramMethod[bool]):
             business_connection_id: str,
             owned_gift_id: str,
             new_owner_chat_id: int,
-            star_count: Optional[int] = None,
+            star_count: int | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

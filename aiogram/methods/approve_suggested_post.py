@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from ..types import DateTimeUnion
 from .base import TelegramMethod
@@ -20,7 +20,7 @@ class ApproveSuggestedPost(TelegramMethod[bool]):
     """Unique identifier for the target direct messages chat"""
     message_id: int
     """Identifier of a suggested post message to approve"""
-    send_date: Optional[DateTimeUnion] = None
+    send_date: DateTimeUnion | None = None
     """Point in time (Unix timestamp) when the post is expected to be published; omit if the date has already been specified when the suggested post was created. If specified, then the date must be not more than 2678400 seconds (30 days) in the future"""
 
     if TYPE_CHECKING:
@@ -32,7 +32,7 @@ class ApproveSuggestedPost(TelegramMethod[bool]):
             *,
             chat_id: int,
             message_id: int,
-            send_date: Optional[DateTimeUnion] = None,
+            send_date: DateTimeUnion | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

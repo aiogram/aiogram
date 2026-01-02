@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from pydantic import Field
 
@@ -20,27 +20,27 @@ class GetBusinessAccountGifts(TelegramMethod[OwnedGifts]):
 
     business_connection_id: str
     """Unique identifier of the business connection"""
-    exclude_unsaved: Optional[bool] = None
+    exclude_unsaved: bool | None = None
     """Pass :code:`True` to exclude gifts that aren't saved to the account's profile page"""
-    exclude_saved: Optional[bool] = None
+    exclude_saved: bool | None = None
     """Pass :code:`True` to exclude gifts that are saved to the account's profile page"""
-    exclude_unlimited: Optional[bool] = None
+    exclude_unlimited: bool | None = None
     """Pass :code:`True` to exclude gifts that can be purchased an unlimited number of times"""
-    exclude_limited_upgradable: Optional[bool] = None
+    exclude_limited_upgradable: bool | None = None
     """Pass :code:`True` to exclude gifts that can be purchased a limited number of times and can be upgraded to unique"""
-    exclude_limited_non_upgradable: Optional[bool] = None
+    exclude_limited_non_upgradable: bool | None = None
     """Pass :code:`True` to exclude gifts that can be purchased a limited number of times and can't be upgraded to unique"""
-    exclude_unique: Optional[bool] = None
+    exclude_unique: bool | None = None
     """Pass :code:`True` to exclude unique gifts"""
-    exclude_from_blockchain: Optional[bool] = None
+    exclude_from_blockchain: bool | None = None
     """Pass :code:`True` to exclude gifts that were assigned from the TON blockchain and can't be resold or transferred in Telegram"""
-    sort_by_price: Optional[bool] = None
+    sort_by_price: bool | None = None
     """Pass :code:`True` to sort results by gift price instead of send date. Sorting is applied before pagination."""
-    offset: Optional[str] = None
+    offset: str | None = None
     """Offset of the first entry to return as received from the previous request; use empty string to get the first chunk of results"""
-    limit: Optional[int] = None
+    limit: int | None = None
     """The maximum number of gifts to be returned; 1-100. Defaults to 100"""
-    exclude_limited: Optional[bool] = Field(None, json_schema_extra={"deprecated": True})
+    exclude_limited: bool | None = Field(None, json_schema_extra={"deprecated": True})
     """Pass :code:`True` to exclude gifts that can be purchased a limited number of times
 
 .. deprecated:: API:9.3
@@ -54,17 +54,17 @@ class GetBusinessAccountGifts(TelegramMethod[OwnedGifts]):
             __pydantic__self__,
             *,
             business_connection_id: str,
-            exclude_unsaved: Optional[bool] = None,
-            exclude_saved: Optional[bool] = None,
-            exclude_unlimited: Optional[bool] = None,
-            exclude_limited_upgradable: Optional[bool] = None,
-            exclude_limited_non_upgradable: Optional[bool] = None,
-            exclude_unique: Optional[bool] = None,
-            exclude_from_blockchain: Optional[bool] = None,
-            sort_by_price: Optional[bool] = None,
-            offset: Optional[str] = None,
-            limit: Optional[int] = None,
-            exclude_limited: Optional[bool] = None,
+            exclude_unsaved: bool | None = None,
+            exclude_saved: bool | None = None,
+            exclude_unlimited: bool | None = None,
+            exclude_limited_upgradable: bool | None = None,
+            exclude_limited_non_upgradable: bool | None = None,
+            exclude_unique: bool | None = None,
+            exclude_from_blockchain: bool | None = None,
+            sort_by_price: bool | None = None,
+            offset: str | None = None,
+            limit: int | None = None,
+            exclude_limited: bool | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from typing import Union
+from typing import TypeAlias
 
 from .input_poll_option import InputPollOption
 
-InputPollOptionUnion = Union[InputPollOption, str]
+InputPollOptionUnion: TypeAlias = InputPollOption | str

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from .base import TelegramObject
 
@@ -32,21 +32,21 @@ class Sticker(TelegramObject):
     """:code:`True`, if the sticker is `animated <https://telegram.org/blog/animated-stickers>`_"""
     is_video: bool
     """:code:`True`, if the sticker is a `video sticker <https://telegram.org/blog/video-stickers-better-reactions>`_"""
-    thumbnail: Optional[PhotoSize] = None
+    thumbnail: PhotoSize | None = None
     """*Optional*. Sticker thumbnail in the .WEBP or .JPG format"""
-    emoji: Optional[str] = None
+    emoji: str | None = None
     """*Optional*. Emoji associated with the sticker"""
-    set_name: Optional[str] = None
+    set_name: str | None = None
     """*Optional*. Name of the sticker set to which the sticker belongs"""
-    premium_animation: Optional[File] = None
+    premium_animation: File | None = None
     """*Optional*. For premium regular stickers, premium animation for the sticker"""
-    mask_position: Optional[MaskPosition] = None
+    mask_position: MaskPosition | None = None
     """*Optional*. For mask stickers, the position where the mask should be placed"""
-    custom_emoji_id: Optional[str] = None
+    custom_emoji_id: str | None = None
     """*Optional*. For custom emoji stickers, unique identifier of the custom emoji"""
-    needs_repainting: Optional[bool] = None
+    needs_repainting: bool | None = None
     """*Optional*. :code:`True`, if the sticker must be repainted to a text color in messages, the color of the Telegram Premium badge in emoji status, white color on chat photos, or another appropriate color in other places"""
-    file_size: Optional[int] = None
+    file_size: int | None = None
     """*Optional*. File size in bytes"""
 
     if TYPE_CHECKING:
@@ -63,14 +63,14 @@ class Sticker(TelegramObject):
             height: int,
             is_animated: bool,
             is_video: bool,
-            thumbnail: Optional[PhotoSize] = None,
-            emoji: Optional[str] = None,
-            set_name: Optional[str] = None,
-            premium_animation: Optional[File] = None,
-            mask_position: Optional[MaskPosition] = None,
-            custom_emoji_id: Optional[str] = None,
-            needs_repainting: Optional[bool] = None,
-            file_size: Optional[int] = None,
+            thumbnail: PhotoSize | None = None,
+            emoji: str | None = None,
+            set_name: str | None = None,
+            premium_animation: File | None = None,
+            mask_position: MaskPosition | None = None,
+            custom_emoji_id: str | None = None,
+            needs_repainting: bool | None = None,
+            file_size: int | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

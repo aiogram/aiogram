@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from ..types import ChatIdUnion, DateTimeUnion
 from .base import TelegramMethod
@@ -20,9 +20,9 @@ class BanChatMember(TelegramMethod[bool]):
     """Unique identifier for the target group or username of the target supergroup or channel (in the format :code:`@channelusername`)"""
     user_id: int
     """Unique identifier of the target user"""
-    until_date: Optional[DateTimeUnion] = None
+    until_date: DateTimeUnion | None = None
     """Date when the user will be unbanned; Unix time. If user is banned for more than 366 days or less than 30 seconds from the current time they are considered to be banned forever. Applied for supergroups and channels only."""
-    revoke_messages: Optional[bool] = None
+    revoke_messages: bool | None = None
     """Pass :code:`True` to delete all messages from the chat for the user that is being removed. If :code:`False`, the user will be able to see messages in the group that were sent before the user was removed. Always :code:`True` for supergroups and channels."""
 
     if TYPE_CHECKING:
@@ -34,8 +34,8 @@ class BanChatMember(TelegramMethod[bool]):
             *,
             chat_id: ChatIdUnion,
             user_id: int,
-            until_date: Optional[DateTimeUnion] = None,
-            revoke_messages: Optional[bool] = None,
+            until_date: DateTimeUnion | None = None,
+            revoke_messages: bool | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

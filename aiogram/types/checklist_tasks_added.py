@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from .base import TelegramObject
 
@@ -18,7 +18,7 @@ class ChecklistTasksAdded(TelegramObject):
 
     tasks: list[ChecklistTask]
     """List of tasks added to the checklist"""
-    checklist_message: Optional[Message] = None
+    checklist_message: Message | None = None
     """*Optional*. Message containing the checklist to which the tasks were added. Note that the :class:`aiogram.types.message.Message` object in this field will not contain the *reply_to_message* field even if it itself is a reply."""
 
     if TYPE_CHECKING:
@@ -29,7 +29,7 @@ class ChecklistTasksAdded(TelegramObject):
             __pydantic__self__,
             *,
             tasks: list[ChecklistTask],
-            checklist_message: Optional[Message] = None,
+            checklist_message: Message | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

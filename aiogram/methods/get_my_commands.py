@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from ..types import BotCommand, BotCommandScopeUnion
 from .base import TelegramMethod
@@ -16,9 +16,9 @@ class GetMyCommands(TelegramMethod[list[BotCommand]]):
     __returning__ = list[BotCommand]
     __api_method__ = "getMyCommands"
 
-    scope: Optional[BotCommandScopeUnion] = None
+    scope: BotCommandScopeUnion | None = None
     """A JSON-serialized object, describing scope of users. Defaults to :class:`aiogram.types.bot_command_scope_default.BotCommandScopeDefault`."""
-    language_code: Optional[str] = None
+    language_code: str | None = None
     """A two-letter ISO 639-1 language code or an empty string"""
 
     if TYPE_CHECKING:
@@ -28,8 +28,8 @@ class GetMyCommands(TelegramMethod[list[BotCommand]]):
         def __init__(
             __pydantic__self__,
             *,
-            scope: Optional[BotCommandScopeUnion] = None,
-            language_code: Optional[str] = None,
+            scope: BotCommandScopeUnion | None = None,
+            language_code: str | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

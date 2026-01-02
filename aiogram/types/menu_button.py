@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from .base import MutableTelegramObject
 
@@ -23,9 +23,9 @@ class MenuButton(MutableTelegramObject):
 
     type: str
     """Type of the button"""
-    text: Optional[str] = None
+    text: str | None = None
     """*Optional*. Text on the button"""
-    web_app: Optional[WebAppInfo] = None
+    web_app: WebAppInfo | None = None
     """*Optional*. Description of the Web App that will be launched when the user presses the button. The Web App will be able to send an arbitrary message on behalf of the user using the method :class:`aiogram.methods.answer_web_app_query.AnswerWebAppQuery`. Alternatively, a :code:`t.me` link to a Web App of the bot can be specified in the object instead of the Web App's URL, in which case the Web App will be opened as if the user pressed the link."""
 
     if TYPE_CHECKING:
@@ -36,8 +36,8 @@ class MenuButton(MutableTelegramObject):
             __pydantic__self__,
             *,
             type: str,
-            text: Optional[str] = None,
-            web_app: Optional[WebAppInfo] = None,
+            text: str | None = None,
+            web_app: WebAppInfo | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

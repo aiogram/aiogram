@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from .base import TelegramObject
 
@@ -17,11 +17,11 @@ class GiveawayCompleted(TelegramObject):
 
     winner_count: int
     """Number of winners in the giveaway"""
-    unclaimed_prize_count: Optional[int] = None
+    unclaimed_prize_count: int | None = None
     """*Optional*. Number of undistributed prizes"""
-    giveaway_message: Optional[Message] = None
+    giveaway_message: Message | None = None
     """*Optional*. Message with the giveaway that was completed, if it wasn't deleted"""
-    is_star_giveaway: Optional[bool] = None
+    is_star_giveaway: bool | None = None
     """*Optional*. :code:`True`, if the giveaway is a Telegram Star giveaway. Otherwise, currently, the giveaway is a Telegram Premium giveaway."""
 
     if TYPE_CHECKING:
@@ -32,9 +32,9 @@ class GiveawayCompleted(TelegramObject):
             __pydantic__self__,
             *,
             winner_count: int,
-            unclaimed_prize_count: Optional[int] = None,
-            giveaway_message: Optional[Message] = None,
-            is_star_giveaway: Optional[bool] = None,
+            unclaimed_prize_count: int | None = None,
+            giveaway_message: Message | None = None,
+            is_star_giveaway: bool | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!
