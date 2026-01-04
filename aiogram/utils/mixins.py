@@ -15,7 +15,7 @@ class DataMixin:
         data: dict[str, Any] | None = getattr(self, "_data", None)
         if data is None:
             data = {}
-            setattr(self, "_data", data)
+            self._data = data
         return data
 
     def __getitem__(self, key: str) -> Any:

@@ -2,7 +2,7 @@ import asyncio
 import time
 from asyncio import Event
 from dataclasses import dataclass
-from typing import Any, Dict
+from typing import Any
 from unittest.mock import AsyncMock, patch
 
 import pytest
@@ -251,7 +251,7 @@ class TestTokenBasedRequestHandler:
 
         @dataclass
         class FakeRequest:
-            match_info: Dict[str, Any]
+            match_info: dict[str, Any]
 
         bot1 = await handler.resolve_bot(request=FakeRequest(match_info={"bot_token": "42:TEST"}))
         assert bot1.id == 42

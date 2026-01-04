@@ -28,5 +28,5 @@ class TestGetAvailableGifts:
         )
 
         response: Gifts = await bot.get_available_gifts()
-        request = bot.get_request()
+        bot.get_request()
         assert response == prepare_result.result

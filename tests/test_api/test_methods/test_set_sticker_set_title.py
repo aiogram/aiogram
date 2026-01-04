@@ -7,5 +7,5 @@ class TestSetStickerSetTitle:
         prepare_result = bot.add_result_for(SetStickerSetTitle, ok=True, result=True)
 
         response: bool = await bot.set_sticker_set_title(name="test", title="Test")
-        request = bot.get_request()
+        bot.get_request()
         assert response == prepare_result.result

@@ -107,20 +107,20 @@ class TestCallbackData:
     def test_pack_optional(self):
         class MyCallback1(CallbackData, prefix="test1"):
             foo: str
-            bar: Optional[int] = None
+            bar: int | None = None
 
         assert MyCallback1(foo="spam").pack() == "test1:spam:"
         assert MyCallback1(foo="spam", bar=42).pack() == "test1:spam:42"
 
         class MyCallback2(CallbackData, prefix="test2"):
-            foo: Optional[str] = None
+            foo: str | None = None
             bar: int
 
         assert MyCallback2(bar=42).pack() == "test2::42"
         assert MyCallback2(foo="spam", bar=42).pack() == "test2:spam:42"
 
         class MyCallback3(CallbackData, prefix="test3"):
-            foo: Optional[str] = "experiment"
+            foo: str | None = "experiment"
             bar: int
 
         assert MyCallback3(bar=42).pack() == "test3:experiment:42"
@@ -141,28 +141,28 @@ class TestCallbackData:
 
         class MyCallback1(CallbackData, prefix="test1"):
             foo: str
-            bar: Optional[int] = None
+            bar: int | None = None
 
         assert MyCallback1.unpack("test1:spam:") == MyCallback1(foo="spam")
         assert MyCallback1.unpack("test1:spam:42") == MyCallback1(foo="spam", bar=42)
 
         class MyCallback2(CallbackData, prefix="test2"):
-            foo: Optional[str] = None
+            foo: str | None = None
             bar: int
 
         assert MyCallback2.unpack("test2::42") == MyCallback2(bar=42)
         assert MyCallback2.unpack("test2:spam:42") == MyCallback2(foo="spam", bar=42)
 
         class MyCallback3(CallbackData, prefix="test3"):
-            foo: Optional[str] = "experiment"
+            foo: str | None = "experiment"
             bar: int
 
         assert MyCallback3.unpack("test3:experiment:42") == MyCallback3(bar=42)
         assert MyCallback3.unpack("test3:spam:42") == MyCallback3(foo="spam", bar=42)
 
         class MyCallback4(CallbackData, prefix="test4"):
-            foo: Optional[str] = ""
-            bar: Optional[str] = None
+            foo: str | None = ""
+            bar: str | None = None
 
         assert MyCallback4.unpack("test4::") == MyCallback4(foo="", bar=None)
         assert MyCallback4.unpack("test4::") == MyCallback4()

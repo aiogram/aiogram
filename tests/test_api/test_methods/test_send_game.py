@@ -25,5 +25,5 @@ class TestSendGame:
         )
 
         response: Message = await bot.send_game(chat_id=42, game_short_name="game")
-        request = bot.get_request()
+        bot.get_request()
         assert response == prepare_result.result

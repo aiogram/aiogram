@@ -37,15 +37,14 @@ install: clean
 
 .PHONY: lint
 lint:
-	uv run isort --check-only $(code_dir)
-	uv run black --check --diff $(code_dir)
+	uv run ruff format --check --diff $(code_dir)
 	uv run ruff check --show-fixes --preview $(package_dir) $(examples_dir)
 	uv run mypy $(package_dir)
 
 .PHONY: reformat
 reformat:
-	uv run black $(code_dir)
-	uv run isort $(code_dir)
+	uv run ruff format $(code_dir)
+	uv run ruff check --fix $(code_dir)
 
 # =================================================================================================
 # Tests

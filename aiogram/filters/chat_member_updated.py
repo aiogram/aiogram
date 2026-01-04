@@ -37,7 +37,7 @@ class _MemberStatusMarker:
     def __or__(
         self,
         other: _MemberStatusMarker | _MemberStatusGroupMarker,
-    ) -> "_MemberStatusGroupMarker":
+    ) -> _MemberStatusGroupMarker:
         if isinstance(other, _MemberStatusMarker):
             return _MemberStatusGroupMarker(self, other)
         if isinstance(other, _MemberStatusGroupMarker):
@@ -53,7 +53,7 @@ class _MemberStatusMarker:
     def __rshift__(
         self,
         other: _MemberStatusMarker | _MemberStatusGroupMarker,
-    ) -> "_MemberStatusTransition":
+    ) -> _MemberStatusTransition:
         old = _MemberStatusGroupMarker(self)
         if isinstance(other, _MemberStatusMarker):
             return _MemberStatusTransition(old=old, new=_MemberStatusGroupMarker(other))
@@ -68,7 +68,7 @@ class _MemberStatusMarker:
     def __lshift__(
         self,
         other: _MemberStatusMarker | _MemberStatusGroupMarker,
-    ) -> "_MemberStatusTransition":
+    ) -> _MemberStatusTransition:
         new = _MemberStatusGroupMarker(self)
         if isinstance(other, _MemberStatusMarker):
             return _MemberStatusTransition(old=_MemberStatusGroupMarker(other), new=new)
@@ -118,7 +118,7 @@ class _MemberStatusGroupMarker:
     def __rshift__(
         self,
         other: _MemberStatusMarker | _MemberStatusGroupMarker,
-    ) -> "_MemberStatusTransition":
+    ) -> _MemberStatusTransition:
         if isinstance(other, _MemberStatusMarker):
             return _MemberStatusTransition(old=self, new=_MemberStatusGroupMarker(other))
         if isinstance(other, _MemberStatusGroupMarker):
@@ -132,7 +132,7 @@ class _MemberStatusGroupMarker:
     def __lshift__(
         self,
         other: _MemberStatusMarker | _MemberStatusGroupMarker,
-    ) -> "_MemberStatusTransition":
+    ) -> _MemberStatusTransition:
         if isinstance(other, _MemberStatusMarker):
             return _MemberStatusTransition(old=_MemberStatusGroupMarker(other), new=self)
         if isinstance(other, _MemberStatusGroupMarker):

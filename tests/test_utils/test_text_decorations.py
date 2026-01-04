@@ -1,5 +1,3 @@
-from typing import List, Optional
-
 import pytest
 
 from aiogram.types import MessageEntity, User
@@ -304,7 +302,7 @@ class TestTextDecoration:
         self,
         decorator: TextDecoration,
         text: str,
-        entities: Optional[List[MessageEntity]],
+        entities: list[MessageEntity] | None,
         result: str,
     ):
         assert decorator.unparse(text, entities) == result

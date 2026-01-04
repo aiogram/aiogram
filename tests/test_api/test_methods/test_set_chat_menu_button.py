@@ -7,5 +7,5 @@ class TestSetChatMenuButton:
         prepare_result = bot.add_result_for(SetChatMenuButton, ok=True, result=True)
 
         response: bool = await bot.set_chat_menu_button()
-        request = bot.get_request()
+        bot.get_request()
         assert response == prepare_result.result

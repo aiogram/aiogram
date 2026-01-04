@@ -21,10 +21,10 @@ class FlagDecorator:
     flag: Flag
 
     @classmethod
-    def _with_flag(cls, flag: Flag) -> "FlagDecorator":
+    def _with_flag(cls, flag: Flag) -> FlagDecorator:
         return cls(flag)
 
-    def _with_value(self, value: Any) -> "FlagDecorator":
+    def _with_value(self, value: Any) -> FlagDecorator:
         new_flag = Flag(self.flag.name, value)
         return self._with_flag(new_flag)
 
@@ -33,11 +33,11 @@ class FlagDecorator:
         pass
 
     @overload
-    def __call__(self, value: Any, /) -> "FlagDecorator":
+    def __call__(self, value: Any, /) -> FlagDecorator:
         pass
 
     @overload
-    def __call__(self, **kwargs: Any) -> "FlagDecorator":
+    def __call__(self, **kwargs: Any) -> FlagDecorator:
         pass
 
     def __call__(

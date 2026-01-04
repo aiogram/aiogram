@@ -7,5 +7,5 @@ class TestSetStickerEmojiList:
         prepare_result = bot.add_result_for(SetStickerEmojiList, ok=True, result=True)
 
         response: bool = await bot.set_sticker_emoji_list(sticker="sticker id", emoji_list=["X"])
-        request = bot.get_request()
+        bot.get_request()
         assert response == prepare_result.result

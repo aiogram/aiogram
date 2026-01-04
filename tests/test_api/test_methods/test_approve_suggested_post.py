@@ -10,5 +10,5 @@ class TestApproveSuggestedPost:
             chat_id=-42,
             message_id=42,
         )
-        request = bot.get_request()
+        bot.get_request()
         assert response == prepare_result.result

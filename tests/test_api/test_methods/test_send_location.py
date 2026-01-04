@@ -19,5 +19,5 @@ class TestSendLocation:
         )
 
         response: Message = await bot.send_location(chat_id=42, latitude=3.14, longitude=3.14)
-        request = bot.get_request()
+        bot.get_request()
         assert response == prepare_result.result

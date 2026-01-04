@@ -37,5 +37,5 @@ class TestGetChatGifts:
             chat_id=42,
             limit=10,
         )
-        request = bot.get_request()
+        bot.get_request()
         assert response == prepare_result.result

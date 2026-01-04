@@ -12,5 +12,5 @@ class TestTransferGift:
             new_owner_chat_id=123456789,
             star_count=50,
         )
-        request = bot.get_request()
+        bot.get_request()
         assert response == prepare_result.result

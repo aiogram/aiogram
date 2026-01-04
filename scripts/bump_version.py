@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Version bumping script for aiogram (replaces hatch version)."""
+
 import re
 import sys
 from pathlib import Path

@@ -10,5 +10,5 @@ class TestSetChatPhoto:
         response: bool = await bot.set_chat_photo(
             chat_id=-42, photo=BufferedInputFile(b"", filename="file.png")
         )
-        request = bot.get_request()
+        bot.get_request()
         assert response == prepare_result.result

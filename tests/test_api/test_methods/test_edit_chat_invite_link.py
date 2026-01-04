@@ -20,5 +20,5 @@ class TestEditChatInviteLink:
         response: ChatInviteLink = await bot.edit_chat_invite_link(
             chat_id=-42, invite_link="https://t.me/username", member_limit=1
         )
-        request = bot.get_request()
+        bot.get_request()
         assert response == prepare_result.result

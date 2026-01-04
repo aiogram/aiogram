@@ -1,8 +1,8 @@
 import sys
 from datetime import datetime, timezone
+from typing import Annotated
 
 from pydantic import PlainSerializer
-from typing_extensions import Annotated
 
 if sys.platform == "win32":  # pragma: no cover
 

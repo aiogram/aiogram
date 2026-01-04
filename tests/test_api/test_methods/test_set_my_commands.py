@@ -9,5 +9,5 @@ class TestSetMyCommands:
         response: bool = await bot.set_my_commands(
             commands=[],
         )
-        request = bot.get_request()
+        bot.get_request()
         assert response == prepare_result.result

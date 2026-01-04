@@ -10,5 +10,5 @@ class TestRestrictChatMember:
         response: bool = await bot.restrict_chat_member(
             chat_id=-42, user_id=42, permissions=ChatPermissions()
         )
-        request = bot.get_request()
+        bot.get_request()
         assert response == prepare_result.result

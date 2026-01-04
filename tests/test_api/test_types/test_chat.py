@@ -1,5 +1,3 @@
-from typing import Optional
-
 from pytest import mark, param
 
 from aiogram.enums import ChatAction
@@ -199,9 +197,9 @@ class TestChat:
     )
     def test_full_name(
         self,
-        first: Optional[str],
-        last: Optional[str],
-        title: Optional[str],
+        first: str | None,
+        last: str | None,
+        title: str | None,
         chat_type: str,
         result: str,
     ):

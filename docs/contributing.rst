@@ -148,8 +148,8 @@ When using :code:`uv`, prefix commands with :code:`uv run` to execute them in th
 .. code-block:: bash
 
     # Format code
-    uv run black aiogram tests examples
-    uv run isort aiogram tests examples
+    uv run ruff format aiogram tests scripts examples
+    uv run ruff check --fix aiogram tests scripts examples
 
     # Run tests
     uv run pytest tests
@@ -180,22 +180,22 @@ implementing new features or experimenting.
 Format the code (code-style)
 ----------------------------
 
-Note that this project is Black-formatted, so you should follow that code-style,
-too be sure You're correctly doing this let's reformat the code automatically:
+Note that this project uses Ruff for formatting and linting, so you should follow that code-style.
+To be sure you're correctly doing this, let's reformat the code automatically:
 
 Using traditional approach:
 
 .. code-block:: bash
 
-    black aiogram tests examples
-    isort aiogram tests examples
+    ruff format aiogram tests scripts examples
+    ruff check --fix aiogram tests scripts examples
 
 Or with uv:
 
 .. code-block:: bash
 
-    uv run black aiogram tests examples
-    uv run isort aiogram tests examples
+    uv run ruff format aiogram tests scripts examples
+    uv run ruff check --fix aiogram tests scripts examples
 
 Or simply use Makefile:
 

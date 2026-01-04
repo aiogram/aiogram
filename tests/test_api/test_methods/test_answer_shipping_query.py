@@ -7,5 +7,5 @@ class TestAnswerShippingQuery:
         prepare_result = bot.add_result_for(AnswerShippingQuery, ok=True, result=True)
 
         response: bool = await bot.answer_shipping_query(shipping_query_id="query id", ok=True)
-        request = bot.get_request()
+        bot.get_request()
         assert response == prepare_result.result

@@ -1,4 +1,4 @@
-from typing import List, Literal, Optional, Union
+from typing import Literal, Optional, Union
 
 from .accepted_gift_types import AcceptedGiftTypes
 from .affiliate_info import AffiliateInfo
@@ -654,7 +654,7 @@ for _entity_name in __all__:
         continue
     _entity.model_rebuild(
         _types_namespace={
-            "List": List,
+            "List": list,
             "Optional": Optional,
             "Union": Union,
             "Literal": Literal,

@@ -29,5 +29,5 @@ class TestGetStickerSet:
         )
 
         response: StickerSet = await bot.get_sticker_set(name="test")
-        request = bot.get_request()
+        bot.get_request()
         assert response == prepare_result.result
