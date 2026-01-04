@@ -9,10 +9,15 @@ class TestBackoffConfig:
     @pytest.mark.parametrize(
         "kwargs",
         [
-            dict(min_delay=1.0, max_delay=1.0, factor=2.0, jitter=0.1),  # equals min and max
-            dict(min_delay=1.0, max_delay=1.0, factor=1.0, jitter=0.1),  # factor == 1
-            dict(min_delay=1.0, max_delay=2.0, factor=0.5, jitter=0.1),  # factor < 1
-            dict(min_delay=2.0, max_delay=1.0, factor=2.0, jitter=0.1),  # min > max
+            {
+                "min_delay": 1.0,
+                "max_delay": 1.0,
+                "factor": 2.0,
+                "jitter": 0.1,
+            },  # equals min and max
+            {"min_delay": 1.0, "max_delay": 1.0, "factor": 1.0, "jitter": 0.1},  # factor == 1
+            {"min_delay": 1.0, "max_delay": 2.0, "factor": 0.5, "jitter": 0.1},  # factor < 1
+            {"min_delay": 2.0, "max_delay": 1.0, "factor": 2.0, "jitter": 0.1},  # min > max
         ],
     )
     def test_incorrect_post_init(self, kwargs):
@@ -21,7 +26,7 @@ class TestBackoffConfig:
 
     @pytest.mark.parametrize(
         "kwargs",
-        [dict(min_delay=1.0, max_delay=2.0, factor=1.2, jitter=0.1)],
+        [{"min_delay": 1.0, "max_delay": 2.0, "factor": 1.2, "jitter": 0.1}],
     )
     def test_correct_post_init(self, kwargs):
         assert BackoffConfig(**kwargs)

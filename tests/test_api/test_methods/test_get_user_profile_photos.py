@@ -17,5 +17,5 @@ class TestGetUserProfilePhotos:
         )
 
         response: UserProfilePhotos = await bot.get_user_profile_photos(user_id=42)
-        request = bot.get_request()
+        bot.get_request()
         assert response == prepare_result.result

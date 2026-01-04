@@ -10,5 +10,5 @@ class TestGetMyDescription:
         )
 
         response: BotDescription = await bot.get_my_description()
-        request = bot.get_request()
+        bot.get_request()
         assert response == prepare_result.result

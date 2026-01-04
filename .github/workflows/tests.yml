@@ -72,7 +72,7 @@ jobs:
         run: |
           uv run ruff check --output-format=github aiogram examples
           uv run mypy aiogram
-          uv run black --check --diff aiogram tests
+          uv run ruff format --check --diff aiogram tests scripts examples
 
       - name: Setup redis
         if: ${{ env.IS_WINDOWS == 'false' }}

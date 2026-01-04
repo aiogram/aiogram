@@ -10,5 +10,5 @@ class TestRefundStarPayment:
             user_id=42,
             telegram_payment_charge_id="12345",
         )
-        request = bot.get_request()
+        bot.get_request()
         assert response == prepare_result.result

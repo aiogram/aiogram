@@ -120,7 +120,7 @@ class ObserverDecorator:
         handlers = getattr(target, "__aiogram_handler__", None)
         if not handlers:
             handlers = []
-            setattr(target, "__aiogram_handler__", handlers)
+            target.__aiogram_handler__ = handlers  # type: ignore[union-attr]
 
         handlers.append(
             HandlerContainer(
@@ -137,7 +137,7 @@ class ObserverDecorator:
         action = getattr(target, "__aiogram_action__", None)
         if action is None:
             action = defaultdict(dict)
-            setattr(target, "__aiogram_action__", action)
+            target.__aiogram_action__ = action  # type: ignore[attr-defined]
         action[self.action][self.name] = CallableObject(target)
 
     def __call__(self, target: CallbackType) -> CallbackType:
@@ -865,7 +865,7 @@ class SceneRegistry:
             return self._scenes[scene]
         except KeyError:
             msg = f"Scene {scene!r} is not registered"
-            raise SceneException(msg)
+            raise SceneException(msg) from None
 
 
 @dataclass

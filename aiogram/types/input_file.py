@@ -3,8 +3,9 @@ from __future__ import annotations
 import io
 import os
 from abc import ABC, abstractmethod
+from collections.abc import AsyncGenerator
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, AsyncGenerator
+from typing import TYPE_CHECKING, Any
 
 import aiofiles
 
@@ -33,7 +34,7 @@ class InputFile(ABC):
         self.chunk_size = chunk_size
 
     @abstractmethod
-    async def read(self, bot: "Bot") -> AsyncGenerator[bytes, None]:  # pragma: no cover
+    async def read(self, bot: Bot) -> AsyncGenerator[bytes, None]:  # pragma: no cover
         yield b""
 
 
@@ -72,7 +73,7 @@ class BufferedInputFile(InputFile):
             data = f.read()
         return cls(data, filename=filename, chunk_size=chunk_size)
 
-    async def read(self, bot: "Bot") -> AsyncGenerator[bytes, None]:
+    async def read(self, bot: Bot) -> AsyncGenerator[bytes, None]:
         buffer = io.BytesIO(self.data)
         while chunk := buffer.read(self.chunk_size):
             yield chunk
@@ -99,7 +100,7 @@ class FSInputFile(InputFile):
 
         self.path = path
 
-    async def read(self, bot: "Bot") -> AsyncGenerator[bytes, None]:
+    async def read(self, bot: Bot) -> AsyncGenerator[bytes, None]:
         async with aiofiles.open(self.path, "rb") as f:
             while chunk := await f.read(self.chunk_size):
                 yield chunk
@@ -135,7 +136,7 @@ class URLInputFile(InputFile):
         self.timeout = timeout
         self.bot = bot
 
-    async def read(self, bot: "Bot") -> AsyncGenerator[bytes, None]:
+    async def read(self, bot: Bot) -> AsyncGenerator[bytes, None]:
         bot = self.bot or bot
         stream = bot.session.stream_content(
             url=self.url,

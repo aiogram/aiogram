@@ -4,14 +4,14 @@ from os import getenv
 
 from aiohttp.web import run_app
 from aiohttp.web_app import Application
-from handlers import my_router
-from routes import check_data_handler, demo_handler, send_message_handler
 
 from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums.parse_mode import ParseMode
 from aiogram.types import MenuButtonWebApp, WebAppInfo
 from aiogram.webhook.aiohttp_server import SimpleRequestHandler, setup_application
+from handlers import my_router
+from routes import check_data_handler, demo_handler, send_message_handler
 
 TOKEN = getenv("BOT_TOKEN")
 

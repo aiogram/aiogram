@@ -24,5 +24,5 @@ class TestGetMyDefaultAdministratorRights:
         )
 
         response: ChatAdministratorRights = await bot.get_my_default_administrator_rights()
-        request = bot.get_request()
+        bot.get_request()
         assert response == prepare_result.result

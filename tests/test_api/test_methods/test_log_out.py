@@ -7,5 +7,5 @@ class TestLogOut:
         prepare_result = bot.add_result_for(LogOut, ok=True, result=True)
 
         response: bool = await bot.log_out()
-        request = bot.get_request()
+        bot.get_request()
         assert response == prepare_result.result

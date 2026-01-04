@@ -1,5 +1,3 @@
-from typing import List
-
 from aiogram.methods import GetCustomEmojiStickers
 from aiogram.types import Sticker
 from tests.mocked_bot import MockedBot
@@ -24,8 +22,8 @@ class TestGetCustomEmojiStickers:
             ],
         )
 
-        response: List[Sticker] = await bot.get_custom_emoji_stickers(
+        response: list[Sticker] = await bot.get_custom_emoji_stickers(
             custom_emoji_ids=["1", "2"],
         )
-        request = bot.get_request()
+        bot.get_request()
         assert response == prepare_result.result

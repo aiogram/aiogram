@@ -851,9 +851,9 @@ class Message(MaybeInaccessibleMessage):
 
         from aiogram.methods import SendAnimation
 
-        assert (
-            self.chat is not None
-        ), "This method can be used only if chat is present in the message."
+        assert self.chat is not None, (
+            "This method can be used only if chat is present in the message."
+        )
 
         return SendAnimation(
             chat_id=self.chat.id,
@@ -944,9 +944,9 @@ class Message(MaybeInaccessibleMessage):
 
         from aiogram.methods import SendAnimation
 
-        assert (
-            self.chat is not None
-        ), "This method can be used only if chat is present in the message."
+        assert self.chat is not None, (
+            "This method can be used only if chat is present in the message."
+        )
 
         return SendAnimation(
             chat_id=self.chat.id,
@@ -1032,9 +1032,9 @@ class Message(MaybeInaccessibleMessage):
 
         from aiogram.methods import SendAudio
 
-        assert (
-            self.chat is not None
-        ), "This method can be used only if chat is present in the message."
+        assert self.chat is not None, (
+            "This method can be used only if chat is present in the message."
+        )
 
         return SendAudio(
             chat_id=self.chat.id,
@@ -1120,9 +1120,9 @@ class Message(MaybeInaccessibleMessage):
 
         from aiogram.methods import SendAudio
 
-        assert (
-            self.chat is not None
-        ), "This method can be used only if chat is present in the message."
+        assert self.chat is not None, (
+            "This method can be used only if chat is present in the message."
+        )
 
         return SendAudio(
             chat_id=self.chat.id,
@@ -1197,9 +1197,9 @@ class Message(MaybeInaccessibleMessage):
 
         from aiogram.methods import SendContact
 
-        assert (
-            self.chat is not None
-        ), "This method can be used only if chat is present in the message."
+        assert self.chat is not None, (
+            "This method can be used only if chat is present in the message."
+        )
 
         return SendContact(
             chat_id=self.chat.id,
@@ -1272,9 +1272,9 @@ class Message(MaybeInaccessibleMessage):
 
         from aiogram.methods import SendContact
 
-        assert (
-            self.chat is not None
-        ), "This method can be used only if chat is present in the message."
+        assert self.chat is not None, (
+            "This method can be used only if chat is present in the message."
+        )
 
         return SendContact(
             chat_id=self.chat.id,
@@ -1349,9 +1349,9 @@ class Message(MaybeInaccessibleMessage):
 
         from aiogram.methods import SendDocument
 
-        assert (
-            self.chat is not None
-        ), "This method can be used only if chat is present in the message."
+        assert self.chat is not None, (
+            "This method can be used only if chat is present in the message."
+        )
 
         return SendDocument(
             chat_id=self.chat.id,
@@ -1430,9 +1430,9 @@ class Message(MaybeInaccessibleMessage):
 
         from aiogram.methods import SendDocument
 
-        assert (
-            self.chat is not None
-        ), "This method can be used only if chat is present in the message."
+        assert self.chat is not None, (
+            "This method can be used only if chat is present in the message."
+        )
 
         return SendDocument(
             chat_id=self.chat.id,
@@ -1495,9 +1495,9 @@ class Message(MaybeInaccessibleMessage):
 
         from aiogram.methods import SendGame
 
-        assert (
-            self.chat is not None
-        ), "This method can be used only if chat is present in the message."
+        assert self.chat is not None, (
+            "This method can be used only if chat is present in the message."
+        )
 
         return SendGame(
             chat_id=self.chat.id,
@@ -1555,9 +1555,9 @@ class Message(MaybeInaccessibleMessage):
 
         from aiogram.methods import SendGame
 
-        assert (
-            self.chat is not None
-        ), "This method can be used only if chat is present in the message."
+        assert self.chat is not None, (
+            "This method can be used only if chat is present in the message."
+        )
 
         return SendGame(
             chat_id=self.chat.id,
@@ -1657,9 +1657,9 @@ class Message(MaybeInaccessibleMessage):
 
         from aiogram.methods import SendInvoice
 
-        assert (
-            self.chat is not None
-        ), "This method can be used only if chat is present in the message."
+        assert self.chat is not None, (
+            "This method can be used only if chat is present in the message."
+        )
 
         return SendInvoice(
             chat_id=self.chat.id,
@@ -1783,9 +1783,9 @@ class Message(MaybeInaccessibleMessage):
 
         from aiogram.methods import SendInvoice
 
-        assert (
-            self.chat is not None
-        ), "This method can be used only if chat is present in the message."
+        assert self.chat is not None, (
+            "This method can be used only if chat is present in the message."
+        )
 
         return SendInvoice(
             chat_id=self.chat.id,
@@ -1877,9 +1877,9 @@ class Message(MaybeInaccessibleMessage):
 
         from aiogram.methods import SendLocation
 
-        assert (
-            self.chat is not None
-        ), "This method can be used only if chat is present in the message."
+        assert self.chat is not None, (
+            "This method can be used only if chat is present in the message."
+        )
 
         return SendLocation(
             chat_id=self.chat.id,
@@ -1958,9 +1958,9 @@ class Message(MaybeInaccessibleMessage):
 
         from aiogram.methods import SendLocation
 
-        assert (
-            self.chat is not None
-        ), "This method can be used only if chat is present in the message."
+        assert self.chat is not None, (
+            "This method can be used only if chat is present in the message."
+        )
 
         return SendLocation(
             chat_id=self.chat.id,
@@ -2023,9 +2023,9 @@ class Message(MaybeInaccessibleMessage):
 
         from aiogram.methods import SendMediaGroup
 
-        assert (
-            self.chat is not None
-        ), "This method can be used only if chat is present in the message."
+        assert self.chat is not None, (
+            "This method can be used only if chat is present in the message."
+        )
 
         return SendMediaGroup(
             chat_id=self.chat.id,
@@ -2083,9 +2083,9 @@ class Message(MaybeInaccessibleMessage):
 
         from aiogram.methods import SendMediaGroup
 
-        assert (
-            self.chat is not None
-        ), "This method can be used only if chat is present in the message."
+        assert self.chat is not None, (
+            "This method can be used only if chat is present in the message."
+        )
 
         return SendMediaGroup(
             chat_id=self.chat.id,
@@ -2153,9 +2153,9 @@ class Message(MaybeInaccessibleMessage):
 
         from aiogram.methods import SendMessage
 
-        assert (
-            self.chat is not None
-        ), "This method can be used only if chat is present in the message."
+        assert self.chat is not None, (
+            "This method can be used only if chat is present in the message."
+        )
 
         return SendMessage(
             chat_id=self.chat.id,
@@ -2231,9 +2231,9 @@ class Message(MaybeInaccessibleMessage):
 
         from aiogram.methods import SendMessage
 
-        assert (
-            self.chat is not None
-        ), "This method can be used only if chat is present in the message."
+        assert self.chat is not None, (
+            "This method can be used only if chat is present in the message."
+        )
 
         return SendMessage(
             chat_id=self.chat.id,
@@ -2309,9 +2309,9 @@ class Message(MaybeInaccessibleMessage):
 
         from aiogram.methods import SendPhoto
 
-        assert (
-            self.chat is not None
-        ), "This method can be used only if chat is present in the message."
+        assert self.chat is not None, (
+            "This method can be used only if chat is present in the message."
+        )
 
         return SendPhoto(
             chat_id=self.chat.id,
@@ -2390,9 +2390,9 @@ class Message(MaybeInaccessibleMessage):
 
         from aiogram.methods import SendPhoto
 
-        assert (
-            self.chat is not None
-        ), "This method can be used only if chat is present in the message."
+        assert self.chat is not None, (
+            "This method can be used only if chat is present in the message."
+        )
 
         return SendPhoto(
             chat_id=self.chat.id,
@@ -2481,9 +2481,9 @@ class Message(MaybeInaccessibleMessage):
 
         from aiogram.methods import SendPoll
 
-        assert (
-            self.chat is not None
-        ), "This method can be used only if chat is present in the message."
+        assert self.chat is not None, (
+            "This method can be used only if chat is present in the message."
+        )
 
         return SendPoll(
             chat_id=self.chat.id,
@@ -2580,9 +2580,9 @@ class Message(MaybeInaccessibleMessage):
 
         from aiogram.methods import SendPoll
 
-        assert (
-            self.chat is not None
-        ), "This method can be used only if chat is present in the message."
+        assert self.chat is not None, (
+            "This method can be used only if chat is present in the message."
+        )
 
         return SendPoll(
             chat_id=self.chat.id,
@@ -2655,9 +2655,9 @@ class Message(MaybeInaccessibleMessage):
 
         from aiogram.methods import SendDice
 
-        assert (
-            self.chat is not None
-        ), "This method can be used only if chat is present in the message."
+        assert self.chat is not None, (
+            "This method can be used only if chat is present in the message."
+        )
 
         return SendDice(
             chat_id=self.chat.id,
@@ -2721,9 +2721,9 @@ class Message(MaybeInaccessibleMessage):
 
         from aiogram.methods import SendDice
 
-        assert (
-            self.chat is not None
-        ), "This method can be used only if chat is present in the message."
+        assert self.chat is not None, (
+            "This method can be used only if chat is present in the message."
+        )
 
         return SendDice(
             chat_id=self.chat.id,
@@ -2787,9 +2787,9 @@ class Message(MaybeInaccessibleMessage):
 
         from aiogram.methods import SendSticker
 
-        assert (
-            self.chat is not None
-        ), "This method can be used only if chat is present in the message."
+        assert self.chat is not None, (
+            "This method can be used only if chat is present in the message."
+        )
 
         return SendSticker(
             chat_id=self.chat.id,
@@ -2856,9 +2856,9 @@ class Message(MaybeInaccessibleMessage):
 
         from aiogram.methods import SendSticker
 
-        assert (
-            self.chat is not None
-        ), "This method can be used only if chat is present in the message."
+        assert self.chat is not None, (
+            "This method can be used only if chat is present in the message."
+        )
 
         return SendSticker(
             chat_id=self.chat.id,
@@ -2935,9 +2935,9 @@ class Message(MaybeInaccessibleMessage):
 
         from aiogram.methods import SendVenue
 
-        assert (
-            self.chat is not None
-        ), "This method can be used only if chat is present in the message."
+        assert self.chat is not None, (
+            "This method can be used only if chat is present in the message."
+        )
 
         return SendVenue(
             chat_id=self.chat.id,
@@ -3022,9 +3022,9 @@ class Message(MaybeInaccessibleMessage):
 
         from aiogram.methods import SendVenue
 
-        assert (
-            self.chat is not None
-        ), "This method can be used only if chat is present in the message."
+        assert self.chat is not None, (
+            "This method can be used only if chat is present in the message."
+        )
 
         return SendVenue(
             chat_id=self.chat.id,
@@ -3117,9 +3117,9 @@ class Message(MaybeInaccessibleMessage):
 
         from aiogram.methods import SendVideo
 
-        assert (
-            self.chat is not None
-        ), "This method can be used only if chat is present in the message."
+        assert self.chat is not None, (
+            "This method can be used only if chat is present in the message."
+        )
 
         return SendVideo(
             chat_id=self.chat.id,
@@ -3219,9 +3219,9 @@ class Message(MaybeInaccessibleMessage):
 
         from aiogram.methods import SendVideo
 
-        assert (
-            self.chat is not None
-        ), "This method can be used only if chat is present in the message."
+        assert self.chat is not None, (
+            "This method can be used only if chat is present in the message."
+        )
 
         return SendVideo(
             chat_id=self.chat.id,
@@ -3301,9 +3301,9 @@ class Message(MaybeInaccessibleMessage):
 
         from aiogram.methods import SendVideoNote
 
-        assert (
-            self.chat is not None
-        ), "This method can be used only if chat is present in the message."
+        assert self.chat is not None, (
+            "This method can be used only if chat is present in the message."
+        )
 
         return SendVideoNote(
             chat_id=self.chat.id,
@@ -3376,9 +3376,9 @@ class Message(MaybeInaccessibleMessage):
 
         from aiogram.methods import SendVideoNote
 
-        assert (
-            self.chat is not None
-        ), "This method can be used only if chat is present in the message."
+        assert self.chat is not None, (
+            "This method can be used only if chat is present in the message."
+        )
 
         return SendVideoNote(
             chat_id=self.chat.id,
@@ -3451,9 +3451,9 @@ class Message(MaybeInaccessibleMessage):
 
         from aiogram.methods import SendVoice
 
-        assert (
-            self.chat is not None
-        ), "This method can be used only if chat is present in the message."
+        assert self.chat is not None, (
+            "This method can be used only if chat is present in the message."
+        )
 
         return SendVoice(
             chat_id=self.chat.id,
@@ -3529,9 +3529,9 @@ class Message(MaybeInaccessibleMessage):
 
         from aiogram.methods import SendVoice
 
-        assert (
-            self.chat is not None
-        ), "This method can be used only if chat is present in the message."
+        assert self.chat is not None, (
+            "This method can be used only if chat is present in the message."
+        )
 
         return SendVoice(
             chat_id=self.chat.id,
@@ -3808,9 +3808,9 @@ class Message(MaybeInaccessibleMessage):
 
         from aiogram.methods import CopyMessage
 
-        assert (
-            self.chat is not None
-        ), "This method can be used only if chat is present in the message."
+        assert self.chat is not None, (
+            "This method can be used only if chat is present in the message."
+        )
 
         return CopyMessage(
             from_chat_id=self.chat.id,
@@ -3872,9 +3872,9 @@ class Message(MaybeInaccessibleMessage):
 
         from aiogram.methods import EditMessageText
 
-        assert (
-            self.chat is not None
-        ), "This method can be used only if chat is present in the message."
+        assert self.chat is not None, (
+            "This method can be used only if chat is present in the message."
+        )
 
         return EditMessageText(
             chat_id=self.chat.id,
@@ -3928,9 +3928,9 @@ class Message(MaybeInaccessibleMessage):
 
         from aiogram.methods import ForwardMessage
 
-        assert (
-            self.chat is not None
-        ), "This method can be used only if chat is present in the message."
+        assert self.chat is not None, (
+            "This method can be used only if chat is present in the message."
+        )
 
         return ForwardMessage(
             from_chat_id=self.chat.id,
@@ -3975,9 +3975,9 @@ class Message(MaybeInaccessibleMessage):
 
         from aiogram.methods import EditMessageMedia
 
-        assert (
-            self.chat is not None
-        ), "This method can be used only if chat is present in the message."
+        assert self.chat is not None, (
+            "This method can be used only if chat is present in the message."
+        )
 
         return EditMessageMedia(
             chat_id=self.chat.id,
@@ -4016,9 +4016,9 @@ class Message(MaybeInaccessibleMessage):
 
         from aiogram.methods import EditMessageReplyMarkup
 
-        assert (
-            self.chat is not None
-        ), "This method can be used only if chat is present in the message."
+        assert self.chat is not None, (
+            "This method can be used only if chat is present in the message."
+        )
 
         return EditMessageReplyMarkup(
             chat_id=self.chat.id,
@@ -4055,9 +4055,9 @@ class Message(MaybeInaccessibleMessage):
 
         from aiogram.methods import EditMessageReplyMarkup
 
-        assert (
-            self.chat is not None
-        ), "This method can be used only if chat is present in the message."
+        assert self.chat is not None, (
+            "This method can be used only if chat is present in the message."
+        )
 
         return EditMessageReplyMarkup(
             chat_id=self.chat.id,
@@ -4107,9 +4107,9 @@ class Message(MaybeInaccessibleMessage):
 
         from aiogram.methods import EditMessageLiveLocation
 
-        assert (
-            self.chat is not None
-        ), "This method can be used only if chat is present in the message."
+        assert self.chat is not None, (
+            "This method can be used only if chat is present in the message."
+        )
 
         return EditMessageLiveLocation(
             chat_id=self.chat.id,
@@ -4153,9 +4153,9 @@ class Message(MaybeInaccessibleMessage):
 
         from aiogram.methods import StopMessageLiveLocation
 
-        assert (
-            self.chat is not None
-        ), "This method can be used only if chat is present in the message."
+        assert self.chat is not None, (
+            "This method can be used only if chat is present in the message."
+        )
 
         return StopMessageLiveLocation(
             chat_id=self.chat.id,
@@ -4201,9 +4201,9 @@ class Message(MaybeInaccessibleMessage):
 
         from aiogram.methods import EditMessageCaption
 
-        assert (
-            self.chat is not None
-        ), "This method can be used only if chat is present in the message."
+        assert self.chat is not None, (
+            "This method can be used only if chat is present in the message."
+        )
 
         return EditMessageCaption(
             chat_id=self.chat.id,
@@ -4261,9 +4261,9 @@ class Message(MaybeInaccessibleMessage):
 
         from aiogram.methods import DeleteMessage
 
-        assert (
-            self.chat is not None
-        ), "This method can be used only if chat is present in the message."
+        assert self.chat is not None, (
+            "This method can be used only if chat is present in the message."
+        )
 
         return DeleteMessage(
             chat_id=self.chat.id,
@@ -4297,9 +4297,9 @@ class Message(MaybeInaccessibleMessage):
 
         from aiogram.methods import PinChatMessage
 
-        assert (
-            self.chat is not None
-        ), "This method can be used only if chat is present in the message."
+        assert self.chat is not None, (
+            "This method can be used only if chat is present in the message."
+        )
 
         return PinChatMessage(
             chat_id=self.chat.id,
@@ -4332,9 +4332,9 @@ class Message(MaybeInaccessibleMessage):
 
         from aiogram.methods import UnpinChatMessage
 
-        assert (
-            self.chat is not None
-        ), "This method can be used only if chat is present in the message."
+        assert self.chat is not None, (
+            "This method can be used only if chat is present in the message."
+        )
 
         return UnpinChatMessage(
             chat_id=self.chat.id,
@@ -4353,7 +4353,7 @@ class Message(MaybeInaccessibleMessage):
         :param include_thread_id: if set, adds chat thread id to URL and returns like https://t.me/username/thread_id/message_id
         :return: string with full message URL
         """
-        if self.chat.type in ("private", "group"):
+        if self.chat.type in {"private", "group"}:
             return None
 
         chat_value = (
@@ -4397,9 +4397,9 @@ class Message(MaybeInaccessibleMessage):
 
         from aiogram.methods import SetMessageReaction
 
-        assert (
-            self.chat is not None
-        ), "This method can be used only if chat is present in the message."
+        assert self.chat is not None, (
+            "This method can be used only if chat is present in the message."
+        )
 
         return SetMessageReaction(
             chat_id=self.chat.id,
@@ -4461,9 +4461,9 @@ class Message(MaybeInaccessibleMessage):
 
         from aiogram.methods import SendPaidMedia
 
-        assert (
-            self.chat is not None
-        ), "This method can be used only if chat is present in the message."
+        assert self.chat is not None, (
+            "This method can be used only if chat is present in the message."
+        )
 
         return SendPaidMedia(
             chat_id=self.chat.id,
@@ -4536,9 +4536,9 @@ class Message(MaybeInaccessibleMessage):
 
         from aiogram.methods import SendPaidMedia
 
-        assert (
-            self.chat is not None
-        ), "This method can be used only if chat is present in the message."
+        assert self.chat is not None, (
+            "This method can be used only if chat is present in the message."
+        )
 
         return SendPaidMedia(
             chat_id=self.chat.id,

@@ -15,5 +15,5 @@ class TestAnswerWebAppQuery:
                 thumbnail_url="test",
             ),
         )
-        request = bot.get_request()
+        bot.get_request()
         assert response == prepare_result.result

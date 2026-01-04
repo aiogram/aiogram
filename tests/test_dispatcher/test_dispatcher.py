@@ -6,7 +6,7 @@ import warnings
 from asyncio import Event
 from collections import Counter
 from contextlib import suppress
-from typing import Any, Optional
+from typing import Any
 from unittest.mock import AsyncMock, patch
 
 import pytest
@@ -199,7 +199,7 @@ class TestDispatcher:
     async def test_process_update_empty(self, bot: MockedBot):
         dispatcher = Dispatcher()
 
-        with pytest.warns(RuntimeWarning, match="Detected unknown update type") as record:
+        with pytest.warns(RuntimeWarning, match="Detected unknown update type"):
             result = await dispatcher._process_update(bot=bot, update=Update(update_id=42))
             assert not result
 
@@ -819,7 +819,7 @@ class TestDispatcher:
         with (
             patch(
                 "aiogram.dispatcher.dispatcher.Dispatcher._process_update", new_callable=AsyncMock
-            ) as mocked_process_update,
+            ),
             patch(
                 "aiogram.dispatcher.dispatcher.Dispatcher._listen_updates"
             ) as patched_listen_updates,
@@ -913,7 +913,7 @@ class TestDispatcher:
             patch(
                 "aiogram.dispatcher.dispatcher.Dispatcher._process_update",
                 side_effect=mock_process_update,
-            ) as mocked_process_update,
+            ),
             patch(
                 "aiogram.dispatcher.dispatcher.Dispatcher._listen_updates"
             ) as patched_listen_updates,

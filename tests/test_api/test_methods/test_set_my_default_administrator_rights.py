@@ -7,5 +7,5 @@ class TestSetMyDefaultAdministratorRights:
         prepare_result = bot.add_result_for(SetMyDefaultAdministratorRights, ok=True, result=True)
 
         response: bool = await bot.set_my_default_administrator_rights()
-        request = bot.get_request()
+        bot.get_request()
         assert response == prepare_result.result

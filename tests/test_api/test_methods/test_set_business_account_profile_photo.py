@@ -12,5 +12,5 @@ class TestSetBusinessAccountProfilePhoto:
             photo=InputProfilePhotoStatic(photo="test_photo_file_id"),
             is_public=True,
         )
-        request = bot.get_request()
+        bot.get_request()
         assert response == prepare_result.result

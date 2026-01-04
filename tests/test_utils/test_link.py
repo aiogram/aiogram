@@ -1,5 +1,5 @@
 from itertools import product
-from typing import Any, Dict
+from typing import Any
 from urllib.parse import parse_qs
 
 import pytest
@@ -18,7 +18,7 @@ class TestLink:
         "base,params,result",
         [["user", {"id": 42}, "tg://user?id=42"]],
     )
-    def test_create_tg_link(self, base: str, params: Dict[str, Any], result: str):
+    def test_create_tg_link(self, base: str, params: dict[str, Any], result: str):
         assert create_tg_link(base, **params) == result
 
     @pytest.mark.parametrize(
@@ -28,7 +28,7 @@ class TestLink:
             ["username", {"start": "test"}, "https://t.me/username?start=test"],
         ],
     )
-    def test_create_telegram_link(self, base: str, params: Dict[str, Any], result: str):
+    def test_create_telegram_link(self, base: str, params: dict[str, Any], result: str):
         assert create_telegram_link(base, **params) == result
 
     def test_fragment(self):
@@ -70,8 +70,8 @@ class TestCreateChannelBotLink:
         }
 
         variants = product([True, False], repeat=len(params))
-        for index, variants in enumerate(variants):
-            kwargs = {k: v for k, v in zip(params, variants) if v}
+        for _index, variants in enumerate(variants):
+            kwargs = {k: v for k, v in zip(params, variants, strict=False) if v}
             if not kwargs:
                 # Variant without additional arguments is already covered
                 continue

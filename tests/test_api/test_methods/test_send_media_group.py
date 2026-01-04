@@ -1,5 +1,4 @@
 import datetime
-from typing import List
 
 from aiogram.methods import SendMediaGroup
 from aiogram.types import (
@@ -45,12 +44,12 @@ class TestSendMediaGroup:
             ],
         )
 
-        response: List[Message] = await bot.send_media_group(
+        response: list[Message] = await bot.send_media_group(
             chat_id=42,
             media=[
                 InputMediaPhoto(media="file id"),
                 InputMediaVideo(media=BufferedInputFile(b"", "video.mp4")),
             ],
         )
-        request = bot.get_request()
+        bot.get_request()
         assert response == prepare_result.result

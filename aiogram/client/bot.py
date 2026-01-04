@@ -2,12 +2,11 @@ from __future__ import annotations
 
 import io
 import pathlib
+from collections.abc import AsyncGenerator, AsyncIterator
 from contextlib import asynccontextmanager
 from types import TracebackType
 from typing import (
     Any,
-    AsyncGenerator,
-    AsyncIterator,
     BinaryIO,
     TypeVar,
     cast,
@@ -283,9 +282,9 @@ class Bot:
         # Few arguments are completely removed in 3.7.0 version
         # Temporary solution to raise an error if user passed these arguments
         # with explanation how to fix it
-        parse_mode = kwargs.get("parse_mode", None)
-        link_preview_is_disabled = kwargs.get("disable_web_page_preview", None)
-        protect_content = kwargs.get("protect_content", None)
+        parse_mode = kwargs.get("parse_mode")
+        link_preview_is_disabled = kwargs.get("disable_web_page_preview")
+        protect_content = kwargs.get("protect_content")
         if (
             parse_mode is not None
             or link_preview_is_disabled is not None
@@ -310,7 +309,7 @@ class Bot:
         self.__token = token
         self._me: User | None = None
 
-    async def __aenter__(self) -> "Bot":
+    async def __aenter__(self) -> Bot:
         return self
 
     async def __aexit__(

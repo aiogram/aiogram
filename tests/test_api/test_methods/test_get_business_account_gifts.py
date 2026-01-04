@@ -37,5 +37,5 @@ class TestGetBusinessAccountGifts:
             business_connection_id="test_connection_id",
             limit=10,
         )
-        request = bot.get_request()
+        bot.get_request()
         assert response == prepare_result.result

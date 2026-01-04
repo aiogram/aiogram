@@ -1,5 +1,6 @@
 from collections import deque
-from typing import TYPE_CHECKING, Any, AsyncGenerator, Deque, Dict, Optional, Type
+from collections.abc import AsyncGenerator
+from typing import TYPE_CHECKING, Any
 
 from aiogram import Bot
 from aiogram.client.session.base import BaseSession
@@ -10,9 +11,9 @@ from aiogram.types import UNSET_PARSE_MODE, ResponseParameters, User
 
 class MockedSession(BaseSession):
     def __init__(self):
-        super(MockedSession, self).__init__()
-        self.responses: Deque[Response[TelegramType]] = deque()
-        self.requests: Deque[TelegramMethod[TelegramType]] = deque()
+        super().__init__()
+        self.responses: deque[Response[TelegramType]] = deque()
+        self.requests: deque[TelegramMethod[TelegramType]] = deque()
         self.closed = True
 
     def add_result(self, response: Response[TelegramType]) -> Response[TelegramType]:
@@ -29,7 +30,7 @@ class MockedSession(BaseSession):
         self,
         bot: Bot,
         method: TelegramMethod[TelegramType],
-        timeout: Optional[int] = UNSET_PARSE_MODE,
+        timeout: int | None = UNSET_PARSE_MODE,
     ) -> TelegramType:
         self.closed = False
         self.requests.append(method)
@@ -45,7 +46,7 @@ class MockedSession(BaseSession):
     async def stream_content(
         self,
         url: str,
-        headers: Optional[Dict[str, Any]] = None,
+        headers: dict[str, Any] | None = None,
         timeout: int = 30,
         chunk_size: int = 65536,
         raise_for_status: bool = True,
@@ -58,9 +59,7 @@ class MockedBot(Bot):
         session: MockedSession
 
     def __init__(self, **kwargs):
-        super(MockedBot, self).__init__(
-            kwargs.pop("token", "42:TEST"), session=MockedSession(), **kwargs
-        )
+        super().__init__(kwargs.pop("token", "42:TEST"), session=MockedSession(), **kwargs)
         self._me = User(
             id=self.id,
             is_bot=True,
@@ -72,13 +71,13 @@ class MockedBot(Bot):
 
     def add_result_for(
         self,
-        method: Type[TelegramMethod[TelegramType]],
+        method: type[TelegramMethod[TelegramType]],
         ok: bool,
         result: TelegramType = None,
-        description: Optional[str] = None,
+        description: str | None = None,
         error_code: int = 200,
-        migrate_to_chat_id: Optional[int] = None,
-        retry_after: Optional[int] = None,
+        migrate_to_chat_id: int | None = None,
+        retry_after: int | None = None,
     ) -> Response[TelegramType]:
         response = Response[method.__returning__](  # type: ignore
             ok=ok,

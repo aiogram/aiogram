@@ -1,5 +1,6 @@
 import functools
-from typing import Any, Callable, Dict, Set, Union
+from collections.abc import Callable
+from typing import Any
 
 import pytest
 from magic_filter import F as A
@@ -29,7 +30,7 @@ async def callback4(foo: int, *, bar: int, baz: int):
 
 
 class TestFilter(Filter):
-    async def __call__(self, foo: int, bar: int, baz: int) -> Union[bool, Dict[str, Any]]:
+    async def __call__(self, foo: int, bar: int, baz: int) -> bool | dict[str, Any]:
         return locals()
 
 
@@ -61,7 +62,7 @@ class TestCallableObject:
             pytest.param(SyncCallable(), {"foo", "bar", "baz"}),
         ],
     )
-    def test_init_args_spec(self, callback: Callable, args: Set[str]):
+    def test_init_args_spec(self, callback: Callable, args: set[str]):
         obj = CallableObject(callback)
         assert set(obj.params) == args
 
@@ -125,7 +126,7 @@ class TestCallableObject:
         ],
     )
     def test_prepare_kwargs(
-        self, callback: Callable, kwargs: Dict[str, Any], result: Dict[str, Any]
+        self, callback: Callable, kwargs: dict[str, Any], result: dict[str, Any]
     ):
         obj = CallableObject(callback)
         assert obj._prepare_kwargs(kwargs) == result
@@ -147,7 +148,6 @@ class TestFilterObject:
     def test_post_init(self):
         case = F.test
         filter_obj = FilterObject(callback=case)
-        print(filter_obj.callback)
         assert filter_obj.callback == case.resolve
 
 

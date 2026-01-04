@@ -1,4 +1,4 @@
-from typing import Awaitable
+from collections.abc import Awaitable
 from unittest.mock import AsyncMock, patch
 
 from aiogram.filters import Filter

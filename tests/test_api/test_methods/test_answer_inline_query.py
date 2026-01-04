@@ -17,5 +17,5 @@ class TestAnswerInlineQuery:
                 )
             ],
         )
-        request = bot.get_request()
+        bot.get_request()
         assert response == prepare_result.result

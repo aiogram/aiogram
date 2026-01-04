@@ -1,5 +1,4 @@
 from datetime import datetime
-from typing import Type
 
 import pytest
 
@@ -90,6 +89,6 @@ CHAT_MEMBER_RESTRICTED = ChatMemberRestricted(
         (CHAT_MEMBER_RESTRICTED, ChatMemberRestricted),
     ],
 )
-def test_chat_member_resolution(data: dict, resolved_type: Type[ChatMember]) -> None:
+def test_chat_member_resolution(data: dict, resolved_type: type[ChatMember]) -> None:
     chat_member = ChatMemberAdapter.validate_python(data)
     assert isinstance(chat_member, resolved_type)

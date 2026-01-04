@@ -15,5 +15,5 @@ class TestSendMessageDraft:
             draft_id=1,
             text="test draft",
         )
-        request = bot.get_request()
+        bot.get_request()
         assert response == prepare_result.result

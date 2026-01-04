@@ -25,5 +25,5 @@ class TestGetChat:
         )
 
         response: ChatFullInfo = await bot.get_chat(chat_id=-42)
-        request = bot.get_request()
+        bot.get_request()
         assert response == prepare_result.result

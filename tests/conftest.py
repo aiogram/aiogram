@@ -144,8 +144,7 @@ async def memory_storage():
 
 @pytest.fixture()
 async def redis_isolation(redis_storage):
-    isolation = redis_storage.create_isolation()
-    return isolation
+    return redis_storage.create_isolation()
 
 
 @pytest.fixture()

@@ -1,4 +1,4 @@
-from typing import Any, Dict, Type, Union
+from typing import Any
 
 import pytest
 
@@ -49,46 +49,46 @@ class TestMessage:
     @pytest.mark.parametrize(
         "alias_for_method,kwargs,method_class",
         [
-            ["animation", dict(animation="animation"), SendAnimation],
-            ["audio", dict(audio="audio"), SendAudio],
-            ["contact", dict(phone_number="+000000000000", first_name="Test"), SendContact],
-            ["document", dict(document="document"), SendDocument],
-            ["game", dict(game_short_name="game"), SendGame],
+            ["animation", {"animation": "animation"}, SendAnimation],
+            ["audio", {"audio": "audio"}, SendAudio],
+            ["contact", {"phone_number": "+000000000000", "first_name": "Test"}, SendContact],
+            ["document", {"document": "document"}, SendDocument],
+            ["game", {"game_short_name": "game"}, SendGame],
             [
                 "invoice",
-                dict(
-                    title="title",
-                    description="description",
-                    payload="payload",
-                    provider_token="provider_token",
-                    start_parameter="start_parameter",
-                    currency="currency",
-                    prices=[],
-                ),
+                {
+                    "title": "title",
+                    "description": "description",
+                    "payload": "payload",
+                    "provider_token": "provider_token",
+                    "start_parameter": "start_parameter",
+                    "currency": "currency",
+                    "prices": [],
+                },
                 SendInvoice,
             ],
-            ["location", dict(latitude=0.42, longitude=0.42), SendLocation],
-            ["media_group", dict(media=[]), SendMediaGroup],
-            ["", dict(text="test"), SendMessage],
-            ["photo", dict(photo="photo"), SendPhoto],
-            ["poll", dict(question="Q?", options=[]), SendPoll],
-            ["dice", dict(), SendDice],
-            ["sticker", dict(sticker="sticker"), SendSticker],
-            ["sticker", dict(sticker="sticker"), SendSticker],
+            ["location", {"latitude": 0.42, "longitude": 0.42}, SendLocation],
+            ["media_group", {"media": []}, SendMediaGroup],
+            ["", {"text": "test"}, SendMessage],
+            ["photo", {"photo": "photo"}, SendPhoto],
+            ["poll", {"question": "Q?", "options": []}, SendPoll],
+            ["dice", {}, SendDice],
+            ["sticker", {"sticker": "sticker"}, SendSticker],
+            ["sticker", {"sticker": "sticker"}, SendSticker],
             [
                 "venue",
-                dict(
-                    latitude=0.42,
-                    longitude=0.42,
-                    title="title",
-                    address="address",
-                ),
+                {
+                    "latitude": 0.42,
+                    "longitude": 0.42,
+                    "title": "title",
+                    "address": "address",
+                },
                 SendVenue,
             ],
-            ["video", dict(video="video"), SendVideo],
-            ["video_note", dict(video_note="video_note"), SendVideoNote],
-            ["voice", dict(voice="voice"), SendVoice],
-            ["paid_media", dict(media=[], star_count=42), SendPaidMedia],
+            ["video", {"video": "video"}, SendVideo],
+            ["video_note", {"video_note": "video_note"}, SendVideoNote],
+            ["voice", {"voice": "voice"}, SendVoice],
+            ["paid_media", {"media": [], "star_count": 42}, SendPaidMedia],
         ],
     )
     @pytest.mark.parametrize("alias_type", ["reply", "answer"])
@@ -96,28 +96,26 @@ class TestMessage:
         self,
         alias_for_method: str,
         alias_type: str,
-        kwargs: Dict[str, Any],
-        method_class: Type[
-            Union[
-                SendAnimation,
-                SendAudio,
-                SendContact,
-                SendDocument,
-                SendGame,
-                SendInvoice,
-                SendLocation,
-                SendMediaGroup,
-                SendMessage,
-                SendPhoto,
-                SendPoll,
-                SendSticker,
-                SendSticker,
-                SendVenue,
-                SendVideo,
-                SendVideoNote,
-                SendVoice,
-                SendPaidMedia,
-            ]
+        kwargs: dict[str, Any],
+        method_class: type[
+            SendAnimation
+            | SendAudio
+            | SendContact
+            | SendDocument
+            | SendGame
+            | SendInvoice
+            | SendLocation
+            | SendMediaGroup
+            | SendMessage
+            | SendPhoto
+            | SendPoll
+            | SendSticker
+            | SendSticker
+            | SendVenue
+            | SendVideo
+            | SendVideoNote
+            | SendVoice
+            | SendPaidMedia
         ],
     ):
         message = InaccessibleMessage(
