@@ -4353,7 +4353,7 @@ class Message(MaybeInaccessibleMessage):
         :param include_thread_id: if set, adds chat thread id to URL and returns like https://t.me/username/thread_id/message_id
         :return: string with full message URL
         """
-        if self.chat.type in ("private", "group"):
+        if self.chat.type in {"private", "group"}:
             return None
 
         chat_value = (
