@@ -1,0 +1,7 @@
+Docs: add guide "Testing your bot" (pytest examples)
+
+A new documentation page explaining how to test bot handlers with pytest
+without sending real requests to Telegram API.
+Includes:
+- an echo handler example
+- a callback query example
