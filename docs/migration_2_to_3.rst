@@ -154,3 +154,201 @@ you relied on catching very specific v2 exception classes, replace those
 handlers with the corresponding v3 class above (or catch a broader v3 class
 such as :class:`TelegramBadRequest` / :class:`TelegramAPIError`) and inspect
 available attributes (see "Mapping (v2 -> v3)") for any required details.
+
+
+Middlewares
+===========
+
+- Middlewares can now control an execution context, e.g., using context managers.
+  (:ref:`Read more » <middlewares>`)
+- All contextual data is now shared end-to-end between middlewares, filters, and handlers.
+  For example now you can easily pass some data into context inside middleware and
+  get it in the filters layer as the same way as in the handlers via keyword arguments.
+- Added a mechanism named **flags** that helps customize handler behavior
+  in conjunction with middlewares. (:ref:`Read more » <flags>`)
+
+
+Keyboard Markup
+===============
+
+- Now :class:`aiogram.types.inline_keyboard_markup.InlineKeyboardMarkup`
+  and :class:`aiogram.types.reply_keyboard_markup.ReplyKeyboardMarkup` no longer have methods for extension,
+  instead you have to use markup builders :class:`aiogram.utils.keyboard.ReplyKeyboardBuilder`
+  and :class:`aiogram.utils.keyboard.KeyboardBuilder` respectively
+  (:ref:`Read more » <Keyboard builder>`)
+
+
+Callbacks data
+==============
+
+- The callback data factory is now strictly typed using `pydantic <https://docs.pydantic.dev/>`_ models.
+  (:ref:`Read more » <Callback data factory>`)
+
+
+Finite State machine
+====================
+
+- State filters will no longer be automatically added to all handlers;
+  you will need to specify the state if you want to use it.
+- Added the possibility to change the FSM strategy. For example,
+  if you want to control the state for each user based on chat topics rather than
+  the user in a chat, you can specify this in the |Dispatcher|.
+- Now :class:`aiogram.fsm.state.State` and :class:`aiogram.fsm.state.StateGroup` don't have helper
+  methods like :code:`.set()`, :code:`.next()`, etc.
+  Instead, you should set states by passing them directly to
+  :class:`aiogram.fsm.context.FSMContext` (:ref:`Read more » <Finite State Machine>`)
+- The state proxy is deprecated; you should update the state data by calling
+  :code:`state.set_data(...)` and :code:`state.get_data()` respectively.
+
+
+Sending Files
+=============
+
+- From now on, you should wrap files in an InputFile object before sending them,
+  instead of passing the IO object directly to the API method. (:ref:`Read more » <sending-files>`)
+
+
+Webhook
+=======
+
+- The aiohttp web app configuration has been simplified.
+- By default, the ability to upload files has been added when you `make requests in response to updates <https://core.telegram.org/bots/faq#how-can-i-make-requests-in-response-to-updates>`_ (available for webhook only).
+
+
+Telegram API Server
+===================
+
+- The :obj:`server` parameter has been moved from the |Bot| instance to :obj:`api` parameter of the :class:`~aiogram.client.session.base.BaseSession`.
+- The constant :obj:`aiogram.bot.api.TELEGRAM_PRODUCTION` has been moved to :obj:`aiogram.client.telegram.PRODUCTION`.
+
+
+Telegram objects transformation (to dict, to json, from json)
+=============================================================
+
+- Methods :code:`TelegramObject.to_object()`, :code:`TelegramObject.to_json()` and :code:`TelegramObject.to_python()`
+  have been removed due to the use of `pydantic <https://docs.pydantic.dev/>`_ models.
+- :code:`TelegramObject.to_object()` should be replaced by :code:`TelegramObject.model_validate()`
+  (`Read more <https://docs.pydantic.dev/2.7/api/base_model/#pydantic.BaseModel.model_validate>`_)
+- :code:`TelegramObject.as_json()` should be replaced by :func:`aiogram.utils.serialization.deserialize_telegram_object_to_python`
+- :code:`<TelegramObject>.to_python()` should be replaced by :code:`json.dumps(deserialize_telegram_object_to_python(<TelegramObject>))`
+
+Here are some usage examples:
+
+- Creating an object from a dictionary representation of an object
+
+  .. code-block::
+
+    # Version 2.x
+    message_dict = {"id": 42, ...}
+    message_obj = Message.to_object(message_dict)
+    print(message_obj)
+    # id=42 name='n' ...
+    print(type(message_obj))
+    # <class 'aiogram.types.message.Message'>
+
+  .. code-block::
+
+    # Version 3.x
+    message_dict = {"id": 42, ...}
+    message_obj = Message.model_validate(message_dict)
+    print(message_obj)
+    # id=42 name='n' ...
+    print(type(message_obj))
+    # <class 'aiogram.types.message.Message'>
+
+- Creating a json representation of an object
+
+  .. code-block::
+
+    # Version 2.x
+    async def handler(message: Message) -> None:
+        message_json = message.as_json()
+        print(message_json)
+        # {"id": 42, ...}
+        print(type(message_json))
+        # <class 'str'>
+
+  .. code-block::
+
+    # Version 3.x
+    async def handler(message: Message) -> None:
+        message_json = json.dumps(deserialize_telegram_object_to_python(message))
+        print(message_json)
+        # {"id": 42, ...}
+        print(type(message_json))
+        # <class 'str'>
+
+- Creating a dictionary representation of an object
+
+  .. code-block::
+
+    async def handler(message: Message) -> None:
+        # Version 2.x
+        message_dict = message.to_python()
+        print(message_dict)
+        # {"id": 42, ...}
+        print(type(message_dict))
+        # <class 'dict'>
+
+  .. code-block::
+
+    async def handler(message: Message) -> None:
+        # Version 3.x
+        message_dict = deserialize_telegram_object_to_python(message)
+        print(message_dict)
+        # {"id": 42, ...}
+        print(type(message_dict))
+        # <class 'dict'>
+
+
+ChatMember tools
+================
+
+- Now :class:`aiogram.types.chat_member.ChatMember` no longer contains tools to resolve an object with the appropriate status.
+
+  .. code-block::
+
+    # Version 2.x
+    from aiogram.types import ChatMember
+
+    chat_member = ChatMember.resolve(**dict_data)
+
+  .. code-block::
+
+    # Version 3.x
+    from aiogram.utils.chat_member import ChatMemberAdapter
+
+    chat_member = ChatMemberAdapter.validate_python(dict_data)
+
+
+- Now :class:`aiogram.types.chat_member.ChatMember` and all its child classes no longer
+  contain methods for checking for membership in certain logical groups.
+  As a substitute, you can use pre-defined groups or create such groups yourself
+  and check their entry using the :func:`isinstance` function
+
+  .. code-block::
+
+    # Version 2.x
+
+    if chat_member.is_chat_admin():
+        print("ChatMember is chat admin")
+
+    if chat_member.is_chat_member():
+        print("ChatMember is in the chat")
+
+  .. code-block::
+
+    # Version 3.x
+
+    from aiogram.utils.chat_member import ADMINS, MEMBERS
+
+    if isinstance(chat_member, ADMINS):
+        print("ChatMember is chat admin")
+
+    if isinstance(chat_member, MEMBERS):
+        print("ChatMember is in the chat")
+
+  .. note::
+    You also can independently create group similar to ADMINS that fits the logic of your application.
+
+    E.g., you can create a PUNISHED group and include banned and restricted members there!
