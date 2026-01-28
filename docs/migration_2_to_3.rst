@@ -122,12 +122,6 @@ Mapping (v2 -> v3)
 - NetworkError -> :class:`TelegramNetworkError`
 - EntityTooLarge -> :class:`TelegramEntityTooLarge`
 
-Migration notes
----------------
-
-- Use the mapped v3 exception classes in your code; when behavior depends on
-  specific error details, rely on the attributes listed above (``retry_after``,
-  ``migrate_to_chat_id``, ``original``, ``data``) instead of parsing messages.
 
 Exceptions removed in v3 (from v2)
 ----------------------------------
