@@ -94,8 +94,60 @@ Bot API
   However, all errors are classified by HTTP status codes, and for each method,
   only one type of error can be associated with a given code.
   Therefore, in most cases, you should check only the error type (by status code)
-  without inspecting the error message.
+  without inspecting the error message. More details can be found in the
+  :ref:`exceptions section » <exceptions>`.
 
+
+Exceptions
+==========
+
+Mapping (v2 -> v3)
+-------------------
+
+- RetryAfter -> :class:`TelegramRetryAfter` (:mod:`aiogram.exceptions`)
+  - Important attribute in v3: ``retry_after`` (int).
+
+- ChatMigrated / MigrateToChat -> :class:`TelegramMigrateToChat`
+  - Important attribute in v3: ``migrate_to_chat_id`` (int).
+
+- ClientDecodeError -> :class:`ClientDecodeError`
+  - Important attributes in v3: ``original`` (Exception) and ``data`` (response body).
+
+- BadRequest -> :class:`TelegramBadRequest`
+- Unauthorized -> :class:`TelegramUnauthorizedError`
+- Forbidden -> :class:`TelegramForbiddenError`
+- NotFound -> :class:`TelegramNotFound`
+- Conflict -> :class:`TelegramConflictError`
+- ServerError -> :class:`TelegramServerError`
+- NetworkError -> :class:`TelegramNetworkError`
+- EntityTooLarge -> :class:`TelegramEntityTooLarge`
+
+
+Exceptions removed in v3 (from v2)
+----------------------------------
+
+The list below contains common exception names that appeared in aiogram v2 but
+are not defined as separate classes in the v3 codebase. For each v2 name, a
+recommended v3 replacement (or handling) is provided — keep your migration
+logic simple and rely on the v3 exception classes and their attributes.
+
+- MessageNotModified -> :class:`TelegramBadRequest`
+- MessageToEditNotFound -> :class:`TelegramNotFound`
+- MessageToDeleteNotFound -> :class:`TelegramNotFound`
+- MessageCantBeDeleted -> :class:`TelegramForbiddenError` / :class:`TelegramBadRequest`
+- CantParseEntities -> :class:`TelegramBadRequest`
+- MessageIsTooLong -> :class:`TelegramEntityTooLarge`
+- MessageIdentifierNotFound -> :class:`TelegramNotFound`
+- UserDeactivated -> :class:`TelegramForbiddenError`
+- CantInitiateConversation -> :class:`TelegramBadRequest`
+- StickerSetNameInvalid -> :class:`TelegramBadRequest`
+- ChatAdminRequired -> :class:`TelegramForbiddenError`
+
+Use these replacements when migrating exception handling from v2 to v3. If
+you relied on catching very specific v2 exception classes, replace those
+handlers with the corresponding v3 class above (or catch a broader v3 class
+such as :class:`TelegramBadRequest` / :class:`TelegramAPIError`) and inspect
+available attributes (see "Mapping (v2 -> v3)") for any required details.
 
 
 Middlewares
