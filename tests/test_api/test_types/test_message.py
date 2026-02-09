@@ -46,6 +46,8 @@ from aiogram.types import (
     Chat,
     ChatBackground,
     ChatBoostAdded,
+    ChatOwnerChanged,
+    ChatOwnerLeft,
     ChatShared,
     Checklist,
     ChecklistTask,
@@ -250,6 +252,24 @@ TEST_MESSAGE_LEFT_CHAT_MEMBER = Message(
     message_id=42,
     date=datetime.datetime.now(),
     left_chat_member=User(id=42, is_bot=False, first_name="Test"),
+    chat=Chat(id=42, type="private"),
+    from_user=User(id=42, is_bot=False, first_name="Test"),
+)
+TEST_MESSAGE_CHAT_OWNER_LEFT = Message(
+    message_id=42,
+    date=datetime.datetime.now(),
+    chat_owner_left=ChatOwnerLeft(
+        new_owner=User(id=43, is_bot=False, first_name="NewOwner"),
+    ),
+    chat=Chat(id=42, type="private"),
+    from_user=User(id=42, is_bot=False, first_name="Test"),
+)
+TEST_MESSAGE_CHAT_OWNER_CHANGED = Message(
+    message_id=42,
+    date=datetime.datetime.now(),
+    chat_owner_changed=ChatOwnerChanged(
+        new_owner=User(id=43, is_bot=False, first_name="NewOwner"),
+    ),
     chat=Chat(id=42, type="private"),
     from_user=User(id=42, is_bot=False, first_name="Test"),
 )
@@ -849,6 +869,8 @@ MESSAGES_AND_CONTENT_TYPES = [
     [TEST_MESSAGE_LOCATION, ContentType.LOCATION],
     [TEST_MESSAGE_NEW_CHAT_MEMBERS, ContentType.NEW_CHAT_MEMBERS],
     [TEST_MESSAGE_LEFT_CHAT_MEMBER, ContentType.LEFT_CHAT_MEMBER],
+    [TEST_MESSAGE_CHAT_OWNER_LEFT, ContentType.CHAT_OWNER_LEFT],
+    [TEST_MESSAGE_CHAT_OWNER_CHANGED, ContentType.CHAT_OWNER_CHANGED],
     [TEST_MESSAGE_INVOICE, ContentType.INVOICE],
     [TEST_MESSAGE_SUCCESSFUL_PAYMENT, ContentType.SUCCESSFUL_PAYMENT],
     [TEST_MESSAGE_CONNECTED_WEBSITE, ContentType.CONNECTED_WEBSITE],
@@ -930,6 +952,8 @@ MESSAGES_AND_COPY_METHODS = [
     [TEST_MESSAGE_STORY, ForwardMessage],
     [TEST_MESSAGE_NEW_CHAT_MEMBERS, None],
     [TEST_MESSAGE_LEFT_CHAT_MEMBER, None],
+    [TEST_MESSAGE_CHAT_OWNER_LEFT, None],
+    [TEST_MESSAGE_CHAT_OWNER_CHANGED, None],
     [TEST_MESSAGE_INVOICE, None],
     [TEST_MESSAGE_SUCCESSFUL_PAYMENT, None],
     [TEST_MESSAGE_CONNECTED_WEBSITE, None],
