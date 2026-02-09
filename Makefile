@@ -44,7 +44,7 @@ lint:
 .PHONY: reformat
 reformat:
 	uv run ruff format $(code_dir)
-	uv run ruff check --fix $(package_dir)
+	uv run ruff check --fix $(code_dir)
 
 # =================================================================================================
 # Tests
