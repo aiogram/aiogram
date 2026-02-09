@@ -7,6 +7,7 @@ from .base import TelegramObject
 
 if TYPE_CHECKING:
     from .photo_size import PhotoSize
+    from .video_quality import VideoQuality
 
 
 class Video(TelegramObject):
@@ -32,6 +33,8 @@ class Video(TelegramObject):
     """*Optional*. Available sizes of the cover of the video in the message"""
     start_timestamp: datetime.datetime | None = None
     """*Optional*. Timestamp in seconds from which the video will play in the message"""
+    qualities: list[VideoQuality] | None = None
+    """*Optional*. List of available qualities of the video"""
     file_name: str | None = None
     """*Optional*. Original filename as defined by the sender"""
     mime_type: str | None = None
@@ -54,6 +57,7 @@ class Video(TelegramObject):
             thumbnail: PhotoSize | None = None,
             cover: list[PhotoSize] | None = None,
             start_timestamp: datetime.datetime | None = None,
+            qualities: list[VideoQuality] | None = None,
             file_name: str | None = None,
             mime_type: str | None = None,
             file_size: int | None = None,
@@ -72,6 +76,7 @@ class Video(TelegramObject):
                 thumbnail=thumbnail,
                 cover=cover,
                 start_timestamp=start_timestamp,
+                qualities=qualities,
                 file_name=file_name,
                 mime_type=mime_type,
                 file_size=file_size,

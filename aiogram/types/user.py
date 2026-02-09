@@ -45,6 +45,8 @@ class User(TelegramObject):
     """*Optional*. :code:`True`, if the bot has a main Web App. Returned only in :class:`aiogram.methods.get_me.GetMe`."""
     has_topics_enabled: bool | None = None
     """*Optional*. :code:`True`, if the bot has forum topic mode enabled in private chats. Returned only in :class:`aiogram.methods.get_me.GetMe`."""
+    allows_users_to_create_topics: bool | None = None
+    """*Optional*. :code:`True`, if the bot allows users to create and delete topics in private chats. Returned only in :class:`aiogram.methods.get_me.GetMe`."""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!
@@ -67,6 +69,7 @@ class User(TelegramObject):
             can_connect_to_business: bool | None = None,
             has_main_web_app: bool | None = None,
             has_topics_enabled: bool | None = None,
+            allows_users_to_create_topics: bool | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!
@@ -88,6 +91,7 @@ class User(TelegramObject):
                 can_connect_to_business=can_connect_to_business,
                 has_main_web_app=has_main_web_app,
                 has_topics_enabled=has_topics_enabled,
+                allows_users_to_create_topics=allows_users_to_create_topics,
                 **__pydantic_kwargs,
             )
 

@@ -7,9 +7,9 @@
   "object": {
     "anchor": "gamehighscore",
     "name": "GameHighScore",
-    "description": "This object represents one row of the high scores table for a game.\nAnd that's about all we've got for now.\nIf you've got any questions, please check out our Bot FAQ",
-    "html_description": "<p>This object represents one row of the high scores table for a game.</p><p>And that's about all we've got for now.<br/>\nIf you've got any questions, please check out our <a href=\"/bots/faq\"><strong>Bot FAQ &#187;</strong></a></p>",
-    "rst_description": "This object represents one row of the high scores table for a game.\nAnd that's about all we've got for now.\n\nIf you've got any questions, please check out our `https://core.telegram.org/bots/faq <https://core.telegram.org/bots/faq>`_ **Bot FAQ »**",
+    "description": "This object represents one row of the high scores table for a game.\nAnd that's about all we've got for now.\nIf you've got any questions, please check out our Bot FAQ\n-",
+    "html_description": "<p>This object represents one row of the high scores table for a game.</p><p>And that's about all we've got for now.<br/>\nIf you've got any questions, please check out our <a href=\"/bots/faq\"><strong>Bot FAQ &#187;</strong></a><br/>\n-</p>",
+    "rst_description": "This object represents one row of the high scores table for a game.\nAnd that's about all we've got for now.\n\nIf you've got any questions, please check out our `https://core.telegram.org/bots/faq <https://core.telegram.org/bots/faq>`_ **Bot FAQ »**\n\n-",
     "annotations": [
       {
         "type": "Integer",

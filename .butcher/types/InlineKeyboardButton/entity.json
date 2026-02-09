@@ -7,9 +7,9 @@
   "object": {
     "anchor": "inlinekeyboardbutton",
     "name": "InlineKeyboardButton",
-    "description": "This object represents one button of an inline keyboard. Exactly one of the optional fields must be used to specify type of the button.",
-    "html_description": "<p>This object represents one button of an inline keyboard. Exactly one of the optional fields must be used to specify type of the button.</p>",
-    "rst_description": "This object represents one button of an inline keyboard. Exactly one of the optional fields must be used to specify type of the button.",
+    "description": "This object represents one button of an inline keyboard. Exactly one of the fields other than text, icon_custom_emoji_id, and style must be used to specify the type of the button.",
+    "html_description": "<p>This object represents one button of an inline keyboard. Exactly one of the fields other than <em>text</em>, <em>icon_custom_emoji_id</em>, and <em>style</em> must be used to specify the type of the button.</p>",
+    "rst_description": "This object represents one button of an inline keyboard. Exactly one of the fields other than *text*, *icon_custom_emoji_id*, and *style* must be used to specify the type of the button.",
     "annotations": [
       {
         "type": "String",
@@ -18,6 +18,22 @@
         "rst_description": "Label text on the button\n",
         "name": "text",
         "required": true
+      },
+      {
+        "type": "String",
+        "description": "Unique identifier of the custom emoji shown before the text of the button. Can only be used by bots that purchased additional usernames on Fragment or in the messages directly sent by the bot to private, group and supergroup chats if the owner of the bot has a Telegram Premium subscription.",
+        "html_description": "<td><em>Optional</em>. Unique identifier of the custom emoji shown before the text of the button. Can only be used by bots that purchased additional usernames on <a href=\"https://fragment.com\">Fragment</a> or in the messages directly sent by the bot to private, group and supergroup chats if the owner of the bot has a Telegram Premium subscription.</td>",
+        "rst_description": "*Optional*. Unique identifier of the custom emoji shown before the text of the button. Can only be used by bots that purchased additional usernames on `Fragment <https://fragment.com>`_ or in the messages directly sent by the bot to private, group and supergroup chats if the owner of the bot has a Telegram Premium subscription.\n",
+        "name": "icon_custom_emoji_id",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "Style of the button. Must be one of 'danger' (red), 'success' (green) or 'primary' (blue). If omitted, then an app-specific style is used.",
+        "html_description": "<td><em>Optional</em>. Style of the button. Must be one of &#8220;danger&#8221; (red), &#8220;success&#8221; (green) or &#8220;primary&#8221; (blue). If omitted, then an app-specific style is used.</td>",
+        "rst_description": "*Optional*. Style of the button. Must be one of 'danger' (red), 'success' (green) or 'primary' (blue). If omitted, then an app-specific style is used.\n",
+        "name": "style",
+        "required": false
       },
       {
         "type": "String",

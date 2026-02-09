@@ -20,7 +20,9 @@ class UniqueGiftModel(TelegramObject):
     sticker: Sticker
     """The sticker that represents the unique gift"""
     rarity_per_mille: int
-    """The number of unique gifts that receive this model for every 1000 gifts upgraded"""
+    """The number of unique gifts that receive this model for every 1000 gift upgrades. Always 0 for crafted gifts."""
+    rarity: str | None = None
+    """*Optional*. Rarity of the model if it is a crafted model. Currently, can be 'uncommon', 'rare', 'epic', or 'legendary'."""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!
@@ -32,6 +34,7 @@ class UniqueGiftModel(TelegramObject):
             name: str,
             sticker: Sticker,
             rarity_per_mille: int,
+            rarity: str | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!
@@ -39,5 +42,9 @@ class UniqueGiftModel(TelegramObject):
             # Is needed only for type checking and IDE support without any additional plugins
 
             super().__init__(
-                name=name, sticker=sticker, rarity_per_mille=rarity_per_mille, **__pydantic_kwargs
+                name=name,
+                sticker=sticker,
+                rarity_per_mille=rarity_per_mille,
+                rarity=rarity,
+                **__pydantic_kwargs,
             )

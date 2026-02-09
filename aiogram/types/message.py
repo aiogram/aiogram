@@ -55,6 +55,8 @@ if TYPE_CHECKING:
     from .chat_background import ChatBackground
     from .chat_boost_added import ChatBoostAdded
     from .chat_id_union import ChatIdUnion
+    from .chat_owner_changed import ChatOwnerChanged
+    from .chat_owner_left import ChatOwnerLeft
     from .chat_shared import ChatShared
     from .checklist import Checklist
     from .checklist_tasks_added import ChecklistTasksAdded
@@ -245,6 +247,10 @@ class Message(MaybeInaccessibleMessage):
     """*Optional*. New members that were added to the group or supergroup and information about them (the bot itself may be one of these members)"""
     left_chat_member: User | None = None
     """*Optional*. A member was removed from the group, information about them (this member may be the bot itself)"""
+    chat_owner_left: ChatOwnerLeft | None = None
+    """*Optional*. Service message: chat owner has left"""
+    chat_owner_changed: ChatOwnerChanged | None = None
+    """*Optional*. Service message: chat owner has changed"""
     new_chat_title: str | None = None
     """*Optional*. A chat title was changed to this value"""
     new_chat_photo: list[PhotoSize] | None = None
@@ -440,6 +446,8 @@ class Message(MaybeInaccessibleMessage):
             location: Location | None = None,
             new_chat_members: list[User] | None = None,
             left_chat_member: User | None = None,
+            chat_owner_left: ChatOwnerLeft | None = None,
+            chat_owner_changed: ChatOwnerChanged | None = None,
             new_chat_title: str | None = None,
             new_chat_photo: list[PhotoSize] | None = None,
             delete_chat_photo: bool | None = None,
@@ -557,6 +565,8 @@ class Message(MaybeInaccessibleMessage):
                 location=location,
                 new_chat_members=new_chat_members,
                 left_chat_member=left_chat_member,
+                chat_owner_left=chat_owner_left,
+                chat_owner_changed=chat_owner_changed,
                 new_chat_title=new_chat_title,
                 new_chat_photo=new_chat_photo,
                 delete_chat_photo=delete_chat_photo,
@@ -650,6 +660,10 @@ class Message(MaybeInaccessibleMessage):
             return ContentType.NEW_CHAT_MEMBERS
         if self.left_chat_member:
             return ContentType.LEFT_CHAT_MEMBER
+        if self.chat_owner_left:
+            return ContentType.CHAT_OWNER_LEFT
+        if self.chat_owner_changed:
+            return ContentType.CHAT_OWNER_CHANGED
         if self.invoice:
             return ContentType.INVOICE
         if self.successful_payment:

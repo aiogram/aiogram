@@ -9,6 +9,7 @@ from .custom import DateTime
 
 if TYPE_CHECKING:
     from .accepted_gift_types import AcceptedGiftTypes
+    from .audio import Audio
     from .birthdate import Birthdate
     from .business_intro import BusinessIntro
     from .business_location import BusinessLocation
@@ -125,6 +126,8 @@ class ChatFullInfo(Chat):
     """*Optional*. For supergroups, the location to which the supergroup is connected"""
     rating: UserRating | None = None
     """*Optional*. For private chats, the rating of the user if any"""
+    first_profile_audio: Audio | None = None
+    """*Optional*. For private chats, the first audio added to the profile of the user"""
     unique_gift_colors: UniqueGiftColors | None = None
     """*Optional*. The color scheme based on a unique gift that must be used for the chat's name, message replies and link previews"""
     paid_message_star_count: int | None = None
@@ -190,6 +193,7 @@ class ChatFullInfo(Chat):
             linked_chat_id: int | None = None,
             location: ChatLocation | None = None,
             rating: UserRating | None = None,
+            first_profile_audio: Audio | None = None,
             unique_gift_colors: UniqueGiftColors | None = None,
             paid_message_star_count: int | None = None,
             can_send_gift: bool | None = None,
@@ -248,6 +252,7 @@ class ChatFullInfo(Chat):
                 linked_chat_id=linked_chat_id,
                 location=location,
                 rating=rating,
+                first_profile_audio=first_profile_audio,
                 unique_gift_colors=unique_gift_colors,
                 paid_message_star_count=paid_message_star_count,
                 can_send_gift=can_send_gift,

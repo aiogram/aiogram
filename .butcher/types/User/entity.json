@@ -122,6 +122,14 @@
         "rst_description": "*Optional*. :code:`True`, if the bot has forum topic mode enabled in private chats. Returned only in :class:`aiogram.methods.get_me.GetMe`.\n",
         "name": "has_topics_enabled",
         "required": false
+      },
+      {
+        "type": "Boolean",
+        "description": "True, if the bot allows users to create and delete topics in private chats. Returned only in getMe.",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the bot allows users to create and delete topics in private chats. Returned only in <a href=\"#getme\">getMe</a>.</td>",
+        "rst_description": "*Optional*. :code:`True`, if the bot allows users to create and delete topics in private chats. Returned only in :class:`aiogram.methods.get_me.GetMe`.\n",
+        "name": "allows_users_to_create_topics",
+        "required": false
       }
     ],
     "category": "types"

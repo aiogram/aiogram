@@ -1,7 +1,7 @@
 {
   "api": {
-    "version": "9.3",
-    "release_date": "2025-12-31"
+    "version": "9.4",
+    "release_date": "2026-02-09"
   },
   "items": [
     {
@@ -552,6 +552,14 @@
               "rst_description": "*Optional*. :code:`True`, if the bot has forum topic mode enabled in private chats. Returned only in :class:`aiogram.methods.get_me.GetMe`.\n",
               "name": "has_topics_enabled",
               "required": false
+            },
+            {
+              "type": "Boolean",
+              "description": "True, if the bot allows users to create and delete topics in private chats. Returned only in getMe.",
+              "html_description": "<td><em>Optional</em>. <em>True</em>, if the bot allows users to create and delete topics in private chats. Returned only in <a href=\"#getme\">getMe</a>.</td>",
+              "rst_description": "*Optional*. :code:`True`, if the bot allows users to create and delete topics in private chats. Returned only in :class:`aiogram.methods.get_me.GetMe`.\n",
+              "name": "allows_users_to_create_topics",
+              "required": false
             }
           ],
           "category": "types"
@@ -1022,6 +1030,14 @@
               "required": false
             },
             {
+              "type": "Audio",
+              "description": "For private chats, the first audio added to the profile of the user",
+              "html_description": "<td><em>Optional</em>. For private chats, the first audio added to the profile of the user</td>",
+              "rst_description": "*Optional*. For private chats, the first audio added to the profile of the user\n",
+              "name": "first_profile_audio",
+              "required": false
+            },
+            {
               "type": "UniqueGiftColors",
               "description": "The color scheme based on a unique gift that must be used for the chat's name, message replies and link previews",
               "html_description": "<td><em>Optional</em>. The color scheme based on a unique gift that must be used for the chat's name, message replies and link previews</td>",
@@ -1477,6 +1493,22 @@
               "html_description": "<td><em>Optional</em>. A member was removed from the group, information about them (this member may be the bot itself)</td>",
               "rst_description": "*Optional*. A member was removed from the group, information about them (this member may be the bot itself)\n",
               "name": "left_chat_member",
+              "required": false
+            },
+            {
+              "type": "ChatOwnerLeft",
+              "description": "Service message: chat owner has left",
+              "html_description": "<td><em>Optional</em>. Service message: chat owner has left</td>",
+              "rst_description": "*Optional*. Service message: chat owner has left\n",
+              "name": "chat_owner_left",
+              "required": false
+            },
+            {
+              "type": "ChatOwnerChanged",
+              "description": "Service message: chat owner has changed",
+              "html_description": "<td><em>Optional</em>. Service message: chat owner has changed</td>",
+              "rst_description": "*Optional*. Service message: chat owner has changed\n",
+              "name": "chat_owner_changed",
               "required": false
             },
             {
@@ -2795,6 +2827,64 @@
           "category": "types"
         },
         {
+          "anchor": "videoquality",
+          "name": "VideoQuality",
+          "description": "This object represents a video file of a specific quality.",
+          "html_description": "<p>This object represents a video file of a specific quality.</p>",
+          "rst_description": "This object represents a video file of a specific quality.",
+          "annotations": [
+            {
+              "type": "String",
+              "description": "Identifier for this file, which can be used to download or reuse the file",
+              "html_description": "<td>Identifier for this file, which can be used to download or reuse the file</td>",
+              "rst_description": "Identifier for this file, which can be used to download or reuse the file\n",
+              "name": "file_id",
+              "required": true
+            },
+            {
+              "type": "String",
+              "description": "Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.",
+              "html_description": "<td>Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.</td>",
+              "rst_description": "Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.\n",
+              "name": "file_unique_id",
+              "required": true
+            },
+            {
+              "type": "Integer",
+              "description": "Video width",
+              "html_description": "<td>Video width</td>",
+              "rst_description": "Video width\n",
+              "name": "width",
+              "required": true
+            },
+            {
+              "type": "Integer",
+              "description": "Video height",
+              "html_description": "<td>Video height</td>",
+              "rst_description": "Video height\n",
+              "name": "height",
+              "required": true
+            },
+            {
+              "type": "String",
+              "description": "Codec that was used to encode the video, for example, 'h264', 'h265', or 'av01'",
+              "html_description": "<td>Codec that was used to encode the video, for example, &#8220;h264&#8221;, &#8220;h265&#8221;, or &#8220;av01&#8221;</td>",
+              "rst_description": "Codec that was used to encode the video, for example, 'h264', 'h265', or 'av01'\n",
+              "name": "codec",
+              "required": true
+            },
+            {
+              "type": "Integer",
+              "description": "File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value.",
+              "html_description": "<td><em>Optional</em>. File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value.</td>",
+              "rst_description": "*Optional*. File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value.\n",
+              "name": "file_size",
+              "required": false
+            }
+          ],
+          "category": "types"
+        },
+        {
           "anchor": "video",
           "name": "Video",
           "description": "This object represents a video file.",
@@ -2863,6 +2953,14 @@
               "html_description": "<td><em>Optional</em>. Timestamp in seconds from which the video will play in the message</td>",
               "rst_description": "*Optional*. Timestamp in seconds from which the video will play in the message\n",
               "name": "start_timestamp",
+              "required": false
+            },
+            {
+              "type": "Array of VideoQuality",
+              "description": "List of available qualities of the video",
+              "html_description": "<td><em>Optional</em>. List of available qualities of the video</td>",
+              "rst_description": "*Optional*. List of available qualities of the video\n",
+              "name": "qualities",
               "required": false
             },
             {
@@ -5185,6 +5283,32 @@
           "category": "types"
         },
         {
+          "anchor": "userprofileaudios",
+          "name": "UserProfileAudios",
+          "description": "This object represents the audios displayed on a user's profile.",
+          "html_description": "<p>This object represents the audios displayed on a user's profile.</p>",
+          "rst_description": "This object represents the audios displayed on a user's profile.",
+          "annotations": [
+            {
+              "type": "Integer",
+              "description": "Total number of profile audios for the target user",
+              "html_description": "<td>Total number of profile audios for the target user</td>",
+              "rst_description": "Total number of profile audios for the target user\n",
+              "name": "total_count",
+              "required": true
+            },
+            {
+              "type": "Array of Audio",
+              "description": "Requested profile audios",
+              "html_description": "<td>Requested profile audios</td>",
+              "rst_description": "Requested profile audios\n",
+              "name": "audios",
+              "required": true
+            }
+          ],
+          "category": "types"
+        },
+        {
           "anchor": "file",
           "name": "File",
           "description": "This object represents a file ready to be downloaded. The file can be downloaded via the link https://api.telegram.org/file/bot<token>/<file_path>. It is guaranteed that the link will be valid for at least 1 hour. When the link expires, a new one can be requested by calling getFile.\nThe maximum file size to download is 20 MB",
@@ -5305,17 +5429,33 @@
         {
           "anchor": "keyboardbutton",
           "name": "KeyboardButton",
-          "description": "This object represents one button of the reply keyboard. At most one of the optional fields must be used to specify type of the button. For simple text buttons, String can be used instead of this object to specify the button text.\nNote: request_users and request_chat options will only work in Telegram versions released after 3 February, 2023. Older clients will display unsupported message.",
-          "html_description": "<p>This object represents one button of the reply keyboard. At most one of the optional fields must be used to specify type of the button. For simple text buttons, <em>String</em> can be used instead of this object to specify the button text.</p><p><strong>Note:</strong> <em>request_users</em> and <em>request_chat</em> options will only work in Telegram versions released after 3 February, 2023. Older clients will display <em>unsupported message</em>.</p>",
-          "rst_description": "This object represents one button of the reply keyboard. At most one of the optional fields must be used to specify type of the button. For simple text buttons, *String* can be used instead of this object to specify the button text.\n**Note:** *request_users* and *request_chat* options will only work in Telegram versions released after 3 February, 2023. Older clients will display *unsupported message*.",
+          "description": "This object represents one button of the reply keyboard. At most one of the fields other than text, icon_custom_emoji_id, and style must be used to specify the type of the button. For simple text buttons, String can be used instead of this object to specify the button text.",
+          "html_description": "<p>This object represents one button of the reply keyboard. At most one of the fields other than <em>text</em>, <em>icon_custom_emoji_id</em>, and <em>style</em> must be used to specify the type of the button. For simple text buttons, <em>String</em> can be used instead of this object to specify the button text.</p>",
+          "rst_description": "This object represents one button of the reply keyboard. At most one of the fields other than *text*, *icon_custom_emoji_id*, and *style* must be used to specify the type of the button. For simple text buttons, *String* can be used instead of this object to specify the button text.",
           "annotations": [
             {
               "type": "String",
-              "description": "Text of the button. If none of the optional fields are used, it will be sent as a message when the button is pressed",
-              "html_description": "<td>Text of the button. If none of the optional fields are used, it will be sent as a message when the button is pressed</td>",
-              "rst_description": "Text of the button. If none of the optional fields are used, it will be sent as a message when the button is pressed\n",
+              "description": "Text of the button. If none of the fields other than text, icon_custom_emoji_id, and style are used, it will be sent as a message when the button is pressed",
+              "html_description": "<td>Text of the button. If none of the fields other than <em>text</em>, <em>icon_custom_emoji_id</em>, and <em>style</em> are used, it will be sent as a message when the button is pressed</td>",
+              "rst_description": "Text of the button. If none of the fields other than *text*, *icon_custom_emoji_id*, and *style* are used, it will be sent as a message when the button is pressed\n",
               "name": "text",
               "required": true
+            },
+            {
+              "type": "String",
+              "description": "Unique identifier of the custom emoji shown before the text of the button. Can only be used by bots that purchased additional usernames on Fragment or in the messages directly sent by the bot to private, group and supergroup chats if the owner of the bot has a Telegram Premium subscription.",
+              "html_description": "<td><em>Optional</em>. Unique identifier of the custom emoji shown before the text of the button. Can only be used by bots that purchased additional usernames on <a href=\"https://fragment.com\">Fragment</a> or in the messages directly sent by the bot to private, group and supergroup chats if the owner of the bot has a Telegram Premium subscription.</td>",
+              "rst_description": "*Optional*. Unique identifier of the custom emoji shown before the text of the button. Can only be used by bots that purchased additional usernames on `Fragment <https://fragment.com>`_ or in the messages directly sent by the bot to private, group and supergroup chats if the owner of the bot has a Telegram Premium subscription.\n",
+              "name": "icon_custom_emoji_id",
+              "required": false
+            },
+            {
+              "type": "String",
+              "description": "Style of the button. Must be one of 'danger' (red), 'success' (green) or 'primary' (blue). If omitted, then an app-specific style is used.",
+              "html_description": "<td><em>Optional</em>. Style of the button. Must be one of &#8220;danger&#8221; (red), &#8220;success&#8221; (green) or &#8220;primary&#8221; (blue). If omitted, then an app-specific style is used.</td>",
+              "rst_description": "*Optional*. Style of the button. Must be one of 'danger' (red), 'success' (green) or 'primary' (blue). If omitted, then an app-specific style is used.\n",
+              "name": "style",
+              "required": false
             },
             {
               "type": "KeyboardButtonRequestUsers",
@@ -5597,9 +5737,9 @@
         {
           "anchor": "inlinekeyboardbutton",
           "name": "InlineKeyboardButton",
-          "description": "This object represents one button of an inline keyboard. Exactly one of the optional fields must be used to specify type of the button.",
-          "html_description": "<p>This object represents one button of an inline keyboard. Exactly one of the optional fields must be used to specify type of the button.</p>",
-          "rst_description": "This object represents one button of an inline keyboard. Exactly one of the optional fields must be used to specify type of the button.",
+          "description": "This object represents one button of an inline keyboard. Exactly one of the fields other than text, icon_custom_emoji_id, and style must be used to specify the type of the button.",
+          "html_description": "<p>This object represents one button of an inline keyboard. Exactly one of the fields other than <em>text</em>, <em>icon_custom_emoji_id</em>, and <em>style</em> must be used to specify the type of the button.</p>",
+          "rst_description": "This object represents one button of an inline keyboard. Exactly one of the fields other than *text*, *icon_custom_emoji_id*, and *style* must be used to specify the type of the button.",
           "annotations": [
             {
               "type": "String",
@@ -5608,6 +5748,22 @@
               "rst_description": "Label text on the button\n",
               "name": "text",
               "required": true
+            },
+            {
+              "type": "String",
+              "description": "Unique identifier of the custom emoji shown before the text of the button. Can only be used by bots that purchased additional usernames on Fragment or in the messages directly sent by the bot to private, group and supergroup chats if the owner of the bot has a Telegram Premium subscription.",
+              "html_description": "<td><em>Optional</em>. Unique identifier of the custom emoji shown before the text of the button. Can only be used by bots that purchased additional usernames on <a href=\"https://fragment.com\">Fragment</a> or in the messages directly sent by the bot to private, group and supergroup chats if the owner of the bot has a Telegram Premium subscription.</td>",
+              "rst_description": "*Optional*. Unique identifier of the custom emoji shown before the text of the button. Can only be used by bots that purchased additional usernames on `Fragment <https://fragment.com>`_ or in the messages directly sent by the bot to private, group and supergroup chats if the owner of the bot has a Telegram Premium subscription.\n",
+              "name": "icon_custom_emoji_id",
+              "required": false
+            },
+            {
+              "type": "String",
+              "description": "Style of the button. Must be one of 'danger' (red), 'success' (green) or 'primary' (blue). If omitted, then an app-specific style is used.",
+              "html_description": "<td><em>Optional</em>. Style of the button. Must be one of &#8220;danger&#8221; (red), &#8220;success&#8221; (green) or &#8220;primary&#8221; (blue). If omitted, then an app-specific style is used.</td>",
+              "rst_description": "*Optional*. Style of the button. Must be one of 'danger' (red), 'success' (green) or 'primary' (blue). If omitted, then an app-specific style is used.\n",
+              "name": "style",
+              "required": false
             },
             {
               "type": "String",
@@ -7884,11 +8040,19 @@
             },
             {
               "type": "Integer",
-              "description": "The number of unique gifts that receive this model for every 1000 gifts upgraded",
-              "html_description": "<td>The number of unique gifts that receive this model for every 1000 gifts upgraded</td>",
-              "rst_description": "The number of unique gifts that receive this model for every 1000 gifts upgraded\n",
+              "description": "The number of unique gifts that receive this model for every 1000 gift upgrades. Always 0 for crafted gifts.",
+              "html_description": "<td>The number of unique gifts that receive this model for every 1000 gift upgrades. Always 0 for crafted gifts.</td>",
+              "rst_description": "The number of unique gifts that receive this model for every 1000 gift upgrades. Always 0 for crafted gifts.\n",
               "name": "rarity_per_mille",
               "required": true
+            },
+            {
+              "type": "String",
+              "description": "Rarity of the model if it is a crafted model. Currently, can be 'uncommon', 'rare', 'epic', or 'legendary'.",
+              "html_description": "<td><em>Optional</em>. Rarity of the model if it is a crafted model. Currently, can be &#8220;uncommon&#8221;, &#8220;rare&#8221;, &#8220;epic&#8221;, or &#8220;legendary&#8221;.</td>",
+              "rst_description": "*Optional*. Rarity of the model if it is a crafted model. Currently, can be 'uncommon', 'rare', 'epic', or 'legendary'.\n",
+              "name": "rarity",
+              "required": false
             }
           ],
           "category": "types"
@@ -8130,6 +8294,14 @@
               "html_description": "<td><em>Optional</em>. <em>True</em>, if the original regular gift was exclusively purchaseable by Telegram Premium subscribers</td>",
               "rst_description": "*Optional*. :code:`True`, if the original regular gift was exclusively purchaseable by Telegram Premium subscribers\n",
               "name": "is_premium",
+              "required": false
+            },
+            {
+              "type": "True",
+              "description": "True, if the gift was used to craft another gift and isn't available anymore",
+              "html_description": "<td><em>Optional</em>. <em>True</em>, if the gift was used to craft another gift and isn't available anymore</td>",
+              "rst_description": "*Optional*. :code:`True`, if the gift was used to craft another gift and isn't available anymore\n",
+              "name": "is_burned",
               "required": false
             },
             {
@@ -9188,6 +9360,42 @@
               "html_description": "<td>Source of the removed boost</td>",
               "rst_description": "Source of the removed boost\n",
               "name": "source",
+              "required": true
+            }
+          ],
+          "category": "types"
+        },
+        {
+          "anchor": "chatownerleft",
+          "name": "ChatOwnerLeft",
+          "description": "Describes a service message about the chat owner leaving the chat.",
+          "html_description": "<p>Describes a service message about the chat owner leaving the chat.</p>",
+          "rst_description": "Describes a service message about the chat owner leaving the chat.",
+          "annotations": [
+            {
+              "type": "User",
+              "description": "The user which will be the new owner of the chat if the previous owner does not return to the chat",
+              "html_description": "<td><em>Optional</em>. The user which will be the new owner of the chat if the previous owner does not return to the chat</td>",
+              "rst_description": "*Optional*. The user which will be the new owner of the chat if the previous owner does not return to the chat\n",
+              "name": "new_owner",
+              "required": false
+            }
+          ],
+          "category": "types"
+        },
+        {
+          "anchor": "chatownerchanged",
+          "name": "ChatOwnerChanged",
+          "description": "Describes a service message about an ownership change in the chat.",
+          "html_description": "<p>Describes a service message about an ownership change in the chat.</p>",
+          "rst_description": "Describes a service message about an ownership change in the chat.",
+          "annotations": [
+            {
+              "type": "User",
+              "description": "The new owner of the chat",
+              "html_description": "<td>The new owner of the chat</td>",
+              "rst_description": "The new owner of the chat\n",
+              "name": "new_owner",
               "required": true
             }
           ],
@@ -13041,6 +13249,40 @@
           "category": "methods"
         },
         {
+          "anchor": "getuserprofileaudios",
+          "name": "getUserProfileAudios",
+          "description": "Use this method to get a list of profile audios for a user. Returns a UserProfileAudios object.",
+          "html_description": "<p>Use this method to get a list of profile audios for a user. Returns a <a href=\"#userprofileaudios\">UserProfileAudios</a> object.</p>",
+          "rst_description": "Use this method to get a list of profile audios for a user. Returns a :class:`aiogram.types.user_profile_audios.UserProfileAudios` object.",
+          "annotations": [
+            {
+              "type": "Integer",
+              "required": true,
+              "description": "Unique identifier of the target user",
+              "html_description": "<td>Unique identifier of the target user</td>",
+              "rst_description": "Unique identifier of the target user\n",
+              "name": "user_id"
+            },
+            {
+              "type": "Integer",
+              "required": false,
+              "description": "Sequential number of the first audio to be returned. By default, all audios are returned.",
+              "html_description": "<td>Sequential number of the first audio to be returned. By default, all audios are returned.</td>",
+              "rst_description": "Sequential number of the first audio to be returned. By default, all audios are returned.\n",
+              "name": "offset"
+            },
+            {
+              "type": "Integer",
+              "required": false,
+              "description": "Limits the number of audios to be retrieved. Values between 1-100 are accepted. Defaults to 100.",
+              "html_description": "<td>Limits the number of audios to be retrieved. Values between 1-100 are accepted. Defaults to 100.</td>",
+              "rst_description": "Limits the number of audios to be retrieved. Values between 1-100 are accepted. Defaults to 100.\n",
+              "name": "limit"
+            }
+          ],
+          "category": "methods"
+        },
+        {
           "anchor": "setuseremojistatus",
           "name": "setUserEmojiStatus",
           "description": "Changes the emoji status for a given user that previously allowed the bot to manage their emoji status via the Mini App method requestEmojiStatusAccess. Returns True on success.",
@@ -14116,9 +14358,9 @@
         {
           "anchor": "createforumtopic",
           "name": "createForumTopic",
-          "description": "Use this method to create a topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the can_manage_topics administrator rights. Returns information about the created topic as a ForumTopic object.",
-          "html_description": "<p>Use this method to create a topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the <em>can_manage_topics</em> administrator rights. Returns information about the created topic as a <a href=\"#forumtopic\">ForumTopic</a> object.</p>",
-          "rst_description": "Use this method to create a topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the *can_manage_topics* administrator rights. Returns information about the created topic as a :class:`aiogram.types.forum_topic.ForumTopic` object.",
+          "description": "Use this method to create a topic in a forum supergroup chat or a private chat with a user. In the case of a supergroup chat the bot must be an administrator in the chat for this to work and must have the can_manage_topics administrator right. Returns information about the created topic as a ForumTopic object.",
+          "html_description": "<p>Use this method to create a topic in a forum supergroup chat or a private chat with a user. In the case of a supergroup chat the bot must be an administrator in the chat for this to work and must have the <em>can_manage_topics</em> administrator right. Returns information about the created topic as a <a href=\"#forumtopic\">ForumTopic</a> object.</p>",
+          "rst_description": "Use this method to create a topic in a forum supergroup chat or a private chat with a user. In the case of a supergroup chat the bot must be an administrator in the chat for this to work and must have the *can_manage_topics* administrator right. Returns information about the created topic as a :class:`aiogram.types.forum_topic.ForumTopic` object.",
           "annotations": [
             {
               "type": "Integer or String",
@@ -14727,6 +14969,33 @@
               "name": "language_code"
             }
           ],
+          "category": "methods"
+        },
+        {
+          "anchor": "setmyprofilephoto",
+          "name": "setMyProfilePhoto",
+          "description": "Changes the profile photo of the bot. Returns True on success.",
+          "html_description": "<p>Changes the profile photo of the bot. Returns <em>True</em> on success.</p>",
+          "rst_description": "Changes the profile photo of the bot. Returns :code:`True` on success.",
+          "annotations": [
+            {
+              "type": "InputProfilePhoto",
+              "required": true,
+              "description": "The new profile photo to set",
+              "html_description": "<td>The new profile photo to set</td>",
+              "rst_description": "The new profile photo to set\n",
+              "name": "photo"
+            }
+          ],
+          "category": "methods"
+        },
+        {
+          "anchor": "removemyprofilephoto",
+          "name": "removeMyProfilePhoto",
+          "description": "Removes the profile photo of the bot. Requires no parameters. Returns True on success.",
+          "html_description": "<p>Removes the profile photo of the bot. Requires no parameters. Returns <em>True</em> on success.</p>",
+          "rst_description": "Removes the profile photo of the bot. Requires no parameters. Returns :code:`True` on success.",
+          "annotations": [],
           "category": "methods"
         },
         {
@@ -22596,9 +22865,9 @@
         {
           "anchor": "gamehighscore",
           "name": "GameHighScore",
-          "description": "This object represents one row of the high scores table for a game.\nAnd that's about all we've got for now.\nIf you've got any questions, please check out our Bot FAQ",
-          "html_description": "<p>This object represents one row of the high scores table for a game.</p><p>And that's about all we've got for now.<br/>\nIf you've got any questions, please check out our <a href=\"/bots/faq\"><strong>Bot FAQ &#187;</strong></a></p>",
-          "rst_description": "This object represents one row of the high scores table for a game.\nAnd that's about all we've got for now.\n\nIf you've got any questions, please check out our `https://core.telegram.org/bots/faq <https://core.telegram.org/bots/faq>`_ **Bot FAQ »**",
+          "description": "This object represents one row of the high scores table for a game.\nAnd that's about all we've got for now.\nIf you've got any questions, please check out our Bot FAQ\n-",
+          "html_description": "<p>This object represents one row of the high scores table for a game.</p><p>And that's about all we've got for now.<br/>\nIf you've got any questions, please check out our <a href=\"/bots/faq\"><strong>Bot FAQ &#187;</strong></a><br/>\n-</p>",
+          "rst_description": "This object represents one row of the high scores table for a game.\nAnd that's about all we've got for now.\n\nIf you've got any questions, please check out our `https://core.telegram.org/bots/faq <https://core.telegram.org/bots/faq>`_ **Bot FAQ »**\n\n-",
           "annotations": [
             {
               "type": "Integer",
