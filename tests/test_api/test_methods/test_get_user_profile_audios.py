@@ -10,9 +10,7 @@ class TestGetUserProfileAudios:
             ok=True,
             result=UserProfileAudios(
                 total_count=1,
-                audios=[
-                    Audio(file_id="file_id", file_unique_id="file_unique_id", duration=120)
-                ],
+                audios=[Audio(file_id="file_id", file_unique_id="file_unique_id", duration=120)],
             ),
         )
 
