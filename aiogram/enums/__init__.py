@@ -1,4 +1,5 @@
 from .bot_command_scope_type import BotCommandScopeType
+from .button_style import ButtonStyle
 from .chat_action import ChatAction
 from .chat_boost_source_type import ChatBoostSourceType
 from .chat_member_status import ChatMemberStatus
@@ -36,6 +37,7 @@ from .update_type import UpdateType
 
 __all__ = (
     "BotCommandScopeType",
+    "ButtonStyle",
     "ChatAction",
     "ChatBoostSourceType",
     "ChatMemberStatus",
