@@ -7,7 +7,7 @@ from ..utils.link import create_tg_link
 from .base import TelegramObject
 
 if TYPE_CHECKING:
-    from ..methods import GetUserProfilePhotos
+    from ..methods import GetUserProfileAudios, GetUserProfilePhotos
 
 
 class User(TelegramObject):
@@ -141,6 +141,35 @@ class User(TelegramObject):
         from aiogram.methods import GetUserProfilePhotos
 
         return GetUserProfilePhotos(
+            user_id=self.id,
+            offset=offset,
+            limit=limit,
+            **kwargs,
+        ).as_(self._bot)
+
+    def get_profile_audios(
+        self,
+        offset: int | None = None,
+        limit: int | None = None,
+        **kwargs: Any,
+    ) -> GetUserProfileAudios:
+        """
+        Shortcut for method :class:`aiogram.methods.get_user_profile_audios.GetUserProfileAudios`
+        will automatically fill method attributes:
+
+        - :code:`user_id`
+
+        Use this method to get a list of profile audios for a user. Returns a :class:`aiogram.types.user_profile_audios.UserProfileAudios` object.
+
+        Source: https://core.telegram.org/bots/api#getuserprofileaudios
+
+        :param offset: Sequential number of the first audio to be returned. By default, all audios are returned.
+        :param limit: Limits the number of audios to be retrieved. Values between 1-100 are accepted. Defaults to 100.
+        :return: instance of method :class:`aiogram.methods.get_user_profile_audios.GetUserProfileAudios`
+        """
+        from aiogram.methods import GetUserProfileAudios
+
+        return GetUserProfileAudios(
             user_id=self.id,
             offset=offset,
             limit=limit,
