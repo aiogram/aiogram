@@ -258,7 +258,9 @@ TEST_MESSAGE_LEFT_CHAT_MEMBER = Message(
 TEST_MESSAGE_CHAT_OWNER_LEFT = Message(
     message_id=42,
     date=datetime.datetime.now(),
-    chat_owner_left=ChatOwnerLeft(),
+    chat_owner_left=ChatOwnerLeft(
+        new_owner=User(id=43, is_bot=False, first_name="NewOwner"),
+    ),
     chat=Chat(id=42, type="private"),
     from_user=User(id=42, is_bot=False, first_name="Test"),
 )
