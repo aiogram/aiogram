@@ -91,7 +91,6 @@ These patterns repeatedly appeared in maintainer feedback and should be treated 
 - Keep generation path consistent: shortcuts/features should be added through `.butcher` config + generation, not ad-hoc manual edits.
 - Keep test style consistent with existing suite; avoid introducing new dependencies for small tests.
 - Preserve framework contracts (e.g., dispatcher/workflow data passed to startup/shutdown callbacks).
-- For malformed-update fixes, confirm issue is reproducible on current Telegram payloads before adding runtime pre-validation overhead.
 - When fixing generated API metadata/docs, update the source mapping in `.butcher` so future regenerations keep the fix.
 
 ## Documentation work
