@@ -5,7 +5,7 @@ from typing import Any
 from aiogram import BaseMiddleware, Dispatcher
 from aiogram.enums import ChatType
 from aiogram.filters import CommandStart
-from aiogram.fsm.scene import Scene, SceneRegistry, on
+from aiogram.fsm.scene import After, Scene, SceneRegistry, on
 from aiogram.types import Chat, Message, TelegramObject, Update, User
 from tests.mocked_bot import MockedBot
 
@@ -35,6 +35,12 @@ class StartScene(Scene, state="start"):
         await self.wizard.goto(TargetScene)
 
 
+class StartSceneWithAfter(Scene, state="start_with_after"):
+    @on.message(after=After.goto(TargetScene))
+    async def goto_target_with_after(self, message: Message) -> None:
+        pass
+
+
 async def test_scene_goto_preserves_message_middleware_data(bot: MockedBot) -> None:
     dp = Dispatcher()
     registry = SceneRegistry(dp)
@@ -56,5 +62,45 @@ async def test_scene_goto_preserves_message_middleware_data(bot: MockedBot) -> N
     )
 
     await dp.feed_update(bot, update)
+
+    assert TargetScene.entered_with_context == "context from middleware"
+
+
+async def test_scene_after_goto_preserves_message_middleware_data(bot: MockedBot) -> None:
+    dp = Dispatcher()
+    registry = SceneRegistry(dp)
+    registry.add(StartSceneWithAfter, TargetScene)
+    dp.message.register(StartSceneWithAfter.as_handler(), CommandStart())
+    dp.message.middleware(TestContextMiddleware())
+
+    TargetScene.entered_with_context = None
+
+    await dp.feed_update(
+        bot,
+        Update(
+            update_id=1,
+            message=Message(
+                message_id=1,
+                date=datetime.now(),
+                chat=Chat(id=42, type=ChatType.PRIVATE),
+                from_user=User(id=42, is_bot=False, first_name="Test"),
+                text="/start",
+            ),
+        ),
+    )
+
+    await dp.feed_update(
+        bot,
+        Update(
+            update_id=2,
+            message=Message(
+                message_id=2,
+                date=datetime.now(),
+                chat=Chat(id=42, type=ChatType.PRIVATE),
+                from_user=User(id=42, is_bot=False, first_name="Test"),
+                text="go",
+            ),
+        ),
+    )
 
     assert TargetScene.entered_with_context == "context from middleware"
