@@ -248,9 +248,13 @@ class SceneHandlerWrapper:
         event: TelegramObject,
         **kwargs: Any,
     ) -> Any:
-        state: FSMContext = kwargs["state"]
-        scenes: ScenesManager = kwargs["scenes"]
-        event_update: Update = kwargs["event_update"]
+        try:
+            state: FSMContext = kwargs["state"]
+            scenes: ScenesManager = kwargs["scenes"]
+            event_update: Update = kwargs["event_update"]
+        except KeyError:
+            msg = "Scene context is not available. Ensure FSM is enabled and pipeline is intact."
+            raise SceneException(msg) from None
         scene = self.scene(
             wizard=SceneWizard(
                 scene_config=self.scene.__scene_config__,
@@ -768,12 +772,15 @@ class SceneRegistry:
         data: dict[str, Any],
     ) -> Any:
         assert isinstance(event, Update), "Event must be an Update instance"
+        state = data.get("state")
+        if state is None:
+            return await handler(event, data)
 
         data["scenes"] = ScenesManager(
             registry=self,
             update_type=event.event_type,
             event=event.event,
-            state=data["state"],
+            state=state,
             data=data,
         )
         return await handler(event, data)
@@ -784,12 +791,16 @@ class SceneRegistry:
         event: TelegramObject,
         data: dict[str, Any],
     ) -> Any:
+        state = data.get("state")
+        if state is None:
+            return await handler(event, data)
+
         update: Update = data["event_update"]
         data["scenes"] = ScenesManager(
             registry=self,
             update_type=update.event_type,
             event=event,
-            state=data["state"],
+            state=state,
             data=data,
         )
         return await handler(event, data)
