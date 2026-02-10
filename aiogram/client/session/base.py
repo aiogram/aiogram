@@ -256,7 +256,7 @@ class BaseSession(abc.ABC):
         timeout: int | None = None,
     ) -> TelegramType:
         middleware = self.middleware.wrap_middlewares(self.make_request, timeout=timeout)
-        return cast(TelegramType, await middleware(bot, method))
+        return await middleware(bot, method)
 
     async def __aenter__(self) -> Self:
         return self
