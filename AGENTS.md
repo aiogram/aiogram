@@ -21,6 +21,8 @@ Note: `uv run pre-commit install` writes hooks to the shared repository `.git/ho
 
 ## Mandatory local checks before PR
 
+Code style/lint in this repository is enforced via Ruff (`ruff check` + `ruff format`).
+
 Quick loop (recommended for most PR iterations):
 
 ```bash
