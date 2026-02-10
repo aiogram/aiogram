@@ -251,10 +251,14 @@ class SceneHandlerWrapper:
         try:
             state: FSMContext = kwargs["state"]
             scenes: ScenesManager = kwargs["scenes"]
-            event_update: Update = kwargs["event_update"]
-        except KeyError:
-            msg = "Scene context is not available. Ensure FSM is enabled and pipeline is intact."
+        except KeyError as error:
+            missing_key = error.args[0]
+            msg = (
+                f"Scene context key {missing_key!r} is not available. "
+                "Ensure FSM is enabled and pipeline is intact."
+            )
             raise SceneException(msg) from None
+        event_update: Update = kwargs["event_update"]
         scene = self.scene(
             wizard=SceneWizard(
                 scene_config=self.scene.__scene_config__,

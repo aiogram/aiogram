@@ -333,7 +333,7 @@ class TestSceneHandlerWrapper:
 
         with pytest.raises(
             SceneException,
-            match="Scene context is not available. Ensure FSM is enabled and pipeline is intact.",
+            match="Scene context key 'state' is not available. Ensure FSM is enabled and pipeline is intact.",
         ):
             await scene_handler_wrapper(event_update_mock, event_update=event_update_mock)
 
