@@ -1056,8 +1056,7 @@ class TestMessage:
 
     def test_chat_owner_left_no_successor(self):
         assert (
-            TEST_MESSAGE_CHAT_OWNER_LEFT_NO_SUCCESSOR.content_type
-            == ContentType.CHAT_OWNER_LEFT
+            TEST_MESSAGE_CHAT_OWNER_LEFT_NO_SUCCESSOR.content_type == ContentType.CHAT_OWNER_LEFT
         )
 
     def test_as_reply_parameters(self):
