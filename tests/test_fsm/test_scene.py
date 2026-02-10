@@ -253,6 +253,7 @@ class TestSceneHandlerWrapper:
 
         state_mock = AsyncMock(spec=FSMContext)
         scenes_mock = AsyncMock(spec=ScenesManager)
+        scenes_mock.data = {}
         event_update_mock = Update(
             update_id=42,
             message=Message(
@@ -282,6 +283,7 @@ class TestSceneHandlerWrapper:
 
         state_mock = AsyncMock(spec=FSMContext)
         scenes_mock = AsyncMock(spec=ScenesManager)
+        scenes_mock.data = {}
         event_update_mock = Update(
             update_id=42,
             message=Message(
