@@ -167,6 +167,9 @@ class User(TelegramObject):
         :param limit: Limits the number of audios to be retrieved. Values between 1-100 are accepted. Defaults to 100.
         :return: instance of method :class:`aiogram.methods.get_user_profile_audios.GetUserProfileAudios`
         """
+        # DO NOT EDIT MANUALLY!!!
+        # This method was auto-generated via `butcher`
+
         from aiogram.methods import GetUserProfileAudios
 
         return GetUserProfileAudios(
