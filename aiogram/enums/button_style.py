@@ -5,7 +5,9 @@ class ButtonStyle(str, Enum):
     """
     This object represents a button style (inline- or reply-keyboard).
 
-    Source: https://core.telegram.org/bots/api#chat
+    Sources:
+      * https://core.telegram.org/bots/api#inlinekeyboardbutton
+      * https://core.telegram.org/bots/api#keyboardbutton
     """
 
     DANGER = "danger"
