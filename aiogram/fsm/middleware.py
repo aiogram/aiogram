@@ -70,6 +70,9 @@ class FSMContextMiddleware(BaseMiddleware):
     ) -> FSMContext | None:
         if chat_id is None:
             chat_id = user_id
+        elif user_id is None and self.strategy in {FSMStrategy.CHAT, FSMStrategy.CHAT_TOPIC}:
+            # CHAT/CHAT_TOPIC are chat-scoped, so missing user_id can fallback to chat_id.
+            user_id = chat_id
 
         if chat_id is not None and user_id is not None:
             chat_id, user_id, thread_id = apply_strategy(
