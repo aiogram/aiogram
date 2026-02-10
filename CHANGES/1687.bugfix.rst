@@ -1,0 +1,1 @@
+Fixed scene transitions to preserve middleware-injected data when moving between scenes via ``SceneWizard.goto``.
