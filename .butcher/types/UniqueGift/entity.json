@@ -77,6 +77,14 @@
       },
       {
         "type": "True",
+        "description": "True, if the gift was used to craft another gift and isn't available anymore",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the gift was used to craft another gift and isn't available anymore</td>",
+        "rst_description": "*Optional*. :code:`True`, if the gift was used to craft another gift and isn't available anymore\n",
+        "name": "is_burned",
+        "required": false
+      },
+      {
+        "type": "True",
         "description": "True, if the gift is assigned from the TON blockchain and can't be resold or transferred in Telegram",
         "html_description": "<td><em>Optional</em>. <em>True</em>, if the gift is assigned from the TON blockchain and can't be resold or transferred in Telegram</td>",
         "rst_description": "*Optional*. :code:`True`, if the gift is assigned from the TON blockchain and can't be resold or transferred in Telegram\n",

@@ -45,9 +45,9 @@ def bump_version(part: str) -> str:
 
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print("Usage: python scripts/bump_version.py [major|minor|patch|to:X.Y.Z]")
+    if len(sys.argv) != 2:  # noqa: PLR2004
+        print("Usage: python scripts/bump_version.py [major|minor|patch|to:X.Y.Z]")  # noqa: T201
         sys.exit(1)
 
     new_version = bump_version(sys.argv[1])
-    print(f"Bumped version to {new_version}")
+    print(f"Bumped version to {new_version}")  # noqa: T201

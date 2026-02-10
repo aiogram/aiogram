@@ -444,6 +444,22 @@
         "required": false
       },
       {
+        "type": "ChatOwnerLeft",
+        "description": "Service message: chat owner has left",
+        "html_description": "<td><em>Optional</em>. Service message: chat owner has left</td>",
+        "rst_description": "*Optional*. Service message: chat owner has left\n",
+        "name": "chat_owner_left",
+        "required": false
+      },
+      {
+        "type": "ChatOwnerChanged",
+        "description": "Service message: chat owner has changed",
+        "html_description": "<td><em>Optional</em>. Service message: chat owner has changed</td>",
+        "rst_description": "*Optional*. Service message: chat owner has changed\n",
+        "name": "chat_owner_changed",
+        "required": false
+      },
+      {
         "type": "String",
         "description": "A chat title was changed to this value",
         "html_description": "<td><em>Optional</em>. A chat title was changed to this value</td>",

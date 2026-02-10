@@ -396,6 +396,14 @@
         "required": false
       },
       {
+        "type": "Audio",
+        "description": "For private chats, the first audio added to the profile of the user",
+        "html_description": "<td><em>Optional</em>. For private chats, the first audio added to the profile of the user</td>",
+        "rst_description": "*Optional*. For private chats, the first audio added to the profile of the user\n",
+        "name": "first_profile_audio",
+        "required": false
+      },
+      {
         "type": "UniqueGiftColors",
         "description": "The color scheme based on a unique gift that must be used for the chat's name, message replies and link previews",
         "html_description": "<td><em>Optional</em>. The color scheme based on a unique gift that must be used for the chat's name, message replies and link previews</td>",

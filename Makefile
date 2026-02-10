@@ -37,7 +37,7 @@ install: clean
 
 .PHONY: lint
 lint:
-	uv run ruff format --check --diff $(code_dir)
+	uv run ruff format --check --diff $(package_dir)
 	uv run ruff check --show-fixes --preview $(package_dir) $(examples_dir)
 	uv run mypy $(package_dir)
 

@@ -1,0 +1,41 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available methods",
+    "anchor": "available-methods"
+  },
+  "object": {
+    "anchor": "getuserprofileaudios",
+    "name": "getUserProfileAudios",
+    "description": "Use this method to get a list of profile audios for a user. Returns a UserProfileAudios object.",
+    "html_description": "<p>Use this method to get a list of profile audios for a user. Returns a <a href=\"#userprofileaudios\">UserProfileAudios</a> object.</p>",
+    "rst_description": "Use this method to get a list of profile audios for a user. Returns a :class:`aiogram.types.user_profile_audios.UserProfileAudios` object.",
+    "annotations": [
+      {
+        "type": "Integer",
+        "required": true,
+        "description": "Unique identifier of the target user",
+        "html_description": "<td>Unique identifier of the target user</td>",
+        "rst_description": "Unique identifier of the target user\n",
+        "name": "user_id"
+      },
+      {
+        "type": "Integer",
+        "required": false,
+        "description": "Sequential number of the first audio to be returned. By default, all audios are returned.",
+        "html_description": "<td>Sequential number of the first audio to be returned. By default, all audios are returned.</td>",
+        "rst_description": "Sequential number of the first audio to be returned. By default, all audios are returned.\n",
+        "name": "offset"
+      },
+      {
+        "type": "Integer",
+        "required": false,
+        "description": "Limits the number of audios to be retrieved. Values between 1-100 are accepted. Defaults to 100.",
+        "html_description": "<td>Limits the number of audios to be retrieved. Values between 1-100 are accepted. Defaults to 100.</td>",
+        "rst_description": "Limits the number of audios to be retrieved. Values between 1-100 are accepted. Defaults to 100.\n",
+        "name": "limit"
+      }
+    ],
+    "category": "methods"
+  }
+}

@@ -387,6 +387,8 @@ __all__ = (
     "ChatMemberRestricted",
     "ChatMemberUnion",
     "ChatMemberUpdated",
+    "ChatOwnerChanged",
+    "ChatOwnerLeft",
     "ChatPermissions",
     "ChatPhoto",
     "ChatShared",
@@ -627,6 +629,7 @@ __all__ = (
     "Update",
     "User",
     "UserChatBoosts",
+    "UserProfileAudios",
     "UserProfilePhotos",
     "UserRating",
     "UserShared",
@@ -638,6 +641,7 @@ __all__ = (
     "VideoChatScheduled",
     "VideoChatStarted",
     "VideoNote",
+    "VideoQuality",
     "Voice",
     "WebAppData",
     "WebAppInfo",
@@ -646,6 +650,10 @@ __all__ = (
 )
 
 from ..client.default import Default as _Default
+from .chat_owner_changed import ChatOwnerChanged
+from .chat_owner_left import ChatOwnerLeft
+from .user_profile_audios import UserProfileAudios
+from .video_quality import VideoQuality
 
 # Load typing forward refs for every TelegramObject
 for _entity_name in __all__:

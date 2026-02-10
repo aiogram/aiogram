@@ -14,13 +14,17 @@ if TYPE_CHECKING:
 
 class InlineKeyboardButton(MutableTelegramObject):
     """
-    This object represents one button of an inline keyboard. Exactly one of the optional fields must be used to specify type of the button.
+    This object represents one button of an inline keyboard. Exactly one of the fields other than *text*, *icon_custom_emoji_id*, and *style* must be used to specify the type of the button.
 
     Source: https://core.telegram.org/bots/api#inlinekeyboardbutton
     """
 
     text: str
     """Label text on the button"""
+    icon_custom_emoji_id: str | None = None
+    """*Optional*. Unique identifier of the custom emoji shown before the text of the button. Can only be used by bots that purchased additional usernames on `Fragment <https://fragment.com>`_ or in the messages directly sent by the bot to private, group and supergroup chats if the owner of the bot has a Telegram Premium subscription."""
+    style: str | None = None
+    """*Optional*. Style of the button. Must be one of 'danger' (red), 'success' (green) or 'primary' (blue). If omitted, then an app-specific style is used."""
     url: str | None = None
     """*Optional*. HTTP or tg:// URL to be opened when the button is pressed. Links :code:`tg://user?id=<user_id>` can be used to mention a user by their identifier without using a username, if this is allowed by their privacy settings."""
     callback_data: str | None = None
@@ -50,6 +54,8 @@ class InlineKeyboardButton(MutableTelegramObject):
             __pydantic__self__,
             *,
             text: str,
+            icon_custom_emoji_id: str | None = None,
+            style: str | None = None,
             url: str | None = None,
             callback_data: str | None = None,
             web_app: WebAppInfo | None = None,
@@ -68,6 +74,8 @@ class InlineKeyboardButton(MutableTelegramObject):
 
             super().__init__(
                 text=text,
+                icon_custom_emoji_id=icon_custom_emoji_id,
+                style=style,
                 url=url,
                 callback_data=callback_data,
                 web_app=web_app,

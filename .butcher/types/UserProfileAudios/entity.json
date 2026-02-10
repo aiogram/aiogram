@@ -1,0 +1,33 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "userprofileaudios",
+    "name": "UserProfileAudios",
+    "description": "This object represents the audios displayed on a user's profile.",
+    "html_description": "<p>This object represents the audios displayed on a user's profile.</p>",
+    "rst_description": "This object represents the audios displayed on a user's profile.",
+    "annotations": [
+      {
+        "type": "Integer",
+        "description": "Total number of profile audios for the target user",
+        "html_description": "<td>Total number of profile audios for the target user</td>",
+        "rst_description": "Total number of profile audios for the target user\n",
+        "name": "total_count",
+        "required": true
+      },
+      {
+        "type": "Array of Audio",
+        "description": "Requested profile audios",
+        "html_description": "<td>Requested profile audios</td>",
+        "rst_description": "Requested profile audios\n",
+        "name": "audios",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

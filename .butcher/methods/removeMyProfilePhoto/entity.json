@@ -1,0 +1,16 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available methods",
+    "anchor": "available-methods"
+  },
+  "object": {
+    "anchor": "removemyprofilephoto",
+    "name": "removeMyProfilePhoto",
+    "description": "Removes the profile photo of the bot. Requires no parameters. Returns True on success.",
+    "html_description": "<p>Removes the profile photo of the bot. Requires no parameters. Returns <em>True</em> on success.</p>",
+    "rst_description": "Removes the profile photo of the bot. Requires no parameters. Returns :code:`True` on success.",
+    "annotations": [],
+    "category": "methods"
+  }
+}
