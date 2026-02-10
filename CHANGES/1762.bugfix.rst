@@ -1,0 +1,1 @@
+Fix review issues from Bot API 9.4 PR: fix Makefile reformat scope inconsistency, add ``User.get_profile_audios()`` shortcut method, improve test coverage for ``VideoQuality`` and ``ChatOwnerLeft``.
