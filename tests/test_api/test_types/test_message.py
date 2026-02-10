@@ -264,6 +264,13 @@ TEST_MESSAGE_CHAT_OWNER_LEFT = Message(
     chat=Chat(id=42, type="private"),
     from_user=User(id=42, is_bot=False, first_name="Test"),
 )
+TEST_MESSAGE_CHAT_OWNER_LEFT_NO_SUCCESSOR = Message(
+    message_id=42,
+    date=datetime.datetime.now(),
+    chat_owner_left=ChatOwnerLeft(),
+    chat=Chat(id=42, type="private"),
+    from_user=User(id=42, is_bot=False, first_name="Test"),
+)
 TEST_MESSAGE_CHAT_OWNER_CHANGED = Message(
     message_id=42,
     date=datetime.datetime.now(),
@@ -1046,6 +1053,12 @@ class TestMessage:
     )
     def test_content_type(self, message: Message, content_type: str):
         assert message.content_type == content_type
+
+    def test_chat_owner_left_no_successor(self):
+        assert (
+            TEST_MESSAGE_CHAT_OWNER_LEFT_NO_SUCCESSOR.content_type
+            == ContentType.CHAT_OWNER_LEFT
+        )
 
     def test_as_reply_parameters(self):
         message = Message(

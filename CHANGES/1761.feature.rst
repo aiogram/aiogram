@@ -23,6 +23,7 @@ Updated to Bot API 9.4 (February 9, 2026)
 - Added :class:`aiogram.methods.set_my_profile_photo.SetMyProfilePhoto` method - allows bots to set their profile photo
 - Added :class:`aiogram.methods.remove_my_profile_photo.RemoveMyProfilePhoto` method - allows bots to remove their profile photo
 - Added :class:`aiogram.methods.get_user_profile_audios.GetUserProfileAudios` method - retrieves a user's profile audio list
+- Added :meth:`aiogram.types.user.User.get_profile_audios` shortcut - creates a prefilled :class:`aiogram.methods.get_user_profile_audios.GetUserProfileAudios` request with :code:`user_id`
 
 **New Types:**
 
