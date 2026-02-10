@@ -1016,6 +1016,28 @@ class TestAllMessageTypesTested:
 
 
 class TestMessage:
+    def test_model_validate_external_reply_with_empty_story(self):
+        message = Message.model_validate(
+            {
+                "message_id": 42,
+                "date": int(datetime.datetime.now().timestamp()),
+                "chat": {"id": 42, "type": "private"},
+                "from": {"id": 42, "is_bot": False, "first_name": "Test"},
+                "text": "test",
+                "external_reply": {
+                    "origin": {
+                        "type": "user",
+                        "sender_user": {"id": 43, "is_bot": False, "first_name": "Sender"},
+                        "date": int(datetime.datetime.now().timestamp()),
+                    },
+                    "story": {},
+                },
+            }
+        )
+
+        assert message.external_reply is not None
+        assert message.external_reply.story is None
+
     @pytest.mark.parametrize(
         "message,content_type",
         MESSAGES_AND_CONTENT_TYPES,

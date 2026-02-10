@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
+from pydantic import model_validator
+
 from .base import TelegramObject
 
 if TYPE_CHECKING:
@@ -36,6 +38,18 @@ class ExternalReplyInfo(TelegramObject):
 
     Source: https://core.telegram.org/bots/api#externalreplyinfo
     """
+
+    @model_validator(mode="before")
+    @classmethod
+    def handle_empty_story(cls, values: Any) -> Any:
+        if not isinstance(values, dict):
+            return values
+
+        if values.get("story") == {}:
+            values = values.copy()
+            values["story"] = None
+
+        return values
 
     origin: MessageOriginUnion
     """Origin of the message replied to by the given message"""

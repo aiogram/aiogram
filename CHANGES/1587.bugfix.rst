@@ -1,0 +1,1 @@
+Fixed deserialization for malformed Bot API updates where :code:`external_reply.story` is an empty object, treating it as missing data instead of crashing polling.

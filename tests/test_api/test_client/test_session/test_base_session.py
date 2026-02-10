@@ -26,7 +26,7 @@ from aiogram.exceptions import (
     TelegramServerError,
     TelegramUnauthorizedError,
 )
-from aiogram.methods import DeleteMessage, GetMe, TelegramMethod
+from aiogram.methods import DeleteMessage, GetMe, GetUpdates, TelegramMethod
 from aiogram.types import UNSET_PARSE_MODE, LinkPreviewOptions, User
 from aiogram.types.base import UNSET_DISABLE_WEB_PAGE_PREVIEW, UNSET_PROTECT_CONTENT
 from tests.mocked_bot import MockedBot
@@ -226,6 +226,52 @@ class TestBaseSession:
                 status_code=200,
                 content='{"ok": "test"}',
             )
+
+    def test_check_response_get_updates_with_empty_external_reply_story(self):
+        session = CustomSession()
+        bot = MockedBot()
+        method = GetUpdates()
+
+        response = session.check_response(
+            bot=bot,
+            method=method,
+            status_code=200,
+            content=json.dumps(
+                {
+                    "ok": True,
+                    "result": [
+                        {
+                            "update_id": 1,
+                            "message": {
+                                "message_id": 42,
+                                "date": int(datetime.datetime.now().timestamp()),
+                                "chat": {"id": 42, "type": "private"},
+                                "from": {"id": 42, "is_bot": False, "first_name": "Test"},
+                                "text": "test",
+                                "external_reply": {
+                                    "origin": {
+                                        "type": "user",
+                                        "sender_user": {
+                                            "id": 43,
+                                            "is_bot": False,
+                                            "first_name": "Sender",
+                                        },
+                                        "date": int(datetime.datetime.now().timestamp()),
+                                    },
+                                    "story": {},
+                                },
+                            },
+                        }
+                    ],
+                }
+            ),
+        )
+
+        assert len(response.result) == 1
+        update = response.result[0]
+        assert update.message is not None
+        assert update.message.external_reply is not None
+        assert update.message.external_reply.story is None
 
     async def test_make_request(self):
         session = CustomSession()
