@@ -1,1 +1,0 @@
-Add full_name property to Contact and corresponding tests

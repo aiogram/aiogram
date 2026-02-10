@@ -1,1 +1,0 @@
-Fixed scene handling for ``channel_post`` and ``edited_channel_post`` when Scenes are registered but FSM state is unavailable, and added channel-scoped FSM context support for ``CHAT``/``CHAT_TOPIC`` strategies.
