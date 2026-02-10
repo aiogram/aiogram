@@ -11,5 +11,5 @@ class TestRemoveBusinessAccountProfilePhoto:
         response: bool = await bot.remove_business_account_profile_photo(
             business_connection_id="test_connection_id", is_public=True
         )
-        request = bot.get_request()
+        bot.get_request()
         assert response == prepare_result.result

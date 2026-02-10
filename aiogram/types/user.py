@@ -7,7 +7,7 @@ from ..utils.link import create_tg_link
 from .base import TelegramObject
 
 if TYPE_CHECKING:
-    from ..methods import GetUserProfilePhotos
+    from ..methods import GetUserProfileAudios, GetUserProfilePhotos
 
 
 class User(TelegramObject):
@@ -45,6 +45,8 @@ class User(TelegramObject):
     """*Optional*. :code:`True`, if the bot has a main Web App. Returned only in :class:`aiogram.methods.get_me.GetMe`."""
     has_topics_enabled: bool | None = None
     """*Optional*. :code:`True`, if the bot has forum topic mode enabled in private chats. Returned only in :class:`aiogram.methods.get_me.GetMe`."""
+    allows_users_to_create_topics: bool | None = None
+    """*Optional*. :code:`True`, if the bot allows users to create and delete topics in private chats. Returned only in :class:`aiogram.methods.get_me.GetMe`."""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!
@@ -67,6 +69,7 @@ class User(TelegramObject):
             can_connect_to_business: bool | None = None,
             has_main_web_app: bool | None = None,
             has_topics_enabled: bool | None = None,
+            allows_users_to_create_topics: bool | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!
@@ -88,6 +91,7 @@ class User(TelegramObject):
                 can_connect_to_business=can_connect_to_business,
                 has_main_web_app=has_main_web_app,
                 has_topics_enabled=has_topics_enabled,
+                allows_users_to_create_topics=allows_users_to_create_topics,
                 **__pydantic_kwargs,
             )
 
@@ -137,6 +141,38 @@ class User(TelegramObject):
         from aiogram.methods import GetUserProfilePhotos
 
         return GetUserProfilePhotos(
+            user_id=self.id,
+            offset=offset,
+            limit=limit,
+            **kwargs,
+        ).as_(self._bot)
+
+    def get_profile_audios(
+        self,
+        offset: int | None = None,
+        limit: int | None = None,
+        **kwargs: Any,
+    ) -> GetUserProfileAudios:
+        """
+        Shortcut for method :class:`aiogram.methods.get_user_profile_audios.GetUserProfileAudios`
+        will automatically fill method attributes:
+
+        - :code:`user_id`
+
+        Use this method to get a list of profile audios for a user. Returns a :class:`aiogram.types.user_profile_audios.UserProfileAudios` object.
+
+        Source: https://core.telegram.org/bots/api#getuserprofileaudios
+
+        :param offset: Sequential number of the first audio to be returned. By default, all audios are returned.
+        :param limit: Limits the number of audios to be retrieved. Values between 1-100 are accepted. Defaults to 100.
+        :return: instance of method :class:`aiogram.methods.get_user_profile_audios.GetUserProfileAudios`
+        """
+        # DO NOT EDIT MANUALLY!!!
+        # This method was auto-generated via `butcher`
+
+        from aiogram.methods import GetUserProfileAudios
+
+        return GetUserProfileAudios(
             user_id=self.id,
             offset=offset,
             limit=limit,

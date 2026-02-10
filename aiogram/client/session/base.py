@@ -90,14 +90,14 @@ class BaseSession(abc.ABC):
             # in due to decoder can be customized and raise any exception
 
             msg = "Failed to decode object"
-            raise ClientDecodeError(msg, e, content)
+            raise ClientDecodeError(msg, e, content) from e
 
         try:
             response_type = Response[method.__returning__]  # type: ignore
             response = response_type.model_validate(json_data, context={"bot": bot})
         except ValidationError as e:
             msg = "Failed to deserialize object"
-            raise ClientDecodeError(msg, e, json_data)
+            raise ClientDecodeError(msg, e, json_data) from e
 
         if HTTPStatus.OK <= status_code <= HTTPStatus.IM_USED and response.ok:
             return response

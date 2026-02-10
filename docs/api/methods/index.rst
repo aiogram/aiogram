@@ -82,6 +82,7 @@ Available methods
     get_my_short_description
     get_user_chat_boosts
     get_user_gifts
+    get_user_profile_audios
     get_user_profile_photos
     gift_premium_subscription
     hide_general_forum_topic
@@ -93,6 +94,7 @@ Available methods
     read_business_message
     remove_business_account_profile_photo
     remove_chat_verification
+    remove_my_profile_photo
     remove_user_verification
     reopen_forum_topic
     reopen_general_forum_topic
@@ -135,6 +137,7 @@ Available methods
     set_my_default_administrator_rights
     set_my_description
     set_my_name
+    set_my_profile_photo
     set_my_short_description
     set_user_emoji_status
     transfer_business_account_stars

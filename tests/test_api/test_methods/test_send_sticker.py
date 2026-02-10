@@ -27,5 +27,5 @@ class TestSendSticker:
         )
 
         response: Message = await bot.send_sticker(chat_id=42, sticker="file id")
-        request = bot.get_request()
+        bot.get_request()
         assert response == prepare_result.result

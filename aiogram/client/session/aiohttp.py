@@ -58,7 +58,7 @@ def _prepare_connector(chain_or_plain: _ProxyType) -> tuple[type[TCPConnector], 
     # since tuple is Iterable(compatible with _ProxyChain) object, we assume that
     # user wants chained proxies if tuple is a pair of string(url) and BasicAuth
     if isinstance(chain_or_plain, str) or (
-        isinstance(chain_or_plain, tuple) and len(chain_or_plain) == 2
+        isinstance(chain_or_plain, tuple) and len(chain_or_plain) == 2  # noqa: PLR2004
     ):
         chain_or_plain = cast(_ProxyBasic, chain_or_plain)
         return ProxyConnector, _retrieve_basic(chain_or_plain)
@@ -170,10 +170,10 @@ class AiohttpSession(BaseSession):
                 timeout=self.timeout if timeout is None else timeout,
             ) as resp:
                 raw_result = await resp.text()
-        except asyncio.TimeoutError:
-            raise TelegramNetworkError(method=method, message="Request timeout error")
+        except asyncio.TimeoutError as e:
+            raise TelegramNetworkError(method=method, message="Request timeout error") from e
         except ClientError as e:
-            raise TelegramNetworkError(method=method, message=f"{type(e).__name__}: {e}")
+            raise TelegramNetworkError(method=method, message=f"{type(e).__name__}: {e}") from e
         response = self.check_response(
             bot=bot,
             method=method,

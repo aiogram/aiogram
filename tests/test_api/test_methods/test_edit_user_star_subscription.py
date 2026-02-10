@@ -11,5 +11,5 @@ class TestEditUserStarSubscription:
             telegram_payment_charge_id="telegram_payment_charge_id",
             is_canceled=False,
         )
-        request = bot.get_request()
+        bot.get_request()
         assert response == prepare_result.result

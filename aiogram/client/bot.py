@@ -2,12 +2,11 @@ from __future__ import annotations
 
 import io
 import pathlib
+from collections.abc import AsyncGenerator, AsyncIterator
 from contextlib import asynccontextmanager
 from types import TracebackType
 from typing import (
     Any,
-    AsyncGenerator,
-    AsyncIterator,
     BinaryIO,
     TypeVar,
     cast,
@@ -93,6 +92,7 @@ from ..methods import (
     GetUpdates,
     GetUserChatBoosts,
     GetUserGifts,
+    GetUserProfileAudios,
     GetUserProfilePhotos,
     GetWebhookInfo,
     GiftPremiumSubscription,
@@ -106,6 +106,7 @@ from ..methods import (
     RefundStarPayment,
     RemoveBusinessAccountProfilePhoto,
     RemoveChatVerification,
+    RemoveMyProfilePhoto,
     RemoveUserVerification,
     ReopenForumTopic,
     ReopenGeneralForumTopic,
@@ -155,6 +156,7 @@ from ..methods import (
     SetMyDefaultAdministratorRights,
     SetMyDescription,
     SetMyName,
+    SetMyProfilePhoto,
     SetMyShortDescription,
     SetPassportDataErrors,
     SetStickerEmojiList,
@@ -242,6 +244,7 @@ from ..types import (
     Update,
     User,
     UserChatBoosts,
+    UserProfileAudios,
     UserProfilePhotos,
     WebhookInfo,
 )
@@ -283,9 +286,9 @@ class Bot:
         # Few arguments are completely removed in 3.7.0 version
         # Temporary solution to raise an error if user passed these arguments
         # with explanation how to fix it
-        parse_mode = kwargs.get("parse_mode", None)
-        link_preview_is_disabled = kwargs.get("disable_web_page_preview", None)
-        protect_content = kwargs.get("protect_content", None)
+        parse_mode = kwargs.get("parse_mode")
+        link_preview_is_disabled = kwargs.get("disable_web_page_preview")
+        protect_content = kwargs.get("protect_content")
         if (
             parse_mode is not None
             or link_preview_is_disabled is not None
@@ -310,7 +313,7 @@ class Bot:
         self.__token = token
         self._me: User | None = None
 
-    async def __aenter__(self) -> "Bot":
+    async def __aenter__(self) -> Bot:
         return self
 
     async def __aexit__(
@@ -912,7 +915,7 @@ class Bot:
         request_timeout: int | None = None,
     ) -> ForumTopic:
         """
-        Use this method to create a topic in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the *can_manage_topics* administrator rights. Returns information about the created topic as a :class:`aiogram.types.forum_topic.ForumTopic` object.
+        Use this method to create a topic in a forum supergroup chat or a private chat with a user. In the case of a supergroup chat the bot must be an administrator in the chat for this to work and must have the *can_manage_topics* administrator right. Returns information about the created topic as a :class:`aiogram.types.forum_topic.ForumTopic` object.
 
         Source: https://core.telegram.org/bots/api#createforumtopic
 
@@ -5841,5 +5844,67 @@ class Bot:
             message_thread_id=message_thread_id,
             parse_mode=parse_mode,
             entities=entities,
+        )
+        return await self(call, request_timeout=request_timeout)
+
+    async def get_user_profile_audios(
+        self,
+        user_id: int,
+        offset: int | None = None,
+        limit: int | None = None,
+        request_timeout: int | None = None,
+    ) -> UserProfileAudios:
+        """
+        Use this method to get a list of profile audios for a user. Returns a :class:`aiogram.types.user_profile_audios.UserProfileAudios` object.
+
+        Source: https://core.telegram.org/bots/api#getuserprofileaudios
+
+        :param user_id: Unique identifier of the target user
+        :param offset: Sequential number of the first audio to be returned. By default, all audios are returned.
+        :param limit: Limits the number of audios to be retrieved. Values between 1-100 are accepted. Defaults to 100.
+        :param request_timeout: Request timeout
+        :return: Returns a :class:`aiogram.types.user_profile_audios.UserProfileAudios` object.
+        """
+
+        call = GetUserProfileAudios(
+            user_id=user_id,
+            offset=offset,
+            limit=limit,
+        )
+        return await self(call, request_timeout=request_timeout)
+
+    async def remove_my_profile_photo(
+        self,
+        request_timeout: int | None = None,
+    ) -> bool:
+        """
+        Removes the profile photo of the bot. Requires no parameters. Returns :code:`True` on success.
+
+        Source: https://core.telegram.org/bots/api#removemyprofilephoto
+
+        :param request_timeout: Request timeout
+        :return: Returns :code:`True` on success.
+        """
+
+        call = RemoveMyProfilePhoto()
+        return await self(call, request_timeout=request_timeout)
+
+    async def set_my_profile_photo(
+        self,
+        photo: InputProfilePhotoUnion,
+        request_timeout: int | None = None,
+    ) -> bool:
+        """
+        Changes the profile photo of the bot. Returns :code:`True` on success.
+
+        Source: https://core.telegram.org/bots/api#setmyprofilephoto
+
+        :param photo: The new profile photo to set
+        :param request_timeout: Request timeout
+        :return: Returns :code:`True` on success.
+        """
+
+        call = SetMyProfilePhoto(
+            photo=photo,
         )
         return await self(call, request_timeout=request_timeout)

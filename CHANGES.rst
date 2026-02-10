@@ -16,6 +16,88 @@ Changelog
 
 .. towncrier release notes start
 
+3.25.0 (2026-02-10)
+====================
+
+Features
+--------
+
+- Add full_name property to Contact and corresponding tests
+  `#1758 <https://github.com/aiogram/aiogram/issues/1758>`_
+- Updated to `Bot API 9.4 (February 9, 2026) <https://core.telegram.org/bots/api-changelog#february-9-2026>`_
+
+  **New Features:**
+
+  - Bots with Premium subscriptions can now use custom emoji directly in messages to private, group, and supergroup chats
+  - Bots can create topics in private chats via the :class:`aiogram.methods.create_forum_topic.CreateForumTopic` method
+  - Bots can prevent users from creating/deleting topics in private chats through BotFather settings
+
+  **New Fields:**
+
+  - Added :code:`allows_users_to_create_topics` field to :class:`aiogram.types.user.User` class - indicates whether the user allows others to create topics in chats with them
+  - Added :code:`icon_custom_emoji_id` field to :class:`aiogram.types.keyboard_button.KeyboardButton` and :class:`aiogram.types.inline_keyboard_button.InlineKeyboardButton` classes - allows displaying custom emoji icons on buttons
+  - Added :code:`style` field to :class:`aiogram.types.keyboard_button.KeyboardButton` and :class:`aiogram.types.inline_keyboard_button.InlineKeyboardButton` classes - changes button color/style
+  - Added :code:`chat_owner_left` field to :class:`aiogram.types.message.Message` class - service message indicating chat owner has left (type: :class:`aiogram.types.chat_owner_left.ChatOwnerLeft`)
+  - Added :code:`chat_owner_changed` field to :class:`aiogram.types.message.Message` class - service message indicating chat ownership has transferred (type: :class:`aiogram.types.chat_owner_changed.ChatOwnerChanged`)
+  - Added :code:`qualities` field to :class:`aiogram.types.video.Video` class - list of available video quality options (type: :code:`list[`:class:`aiogram.types.video_quality.VideoQuality`:code:`]`)
+  - Added :code:`first_profile_audio` field to :class:`aiogram.types.chat_full_info.ChatFullInfo` class - user's first profile audio
+  - Added :code:`rarity` field to :class:`aiogram.types.unique_gift_model.UniqueGiftModel` class
+  - Added :code:`is_burned` field to :class:`aiogram.types.unique_gift.UniqueGift` class
+
+  **New Methods:**
+
+  - Added :class:`aiogram.methods.set_my_profile_photo.SetMyProfilePhoto` method - allows bots to set their profile photo
+  - Added :class:`aiogram.methods.remove_my_profile_photo.RemoveMyProfilePhoto` method - allows bots to remove their profile photo
+  - Added :class:`aiogram.methods.get_user_profile_audios.GetUserProfileAudios` method - retrieves a user's profile audio list
+  - Added :meth:`aiogram.types.user.User.get_profile_audios` shortcut - creates a prefilled :class:`aiogram.methods.get_user_profile_audios.GetUserProfileAudios` request with :code:`user_id`
+
+  **New Types:**
+
+  - Added :class:`aiogram.types.chat_owner_left.ChatOwnerLeft` type - describes a service message about the chat owner leaving the chat
+  - Added :class:`aiogram.types.chat_owner_changed.ChatOwnerChanged` type - describes a service message about an ownership change in the chat
+  - Added :class:`aiogram.types.video_quality.VideoQuality` type - describes available video quality options
+  - Added :class:`aiogram.types.user_profile_audios.UserProfileAudios` type - represents the collection of audios displayed on a user's profile
+
+  `#1761 <https://github.com/aiogram/aiogram/issues/1761>`_
+
+
+Bugfixes
+--------
+
+- Fixed scene handling for ``channel_post`` and ``edited_channel_post`` when Scenes are registered but FSM state is unavailable, and added channel-scoped FSM context support for ``CHAT``/``CHAT_TOPIC`` strategies.
+  `#1743 <https://github.com/aiogram/aiogram/issues/1743>`_
+
+
+Misc
+----
+
+- Migrated from Black and isort to Ruff for code formatting and linting, a modern, blazingly fast formatter and linter written in Rust.
+
+  Enabled additional ruff rule sets.
+
+  **For end users:**
+
+  No changes required. This is purely a development tooling change that doesn't affect the library API or behavior.
+
+  **For contributors:**
+
+  - Use ``make reformat`` or ``uv run ruff format`` to format code (replaces ``black`` and ``isort``)
+  - Use ``make lint`` to check code quality (now includes formatting, linting, and type checking)
+  - Pre-commit hooks automatically updated to use ``ruff`` and ``ruff-format``
+  - CI/CD pipelines updated to use ruff in GitHub Actions workflows
+
+  **Benefits:**
+
+  - 10-100x faster formatting and linting compared to Black + isort + flake8
+  - Single tool for formatting, import sorting, and linting
+  - More comprehensive code quality checks out of the box
+  - Auto-fixes for many common issues (33 issues auto-fixed during migration)
+  - Better integration with modern Python development workflows
+
+  This change improves the developer experience and code quality while maintaining the same code style standards.
+  `#1750 <https://github.com/aiogram/aiogram/issues/1750>`_
+
+
 3.24.0 (2026-01-02)
 ====================
 

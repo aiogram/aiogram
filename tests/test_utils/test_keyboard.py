@@ -207,21 +207,21 @@ class TestKeyboardBuilder:
         markup = builder.export()
 
         assert len(markup) == len(shape)
-        for row, expected_size in zip(markup, shape):
+        for row, expected_size in zip(markup, shape, strict=False):
             assert len(row) == expected_size
 
     @pytest.mark.parametrize(
         "builder_type,kwargs,expected",
         [
-            [ReplyKeyboardBuilder, dict(text="test"), KeyboardButton(text="test")],
+            [ReplyKeyboardBuilder, {"text": "test"}, KeyboardButton(text="test")],
             [
                 InlineKeyboardBuilder,
-                dict(text="test", callback_data="callback"),
+                {"text": "test", "callback_data": "callback"},
                 InlineKeyboardButton(text="test", callback_data="callback"),
             ],
             [
                 InlineKeyboardBuilder,
-                dict(text="test", callback_data=MyCallback(value="test")),
+                {"text": "test", "callback_data": MyCallback(value="test")},
                 InlineKeyboardButton(text="test", callback_data="test:test"),
             ],
         ],

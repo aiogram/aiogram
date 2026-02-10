@@ -20,5 +20,5 @@ class TestRepostStory:
             from_story_id=456,
             active_period=6 * 3600,
         )
-        request = bot.get_request()
+        bot.get_request()
         assert response == prepare_result.result

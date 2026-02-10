@@ -12,5 +12,5 @@ class TestUpgradeGift:
             keep_original_details=True,
             star_count=100,
         )
-        request = bot.get_request()
+        bot.get_request()
         assert response == prepare_result.result

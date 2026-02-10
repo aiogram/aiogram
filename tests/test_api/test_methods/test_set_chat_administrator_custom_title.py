@@ -9,5 +9,5 @@ class TestSetChatTitle:
         response: bool = await bot.set_chat_administrator_custom_title(
             chat_id=-42, user_id=42, custom_title="test chat"
         )
-        request = bot.get_request()
+        bot.get_request()
         assert response == prepare_result.result

@@ -123,14 +123,15 @@ class Command(Filter):
             result.update(command.magic_result)
         return result
 
-    def extract_command(self, text: str) -> CommandObject:
+    @classmethod
+    def extract_command(cls, text: str) -> CommandObject:
         # First step: separate command with arguments
         # "/command@mention arg1 arg2" -> "/command@mention", ["arg1 arg2"]
         try:
             full_command, *args = text.split(maxsplit=1)
-        except ValueError:
+        except ValueError as e:
             msg = "not enough values to unpack"
-            raise CommandException(msg)
+            raise CommandException(msg) from e
 
         # Separate command into valuable parts
         # "/command@mention" -> "/", ("command", "@", "mention")
@@ -292,6 +293,6 @@ class CommandStart(Command):
                 args = decode_payload(args)
             except UnicodeDecodeError as e:
                 msg = f"Failed to decode Base64: {e}"
-                raise CommandException(msg)
+                raise CommandException(msg) from e
             return replace(command, args=args)
         return command

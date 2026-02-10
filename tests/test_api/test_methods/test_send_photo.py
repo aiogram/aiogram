@@ -21,5 +21,5 @@ class TestSendPhoto:
         )
 
         response: Message = await bot.send_photo(chat_id=42, photo="file id")
-        request = bot.get_request()
+        bot.get_request()
         assert response == prepare_result.result

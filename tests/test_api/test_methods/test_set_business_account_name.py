@@ -11,5 +11,5 @@ class TestSetBusinessAccountName:
             first_name="Test Business",
             last_name="Account Name",
         )
-        request = bot.get_request()
+        bot.get_request()
         assert response == prepare_result.result

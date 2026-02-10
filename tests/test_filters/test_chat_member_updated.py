@@ -1,5 +1,4 @@
 from datetime import datetime
-from typing import Optional
 
 import pytest
 
@@ -27,7 +26,7 @@ from aiogram.types import (
 
 class ChatMemberCustom(ChatMember):
     status: str
-    is_member: Optional[bool] = None
+    is_member: bool | None = None
 
 
 class TestMemberStatusMarker:

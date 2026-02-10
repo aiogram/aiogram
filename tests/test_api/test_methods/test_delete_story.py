@@ -9,5 +9,5 @@ class TestDeleteStory:
         response: bool = await bot.delete_story(
             business_connection_id="test_connection_id", story_id=42
         )
-        request = bot.get_request()
+        bot.get_request()
         assert response == prepare_result.result

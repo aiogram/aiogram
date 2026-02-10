@@ -19,7 +19,7 @@ class TestSendMessage:
         )
 
         response: Message = await bot.send_message(chat_id=42, text="test")
-        request = bot.get_request()
+        bot.get_request()
         assert response == prepare_result.result
 
     async def test_force_reply(self):

@@ -31,7 +31,6 @@ class TestDataclassKwargs:
     )
     def test_dataclass_kwargs(self, py_version, expected):
         with patch("sys.version_info", py_version):
-
             assert (
                 dataclass_kwargs(
                     init=True,

@@ -74,6 +74,7 @@ from .get_sticker_set import GetStickerSet
 from .get_updates import GetUpdates
 from .get_user_chat_boosts import GetUserChatBoosts
 from .get_user_gifts import GetUserGifts
+from .get_user_profile_audios import GetUserProfileAudios
 from .get_user_profile_photos import GetUserProfilePhotos
 from .get_webhook_info import GetWebhookInfo
 from .gift_premium_subscription import GiftPremiumSubscription
@@ -87,6 +88,7 @@ from .read_business_message import ReadBusinessMessage
 from .refund_star_payment import RefundStarPayment
 from .remove_business_account_profile_photo import RemoveBusinessAccountProfilePhoto
 from .remove_chat_verification import RemoveChatVerification
+from .remove_my_profile_photo import RemoveMyProfilePhoto
 from .remove_user_verification import RemoveUserVerification
 from .reopen_forum_topic import ReopenForumTopic
 from .reopen_general_forum_topic import ReopenGeneralForumTopic
@@ -136,6 +138,7 @@ from .set_my_commands import SetMyCommands
 from .set_my_default_administrator_rights import SetMyDefaultAdministratorRights
 from .set_my_description import SetMyDescription
 from .set_my_name import SetMyName
+from .set_my_profile_photo import SetMyProfilePhoto
 from .set_my_short_description import SetMyShortDescription
 from .set_passport_data_errors import SetPassportDataErrors
 from .set_sticker_emoji_list import SetStickerEmojiList
@@ -238,6 +241,7 @@ __all__ = (
     "GetUpdates",
     "GetUserChatBoosts",
     "GetUserGifts",
+    "GetUserProfileAudios",
     "GetUserProfilePhotos",
     "GetWebhookInfo",
     "GiftPremiumSubscription",
@@ -251,6 +255,7 @@ __all__ = (
     "RefundStarPayment",
     "RemoveBusinessAccountProfilePhoto",
     "RemoveChatVerification",
+    "RemoveMyProfilePhoto",
     "RemoveUserVerification",
     "ReopenForumTopic",
     "ReopenGeneralForumTopic",
@@ -302,6 +307,7 @@ __all__ = (
     "SetMyDefaultAdministratorRights",
     "SetMyDescription",
     "SetMyName",
+    "SetMyProfilePhoto",
     "SetMyShortDescription",
     "SetPassportDataErrors",
     "SetStickerEmojiList",

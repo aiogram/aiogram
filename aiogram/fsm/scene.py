@@ -120,7 +120,7 @@ class ObserverDecorator:
         handlers = getattr(target, "__aiogram_handler__", None)
         if not handlers:
             handlers = []
-            setattr(target, "__aiogram_handler__", handlers)
+            target.__aiogram_handler__ = handlers  # type: ignore[union-attr]
 
         handlers.append(
             HandlerContainer(
@@ -137,7 +137,7 @@ class ObserverDecorator:
         action = getattr(target, "__aiogram_action__", None)
         if action is None:
             action = defaultdict(dict)
-            setattr(target, "__aiogram_action__", action)
+            target.__aiogram_action__ = action  # type: ignore[attr-defined]
         action[self.action][self.name] = CallableObject(target)
 
     def __call__(self, target: CallbackType) -> CallbackType:
@@ -248,8 +248,16 @@ class SceneHandlerWrapper:
         event: TelegramObject,
         **kwargs: Any,
     ) -> Any:
-        state: FSMContext = kwargs["state"]
-        scenes: ScenesManager = kwargs["scenes"]
+        try:
+            state: FSMContext = kwargs["state"]
+            scenes: ScenesManager = kwargs["scenes"]
+        except KeyError as error:
+            missing_key = error.args[0]
+            msg = (
+                f"Scene context key {missing_key!r} is not available. "
+                "Ensure FSM is enabled and pipeline is intact."
+            )
+            raise SceneException(msg) from None
         event_update: Update = kwargs["event_update"]
         scene = self.scene(
             wizard=SceneWizard(
@@ -768,12 +776,15 @@ class SceneRegistry:
         data: dict[str, Any],
     ) -> Any:
         assert isinstance(event, Update), "Event must be an Update instance"
+        state = data.get("state")
+        if state is None:
+            return await handler(event, data)
 
         data["scenes"] = ScenesManager(
             registry=self,
             update_type=event.event_type,
             event=event.event,
-            state=data["state"],
+            state=state,
             data=data,
         )
         return await handler(event, data)
@@ -784,12 +795,16 @@ class SceneRegistry:
         event: TelegramObject,
         data: dict[str, Any],
     ) -> Any:
+        state = data.get("state")
+        if state is None:
+            return await handler(event, data)
+
         update: Update = data["event_update"]
         data["scenes"] = ScenesManager(
             registry=self,
             update_type=update.event_type,
             event=event,
-            state=data["state"],
+            state=state,
             data=data,
         )
         return await handler(event, data)
@@ -865,7 +880,7 @@ class SceneRegistry:
             return self._scenes[scene]
         except KeyError:
             msg = f"Scene {scene!r} is not registered"
-            raise SceneException(msg)
+            raise SceneException(msg) from None
 
 
 @dataclass

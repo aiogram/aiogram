@@ -2,12 +2,11 @@ import asyncio
 import logging
 from os import getenv
 
-from handlers.echo import echo_router
-from handlers.start import start_router
-
 from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
+from handlers.echo import echo_router
+from handlers.start import start_router
 
 # Bot token can be obtained via https://t.me/BotFather
 TOKEN = getenv("BOT_TOKEN")

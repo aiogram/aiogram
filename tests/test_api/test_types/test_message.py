@@ -1,5 +1,5 @@
 import datetime
-from typing import Any, Dict, Optional, Type, Union
+from typing import Any
 
 import pytest
 
@@ -46,6 +46,8 @@ from aiogram.types import (
     Chat,
     ChatBackground,
     ChatBoostAdded,
+    ChatOwnerChanged,
+    ChatOwnerLeft,
     ChatShared,
     Checklist,
     ChecklistTask,
@@ -250,6 +252,31 @@ TEST_MESSAGE_LEFT_CHAT_MEMBER = Message(
     message_id=42,
     date=datetime.datetime.now(),
     left_chat_member=User(id=42, is_bot=False, first_name="Test"),
+    chat=Chat(id=42, type="private"),
+    from_user=User(id=42, is_bot=False, first_name="Test"),
+)
+TEST_MESSAGE_CHAT_OWNER_LEFT = Message(
+    message_id=42,
+    date=datetime.datetime.now(),
+    chat_owner_left=ChatOwnerLeft(
+        new_owner=User(id=43, is_bot=False, first_name="NewOwner"),
+    ),
+    chat=Chat(id=42, type="private"),
+    from_user=User(id=42, is_bot=False, first_name="Test"),
+)
+TEST_MESSAGE_CHAT_OWNER_LEFT_NO_SUCCESSOR = Message(
+    message_id=42,
+    date=datetime.datetime.now(),
+    chat_owner_left=ChatOwnerLeft(),
+    chat=Chat(id=42, type="private"),
+    from_user=User(id=42, is_bot=False, first_name="Test"),
+)
+TEST_MESSAGE_CHAT_OWNER_CHANGED = Message(
+    message_id=42,
+    date=datetime.datetime.now(),
+    chat_owner_changed=ChatOwnerChanged(
+        new_owner=User(id=43, is_bot=False, first_name="NewOwner"),
+    ),
     chat=Chat(id=42, type="private"),
     from_user=User(id=42, is_bot=False, first_name="Test"),
 )
@@ -849,6 +876,8 @@ MESSAGES_AND_CONTENT_TYPES = [
     [TEST_MESSAGE_LOCATION, ContentType.LOCATION],
     [TEST_MESSAGE_NEW_CHAT_MEMBERS, ContentType.NEW_CHAT_MEMBERS],
     [TEST_MESSAGE_LEFT_CHAT_MEMBER, ContentType.LEFT_CHAT_MEMBER],
+    [TEST_MESSAGE_CHAT_OWNER_LEFT, ContentType.CHAT_OWNER_LEFT],
+    [TEST_MESSAGE_CHAT_OWNER_CHANGED, ContentType.CHAT_OWNER_CHANGED],
     [TEST_MESSAGE_INVOICE, ContentType.INVOICE],
     [TEST_MESSAGE_SUCCESSFUL_PAYMENT, ContentType.SUCCESSFUL_PAYMENT],
     [TEST_MESSAGE_CONNECTED_WEBSITE, ContentType.CONNECTED_WEBSITE],
@@ -930,6 +959,8 @@ MESSAGES_AND_COPY_METHODS = [
     [TEST_MESSAGE_STORY, ForwardMessage],
     [TEST_MESSAGE_NEW_CHAT_MEMBERS, None],
     [TEST_MESSAGE_LEFT_CHAT_MEMBER, None],
+    [TEST_MESSAGE_CHAT_OWNER_LEFT, None],
+    [TEST_MESSAGE_CHAT_OWNER_CHANGED, None],
     [TEST_MESSAGE_INVOICE, None],
     [TEST_MESSAGE_SUCCESSFUL_PAYMENT, None],
     [TEST_MESSAGE_CONNECTED_WEBSITE, None],
@@ -989,7 +1020,7 @@ MESSAGES_AND_COPY_METHODS = [
 class TestAllMessageTypesTested:
     @pytest.fixture(scope="function")
     def known_content_types(self):
-        content_types = {t for t in ContentType}
+        content_types = set(ContentType)
         content_types.remove(ContentType.ANY)
         return content_types
 
@@ -1023,6 +1054,11 @@ class TestMessage:
     def test_content_type(self, message: Message, content_type: str):
         assert message.content_type == content_type
 
+    def test_chat_owner_left_no_successor(self):
+        assert (
+            TEST_MESSAGE_CHAT_OWNER_LEFT_NO_SUCCESSOR.content_type == ContentType.CHAT_OWNER_LEFT
+        )
+
     def test_as_reply_parameters(self):
         message = Message(
             message_id=42, chat=Chat(id=42, type="private"), date=datetime.datetime.now()
@@ -1034,46 +1070,46 @@ class TestMessage:
     @pytest.mark.parametrize(
         "alias_for_method,kwargs,method_class",
         [
-            ["animation", dict(animation="animation"), SendAnimation],
-            ["audio", dict(audio="audio"), SendAudio],
-            ["contact", dict(phone_number="+000000000000", first_name="Test"), SendContact],
-            ["document", dict(document="document"), SendDocument],
-            ["game", dict(game_short_name="game"), SendGame],
+            ["animation", {"animation": "animation"}, SendAnimation],
+            ["audio", {"audio": "audio"}, SendAudio],
+            ["contact", {"phone_number": "+000000000000", "first_name": "Test"}, SendContact],
+            ["document", {"document": "document"}, SendDocument],
+            ["game", {"game_short_name": "game"}, SendGame],
             [
                 "invoice",
-                dict(
-                    title="title",
-                    description="description",
-                    payload="payload",
-                    provider_token="provider_token",
-                    start_parameter="start_parameter",
-                    currency="currency",
-                    prices=[],
-                ),
+                {
+                    "title": "title",
+                    "description": "description",
+                    "payload": "payload",
+                    "provider_token": "provider_token",
+                    "start_parameter": "start_parameter",
+                    "currency": "currency",
+                    "prices": [],
+                },
                 SendInvoice,
             ],
-            ["location", dict(latitude=0.42, longitude=0.42), SendLocation],
-            ["media_group", dict(media=[]), SendMediaGroup],
-            ["", dict(text="test"), SendMessage],
-            ["photo", dict(photo="photo"), SendPhoto],
-            ["poll", dict(question="Q?", options=[]), SendPoll],
-            ["dice", dict(), SendDice],
-            ["sticker", dict(sticker="sticker"), SendSticker],
-            ["sticker", dict(sticker="sticker"), SendSticker],
+            ["location", {"latitude": 0.42, "longitude": 0.42}, SendLocation],
+            ["media_group", {"media": []}, SendMediaGroup],
+            ["", {"text": "test"}, SendMessage],
+            ["photo", {"photo": "photo"}, SendPhoto],
+            ["poll", {"question": "Q?", "options": []}, SendPoll],
+            ["dice", {}, SendDice],
+            ["sticker", {"sticker": "sticker"}, SendSticker],
+            ["sticker", {"sticker": "sticker"}, SendSticker],
             [
                 "venue",
-                dict(
-                    latitude=0.42,
-                    longitude=0.42,
-                    title="title",
-                    address="address",
-                ),
+                {
+                    "latitude": 0.42,
+                    "longitude": 0.42,
+                    "title": "title",
+                    "address": "address",
+                },
                 SendVenue,
             ],
-            ["video", dict(video="video"), SendVideo],
-            ["video_note", dict(video_note="video_note"), SendVideoNote],
-            ["voice", dict(voice="voice"), SendVoice],
-            ["paid_media", dict(media=[], star_count=42), SendPaidMedia],
+            ["video", {"video": "video"}, SendVideo],
+            ["video_note", {"video_note": "video_note"}, SendVideoNote],
+            ["voice", {"voice": "voice"}, SendVoice],
+            ["paid_media", {"media": [], "star_count": 42}, SendPaidMedia],
         ],
     )
     @pytest.mark.parametrize("alias_type", ["reply", "answer"])
@@ -1081,28 +1117,26 @@ class TestMessage:
         self,
         alias_for_method: str,
         alias_type: str,
-        kwargs: Dict[str, Any],
-        method_class: Type[
-            Union[
-                SendAnimation,
-                SendAudio,
-                SendContact,
-                SendDocument,
-                SendGame,
-                SendInvoice,
-                SendLocation,
-                SendMediaGroup,
-                SendMessage,
-                SendPhoto,
-                SendPoll,
-                SendSticker,
-                SendSticker,
-                SendVenue,
-                SendVideo,
-                SendVideoNote,
-                SendVoice,
-                SendPaidMedia,
-            ]
+        kwargs: dict[str, Any],
+        method_class: type[
+            SendAnimation
+            | SendAudio
+            | SendContact
+            | SendDocument
+            | SendGame
+            | SendInvoice
+            | SendLocation
+            | SendMediaGroup
+            | SendMessage
+            | SendPhoto
+            | SendPoll
+            | SendSticker
+            | SendSticker
+            | SendVenue
+            | SendVideo
+            | SendVideoNote
+            | SendVoice
+            | SendPaidMedia
         ],
     ):
         message = Message(
@@ -1145,7 +1179,7 @@ class TestMessage:
     def test_send_copy(
         self,
         message: Message,
-        expected_method: Optional[Type[TelegramMethod]],
+        expected_method: type[TelegramMethod] | None,
     ):
         if expected_method is None:
             with pytest.raises(TypeError, match="This type of message can't be copied."):
@@ -1181,8 +1215,8 @@ class TestMessage:
     def test_send_copy_custom_parse_mode(
         self,
         message: Message,
-        expected_method: Optional[Type[TelegramMethod]],
-        custom_parse_mode: Optional[str],
+        expected_method: type[TelegramMethod] | None,
+        custom_parse_mode: str | None,
     ):
         method = message.send_copy(
             chat_id=42,

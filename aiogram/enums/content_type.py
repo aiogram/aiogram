@@ -28,6 +28,8 @@ class ContentType(str, Enum):
     LOCATION = "location"
     NEW_CHAT_MEMBERS = "new_chat_members"
     LEFT_CHAT_MEMBER = "left_chat_member"
+    CHAT_OWNER_LEFT = "chat_owner_left"
+    CHAT_OWNER_CHANGED = "chat_owner_changed"
     NEW_CHAT_TITLE = "new_chat_title"
     NEW_CHAT_PHOTO = "new_chat_photo"
     DELETE_CHAT_PHOTO = "delete_chat_photo"

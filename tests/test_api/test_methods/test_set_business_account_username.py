@@ -9,5 +9,5 @@ class TestSetBusinessAccountUsername:
         response: bool = await bot.set_business_account_username(
             business_connection_id="test_connection_id", username="test_business_username"
         )
-        request = bot.get_request()
+        bot.get_request()
         assert response == prepare_result.result

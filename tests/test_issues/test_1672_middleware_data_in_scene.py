@@ -1,5 +1,6 @@
+from collections.abc import Awaitable, Callable
 from datetime import datetime
-from typing import Any, Awaitable, Callable, Dict
+from typing import Any
 from unittest.mock import AsyncMock
 
 import pytest
@@ -25,9 +26,9 @@ class EchoScene(Scene, state="test"):
 class TestMiddleware(BaseMiddleware):
     async def __call__(
         self,
-        handler: Callable[[TelegramObject, Dict[str, Any]], Awaitable[Any]],
+        handler: Callable[[TelegramObject, dict[str, Any]], Awaitable[Any]],
         event: TelegramObject,
-        data: Dict[str, Any],
+        data: dict[str, Any],
     ) -> Any:
         data["test_context"] = "Custom context here"
         return await handler(event, data)

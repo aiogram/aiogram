@@ -7,5 +7,5 @@ class TestReopenGeneralForumTopic:
         prepare_result = bot.add_result_for(ReopenGeneralForumTopic, ok=True, result=True)
 
         response: bool = await bot.reopen_general_forum_topic(chat_id=42)
-        request = bot.get_request()
+        bot.get_request()
         assert response == prepare_result.result

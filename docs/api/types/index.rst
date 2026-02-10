@@ -67,6 +67,8 @@ Available types
     chat_member_owner
     chat_member_restricted
     chat_member_updated
+    chat_owner_changed
+    chat_owner_left
     chat_permissions
     chat_photo
     chat_shared
@@ -199,6 +201,7 @@ Available types
     unique_gift_symbol
     user
     user_chat_boosts
+    user_profile_audios
     user_profile_photos
     user_rating
     user_shared
@@ -210,6 +213,7 @@ Available types
     video_chat_scheduled
     video_chat_started
     video_note
+    video_quality
     voice
     web_app_data
     web_app_info

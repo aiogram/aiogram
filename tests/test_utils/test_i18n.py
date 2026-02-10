@@ -1,5 +1,4 @@
-from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 
 import pytest
 
@@ -81,7 +80,7 @@ class TestI18nCore:
             ["it", {"singular": "test", "plural": "test2", "n": 2}, "test2"],
         ],
     )
-    def test_gettext(self, i18n: I18n, locale: str, case: Dict[str, Any], result: str):
+    def test_gettext(self, i18n: I18n, locale: str, case: dict[str, Any], result: str):
         if locale is not None:
             i18n.current_locale = locale
         with i18n.context():

@@ -10,5 +10,5 @@ class TestSetChatPermissions:
         response: bool = await bot.set_chat_permissions(
             chat_id=-42, permissions=ChatPermissions(can_send_messages=False)
         )
-        request = bot.get_request()
+        bot.get_request()
         assert response == prepare_result.result

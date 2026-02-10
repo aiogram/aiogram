@@ -13,13 +13,10 @@ repos:
       - id: "check-toml"
       - id: "check-json"
 
-  - repo: https://github.com/psf/black
-    rev: 25.9.0
-    hooks:
-      - id: black
-        files: &files '^(aiogram|tests|examples)'
-
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: 'v0.14.0'
     hooks:
       - id: ruff
+        files: &files '^(aiogram|tests|examples)'
+      - id: ruff-format
+        files: *files

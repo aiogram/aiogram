@@ -22,6 +22,7 @@ if TYPE_CHECKING:
     from aiogram import Bot
 
 BAD_PATTERN = re.compile(r"[^a-zA-Z0-9-_]")
+DEEPLINK_PAYLOAD_LENGTH = 64
 
 
 async def create_start_link(
@@ -145,8 +146,8 @@ def create_deep_link(
         )
         raise ValueError(msg)
 
-    if len(payload) > 64:
-        msg = "Payload must be up to 64 characters long."
+    if len(payload) > DEEPLINK_PAYLOAD_LENGTH:
+        msg = f"Payload must be up to {DEEPLINK_PAYLOAD_LENGTH} characters long."
         raise ValueError(msg)
 
     if not app_name:

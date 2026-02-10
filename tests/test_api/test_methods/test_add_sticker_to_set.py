@@ -15,5 +15,5 @@ class TestAddStickerToSet:
                 sticker="file id", format=StickerFormat.STATIC, emoji_list=[":)"]
             ),
         )
-        request = bot.get_request()
+        bot.get_request()
         assert response == prepare_result.result

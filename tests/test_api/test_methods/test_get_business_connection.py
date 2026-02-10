@@ -20,5 +20,5 @@ class TestGetBusinessConnection:
         response: BusinessConnection = await bot.get_business_connection(
             business_connection_id="test"
         )
-        request = bot.get_request()
+        bot.get_request()
         assert response == prepare_result.result

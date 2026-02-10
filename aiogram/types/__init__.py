@@ -1,4 +1,4 @@
-from typing import List, Literal, Optional, Union
+from typing import Literal, Optional, Union
 
 from .accepted_gift_types import AcceptedGiftTypes
 from .affiliate_info import AffiliateInfo
@@ -387,6 +387,8 @@ __all__ = (
     "ChatMemberRestricted",
     "ChatMemberUnion",
     "ChatMemberUpdated",
+    "ChatOwnerChanged",
+    "ChatOwnerLeft",
     "ChatPermissions",
     "ChatPhoto",
     "ChatShared",
@@ -627,6 +629,7 @@ __all__ = (
     "Update",
     "User",
     "UserChatBoosts",
+    "UserProfileAudios",
     "UserProfilePhotos",
     "UserRating",
     "UserShared",
@@ -638,6 +641,7 @@ __all__ = (
     "VideoChatScheduled",
     "VideoChatStarted",
     "VideoNote",
+    "VideoQuality",
     "Voice",
     "WebAppData",
     "WebAppInfo",
@@ -646,6 +650,10 @@ __all__ = (
 )
 
 from ..client.default import Default as _Default
+from .chat_owner_changed import ChatOwnerChanged
+from .chat_owner_left import ChatOwnerLeft
+from .user_profile_audios import UserProfileAudios
+from .video_quality import VideoQuality
 
 # Load typing forward refs for every TelegramObject
 for _entity_name in __all__:
@@ -654,7 +662,7 @@ for _entity_name in __all__:
         continue
     _entity.model_rebuild(
         _types_namespace={
-            "List": List,
+            "List": list,
             "Optional": Optional,
             "Union": Union,
             "Literal": Literal,

@@ -1,4 +1,5 @@
-from typing import Any, Callable, Optional, Tuple
+from collections.abc import Callable
+from typing import Any
 
 import pytest
 
@@ -75,6 +76,6 @@ class TestMarkdown:
         ],
     )
     def test_formatter(
-        self, func: Callable[[Any], Any], args: Tuple[str], sep: Optional[str], result: str
+        self, func: Callable[[Any], Any], args: tuple[str], sep: str | None, result: str
     ):
         assert func(*args, **({"sep": sep} if sep is not None else {})) == result  # type: ignore
