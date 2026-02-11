@@ -178,8 +178,8 @@ class TestSimpleRequestHandler:
             new_callable=AsyncMock,
         ) as mocked_silent_call_request:
             method_called_event = asyncio.Event()
-            mocked_silent_call_request.side_effect = (
-                lambda *args, **kwargs: method_called_event.set()
+            mocked_silent_call_request.side_effect = lambda *args, **kwargs: (
+                method_called_event.set()
             )
 
             handler_event.clear()

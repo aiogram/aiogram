@@ -1,10 +1,11 @@
 [build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
+requires = ["uv_build>=0.10.2,<0.11.0"]
+build-backend = "uv_build"
 
 [project]
 name = "aiogram"
 description = 'Modern and fully asynchronous framework for Telegram Bot API'
+version = "3.25.0"
 readme = "README.rst"
 requires-python = ">=3.10,<3.15"
 license = "MIT"
@@ -48,10 +49,6 @@ dependencies = [
     "certifi>=2023.7.22",
     "typing-extensions>=4.7.0,<=5.0",
 ]
-dynamic = ["version"]
-
-[tool.hatch.version]
-path = "aiogram/__meta__.py"
 
 [project.optional-dependencies]
 fast = [
@@ -94,10 +91,10 @@ docs = [
 
 [dependency-groups]
 dev = [
-    "ruff~=0.14",
+    "ruff~=0.15",
     "mypy==1.10.1",
     "toml~=0.10.2",
-    "pre-commit~=4.3",
+    "pre-commit~=4.5",
     "packaging~=25.0",
     "motor-types==1.0.0b4",
 ]
@@ -117,6 +114,10 @@ test = [
 Homepage = "https://aiogram.dev/"
 Documentation = "https://docs.aiogram.dev/"
 Repository = "https://github.com/aiogram/aiogram/"
+
+[tool.uv.build-backend]
+module-root = ""
+module-name = "aiogram"
 
 [tool.ruff]
 line-length = 99
