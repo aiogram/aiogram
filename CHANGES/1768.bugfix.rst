@@ -1,0 +1,1 @@
+Added ``icon_custom_emoji_id`` and ``style`` parameters to ``InlineKeyboardBuilder.button`` and ``ReplyKeyboardBuilder.button`` signatures.
