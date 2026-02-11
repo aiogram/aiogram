@@ -122,7 +122,7 @@ class TestBot:
 
         # https://github.com/Tinche/aiofiles#writing-tests-for-aiofiles
         aiofiles.threadpool.wrap.register(MagicMock)(
-            lambda *args, **kwargs: aiofiles.threadpool.binary.AsyncBufferedIOBase(*args, **kwargs)
+            lambda *args, **kwargs: aiofiles.threadpool.binary.AsyncBufferedIOBase(*args, **kwargs)  # noqa: PLW0108
         )
 
         mock_file = MagicMock()

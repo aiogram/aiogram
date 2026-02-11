@@ -161,14 +161,14 @@ When using :code:`uv`, prefix commands with :code:`uv run` to execute them in th
     # Start documentation server
     uv run sphinx-autobuild --watch aiogram/ docs/ docs/_build/
 
-Or use the Makefile commands which now support :code:`uv`:
+Or use the Justfile commands which now support :code:`uv`:
 
 .. code-block:: bash
 
-    make install    # Uses uv sync
-    make lint       # Uses uv run
-    make reformat   # Uses uv run
-    make test       # Uses uv run
+    just install    # Uses uv sync
+    just lint       # Uses uv run
+    just reformat   # Uses uv run
+    just test       # Uses uv run
 
 Making changes in code
 ----------------------
@@ -197,11 +197,11 @@ Or with uv:
     uv run ruff format aiogram tests scripts examples
     uv run ruff check --fix aiogram tests scripts examples
 
-Or simply use Makefile:
+Or simply use Justfile:
 
 .. code-block:: bash
 
-    make reformat
+    just reformat
 
 
 Run tests
@@ -221,11 +221,11 @@ Or with uv:
 
     uv run pytest tests
 
-Or use Makefile:
+Or use Justfile:
 
 .. code-block:: bash
 
-    make test
+    just test
 
 Also if you are doing something with Redis-storage or/and MongoDB-storage,
 you will need to test everything works with Redis or/and MongoDB:
@@ -260,11 +260,11 @@ Or with uv:
 
     uv run --extra docs sphinx-autobuild --watch aiogram/ docs/ docs/_build/
 
-Or use Makefile:
+Or use Justfile:
 
 .. code-block:: bash
 
-    make docs-serve
+    just docs-serve
 
 
 Docs translations
@@ -291,11 +291,11 @@ Or with uv:
     uv run --extra docs bash -c 'cd docs && make gettext'
     uv run --extra docs bash -c 'cd docs && sphinx-intl update -p _build/gettext -l <language_code>'
 
-Or use Makefile:
+Or use Justfile:
 
 .. code-block:: bash
 
-    make docs-gettext
+    just docs-gettext
 
 Change the :code:`<language_code>` in example below to the target language code, after that
 you can modify texts inside :code:`docs/locale/<language_code>/LC_MESSAGES` as :code:`*.po` files

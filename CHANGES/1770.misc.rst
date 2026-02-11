@@ -1,0 +1,3 @@
+Migrated from `hatch` to `uv` build system.
+
+Removed legacy `Makefile` and introduced `Justfile` for task automation to support the new uv-based workflow.
