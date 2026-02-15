@@ -1,0 +1,1 @@
+Fixed type hinting for session middlewares where the return type was incorrectly marked as :class:`aiogram.methods.base.Response` instead of the concrete :class:`aiogram.methods.base.TelegramType`.

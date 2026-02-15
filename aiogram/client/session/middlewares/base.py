@@ -7,7 +7,7 @@ from aiogram.methods.base import TelegramType
 
 if TYPE_CHECKING:
     from aiogram.client.bot import Bot
-    from aiogram.methods import Response, TelegramMethod
+    from aiogram.methods import TelegramMethod
 
 
 class NextRequestMiddlewareType(Protocol[TelegramType]):  # pragma: no cover
@@ -15,7 +15,7 @@ class NextRequestMiddlewareType(Protocol[TelegramType]):  # pragma: no cover
         self,
         bot: Bot,
         method: TelegramMethod[TelegramType],
-    ) -> Response[TelegramType]:
+    ) -> TelegramType:
         pass
 
 
@@ -25,7 +25,7 @@ class RequestMiddlewareType(Protocol):  # pragma: no cover
         make_request: NextRequestMiddlewareType[TelegramType],
         bot: Bot,
         method: TelegramMethod[TelegramType],
-    ) -> Response[TelegramType]:
+    ) -> TelegramType:
         pass
 
 
@@ -40,7 +40,7 @@ class BaseRequestMiddleware(ABC):
         make_request: NextRequestMiddlewareType[TelegramType],
         bot: Bot,
         method: TelegramMethod[TelegramType],
-    ) -> Response[TelegramType]:
+    ) -> TelegramType:
         """
         Execute middleware
 
@@ -48,5 +48,5 @@ class BaseRequestMiddleware(ABC):
         :param bot: bot for request making
         :param method: Request method (Subclass of :class:`aiogram.methods.base.TelegramMethod`)
 
-        :return: :class:`aiogram.methods.Response`
+        :return: Concrete Telegram type (e.g. Message, User, etc.)
         """
