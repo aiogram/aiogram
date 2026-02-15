@@ -1,0 +1,1 @@
+Documented webhook security constraints for proxy deployments, including trust requirements for :code:`X-Forwarded-For` and recommended defense-in-depth checks.
