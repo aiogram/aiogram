@@ -1,2 +1,4 @@
-__version__ = "3.25.0"
+import importlib.metadata
+
+__version__ = importlib.metadata.version(__package__)
 __api_version__ = "9.4"
