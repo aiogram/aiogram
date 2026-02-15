@@ -1,0 +1,3 @@
+The tests for `text_decorations` duplicated the tests for `html_markdown` with `type="url"` and `type="text_link"`, but there were no such tests for `markdown_decoration`
+
+Removed duplicates and added missing tests to markdown_decoration
