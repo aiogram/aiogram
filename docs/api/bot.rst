@@ -19,4 +19,3 @@ For example :code:`sendMessage` named :code:`send_message` and has the same spec
     :member-order: bysource
     :special-members: __init__
     :undoc-members: True
-    :noindex:
