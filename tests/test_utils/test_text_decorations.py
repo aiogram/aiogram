@@ -72,7 +72,7 @@ class TestTextDecoration:
             [
                 markdown_decoration,
                 MessageEntity(type="text_link", offset=0, length=5, url="https://aiogram.dev"),
-                "[test](https://aiogram.dev)"
+                "[test](https://aiogram.dev)",
             ],
             [markdown_decoration, MessageEntity(type="bold", offset=0, length=5), "*test*"],
             [markdown_decoration, MessageEntity(type="italic", offset=0, length=5), "_\rtest_\r"],
