@@ -1,0 +1,1 @@
+Improved i18n locale detection in ``SimpleI18nMiddleware`` to support Telegram-style region codes such as ``pt-br`` by resolving first the raw code and then the normalized Babel-style code (for example ``pt_BR``).
