@@ -113,6 +113,16 @@ On top of your application the instance of :class:`aiogram.utils.i18n.I18n` shou
 
 After that you will need to choose one of builtin I18n middleware or write your own.
 
+When using :class:`aiogram.utils.i18n.middleware.SimpleI18nMiddleware`, locale codes from
+Telegram (for example ``pt-br``) are resolved against loaded locales in two steps:
+
+1. Direct match as received from Telegram (``pt-br``)
+2. Normalized Babel-style identifier (``pt_BR``)
+
+So if your translations are stored under
+``locales/pt_BR/LC_MESSAGES/messages.mo``, they will be selected for users with
+``language_code="pt-br"``.
+
 Builtin middlewares:
 
 

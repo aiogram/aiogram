@@ -129,14 +129,18 @@ class SimpleI18nMiddleware(I18nMiddleware):
         event_from_user: User | None = data.get("event_from_user")
         if event_from_user is None or event_from_user.language_code is None:
             return self.i18n.default_locale
+
+        user_locale = event_from_user.language_code
         try:
-            locale = Locale.parse(event_from_user.language_code, sep="-")
+            locale = Locale.parse(user_locale, sep="-")
         except UnknownLocaleError:
             return self.i18n.default_locale
 
-        if locale.language not in self.i18n.available_locales:
-            return self.i18n.default_locale
-        return locale.language
+        for candidate in (user_locale, str(locale), locale.language):
+            if candidate in self.i18n.available_locales:
+                return candidate
+
+        return self.i18n.default_locale
 
 
 class ConstI18nMiddleware(I18nMiddleware):
