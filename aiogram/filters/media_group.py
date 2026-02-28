@@ -47,6 +47,8 @@ class MediaGroupFilter(Filter):
         self.max_media_count = max_media_count
 
     def __str__(self) -> str:
+        if self.min_media_count == self.max_media_count:
+            return self._signature_to_string(count=self.min_media_count)
         return self._signature_to_string(
             min_media_count=self.min_media_count, max_media_count=self.max_media_count
         )

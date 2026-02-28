@@ -1,7 +1,9 @@
-from aiogram.filters.media_group import MediaGroupFilter, MIN_MEDIA_COUNT, DEFAULT_MAX_MEDIA_COUNT
-import pytest
 import datetime
-from aiogram.types import Message, Chat
+
+import pytest
+
+from aiogram.filters.media_group import DEFAULT_MAX_MEDIA_COUNT, MIN_MEDIA_COUNT, MediaGroupFilter
+from aiogram.types import Chat, Message
 
 
 class TestMediaGroupFilter:
@@ -59,3 +61,11 @@ class TestMediaGroupFilter:
         assert bool(response) is result
         if result:
             assert response.get("media_count") == media_count
+
+    def test_str_count(self):
+        filter = MediaGroupFilter(5)
+        assert str(filter) == "MediaGroupFilter(count=5)"
+
+    def test_str_range(self):
+        filter = MediaGroupFilter(min_media_count=2, max_media_count=5)
+        assert str(filter) == "MediaGroupFilter(min_media_count=2, max_media_count=5)"
