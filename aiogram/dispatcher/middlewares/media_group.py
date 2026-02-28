@@ -5,6 +5,7 @@ from collections import defaultdict
 from collections.abc import Awaitable, Callable
 from typing import TYPE_CHECKING, Any, cast
 
+from aiogram import Bot
 from aiogram.dispatcher.middlewares.base import BaseMiddleware
 from aiogram.types import Message, TelegramObject
 
@@ -56,8 +57,9 @@ class BaseMediaGroupAggregator(ABC):
 class RedisMediaGroupAggregator(BaseMediaGroupAggregator):
     redis: "Redis"
 
-    def __init__(self, redis: "Redis") -> None:
+    def __init__(self, redis: "Redis", ttl_sec: int = TTL_SEC) -> None:
         self.redis = redis
+        self.ttl_sec = ttl_sec
 
     @staticmethod
     def get_group_key(media_group_id: str) -> str:
@@ -73,9 +75,9 @@ class RedisMediaGroupAggregator(BaseMediaGroupAggregator):
 
     async def add_into_group(self, media_group_id: str, media: Message) -> int:
         async with self.redis.pipeline(transaction=True) as pipe:
-            pipe.set(self.get_last_message_time_key(media_group_id), time.time(), ex=TTL_SEC)
+            pipe.set(self.get_last_message_time_key(media_group_id), time.time(), ex=self.ttl_sec)
             pipe.rpush(self.get_group_key(media_group_id), media.model_dump_json())
-            pipe.expire(self.get_group_key(media_group_id), TTL_SEC)
+            pipe.expire(self.get_group_key(media_group_id), self.ttl_sec)
             res = await pipe.execute()
         return cast(int, res[1])
 
@@ -110,16 +112,17 @@ class RedisMediaGroupAggregator(BaseMediaGroupAggregator):
 
 
 class MemoryMediaGroupAggregator(BaseMediaGroupAggregator):
-    def __init__(self) -> None:
+    def __init__(self, ttl_sec: int = TTL_SEC) -> None:
         self.groups: dict[str, list[Message]] = defaultdict(list)
         self.last_message_timers: dict[str, float] = {}
         self.locks: dict[str, bool] = {}
+        self.ttl_sec = ttl_sec
 
     def remove_expired_objects(self) -> None:
         expired_group_ids = []
         current_time = time.time()
         for group_id, last_message_time in self.last_message_timers.items():
-            if current_time - last_message_time > TTL_SEC:
+            if current_time - last_message_time > self.ttl_sec:
                 expired_group_ids.append(group_id)
             else:
                 break  # the list is sorted in ascending order
@@ -188,7 +191,10 @@ class MediaGroupAggregatorMiddleware(BaseMiddleware):
                     album = await self.media_group_aggregator.get_group(event.media_group_id)
                     if not album:
                         return None
-                    album.sort(key=lambda msg: msg.message_id)
+                    album = sorted(
+                        (msg.as_(cast(Bot, data.get("bot"))) for msg in album),
+                        key=lambda msg: msg.message_id,
+                    )
                     data.update(album=album)
                     result = await handler(album[0], data)
                     await self.media_group_aggregator.delete_group(event.media_group_id)

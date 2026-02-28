@@ -54,7 +54,7 @@ class MediaGroupFilter(Filter):
         )
 
     async def __call__(
-        self, message: Message, album: list[Message] = None
+        self, message: Message, album: list[Message] | None = None
     ) -> Literal[False] | dict[str, Any]:
         media_count = len(album or [])
         if not (self.min_media_count <= media_count <= self.max_media_count):
