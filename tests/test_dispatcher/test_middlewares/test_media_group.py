@@ -189,15 +189,18 @@ class TestMediaGroupAggregator:
         assert await aggregator.get_group("42") == []
 
     async def test_acquire_lock(self, aggregator: BaseMediaGroupAggregator):
-        for _ in range(2):
-            assert await aggregator.acquire_lock("42")
-            assert not await aggregator.acquire_lock("42")
-            await aggregator.release_lock("42")
+        await aggregator.acquire_lock("42", "key1")
+        assert not await aggregator.acquire_lock("42", "key2")
+        await aggregator.release_lock("42", "key1")
+        for i in ("key2", "key3"):
+            assert await aggregator.acquire_lock("42", i)
+            assert not await aggregator.acquire_lock("42", i)
+            await aggregator.release_lock("42", i)
 
     async def test_expired_objects_removed(self):
         aggregator = MemoryMediaGroupAggregator()
         await aggregator.add_into_group("42", _get_message(1))
-        with mock.patch("time.time", return_value=time.time() + aggregator.ttl_sec + 1):
+        with mock.patch("time.monotonic", return_value=time.time() + aggregator.ttl_sec + 1):
             new_msg = _get_message(2)
             await aggregator.add_into_group("24", new_msg)
         assert await aggregator.get_group("42") == []
@@ -205,7 +208,7 @@ class TestMediaGroupAggregator:
 
     async def test_get_current_time_memory_aggregator(self):
         aggregator = MemoryMediaGroupAggregator()
-        with mock.patch("time.time", return_value=1.1):
+        with mock.patch("time.monotonic", return_value=1.1):
             assert await aggregator.get_current_time() == 1.1
 
     async def test_get_current_time_redis_aggregator(self):
@@ -216,7 +219,7 @@ class TestMediaGroupAggregator:
     async def test_last_message_time(self, aggregator: BaseMediaGroupAggregator):
         assert await aggregator.get_last_message_time("42") is None
         await aggregator.add_into_group("42", _get_message(1))
-        time_before_second_message = time.time()
+        time_before_second_message = await aggregator.get_current_time()
         assert await aggregator.get_last_message_time("42") <= time_before_second_message
         await aggregator.add_into_group("42", _get_message(2))
         assert await aggregator.get_last_message_time("42") >= time_before_second_message
