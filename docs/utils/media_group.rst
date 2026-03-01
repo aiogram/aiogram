@@ -1,8 +1,13 @@
 ===================
-Media group builder
+Media group
 ===================
 
-This module provides a builder for media groups, it can be used to build media groups
+This module provides tools for media groups.
+
+Building media groups
+=====================
+
+Media group builder can be used to build media groups
 for :class:`aiogram.types.input_media_photo.InputMediaPhoto`, :class:`aiogram.types.input_media_video.InputMediaVideo`,
 :class:`aiogram.types.input_media_document.InputMediaDocument` and :class:`aiogram.types.input_media_audio.InputMediaAudio`.
 
@@ -39,8 +44,60 @@ it will be used as ``caption`` for first media in group.
     await bot.send_media_group(chat_id=chat_id, media=media_group.build())
 
 
+Handling media groups
+======================
+
+By default each media in the group is processed separately.
+
+You can use :class:`aiogram.dispatcher.middlewares.media_group.MediaGroupAggregatorMiddleware`
+to process media groups as one. If you do, only one message from the group will be processed, and updates for
+other messages with the same media group ID will be suppressed. There are two options to store media groups:
+
+- :class:`aiogram.dispatcher.middlewares.media_group.MemoryMediaGroupAggregator` - simple in-memory storage, used by default
+- :class:`aiogram.dispatcher.middlewares.media_group.RedisMediaGroupAggregator` - support distributed environment
+
+You also can use :class:`aiogram.filters.media_group.MediaGroupFilter`
+to filter media groups.
+
+Usage
+=====
+
+.. code-block:: python
+
+    from aiogram import F
+    from aiogram.types import Message
+
+    # register middleware
+    from aiogram.dispatcher.middlewares.media_group import MediaGroupAggregatorMiddleware
+    from aiogram.filters.media_group import MediaGroupFilter
+
+    router.message.outer_middleware(MediaGroupAggregatorMiddleware())
+
+    # use middleware
+    @router.message(
+      MediaGroupFilter(max_media_count=5),
+      F.caption == "album_caption" # other filters will be applied to the first message in the group
+    )
+    async def start(message: Message, album: list[Message]):
+      # message is the first media in this group
+      # album is list of all messages with the same mediaGroupId, including current message
+      await message.answer(
+        f"You sent {len(album)} media in the group. "
+        f"Media group ID: {message.media_group_id}. "
+        f"Album messages: {', '.join(str(m.message_id) for m in album)}"
+      )
+
 References
 ==========
 
 .. autoclass:: aiogram.utils.media_group.MediaGroupBuilder
    :members:
+.. autoclass:: aiogram.dispatcher.middlewares.media_group.MediaGroupAggregatorMiddleware
+   :members:
+.. autoclass:: aiogram.filters.media_group.MediaGroupFilter
+   :members:
+.. autoclass:: aiogram.dispatcher.middlewares.media_group.MemoryMediaGroupAggregator
+   :members:
+.. autoclass:: aiogram.dispatcher.middlewares.media_group.RedisMediaGroupAggregator
+   :members:
+   :special-members: __init__
