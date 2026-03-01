@@ -27,3 +27,4 @@ class MessageEntityType(str, Enum):
     TEXT_LINK = "text_link"
     TEXT_MENTION = "text_mention"
     CUSTOM_EMOJI = "custom_emoji"
+    DATE_TIME = "date_time"

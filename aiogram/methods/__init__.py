@@ -126,6 +126,7 @@ from .set_business_account_profile_photo import SetBusinessAccountProfilePhoto
 from .set_business_account_username import SetBusinessAccountUsername
 from .set_chat_administrator_custom_title import SetChatAdministratorCustomTitle
 from .set_chat_description import SetChatDescription
+from .set_chat_member_tag import SetChatMemberTag
 from .set_chat_menu_button import SetChatMenuButton
 from .set_chat_permissions import SetChatPermissions
 from .set_chat_photo import SetChatPhoto
@@ -295,6 +296,7 @@ __all__ = (
     "SetBusinessAccountUsername",
     "SetChatAdministratorCustomTitle",
     "SetChatDescription",
+    "SetChatMemberTag",
     "SetChatMenuButton",
     "SetChatPermissions",
     "SetChatPhoto",

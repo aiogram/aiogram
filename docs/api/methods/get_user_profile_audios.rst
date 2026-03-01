@@ -36,3 +36,11 @@ With specific bot
 .. code-block:: python
 
     result: UserProfileAudios = await bot(GetUserProfileAudios(...))
+
+
+
+
+As shortcut from received object
+--------------------------------
+
+- :meth:`aiogram.types.user.User.get_profile_audios`

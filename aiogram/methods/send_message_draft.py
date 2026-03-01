@@ -8,7 +8,7 @@ from .base import TelegramMethod
 
 class SendMessageDraft(TelegramMethod[bool]):
     """
-    Use this method to stream a partial message to a user while the message is being generated; supported only for bots with forum topic mode enabled. Returns :code:`True` on success.
+    Use this method to stream a partial message to a user while the message is being generated. Returns :code:`True` on success.
 
     Source: https://core.telegram.org/bots/api#sendmessagedraft
     """

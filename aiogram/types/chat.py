@@ -1018,6 +1018,7 @@ class Chat(TelegramObject):
         can_pin_messages: bool | None = None,
         can_manage_topics: bool | None = None,
         can_manage_direct_messages: bool | None = None,
+        can_manage_tags: bool | None = None,
         **kwargs: Any,
     ) -> PromoteChatMember:
         """
@@ -1047,6 +1048,7 @@ class Chat(TelegramObject):
         :param can_pin_messages: Pass :code:`True` if the administrator can pin messages; for supergroups only
         :param can_manage_topics: Pass :code:`True` if the user is allowed to create, rename, close, and reopen forum topics; for supergroups only
         :param can_manage_direct_messages: Pass :code:`True` if the administrator can manage direct messages within the channel and decline suggested posts; for channels only
+        :param can_manage_tags: Pass :code:`True` if the administrator can edit the tags of regular members; for groups and supergroups only
         :return: instance of method :class:`aiogram.methods.promote_chat_member.PromoteChatMember`
         """
         # DO NOT EDIT MANUALLY!!!
@@ -1073,6 +1075,7 @@ class Chat(TelegramObject):
             can_pin_messages=can_pin_messages,
             can_manage_topics=can_manage_topics,
             can_manage_direct_messages=can_manage_direct_messages,
+            can_manage_tags=can_manage_tags,
             **kwargs,
         ).as_(self._bot)
 

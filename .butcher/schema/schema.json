@@ -1,7 +1,7 @@
 {
   "api": {
-    "version": "9.4",
-    "release_date": "2026-02-09"
+    "version": "9.5",
+    "release_date": "2026-03-01"
   },
   "items": [
     {
@@ -1120,6 +1120,14 @@
               "required": false
             },
             {
+              "type": "String",
+              "description": "Tag or custom title of the sender of the message; for supergroups only",
+              "html_description": "<td><em>Optional</em>. Tag or custom title of the sender of the message; for supergroups only</td>",
+              "rst_description": "*Optional*. Tag or custom title of the sender of the message; for supergroups only\n",
+              "name": "sender_tag",
+              "required": false
+            },
+            {
               "type": "Integer",
               "description": "Date the message was sent in Unix time. It is always a positive number, representing a valid date.",
               "html_description": "<td>Date the message was sent in Unix time. It is always a positive number, representing a valid date.</td>",
@@ -1249,9 +1257,9 @@
             },
             {
               "type": "String",
-              "description": "The unique identifier of a media message group this message belongs to",
-              "html_description": "<td><em>Optional</em>. The unique identifier of a media message group this message belongs to</td>",
-              "rst_description": "*Optional*. The unique identifier of a media message group this message belongs to\n",
+              "description": "The unique identifier inside this chat of a media message group this message belongs to",
+              "html_description": "<td><em>Optional</em>. The unique identifier inside this chat of a media message group this message belongs to</td>",
+              "rst_description": "*Optional*. The unique identifier inside this chat of a media message group this message belongs to\n",
               "name": "media_group_id",
               "required": false
             },
@@ -1898,8 +1906,8 @@
             {
               "type": "InlineKeyboardMarkup",
               "description": "Inline keyboard attached to the message. login_url buttons are represented as ordinary url buttons.",
-              "html_description": "<td><em>Optional</em>. Inline keyboard attached to the message. <code>login_url</code> buttons are represented as ordinary <code>url</code> buttons.</td>",
-              "rst_description": "*Optional*. Inline keyboard attached to the message. :code:`login_url` buttons are represented as ordinary :code:`url` buttons.\n",
+              "html_description": "<td><em>Optional</em>. <a href=\"/bots/features#inline-keyboards\">Inline keyboard</a> attached to the message. <code>login_url</code> buttons are represented as ordinary <code>url</code> buttons.</td>",
+              "rst_description": "*Optional*. `Inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_ attached to the message. :code:`login_url` buttons are represented as ordinary :code:`url` buttons.\n",
               "name": "reply_markup",
               "required": false
             }
@@ -1976,9 +1984,9 @@
           "annotations": [
             {
               "type": "String",
-              "description": "Type of the entity. Currently, can be 'mention' (@username), 'hashtag' (#hashtag or #hashtag@chatusername), 'cashtag' ($USD or $USD@chatusername), 'bot_command' (/start@jobs_bot), 'url' (https://telegram.org), 'email' (do-not-reply@telegram.org), 'phone_number' (+1-212-555-0123), 'bold' (bold text), 'italic' (italic text), 'underline' (underlined text), 'strikethrough' (strikethrough text), 'spoiler' (spoiler message), 'blockquote' (block quotation), 'expandable_blockquote' (collapsed-by-default block quotation), 'code' (monowidth string), 'pre' (monowidth block), 'text_link' (for clickable text URLs), 'text_mention' (for users without usernames), 'custom_emoji' (for inline custom emoji stickers)",
-              "html_description": "<td>Type of the entity. Currently, can be &#8220;mention&#8221; (<code>@username</code>), &#8220;hashtag&#8221; (<code>#hashtag</code> or <code>#hashtag@chatusername</code>), &#8220;cashtag&#8221; (<code>$USD</code> or <code>$USD@chatusername</code>), &#8220;bot_command&#8221; (<code>/start@jobs_bot</code>), &#8220;url&#8221; (<code>https://telegram.org</code>), &#8220;email&#8221; (<code>do-not-reply@telegram.org</code>), &#8220;phone_number&#8221; (<code>+1-212-555-0123</code>), &#8220;bold&#8221; (<strong>bold text</strong>), &#8220;italic&#8221; (<em>italic text</em>), &#8220;underline&#8221; (underlined text), &#8220;strikethrough&#8221; (strikethrough text), &#8220;spoiler&#8221; (spoiler message), &#8220;blockquote&#8221; (block quotation), &#8220;expandable_blockquote&#8221; (collapsed-by-default block quotation), &#8220;code&#8221; (monowidth string), &#8220;pre&#8221; (monowidth block), &#8220;text_link&#8221; (for clickable text URLs), &#8220;text_mention&#8221; (for users <a href=\"https://telegram.org/blog/edit#new-mentions\">without usernames</a>), &#8220;custom_emoji&#8221; (for inline custom emoji stickers)</td>",
-              "rst_description": "Type of the entity. Currently, can be 'mention' (:code:`@username`), 'hashtag' (:code:`#hashtag` or :code:`#hashtag@chatusername`), 'cashtag' (:code:`$USD` or :code:`$USD@chatusername`), 'bot_command' (:code:`/start@jobs_bot`), 'url' (:code:`https://telegram.org`), 'email' (:code:`do-not-reply@telegram.org`), 'phone_number' (:code:`+1-212-555-0123`), 'bold' (**bold text**), 'italic' (*italic text*), 'underline' (underlined text), 'strikethrough' (strikethrough text), 'spoiler' (spoiler message), 'blockquote' (block quotation), 'expandable_blockquote' (collapsed-by-default block quotation), 'code' (monowidth string), 'pre' (monowidth block), 'text_link' (for clickable text URLs), 'text_mention' (for users `without usernames <https://telegram.org/blog/edit#new-mentions>`_), 'custom_emoji' (for inline custom emoji stickers)\n",
+              "description": "Type of the entity. Currently, can be 'mention' (@username), 'hashtag' (#hashtag or #hashtag@chatusername), 'cashtag' ($USD or $USD@chatusername), 'bot_command' (/start@jobs_bot), 'url' (https://telegram.org), 'email' (do-not-reply@telegram.org), 'phone_number' (+1-212-555-0123), 'bold' (bold text), 'italic' (italic text), 'underline' (underlined text), 'strikethrough' (strikethrough text), 'spoiler' (spoiler message), 'blockquote' (block quotation), 'expandable_blockquote' (collapsed-by-default block quotation), 'code' (monowidth string), 'pre' (monowidth block), 'text_link' (for clickable text URLs), 'text_mention' (for users without usernames), 'custom_emoji' (for inline custom emoji stickers), or 'date_time' (for formatted date and time)",
+              "html_description": "<td>Type of the entity. Currently, can be &#8220;mention&#8221; (<code>@username</code>), &#8220;hashtag&#8221; (<code>#hashtag</code> or <code>#hashtag@chatusername</code>), &#8220;cashtag&#8221; (<code>$USD</code> or <code>$USD@chatusername</code>), &#8220;bot_command&#8221; (<code>/start@jobs_bot</code>), &#8220;url&#8221; (<code>https://telegram.org</code>), &#8220;email&#8221; (<code>do-not-reply@telegram.org</code>), &#8220;phone_number&#8221; (<code>+1-212-555-0123</code>), &#8220;bold&#8221; (<strong>bold text</strong>), &#8220;italic&#8221; (<em>italic text</em>), &#8220;underline&#8221; (underlined text), &#8220;strikethrough&#8221; (strikethrough text), &#8220;spoiler&#8221; (spoiler message), &#8220;blockquote&#8221; (block quotation), &#8220;expandable_blockquote&#8221; (collapsed-by-default block quotation), &#8220;code&#8221; (monowidth string), &#8220;pre&#8221; (monowidth block), &#8220;text_link&#8221; (for clickable text URLs), &#8220;text_mention&#8221; (for users <a href=\"https://telegram.org/blog/edit#new-mentions\">without usernames</a>), &#8220;custom_emoji&#8221; (for inline custom emoji stickers), or &#8220;date_time&#8221; (for formatted date and time)</td>",
+              "rst_description": "Type of the entity. Currently, can be 'mention' (:code:`@username`), 'hashtag' (:code:`#hashtag` or :code:`#hashtag@chatusername`), 'cashtag' (:code:`$USD` or :code:`$USD@chatusername`), 'bot_command' (:code:`/start@jobs_bot`), 'url' (:code:`https://telegram.org`), 'email' (:code:`do-not-reply@telegram.org`), 'phone_number' (:code:`+1-212-555-0123`), 'bold' (**bold text**), 'italic' (*italic text*), 'underline' (underlined text), 'strikethrough' (strikethrough text), 'spoiler' (spoiler message), 'blockquote' (block quotation), 'expandable_blockquote' (collapsed-by-default block quotation), 'code' (monowidth string), 'pre' (monowidth block), 'text_link' (for clickable text URLs), 'text_mention' (for users `without usernames <https://telegram.org/blog/edit#new-mentions>`_), 'custom_emoji' (for inline custom emoji stickers), or 'date_time' (for formatted date and time)\n",
               "name": "type",
               "required": true
             },
@@ -2028,6 +2036,22 @@
               "html_description": "<td><em>Optional</em>. For &#8220;custom_emoji&#8221; only, unique identifier of the custom emoji. Use <a href=\"#getcustomemojistickers\">getCustomEmojiStickers</a> to get full information about the sticker</td>",
               "rst_description": "*Optional*. For 'custom_emoji' only, unique identifier of the custom emoji. Use :class:`aiogram.methods.get_custom_emoji_stickers.GetCustomEmojiStickers` to get full information about the sticker\n",
               "name": "custom_emoji_id",
+              "required": false
+            },
+            {
+              "type": "Integer",
+              "description": "For 'date_time' only, the Unix time associated with the entity",
+              "html_description": "<td><em>Optional</em>. For &#8220;date_time&#8221; only, the Unix time associated with the entity</td>",
+              "rst_description": "*Optional*. For 'date_time' only, the Unix time associated with the entity\n",
+              "name": "unix_time",
+              "required": false
+            },
+            {
+              "type": "String",
+              "description": "For 'date_time' only, the string that defines the formatting of the date and time. See date-time entity formatting for more details.",
+              "html_description": "<td><em>Optional</em>. For &#8220;date_time&#8221; only, the string that defines the formatting of the date and time. See <a href=\"#date-time-entity-formatting\">date-time entity formatting</a> for more details.</td>",
+              "rst_description": "*Optional*. For 'date_time' only, the string that defines the formatting of the date and time. See `date-time entity formatting <https://core.telegram.org/bots/api#date-time-entity-formatting>`_ for more details.\n",
+              "name": "date_time_format",
               "required": false
             }
           ],
@@ -6332,6 +6356,14 @@
               "rst_description": "*Optional*. :code:`True`, if the administrator can manage direct messages of the channel and decline suggested posts; for channels only\n",
               "name": "can_manage_direct_messages",
               "required": false
+            },
+            {
+              "type": "Boolean",
+              "description": "True, if the administrator can edit the tags of regular members; for groups and supergroups only. If omitted defaults to the value of can_pin_messages.",
+              "html_description": "<td><em>Optional</em>. <em>True</em>, if the administrator can edit the tags of regular members; for groups and supergroups only. If omitted defaults to the value of can_pin_messages.</td>",
+              "rst_description": "*Optional*. :code:`True`, if the administrator can edit the tags of regular members; for groups and supergroups only. If omitted defaults to the value of can_pin_messages.\n",
+              "name": "can_manage_tags",
+              "required": false
             }
           ],
           "category": "types"
@@ -6621,6 +6653,14 @@
               "required": false
             },
             {
+              "type": "Boolean",
+              "description": "True, if the administrator can edit the tags of regular members; for groups and supergroups only. If omitted defaults to the value of can_pin_messages.",
+              "html_description": "<td><em>Optional</em>. <em>True</em>, if the administrator can edit the tags of regular members; for groups and supergroups only. If omitted defaults to the value of can_pin_messages.</td>",
+              "rst_description": "*Optional*. :code:`True`, if the administrator can edit the tags of regular members; for groups and supergroups only. If omitted defaults to the value of can_pin_messages.\n",
+              "name": "can_manage_tags",
+              "required": false
+            },
+            {
               "type": "String",
               "description": "Custom title for this user",
               "html_description": "<td><em>Optional</em>. Custom title for this user</td>",
@@ -6645,6 +6685,14 @@
               "rst_description": "The member's status in the chat, always 'member'\n",
               "name": "status",
               "required": true
+            },
+            {
+              "type": "String",
+              "description": "Tag of the member",
+              "html_description": "<td><em>Optional</em>. Tag of the member</td>",
+              "rst_description": "*Optional*. Tag of the member\n",
+              "name": "tag",
+              "required": false
             },
             {
               "type": "User",
@@ -6679,6 +6727,14 @@
               "rst_description": "The member's status in the chat, always 'restricted'\n",
               "name": "status",
               "required": true
+            },
+            {
+              "type": "String",
+              "description": "Tag of the member",
+              "html_description": "<td><em>Optional</em>. Tag of the member</td>",
+              "rst_description": "*Optional*. Tag of the member\n",
+              "name": "tag",
+              "required": false
             },
             {
               "type": "User",
@@ -6774,6 +6830,14 @@
               "html_description": "<td><em>True</em>, if the user is allowed to add web page previews to their messages</td>",
               "rst_description": ":code:`True`, if the user is allowed to add web page previews to their messages\n",
               "name": "can_add_web_page_previews",
+              "required": true
+            },
+            {
+              "type": "Boolean",
+              "description": "True, if the user is allowed to edit their own tag",
+              "html_description": "<td><em>True</em>, if the user is allowed to edit their own tag</td>",
+              "rst_description": ":code:`True`, if the user is allowed to edit their own tag\n",
+              "name": "can_edit_tag",
               "required": true
             },
             {
@@ -7022,6 +7086,14 @@
               "html_description": "<td><em>Optional</em>. <em>True</em>, if the user is allowed to add web page previews to their messages</td>",
               "rst_description": "*Optional*. :code:`True`, if the user is allowed to add web page previews to their messages\n",
               "name": "can_add_web_page_previews",
+              "required": false
+            },
+            {
+              "type": "Boolean",
+              "description": "True, if the user is allowed to edit their own tag",
+              "html_description": "<td><em>Optional</em>. <em>True</em>, if the user is allowed to edit their own tag</td>",
+              "rst_description": "*Optional*. :code:`True`, if the user is allowed to edit their own tag\n",
+              "name": "can_edit_tag",
               "required": false
             },
             {
@@ -12959,8 +13031,8 @@
               "type": "InlineKeyboardMarkup",
               "required": false,
               "description": "A JSON-serialized object for an inline keyboard",
-              "html_description": "<td>A JSON-serialized object for an inline keyboard</td>",
-              "rst_description": "A JSON-serialized object for an inline keyboard\n",
+              "html_description": "<td>A JSON-serialized object for an <a href=\"/bots/features#inline-keyboards\">inline keyboard</a></td>",
+              "rst_description": "A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_\n",
               "name": "reply_markup"
             }
           ],
@@ -13075,9 +13147,9 @@
         {
           "anchor": "sendmessagedraft",
           "name": "sendMessageDraft",
-          "description": "Use this method to stream a partial message to a user while the message is being generated; supported only for bots with forum topic mode enabled. Returns True on success.",
-          "html_description": "<p>Use this method to stream a partial message to a user while the message is being generated; supported only for bots with forum topic mode enabled. Returns <em>True</em> on success.</p>",
-          "rst_description": "Use this method to stream a partial message to a user while the message is being generated; supported only for bots with forum topic mode enabled. Returns :code:`True` on success.",
+          "description": "Use this method to stream a partial message to a user while the message is being generated. Returns True on success.",
+          "html_description": "<p>Use this method to stream a partial message to a user while the message is being generated. Returns <em>True</em> on success.</p>",
+          "rst_description": "Use this method to stream a partial message to a user while the message is being generated. Returns :code:`True` on success.",
           "annotations": [
             {
               "type": "Integer",
@@ -13610,6 +13682,14 @@
               "html_description": "<td>Pass <em>True</em> if the administrator can manage direct messages within the channel and decline suggested posts; for channels only</td>",
               "rst_description": "Pass :code:`True` if the administrator can manage direct messages within the channel and decline suggested posts; for channels only\n",
               "name": "can_manage_direct_messages"
+            },
+            {
+              "type": "Boolean",
+              "required": false,
+              "description": "Pass True if the administrator can edit the tags of regular members; for groups and supergroups only",
+              "html_description": "<td>Pass <em>True</em> if the administrator can edit the tags of regular members; for groups and supergroups only</td>",
+              "rst_description": "Pass :code:`True` if the administrator can edit the tags of regular members; for groups and supergroups only\n",
+              "name": "can_manage_tags"
             }
           ],
           "category": "methods"
@@ -13644,6 +13724,40 @@
               "html_description": "<td>New custom title for the administrator; 0-16 characters, emoji are not allowed</td>",
               "rst_description": "New custom title for the administrator; 0-16 characters, emoji are not allowed\n",
               "name": "custom_title"
+            }
+          ],
+          "category": "methods"
+        },
+        {
+          "anchor": "setchatmembertag",
+          "name": "setChatMemberTag",
+          "description": "Use this method to set a tag for a regular member in a group or a supergroup. The bot must be an administrator in the chat for this to work and must have the can_manage_tags administrator right. Returns True on success.",
+          "html_description": "<p>Use this method to set a tag for a regular member in a group or a supergroup. The bot must be an administrator in the chat for this to work and must have the <em>can_manage_tags</em> administrator right. Returns <em>True</em> on success.</p>",
+          "rst_description": "Use this method to set a tag for a regular member in a group or a supergroup. The bot must be an administrator in the chat for this to work and must have the *can_manage_tags* administrator right. Returns :code:`True` on success.",
+          "annotations": [
+            {
+              "type": "Integer or String",
+              "required": true,
+              "description": "Unique identifier for the target chat or username of the target supergroup (in the format @supergroupusername)",
+              "html_description": "<td>Unique identifier for the target chat or username of the target supergroup (in the format <code>@supergroupusername</code>)</td>",
+              "rst_description": "Unique identifier for the target chat or username of the target supergroup (in the format :code:`@supergroupusername`)\n",
+              "name": "chat_id"
+            },
+            {
+              "type": "Integer",
+              "required": true,
+              "description": "Unique identifier of the target user",
+              "html_description": "<td>Unique identifier of the target user</td>",
+              "rst_description": "Unique identifier of the target user\n",
+              "name": "user_id"
+            },
+            {
+              "type": "String",
+              "required": false,
+              "description": "New tag for the member; 0-16 characters, emoji are not allowed",
+              "html_description": "<td>New tag for the member; 0-16 characters, emoji are not allowed</td>",
+              "rst_description": "New tag for the member; 0-16 characters, emoji are not allowed\n",
+              "name": "tag"
             }
           ],
           "category": "methods"
@@ -16631,8 +16745,8 @@
               "type": "InlineKeyboardMarkup",
               "required": false,
               "description": "A JSON-serialized object for the new inline keyboard for the message",
-              "html_description": "<td>A JSON-serialized object for the new inline keyboard for the message</td>",
-              "rst_description": "A JSON-serialized object for the new inline keyboard for the message\n",
+              "html_description": "<td>A JSON-serialized object for the new <a href=\"/bots/features#inline-keyboards\">inline keyboard</a> for the message</td>",
+              "rst_description": "A JSON-serialized object for the new `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_ for the message\n",
               "name": "reply_markup"
             }
           ],
@@ -18727,8 +18841,8 @@
             {
               "type": "InlineKeyboardMarkup",
               "description": "Inline keyboard attached to the message",
-              "html_description": "<td><em>Optional</em>. Inline keyboard attached to the message</td>",
-              "rst_description": "*Optional*. Inline keyboard attached to the message\n",
+              "html_description": "<td><em>Optional</em>. <a href=\"/bots/features#inline-keyboards\">Inline keyboard</a> attached to the message</td>",
+              "rst_description": "*Optional*. `Inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_ attached to the message\n",
               "name": "reply_markup",
               "required": false
             },
@@ -22865,9 +22979,9 @@
         {
           "anchor": "gamehighscore",
           "name": "GameHighScore",
-          "description": "This object represents one row of the high scores table for a game.\nAnd that's about all we've got for now.\nIf you've got any questions, please check out our Bot FAQ\n-",
-          "html_description": "<p>This object represents one row of the high scores table for a game.</p><p>And that's about all we've got for now.<br/>\nIf you've got any questions, please check out our <a href=\"/bots/faq\"><strong>Bot FAQ &#187;</strong></a><br/>\n-</p>",
-          "rst_description": "This object represents one row of the high scores table for a game.\nAnd that's about all we've got for now.\n\nIf you've got any questions, please check out our `https://core.telegram.org/bots/faq <https://core.telegram.org/bots/faq>`_ **Bot FAQ »**\n\n-",
+          "description": "This object represents one row of the high scores table for a game.\nAnd that's about all we've got for now.\nIf you've got any questions, please check out our Bot FAQ",
+          "html_description": "<p>This object represents one row of the high scores table for a game.</p><p>And that's about all we've got for now.<br/>\nIf you've got any questions, please check out our <a href=\"/bots/faq\"><strong>Bot FAQ &#187;</strong></a></p>",
+          "rst_description": "This object represents one row of the high scores table for a game.\nAnd that's about all we've got for now.\n\nIf you've got any questions, please check out our `https://core.telegram.org/bots/faq <https://core.telegram.org/bots/faq>`_ **Bot FAQ »**",
           "annotations": [
             {
               "type": "Integer",

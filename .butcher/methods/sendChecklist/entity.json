@@ -71,8 +71,8 @@
         "type": "InlineKeyboardMarkup",
         "required": false,
         "description": "A JSON-serialized object for an inline keyboard",
-        "html_description": "<td>A JSON-serialized object for an inline keyboard</td>",
-        "rst_description": "A JSON-serialized object for an inline keyboard\n",
+        "html_description": "<td>A JSON-serialized object for an <a href=\"/bots/features#inline-keyboards\">inline keyboard</a></td>",
+        "rst_description": "A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_\n",
         "name": "reply_markup"
       }
     ],
