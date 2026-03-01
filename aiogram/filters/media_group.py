@@ -29,8 +29,10 @@ class MediaGroupFilter(Filter):
         :param max_media_count: max count of media in the group, inclusively
         """
         if count is None:
-            min_media_count = min_media_count or MIN_MEDIA_COUNT
-            max_media_count = max_media_count or DEFAULT_MAX_MEDIA_COUNT
+            if min_media_count is None:
+                min_media_count = MIN_MEDIA_COUNT
+            if max_media_count is None:
+                max_media_count = max(DEFAULT_MAX_MEDIA_COUNT, min_media_count)
         else:
             if min_media_count is not None or max_media_count is not None:
                 raise ValueError(

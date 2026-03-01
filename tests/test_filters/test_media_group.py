@@ -12,6 +12,8 @@ class TestMediaGroupFilter:
         [
             ((), MIN_MEDIA_COUNT, DEFAULT_MAX_MEDIA_COUNT),
             ((3,), 3, 3),
+            ((11,), 11, 11),
+            ((None, 11, None), 11, 11),
             ((None, 3), 3, DEFAULT_MAX_MEDIA_COUNT),
             ((None, None, 3), MIN_MEDIA_COUNT, 3),
         ],

@@ -13,7 +13,7 @@ if TYPE_CHECKING:
     from redis.asyncio.client import Redis
 
 DELAY_SEC = 1.0
-TIMEOUT_SEC = 10
+LOCK_TTL_SEC = 30
 TTL_SEC = 600
 
 
@@ -53,13 +53,29 @@ class BaseMediaGroupAggregator(ABC):
             message_ids.add(message.message_id)
         return result
 
+    async def get_current_time(self) -> float:
+        return time.time()
+
 
 class RedisMediaGroupAggregator(BaseMediaGroupAggregator):
+    """
+    Aggregates media groups in Redis.
+    """
+
     redis: "Redis"
 
-    def __init__(self, redis: "Redis", ttl_sec: int = TTL_SEC) -> None:
+    def __init__(
+        self, redis: "Redis", ttl_sec: int = TTL_SEC, lock_ttl_sec: int = LOCK_TTL_SEC
+    ) -> None:
+        """
+        :param ttl_sec: ttl for media group data in seconds
+        :param lock_ttl_sec: ttl for lock in seconds. Value should be too big to prevent lock
+            releasing until handler finished and too small to expire until telegram send retry if
+            handler failed.
+        """
         self.redis = redis
         self.ttl_sec = ttl_sec
+        self.lock_ttl_sec = lock_ttl_sec
 
     @staticmethod
     def get_group_key(media_group_id: str) -> str:
@@ -74,8 +90,9 @@ class RedisMediaGroupAggregator(BaseMediaGroupAggregator):
         return f"media_group:{media_group_id}:lock"
 
     async def add_into_group(self, media_group_id: str, media: Message) -> int:
+        current_time = await self.get_current_time()
         async with self.redis.pipeline(transaction=True) as pipe:
-            pipe.set(self.get_last_message_time_key(media_group_id), time.time(), ex=self.ttl_sec)
+            pipe.set(self.get_last_message_time_key(media_group_id), current_time, ex=self.ttl_sec)
             pipe.rpush(self.get_group_key(media_group_id), media.model_dump_json())
             pipe.expire(self.get_group_key(media_group_id), self.ttl_sec)
             res = await pipe.execute()
@@ -85,7 +102,7 @@ class RedisMediaGroupAggregator(BaseMediaGroupAggregator):
         return cast(
             bool,
             await self.redis.set(
-                self.get_group_lock_key(media_group_id), "1", nx=True, ex=TIMEOUT_SEC
+                self.get_group_lock_key(media_group_id), "1", nx=True, ex=self.lock_ttl_sec
             ),
         )
 
@@ -96,7 +113,7 @@ class RedisMediaGroupAggregator(BaseMediaGroupAggregator):
         result = await cast(
             Awaitable[list[str]], self.redis.lrange(self.get_group_key(media_group_id), 0, -1)
         )
-        return self.deduplicate_messages([Message.model_validate_json(msg) for msg in result])
+        return self.deduplicate_messages([Message.model_validate_json(msg) for msg in set(result)])
 
     async def delete_group(self, media_group_id: str) -> None:
         async with self.redis.pipeline(transaction=True) as pipe:
@@ -109,6 +126,10 @@ class RedisMediaGroupAggregator(BaseMediaGroupAggregator):
         if result is None:
             return None
         return float(result)
+
+    async def get_current_time(self) -> float:
+        seconds, microseconds = cast(tuple[int, int], await self.redis.time())
+        return seconds + microseconds / 1e6
 
 
 class MemoryMediaGroupAggregator(BaseMediaGroupAggregator):
@@ -184,9 +205,11 @@ class MediaGroupAggregatorMiddleware(BaseMiddleware):
         if not await self.media_group_aggregator.acquire_lock(event.media_group_id):
             return None
         try:
-            last_message_time = time.time()
+            last_message_time = await self.media_group_aggregator.get_current_time()
             while True:
-                delta = self.delay - (time.time() - last_message_time)
+                delta = self.delay - (
+                    await self.media_group_aggregator.get_current_time() - last_message_time
+                )
                 if delta <= 0:
                     album = await self.media_group_aggregator.get_group(event.media_group_id)
                     if not album:

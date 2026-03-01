@@ -51,7 +51,10 @@ By default each media in the group is processed separately.
 
 You can use :class:`aiogram.dispatcher.middlewares.media_group.MediaGroupAggregatorMiddleware`
 to process media groups as one. If you do, only one message from the group will be processed, and updates for
-other messages with the same media group ID will be suppressed.
+other messages with the same media group ID will be suppressed. There are two options to store media groups:
+
+- :class:`aiogram.dispatcher.middlewares.media_group.MemoryMediaGroupAggregator` - simple in-memory storage, used by default
+- :class:`aiogram.dispatcher.middlewares.media_group.RedisMediaGroupAggregator` - support distributed environment
 
 You also can use :class:`aiogram.filters.media_group.MediaGroupFilter`
 to filter media groups.
@@ -72,7 +75,7 @@ Usage
 
     # use middleware
     @router.message(
-      MediaGroupFilter(max_count=5),
+      MediaGroupFilter(max_media_count=5),
       F.caption == "album_caption" # other filters will be applied to the first message in the group
     )
     async def start(message: Message, album: list[Message]):
@@ -93,3 +96,8 @@ References
    :members:
 .. autoclass:: aiogram.filters.media_group.MediaGroupFilter
    :members:
+.. autoclass:: aiogram.dispatcher.middlewares.media_group.MemoryMediaGroupAggregator
+   :members:
+.. autoclass:: aiogram.dispatcher.middlewares.media_group.RedisMediaGroupAggregator
+   :members:
+   :special-members: __init__

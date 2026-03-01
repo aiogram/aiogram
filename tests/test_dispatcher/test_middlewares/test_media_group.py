@@ -96,7 +96,8 @@ class TestMediaGroupAggregatorMiddleware:
         assert isinstance(first_message, Message)
         assert first_message.message_id == 1
 
-    async def test_skip_propagating_if_data_deleted(self):
+    @pytest.mark.parametrize("deleted_object", ["album", "last_message_time"])
+    async def test_skip_propagating_if_data_deleted(self, deleted_object):
         middleware = self.get_middleware()
         counter = 0
 
@@ -107,7 +108,10 @@ class TestMediaGroupAggregatorMiddleware:
         task1 = await wait_until_func_call_sleep(
             asyncio.create_task, middleware(next_handler, _get_message(1, media_group_id="42"), {})
         )
-        await middleware.media_group_aggregator.delete_group("42")
+        if deleted_object == "album":
+            middleware.media_group_aggregator.groups.pop("42")
+        else:
+            middleware.media_group_aggregator.last_message_timers.pop("42")
         await task1
         assert counter == 0
 
@@ -198,6 +202,16 @@ class TestMediaGroupAggregator:
             await aggregator.add_into_group("24", new_msg)
         assert await aggregator.get_group("42") == []
         assert await aggregator.get_group("24") == [new_msg]
+
+    async def test_get_current_time_memory_aggregator(self):
+        aggregator = MemoryMediaGroupAggregator()
+        with mock.patch("time.time", return_value=1.1):
+            assert await aggregator.get_current_time() == 1.1
+
+    async def test_get_current_time_redis_aggregator(self):
+        aggregator = RedisMediaGroupAggregator(mock.Mock(spec=Redis))
+        aggregator.redis.time = mock.AsyncMock(return_value=(1, 123456))
+        assert await aggregator.get_current_time() == 1.123456
 
     async def test_last_message_time(self, aggregator: BaseMediaGroupAggregator):
         assert await aggregator.get_last_message_time("42") is None
