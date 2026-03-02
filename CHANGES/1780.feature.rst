@@ -1,0 +1,1 @@
+Extended Telegram Bot API 9.5 support for chat tags: added `Chat.set_member_tag(...)` shortcut through butcher aliases/codegen, completed tag-related fields handling (`can_manage_tags`, `can_edit_tag`, `sender_tag`), and aligned tests/formatting expectations for the updated API behavior.

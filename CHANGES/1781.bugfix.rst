@@ -1,1 +1,0 @@
-Fixed follow-up support for Bot API 9.5 chat tags by adding and validating the ``Chat.set_member_tag`` shortcut via butcher aliases, and extended test coverage for new tag-related fields and ``sender_tag`` content type handling.
