@@ -764,8 +764,6 @@ class Message(MaybeInaccessibleMessage):
             return ContentType.GIFT_UPGRADE_SENT
         if self.paid_message_price_changed:
             return ContentType.PAID_MESSAGE_PRICE_CHANGED
-        if self.sender_tag:
-            return ContentType.SENDER_TAG
         if self.suggested_post_approved:
             return ContentType.SUGGESTED_POST_APPROVED
         if self.suggested_post_approval_failed:
