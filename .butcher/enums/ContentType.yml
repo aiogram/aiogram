@@ -39,6 +39,7 @@ extract:
     - reply_to_story
     - business_connection_id
     - sender_business_bot
+    - sender_tag
     - is_from_offline
     - has_media_spoiler
     - effect_id

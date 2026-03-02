@@ -144,6 +144,7 @@ from ..methods import (
     SetBusinessAccountUsername,
     SetChatAdministratorCustomTitle,
     SetChatDescription,
+    SetChatMemberTag,
     SetChatMenuButton,
     SetChatPermissions,
     SetChatPhoto,
@@ -2021,6 +2022,7 @@ class Bot:
         can_pin_messages: bool | None = None,
         can_manage_topics: bool | None = None,
         can_manage_direct_messages: bool | None = None,
+        can_manage_tags: bool | None = None,
         request_timeout: int | None = None,
     ) -> bool:
         """
@@ -2046,6 +2048,7 @@ class Bot:
         :param can_pin_messages: Pass :code:`True` if the administrator can pin messages; for supergroups only
         :param can_manage_topics: Pass :code:`True` if the user is allowed to create, rename, close, and reopen forum topics; for supergroups only
         :param can_manage_direct_messages: Pass :code:`True` if the administrator can manage direct messages within the channel and decline suggested posts; for channels only
+        :param can_manage_tags: Pass :code:`True` if the administrator can edit the tags of regular members; for groups and supergroups only
         :param request_timeout: Request timeout
         :return: Returns :code:`True` on success.
         """
@@ -2069,6 +2072,7 @@ class Bot:
             can_pin_messages=can_pin_messages,
             can_manage_topics=can_manage_topics,
             can_manage_direct_messages=can_manage_direct_messages,
+            can_manage_tags=can_manage_tags,
         )
         return await self(call, request_timeout=request_timeout)
 
@@ -5560,7 +5564,7 @@ class Bot:
         :param chat_id: Unique identifier for the target chat
         :param message_id: Unique identifier for the target message
         :param checklist: A JSON-serialized object for the new checklist
-        :param reply_markup: A JSON-serialized object for the new inline keyboard for the message
+        :param reply_markup: A JSON-serialized object for the new `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_ for the message
         :param request_timeout: Request timeout
         :return: On success, the edited :class:`aiogram.types.message.Message` is returned.
         """
@@ -5614,7 +5618,7 @@ class Bot:
         :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param message_effect_id: Unique identifier of the message effect to be added to the message
         :param reply_parameters: A JSON-serialized object for description of the message to reply to
-        :param reply_markup: A JSON-serialized object for an inline keyboard
+        :param reply_markup: A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_
         :param request_timeout: Request timeout
         :return: On success, the sent :class:`aiogram.types.message.Message` is returned.
         """
@@ -5823,7 +5827,7 @@ class Bot:
         request_timeout: int | None = None,
     ) -> bool:
         """
-        Use this method to stream a partial message to a user while the message is being generated; supported only for bots with forum topic mode enabled. Returns :code:`True` on success.
+        Use this method to stream a partial message to a user while the message is being generated. Returns :code:`True` on success.
 
         Source: https://core.telegram.org/bots/api#sendmessagedraft
 
@@ -5906,5 +5910,31 @@ class Bot:
 
         call = SetMyProfilePhoto(
             photo=photo,
+        )
+        return await self(call, request_timeout=request_timeout)
+
+    async def set_chat_member_tag(
+        self,
+        chat_id: ChatIdUnion,
+        user_id: int,
+        tag: str | None = None,
+        request_timeout: int | None = None,
+    ) -> bool:
+        """
+        Use this method to set a tag for a regular member in a group or a supergroup. The bot must be an administrator in the chat for this to work and must have the *can_manage_tags* administrator right. Returns :code:`True` on success.
+
+        Source: https://core.telegram.org/bots/api#setchatmembertag
+
+        :param chat_id: Unique identifier for the target chat or username of the target supergroup (in the format :code:`@supergroupusername`)
+        :param user_id: Unique identifier of the target user
+        :param tag: New tag for the member; 0-16 characters, emoji are not allowed
+        :param request_timeout: Request timeout
+        :return: Returns :code:`True` on success.
+        """
+
+        call = SetChatMemberTag(
+            chat_id=chat_id,
+            user_id=user_id,
+            tag=tag,
         )
         return await self(call, request_timeout=request_timeout)

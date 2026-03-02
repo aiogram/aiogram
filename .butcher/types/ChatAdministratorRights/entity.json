@@ -138,6 +138,14 @@
         "rst_description": "*Optional*. :code:`True`, if the administrator can manage direct messages of the channel and decline suggested posts; for channels only\n",
         "name": "can_manage_direct_messages",
         "required": false
+      },
+      {
+        "type": "Boolean",
+        "description": "True, if the administrator can edit the tags of regular members; for groups and supergroups only. If omitted defaults to the value of can_pin_messages.",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the administrator can edit the tags of regular members; for groups and supergroups only. If omitted defaults to the value of can_pin_messages.</td>",
+        "rst_description": "*Optional*. :code:`True`, if the administrator can edit the tags of regular members; for groups and supergroups only. If omitted defaults to the value of can_pin_messages.\n",
+        "name": "can_manage_tags",
+        "required": false
       }
     ],
     "category": "types"

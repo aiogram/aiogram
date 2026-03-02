@@ -157,6 +157,8 @@ class Message(MaybeInaccessibleMessage):
     """*Optional*. If the sender of the message boosted the chat, the number of boosts added by the user"""
     sender_business_bot: User | None = None
     """*Optional*. The bot that actually sent the message on behalf of the business account. Available only for outgoing messages sent on behalf of the connected business account."""
+    sender_tag: str | None = None
+    """*Optional*. Tag or custom title of the sender of the message; for supergroups only"""
     business_connection_id: str | None = None
     """*Optional*. Unique identifier of the business connection from which the message was received. If non-empty, the message belongs to a chat of the corresponding business account that is independent from any potential bot chat which might share the same identifier."""
     forward_origin: MessageOriginUnion | None = None
@@ -186,7 +188,7 @@ class Message(MaybeInaccessibleMessage):
     is_paid_post: bool | None = None
     """*Optional*. :code:`True`, if the message is a paid post. Note that such posts must not be deleted for 24 hours to receive the payment and can't be edited."""
     media_group_id: str | None = None
-    """*Optional*. The unique identifier of a media message group this message belongs to"""
+    """*Optional*. The unique identifier inside this chat of a media message group this message belongs to"""
     author_signature: str | None = None
     """*Optional*. Signature of the post author for messages in channels, or the custom title of an anonymous group administrator"""
     paid_star_count: int | None = None
@@ -348,7 +350,7 @@ class Message(MaybeInaccessibleMessage):
     web_app_data: WebAppData | None = None
     """*Optional*. Service message: data sent by a Web App"""
     reply_markup: InlineKeyboardMarkup | None = None
-    """*Optional*. Inline keyboard attached to the message. :code:`login_url` buttons are represented as ordinary :code:`url` buttons."""
+    """*Optional*. `Inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_ attached to the message. :code:`login_url` buttons are represented as ordinary :code:`url` buttons."""
     forward_date: DateTime | None = Field(None, json_schema_extra={"deprecated": True})
     """*Optional*. For forwarded messages, date the original message was sent in Unix time
 
@@ -401,6 +403,7 @@ class Message(MaybeInaccessibleMessage):
             sender_chat: Chat | None = None,
             sender_boost_count: int | None = None,
             sender_business_bot: User | None = None,
+            sender_tag: str | None = None,
             business_connection_id: str | None = None,
             forward_origin: MessageOriginUnion | None = None,
             is_topic_message: bool | None = None,
@@ -520,6 +523,7 @@ class Message(MaybeInaccessibleMessage):
                 sender_chat=sender_chat,
                 sender_boost_count=sender_boost_count,
                 sender_business_bot=sender_business_bot,
+                sender_tag=sender_tag,
                 business_connection_id=business_connection_id,
                 forward_origin=forward_origin,
                 is_topic_message=is_topic_message,
