@@ -70,6 +70,7 @@ CHAT_MEMBER_RESTRICTED = ChatMemberRestricted(
     can_send_polls=False,
     can_send_other_messages=False,
     can_add_web_page_previews=False,
+    can_edit_tag=False,
     can_change_info=False,
     can_invite_users=False,
     can_pin_messages=False,

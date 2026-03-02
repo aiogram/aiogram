@@ -71,6 +71,10 @@ set_administrator_custom_title:
   method: setChatAdministratorCustomTitle
   fill: *self
 
+set_member_tag:
+  method: setChatMemberTag
+  fill: *self
+
 set_permissions:
   method: setChatPermissions
   fill: *self
