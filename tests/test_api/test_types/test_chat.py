@@ -115,6 +115,14 @@ class TestChat:
         method = chat.set_administrator_custom_title(user_id=1, custom_title="test")
         assert method.chat_id == chat.id
 
+    def test_set_member_tag(self):
+        chat = Chat(id=-42, type="supergroup")
+
+        method = chat.set_member_tag(user_id=42, tag="test")
+        assert method.chat_id == chat.id
+        assert method.user_id == 42
+        assert method.tag == "test"
+
     def test_set_permissions(self):
         chat = Chat(id=-42, type="supergroup")
 

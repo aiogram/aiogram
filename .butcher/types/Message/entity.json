@@ -68,6 +68,14 @@
         "required": false
       },
       {
+        "type": "String",
+        "description": "Tag or custom title of the sender of the message; for supergroups only",
+        "html_description": "<td><em>Optional</em>. Tag or custom title of the sender of the message; for supergroups only</td>",
+        "rst_description": "*Optional*. Tag or custom title of the sender of the message; for supergroups only\n",
+        "name": "sender_tag",
+        "required": false
+      },
+      {
         "type": "Integer",
         "description": "Date the message was sent in Unix time. It is always a positive number, representing a valid date.",
         "html_description": "<td>Date the message was sent in Unix time. It is always a positive number, representing a valid date.</td>",
@@ -197,9 +205,9 @@
       },
       {
         "type": "String",
-        "description": "The unique identifier of a media message group this message belongs to",
-        "html_description": "<td><em>Optional</em>. The unique identifier of a media message group this message belongs to</td>",
-        "rst_description": "*Optional*. The unique identifier of a media message group this message belongs to\n",
+        "description": "The unique identifier inside this chat of a media message group this message belongs to",
+        "html_description": "<td><em>Optional</em>. The unique identifier inside this chat of a media message group this message belongs to</td>",
+        "rst_description": "*Optional*. The unique identifier inside this chat of a media message group this message belongs to\n",
         "name": "media_group_id",
         "required": false
       },
@@ -846,8 +854,8 @@
       {
         "type": "InlineKeyboardMarkup",
         "description": "Inline keyboard attached to the message. login_url buttons are represented as ordinary url buttons.",
-        "html_description": "<td><em>Optional</em>. Inline keyboard attached to the message. <code>login_url</code> buttons are represented as ordinary <code>url</code> buttons.</td>",
-        "rst_description": "*Optional*. Inline keyboard attached to the message. :code:`login_url` buttons are represented as ordinary :code:`url` buttons.\n",
+        "html_description": "<td><em>Optional</em>. <a href=\"/bots/features#inline-keyboards\">Inline keyboard</a> attached to the message. <code>login_url</code> buttons are represented as ordinary <code>url</code> buttons.</td>",
+        "rst_description": "*Optional*. `Inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_ attached to the message. :code:`login_url` buttons are represented as ordinary :code:`url` buttons.\n",
         "name": "reply_markup",
         "required": false
       },

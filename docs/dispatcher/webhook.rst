@@ -66,6 +66,19 @@ It can be acy using firewall rules or nginx configuration or middleware on appli
 
 So, aiogram has an implementation of the IP filtering middleware for aiohttp.
 
+`aiogram` IP filtering middleware reads the left-most IP address from `X-Forwarded-For`.
+
+.. warning::
+
+    `X-Forwarded-For` is trustworthy only if all webhook traffic goes through a trusted reverse proxy that rewrites this header.
+    If your application is directly reachable from the Internet, this header can be forged.
+
+For production deployments, use defense in depth:
+
+- Always set and verify :code:`X-Telegram-Bot-Api-Secret-Token`
+- Restrict network access to the webhook endpoint (firewall, security groups, ACL)
+- Ensure the backend app is not publicly reachable and accepts requests only from the trusted proxy
+
 .. autofunction:: aiogram.webhook.aiohttp_server.ip_filter_middleware
 
 .. autoclass:: aiogram.webhook.security.IPFilter

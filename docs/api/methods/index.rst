@@ -127,6 +127,7 @@ Available methods
     set_business_account_username
     set_chat_administrator_custom_title
     set_chat_description
+    set_chat_member_tag
     set_chat_menu_button
     set_chat_permissions
     set_chat_photo

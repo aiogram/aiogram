@@ -3,9 +3,11 @@ from __future__ import annotations
 import html
 import re
 from abc import ABC, abstractmethod
+from datetime import date, datetime, time
 from typing import TYPE_CHECKING, cast
 
 from aiogram.enums import MessageEntityType
+from aiogram.utils.link import create_tg_link
 
 if TYPE_CHECKING:
     from collections.abc import Generator
@@ -78,6 +80,12 @@ class TextDecoration(ABC):
             return self.link(value=text, link=cast(str, entity.url))
         if entity.type == MessageEntityType.CUSTOM_EMOJI:
             return self.custom_emoji(value=text, custom_emoji_id=cast(str, entity.custom_emoji_id))
+        if entity.type == MessageEntityType.DATE_TIME:
+            return self.date_time(
+                value=text,
+                unix_time=cast(int, entity.unix_time),
+                date_time_format=entity.date_time_format,
+            )
 
         # This case is not possible because of `if` above, but if any new entity is added to
         # API it will be here too
@@ -180,54 +188,105 @@ class TextDecoration(ABC):
     def expandable_blockquote(self, value: str) -> str:
         pass
 
+    @abstractmethod
+    def date_time(
+        self,
+        value: str,
+        unix_time: int | datetime,
+        date_time_format: str | None = None,
+    ) -> str:
+        pass
+
 
 class HtmlDecoration(TextDecoration):
     BOLD_TAG = "b"
     ITALIC_TAG = "i"
     UNDERLINE_TAG = "u"
     STRIKETHROUGH_TAG = "s"
+    CODE_TAG = "code"
+    PRE_TAG = "pre"
+    LINK_TAG = "a"
     SPOILER_TAG = "tg-spoiler"
     EMOJI_TAG = "tg-emoji"
+    DATE_TIME_TAG = "tg-time"
     BLOCKQUOTE_TAG = "blockquote"
 
+    def _tag(
+        self,
+        tag: str,
+        content: str,
+        *,
+        attrs: dict[str, str] | None = None,
+        flags: list[str] | None = None,
+    ) -> str:
+        prepared_attrs: list[str] = []
+        if attrs:
+            prepared_attrs.extend(f'{k}="{v}"' for k, v in attrs.items())
+        if flags:
+            prepared_attrs.extend(f"{flag}" for flag in flags)
+
+        attrs_str = " ".join(prepared_attrs)
+        if attrs_str:
+            attrs_str = " " + attrs_str
+
+        return f"<{tag}{attrs_str}>{content}</{tag}>"
+
     def link(self, value: str, link: str) -> str:
-        return f'<a href="{link}">{value}</a>'
+        return self._tag(self.LINK_TAG, value, attrs={"href": link})
 
     def bold(self, value: str) -> str:
-        return f"<{self.BOLD_TAG}>{value}</{self.BOLD_TAG}>"
+        return self._tag(self.BOLD_TAG, value)
 
     def italic(self, value: str) -> str:
-        return f"<{self.ITALIC_TAG}>{value}</{self.ITALIC_TAG}>"
+        return self._tag(self.ITALIC_TAG, value)
 
     def code(self, value: str) -> str:
-        return f"<code>{value}</code>"
+        return self._tag(self.CODE_TAG, value)
 
     def pre(self, value: str) -> str:
-        return f"<pre>{value}</pre>"
+        return self._tag(self.PRE_TAG, value)
 
     def pre_language(self, value: str, language: str) -> str:
-        return f'<pre><code class="language-{language}">{value}</code></pre>'
+        return self._tag(
+            self.PRE_TAG,
+            self._tag(self.CODE_TAG, value, attrs={"language": f"language-{language}"}),
+        )
 
     def underline(self, value: str) -> str:
-        return f"<{self.UNDERLINE_TAG}>{value}</{self.UNDERLINE_TAG}>"
+        return self._tag(self.UNDERLINE_TAG, value)
 
     def strikethrough(self, value: str) -> str:
-        return f"<{self.STRIKETHROUGH_TAG}>{value}</{self.STRIKETHROUGH_TAG}>"
+        return self._tag(self.STRIKETHROUGH_TAG, value)
 
     def spoiler(self, value: str) -> str:
-        return f"<{self.SPOILER_TAG}>{value}</{self.SPOILER_TAG}>"
+        return self._tag(self.SPOILER_TAG, value)
 
     def quote(self, value: str) -> str:
         return html.escape(value, quote=False)
 
     def custom_emoji(self, value: str, custom_emoji_id: str) -> str:
-        return f'<{self.EMOJI_TAG} emoji-id="{custom_emoji_id}">{value}</{self.EMOJI_TAG}>'
+        return self._tag(self.EMOJI_TAG, value, attrs={"emoji_id": custom_emoji_id})
 
     def blockquote(self, value: str) -> str:
-        return f"<{self.BLOCKQUOTE_TAG}>{value}</{self.BLOCKQUOTE_TAG}>"
+        return self._tag(self.BLOCKQUOTE_TAG, value)
 
     def expandable_blockquote(self, value: str) -> str:
-        return f"<{self.BLOCKQUOTE_TAG} expandable>{value}</{self.BLOCKQUOTE_TAG}>"
+        return self._tag(self.BLOCKQUOTE_TAG, value, flags=["expandable"])
+
+    def date_time(
+        self,
+        value: str,
+        unix_time: int | datetime,
+        date_time_format: str | None = None,
+    ) -> str:
+        if isinstance(unix_time, datetime):
+            unix_time = int(unix_time.timestamp())
+
+        args = {"unix": str(unix_time)}
+        if date_time_format:
+            args["format"] = date_time_format
+
+        return self._tag(self.DATE_TIME_TAG, value, attrs=args)
 
 
 class MarkdownDecoration(TextDecoration):
@@ -264,13 +323,30 @@ class MarkdownDecoration(TextDecoration):
         return re.sub(pattern=self.MARKDOWN_QUOTE_PATTERN, repl=r"\\\1", string=value)
 
     def custom_emoji(self, value: str, custom_emoji_id: str) -> str:
-        return f"!{self.link(value=value, link=f'tg://emoji?id={custom_emoji_id}')}"
+        link = create_tg_link("emoji", emoji_id=custom_emoji_id)
+        return f"!{self.link(value=value, link=link)}"
 
     def blockquote(self, value: str) -> str:
         return "\n".join(f">{line}" for line in value.splitlines())
 
     def expandable_blockquote(self, value: str) -> str:
         return "\n".join(f">{line}" for line in value.splitlines()) + "||"
+
+    def date_time(
+        self,
+        value: str,
+        unix_time: int | datetime,
+        date_time_format: str | None = None,
+    ) -> str:
+        if isinstance(unix_time, datetime):
+            unix_time = int(unix_time.timestamp())
+
+        link_params = {"unix": str(unix_time)}
+        if date_time_format:
+            link_params["format"] = date_time_format
+        link = create_tg_link("time", **link_params)
+
+        return f"!{self.link(value, link=link)}"
 
 
 html_decoration = HtmlDecoration()

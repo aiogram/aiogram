@@ -203,45 +203,95 @@ msgstr ""
 
 #: ../../dispatcher/webhook.rst:51
 msgid "Security"
-msgstr ""
+msgstr "Безпека"
 
 #: ../../dispatcher/webhook.rst:53
 msgid ""
 "Telegram supports two methods to verify incoming requests that they are "
 "from Telegram:"
-msgstr ""
+msgstr "Telegram підтримує два методи перевірки вхідних запитів, що вони надходять від Telegram:"
 
 #: ../../dispatcher/webhook.rst:56
 msgid "Using a secret token"
-msgstr ""
+msgstr "Використання секретного токена"
 
 #: ../../dispatcher/webhook.rst:58
 msgid ""
 "When you set webhook, you can specify a secret token and then use it to "
 "verify incoming requests."
 msgstr ""
+"Коли ви налаштовуєте webhook, ви можете вказати секретний токен і потім "
+"використовувати його для перевірки вхідних запитів."
 
 #: ../../dispatcher/webhook.rst:61
 msgid "Using IP filtering"
-msgstr ""
+msgstr "Використання фільтрації за IP"
 
 #: ../../dispatcher/webhook.rst:63
 msgid ""
 "You can specify a list of IP addresses from which you expect incoming "
 "requests, and then use it to verify incoming requests."
 msgstr ""
+"Ви можете вказати список IP-адрес, з яких очікуєте вхідні запити, і "
+"використовувати його для перевірки запитів."
 
 #: ../../dispatcher/webhook.rst:65
 msgid ""
 "It can be acy using firewall rules or nginx configuration or middleware "
 "on application level."
 msgstr ""
+"Це можна зробити за допомогою правил firewall, конфігурації nginx або "
+"middleware на рівні застосунку."
 
 #: ../../dispatcher/webhook.rst:67
 msgid ""
 "So, aiogram has an implementation of the IP filtering middleware for "
 "aiohttp."
 msgstr ""
+"Тому в aiogram є реалізація middleware для фільтрації за IP для aiohttp."
+
+#: ../../dispatcher/webhook.rst:69
+msgid ""
+"`aiogram` IP filtering middleware reads the left-most IP address from "
+"`X-Forwarded-For`."
+msgstr ""
+"IP-фільтр middleware в `aiogram` читає крайню ліву IP-адресу з "
+"`X-Forwarded-For`."
+
+#: ../../dispatcher/webhook.rst:73
+msgid ""
+"`X-Forwarded-For` is trustworthy only if all webhook traffic goes through a"
+" trusted reverse proxy that rewrites this header. If your application is "
+"directly reachable from the Internet, this header can be forged."
+msgstr ""
+"`X-Forwarded-For` можна вважати надійним лише тоді, коли весь webhook-"
+"трафік проходить через довірений reverse proxy, який перезаписує цей "
+"заголовок. Якщо ваш застосунок напряму доступний з Інтернету, цей "
+"заголовок можна підробити."
+
+#: ../../dispatcher/webhook.rst:76
+msgid "For production deployments, use defense in depth:"
+msgstr "Для production-деплойментів використовуйте багаторівневий захист:"
+
+#: ../../dispatcher/webhook.rst:78
+msgid "Always set and verify :code:`X-Telegram-Bot-Api-Secret-Token`"
+msgstr "Завжди встановлюйте та перевіряйте :code:`X-Telegram-Bot-Api-Secret-Token`"
+
+#: ../../dispatcher/webhook.rst:79
+msgid ""
+"Restrict network access to the webhook endpoint (firewall, security "
+"groups, ACL)"
+msgstr ""
+"Обмежуйте мережевий доступ до webhook endpoint (firewall, security groups, "
+"ACL)"
+
+#: ../../dispatcher/webhook.rst:80
+msgid ""
+"Ensure the backend app is not publicly reachable and accepts requests only "
+"from the trusted proxy"
+msgstr ""
+"Переконайтеся, що backend-застосунок не доступний публічно та приймає "
+"запити лише від довіреного proxy"
 
 #: ../../dispatcher/webhook.rst:75
 msgid "Examples"

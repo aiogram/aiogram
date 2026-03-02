@@ -7,9 +7,9 @@
   "object": {
     "anchor": "sendmessagedraft",
     "name": "sendMessageDraft",
-    "description": "Use this method to stream a partial message to a user while the message is being generated; supported only for bots with forum topic mode enabled. Returns True on success.",
-    "html_description": "<p>Use this method to stream a partial message to a user while the message is being generated; supported only for bots with forum topic mode enabled. Returns <em>True</em> on success.</p>",
-    "rst_description": "Use this method to stream a partial message to a user while the message is being generated; supported only for bots with forum topic mode enabled. Returns :code:`True` on success.",
+    "description": "Use this method to stream a partial message to a user while the message is being generated. Returns True on success.",
+    "html_description": "<p>Use this method to stream a partial message to a user while the message is being generated. Returns <em>True</em> on success.</p>",
+    "rst_description": "Use this method to stream a partial message to a user while the message is being generated. Returns :code:`True` on success.",
     "annotations": [
       {
         "type": "Integer",

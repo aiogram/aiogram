@@ -259,6 +259,7 @@ class SceneHandlerWrapper:
             )
             raise SceneException(msg) from None
         event_update: Update = kwargs["event_update"]
+        scenes.data = {**scenes.data, **kwargs}
         scene = self.scene(
             wizard=SceneWizard(
                 scene_config=self.scene.__scene_config__,
@@ -712,6 +713,9 @@ class ScenesManager:
         :param kwargs: Additional keyword arguments to pass to the scene's wizard.enter() method.
         :return: None
         """
+        if kwargs:
+            self.data = {**self.data, **kwargs}
+
         if _check_active:
             active_scene = await self._get_active_scene()
             if active_scene is not None:

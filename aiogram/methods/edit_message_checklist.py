@@ -25,7 +25,7 @@ class EditMessageChecklist(TelegramMethod[Message]):
     checklist: InputChecklist
     """A JSON-serialized object for the new checklist"""
     reply_markup: InlineKeyboardMarkup | None = None
-    """A JSON-serialized object for the new inline keyboard for the message"""
+    """A JSON-serialized object for the new `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_ for the message"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!

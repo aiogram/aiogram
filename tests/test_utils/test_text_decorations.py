@@ -1,3 +1,5 @@
+from datetime import datetime, timezone
+
 import pytest
 
 from aiogram.types import MessageEntity, User
@@ -25,7 +27,7 @@ class TestTextDecoration:
             [
                 html_decoration,
                 MessageEntity(type="pre", offset=0, length=5, language="python"),
-                '<pre><code class="language-python">test</code></pre>',
+                '<pre><code language="language-python">test</code></pre>',
             ],
             [html_decoration, MessageEntity(type="underline", offset=0, length=5), "<u>test</u>"],
             [
@@ -57,7 +59,7 @@ class TestTextDecoration:
             [
                 html_decoration,
                 MessageEntity(type="custom_emoji", offset=0, length=5, custom_emoji_id="42"),
-                '<tg-emoji emoji-id="42">test</tg-emoji>',
+                '<tg-emoji emoji_id="42">test</tg-emoji>',
             ],
             [
                 html_decoration,
@@ -73,6 +75,17 @@ class TestTextDecoration:
                 html_decoration,
                 MessageEntity(type="expandable_blockquote", offset=0, length=5),
                 "<blockquote expandable>test</blockquote>",
+            ],
+            [
+                html_decoration,
+                MessageEntity(
+                    type="date_time",
+                    offset=0,
+                    length=5,
+                    unix_time=42,
+                    date_time_format="yMd",
+                ),
+                '<tg-time unix="42" format="yMd">test</tg-time>',
             ],
             [markdown_decoration, MessageEntity(type="bold", offset=0, length=5), "*test*"],
             [markdown_decoration, MessageEntity(type="italic", offset=0, length=5), "_\rtest_\r"],
@@ -102,7 +115,7 @@ class TestTextDecoration:
             [
                 markdown_decoration,
                 MessageEntity(type="custom_emoji", offset=0, length=5, custom_emoji_id="42"),
-                "![test](tg://emoji?id=42)",
+                "![test](tg://emoji?emoji_id=42)",
             ],
             [
                 markdown_decoration,
@@ -124,12 +137,65 @@ class TestTextDecoration:
                 MessageEntity(type="expandable_blockquote", offset=0, length=5),
                 ">test||",
             ],
+            [
+                markdown_decoration,
+                MessageEntity(
+                    type="date_time",
+                    offset=0,
+                    length=5,
+                    unix_time=42,
+                    date_time_format="yMd",
+                ),
+                "![test](tg://time?unix=42&format=yMd)",
+            ],
+            [
+                html_decoration,
+                MessageEntity(type="date_time", offset=0, length=5, unix_time=42),
+                '<tg-time unix="42">test</tg-time>',
+            ],
+            [
+                markdown_decoration,
+                MessageEntity(type="date_time", offset=0, length=5, unix_time=42),
+                "![test](tg://time?unix=42)",
+            ],
         ],
     )
     def test_apply_single_entity(
         self, decorator: TextDecoration, entity: MessageEntity, result: str
     ):
         assert decorator.apply_entity(entity, "test") == result
+
+    @pytest.mark.parametrize(
+        "decorator,date_time_format,expected",
+        [
+            (
+                html_decoration,
+                None,
+                '<tg-time unix="1704067200">test</tg-time>',
+            ),
+            (
+                html_decoration,
+                "yMd",
+                '<tg-time unix="1704067200" format="yMd">test</tg-time>',
+            ),
+            (
+                markdown_decoration,
+                None,
+                "![test](tg://time?unix=1704067200)",
+            ),
+            (
+                markdown_decoration,
+                "yMd",
+                "![test](tg://time?unix=1704067200&format=yMd)",
+            ),
+        ],
+    )
+    def test_date_time_with_datetime_object(
+        self, decorator: TextDecoration, date_time_format: str | None, expected: str
+    ):
+        dt = datetime(2024, 1, 1, 0, 0, 0, tzinfo=timezone.utc)
+        result = decorator.date_time("test", unix_time=dt, date_time_format=date_time_format)
+        assert result == expected
 
     def test_unknown_apply_entity(self):
         assert (
@@ -295,6 +361,22 @@ class TestTextDecoration:
                     MessageEntity(type="bold", offset=0, length=16),
                 ],
                 "<b>test@example.com</b>",
+            ],
+            [
+                html_decoration,
+                "test",
+                [MessageEntity(type="date_time", offset=0, length=4, unix_time=42)],
+                '<tg-time unix="42">test</tg-time>',
+            ],
+            [
+                html_decoration,
+                "test",
+                [
+                    MessageEntity(
+                        type="date_time", offset=0, length=4, unix_time=42, date_time_format="yMd"
+                    )
+                ],
+                '<tg-time unix="42" format="yMd">test</tg-time>',
             ],
         ],
     )

@@ -28,6 +28,7 @@ if TYPE_CHECKING:
         SendChatAction,
         SetChatAdministratorCustomTitle,
         SetChatDescription,
+        SetChatMemberTag,
         SetChatPermissions,
         SetChatPhoto,
         SetChatStickerSet,
@@ -967,6 +968,38 @@ class Chat(TelegramObject):
             **kwargs,
         ).as_(self._bot)
 
+    def set_member_tag(
+        self,
+        user_id: int,
+        tag: str | None = None,
+        **kwargs: Any,
+    ) -> SetChatMemberTag:
+        """
+        Shortcut for method :class:`aiogram.methods.set_chat_member_tag.SetChatMemberTag`
+        will automatically fill method attributes:
+
+        - :code:`chat_id`
+
+        Use this method to set a tag for a regular member in a group or a supergroup. The bot must be an administrator in the chat for this to work and must have the *can_manage_tags* administrator right. Returns :code:`True` on success.
+
+        Source: https://core.telegram.org/bots/api#setchatmembertag
+
+        :param user_id: Unique identifier of the target user
+        :param tag: New tag for the member; 0-16 characters, emoji are not allowed
+        :return: instance of method :class:`aiogram.methods.set_chat_member_tag.SetChatMemberTag`
+        """
+        # DO NOT EDIT MANUALLY!!!
+        # This method was auto-generated via `butcher`
+
+        from aiogram.methods import SetChatMemberTag
+
+        return SetChatMemberTag(
+            chat_id=self.id,
+            user_id=user_id,
+            tag=tag,
+            **kwargs,
+        ).as_(self._bot)
+
     def set_permissions(
         self,
         permissions: ChatPermissions,
@@ -1018,6 +1051,7 @@ class Chat(TelegramObject):
         can_pin_messages: bool | None = None,
         can_manage_topics: bool | None = None,
         can_manage_direct_messages: bool | None = None,
+        can_manage_tags: bool | None = None,
         **kwargs: Any,
     ) -> PromoteChatMember:
         """
@@ -1047,6 +1081,7 @@ class Chat(TelegramObject):
         :param can_pin_messages: Pass :code:`True` if the administrator can pin messages; for supergroups only
         :param can_manage_topics: Pass :code:`True` if the user is allowed to create, rename, close, and reopen forum topics; for supergroups only
         :param can_manage_direct_messages: Pass :code:`True` if the administrator can manage direct messages within the channel and decline suggested posts; for channels only
+        :param can_manage_tags: Pass :code:`True` if the administrator can edit the tags of regular members; for groups and supergroups only
         :return: instance of method :class:`aiogram.methods.promote_chat_member.PromoteChatMember`
         """
         # DO NOT EDIT MANUALLY!!!
@@ -1073,6 +1108,7 @@ class Chat(TelegramObject):
             can_pin_messages=can_pin_messages,
             can_manage_topics=can_manage_topics,
             can_manage_direct_messages=can_manage_direct_messages,
+            can_manage_tags=can_manage_tags,
             **kwargs,
         ).as_(self._bot)
 

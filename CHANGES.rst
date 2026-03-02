@@ -16,6 +16,43 @@ Changelog
 
 .. towncrier release notes start
 
+3.25.0 (2026-03-03)
+====================
+
+Bugfixes
+--------
+
+- Fixed scene transitions to preserve middleware-injected data when moving between scenes via ``SceneWizard.goto``.
+  `#1687 <https://github.com/aiogram/aiogram/issues/1687>`_
+- Added ``icon_custom_emoji_id`` and ``style`` parameters to ``InlineKeyboardBuilder.button`` and ``ReplyKeyboardBuilder.button`` signatures.
+  `#1768 <https://github.com/aiogram/aiogram/issues/1768>`_
+- Fixed Pydantic protected namespace warning for `model_custom_emoji_id` by adding `protected_namespaces=()` to `model_config`.
+  `#1772 <https://github.com/aiogram/aiogram/issues/1772>`_
+
+
+Misc
+----
+
+- Documented webhook security constraints for proxy deployments, including trust requirements for :code:`X-Forwarded-For` and recommended defense-in-depth checks.
+  `#47 <https://github.com/aiogram/aiogram/issues/47>`_
+- Updated to `Bot API 9.5 <https://core.telegram.org/bots/api-changelog#march-1-2026>`_
+
+  **New Methods:**
+
+  - Added :class:`aiogram.methods.send_message_draft.SendMessageDraft` method - allowed for all bots to stream partial messages while they are being generated
+  - Added :class:`aiogram.methods.set_chat_member_tag.SetChatMemberTag` method - allows bots to set a custom tag for a chat member; available via :meth:`aiogram.types.chat.Chat.set_member_tag` shortcut
+
+  **New Fields:**
+
+  - Added :code:`date_time` type to :class:`aiogram.types.message_entity.MessageEntity` with :code:`unix_time` and :code:`date_time_format` fields - allows bots to display a formatted date and time to the user
+  - Added :code:`tag` field to :class:`aiogram.types.chat_member_member.ChatMemberMember` and :class:`aiogram.types.chat_member_restricted.ChatMemberRestricted` - the custom tag set for the chat member
+  - Added :code:`can_edit_tag` field to :class:`aiogram.types.chat_member_restricted.ChatMemberRestricted` and :class:`aiogram.types.chat_permissions.ChatPermissions` - indicates whether the user is allowed to edit their own tag
+  - Added :code:`can_manage_tags` field to :class:`aiogram.types.chat_member_administrator.ChatMemberAdministrator` and :class:`aiogram.types.chat_administrator_rights.ChatAdministratorRights` - indicates whether the administrator can manage tags of other chat members
+  - Added :code:`can_manage_tags` parameter to :class:`aiogram.methods.promote_chat_member.PromoteChatMember` method
+  - Added :code:`sender_tag` field to :class:`aiogram.types.message.Message` - the tag of the message sender in the chat
+  `#1780 <https://github.com/aiogram/aiogram/issues/1780>`_
+
+
 3.25.0 (2026-02-10)
 ====================
 
