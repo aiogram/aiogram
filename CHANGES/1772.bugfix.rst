@@ -1,0 +1,1 @@
+Fixed Pydantic protected namespace warning for `model_custom_emoji_id` by adding `protected_namespaces=()` to `model_config`.
