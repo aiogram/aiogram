@@ -28,6 +28,7 @@ if TYPE_CHECKING:
         SendChatAction,
         SetChatAdministratorCustomTitle,
         SetChatDescription,
+        SetChatMemberTag,
         SetChatPermissions,
         SetChatPhoto,
         SetChatStickerSet,
@@ -964,6 +965,38 @@ class Chat(TelegramObject):
             chat_id=self.id,
             user_id=user_id,
             custom_title=custom_title,
+            **kwargs,
+        ).as_(self._bot)
+
+    def set_member_tag(
+        self,
+        user_id: int,
+        tag: str | None = None,
+        **kwargs: Any,
+    ) -> SetChatMemberTag:
+        """
+        Shortcut for method :class:`aiogram.methods.set_chat_member_tag.SetChatMemberTag`
+        will automatically fill method attributes:
+
+        - :code:`chat_id`
+
+        Use this method to set a tag for a regular member in a group or a supergroup. The bot must be an administrator in the chat for this to work and must have the *can_manage_tags* administrator right. Returns :code:`True` on success.
+
+        Source: https://core.telegram.org/bots/api#setchatmembertag
+
+        :param user_id: Unique identifier of the target user
+        :param tag: New tag for the member; 0-16 characters, emoji are not allowed
+        :return: instance of method :class:`aiogram.methods.set_chat_member_tag.SetChatMemberTag`
+        """
+        # DO NOT EDIT MANUALLY!!!
+        # This method was auto-generated via `butcher`
+
+        from aiogram.methods import SetChatMemberTag
+
+        return SetChatMemberTag(
+            chat_id=self.id,
+            user_id=user_id,
+            tag=tag,
             **kwargs,
         ).as_(self._bot)
 
