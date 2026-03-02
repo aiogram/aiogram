@@ -1,9 +1,10 @@
 from typing import Any
 from unittest.mock import sentinel
 
+from pydantic import BaseModel, ConfigDict, model_validator
+
 from aiogram.client.context_controller import BotContextController
 from aiogram.client.default import Default
-from pydantic import BaseModel, ConfigDict, model_validator
 
 
 class TelegramObject(BotContextController, BaseModel):
