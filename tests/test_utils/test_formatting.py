@@ -9,6 +9,7 @@ from aiogram.utils.formatting import (
     CashTag,
     Code,
     CustomEmoji,
+    DateTime,
     Email,
     ExpandableBlockQuote,
     HashTag,
@@ -93,7 +94,7 @@ class TestNode:
             ],
             [
                 Pre("test", language="python"),
-                '<pre><code class="language-python">test</code></pre>',
+                '<pre><code language="language-python">test</code></pre>',
             ],
             [
                 TextLink("test", url="https://example.com"),
@@ -105,7 +106,7 @@ class TestNode:
             ],
             [
                 CustomEmoji("test", custom_emoji_id="42"),
-                '<tg-emoji emoji-id="42">test</tg-emoji>',
+                '<tg-emoji emoji_id="42">test</tg-emoji>',
             ],
             [
                 BlockQuote("test"),
@@ -114,6 +115,10 @@ class TestNode:
             [
                 ExpandableBlockQuote("test"),
                 "<blockquote expandable>test</blockquote>",
+            ],
+            [
+                DateTime("test", unix_time=42, date_time_format="yMd"),
+                '<tg-time unix="42" format="yMd">test</tg-time>',
             ],
         ],
     )
@@ -357,6 +362,22 @@ class TestUtils:
         )
         assert isinstance(node, Bold)
         assert node._body == ("test",)
+
+    def test_apply_entity_date_time(self):
+        node = _apply_entity(
+            MessageEntity(
+                type=MessageEntityType.DATE_TIME,
+                offset=0,
+                length=4,
+                unix_time=42,
+                date_time_format="yMd",
+            ),
+            "test",
+        )
+        assert isinstance(node, DateTime)
+        assert node._body == ("test",)
+        assert node._params["unix_time"] == 42
+        assert node._params["date_time_format"] == "yMd"
 
     def test_as_line(self):
         node = as_line("test", "test", "test")

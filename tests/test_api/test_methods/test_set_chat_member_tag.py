@@ -7,5 +7,8 @@ class TestSetChatMemberTag:
         prepare_result = bot.add_result_for(SetChatMemberTag, ok=True, result=True)
 
         response: bool = await bot.set_chat_member_tag(chat_id=-42, user_id=42, tag="test")
-        bot.get_request()
+        request = bot.get_request()
+        assert request.chat_id == -42
+        assert request.user_id == 42
+        assert request.tag == "test"
         assert response == prepare_result.result

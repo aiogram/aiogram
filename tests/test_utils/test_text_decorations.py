@@ -25,7 +25,7 @@ class TestTextDecoration:
             [
                 html_decoration,
                 MessageEntity(type="pre", offset=0, length=5, language="python"),
-                '<pre><code class="language-python">test</code></pre>',
+                '<pre><code language="language-python">test</code></pre>',
             ],
             [html_decoration, MessageEntity(type="underline", offset=0, length=5), "<u>test</u>"],
             [
@@ -57,7 +57,7 @@ class TestTextDecoration:
             [
                 html_decoration,
                 MessageEntity(type="custom_emoji", offset=0, length=5, custom_emoji_id="42"),
-                '<tg-emoji emoji-id="42">test</tg-emoji>',
+                '<tg-emoji emoji_id="42">test</tg-emoji>',
             ],
             [
                 html_decoration,
@@ -73,6 +73,17 @@ class TestTextDecoration:
                 html_decoration,
                 MessageEntity(type="expandable_blockquote", offset=0, length=5),
                 "<blockquote expandable>test</blockquote>",
+            ],
+            [
+                html_decoration,
+                MessageEntity(
+                    type="date_time",
+                    offset=0,
+                    length=5,
+                    unix_time=42,
+                    date_time_format="yMd",
+                ),
+                '<tg-time unix="42" format="yMd">test</tg-time>',
             ],
             [markdown_decoration, MessageEntity(type="bold", offset=0, length=5), "*test*"],
             [markdown_decoration, MessageEntity(type="italic", offset=0, length=5), "_\rtest_\r"],
@@ -102,7 +113,7 @@ class TestTextDecoration:
             [
                 markdown_decoration,
                 MessageEntity(type="custom_emoji", offset=0, length=5, custom_emoji_id="42"),
-                "![test](tg://emoji?id=42)",
+                "![test](tg://emoji?emoji_id=42)",
             ],
             [
                 markdown_decoration,
@@ -123,6 +134,17 @@ class TestTextDecoration:
                 markdown_decoration,
                 MessageEntity(type="expandable_blockquote", offset=0, length=5),
                 ">test||",
+            ],
+            [
+                markdown_decoration,
+                MessageEntity(
+                    type="date_time",
+                    offset=0,
+                    length=5,
+                    unix_time=42,
+                    date_time_format="yMd",
+                ),
+                "![test](tg://time?unix=42&format=yMd)",
             ],
         ],
     )
