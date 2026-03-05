@@ -60,7 +60,7 @@ You also can use :class:`aiogram.filters.media_group.MediaGroupFilter`
 to filter media groups.
 
 Usage
-=====
+-----
 
 .. code-block:: python
 
@@ -69,7 +69,7 @@ Usage
 
     # register middleware
     from aiogram.dispatcher.middlewares.media_group import MediaGroupAggregatorMiddleware
-    from aiogram.filters.media_group import MediaGroupFilter
+    from aiogram.filters import MediaGroupFilter
 
     router.message.outer_middleware(MediaGroupAggregatorMiddleware())
 

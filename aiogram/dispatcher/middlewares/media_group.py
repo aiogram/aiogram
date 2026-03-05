@@ -71,9 +71,9 @@ class RedisMediaGroupAggregator(BaseMediaGroupAggregator):
     ) -> None:
         """
         :param ttl_sec: ttl for media group data in seconds
-        :param lock_ttl_sec: ttl for lock in seconds. Value should be too big to prevent lock
-            releasing until handler finished and too small to expire until telegram send retry if
-            handler failed.
+        :param lock_ttl_sec: ttl for lock in seconds. Value should be large enough to prevent the
+            lock from expiring before the handler finishes, but small enough to expire before
+            Telegram retries a failed delivery.
         """
         self.redis = redis
         self.ttl_sec = ttl_sec
@@ -115,7 +115,7 @@ class RedisMediaGroupAggregator(BaseMediaGroupAggregator):
             "else return 0 end"
         )
         await cast(
-            Awaitable[str],
+            Awaitable[int],
             self.redis.eval(release_script, 1, self.get_group_lock_key(media_group_id), lock_id),
         )
 
@@ -123,7 +123,7 @@ class RedisMediaGroupAggregator(BaseMediaGroupAggregator):
         result = await cast(
             Awaitable[list[str]], self.redis.lrange(self.get_group_key(media_group_id), 0, -1)
         )
-        return self.deduplicate_messages([Message.model_validate_json(msg) for msg in set(result)])
+        return self.deduplicate_messages([Message.model_validate_json(msg) for msg in result])
 
     async def delete_group(self, media_group_id: str) -> None:
         async with self.redis.pipeline(transaction=True) as pipe:
@@ -172,7 +172,7 @@ class MemoryMediaGroupAggregator(BaseMediaGroupAggregator):
         return len(self.groups[media_group_id])
 
     async def acquire_lock(self, media_group_id: str, lock_id: str) -> bool:
-        if self.locks.get(media_group_id):
+        if self.locks.get(media_group_id) is not None:
             return False
         self.locks[media_group_id] = lock_id
         return True
@@ -220,8 +220,12 @@ class MediaGroupAggregatorMiddleware(BaseMiddleware):
         if not await self.media_group_aggregator.acquire_lock(event.media_group_id, lock_id):
             return None
         try:
-            last_message_time = await self.media_group_aggregator.get_current_time()
             while True:
+                last_message_time = await self.media_group_aggregator.get_last_message_time(
+                    event.media_group_id
+                )
+                if not last_message_time:
+                    return None
                 delta = self.delay - (
                     await self.media_group_aggregator.get_current_time() - last_message_time
                 )
@@ -238,11 +242,5 @@ class MediaGroupAggregatorMiddleware(BaseMiddleware):
                     await self.media_group_aggregator.delete_group(event.media_group_id)
                     return result
                 await asyncio.sleep(delta)
-                new_last_message_time = await self.media_group_aggregator.get_last_message_time(
-                    event.media_group_id
-                )
-                if not new_last_message_time:
-                    return None
-                last_message_time = new_last_message_time
         finally:
             await self.media_group_aggregator.release_lock(event.media_group_id, lock_id)

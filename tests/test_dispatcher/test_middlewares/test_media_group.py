@@ -189,13 +189,15 @@ class TestMediaGroupAggregator:
         assert await aggregator.get_group("42") == []
 
     async def test_acquire_lock(self, aggregator: BaseMediaGroupAggregator):
-        await aggregator.acquire_lock("42", "key1")
-        assert not await aggregator.acquire_lock("42", "key2")
-        await aggregator.release_lock("42", "key1")
-        for i in ("key2", "key3"):
+        for i in ("key1", "key2"):
             assert await aggregator.acquire_lock("42", i)
             assert not await aggregator.acquire_lock("42", i)
             await aggregator.release_lock("42", i)
+
+    async def test_lock_not_acquired_with_wrong_key(self, aggregator: BaseMediaGroupAggregator):
+        await aggregator.acquire_lock("42", "key1")
+        await aggregator.release_lock("42", "key2")
+        assert not await aggregator.acquire_lock("42", "key1")
 
     async def test_expired_objects_removed(self):
         aggregator = MemoryMediaGroupAggregator()
