@@ -16,7 +16,7 @@ Changelog
 
 .. towncrier release notes start
 
-3.25.0 (2026-03-03)
+3.26.0 (2026-03-03)
 ====================
 
 Bugfixes
