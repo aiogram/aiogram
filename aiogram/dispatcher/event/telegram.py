@@ -13,6 +13,10 @@ from .handler import CallbackType, FilterObject, HandlerObject
 if TYPE_CHECKING:
     from aiogram.dispatcher.router import Router
     from aiogram.types import TelegramObject
+import contextlib
+import functools
+
+from aiogram.tracer import AbstractTracer, tracer
 
 
 class TelegramEventObserver:
@@ -113,20 +117,37 @@ class TelegramEventObserver:
         Propagate event to handlers and stops propagation on first match.
         Handler will be called when all its filters are pass.
         """
+        tracer_instance = tracer.get()
         for handler in self.handlers:
+            if tracer_instance is not None and (
+                filter_manager := tracer_instance.get_filter_span_manager(handler)
+            ):
+                async with filter_manager:
+                    result, data = await handler.check(event, **kwargs)
+            else:
+                result, data = await handler.check(event, **kwargs)
+            if not result:
+                continue
             kwargs["handler"] = handler
-            result, data = await handler.check(event, **kwargs)
-            if result:
-                kwargs.update(data)
-                try:
-                    wrapped_inner = self.outer_middleware.wrap_middlewares(
-                        self._resolve_middlewares(),
-                        handler.call,
-                    )
-                    return await wrapped_inner(event, kwargs)
-                except SkipHandler:
-                    continue
+            kwargs.update(data)
+            try:
+                handler_call = handler.call
+                if tracer_instance is not None and (
+                    handler_manager := tracer_instance.get_handler_span_manager(handler)
+                ):
 
+                    @functools.wraps(handler.callback)
+                    async def handler_wrapper(event, **kwargs):
+                        async with handler_manager:  # noqa: B023
+                            return await handler.call(event, **kwargs)  # noqa: B023
+
+                    handler_call = handler_wrapper
+                wrapped_inner = self.outer_middleware.wrap_middlewares(
+                    self._resolve_middlewares(), handler_call
+                )
+                return await wrapped_inner(event, kwargs)
+            except SkipHandler:
+                continue
         return UNHANDLED
 
     def __call__(

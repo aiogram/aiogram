@@ -17,7 +17,8 @@ from aiogram.fsm.storage.base import BaseEventIsolation, BaseStorage
 from aiogram.fsm.storage.memory import DisabledEventIsolation, MemoryStorage
 from aiogram.fsm.strategy import FSMStrategy
 from aiogram.methods import GetUpdates, TelegramMethod
-from aiogram.types import Update, User
+from aiogram.tracer import AbstractTracer, tracer
+from aiogram.types import TelegramObject, Update, User
 from aiogram.types.base import UNSET, UNSET_TYPE
 from aiogram.types.update import UpdateTypeLookupError
 from aiogram.utils.backoff import Backoff, BackoffConfig
@@ -48,6 +49,7 @@ class Dispatcher(Router):
         events_isolation: BaseEventIsolation | None = None,
         disable_fsm: bool = False,
         name: str | None = None,
+        tracer: AbstractTracer | None = None,
         **kwargs: Any,
     ) -> None:
         """
@@ -73,6 +75,7 @@ class Dispatcher(Router):
             router=self,
             event_name="update",
         )
+        self.tracer = tracer
         self.update.register(self._listen_update)
 
         # Error handlers should work is out of all other functions
@@ -159,7 +162,6 @@ class Dispatcher(Router):
             # The preferred way is that pass already mounted Bot instance to this update
             # before call feed_update method
             update = Update.model_validate(update.model_dump(), context={"bot": bot})
-
         try:
             response = await self.update.wrap_outer_middleware(
                 self.update.trigger,
@@ -279,8 +281,22 @@ class Dispatcher(Router):
             raise SkipHandler() from e
 
         kwargs.update(event_update=update)
-
+        if self.tracer is not None:
+            tracer.set(self.tracer)
         return await self.propagate_event(update_type=update_type, event=event, **kwargs)
+
+    async def _propagate_event(
+        self,
+        observer: TelegramEventObserver | None,
+        update_type: str,
+        event: TelegramObject,
+        **kwargs: Any,
+    ) -> Any:
+        if self.tracer is None:
+            return await super()._propagate_event(observer, update_type, event, **kwargs)
+
+        async with self.tracer.get_trigger_span_manager(event):
+            return await super()._propagate_event(observer, update_type, event, **kwargs)
 
     @classmethod
     async def silent_call_request(cls, bot: Bot, result: TelegramMethod[Any]) -> None:
