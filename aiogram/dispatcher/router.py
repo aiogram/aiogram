@@ -262,7 +262,7 @@ class Router:
         :return:
         """
         if not isinstance(router, Router):
-            msg = f"router should be instance of Router not {type(router).__class__.__name__}"
+            msg = f"router should be instance of Router not {type(router).__name__!r}"
             raise ValueError(msg)
         router.parent_router = self
         return router
