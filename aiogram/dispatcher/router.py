@@ -131,7 +131,7 @@ class Router:
         Is useful for getting updates only for registered event types.
 
         :param skip_events: skip specified event names
-        :return: set of registered names
+        :return: sorted list of registered names
         """
         handlers_in_use: set[str] = set()
         if skip_events is None:
@@ -143,7 +143,7 @@ class Router:
                 if observer.handlers and update_name not in skip_events:
                     handlers_in_use.add(update_name)
 
-        return list(sorted(handlers_in_use))  # NOQA: C413
+        return sorted(handlers_in_use)
 
     async def propagate_event(self, update_type: str, event: TelegramObject, **kwargs: Any) -> Any:
         kwargs.update(event_router=self)
