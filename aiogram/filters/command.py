@@ -240,7 +240,7 @@ class CommandObject:
 class CommandStart(Command):
     def __init__(
         self,
-        deep_link: bool = False,
+        deep_link: bool | None = None,
         deep_link_encoded: bool = False,
         ignore_case: bool = False,
         ignore_mention: bool = False,
@@ -282,7 +282,12 @@ class CommandStart(Command):
         return command  # noqa: RET504
 
     def validate_deeplink(self, command: CommandObject) -> CommandObject:
-        if not self.deep_link:
+        if self.deep_link is None:
+            return command
+        if self.deep_link is False:
+            if command.args:
+                msg = "Deep-link was not expected"
+                raise CommandException(msg)
             return command
         if not command.args:
             msg = "Deep-link was missing"
