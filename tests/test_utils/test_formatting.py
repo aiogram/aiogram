@@ -108,7 +108,7 @@ class TestNode:
             ],
             [
                 CustomEmoji("test", custom_emoji_id="42"),
-                '<tg-emoji emoji_id="42">test</tg-emoji>',
+                '<tg-emoji emoji-id="42">test</tg-emoji>',
             ],
             [
                 BlockQuote("test"),

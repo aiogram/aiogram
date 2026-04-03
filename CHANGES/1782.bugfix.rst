@@ -1,0 +1,1 @@
+Fixed ``HtmlDecoration.custom_emoji()`` to use the correct ``emoji-id`` attribute name instead of ``emoji_id`` in the ``<tg-emoji>`` tag, matching the Telegram Bot API specification.

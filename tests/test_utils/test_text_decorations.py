@@ -59,7 +59,7 @@ class TestTextDecoration:
             [
                 html_decoration,
                 MessageEntity(type="custom_emoji", offset=0, length=5, custom_emoji_id="42"),
-                '<tg-emoji emoji_id="42">test</tg-emoji>',
+                '<tg-emoji emoji-id="42">test</tg-emoji>',
             ],
             [
                 html_decoration,
