@@ -16,7 +16,85 @@ Changelog
 
 .. towncrier release notes start
 
-3.25.0 (2026-03-03)
+3.27.0 (2026-04-04)
+====================
+
+Features
+--------
+
+- Added `__eq__` and `__hash__` methods to the `Default` class.
+  `#1707 <https://github.com/aiogram/aiogram/issues/1707>`_
+
+
+Bugfixes
+--------
+
+- ``CommandStart(deep_link=False)`` now correctly rejects messages that contain deep-link arguments. Previously ``deep_link=False`` (the default) did not distinguish between ``/start`` and ``/start <payload>``. The default is changed to ``None`` (accept both) to preserve backward compatibility.
+  `#1713 <https://github.com/aiogram/aiogram/issues/1713>`_
+- Fixed ``HtmlDecoration.custom_emoji()`` to use the correct ``emoji-id`` attribute name instead of ``emoji_id`` in the ``<tg-emoji>`` tag, matching the Telegram Bot API specification.
+  `#1782 <https://github.com/aiogram/aiogram/issues/1782>`_
+- Remove redundant list() around sorted() and fix router type name in validation error message
+  `#1788 <https://github.com/aiogram/aiogram/issues/1788>`_
+
+
+Misc
+----
+
+- Updated to `Bot API 9.6 <https://core.telegram.org/bots/api-changelog#april-3-2026>`_
+
+  **Managed Bots**
+
+  *New Methods:*
+
+  - Added :class:`aiogram.methods.get_managed_bot_token.GetManagedBotToken` method - retrieves the token of a managed bot
+  - Added :class:`aiogram.methods.replace_managed_bot_token.ReplaceManagedBotToken` method - generates a new token for a managed bot, invalidating the previous one
+  - Added :class:`aiogram.methods.save_prepared_keyboard_button.SavePreparedKeyboardButton` method - saves a keyboard button to be used in Mini Apps via :code:`requestChat`
+
+  *New Types:*
+
+  - Added :class:`aiogram.types.keyboard_button_request_managed_bot.KeyboardButtonRequestManagedBot` type - defines criteria for selecting a managed bot via a keyboard button
+  - Added :class:`aiogram.types.managed_bot_created.ManagedBotCreated` type - describes a service message about a managed bot being created
+  - Added :class:`aiogram.types.managed_bot_updated.ManagedBotUpdated` type - describes updates to a managed bot
+  - Added :class:`aiogram.types.prepared_keyboard_button.PreparedKeyboardButton` type - represents a prepared keyboard button for use in Mini Apps
+
+  *New Fields:*
+
+  - Added :code:`can_manage_bots` field to :class:`aiogram.types.user.User` - indicates whether the bot can manage other bots
+  - Added :code:`request_managed_bot` field to :class:`aiogram.types.keyboard_button.KeyboardButton` - requests the user to select a managed bot
+  - Added :code:`managed_bot_created` field to :class:`aiogram.types.message.Message` - service message about a managed bot being created (type: :class:`aiogram.types.managed_bot_created.ManagedBotCreated`)
+  - Added :code:`managed_bot` field to :class:`aiogram.types.update.Update` - contains updates received by a managed bot
+
+  **Polls**
+
+  *New Types:*
+
+  - Added :class:`aiogram.types.poll_option_added.PollOptionAdded` type - describes a service message about a new option added to a poll
+  - Added :class:`aiogram.types.poll_option_deleted.PollOptionDeleted` type - describes a service message about a poll option being deleted
+
+  *New Fields:*
+
+  - Replaced :code:`correct_option_id` with :code:`correct_option_ids` in :class:`aiogram.types.poll.Poll` - supports multiple correct answers for quiz polls
+  - Added :code:`allows_revoting` field to :class:`aiogram.types.poll.Poll` - indicates whether users are allowed to change their vote
+  - Added :code:`description` and :code:`description_entities` fields to :class:`aiogram.types.poll.Poll` - optional poll description with formatting entities
+  - Added :code:`persistent_id` field to :class:`aiogram.types.poll_option.PollOption` - stable identifier for a poll option
+  - Added :code:`added_by_user` and :code:`added_by_chat` fields to :class:`aiogram.types.poll_option.PollOption` - identifies who added the option
+  - Added :code:`addition_date` field to :class:`aiogram.types.poll_option.PollOption` - date when the option was added
+  - Added :code:`option_persistent_ids` field to :class:`aiogram.types.poll_answer.PollAnswer` - persistent IDs of the chosen options
+  - Added :code:`poll_option_id` field to :class:`aiogram.types.reply_parameters.ReplyParameters` - allows replying to a specific poll option
+  - Added :code:`reply_to_poll_option_id` field to :class:`aiogram.types.message.Message` - the persistent ID of the poll option the message replies to
+
+  *New Parameters for* :class:`aiogram.methods.send_poll.SendPoll`:
+
+  - Replaced :code:`correct_option_id` with :code:`correct_option_ids` - supports multiple correct answers for quiz polls
+  - Added :code:`allows_revoting` - allows users to change their vote after submission
+  - Added :code:`shuffle_options` - randomizes the order of poll options for each user
+  - Added :code:`allow_adding_options` - allows users to add their own poll options
+  - Added :code:`hide_results_until_closes` - hides vote results until the poll is closed
+  - Added :code:`description`, :code:`description_parse_mode`, :code:`description_entities` - optional poll description with parse mode and formatting
+  `#1792 <https://github.com/aiogram/aiogram/issues/1792>`_
+
+
+3.26.0 (2026-03-03)
 ====================
 
 Bugfixes

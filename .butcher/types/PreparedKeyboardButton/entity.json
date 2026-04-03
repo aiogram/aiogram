@@ -1,0 +1,25 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "preparedkeyboardbutton",
+    "name": "PreparedKeyboardButton",
+    "description": "Describes a keyboard button to be used by a user of a Mini App.",
+    "html_description": "<p>Describes a keyboard button to be used by a user of a Mini App.</p>",
+    "rst_description": "Describes a keyboard button to be used by a user of a Mini App.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Unique identifier of the keyboard button",
+        "html_description": "<td>Unique identifier of the keyboard button</td>",
+        "rst_description": "Unique identifier of the keyboard button\n",
+        "name": "id",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

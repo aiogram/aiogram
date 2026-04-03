@@ -15,6 +15,7 @@ if TYPE_CHECKING:
     from .chat_member_updated import ChatMemberUpdated
     from .chosen_inline_result import ChosenInlineResult
     from .inline_query import InlineQuery
+    from .managed_bot_updated import ManagedBotUpdated
     from .message import Message
     from .message_reaction_count_updated import MessageReactionCountUpdated
     from .message_reaction_updated import MessageReactionUpdated
@@ -82,6 +83,8 @@ class Update(TelegramObject):
     """*Optional*. A chat boost was added or changed. The bot must be an administrator in the chat to receive these updates."""
     removed_chat_boost: ChatBoostRemoved | None = None
     """*Optional*. A boost was removed from a chat. The bot must be an administrator in the chat to receive these updates."""
+    managed_bot: ManagedBotUpdated | None = None
+    """*Optional*. A new bot was created to be managed by the bot or token of a bot was changed"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!
@@ -114,6 +117,7 @@ class Update(TelegramObject):
             chat_join_request: ChatJoinRequest | None = None,
             chat_boost: ChatBoostUpdated | None = None,
             removed_chat_boost: ChatBoostRemoved | None = None,
+            managed_bot: ManagedBotUpdated | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!
@@ -145,6 +149,7 @@ class Update(TelegramObject):
                 chat_join_request=chat_join_request,
                 chat_boost=chat_boost,
                 removed_chat_boost=removed_chat_boost,
+                managed_bot=managed_bot,
                 **__pydantic_kwargs,
             )
 
@@ -206,6 +211,8 @@ class Update(TelegramObject):
             return "business_message"
         if self.purchased_paid_media:
             return "purchased_paid_media"
+        if self.managed_bot:
+            return "managed_bot"
 
         raise UpdateTypeLookupError("Update does not contain any known event type.")
 

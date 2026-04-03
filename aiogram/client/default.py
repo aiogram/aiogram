@@ -28,6 +28,14 @@ class Default:
     def __repr__(self) -> str:
         return f"<{self}>"
 
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, Default):
+            return NotImplemented
+        return self._name == other._name
+
+    def __hash__(self) -> int:
+        return hash(self._name)
+
 
 @dataclass(**dataclass_kwargs(slots=True, kw_only=True))
 class DefaultBotProperties:

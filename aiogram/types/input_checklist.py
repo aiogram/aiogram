@@ -23,7 +23,7 @@ class InputChecklist(TelegramObject):
     parse_mode: str | None = None
     """*Optional*. Mode for parsing entities in the title. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details."""
     title_entities: list[MessageEntity] | None = None
-    """*Optional*. List of special entities that appear in the title, which can be specified instead of parse_mode. Currently, only *bold*, *italic*, *underline*, *strikethrough*, *spoiler*, and *custom_emoji* entities are allowed."""
+    """*Optional*. List of special entities that appear in the title, which can be specified instead of parse_mode. Currently, only *bold*, *italic*, *underline*, *strikethrough*, *spoiler*, *custom_emoji*, and *date_time* entities are allowed."""
     others_can_add_tasks: bool | None = None
     """*Optional*. Pass :code:`True` if other users can add tasks to the checklist"""
     others_can_mark_tasks_as_done: bool | None = None

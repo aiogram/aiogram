@@ -62,6 +62,7 @@ from .get_custom_emoji_stickers import GetCustomEmojiStickers
 from .get_file import GetFile
 from .get_forum_topic_icon_stickers import GetForumTopicIconStickers
 from .get_game_high_scores import GetGameHighScores
+from .get_managed_bot_token import GetManagedBotToken
 from .get_me import GetMe
 from .get_my_commands import GetMyCommands
 from .get_my_default_administrator_rights import GetMyDefaultAdministratorRights
@@ -92,11 +93,13 @@ from .remove_my_profile_photo import RemoveMyProfilePhoto
 from .remove_user_verification import RemoveUserVerification
 from .reopen_forum_topic import ReopenForumTopic
 from .reopen_general_forum_topic import ReopenGeneralForumTopic
+from .replace_managed_bot_token import ReplaceManagedBotToken
 from .replace_sticker_in_set import ReplaceStickerInSet
 from .repost_story import RepostStory
 from .restrict_chat_member import RestrictChatMember
 from .revoke_chat_invite_link import RevokeChatInviteLink
 from .save_prepared_inline_message import SavePreparedInlineMessage
+from .save_prepared_keyboard_button import SavePreparedKeyboardButton
 from .send_animation import SendAnimation
 from .send_audio import SendAudio
 from .send_chat_action import SendChatAction
@@ -230,6 +233,7 @@ __all__ = (
     "GetFile",
     "GetForumTopicIconStickers",
     "GetGameHighScores",
+    "GetManagedBotToken",
     "GetMe",
     "GetMyCommands",
     "GetMyDefaultAdministratorRights",
@@ -260,6 +264,7 @@ __all__ = (
     "RemoveUserVerification",
     "ReopenForumTopic",
     "ReopenGeneralForumTopic",
+    "ReplaceManagedBotToken",
     "ReplaceStickerInSet",
     "RepostStory",
     "Request",
@@ -267,6 +272,7 @@ __all__ = (
     "RestrictChatMember",
     "RevokeChatInviteLink",
     "SavePreparedInlineMessage",
+    "SavePreparedKeyboardButton",
     "SendAnimation",
     "SendAudio",
     "SendChatAction",

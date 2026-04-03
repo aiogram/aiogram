@@ -265,7 +265,7 @@ class HtmlDecoration(TextDecoration):
         return html.escape(value, quote=False)
 
     def custom_emoji(self, value: str, custom_emoji_id: str) -> str:
-        return self._tag(self.EMOJI_TAG, value, attrs={"emoji_id": custom_emoji_id})
+        return self._tag(self.EMOJI_TAG, value, attrs={"emoji-id": custom_emoji_id})
 
     def blockquote(self, value: str) -> str:
         return self._tag(self.BLOCKQUOTE_TAG, value)
