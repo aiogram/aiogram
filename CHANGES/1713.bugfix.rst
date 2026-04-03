@@ -1,0 +1,1 @@
+``CommandStart(deep_link=False)`` now correctly rejects messages that contain deep-link arguments. Previously ``deep_link=False`` (the default) did not distinguish between ``/start`` and ``/start <payload>``. The default is changed to ``None`` (accept both) to preserve backward compatibility.
