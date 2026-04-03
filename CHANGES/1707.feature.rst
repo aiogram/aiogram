@@ -1,0 +1,1 @@
+Added `__eq__` and `__hash__` methods to the `Default` class.
