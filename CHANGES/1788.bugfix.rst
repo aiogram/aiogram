@@ -1,1 +1,0 @@
-Remove redundant list() around sorted() and fix router type name in validation error message
