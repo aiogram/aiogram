@@ -33,6 +33,8 @@ class ReplyParameters(TelegramObject):
     """*Optional*. Position of the quote in the original message in UTF-16 code units"""
     checklist_task_id: int | None = None
     """*Optional*. Identifier of the specific checklist task to be replied to"""
+    poll_option_id: str | None = None
+    """*Optional*. Persistent identifier of a specific poll option to reply to"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!
@@ -51,6 +53,7 @@ class ReplyParameters(TelegramObject):
             quote_entities: list[MessageEntity] | None = None,
             quote_position: int | None = None,
             checklist_task_id: int | None = None,
+            poll_option_id: str | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!
@@ -66,5 +69,6 @@ class ReplyParameters(TelegramObject):
                 quote_entities=quote_entities,
                 quote_position=quote_position,
                 checklist_task_id=checklist_task_id,
+                poll_option_id=poll_option_id,
                 **__pydantic_kwargs,
             )

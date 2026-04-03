@@ -80,6 +80,7 @@ from ..methods import (
     GetFile,
     GetForumTopicIconStickers,
     GetGameHighScores,
+    GetManagedBotToken,
     GetMe,
     GetMyCommands,
     GetMyDefaultAdministratorRights,
@@ -110,11 +111,13 @@ from ..methods import (
     RemoveUserVerification,
     ReopenForumTopic,
     ReopenGeneralForumTopic,
+    ReplaceManagedBotToken,
     ReplaceStickerInSet,
     RepostStory,
     RestrictChatMember,
     RevokeChatInviteLink,
     SavePreparedInlineMessage,
+    SavePreparedKeyboardButton,
     SendAnimation,
     SendAudio,
     SendChatAction,
@@ -216,6 +219,7 @@ from ..types import (
     InputProfilePhotoUnion,
     InputSticker,
     InputStoryContentUnion,
+    KeyboardButton,
     LabeledPrice,
     LinkPreviewOptions,
     MaskPosition,
@@ -228,6 +232,7 @@ from ..types import (
     PassportElementErrorUnion,
     Poll,
     PreparedInlineMessage,
+    PreparedKeyboardButton,
     ReactionTypeUnion,
     ReplyMarkupUnion,
     ReplyParameters,
@@ -1797,6 +1802,46 @@ class Bot:
         call = GetMe()
         return await self(call, request_timeout=request_timeout)
 
+    async def get_managed_bot_token(
+        self,
+        user_id: int,
+        request_timeout: int | None = None,
+    ) -> str:
+        """
+        Use this method to get the token of a managed bot. Returns the token as *String* on success.
+
+        Source: https://core.telegram.org/bots/api#getmanagedbottoken
+
+        :param user_id: User identifier of the managed bot whose token will be returned
+        :param request_timeout: Request timeout
+        :return: Returns the token as *String* on success.
+        """
+
+        call = GetManagedBotToken(
+            user_id=user_id,
+        )
+        return await self(call, request_timeout=request_timeout)
+
+    async def replace_managed_bot_token(
+        self,
+        user_id: int,
+        request_timeout: int | None = None,
+    ) -> str:
+        """
+        Use this method to revoke the current token of a managed bot and generate a new one. Returns the new token as *String* on success.
+
+        Source: https://core.telegram.org/bots/api#replacemanagedbottoken
+
+        :param user_id: User identifier of the managed bot whose token will be replaced
+        :param request_timeout: Request timeout
+        :return: Returns the new token as *String* on success.
+        """
+
+        call = ReplaceManagedBotToken(
+            user_id=user_id,
+        )
+        return await self(call, request_timeout=request_timeout)
+
     async def get_my_commands(
         self,
         scope: BotCommandScopeUnion | None = None,
@@ -3008,13 +3053,20 @@ class Bot:
         is_anonymous: bool | None = None,
         type: str | None = None,
         allows_multiple_answers: bool | None = None,
-        correct_option_id: int | None = None,
+        allows_revoting: bool | None = None,
+        shuffle_options: bool | None = None,
+        allow_adding_options: bool | None = None,
+        hide_results_until_closes: bool | None = None,
+        correct_option_ids: list[int] | None = None,
         explanation: str | None = None,
         explanation_parse_mode: str | Default | None = Default("parse_mode"),
         explanation_entities: list[MessageEntity] | None = None,
         open_period: int | None = None,
         close_date: DateTimeUnion | None = None,
         is_closed: bool | None = None,
+        description: str | None = None,
+        description_parse_mode: str | Default | None = Default("parse_mode"),
+        description_entities: list[MessageEntity] | None = None,
         disable_notification: bool | None = None,
         protect_content: bool | Default | None = Default("protect_content"),
         allow_paid_broadcast: bool | None = None,
@@ -3040,13 +3092,20 @@ class Bot:
         :param is_anonymous: :code:`True`, if the poll needs to be anonymous, defaults to :code:`True`
         :param type: Poll type, 'quiz' or 'regular', defaults to 'regular'
         :param allows_multiple_answers: :code:`True`, if the poll allows multiple answers, ignored for polls in quiz mode, defaults to :code:`False`
-        :param correct_option_id: 0-based identifier of the correct answer option, required for polls in quiz mode
+        :param allows_revoting: Pass :code:`True`, if the poll allows to change chosen answer options
+        :param shuffle_options: Pass :code:`True`, if the poll options must be shown in random order
+        :param allow_adding_options: Pass :code:`True`, if answer options can be added to the poll after creation
+        :param hide_results_until_closes: Pass :code:`True`, if poll results must be shown only after the poll closes
+        :param correct_option_ids: A JSON-serialized list of 0-based identifiers of the correct answer options, required for polls in quiz mode
         :param explanation: Text that is shown when a user chooses an incorrect answer or taps on the lamp icon in a quiz-style poll, 0-200 characters with at most 2 line feeds after entities parsing
         :param explanation_parse_mode: Mode for parsing entities in the explanation. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.
         :param explanation_entities: A JSON-serialized list of special entities that appear in the poll explanation. It can be specified instead of *explanation_parse_mode*
-        :param open_period: Amount of time in seconds the poll will be active after creation, 5-600. Can't be used together with *close_date*.
-        :param close_date: Point in time (Unix timestamp) when the poll will be automatically closed. Must be at least 5 and no more than 600 seconds in the future. Can't be used together with *open_period*.
+        :param open_period: Amount of time in seconds the poll will be active after creation, 5-2628000. Can't be used together with *close_date*.
+        :param close_date: Point in time (Unix timestamp) when the poll will be automatically closed. Must be at least 5 and no more than 2628000 seconds in the future. Can't be used together with *open_period*.
         :param is_closed: Pass :code:`True` if the poll needs to be immediately closed. This can be useful for poll preview.
+        :param description: Description of the poll to be sent, 0-1024 characters after entities parsing
+        :param description_parse_mode: Mode for parsing entities in the poll description.
+        :param description_entities: A JSON-serialized list of special entities that appear in the poll description
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param allow_paid_broadcast: Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
@@ -3070,13 +3129,20 @@ class Bot:
             is_anonymous=is_anonymous,
             type=type,
             allows_multiple_answers=allows_multiple_answers,
-            correct_option_id=correct_option_id,
+            allows_revoting=allows_revoting,
+            shuffle_options=shuffle_options,
+            allow_adding_options=allow_adding_options,
+            hide_results_until_closes=hide_results_until_closes,
+            correct_option_ids=correct_option_ids,
             explanation=explanation,
             explanation_parse_mode=explanation_parse_mode,
             explanation_entities=explanation_entities,
             open_period=open_period,
             close_date=close_date,
             is_closed=is_closed,
+            description=description,
+            description_parse_mode=description_parse_mode,
+            description_entities=description_entities,
             disable_notification=disable_notification,
             protect_content=protect_content,
             allow_paid_broadcast=allow_paid_broadcast,
@@ -4880,6 +4946,29 @@ class Bot:
             allow_bot_chats=allow_bot_chats,
             allow_group_chats=allow_group_chats,
             allow_channel_chats=allow_channel_chats,
+        )
+        return await self(call, request_timeout=request_timeout)
+
+    async def save_prepared_keyboard_button(
+        self,
+        user_id: int,
+        button: KeyboardButton,
+        request_timeout: int | None = None,
+    ) -> PreparedKeyboardButton:
+        """
+        Stores a keyboard button that can be used by a user within a Mini App. Returns a :class:`aiogram.types.prepared_keyboard_button.PreparedKeyboardButton` object.
+
+        Source: https://core.telegram.org/bots/api#savepreparedkeyboardbutton
+
+        :param user_id: Unique identifier of the target user that can use the button
+        :param button: A JSON-serialized object describing the button to be saved. The button must be of the type *request_users*, *request_chat*, or *request_managed_bot*
+        :param request_timeout: Request timeout
+        :return: Returns a :class:`aiogram.types.prepared_keyboard_button.PreparedKeyboardButton` object.
+        """
+
+        call = SavePreparedKeyboardButton(
+            user_id=user_id,
+            button=button,
         )
         return await self(call, request_timeout=request_timeout)
 

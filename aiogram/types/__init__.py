@@ -171,6 +171,7 @@ from .invoice import Invoice
 from .keyboard_button import KeyboardButton
 from .keyboard_button_poll_type import KeyboardButtonPollType
 from .keyboard_button_request_chat import KeyboardButtonRequestChat
+from .keyboard_button_request_managed_bot import KeyboardButtonRequestManagedBot
 from .keyboard_button_request_user import KeyboardButtonRequestUser
 from .keyboard_button_request_users import KeyboardButtonRequestUsers
 from .labeled_price import LabeledPrice
@@ -178,6 +179,8 @@ from .link_preview_options import LinkPreviewOptions
 from .location import Location
 from .location_address import LocationAddress
 from .login_url import LoginUrl
+from .managed_bot_created import ManagedBotCreated
+from .managed_bot_updated import ManagedBotUpdated
 from .mask_position import MaskPosition
 from .maybe_inaccessible_message import MaybeInaccessibleMessage
 from .maybe_inaccessible_message_union import MaybeInaccessibleMessageUnion
@@ -232,8 +235,11 @@ from .photo_size import PhotoSize
 from .poll import Poll
 from .poll_answer import PollAnswer
 from .poll_option import PollOption
+from .poll_option_added import PollOptionAdded
+from .poll_option_deleted import PollOptionDeleted
 from .pre_checkout_query import PreCheckoutQuery
 from .prepared_inline_message import PreparedInlineMessage
+from .prepared_keyboard_button import PreparedKeyboardButton
 from .proximity_alert_triggered import ProximityAlertTriggered
 from .reaction_count import ReactionCount
 from .reaction_type import ReactionType
@@ -495,6 +501,7 @@ __all__ = (
     "KeyboardButton",
     "KeyboardButtonPollType",
     "KeyboardButtonRequestChat",
+    "KeyboardButtonRequestManagedBot",
     "KeyboardButtonRequestUser",
     "KeyboardButtonRequestUsers",
     "LabeledPrice",
@@ -502,6 +509,8 @@ __all__ = (
     "Location",
     "LocationAddress",
     "LoginUrl",
+    "ManagedBotCreated",
+    "ManagedBotUpdated",
     "MaskPosition",
     "MaybeInaccessibleMessage",
     "MaybeInaccessibleMessageUnion",
@@ -554,8 +563,11 @@ __all__ = (
     "Poll",
     "PollAnswer",
     "PollOption",
+    "PollOptionAdded",
+    "PollOptionDeleted",
     "PreCheckoutQuery",
     "PreparedInlineMessage",
+    "PreparedKeyboardButton",
     "ProximityAlertTriggered",
     "ReactionCount",
     "ReactionType",

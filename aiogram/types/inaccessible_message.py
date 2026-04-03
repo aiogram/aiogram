@@ -1746,7 +1746,7 @@ class InaccessibleMessage(MaybeInaccessibleMessage):
         is_anonymous: bool | None = None,
         type: str | None = None,
         allows_multiple_answers: bool | None = None,
-        correct_option_id: int | None = None,
+        correct_option_ids: list[int] | None = None,
         explanation: str | None = None,
         explanation_parse_mode: str | Default | None = Default("parse_mode"),
         explanation_entities: list[MessageEntity] | None = None,
@@ -1782,7 +1782,7 @@ class InaccessibleMessage(MaybeInaccessibleMessage):
         :param is_anonymous: :code:`True`, if the poll needs to be anonymous, defaults to :code:`True`
         :param type: Poll type, 'quiz' or 'regular', defaults to 'regular'
         :param allows_multiple_answers: :code:`True`, if the poll allows multiple answers, ignored for polls in quiz mode, defaults to :code:`False`
-        :param correct_option_id: 0-based identifier of the correct answer option, required for polls in quiz mode
+        :param correct_option_ids: A JSON-serialized list of 0-based identifiers of the correct answer options, required for polls in quiz mode
         :param explanation: Text that is shown when a user chooses an incorrect answer or taps on the lamp icon in a quiz-style poll, 0-200 characters with at most 2 line feeds after entities parsing
         :param explanation_parse_mode: Mode for parsing entities in the explanation. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.
         :param explanation_entities: A JSON-serialized list of special entities that appear in the poll explanation. It can be specified instead of *explanation_parse_mode*
@@ -1819,7 +1819,7 @@ class InaccessibleMessage(MaybeInaccessibleMessage):
             is_anonymous=is_anonymous,
             type=type,
             allows_multiple_answers=allows_multiple_answers,
-            correct_option_id=correct_option_id,
+            correct_option_ids=correct_option_ids,
             explanation=explanation,
             explanation_parse_mode=explanation_parse_mode,
             explanation_entities=explanation_entities,
@@ -1848,7 +1848,7 @@ class InaccessibleMessage(MaybeInaccessibleMessage):
         is_anonymous: bool | None = None,
         type: str | None = None,
         allows_multiple_answers: bool | None = None,
-        correct_option_id: int | None = None,
+        correct_option_ids: list[int] | None = None,
         explanation: str | None = None,
         explanation_parse_mode: str | Default | None = Default("parse_mode"),
         explanation_entities: list[MessageEntity] | None = None,
@@ -1883,7 +1883,7 @@ class InaccessibleMessage(MaybeInaccessibleMessage):
         :param is_anonymous: :code:`True`, if the poll needs to be anonymous, defaults to :code:`True`
         :param type: Poll type, 'quiz' or 'regular', defaults to 'regular'
         :param allows_multiple_answers: :code:`True`, if the poll allows multiple answers, ignored for polls in quiz mode, defaults to :code:`False`
-        :param correct_option_id: 0-based identifier of the correct answer option, required for polls in quiz mode
+        :param correct_option_ids: A JSON-serialized list of 0-based identifiers of the correct answer options, required for polls in quiz mode
         :param explanation: Text that is shown when a user chooses an incorrect answer or taps on the lamp icon in a quiz-style poll, 0-200 characters with at most 2 line feeds after entities parsing
         :param explanation_parse_mode: Mode for parsing entities in the explanation. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.
         :param explanation_entities: A JSON-serialized list of special entities that appear in the poll explanation. It can be specified instead of *explanation_parse_mode*
@@ -1919,7 +1919,7 @@ class InaccessibleMessage(MaybeInaccessibleMessage):
             is_anonymous=is_anonymous,
             type=type,
             allows_multiple_answers=allows_multiple_answers,
-            correct_option_id=correct_option_id,
+            correct_option_ids=correct_option_ids,
             explanation=explanation,
             explanation_parse_mode=explanation_parse_mode,
             explanation_entities=explanation_entities,

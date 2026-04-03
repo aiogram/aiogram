@@ -90,6 +90,7 @@ if TYPE_CHECKING:
     from .labeled_price import LabeledPrice
     from .link_preview_options import LinkPreviewOptions
     from .location import Location
+    from .managed_bot_created import ManagedBotCreated
     from .maybe_inaccessible_message_union import MaybeInaccessibleMessageUnion
     from .media_union import MediaUnion
     from .message_auto_delete_timer_changed import MessageAutoDeleteTimerChanged
@@ -100,6 +101,8 @@ if TYPE_CHECKING:
     from .passport_data import PassportData
     from .photo_size import PhotoSize
     from .poll import Poll
+    from .poll_option_added import PollOptionAdded
+    from .poll_option_deleted import PollOptionDeleted
     from .proximity_alert_triggered import ProximityAlertTriggered
     from .reaction_type_union import ReactionTypeUnion
     from .refunded_payment import RefundedPayment
@@ -177,6 +180,8 @@ class Message(MaybeInaccessibleMessage):
     """*Optional*. For replies to a story, the original story"""
     reply_to_checklist_task_id: int | None = None
     """*Optional*. Identifier of the specific checklist task that is being replied to"""
+    reply_to_poll_option_id: str | None = None
+    """*Optional*. Persistent identifier of the specific poll option that is being replied to"""
     via_bot: User | None = None
     """*Optional*. Bot through which the message was sent"""
     edit_date: int | None = None
@@ -327,8 +332,14 @@ class Message(MaybeInaccessibleMessage):
     """*Optional*. A giveaway with public winners was completed"""
     giveaway_completed: GiveawayCompleted | None = None
     """*Optional*. Service message: a giveaway without public winners was completed"""
+    managed_bot_created: ManagedBotCreated | None = None
+    """*Optional*. Service message: a bot was created to be managed by the current bot"""
     paid_message_price_changed: PaidMessagePriceChanged | None = None
     """*Optional*. Service message: the price for paid messages has changed in the chat"""
+    poll_option_added: PollOptionAdded | None = None
+    """*Optional*. Service message: an option was added to a poll"""
+    poll_option_deleted: PollOptionDeleted | None = None
+    """*Optional*. Service message: an option was removed from a poll"""
     suggested_post_approved: SuggestedPostApproved | None = None
     """*Optional*. Service message: a suggested post was approved"""
     suggested_post_approval_failed: SuggestedPostApprovalFailed | None = None
@@ -413,6 +424,7 @@ class Message(MaybeInaccessibleMessage):
             quote: TextQuote | None = None,
             reply_to_story: Story | None = None,
             reply_to_checklist_task_id: int | None = None,
+            reply_to_poll_option_id: str | None = None,
             via_bot: User | None = None,
             edit_date: int | None = None,
             has_protected_content: bool | None = None,
@@ -488,7 +500,10 @@ class Message(MaybeInaccessibleMessage):
             giveaway: Giveaway | None = None,
             giveaway_winners: GiveawayWinners | None = None,
             giveaway_completed: GiveawayCompleted | None = None,
+            managed_bot_created: ManagedBotCreated | None = None,
             paid_message_price_changed: PaidMessagePriceChanged | None = None,
+            poll_option_added: PollOptionAdded | None = None,
+            poll_option_deleted: PollOptionDeleted | None = None,
             suggested_post_approved: SuggestedPostApproved | None = None,
             suggested_post_approval_failed: SuggestedPostApprovalFailed | None = None,
             suggested_post_declined: SuggestedPostDeclined | None = None,
@@ -533,6 +548,7 @@ class Message(MaybeInaccessibleMessage):
                 quote=quote,
                 reply_to_story=reply_to_story,
                 reply_to_checklist_task_id=reply_to_checklist_task_id,
+                reply_to_poll_option_id=reply_to_poll_option_id,
                 via_bot=via_bot,
                 edit_date=edit_date,
                 has_protected_content=has_protected_content,
@@ -608,7 +624,10 @@ class Message(MaybeInaccessibleMessage):
                 giveaway=giveaway,
                 giveaway_winners=giveaway_winners,
                 giveaway_completed=giveaway_completed,
+                managed_bot_created=managed_bot_created,
                 paid_message_price_changed=paid_message_price_changed,
+                poll_option_added=poll_option_added,
+                poll_option_deleted=poll_option_deleted,
                 suggested_post_approved=suggested_post_approved,
                 suggested_post_approval_failed=suggested_post_approval_failed,
                 suggested_post_declined=suggested_post_declined,
@@ -764,6 +783,12 @@ class Message(MaybeInaccessibleMessage):
             return ContentType.GIFT_UPGRADE_SENT
         if self.paid_message_price_changed:
             return ContentType.PAID_MESSAGE_PRICE_CHANGED
+        if self.managed_bot_created:
+            return ContentType.MANAGED_BOT_CREATED
+        if self.poll_option_added:
+            return ContentType.POLL_OPTION_ADDED
+        if self.poll_option_deleted:
+            return ContentType.POLL_OPTION_DELETED
         if self.suggested_post_approved:
             return ContentType.SUGGESTED_POST_APPROVED
         if self.suggested_post_approval_failed:
@@ -2444,7 +2469,7 @@ class Message(MaybeInaccessibleMessage):
         is_anonymous: bool | None = None,
         type: str | None = None,
         allows_multiple_answers: bool | None = None,
-        correct_option_id: int | None = None,
+        correct_option_ids: list[int] | None = None,
         explanation: str | None = None,
         explanation_parse_mode: str | Default | None = Default("parse_mode"),
         explanation_entities: list[MessageEntity] | None = None,
@@ -2479,7 +2504,7 @@ class Message(MaybeInaccessibleMessage):
         :param is_anonymous: :code:`True`, if the poll needs to be anonymous, defaults to :code:`True`
         :param type: Poll type, 'quiz' or 'regular', defaults to 'regular'
         :param allows_multiple_answers: :code:`True`, if the poll allows multiple answers, ignored for polls in quiz mode, defaults to :code:`False`
-        :param correct_option_id: 0-based identifier of the correct answer option, required for polls in quiz mode
+        :param correct_option_ids: A JSON-serialized list of 0-based identifiers of the correct answer options, required for polls in quiz mode
         :param explanation: Text that is shown when a user chooses an incorrect answer or taps on the lamp icon in a quiz-style poll, 0-200 characters with at most 2 line feeds after entities parsing
         :param explanation_parse_mode: Mode for parsing entities in the explanation. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.
         :param explanation_entities: A JSON-serialized list of special entities that appear in the poll explanation. It can be specified instead of *explanation_parse_mode*
@@ -2515,7 +2540,7 @@ class Message(MaybeInaccessibleMessage):
             is_anonymous=is_anonymous,
             type=type,
             allows_multiple_answers=allows_multiple_answers,
-            correct_option_id=correct_option_id,
+            correct_option_ids=correct_option_ids,
             explanation=explanation,
             explanation_parse_mode=explanation_parse_mode,
             explanation_entities=explanation_entities,
@@ -2540,7 +2565,7 @@ class Message(MaybeInaccessibleMessage):
         is_anonymous: bool | None = None,
         type: str | None = None,
         allows_multiple_answers: bool | None = None,
-        correct_option_id: int | None = None,
+        correct_option_ids: list[int] | None = None,
         explanation: str | None = None,
         explanation_parse_mode: str | Default | None = Default("parse_mode"),
         explanation_entities: list[MessageEntity] | None = None,
@@ -2576,7 +2601,7 @@ class Message(MaybeInaccessibleMessage):
         :param is_anonymous: :code:`True`, if the poll needs to be anonymous, defaults to :code:`True`
         :param type: Poll type, 'quiz' or 'regular', defaults to 'regular'
         :param allows_multiple_answers: :code:`True`, if the poll allows multiple answers, ignored for polls in quiz mode, defaults to :code:`False`
-        :param correct_option_id: 0-based identifier of the correct answer option, required for polls in quiz mode
+        :param correct_option_ids: A JSON-serialized list of 0-based identifiers of the correct answer options, required for polls in quiz mode
         :param explanation: Text that is shown when a user chooses an incorrect answer or taps on the lamp icon in a quiz-style poll, 0-200 characters with at most 2 line feeds after entities parsing
         :param explanation_parse_mode: Mode for parsing entities in the explanation. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.
         :param explanation_entities: A JSON-serialized list of special entities that appear in the poll explanation. It can be specified instead of *explanation_parse_mode*
@@ -2613,7 +2638,7 @@ class Message(MaybeInaccessibleMessage):
             is_anonymous=is_anonymous,
             type=type,
             allows_multiple_answers=allows_multiple_answers,
-            correct_option_id=correct_option_id,
+            correct_option_ids=correct_option_ids,
             explanation=explanation,
             explanation_parse_mode=explanation_parse_mode,
             explanation_entities=explanation_entities,

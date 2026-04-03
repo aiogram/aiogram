@@ -1,0 +1,23 @@
+Updated to `Bot API 9.6 <https://core.telegram.org/bots/api-changelog#april-3-2026>`_
+
+**Managed Bots:**
+
+- Added :class:`aiogram.types.managed_bot_updated.ManagedBotUpdated` and :class:`aiogram.types.managed_bot_created.ManagedBotCreated` types
+- Added :class:`aiogram.types.keyboard_button_request_managed_bot.KeyboardButtonRequestManagedBot` type and :code:`request_managed_bot` field to :class:`aiogram.types.keyboard_button.KeyboardButton`
+- Added :class:`aiogram.types.prepared_keyboard_button.PreparedKeyboardButton` type
+- Added :class:`aiogram.methods.get_managed_bot_token.GetManagedBotToken`, :class:`aiogram.methods.replace_managed_bot_token.ReplaceManagedBotToken`, and :class:`aiogram.methods.save_prepared_keyboard_button.SavePreparedKeyboardButton` methods
+- Added :code:`managed_bot` field to :class:`aiogram.types.update.Update`
+- Added :code:`managed_bot_created` field to :class:`aiogram.types.message.Message`
+- Added :code:`can_manage_bots` field to :class:`aiogram.types.user.User`
+
+**Polls:**
+
+- Replaced :code:`correct_option_id` with :code:`correct_option_ids` in :class:`aiogram.types.poll.Poll` and :class:`aiogram.methods.send_poll.SendPoll` — quizzes now support multiple correct answers
+- Added :code:`allows_revoting`, :code:`description`, :code:`description_entities` fields to :class:`aiogram.types.poll.Poll`
+- Added :code:`persistent_id`, :code:`added_by_user`, :code:`added_by_chat`, :code:`addition_date` fields to :class:`aiogram.types.poll_option.PollOption`
+- Added :code:`option_persistent_ids` field to :class:`aiogram.types.poll_answer.PollAnswer`
+- Added :code:`allows_revoting`, :code:`shuffle_options`, :code:`allow_adding_options`, :code:`hide_results_until_closes`, :code:`description`, :code:`description_parse_mode`, :code:`description_entities` parameters to :class:`aiogram.methods.send_poll.SendPoll`
+- Added :class:`aiogram.types.poll_option_added.PollOptionAdded` and :class:`aiogram.types.poll_option_deleted.PollOptionDeleted` types
+- Added :code:`poll_option_added`, :code:`poll_option_deleted`, :code:`reply_to_poll_option_id` fields to :class:`aiogram.types.message.Message`
+- Added :code:`poll_option_id` field to :class:`aiogram.types.reply_parameters.ReplyParameters`
+- Maximum poll duration increased to 2,628,000 seconds (~30.4 days)
