@@ -211,6 +211,8 @@ class Update(TelegramObject):
             return "business_message"
         if self.purchased_paid_media:
             return "purchased_paid_media"
+        if self.managed_bot:
+            return "managed_bot"
 
         raise UpdateTypeLookupError("Update does not contain any known event type.")
 

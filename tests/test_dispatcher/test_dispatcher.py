@@ -30,6 +30,7 @@ from aiogram.types import (
     ChatMemberUpdated,
     ChosenInlineResult,
     InlineQuery,
+    ManagedBotUpdated,
     Message,
     MessageReactionCountUpdated,
     MessageReactionUpdated,
@@ -597,6 +598,18 @@ class TestDispatcher:
                     purchased_paid_media=PaidMediaPurchased(
                         paid_media_payload="payload",
                         from_user=User(id=42, is_bot=False, first_name="Test"),
+                    ),
+                ),
+                False,
+                True,
+            ),
+            pytest.param(
+                "managed_bot",
+                Update(
+                    update_id=42,
+                    managed_bot=ManagedBotUpdated(
+                        user=User(id=42, is_bot=False, first_name="Test"),
+                        bot_user=User(id=100, is_bot=True, first_name="ManagedBot"),
                     ),
                 ),
                 False,
