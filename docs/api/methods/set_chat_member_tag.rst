@@ -43,3 +43,9 @@ As reply into Webhook in handler
 .. code-block:: python
 
     return SetChatMemberTag(...)
+
+
+As shortcut from received object
+--------------------------------
+
+- :meth:`aiogram.types.chat.Chat.set_member_tag`

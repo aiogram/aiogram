@@ -13,6 +13,14 @@
     "annotations": [
       {
         "type": "String",
+        "description": "Unique identifier of the option, persistent on option addition and deletion",
+        "html_description": "<td>Unique identifier of the option, persistent on option addition and deletion</td>",
+        "rst_description": "Unique identifier of the option, persistent on option addition and deletion\n",
+        "name": "persistent_id",
+        "required": true
+      },
+      {
+        "type": "String",
         "description": "Option text, 1-100 characters",
         "html_description": "<td>Option text, 1-100 characters</td>",
         "rst_description": "Option text, 1-100 characters\n",
@@ -29,11 +37,35 @@
       },
       {
         "type": "Integer",
-        "description": "Number of users that voted for this option",
-        "html_description": "<td>Number of users that voted for this option</td>",
-        "rst_description": "Number of users that voted for this option\n",
+        "description": "Number of users who voted for this option; may be 0 if unknown",
+        "html_description": "<td>Number of users who voted for this option; may be 0 if unknown</td>",
+        "rst_description": "Number of users who voted for this option; may be 0 if unknown\n",
         "name": "voter_count",
         "required": true
+      },
+      {
+        "type": "User",
+        "description": "User who added the option; omitted if the option wasn't added by a user after poll creation",
+        "html_description": "<td><em>Optional</em>. User who added the option; omitted if the option wasn't added by a user after poll creation</td>",
+        "rst_description": "*Optional*. User who added the option; omitted if the option wasn't added by a user after poll creation\n",
+        "name": "added_by_user",
+        "required": false
+      },
+      {
+        "type": "Chat",
+        "description": "Chat that added the option; omitted if the option wasn't added by a chat after poll creation",
+        "html_description": "<td><em>Optional</em>. Chat that added the option; omitted if the option wasn't added by a chat after poll creation</td>",
+        "rst_description": "*Optional*. Chat that added the option; omitted if the option wasn't added by a chat after poll creation\n",
+        "name": "added_by_chat",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "Point in time (Unix timestamp) when the option was added; omitted if the option existed in the original poll",
+        "html_description": "<td><em>Optional</em>. Point in time (Unix timestamp) when the option was added; omitted if the option existed in the original poll</td>",
+        "rst_description": "*Optional*. Point in time (Unix timestamp) when the option was added; omitted if the option existed in the original poll\n",
+        "name": "addition_date",
+        "required": false
       }
     ],
     "category": "types"

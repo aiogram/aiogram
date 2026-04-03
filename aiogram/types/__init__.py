@@ -495,6 +495,7 @@ __all__ = (
     "KeyboardButton",
     "KeyboardButtonPollType",
     "KeyboardButtonRequestChat",
+    "KeyboardButtonRequestManagedBot",
     "KeyboardButtonRequestUser",
     "KeyboardButtonRequestUsers",
     "LabeledPrice",
@@ -502,6 +503,8 @@ __all__ = (
     "Location",
     "LocationAddress",
     "LoginUrl",
+    "ManagedBotCreated",
+    "ManagedBotUpdated",
     "MaskPosition",
     "MaybeInaccessibleMessage",
     "MaybeInaccessibleMessageUnion",
@@ -554,8 +557,11 @@ __all__ = (
     "Poll",
     "PollAnswer",
     "PollOption",
+    "PollOptionAdded",
+    "PollOptionDeleted",
     "PreCheckoutQuery",
     "PreparedInlineMessage",
+    "PreparedKeyboardButton",
     "ProximityAlertTriggered",
     "ReactionCount",
     "ReactionType",
@@ -652,6 +658,12 @@ __all__ = (
 from ..client.default import Default as _Default
 from .chat_owner_changed import ChatOwnerChanged
 from .chat_owner_left import ChatOwnerLeft
+from .keyboard_button_request_managed_bot import KeyboardButtonRequestManagedBot
+from .managed_bot_created import ManagedBotCreated
+from .managed_bot_updated import ManagedBotUpdated
+from .poll_option_added import PollOptionAdded
+from .poll_option_deleted import PollOptionDeleted
+from .prepared_keyboard_button import PreparedKeyboardButton
 from .user_profile_audios import UserProfileAudios
 from .video_quality import VideoQuality
 

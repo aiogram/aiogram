@@ -1,0 +1,33 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available methods",
+    "anchor": "available-methods"
+  },
+  "object": {
+    "anchor": "savepreparedkeyboardbutton",
+    "name": "savePreparedKeyboardButton",
+    "description": "Stores a keyboard button that can be used by a user within a Mini App. Returns a PreparedKeyboardButton object.",
+    "html_description": "<p>Stores a keyboard button that can be used by a user within a Mini App. Returns a <a href=\"#preparedkeyboardbutton\">PreparedKeyboardButton</a> object.</p>",
+    "rst_description": "Stores a keyboard button that can be used by a user within a Mini App. Returns a :class:`aiogram.types.prepared_keyboard_button.PreparedKeyboardButton` object.",
+    "annotations": [
+      {
+        "type": "Integer",
+        "required": true,
+        "description": "Unique identifier of the target user that can use the button",
+        "html_description": "<td>Unique identifier of the target user that can use the button</td>",
+        "rst_description": "Unique identifier of the target user that can use the button\n",
+        "name": "user_id"
+      },
+      {
+        "type": "KeyboardButton",
+        "required": true,
+        "description": "A JSON-serialized object describing the button to be saved. The button must be of the type request_users, request_chat, or request_managed_bot",
+        "html_description": "<td>A JSON-serialized object describing the button to be saved. The button must be of the type <em>request_users</em>, <em>request_chat</em>, or <em>request_managed_bot</em></td>",
+        "rst_description": "A JSON-serialized object describing the button to be saved. The button must be of the type *request_users*, *request_chat*, or *request_managed_bot*\n",
+        "name": "button"
+      }
+    ],
+    "category": "methods"
+  }
+}

@@ -1,7 +1,7 @@
 {
   "api": {
-    "version": "9.5",
-    "release_date": "2026-03-01"
+    "version": "9.6",
+    "release_date": "2026-04-03"
   },
   "items": [
     {
@@ -205,6 +205,14 @@
               "html_description": "<td><em>Optional</em>. A boost was removed from a chat. The bot must be an administrator in the chat to receive these updates.</td>",
               "rst_description": "*Optional*. A boost was removed from a chat. The bot must be an administrator in the chat to receive these updates.\n",
               "name": "removed_chat_boost",
+              "required": false
+            },
+            {
+              "type": "ManagedBotUpdated",
+              "description": "A new bot was created to be managed by the bot or token of a bot was changed",
+              "html_description": "<td><em>Optional</em>. A new bot was created to be managed by the bot or token of a bot was changed</td>",
+              "rst_description": "*Optional*. A new bot was created to be managed by the bot or token of a bot was changed\n",
+              "name": "managed_bot",
               "required": false
             }
           ],
@@ -559,6 +567,14 @@
               "html_description": "<td><em>Optional</em>. <em>True</em>, if the bot allows users to create and delete topics in private chats. Returned only in <a href=\"#getme\">getMe</a>.</td>",
               "rst_description": "*Optional*. :code:`True`, if the bot allows users to create and delete topics in private chats. Returned only in :class:`aiogram.methods.get_me.GetMe`.\n",
               "name": "allows_users_to_create_topics",
+              "required": false
+            },
+            {
+              "type": "Boolean",
+              "description": "True, if other bots can be created to be controlled by the bot. Returned only in getMe.",
+              "html_description": "<td><em>Optional</em>. <em>True</em>, if other bots can be created to be controlled by the bot. Returned only in <a href=\"#getme\">getMe</a>.</td>",
+              "rst_description": "*Optional*. :code:`True`, if other bots can be created to be controlled by the bot. Returned only in :class:`aiogram.methods.get_me.GetMe`.\n",
+              "name": "can_manage_bots",
               "required": false
             }
           ],
@@ -1216,6 +1232,14 @@
               "required": false
             },
             {
+              "type": "String",
+              "description": "Persistent identifier of the specific poll option that is being replied to",
+              "html_description": "<td><em>Optional</em>. Persistent identifier of the specific poll option that is being replied to</td>",
+              "rst_description": "*Optional*. Persistent identifier of the specific poll option that is being replied to\n",
+              "name": "reply_to_poll_option_id",
+              "required": false
+            },
+            {
               "type": "User",
               "description": "Bot through which the message was sent",
               "html_description": "<td><em>Optional</em>. Bot through which the message was sent</td>",
@@ -1816,11 +1840,35 @@
               "required": false
             },
             {
+              "type": "ManagedBotCreated",
+              "description": "Service message: user created a bot that will be managed by the current bot",
+              "html_description": "<td><em>Optional</em>. Service message: user created a bot that will be managed by the current bot</td>",
+              "rst_description": "*Optional*. Service message: user created a bot that will be managed by the current bot\n",
+              "name": "managed_bot_created",
+              "required": false
+            },
+            {
               "type": "PaidMessagePriceChanged",
               "description": "Service message: the price for paid messages has changed in the chat",
               "html_description": "<td><em>Optional</em>. Service message: the price for paid messages has changed in the chat</td>",
               "rst_description": "*Optional*. Service message: the price for paid messages has changed in the chat\n",
               "name": "paid_message_price_changed",
+              "required": false
+            },
+            {
+              "type": "PollOptionAdded",
+              "description": "Service message: answer option was added to a poll",
+              "html_description": "<td><em>Optional</em>. Service message: answer option was added to a poll</td>",
+              "rst_description": "*Optional*. Service message: answer option was added to a poll\n",
+              "name": "poll_option_added",
+              "required": false
+            },
+            {
+              "type": "PollOptionDeleted",
+              "description": "Service message: answer option was deleted from a poll",
+              "html_description": "<td><em>Optional</em>. Service message: answer option was deleted from a poll</td>",
+              "rst_description": "*Optional*. Service message: answer option was deleted from a poll\n",
+              "name": "poll_option_deleted",
               "required": false
             },
             {
@@ -2074,9 +2122,9 @@
             },
             {
               "type": "Array of MessageEntity",
-              "description": "Special entities that appear in the quote. Currently, only bold, italic, underline, strikethrough, spoiler, and custom_emoji entities are kept in quotes.",
-              "html_description": "<td><em>Optional</em>. Special entities that appear in the quote. Currently, only <em>bold</em>, <em>italic</em>, <em>underline</em>, <em>strikethrough</em>, <em>spoiler</em>, and <em>custom_emoji</em> entities are kept in quotes.</td>",
-              "rst_description": "*Optional*. Special entities that appear in the quote. Currently, only *bold*, *italic*, *underline*, *strikethrough*, *spoiler*, and *custom_emoji* entities are kept in quotes.\n",
+              "description": "Special entities that appear in the quote. Currently, only bold, italic, underline, strikethrough, spoiler, custom_emoji, and date_time entities are kept in quotes.",
+              "html_description": "<td><em>Optional</em>. Special entities that appear in the quote. Currently, only <em>bold</em>, <em>italic</em>, <em>underline</em>, <em>strikethrough</em>, <em>spoiler</em>, <em>custom_emoji</em>, and <em>date_time</em> entities are kept in quotes.</td>",
+              "rst_description": "*Optional*. Special entities that appear in the quote. Currently, only *bold*, *italic*, *underline*, *strikethrough*, *spoiler*, *custom_emoji*, and *date_time* entities are kept in quotes.\n",
               "name": "entities",
               "required": false
             },
@@ -2342,9 +2390,9 @@
             },
             {
               "type": "String",
-              "description": "Quoted part of the message to be replied to; 0-1024 characters after entities parsing. The quote must be an exact substring of the message to be replied to, including bold, italic, underline, strikethrough, spoiler, and custom_emoji entities. The message will fail to send if the quote isn't found in the original message.",
-              "html_description": "<td><em>Optional</em>. Quoted part of the message to be replied to; 0-1024 characters after entities parsing. The quote must be an exact substring of the message to be replied to, including <em>bold</em>, <em>italic</em>, <em>underline</em>, <em>strikethrough</em>, <em>spoiler</em>, and <em>custom_emoji</em> entities. The message will fail to send if the quote isn't found in the original message.</td>",
-              "rst_description": "*Optional*. Quoted part of the message to be replied to; 0-1024 characters after entities parsing. The quote must be an exact substring of the message to be replied to, including *bold*, *italic*, *underline*, *strikethrough*, *spoiler*, and *custom_emoji* entities. The message will fail to send if the quote isn't found in the original message.\n",
+              "description": "Quoted part of the message to be replied to; 0-1024 characters after entities parsing. The quote must be an exact substring of the message to be replied to, including bold, italic, underline, strikethrough, spoiler, custom_emoji, and date_time entities. The message will fail to send if the quote isn't found in the original message.",
+              "html_description": "<td><em>Optional</em>. Quoted part of the message to be replied to; 0-1024 characters after entities parsing. The quote must be an exact substring of the message to be replied to, including <em>bold</em>, <em>italic</em>, <em>underline</em>, <em>strikethrough</em>, <em>spoiler</em>, <em>custom_emoji</em>, and <em>date_time</em> entities. The message will fail to send if the quote isn't found in the original message.</td>",
+              "rst_description": "*Optional*. Quoted part of the message to be replied to; 0-1024 characters after entities parsing. The quote must be an exact substring of the message to be replied to, including *bold*, *italic*, *underline*, *strikethrough*, *spoiler*, *custom_emoji*, and *date_time* entities. The message will fail to send if the quote isn't found in the original message.\n",
               "name": "quote",
               "required": false
             },
@@ -2378,6 +2426,14 @@
               "html_description": "<td><em>Optional</em>. Identifier of the specific checklist task to be replied to</td>",
               "rst_description": "*Optional*. Identifier of the specific checklist task to be replied to\n",
               "name": "checklist_task_id",
+              "required": false
+            },
+            {
+              "type": "String",
+              "description": "Persistent identifier of the specific poll option to be replied to",
+              "html_description": "<td><em>Optional</em>. Persistent identifier of the specific poll option to be replied to</td>",
+              "rst_description": "*Optional*. Persistent identifier of the specific poll option to be replied to\n",
+              "name": "poll_option_id",
               "required": false
             }
           ],
@@ -3336,6 +3392,14 @@
           "annotations": [
             {
               "type": "String",
+              "description": "Unique identifier of the option, persistent on option addition and deletion",
+              "html_description": "<td>Unique identifier of the option, persistent on option addition and deletion</td>",
+              "rst_description": "Unique identifier of the option, persistent on option addition and deletion\n",
+              "name": "persistent_id",
+              "required": true
+            },
+            {
+              "type": "String",
               "description": "Option text, 1-100 characters",
               "html_description": "<td>Option text, 1-100 characters</td>",
               "rst_description": "Option text, 1-100 characters\n",
@@ -3352,11 +3416,35 @@
             },
             {
               "type": "Integer",
-              "description": "Number of users that voted for this option",
-              "html_description": "<td>Number of users that voted for this option</td>",
-              "rst_description": "Number of users that voted for this option\n",
+              "description": "Number of users who voted for this option; may be 0 if unknown",
+              "html_description": "<td>Number of users who voted for this option; may be 0 if unknown</td>",
+              "rst_description": "Number of users who voted for this option; may be 0 if unknown\n",
               "name": "voter_count",
               "required": true
+            },
+            {
+              "type": "User",
+              "description": "User who added the option; omitted if the option wasn't added by a user after poll creation",
+              "html_description": "<td><em>Optional</em>. User who added the option; omitted if the option wasn't added by a user after poll creation</td>",
+              "rst_description": "*Optional*. User who added the option; omitted if the option wasn't added by a user after poll creation\n",
+              "name": "added_by_user",
+              "required": false
+            },
+            {
+              "type": "Chat",
+              "description": "Chat that added the option; omitted if the option wasn't added by a chat after poll creation",
+              "html_description": "<td><em>Optional</em>. Chat that added the option; omitted if the option wasn't added by a chat after poll creation</td>",
+              "rst_description": "*Optional*. Chat that added the option; omitted if the option wasn't added by a chat after poll creation\n",
+              "name": "added_by_chat",
+              "required": false
+            },
+            {
+              "type": "Integer",
+              "description": "Point in time (Unix timestamp) when the option was added; omitted if the option existed in the original poll",
+              "html_description": "<td><em>Optional</em>. Point in time (Unix timestamp) when the option was added; omitted if the option existed in the original poll</td>",
+              "rst_description": "*Optional*. Point in time (Unix timestamp) when the option was added; omitted if the option existed in the original poll\n",
+              "name": "addition_date",
+              "required": false
             }
           ],
           "category": "types"
@@ -3432,6 +3520,14 @@
               "html_description": "<td>0-based identifiers of chosen answer options. May be empty if the vote was retracted.</td>",
               "rst_description": "0-based identifiers of chosen answer options. May be empty if the vote was retracted.\n",
               "name": "option_ids",
+              "required": true
+            },
+            {
+              "type": "Array of String",
+              "description": "Persistent identifiers of the chosen answer options. May be empty if the vote was retracted.",
+              "html_description": "<td>Persistent identifiers of the chosen answer options. May be empty if the vote was retracted.</td>",
+              "rst_description": "Persistent identifiers of the chosen answer options. May be empty if the vote was retracted.\n",
+              "name": "option_persistent_ids",
               "required": true
             }
           ],
@@ -3517,11 +3613,19 @@
               "required": true
             },
             {
-              "type": "Integer",
-              "description": "0-based identifier of the correct answer option. Available only for polls in the quiz mode, which are closed, or was sent (not forwarded) by the bot or to the private chat with the bot.",
-              "html_description": "<td><em>Optional</em>. 0-based identifier of the correct answer option. Available only for polls in the quiz mode, which are closed, or was sent (not forwarded) by the bot or to the private chat with the bot.</td>",
-              "rst_description": "*Optional*. 0-based identifier of the correct answer option. Available only for polls in the quiz mode, which are closed, or was sent (not forwarded) by the bot or to the private chat with the bot.\n",
-              "name": "correct_option_id",
+              "type": "Boolean",
+              "description": "True, if the poll allows to change the chosen answer options",
+              "html_description": "<td><em>True</em>, if the poll allows to change the chosen answer options</td>",
+              "rst_description": ":code:`True`, if the poll allows to change the chosen answer options\n",
+              "name": "allows_revoting",
+              "required": true
+            },
+            {
+              "type": "Array of Integer",
+              "description": "Array of 0-based identifiers of the correct answer options. Available only for polls in quiz mode which are closed or were sent (not forwarded) by the bot or to the private chat with the bot.",
+              "html_description": "<td><em>Optional</em>. Array of 0-based identifiers of the correct answer options. Available only for polls in quiz mode which are closed or were sent (not forwarded) by the bot or to the private chat with the bot.</td>",
+              "rst_description": "*Optional*. Array of 0-based identifiers of the correct answer options. Available only for polls in quiz mode which are closed or were sent (not forwarded) by the bot or to the private chat with the bot.\n",
+              "name": "correct_option_ids",
               "required": false
             },
             {
@@ -3554,6 +3658,22 @@
               "html_description": "<td><em>Optional</em>. Point in time (Unix timestamp) when the poll will be automatically closed</td>",
               "rst_description": "*Optional*. Point in time (Unix timestamp) when the poll will be automatically closed\n",
               "name": "close_date",
+              "required": false
+            },
+            {
+              "type": "String",
+              "description": "Description of the poll; for polls inside the Message object only",
+              "html_description": "<td><em>Optional</em>. Description of the poll; for polls inside the <a href=\"#message\">Message</a> object only</td>",
+              "rst_description": "*Optional*. Description of the poll; for polls inside the :class:`aiogram.types.message.Message` object only\n",
+              "name": "description",
+              "required": false
+            },
+            {
+              "type": "Array of MessageEntity",
+              "description": "Special entities like usernames, URLs, bot commands, etc. that appear in the description",
+              "html_description": "<td><em>Optional</em>. Special entities like usernames, URLs, bot commands, etc. that appear in the description</td>",
+              "rst_description": "*Optional*. Special entities like usernames, URLs, bot commands, etc. that appear in the description\n",
+              "name": "description_entities",
               "required": false
             }
           ],
@@ -3700,9 +3820,9 @@
             },
             {
               "type": "Array of MessageEntity",
-              "description": "List of special entities that appear in the text, which can be specified instead of parse_mode. Currently, only bold, italic, underline, strikethrough, spoiler, and custom_emoji entities are allowed.",
-              "html_description": "<td><em>Optional</em>. List of special entities that appear in the text, which can be specified instead of parse_mode. Currently, only <em>bold</em>, <em>italic</em>, <em>underline</em>, <em>strikethrough</em>, <em>spoiler</em>, and <em>custom_emoji</em> entities are allowed.</td>",
-              "rst_description": "*Optional*. List of special entities that appear in the text, which can be specified instead of parse_mode. Currently, only *bold*, *italic*, *underline*, *strikethrough*, *spoiler*, and *custom_emoji* entities are allowed.\n",
+              "description": "List of special entities that appear in the text, which can be specified instead of parse_mode. Currently, only bold, italic, underline, strikethrough, spoiler, custom_emoji, and date_time entities are allowed.",
+              "html_description": "<td><em>Optional</em>. List of special entities that appear in the text, which can be specified instead of parse_mode. Currently, only <em>bold</em>, <em>italic</em>, <em>underline</em>, <em>strikethrough</em>, <em>spoiler</em>, <em>custom_emoji</em>, and <em>date_time</em> entities are allowed.</td>",
+              "rst_description": "*Optional*. List of special entities that appear in the text, which can be specified instead of parse_mode. Currently, only *bold*, *italic*, *underline*, *strikethrough*, *spoiler*, *custom_emoji*, and *date_time* entities are allowed.\n",
               "name": "text_entities",
               "required": false
             }
@@ -3734,9 +3854,9 @@
             },
             {
               "type": "Array of MessageEntity",
-              "description": "List of special entities that appear in the title, which can be specified instead of parse_mode. Currently, only bold, italic, underline, strikethrough, spoiler, and custom_emoji entities are allowed.",
-              "html_description": "<td><em>Optional</em>. List of special entities that appear in the title, which can be specified instead of parse_mode. Currently, only <em>bold</em>, <em>italic</em>, <em>underline</em>, <em>strikethrough</em>, <em>spoiler</em>, and <em>custom_emoji</em> entities are allowed.</td>",
-              "rst_description": "*Optional*. List of special entities that appear in the title, which can be specified instead of parse_mode. Currently, only *bold*, *italic*, *underline*, *strikethrough*, *spoiler*, and *custom_emoji* entities are allowed.\n",
+              "description": "List of special entities that appear in the title, which can be specified instead of parse_mode. Currently, only bold, italic, underline, strikethrough, spoiler, custom_emoji, and date_time entities are allowed.",
+              "html_description": "<td><em>Optional</em>. List of special entities that appear in the title, which can be specified instead of parse_mode. Currently, only <em>bold</em>, <em>italic</em>, <em>underline</em>, <em>strikethrough</em>, <em>spoiler</em>, <em>custom_emoji</em>, and <em>date_time</em> entities are allowed.</td>",
+              "rst_description": "*Optional*. List of special entities that appear in the title, which can be specified instead of parse_mode. Currently, only *bold*, *italic*, *underline*, *strikethrough*, *spoiler*, *custom_emoji*, and *date_time* entities are allowed.\n",
               "name": "title_entities",
               "required": false
             },
@@ -4025,6 +4145,134 @@
               "rst_description": "New auto-delete time for messages in the chat; in seconds\n",
               "name": "message_auto_delete_time",
               "required": true
+            }
+          ],
+          "category": "types"
+        },
+        {
+          "anchor": "managedbotcreated",
+          "name": "ManagedBotCreated",
+          "description": "This object contains information about the bot that was created to be managed by the current bot.",
+          "html_description": "<p>This object contains information about the bot that was created to be managed by the current bot.</p>",
+          "rst_description": "This object contains information about the bot that was created to be managed by the current bot.",
+          "annotations": [
+            {
+              "type": "User",
+              "description": "Information about the bot. The bot's token can be fetched using the method getManagedBotToken.",
+              "html_description": "<td>Information about the bot. The bot's token can be fetched using the method <a href=\"#getmanagedbottoken\">getManagedBotToken</a>.</td>",
+              "rst_description": "Information about the bot. The bot's token can be fetched using the method :class:`aiogram.methods.get_managed_bot_token.GetManagedBotToken`.\n",
+              "name": "bot",
+              "required": true
+            }
+          ],
+          "category": "types"
+        },
+        {
+          "anchor": "managedbotupdated",
+          "name": "ManagedBotUpdated",
+          "description": "This object contains information about the creation or token update of a bot that is managed by the current bot.",
+          "html_description": "<p>This object contains information about the creation or token update of a bot that is managed by the current bot.</p>",
+          "rst_description": "This object contains information about the creation or token update of a bot that is managed by the current bot.",
+          "annotations": [
+            {
+              "type": "User",
+              "description": "User that created the bot",
+              "html_description": "<td>User that created the bot</td>",
+              "rst_description": "User that created the bot\n",
+              "name": "user",
+              "required": true
+            },
+            {
+              "type": "User",
+              "description": "Information about the bot. Token of the bot can be fetched using the method getManagedBotToken.",
+              "html_description": "<td>Information about the bot. Token of the bot can be fetched using the method <a href=\"#getmanagedbottoken\">getManagedBotToken</a>.</td>",
+              "rst_description": "Information about the bot. Token of the bot can be fetched using the method :class:`aiogram.methods.get_managed_bot_token.GetManagedBotToken`.\n",
+              "name": "bot",
+              "required": true
+            }
+          ],
+          "category": "types"
+        },
+        {
+          "anchor": "polloptionadded",
+          "name": "PollOptionAdded",
+          "description": "Describes a service message about an option added to a poll.",
+          "html_description": "<p>Describes a service message about an option added to a poll.</p>",
+          "rst_description": "Describes a service message about an option added to a poll.",
+          "annotations": [
+            {
+              "type": "MaybeInaccessibleMessage",
+              "description": "Message containing the poll to which the option was added, if known. Note that the Message object in this field will not contain the reply_to_message field even if it itself is a reply.",
+              "html_description": "<td><em>Optional</em>. Message containing the poll to which the option was added, if known. Note that the <a href=\"#message\">Message</a> object in this field will not contain the <em>reply_to_message</em> field even if it itself is a reply.</td>",
+              "rst_description": "*Optional*. Message containing the poll to which the option was added, if known. Note that the :class:`aiogram.types.message.Message` object in this field will not contain the *reply_to_message* field even if it itself is a reply.\n",
+              "name": "poll_message",
+              "required": false
+            },
+            {
+              "type": "String",
+              "description": "Unique identifier of the added option",
+              "html_description": "<td>Unique identifier of the added option</td>",
+              "rst_description": "Unique identifier of the added option\n",
+              "name": "option_persistent_id",
+              "required": true
+            },
+            {
+              "type": "String",
+              "description": "Option text",
+              "html_description": "<td>Option text</td>",
+              "rst_description": "Option text\n",
+              "name": "option_text",
+              "required": true
+            },
+            {
+              "type": "Array of MessageEntity",
+              "description": "Special entities that appear in the option_text",
+              "html_description": "<td><em>Optional</em>. Special entities that appear in the <em>option_text</em></td>",
+              "rst_description": "*Optional*. Special entities that appear in the *option_text*\n",
+              "name": "option_text_entities",
+              "required": false
+            }
+          ],
+          "category": "types"
+        },
+        {
+          "anchor": "polloptiondeleted",
+          "name": "PollOptionDeleted",
+          "description": "Describes a service message about an option deleted from a poll.",
+          "html_description": "<p>Describes a service message about an option deleted from a poll.</p>",
+          "rst_description": "Describes a service message about an option deleted from a poll.",
+          "annotations": [
+            {
+              "type": "MaybeInaccessibleMessage",
+              "description": "Message containing the poll from which the option was deleted, if known. Note that the Message object in this field will not contain the reply_to_message field even if it itself is a reply.",
+              "html_description": "<td><em>Optional</em>. Message containing the poll from which the option was deleted, if known. Note that the <a href=\"#message\">Message</a> object in this field will not contain the <em>reply_to_message</em> field even if it itself is a reply.</td>",
+              "rst_description": "*Optional*. Message containing the poll from which the option was deleted, if known. Note that the :class:`aiogram.types.message.Message` object in this field will not contain the *reply_to_message* field even if it itself is a reply.\n",
+              "name": "poll_message",
+              "required": false
+            },
+            {
+              "type": "String",
+              "description": "Unique identifier of the deleted option",
+              "html_description": "<td>Unique identifier of the deleted option</td>",
+              "rst_description": "Unique identifier of the deleted option\n",
+              "name": "option_persistent_id",
+              "required": true
+            },
+            {
+              "type": "String",
+              "description": "Option text",
+              "html_description": "<td>Option text</td>",
+              "rst_description": "Option text\n",
+              "name": "option_text",
+              "required": true
+            },
+            {
+              "type": "Array of MessageEntity",
+              "description": "Special entities that appear in the option_text",
+              "html_description": "<td><em>Optional</em>. Special entities that appear in the <em>option_text</em></td>",
+              "rst_description": "*Optional*. Special entities that appear in the *option_text*\n",
+              "name": "option_text_entities",
+              "required": false
             }
           ],
           "category": "types"
@@ -5498,6 +5746,14 @@
               "required": false
             },
             {
+              "type": "KeyboardButtonRequestManagedBot",
+              "description": "If specified, pressing the button will ask the user to create and share a bot that will be managed by the current bot. Available for bots that enabled management of other bots in the @BotFather Mini App. Available in private chats only.",
+              "html_description": "<td><em>Optional</em>. If specified, pressing the button will ask the user to create and share a bot that will be managed by the current bot. Available for bots that enabled management of other bots in the <a href=\"https://t.me/BotFather\">@BotFather</a> Mini App. Available in private chats only.</td>",
+              "rst_description": "*Optional*. If specified, pressing the button will ask the user to create and share a bot that will be managed by the current bot. Available for bots that enabled management of other bots in the `@BotFather <https://t.me/BotFather>`_ Mini App. Available in private chats only.\n",
+              "name": "request_managed_bot",
+              "required": false
+            },
+            {
               "type": "Boolean",
               "description": "If True, the user's phone number will be sent as a contact when the button is pressed. Available in private chats only.",
               "html_description": "<td><em>Optional</em>. If <em>True</em>, the user's phone number will be sent as a contact when the button is pressed. Available in private chats only.</td>",
@@ -5691,6 +5947,40 @@
               "html_description": "<td><em>Optional</em>. Pass <em>True</em> to request the chat's photo</td>",
               "rst_description": "*Optional*. Pass :code:`True` to request the chat's photo\n",
               "name": "request_photo",
+              "required": false
+            }
+          ],
+          "category": "types"
+        },
+        {
+          "anchor": "keyboardbuttonrequestmanagedbot",
+          "name": "KeyboardButtonRequestManagedBot",
+          "description": "This object defines the parameters for the creation of a managed bot. Information about the created bot will be shared with the bot using the update managed_bot and a Message with the field managed_bot_created.",
+          "html_description": "<p>This object defines the parameters for the creation of a managed bot. Information about the created bot will be shared with the bot using the update <em>managed_bot</em> and a <a href=\"#message\">Message</a> with the field <em>managed_bot_created</em>.</p>",
+          "rst_description": "This object defines the parameters for the creation of a managed bot. Information about the created bot will be shared with the bot using the update *managed_bot* and a :class:`aiogram.types.message.Message` with the field *managed_bot_created*.",
+          "annotations": [
+            {
+              "type": "Integer",
+              "description": "Signed 32-bit identifier of the request. Must be unique within the message",
+              "html_description": "<td>Signed 32-bit identifier of the request. Must be unique within the message</td>",
+              "rst_description": "Signed 32-bit identifier of the request. Must be unique within the message\n",
+              "name": "request_id",
+              "required": true
+            },
+            {
+              "type": "String",
+              "description": "Suggested name for the bot",
+              "html_description": "<td><em>Optional</em>. Suggested name for the bot</td>",
+              "rst_description": "*Optional*. Suggested name for the bot\n",
+              "name": "suggested_name",
+              "required": false
+            },
+            {
+              "type": "String",
+              "description": "Suggested username for the bot",
+              "html_description": "<td><em>Optional</em>. Suggested username for the bot</td>",
+              "rst_description": "*Optional*. Suggested username for the bot\n",
+              "name": "suggested_username",
               "required": false
             }
           ],
@@ -9706,6 +9996,68 @@
           "category": "types"
         },
         {
+          "anchor": "sentwebappmessage",
+          "name": "SentWebAppMessage",
+          "description": "Describes an inline message sent by a Web App on behalf of a user.",
+          "html_description": "<p>Describes an inline message sent by a <a href=\"/bots/webapps\">Web App</a> on behalf of a user.</p>",
+          "rst_description": "Describes an inline message sent by a `Web App <https://core.telegram.org/bots/webapps>`_ on behalf of a user.",
+          "annotations": [
+            {
+              "type": "String",
+              "description": "Identifier of the sent inline message. Available only if there is an inline keyboard attached to the message.",
+              "html_description": "<td><em>Optional</em>. Identifier of the sent inline message. Available only if there is an <a href=\"#inlinekeyboardmarkup\">inline keyboard</a> attached to the message.</td>",
+              "rst_description": "*Optional*. Identifier of the sent inline message. Available only if there is an `inline keyboard <https://core.telegram.org/bots/api#inlinekeyboardmarkup>`_ attached to the message.\n",
+              "name": "inline_message_id",
+              "required": false
+            }
+          ],
+          "category": "types"
+        },
+        {
+          "anchor": "preparedinlinemessage",
+          "name": "PreparedInlineMessage",
+          "description": "Describes an inline message to be sent by a user of a Mini App.",
+          "html_description": "<p>Describes an inline message to be sent by a user of a Mini App.</p>",
+          "rst_description": "Describes an inline message to be sent by a user of a Mini App.",
+          "annotations": [
+            {
+              "type": "String",
+              "description": "Unique identifier of the prepared message",
+              "html_description": "<td>Unique identifier of the prepared message</td>",
+              "rst_description": "Unique identifier of the prepared message\n",
+              "name": "id",
+              "required": true
+            },
+            {
+              "type": "Integer",
+              "description": "Expiration date of the prepared message, in Unix time. Expired prepared messages can no longer be used",
+              "html_description": "<td>Expiration date of the prepared message, in Unix time. Expired prepared messages can no longer be used</td>",
+              "rst_description": "Expiration date of the prepared message, in Unix time. Expired prepared messages can no longer be used\n",
+              "name": "expiration_date",
+              "required": true
+            }
+          ],
+          "category": "types"
+        },
+        {
+          "anchor": "preparedkeyboardbutton",
+          "name": "PreparedKeyboardButton",
+          "description": "Describes a keyboard button to be used by a user of a Mini App.",
+          "html_description": "<p>Describes a keyboard button to be used by a user of a Mini App.</p>",
+          "rst_description": "Describes a keyboard button to be used by a user of a Mini App.",
+          "annotations": [
+            {
+              "type": "String",
+              "description": "Unique identifier of the keyboard button",
+              "html_description": "<td>Unique identifier of the keyboard button</td>",
+              "rst_description": "Unique identifier of the keyboard button\n",
+              "name": "id",
+              "required": true
+            }
+          ],
+          "category": "types"
+        },
+        {
           "anchor": "responseparameters",
           "name": "ResponseParameters",
           "description": "Describes why a request was unsuccessful.",
@@ -12852,18 +13204,50 @@
             {
               "type": "Boolean",
               "required": false,
-              "description": "True, if the poll allows multiple answers, ignored for polls in quiz mode, defaults to False",
-              "html_description": "<td><em>True</em>, if the poll allows multiple answers, ignored for polls in quiz mode, defaults to <em>False</em></td>",
-              "rst_description": ":code:`True`, if the poll allows multiple answers, ignored for polls in quiz mode, defaults to :code:`False`\n",
+              "description": "Pass True, if the poll allows multiple answers, defaults to False",
+              "html_description": "<td>Pass <em>True</em>, if the poll allows multiple answers, defaults to <em>False</em></td>",
+              "rst_description": "Pass :code:`True`, if the poll allows multiple answers, defaults to :code:`False`\n",
               "name": "allows_multiple_answers"
             },
             {
-              "type": "Integer",
+              "type": "Boolean",
               "required": false,
-              "description": "0-based identifier of the correct answer option, required for polls in quiz mode",
-              "html_description": "<td>0-based identifier of the correct answer option, required for polls in quiz mode</td>",
-              "rst_description": "0-based identifier of the correct answer option, required for polls in quiz mode\n",
-              "name": "correct_option_id"
+              "description": "Pass True, if the poll allows to change chosen answer options, defaults to False for quizzes and to True for regular polls",
+              "html_description": "<td>Pass <em>True</em>, if the poll allows to change chosen answer options, defaults to <em>False</em> for quizzes and to <em>True</em> for regular polls</td>",
+              "rst_description": "Pass :code:`True`, if the poll allows to change chosen answer options, defaults to :code:`False` for quizzes and to :code:`True` for regular polls\n",
+              "name": "allows_revoting"
+            },
+            {
+              "type": "Boolean",
+              "required": false,
+              "description": "Pass True, if the poll options must be shown in random order",
+              "html_description": "<td>Pass <em>True</em>, if the poll options must be shown in random order</td>",
+              "rst_description": "Pass :code:`True`, if the poll options must be shown in random order\n",
+              "name": "shuffle_options"
+            },
+            {
+              "type": "Boolean",
+              "required": false,
+              "description": "Pass True, if answer options can be added to the poll after creation; not supported for anonymous polls and quizzes",
+              "html_description": "<td>Pass <em>True</em>, if answer options can be added to the poll after creation; not supported for anonymous polls and quizzes</td>",
+              "rst_description": "Pass :code:`True`, if answer options can be added to the poll after creation; not supported for anonymous polls and quizzes\n",
+              "name": "allow_adding_options"
+            },
+            {
+              "type": "Boolean",
+              "required": false,
+              "description": "Pass True, if poll results must be shown only after the poll closes",
+              "html_description": "<td>Pass <em>True</em>, if poll results must be shown only after the poll closes</td>",
+              "rst_description": "Pass :code:`True`, if poll results must be shown only after the poll closes\n",
+              "name": "hide_results_until_closes"
+            },
+            {
+              "type": "Array of Integer",
+              "required": false,
+              "description": "A JSON-serialized list of monotonically increasing 0-based identifiers of the correct answer options, required for polls in quiz mode",
+              "html_description": "<td>A JSON-serialized list of monotonically increasing 0-based identifiers of the correct answer options, required for polls in quiz mode</td>",
+              "rst_description": "A JSON-serialized list of monotonically increasing 0-based identifiers of the correct answer options, required for polls in quiz mode\n",
+              "name": "correct_option_ids"
             },
             {
               "type": "String",
@@ -12892,17 +13276,17 @@
             {
               "type": "Integer",
               "required": false,
-              "description": "Amount of time in seconds the poll will be active after creation, 5-600. Can't be used together with close_date.",
-              "html_description": "<td>Amount of time in seconds the poll will be active after creation, 5-600. Can't be used together with <em>close_date</em>.</td>",
-              "rst_description": "Amount of time in seconds the poll will be active after creation, 5-600. Can't be used together with *close_date*.\n",
+              "description": "Amount of time in seconds the poll will be active after creation, 5-2628000. Can't be used together with close_date.",
+              "html_description": "<td>Amount of time in seconds the poll will be active after creation, 5-2628000. Can't be used together with <em>close_date</em>.</td>",
+              "rst_description": "Amount of time in seconds the poll will be active after creation, 5-2628000. Can't be used together with *close_date*.\n",
               "name": "open_period"
             },
             {
               "type": "Integer",
               "required": false,
-              "description": "Point in time (Unix timestamp) when the poll will be automatically closed. Must be at least 5 and no more than 600 seconds in the future. Can't be used together with open_period.",
-              "html_description": "<td>Point in time (Unix timestamp) when the poll will be automatically closed. Must be at least 5 and no more than 600 seconds in the future. Can't be used together with <em>open_period</em>.</td>",
-              "rst_description": "Point in time (Unix timestamp) when the poll will be automatically closed. Must be at least 5 and no more than 600 seconds in the future. Can't be used together with *open_period*.\n",
+              "description": "Point in time (Unix timestamp) when the poll will be automatically closed. Must be at least 5 and no more than 2628000 seconds in the future. Can't be used together with open_period.",
+              "html_description": "<td>Point in time (Unix timestamp) when the poll will be automatically closed. Must be at least 5 and no more than 2628000 seconds in the future. Can't be used together with <em>open_period</em>.</td>",
+              "rst_description": "Point in time (Unix timestamp) when the poll will be automatically closed. Must be at least 5 and no more than 2628000 seconds in the future. Can't be used together with *open_period*.\n",
               "name": "close_date"
             },
             {
@@ -12912,6 +13296,30 @@
               "html_description": "<td>Pass <em>True</em> if the poll needs to be immediately closed. This can be useful for poll preview.</td>",
               "rst_description": "Pass :code:`True` if the poll needs to be immediately closed. This can be useful for poll preview.\n",
               "name": "is_closed"
+            },
+            {
+              "type": "String",
+              "required": false,
+              "description": "Description of the poll to be sent, 0-1024 characters after entities parsing",
+              "html_description": "<td>Description of the poll to be sent, 0-1024 characters after entities parsing</td>",
+              "rst_description": "Description of the poll to be sent, 0-1024 characters after entities parsing\n",
+              "name": "description"
+            },
+            {
+              "type": "String",
+              "required": false,
+              "description": "Mode for parsing entities in the poll description. See formatting options for more details.",
+              "html_description": "<td>Mode for parsing entities in the poll description. See <a href=\"#formatting-options\">formatting options</a> for more details.</td>",
+              "rst_description": "Mode for parsing entities in the poll description. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.\n",
+              "name": "description_parse_mode"
+            },
+            {
+              "type": "Array of MessageEntity",
+              "required": false,
+              "description": "A JSON-serialized list of special entities that appear in the poll description, which can be specified instead of description_parse_mode",
+              "html_description": "<td>A JSON-serialized list of special entities that appear in the poll description, which can be specified instead of <em>description_parse_mode</em></td>",
+              "rst_description": "A JSON-serialized list of special entities that appear in the poll description, which can be specified instead of *description_parse_mode*\n",
+              "name": "description_entities"
             },
             {
               "type": "Boolean",
@@ -14868,6 +15276,42 @@
           "category": "methods"
         },
         {
+          "anchor": "getmanagedbottoken",
+          "name": "getManagedBotToken",
+          "description": "Use this method to get the token of a managed bot. Returns the token as String on success.",
+          "html_description": "<p>Use this method to get the token of a managed bot. Returns the token as <em>String</em> on success.</p>",
+          "rst_description": "Use this method to get the token of a managed bot. Returns the token as *String* on success.",
+          "annotations": [
+            {
+              "type": "Integer",
+              "required": true,
+              "description": "User identifier of the managed bot whose token will be returned",
+              "html_description": "<td>User identifier of the managed bot whose token will be returned</td>",
+              "rst_description": "User identifier of the managed bot whose token will be returned\n",
+              "name": "user_id"
+            }
+          ],
+          "category": "methods"
+        },
+        {
+          "anchor": "replacemanagedbottoken",
+          "name": "replaceManagedBotToken",
+          "description": "Use this method to revoke the current token of a managed bot and generate a new one. Returns the new token as String on success.",
+          "html_description": "<p>Use this method to revoke the current token of a managed bot and generate a new one. Returns the new token as <em>String</em> on success.</p>",
+          "rst_description": "Use this method to revoke the current token of a managed bot and generate a new one. Returns the new token as *String* on success.",
+          "annotations": [
+            {
+              "type": "Integer",
+              "required": true,
+              "description": "User identifier of the managed bot whose token will be replaced",
+              "html_description": "<td>User identifier of the managed bot whose token will be replaced</td>",
+              "rst_description": "User identifier of the managed bot whose token will be replaced\n",
+              "name": "user_id"
+            }
+          ],
+          "category": "methods"
+        },
+        {
           "anchor": "setmycommands",
           "name": "setMyCommands",
           "description": "Use this method to change the list of the bot's commands. See this manual for more details about bot commands. Returns True on success.",
@@ -15259,17 +15703,17 @@
             {
               "type": "String",
               "required": false,
-              "description": "Mode for parsing entities in the text. See formatting options for more details. Entities other than 'bold', 'italic', 'underline', 'strikethrough', 'spoiler', and 'custom_emoji' are ignored.",
-              "html_description": "<td>Mode for parsing entities in the text. See <a href=\"#formatting-options\">formatting options</a> for more details. Entities other than &#8220;bold&#8221;, &#8220;italic&#8221;, &#8220;underline&#8221;, &#8220;strikethrough&#8221;, &#8220;spoiler&#8221;, and &#8220;custom_emoji&#8221; are ignored.</td>",
-              "rst_description": "Mode for parsing entities in the text. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details. Entities other than 'bold', 'italic', 'underline', 'strikethrough', 'spoiler', and 'custom_emoji' are ignored.\n",
+              "description": "Mode for parsing entities in the text. See formatting options for more details. Entities other than 'bold', 'italic', 'underline', 'strikethrough', 'spoiler', 'custom_emoji', and 'date_time' are ignored.",
+              "html_description": "<td>Mode for parsing entities in the text. See <a href=\"#formatting-options\">formatting options</a> for more details. Entities other than &#8220;bold&#8221;, &#8220;italic&#8221;, &#8220;underline&#8221;, &#8220;strikethrough&#8221;, &#8220;spoiler&#8221;, &#8220;custom_emoji&#8221;, and &#8220;date_time&#8221; are ignored.</td>",
+              "rst_description": "Mode for parsing entities in the text. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details. Entities other than 'bold', 'italic', 'underline', 'strikethrough', 'spoiler', 'custom_emoji', and 'date_time' are ignored.\n",
               "name": "text_parse_mode"
             },
             {
               "type": "Array of MessageEntity",
               "required": false,
-              "description": "A JSON-serialized list of special entities that appear in the gift text. It can be specified instead of text_parse_mode. Entities other than 'bold', 'italic', 'underline', 'strikethrough', 'spoiler', and 'custom_emoji' are ignored.",
-              "html_description": "<td>A JSON-serialized list of special entities that appear in the gift text. It can be specified instead of <em>text_parse_mode</em>. Entities other than &#8220;bold&#8221;, &#8220;italic&#8221;, &#8220;underline&#8221;, &#8220;strikethrough&#8221;, &#8220;spoiler&#8221;, and &#8220;custom_emoji&#8221; are ignored.</td>",
-              "rst_description": "A JSON-serialized list of special entities that appear in the gift text. It can be specified instead of *text_parse_mode*. Entities other than 'bold', 'italic', 'underline', 'strikethrough', 'spoiler', and 'custom_emoji' are ignored.\n",
+              "description": "A JSON-serialized list of special entities that appear in the gift text. It can be specified instead of text_parse_mode. Entities other than 'bold', 'italic', 'underline', 'strikethrough', 'spoiler', 'custom_emoji', and 'date_time' are ignored.",
+              "html_description": "<td>A JSON-serialized list of special entities that appear in the gift text. It can be specified instead of <em>text_parse_mode</em>. Entities other than &#8220;bold&#8221;, &#8220;italic&#8221;, &#8220;underline&#8221;, &#8220;strikethrough&#8221;, &#8220;spoiler&#8221;, &#8220;custom_emoji&#8221;, and &#8220;date_time&#8221; are ignored.</td>",
+              "rst_description": "A JSON-serialized list of special entities that appear in the gift text. It can be specified instead of *text_parse_mode*. Entities other than 'bold', 'italic', 'underline', 'strikethrough', 'spoiler', 'custom_emoji', and 'date_time' are ignored.\n",
               "name": "text_entities"
             }
           ],
@@ -15317,17 +15761,17 @@
             {
               "type": "String",
               "required": false,
-              "description": "Mode for parsing entities in the text. See formatting options for more details. Entities other than 'bold', 'italic', 'underline', 'strikethrough', 'spoiler', and 'custom_emoji' are ignored.",
-              "html_description": "<td>Mode for parsing entities in the text. See <a href=\"#formatting-options\">formatting options</a> for more details. Entities other than &#8220;bold&#8221;, &#8220;italic&#8221;, &#8220;underline&#8221;, &#8220;strikethrough&#8221;, &#8220;spoiler&#8221;, and &#8220;custom_emoji&#8221; are ignored.</td>",
-              "rst_description": "Mode for parsing entities in the text. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details. Entities other than 'bold', 'italic', 'underline', 'strikethrough', 'spoiler', and 'custom_emoji' are ignored.\n",
+              "description": "Mode for parsing entities in the text. See formatting options for more details. Entities other than 'bold', 'italic', 'underline', 'strikethrough', 'spoiler', 'custom_emoji', and 'date_time' are ignored.",
+              "html_description": "<td>Mode for parsing entities in the text. See <a href=\"#formatting-options\">formatting options</a> for more details. Entities other than &#8220;bold&#8221;, &#8220;italic&#8221;, &#8220;underline&#8221;, &#8220;strikethrough&#8221;, &#8220;spoiler&#8221;, &#8220;custom_emoji&#8221;, and &#8220;date_time&#8221; are ignored.</td>",
+              "rst_description": "Mode for parsing entities in the text. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details. Entities other than 'bold', 'italic', 'underline', 'strikethrough', 'spoiler', 'custom_emoji', and 'date_time' are ignored.\n",
               "name": "text_parse_mode"
             },
             {
               "type": "Array of MessageEntity",
               "required": false,
-              "description": "A JSON-serialized list of special entities that appear in the gift text. It can be specified instead of text_parse_mode. Entities other than 'bold', 'italic', 'underline', 'strikethrough', 'spoiler', and 'custom_emoji' are ignored.",
-              "html_description": "<td>A JSON-serialized list of special entities that appear in the gift text. It can be specified instead of <em>text_parse_mode</em>. Entities other than &#8220;bold&#8221;, &#8220;italic&#8221;, &#8220;underline&#8221;, &#8220;strikethrough&#8221;, &#8220;spoiler&#8221;, and &#8220;custom_emoji&#8221; are ignored.</td>",
-              "rst_description": "A JSON-serialized list of special entities that appear in the gift text. It can be specified instead of *text_parse_mode*. Entities other than 'bold', 'italic', 'underline', 'strikethrough', 'spoiler', and 'custom_emoji' are ignored.\n",
+              "description": "A JSON-serialized list of special entities that appear in the gift text. It can be specified instead of text_parse_mode. Entities other than 'bold', 'italic', 'underline', 'strikethrough', 'spoiler', 'custom_emoji', and 'date_time' are ignored.",
+              "html_description": "<td>A JSON-serialized list of special entities that appear in the gift text. It can be specified instead of <em>text_parse_mode</em>. Entities other than &#8220;bold&#8221;, &#8220;italic&#8221;, &#8220;underline&#8221;, &#8220;strikethrough&#8221;, &#8220;spoiler&#8221;, &#8220;custom_emoji&#8221;, and &#8220;date_time&#8221; are ignored.</td>",
+              "rst_description": "A JSON-serialized list of special entities that appear in the gift text. It can be specified instead of *text_parse_mode*. Entities other than 'bold', 'italic', 'underline', 'strikethrough', 'spoiler', 'custom_emoji', and 'date_time' are ignored.\n",
               "name": "text_entities"
             }
           ],
@@ -16321,6 +16765,116 @@
               "html_description": "<td>Unique identifier of the story to delete</td>",
               "rst_description": "Unique identifier of the story to delete\n",
               "name": "story_id"
+            }
+          ],
+          "category": "methods"
+        },
+        {
+          "anchor": "answerwebappquery",
+          "name": "answerWebAppQuery",
+          "description": "Use this method to set the result of an interaction with a Web App and send a corresponding message on behalf of the user to the chat from which the query originated. On success, a SentWebAppMessage object is returned.",
+          "html_description": "<p>Use this method to set the result of an interaction with a <a href=\"/bots/webapps\">Web App</a> and send a corresponding message on behalf of the user to the chat from which the query originated. On success, a <a href=\"#sentwebappmessage\">SentWebAppMessage</a> object is returned.</p>",
+          "rst_description": "Use this method to set the result of an interaction with a `Web App <https://core.telegram.org/bots/webapps>`_ and send a corresponding message on behalf of the user to the chat from which the query originated. On success, a :class:`aiogram.types.sent_web_app_message.SentWebAppMessage` object is returned.",
+          "annotations": [
+            {
+              "type": "String",
+              "required": true,
+              "description": "Unique identifier for the query to be answered",
+              "html_description": "<td>Unique identifier for the query to be answered</td>",
+              "rst_description": "Unique identifier for the query to be answered\n",
+              "name": "web_app_query_id"
+            },
+            {
+              "type": "InlineQueryResult",
+              "required": true,
+              "description": "A JSON-serialized object describing the message to be sent",
+              "html_description": "<td>A JSON-serialized object describing the message to be sent</td>",
+              "rst_description": "A JSON-serialized object describing the message to be sent\n",
+              "name": "result"
+            }
+          ],
+          "category": "methods"
+        },
+        {
+          "anchor": "savepreparedinlinemessage",
+          "name": "savePreparedInlineMessage",
+          "description": "Stores a message that can be sent by a user of a Mini App. Returns a PreparedInlineMessage object.",
+          "html_description": "<p>Stores a message that can be sent by a user of a Mini App. Returns a <a href=\"#preparedinlinemessage\">PreparedInlineMessage</a> object.</p>",
+          "rst_description": "Stores a message that can be sent by a user of a Mini App. Returns a :class:`aiogram.types.prepared_inline_message.PreparedInlineMessage` object.",
+          "annotations": [
+            {
+              "type": "Integer",
+              "required": true,
+              "description": "Unique identifier of the target user that can use the prepared message",
+              "html_description": "<td>Unique identifier of the target user that can use the prepared message</td>",
+              "rst_description": "Unique identifier of the target user that can use the prepared message\n",
+              "name": "user_id"
+            },
+            {
+              "type": "InlineQueryResult",
+              "required": true,
+              "description": "A JSON-serialized object describing the message to be sent",
+              "html_description": "<td>A JSON-serialized object describing the message to be sent</td>",
+              "rst_description": "A JSON-serialized object describing the message to be sent\n",
+              "name": "result"
+            },
+            {
+              "type": "Boolean",
+              "required": false,
+              "description": "Pass True if the message can be sent to private chats with users",
+              "html_description": "<td>Pass <em>True</em> if the message can be sent to private chats with users</td>",
+              "rst_description": "Pass :code:`True` if the message can be sent to private chats with users\n",
+              "name": "allow_user_chats"
+            },
+            {
+              "type": "Boolean",
+              "required": false,
+              "description": "Pass True if the message can be sent to private chats with bots",
+              "html_description": "<td>Pass <em>True</em> if the message can be sent to private chats with bots</td>",
+              "rst_description": "Pass :code:`True` if the message can be sent to private chats with bots\n",
+              "name": "allow_bot_chats"
+            },
+            {
+              "type": "Boolean",
+              "required": false,
+              "description": "Pass True if the message can be sent to group and supergroup chats",
+              "html_description": "<td>Pass <em>True</em> if the message can be sent to group and supergroup chats</td>",
+              "rst_description": "Pass :code:`True` if the message can be sent to group and supergroup chats\n",
+              "name": "allow_group_chats"
+            },
+            {
+              "type": "Boolean",
+              "required": false,
+              "description": "Pass True if the message can be sent to channel chats",
+              "html_description": "<td>Pass <em>True</em> if the message can be sent to channel chats</td>",
+              "rst_description": "Pass :code:`True` if the message can be sent to channel chats\n",
+              "name": "allow_channel_chats"
+            }
+          ],
+          "category": "methods"
+        },
+        {
+          "anchor": "savepreparedkeyboardbutton",
+          "name": "savePreparedKeyboardButton",
+          "description": "Stores a keyboard button that can be used by a user within a Mini App. Returns a PreparedKeyboardButton object.",
+          "html_description": "<p>Stores a keyboard button that can be used by a user within a Mini App. Returns a <a href=\"#preparedkeyboardbutton\">PreparedKeyboardButton</a> object.</p>",
+          "rst_description": "Stores a keyboard button that can be used by a user within a Mini App. Returns a :class:`aiogram.types.prepared_keyboard_button.PreparedKeyboardButton` object.",
+          "annotations": [
+            {
+              "type": "Integer",
+              "required": true,
+              "description": "Unique identifier of the target user that can use the button",
+              "html_description": "<td>Unique identifier of the target user that can use the button</td>",
+              "rst_description": "Unique identifier of the target user that can use the button\n",
+              "name": "user_id"
+            },
+            {
+              "type": "KeyboardButton",
+              "required": true,
+              "description": "A JSON-serialized object describing the button to be saved. The button must be of the type request_users, request_chat, or request_managed_bot",
+              "html_description": "<td>A JSON-serialized object describing the button to be saved. The button must be of the type <em>request_users</em>, <em>request_chat</em>, or <em>request_managed_bot</em></td>",
+              "rst_description": "A JSON-serialized object describing the button to be saved. The button must be of the type *request_users*, *request_chat*, or *request_managed_bot*\n",
+              "name": "button"
             }
           ],
           "category": "methods"
@@ -20385,134 +20939,6 @@
               "html_description": "<td>The query that was used to obtain the result</td>",
               "rst_description": "The query that was used to obtain the result\n",
               "name": "query",
-              "required": true
-            }
-          ],
-          "category": "types"
-        },
-        {
-          "anchor": "answerwebappquery",
-          "name": "answerWebAppQuery",
-          "description": "Use this method to set the result of an interaction with a Web App and send a corresponding message on behalf of the user to the chat from which the query originated. On success, a SentWebAppMessage object is returned.",
-          "html_description": "<p>Use this method to set the result of an interaction with a <a href=\"/bots/webapps\">Web App</a> and send a corresponding message on behalf of the user to the chat from which the query originated. On success, a <a href=\"#sentwebappmessage\">SentWebAppMessage</a> object is returned.</p>",
-          "rst_description": "Use this method to set the result of an interaction with a `Web App <https://core.telegram.org/bots/webapps>`_ and send a corresponding message on behalf of the user to the chat from which the query originated. On success, a :class:`aiogram.types.sent_web_app_message.SentWebAppMessage` object is returned.",
-          "annotations": [
-            {
-              "type": "String",
-              "required": true,
-              "description": "Unique identifier for the query to be answered",
-              "html_description": "<td>Unique identifier for the query to be answered</td>",
-              "rst_description": "Unique identifier for the query to be answered\n",
-              "name": "web_app_query_id"
-            },
-            {
-              "type": "InlineQueryResult",
-              "required": true,
-              "description": "A JSON-serialized object describing the message to be sent",
-              "html_description": "<td>A JSON-serialized object describing the message to be sent</td>",
-              "rst_description": "A JSON-serialized object describing the message to be sent\n",
-              "name": "result"
-            }
-          ],
-          "category": "methods"
-        },
-        {
-          "anchor": "sentwebappmessage",
-          "name": "SentWebAppMessage",
-          "description": "Describes an inline message sent by a Web App on behalf of a user.",
-          "html_description": "<p>Describes an inline message sent by a <a href=\"/bots/webapps\">Web App</a> on behalf of a user.</p>",
-          "rst_description": "Describes an inline message sent by a `Web App <https://core.telegram.org/bots/webapps>`_ on behalf of a user.",
-          "annotations": [
-            {
-              "type": "String",
-              "description": "Identifier of the sent inline message. Available only if there is an inline keyboard attached to the message.",
-              "html_description": "<td><em>Optional</em>. Identifier of the sent inline message. Available only if there is an <a href=\"#inlinekeyboardmarkup\">inline keyboard</a> attached to the message.</td>",
-              "rst_description": "*Optional*. Identifier of the sent inline message. Available only if there is an `inline keyboard <https://core.telegram.org/bots/api#inlinekeyboardmarkup>`_ attached to the message.\n",
-              "name": "inline_message_id",
-              "required": false
-            }
-          ],
-          "category": "types"
-        },
-        {
-          "anchor": "savepreparedinlinemessage",
-          "name": "savePreparedInlineMessage",
-          "description": "Stores a message that can be sent by a user of a Mini App. Returns a PreparedInlineMessage object.",
-          "html_description": "<p>Stores a message that can be sent by a user of a Mini App. Returns a <a href=\"#preparedinlinemessage\">PreparedInlineMessage</a> object.</p>",
-          "rst_description": "Stores a message that can be sent by a user of a Mini App. Returns a :class:`aiogram.types.prepared_inline_message.PreparedInlineMessage` object.",
-          "annotations": [
-            {
-              "type": "Integer",
-              "required": true,
-              "description": "Unique identifier of the target user that can use the prepared message",
-              "html_description": "<td>Unique identifier of the target user that can use the prepared message</td>",
-              "rst_description": "Unique identifier of the target user that can use the prepared message\n",
-              "name": "user_id"
-            },
-            {
-              "type": "InlineQueryResult",
-              "required": true,
-              "description": "A JSON-serialized object describing the message to be sent",
-              "html_description": "<td>A JSON-serialized object describing the message to be sent</td>",
-              "rst_description": "A JSON-serialized object describing the message to be sent\n",
-              "name": "result"
-            },
-            {
-              "type": "Boolean",
-              "required": false,
-              "description": "Pass True if the message can be sent to private chats with users",
-              "html_description": "<td>Pass <em>True</em> if the message can be sent to private chats with users</td>",
-              "rst_description": "Pass :code:`True` if the message can be sent to private chats with users\n",
-              "name": "allow_user_chats"
-            },
-            {
-              "type": "Boolean",
-              "required": false,
-              "description": "Pass True if the message can be sent to private chats with bots",
-              "html_description": "<td>Pass <em>True</em> if the message can be sent to private chats with bots</td>",
-              "rst_description": "Pass :code:`True` if the message can be sent to private chats with bots\n",
-              "name": "allow_bot_chats"
-            },
-            {
-              "type": "Boolean",
-              "required": false,
-              "description": "Pass True if the message can be sent to group and supergroup chats",
-              "html_description": "<td>Pass <em>True</em> if the message can be sent to group and supergroup chats</td>",
-              "rst_description": "Pass :code:`True` if the message can be sent to group and supergroup chats\n",
-              "name": "allow_group_chats"
-            },
-            {
-              "type": "Boolean",
-              "required": false,
-              "description": "Pass True if the message can be sent to channel chats",
-              "html_description": "<td>Pass <em>True</em> if the message can be sent to channel chats</td>",
-              "rst_description": "Pass :code:`True` if the message can be sent to channel chats\n",
-              "name": "allow_channel_chats"
-            }
-          ],
-          "category": "methods"
-        },
-        {
-          "anchor": "preparedinlinemessage",
-          "name": "PreparedInlineMessage",
-          "description": "Describes an inline message to be sent by a user of a Mini App.",
-          "html_description": "<p>Describes an inline message to be sent by a user of a Mini App.</p>",
-          "rst_description": "Describes an inline message to be sent by a user of a Mini App.",
-          "annotations": [
-            {
-              "type": "String",
-              "description": "Unique identifier of the prepared message",
-              "html_description": "<td>Unique identifier of the prepared message</td>",
-              "rst_description": "Unique identifier of the prepared message\n",
-              "name": "id",
-              "required": true
-            },
-            {
-              "type": "Integer",
-              "description": "Expiration date of the prepared message, in Unix time. Expired prepared messages can no longer be used",
-              "html_description": "<td>Expiration date of the prepared message, in Unix time. Expired prepared messages can no longer be used</td>",
-              "rst_description": "Expiration date of the prepared message, in Unix time. Expired prepared messages can no longer be used\n",
-              "name": "expiration_date",
               "required": true
             }
           ],

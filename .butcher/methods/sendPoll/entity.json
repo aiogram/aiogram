@@ -86,18 +86,50 @@
       {
         "type": "Boolean",
         "required": false,
-        "description": "True, if the poll allows multiple answers, ignored for polls in quiz mode, defaults to False",
-        "html_description": "<td><em>True</em>, if the poll allows multiple answers, ignored for polls in quiz mode, defaults to <em>False</em></td>",
-        "rst_description": ":code:`True`, if the poll allows multiple answers, ignored for polls in quiz mode, defaults to :code:`False`\n",
+        "description": "Pass True, if the poll allows multiple answers, defaults to False",
+        "html_description": "<td>Pass <em>True</em>, if the poll allows multiple answers, defaults to <em>False</em></td>",
+        "rst_description": "Pass :code:`True`, if the poll allows multiple answers, defaults to :code:`False`\n",
         "name": "allows_multiple_answers"
       },
       {
-        "type": "Integer",
+        "type": "Boolean",
         "required": false,
-        "description": "0-based identifier of the correct answer option, required for polls in quiz mode",
-        "html_description": "<td>0-based identifier of the correct answer option, required for polls in quiz mode</td>",
-        "rst_description": "0-based identifier of the correct answer option, required for polls in quiz mode\n",
-        "name": "correct_option_id"
+        "description": "Pass True, if the poll allows to change chosen answer options, defaults to False for quizzes and to True for regular polls",
+        "html_description": "<td>Pass <em>True</em>, if the poll allows to change chosen answer options, defaults to <em>False</em> for quizzes and to <em>True</em> for regular polls</td>",
+        "rst_description": "Pass :code:`True`, if the poll allows to change chosen answer options, defaults to :code:`False` for quizzes and to :code:`True` for regular polls\n",
+        "name": "allows_revoting"
+      },
+      {
+        "type": "Boolean",
+        "required": false,
+        "description": "Pass True, if the poll options must be shown in random order",
+        "html_description": "<td>Pass <em>True</em>, if the poll options must be shown in random order</td>",
+        "rst_description": "Pass :code:`True`, if the poll options must be shown in random order\n",
+        "name": "shuffle_options"
+      },
+      {
+        "type": "Boolean",
+        "required": false,
+        "description": "Pass True, if answer options can be added to the poll after creation; not supported for anonymous polls and quizzes",
+        "html_description": "<td>Pass <em>True</em>, if answer options can be added to the poll after creation; not supported for anonymous polls and quizzes</td>",
+        "rst_description": "Pass :code:`True`, if answer options can be added to the poll after creation; not supported for anonymous polls and quizzes\n",
+        "name": "allow_adding_options"
+      },
+      {
+        "type": "Boolean",
+        "required": false,
+        "description": "Pass True, if poll results must be shown only after the poll closes",
+        "html_description": "<td>Pass <em>True</em>, if poll results must be shown only after the poll closes</td>",
+        "rst_description": "Pass :code:`True`, if poll results must be shown only after the poll closes\n",
+        "name": "hide_results_until_closes"
+      },
+      {
+        "type": "Array of Integer",
+        "required": false,
+        "description": "A JSON-serialized list of monotonically increasing 0-based identifiers of the correct answer options, required for polls in quiz mode",
+        "html_description": "<td>A JSON-serialized list of monotonically increasing 0-based identifiers of the correct answer options, required for polls in quiz mode</td>",
+        "rst_description": "A JSON-serialized list of monotonically increasing 0-based identifiers of the correct answer options, required for polls in quiz mode\n",
+        "name": "correct_option_ids"
       },
       {
         "type": "String",
@@ -126,17 +158,17 @@
       {
         "type": "Integer",
         "required": false,
-        "description": "Amount of time in seconds the poll will be active after creation, 5-600. Can't be used together with close_date.",
-        "html_description": "<td>Amount of time in seconds the poll will be active after creation, 5-600. Can't be used together with <em>close_date</em>.</td>",
-        "rst_description": "Amount of time in seconds the poll will be active after creation, 5-600. Can't be used together with *close_date*.\n",
+        "description": "Amount of time in seconds the poll will be active after creation, 5-2628000. Can't be used together with close_date.",
+        "html_description": "<td>Amount of time in seconds the poll will be active after creation, 5-2628000. Can't be used together with <em>close_date</em>.</td>",
+        "rst_description": "Amount of time in seconds the poll will be active after creation, 5-2628000. Can't be used together with *close_date*.\n",
         "name": "open_period"
       },
       {
         "type": "Integer",
         "required": false,
-        "description": "Point in time (Unix timestamp) when the poll will be automatically closed. Must be at least 5 and no more than 600 seconds in the future. Can't be used together with open_period.",
-        "html_description": "<td>Point in time (Unix timestamp) when the poll will be automatically closed. Must be at least 5 and no more than 600 seconds in the future. Can't be used together with <em>open_period</em>.</td>",
-        "rst_description": "Point in time (Unix timestamp) when the poll will be automatically closed. Must be at least 5 and no more than 600 seconds in the future. Can't be used together with *open_period*.\n",
+        "description": "Point in time (Unix timestamp) when the poll will be automatically closed. Must be at least 5 and no more than 2628000 seconds in the future. Can't be used together with open_period.",
+        "html_description": "<td>Point in time (Unix timestamp) when the poll will be automatically closed. Must be at least 5 and no more than 2628000 seconds in the future. Can't be used together with <em>open_period</em>.</td>",
+        "rst_description": "Point in time (Unix timestamp) when the poll will be automatically closed. Must be at least 5 and no more than 2628000 seconds in the future. Can't be used together with *open_period*.\n",
         "name": "close_date"
       },
       {
@@ -146,6 +178,30 @@
         "html_description": "<td>Pass <em>True</em> if the poll needs to be immediately closed. This can be useful for poll preview.</td>",
         "rst_description": "Pass :code:`True` if the poll needs to be immediately closed. This can be useful for poll preview.\n",
         "name": "is_closed"
+      },
+      {
+        "type": "String",
+        "required": false,
+        "description": "Description of the poll to be sent, 0-1024 characters after entities parsing",
+        "html_description": "<td>Description of the poll to be sent, 0-1024 characters after entities parsing</td>",
+        "rst_description": "Description of the poll to be sent, 0-1024 characters after entities parsing\n",
+        "name": "description"
+      },
+      {
+        "type": "String",
+        "required": false,
+        "description": "Mode for parsing entities in the poll description. See formatting options for more details.",
+        "html_description": "<td>Mode for parsing entities in the poll description. See <a href=\"#formatting-options\">formatting options</a> for more details.</td>",
+        "rst_description": "Mode for parsing entities in the poll description. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.\n",
+        "name": "description_parse_mode"
+      },
+      {
+        "type": "Array of MessageEntity",
+        "required": false,
+        "description": "A JSON-serialized list of special entities that appear in the poll description, which can be specified instead of description_parse_mode",
+        "html_description": "<td>A JSON-serialized list of special entities that appear in the poll description, which can be specified instead of <em>description_parse_mode</em></td>",
+        "rst_description": "A JSON-serialized list of special entities that appear in the poll description, which can be specified instead of *description_parse_mode*\n",
+        "name": "description_entities"
       },
       {
         "type": "Boolean",
@@ -205,6 +261,18 @@
         "deprecated": {
           "version": "7.0",
           "release_date": "2023-12-29"
+        }
+      },
+      {
+        "type": "Integer",
+        "required": false,
+        "description": "0-based identifier of the correct answer option, required for polls in quiz mode",
+        "html_description": "<td>0-based identifier of the correct answer option, required for polls in quiz mode</td>",
+        "rst_description": "0-based identifier of the correct answer option, required for polls in quiz mode\n",
+        "name": "correct_option_id",
+        "deprecated": {
+          "version": "9.6",
+          "release_date": "2026-04-03"
         }
       },
       {

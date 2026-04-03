@@ -42,6 +42,14 @@
         "rst_description": "0-based identifiers of chosen answer options. May be empty if the vote was retracted.\n",
         "name": "option_ids",
         "required": true
+      },
+      {
+        "type": "Array of String",
+        "description": "Persistent identifiers of the chosen answer options. May be empty if the vote was retracted.",
+        "html_description": "<td>Persistent identifiers of the chosen answer options. May be empty if the vote was retracted.</td>",
+        "rst_description": "Persistent identifiers of the chosen answer options. May be empty if the vote was retracted.\n",
+        "name": "option_persistent_ids",
+        "required": true
       }
     ],
     "category": "types"

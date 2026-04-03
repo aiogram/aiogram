@@ -202,6 +202,14 @@
         "rst_description": "*Optional*. A boost was removed from a chat. The bot must be an administrator in the chat to receive these updates.\n",
         "name": "removed_chat_boost",
         "required": false
+      },
+      {
+        "type": "ManagedBotUpdated",
+        "description": "A new bot was created to be managed by the bot or token of a bot was changed",
+        "html_description": "<td><em>Optional</em>. A new bot was created to be managed by the bot or token of a bot was changed</td>",
+        "rst_description": "*Optional*. A new bot was created to be managed by the bot or token of a bot was changed\n",
+        "name": "managed_bot",
+        "required": false
       }
     ],
     "category": "types"
