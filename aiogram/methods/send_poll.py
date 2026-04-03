@@ -71,7 +71,7 @@ class SendPoll(TelegramMethod[Message]):
     """Pass :code:`True` if the poll needs to be immediately closed. This can be useful for poll preview."""
     description: str | None = None
     """Description of the poll to be sent, 0-1024 characters after entities parsing"""
-    description_parse_mode: str | None = None
+    description_parse_mode: str | Default | None = Default("parse_mode")
     """Mode for parsing entities in the poll description. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details."""
     description_entities: list[MessageEntity] | None = None
     """A JSON-serialized list of special entities that appear in the poll description, which can be specified instead of *description_parse_mode*"""
@@ -132,7 +132,7 @@ class SendPoll(TelegramMethod[Message]):
             close_date: DateTimeUnion | None = None,
             is_closed: bool | None = None,
             description: str | None = None,
-            description_parse_mode: str | None = None,
+            description_parse_mode: str | Default | None = Default("parse_mode"),
             description_entities: list[MessageEntity] | None = None,
             disable_notification: bool | None = None,
             protect_content: bool | Default | None = Default("protect_content"),

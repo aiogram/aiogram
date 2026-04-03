@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any
 
 from .base import TelegramObject
+from .custom import DateTime
 
 if TYPE_CHECKING:
     from .chat import Chat
@@ -29,7 +30,7 @@ class PollOption(TelegramObject):
     """*Optional*. User who added the option; omitted if the option wasn't added by a user after poll creation"""
     added_by_chat: Chat | None = None
     """*Optional*. Chat that added the option; omitted if the option wasn't added by a chat after poll creation"""
-    addition_date: int | None = None
+    addition_date: DateTime | None = None
     """*Optional*. Point in time (Unix timestamp) when the option was added; omitted if the option existed in the original poll"""
 
     if TYPE_CHECKING:
@@ -45,7 +46,7 @@ class PollOption(TelegramObject):
             text_entities: list[MessageEntity] | None = None,
             added_by_user: User | None = None,
             added_by_chat: Chat | None = None,
-            addition_date: int | None = None,
+            addition_date: DateTime | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

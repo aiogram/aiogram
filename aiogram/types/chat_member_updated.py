@@ -936,7 +936,7 @@ class ChatMemberUpdated(TelegramObject):
         close_date: DateTimeUnion | None = None,
         is_closed: bool | None = None,
         description: str | None = None,
-        description_parse_mode: str | None = None,
+        description_parse_mode: str | Default | None = Default("parse_mode"),
         description_entities: list[MessageEntity] | None = None,
         disable_notification: bool | None = None,
         protect_content: bool | Default | None = Default("protect_content"),
