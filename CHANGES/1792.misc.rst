@@ -43,6 +43,7 @@ Updated to `Bot API 9.6 <https://core.telegram.org/bots/api-changelog#april-3-20
 
 *New Parameters for* :class:`aiogram.methods.send_poll.SendPoll`:
 
+- Replaced :code:`correct_option_id` with :code:`correct_option_ids` - supports multiple correct answers for quiz polls
 - Added :code:`allows_revoting` - allows users to change their vote after submission
 - Added :code:`shuffle_options` - randomizes the order of poll options for each user
 - Added :code:`allow_adding_options` - allows users to add their own poll options
