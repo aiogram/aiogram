@@ -1,0 +1,25 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "managedbotcreated",
+    "name": "ManagedBotCreated",
+    "description": "This object contains information about the bot that was created to be managed by the current bot.",
+    "html_description": "<p>This object contains information about the bot that was created to be managed by the current bot.</p>",
+    "rst_description": "This object contains information about the bot that was created to be managed by the current bot.",
+    "annotations": [
+      {
+        "type": "User",
+        "description": "Information about the bot. The bot's token can be fetched using the method getManagedBotToken.",
+        "html_description": "<td>Information about the bot. The bot's token can be fetched using the method <a href=\"#getmanagedbottoken\">getManagedBotToken</a>.</td>",
+        "rst_description": "Information about the bot. The bot's token can be fetched using the method :class:`aiogram.methods.get_managed_bot_token.GetManagedBotToken`.\n",
+        "name": "bot",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

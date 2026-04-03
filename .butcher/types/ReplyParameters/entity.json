@@ -37,9 +37,9 @@
       },
       {
         "type": "String",
-        "description": "Quoted part of the message to be replied to; 0-1024 characters after entities parsing. The quote must be an exact substring of the message to be replied to, including bold, italic, underline, strikethrough, spoiler, and custom_emoji entities. The message will fail to send if the quote isn't found in the original message.",
-        "html_description": "<td><em>Optional</em>. Quoted part of the message to be replied to; 0-1024 characters after entities parsing. The quote must be an exact substring of the message to be replied to, including <em>bold</em>, <em>italic</em>, <em>underline</em>, <em>strikethrough</em>, <em>spoiler</em>, and <em>custom_emoji</em> entities. The message will fail to send if the quote isn't found in the original message.</td>",
-        "rst_description": "*Optional*. Quoted part of the message to be replied to; 0-1024 characters after entities parsing. The quote must be an exact substring of the message to be replied to, including *bold*, *italic*, *underline*, *strikethrough*, *spoiler*, and *custom_emoji* entities. The message will fail to send if the quote isn't found in the original message.\n",
+        "description": "Quoted part of the message to be replied to; 0-1024 characters after entities parsing. The quote must be an exact substring of the message to be replied to, including bold, italic, underline, strikethrough, spoiler, custom_emoji, and date_time entities. The message will fail to send if the quote isn't found in the original message.",
+        "html_description": "<td><em>Optional</em>. Quoted part of the message to be replied to; 0-1024 characters after entities parsing. The quote must be an exact substring of the message to be replied to, including <em>bold</em>, <em>italic</em>, <em>underline</em>, <em>strikethrough</em>, <em>spoiler</em>, <em>custom_emoji</em>, and <em>date_time</em> entities. The message will fail to send if the quote isn't found in the original message.</td>",
+        "rst_description": "*Optional*. Quoted part of the message to be replied to; 0-1024 characters after entities parsing. The quote must be an exact substring of the message to be replied to, including *bold*, *italic*, *underline*, *strikethrough*, *spoiler*, *custom_emoji*, and *date_time* entities. The message will fail to send if the quote isn't found in the original message.\n",
         "name": "quote",
         "required": false
       },
@@ -73,6 +73,14 @@
         "html_description": "<td><em>Optional</em>. Identifier of the specific checklist task to be replied to</td>",
         "rst_description": "*Optional*. Identifier of the specific checklist task to be replied to\n",
         "name": "checklist_task_id",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "Persistent identifier of the specific poll option to be replied to",
+        "html_description": "<td><em>Optional</em>. Persistent identifier of the specific poll option to be replied to</td>",
+        "rst_description": "*Optional*. Persistent identifier of the specific poll option to be replied to\n",
+        "name": "poll_option_id",
         "required": false
       }
     ],

@@ -1,0 +1,49 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "polloptiondeleted",
+    "name": "PollOptionDeleted",
+    "description": "Describes a service message about an option deleted from a poll.",
+    "html_description": "<p>Describes a service message about an option deleted from a poll.</p>",
+    "rst_description": "Describes a service message about an option deleted from a poll.",
+    "annotations": [
+      {
+        "type": "MaybeInaccessibleMessage",
+        "description": "Message containing the poll from which the option was deleted, if known. Note that the Message object in this field will not contain the reply_to_message field even if it itself is a reply.",
+        "html_description": "<td><em>Optional</em>. Message containing the poll from which the option was deleted, if known. Note that the <a href=\"#message\">Message</a> object in this field will not contain the <em>reply_to_message</em> field even if it itself is a reply.</td>",
+        "rst_description": "*Optional*. Message containing the poll from which the option was deleted, if known. Note that the :class:`aiogram.types.message.Message` object in this field will not contain the *reply_to_message* field even if it itself is a reply.\n",
+        "name": "poll_message",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "Unique identifier of the deleted option",
+        "html_description": "<td>Unique identifier of the deleted option</td>",
+        "rst_description": "Unique identifier of the deleted option\n",
+        "name": "option_persistent_id",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Option text",
+        "html_description": "<td>Option text</td>",
+        "rst_description": "Option text\n",
+        "name": "option_text",
+        "required": true
+      },
+      {
+        "type": "Array of MessageEntity",
+        "description": "Special entities that appear in the option_text",
+        "html_description": "<td><em>Optional</em>. Special entities that appear in the <em>option_text</em></td>",
+        "rst_description": "*Optional*. Special entities that appear in the *option_text*\n",
+        "name": "option_text_entities",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

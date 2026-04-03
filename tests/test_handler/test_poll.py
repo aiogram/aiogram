@@ -9,11 +9,12 @@ class TestShippingQueryHandler:
         event = Poll(
             id="query",
             question="Q?",
-            options=[PollOption(text="A1", voter_count=1)],
+            options=[PollOption(persistent_id="1", text="A1", voter_count=1)],
             is_closed=True,
             is_anonymous=False,
             type="quiz",
             allows_multiple_answers=False,
+            allows_revoting=False,
             total_voter_count=0,
             correct_option_id=0,
         )

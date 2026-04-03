@@ -1,3 +1,4 @@
 explanation_parse_mode: parse_mode
 question_parse_mode: parse_mode
+description_parse_mode: parse_mode
 protect_content: protect_content

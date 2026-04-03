@@ -164,6 +164,14 @@
         "required": false
       },
       {
+        "type": "String",
+        "description": "Persistent identifier of the specific poll option that is being replied to",
+        "html_description": "<td><em>Optional</em>. Persistent identifier of the specific poll option that is being replied to</td>",
+        "rst_description": "*Optional*. Persistent identifier of the specific poll option that is being replied to\n",
+        "name": "reply_to_poll_option_id",
+        "required": false
+      },
+      {
         "type": "User",
         "description": "Bot through which the message was sent",
         "html_description": "<td><em>Optional</em>. Bot through which the message was sent</td>",
@@ -764,11 +772,35 @@
         "required": false
       },
       {
+        "type": "ManagedBotCreated",
+        "description": "Service message: user created a bot that will be managed by the current bot",
+        "html_description": "<td><em>Optional</em>. Service message: user created a bot that will be managed by the current bot</td>",
+        "rst_description": "*Optional*. Service message: user created a bot that will be managed by the current bot\n",
+        "name": "managed_bot_created",
+        "required": false
+      },
+      {
         "type": "PaidMessagePriceChanged",
         "description": "Service message: the price for paid messages has changed in the chat",
         "html_description": "<td><em>Optional</em>. Service message: the price for paid messages has changed in the chat</td>",
         "rst_description": "*Optional*. Service message: the price for paid messages has changed in the chat\n",
         "name": "paid_message_price_changed",
+        "required": false
+      },
+      {
+        "type": "PollOptionAdded",
+        "description": "Service message: answer option was added to a poll",
+        "html_description": "<td><em>Optional</em>. Service message: answer option was added to a poll</td>",
+        "rst_description": "*Optional*. Service message: answer option was added to a poll\n",
+        "name": "poll_option_added",
+        "required": false
+      },
+      {
+        "type": "PollOptionDeleted",
+        "description": "Service message: answer option was deleted from a poll",
+        "html_description": "<td><em>Optional</em>. Service message: answer option was deleted from a poll</td>",
+        "rst_description": "*Optional*. Service message: answer option was deleted from a poll\n",
+        "name": "poll_option_deleted",
         "required": false
       },
       {

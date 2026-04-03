@@ -80,6 +80,7 @@ from ..methods import (
     GetFile,
     GetForumTopicIconStickers,
     GetGameHighScores,
+    GetManagedBotToken,
     GetMe,
     GetMyCommands,
     GetMyDefaultAdministratorRights,
@@ -110,11 +111,13 @@ from ..methods import (
     RemoveUserVerification,
     ReopenForumTopic,
     ReopenGeneralForumTopic,
+    ReplaceManagedBotToken,
     ReplaceStickerInSet,
     RepostStory,
     RestrictChatMember,
     RevokeChatInviteLink,
     SavePreparedInlineMessage,
+    SavePreparedKeyboardButton,
     SendAnimation,
     SendAudio,
     SendChatAction,
@@ -216,6 +219,7 @@ from ..types import (
     InputProfilePhotoUnion,
     InputSticker,
     InputStoryContentUnion,
+    KeyboardButton,
     LabeledPrice,
     LinkPreviewOptions,
     MaskPosition,
@@ -228,6 +232,7 @@ from ..types import (
     PassportElementErrorUnion,
     Poll,
     PreparedInlineMessage,
+    PreparedKeyboardButton,
     ReactionTypeUnion,
     ReplyMarkupUnion,
     ReplyParameters,
@@ -3008,13 +3013,20 @@ class Bot:
         is_anonymous: bool | None = None,
         type: str | None = None,
         allows_multiple_answers: bool | None = None,
-        correct_option_id: int | None = None,
+        allows_revoting: bool | None = None,
+        shuffle_options: bool | None = None,
+        allow_adding_options: bool | None = None,
+        hide_results_until_closes: bool | None = None,
+        correct_option_ids: list[int] | None = None,
         explanation: str | None = None,
         explanation_parse_mode: str | Default | None = Default("parse_mode"),
         explanation_entities: list[MessageEntity] | None = None,
         open_period: int | None = None,
         close_date: DateTimeUnion | None = None,
         is_closed: bool | None = None,
+        description: str | None = None,
+        description_parse_mode: str | Default | None = Default("parse_mode"),
+        description_entities: list[MessageEntity] | None = None,
         disable_notification: bool | None = None,
         protect_content: bool | Default | None = Default("protect_content"),
         allow_paid_broadcast: bool | None = None,
@@ -3022,6 +3034,7 @@ class Bot:
         reply_parameters: ReplyParameters | None = None,
         reply_markup: ReplyMarkupUnion | None = None,
         allow_sending_without_reply: bool | None = None,
+        correct_option_id: int | None = None,
         reply_to_message_id: int | None = None,
         request_timeout: int | None = None,
     ) -> Message:
@@ -3039,14 +3052,21 @@ class Bot:
         :param question_entities: A JSON-serialized list of special entities that appear in the poll question. It can be specified instead of *question_parse_mode*
         :param is_anonymous: :code:`True`, if the poll needs to be anonymous, defaults to :code:`True`
         :param type: Poll type, 'quiz' or 'regular', defaults to 'regular'
-        :param allows_multiple_answers: :code:`True`, if the poll allows multiple answers, ignored for polls in quiz mode, defaults to :code:`False`
-        :param correct_option_id: 0-based identifier of the correct answer option, required for polls in quiz mode
+        :param allows_multiple_answers: Pass :code:`True`, if the poll allows multiple answers, defaults to :code:`False`
+        :param allows_revoting: Pass :code:`True`, if the poll allows to change chosen answer options, defaults to :code:`False` for quizzes and to :code:`True` for regular polls
+        :param shuffle_options: Pass :code:`True`, if the poll options must be shown in random order
+        :param allow_adding_options: Pass :code:`True`, if answer options can be added to the poll after creation; not supported for anonymous polls and quizzes
+        :param hide_results_until_closes: Pass :code:`True`, if poll results must be shown only after the poll closes
+        :param correct_option_ids: A JSON-serialized list of monotonically increasing 0-based identifiers of the correct answer options, required for polls in quiz mode
         :param explanation: Text that is shown when a user chooses an incorrect answer or taps on the lamp icon in a quiz-style poll, 0-200 characters with at most 2 line feeds after entities parsing
         :param explanation_parse_mode: Mode for parsing entities in the explanation. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.
         :param explanation_entities: A JSON-serialized list of special entities that appear in the poll explanation. It can be specified instead of *explanation_parse_mode*
-        :param open_period: Amount of time in seconds the poll will be active after creation, 5-600. Can't be used together with *close_date*.
-        :param close_date: Point in time (Unix timestamp) when the poll will be automatically closed. Must be at least 5 and no more than 600 seconds in the future. Can't be used together with *open_period*.
+        :param open_period: Amount of time in seconds the poll will be active after creation, 5-2628000. Can't be used together with *close_date*.
+        :param close_date: Point in time (Unix timestamp) when the poll will be automatically closed. Must be at least 5 and no more than 2628000 seconds in the future. Can't be used together with *open_period*.
         :param is_closed: Pass :code:`True` if the poll needs to be immediately closed. This can be useful for poll preview.
+        :param description: Description of the poll to be sent, 0-1024 characters after entities parsing
+        :param description_parse_mode: Mode for parsing entities in the poll description. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.
+        :param description_entities: A JSON-serialized list of special entities that appear in the poll description, which can be specified instead of *description_parse_mode*
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param allow_paid_broadcast: Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
@@ -3054,6 +3074,7 @@ class Bot:
         :param reply_parameters: Description of the message to reply to
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
+        :param correct_option_id: 0-based identifier of the correct answer option, required for polls in quiz mode
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :param request_timeout: Request timeout
         :return: On success, the sent :class:`aiogram.types.message.Message` is returned.
@@ -3070,13 +3091,20 @@ class Bot:
             is_anonymous=is_anonymous,
             type=type,
             allows_multiple_answers=allows_multiple_answers,
-            correct_option_id=correct_option_id,
+            allows_revoting=allows_revoting,
+            shuffle_options=shuffle_options,
+            allow_adding_options=allow_adding_options,
+            hide_results_until_closes=hide_results_until_closes,
+            correct_option_ids=correct_option_ids,
             explanation=explanation,
             explanation_parse_mode=explanation_parse_mode,
             explanation_entities=explanation_entities,
             open_period=open_period,
             close_date=close_date,
             is_closed=is_closed,
+            description=description,
+            description_parse_mode=description_parse_mode,
+            description_entities=description_entities,
             disable_notification=disable_notification,
             protect_content=protect_content,
             allow_paid_broadcast=allow_paid_broadcast,
@@ -3084,6 +3112,7 @@ class Bot:
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
             allow_sending_without_reply=allow_sending_without_reply,
+            correct_option_id=correct_option_id,
             reply_to_message_id=reply_to_message_id,
         )
         return await self(call, request_timeout=request_timeout)
@@ -4904,8 +4933,8 @@ class Bot:
         :param chat_id: Required if *user_id* is not specified. Unique identifier for the chat or username of the channel (in the format :code:`@channelusername`) that will receive the gift.
         :param pay_for_upgrade: Pass :code:`True` to pay for the gift upgrade from the bot's balance, thereby making the upgrade free for the receiver
         :param text: Text that will be shown along with the gift; 0-128 characters
-        :param text_parse_mode: Mode for parsing entities in the text. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details. Entities other than 'bold', 'italic', 'underline', 'strikethrough', 'spoiler', and 'custom_emoji' are ignored.
-        :param text_entities: A JSON-serialized list of special entities that appear in the gift text. It can be specified instead of *text_parse_mode*. Entities other than 'bold', 'italic', 'underline', 'strikethrough', 'spoiler', and 'custom_emoji' are ignored.
+        :param text_parse_mode: Mode for parsing entities in the text. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details. Entities other than 'bold', 'italic', 'underline', 'strikethrough', 'spoiler', 'custom_emoji', and 'date_time' are ignored.
+        :param text_entities: A JSON-serialized list of special entities that appear in the gift text. It can be specified instead of *text_parse_mode*. Entities other than 'bold', 'italic', 'underline', 'strikethrough', 'spoiler', 'custom_emoji', and 'date_time' are ignored.
         :param request_timeout: Request timeout
         :return: Returns :code:`True` on success.
         """
@@ -5232,8 +5261,8 @@ class Bot:
         :param month_count: Number of months the Telegram Premium subscription will be active for the user; must be one of 3, 6, or 12
         :param star_count: Number of Telegram Stars to pay for the Telegram Premium subscription; must be 1000 for 3 months, 1500 for 6 months, and 2500 for 12 months
         :param text: Text that will be shown along with the service message about the subscription; 0-128 characters
-        :param text_parse_mode: Mode for parsing entities in the text. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details. Entities other than 'bold', 'italic', 'underline', 'strikethrough', 'spoiler', and 'custom_emoji' are ignored.
-        :param text_entities: A JSON-serialized list of special entities that appear in the gift text. It can be specified instead of *text_parse_mode*. Entities other than 'bold', 'italic', 'underline', 'strikethrough', 'spoiler', and 'custom_emoji' are ignored.
+        :param text_parse_mode: Mode for parsing entities in the text. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details. Entities other than 'bold', 'italic', 'underline', 'strikethrough', 'spoiler', 'custom_emoji', and 'date_time' are ignored.
+        :param text_entities: A JSON-serialized list of special entities that appear in the gift text. It can be specified instead of *text_parse_mode*. Entities other than 'bold', 'italic', 'underline', 'strikethrough', 'spoiler', 'custom_emoji', and 'date_time' are ignored.
         :param request_timeout: Request timeout
         :return: Returns :code:`True` on success.
         """
@@ -5936,5 +5965,68 @@ class Bot:
             chat_id=chat_id,
             user_id=user_id,
             tag=tag,
+        )
+        return await self(call, request_timeout=request_timeout)
+
+    async def get_managed_bot_token(
+        self,
+        user_id: int,
+        request_timeout: int | None = None,
+    ) -> str:
+        """
+        Use this method to get the token of a managed bot. Returns the token as *String* on success.
+
+        Source: https://core.telegram.org/bots/api#getmanagedbottoken
+
+        :param user_id: User identifier of the managed bot whose token will be returned
+        :param request_timeout: Request timeout
+        :return: Returns the token as *String* on success.
+        """
+
+        call = GetManagedBotToken(
+            user_id=user_id,
+        )
+        return await self(call, request_timeout=request_timeout)
+
+    async def replace_managed_bot_token(
+        self,
+        user_id: int,
+        request_timeout: int | None = None,
+    ) -> str:
+        """
+        Use this method to revoke the current token of a managed bot and generate a new one. Returns the new token as *String* on success.
+
+        Source: https://core.telegram.org/bots/api#replacemanagedbottoken
+
+        :param user_id: User identifier of the managed bot whose token will be replaced
+        :param request_timeout: Request timeout
+        :return: Returns the new token as *String* on success.
+        """
+
+        call = ReplaceManagedBotToken(
+            user_id=user_id,
+        )
+        return await self(call, request_timeout=request_timeout)
+
+    async def save_prepared_keyboard_button(
+        self,
+        user_id: int,
+        button: KeyboardButton,
+        request_timeout: int | None = None,
+    ) -> PreparedKeyboardButton:
+        """
+        Stores a keyboard button that can be used by a user within a Mini App. Returns a :class:`aiogram.types.prepared_keyboard_button.PreparedKeyboardButton` object.
+
+        Source: https://core.telegram.org/bots/api#savepreparedkeyboardbutton
+
+        :param user_id: Unique identifier of the target user that can use the button
+        :param button: A JSON-serialized object describing the button to be saved. The button must be of the type *request_users*, *request_chat*, or *request_managed_bot*
+        :param request_timeout: Request timeout
+        :return: Returns a :class:`aiogram.types.prepared_keyboard_button.PreparedKeyboardButton` object.
+        """
+
+        call = SavePreparedKeyboardButton(
+            user_id=user_id,
+            button=button,
         )
         return await self(call, request_timeout=request_timeout)
