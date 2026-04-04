@@ -149,6 +149,42 @@ class TestSimpleI18nMiddleware:
         )
         assert locale == i18n.default_locale
 
+    @pytest.mark.parametrize(
+        ("available_locales", "default_locale", "language_code", "expected_locale"),
+        [
+            ({"pt-br": None}, "en", "pt-br", "pt-br"),
+            ({"pt_BR": None}, "en", "pt-br", "pt_BR"),
+            ({"pt-br": None, "pt_BR": None}, "en", "pt-br", "pt-br"),
+            ({"en": None}, "uk", "en-US", "en"),
+            ({"uk": None}, "en", "uk-UA", "uk"),
+        ],
+    )
+    async def test_get_locale_region_code_variants(
+        self,
+        i18n: I18n,
+        available_locales: dict[str, None],
+        default_locale: str,
+        language_code: str,
+        expected_locale: str,
+    ):
+        i18n.default_locale = default_locale
+        middleware = SimpleI18nMiddleware(i18n=i18n)
+        i18n.locales = available_locales
+
+        locale = await middleware.get_locale(
+            None,
+            {
+                "event_from_user": User(
+                    id=42,
+                    is_bot=False,
+                    first_name="Test",
+                    language_code=language_code,
+                )
+            },
+        )
+
+        assert locale == expected_locale
+
     async def test_custom_keys(self, i18n: I18n):
         async def handler(event, data):
             return data
