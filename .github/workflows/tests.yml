@@ -34,6 +34,9 @@ jobs:
           - "3.12"
           - "3.13"
           - "3.14"
+        dependency-resolution:
+          - "lowest-direct"
+          - "highest"
 
     defaults:
       # Windows sucks. Force use bash instead of PowerShell
@@ -64,9 +67,9 @@ jobs:
         with:
           enable-cache: true
 
-      - name: Install project dependencies
+      - name: Install project dependencies with ${{ matrix.dependency-resolution }} resolution
         run: |
-          uv sync --all-extras --group dev --group test
+          uv sync --all-extras --group dev --group test --resolution ${{ matrix.dependency-resolution }}
 
       - name: Lint code
         run: |
