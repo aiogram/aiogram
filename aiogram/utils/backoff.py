@@ -65,7 +65,10 @@ class Backoff:
         await asyncio.sleep(next(self))
 
     def _calculate_next(self, value: float) -> float:
-        return normalvariate(min(value * self.factor, self.max_delay), self.jitter)
+        return max(
+            self.min_delay,
+            normalvariate(min(value * self.factor, self.max_delay), self.jitter),
+        )
 
     def __next__(self) -> float:
         self._current_delay = self._next_delay

@@ -351,6 +351,10 @@ class MediaGroupBuilder:
 
         :return: List of media objects.
         """
+        if not self._media:
+            msg = "Media group must contain at least one media element"
+            raise ValueError(msg)
+
         update_first_media: dict[str, Any] = {"caption": self.caption}
         if self.caption_entities is not None:
             update_first_media["caption_entities"] = self.caption_entities
