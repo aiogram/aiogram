@@ -1,0 +1,1 @@
+Added ``MediaGroupAggregatorMiddleware`` to aggregate media groups into a single event with an album list in the handler data.
