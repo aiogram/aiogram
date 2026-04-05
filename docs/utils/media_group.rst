@@ -1,6 +1,6 @@
-===================
+===========
 Media group
-===================
+===========
 
 This module provides tools for media groups.
 
@@ -45,7 +45,7 @@ it will be used as ``caption`` for first media in group.
 
 
 Handling media groups
-======================
+=====================
 
 By default each media in the group is processed separately.
 
@@ -56,7 +56,7 @@ other messages with the same media group ID will be suppressed. There are two op
 - :class:`aiogram.dispatcher.middlewares.media_group.MemoryMediaGroupAggregator` - simple in-memory storage, used by default
 - :class:`aiogram.dispatcher.middlewares.media_group.RedisMediaGroupAggregator` - support distributed environment
 
-You also can use :class:`aiogram.filters.media_group.MediaGroupFilter`
+You also can use :class:`aiogram.filters.magic_data.MagicData` with ``F.album``
 to filter media groups.
 
 Usage
@@ -69,13 +69,13 @@ Usage
 
     # register middleware
     from aiogram.dispatcher.middlewares.media_group import MediaGroupAggregatorMiddleware
-    from aiogram.filters import MediaGroupFilter
+    from aiogram.filters import MagicData
 
     router.message.outer_middleware(MediaGroupAggregatorMiddleware())
 
     # use middleware
     @router.message(
-      MediaGroupFilter(max_media_count=5),
+      MagicData(F.album.len() <= 5),
       F.caption == "album_caption" # other filters will be applied to the first message in the group
     )
     async def start(message: Message, album: list[Message]):
@@ -93,8 +93,6 @@ References
 .. autoclass:: aiogram.utils.media_group.MediaGroupBuilder
    :members:
 .. autoclass:: aiogram.dispatcher.middlewares.media_group.MediaGroupAggregatorMiddleware
-   :members:
-.. autoclass:: aiogram.filters.media_group.MediaGroupFilter
    :members:
 .. autoclass:: aiogram.dispatcher.middlewares.media_group.MemoryMediaGroupAggregator
    :members:
