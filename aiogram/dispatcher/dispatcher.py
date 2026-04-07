@@ -292,10 +292,13 @@ class Dispatcher(Router):
         event: TelegramObject,
         **kwargs: Any,
     ) -> Any:
-        if self.tracer is None:
+        if (
+            self.tracer is None
+            or (tracer_manager := self.tracer.get_trigger_span_manager(event)) is None
+        ):
             return await super()._propagate_event(observer, update_type, event, **kwargs)
 
-        async with self.tracer.get_trigger_span_manager(event):
+        async with tracer_manager:
             return await super()._propagate_event(observer, update_type, event, **kwargs)
 
     @classmethod

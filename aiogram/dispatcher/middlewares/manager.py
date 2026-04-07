@@ -58,15 +58,15 @@ class MiddlewareManager(Sequence[MiddlewareType[TelegramObject]]):
     async def middleware_step(
         tracer_instance: AbstractTracer,
         middleware: MiddlewareType[TelegramObject],
-        handler,
+        handler: CallbackType,
         event: TelegramObject,
-        data,
+        kwargs: dict[str, Any],
     ) -> Any:
         manager = tracer_instance.get_middleware_span_manager(middleware)
         if manager is None:
-            return await middleware(handler, event, data)
+            return await middleware(handler, event, kwargs)
         async with manager:
-            return await middleware(handler, event, data)
+            return await middleware(handler, event, kwargs)
 
     @staticmethod
     def wrap_middlewares(
@@ -80,10 +80,10 @@ class MiddlewareManager(Sequence[MiddlewareType[TelegramObject]]):
         tracer_instance = tracer.get()
         if tracer_instance is None:
             for m in reversed(middlewares):
-                middleware = functools.partial(m, middleware)
+                middleware = functools.partial(m, middleware)  # type: ignore[assignment]
         else:
             for m in reversed(middlewares):
-                middleware = functools.partial(
+                middleware = functools.partial(  # type: ignore[assignment]
                     MiddlewareManager.middleware_step, tracer_instance, m, middleware
                 )
         return middleware

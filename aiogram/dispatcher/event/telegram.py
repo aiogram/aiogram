@@ -136,10 +136,12 @@ class TelegramEventObserver:
                     handler_manager := tracer_instance.get_handler_span_manager(handler)
                 ):
 
-                    @functools.wraps(handler.callback)
-                    async def handler_wrapper(event, **kwargs):
+                    @functools.wraps(handler.call)
+                    async def handler_wrapper(
+                        event: TelegramObject, *args: Any, **kwargs: Any
+                    ) -> Any:
                         async with handler_manager:  # noqa: B023
-                            return await handler.call(event, **kwargs)  # noqa: B023
+                            return await handler.call(event, *args, **kwargs)  # noqa: B023
 
                     handler_call = handler_wrapper
                 wrapped_inner = self.outer_middleware.wrap_middlewares(
