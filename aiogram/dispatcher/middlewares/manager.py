@@ -8,6 +8,7 @@ from aiogram.dispatcher.event.bases import (
     NextMiddlewareType,
 )
 from aiogram.dispatcher.event.handler import CallbackType
+from aiogram.tracer import AbstractTracer, tracer
 from aiogram.types import TelegramObject
 
 
@@ -54,15 +55,35 @@ class MiddlewareManager(Sequence[MiddlewareType[TelegramObject]]):
         return len(self._middlewares)
 
     @staticmethod
-    def wrap_middlewares(
-        middlewares: Sequence[MiddlewareType[MiddlewareEventType]],
+    async def middleware_step(
+        tracer_instance: AbstractTracer,
+        middleware: MiddlewareType[TelegramObject],
         handler: CallbackType,
+        event: TelegramObject,
+        kwargs: dict[str, Any],
+    ) -> Any:
+        manager = tracer_instance.get_middleware_span_manager(middleware)
+        if manager is None:
+            return await middleware(handler, event, kwargs)
+        async with manager:
+            return await middleware(handler, event, kwargs)
+
+    @staticmethod
+    def wrap_middlewares(
+        middlewares: Sequence[MiddlewareType[MiddlewareEventType]], handler: CallbackType
     ) -> NextMiddlewareType[MiddlewareEventType]:
         @functools.wraps(handler)
         def handler_wrapper(event: TelegramObject, kwargs: dict[str, Any]) -> Any:
             return handler(event, **kwargs)
 
         middleware = handler_wrapper
-        for m in reversed(middlewares):
-            middleware = functools.partial(m, middleware)  # type: ignore[assignment]
+        tracer_instance = tracer.get()
+        if tracer_instance is None:
+            for m in reversed(middlewares):
+                middleware = functools.partial(m, middleware)  # type: ignore[assignment]
+        else:
+            for m in reversed(middlewares):
+                middleware = functools.partial(  # type: ignore[assignment]
+                    MiddlewareManager.middleware_step, tracer_instance, m, middleware
+                )
         return middleware
