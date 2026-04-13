@@ -102,7 +102,7 @@ dev = [
     "motor-types==1.0.0b4",
 ]
 test = [
-    "pytest==9.0.1",
+    "pytest==9.0.3",
     "pytest-html==4.1.1",
     "pytest-mock==3.15.1",
     "pytest-mypy==1.0.1",
