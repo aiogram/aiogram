@@ -136,4 +136,5 @@ class PyMongoStorage(BaseStorage):
         )
         if not update_result:
             await self._collection.delete_one({"_id": document_id})
+            return {}
         return cast(dict[str, Any], update_result.get("data", {}))
