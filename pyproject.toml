@@ -43,7 +43,7 @@ classifiers = [
 dependencies = [
     "magic-filter>=1.0.12,<1.1",
     "aiohttp>=3.9.0,<3.14",
-    "pydantic>=2.4.1,<2.13",
+    "pydantic>=2.4.1,<2.14",
     "aiofiles>=23.2.1,<26.0",
     "certifi>=2023.7.22",
     "typing-extensions>=4.7.0,<=5.0",
@@ -64,7 +64,7 @@ redis = [
 ]
 mongo = [
     "motor>=3.3.2,<3.8",
-    "pymongo>4.5,<4.16",
+    "pymongo>4.5,<4.17",
 ]
 proxy = [
     "aiohttp-socks~=0.10.1",
@@ -94,22 +94,22 @@ docs = [
 
 [dependency-groups]
 dev = [
-    "ruff~=0.14",
+    "ruff~=0.15",
     "mypy==1.10.1",
     "toml~=0.10.2",
     "pre-commit~=4.3",
-    "packaging~=25.0",
+    "packaging~=26.0",
     "motor-types==1.0.0b4",
 ]
 test = [
-    "pytest==9.0.1",
-    "pytest-html==4.1.1",
+    "pytest==9.0.3",
+    "pytest-html>=4.2,<4.3",
     "pytest-mock==3.15.1",
     "pytest-mypy==1.0.1",
-    "pytest-cov==7.0.0",
+    "pytest-cov>=7.1,<7.2",
     "pytest-aiohttp==1.1.0",
     "aresponses==3.0.0",
-    "pytz==2025.2",
+    "pytz>=2026,<2027",
     "pycryptodomex==3.23.0",
 ]
 
