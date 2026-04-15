@@ -16,7 +16,7 @@ from aiogram.fsm.storage.base import (
 
 class PyMongoStorage(BaseStorage):
     """
-    MongoDB storage required :code:`pymongo` package installed (:code:`pip install pymongo`).
+    MongoDB storage requires the :code:`pymongo` package (:code:`pip install pymongo`).
     """
 
     def __init__(
@@ -27,7 +27,7 @@ class PyMongoStorage(BaseStorage):
         collection_name: str = "states_and_data",
     ) -> None:
         """
-        :param client: Instance of AsyncMongoClient
+        :param client: instance of AsyncMongoClient
         :param key_builder: builder that helps to convert contextual key to string
         :param db_name: name of the MongoDB database for FSM
         :param collection_name: name of the collection for storing FSM states and data
@@ -47,11 +47,11 @@ class PyMongoStorage(BaseStorage):
         **kwargs: Any,
     ) -> "PyMongoStorage":
         """
-        Create an instance of :class:`PyMongoStorage` with specifying the connection string
+        Create an instance of :class:`PyMongoStorage` with the specified connection url
 
-        :param url: for example :code:`mongodb://user:password@host:port`
+        :param url: the connection url (i.e. :code:`mongodb://user:password@host:port`)
         :param connection_kwargs: see :code:`pymongo` docs
-        :param kwargs: arguments to be passed to :class:`PyMongoStorage`
+        :param kwargs: arguments passed to :class:`PyMongoStorage`
         :return: an instance of :class:`PyMongoStorage`
         """
         if connection_kwargs is None:

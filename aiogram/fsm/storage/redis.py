@@ -26,7 +26,7 @@ _JsonDumps = Callable[..., str]
 
 class RedisStorage(BaseStorage):
     """
-    Redis storage required :code:`redis` package installed (:code:`pip install redis`)
+    Redis storage requires the :code:`redis` package (:code:`pip install redis`)
     """
 
     def __init__(
@@ -39,7 +39,7 @@ class RedisStorage(BaseStorage):
         json_dumps: _JsonDumps = json.dumps,
     ) -> None:
         """
-        :param redis: Instance of Redis connection
+        :param redis: instance of Redis connection
         :param key_builder: builder that helps to convert contextual key to string
         :param state_ttl: TTL for state records
         :param data_ttl: TTL for data records
@@ -61,11 +61,11 @@ class RedisStorage(BaseStorage):
         **kwargs: Any,
     ) -> "RedisStorage":
         """
-        Create an instance of :class:`RedisStorage` with specifying the connection string
+        Create an instance of :class:`RedisStorage` with the specified connection url
 
-        :param url: for example :code:`redis://user:password@host:port/db`
+        :param url: the connection url (i.e. :code:`redis://user:password@host:port/db`)
         :param connection_kwargs: see :code:`redis` docs
-        :param kwargs: arguments to be passed to :class:`RedisStorage`
+        :param kwargs: arguments passed to :class:`RedisStorage`
         :return: an instance of :class:`RedisStorage`
         """
         if connection_kwargs is None:
