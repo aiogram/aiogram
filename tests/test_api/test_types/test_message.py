@@ -75,6 +75,7 @@ from aiogram.types import (
     InlineKeyboardMarkup,
     InputMediaPhoto,
     Invoice,
+    LinkPreviewOptions,
     Location,
     ManagedBotCreated,
     MessageAutoDeleteTimerChanged,
@@ -1263,6 +1264,27 @@ class TestMessage:
         )
         assert isinstance(method, expected_method)
         assert method.parse_mode == custom_parse_mode
+
+    def test_send_copy_link_preview_options_forwarded(self):
+        options = LinkPreviewOptions(is_disabled=True)
+        method = TEST_MESSAGE_TEXT.send_copy(chat_id=42, link_preview_options=options)
+        assert isinstance(method, SendMessage)
+        assert method.link_preview_options is options
+
+    def test_send_copy_link_preview_options_inherits_from_source(self):
+        source_options = LinkPreviewOptions(prefer_small_media=True)
+        message = TEST_MESSAGE_TEXT.model_copy(update={"link_preview_options": source_options})
+        method = message.send_copy(chat_id=42)
+        assert isinstance(method, SendMessage)
+        assert method.link_preview_options is source_options
+
+    def test_send_copy_link_preview_options_explicit_overrides_source(self):
+        source_options = LinkPreviewOptions(prefer_small_media=True)
+        override = LinkPreviewOptions(is_disabled=True)
+        message = TEST_MESSAGE_TEXT.model_copy(update={"link_preview_options": source_options})
+        method = message.send_copy(chat_id=42, link_preview_options=override)
+        assert isinstance(method, SendMessage)
+        assert method.link_preview_options is override
 
     def test_edit_text(self):
         message = Message(
