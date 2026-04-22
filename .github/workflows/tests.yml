@@ -35,8 +35,11 @@ jobs:
           - "3.13"
           - "3.14"
         dependency-resolution:
-          - "lowest-direct"
           - "highest"
+        include:
+          - os: ubuntu-latest
+            python-version: "3.10"
+            dependency-resolution: lowest-direct
 
     defaults:
       # Windows sucks. Force use bash instead of PowerShell
