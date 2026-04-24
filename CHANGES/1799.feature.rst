@@ -8,11 +8,10 @@ This catches the common operator-precedence pitfall where an expression such as
 
     F.text == "confirm" | F.text == "cancel"
 
-is silently parsed by Python as the always-``False`` chained comparison
+is silently parsed by Python as the chained comparison
 ``F.text == ("confirm" | F.text) == "cancel"`` instead of the intended
 ``(F.text == "confirm") | (F.text == "cancel")``.
 
-The warning fires at handler-registration time (module import), before any
-events are processed, and includes the corrected parenthesised form.
-Runtime behaviour is fully preserved — the warning is non-breaking and can be
-silenced with :func:`warnings.filterwarnings` if needed.
+When that expression is evaluated, the warning includes the corrected
+parenthesised form. Runtime behaviour is fully preserved — the warning is
+non-breaking and can be silenced with :func:`warnings.filterwarnings` if needed.
