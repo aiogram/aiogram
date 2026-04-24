@@ -1,0 +1,1 @@
+Bump ``ruff`` pre-commit hook from ``v0.14.0`` to ``v0.15.11`` and rename hook id from ``ruff`` to ``ruff-check``
