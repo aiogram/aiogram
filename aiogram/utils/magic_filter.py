@@ -11,7 +11,7 @@ _WARN_OR = (
     "Because '|' binds tighter than '==', the expression\n"
     "    F.x == 'a' | F.x == 'b'\n"
     "is parsed by Python as:\n"
-    "    F.x == ('a' | F.x) == 'b'   # always False\n"
+    "    F.x == ('a' | F.x) == 'b'   # likely not what you intended\n"
     "Correct forms:\n"
     "    (F.x == 'a') | (F.x == 'b')\n"
     "    F.x.in_({{'a', 'b'}})"
@@ -22,7 +22,7 @@ _WARN_AND = (
     "Because '&' binds tighter than '==', the expression\n"
     "    F.x == 'a' & F.y == 'b'\n"
     "is parsed by Python as:\n"
-    "    F.x == ('a' & F.y) == 'b'   # always False\n"
+    "    F.x == ('a' & F.y) == 'b'   # likely not what you intended\n"
     "Correct form:\n"
     "    (F.x == 'a') & (F.y == 'b')"
 )
