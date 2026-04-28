@@ -108,7 +108,7 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: coverage.xml
           flags: unittests
-          name: py-${{ matrix.python-version }}-${{ matrix.os }}
+          name: py-${{ matrix.python-version }}-${{ matrix.os }}-${{ matrix.dependency-resolution }}
           fail_ci_if_error: true
 
   pypy-tests:
