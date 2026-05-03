@@ -1,0 +1,1 @@
+Bumped upper version bounds for ``pydantic`` (``<2.14``) and ``pymongo`` (``<4.17``); refreshed dev/test dependencies (``ruff``, ``packaging``, ``pytest``, ``pytest-html``, ``pytest-cov``, ``pytz``).
