@@ -1,0 +1,1 @@
+Added the ``link_preview_options`` parameter to :meth:`aiogram.types.message.Message.send_copy`. When copying a text message, the new parameter is forwarded to :class:`aiogram.methods.send_message.SendMessage`; if it is not provided, the original message's ``link_preview_options`` are used as a fallback.

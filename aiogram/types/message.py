@@ -3658,6 +3658,7 @@ class Message(MaybeInaccessibleMessage):
         business_connection_id: str | None = None,
         parse_mode: str | None = None,
         message_effect_id: str | None = None,
+        link_preview_options: LinkPreviewOptions | None = None,
     ) -> (
         ForwardMessage
         | SendAnimation
@@ -3696,6 +3697,9 @@ class Message(MaybeInaccessibleMessage):
         :param business_connection_id:
         :param parse_mode:
         :param message_effect_id:
+        :param link_preview_options: Link preview generation options for the copied message.
+            Only applied when the source message is a text message; falls back to
+            the original message's ``link_preview_options`` when not provided.
         :return:
         """
         from ..methods import (
@@ -3735,6 +3739,7 @@ class Message(MaybeInaccessibleMessage):
             return SendMessage(
                 text=self.text,
                 entities=self.entities,
+                link_preview_options=link_preview_options or self.link_preview_options,
                 **kwargs,
             ).as_(self._bot)
         if self.audio:
