@@ -14,9 +14,9 @@ repos:
       - id: "check-json"
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: 'v0.14.0'
+    rev: 'v0.15.11'
     hooks:
-      - id: ruff
+      - id: ruff-check
         files: &files '^(aiogram|tests|examples)'
       - id: ruff-format
         files: *files
