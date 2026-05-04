@@ -76,6 +76,7 @@ from aiogram.types import (
     InputMediaPhoto,
     Invoice,
     Location,
+    ManagedBotCreated,
     MessageAutoDeleteTimerChanged,
     MessageEntity,
     PaidMediaInfo,
@@ -85,6 +86,8 @@ from aiogram.types import (
     PhotoSize,
     Poll,
     PollOption,
+    PollOptionAdded,
+    PollOptionDeleted,
     ProximityAlertTriggered,
     ReactionTypeCustomEmoji,
     RefundedPayment,
@@ -426,13 +429,14 @@ TEST_MESSAGE_POLL = Message(
         id="QA",
         question="Q",
         options=[
-            PollOption(text="A", voter_count=0),
-            PollOption(text="B", voter_count=0),
+            PollOption(persistent_id="1", text="A", voter_count=0),
+            PollOption(persistent_id="2", text="B", voter_count=0),
         ],
         is_closed=False,
         is_anonymous=False,
         type="quiz",
         allows_multiple_answers=False,
+        allows_revoting=False,
         total_voter_count=0,
         correct_option_id=1,
     ),
@@ -858,6 +862,35 @@ TEST_MESSAGE_SUGGESTED_POST_REFUNDED = Message(
     from_user=User(id=42, is_bot=False, first_name="Test"),
     suggested_post_refunded=SuggestedPostRefunded(reason="post_deleted"),
 )
+TEST_MESSAGE_MANAGED_BOT_CREATED = Message(
+    message_id=42,
+    date=datetime.datetime.now(),
+    chat=Chat(id=42, type="private"),
+    from_user=User(id=42, is_bot=False, first_name="Test"),
+    managed_bot_created=ManagedBotCreated(
+        bot_user=User(id=100, is_bot=True, first_name="ManagedBot"),
+    ),
+)
+TEST_MESSAGE_POLL_OPTION_ADDED = Message(
+    message_id=42,
+    date=datetime.datetime.now(),
+    chat=Chat(id=42, type="private"),
+    from_user=User(id=42, is_bot=False, first_name="Test"),
+    poll_option_added=PollOptionAdded(
+        option_persistent_id="1",
+        option_text="New option",
+    ),
+)
+TEST_MESSAGE_POLL_OPTION_DELETED = Message(
+    message_id=42,
+    date=datetime.datetime.now(),
+    chat=Chat(id=42, type="private"),
+    from_user=User(id=42, is_bot=False, first_name="Test"),
+    poll_option_deleted=PollOptionDeleted(
+        option_persistent_id="1",
+        option_text="Deleted option",
+    ),
+)
 
 MESSAGES_AND_CONTENT_TYPES = [
     [TEST_MESSAGE_TEXT, ContentType.TEXT],
@@ -937,6 +970,9 @@ MESSAGES_AND_CONTENT_TYPES = [
     [TEST_MESSAGE_SUGGESTED_POST_DECLINED, ContentType.SUGGESTED_POST_DECLINED],
     [TEST_MESSAGE_SUGGESTED_POST_PAID, ContentType.SUGGESTED_POST_PAID],
     [TEST_MESSAGE_SUGGESTED_POST_REFUNDED, ContentType.SUGGESTED_POST_REFUNDED],
+    [TEST_MESSAGE_MANAGED_BOT_CREATED, ContentType.MANAGED_BOT_CREATED],
+    [TEST_MESSAGE_POLL_OPTION_ADDED, ContentType.POLL_OPTION_ADDED],
+    [TEST_MESSAGE_POLL_OPTION_DELETED, ContentType.POLL_OPTION_DELETED],
     [TEST_MESSAGE_UNKNOWN, ContentType.UNKNOWN],
 ]
 
@@ -1013,6 +1049,9 @@ MESSAGES_AND_COPY_METHODS = [
     [TEST_MESSAGE_SUGGESTED_POST_DECLINED, None],
     [TEST_MESSAGE_SUGGESTED_POST_PAID, None],
     [TEST_MESSAGE_SUGGESTED_POST_REFUNDED, None],
+    [TEST_MESSAGE_MANAGED_BOT_CREATED, None],
+    [TEST_MESSAGE_POLL_OPTION_ADDED, None],
+    [TEST_MESSAGE_POLL_OPTION_DELETED, None],
     [TEST_MESSAGE_UNKNOWN, None],
 ]
 

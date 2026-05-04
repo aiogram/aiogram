@@ -31,7 +31,7 @@ class SendChecklist(TelegramMethod[Message]):
     reply_parameters: ReplyParameters | None = None
     """A JSON-serialized object for description of the message to reply to"""
     reply_markup: InlineKeyboardMarkup | None = None
-    """A JSON-serialized object for an inline keyboard"""
+    """A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!

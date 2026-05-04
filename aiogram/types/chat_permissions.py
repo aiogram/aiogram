@@ -32,6 +32,8 @@ class ChatPermissions(MutableTelegramObject):
     """*Optional*. :code:`True`, if the user is allowed to send animations, games, stickers and use inline bots"""
     can_add_web_page_previews: bool | None = None
     """*Optional*. :code:`True`, if the user is allowed to add web page previews to their messages"""
+    can_edit_tag: bool | None = None
+    """*Optional*. :code:`True`, if the user is allowed to edit their own tag"""
     can_change_info: bool | None = None
     """*Optional*. :code:`True`, if the user is allowed to change the chat title, photo and other settings. Ignored in public supergroups"""
     can_invite_users: bool | None = None
@@ -58,6 +60,7 @@ class ChatPermissions(MutableTelegramObject):
             can_send_polls: bool | None = None,
             can_send_other_messages: bool | None = None,
             can_add_web_page_previews: bool | None = None,
+            can_edit_tag: bool | None = None,
             can_change_info: bool | None = None,
             can_invite_users: bool | None = None,
             can_pin_messages: bool | None = None,
@@ -79,6 +82,7 @@ class ChatPermissions(MutableTelegramObject):
                 can_send_polls=can_send_polls,
                 can_send_other_messages=can_send_other_messages,
                 can_add_web_page_previews=can_add_web_page_previews,
+                can_edit_tag=can_edit_tag,
                 can_change_info=can_change_info,
                 can_invite_users=can_invite_users,
                 can_pin_messages=can_pin_messages,

@@ -38,7 +38,7 @@ class InlineQueryResultDocument(InlineQueryResult):
     description: str | None = None
     """*Optional*. Short description of the result"""
     reply_markup: InlineKeyboardMarkup | None = None
-    """*Optional*. Inline keyboard attached to the message"""
+    """*Optional*. `Inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_ attached to the message"""
     input_message_content: InputMessageContentUnion | None = None
     """*Optional*. Content of the message to be sent instead of the file"""
     thumbnail_url: str | None = None

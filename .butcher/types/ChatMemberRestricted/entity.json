@@ -20,6 +20,14 @@
         "required": true
       },
       {
+        "type": "String",
+        "description": "Tag of the member",
+        "html_description": "<td><em>Optional</em>. Tag of the member</td>",
+        "rst_description": "*Optional*. Tag of the member\n",
+        "name": "tag",
+        "required": false
+      },
+      {
         "type": "User",
         "description": "Information about the user",
         "html_description": "<td>Information about the user</td>",
@@ -113,6 +121,14 @@
         "html_description": "<td><em>True</em>, if the user is allowed to add web page previews to their messages</td>",
         "rst_description": ":code:`True`, if the user is allowed to add web page previews to their messages\n",
         "name": "can_add_web_page_previews",
+        "required": true
+      },
+      {
+        "type": "Boolean",
+        "description": "True, if the user is allowed to edit their own tag",
+        "html_description": "<td><em>True</em>, if the user is allowed to edit their own tag</td>",
+        "rst_description": ":code:`True`, if the user is allowed to edit their own tag\n",
+        "name": "can_edit_tag",
         "required": true
       },
       {

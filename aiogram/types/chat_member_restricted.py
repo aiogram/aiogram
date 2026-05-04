@@ -43,6 +43,8 @@ class ChatMemberRestricted(ChatMember):
     """:code:`True`, if the user is allowed to send animations, games, stickers and use inline bots"""
     can_add_web_page_previews: bool
     """:code:`True`, if the user is allowed to add web page previews to their messages"""
+    can_edit_tag: bool
+    """:code:`True`, if the user is allowed to edit their own tag"""
     can_change_info: bool
     """:code:`True`, if the user is allowed to change the chat title, photo and other settings"""
     can_invite_users: bool
@@ -53,6 +55,8 @@ class ChatMemberRestricted(ChatMember):
     """:code:`True`, if the user is allowed to create forum topics"""
     until_date: DateTime
     """Date when restrictions will be lifted for this user; Unix time. If 0, then the user is restricted forever"""
+    tag: str | None = None
+    """*Optional*. Tag of the member"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!
@@ -74,11 +78,13 @@ class ChatMemberRestricted(ChatMember):
             can_send_polls: bool,
             can_send_other_messages: bool,
             can_add_web_page_previews: bool,
+            can_edit_tag: bool,
             can_change_info: bool,
             can_invite_users: bool,
             can_pin_messages: bool,
             can_manage_topics: bool,
             until_date: DateTime,
+            tag: str | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!
@@ -99,10 +105,12 @@ class ChatMemberRestricted(ChatMember):
                 can_send_polls=can_send_polls,
                 can_send_other_messages=can_send_other_messages,
                 can_add_web_page_previews=can_add_web_page_previews,
+                can_edit_tag=can_edit_tag,
                 can_change_info=can_change_info,
                 can_invite_users=can_invite_users,
                 can_pin_messages=can_pin_messages,
                 can_manage_topics=can_manage_topics,
                 until_date=until_date,
+                tag=tag,
                 **__pydantic_kwargs,
             )

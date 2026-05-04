@@ -50,7 +50,9 @@ class TestRouter:
 
     def test_include_router_by_string_bad_type(self):
         router = Router()
-        with pytest.raises(ValueError, match=r"router should be instance of Router"):
+        with pytest.raises(
+            ValueError, match=r"router should be instance of Router not 'TestRouter'"
+        ):
             router.include_router(self)
 
     def test_set_parent_router_bad_type(self):
@@ -71,6 +73,7 @@ class TestRouter:
         assert router.observers["shipping_query"] == router.shipping_query
         assert router.observers["pre_checkout_query"] == router.pre_checkout_query
         assert router.observers["poll"] == router.poll
+        assert router.observers["managed_bot"] == router.managed_bot
 
     async def test_emit_startup(self):
         router1 = Router()

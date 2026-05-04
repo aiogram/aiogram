@@ -183,4 +183,6 @@ class UserContextMiddleware(BaseMiddleware):
             return EventContext(
                 user=event.purchased_paid_media.from_user,
             )
+        if event.managed_bot:
+            return EventContext(user=event.managed_bot.user)
         return EventContext()

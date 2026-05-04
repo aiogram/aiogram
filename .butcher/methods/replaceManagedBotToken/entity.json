@@ -1,0 +1,25 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available methods",
+    "anchor": "available-methods"
+  },
+  "object": {
+    "anchor": "replacemanagedbottoken",
+    "name": "replaceManagedBotToken",
+    "description": "Use this method to revoke the current token of a managed bot and generate a new one. Returns the new token as String on success.",
+    "html_description": "<p>Use this method to revoke the current token of a managed bot and generate a new one. Returns the new token as <em>String</em> on success.</p>",
+    "rst_description": "Use this method to revoke the current token of a managed bot and generate a new one. Returns the new token as *String* on success.",
+    "annotations": [
+      {
+        "type": "Integer",
+        "required": true,
+        "description": "User identifier of the managed bot whose token will be replaced",
+        "html_description": "<td>User identifier of the managed bot whose token will be replaced</td>",
+        "rst_description": "User identifier of the managed bot whose token will be replaced\n",
+        "name": "user_id"
+      }
+    ],
+    "category": "methods"
+  }
+}

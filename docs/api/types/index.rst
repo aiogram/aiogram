@@ -125,12 +125,15 @@ Available types
     keyboard_button
     keyboard_button_poll_type
     keyboard_button_request_chat
+    keyboard_button_request_managed_bot
     keyboard_button_request_user
     keyboard_button_request_users
     link_preview_options
     location
     location_address
     login_url
+    managed_bot_created
+    managed_bot_updated
     maybe_inaccessible_message
     menu_button
     menu_button_commands
@@ -161,6 +164,10 @@ Available types
     poll
     poll_answer
     poll_option
+    poll_option_added
+    poll_option_deleted
+    prepared_inline_message
+    prepared_keyboard_button
     proximity_alert_triggered
     reaction_count
     reaction_type
@@ -171,6 +178,7 @@ Available types
     reply_keyboard_remove
     reply_parameters
     response_parameters
+    sent_web_app_message
     shared_user
     star_amount
     story
@@ -255,8 +263,6 @@ Inline mode
     input_message_content
     input_text_message_content
     input_venue_message_content
-    prepared_inline_message
-    sent_web_app_message
 
 Payments
 ========

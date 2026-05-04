@@ -164,6 +164,14 @@
         "required": false
       },
       {
+        "type": "Boolean",
+        "description": "True, if the administrator can edit the tags of regular members; for groups and supergroups only. If omitted defaults to the value of can_pin_messages.",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the administrator can edit the tags of regular members; for groups and supergroups only. If omitted defaults to the value of can_pin_messages.</td>",
+        "rst_description": "*Optional*. :code:`True`, if the administrator can edit the tags of regular members; for groups and supergroups only. If omitted defaults to the value of can_pin_messages.\n",
+        "name": "can_manage_tags",
+        "required": false
+      },
+      {
         "type": "String",
         "description": "Custom title for this user",
         "html_description": "<td><em>Optional</em>. Custom title for this user</td>",

@@ -85,6 +85,7 @@ class Router:
             router=self,
             event_name="purchased_paid_media",
         )
+        self.managed_bot = TelegramEventObserver(router=self, event_name="managed_bot")
 
         self.errors = self.error = TelegramEventObserver(router=self, event_name="error")
 
@@ -115,6 +116,7 @@ class Router:
             "edited_business_message": self.edited_business_message,
             "business_message": self.business_message,
             "purchased_paid_media": self.purchased_paid_media,
+            "managed_bot": self.managed_bot,
             "error": self.errors,
         }
 
@@ -131,7 +133,7 @@ class Router:
         Is useful for getting updates only for registered event types.
 
         :param skip_events: skip specified event names
-        :return: set of registered names
+        :return: sorted list of registered names
         """
         handlers_in_use: set[str] = set()
         if skip_events is None:
@@ -143,7 +145,7 @@ class Router:
                 if observer.handlers and update_name not in skip_events:
                     handlers_in_use.add(update_name)
 
-        return list(sorted(handlers_in_use))  # NOQA: C413
+        return sorted(handlers_in_use)
 
     async def propagate_event(self, update_type: str, event: TelegramObject, **kwargs: Any) -> Any:
         kwargs.update(event_router=self)
@@ -262,7 +264,7 @@ class Router:
         :return:
         """
         if not isinstance(router, Router):
-            msg = f"router should be instance of Router not {type(router).__class__.__name__}"
+            msg = f"router should be instance of Router not {type(router).__name__!r}"
             raise ValueError(msg)
         router.parent_router = self
         return router

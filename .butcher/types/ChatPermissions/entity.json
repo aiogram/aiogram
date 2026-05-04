@@ -93,6 +93,14 @@
       },
       {
         "type": "Boolean",
+        "description": "True, if the user is allowed to edit their own tag",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the user is allowed to edit their own tag</td>",
+        "rst_description": "*Optional*. :code:`True`, if the user is allowed to edit their own tag\n",
+        "name": "can_edit_tag",
+        "required": false
+      },
+      {
+        "type": "Boolean",
         "description": "True, if the user is allowed to change the chat title, photo and other settings. Ignored in public supergroups",
         "html_description": "<td><em>Optional</em>. <em>True</em>, if the user is allowed to change the chat title, photo and other settings. Ignored in public supergroups</td>",
         "rst_description": "*Optional*. :code:`True`, if the user is allowed to change the chat title, photo and other settings. Ignored in public supergroups\n",
