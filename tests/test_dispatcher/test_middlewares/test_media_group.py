@@ -13,7 +13,7 @@ from aiogram.dispatcher.middlewares.media_group import (
     MemoryMediaGroupAggregator,
     RedisMediaGroupAggregator,
 )
-from aiogram.types import Chat, Message
+from aiogram.types import Chat, Message, Update
 
 
 def _get_message(message_id: int, **kwargs):
@@ -82,19 +82,25 @@ class TestMediaGroupAggregatorMiddleware:
 
     async def test_propagate_first_media_in_album(self):
         middleware = self.get_middleware()
-        first_message = None
+        first_message: Message | None = None
+        first_event_update: Update | None = None
 
-        async def next_handler(message: Message, _):
-            nonlocal first_message
-            first_message = message
+        async def next_handler(message: Message, data: dict[str, Any]):
+            nonlocal first_message, first_event_update
+            first_message, first_event_update = message, data.get("event_update")
+
+        def call_middleware(message_id: int):
+            message = _get_message(message_id, media_group_id="42")
+            return middleware(next_handler, message, {"event_update": Update(update_id=42, message=message)})
 
         task1 = await wait_until_func_call_sleep(
-            asyncio.create_task, middleware(next_handler, _get_message(2, media_group_id="42"), {})
+            asyncio.create_task, call_middleware(2)
         )
-        await middleware(next_handler, _get_message(1, media_group_id="42"), {})
+        await call_middleware(1)
         await task1
         assert isinstance(first_message, Message)
         assert first_message.message_id == 1
+        assert first_event_update.message.message_id == first_message.message_id
 
     @pytest.mark.parametrize("deleted_object", ["album", "last_message_time"])
     async def test_skip_propagating_if_data_deleted(self, deleted_object):

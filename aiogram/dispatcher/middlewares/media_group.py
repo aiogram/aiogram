@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING, Any, cast
 
 from aiogram import Bot
 from aiogram.dispatcher.middlewares.base import BaseMiddleware
-from aiogram.types import Message, TelegramObject
+from aiogram.types import Message, TelegramObject, Update
 
 if TYPE_CHECKING:
     from redis.asyncio.client import Redis
@@ -237,6 +237,10 @@ class MediaGroupAggregatorMiddleware(BaseMiddleware):
                         (msg.as_(cast(Bot, data.get("bot"))) for msg in album),
                         key=lambda msg: msg.message_id,
                     )
+                    if event_update := cast(Update, data.get("event_update")):
+                        data.update(
+                            event_update=event_update.model_copy(update={"message": album[0]})
+                        )
                     data.update(album=album)
                     result = await handler(album[0], data)
                     await self.media_group_aggregator.delete_group(event.media_group_id)

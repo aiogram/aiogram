@@ -87,6 +87,11 @@ Usage
         f"Album messages: {', '.join(str(m.message_id) for m in album)}"
       )
 
+.. warning::
+
+  Note that this middleware is designed to work only when updates can be processed concurrently.
+  Polling with ``handle_as_tasks=False`` or ``tasks_concurrency_limit=1`` or webhooks configurations with the same effect will cause incorrect processing.
+
 References
 ==========
 
