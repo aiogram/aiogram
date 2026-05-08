@@ -10,6 +10,14 @@ Updated to `Bot API 10.0 <https://core.telegram.org/bots/api-changelog#may-8-202
 
 - Added :class:`aiogram.types.sent_guest_message.SentGuestMessage` type - represents a message sent in response to a guest query
 
+*New Shortcuts:*
+
+- Added :meth:`aiogram.types.message.Message.answer_guest_query` shortcut on :class:`~aiogram.types.message.Message` - replies to a guest query using the message's :code:`guest_query_id`
+
+*New Router handlers:*
+
+- Added :attr:`Router.guest_message <aiogram.dispatcher.router.Router.guest_message>` observer - handles incoming :code:`guest_message` updates
+
 *New Fields:*
 
 - Added :code:`supports_guest_queries` field to :class:`aiogram.types.user.User` - indicates whether the user supports guest queries

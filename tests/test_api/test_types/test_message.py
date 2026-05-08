@@ -5,6 +5,7 @@ import pytest
 
 from aiogram.enums import ParseMode
 from aiogram.methods import (
+    AnswerGuestQuery,
     CopyMessage,
     DeleteMessage,
     EditMessageCaption,
@@ -73,6 +74,7 @@ from aiogram.types import (
     GiveawayWinners,
     InlineKeyboardButton,
     InlineKeyboardMarkup,
+    InlineQueryResultPhoto,
     InputMediaPhoto,
     Invoice,
     LinkPreviewOptions,
@@ -1468,3 +1470,36 @@ class TestMessage:
             entities=entities,
         )
         assert getattr(message, f"{mode}_text") == expected_value
+
+    def test_answer_guest_query(self):
+        result = InlineQueryResultPhoto(
+            id="result_id",
+            photo_url="https://example.com/photo.jpg",
+            thumbnail_url="https://example.com/thumb.jpg",
+        )
+
+        message = Message(
+            message_id=42,
+            chat=Chat(id=42, type="private"),
+            date=datetime.datetime.now(),
+            guest_query_id="query_id",
+        )
+        method = message.answer_guest_query(result=result)
+        assert isinstance(method, AnswerGuestQuery)
+        assert method.guest_query_id == message.guest_query_id
+        assert method.result == result
+
+    def test_answer_guest_query_no_guest_query_id(self):
+        message = Message(
+            message_id=42,
+            chat=Chat(id=42, type="private"),
+            date=datetime.datetime.now(),
+        )
+        with pytest.raises(AssertionError):
+            message.answer_guest_query(
+                result=InlineQueryResultPhoto(
+                    id="result_id",
+                    photo_url="https://example.com/photo.jpg",
+                    thumbnail_url="https://example.com/thumb.jpg",
+                )
+            )

@@ -18,6 +18,7 @@ from .reply_parameters import ReplyParameters
 
 if TYPE_CHECKING:
     from ..methods import (
+        AnswerGuestQuery,
         CopyMessage,
         DeleteMessage,
         EditMessageCaption,
@@ -81,6 +82,7 @@ if TYPE_CHECKING:
     from .giveaway_created import GiveawayCreated
     from .giveaway_winners import GiveawayWinners
     from .inline_keyboard_markup import InlineKeyboardMarkup
+    from .inline_query_result_union import InlineQueryResultUnion
     from .input_file import InputFile
     from .input_file_union import InputFileUnion
     from .input_media_union import InputMediaUnion
@@ -4698,5 +4700,38 @@ class Message(MaybeInaccessibleMessage):
             allow_paid_broadcast=allow_paid_broadcast,
             suggested_post_parameters=suggested_post_parameters,
             reply_markup=reply_markup,
+            **kwargs,
+        ).as_(self._bot)
+
+    def answer_guest_query(
+        self,
+        result: InlineQueryResultUnion,
+        **kwargs: Any,
+    ) -> AnswerGuestQuery:
+        """
+        Shortcut for method :class:`aiogram.methods.answer_guest_query.AnswerGuestQuery`
+        will automatically fill method attributes:
+
+        - :code:`guest_query_id`
+
+        Use this method to reply to a received guest message. On success, a :class:`aiogram.types.sent_guest_message.SentGuestMessage` object is returned.
+
+        Source: https://core.telegram.org/bots/api#answerguestquery
+
+        :param result: A JSON-serialized object describing the message to be sent
+        :return: instance of method :class:`aiogram.methods.answer_guest_query.AnswerGuestQuery`
+        """
+        # DO NOT EDIT MANUALLY!!!
+        # This method was auto-generated via `butcher`
+
+        from aiogram.methods import AnswerGuestQuery
+
+        assert self.guest_query_id is not None, (
+            "This method can be used only if `guest_query_id` is present in the message."
+        )
+
+        return AnswerGuestQuery(
+            guest_query_id=self.guest_query_id,
+            result=result,
             **kwargs,
         ).as_(self._bot)

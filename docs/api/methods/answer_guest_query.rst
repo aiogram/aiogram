@@ -43,3 +43,9 @@ As reply into Webhook in handler
 .. code-block:: python
 
     return AnswerGuestQuery(...)
+
+
+As shortcut from received object
+--------------------------------
+
+- :meth:`aiogram.types.message.Message.answer_guest_query`
