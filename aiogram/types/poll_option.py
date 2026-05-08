@@ -8,6 +8,7 @@ from .custom import DateTime
 if TYPE_CHECKING:
     from .chat import Chat
     from .message_entity import MessageEntity
+    from .poll_media import PollMedia
     from .user import User
 
 
@@ -26,6 +27,8 @@ class PollOption(TelegramObject):
     """Number of users who voted for this option; may be 0 if unknown"""
     text_entities: list[MessageEntity] | None = None
     """*Optional*. Special entities that appear in the option *text*. Currently, only custom emoji entities are allowed in poll option texts"""
+    media: PollMedia | None = None
+    """*Optional*. Media added to the poll option"""
     added_by_user: User | None = None
     """*Optional*. User who added the option; omitted if the option wasn't added by a user after poll creation"""
     added_by_chat: Chat | None = None
@@ -44,6 +47,7 @@ class PollOption(TelegramObject):
             text: str,
             voter_count: int,
             text_entities: list[MessageEntity] | None = None,
+            media: PollMedia | None = None,
             added_by_user: User | None = None,
             added_by_chat: Chat | None = None,
             addition_date: DateTime | None = None,
@@ -58,6 +62,7 @@ class PollOption(TelegramObject):
                 text=text,
                 voter_count=voter_count,
                 text_entities=text_entities,
+                media=media,
                 added_by_user=added_by_user,
                 added_by_chat=added_by_chat,
                 addition_date=addition_date,

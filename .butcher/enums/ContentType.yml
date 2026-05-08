@@ -50,3 +50,6 @@ extract:
     - suggested_post_info
     - is_paid_post
     - reply_to_poll_option_id
+    - guest_query_id
+    - guest_bot_caller_user
+    - guest_bot_caller_chat

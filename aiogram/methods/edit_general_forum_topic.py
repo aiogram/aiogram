@@ -17,7 +17,7 @@ class EditGeneralForumTopic(TelegramMethod[bool]):
     __api_method__ = "editGeneralForumTopic"
 
     chat_id: ChatIdUnion
-    """Unique identifier for the target chat or username of the target supergroup (in the format :code:`@supergroupusername`)"""
+    """Unique identifier for the target chat or username of the target supergroup in the format :code:`@username`"""
     name: str
     """New topic name, 1-128 characters"""
 

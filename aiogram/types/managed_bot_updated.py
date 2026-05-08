@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 
 class ManagedBotUpdated(TelegramObject):
     """
-    This object contains information about the creation or token update of a bot that is managed by the current bot.
+    This object contains information about the creation, token update, or owner update of a bot that is managed by the current bot.
 
     Source: https://core.telegram.org/bots/api#managedbotupdated
     """

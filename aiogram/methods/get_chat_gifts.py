@@ -17,7 +17,7 @@ class GetChatGifts(TelegramMethod[OwnedGifts]):
     __api_method__ = "getChatGifts"
 
     chat_id: ChatIdUnion
-    """Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)"""
+    """Unique identifier for the target chat or username of the target channel in the format :code:`@username`"""
     exclude_unsaved: bool | None = None
     """Pass :code:`True` to exclude gifts that aren't saved to the chat's profile page. Always :code:`True`, unless the bot has the *can_post_messages* administrator right in the channel."""
     exclude_saved: bool | None = None

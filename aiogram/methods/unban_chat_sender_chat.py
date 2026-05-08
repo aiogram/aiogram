@@ -17,7 +17,7 @@ class UnbanChatSenderChat(TelegramMethod[bool]):
     __api_method__ = "unbanChatSenderChat"
 
     chat_id: ChatIdUnion
-    """Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)"""
+    """Unique identifier for the target chat or username of the target channel in the format :code:`@username`"""
     sender_chat_id: int
     """Unique identifier of the target sender chat"""
 

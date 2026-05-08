@@ -338,6 +338,7 @@ __all__ = (
     "BackgroundTypeUnion",
     "BackgroundTypeWallpaper",
     "Birthdate",
+    "BotAccessSettings",
     "BotCommand",
     "BotCommandScope",
     "BotCommandScopeAllChatAdministrators",
@@ -469,16 +470,23 @@ __all__ = (
     "InputMediaAnimation",
     "InputMediaAudio",
     "InputMediaDocument",
+    "InputMediaLivePhoto",
+    "InputMediaLocation",
     "InputMediaPhoto",
+    "InputMediaSticker",
     "InputMediaUnion",
+    "InputMediaVenue",
     "InputMediaVideo",
     "InputMessageContent",
     "InputMessageContentUnion",
     "InputPaidMedia",
+    "InputPaidMediaLivePhoto",
     "InputPaidMediaPhoto",
     "InputPaidMediaUnion",
     "InputPaidMediaVideo",
+    "InputPollMedia",
     "InputPollOption",
+    "InputPollOptionMedia",
     "InputPollOptionUnion",
     "InputProfilePhoto",
     "InputProfilePhotoAnimated",
@@ -500,6 +508,7 @@ __all__ = (
     "KeyboardButtonRequestUsers",
     "LabeledPrice",
     "LinkPreviewOptions",
+    "LivePhoto",
     "Location",
     "LocationAddress",
     "LoginUrl",
@@ -534,6 +543,7 @@ __all__ = (
     "OwnedGifts",
     "PaidMedia",
     "PaidMediaInfo",
+    "PaidMediaLivePhoto",
     "PaidMediaPhoto",
     "PaidMediaPreview",
     "PaidMediaPurchased",
@@ -556,6 +566,7 @@ __all__ = (
     "PhotoSize",
     "Poll",
     "PollAnswer",
+    "PollMedia",
     "PollOption",
     "PollOptionAdded",
     "PollOptionDeleted",
@@ -582,6 +593,7 @@ __all__ = (
     "RevenueWithdrawalStatePending",
     "RevenueWithdrawalStateSucceeded",
     "RevenueWithdrawalStateUnion",
+    "SentGuestMessage",
     "SentWebAppMessage",
     "SharedUser",
     "ShippingAddress",
@@ -656,14 +668,26 @@ __all__ = (
 )
 
 from ..client.default import Default as _Default
+from .bot_access_settings import BotAccessSettings
 from .chat_owner_changed import ChatOwnerChanged
 from .chat_owner_left import ChatOwnerLeft
+from .input_media_live_photo import InputMediaLivePhoto
+from .input_media_location import InputMediaLocation
+from .input_media_sticker import InputMediaSticker
+from .input_media_venue import InputMediaVenue
+from .input_paid_media_live_photo import InputPaidMediaLivePhoto
+from .input_poll_media import InputPollMedia
+from .input_poll_option_media import InputPollOptionMedia
 from .keyboard_button_request_managed_bot import KeyboardButtonRequestManagedBot
+from .live_photo import LivePhoto
 from .managed_bot_created import ManagedBotCreated
 from .managed_bot_updated import ManagedBotUpdated
+from .paid_media_live_photo import PaidMediaLivePhoto
+from .poll_media import PollMedia
 from .poll_option_added import PollOptionAdded
 from .poll_option_deleted import PollOptionDeleted
 from .prepared_keyboard_button import PreparedKeyboardButton
+from .sent_guest_message import SentGuestMessage
 from .user_profile_audios import UserProfileAudios
 from .video_quality import VideoQuality
 

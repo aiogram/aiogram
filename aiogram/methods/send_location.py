@@ -26,7 +26,7 @@ class SendLocation(TelegramMethod[Message]):
     __api_method__ = "sendLocation"
 
     chat_id: ChatIdUnion
-    """Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)"""
+    """Unique identifier for the target chat or username of the target bot, supergroup or channel in the format :code:`@username`"""
     latitude: float
     """Latitude of the location"""
     longitude: float
@@ -50,7 +50,7 @@ class SendLocation(TelegramMethod[Message]):
     protect_content: bool | Default | None = Default("protect_content")
     """Protects the contents of the sent message from forwarding and saving"""
     allow_paid_broadcast: bool | None = None
-    """Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance"""
+    """Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance."""
     message_effect_id: str | None = None
     """Unique identifier of the message effect to be added to the message; for private chats only"""
     suggested_post_parameters: SuggestedPostParameters | None = None

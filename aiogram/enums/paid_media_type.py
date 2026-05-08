@@ -11,3 +11,4 @@ class PaidMediaType(str, Enum):
     PHOTO = "photo"
     PREVIEW = "preview"
     VIDEO = "video"
+    LIVE_PHOTO = "live_photo"

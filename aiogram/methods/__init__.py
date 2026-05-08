@@ -1,5 +1,6 @@
 from .add_sticker_to_set import AddStickerToSet
 from .answer_callback_query import AnswerCallbackQuery
+from .answer_guest_query import AnswerGuestQuery
 from .answer_inline_query import AnswerInlineQuery
 from .answer_pre_checkout_query import AnswerPreCheckoutQuery
 from .answer_shipping_query import AnswerShippingQuery
@@ -22,11 +23,13 @@ from .create_invoice_link import CreateInvoiceLink
 from .create_new_sticker_set import CreateNewStickerSet
 from .decline_chat_join_request import DeclineChatJoinRequest
 from .decline_suggested_post import DeclineSuggestedPost
+from .delete_all_message_reactions import DeleteAllMessageReactions
 from .delete_business_messages import DeleteBusinessMessages
 from .delete_chat_photo import DeleteChatPhoto
 from .delete_chat_sticker_set import DeleteChatStickerSet
 from .delete_forum_topic import DeleteForumTopic
 from .delete_message import DeleteMessage
+from .delete_message_reaction import DeleteMessageReaction
 from .delete_messages import DeleteMessages
 from .delete_my_commands import DeleteMyCommands
 from .delete_sticker_from_set import DeleteStickerFromSet
@@ -62,6 +65,7 @@ from .get_custom_emoji_stickers import GetCustomEmojiStickers
 from .get_file import GetFile
 from .get_forum_topic_icon_stickers import GetForumTopicIconStickers
 from .get_game_high_scores import GetGameHighScores
+from .get_managed_bot_access_settings import GetManagedBotAccessSettings
 from .get_managed_bot_token import GetManagedBotToken
 from .get_me import GetMe
 from .get_my_commands import GetMyCommands
@@ -75,6 +79,7 @@ from .get_sticker_set import GetStickerSet
 from .get_updates import GetUpdates
 from .get_user_chat_boosts import GetUserChatBoosts
 from .get_user_gifts import GetUserGifts
+from .get_user_personal_chat_messages import GetUserPersonalChatMessages
 from .get_user_profile_audios import GetUserProfileAudios
 from .get_user_profile_photos import GetUserProfilePhotos
 from .get_webhook_info import GetWebhookInfo
@@ -110,6 +115,7 @@ from .send_document import SendDocument
 from .send_game import SendGame
 from .send_gift import SendGift
 from .send_invoice import SendInvoice
+from .send_live_photo import SendLivePhoto
 from .send_location import SendLocation
 from .send_media_group import SendMediaGroup
 from .send_message import SendMessage
@@ -137,6 +143,7 @@ from .set_chat_sticker_set import SetChatStickerSet
 from .set_chat_title import SetChatTitle
 from .set_custom_emoji_sticker_set_thumbnail import SetCustomEmojiStickerSetThumbnail
 from .set_game_score import SetGameScore
+from .set_managed_bot_access_settings import SetManagedBotAccessSettings
 from .set_message_reaction import SetMessageReaction
 from .set_my_commands import SetMyCommands
 from .set_my_default_administrator_rights import SetMyDefaultAdministratorRights
@@ -172,6 +179,7 @@ from .verify_user import VerifyUser
 __all__ = (
     "AddStickerToSet",
     "AnswerCallbackQuery",
+    "AnswerGuestQuery",
     "AnswerInlineQuery",
     "AnswerPreCheckoutQuery",
     "AnswerShippingQuery",
@@ -193,11 +201,13 @@ __all__ = (
     "CreateNewStickerSet",
     "DeclineChatJoinRequest",
     "DeclineSuggestedPost",
+    "DeleteAllMessageReactions",
     "DeleteBusinessMessages",
     "DeleteChatPhoto",
     "DeleteChatStickerSet",
     "DeleteForumTopic",
     "DeleteMessage",
+    "DeleteMessageReaction",
     "DeleteMessages",
     "DeleteMyCommands",
     "DeleteStickerFromSet",
@@ -233,6 +243,7 @@ __all__ = (
     "GetFile",
     "GetForumTopicIconStickers",
     "GetGameHighScores",
+    "GetManagedBotAccessSettings",
     "GetManagedBotToken",
     "GetMe",
     "GetMyCommands",
@@ -246,6 +257,7 @@ __all__ = (
     "GetUpdates",
     "GetUserChatBoosts",
     "GetUserGifts",
+    "GetUserPersonalChatMessages",
     "GetUserProfileAudios",
     "GetUserProfilePhotos",
     "GetWebhookInfo",
@@ -283,6 +295,7 @@ __all__ = (
     "SendGame",
     "SendGift",
     "SendInvoice",
+    "SendLivePhoto",
     "SendLocation",
     "SendMediaGroup",
     "SendMessage",
@@ -310,6 +323,7 @@ __all__ = (
     "SetChatTitle",
     "SetCustomEmojiStickerSetThumbnail",
     "SetGameScore",
+    "SetManagedBotAccessSettings",
     "SetMessageReaction",
     "SetMyCommands",
     "SetMyDefaultAdministratorRights",

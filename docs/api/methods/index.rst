@@ -35,6 +35,7 @@ Available methods
     :maxdepth: 1
 
     answer_callback_query
+    answer_guest_query
     answer_web_app_query
     approve_chat_join_request
     ban_chat_member
@@ -75,6 +76,7 @@ Available methods
     get_chat_menu_button
     get_file
     get_forum_topic_icon_stickers
+    get_managed_bot_access_settings
     get_managed_bot_token
     get_me
     get_my_commands
@@ -84,6 +86,7 @@ Available methods
     get_my_short_description
     get_user_chat_boosts
     get_user_gifts
+    get_user_personal_chat_messages
     get_user_profile_audios
     get_user_profile_photos
     gift_premium_subscription
@@ -114,6 +117,7 @@ Available methods
     send_dice
     send_document
     send_gift
+    send_live_photo
     send_location
     send_media_group
     send_message
@@ -138,6 +142,7 @@ Available methods
     set_chat_photo
     set_chat_sticker_set
     set_chat_title
+    set_managed_bot_access_settings
     set_message_reaction
     set_my_commands
     set_my_default_administrator_rights
@@ -167,7 +172,9 @@ Updating messages
 
     approve_suggested_post
     decline_suggested_post
+    delete_all_message_reactions
     delete_message
+    delete_message_reaction
     delete_messages
     edit_message_caption
     edit_message_checklist

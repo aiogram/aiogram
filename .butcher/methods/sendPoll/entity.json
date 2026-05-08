@@ -22,9 +22,9 @@
       {
         "type": "Integer or String",
         "required": true,
-        "description": "Unique identifier for the target chat or username of the target channel (in the format @channelusername). Polls can't be sent to channel direct messages chats.",
-        "html_description": "<td>Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>). Polls can't be sent to channel direct messages chats.</td>",
-        "rst_description": "Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`). Polls can't be sent to channel direct messages chats.\n",
+        "description": "Unique identifier for the target chat or username of the target bot, supergroup or channel in the format @username. Polls can't be sent to channel direct messages chats.",
+        "html_description": "<td>Unique identifier for the target chat or username of the target bot, supergroup or channel in the format <code>@username</code>. Polls can't be sent to channel direct messages chats.</td>",
+        "rst_description": "Unique identifier for the target chat or username of the target bot, supergroup or channel in the format :code:`@username`. Polls can't be sent to channel direct messages chats.\n",
         "name": "chat_id"
       },
       {
@@ -62,9 +62,9 @@
       {
         "type": "Array of InputPollOption",
         "required": true,
-        "description": "A JSON-serialized list of 2-12 answer options",
-        "html_description": "<td>A JSON-serialized list of 2-12 answer options</td>",
-        "rst_description": "A JSON-serialized list of 2-12 answer options\n",
+        "description": "A JSON-serialized list of 1-12 answer options",
+        "html_description": "<td>A JSON-serialized list of 1-12 answer options</td>",
+        "rst_description": "A JSON-serialized list of 1-12 answer options\n",
         "name": "options"
       },
       {
@@ -124,6 +124,22 @@
         "name": "hide_results_until_closes"
       },
       {
+        "type": "Boolean",
+        "required": false,
+        "description": "Pass True, if voting is limited to users who have been members of the chat where the poll is being sent for more than 24 hours; for channel chats only",
+        "html_description": "<td>Pass <em>True</em>, if voting is limited to users who have been members of the chat where the poll is being sent for more than 24 hours; for channel chats only</td>",
+        "rst_description": "Pass :code:`True`, if voting is limited to users who have been members of the chat where the poll is being sent for more than 24 hours; for channel chats only\n",
+        "name": "members_only"
+      },
+      {
+        "type": "Array of String",
+        "required": false,
+        "description": "A JSON-serialized list of 0-12 two-letter ISO 3166-1 alpha-2 country codes indicating the countries from which users can vote in the poll; for channel chats only. If omitted or empty, then users from any country can participate in the poll.",
+        "html_description": "<td>A JSON-serialized list of 0-12 two-letter <a href=\"https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2\">ISO 3166-1 alpha-2</a> country codes indicating the countries from which users can vote in the poll; for channel chats only. If omitted or empty, then users from any country can participate in the poll.</td>",
+        "rst_description": "A JSON-serialized list of 0-12 two-letter `ISO 3166-1 alpha-2 <https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2>`_ country codes indicating the countries from which users can vote in the poll; for channel chats only. If omitted or empty, then users from any country can participate in the poll.\n",
+        "name": "country_codes"
+      },
+      {
         "type": "Array of Integer",
         "required": false,
         "description": "A JSON-serialized list of monotonically increasing 0-based identifiers of the correct answer options, required for polls in quiz mode",
@@ -154,6 +170,14 @@
         "html_description": "<td>A JSON-serialized list of special entities that appear in the poll explanation. It can be specified instead of <em>explanation_parse_mode</em></td>",
         "rst_description": "A JSON-serialized list of special entities that appear in the poll explanation. It can be specified instead of *explanation_parse_mode*\n",
         "name": "explanation_entities"
+      },
+      {
+        "type": "InputPollMedia",
+        "required": false,
+        "description": "Media added to the quiz explanation",
+        "html_description": "<td>Media added to the quiz explanation</td>",
+        "rst_description": "Media added to the quiz explanation\n",
+        "name": "explanation_media"
       },
       {
         "type": "Integer",
@@ -204,6 +228,14 @@
         "name": "description_entities"
       },
       {
+        "type": "InputPollMedia",
+        "required": false,
+        "description": "Media added to the poll description",
+        "html_description": "<td>Media added to the poll description</td>",
+        "rst_description": "Media added to the poll description\n",
+        "name": "media"
+      },
+      {
         "type": "Boolean",
         "required": false,
         "description": "Sends the message silently. Users will receive a notification with no sound.",
@@ -222,9 +254,9 @@
       {
         "type": "Boolean",
         "required": false,
-        "description": "Pass True to allow up to 1000 messages per second, ignoring broadcasting limits for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance",
-        "html_description": "<td>Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href=\"https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once\">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance</td>",
-        "rst_description": "Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance\n",
+        "description": "Pass True to allow up to 1000 messages per second, ignoring broadcasting limits for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance.",
+        "html_description": "<td>Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href=\"https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once\">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance.</td>",
+        "rst_description": "Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance.\n",
         "name": "allow_paid_broadcast"
       },
       {
