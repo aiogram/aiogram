@@ -1,1 +1,0 @@
-Dropped PyPy 3.10 support because required optional dependencies no longer support it.

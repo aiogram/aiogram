@@ -1,1 +1,0 @@
-Bumped ``mypy`` to ``2.0.0`` and fixed typing issues reported by the new version.

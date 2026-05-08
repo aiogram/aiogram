@@ -1,1 +1,0 @@
-Improve grammar in MemoryStorage, PyMongoStorage, and RedisStorage docstrings.
