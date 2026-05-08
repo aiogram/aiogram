@@ -7,14 +7,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  aiogram\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-08 02:28+0200\n"
+"POT-Creation-Date: 2026-05-09 01:04+0300\n"
 "PO-Revision-Date: 2022-12-10 19:44+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.13.1\n"
+"Generated-By: Babel 2.18.0\n"
 
 #: ../../dispatcher/dispatcher.rst:3
 msgid "Dispatcher"
@@ -137,6 +137,13 @@ msgstr "закривати сесії бота під час завершенн�
 
 #: aiogram.dispatcher.dispatcher.Dispatcher.run_polling:10
 #: aiogram.dispatcher.dispatcher.Dispatcher.start_polling:11 of
+msgid ""
+"Maximum number of concurrent updates to process (None = no limit), used "
+"only if handle_as_tasks is True"
+msgstr ""
+
+#: aiogram.dispatcher.dispatcher.Dispatcher.run_polling:12
+#: aiogram.dispatcher.dispatcher.Dispatcher.start_polling:13 of
 msgid "contextual data"
 msgstr "контекстні дані"
 
@@ -190,4 +197,5 @@ msgid ""
 ":meth:`~aiogram.dispatcher.dispatcher.Dispatcher.feed_raw_update` method:"
 msgstr ""
 "Також ви можете передати сирий об'єкт оновлення (словник) до диспетчера "
-"через метод :meth:`~aiogram.dispatcher.dispatcher.Dispatcher.feed_raw_update`:"
+"через метод "
+":meth:`~aiogram.dispatcher.dispatcher.Dispatcher.feed_raw_update`:"

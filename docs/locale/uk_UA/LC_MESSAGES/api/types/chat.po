@@ -8,14 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-08 02:28+0200\n"
+"POT-Creation-Date: 2026-05-09 01:04+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.13.1\n"
+"Generated-By: Babel 2.18.0\n"
 
 #: ../../api/types/chat.rst:3
 msgid "Chat"
@@ -67,6 +67,12 @@ msgid ""
 "*Optional*. :code:`True`, if the supergroup chat is a forum (has `topics "
 "<https://telegram.org/blog/topics-in-groups-collectible-usernames#topics-"
 "in-groups>`_ enabled)"
+msgstr ""
+
+#: ../../docstring aiogram.types.chat.Chat.is_direct_messages:1 of
+msgid ""
+"*Optional*. :code:`True`, if the chat is the direct messages chat of a "
+"channel"
 msgstr ""
 
 #: ../../docstring aiogram.types.chat.Chat.accent_color_id:1 of
@@ -395,6 +401,7 @@ msgstr ""
 #: aiogram.types.chat.Chat.revoke_invite_link:4
 #: aiogram.types.chat.Chat.set_administrator_custom_title:4
 #: aiogram.types.chat.Chat.set_description:4
+#: aiogram.types.chat.Chat.set_member_tag:4
 #: aiogram.types.chat.Chat.set_permissions:4
 #: aiogram.types.chat.Chat.set_photo:4
 #: aiogram.types.chat.Chat.set_sticker_set:4
@@ -474,9 +481,8 @@ msgstr ""
 
 #: aiogram.types.chat.Chat.get_administrators:6 of
 msgid ""
-"Use this method to get a list of administrators in a chat, which aren't "
-"bots. Returns an Array of :class:`aiogram.types.chat_member.ChatMember` "
-"objects."
+"Use this method to get a list of administrators in a chat. Returns an "
+"Array of :class:`aiogram.types.chat_member.ChatMember` objects."
 msgstr ""
 
 #: aiogram.types.chat.Chat.get_administrators:8 of
@@ -484,6 +490,13 @@ msgid "Source: https://core.telegram.org/bots/api#getchatadministrators"
 msgstr ""
 
 #: aiogram.types.chat.Chat.get_administrators:10 of
+msgid ""
+"Pass :code:`True` to additionally receive all bots that are "
+"administrators of the chat. By default, bots other than the current bot "
+"are omitted."
+msgstr ""
+
+#: aiogram.types.chat.Chat.get_administrators:11 of
 msgid ""
 "instance of method "
 ":class:`aiogram.methods.get_chat_administrators.GetChatAdministrators`"
@@ -541,23 +554,30 @@ msgstr ""
 
 #: aiogram.types.chat.Chat.delete_message:22 of
 msgid ""
-"If the bot has *can_delete_messages* permission in a supergroup or a "
-"channel, it can delete any message there."
+"If the bot has *can_delete_messages* administrator right in a supergroup "
+"or a channel, it can delete any message there."
 msgstr ""
 
 #: aiogram.types.chat.Chat.delete_message:24 of
-msgid "Returns :code:`True` on success."
+msgid ""
+"If the bot has *can_manage_direct_messages* administrator right in a "
+"channel, it can delete any message in the corresponding direct messages "
+"chat."
 msgstr ""
 
 #: aiogram.types.chat.Chat.delete_message:26 of
-msgid "Source: https://core.telegram.org/bots/api#deletemessage"
+msgid "Returns :code:`True` on success."
 msgstr ""
 
 #: aiogram.types.chat.Chat.delete_message:28 of
+msgid "Source: https://core.telegram.org/bots/api#deletemessage"
+msgstr ""
+
+#: aiogram.types.chat.Chat.delete_message:30 of
 msgid "Identifier of the message to delete"
 msgstr ""
 
-#: aiogram.types.chat.Chat.delete_message:29 of
+#: aiogram.types.chat.Chat.delete_message:31 of
 msgid "instance of method :class:`aiogram.methods.delete_message.DeleteMessage`"
 msgstr ""
 
@@ -771,7 +791,9 @@ msgid ""
 msgstr ""
 
 #: aiogram.types.chat.Chat.do:16 of
-msgid "Unique identifier for the target message thread; for supergroups only"
+msgid ""
+"Unique identifier for the target message thread or topic of a forum; for "
+"supergroups and private chats of bots with forum topic mode enabled only"
 msgstr ""
 
 #: aiogram.types.chat.Chat.do:17 of
@@ -860,7 +882,8 @@ msgstr ""
 #: aiogram.types.chat.Chat.ban:10 aiogram.types.chat.Chat.get_member:10
 #: aiogram.types.chat.Chat.promote:10 aiogram.types.chat.Chat.restrict:10
 #: aiogram.types.chat.Chat.set_administrator_custom_title:10
-#: aiogram.types.chat.Chat.unban:10 of
+#: aiogram.types.chat.Chat.set_member_tag:10 aiogram.types.chat.Chat.unban:10
+#: of
 msgid "Unique identifier of the target user"
 msgstr ""
 
@@ -920,11 +943,12 @@ msgstr ""
 
 #: aiogram.types.chat.Chat.unpin_all_messages:6 of
 msgid ""
-"Use this method to clear the list of pinned messages in a chat. If the "
-"chat is not a private chat, the bot must be an administrator in the chat "
-"for this to work and must have the 'can_pin_messages' administrator right"
-" in a supergroup or 'can_edit_messages' administrator right in a channel."
-" Returns :code:`True` on success."
+"Use this method to clear the list of pinned messages in a chat. In "
+"private chats and channel direct messages chats, no additional rights are"
+" required to unpin all pinned messages. Conversely, the bot must be an "
+"administrator with the 'can_pin_messages' right or the "
+"'can_edit_messages' right to unpin all pinned messages in groups and "
+"channels respectively. Returns :code:`True` on success."
 msgstr ""
 
 #: aiogram.types.chat.Chat.unpin_all_messages:8 of
@@ -947,11 +971,11 @@ msgstr ""
 #: aiogram.types.chat.Chat.unpin_message:6 of
 msgid ""
 "Use this method to remove a message from the list of pinned messages in a"
-" chat. If the chat is not a private chat, the bot must be an "
-"administrator in the chat for this to work and must have the "
-"'can_pin_messages' administrator right in a supergroup or "
-"'can_edit_messages' administrator right in a channel. Returns "
-":code:`True` on success."
+" chat. In private chats and channel direct messages chats, all messages "
+"can be unpinned. Conversely, the bot must be an administrator with the "
+"'can_pin_messages' right or the 'can_edit_messages' right to unpin "
+"messages in groups and channels respectively. Returns :code:`True` on "
+"success."
 msgstr ""
 
 #: aiogram.types.chat.Chat.unpin_message:8 of
@@ -987,10 +1011,11 @@ msgstr ""
 #: aiogram.types.chat.Chat.pin_message:6 of
 msgid ""
 "Use this method to add a message to the list of pinned messages in a "
-"chat. If the chat is not a private chat, the bot must be an administrator"
-" in the chat for this to work and must have the 'can_pin_messages' "
-"administrator right in a supergroup or 'can_edit_messages' administrator "
-"right in a channel. Returns :code:`True` on success."
+"chat. In private chats and channel direct messages chats, all non-service"
+" messages can be pinned. Conversely, the bot must be an administrator "
+"with the 'can_pin_messages' right or the 'can_edit_messages' right to pin"
+" messages in groups and channels respectively. Returns :code:`True` on "
+"success."
 msgstr ""
 
 #: aiogram.types.chat.Chat.pin_message:8 of
@@ -1047,6 +1072,35 @@ msgstr ""
 msgid ""
 "instance of method "
 ":class:`aiogram.methods.set_chat_administrator_custom_title.SetChatAdministratorCustomTitle`"
+msgstr ""
+
+#: aiogram.types.chat.Chat.set_member_tag:1 of
+msgid ""
+"Shortcut for method "
+":class:`aiogram.methods.set_chat_member_tag.SetChatMemberTag` will "
+"automatically fill method attributes:"
+msgstr ""
+
+#: aiogram.types.chat.Chat.set_member_tag:6 of
+msgid ""
+"Use this method to set a tag for a regular member in a group or a "
+"supergroup. The bot must be an administrator in the chat for this to work"
+" and must have the *can_manage_tags* administrator right. Returns "
+":code:`True` on success."
+msgstr ""
+
+#: aiogram.types.chat.Chat.set_member_tag:8 of
+msgid "Source: https://core.telegram.org/bots/api#setchatmembertag"
+msgstr ""
+
+#: aiogram.types.chat.Chat.set_member_tag:11 of
+msgid "New tag for the member; 0-16 characters, emoji are not allowed"
+msgstr ""
+
+#: aiogram.types.chat.Chat.set_member_tag:12 of
+msgid ""
+"instance of method "
+":class:`aiogram.methods.set_chat_member_tag.SetChatMemberTag`"
 msgstr ""
 
 #: aiogram.types.chat.Chat.set_permissions:1 of
@@ -1117,8 +1171,8 @@ msgstr ""
 msgid ""
 "Pass :code:`True` if the administrator can access the chat event log, get"
 " boost list, see hidden supergroup and channel members, report spam "
-"messages and ignore slow mode. Implied by any other administrator "
-"privilege."
+"messages, ignore slow mode, and send messages to the chat without paying "
+"Telegram Stars. Implied by any other administrator privilege."
 msgstr ""
 
 #: aiogram.types.chat.Chat.promote:13 of
@@ -1132,7 +1186,8 @@ msgstr ""
 #: aiogram.types.chat.Chat.promote:15 of
 msgid ""
 "Pass :code:`True` if the administrator can restrict, ban or unban chat "
-"members, or access supergroup statistics"
+"members, or access supergroup statistics. For backward compatibility, "
+"defaults to :code:`True` for promotions of channel administrators"
 msgstr ""
 
 #: aiogram.types.chat.Chat.promote:16 of
@@ -1173,7 +1228,7 @@ msgstr ""
 #: aiogram.types.chat.Chat.promote:22 of
 msgid ""
 "Pass :code:`True` if the administrator can post messages in the channel, "
-"or access channel statistics; for channels only"
+"approve suggested posts, or access channel statistics; for channels only"
 msgstr ""
 
 #: aiogram.types.chat.Chat.promote:23 of
@@ -1195,6 +1250,18 @@ msgid ""
 msgstr ""
 
 #: aiogram.types.chat.Chat.promote:26 of
+msgid ""
+"Pass :code:`True` if the administrator can manage direct messages within "
+"the channel and decline suggested posts; for channels only"
+msgstr ""
+
+#: aiogram.types.chat.Chat.promote:27 of
+msgid ""
+"Pass :code:`True` if the administrator can edit the tags of regular "
+"members; for groups and supergroups only"
+msgstr ""
+
+#: aiogram.types.chat.Chat.promote:28 of
 msgid ""
 "instance of method "
 ":class:`aiogram.methods.promote_chat_member.PromoteChatMember`"
@@ -1604,4 +1671,82 @@ msgstr ""
 #~ "Pass :code:`True` if the user is "
 #~ "allowed to create, rename, close, and"
 #~ " reopen forum topics, supergroups only"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Use this method to get a list "
+#~ "of administrators in a chat, which "
+#~ "aren't bots. Returns an Array of "
+#~ ":class:`aiogram.types.chat_member.ChatMember` objects."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "If the bot has *can_delete_messages* "
+#~ "permission in a supergroup or a "
+#~ "channel, it can delete any message "
+#~ "there."
+#~ msgstr ""
+
+#~ msgid "Unique identifier for the target message thread; for supergroups only"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Use this method to clear the list"
+#~ " of pinned messages in a chat. "
+#~ "If the chat is not a private "
+#~ "chat, the bot must be an "
+#~ "administrator in the chat for this "
+#~ "to work and must have the "
+#~ "'can_pin_messages' administrator right in a"
+#~ " supergroup or 'can_edit_messages' administrator"
+#~ " right in a channel. Returns "
+#~ ":code:`True` on success."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Use this method to remove a "
+#~ "message from the list of pinned "
+#~ "messages in a chat. If the chat"
+#~ " is not a private chat, the bot"
+#~ " must be an administrator in the "
+#~ "chat for this to work and must "
+#~ "have the 'can_pin_messages' administrator "
+#~ "right in a supergroup or "
+#~ "'can_edit_messages' administrator right in a"
+#~ " channel. Returns :code:`True` on success."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Use this method to add a message"
+#~ " to the list of pinned messages "
+#~ "in a chat. If the chat is "
+#~ "not a private chat, the bot must"
+#~ " be an administrator in the chat "
+#~ "for this to work and must have "
+#~ "the 'can_pin_messages' administrator right in"
+#~ " a supergroup or 'can_edit_messages' "
+#~ "administrator right in a channel. "
+#~ "Returns :code:`True` on success."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Pass :code:`True` if the administrator "
+#~ "can access the chat event log, get"
+#~ " boost list, see hidden supergroup "
+#~ "and channel members, report spam "
+#~ "messages and ignore slow mode. Implied"
+#~ " by any other administrator privilege."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Pass :code:`True` if the administrator "
+#~ "can restrict, ban or unban chat "
+#~ "members, or access supergroup statistics"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Pass :code:`True` if the administrator "
+#~ "can post messages in the channel, "
+#~ "or access channel statistics; for "
+#~ "channels only"
 #~ msgstr ""
