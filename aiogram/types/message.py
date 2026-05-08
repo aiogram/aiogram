@@ -817,6 +817,8 @@ class Message(MaybeInaccessibleMessage):
             return ContentType.POLL_OPTION_ADDED
         if self.poll_option_deleted:
             return ContentType.POLL_OPTION_DELETED
+        if self.live_photo:
+            return ContentType.LIVE_PHOTO
         return ContentType.UNKNOWN
 
     def _unparse_entities(self, text_decoration: TextDecoration) -> str:
