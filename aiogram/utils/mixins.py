@@ -70,11 +70,7 @@ class ContextInstanceMixin(Generic[ContextInstance]):
         cls,
         no_error: bool = True,
     ) -> ContextInstance | None:  # pragma: no cover
-        # on mypy 0.770 I catch that contextvars.ContextVar always contextvars.ContextVar[Any]
-        cls.__context_instance = cast(
-            contextvars.ContextVar[ContextInstance],
-            cls.__context_instance,
-        )
+        cls.__context_instance = cls.__context_instance
 
         try:
             current: ContextInstance | None = cls.__context_instance.get()
@@ -91,7 +87,7 @@ class ContextInstanceMixin(Generic[ContextInstance]):
         if not isinstance(value, cls):
             msg = f"Value should be instance of {cls.__name__!r} not {type(value).__name__!r}"
             raise TypeError(msg)
-        return cls.__context_instance.set(value)
+        return cls.__context_instance.set(cast(ContextInstance, value))
 
     @classmethod
     def reset_current(cls, token: contextvars.Token[ContextInstance]) -> None:

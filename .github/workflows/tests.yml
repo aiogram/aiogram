@@ -71,7 +71,7 @@ jobs:
       - name: Lint code
         run: |
           uv run ruff check --output-format=github aiogram examples
-          uv run mypy aiogram
+          uv run mypy --native-parser --num-workers 8 aiogram
           uv run ruff format --check --diff aiogram tests scripts examples
 
       - name: Setup redis

@@ -39,7 +39,7 @@ install: clean
 lint:
 	uv run ruff format --check --diff $(package_dir)
 	uv run ruff check --show-fixes --preview $(package_dir) $(examples_dir)
-	uv run mypy $(package_dir)
+	uv run mypy --native-parser --num-workers 8 $(package_dir)
 
 .PHONY: reformat
 reformat:
