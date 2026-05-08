@@ -459,6 +459,7 @@ class Chat(TelegramObject):
 
     def get_administrators(
         self,
+        return_bots: bool | None = None,
         **kwargs: Any,
     ) -> GetChatAdministrators:
         """
@@ -467,10 +468,11 @@ class Chat(TelegramObject):
 
         - :code:`chat_id`
 
-        Use this method to get a list of administrators in a chat, which aren't bots. Returns an Array of :class:`aiogram.types.chat_member.ChatMember` objects.
+        Use this method to get a list of administrators in a chat. Returns an Array of :class:`aiogram.types.chat_member.ChatMember` objects.
 
         Source: https://core.telegram.org/bots/api#getchatadministrators
 
+        :param return_bots: Pass :code:`True` to additionally receive all bots that are administrators of the chat. By default, bots other than the current bot are omitted.
         :return: instance of method :class:`aiogram.methods.get_chat_administrators.GetChatAdministrators`
         """
         # DO NOT EDIT MANUALLY!!!
@@ -480,6 +482,7 @@ class Chat(TelegramObject):
 
         return GetChatAdministrators(
             chat_id=self.id,
+            return_bots=return_bots,
             **kwargs,
         ).as_(self._bot)
 

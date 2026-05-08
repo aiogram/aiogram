@@ -17,7 +17,7 @@ class DeleteForumTopic(TelegramMethod[bool]):
     __api_method__ = "deleteForumTopic"
 
     chat_id: ChatIdUnion
-    """Unique identifier for the target chat or username of the target supergroup (in the format :code:`@supergroupusername`)"""
+    """Unique identifier for the target chat or username of the target supergroup in the format :code:`@username`"""
     message_thread_id: int
     """Unique identifier for the target message thread of the forum topic"""
 

@@ -22,7 +22,7 @@ class SendGift(TelegramMethod[bool]):
     user_id: int | None = None
     """Required if *chat_id* is not specified. Unique identifier of the target user who will receive the gift."""
     chat_id: ChatIdUnion | None = None
-    """Required if *user_id* is not specified. Unique identifier for the chat or username of the channel (in the format :code:`@channelusername`) that will receive the gift."""
+    """Required if *user_id* is not specified. Unique identifier for the chat or username of the channel (in the format :code:`@username`) that will receive the gift."""
     pay_for_upgrade: bool | None = None
     """Pass :code:`True` to pay for the gift upgrade from the bot's balance, thereby making the upgrade free for the receiver"""
     text: str | None = None

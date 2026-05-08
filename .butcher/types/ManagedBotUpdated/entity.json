@@ -7,9 +7,9 @@
   "object": {
     "anchor": "managedbotupdated",
     "name": "ManagedBotUpdated",
-    "description": "This object contains information about the creation or token update of a bot that is managed by the current bot.",
-    "html_description": "<p>This object contains information about the creation or token update of a bot that is managed by the current bot.</p>",
-    "rst_description": "This object contains information about the creation or token update of a bot that is managed by the current bot.",
+    "description": "This object contains information about the creation, token update, or owner update of a bot that is managed by the current bot.",
+    "html_description": "<p>This object contains information about the creation, token update, or owner update of a bot that is managed by the current bot.</p>",
+    "rst_description": "This object contains information about the creation, token update, or owner update of a bot that is managed by the current bot.",
     "annotations": [
       {
         "type": "User",

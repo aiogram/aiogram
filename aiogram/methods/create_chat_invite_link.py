@@ -17,7 +17,7 @@ class CreateChatInviteLink(TelegramMethod[ChatInviteLink]):
     __api_method__ = "createChatInviteLink"
 
     chat_id: ChatIdUnion
-    """Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)"""
+    """Unique identifier for the target chat or username of the target channel in the format :code:`@username`"""
     name: str | None = None
     """Invite link name; 0-32 characters"""
     expire_date: DateTimeUnion | None = None

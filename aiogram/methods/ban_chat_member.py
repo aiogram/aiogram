@@ -17,7 +17,7 @@ class BanChatMember(TelegramMethod[bool]):
     __api_method__ = "banChatMember"
 
     chat_id: ChatIdUnion
-    """Unique identifier for the target group or username of the target supergroup or channel (in the format :code:`@channelusername`)"""
+    """Unique identifier for the target group or username of the target supergroup or channel in the format :code:`@username`"""
     user_id: int
     """Unique identifier of the target user"""
     until_date: DateTimeUnion | None = None

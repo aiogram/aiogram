@@ -19,7 +19,7 @@ class ExportChatInviteLink(TelegramMethod[str]):
     __api_method__ = "exportChatInviteLink"
 
     chat_id: ChatIdUnion
-    """Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)"""
+    """Unique identifier for the target chat or username of the target channel in the format :code:`@username`"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!

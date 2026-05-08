@@ -125,6 +125,14 @@
       },
       {
         "type": "Boolean",
+        "description": "True, if the user is allowed to react to messages",
+        "html_description": "<td><em>True</em>, if the user is allowed to react to messages</td>",
+        "rst_description": ":code:`True`, if the user is allowed to react to messages\n",
+        "name": "can_react_to_messages",
+        "required": true
+      },
+      {
+        "type": "Boolean",
         "description": "True, if the user is allowed to edit their own tag",
         "html_description": "<td><em>True</em>, if the user is allowed to edit their own tag</td>",
         "rst_description": ":code:`True`, if the user is allowed to edit their own tag\n",

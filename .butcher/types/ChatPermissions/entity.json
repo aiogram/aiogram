@@ -93,9 +93,17 @@
       },
       {
         "type": "Boolean",
-        "description": "True, if the user is allowed to edit their own tag",
-        "html_description": "<td><em>Optional</em>. <em>True</em>, if the user is allowed to edit their own tag</td>",
-        "rst_description": "*Optional*. :code:`True`, if the user is allowed to edit their own tag\n",
+        "description": "True, if the user is allowed to react to messages. If omitted, defaults to the value of can_send_messages.",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the user is allowed to react to messages. If omitted, defaults to the value of <em>can_send_messages</em>.</td>",
+        "rst_description": "*Optional*. :code:`True`, if the user is allowed to react to messages. If omitted, defaults to the value of *can_send_messages*.\n",
+        "name": "can_react_to_messages",
+        "required": false
+      },
+      {
+        "type": "Boolean",
+        "description": "True, if the user is allowed to edit their own tag. If omitted, defaults to the value of can_pin_messages.",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the user is allowed to edit their own tag. If omitted, defaults to the value of <em>can_pin_messages</em>.</td>",
+        "rst_description": "*Optional*. :code:`True`, if the user is allowed to edit their own tag. If omitted, defaults to the value of *can_pin_messages*.\n",
         "name": "can_edit_tag",
         "required": false
       },

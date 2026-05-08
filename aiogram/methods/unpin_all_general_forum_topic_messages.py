@@ -16,7 +16,7 @@ class UnpinAllGeneralForumTopicMessages(TelegramMethod[bool]):
     __api_method__ = "unpinAllGeneralForumTopicMessages"
 
     chat_id: ChatIdUnion
-    """Unique identifier for the target chat or username of the target supergroup (in the format :code:`@supergroupusername`)"""
+    """Unique identifier for the target chat or username of the target supergroup in the format :code:`@username`"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!

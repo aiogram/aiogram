@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Any
 from pydantic import Field
 
 from ..client.default import Default
-from ..types import InlineKeyboardMarkup, Message, ReplyParameters
+from ..types import ChatIdUnion, InlineKeyboardMarkup, Message, ReplyParameters
 from .base import TelegramMethod
 
 
@@ -19,8 +19,8 @@ class SendGame(TelegramMethod[Message]):
     __returning__ = Message
     __api_method__ = "sendGame"
 
-    chat_id: int
-    """Unique identifier for the target chat. Games can't be sent to channel direct messages chats and channel chats."""
+    chat_id: ChatIdUnion
+    """Unique identifier for the target chat or username of the target bot in the format :code:`@username`. Games can't be sent to channel direct messages chats and channel chats."""
     game_short_name: str
     """Short name of the game, serves as the unique identifier for the game. Set up your games via `@BotFather <https://t.me/botfather>`_."""
     business_connection_id: str | None = None
@@ -32,7 +32,7 @@ class SendGame(TelegramMethod[Message]):
     protect_content: bool | Default | None = Default("protect_content")
     """Protects the contents of the sent message from forwarding and saving"""
     allow_paid_broadcast: bool | None = None
-    """Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance"""
+    """Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance."""
     message_effect_id: str | None = None
     """Unique identifier of the message effect to be added to the message; for private chats only"""
     reply_parameters: ReplyParameters | None = None
@@ -57,7 +57,7 @@ class SendGame(TelegramMethod[Message]):
         def __init__(
             __pydantic__self__,
             *,
-            chat_id: int,
+            chat_id: ChatIdUnion,
             game_short_name: str,
             business_connection_id: str | None = None,
             message_thread_id: int | None = None,

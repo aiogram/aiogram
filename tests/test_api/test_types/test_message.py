@@ -5,6 +5,7 @@ import pytest
 
 from aiogram.enums import ParseMode
 from aiogram.methods import (
+    AnswerGuestQuery,
     CopyMessage,
     DeleteMessage,
     EditMessageCaption,
@@ -73,9 +74,11 @@ from aiogram.types import (
     GiveawayWinners,
     InlineKeyboardButton,
     InlineKeyboardMarkup,
+    InlineQueryResultPhoto,
     InputMediaPhoto,
     Invoice,
     LinkPreviewOptions,
+    LivePhoto,
     Location,
     ManagedBotCreated,
     MessageAutoDeleteTimerChanged,
@@ -438,6 +441,7 @@ TEST_MESSAGE_POLL = Message(
         type="quiz",
         allows_multiple_answers=False,
         allows_revoting=False,
+        members_only=False,
         total_voter_count=0,
         correct_option_id=1,
     ),
@@ -892,6 +896,19 @@ TEST_MESSAGE_POLL_OPTION_DELETED = Message(
         option_text="Deleted option",
     ),
 )
+TEST_MESSAGE_LIVE_PHOTO = Message(
+    message_id=42,
+    date=datetime.datetime.now(),
+    live_photo=LivePhoto(
+        file_id="file id",
+        file_unique_id="file unique id",
+        width=640,
+        height=480,
+        duration=3,
+    ),
+    chat=Chat(id=42, type="private"),
+    from_user=User(id=42, is_bot=False, first_name="Test"),
+)
 
 MESSAGES_AND_CONTENT_TYPES = [
     [TEST_MESSAGE_TEXT, ContentType.TEXT],
@@ -974,6 +991,7 @@ MESSAGES_AND_CONTENT_TYPES = [
     [TEST_MESSAGE_MANAGED_BOT_CREATED, ContentType.MANAGED_BOT_CREATED],
     [TEST_MESSAGE_POLL_OPTION_ADDED, ContentType.POLL_OPTION_ADDED],
     [TEST_MESSAGE_POLL_OPTION_DELETED, ContentType.POLL_OPTION_DELETED],
+    [TEST_MESSAGE_LIVE_PHOTO, ContentType.LIVE_PHOTO],
     [TEST_MESSAGE_UNKNOWN, ContentType.UNKNOWN],
 ]
 
@@ -1053,6 +1071,7 @@ MESSAGES_AND_COPY_METHODS = [
     [TEST_MESSAGE_MANAGED_BOT_CREATED, None],
     [TEST_MESSAGE_POLL_OPTION_ADDED, None],
     [TEST_MESSAGE_POLL_OPTION_DELETED, None],
+    [TEST_MESSAGE_LIVE_PHOTO, None],
     [TEST_MESSAGE_UNKNOWN, None],
 ]
 
@@ -1451,3 +1470,36 @@ class TestMessage:
             entities=entities,
         )
         assert getattr(message, f"{mode}_text") == expected_value
+
+    def test_answer_guest_query(self):
+        result = InlineQueryResultPhoto(
+            id="result_id",
+            photo_url="https://example.com/photo.jpg",
+            thumbnail_url="https://example.com/thumb.jpg",
+        )
+
+        message = Message(
+            message_id=42,
+            chat=Chat(id=42, type="private"),
+            date=datetime.datetime.now(),
+            guest_query_id="query_id",
+        )
+        method = message.answer_guest_query(result=result)
+        assert isinstance(method, AnswerGuestQuery)
+        assert method.guest_query_id == message.guest_query_id
+        assert method.result == result
+
+    def test_answer_guest_query_no_guest_query_id(self):
+        message = Message(
+            message_id=42,
+            chat=Chat(id=42, type="private"),
+            date=datetime.datetime.now(),
+        )
+        with pytest.raises(AssertionError):
+            message.answer_guest_query(
+                result=InlineQueryResultPhoto(
+                    id="result_id",
+                    photo_url="https://example.com/photo.jpg",
+                    thumbnail_url="https://example.com/thumb.jpg",
+                )
+            )

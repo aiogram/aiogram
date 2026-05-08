@@ -17,7 +17,7 @@ class StopPoll(TelegramMethod[Poll]):
     __api_method__ = "stopPoll"
 
     chat_id: ChatIdUnion
-    """Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)"""
+    """Unique identifier for the target chat or username of the target bot, supergroup or channel in the format :code:`@username`"""
     message_id: int
     """Identifier of the original message with the poll"""
     business_connection_id: str | None = None

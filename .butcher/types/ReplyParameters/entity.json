@@ -21,9 +21,9 @@
       },
       {
         "type": "Integer or String",
-        "description": "If the message to be replied to is from a different chat, unique identifier for the chat or username of the channel (in the format @channelusername). Not supported for messages sent on behalf of a business account and messages from channel direct messages chats.",
-        "html_description": "<td><em>Optional</em>. If the message to be replied to is from a different chat, unique identifier for the chat or username of the channel (in the format <code>@channelusername</code>). Not supported for messages sent on behalf of a business account and messages from channel direct messages chats.</td>",
-        "rst_description": "*Optional*. If the message to be replied to is from a different chat, unique identifier for the chat or username of the channel (in the format :code:`@channelusername`). Not supported for messages sent on behalf of a business account and messages from channel direct messages chats.\n",
+        "description": "If the message to be replied to is from a different chat, unique identifier for the chat or username of the bot, supergroup or channel in the format @username. Not supported for messages sent on behalf of a business account and messages from channel direct messages chats.",
+        "html_description": "<td><em>Optional</em>. If the message to be replied to is from a different chat, unique identifier for the chat or username of the bot, supergroup or channel in the format <code>@username</code>. Not supported for messages sent on behalf of a business account and messages from channel direct messages chats.</td>",
+        "rst_description": "*Optional*. If the message to be replied to is from a different chat, unique identifier for the chat or username of the bot, supergroup or channel in the format :code:`@username`. Not supported for messages sent on behalf of a business account and messages from channel direct messages chats.\n",
         "name": "chat_id",
         "required": false
       },

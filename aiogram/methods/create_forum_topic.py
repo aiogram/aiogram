@@ -17,7 +17,7 @@ class CreateForumTopic(TelegramMethod[ForumTopic]):
     __api_method__ = "createForumTopic"
 
     chat_id: ChatIdUnion
-    """Unique identifier for the target chat or username of the target supergroup (in the format :code:`@supergroupusername`)"""
+    """Unique identifier for the target chat or username of the target supergroup in the format :code:`@username`"""
     name: str
     """Topic name, 1-128 characters"""
     icon_color: int | None = None
