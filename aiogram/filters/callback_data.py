@@ -125,16 +125,17 @@ class CallbackData(BaseModel):
         if prefix != cls.__prefix__:
             msg = f"Bad prefix ({prefix!r} != {cls.__prefix__!r})"
             raise ValueError(msg)
-        payload = {}
+        payload: dict[str, Any] = {}
         for k, v in zip(names, parts, strict=True):  # type: str, str
+            parsed_value: Any = v
             if (
                 (field := cls.model_fields.get(k))
                 and v == ""
                 and _check_field_is_nullable(field)
                 and field.default != ""
             ):
-                v = field.default if field.default is not PydanticUndefined else None
-            payload[k] = v
+                parsed_value = field.default if field.default is not PydanticUndefined else None
+            payload[k] = parsed_value
         return cls(**payload)
 
     @classmethod
