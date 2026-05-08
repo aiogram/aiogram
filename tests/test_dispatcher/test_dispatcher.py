@@ -616,6 +616,21 @@ class TestDispatcher:
                 False,
                 True,
             ),
+            pytest.param(
+                "guest_message",
+                Update(
+                    update_id=42,
+                    guest_message=Message(
+                        message_id=42,
+                        date=datetime.datetime.now(),
+                        text="test",
+                        chat=Chat(id=42, type="private"),
+                        from_user=User(id=42, is_bot=False, first_name="Test"),
+                    ),
+                ),
+                True,
+                True,
+            ),
         ],
     )
     async def test_listen_update(

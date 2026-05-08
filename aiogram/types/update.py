@@ -215,6 +215,8 @@ class Update(TelegramObject):
             return "business_message"
         if self.purchased_paid_media:
             return "purchased_paid_media"
+        if self.guest_message:
+            return "guest_message"
         if self.managed_bot:
             return "managed_bot"
 
