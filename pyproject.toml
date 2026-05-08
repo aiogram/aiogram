@@ -95,7 +95,7 @@ docs = [
 [dependency-groups]
 dev = [
     "ruff~=0.15",
-    "mypy==1.10.1",
+    "mypy==2.0.0; platform_python_implementation != 'PyPy'",
     "toml~=0.10.2",
     "pre-commit~=4.3",
     "packaging~=26.0",
@@ -105,7 +105,7 @@ test = [
     "pytest==9.0.3",
     "pytest-html>=4.2,<4.3",
     "pytest-mock==3.15.1",
-    "pytest-mypy==1.0.1",
+    "pytest-mypy==1.0.1; platform_python_implementation != 'PyPy'",
     "pytest-cov>=7.1,<7.2",
     "pytest-aiohttp==1.1.0",
     "aresponses==3.0.0",
@@ -259,7 +259,6 @@ show_absolute_path = true
 [[tool.mypy.overrides]]
 module = [
     "aiofiles",
-    "async_lru",
     "uvloop",
     "redis.*",
     "babel.*",

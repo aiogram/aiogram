@@ -186,7 +186,7 @@ class Command(Filter):
         await self.validate_mention(bot=bot, command=command)
         command = self.validate_command(command)
         command = self.do_magic(command=command)
-        return command  # noqa: RET504
+        return cast(CommandObject, command)
 
     def do_magic(self, command: CommandObject) -> Any:
         if self.magic is None:
@@ -279,7 +279,7 @@ class CommandStart(Command):
         command = self.validate_command(command)
         command = self.validate_deeplink(command=command)
         command = self.do_magic(command=command)
-        return command  # noqa: RET504
+        return cast(CommandObject, command)
 
     def validate_deeplink(self, command: CommandObject) -> CommandObject:
         if self.deep_link is None:
