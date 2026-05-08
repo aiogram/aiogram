@@ -26,7 +26,7 @@ class SendDice(TelegramMethod[Message]):
     __api_method__ = "sendDice"
 
     chat_id: ChatIdUnion
-    """Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)"""
+    """Unique identifier for the target chat or username of the target bot, supergroup or channel in the format :code:`@username`"""
     business_connection_id: str | None = None
     """Unique identifier of the business connection on behalf of which the message will be sent"""
     message_thread_id: int | None = None
@@ -40,7 +40,7 @@ class SendDice(TelegramMethod[Message]):
     protect_content: bool | Default | None = Default("protect_content")
     """Protects the contents of the sent message from forwarding"""
     allow_paid_broadcast: bool | None = None
-    """Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance"""
+    """Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance."""
     message_effect_id: str | None = None
     """Unique identifier of the message effect to be added to the message; for private chats only"""
     suggested_post_parameters: SuggestedPostParameters | None = None

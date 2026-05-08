@@ -68,6 +68,14 @@
         "required": false
       },
       {
+        "type": "LivePhoto",
+        "description": "Message is a live photo, information about the live photo",
+        "html_description": "<td><em>Optional</em>. Message is a live photo, information about the live photo</td>",
+        "rst_description": "*Optional*. Message is a live photo, information about the live photo\n",
+        "name": "live_photo",
+        "required": false
+      },
+      {
         "type": "PaidMediaInfo",
         "description": "Message contains paid media; information about the paid media",
         "html_description": "<td><em>Optional</em>. Message contains paid media; information about the paid media</td>",

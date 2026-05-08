@@ -74,7 +74,7 @@ class CallableObject:
 
 @dataclass
 class FilterObject(CallableObject):
-    magic: MagicFilter | None = None
+    magic: OriginalMagicFilter | None = None
 
     def __post_init__(self) -> None:
         if isinstance(self.callback, OriginalMagicFilter):

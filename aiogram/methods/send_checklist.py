@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
-from ..types import InlineKeyboardMarkup, InputChecklist, Message, ReplyParameters
+from ..types import ChatIdUnion, InlineKeyboardMarkup, InputChecklist, Message, ReplyParameters
 from .base import TelegramMethod
 
 
@@ -18,8 +18,8 @@ class SendChecklist(TelegramMethod[Message]):
 
     business_connection_id: str
     """Unique identifier of the business connection on behalf of which the message will be sent"""
-    chat_id: int
-    """Unique identifier for the target chat"""
+    chat_id: ChatIdUnion
+    """Unique identifier for the target chat or username of the target bot in the format :code:`@username`"""
     checklist: InputChecklist
     """A JSON-serialized object for the checklist to send"""
     disable_notification: bool | None = None
@@ -41,7 +41,7 @@ class SendChecklist(TelegramMethod[Message]):
             __pydantic__self__,
             *,
             business_connection_id: str,
-            chat_id: int,
+            chat_id: ChatIdUnion,
             checklist: InputChecklist,
             disable_notification: bool | None = None,
             protect_content: bool | None = None,

@@ -37,10 +37,12 @@ class User(TelegramObject):
     """*Optional*. :code:`True`, if the bot can be invited to groups. Returned only in :class:`aiogram.methods.get_me.GetMe`."""
     can_read_all_group_messages: bool | None = None
     """*Optional*. :code:`True`, if `privacy mode <https://core.telegram.org/bots/features#privacy-mode>`_ is disabled for the bot. Returned only in :class:`aiogram.methods.get_me.GetMe`."""
+    supports_guest_queries: bool | None = None
+    """*Optional*. :code:`True`, if the bot supports guest queries from chats it is not a member of. Returned only in :class:`aiogram.methods.get_me.GetMe`."""
     supports_inline_queries: bool | None = None
     """*Optional*. :code:`True`, if the bot supports inline queries. Returned only in :class:`aiogram.methods.get_me.GetMe`."""
     can_connect_to_business: bool | None = None
-    """*Optional*. :code:`True`, if the bot can be connected to a Telegram Business account to receive its messages. Returned only in :class:`aiogram.methods.get_me.GetMe`."""
+    """*Optional*. :code:`True`, if the bot can be connected to a user account to manage it. Returned only in :class:`aiogram.methods.get_me.GetMe`."""
     has_main_web_app: bool | None = None
     """*Optional*. :code:`True`, if the bot has a main Web App. Returned only in :class:`aiogram.methods.get_me.GetMe`."""
     has_topics_enabled: bool | None = None
@@ -67,6 +69,7 @@ class User(TelegramObject):
             added_to_attachment_menu: bool | None = None,
             can_join_groups: bool | None = None,
             can_read_all_group_messages: bool | None = None,
+            supports_guest_queries: bool | None = None,
             supports_inline_queries: bool | None = None,
             can_connect_to_business: bool | None = None,
             has_main_web_app: bool | None = None,
@@ -90,6 +93,7 @@ class User(TelegramObject):
                 added_to_attachment_menu=added_to_attachment_menu,
                 can_join_groups=can_join_groups,
                 can_read_all_group_messages=can_read_all_group_messages,
+                supports_guest_queries=supports_guest_queries,
                 supports_inline_queries=supports_inline_queries,
                 can_connect_to_business=can_connect_to_business,
                 has_main_web_app=has_main_web_app,

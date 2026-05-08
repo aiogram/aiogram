@@ -8,14 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-08 02:28+0200\n"
+"POT-Creation-Date: 2026-05-09 01:04+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.13.1\n"
+"Generated-By: Babel 2.18.0\n"
 
 #: ../../api/methods/send_document.rst:3
 msgid "sendDocument"
@@ -39,8 +39,8 @@ msgstr ""
 
 #: ../../docstring aiogram.methods.send_document.SendDocument.chat_id:1 of
 msgid ""
-"Unique identifier for the target chat or username of the target channel "
-"(in the format :code:`@channelusername`)"
+"Unique identifier for the target chat or username of the target bot, "
+"supergroup or channel in the format :code:`@username`"
 msgstr ""
 
 #: ../../docstring aiogram.methods.send_document.SendDocument.document:1 of
@@ -61,8 +61,16 @@ msgstr ""
 #: ../../docstring
 #: aiogram.methods.send_document.SendDocument.message_thread_id:1 of
 msgid ""
-"Unique identifier for the target message thread (topic) of the forum; for"
-" forum supergroups only"
+"Unique identifier for the target message thread (topic) of a forum; for "
+"forum supergroups and private chats of bots with forum topic mode enabled"
+" only"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.send_document.SendDocument.direct_messages_topic_id:1 of
+msgid ""
+"Identifier of the direct messages topic to which the message will be "
+"sent; required if the message is sent to a direct messages chat"
 msgstr ""
 
 #: ../../docstring aiogram.methods.send_document.SendDocument.thumbnail:1 of
@@ -124,7 +132,7 @@ msgid ""
 "`broadcasting limits <https://core.telegram.org/bots/faq#how-can-i"
 "-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 "
 "Telegram Stars per message. The relevant Stars will be withdrawn from the"
-" bot's balance"
+" bot's balance."
 msgstr ""
 
 #: ../../docstring
@@ -132,6 +140,15 @@ msgstr ""
 msgid ""
 "Unique identifier of the message effect to be added to the message; for "
 "private chats only"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.send_document.SendDocument.suggested_post_parameters:1 of
+msgid ""
+"A JSON-serialized object containing the parameters of the suggested post "
+"to send; for direct messages chats only. If the message is sent as a "
+"reply to another suggested post, then that suggested post is "
+"automatically declined."
 msgstr ""
 
 #: ../../docstring
@@ -250,4 +267,27 @@ msgstr ""
 #~ "instructions to remove reply keyboard or"
 #~ " to force a reply from the "
 #~ "user."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Unique identifier for the target chat"
+#~ " or username of the target channel"
+#~ " (in the format :code:`@channelusername`)"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Unique identifier for the target message"
+#~ " thread (topic) of the forum; for "
+#~ "forum supergroups only"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Pass :code:`True` to allow up to "
+#~ "1000 messages per second, ignoring "
+#~ "`broadcasting limits <https://core.telegram.org/bots/faq"
+#~ "#how-can-i-message-all-of-my-bot-"
+#~ "39s-subscribers-at-once>`_ for a fee"
+#~ " of 0.1 Telegram Stars per message."
+#~ " The relevant Stars will be withdrawn"
+#~ " from the bot's balance"
 #~ msgstr ""

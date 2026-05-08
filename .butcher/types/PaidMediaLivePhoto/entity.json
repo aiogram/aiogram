@@ -1,0 +1,33 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "paidmedialivephoto",
+    "name": "PaidMediaLivePhoto",
+    "description": "The paid media is a live photo.",
+    "html_description": "<p>The paid media is a <a href=\"#livephoto\">live photo</a>.</p>",
+    "rst_description": "The paid media is a `live photo <https://core.telegram.org/bots/api#livephoto>`_.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Type of the paid media, always 'live_photo'",
+        "html_description": "<td>Type of the paid media, always &#8220;live_photo&#8221;</td>",
+        "rst_description": "Type of the paid media, always 'live_photo'\n",
+        "name": "type",
+        "required": true
+      },
+      {
+        "type": "LivePhoto",
+        "description": "The photo",
+        "html_description": "<td>The photo</td>",
+        "rst_description": "The photo\n",
+        "name": "live_photo",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

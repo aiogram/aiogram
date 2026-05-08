@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-08 02:28+0200\n"
+"POT-Creation-Date: 2026-05-09 01:04+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: uk_UA\n"
@@ -18,7 +18,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.13.1\n"
+"Generated-By: Babel 2.18.0\n"
 
 #: ../../api/methods/create_chat_subscription_invite_link.rst:3
 msgid "createChatSubscriptionInviteLink"
@@ -55,7 +55,7 @@ msgstr ""
 #: of
 msgid ""
 "Unique identifier for the target channel chat or username of the target "
-"channel (in the format :code:`@channelusername`)"
+"channel in the format :code:`@username`"
 msgstr ""
 
 #: ../../docstring
@@ -71,7 +71,7 @@ msgstr ""
 #: of
 msgid ""
 "The amount of Telegram Stars a user must pay initially and after each "
-"subsequent subscription period to be a member of the chat; 1-2500"
+"subsequent subscription period to be a member of the chat; 1-10000"
 msgstr ""
 
 #: ../../docstring
@@ -115,3 +115,17 @@ msgstr ""
 #: ../../api/methods/create_chat_subscription_invite_link.rst:41
 msgid "As reply into Webhook in handler"
 msgstr ""
+
+#~ msgid ""
+#~ "Unique identifier for the target channel"
+#~ " chat or username of the target "
+#~ "channel (in the format "
+#~ ":code:`@channelusername`)"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "The amount of Telegram Stars a "
+#~ "user must pay initially and after "
+#~ "each subsequent subscription period to "
+#~ "be a member of the chat; 1-2500"
+#~ msgstr ""

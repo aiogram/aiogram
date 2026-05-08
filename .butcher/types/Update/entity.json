@@ -7,9 +7,9 @@
   "object": {
     "anchor": "update",
     "name": "Update",
-    "description": "This object represents an incoming update.\nAt most one of the optional parameters can be present in any given update.",
-    "html_description": "<p>This <a href=\"#available-types\">object</a> represents an incoming update.<br/>\nAt most <strong>one</strong> of the optional parameters can be present in any given update.</p>",
-    "rst_description": "This `object <https://core.telegram.org/bots/api#available-types>`_ represents an incoming update.\n\nAt most **one** of the optional parameters can be present in any given update.",
+    "description": "This object represents an incoming update.\nAt most one of the optional fields can be present in any given update.",
+    "html_description": "<p>This <a href=\"#available-types\">object</a> represents an incoming update.<br/>\nAt most <strong>one</strong> of the optional fields can be present in any given update.</p>",
+    "rst_description": "This `object <https://core.telegram.org/bots/api#available-types>`_ represents an incoming update.\n\nAt most **one** of the optional fields can be present in any given update.",
     "annotations": [
       {
         "type": "Integer",
@@ -81,6 +81,14 @@
         "html_description": "<td><em>Optional</em>. Messages were deleted from a connected business account</td>",
         "rst_description": "*Optional*. Messages were deleted from a connected business account\n",
         "name": "deleted_business_messages",
+        "required": false
+      },
+      {
+        "type": "Message",
+        "description": "New guest message. The bot can use the field Message.guest_query_id and the method answerGuestQuery to send a message in response.",
+        "html_description": "<td><em>Optional</em>. New guest message. The bot can use the field <em>Message.guest_query_id</em> and the method <a href=\"#answerguestquery\">answerGuestQuery</a> to send a message in response.</td>",
+        "rst_description": "*Optional*. New guest message. The bot can use the field *Message.guest_query_id* and the method :class:`aiogram.methods.answer_guest_query.AnswerGuestQuery` to send a message in response.\n",
+        "name": "guest_message",
         "required": false
       },
       {
@@ -205,9 +213,9 @@
       },
       {
         "type": "ManagedBotUpdated",
-        "description": "A new bot was created to be managed by the bot or token of a bot was changed",
-        "html_description": "<td><em>Optional</em>. A new bot was created to be managed by the bot or token of a bot was changed</td>",
-        "rst_description": "*Optional*. A new bot was created to be managed by the bot or token of a bot was changed\n",
+        "description": "A new bot was created to be managed by the bot, or token or owner of a managed bot was changed",
+        "html_description": "<td><em>Optional</em>. A new bot was created to be managed by the bot, or token or owner of a managed bot was changed</td>",
+        "rst_description": "*Optional*. A new bot was created to be managed by the bot, or token or owner of a managed bot was changed\n",
         "name": "managed_bot",
         "required": false
       }

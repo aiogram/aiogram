@@ -1,0 +1,41 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "inputmediasticker",
+    "name": "InputMediaSticker",
+    "description": "Represents a sticker file to be sent.",
+    "html_description": "<p>Represents a sticker file to be sent.</p>",
+    "rst_description": "Represents a sticker file to be sent.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Type of the result, must be sticker",
+        "html_description": "<td>Type of the result, must be <em>sticker</em></td>",
+        "rst_description": "Type of the result, must be *sticker*\n",
+        "name": "type",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a .WEBP sticker from the Internet, or pass 'attach://<file_attach_name>' to upload a new .WEBP, .TGS, or .WEBM sticker using multipart/form-data under <file_attach_name> name. More information on Sending Files",
+        "html_description": "<td>File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a .WEBP sticker from the Internet, or pass &#8220;attach://&lt;file_attach_name&gt;&#8221; to upload a new .WEBP, .TGS, or .WEBM sticker using multipart/form-data under &lt;file_attach_name&gt; name. <a href=\"#sending-files\">More information on Sending Files &#187;</a></td>",
+        "rst_description": "File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a .WEBP sticker from the Internet, or pass 'attach://<file_attach_name>' to upload a new .WEBP, .TGS, or .WEBM sticker using multipart/form-data under <file_attach_name> name. :ref:`More information on Sending Files » <sending-files>`\n",
+        "name": "media",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Emoji associated with the sticker; only for just uploaded stickers",
+        "html_description": "<td><em>Optional</em>. Emoji associated with the sticker; only for just uploaded stickers</td>",
+        "rst_description": "*Optional*. Emoji associated with the sticker; only for just uploaded stickers\n",
+        "name": "emoji",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

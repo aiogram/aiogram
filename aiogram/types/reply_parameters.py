@@ -20,7 +20,7 @@ class ReplyParameters(TelegramObject):
     message_id: int
     """Identifier of the message that will be replied to in the current chat, or in the chat *chat_id* if it is specified"""
     chat_id: ChatIdUnion | None = None
-    """*Optional*. If the message to be replied to is from a different chat, unique identifier for the chat or username of the channel (in the format :code:`@channelusername`). Not supported for messages sent on behalf of a business account and messages from channel direct messages chats."""
+    """*Optional*. If the message to be replied to is from a different chat, unique identifier for the chat or username of the bot, supergroup or channel in the format :code:`@username`. Not supported for messages sent on behalf of a business account and messages from channel direct messages chats."""
     allow_sending_without_reply: bool | Default | None = Default("allow_sending_without_reply")
     """*Optional*. Pass :code:`True` if the message should be sent even if the specified message to be replied to is not found. Always :code:`False` for replies in another chat or forum topic. Always :code:`True` for messages sent on behalf of a business account."""
     quote: str | None = None

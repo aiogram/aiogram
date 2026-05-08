@@ -11,7 +11,7 @@ from .base import TelegramMethod
 
 class SendMediaGroup(TelegramMethod[list[Message]]):
     """
-    Use this method to send a group of photos, videos, documents or audios as an album. Documents and audio files can be only grouped in an album with messages of the same type. On success, an array of :class:`aiogram.types.message.Message` objects that were sent is returned.
+    Use this method to send a group of photos, live photos, videos, documents or audios as an album. Documents and audio files can be only grouped in an album with messages of the same type. On success, an array of :class:`aiogram.types.message.Message` objects that were sent is returned.
 
     Source: https://core.telegram.org/bots/api#sendmediagroup
     """
@@ -20,7 +20,7 @@ class SendMediaGroup(TelegramMethod[list[Message]]):
     __api_method__ = "sendMediaGroup"
 
     chat_id: ChatIdUnion
-    """Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)"""
+    """Unique identifier for the target chat or username of the target bot, supergroup or channel in the format :code:`@username`"""
     media: list[MediaUnion]
     """A JSON-serialized array describing messages to be sent, must include 2-10 items"""
     business_connection_id: str | None = None
@@ -34,7 +34,7 @@ class SendMediaGroup(TelegramMethod[list[Message]]):
     protect_content: bool | Default | None = Default("protect_content")
     """Protects the contents of the sent messages from forwarding and saving"""
     allow_paid_broadcast: bool | None = None
-    """Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance"""
+    """Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance."""
     message_effect_id: str | None = None
     """Unique identifier of the message effect to be added to the message; for private chats only"""
     reply_parameters: ReplyParameters | None = None

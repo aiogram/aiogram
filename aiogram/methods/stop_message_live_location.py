@@ -19,7 +19,7 @@ class StopMessageLiveLocation(TelegramMethod[Message | bool]):
     business_connection_id: str | None = None
     """Unique identifier of the business connection on behalf of which the message to be edited was sent"""
     chat_id: ChatIdUnion | None = None
-    """Required if *inline_message_id* is not specified. Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)"""
+    """Required if *inline_message_id* is not specified. Unique identifier for the target chat or username of the target bot, supergroup or channel in the format :code:`@username`."""
     message_id: int | None = None
     """Required if *inline_message_id* is not specified. Identifier of the message with live location to stop"""
     inline_message_id: str | None = None

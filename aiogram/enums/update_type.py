@@ -16,6 +16,7 @@ class UpdateType(str, Enum):
     BUSINESS_MESSAGE = "business_message"
     EDITED_BUSINESS_MESSAGE = "edited_business_message"
     DELETED_BUSINESS_MESSAGES = "deleted_business_messages"
+    GUEST_MESSAGE = "guest_message"
     MESSAGE_REACTION = "message_reaction"
     MESSAGE_REACTION_COUNT = "message_reaction_count"
     INLINE_QUERY = "inline_query"

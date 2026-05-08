@@ -15,6 +15,7 @@ class TestShippingQueryHandler:
             type="quiz",
             allows_multiple_answers=False,
             allows_revoting=False,
+            members_only=False,
             total_voter_count=0,
             correct_option_id=0,
         )

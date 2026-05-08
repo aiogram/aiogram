@@ -17,7 +17,7 @@ class SetChatPermissions(TelegramMethod[bool]):
     __api_method__ = "setChatPermissions"
 
     chat_id: ChatIdUnion
-    """Unique identifier for the target chat or username of the target supergroup (in the format :code:`@supergroupusername`)"""
+    """Unique identifier for the target chat or username of the target supergroup in the format :code:`@username`"""
     permissions: ChatPermissions
     """A JSON-serialized object for new default chat permissions"""
     use_independent_chat_permissions: bool | None = None

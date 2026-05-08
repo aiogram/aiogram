@@ -185,4 +185,14 @@ class UserContextMiddleware(BaseMiddleware):
             )
         if event.managed_bot:
             return EventContext(user=event.managed_bot.user)
+        if event.guest_message:
+            return EventContext(
+                chat=event.guest_message.chat,
+                user=event.guest_message.from_user,
+                thread_id=(
+                    event.guest_message.message_thread_id
+                    if event.guest_message.is_topic_message
+                    else None
+                ),
+            )
         return EventContext()
