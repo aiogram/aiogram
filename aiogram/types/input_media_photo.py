@@ -5,13 +5,14 @@ from typing import TYPE_CHECKING, Any, Literal
 from ..client.default import Default
 from ..enums import InputMediaType
 from .input_media import InputMedia
+from .input_poll_option_media import InputPollOptionMedia
 
 if TYPE_CHECKING:
     from .input_file_union import InputFileUnion
     from .message_entity import MessageEntity
 
 
-class InputMediaPhoto(InputMedia):
+class InputMediaPhoto(InputMedia, InputPollOptionMedia):
     """
     Represents a photo to be sent.
 
