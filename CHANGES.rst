@@ -16,6 +16,16 @@ Changelog
 
 .. towncrier release notes start
 
+3.28.1 (2026-05-10)
+====================
+
+Bugfixes
+--------
+
+- Fixed :class:`aiogram.types.input_poll_option.InputPollOption` rejecting :class:`aiogram.types.input_media_photo.InputMediaPhoto` (and other ``InputMedia*`` subclasses) for the ``media`` field. Added :class:`aiogram.types.input_poll_option_media_union.InputPollOptionMediaUnion` type alias and made all valid media classes inherit from :class:`aiogram.types.input_poll_option_media.InputPollOptionMedia`.
+  `#1808 <https://github.com/aiogram/aiogram/issues/1808>`_
+
+
 3.28.0 (2026-05-09)
 ====================
 

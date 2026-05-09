@@ -4,12 +4,13 @@ from typing import TYPE_CHECKING, Any, Literal
 
 from ..enums import InputMediaType
 from .input_media import InputMedia
+from .input_poll_option_media import InputPollOptionMedia
 
 if TYPE_CHECKING:
     from .message_entity import MessageEntity
 
 
-class InputMediaLivePhoto(InputMedia):
+class InputMediaLivePhoto(InputMedia, InputPollOptionMedia):
     """
     Represents a live photo to be sent.
 
