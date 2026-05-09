@@ -2,9 +2,10 @@ from typing import TYPE_CHECKING, Any, Literal
 
 from ..enums import InputMediaType
 from .base import TelegramObject
+from .input_poll_option_media import InputPollOptionMedia
 
 
-class InputMediaSticker(TelegramObject):
+class InputMediaSticker(InputPollOptionMedia):
     """
     Represents a sticker file to be sent.
 
