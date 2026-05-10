@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING, Any, Literal
 from ..client.default import Default
 from ..enums import InputMediaType
 from .input_media import InputMedia
+from .input_poll_media import InputPollMedia
 from .input_poll_option_media import InputPollOptionMedia
 
 if TYPE_CHECKING:
@@ -13,7 +14,7 @@ if TYPE_CHECKING:
     from .message_entity import MessageEntity
 
 
-class InputMediaAnimation(InputMedia, InputPollOptionMedia):
+class InputMediaAnimation(InputMedia, InputPollMedia, InputPollOptionMedia):
     """
     Represents an animation file (GIF or H.264/MPEG-4 AVC video without sound) to be sent.
 

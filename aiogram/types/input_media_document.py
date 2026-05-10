@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING, Any, Literal
 from ..client.default import Default
 from ..enums import InputMediaType
 from .input_media import InputMedia
+from .input_poll_media import InputPollMedia
 
 if TYPE_CHECKING:
     from .input_file import InputFile
@@ -12,7 +13,7 @@ if TYPE_CHECKING:
     from .message_entity import MessageEntity
 
 
-class InputMediaDocument(InputMedia):
+class InputMediaDocument(InputMedia, InputPollMedia):
     """
     Represents a general file to be sent.
 
