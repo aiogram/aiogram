@@ -87,7 +87,7 @@ if TYPE_CHECKING:
     from .input_file_union import InputFileUnion
     from .input_media_union import InputMediaUnion
     from .input_paid_media_union import InputPaidMediaUnion
-    from .input_poll_media import InputPollMedia
+    from .input_poll_media_union import InputPollMediaUnion
     from .input_poll_option_union import InputPollOptionUnion
     from .invoice import Invoice
     from .labeled_price import LabeledPrice
@@ -2501,14 +2501,14 @@ class Message(MaybeInaccessibleMessage):
         explanation: str | None = None,
         explanation_parse_mode: str | Default | None = Default("parse_mode"),
         explanation_entities: list[MessageEntity] | None = None,
-        explanation_media: InputPollMedia | None = None,
+        explanation_media: InputPollMediaUnion | None = None,
         open_period: int | None = None,
         close_date: DateTimeUnion | None = None,
         is_closed: bool | None = None,
         description: str | None = None,
         description_parse_mode: str | Default | None = Default("parse_mode"),
         description_entities: list[MessageEntity] | None = None,
-        media: InputPollMedia | None = None,
+        media: InputPollMediaUnion | None = None,
         disable_notification: bool | None = None,
         protect_content: bool | Default | None = Default("protect_content"),
         allow_paid_broadcast: bool | None = None,
@@ -2633,14 +2633,14 @@ class Message(MaybeInaccessibleMessage):
         explanation: str | None = None,
         explanation_parse_mode: str | Default | None = Default("parse_mode"),
         explanation_entities: list[MessageEntity] | None = None,
-        explanation_media: InputPollMedia | None = None,
+        explanation_media: InputPollMediaUnion | None = None,
         open_period: int | None = None,
         close_date: DateTimeUnion | None = None,
         is_closed: bool | None = None,
         description: str | None = None,
         description_parse_mode: str | Default | None = Default("parse_mode"),
         description_entities: list[MessageEntity] | None = None,
-        media: InputPollMedia | None = None,
+        media: InputPollMediaUnion | None = None,
         disable_notification: bool | None = None,
         protect_content: bool | Default | None = Default("protect_content"),
         allow_paid_broadcast: bool | None = None,

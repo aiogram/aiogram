@@ -1,11 +1,11 @@
 from typing import TYPE_CHECKING, Any, Literal
 
 from ..enums import InputMediaType
-from .base import TelegramObject
+from .input_poll_media import InputPollMedia
 from .input_poll_option_media import InputPollOptionMedia
 
 
-class InputMediaVenue(InputPollOptionMedia):
+class InputMediaVenue(InputPollMedia, InputPollOptionMedia):
     """
     Represents a venue to be sent.
 

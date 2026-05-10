@@ -485,6 +485,7 @@ __all__ = (
     "InputPaidMediaUnion",
     "InputPaidMediaVideo",
     "InputPollMedia",
+    "InputPollMediaUnion",
     "InputPollOption",
     "InputPollOptionMedia",
     "InputPollOptionMediaUnion",
@@ -678,6 +679,7 @@ from .input_media_sticker import InputMediaSticker
 from .input_media_venue import InputMediaVenue
 from .input_paid_media_live_photo import InputPaidMediaLivePhoto
 from .input_poll_media import InputPollMedia
+from .input_poll_media_union import InputPollMediaUnion
 from .input_poll_option_media import InputPollOptionMedia
 from .input_poll_option_media_union import InputPollOptionMediaUnion
 from .keyboard_button_request_managed_bot import KeyboardButtonRequestManagedBot

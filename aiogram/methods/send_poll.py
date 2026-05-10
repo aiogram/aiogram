@@ -8,7 +8,7 @@ from ..client.default import Default
 from ..types import (
     ChatIdUnion,
     DateTimeUnion,
-    InputPollMedia,
+    InputPollMediaUnion,
     InputPollOptionUnion,
     Message,
     MessageEntity,
@@ -68,7 +68,7 @@ class SendPoll(TelegramMethod[Message]):
     """Mode for parsing entities in the explanation. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details."""
     explanation_entities: list[MessageEntity] | None = None
     """A JSON-serialized list of special entities that appear in the poll explanation. It can be specified instead of *explanation_parse_mode*"""
-    explanation_media: InputPollMedia | None = None
+    explanation_media: InputPollMediaUnion | None = None
     """Media added to the quiz explanation"""
     open_period: int | None = None
     """Amount of time in seconds the poll will be active after creation, 5-2628000. Can't be used together with *close_date*."""
@@ -82,7 +82,7 @@ class SendPoll(TelegramMethod[Message]):
     """Mode for parsing entities in the poll description. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details."""
     description_entities: list[MessageEntity] | None = None
     """A JSON-serialized list of special entities that appear in the poll description, which can be specified instead of *description_parse_mode*"""
-    media: InputPollMedia | None = None
+    media: InputPollMediaUnion | None = None
     """Media added to the poll description"""
     disable_notification: bool | None = None
     """Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound."""
@@ -139,14 +139,14 @@ class SendPoll(TelegramMethod[Message]):
             explanation: str | None = None,
             explanation_parse_mode: str | Default | None = Default("parse_mode"),
             explanation_entities: list[MessageEntity] | None = None,
-            explanation_media: InputPollMedia | None = None,
+            explanation_media: InputPollMediaUnion | None = None,
             open_period: int | None = None,
             close_date: DateTimeUnion | None = None,
             is_closed: bool | None = None,
             description: str | None = None,
             description_parse_mode: str | Default | None = Default("parse_mode"),
             description_entities: list[MessageEntity] | None = None,
-            media: InputPollMedia | None = None,
+            media: InputPollMediaUnion | None = None,
             disable_notification: bool | None = None,
             protect_content: bool | Default | None = Default("protect_content"),
             allow_paid_broadcast: bool | None = None,
