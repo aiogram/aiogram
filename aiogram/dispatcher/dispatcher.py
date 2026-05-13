@@ -17,7 +17,7 @@ from aiogram.fsm.storage.base import BaseEventIsolation, BaseStorage
 from aiogram.fsm.storage.memory import DisabledEventIsolation, MemoryStorage
 from aiogram.fsm.strategy import FSMStrategy
 from aiogram.methods import GetUpdates, TelegramMethod
-from aiogram.tracer import AbstractTracer, tracer
+from aiogram.tracer import AbstractTracer, TracerProxy, tracer
 from aiogram.types import TelegramObject, Update, User
 from aiogram.types.base import UNSET, UNSET_TYPE
 from aiogram.types.update import UpdateTypeLookupError
@@ -75,7 +75,7 @@ class Dispatcher(Router):
             router=self,
             event_name="update",
         )
-        self.tracer = tracer
+        self.tracer = TracerProxy(tracer) if tracer else None
         self.update.register(self._listen_update)
 
         # Error handlers should work is out of all other functions
