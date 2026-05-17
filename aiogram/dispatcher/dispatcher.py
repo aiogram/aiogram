@@ -17,7 +17,8 @@ from aiogram.fsm.storage.base import BaseEventIsolation, BaseStorage
 from aiogram.fsm.storage.memory import DisabledEventIsolation, MemoryStorage
 from aiogram.fsm.strategy import FSMStrategy
 from aiogram.methods import GetUpdates, TelegramMethod
-from aiogram.tracer import AbstractTracer, TracerProxy, tracer
+from aiogram.tracer import AbstractTracer, TracerProxy, execute_with_tracing
+from aiogram.tracer import tracer as tracer_var
 from aiogram.types import TelegramObject, Update, User
 from aiogram.types.base import UNSET, UNSET_TYPE
 from aiogram.types.update import UpdateTypeLookupError
@@ -60,12 +61,16 @@ class Dispatcher(Router):
         :param events_isolation: Events isolation
         :param disable_fsm: Disable FSM, note that if you disable FSM
             then you should not use storage and events isolation
+        :param tracer: Tracer instance for telemetry and performance monitoring
         :param kwargs: Other arguments, will be passed as keyword arguments to handlers
         """
         super().__init__(name=name)
 
         if storage and not isinstance(storage, BaseStorage):
             msg = f"FSM storage should be instance of 'BaseStorage' not {type(storage).__name__}"
+            raise TypeError(msg)
+        if tracer and not isinstance(tracer, AbstractTracer):
+            msg = f"Tracer should be instance of 'AbstractTracer' not {type(tracer).__name__}"
             raise TypeError(msg)
 
         # Telegram API provides originally only one event type - Update
@@ -281,9 +286,12 @@ class Dispatcher(Router):
             raise SkipHandler() from e
 
         kwargs.update(event_update=update)
-        if self.tracer is not None:
-            tracer.set(self.tracer)
-        return await self.propagate_event(update_type=update_type, event=event, **kwargs)
+        token = tracer_var.set(self.tracer) if self.tracer else None
+        try:
+            return await self.propagate_event(update_type=update_type, event=event, **kwargs)
+        finally:
+            if token:
+                tracer_var.reset(token)
 
     async def _propagate_event(
         self,
@@ -292,14 +300,11 @@ class Dispatcher(Router):
         event: TelegramObject,
         **kwargs: Any,
     ) -> Any:
-        if (
-            self.tracer is None
-            or (tracer_manager := self.tracer.get_trigger_span_manager(event)) is None
-        ):
-            return await super()._propagate_event(observer, update_type, event, **kwargs)
-
-        async with tracer_manager:
-            return await super()._propagate_event(observer, update_type, event, **kwargs)
+        tracer_instance = tracer_var.get()
+        return await execute_with_tracing(
+            tracer_instance.get_trigger_span_manager(event) if tracer_instance else None,
+            super()._propagate_event(observer, update_type, event, **kwargs),
+        )
 
     @classmethod
     async def silent_call_request(cls, bot: Bot, result: TelegramMethod[Any]) -> None:

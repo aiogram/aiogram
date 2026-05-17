@@ -1,11 +1,14 @@
 from __future__ import annotations
 
+import functools
 from collections.abc import Callable
+from contextlib import AbstractAsyncContextManager
 from typing import TYPE_CHECKING, Any
 
 from aiogram.dispatcher.middlewares.manager import MiddlewareManager
 from aiogram.exceptions import UnsupportedKeywordArgument
 from aiogram.filters.base import Filter
+from aiogram.tracer import execute_with_tracing, tracer
 
 from .bases import UNHANDLED, MiddlewareType, SkipHandler
 from .handler import CallbackType, FilterObject, HandlerObject
@@ -13,10 +16,6 @@ from .handler import CallbackType, FilterObject, HandlerObject
 if TYPE_CHECKING:
     from aiogram.dispatcher.router import Router
     from aiogram.types import TelegramObject
-import contextlib
-import functools
-
-from aiogram.tracer import AbstractTracer, tracer
 
 
 class TelegramEventObserver:
@@ -109,8 +108,23 @@ class TelegramEventObserver:
         )
         return wrapped_outer(event, data)
 
-    def check_root_filters(self, event: TelegramObject, **kwargs: Any) -> Any:
-        return self._handler.check(event, **kwargs)
+    async def check_root_filters(self, event: TelegramObject, **kwargs: Any) -> Any:
+        tracer_instance = tracer.get()
+        result, data = await execute_with_tracing(
+            tracer_instance.get_filter_span_manager(self._handler) if tracer_instance else None,
+            self._handler.check(event, **kwargs),
+        )
+        return result, data
+
+    @staticmethod
+    async def call_handler_with_tracing(
+        event: TelegramObject,
+        handler_manager: AbstractAsyncContextManager[None],
+        handler: HandlerObject,
+        **kwargs: Any,
+    ) -> Any:
+        async with handler_manager:
+            return await handler.call(event, **kwargs)
 
     async def trigger(self, event: TelegramObject, **kwargs: Any) -> Any:
         """
@@ -119,13 +133,10 @@ class TelegramEventObserver:
         """
         tracer_instance = tracer.get()
         for handler in self.handlers:
-            if tracer_instance is not None and (
-                filter_manager := tracer_instance.get_filter_span_manager(handler)
-            ):
-                async with filter_manager:
-                    result, data = await handler.check(event, **kwargs)
-            else:
-                result, data = await handler.check(event, **kwargs)
+            result, data = await execute_with_tracing(
+                tracer_instance.get_filter_span_manager(handler) if tracer_instance else None,
+                handler.check(event, **kwargs),
+            )
             if not result:
                 continue
             kwargs["handler"] = handler
@@ -135,15 +146,11 @@ class TelegramEventObserver:
                 if tracer_instance is not None and (
                     handler_manager := tracer_instance.get_handler_span_manager(handler)
                 ):
-
-                    @functools.wraps(handler.call)
-                    async def handler_wrapper(
-                        event: TelegramObject, *args: Any, **kwargs: Any
-                    ) -> Any:
-                        async with handler_manager:  # noqa: B023
-                            return await handler.call(event, *args, **kwargs)  # noqa: B023
-
-                    handler_call = handler_wrapper
+                    handler_call = functools.partial(
+                        self.call_handler_with_tracing,
+                        handler_manager=handler_manager,
+                        handler=handler,
+                    )
                 wrapped_inner = self.outer_middleware.wrap_middlewares(
                     self._resolve_middlewares(), handler_call
                 )

@@ -3,11 +3,11 @@ from __future__ import annotations
 import functools
 import logging
 from abc import ABC, abstractmethod
-from collections.abc import Callable
+from collections.abc import Awaitable, Callable
 from contextlib import AbstractAsyncContextManager
 from contextvars import ContextVar
 from types import TracebackType
-from typing import TYPE_CHECKING, ParamSpec
+from typing import TYPE_CHECKING, ParamSpec, TypeVar
 
 from aiogram.dispatcher.event.bases import MiddlewareEventType, MiddlewareType
 
@@ -39,18 +39,30 @@ class AbstractTracer(ABC):
         pass
 
 
+T = TypeVar("T")
+
+
+async def execute_with_tracing(manager: SPAN_MANAGER_TYPE, func: Awaitable[T]) -> T:
+    if manager is not None:
+        async with manager:
+            return await func
+    return await func
+
+
 logger = logging.getLogger(__name__)
 
 
 class SpanProxy:
     def __init__(self, span: AbstractAsyncContextManager[None]):
         self.span = span
+        self.have_error_during_enter = False
 
     async def __aenter__(self) -> None:
         try:
             return await self.span.__aenter__()
-        except Exception as e:
-            logger.error(f"Exception during entering span: {e}", exc_info=True)
+        except Exception:
+            logger.exception("Exception during entering span.")
+            self.have_error_during_enter = True
 
     async def __aexit__(
         self,
@@ -58,10 +70,12 @@ class SpanProxy:
         exc_value: BaseException | None,
         traceback: TracebackType | None,
     ) -> bool | None:
+        if self.have_error_during_enter:
+            return None
         try:
             return await self.span.__aexit__(exc_type, exc_value, traceback)
-        except Exception as e:
-            logger.error(f"Exception during exiting span: {e}", exc_info=True)
+        except Exception:
+            logger.exception("Exception during exiting span.")
         return None
 
 
@@ -77,10 +91,8 @@ def safe_span_manager(
             try:
                 span = func(*args, **kwargs)
                 return SpanProxy(span) if span else None
-            except Exception as e:
-                logger.error(
-                    f"Exception during initialization of {name} span manager: {e}", exc_info=True
-                )
+            except Exception:
+                logger.exception(f"Exception during initialization of {name} span manager.")
                 return None
 
         return wrapper
