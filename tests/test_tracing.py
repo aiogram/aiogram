@@ -1,10 +1,11 @@
 from aiogram.tracer import AbstractTracer, tracer, TracerProxy, SpanProxy, safe_span_manager, execute_with_tracing
 from unittest.mock import MagicMock, AsyncMock, call
 from aiogram.dispatcher.event.telegram import TelegramEventObserver
-from aiogram import Router, Dispatcher
-from aiogram.types import TelegramObject, Update, Message
+from aiogram import Router, Dispatcher, Bot
+from aiogram.types import TelegramObject
 import pytest
 from dataclasses import dataclass
+from tests.test_dispatcher.test_dispatcher import UPDATE
 
 @dataclass
 class Spans:
@@ -37,21 +38,13 @@ def tracer_impl(spans: Spans):
     tracer_instance.get_middleware_span_manager.return_value = spans.middleware
     tracer_instance.get_trigger_span_manager.return_value = spans.trigger
     tracer_instance.get_filter_span_manager.return_value = spans.filter
-    token = tracer.set(TracerProxy(tracer_instance))
     yield tracer_instance
-    tracer.reset(token)
 
 @pytest.fixture
 def observer(handler, test_filter):
     router = Router()
     router.message.register(handler, test_filter)
     return router.message
-
-@pytest.fixture
-def trigger(observer: TelegramEventObserver):
-    async def _trigger():
-        await observer.router.propagate_event("message", MagicMock(spec=TelegramObject))
-    return _trigger
 
 @pytest.fixture(autouse=True)
 def inner_middleware(observer: TelegramEventObserver):
@@ -101,7 +94,7 @@ class TestProxy:
         [f"get_{name}_span_manager" for name in ("middleware", "trigger", "filter", "handler")])
     async def test_proxy_delegates_to_tracer(self, method_name, tracer_impl):
         mocked_object = MagicMock()
-        getattr(tracer.get(), method_name)(mocked_object)
+        getattr(TracerProxy(tracer_impl), method_name)(mocked_object)
         getattr(tracer_impl, method_name).assert_called_once_with(mocked_object)
 
     async def test_execute_with_tracing(self):
@@ -119,10 +112,24 @@ class TestProxy:
 
 
 class TestArgumentPassing:
-    async def test_handler_argument_passing(self, handler, tracer_impl, trigger):
+    @pytest.fixture(autouse=True)
+    def set_tracer_var(self, tracer_impl):
+        token = tracer.set(TracerProxy(tracer_impl))
+        yield
+        tracer.reset(token)
+
+    @pytest.fixture
+    def trigger(self, observer: TelegramEventObserver):
+        async def _trigger():
+            await observer.router.propagate_event("message", MagicMock(spec=TelegramObject))
+        return _trigger
+
+    async def test_handler_argument_passing(self, handler, tracer_impl, trigger, spans):
         await trigger()
         tracer_impl.get_handler_span_manager.assert_called_once()
         assert tracer_impl.get_handler_span_manager.call_args[0][0].callback is handler
+        spans.handler.__aenter__.assert_awaited_once()
+        spans.handler.__aexit__.assert_awaited_once()
 
     async def test_middleware_await_order(self, tracer_impl, trigger, inner_middleware, outer_middleware):
         await trigger()
@@ -137,25 +144,33 @@ class TestArgumentPassing:
         await trigger()
         assert tracer_impl.get_filter_span_manager.call_args[0][0].filters[0].callback is test_filter
 
-    async def test_trigger_argument_passing(self, tracer_impl):
-        update = MagicMock(spec=TelegramObject)
-        dispatcher = Dispatcher()
-        await dispatcher.propagate_event("message", update)
-        assert tracer_impl.get_trigger_span_manager.call_args[0][0] is update
-
 class TestIntegration:
-    async def test_middlewares_processed_separately(self, tracer_impl, trigger):
-        await trigger()
-        assert tracer_impl.get_middleware_span_manager.call_count == 2 # inner + outher middlewares
+    @pytest.fixture
+    def dp(self, tracer_impl):
+        return Dispatcher(tracer=tracer_impl)
 
-    async def test_handle_if_middleware_manager_is_none(self, tracer_impl, trigger):
-        tracer_impl.get_middleware_span_manager.return_value = None
-        await trigger()
+    @pytest.fixture
+    def trigger(self, observer: TelegramEventObserver, dp: Dispatcher):
+        dp.include_router(observer.router)
+        async def _trigger():
+            await dp.feed_update(Bot(token="42:TEST"), UPDATE)
+        return _trigger
 
-    async def test_trigger_span_opens_once_in_few_routers(self, tracer_impl):
-        dp = Dispatcher(tracer=tracer_impl)
-        r1 = Router()
-        r2 = Router()
-        dp.include_routers(r1, r2)
-        await dp.update.trigger(Update(update_id=1, message=MagicMock(spec=Message)))
-        assert tracer_impl.get_trigger_span_manager.call_count == 1
+    @pytest.mark.parametrize("method_name",
+        [f"get_{name}_span_manager" for name in ("middleware", "trigger", "filter", "handler")])
+    async def test_handle_if_span_manager_is_none(self, tracer_impl, trigger, method_name):
+        getattr(tracer_impl, method_name).return_value = None
+        await trigger()
+        getattr(tracer_impl, method_name).assert_called()
+
+    async def test_trigger_span_opens_once_in_few_routers(self, tracer_impl, spans, dp: Dispatcher, trigger):
+        dp.message.register(lambda message: True)
+        for _ in range(3):
+            router = Router()
+            router.message.register(lambda message: True)
+            dp.include_router(router)
+        await trigger()
+        tracer_impl.get_trigger_span_manager.assert_called_once()
+        assert tracer_impl.get_trigger_span_manager.call_args[0][0].model_dump() == UPDATE.event.model_dump()
+        spans.trigger.__aenter__.assert_awaited_once()
+        spans.trigger.__aexit__.assert_awaited_once()

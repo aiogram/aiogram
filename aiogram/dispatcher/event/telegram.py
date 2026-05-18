@@ -118,9 +118,10 @@ class TelegramEventObserver:
 
     @staticmethod
     async def call_handler_with_tracing(
-        event: TelegramObject,
         handler_manager: AbstractAsyncContextManager[None],
         handler: HandlerObject,
+        event: TelegramObject,
+        /,  # preventing shadowing from kwargs
         **kwargs: Any,
     ) -> Any:
         async with handler_manager:
@@ -133,13 +134,13 @@ class TelegramEventObserver:
         """
         tracer_instance = tracer.get()
         for handler in self.handlers:
+            kwargs["handler"] = handler
             result, data = await execute_with_tracing(
                 tracer_instance.get_filter_span_manager(handler) if tracer_instance else None,
                 handler.check(event, **kwargs),
             )
             if not result:
                 continue
-            kwargs["handler"] = handler
             kwargs.update(data)
             try:
                 handler_call = handler.call
@@ -148,8 +149,8 @@ class TelegramEventObserver:
                 ):
                     handler_call = functools.partial(
                         self.call_handler_with_tracing,
-                        handler_manager=handler_manager,
-                        handler=handler,
+                        handler_manager,
+                        handler,
                     )
                 wrapped_inner = self.outer_middleware.wrap_middlewares(
                     self._resolve_middlewares(), handler_call

@@ -19,7 +19,7 @@ from aiogram.fsm.strategy import FSMStrategy
 from aiogram.methods import GetUpdates, TelegramMethod
 from aiogram.tracer import AbstractTracer, TracerProxy, execute_with_tracing
 from aiogram.tracer import tracer as tracer_var
-from aiogram.types import TelegramObject, Update, User
+from aiogram.types import Update, User
 from aiogram.types.base import UNSET, UNSET_TYPE
 from aiogram.types.update import UpdateTypeLookupError
 from aiogram.utils.backoff import Backoff, BackoffConfig
@@ -167,19 +167,25 @@ class Dispatcher(Router):
             # The preferred way is that pass already mounted Bot instance to this update
             # before call feed_update method
             update = Update.model_validate(update.model_dump(), context={"bot": bot})
+        token = tracer_var.set(self.tracer) if self.tracer else None
         try:
-            response = await self.update.wrap_outer_middleware(
-                self.update.trigger,
-                update,
-                {
-                    **self.workflow_data,
-                    **kwargs,
-                    "bot": bot,
-                },
+            response = await execute_with_tracing(
+                self.tracer.get_trigger_span_manager(update.event) if self.tracer else None,
+                self.update.wrap_outer_middleware(
+                    self.update.trigger,
+                    update,
+                    {
+                        **self.workflow_data,
+                        **kwargs,
+                        "bot": bot,
+                    },
+                ),
             )
             handled = response is not UNHANDLED
             return response
         finally:
+            if token:
+                tracer_var.reset(token)
             finish_time = loop.time()
             duration = (finish_time - start_time) * 1000
             loggers.event.info(
@@ -286,25 +292,7 @@ class Dispatcher(Router):
             raise SkipHandler() from e
 
         kwargs.update(event_update=update)
-        token = tracer_var.set(self.tracer) if self.tracer else None
-        try:
-            return await self.propagate_event(update_type=update_type, event=event, **kwargs)
-        finally:
-            if token:
-                tracer_var.reset(token)
-
-    async def _propagate_event(
-        self,
-        observer: TelegramEventObserver | None,
-        update_type: str,
-        event: TelegramObject,
-        **kwargs: Any,
-    ) -> Any:
-        tracer_instance = tracer_var.get()
-        return await execute_with_tracing(
-            tracer_instance.get_trigger_span_manager(event) if tracer_instance else None,
-            super()._propagate_event(observer, update_type, event, **kwargs),
-        )
+        return await self.propagate_event(update_type=update_type, event=event, **kwargs)
 
     @classmethod
     async def silent_call_request(cls, bot: Bot, result: TelegramMethod[Any]) -> None:
