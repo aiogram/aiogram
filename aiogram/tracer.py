@@ -24,19 +24,30 @@ class AbstractTracer(ABC):
     def get_middleware_span_manager(
         self, middleware: MiddlewareType[MiddlewareEventType]
     ) -> SPAN_MANAGER_TYPE:
-        pass
+        """
+        Method for getting manager that will be used to wrap each middleware.
+        """
 
     @abstractmethod
     def get_handler_span_manager(self, handler: HandlerObject) -> SPAN_MANAGER_TYPE:
-        pass
+        """
+        Method for getting manager that will be used to wrap handler.
+        """
 
     @abstractmethod
     def get_trigger_span_manager(self, event: TelegramObject) -> SPAN_MANAGER_TYPE:
-        pass
+        """
+        Method for getting manager that will be used to wrap full update processing flow
+        (e.g. routing, filtering, etc).
+        """
 
     @abstractmethod
     def get_filter_span_manager(self, handler: HandlerObject) -> SPAN_MANAGER_TYPE:
-        pass
+        """
+        Method for getting manager that will be used to wrap filter check for handler,
+        both handler and observer filters. In the case of observer-level filters,
+        ``HandlerObject`` with dummy callback(lambda function) will be passed.
+        """
 
 
 T = TypeVar("T")
