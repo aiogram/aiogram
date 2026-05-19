@@ -57,9 +57,9 @@ class MiddlewareManager(Sequence[MiddlewareType[TelegramObject]]):
     @staticmethod
     async def middleware_step(
         tracer_instance: AbstractTracer,
-        middleware: MiddlewareType[TelegramObject],
+        middleware: MiddlewareType[MiddlewareEventType],
         handler: CallbackType,
-        event: TelegramObject,
+        event: MiddlewareEventType,
         kwargs: dict[str, Any],
     ) -> Any:
         manager = tracer_instance.get_middleware_span_manager(middleware)
