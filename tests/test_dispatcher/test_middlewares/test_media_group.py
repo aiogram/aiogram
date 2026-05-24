@@ -91,11 +91,11 @@ class TestMediaGroupAggregatorMiddleware:
 
         def call_middleware(message_id: int):
             message = _get_message(message_id, media_group_id="42")
-            return middleware(next_handler, message, {"event_update": Update(update_id=42, message=message)})
+            return middleware(
+                next_handler, message, {"event_update": Update(update_id=42, message=message)}
+            )
 
-        task1 = await wait_until_func_call_sleep(
-            asyncio.create_task, call_middleware(2)
-        )
+        task1 = await wait_until_func_call_sleep(asyncio.create_task, call_middleware(2))
         await call_middleware(1)
         await task1
         assert isinstance(first_message, Message)
