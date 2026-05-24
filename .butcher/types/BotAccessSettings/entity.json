@@ -1,0 +1,33 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "botaccesssettings",
+    "name": "BotAccessSettings",
+    "description": "This object describes the access settings of a bot.",
+    "html_description": "<p>This object describes the access settings of a bot.</p>",
+    "rst_description": "This object describes the access settings of a bot.",
+    "annotations": [
+      {
+        "type": "Boolean",
+        "description": "True, if only selected users can access the bot. The bot's owner can always access it.",
+        "html_description": "<td><em>True</em>, if only selected users can access the bot. The bot's owner can always access it.</td>",
+        "rst_description": ":code:`True`, if only selected users can access the bot. The bot's owner can always access it.\n",
+        "name": "is_access_restricted",
+        "required": true
+      },
+      {
+        "type": "Array of User",
+        "description": "The list of other users who have access to the bot if the access is restricted",
+        "html_description": "<td><em>Optional</em>. The list of other users who have access to the bot if the access is restricted</td>",
+        "rst_description": "*Optional*. The list of other users who have access to the bot if the access is restricted\n",
+        "name": "added_users",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

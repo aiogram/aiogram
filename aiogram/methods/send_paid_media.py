@@ -25,7 +25,7 @@ class SendPaidMedia(TelegramMethod[Message]):
     __api_method__ = "sendPaidMedia"
 
     chat_id: ChatIdUnion
-    """Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`). If the chat is a channel, all Telegram Star proceeds from this media will be credited to the chat's balance. Otherwise, they will be credited to the bot's balance."""
+    """Unique identifier for the target chat or username of the target bot, supergroup or channel in the format :code:`@username`. If the chat is a channel, all Telegram Star proceeds from this media will be credited to the chat's balance. Otherwise, they will be credited to the bot's balance."""
     star_count: int
     """The number of Telegram Stars that must be paid to buy access to the media; 1-25000"""
     media: list[InputPaidMediaUnion]
@@ -51,7 +51,7 @@ class SendPaidMedia(TelegramMethod[Message]):
     protect_content: bool | None = None
     """Protects the contents of the sent message from forwarding and saving"""
     allow_paid_broadcast: bool | None = None
-    """Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance"""
+    """Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance."""
     suggested_post_parameters: SuggestedPostParameters | None = None
     """A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined."""
     reply_parameters: ReplyParameters | None = None

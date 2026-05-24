@@ -17,7 +17,7 @@ class SetChatPhoto(TelegramMethod[bool]):
     __api_method__ = "setChatPhoto"
 
     chat_id: ChatIdUnion
-    """Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)"""
+    """Unique identifier for the target chat or username of the target channel in the format :code:`@username`"""
     photo: InputFile
     """New chat photo, uploaded using multipart/form-data"""
 

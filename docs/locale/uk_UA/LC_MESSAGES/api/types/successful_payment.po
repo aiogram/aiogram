@@ -8,14 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-08 02:28+0200\n"
+"POT-Creation-Date: 2026-05-09 01:04+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.13.1\n"
+"Generated-By: Babel 2.18.0\n"
 
 #: ../../api/types/successful_payment.rst:3
 msgid "SuccessfulPayment"
@@ -79,12 +79,16 @@ msgstr ""
 
 #: ../../docstring
 #: aiogram.types.successful_payment.SuccessfulPayment.is_recurring:1 of
-msgid "*Optional*. True, if the payment is a recurring payment for a subscription"
+msgid ""
+"*Optional*. :code:`True`, if the payment is a recurring payment for a "
+"subscription"
 msgstr ""
 
 #: ../../docstring
 #: aiogram.types.successful_payment.SuccessfulPayment.is_first_recurring:1 of
-msgid "*Optional*. True, if the payment is the first payment for a subscription"
+msgid ""
+"*Optional*. :code:`True`, if the payment is the first payment for a "
+"subscription"
 msgstr ""
 
 #: ../../docstring
@@ -107,4 +111,14 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Bot specified invoice payload"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "*Optional*. True, if the payment is "
+#~ "a recurring payment for a subscription"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "*Optional*. True, if the payment is "
+#~ "the first payment for a subscription"
 #~ msgstr ""

@@ -17,7 +17,7 @@ class PinChatMessage(TelegramMethod[bool]):
     __api_method__ = "pinChatMessage"
 
     chat_id: ChatIdUnion
-    """Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)"""
+    """Unique identifier for the target chat or username of the target channel in the format :code:`@username`"""
     message_id: int
     """Identifier of a message to pin"""
     business_connection_id: str | None = None

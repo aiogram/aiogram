@@ -1,0 +1,74 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, aiogram Team
+# This file is distributed under the same license as the aiogram package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: aiogram \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-05-09 01:04+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: uk_UA\n"
+"Language-Team: uk_UA <LL@li.org>\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: ../../api/types/live_photo.rst:3
+msgid "LivePhoto"
+msgstr ""
+
+#: aiogram.types.live_photo.LivePhoto:1 of
+msgid "This object represents a live photo."
+msgstr ""
+
+#: aiogram.types.live_photo.LivePhoto:3 of
+msgid "Source: https://core.telegram.org/bots/api#livephoto"
+msgstr ""
+
+#: ../../docstring aiogram.types.live_photo.LivePhoto.file_id:1 of
+msgid ""
+"Identifier for the video file which can be used to download or reuse the "
+"file"
+msgstr ""
+
+#: ../../docstring aiogram.types.live_photo.LivePhoto.file_unique_id:1 of
+msgid ""
+"Unique identifier for the video file which is supposed to be the same "
+"over time and for different bots. Can't be used to download or reuse the "
+"file."
+msgstr ""
+
+#: ../../docstring aiogram.types.live_photo.LivePhoto.width:1 of
+msgid "Video width as defined by the sender"
+msgstr ""
+
+#: ../../docstring aiogram.types.live_photo.LivePhoto.height:1 of
+msgid "Video height as defined by the sender"
+msgstr ""
+
+#: ../../docstring aiogram.types.live_photo.LivePhoto.duration:1 of
+msgid "Duration of the video in seconds as defined by the sender"
+msgstr ""
+
+#: ../../docstring aiogram.types.live_photo.LivePhoto.photo:1 of
+msgid "*Optional*. Available sizes of the corresponding static photo"
+msgstr ""
+
+#: ../../docstring aiogram.types.live_photo.LivePhoto.mime_type:1 of
+msgid "*Optional*. MIME type of the file as defined by the sender"
+msgstr ""
+
+#: ../../docstring aiogram.types.live_photo.LivePhoto.file_size:1 of
+msgid ""
+"*Optional*. File size in bytes. It can be bigger than 2^31 and some "
+"programming languages may have difficulty/silent defects in interpreting "
+"it. But it has at most 52 significant bits, so a signed 64-bit integer or"
+" double-precision float type are safe for storing this value."
+msgstr ""

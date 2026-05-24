@@ -1,0 +1,41 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "inputpaidmedialivephoto",
+    "name": "InputPaidMediaLivePhoto",
+    "description": "The paid media to send is a live photo.",
+    "html_description": "<p>The paid media to send is a live photo.</p>",
+    "rst_description": "The paid media to send is a live photo.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Type of the media, must be live_photo",
+        "html_description": "<td>Type of the media, must be <em>live_photo</em></td>",
+        "rst_description": "Type of the media, must be *live_photo*\n",
+        "name": "type",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Video of the live photo to send. Pass a file_id to send a file that exists on the Telegram servers (recommended) or pass 'attach://<file_attach_name>' to upload a new one using multipart/form-data under <file_attach_name> name. More information on Sending Files. Sending live photos by a URL is currently unsupported.",
+        "html_description": "<td>Video of the live photo to send. Pass a file_id to send a file that exists on the Telegram servers (recommended) or pass &#8220;attach://&lt;file_attach_name&gt;&#8221; to upload a new one using multipart/form-data under &lt;file_attach_name&gt; name. <a href=\"#sending-files\">More information on Sending Files &#187;</a>. Sending live photos by a URL is currently unsupported.</td>",
+        "rst_description": "Video of the live photo to send. Pass a file_id to send a file that exists on the Telegram servers (recommended) or pass 'attach://<file_attach_name>' to upload a new one using multipart/form-data under <file_attach_name> name. :ref:`More information on Sending Files » <sending-files>`. Sending live photos by a URL is currently unsupported.\n",
+        "name": "media",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "The static photo to send. Pass a file_id to send a file that exists on the Telegram servers (recommended) or pass 'attach://<file_attach_name>' to upload a new one using multipart/form-data under <file_attach_name> name. More information on Sending Files. Sending live photos by a URL is currently unsupported.",
+        "html_description": "<td>The static photo to send. Pass a file_id to send a file that exists on the Telegram servers (recommended) or pass &#8220;attach://&lt;file_attach_name&gt;&#8221; to upload a new one using multipart/form-data under &lt;file_attach_name&gt; name. <a href=\"#sending-files\">More information on Sending Files &#187;</a>. Sending live photos by a URL is currently unsupported.</td>",
+        "rst_description": "The static photo to send. Pass a file_id to send a file that exists on the Telegram servers (recommended) or pass 'attach://<file_attach_name>' to upload a new one using multipart/form-data under <file_attach_name> name. :ref:`More information on Sending Files » <sending-files>`. Sending live photos by a URL is currently unsupported.\n",
+        "name": "photo",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

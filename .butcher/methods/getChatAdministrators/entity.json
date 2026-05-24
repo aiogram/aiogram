@@ -7,17 +7,25 @@
   "object": {
     "anchor": "getchatadministrators",
     "name": "getChatAdministrators",
-    "description": "Use this method to get a list of administrators in a chat, which aren't bots. Returns an Array of ChatMember objects.",
-    "html_description": "<p>Use this method to get a list of administrators in a chat, which aren't bots. Returns an Array of <a href=\"#chatmember\">ChatMember</a> objects.</p>",
-    "rst_description": "Use this method to get a list of administrators in a chat, which aren't bots. Returns an Array of :class:`aiogram.types.chat_member.ChatMember` objects.",
+    "description": "Use this method to get a list of administrators in a chat. Returns an Array of ChatMember objects.",
+    "html_description": "<p>Use this method to get a list of administrators in a chat. Returns an Array of <a href=\"#chatmember\">ChatMember</a> objects.</p>",
+    "rst_description": "Use this method to get a list of administrators in a chat. Returns an Array of :class:`aiogram.types.chat_member.ChatMember` objects.",
     "annotations": [
       {
         "type": "Integer or String",
         "required": true,
-        "description": "Unique identifier for the target chat or username of the target supergroup or channel (in the format @channelusername)",
-        "html_description": "<td>Unique identifier for the target chat or username of the target supergroup or channel (in the format <code>@channelusername</code>)</td>",
-        "rst_description": "Unique identifier for the target chat or username of the target supergroup or channel (in the format :code:`@channelusername`)\n",
+        "description": "Unique identifier for the target chat or username of the target supergroup or channel in the format @username",
+        "html_description": "<td>Unique identifier for the target chat or username of the target supergroup or channel in the format <code>@username</code></td>",
+        "rst_description": "Unique identifier for the target chat or username of the target supergroup or channel in the format :code:`@username`\n",
         "name": "chat_id"
+      },
+      {
+        "type": "Boolean",
+        "required": false,
+        "description": "Pass True to additionally receive all bots that are administrators of the chat. By default, bots other than the current bot are omitted.",
+        "html_description": "<td>Pass <em>True</em> to additionally receive all bots that are administrators of the chat. By default, bots other than the current bot are omitted.</td>",
+        "rst_description": "Pass :code:`True` to additionally receive all bots that are administrators of the chat. By default, bots other than the current bot are omitted.\n",
+        "name": "return_bots"
       }
     ],
     "category": "methods"

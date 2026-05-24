@@ -1,0 +1,57 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, aiogram Team
+# This file is distributed under the same license as the aiogram package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: aiogram \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-05-09 01:04+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: uk_UA\n"
+"Language-Team: uk_UA <LL@li.org>\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: ../../api/types/user_rating.rst:3
+msgid "UserRating"
+msgstr ""
+
+#: aiogram.types.user_rating.UserRating:1 of
+msgid ""
+"This object describes the rating of a user based on their Telegram Star "
+"spendings."
+msgstr ""
+
+#: aiogram.types.user_rating.UserRating:3 of
+msgid "Source: https://core.telegram.org/bots/api#userrating"
+msgstr ""
+
+#: ../../docstring aiogram.types.user_rating.UserRating.level:1 of
+msgid ""
+"Current level of the user, indicating their reliability when purchasing "
+"digital goods and services. A higher level suggests a more trustworthy "
+"customer; a negative level is likely reason for concern."
+msgstr ""
+
+#: ../../docstring aiogram.types.user_rating.UserRating.rating:1 of
+msgid "Numerical value of the user's rating; the higher the rating, the better"
+msgstr ""
+
+#: ../../docstring aiogram.types.user_rating.UserRating.current_level_rating:1
+#: of
+msgid "The rating value required to get the current level"
+msgstr ""
+
+#: ../../docstring aiogram.types.user_rating.UserRating.next_level_rating:1 of
+msgid ""
+"*Optional*. The rating value required to get to the next level; omitted "
+"if the maximum level was reached"
+msgstr ""

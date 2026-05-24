@@ -15,9 +15,9 @@ class ForwardMessages(TelegramMethod[list[MessageId]]):
     __api_method__ = "forwardMessages"
 
     chat_id: ChatIdUnion
-    """Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)"""
+    """Unique identifier for the target chat or username of the target bot, supergroup or channel in the format :code:`@username`"""
     from_chat_id: ChatIdUnion
-    """Unique identifier for the chat where the original messages were sent (or channel username in the format :code:`@channelusername`)"""
+    """Unique identifier for the chat where the original messages were sent (or username of the target bot, supergroup or channel in the format :code:`@username`)"""
     message_ids: list[int]
     """A JSON-serialized list of 1-100 identifiers of messages in the chat *from_chat_id* to forward. The identifiers must be specified in a strictly increasing order."""
     message_thread_id: int | None = None

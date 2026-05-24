@@ -1,0 +1,122 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2026, aiogram Team
+# This file is distributed under the same license as the aiogram package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: aiogram \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-05-09 01:04+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: uk_UA\n"
+"Language-Team: uk_UA <LL@li.org>\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: ../../api/methods/get_user_gifts.rst:3
+msgid "getUserGifts"
+msgstr ""
+
+#: ../../api/methods/get_user_gifts.rst:5
+msgid "Returns: :obj:`OwnedGifts`"
+msgstr ""
+
+#: aiogram.methods.get_user_gifts.GetUserGifts:1 of
+msgid ""
+"Returns the gifts owned and hosted by a user. Returns "
+":class:`aiogram.types.owned_gifts.OwnedGifts` on success."
+msgstr ""
+
+#: aiogram.methods.get_user_gifts.GetUserGifts:3 of
+msgid "Source: https://core.telegram.org/bots/api#getusergifts"
+msgstr ""
+
+#: ../../docstring aiogram.methods.get_user_gifts.GetUserGifts.user_id:1 of
+msgid "Unique identifier of the user"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.get_user_gifts.GetUserGifts.exclude_unlimited:1 of
+msgid ""
+"Pass :code:`True` to exclude gifts that can be purchased an unlimited "
+"number of times"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.get_user_gifts.GetUserGifts.exclude_limited_upgradable:1 of
+msgid ""
+"Pass :code:`True` to exclude gifts that can be purchased a limited number"
+" of times and can be upgraded to unique"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.get_user_gifts.GetUserGifts.exclude_limited_non_upgradable:1
+#: of
+msgid ""
+"Pass :code:`True` to exclude gifts that can be purchased a limited number"
+" of times and can't be upgraded to unique"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.get_user_gifts.GetUserGifts.exclude_from_blockchain:1 of
+msgid ""
+"Pass :code:`True` to exclude gifts that were assigned from the TON "
+"blockchain and can't be resold or transferred in Telegram"
+msgstr ""
+
+#: ../../docstring aiogram.methods.get_user_gifts.GetUserGifts.exclude_unique:1
+#: of
+msgid "Pass :code:`True` to exclude unique gifts"
+msgstr ""
+
+#: ../../docstring aiogram.methods.get_user_gifts.GetUserGifts.sort_by_price:1
+#: of
+msgid ""
+"Pass :code:`True` to sort results by gift price instead of send date. "
+"Sorting is applied before pagination."
+msgstr ""
+
+#: ../../docstring aiogram.methods.get_user_gifts.GetUserGifts.offset:1 of
+msgid ""
+"Offset of the first entry to return as received from the previous "
+"request; use an empty string to get the first chunk of results"
+msgstr ""
+
+#: ../../docstring aiogram.methods.get_user_gifts.GetUserGifts.limit:1 of
+msgid "The maximum number of gifts to be returned; 1-100. Defaults to 100"
+msgstr ""
+
+#: ../../api/methods/get_user_gifts.rst:15
+msgid "Usage"
+msgstr ""
+
+#: ../../api/methods/get_user_gifts.rst:18
+msgid "As bot method"
+msgstr ""
+
+#: ../../api/methods/get_user_gifts.rst:26
+msgid "Method as object"
+msgstr ""
+
+#: ../../api/methods/get_user_gifts.rst:28
+msgid "Imports:"
+msgstr ""
+
+#: ../../api/methods/get_user_gifts.rst:30
+msgid ":code:`from aiogram.methods.get_user_gifts import GetUserGifts`"
+msgstr ""
+
+#: ../../api/methods/get_user_gifts.rst:31
+msgid "alias: :code:`from aiogram.methods import GetUserGifts`"
+msgstr ""
+
+#: ../../api/methods/get_user_gifts.rst:34
+msgid "With specific bot"
+msgstr ""

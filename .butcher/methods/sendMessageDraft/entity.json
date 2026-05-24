@@ -7,9 +7,9 @@
   "object": {
     "anchor": "sendmessagedraft",
     "name": "sendMessageDraft",
-    "description": "Use this method to stream a partial message to a user while the message is being generated; supported only for bots with forum topic mode enabled. Returns True on success.",
-    "html_description": "<p>Use this method to stream a partial message to a user while the message is being generated; supported only for bots with forum topic mode enabled. Returns <em>True</em> on success.</p>",
-    "rst_description": "Use this method to stream a partial message to a user while the message is being generated; supported only for bots with forum topic mode enabled. Returns :code:`True` on success.",
+    "description": "Use this method to stream a partial message to a user while the message is being generated. Note that the streamed draft is ephemeral and acts as a temporary 30-second preview - once the output is finalized, you must call sendMessage with the complete message to persist it in the user's chat. Returns True on success.",
+    "html_description": "<p>Use this method to stream a partial message to a user while the message is being generated. Note that the streamed draft is ephemeral and acts as a temporary 30-second preview - once the output is finalized, you <strong>must</strong> call <a href=\"#sendmessage\">sendMessage</a> with the complete message to persist it in the user's chat. Returns <em>True</em> on success.</p>",
+    "rst_description": "Use this method to stream a partial message to a user while the message is being generated. Note that the streamed draft is ephemeral and acts as a temporary 30-second preview - once the output is finalized, you **must** call :class:`aiogram.methods.send_message.SendMessage` with the complete message to persist it in the user's chat. Returns :code:`True` on success.",
     "annotations": [
       {
         "type": "Integer",
@@ -30,17 +30,17 @@
       {
         "type": "Integer",
         "required": true,
-        "description": "Unique identifier of the message draft; must be non-zero. Changes of drafts with the same identifier are animated",
-        "html_description": "<td>Unique identifier of the message draft; must be non-zero. Changes of drafts with the same identifier are animated</td>",
-        "rst_description": "Unique identifier of the message draft; must be non-zero. Changes of drafts with the same identifier are animated\n",
+        "description": "Unique identifier of the message draft; must be non-zero. Changes of drafts with the same identifier are animated.",
+        "html_description": "<td>Unique identifier of the message draft; must be non-zero. Changes of drafts with the same identifier are animated.</td>",
+        "rst_description": "Unique identifier of the message draft; must be non-zero. Changes of drafts with the same identifier are animated.\n",
         "name": "draft_id"
       },
       {
         "type": "String",
-        "required": true,
-        "description": "Text of the message to be sent, 1-4096 characters after entities parsing",
-        "html_description": "<td>Text of the message to be sent, 1-4096 characters after entities parsing</td>",
-        "rst_description": "Text of the message to be sent, 1-4096 characters after entities parsing\n",
+        "required": false,
+        "description": "Text of the message to be sent, 0-4096 characters after entities parsing. Pass an empty text to show a 'Thinking…' placeholder.",
+        "html_description": "<td>Text of the message to be sent, 0-4096 characters after entities parsing. Pass an empty text to show a &#8220;Thinking&#8230;&#8221; placeholder.</td>",
+        "rst_description": "Text of the message to be sent, 0-4096 characters after entities parsing. Pass an empty text to show a 'Thinking…' placeholder.\n",
         "name": "text"
       },
       {

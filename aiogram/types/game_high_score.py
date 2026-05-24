@@ -15,8 +15,6 @@ class GameHighScore(TelegramObject):
 
     If you've got any questions, please check out our `https://core.telegram.org/bots/faq <https://core.telegram.org/bots/faq>`_ **Bot FAQ »**
 
-    -
-
     Source: https://core.telegram.org/bots/api#gamehighscore
     """
 

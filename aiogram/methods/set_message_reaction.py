@@ -15,7 +15,7 @@ class SetMessageReaction(TelegramMethod[bool]):
     __api_method__ = "setMessageReaction"
 
     chat_id: ChatIdUnion
-    """Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)"""
+    """Unique identifier for the target chat or username of the target bot, supergroup or channel in the format :code:`@username`"""
     message_id: int
     """Identifier of the target message. If the message belongs to a media group, the reaction is set to the first non-deleted message in the group instead."""
     reaction: list[ReactionTypeUnion] | None = None
