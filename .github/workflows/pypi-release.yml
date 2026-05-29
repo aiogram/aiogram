@@ -9,6 +9,8 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.package-version.outputs.value }}
     steps:
       - uses: actions/checkout@v6
 
@@ -28,13 +30,10 @@ jobs:
         run: uv build
 
       - name: Try install wheel
+        env:
+          PACKAGE_VERSION: ${{ steps.package-version.outputs.value }}
         run: |
-          pip install -U virtualenv
-          mkdir -p try_install
-          cd try_install
-          virtualenv venv
-          venv/bin/pip install ../dist/aiogram-*.whl
-          venv/bin/python -c "import aiogram; print(aiogram.__version__)"
+          uv run --no-project --with dist/aiogram-*.whl python -c "import os, aiogram; assert aiogram.__version__ == os.environ['PACKAGE_VERSION']; print(aiogram.__version__)"
       - name: Publish artifacts
         uses: actions/upload-artifact@v6
         with:
@@ -47,7 +46,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: pypi
-      url: https://pypi.org/project/aiogram/${{ steps.package-version.outputs.value }}/
+      url: https://pypi.org/project/aiogram/${{ needs.build.outputs.version }}/
     permissions:
       id-token: write
     steps:
