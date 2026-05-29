@@ -10,6 +10,7 @@ on:
       - "tests/**"
       - "codecov.yaml"
       - "pyproject.toml"
+      - "uv.lock"
   pull_request:
     branches:
       - dev-3.x
@@ -18,6 +19,7 @@ on:
       - "aiogram/**"
       - "tests/**"
       - "pyproject.toml"
+      - "uv.lock"
 
 jobs:
   tests:

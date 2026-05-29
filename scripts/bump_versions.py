@@ -5,7 +5,6 @@ from pathlib import Path
 import toml
 
 BASE_PATTERN = r'({variable} = ").+(")'
-PACKAGE_VERSION = re.compile(BASE_PATTERN.format(variable="__version__"))
 API_VERSION = re.compile(BASE_PATTERN.format(variable="__api_version__"))
 API_VERSION_BADGE = re.compile(r"(API-)[\d.]+(-blue\.svg)")
 API_VERSION_LINE = re.compile(
@@ -20,7 +19,7 @@ STAGE_MAPPING = {
 
 def get_package_version() -> str:
     data = toml.load(Path("pyproject.toml").absolute())
-    raw_version: str = data["tool"]["poetry"]["version"]
+    raw_version: str = data["project"]["version"]
     if "-" not in raw_version:
         return raw_version
 
@@ -37,10 +36,10 @@ def get_package_version() -> str:
 
 def get_telegram_api_version() -> str:
     path = Path.cwd() / ".butcher" / "schema" / "schema.json"
-    schema = json.loads(path.read_text())
+    schema = json.loads(path.read_text(encoding="utf-8"))
     version = schema["api"]["version"]
     path = Path.cwd() / ".apiversion"
-    path.write_text(version + "\n")
+    path.write_text(version + "\n", encoding="utf-8")
     return version
 
 
@@ -50,34 +49,36 @@ def replace_line(content: str, pattern: re.Pattern, new_value: str) -> str:
 
 def write_package_meta(api_version: str) -> None:
     path = Path.cwd() / "aiogram" / "__meta__.py"
-    content = path.read_text()
+    content = path.read_text(encoding="utf-8")
 
     content = replace_line(content, API_VERSION, api_version)
 
     print(f"Write {path}")  # noqa: T201
-    path.write_text(content)
+    path.write_text(content, encoding="utf-8")
 
 
 def write_readme(api_version: str) -> None:
     path = Path.cwd() / "README.rst"
-    content = path.read_text()
+    content = path.read_text(encoding="utf-8")
     content = replace_line(content, API_VERSION_BADGE, api_version)
     content = replace_line(content, API_VERSION_LINE, api_version)
     print(f"Write {path}")  # noqa: T201
-    path.write_text(content)
+    path.write_text(content, encoding="utf-8")
 
 
 def write_docs_index(api_version: str) -> None:
     path = Path.cwd() / "docs" / "index.rst"
-    content = path.read_text()
+    content = path.read_text(encoding="utf-8")
     content = replace_line(content, API_VERSION_BADGE, api_version)
     print(f"Write {path}")  # noqa: T201
-    path.write_text(content)
+    path.write_text(content, encoding="utf-8")
 
 
 def main():
+    package_version = get_package_version()
     api_version = get_telegram_api_version()
 
+    print(f"Package version: {package_version}")  # noqa: T201
     print(f"Telegram Bot API version: {api_version}")  # noqa: T201
     write_package_meta(api_version=api_version)
     write_readme(api_version=api_version)

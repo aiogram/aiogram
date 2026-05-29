@@ -100,7 +100,8 @@ build: clean
 
 .PHONY: bump
 bump:
-	uv run python scripts/bump_version.py $(args)
+	$(if $(args),,$(error Usage: make bump args=patch|minor|major|to:X.Y.Z, for example: make bump args=patch or make bump args=to:3.29.0))
+	uv version --frozen $(if $(filter to:%,$(args)),$(patsubst to:%,%,$(args)),--bump $(args))
 	uv run python scripts/bump_versions.py
 
 update-api:
