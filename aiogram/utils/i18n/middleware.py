@@ -140,6 +140,9 @@ class SimpleI18nMiddleware(I18nMiddleware):
             if candidate in self.i18n.available_locales:
                 return candidate
 
+        if locale.language == self.i18n.source_locale:
+            return locale.language
+
         return self.i18n.default_locale
 
 
