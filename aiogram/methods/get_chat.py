@@ -17,7 +17,7 @@ class GetChat(TelegramMethod[ChatFullInfo]):
     __api_method__ = "getChat"
 
     chat_id: ChatIdUnion
-    """Unique identifier for the target chat or username of the target supergroup or channel (in the format :code:`@channelusername`)"""
+    """Unique identifier for the target chat or username of the target supergroup or channel in the format :code:`@username`"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!

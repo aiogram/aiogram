@@ -10,3 +10,4 @@ class InputPaidMediaType(str, Enum):
 
     PHOTO = "photo"
     VIDEO = "video"
+    LIVE_PHOTO = "live_photo"

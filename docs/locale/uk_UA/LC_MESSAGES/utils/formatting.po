@@ -8,14 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aiogram \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-08 02:28+0200\n"
+"POT-Creation-Date: 2026-05-09 01:04+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Українська <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.13.1\n"
+"Generated-By: Babel 2.18.0\n"
 
 #: ../../utils/formatting.rst:5
 msgid "Formatting"
@@ -140,6 +140,7 @@ msgid "initial number, by default 1"
 msgstr "початковий номер, за замовчуванням 1"
 
 #: aiogram.utils.formatting.as_numbered_list:5 of
+#, python-brace-format
 msgid "number format, by default '{}. '"
 msgstr "формат номера, за замовчуванням '{}. '"
 
@@ -156,6 +157,7 @@ msgid "Wrap elements as section with numbered list"
 msgstr "Обгорніть елементи у розділ із нумерованим списком"
 
 #: aiogram.utils.formatting.as_key_value:1 of
+#, python-brace-format
 msgid "Wrap elements pair as key-value line. (:code:`<b>{key}:</b> {value}`)"
 msgstr ""
 "Обгорніть пари елементів у рядок ключ-значення. (:code:`<b>{key}:</b> "
@@ -222,7 +224,7 @@ msgid "Available methods"
 msgstr ""
 
 #: aiogram.utils.formatting.Text:1 of
-msgid "Bases: :py:class:`~typing.Iterable`\\ [:py:obj:`~typing.Any`]"
+msgid "Bases: :py:class:`~collections.abc.Iterable`\\ [:py:obj:`~typing.Any`]"
 msgstr ""
 
 #: aiogram.utils.formatting.Text:1 of
@@ -236,8 +238,34 @@ msgstr "Обгорніть елементи у розділ із нумеров�
 
 #: aiogram.utils.formatting.Text.as_kwargs:1 of
 msgid ""
-"Render elements tree as keyword arguments for usage in the API call, for "
+"Render element tree as keyword arguments for usage in an API call, for "
 "example:"
+msgstr ""
+
+#: aiogram.utils.formatting.Text.as_caption_kwargs:1 of
+msgid ""
+"Shortcut for :meth:`as_kwargs` for usage with API calls that take "
+"``caption`` as a parameter."
+msgstr ""
+
+#: aiogram.utils.formatting.Text.as_caption_kwargs:9
+#: aiogram.utils.formatting.Text.as_gift_text_kwargs:9
+#: aiogram.utils.formatting.Text.as_poll_explanation_kwargs:14
+#: aiogram.utils.formatting.Text.as_poll_question_kwargs:9 of
+msgid "Will be passed to :meth:`as_kwargs`."
+msgstr ""
+
+#: aiogram.utils.formatting.Text.as_poll_explanation_kwargs:1
+#: aiogram.utils.formatting.Text.as_poll_question_kwargs:1 of
+msgid ""
+"Shortcut for :meth:`as_kwargs` for usage with method "
+":class:`aiogram.methods.send_poll.SendPoll`."
+msgstr ""
+
+#: aiogram.utils.formatting.Text.as_gift_text_kwargs:1 of
+msgid ""
+"Shortcut for :meth:`as_kwargs` for usage with method "
+":class:`aiogram.methods.send_gift.SendGift`."
 msgstr ""
 
 #: aiogram.utils.formatting.Text.as_html:1 of
@@ -470,3 +498,12 @@ msgid ""
 "with type "
 ":obj:`aiogram.enums.message_entity_type.MessageEntityType.EXPANDABLE_BLOCKQUOTE`"
 msgstr ""
+
+#~ msgid "Bases: :py:class:`~typing.Iterable`\\ [:py:obj:`~typing.Any`]"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Render elements tree as keyword "
+#~ "arguments for usage in the API "
+#~ "call, for example:"
+#~ msgstr ""

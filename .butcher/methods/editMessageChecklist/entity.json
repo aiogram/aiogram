@@ -20,11 +20,11 @@
         "name": "business_connection_id"
       },
       {
-        "type": "Integer",
+        "type": "Integer or String",
         "required": true,
-        "description": "Unique identifier for the target chat",
-        "html_description": "<td>Unique identifier for the target chat</td>",
-        "rst_description": "Unique identifier for the target chat\n",
+        "description": "Unique identifier for the target chat or username of the target bot in the format @username",
+        "html_description": "<td>Unique identifier for the target chat or username of the target bot in the format <code>@username</code></td>",
+        "rst_description": "Unique identifier for the target chat or username of the target bot in the format :code:`@username`\n",
         "name": "chat_id"
       },
       {
@@ -47,8 +47,8 @@
         "type": "InlineKeyboardMarkup",
         "required": false,
         "description": "A JSON-serialized object for the new inline keyboard for the message",
-        "html_description": "<td>A JSON-serialized object for the new inline keyboard for the message</td>",
-        "rst_description": "A JSON-serialized object for the new inline keyboard for the message\n",
+        "html_description": "<td>A JSON-serialized object for the new <a href=\"/bots/features#inline-keyboards\">inline keyboard</a> for the message</td>",
+        "rst_description": "A JSON-serialized object for the new `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_ for the message\n",
         "name": "reply_markup"
       }
     ],

@@ -186,7 +186,7 @@ class Command(Filter):
         await self.validate_mention(bot=bot, command=command)
         command = self.validate_command(command)
         command = self.do_magic(command=command)
-        return command  # noqa: RET504
+        return cast(CommandObject, command)
 
     def do_magic(self, command: CommandObject) -> Any:
         if self.magic is None:
@@ -240,7 +240,7 @@ class CommandObject:
 class CommandStart(Command):
     def __init__(
         self,
-        deep_link: bool = False,
+        deep_link: bool | None = None,
         deep_link_encoded: bool = False,
         ignore_case: bool = False,
         ignore_mention: bool = False,
@@ -279,10 +279,15 @@ class CommandStart(Command):
         command = self.validate_command(command)
         command = self.validate_deeplink(command=command)
         command = self.do_magic(command=command)
-        return command  # noqa: RET504
+        return cast(CommandObject, command)
 
     def validate_deeplink(self, command: CommandObject) -> CommandObject:
-        if not self.deep_link:
+        if self.deep_link is None:
+            return command
+        if self.deep_link is False:
+            if command.args:
+                msg = "Deep-link was not expected"
+                raise CommandException(msg)
             return command
         if not command.args:
             msg = "Deep-link was missing"

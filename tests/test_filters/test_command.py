@@ -85,6 +85,9 @@ class TestCommandFilter:
                 False,
             ],
             ["/start test", CommandStart(), True],
+            ["/start", CommandStart(), True],
+            ["/start", CommandStart(deep_link=False), True],
+            ["/start test", CommandStart(deep_link=False), False],
             ["/start", CommandStart(deep_link=True), False],
             ["/start test", CommandStart(deep_link=True), True],
             ["/start test", CommandStart(deep_link=True, deep_link_encoded=True), False],
@@ -175,7 +178,7 @@ class TestCommandStart:
         cmd = CommandStart()
         assert (
             str(cmd)
-            == "CommandStart(ignore_case=False, ignore_mention=False, deep_link=False, deep_link_encoded=False)"
+            == "CommandStart(ignore_case=False, ignore_mention=False, deep_link_encoded=False)"
         )
 
 

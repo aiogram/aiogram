@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  aiogram\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-08 02:28+0200\n"
+"POT-Creation-Date: 2026-05-09 01:04+0300\n"
 "PO-Revision-Date: 2023-11-23 01:27+0200\n"
 "Last-Translator: \n"
 "Language: uk_UA\n"
@@ -17,7 +17,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.13.1\n"
+"Generated-By: Babel 2.18.0\n"
 
 #: ../../dispatcher/finite_state_machine/scene.rst:5
 msgid "Scenes Wizard"
@@ -470,13 +470,15 @@ msgid "None"
 msgstr ""
 
 #: aiogram.fsm.scene.SceneRegistry.get:1 of
+#, fuzzy
 msgid ""
 "This method returns the registered Scene object for the specified scene. "
-"The scene parameter can be either a Scene object or a string representing"
-" the name of the scene. If a Scene object is provided, the state "
-"attribute of the SceneConfig object associated with the Scene object will"
-" be used as the scene name. If None or an invalid type is provided, a "
-"SceneException will be raised."
+"The scene parameter can be either a Scene object, State object or a "
+"string representing the name of the scene. If a Scene object is provided,"
+" the state attribute of the SceneConfig object associated with the Scene "
+"object will be used as the scene name. If a State object is provided, the"
+" state attribute of the State object will be used as the scene name. If "
+"None or an invalid type is provided, a SceneException will be raised."
 msgstr ""
 "Цей метод повертає зареєстрований об’єкт Scene для вказаної сцени. "
 "Параметром сцени може бути або об’єкт Scene, або рядок, що представляє "
@@ -485,7 +487,7 @@ msgstr ""
 "сцени. Якщо вказано None або недійсний тип, буде викликано "
 "SceneException."
 
-#: aiogram.fsm.scene.SceneRegistry.get:7 of
+#: aiogram.fsm.scene.SceneRegistry.get:8 of
 msgid ""
 "If the specified scene is not registered in the SceneRegistry object, a "
 "SceneException will be raised."
@@ -493,11 +495,14 @@ msgstr ""
 "Якщо вказану сцену не зареєстровано в об’єкті SceneRegistry, буде "
 "породжено помилку SceneException."
 
-#: aiogram.fsm.scene.SceneRegistry.get:10 of
-msgid "A Scene object or a string representing the name of the scene."
+#: aiogram.fsm.scene.SceneRegistry.get:11 of
+#, fuzzy
+msgid ""
+"A Scene object, State object or a string representing the name of the "
+"scene."
 msgstr "Об’єкт Scene або рядок, що представляє назву сцени."
 
-#: aiogram.fsm.scene.SceneRegistry.get:11 of
+#: aiogram.fsm.scene.SceneRegistry.get:12 of
 msgid "The registered Scene object corresponding to the given scene parameter."
 msgstr "Зареєстрований об’єкт Scene, що відповідає даному параметру сцени."
 
@@ -535,7 +540,8 @@ msgid "Enters the specified scene."
 msgstr "Виходить на вказану сцену."
 
 #: aiogram.fsm.scene.ScenesManager.enter:3 of
-msgid "Optional Type[Scene] or str representing the scene type to enter."
+#, fuzzy
+msgid "Optional Type[Scene], State or str representing the scene type to enter."
 msgstr ""
 "Додатково Type[Scene] або str, що представляє тип сцени, який потрібно "
 "ввести."
@@ -657,9 +663,10 @@ msgstr ""
 "потім викликає подію `enter`, щоб увійти до вказаної сцени."
 
 #: aiogram.fsm.scene.SceneWizard.goto:5 of
+#, fuzzy
 msgid ""
-"The scene to transition to. Can be either a `Scene` instance or a string "
-"representing the scene."
+"The scene to transition to. Can be either a `Scene` instance `State` "
+"instance or a string representing the scene."
 msgstr ""
 "Сцена для переходу. Може бути екземпляром `Scene` або рядком, що "
 "представляє сцену."
@@ -695,7 +702,8 @@ msgid "Sets custom data in the current state."
 msgstr "Встановлює настроювані дані в поточний стан."
 
 #: aiogram.fsm.scene.SceneWizard.set_data:3 of
-msgid "A dictionary containing the custom data to be set in the current state."
+#, fuzzy
+msgid "A mapping containing the custom data to be set in the current state."
 msgstr ""
 "Словник, що містить настроювані дані, які потрібно встановити в поточному"
 " стані."
@@ -705,7 +713,8 @@ msgid "This method updates the data stored in the current state"
 msgstr "Цей метод оновлює дані, що зберігаються в поточному стані"
 
 #: aiogram.fsm.scene.SceneWizard.update_data:3 of
-msgid "Optional dictionary of data to update."
+#, fuzzy
+msgid "Optional mapping of data to update."
 msgstr "Додатковий словник даних для оновлення."
 
 #: aiogram.fsm.scene.SceneWizard.update_data:4 of
@@ -834,3 +843,72 @@ msgstr "Точка переходу - коли користувач перехо
 #: ../../dispatcher/finite_state_machine/scene.rst:244
 msgid "exit point - when user exits from the scene"
 msgstr "Точка виходу - коли користувач завершує сцену"
+
+#: ../../dispatcher/finite_state_machine/scene.rst:247
+#, fuzzy
+msgid "How to enter the scene"
+msgstr "Як це використовувати?"
+
+#: ../../dispatcher/finite_state_machine/scene.rst:249
+msgid ""
+"There are several ways to enter a scene in aiogram. Each approach has "
+"specific use cases and advantages"
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:251
+msgid "**Directly using the scene's entry point as a handler:**"
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:253
+msgid ""
+"You can convert a scene's entry point to a handler and register it like "
+"any other handler:"
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:259
+msgid "**From a regular handler using ScenesManager:**"
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:261
+msgid "Enter a scene from any regular handler by using the ScenesManager:"
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:265
+msgid ""
+"When using ScenesManager, you need to explicitly pass all dependencies "
+"required by the scene's entry point handler as arguments to the enter "
+"method."
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:274
+msgid "**From another scene using After.goto marker:**"
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:276
+msgid ""
+"Transition to another scene after a handler is executed using the After "
+"marker:"
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:292
+msgid "**Using explicit transition with wizard.goto:**"
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:294
+msgid ""
+"For more control over the transition, use the wizard.goto method from "
+"within a scene handler:"
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:298
+msgid ""
+"Dependencies will be injected into the handler normally and then extended"
+" with the arguments specified in the goto method."
+msgstr ""
+
+#: ../../dispatcher/finite_state_machine/scene.rst:314
+msgid ""
+"Each method offers different levels of control and integration with your "
+"application's architecture. Choose the approach that best fits your "
+"specific use case and coding style."
+msgstr ""

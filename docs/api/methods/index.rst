@@ -35,6 +35,8 @@ Available methods
     :maxdepth: 1
 
     answer_callback_query
+    answer_guest_query
+    answer_web_app_query
     approve_chat_join_request
     ban_chat_member
     ban_chat_sender_chat
@@ -74,6 +76,8 @@ Available methods
     get_chat_menu_button
     get_file
     get_forum_topic_icon_stickers
+    get_managed_bot_access_settings
+    get_managed_bot_token
     get_me
     get_my_commands
     get_my_default_administrator_rights
@@ -82,6 +86,7 @@ Available methods
     get_my_short_description
     get_user_chat_boosts
     get_user_gifts
+    get_user_personal_chat_messages
     get_user_profile_audios
     get_user_profile_photos
     gift_premium_subscription
@@ -98,9 +103,12 @@ Available methods
     remove_user_verification
     reopen_forum_topic
     reopen_general_forum_topic
+    replace_managed_bot_token
     repost_story
     restrict_chat_member
     revoke_chat_invite_link
+    save_prepared_inline_message
+    save_prepared_keyboard_button
     send_animation
     send_audio
     send_chat_action
@@ -109,6 +117,7 @@ Available methods
     send_dice
     send_document
     send_gift
+    send_live_photo
     send_location
     send_media_group
     send_message
@@ -127,11 +136,13 @@ Available methods
     set_business_account_username
     set_chat_administrator_custom_title
     set_chat_description
+    set_chat_member_tag
     set_chat_menu_button
     set_chat_permissions
     set_chat_photo
     set_chat_sticker_set
     set_chat_title
+    set_managed_bot_access_settings
     set_message_reaction
     set_my_commands
     set_my_default_administrator_rights
@@ -161,7 +172,9 @@ Updating messages
 
     approve_suggested_post
     decline_suggested_post
+    delete_all_message_reactions
     delete_message
+    delete_message_reaction
     delete_messages
     edit_message_caption
     edit_message_checklist
@@ -171,16 +184,6 @@ Updating messages
     edit_message_text
     stop_message_live_location
     stop_poll
-
-Inline mode
-===========
-
-.. toctree::
-    :maxdepth: 1
-
-    answer_inline_query
-    answer_web_app_query
-    save_prepared_inline_message
 
 Games
 =====
@@ -225,3 +228,11 @@ Telegram Passport
     :maxdepth: 1
 
     set_passport_data_errors
+
+Inline mode
+===========
+
+.. toctree::
+    :maxdepth: 1
+
+    answer_inline_query

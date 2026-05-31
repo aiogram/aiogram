@@ -24,6 +24,15 @@ class TestDefault:
         default = Default("test")
         assert repr(default) == "<Default('test')>"
 
+    def test_eq_same_name(self):
+        assert Default("test") == Default("test")
+
+    def test_eq_different_name(self):
+        assert Default("foo") != Default("bar")
+
+    def test_hash(self):
+        assert hash(Default("test")) == hash(Default("test"))
+
 
 class TestDefaultBotProperties:
     def test_post_init_empty(self):

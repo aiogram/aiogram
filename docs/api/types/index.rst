@@ -24,6 +24,7 @@ Available types
     background_type_pattern
     background_type_wallpaper
     birthdate
+    bot_access_settings
     bot_command
     bot_command_scope
     bot_command_scope_all_chat_administrators
@@ -110,12 +111,19 @@ Available types
     input_media_animation
     input_media_audio
     input_media_document
+    input_media_live_photo
+    input_media_location
     input_media_photo
+    input_media_sticker
+    input_media_venue
     input_media_video
     input_paid_media
+    input_paid_media_live_photo
     input_paid_media_photo
     input_paid_media_video
+    input_poll_media
     input_poll_option
+    input_poll_option_media
     input_profile_photo
     input_profile_photo_animated
     input_profile_photo_static
@@ -125,12 +133,16 @@ Available types
     keyboard_button
     keyboard_button_poll_type
     keyboard_button_request_chat
+    keyboard_button_request_managed_bot
     keyboard_button_request_user
     keyboard_button_request_users
     link_preview_options
+    live_photo
     location
     location_address
     login_url
+    managed_bot_created
+    managed_bot_updated
     maybe_inaccessible_message
     menu_button
     menu_button_commands
@@ -153,6 +165,7 @@ Available types
     owned_gifts
     paid_media
     paid_media_info
+    paid_media_live_photo
     paid_media_photo
     paid_media_preview
     paid_media_video
@@ -160,7 +173,12 @@ Available types
     photo_size
     poll
     poll_answer
+    poll_media
     poll_option
+    poll_option_added
+    poll_option_deleted
+    prepared_inline_message
+    prepared_keyboard_button
     proximity_alert_triggered
     reaction_count
     reaction_type
@@ -171,6 +189,8 @@ Available types
     reply_keyboard_remove
     reply_parameters
     response_parameters
+    sent_guest_message
+    sent_web_app_message
     shared_user
     star_amount
     story
@@ -255,8 +275,6 @@ Inline mode
     input_message_content
     input_text_message_content
     input_venue_message_content
-    prepared_inline_message
-    sent_web_app_message
 
 Payments
 ========

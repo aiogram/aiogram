@@ -17,7 +17,7 @@ class VerifyChat(TelegramMethod[bool]):
     __api_method__ = "verifyChat"
 
     chat_id: ChatIdUnion
-    """Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`). Channel direct messages chats can't be verified."""
+    """Unique identifier for the target chat or username of the target bot, supergroup or channel in the format :code:`@username`. Channel direct messages chats can't be verified."""
     custom_description: str | None = None
     """Custom description for the verification; 0-70 characters. Must be empty if the organization isn't allowed to provide a custom verification description."""
 

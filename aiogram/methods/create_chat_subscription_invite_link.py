@@ -17,7 +17,7 @@ class CreateChatSubscriptionInviteLink(TelegramMethod[ChatInviteLink]):
     __api_method__ = "createChatSubscriptionInviteLink"
 
     chat_id: ChatIdUnion
-    """Unique identifier for the target channel chat or username of the target channel (in the format :code:`@channelusername`)"""
+    """Unique identifier for the target channel chat or username of the target channel in the format :code:`@username`"""
     subscription_period: DateTimeUnion
     """The number of seconds the subscription will be active for before the next payment. Currently, it must always be 2592000 (30 days)."""
     subscription_price: int

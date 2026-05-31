@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import textwrap
 from collections.abc import Generator, Iterable, Iterator
+from datetime import datetime
 from typing import Any, ClassVar
 
 from typing_extensions import Self
@@ -534,6 +535,26 @@ class ExpandableBlockQuote(Text):
     type = MessageEntityType.EXPANDABLE_BLOCKQUOTE
 
 
+class DateTime(Text):
+    type = MessageEntityType.DATE_TIME
+
+    def __init__(
+        self,
+        *body: NodeType,
+        unix_time: int | datetime,
+        date_time_format: str | None = None,
+        **params: Any,
+    ) -> None:
+        if isinstance(unix_time, datetime):
+            unix_time = int(unix_time.timestamp())
+        super().__init__(
+            *body,
+            unix_time=unix_time,
+            date_time_format=date_time_format,
+            **params,
+        )
+
+
 NODE_TYPES: dict[str | None, type[Text]] = {
     Text.type: Text,
     HashTag.type: HashTag,
@@ -554,6 +575,7 @@ NODE_TYPES: dict[str | None, type[Text]] = {
     CustomEmoji.type: CustomEmoji,
     BlockQuote.type: BlockQuote,
     ExpandableBlockQuote.type: ExpandableBlockQuote,
+    DateTime.type: DateTime,
 }
 
 

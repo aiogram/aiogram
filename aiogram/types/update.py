@@ -15,6 +15,7 @@ if TYPE_CHECKING:
     from .chat_member_updated import ChatMemberUpdated
     from .chosen_inline_result import ChosenInlineResult
     from .inline_query import InlineQuery
+    from .managed_bot_updated import ManagedBotUpdated
     from .message import Message
     from .message_reaction_count_updated import MessageReactionCountUpdated
     from .message_reaction_updated import MessageReactionUpdated
@@ -29,7 +30,7 @@ class Update(TelegramObject):
     """
     This `object <https://core.telegram.org/bots/api#available-types>`_ represents an incoming update.
 
-    At most **one** of the optional parameters can be present in any given update.
+    At most **one** of the optional fields can be present in any given update.
 
     Source: https://core.telegram.org/bots/api#update
     """
@@ -52,6 +53,8 @@ class Update(TelegramObject):
     """*Optional*. New version of a message from a connected business account"""
     deleted_business_messages: BusinessMessagesDeleted | None = None
     """*Optional*. Messages were deleted from a connected business account"""
+    guest_message: Message | None = None
+    """*Optional*. New guest message. The bot can use the field *Message.guest_query_id* and the method :class:`aiogram.methods.answer_guest_query.AnswerGuestQuery` to send a message in response."""
     message_reaction: MessageReactionUpdated | None = None
     """*Optional*. A reaction to a message was changed by a user. The bot must be an administrator in the chat and must explicitly specify :code:`"message_reaction"` in the list of *allowed_updates* to receive these updates. The update isn't received for reactions set by bots."""
     message_reaction_count: MessageReactionCountUpdated | None = None
@@ -82,6 +85,8 @@ class Update(TelegramObject):
     """*Optional*. A chat boost was added or changed. The bot must be an administrator in the chat to receive these updates."""
     removed_chat_boost: ChatBoostRemoved | None = None
     """*Optional*. A boost was removed from a chat. The bot must be an administrator in the chat to receive these updates."""
+    managed_bot: ManagedBotUpdated | None = None
+    """*Optional*. A new bot was created to be managed by the bot, or token or owner of a managed bot was changed"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!
@@ -99,6 +104,7 @@ class Update(TelegramObject):
             business_message: Message | None = None,
             edited_business_message: Message | None = None,
             deleted_business_messages: BusinessMessagesDeleted | None = None,
+            guest_message: Message | None = None,
             message_reaction: MessageReactionUpdated | None = None,
             message_reaction_count: MessageReactionCountUpdated | None = None,
             inline_query: InlineQuery | None = None,
@@ -114,6 +120,7 @@ class Update(TelegramObject):
             chat_join_request: ChatJoinRequest | None = None,
             chat_boost: ChatBoostUpdated | None = None,
             removed_chat_boost: ChatBoostRemoved | None = None,
+            managed_bot: ManagedBotUpdated | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!
@@ -130,6 +137,7 @@ class Update(TelegramObject):
                 business_message=business_message,
                 edited_business_message=edited_business_message,
                 deleted_business_messages=deleted_business_messages,
+                guest_message=guest_message,
                 message_reaction=message_reaction,
                 message_reaction_count=message_reaction_count,
                 inline_query=inline_query,
@@ -145,6 +153,7 @@ class Update(TelegramObject):
                 chat_join_request=chat_join_request,
                 chat_boost=chat_boost,
                 removed_chat_boost=removed_chat_boost,
+                managed_bot=managed_bot,
                 **__pydantic_kwargs,
             )
 
@@ -206,6 +215,10 @@ class Update(TelegramObject):
             return "business_message"
         if self.purchased_paid_media:
             return "purchased_paid_media"
+        if self.guest_message:
+            return "guest_message"
+        if self.managed_bot:
+            return "managed_bot"
 
         raise UpdateTypeLookupError("Update does not contain any known event type.")
 

@@ -20,6 +20,8 @@ class PollAnswer(TelegramObject):
     """Unique poll identifier"""
     option_ids: list[int]
     """0-based identifiers of chosen answer options. May be empty if the vote was retracted."""
+    option_persistent_ids: list[str]
+    """Persistent identifiers of the chosen answer options. May be empty if the vote was retracted."""
     voter_chat: Chat | None = None
     """*Optional*. The chat that changed the answer to the poll, if the voter is anonymous"""
     user: User | None = None
@@ -34,6 +36,7 @@ class PollAnswer(TelegramObject):
             *,
             poll_id: str,
             option_ids: list[int],
+            option_persistent_ids: list[str],
             voter_chat: Chat | None = None,
             user: User | None = None,
             **__pydantic_kwargs: Any,
@@ -45,6 +48,7 @@ class PollAnswer(TelegramObject):
             super().__init__(
                 poll_id=poll_id,
                 option_ids=option_ids,
+                option_persistent_ids=option_persistent_ids,
                 voter_chat=voter_chat,
                 user=user,
                 **__pydantic_kwargs,

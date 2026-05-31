@@ -86,8 +86,8 @@
       {
         "type": "InlineKeyboardMarkup",
         "description": "Inline keyboard attached to the message",
-        "html_description": "<td><em>Optional</em>. Inline keyboard attached to the message</td>",
-        "rst_description": "*Optional*. Inline keyboard attached to the message\n",
+        "html_description": "<td><em>Optional</em>. <a href=\"/bots/features#inline-keyboards\">Inline keyboard</a> attached to the message</td>",
+        "rst_description": "*Optional*. `Inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_ attached to the message\n",
         "name": "reply_markup",
         "required": false
       },

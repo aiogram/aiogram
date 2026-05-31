@@ -1,0 +1,25 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "sentguestmessage",
+    "name": "SentGuestMessage",
+    "description": "Describes an inline message sent by a guest bot.",
+    "html_description": "<p>Describes an inline message sent by a guest bot.</p>",
+    "rst_description": "Describes an inline message sent by a guest bot.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Identifier of the sent inline message",
+        "html_description": "<td>Identifier of the sent inline message</td>",
+        "rst_description": "Identifier of the sent inline message\n",
+        "name": "inline_message_id",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

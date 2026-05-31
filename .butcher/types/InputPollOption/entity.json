@@ -34,6 +34,14 @@
         "rst_description": "*Optional*. A JSON-serialized list of special entities that appear in the poll option text. It can be specified instead of *text_parse_mode*\n",
         "name": "text_entities",
         "required": false
+      },
+      {
+        "type": "InputPollOptionMedia",
+        "description": "Media added to the poll option",
+        "html_description": "<td><em>Optional</em>. Media added to the poll option</td>",
+        "rst_description": "*Optional*. Media added to the poll option\n",
+        "name": "media",
+        "required": false
       }
     ],
     "category": "types"

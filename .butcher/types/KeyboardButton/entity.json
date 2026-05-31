@@ -52,6 +52,14 @@
         "required": false
       },
       {
+        "type": "KeyboardButtonRequestManagedBot",
+        "description": "If specified, pressing the button will ask the user to create and share a bot that will be managed by the current bot. Available for bots that enabled management of other bots in the @BotFather Mini App. Available in private chats only.",
+        "html_description": "<td><em>Optional</em>. If specified, pressing the button will ask the user to create and share a bot that will be managed by the current bot. Available for bots that enabled management of other bots in the <a href=\"https://t.me/BotFather\">@BotFather</a> Mini App. Available in private chats only.</td>",
+        "rst_description": "*Optional*. If specified, pressing the button will ask the user to create and share a bot that will be managed by the current bot. Available for bots that enabled management of other bots in the `@BotFather <https://t.me/BotFather>`_ Mini App. Available in private chats only.\n",
+        "name": "request_managed_bot",
+        "required": false
+      },
+      {
         "type": "Boolean",
         "description": "If True, the user's phone number will be sent as a contact when the button is pressed. Available in private chats only.",
         "html_description": "<td><em>Optional</em>. If <em>True</em>, the user's phone number will be sent as a contact when the button is pressed. Available in private chats only.</td>",

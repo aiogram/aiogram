@@ -10,3 +10,4 @@ multi_parse:
   entities:
     - InputPaidMediaPhoto
     - InputPaidMediaVideo
+    - InputPaidMediaLivePhoto

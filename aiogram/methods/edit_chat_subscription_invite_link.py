@@ -17,7 +17,7 @@ class EditChatSubscriptionInviteLink(TelegramMethod[ChatInviteLink]):
     __api_method__ = "editChatSubscriptionInviteLink"
 
     chat_id: ChatIdUnion
-    """Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)"""
+    """Unique identifier for the target chat or username of the target channel in the format :code:`@username`"""
     invite_link: str
     """The invite link to edit"""
     name: str | None = None

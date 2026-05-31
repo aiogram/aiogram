@@ -5,6 +5,8 @@ from typing import TYPE_CHECKING, Any, Literal
 from ..client.default import Default
 from ..enums import InputMediaType
 from .input_media import InputMedia
+from .input_poll_media import InputPollMedia
+from .input_poll_option_media import InputPollOptionMedia
 
 if TYPE_CHECKING:
     from .date_time_union import DateTimeUnion
@@ -13,7 +15,7 @@ if TYPE_CHECKING:
     from .message_entity import MessageEntity
 
 
-class InputMediaVideo(InputMedia):
+class InputMediaVideo(InputMedia, InputPollMedia, InputPollOptionMedia):
     """
     Represents a video to be sent.
 
