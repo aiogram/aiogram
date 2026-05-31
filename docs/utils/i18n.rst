@@ -108,8 +108,10 @@ On top of your application the instance of :class:`aiogram.utils.i18n.I18n` shou
 
 .. code-block::
 
-    i18n = I18n(path="locales", default_locale="en", domain="messages")
+    i18n = I18n(path="locales", default_locale="en", domain="messages", source_locale="en")
 
+
+By default, ``source_locale`` equals ``default_locale``. It defines the language of the original source texts. When a user's language matches ``source_locale``, ``gettext`` returns the original text even if the source locale is not compiled into the ``.mo`` file.
 
 After that you will need to choose one of builtin I18n middleware or write your own.
 

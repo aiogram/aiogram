@@ -26,10 +26,17 @@ def i18n_fixture() -> I18n:
 class TestI18nCore:
     def test_init(self, i18n: I18n):
         assert set(i18n.available_locales) == {"en", "uk"}
+        assert i18n.source_locale == "en"
 
     def test_init_relative(self):
         i18n_relative = I18n(path="tests/data/locales")
         assert set(i18n_relative.available_locales) == {"en", "uk"}
+        assert i18n_relative.source_locale == "en"
+
+    def test_init_source_locale(self, i18n: I18n):
+        i18n_with_source = I18n(path=(i18n.path), default_locale="ru", source_locale="en")
+        assert i18n_with_source.source_locale == "en"
+        assert i18n_with_source.default_locale == "ru"
 
     def test_reload(self, i18n: I18n):
         i18n.reload()

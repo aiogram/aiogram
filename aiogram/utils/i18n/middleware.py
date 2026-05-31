@@ -135,6 +135,8 @@ class SimpleI18nMiddleware(I18nMiddleware):
             return self.i18n.default_locale
 
         if locale.language not in self.i18n.available_locales:
+            if locale.language == self.i18n.source_locale:
+                return locale.language
             return self.i18n.default_locale
         return locale.language
 
