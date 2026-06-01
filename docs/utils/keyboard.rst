@@ -64,7 +64,7 @@ Inline Keyboard
 .. autoclass:: aiogram.utils.keyboard.InlineKeyboardBuilder
     :members: __init__, buttons, copy, export, add, row, adjust, from_markup, attach
 
-    .. method:: button(text: str, url: Optional[str] = None, login_url: Optional[LoginUrl] = None, callback_data: Optional[Union[str, CallbackData]] = None, switch_inline_query: Optional[str] = None, switch_inline_query_current_chat: Optional[str] = None, callback_game: Optional[CallbackGame] = None, pay: Optional[bool] = None, **kwargs: Any) -> aiogram.utils.keyboard.InlineKeyboardBuilder
+    .. method:: button(text: str, icon_custom_emoji_id: Optional[str] = None, style: Optional[str] = None, url: Optional[str] = None, login_url: Optional[LoginUrl] = None, callback_data: Optional[Union[str, CallbackData]] = None, switch_inline_query: Optional[str] = None, switch_inline_query_current_chat: Optional[str] = None, switch_inline_query_chosen_chat: Optional[SwitchInlineQueryChosenChat] = None, copy_text: Optional[CopyTextButton] = None, callback_game: Optional[CallbackGame] = None, pay: Optional[bool] = None, **kwargs: Any) -> aiogram.utils.keyboard.InlineKeyboardBuilder
         :noindex:
 
         Add new inline button to markup
@@ -80,7 +80,7 @@ Reply Keyboard
 .. autoclass:: aiogram.utils.keyboard.ReplyKeyboardBuilder
     :members: __init__, buttons, copy, export, add, row, adjust, from_markup, attach
 
-    .. method:: button(text: str, request_contact: Optional[bool] = None, request_location: Optional[bool] = None, request_poll: Optional[KeyboardButtonPollType] = None, **kwargs: Any) -> aiogram.utils.keyboard.ReplyKeyboardBuilder
+    .. method:: button(text: str, icon_custom_emoji_id: Optional[str] = None, style: Optional[str] = None, request_users: Optional[KeyboardButtonRequestUsers] = None, request_chat: Optional[KeyboardButtonRequestChat] = None, request_contact: Optional[bool] = None, request_location: Optional[bool] = None, request_poll: Optional[KeyboardButtonPollType] = None, web_app: Optional[WebAppInfo] = None, **kwargs: Any) -> aiogram.utils.keyboard.ReplyKeyboardBuilder
         :noindex:
 
         Add new button to markup

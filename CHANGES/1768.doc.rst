@@ -1,0 +1,1 @@
+Updated keyboard builder documentation to include ``icon_custom_emoji_id`` and other current button parameters.
