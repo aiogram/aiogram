@@ -1,0 +1,1 @@
+Made :code:`can_react_to_messages` and :code:`can_edit_tag` optional (``bool | None = None``) in :class:`aiogram.types.ChatMemberRestricted` to handle ``my_chat_member`` updates where Telegram omits these fields, preventing a :class:`pydantic.ValidationError` at runtime.
