@@ -294,6 +294,21 @@ class TestKeyboardBuilder:
     def test_as_markup(self, builder, expected):
         assert isinstance(builder.as_markup(), expected)
 
+    def test_reply_keyboard_as_markup_options(self):
+        markup = ReplyKeyboardBuilder().as_markup(
+            is_persistent=True,
+            resize_keyboard=True,
+            one_time_keyboard=True,
+            input_field_placeholder="Placeholder",
+            selective=True,
+        )
+
+        assert markup.is_persistent is True
+        assert markup.resize_keyboard is True
+        assert markup.one_time_keyboard is True
+        assert markup.input_field_placeholder == "Placeholder"
+        assert markup.selective is True
+
     @pytest.mark.parametrize(
         "builder,button_kwargs,icon_custom_emoji_id,style",
         [

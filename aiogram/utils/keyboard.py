@@ -337,9 +337,9 @@ class InlineKeyboardBuilder(KeyboardBuilder[InlineKeyboardButton]):
             ),
         )
 
-    def as_markup(self, **kwargs: Any) -> InlineKeyboardMarkup:
+    def as_markup(self) -> InlineKeyboardMarkup:
         """Construct an InlineKeyboardMarkup"""
-        return cast(InlineKeyboardMarkup, super().as_markup(**kwargs))
+        return cast(InlineKeyboardMarkup, super().as_markup())
 
     def __init__(self, markup: list[list[InlineKeyboardButton]] | None = None) -> None:
         super().__init__(button_type=InlineKeyboardButton, markup=markup)
@@ -405,9 +405,28 @@ class ReplyKeyboardBuilder(KeyboardBuilder[KeyboardButton]):
             ),
         )
 
-    def as_markup(self, **kwargs: Any) -> ReplyKeyboardMarkup:
+    def as_markup(
+        self,
+        *,
+        is_persistent: bool | None = None,
+        resize_keyboard: bool | None = None,
+        one_time_keyboard: bool | None = None,
+        input_field_placeholder: str | None = None,
+        selective: bool | None = None,
+        **kwargs: Any,
+    ) -> ReplyKeyboardMarkup:
         """Construct a ReplyKeyboardMarkup"""
-        return cast(ReplyKeyboardMarkup, super().as_markup(**kwargs))
+        return cast(
+            ReplyKeyboardMarkup,
+            super().as_markup(
+                is_persistent=is_persistent,
+                resize_keyboard=resize_keyboard,
+                one_time_keyboard=one_time_keyboard,
+                input_field_placeholder=input_field_placeholder,
+                selective=selective,
+                **kwargs,
+            ),
+        )
 
     def __init__(self, markup: list[list[KeyboardButton]] | None = None) -> None:
         super().__init__(button_type=KeyboardButton, markup=markup)
