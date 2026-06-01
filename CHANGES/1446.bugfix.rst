@@ -1,0 +1,1 @@
+Added regression coverage for ``StickerSet`` payloads without deprecated ``is_animated`` and ``is_video`` fields.
