@@ -94,3 +94,13 @@ CHAT_MEMBER_RESTRICTED = ChatMemberRestricted(
 def test_chat_member_resolution(data: dict, resolved_type: type[ChatMember]) -> None:
     chat_member = ChatMemberAdapter.validate_python(data)
     assert isinstance(chat_member, resolved_type)
+
+
+def test_chat_member_restricted_allows_missing_can_react_to_messages() -> None:
+    data = CHAT_MEMBER_RESTRICTED.copy()
+    data.pop("can_react_to_messages")
+
+    chat_member = ChatMemberAdapter.validate_python(data)
+
+    assert isinstance(chat_member, ChatMemberRestricted)
+    assert chat_member.can_react_to_messages is None

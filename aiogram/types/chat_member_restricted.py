@@ -43,8 +43,8 @@ class ChatMemberRestricted(ChatMember):
     """:code:`True`, if the user is allowed to send animations, games, stickers and use inline bots"""
     can_add_web_page_previews: bool
     """:code:`True`, if the user is allowed to add web page previews to their messages"""
-    can_react_to_messages: bool
-    """:code:`True`, if the user is allowed to react to messages"""
+    can_react_to_messages: bool | None = None
+    """*Optional*. :code:`True`, if the user is allowed to react to messages"""
     can_edit_tag: bool
     """:code:`True`, if the user is allowed to edit their own tag"""
     can_change_info: bool
@@ -80,7 +80,7 @@ class ChatMemberRestricted(ChatMember):
             can_send_polls: bool,
             can_send_other_messages: bool,
             can_add_web_page_previews: bool,
-            can_react_to_messages: bool,
+            can_react_to_messages: bool | None = None,
             can_edit_tag: bool,
             can_change_info: bool,
             can_invite_users: bool,

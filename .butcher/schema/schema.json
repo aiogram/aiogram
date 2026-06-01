@@ -7429,10 +7429,10 @@
             {
               "type": "Boolean",
               "description": "True, if the user is allowed to react to messages",
-              "html_description": "<td><em>True</em>, if the user is allowed to react to messages</td>",
-              "rst_description": ":code:`True`, if the user is allowed to react to messages\n",
+              "html_description": "<td><em>Optional</em>. <em>True</em>, if the user is allowed to react to messages</td>",
+              "rst_description": "*Optional*. :code:`True`, if the user is allowed to react to messages\n",
               "name": "can_react_to_messages",
-              "required": true
+              "required": false
             },
             {
               "type": "Boolean",
