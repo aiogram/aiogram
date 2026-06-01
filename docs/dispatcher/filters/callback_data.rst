@@ -52,6 +52,10 @@ So... Now you can use this class to generate any callbacks with defined structur
         ...
         print("bar =", callback_data.bar)
 
+The parsed callback data instance is injected into the handler under the
+:code:`callback_data` name. If you use another parameter name, pass it explicitly
+through a custom filter or rename the handler argument to :code:`callback_data`.
+
 Also can be used in :doc:`Keyboard builder </utils/keyboard>`:
 
 .. code-block:: python
