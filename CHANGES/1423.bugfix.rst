@@ -1,0 +1,1 @@
+Improved ``ReplyKeyboardBuilder.as_markup`` type hints for reply keyboard options.
