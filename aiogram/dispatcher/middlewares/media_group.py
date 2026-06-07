@@ -240,7 +240,9 @@ class MediaGroupAggregatorMiddleware(BaseMiddleware):
                     album.sort(key=lambda msg: msg.message_id)
                     if event_update := cast(Update, data.get("event_update")):
                         data.update(
-                            event_update=event_update.model_copy(update={"message": album[0]})
+                            event_update=event_update.model_copy(
+                                update={event_update.event_type: album[0]}
+                            )
                         )
                     data.update(album=album)
                     result = await handler(album[0], data)

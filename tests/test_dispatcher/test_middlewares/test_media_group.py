@@ -95,10 +95,11 @@ class TestMediaGroupAggregatorMiddleware:
         assert event.bot is bot
         assert event.reply_to_message.bot is bot
 
-    async def test_propagate_first_media_in_album(self):
+    @pytest.mark.parametrize("event_type", ["message", "channel_post"])
+    async def test_propagate_first_media_in_album(self, event_type):
         middleware = self.get_middleware()
-        first_message: Message | None = None
-        first_event_update: Update | None = None
+        first_message = None
+        first_event_update = None
 
         async def next_handler(message: Message, data: dict[str, Any]):
             nonlocal first_message, first_event_update
@@ -107,7 +108,9 @@ class TestMediaGroupAggregatorMiddleware:
         def call_middleware(message_id: int):
             message = _get_message(message_id, media_group_id="42")
             return middleware(
-                next_handler, message, {"event_update": Update(update_id=42, message=message)}
+                next_handler,
+                message,
+                {"event_update": Update(update_id=42, **{event_type: message})},
             )
 
         task1 = await wait_until_func_call_sleep(asyncio.create_task, call_middleware(2))
@@ -115,7 +118,9 @@ class TestMediaGroupAggregatorMiddleware:
         await task1
         assert isinstance(first_message, Message)
         assert first_message.message_id == 1
-        assert first_event_update.message.message_id == first_message.message_id
+        assert isinstance(first_event_update, Update)
+        assert first_event_update.event.message_id == first_message.message_id
+        assert first_event_update.event_type == event_type
 
     @pytest.mark.parametrize("deleted_object", ["album", "last_message_time"])
     async def test_skip_propagating_if_data_deleted(self, deleted_object):
