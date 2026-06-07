@@ -32,7 +32,7 @@ class BaseMediaGroupAggregator(ABC):
         pass
 
     @abstractmethod
-    async def get_group(self, media_group_id: str) -> list[Message]:
+    async def get_group(self, media_group_id: str, bot: Bot) -> list[Message]:
         pass
 
     @abstractmethod
@@ -119,11 +119,13 @@ class RedisMediaGroupAggregator(BaseMediaGroupAggregator):
             self.redis.eval(release_script, 1, self.get_group_lock_key(media_group_id), lock_id),
         )
 
-    async def get_group(self, media_group_id: str) -> list[Message]:
+    async def get_group(self, media_group_id: str, bot: Bot) -> list[Message]:
         result = await cast(
             Awaitable[list[str]], self.redis.lrange(self.get_group_key(media_group_id), 0, -1)
         )
-        return self.deduplicate_messages([Message.model_validate_json(msg) for msg in result])
+        return self.deduplicate_messages(
+            [Message.model_validate_json(msg, context={"bot": bot}) for msg in result]
+        )
 
     async def delete_group(self, media_group_id: str) -> None:
         async with self.redis.pipeline(transaction=True) as pipe:
@@ -181,7 +183,7 @@ class MemoryMediaGroupAggregator(BaseMediaGroupAggregator):
         if self.locks.get(media_group_id) == lock_id:
             self.locks.pop(media_group_id)
 
-    async def get_group(self, media_group_id: str) -> list[Message]:
+    async def get_group(self, media_group_id: str, bot: Bot) -> list[Message]:
         return self.groups.get(media_group_id, [])
 
     async def delete_group(self, media_group_id: str) -> None:
@@ -230,13 +232,12 @@ class MediaGroupAggregatorMiddleware(BaseMiddleware):
                     await self.media_group_aggregator.get_current_time() - last_message_time
                 )
                 if delta <= 0:
-                    album = await self.media_group_aggregator.get_group(event.media_group_id)
+                    album = await self.media_group_aggregator.get_group(
+                        event.media_group_id, cast(Bot, data.get("bot"))
+                    )
                     if not album:
                         return None
-                    album = sorted(
-                        (msg.as_(cast(Bot, data.get("bot"))) for msg in album),
-                        key=lambda msg: msg.message_id,
-                    )
+                    album.sort(key=lambda msg: msg.message_id)
                     if event_update := cast(Update, data.get("event_update")):
                         data.update(
                             event_update=event_update.model_copy(update={"message": album[0]})

@@ -13,12 +13,20 @@ from aiogram.dispatcher.middlewares.media_group import (
     MemoryMediaGroupAggregator,
     RedisMediaGroupAggregator,
 )
-from aiogram.types import Chat, Message, Update
+from aiogram.types import Message, Update
 
 
-def _get_message(message_id: int, **kwargs):
-    chat = Chat(id=1, type="private", title="Test")
-    return Message(message_id=message_id, date=datetime.now(), chat=chat, **kwargs)
+def _get_raw_message(message_id: int, **kwargs):
+    return {
+        "message_id": message_id,
+        "date": datetime.now().timestamp(),
+        "chat": {"id": 1, "type": "private", "title": "Test"},
+        **kwargs,
+    }
+
+
+def _get_message(message_id: int, context: dict[str, Any] | None = None, **kwargs):
+    return Message.model_validate(_get_raw_message(message_id, **kwargs), context=context)
 
 
 async def wait_until_func_call_sleep(func: Callable[..., Awaitable[Any]], *args, **kwargs) -> Any:
@@ -36,8 +44,9 @@ async def wait_until_func_call_sleep(func: Callable[..., Awaitable[Any]], *args,
 
 
 class TestMediaGroupAggregatorMiddleware:
-    def get_middleware(self):
-        return MediaGroupAggregatorMiddleware(delay=0.1)
+    def get_middleware(self, **kwargs):
+        kwargs.setdefault("delay", 0.1)
+        return MediaGroupAggregatorMiddleware(**kwargs)
 
     async def test_skip_non_media_group(self):
         is_called = False
@@ -67,8 +76,8 @@ class TestMediaGroupAggregatorMiddleware:
         assert len(album) == 2
         assert counter == 1
 
-    async def test_bot_object_saved(self, bot):
-        middleware = self.get_middleware()
+    async def test_bot_object_saved(self, bot, aggregator: BaseMediaGroupAggregator):
+        middleware = self.get_middleware(media_group_aggregator=aggregator)
         event = album = None
 
         async def next_handler(message: Message, data: dict[str, Any]):
@@ -76,9 +85,15 @@ class TestMediaGroupAggregatorMiddleware:
             event = message
             album = data.get("album")
 
-        await middleware(next_handler, _get_message(1, media_group_id="42"), {"bot": bot})
+        CONTEXT = {"bot": bot}
+        nested_object = _get_message(2, context=CONTEXT)
+        await middleware(
+            next_handler,
+            _get_message(1, reply_to_message=nested_object, media_group_id="42", context=CONTEXT),
+            CONTEXT,
+        )
         assert event.bot is bot
-        assert all(msg.bot is bot for msg in album)
+        assert event.reply_to_message.bot is bot
 
     async def test_propagate_first_media_in_album(self):
         middleware = self.get_middleware()
@@ -182,17 +197,17 @@ async def aggregator(request):
 
 
 class TestMediaGroupAggregator:
-    async def test_group_creating(self, aggregator: BaseMediaGroupAggregator):
+    async def test_group_creating(self, bot, aggregator: BaseMediaGroupAggregator):
         msg1 = _get_message(1)
         msg2 = _get_message(2)
         assert await aggregator.add_into_group("42", msg1) == 1
         assert await aggregator.add_into_group("42", msg2) == 2
-        assert {msg.message_id for msg in await aggregator.get_group("42")} == {
+        assert {msg.message_id for msg in await aggregator.get_group("42", bot)} == {
             msg1.message_id,
             msg2.message_id,
         }
         await aggregator.delete_group("42")
-        assert await aggregator.get_group("42") == []
+        assert await aggregator.get_group("42", bot) == []
 
     async def test_acquire_lock(self, aggregator: BaseMediaGroupAggregator):
         for i in ("key1", "key2"):
@@ -205,14 +220,14 @@ class TestMediaGroupAggregator:
         await aggregator.release_lock("42", "key2")
         assert not await aggregator.acquire_lock("42", "key1")
 
-    async def test_expired_objects_removed(self):
+    async def test_expired_objects_removed(self, bot):
         aggregator = MemoryMediaGroupAggregator()
         await aggregator.add_into_group("42", _get_message(1))
         with mock.patch("time.monotonic", return_value=time.time() + aggregator.ttl_sec + 1):
             new_msg = _get_message(2)
             await aggregator.add_into_group("24", new_msg)
-        assert await aggregator.get_group("42") == []
-        assert await aggregator.get_group("24") == [new_msg]
+        assert await aggregator.get_group("42", bot) == []
+        assert await aggregator.get_group("24", bot) == [new_msg]
 
     async def test_get_current_time_memory_aggregator(self):
         aggregator = MemoryMediaGroupAggregator()
