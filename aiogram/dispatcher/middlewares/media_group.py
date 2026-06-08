@@ -215,16 +215,19 @@ class MediaGroupAggregatorMiddleware(BaseMiddleware):
         event: TelegramObject,
         data: dict[str, Any],
     ) -> Any:
-        if not isinstance(event, Message) or not event.media_group_id:
+        if not isinstance(event, Update):
+            raise RuntimeError("MediaGroupAggregatorMiddleware got an unexpected event type!")
+        message = event.event
+        if not isinstance(message, Message) or not message.media_group_id:
             return await handler(event, data)
-        await self.media_group_aggregator.add_into_group(event.media_group_id, event)
+        await self.media_group_aggregator.add_into_group(message.media_group_id, message)
         lock_id = str(uuid.uuid4())
-        if not await self.media_group_aggregator.acquire_lock(event.media_group_id, lock_id):
+        if not await self.media_group_aggregator.acquire_lock(message.media_group_id, lock_id):
             return None
         try:
             while True:
                 last_message_time = await self.media_group_aggregator.get_last_message_time(
-                    event.media_group_id
+                    message.media_group_id
                 )
                 if not last_message_time:
                     return None
@@ -233,21 +236,17 @@ class MediaGroupAggregatorMiddleware(BaseMiddleware):
                 )
                 if delta <= 0:
                     album = await self.media_group_aggregator.get_group(
-                        event.media_group_id, cast(Bot, data.get("bot"))
+                        message.media_group_id, cast(Bot, data.get("bot"))
                     )
                     if not album:
                         return None
                     album.sort(key=lambda msg: msg.message_id)
-                    if event_update := cast(Update, data.get("event_update")):
-                        data.update(
-                            event_update=event_update.model_copy(
-                                update={event_update.event_type: album[0]}
-                            )
-                        )
                     data.update(album=album)
-                    result = await handler(album[0], data)
-                    await self.media_group_aggregator.delete_group(event.media_group_id)
+                    result = await handler(
+                        event.model_copy(update={event.event_type: album[0]}), data
+                    )
+                    await self.media_group_aggregator.delete_group(message.media_group_id)
                     return result
                 await asyncio.sleep(delta)
         finally:
-            await self.media_group_aggregator.release_lock(event.media_group_id, lock_id)
+            await self.media_group_aggregator.release_lock(message.media_group_id, lock_id)

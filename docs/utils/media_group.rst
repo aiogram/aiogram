@@ -64,17 +64,17 @@ Usage
 
 .. code-block:: python
 
-    from aiogram import F
+    from aiogram import F, Dispatcher
     from aiogram.types import Message
 
     # register middleware
     from aiogram.dispatcher.middlewares.media_group import MediaGroupAggregatorMiddleware
     from aiogram.filters import MagicData
 
-    router.message.outer_middleware(MediaGroupAggregatorMiddleware())
+    dp = Dispatcher(media_group_aggregation_middeware=MediaGroupAggregatorMiddleware())
 
     # use middleware
-    @router.message(
+    @dp.message(
       MagicData(F.album.len() <= 5),
       F.caption == "album_caption" # other filters will be applied to the first message in the group
     )

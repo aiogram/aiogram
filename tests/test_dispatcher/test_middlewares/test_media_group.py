@@ -14,6 +14,8 @@ from aiogram.dispatcher.middlewares.media_group import (
     RedisMediaGroupAggregator,
 )
 from aiogram.types import Message, Update
+from aiogram import Dispatcher
+from aiogram.fsm.storage.memory import SimpleEventIsolation
 
 
 def _get_raw_message(message_id: int, **kwargs):
@@ -27,6 +29,12 @@ def _get_raw_message(message_id: int, **kwargs):
 
 def _get_message(message_id: int, context: dict[str, Any] | None = None, **kwargs):
     return Message.model_validate(_get_raw_message(message_id, **kwargs), context=context)
+
+
+def _get_update(message_id: int, context: dict[str, Any] | None = None, **kwargs):
+    return Update.model_validate(
+        {"update_id": 42, "message": _get_raw_message(message_id, **kwargs)}, context=context
+    )
 
 
 async def wait_until_func_call_sleep(func: Callable[..., Awaitable[Any]], *args, **kwargs) -> Any:
@@ -43,10 +51,38 @@ async def wait_until_func_call_sleep(func: Callable[..., Awaitable[Any]], *args,
     return task1
 
 
+async def capture_first_event(
+    middleware: MediaGroupAggregatorMiddleware,
+    *updates: list[Update],
+    context: dict[str, Any] = {},
+) -> Update:
+    captured_update = None
+
+    async def next_handler(event, _):
+        nonlocal captured_update
+        captured_update = event
+
+    tasks = []
+    for update in updates:
+        task = await wait_until_func_call_sleep(
+            asyncio.create_task, middleware(next_handler, update, context)
+        )
+        tasks.append(task)
+    await asyncio.gather(*tasks)
+    return captured_update
+
+
 class TestMediaGroupAggregatorMiddleware:
     def get_middleware(self, **kwargs):
         kwargs.setdefault("delay", 0.1)
         return MediaGroupAggregatorMiddleware(**kwargs)
+
+    async def test_raise_exception_if_wrong_event_type(self):
+        async def next_handler(*_, **__):
+            pass
+
+        with pytest.raises(RuntimeError):
+            await self.get_middleware()(next_handler, _get_message(1), {})
 
     async def test_skip_non_media_group(self):
         is_called = False
@@ -55,7 +91,7 @@ class TestMediaGroupAggregatorMiddleware:
             nonlocal is_called
             is_called = True
 
-        await self.get_middleware()(next_handler, _get_message(1), {})
+        await self.get_middleware()(next_handler, _get_update(1), {})
         assert is_called
 
     async def test_called_once_for_album(self):
@@ -69,58 +105,62 @@ class TestMediaGroupAggregatorMiddleware:
             album = data.get("album")
 
         await asyncio.gather(
-            middleware(next_handler, _get_message(1, media_group_id="42"), {}),
-            middleware(next_handler, _get_message(2, media_group_id="42"), {}),
+            middleware(next_handler, _get_update(1, media_group_id="42"), {}),
+            middleware(next_handler, _get_update(2, media_group_id="42"), {}),
         )
         assert album is not None
         assert len(album) == 2
         assert counter == 1
 
     async def test_bot_object_saved(self, bot, aggregator: BaseMediaGroupAggregator):
-        middleware = self.get_middleware(media_group_aggregator=aggregator)
-        event = album = None
-
-        async def next_handler(message: Message, data: dict[str, Any]):
-            nonlocal event, album
-            event = message
-            album = data.get("album")
-
         CONTEXT = {"bot": bot}
-        nested_object = _get_message(2, context=CONTEXT)
-        await middleware(
-            next_handler,
-            _get_message(1, reply_to_message=nested_object, media_group_id="42", context=CONTEXT),
-            CONTEXT,
+        nested_object = _get_raw_message(2)
+        update = await capture_first_event(
+            self.get_middleware(media_group_aggregator=aggregator),
+            _get_update(1, reply_to_message=nested_object, media_group_id="42", context=CONTEXT),
+            context=CONTEXT,
         )
-        assert event.bot is bot
-        assert event.reply_to_message.bot is bot
+        assert isinstance(update, Update)
+        assert update.event.bot is bot
+        assert update.event.reply_to_message.bot is bot
 
     @pytest.mark.parametrize("event_type", ["message", "channel_post"])
-    async def test_propagate_first_media_in_album(self, event_type):
-        middleware = self.get_middleware()
-        first_message = None
-        first_event_update = None
+    async def test_keep_original_event_type(self, event_type):
+        update = await capture_first_event(
+            self.get_middleware(),
+            Update(
+                update_id=1,
+                **{event_type: _get_raw_message(1, media_group_id="42")},
+            ),
+        )
+        assert isinstance(update, Update)
+        assert update.event_type == event_type
 
-        async def next_handler(message: Message, data: dict[str, Any]):
-            nonlocal first_message, first_event_update
-            first_message, first_event_update = message, data.get("event_update")
+    async def test_propagate_first_media_in_album(self):
+        update = await capture_first_event(
+            self.get_middleware(),
+            _get_update(2, media_group_id="42"),
+            _get_update(1, media_group_id="42"),
+        )
+        assert update.event.message_id == 1
 
-        def call_middleware(message_id: int):
-            message = _get_message(message_id, media_group_id="42")
-            return middleware(
-                next_handler,
-                message,
-                {"event_update": Update(update_id=42, **{event_type: message})},
-            )
+    async def test_aggregation_with_event_isolation(self, bot):
+        dp = Dispatcher(
+            events_isolation=SimpleEventIsolation(),
+            media_group_aggregation_middleware=self.get_middleware(),
+        )
+        counter = 0
 
-        task1 = await wait_until_func_call_sleep(asyncio.create_task, call_middleware(2))
-        await call_middleware(1)
-        await task1
-        assert isinstance(first_message, Message)
-        assert first_message.message_id == 1
-        assert isinstance(first_event_update, Update)
-        assert first_event_update.event.message_id == first_message.message_id
-        assert first_event_update.event_type == event_type
+        async def handler(_):
+            nonlocal counter
+            counter += 1
+
+        dp.message.register(handler)
+        await asyncio.gather(
+            dp.feed_update(bot, _get_update(1, media_group_id="42")),
+            dp.feed_update(bot, _get_update(2, media_group_id="42")),
+        )
+        assert counter == 1
 
     @pytest.mark.parametrize("deleted_object", ["album", "last_message_time"])
     async def test_skip_propagating_if_data_deleted(self, deleted_object):
@@ -132,7 +172,7 @@ class TestMediaGroupAggregatorMiddleware:
             counter += 1
 
         task1 = await wait_until_func_call_sleep(
-            asyncio.create_task, middleware(next_handler, _get_message(1, media_group_id="42"), {})
+            asyncio.create_task, middleware(next_handler, _get_update(1, media_group_id="42"), {})
         )
         if deleted_object == "album":
             middleware.media_group_aggregator.groups.pop("42")
@@ -152,8 +192,8 @@ class TestMediaGroupAggregatorMiddleware:
             albums.append(data.get("album"))
 
         await asyncio.gather(
-            middleware(next_handler, _get_message(1, media_group_id="1"), {}),
-            middleware(next_handler, _get_message(2, media_group_id="2"), {}),
+            middleware(next_handler, _get_update(1, media_group_id="1"), {}),
+            middleware(next_handler, _get_update(2, media_group_id="2"), {}),
         )
         assert counter == 2
         assert len(albums) == 2
@@ -169,8 +209,8 @@ class TestMediaGroupAggregatorMiddleware:
             nonlocal album
             album = data.get("album")
 
-        first_message = _get_message(1, media_group_id="42")
-        second_message = _get_message(2, media_group_id="42")
+        first_message = _get_update(1, media_group_id="42")
+        second_message = _get_update(2, media_group_id="42")
         with pytest.raises(RuntimeError):
             await asyncio.gather(
                 middleware(failed_handler, first_message, {}),

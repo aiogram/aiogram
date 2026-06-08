@@ -25,6 +25,7 @@ from aiogram.utils.backoff import Backoff, BackoffConfig
 from .event.bases import UNHANDLED, SkipHandler
 from .event.telegram import TelegramEventObserver
 from .middlewares.error import ErrorsMiddleware
+from .middlewares.media_group import MediaGroupAggregatorMiddleware
 from .middlewares.user_context import UserContextMiddleware
 from .router import Router
 
@@ -47,6 +48,7 @@ class Dispatcher(Router):
         fsm_strategy: FSMStrategy = FSMStrategy.USER_IN_CHAT,
         events_isolation: BaseEventIsolation | None = None,
         disable_fsm: bool = False,
+        media_group_aggregation_middleware: MediaGroupAggregatorMiddleware | None = None,
         name: str | None = None,
         **kwargs: Any,
     ) -> None:
@@ -82,6 +84,9 @@ class Dispatcher(Router):
         # User context middleware makes small optimization for all other builtin
         # middlewares via caching the user and chat instances in the event context
         self.update.outer_middleware(UserContextMiddleware())
+
+        if media_group_aggregation_middleware:
+            self.update.outer_middleware(media_group_aggregation_middleware)
 
         # FSM middleware should always be registered after User context middleware
         # because here is used context from previous step
