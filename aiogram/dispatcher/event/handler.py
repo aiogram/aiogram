@@ -98,6 +98,14 @@ class FilterObject(CallableObject):
         if isinstance(self.callback, Filter):
             self.awaitable = True
 
+    async def call(self, *args: Any, **kwargs: Any) -> Any:
+        from aiogram.utils.opentelemetry import is_enabled, trace_filter
+
+        if is_enabled():
+            async with trace_filter(self, args, kwargs):
+                return await super().call(*args, **kwargs)
+        return await super().call(*args, **kwargs)
+
 
 @dataclass
 class HandlerObject(CallableObject):
@@ -110,6 +118,14 @@ class HandlerObject(CallableObject):
         if inspect.isclass(callback) and issubclass(callback, BaseHandler):
             self.awaitable = True
         self.flags.update(extract_flags_from_object(callback))
+
+    async def call(self, *args: Any, **kwargs: Any) -> Any:
+        from aiogram.utils.opentelemetry import is_enabled, trace_handler
+
+        if is_enabled():
+            async with trace_handler(self, args, kwargs):
+                return await super().call(*args, **kwargs)
+        return await super().call(*args, **kwargs)
 
     async def check(self, *args: Any, **kwargs: Any) -> tuple[bool, dict[str, Any]]:
         if not self.filters:

@@ -78,6 +78,9 @@ cli = [
 signature = [
     "cryptography>=46.0.0",
 ]
+opentelemetry = [
+    "opentelemetry-api>=1.12.0",
+]
 docs = [
     "Sphinx~=8.0.2",
     "sphinx-intl~=2.2.0",
@@ -111,6 +114,7 @@ test = [
     "aresponses==3.0.0",
     "pytz>=2026,<2027",
     "pycryptodomex==3.23.0",
+    "opentelemetry-sdk>=1.12.0",
 ]
 
 [project.urls]

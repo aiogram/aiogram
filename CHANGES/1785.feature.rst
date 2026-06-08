@@ -1,0 +1,1 @@
+Added native OpenTelemetry support for tracing updates, middlewares, filters, handlers, and Telegram Bot API requests.

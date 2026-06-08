@@ -160,16 +160,30 @@ class Dispatcher(Router):
             # before call feed_update method
             update = Update.model_validate(update.model_dump(), context={"bot": bot})
 
+        from aiogram.utils.opentelemetry import is_enabled, trace_update
+
         try:
-            response = await self.update.wrap_outer_middleware(
-                self.update.trigger,
-                update,
-                {
-                    **self.workflow_data,
-                    **kwargs,
-                    "bot": bot,
-                },
-            )
+            if is_enabled():
+                with trace_update(update, self, kwargs):
+                    response = await self.update.wrap_outer_middleware(
+                        self.update.trigger,
+                        update,
+                        {
+                            **self.workflow_data,
+                            **kwargs,
+                            "bot": bot,
+                        },
+                    )
+            else:
+                response = await self.update.wrap_outer_middleware(
+                    self.update.trigger,
+                    update,
+                    {
+                        **self.workflow_data,
+                        **kwargs,
+                        "bot": bot,
+                    },
+                )
             handled = response is not UNHANDLED
             return response
         finally:

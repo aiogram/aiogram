@@ -255,8 +255,15 @@ class BaseSession(abc.ABC):
         method: TelegramMethod[TelegramType],
         timeout: int | None = None,
     ) -> TelegramType:
-        middleware = self.middleware.wrap_middlewares(self.make_request, timeout=timeout)
-        return cast(TelegramType, await middleware(bot, method))
+        from aiogram.utils.opentelemetry import is_enabled, trace_api_call
+
+        if is_enabled():
+            async with trace_api_call(method):
+                middleware = self.middleware.wrap_middlewares(self.make_request, timeout=timeout)
+                return cast(TelegramType, await middleware(bot, method))
+        else:
+            middleware = self.middleware.wrap_middlewares(self.make_request, timeout=timeout)
+            return cast(TelegramType, await middleware(bot, method))
 
     async def __aenter__(self) -> Self:
         return self

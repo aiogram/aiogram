@@ -62,7 +62,13 @@ class MiddlewareManager(Sequence[MiddlewareType[TelegramObject]]):
         def handler_wrapper(event: TelegramObject, kwargs: dict[str, Any]) -> Any:
             return handler(event, **kwargs)
 
+        from aiogram.utils.opentelemetry import is_enabled, wrap_middleware_otel
+
         middleware = handler_wrapper
         for m in reversed(middlewares):
-            middleware = functools.partial(m, middleware)  # type: ignore[assignment]
+            if is_enabled():
+                m_wrapped = wrap_middleware_otel(m)
+                middleware = functools.partial(m_wrapped, middleware)  # type: ignore[assignment]
+            else:
+                middleware = functools.partial(m, middleware)  # type: ignore[assignment]
         return middleware
