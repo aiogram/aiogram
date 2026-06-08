@@ -64,28 +64,29 @@ Usage
 
 .. code-block:: python
 
-    from aiogram import F, Dispatcher
-    from aiogram.types import Message
+    from collections.abc import Sequence
 
-    # register middleware
+    from aiogram import Dispatcher, F
     from aiogram.dispatcher.middlewares.media_group import MediaGroupAggregatorMiddleware
     from aiogram.filters import MagicData
+    from aiogram.types import Message
 
-    dp = Dispatcher(media_group_aggregation_middeware=MediaGroupAggregatorMiddleware())
+    # Register middleware. It will be applied to all events with media groups,
+    # e.g. message, edited_message, channel_post, etc.
+    dp = Dispatcher(media_group_aggregator=MediaGroupAggregatorMiddleware())
 
-    # use middleware
     @dp.message(
-      MagicData(F.album.len() <= 5),
-      F.caption == "album_caption" # other filters will be applied to the first message in the group
+        MagicData(F.album.len() <= 5),
+        F.caption == "album_caption",  # other filters will be applied to the first message in the group
     )
-    async def start(message: Message, album: list[Message]):
-      # message is the first media in this group
-      # album is list of all messages with the same mediaGroupId, including current message
-      await message.answer(
-        f"You sent {len(album)} media in the group. "
-        f"Media group ID: {message.media_group_id}. "
-        f"Album messages: {', '.join(str(m.message_id) for m in album)}"
-      )
+    async def start(message: Message, album: Sequence[Message]):
+        # message is the first media item
+        # album is a list of all messages with the same media_group_id, including current message
+        await message.answer(
+            f"You sent {len(album)} media in the group. "
+            f"Media group ID: {message.media_group_id}. "
+            f"Album messages: {', '.join(str(m.message_id) for m in album)}"
+        )
 
 .. warning::
 

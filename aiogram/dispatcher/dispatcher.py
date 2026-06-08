@@ -48,7 +48,7 @@ class Dispatcher(Router):
         fsm_strategy: FSMStrategy = FSMStrategy.USER_IN_CHAT,
         events_isolation: BaseEventIsolation | None = None,
         disable_fsm: bool = False,
-        media_group_aggregation_middleware: MediaGroupAggregatorMiddleware | None = None,
+        media_group_aggregator: MediaGroupAggregatorMiddleware | None = None,
         name: str | None = None,
         **kwargs: Any,
     ) -> None:
@@ -85,8 +85,8 @@ class Dispatcher(Router):
         # middlewares via caching the user and chat instances in the event context
         self.update.outer_middleware(UserContextMiddleware())
 
-        if media_group_aggregation_middleware:
-            self.update.outer_middleware(media_group_aggregation_middleware)
+        if media_group_aggregator:
+            self.update.outer_middleware(media_group_aggregator)
 
         # FSM middleware should always be registered after User context middleware
         # because here is used context from previous step
