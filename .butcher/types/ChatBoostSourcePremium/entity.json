@@ -1,0 +1,33 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "chatboostsourcepremium",
+    "name": "ChatBoostSourcePremium",
+    "description": "The boost was obtained by subscribing to Telegram Premium or by gifting a Telegram Premium subscription to another user.",
+    "html_description": "<p>The boost was obtained by subscribing to Telegram Premium or by gifting a Telegram Premium subscription to another user.</p>",
+    "rst_description": "The boost was obtained by subscribing to Telegram Premium or by gifting a Telegram Premium subscription to another user.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Source of the boost, always 'premium'",
+        "html_description": "<td>Source of the boost, always &#8220;premium&#8221;</td>",
+        "rst_description": "Source of the boost, always 'premium'\n",
+        "name": "source",
+        "required": true
+      },
+      {
+        "type": "User",
+        "description": "User that boosted the chat",
+        "html_description": "<td>User that boosted the chat</td>",
+        "rst_description": "User that boosted the chat\n",
+        "name": "user",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

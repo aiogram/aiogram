@@ -1,0 +1,207 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2023, aiogram Team
+# This file is distributed under the same license as the aiogram package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2023.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: aiogram \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-03-08 02:28+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.13.1\n"
+
+#: ../../dispatcher/dependency_injection.rst:3
+msgid "Dependency injection"
+msgstr "Ін'єкція залежностей"
+
+#: ../../dispatcher/dependency_injection.rst:5
+msgid ""
+"Dependency injection is a programming technique that makes a class "
+"independent of its dependencies. It achieves that by decoupling the usage"
+" of an object from its creation. This helps you to follow `SOLID's "
+"<https://en.wikipedia.org/wiki/SOLID>`_ dependency inversion and single "
+"responsibility principles."
+msgstr ""
+"Ін'єкція залежностей — це техніка програмування, яка робить класи "
+"незалежними від їхніх залежностей. Вона досягається шляхом відділення "
+"використання об'єкта від його створення. Це допомагає дотримуватися "
+"принципів інверсії залежностей та єдиної відповідальності за SOLID."
+
+#: ../../dispatcher/dependency_injection.rst:12
+msgid "How it works in aiogram"
+msgstr "Як це працює в aiogram"
+
+#: ../../dispatcher/dependency_injection.rst:14
+msgid ""
+"For each update :class:`aiogram.dispatcher.dispatcher.Dispatcher` passes "
+"handling context data. Filters and middleware can also make changes to "
+"the context."
+msgstr ""
+"Для кожного оновлення :class:`aiogram.dispatcher.dispatcher.Dispatcher` "
+"передає дані контексту обробки. Фільтри та проміжне програмне забезпечення "
+"також можуть вносити зміни до контексту."
+
+#: ../../dispatcher/dependency_injection.rst:17
+msgid ""
+"To access contextual data you should specify corresponding keyword "
+"parameter in handler or filter. For example, to get "
+":class:`aiogram.fsm.context.FSMContext` we do it like that:"
+msgstr ""
+"Щоб отримати доступ до контекстних даних, ви повинні вказати відповідний "
+"параметр ключового слова в обробнику або фільтрі. Наприклад, щоб отримати "
+":class:`aiogram.fsm.context.FSMContext`, ми робимо це так:"
+
+#: ../../dispatcher/dependency_injection.rst:30
+msgid "Injecting own dependencies"
+msgstr "Ін'єкція власних залежностей"
+
+#: ../../dispatcher/dependency_injection.rst:32
+msgid "Aiogram provides several ways to complement / modify contextual data."
+msgstr "Aiogram надає кілька способів для доповнення/модифікації контекстних даних."
+
+#: ../../dispatcher/dependency_injection.rst:34
+msgid ""
+"The first and easiest way is to simply specify the named arguments in "
+":class:`aiogram.dispatcher.dispatcher.Dispatcher` initialization, polling"
+" start methods or "
+":class:`aiogram.webhook.aiohttp_server.SimpleRequestHandler` "
+"initialization if you use webhooks."
+msgstr ""
+"Перший і найпростіший спосіб — це просто вказати іменовані аргументи під час "
+"ініціалізації :class:`aiogram.dispatcher.dispatcher.Dispatcher`, запуску методів "
+"опитування або ініціалізації "
+":class:`aiogram.webhook.aiohttp_server.SimpleRequestHandler`, якщо ви використовуєте вебхуки."
+
+#: ../../dispatcher/dependency_injection.rst:46
+msgid "Analogy for webhook:"
+msgstr "Аналогія для вебхука:"
+
+#: ../../dispatcher/dependency_injection.rst:55
+msgid ""
+":class:`aiogram.dispatcher.dispatcher.Dispatcher`'s workflow data also "
+"can be supplemented by setting values as in a dictionary:"
+msgstr ""
+"Дані робочого процесу :class:`aiogram.dispatcher.dispatcher.Dispatcher` також можуть "
+"доповнюватися шляхом встановлення значень, як у словнику:"
+
+#: ../../dispatcher/dependency_injection.rst:63
+msgid ""
+"The middlewares updates the context quite often. You can read more about "
+"them on this page:"
+msgstr ""
+"Проміжне програмне забезпечення досить часто оновлює контекст. Ви можете "
+"прочитати про це більше на цій сторінці:"
+
+#: ../../dispatcher/dependency_injection.rst:66
+msgid ":ref:`Middlewares <middlewares>`"
+msgstr ":ref:`Проміжне програмне забезпечення <middlewares>`"
+
+#: ../../dispatcher/dependency_injection.rst:68
+msgid "The last way is to return a dictionary from the filter:"
+msgstr "Останній спосіб — повернути словник із фільтра:"
+
+#: ../../dispatcher/dependency_injection.rst:72
+msgid ""
+"...or using :ref:`MagicFilter <magic-filters>` with :code:`.as_(...)` "
+"method."
+msgstr ""
+"...або використовуючи :ref:`MagicFilter <magic-filters>` з методом "
+":code:`.as_(...)`."
+
+#: ../../dispatcher/dependency_injection.rst:76
+msgid "Using type hints"
+msgstr "Використання підказок типів"
+
+#: ../../dispatcher/dependency_injection.rst:80
+msgid ""
+"Type-hinting middleware data is optional and is not required for the "
+"correct operation of the dispatcher. However, it is recommended to use it"
+" to improve the readability of the code."
+msgstr ""
+"Використання підказок типів для даних проміжного програмного забезпечення "
+"необов'язкове й не потрібне для правильної роботи диспетчера. Проте "
+"рекомендується використовувати їх для покращення читабельності коду."
+
+#: ../../dispatcher/dependency_injection.rst:83
+msgid ""
+"You can use type hints to specify the type of the context data in the "
+"middlewares, filters and handlers."
+msgstr ""
+"Ви можете використовувати підказки типів для визначення типу контекстних "
+"даних у проміжному ПЗ, фільтрах та обробниках."
+
+#: ../../dispatcher/dependency_injection.rst:85
+msgid ""
+"The default middleware data typed dict can be found in "
+":class:`aiogram.dispatcher.middlewares.data.MiddlewareData`."
+msgstr ""
+"Словник типів даних за замовчуванням для проміжного ПЗ можна знайти в "
+":class:`aiogram.dispatcher.middlewares.data.MiddlewareData`."
+
+#: ../../dispatcher/dependency_injection.rst:87
+msgid ""
+"In case when you have extended the context data, you can use the "
+":class:`aiogram.dispatcher.middlewares.data.MiddlewareData` as a base "
+"class and specify the type hints for the new fields."
+msgstr ""
+"Якщо ви розширили контекстні дані, ви можете використовувати "
+":class:`aiogram.dispatcher.middlewares.data.MiddlewareData` як базовий клас "
+"та вказати підказки типів для нових полів."
+
+#: ../../dispatcher/dependency_injection.rst:91
+msgid ""
+"If you using type checking tools like mypy, you can experience warnings "
+"about that this type hint against Liskov substitution principle in due "
+"stricter type is not a subclass of :code:`dict[str, Any]`. This is a "
+"known issue and it is not a bug. You can ignore this warning or use "
+":code:`# type: ignore` comment."
+msgstr ""
+"Якщо ви використовуєте інструменти перевірки типів, такі як mypy, ви "
+"можете отримати попередження про те, що ці підказки типів порушують "
+"принцип підстановки Лісков через те, що суворіший тип не є підкласом "
+":code:`dict[str, Any]`. Це відома проблема, і це не є помилкою. Ви можете "
+"проігнорувати це попередження або використати коментар :code:`# type: ignore`."
+
+#: ../../dispatcher/dependency_injection.rst:94
+msgid "Example of using type hints:"
+msgstr "Приклад використання підказок типів:"
+
+#: ../../dispatcher/dependency_injection.rst:119
+msgid "Available context data type helpers"
+msgstr "Доступні помічники для типів контекстних даних"
+
+#: aiogram.dispatcher.middlewares.data.MiddlewareData:1 of
+msgid "Data passed to the handler by the middlewares."
+msgstr "Дані, передані обробнику проміжним ПЗ."
+
+#: aiogram.dispatcher.middlewares.data.MiddlewareData:3 of
+msgid "You can add your own data by extending this class."
+msgstr "Ви можете додати власні дані, розширивши цей клас."
+
+#: aiogram.dispatcher.middlewares.data.I18nData:1 of
+msgid "I18n related data."
+msgstr "Дані, пов'язані з I18n."
+
+#: aiogram.dispatcher.middlewares.data.I18nData:3 of
+msgid ""
+"Is not included by default, you need to add it to your own Data class if "
+"you need it."
+msgstr ""
+"За замовчуванням не включено, вам потрібно додати це до власного класу Даних, "
+"якщо це необхідно."
+
+#: ../../docstring aiogram.dispatcher.middlewares.data.I18nData.i18n:1 of
+msgid "I18n object."
+msgstr "Об'єкт I18n."
+
+#: ../../docstring
+#: aiogram.dispatcher.middlewares.data.I18nData.i18n_middleware:1 of
+msgid "I18n middleware."
+msgstr "Проміжне ПЗ для I18n."

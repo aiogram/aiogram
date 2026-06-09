@@ -1,0 +1,49 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "chatboostremoved",
+    "name": "ChatBoostRemoved",
+    "description": "This object represents a boost removed from a chat.",
+    "html_description": "<p>This object represents a boost removed from a chat.</p>",
+    "rst_description": "This object represents a boost removed from a chat.",
+    "annotations": [
+      {
+        "type": "Chat",
+        "description": "Chat which was boosted",
+        "html_description": "<td>Chat which was boosted</td>",
+        "rst_description": "Chat which was boosted\n",
+        "name": "chat",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Unique identifier of the boost",
+        "html_description": "<td>Unique identifier of the boost</td>",
+        "rst_description": "Unique identifier of the boost\n",
+        "name": "boost_id",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "Point in time (Unix timestamp) when the boost was removed",
+        "html_description": "<td>Point in time (Unix timestamp) when the boost was removed</td>",
+        "rst_description": "Point in time (Unix timestamp) when the boost was removed\n",
+        "name": "remove_date",
+        "required": true
+      },
+      {
+        "type": "ChatBoostSource",
+        "description": "Source of the removed boost",
+        "html_description": "<td>Source of the removed boost</td>",
+        "rst_description": "Source of the removed boost\n",
+        "name": "source",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

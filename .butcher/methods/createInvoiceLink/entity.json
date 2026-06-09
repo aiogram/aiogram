@@ -1,0 +1,193 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Payments",
+    "anchor": "payments"
+  },
+  "object": {
+    "anchor": "createinvoicelink",
+    "name": "createInvoiceLink",
+    "description": "Use this method to create a link for an invoice. Returns the created invoice link as String on success.",
+    "html_description": "<p>Use this method to create a link for an invoice. Returns the created invoice link as <em>String</em> on success.</p>",
+    "rst_description": "Use this method to create a link for an invoice. Returns the created invoice link as *String* on success.",
+    "annotations": [
+      {
+        "type": "String",
+        "required": false,
+        "description": "Unique identifier of the business connection on behalf of which the link will be created. For payments in Telegram Stars only.",
+        "html_description": "<td>Unique identifier of the business connection on behalf of which the link will be created. For payments in <a href=\"https://t.me/BotNews/90\">Telegram Stars</a> only.</td>",
+        "rst_description": "Unique identifier of the business connection on behalf of which the link will be created. For payments in `Telegram Stars <https://t.me/BotNews/90>`_ only.\n",
+        "name": "business_connection_id"
+      },
+      {
+        "type": "String",
+        "required": true,
+        "description": "Product name, 1-32 characters",
+        "html_description": "<td>Product name, 1-32 characters</td>",
+        "rst_description": "Product name, 1-32 characters\n",
+        "name": "title"
+      },
+      {
+        "type": "String",
+        "required": true,
+        "description": "Product description, 1-255 characters",
+        "html_description": "<td>Product description, 1-255 characters</td>",
+        "rst_description": "Product description, 1-255 characters\n",
+        "name": "description"
+      },
+      {
+        "type": "String",
+        "required": true,
+        "description": "Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use it for your internal processes.",
+        "html_description": "<td>Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use it for your internal processes.</td>",
+        "rst_description": "Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use it for your internal processes.\n",
+        "name": "payload"
+      },
+      {
+        "type": "String",
+        "required": false,
+        "description": "Payment provider token, obtained via @BotFather. Pass an empty string for payments in Telegram Stars.",
+        "html_description": "<td>Payment provider token, obtained via <a href=\"https://t.me/botfather\">@BotFather</a>. Pass an empty string for payments in <a href=\"https://t.me/BotNews/90\">Telegram Stars</a>.</td>",
+        "rst_description": "Payment provider token, obtained via `@BotFather <https://t.me/botfather>`_. Pass an empty string for payments in `Telegram Stars <https://t.me/BotNews/90>`_.\n",
+        "name": "provider_token"
+      },
+      {
+        "type": "String",
+        "required": true,
+        "description": "Three-letter ISO 4217 currency code, see more on currencies. Pass 'XTR' for payments in Telegram Stars.",
+        "html_description": "<td>Three-letter ISO 4217 currency code, see <a href=\"/bots/payments#supported-currencies\">more on currencies</a>. Pass &#8220;XTR&#8221; for payments in <a href=\"https://t.me/BotNews/90\">Telegram Stars</a>.</td>",
+        "rst_description": "Three-letter ISO 4217 currency code, see `more on currencies <https://core.telegram.org/bots/payments#supported-currencies>`_. Pass 'XTR' for payments in `Telegram Stars <https://t.me/BotNews/90>`_.\n",
+        "name": "currency"
+      },
+      {
+        "type": "Array of LabeledPrice",
+        "required": true,
+        "description": "Price breakdown, a JSON-serialized list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.). Must contain exactly one item for payments in Telegram Stars.",
+        "html_description": "<td>Price breakdown, a JSON-serialized list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.). Must contain exactly one item for payments in <a href=\"https://t.me/BotNews/90\">Telegram Stars</a>.</td>",
+        "rst_description": "Price breakdown, a JSON-serialized list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.). Must contain exactly one item for payments in `Telegram Stars <https://t.me/BotNews/90>`_.\n",
+        "name": "prices"
+      },
+      {
+        "type": "Integer",
+        "required": false,
+        "description": "The number of seconds the subscription will be active for before the next payment. The currency must be set to 'XTR' (Telegram Stars) if the parameter is used. Currently, it must always be 2592000 (30 days) if specified. Any number of subscriptions can be active for a given bot at the same time, including multiple concurrent subscriptions from the same user. Subscription price must no exceed 10000 Telegram Stars.",
+        "html_description": "<td>The number of seconds the subscription will be active for before the next payment. The currency must be set to &#8220;XTR&#8221; (Telegram Stars) if the parameter is used. Currently, it must always be 2592000 (30 days) if specified. Any number of subscriptions can be active for a given bot at the same time, including multiple concurrent subscriptions from the same user. Subscription price must no exceed 10000 Telegram Stars.</td>",
+        "rst_description": "The number of seconds the subscription will be active for before the next payment. The currency must be set to 'XTR' (Telegram Stars) if the parameter is used. Currently, it must always be 2592000 (30 days) if specified. Any number of subscriptions can be active for a given bot at the same time, including multiple concurrent subscriptions from the same user. Subscription price must no exceed 10000 Telegram Stars.\n",
+        "name": "subscription_period"
+      },
+      {
+        "type": "Integer",
+        "required": false,
+        "description": "The maximum accepted amount for tips in the smallest units of the currency (integer, not float/double). For example, for a maximum tip of US$ 1.45 pass max_tip_amount = 145. See the exp parameter in currencies.json, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies). Defaults to 0. Not supported for payments in Telegram Stars.",
+        "html_description": "<td>The maximum accepted amount for tips in the <em>smallest units</em> of the currency (integer, <strong>not</strong> float/double). For example, for a maximum tip of <code>US$ 1.45</code> pass <code>max_tip_amount = 145</code>. See the <em>exp</em> parameter in <a href=\"/bots/payments/currencies.json\">currencies.json</a>, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies). Defaults to 0. Not supported for payments in <a href=\"https://t.me/BotNews/90\">Telegram Stars</a>.</td>",
+        "rst_description": "The maximum accepted amount for tips in the *smallest units* of the currency (integer, **not** float/double). For example, for a maximum tip of :code:`US$ 1.45` pass :code:`max_tip_amount = 145`. See the *exp* parameter in `currencies.json <https://core.telegram.org/bots/payments/currencies.json>`_, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies). Defaults to 0. Not supported for payments in `Telegram Stars <https://t.me/BotNews/90>`_.\n",
+        "name": "max_tip_amount"
+      },
+      {
+        "type": "Array of Integer",
+        "required": false,
+        "description": "A JSON-serialized array of suggested amounts of tips in the smallest units of the currency (integer, not float/double). At most 4 suggested tip amounts can be specified. The suggested tip amounts must be positive, passed in a strictly increased order and must not exceed max_tip_amount.",
+        "html_description": "<td>A JSON-serialized array of suggested amounts of tips in the <em>smallest units</em> of the currency (integer, <strong>not</strong> float/double). At most 4 suggested tip amounts can be specified. The suggested tip amounts must be positive, passed in a strictly increased order and must not exceed <em>max_tip_amount</em>.</td>",
+        "rst_description": "A JSON-serialized array of suggested amounts of tips in the *smallest units* of the currency (integer, **not** float/double). At most 4 suggested tip amounts can be specified. The suggested tip amounts must be positive, passed in a strictly increased order and must not exceed *max_tip_amount*.\n",
+        "name": "suggested_tip_amounts"
+      },
+      {
+        "type": "String",
+        "required": false,
+        "description": "JSON-serialized data about the invoice, which will be shared with the payment provider. A detailed description of required fields should be provided by the payment provider.",
+        "html_description": "<td>JSON-serialized data about the invoice, which will be shared with the payment provider. A detailed description of required fields should be provided by the payment provider.</td>",
+        "rst_description": "JSON-serialized data about the invoice, which will be shared with the payment provider. A detailed description of required fields should be provided by the payment provider.\n",
+        "name": "provider_data"
+      },
+      {
+        "type": "String",
+        "required": false,
+        "description": "URL of the product photo for the invoice. Can be a photo of the goods or a marketing image for a service.",
+        "html_description": "<td>URL of the product photo for the invoice. Can be a photo of the goods or a marketing image for a service.</td>",
+        "rst_description": "URL of the product photo for the invoice. Can be a photo of the goods or a marketing image for a service.\n",
+        "name": "photo_url"
+      },
+      {
+        "type": "Integer",
+        "required": false,
+        "description": "Photo size in bytes",
+        "html_description": "<td>Photo size in bytes</td>",
+        "rst_description": "Photo size in bytes\n",
+        "name": "photo_size"
+      },
+      {
+        "type": "Integer",
+        "required": false,
+        "description": "Photo width",
+        "html_description": "<td>Photo width</td>",
+        "rst_description": "Photo width\n",
+        "name": "photo_width"
+      },
+      {
+        "type": "Integer",
+        "required": false,
+        "description": "Photo height",
+        "html_description": "<td>Photo height</td>",
+        "rst_description": "Photo height\n",
+        "name": "photo_height"
+      },
+      {
+        "type": "Boolean",
+        "required": false,
+        "description": "Pass True if you require the user's full name to complete the order. Ignored for payments in Telegram Stars.",
+        "html_description": "<td>Pass <em>True</em> if you require the user's full name to complete the order. Ignored for payments in <a href=\"https://t.me/BotNews/90\">Telegram Stars</a>.</td>",
+        "rst_description": "Pass :code:`True` if you require the user's full name to complete the order. Ignored for payments in `Telegram Stars <https://t.me/BotNews/90>`_.\n",
+        "name": "need_name"
+      },
+      {
+        "type": "Boolean",
+        "required": false,
+        "description": "Pass True if you require the user's phone number to complete the order. Ignored for payments in Telegram Stars.",
+        "html_description": "<td>Pass <em>True</em> if you require the user's phone number to complete the order. Ignored for payments in <a href=\"https://t.me/BotNews/90\">Telegram Stars</a>.</td>",
+        "rst_description": "Pass :code:`True` if you require the user's phone number to complete the order. Ignored for payments in `Telegram Stars <https://t.me/BotNews/90>`_.\n",
+        "name": "need_phone_number"
+      },
+      {
+        "type": "Boolean",
+        "required": false,
+        "description": "Pass True if you require the user's email address to complete the order. Ignored for payments in Telegram Stars.",
+        "html_description": "<td>Pass <em>True</em> if you require the user's email address to complete the order. Ignored for payments in <a href=\"https://t.me/BotNews/90\">Telegram Stars</a>.</td>",
+        "rst_description": "Pass :code:`True` if you require the user's email address to complete the order. Ignored for payments in `Telegram Stars <https://t.me/BotNews/90>`_.\n",
+        "name": "need_email"
+      },
+      {
+        "type": "Boolean",
+        "required": false,
+        "description": "Pass True if you require the user's shipping address to complete the order. Ignored for payments in Telegram Stars.",
+        "html_description": "<td>Pass <em>True</em> if you require the user's shipping address to complete the order. Ignored for payments in <a href=\"https://t.me/BotNews/90\">Telegram Stars</a>.</td>",
+        "rst_description": "Pass :code:`True` if you require the user's shipping address to complete the order. Ignored for payments in `Telegram Stars <https://t.me/BotNews/90>`_.\n",
+        "name": "need_shipping_address"
+      },
+      {
+        "type": "Boolean",
+        "required": false,
+        "description": "Pass True if the user's phone number should be sent to the provider. Ignored for payments in Telegram Stars.",
+        "html_description": "<td>Pass <em>True</em> if the user's phone number should be sent to the provider. Ignored for payments in <a href=\"https://t.me/BotNews/90\">Telegram Stars</a>.</td>",
+        "rst_description": "Pass :code:`True` if the user's phone number should be sent to the provider. Ignored for payments in `Telegram Stars <https://t.me/BotNews/90>`_.\n",
+        "name": "send_phone_number_to_provider"
+      },
+      {
+        "type": "Boolean",
+        "required": false,
+        "description": "Pass True if the user's email address should be sent to the provider. Ignored for payments in Telegram Stars.",
+        "html_description": "<td>Pass <em>True</em> if the user's email address should be sent to the provider. Ignored for payments in <a href=\"https://t.me/BotNews/90\">Telegram Stars</a>.</td>",
+        "rst_description": "Pass :code:`True` if the user's email address should be sent to the provider. Ignored for payments in `Telegram Stars <https://t.me/BotNews/90>`_.\n",
+        "name": "send_email_to_provider"
+      },
+      {
+        "type": "Boolean",
+        "required": false,
+        "description": "Pass True if the final price depends on the shipping method. Ignored for payments in Telegram Stars.",
+        "html_description": "<td>Pass <em>True</em> if the final price depends on the shipping method. Ignored for payments in <a href=\"https://t.me/BotNews/90\">Telegram Stars</a>.</td>",
+        "rst_description": "Pass :code:`True` if the final price depends on the shipping method. Ignored for payments in `Telegram Stars <https://t.me/BotNews/90>`_.\n",
+        "name": "is_flexible"
+      }
+    ],
+    "category": "methods"
+  }
+}

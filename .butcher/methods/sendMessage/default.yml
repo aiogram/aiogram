@@ -1,0 +1,4 @@
+disable_web_page_preview: link_preview_is_disabled
+parse_mode: parse_mode
+protect_content: protect_content
+link_preview_options: link_preview

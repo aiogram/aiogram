@@ -1,0 +1,46 @@
+{
+  "meta": {
+    "deprecated": {
+      "version": "7.0",
+      "release_date": "2023-12-29"
+    }
+  },
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "keyboardbuttonrequestuser",
+    "name": "KeyboardButtonRequestUser",
+    "description": "This object defines the criteria used to request a suitable user. The identifier of the selected user will be shared with the bot when the corresponding button is pressed.",
+    "html_description": "<p>This object defines the criteria used to request a suitable user. The identifier of the selected user will be shared with the bot when the corresponding button is pressed. <a href=\"/bots/features#chat-and-user-selection\">More about requesting users &#187;</a></p>",
+    "rst_description": "This object defines the criteria used to request a suitable user. The identifier of the selected user will be shared with the bot when the corresponding button is pressed. `More about requesting users » <https://core.telegram.org/bots/features#chat-and-user-selection>`_",
+    "annotations": [
+      {
+        "type": "Integer",
+        "description": "Signed 32-bit identifier of the request, which will be received back in the UserShared object. Must be unique within the message",
+        "html_description": "<td>Signed 32-bit identifier of the request, which will be received back in the <a href=\"#usershared\">UserShared</a> object. Must be unique within the message</td>",
+        "rst_description": "Signed 32-bit identifier of the request, which will be received back in the :class:`aiogram.types.user_shared.UserShared` object. Must be unique within the message\n",
+        "name": "request_id",
+        "required": true
+      },
+      {
+        "type": "Boolean",
+        "description": "Pass True to request a bot, pass False to request a regular user. If not specified, no additional restrictions are applied.",
+        "html_description": "<td><em>Optional</em>. Pass <em>True</em> to request a bot, pass <em>False</em> to request a regular user. If not specified, no additional restrictions are applied.</td>",
+        "rst_description": "*Optional*. Pass :code:`True` to request a bot, pass :code:`False` to request a regular user. If not specified, no additional restrictions are applied.\n",
+        "name": "user_is_bot",
+        "required": false
+      },
+      {
+        "type": "Boolean",
+        "description": "Pass True to request a premium user, pass False to request a non-premium user. If not specified, no additional restrictions are applied.",
+        "html_description": "<td><em>Optional</em>. Pass <em>True</em> to request a premium user, pass <em>False</em> to request a non-premium user. If not specified, no additional restrictions are applied.</td>",
+        "rst_description": "*Optional*. Pass :code:`True` to request a premium user, pass :code:`False` to request a non-premium user. If not specified, no additional restrictions are applied.\n",
+        "name": "user_is_premium",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

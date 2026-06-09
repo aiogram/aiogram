@@ -1,0 +1,117 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2022, aiogram Team
+# This file is distributed under the same license as the aiogram package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2022.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version:  aiogram\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-08-26 23:17+0300\n"
+"PO-Revision-Date: 2022-10-25 16:00+0300\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.12.1\n"
+
+#: ../../dispatcher/filters/magic_data.rst:3
+msgid "MagicData"
+msgstr "MagicData"
+
+#: ../../dispatcher/filters/magic_data.rst:6
+msgid "Usage"
+msgstr "Використання"
+
+#: ../../dispatcher/filters/magic_data.rst:8
+msgid ""
+":code:`MagicData(F.event.from_user.id == F.config.admin_id)`  (Note that "
+":code:`config` should be passed from middleware)"
+msgstr ""
+":code:`MagicData(F.event.from_user.id == F.config.admin_id)`  (Зауважте, "
+"що :code:`config` слід передати з проміжної програми)"
+
+#: ../../dispatcher/filters/magic_data.rst:11
+msgid "Explanation"
+msgstr ""
+
+#: aiogram.filters.magic_data.MagicData:1 of
+msgid "This filter helps to filter event with contextual data"
+msgstr "Цей фільтр допомагає фільтрувати події з контекстними даними"
+
+#: ../../dispatcher/filters/magic_data.rst:18
+msgid "Can be imported:"
+msgstr "Можна імпортувати:"
+
+#: ../../dispatcher/filters/magic_data.rst:20
+msgid ":code:`from aiogram.filters import MagicData`"
+msgstr ":code:`from aiogram.filters import MagicData`"
+
+#: ../../dispatcher/filters/magic_data.rst:24
+msgid "Allowed handlers"
+msgstr "Дозволені типи обробників (handler)"
+
+#: ../../dispatcher/filters/magic_data.rst:26
+msgid "Allowed update types for this filter:"
+msgstr "Дозволені типи оновлень для цього фільтра:"
+
+#: ../../dispatcher/filters/magic_data.rst:28
+msgid ":code:`message`"
+msgstr ":code:`message`"
+
+#: ../../dispatcher/filters/magic_data.rst:29
+msgid ":code:`edited_message`"
+msgstr ":code:`edited_message`"
+
+#: ../../dispatcher/filters/magic_data.rst:30
+msgid ":code:`channel_post`"
+msgstr ":code:`channel_post`"
+
+#: ../../dispatcher/filters/magic_data.rst:31
+msgid ":code:`edited_channel_post`"
+msgstr ":code:`edited_channel_post`"
+
+#: ../../dispatcher/filters/magic_data.rst:32
+msgid ":code:`inline_query`"
+msgstr ":code:`inline_query`"
+
+#: ../../dispatcher/filters/magic_data.rst:33
+msgid ":code:`chosen_inline_result`"
+msgstr ":code:`chosen_inline_result`"
+
+#: ../../dispatcher/filters/magic_data.rst:34
+msgid ":code:`callback_query`"
+msgstr ":code:`callback_query`"
+
+#: ../../dispatcher/filters/magic_data.rst:35
+msgid ":code:`shipping_query`"
+msgstr ":code:`shipping_query`"
+
+#: ../../dispatcher/filters/magic_data.rst:36
+msgid ":code:`pre_checkout_query`"
+msgstr ":code:`pre_checkout_query`"
+
+#: ../../dispatcher/filters/magic_data.rst:37
+msgid ":code:`poll`"
+msgstr ":code:`poll`"
+
+#: ../../dispatcher/filters/magic_data.rst:38
+msgid ":code:`poll_answer`"
+msgstr ":code:`poll_answer`"
+
+#: ../../dispatcher/filters/magic_data.rst:39
+msgid ":code:`my_chat_member`"
+msgstr ":code:`my_chat_member`"
+
+#: ../../dispatcher/filters/magic_data.rst:40
+msgid ":code:`chat_member`"
+msgstr ":code:`chat_member`"
+
+#: ../../dispatcher/filters/magic_data.rst:41
+msgid ":code:`chat_join_request`"
+msgstr ":code:`chat_join_request`"
+
+#: ../../dispatcher/filters/magic_data.rst:42
+msgid ":code:`error`"
+msgstr ":code:`error`"

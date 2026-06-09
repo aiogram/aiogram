@@ -1,0 +1,9 @@
+name: PollType
+description: |
+  This object represents poll type
+
+  Source: https://core.telegram.org/bots/api#poll
+parse:
+  entity: Poll
+  attribute: type
+  regexp: "'([a-z]+)'"

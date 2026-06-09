@@ -1,0 +1,25 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "keyboardbuttonpolltype",
+    "name": "KeyboardButtonPollType",
+    "description": "This object represents type of a poll, which is allowed to be created and sent when the corresponding button is pressed.",
+    "html_description": "<p>This object represents type of a poll, which is allowed to be created and sent when the corresponding button is pressed.</p>",
+    "rst_description": "This object represents type of a poll, which is allowed to be created and sent when the corresponding button is pressed.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "If quiz is passed, the user will be allowed to create only polls in the quiz mode. If regular is passed, only regular polls will be allowed. Otherwise, the user will be allowed to create a poll of any type.",
+        "html_description": "<td><em>Optional</em>. If <em>quiz</em> is passed, the user will be allowed to create only polls in the quiz mode. If <em>regular</em> is passed, only regular polls will be allowed. Otherwise, the user will be allowed to create a poll of any type.</td>",
+        "rst_description": "*Optional*. If *quiz* is passed, the user will be allowed to create only polls in the quiz mode. If *regular* is passed, only regular polls will be allowed. Otherwise, the user will be allowed to create a poll of any type.\n",
+        "name": "type",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

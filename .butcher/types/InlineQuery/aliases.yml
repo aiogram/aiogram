@@ -1,0 +1,4 @@
+answer:
+  method: answerInlineQuery
+  fill:
+    inline_query_id: self.id

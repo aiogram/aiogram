@@ -1,0 +1,16 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "menubutton",
+    "name": "MenuButton",
+    "description": "This object describes the bot's menu button in a private chat. It should be one of\n - MenuButtonCommands\n - MenuButtonWebApp\n - MenuButtonDefault\nIf a menu button other than MenuButtonDefault is set for a private chat, then it is applied in the chat. Otherwise the default menu button is applied. By default, the menu button opens the list of bot commands.",
+    "html_description": "<p>This object describes the bot's menu button in a private chat. It should be one of</p><ul>\n<li><a href=\"#menubuttoncommands\">MenuButtonCommands</a></li>\n<li><a href=\"#menubuttonwebapp\">MenuButtonWebApp</a></li>\n<li><a href=\"#menubuttondefault\">MenuButtonDefault</a></li>\n</ul><p>If a menu button other than <a href=\"#menubuttondefault\">MenuButtonDefault</a> is set for a private chat, then it is applied in the chat. Otherwise the default menu button is applied. By default, the menu button opens the list of bot commands.</p>",
+    "rst_description": "This object describes the bot's menu button in a private chat. It should be one of\n\n - :class:`aiogram.types.menu_button_commands.MenuButtonCommands`\n - :class:`aiogram.types.menu_button_web_app.MenuButtonWebApp`\n - :class:`aiogram.types.menu_button_default.MenuButtonDefault`\n\nIf a menu button other than :class:`aiogram.types.menu_button_default.MenuButtonDefault` is set for a private chat, then it is applied in the chat. Otherwise the default menu button is applied. By default, the menu button opens the list of bot commands.",
+    "annotations": [],
+    "category": "types"
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available methods",
+    "anchor": "available-methods"
+  },
+  "object": {
+    "anchor": "setmydefaultadministratorrights",
+    "name": "setMyDefaultAdministratorRights",
+    "description": "Use this method to change the default administrator rights requested by the bot when it's added as an administrator to groups or channels. These rights will be suggested to users, but they are free to modify the list before adding the bot. Returns True on success.",
+    "html_description": "<p>Use this method to change the default administrator rights requested by the bot when it's added as an administrator to groups or channels. These rights will be suggested to users, but they are free to modify the list before adding the bot. Returns <em>True</em> on success.</p>",
+    "rst_description": "Use this method to change the default administrator rights requested by the bot when it's added as an administrator to groups or channels. These rights will be suggested to users, but they are free to modify the list before adding the bot. Returns :code:`True` on success.",
+    "annotations": [
+      {
+        "type": "ChatAdministratorRights",
+        "required": false,
+        "description": "A JSON-serialized object describing new default administrator rights. If not specified, the default administrator rights will be cleared.",
+        "html_description": "<td>A JSON-serialized object describing new default administrator rights. If not specified, the default administrator rights will be cleared.</td>",
+        "rst_description": "A JSON-serialized object describing new default administrator rights. If not specified, the default administrator rights will be cleared.\n",
+        "name": "rights"
+      },
+      {
+        "type": "Boolean",
+        "required": false,
+        "description": "Pass True to change the default administrator rights of the bot in channels. Otherwise, the default administrator rights of the bot for groups and supergroups will be changed.",
+        "html_description": "<td>Pass <em>True</em> to change the default administrator rights of the bot in channels. Otherwise, the default administrator rights of the bot for groups and supergroups will be changed.</td>",
+        "rst_description": "Pass :code:`True` to change the default administrator rights of the bot in channels. Otherwise, the default administrator rights of the bot for groups and supergroups will be changed.\n",
+        "name": "for_channels"
+      }
+    ],
+    "category": "methods"
+  }
+}

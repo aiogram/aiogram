@@ -1,0 +1,25 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "videochatended",
+    "name": "VideoChatEnded",
+    "description": "This object represents a service message about a video chat ended in the chat.",
+    "html_description": "<p>This object represents a service message about a video chat ended in the chat.</p>",
+    "rst_description": "This object represents a service message about a video chat ended in the chat.",
+    "annotations": [
+      {
+        "type": "Integer",
+        "description": "Video chat duration in seconds",
+        "html_description": "<td>Video chat duration in seconds</td>",
+        "rst_description": "Video chat duration in seconds\n",
+        "name": "duration",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

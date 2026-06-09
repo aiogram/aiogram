@@ -1,0 +1,16 @@
+name: TransactionPartnerType
+description: |
+  This object represents a type of transaction partner.
+
+  Source: https://core.telegram.org/bots/api#transactionpartner
+multi_parse:
+  attribute: type
+  regexp: "'([a-z_]+)'"
+  entities:
+    - TransactionPartnerFragment
+    - TransactionPartnerOther
+    - TransactionPartnerUser
+    - TransactionPartnerTelegramAds
+    - TransactionPartnerTelegramApi
+    - TransactionPartnerAffiliateProgram
+    - TransactionPartnerChat

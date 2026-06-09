@@ -1,0 +1,46 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2022, aiogram Team
+# This file is distributed under the same license as the aiogram package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2022.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: aiogram\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-10-01 22:51+0300\n"
+"PO-Revision-Date: 2022-10-25 18:34+0300\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.10.3\n"
+"X-Generator: Poedit 3.1.1\n"
+
+#: ../../dispatcher/filters/exception.rst:3
+msgid "Exceptions"
+msgstr "Помилки"
+
+#: ../../dispatcher/filters/exception.rst:5
+msgid "This filters can be helpful for handling errors from the text messages."
+msgstr "Ці фільтри можуть бути корисними для обробки помилок у текстових повідомленнях."
+
+#: aiogram.filters.exception.ExceptionTypeFilter:1 of
+msgid "Allows to match exception by type"
+msgstr "Дозволяє зіставляти винятки за типом"
+
+#: aiogram.filters.exception.ExceptionMessageFilter:1 of
+msgid "Allow to match exception by message"
+msgstr "Дозвол зіставляти винятки з повідомленням"
+
+#: ../../dispatcher/filters/exception.rst:18
+msgid "Allowed handlers"
+msgstr "Дозволені обробники"
+
+#: ../../dispatcher/filters/exception.rst:20
+msgid "Allowed update types for this filters:"
+msgstr "Дозволені типи оновлення для цього фільтра:"
+
+#: ../../dispatcher/filters/exception.rst:22
+msgid ":code:`error`"
+msgstr ":code:`error`"

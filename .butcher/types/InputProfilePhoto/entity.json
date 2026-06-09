@@ -1,0 +1,16 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "inputprofilephoto",
+    "name": "InputProfilePhoto",
+    "description": "This object describes a profile photo to set. Currently, it can be one of\n - InputProfilePhotoStatic\n - InputProfilePhotoAnimated",
+    "html_description": "<p>This object describes a profile photo to set. Currently, it can be one of</p><ul>\n<li><a href=\"#inputprofilephotostatic\">InputProfilePhotoStatic</a></li>\n<li><a href=\"#inputprofilephotoanimated\">InputProfilePhotoAnimated</a></li>\n</ul>",
+    "rst_description": "This object describes a profile photo to set. Currently, it can be one of\n\n - :class:`aiogram.types.input_profile_photo_static.InputProfilePhotoStatic`\n - :class:`aiogram.types.input_profile_photo_animated.InputProfilePhotoAnimated`",
+    "annotations": [],
+    "category": "types"
+  }
+}

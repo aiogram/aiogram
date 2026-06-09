@@ -1,0 +1,25 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "gifts",
+    "name": "Gifts",
+    "description": "This object represent a list of gifts.",
+    "html_description": "<p>This object represent a list of gifts.</p>",
+    "rst_description": "This object represent a list of gifts.",
+    "annotations": [
+      {
+        "type": "Array of Gift",
+        "description": "The list of gifts",
+        "html_description": "<td>The list of gifts</td>",
+        "rst_description": "The list of gifts\n",
+        "name": "gifts",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

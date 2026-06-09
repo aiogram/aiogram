@@ -1,0 +1,5 @@
+annotations:
+  close_date:
+    parsed_type:
+      type: std
+      name: DateTime

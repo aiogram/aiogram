@@ -1,0 +1,25 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Stickers",
+    "anchor": "stickers"
+  },
+  "object": {
+    "anchor": "deletestickerfromset",
+    "name": "deleteStickerFromSet",
+    "description": "Use this method to delete a sticker from a set created by the bot. Returns True on success.",
+    "html_description": "<p>Use this method to delete a sticker from a set created by the bot. Returns <em>True</em> on success.</p>",
+    "rst_description": "Use this method to delete a sticker from a set created by the bot. Returns :code:`True` on success.",
+    "annotations": [
+      {
+        "type": "String",
+        "required": true,
+        "description": "File identifier of the sticker",
+        "html_description": "<td>File identifier of the sticker</td>",
+        "rst_description": "File identifier of the sticker\n",
+        "name": "sticker"
+      }
+    ],
+    "category": "methods"
+  }
+}

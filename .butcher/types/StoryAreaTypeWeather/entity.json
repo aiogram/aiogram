@@ -1,0 +1,49 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "storyareatypeweather",
+    "name": "StoryAreaTypeWeather",
+    "description": "Describes a story area containing weather information. Currently, a story can have up to 3 weather areas.",
+    "html_description": "<p>Describes a story area containing weather information. Currently, a story can have up to 3 weather areas.</p>",
+    "rst_description": "Describes a story area containing weather information. Currently, a story can have up to 3 weather areas.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Type of the area, always 'weather'",
+        "html_description": "<td>Type of the area, always &#8220;weather&#8221;</td>",
+        "rst_description": "Type of the area, always 'weather'\n",
+        "name": "type",
+        "required": true
+      },
+      {
+        "type": "Float",
+        "description": "Temperature, in degree Celsius",
+        "html_description": "<td>Temperature, in degree Celsius</td>",
+        "rst_description": "Temperature, in degree Celsius\n",
+        "name": "temperature",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Emoji representing the weather",
+        "html_description": "<td>Emoji representing the weather</td>",
+        "rst_description": "Emoji representing the weather\n",
+        "name": "emoji",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "A color of the area background in the ARGB format",
+        "html_description": "<td>A color of the area background in the ARGB format</td>",
+        "rst_description": "A color of the area background in the ARGB format\n",
+        "name": "background_color",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

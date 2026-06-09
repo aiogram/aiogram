@@ -1,0 +1,129 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Inline mode",
+    "anchor": "inline-mode"
+  },
+  "object": {
+    "anchor": "inlinequeryresultlocation",
+    "name": "InlineQueryResultLocation",
+    "description": "Represents a location on a map. By default, the location will be sent by the user. Alternatively, you can use input_message_content to send a message with the specified content instead of the location.",
+    "html_description": "<p>Represents a location on a map. By default, the location will be sent by the user. Alternatively, you can use <em>input_message_content</em> to send a message with the specified content instead of the location.</p>",
+    "rst_description": "Represents a location on a map. By default, the location will be sent by the user. Alternatively, you can use *input_message_content* to send a message with the specified content instead of the location.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Type of the result, must be location",
+        "html_description": "<td>Type of the result, must be <em>location</em></td>",
+        "rst_description": "Type of the result, must be *location*\n",
+        "name": "type",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Unique identifier for this result, 1-64 Bytes",
+        "html_description": "<td>Unique identifier for this result, 1-64 Bytes</td>",
+        "rst_description": "Unique identifier for this result, 1-64 Bytes\n",
+        "name": "id",
+        "required": true
+      },
+      {
+        "type": "Float",
+        "description": "Location latitude in degrees",
+        "html_description": "<td>Location latitude in degrees</td>",
+        "rst_description": "Location latitude in degrees\n",
+        "name": "latitude",
+        "required": true
+      },
+      {
+        "type": "Float",
+        "description": "Location longitude in degrees",
+        "html_description": "<td>Location longitude in degrees</td>",
+        "rst_description": "Location longitude in degrees\n",
+        "name": "longitude",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Location title",
+        "html_description": "<td>Location title</td>",
+        "rst_description": "Location title\n",
+        "name": "title",
+        "required": true
+      },
+      {
+        "type": "Float",
+        "description": "The radius of uncertainty for the location, measured in meters; 0-1500",
+        "html_description": "<td><em>Optional</em>. The radius of uncertainty for the location, measured in meters; 0-1500</td>",
+        "rst_description": "*Optional*. The radius of uncertainty for the location, measured in meters; 0-1500\n",
+        "name": "horizontal_accuracy",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "Period in seconds during which the location can be updated, should be between 60 and 86400, or 0x7FFFFFFF for live locations that can be edited indefinitely.",
+        "html_description": "<td><em>Optional</em>. Period in seconds during which the location can be updated, should be between 60 and 86400, or 0x7FFFFFFF for live locations that can be edited indefinitely.</td>",
+        "rst_description": "*Optional*. Period in seconds during which the location can be updated, should be between 60 and 86400, or 0x7FFFFFFF for live locations that can be edited indefinitely.\n",
+        "name": "live_period",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "For live locations, a direction in which the user is moving, in degrees. Must be between 1 and 360 if specified.",
+        "html_description": "<td><em>Optional</em>. For live locations, a direction in which the user is moving, in degrees. Must be between 1 and 360 if specified.</td>",
+        "rst_description": "*Optional*. For live locations, a direction in which the user is moving, in degrees. Must be between 1 and 360 if specified.\n",
+        "name": "heading",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "For live locations, a maximum distance for proximity alerts about approaching another chat member, in meters. Must be between 1 and 100000 if specified.",
+        "html_description": "<td><em>Optional</em>. For live locations, a maximum distance for proximity alerts about approaching another chat member, in meters. Must be between 1 and 100000 if specified.</td>",
+        "rst_description": "*Optional*. For live locations, a maximum distance for proximity alerts about approaching another chat member, in meters. Must be between 1 and 100000 if specified.\n",
+        "name": "proximity_alert_radius",
+        "required": false
+      },
+      {
+        "type": "InlineKeyboardMarkup",
+        "description": "Inline keyboard attached to the message",
+        "html_description": "<td><em>Optional</em>. <a href=\"/bots/features#inline-keyboards\">Inline keyboard</a> attached to the message</td>",
+        "rst_description": "*Optional*. `Inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_ attached to the message\n",
+        "name": "reply_markup",
+        "required": false
+      },
+      {
+        "type": "InputMessageContent",
+        "description": "Content of the message to be sent instead of the location",
+        "html_description": "<td><em>Optional</em>. Content of the message to be sent instead of the location</td>",
+        "rst_description": "*Optional*. Content of the message to be sent instead of the location\n",
+        "name": "input_message_content",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "Url of the thumbnail for the result",
+        "html_description": "<td><em>Optional</em>. Url of the thumbnail for the result</td>",
+        "rst_description": "*Optional*. Url of the thumbnail for the result\n",
+        "name": "thumbnail_url",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "Thumbnail width",
+        "html_description": "<td><em>Optional</em>. Thumbnail width</td>",
+        "rst_description": "*Optional*. Thumbnail width\n",
+        "name": "thumbnail_width",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "Thumbnail height",
+        "html_description": "<td><em>Optional</em>. Thumbnail height</td>",
+        "rst_description": "*Optional*. Thumbnail height\n",
+        "name": "thumbnail_height",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

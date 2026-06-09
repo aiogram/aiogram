@@ -1,0 +1,25 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "reactiontypepaid",
+    "name": "ReactionTypePaid",
+    "description": "The reaction is paid.",
+    "html_description": "<p>The reaction is paid.</p>",
+    "rst_description": "The reaction is paid.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Type of the reaction, always 'paid'",
+        "html_description": "<td>Type of the reaction, always &#8220;paid&#8221;</td>",
+        "rst_description": "Type of the reaction, always 'paid'\n",
+        "name": "type",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

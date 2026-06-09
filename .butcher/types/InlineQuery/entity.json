@@ -1,0 +1,65 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Inline mode",
+    "anchor": "inline-mode"
+  },
+  "object": {
+    "anchor": "inlinequery",
+    "name": "InlineQuery",
+    "description": "This object represents an incoming inline query. When the user sends an empty query, your bot could return some default or trending results.",
+    "html_description": "<p>This object represents an incoming inline query. When the user sends an empty query, your bot could return some default or trending results.</p>",
+    "rst_description": "This object represents an incoming inline query. When the user sends an empty query, your bot could return some default or trending results.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Unique identifier for this query",
+        "html_description": "<td>Unique identifier for this query</td>",
+        "rst_description": "Unique identifier for this query\n",
+        "name": "id",
+        "required": true
+      },
+      {
+        "type": "User",
+        "description": "Sender",
+        "html_description": "<td>Sender</td>",
+        "rst_description": "Sender\n",
+        "name": "from",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Text of the query (up to 256 characters)",
+        "html_description": "<td>Text of the query (up to 256 characters)</td>",
+        "rst_description": "Text of the query (up to 256 characters)\n",
+        "name": "query",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Offset of the results to be returned, can be controlled by the bot",
+        "html_description": "<td>Offset of the results to be returned, can be controlled by the bot</td>",
+        "rst_description": "Offset of the results to be returned, can be controlled by the bot\n",
+        "name": "offset",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Type of the chat from which the inline query was sent. Can be either 'sender' for a private chat with the inline query sender, 'private', 'group', 'supergroup', or 'channel'. The chat type should be always known for requests sent from official clients and most third-party clients, unless the request was sent from a secret chat",
+        "html_description": "<td><em>Optional</em>. Type of the chat from which the inline query was sent. Can be either &#8220;sender&#8221; for a private chat with the inline query sender, &#8220;private&#8221;, &#8220;group&#8221;, &#8220;supergroup&#8221;, or &#8220;channel&#8221;. The chat type should be always known for requests sent from official clients and most third-party clients, unless the request was sent from a secret chat</td>",
+        "rst_description": "*Optional*. Type of the chat from which the inline query was sent. Can be either 'sender' for a private chat with the inline query sender, 'private', 'group', 'supergroup', or 'channel'. The chat type should be always known for requests sent from official clients and most third-party clients, unless the request was sent from a secret chat\n",
+        "name": "chat_type",
+        "required": false
+      },
+      {
+        "type": "Location",
+        "description": "Sender location, only for bots that request user location",
+        "html_description": "<td><em>Optional</em>. Sender location, only for bots that request user location</td>",
+        "rst_description": "*Optional*. Sender location, only for bots that request user location\n",
+        "name": "location",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

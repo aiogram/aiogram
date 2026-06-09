@@ -1,0 +1,225 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Getting updates",
+    "anchor": "getting-updates"
+  },
+  "object": {
+    "anchor": "update",
+    "name": "Update",
+    "description": "This object represents an incoming update.\nAt most one of the optional fields can be present in any given update.",
+    "html_description": "<p>This <a href=\"#available-types\">object</a> represents an incoming update.<br/>\nAt most <strong>one</strong> of the optional fields can be present in any given update.</p>",
+    "rst_description": "This `object <https://core.telegram.org/bots/api#available-types>`_ represents an incoming update.\n\nAt most **one** of the optional fields can be present in any given update.",
+    "annotations": [
+      {
+        "type": "Integer",
+        "description": "The update's unique identifier. Update identifiers start from a certain positive number and increase sequentially. This identifier becomes especially handy if you're using webhooks, since it allows you to ignore repeated updates or to restore the correct update sequence, should they get out of order. If there are no new updates for at least a week, then identifier of the next update will be chosen randomly instead of sequentially.",
+        "html_description": "<td>The update's unique identifier. Update identifiers start from a certain positive number and increase sequentially. This identifier becomes especially handy if you're using <a href=\"#setwebhook\">webhooks</a>, since it allows you to ignore repeated updates or to restore the correct update sequence, should they get out of order. If there are no new updates for at least a week, then identifier of the next update will be chosen randomly instead of sequentially.</td>",
+        "rst_description": "The update's unique identifier. Update identifiers start from a certain positive number and increase sequentially. This identifier becomes especially handy if you're using `webhooks <https://core.telegram.org/bots/api#setwebhook>`_, since it allows you to ignore repeated updates or to restore the correct update sequence, should they get out of order. If there are no new updates for at least a week, then identifier of the next update will be chosen randomly instead of sequentially.\n",
+        "name": "update_id",
+        "required": true
+      },
+      {
+        "type": "Message",
+        "description": "New incoming message of any kind - text, photo, sticker, etc.",
+        "html_description": "<td><em>Optional</em>. New incoming message of any kind - text, photo, sticker, etc.</td>",
+        "rst_description": "*Optional*. New incoming message of any kind - text, photo, sticker, etc.\n",
+        "name": "message",
+        "required": false
+      },
+      {
+        "type": "Message",
+        "description": "New version of a message that is known to the bot and was edited. This update may at times be triggered by changes to message fields that are either unavailable or not actively used by your bot.",
+        "html_description": "<td><em>Optional</em>. New version of a message that is known to the bot and was edited. This update may at times be triggered by changes to message fields that are either unavailable or not actively used by your bot.</td>",
+        "rst_description": "*Optional*. New version of a message that is known to the bot and was edited. This update may at times be triggered by changes to message fields that are either unavailable or not actively used by your bot.\n",
+        "name": "edited_message",
+        "required": false
+      },
+      {
+        "type": "Message",
+        "description": "New incoming channel post of any kind - text, photo, sticker, etc.",
+        "html_description": "<td><em>Optional</em>. New incoming channel post of any kind - text, photo, sticker, etc.</td>",
+        "rst_description": "*Optional*. New incoming channel post of any kind - text, photo, sticker, etc.\n",
+        "name": "channel_post",
+        "required": false
+      },
+      {
+        "type": "Message",
+        "description": "New version of a channel post that is known to the bot and was edited. This update may at times be triggered by changes to message fields that are either unavailable or not actively used by your bot.",
+        "html_description": "<td><em>Optional</em>. New version of a channel post that is known to the bot and was edited. This update may at times be triggered by changes to message fields that are either unavailable or not actively used by your bot.</td>",
+        "rst_description": "*Optional*. New version of a channel post that is known to the bot and was edited. This update may at times be triggered by changes to message fields that are either unavailable or not actively used by your bot.\n",
+        "name": "edited_channel_post",
+        "required": false
+      },
+      {
+        "type": "BusinessConnection",
+        "description": "The bot was connected to or disconnected from a business account, or a user edited an existing connection with the bot",
+        "html_description": "<td><em>Optional</em>. The bot was connected to or disconnected from a business account, or a user edited an existing connection with the bot</td>",
+        "rst_description": "*Optional*. The bot was connected to or disconnected from a business account, or a user edited an existing connection with the bot\n",
+        "name": "business_connection",
+        "required": false
+      },
+      {
+        "type": "Message",
+        "description": "New message from a connected business account",
+        "html_description": "<td><em>Optional</em>. New message from a connected business account</td>",
+        "rst_description": "*Optional*. New message from a connected business account\n",
+        "name": "business_message",
+        "required": false
+      },
+      {
+        "type": "Message",
+        "description": "New version of a message from a connected business account",
+        "html_description": "<td><em>Optional</em>. New version of a message from a connected business account</td>",
+        "rst_description": "*Optional*. New version of a message from a connected business account\n",
+        "name": "edited_business_message",
+        "required": false
+      },
+      {
+        "type": "BusinessMessagesDeleted",
+        "description": "Messages were deleted from a connected business account",
+        "html_description": "<td><em>Optional</em>. Messages were deleted from a connected business account</td>",
+        "rst_description": "*Optional*. Messages were deleted from a connected business account\n",
+        "name": "deleted_business_messages",
+        "required": false
+      },
+      {
+        "type": "Message",
+        "description": "New guest message. The bot can use the field Message.guest_query_id and the method answerGuestQuery to send a message in response.",
+        "html_description": "<td><em>Optional</em>. New guest message. The bot can use the field <em>Message.guest_query_id</em> and the method <a href=\"#answerguestquery\">answerGuestQuery</a> to send a message in response.</td>",
+        "rst_description": "*Optional*. New guest message. The bot can use the field *Message.guest_query_id* and the method :class:`aiogram.methods.answer_guest_query.AnswerGuestQuery` to send a message in response.\n",
+        "name": "guest_message",
+        "required": false
+      },
+      {
+        "type": "MessageReactionUpdated",
+        "description": "A reaction to a message was changed by a user. The bot must be an administrator in the chat and must explicitly specify \"message_reaction\" in the list of allowed_updates to receive these updates. The update isn't received for reactions set by bots.",
+        "html_description": "<td><em>Optional</em>. A reaction to a message was changed by a user. The bot must be an administrator in the chat and must explicitly specify <code>\"message_reaction\"</code> in the list of <em>allowed_updates</em> to receive these updates. The update isn't received for reactions set by bots.</td>",
+        "rst_description": "*Optional*. A reaction to a message was changed by a user. The bot must be an administrator in the chat and must explicitly specify :code:`\"message_reaction\"` in the list of *allowed_updates* to receive these updates. The update isn't received for reactions set by bots.\n",
+        "name": "message_reaction",
+        "required": false
+      },
+      {
+        "type": "MessageReactionCountUpdated",
+        "description": "Reactions to a message with anonymous reactions were changed. The bot must be an administrator in the chat and must explicitly specify \"message_reaction_count\" in the list of allowed_updates to receive these updates. The updates are grouped and can be sent with delay up to a few minutes.",
+        "html_description": "<td><em>Optional</em>. Reactions to a message with anonymous reactions were changed. The bot must be an administrator in the chat and must explicitly specify <code>\"message_reaction_count\"</code> in the list of <em>allowed_updates</em> to receive these updates. The updates are grouped and can be sent with delay up to a few minutes.</td>",
+        "rst_description": "*Optional*. Reactions to a message with anonymous reactions were changed. The bot must be an administrator in the chat and must explicitly specify :code:`\"message_reaction_count\"` in the list of *allowed_updates* to receive these updates. The updates are grouped and can be sent with delay up to a few minutes.\n",
+        "name": "message_reaction_count",
+        "required": false
+      },
+      {
+        "type": "InlineQuery",
+        "description": "New incoming inline query",
+        "html_description": "<td><em>Optional</em>. New incoming <a href=\"#inline-mode\">inline</a> query</td>",
+        "rst_description": "*Optional*. New incoming `inline <https://core.telegram.org/bots/api#inline-mode>`_ query\n",
+        "name": "inline_query",
+        "required": false
+      },
+      {
+        "type": "ChosenInlineResult",
+        "description": "The result of an inline query that was chosen by a user and sent to their chat partner. Please see our documentation on the feedback collecting for details on how to enable these updates for your bot.",
+        "html_description": "<td><em>Optional</em>. The result of an <a href=\"#inline-mode\">inline</a> query that was chosen by a user and sent to their chat partner. Please see our documentation on the <a href=\"/bots/inline#collecting-feedback\">feedback collecting</a> for details on how to enable these updates for your bot.</td>",
+        "rst_description": "*Optional*. The result of an `inline <https://core.telegram.org/bots/api#inline-mode>`_ query that was chosen by a user and sent to their chat partner. Please see our documentation on the `feedback collecting <https://core.telegram.org/bots/inline#collecting-feedback>`_ for details on how to enable these updates for your bot.\n",
+        "name": "chosen_inline_result",
+        "required": false
+      },
+      {
+        "type": "CallbackQuery",
+        "description": "New incoming callback query",
+        "html_description": "<td><em>Optional</em>. New incoming callback query</td>",
+        "rst_description": "*Optional*. New incoming callback query\n",
+        "name": "callback_query",
+        "required": false
+      },
+      {
+        "type": "ShippingQuery",
+        "description": "New incoming shipping query. Only for invoices with flexible price",
+        "html_description": "<td><em>Optional</em>. New incoming shipping query. Only for invoices with flexible price</td>",
+        "rst_description": "*Optional*. New incoming shipping query. Only for invoices with flexible price\n",
+        "name": "shipping_query",
+        "required": false
+      },
+      {
+        "type": "PreCheckoutQuery",
+        "description": "New incoming pre-checkout query. Contains full information about checkout",
+        "html_description": "<td><em>Optional</em>. New incoming pre-checkout query. Contains full information about checkout</td>",
+        "rst_description": "*Optional*. New incoming pre-checkout query. Contains full information about checkout\n",
+        "name": "pre_checkout_query",
+        "required": false
+      },
+      {
+        "type": "PaidMediaPurchased",
+        "description": "A user purchased paid media with a non-empty payload sent by the bot in a non-channel chat",
+        "html_description": "<td><em>Optional</em>. A user purchased paid media with a non-empty payload sent by the bot in a non-channel chat</td>",
+        "rst_description": "*Optional*. A user purchased paid media with a non-empty payload sent by the bot in a non-channel chat\n",
+        "name": "purchased_paid_media",
+        "required": false
+      },
+      {
+        "type": "Poll",
+        "description": "New poll state. Bots receive only updates about manually stopped polls and polls, which are sent by the bot",
+        "html_description": "<td><em>Optional</em>. New poll state. Bots receive only updates about manually stopped polls and polls, which are sent by the bot</td>",
+        "rst_description": "*Optional*. New poll state. Bots receive only updates about manually stopped polls and polls, which are sent by the bot\n",
+        "name": "poll",
+        "required": false
+      },
+      {
+        "type": "PollAnswer",
+        "description": "A user changed their answer in a non-anonymous poll. Bots receive new votes only in polls that were sent by the bot itself.",
+        "html_description": "<td><em>Optional</em>. A user changed their answer in a non-anonymous poll. Bots receive new votes only in polls that were sent by the bot itself.</td>",
+        "rst_description": "*Optional*. A user changed their answer in a non-anonymous poll. Bots receive new votes only in polls that were sent by the bot itself.\n",
+        "name": "poll_answer",
+        "required": false
+      },
+      {
+        "type": "ChatMemberUpdated",
+        "description": "The bot's chat member status was updated in a chat. For private chats, this update is received only when the bot is blocked or unblocked by the user.",
+        "html_description": "<td><em>Optional</em>. The bot's chat member status was updated in a chat. For private chats, this update is received only when the bot is blocked or unblocked by the user.</td>",
+        "rst_description": "*Optional*. The bot's chat member status was updated in a chat. For private chats, this update is received only when the bot is blocked or unblocked by the user.\n",
+        "name": "my_chat_member",
+        "required": false
+      },
+      {
+        "type": "ChatMemberUpdated",
+        "description": "A chat member's status was updated in a chat. The bot must be an administrator in the chat and must explicitly specify \"chat_member\" in the list of allowed_updates to receive these updates.",
+        "html_description": "<td><em>Optional</em>. A chat member's status was updated in a chat. The bot must be an administrator in the chat and must explicitly specify <code>\"chat_member\"</code> in the list of <em>allowed_updates</em> to receive these updates.</td>",
+        "rst_description": "*Optional*. A chat member's status was updated in a chat. The bot must be an administrator in the chat and must explicitly specify :code:`\"chat_member\"` in the list of *allowed_updates* to receive these updates.\n",
+        "name": "chat_member",
+        "required": false
+      },
+      {
+        "type": "ChatJoinRequest",
+        "description": "A request to join the chat has been sent. The bot must have the can_invite_users administrator right in the chat to receive these updates.",
+        "html_description": "<td><em>Optional</em>. A request to join the chat has been sent. The bot must have the <em>can_invite_users</em> administrator right in the chat to receive these updates.</td>",
+        "rst_description": "*Optional*. A request to join the chat has been sent. The bot must have the *can_invite_users* administrator right in the chat to receive these updates.\n",
+        "name": "chat_join_request",
+        "required": false
+      },
+      {
+        "type": "ChatBoostUpdated",
+        "description": "A chat boost was added or changed. The bot must be an administrator in the chat to receive these updates.",
+        "html_description": "<td><em>Optional</em>. A chat boost was added or changed. The bot must be an administrator in the chat to receive these updates.</td>",
+        "rst_description": "*Optional*. A chat boost was added or changed. The bot must be an administrator in the chat to receive these updates.\n",
+        "name": "chat_boost",
+        "required": false
+      },
+      {
+        "type": "ChatBoostRemoved",
+        "description": "A boost was removed from a chat. The bot must be an administrator in the chat to receive these updates.",
+        "html_description": "<td><em>Optional</em>. A boost was removed from a chat. The bot must be an administrator in the chat to receive these updates.</td>",
+        "rst_description": "*Optional*. A boost was removed from a chat. The bot must be an administrator in the chat to receive these updates.\n",
+        "name": "removed_chat_boost",
+        "required": false
+      },
+      {
+        "type": "ManagedBotUpdated",
+        "description": "A new bot was created to be managed by the bot, or token or owner of a managed bot was changed",
+        "html_description": "<td><em>Optional</em>. A new bot was created to be managed by the bot, or token or owner of a managed bot was changed</td>",
+        "rst_description": "*Optional*. A new bot was created to be managed by the bot, or token or owner of a managed bot was changed\n",
+        "name": "managed_bot",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

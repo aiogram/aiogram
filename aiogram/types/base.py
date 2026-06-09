@@ -1,119 +1,52 @@
-import datetime
-import time
+from typing import Any
+from unittest.mock import sentinel
+
+from pydantic import BaseModel, ConfigDict, model_validator
+
+from aiogram.client.context_controller import BotContextController
+from aiogram.client.default import Default
 
 
-def deserialize(deserializable, data):
-    """
-    Deserialize object if have data
+class TelegramObject(BotContextController, BaseModel):
+    model_config = ConfigDict(
+        use_enum_values=True,
+        extra="allow",
+        validate_assignment=True,
+        frozen=True,
+        populate_by_name=True,
+        arbitrary_types_allowed=True,
+        defer_build=True,
+        protected_namespaces=(),
+    )
 
-    :param deserializable: :class:`aiogram.types.Deserializable` 
-    :param data: 
-    :return: 
-    """
-    if data:
-        return deserializable.de_json(data)
-
-
-def deserialize_array(deserializable, array):
-    """
-    Deserialize array of objects
-
-    :param deserializable: 
-    :param array: 
-    :return: 
-    """
-    if array:
-        return [deserialize(deserializable, item) for item in array]
-
-
-class Serializable:
-    """
-    Subclasses of this class are guaranteed to be able to be created from a json-style dict.
-    """
-
-    def to_json(self):
-        """
-        Returns a JSON representation of this class.
-
-        :return: dict
-        """
-        return {k: v.to_json() if hasattr(v, 'to_json') else v for k, v in self.__dict__.items() if
-                not k.startswith('_')}
-
-
-class Deserializable:
-    """
-    Subclasses of this class are guaranteed to be able to be created from a json-style dict or json formatted string.
-    All subclasses of this class must override de_json.
-    """
-
-    def to_json(self):
-        result = {}
-        for name, attr in self.__dict__.items():
-            if not attr or name in ['_bot', '_parent']:
-                continue
-            if hasattr(attr, 'to_json'):
-                attr = getattr(attr, 'to_json')()
-            elif isinstance(attr, datetime.datetime):
-                attr = int(time.mktime(attr.timetuple()))
-            result[name] = attr
-        return result
-
+    @model_validator(mode="before")
     @classmethod
-    def _parse_date(cls, unix_time):
-        if unix_time:
-            return datetime.datetime.fromtimestamp(unix_time)
-
-    @property
-    def bot(self) -> 'Bot':
+    def remove_unset(cls, values: dict[str, Any]) -> dict[str, Any]:
         """
-        Bot instance
+        Remove UNSET before fields validation.
+
+        We use UNSET as a sentinel value for `parse_mode` and replace it to real value later.
+        It isn't a problem when it's just default value for a model field,
+        but UNSET might be passed to a model initialization from `Bot.method_name`,
+        so we must take care of it and remove it before fields validation.
         """
-        if not hasattr(self, '_bot'):
-            raise AttributeError("{0} is not configured.".format(self.__class__.__name__))
-        return getattr(self, '_bot')
+        if not isinstance(values, dict):
+            return values
+        return {k: v for k, v in values.items() if not isinstance(v, UNSET_TYPE)}
 
-    @bot.setter
-    def bot(self, bot):
-        setattr(self, '_bot', bot)
-        for name, attr in self.__dict__.items():
-            if hasattr(attr, 'de_json'):
-                attr.bot = bot
 
-    @property
-    def parent(self):
-        """
-        Parent object
-        """
-        return getattr(self, '_parent', None)
+class MutableTelegramObject(TelegramObject):
+    model_config = ConfigDict(
+        frozen=False,
+    )
 
-    @parent.setter
-    def parent(self, value):
-        setattr(self, '_parent', value)
-        for name, attr in self.__dict__.items():
-            if name.startswith('_'):
-                continue
-            if hasattr(attr, 'de_json'):
-                attr.parent = self
 
-    @classmethod
-    def de_json(cls, raw_data):
-        """
-        Returns an instance of this class from the given json dict or string.
+# special sentinel object which used in a situation when None might be a useful value
+UNSET: Any = sentinel.UNSET
+UNSET_TYPE: Any = type(UNSET)
 
-        This function must be overridden by subclasses.
-        :return: an instance of this class created from the given json dict or string.
-        """
-        raise NotImplementedError
-
-    def __str__(self):
-        return str(self.to_json())
-
-    def __repr__(self):
-        return str(self)
-
-    @classmethod
-    def deserialize(cls, obj):
-        if isinstance(obj, list):
-            return deserialize_array(cls, obj)
-        return deserialize(cls, obj)
+# Unused constants are needed only for backward compatibility with external
+# libraries that a working with framework internals
+UNSET_PARSE_MODE: Any = Default("parse_mode")
+UNSET_DISABLE_WEB_PAGE_PREVIEW: Any = Default("link_preview_is_disabled")
+UNSET_PROTECT_CONTENT: Any = Default("protect_content")

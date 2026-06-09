@@ -1,0 +1,25 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "botcommandscopedefault",
+    "name": "BotCommandScopeDefault",
+    "description": "Represents the default scope of bot commands. Default commands are used if no commands with a narrower scope are specified for the user.",
+    "html_description": "<p>Represents the default <a href=\"#botcommandscope\">scope</a> of bot commands. Default commands are used if no commands with a <a href=\"#determining-list-of-commands\">narrower scope</a> are specified for the user.</p>",
+    "rst_description": "Represents the default `scope <https://core.telegram.org/bots/api#botcommandscope>`_ of bot commands. Default commands are used if no commands with a `narrower scope <https://core.telegram.org/bots/api#determining-list-of-commands>`_ are specified for the user.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Scope type, must be default",
+        "html_description": "<td>Scope type, must be <em>default</em></td>",
+        "rst_description": "Scope type, must be *default*\n",
+        "name": "type",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

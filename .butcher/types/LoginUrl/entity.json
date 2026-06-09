@@ -1,0 +1,49 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "loginurl",
+    "name": "LoginUrl",
+    "description": "This object represents a parameter of the inline keyboard button used to automatically authorize a user. Serves as a great replacement for the Telegram Login Widget when the user is coming from Telegram. All the user needs to do is tap/click a button and confirm that they want to log in:\nTelegram apps support these buttons as of version 5.7.\nSample bot: @discussbot",
+    "html_description": "<p>This object represents a parameter of the inline keyboard button used to automatically authorize a user. Serves as a great replacement for the <a href=\"/widgets/login\">Telegram Login Widget</a> when the user is coming from Telegram. All the user needs to do is tap/click a button and confirm that they want to log in:</p><p>Telegram apps support these buttons as of <a href=\"https://telegram.org/blog/privacy-discussions-web-bots#meet-seamless-web-bots\">version 5.7</a>.</p><blockquote>\n<p>Sample bot: <a href=\"https://t.me/discussbot\">@discussbot</a></p>\n</blockquote>",
+    "rst_description": "This object represents a parameter of the inline keyboard button used to automatically authorize a user. Serves as a great replacement for the `Telegram Login Widget <https://core.telegram.org/widgets/login>`_ when the user is coming from Telegram. All the user needs to do is tap/click a button and confirm that they want to log in:\nTelegram apps support these buttons as of `version 5.7 <https://telegram.org/blog/privacy-discussions-web-bots#meet-seamless-web-bots>`_.\n\n Sample bot: `@discussbot <https://t.me/discussbot>`_",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "An HTTPS URL to be opened with user authorization data added to the query string when the button is pressed. If the user refuses to provide authorization data, the original URL without information about the user will be opened. The data added is the same as described in Receiving authorization data.\n\nNOTE: You must always check the hash of the received data to verify the authentication and the integrity of the data as described in Checking authorization.",
+        "html_description": "<td>An HTTPS URL to be opened with user authorization data added to the query string when the button is pressed. If the user refuses to provide authorization data, the original URL without information about the user will be opened. The data added is the same as described in <a href=\"/widgets/login#receiving-authorization-data\">Receiving authorization data</a>.<br/>\n<br/>\n<strong>NOTE:</strong> You <strong>must</strong> always check the hash of the received data to verify the authentication and the integrity of the data as described in <a href=\"/widgets/login#checking-authorization\">Checking authorization</a>.</td>",
+        "rst_description": "An HTTPS URL to be opened with user authorization data added to the query string when the button is pressed. If the user refuses to provide authorization data, the original URL without information about the user will be opened. The data added is the same as described in `Receiving authorization data <https://core.telegram.org/widgets/login#receiving-authorization-data>`_.\n\n\n\n**NOTE:** You **must** always check the hash of the received data to verify the authentication and the integrity of the data as described in `Checking authorization <https://core.telegram.org/widgets/login#checking-authorization>`_.\n",
+        "name": "url",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "New text of the button in forwarded messages.",
+        "html_description": "<td><em>Optional</em>. New text of the button in forwarded messages.</td>",
+        "rst_description": "*Optional*. New text of the button in forwarded messages.\n",
+        "name": "forward_text",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "Username of a bot, which will be used for user authorization. See Setting up a bot for more details. If not specified, the current bot's username will be assumed. The url's domain must be the same as the domain linked with the bot. See Linking your domain to the bot for more details.",
+        "html_description": "<td><em>Optional</em>. Username of a bot, which will be used for user authorization. See <a href=\"/widgets/login#setting-up-a-bot\">Setting up a bot</a> for more details. If not specified, the current bot's username will be assumed. The <em>url</em>'s domain must be the same as the domain linked with the bot. See <a href=\"/widgets/login#linking-your-domain-to-the-bot\">Linking your domain to the bot</a> for more details.</td>",
+        "rst_description": "*Optional*. Username of a bot, which will be used for user authorization. See `Setting up a bot <https://core.telegram.org/widgets/login#setting-up-a-bot>`_ for more details. If not specified, the current bot's username will be assumed. The *url*'s domain must be the same as the domain linked with the bot. See `Linking your domain to the bot <https://core.telegram.org/widgets/login#linking-your-domain-to-the-bot>`_ for more details.\n",
+        "name": "bot_username",
+        "required": false
+      },
+      {
+        "type": "Boolean",
+        "description": "Pass True to request the permission for your bot to send messages to the user.",
+        "html_description": "<td><em>Optional</em>. Pass <em>True</em> to request the permission for your bot to send messages to the user.</td>",
+        "rst_description": "*Optional*. Pass :code:`True` to request the permission for your bot to send messages to the user.\n",
+        "name": "request_write_access",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

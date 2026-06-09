@@ -1,0 +1,73 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available methods",
+    "anchor": "available-methods"
+  },
+  "object": {
+    "anchor": "sendgift",
+    "name": "sendGift",
+    "description": "Sends a gift to the given user or channel chat. The gift can't be converted to Telegram Stars by the receiver. Returns True on success.",
+    "html_description": "<p>Sends a gift to the given user or channel chat. The gift can't be converted to Telegram Stars by the receiver. Returns <em>True</em> on success.</p>",
+    "rst_description": "Sends a gift to the given user or channel chat. The gift can't be converted to Telegram Stars by the receiver. Returns :code:`True` on success.",
+    "annotations": [
+      {
+        "type": "Integer",
+        "required": false,
+        "description": "Required if chat_id is not specified. Unique identifier of the target user who will receive the gift.",
+        "html_description": "<td>Required if <em>chat_id</em> is not specified. Unique identifier of the target user who will receive the gift.</td>",
+        "rst_description": "Required if *chat_id* is not specified. Unique identifier of the target user who will receive the gift.\n",
+        "name": "user_id"
+      },
+      {
+        "type": "Integer or String",
+        "required": false,
+        "description": "Required if user_id is not specified. Unique identifier for the chat or username of the channel (in the format @username) that will receive the gift.",
+        "html_description": "<td>Required if <em>user_id</em> is not specified. Unique identifier for the chat or username of the channel (in the format <code>@username</code>) that will receive the gift.</td>",
+        "rst_description": "Required if *user_id* is not specified. Unique identifier for the chat or username of the channel (in the format :code:`@username`) that will receive the gift.\n",
+        "name": "chat_id"
+      },
+      {
+        "type": "String",
+        "required": true,
+        "description": "Identifier of the gift; limited gifts can't be sent to channel chats",
+        "html_description": "<td>Identifier of the gift; limited gifts can't be sent to channel chats</td>",
+        "rst_description": "Identifier of the gift; limited gifts can't be sent to channel chats\n",
+        "name": "gift_id"
+      },
+      {
+        "type": "Boolean",
+        "required": false,
+        "description": "Pass True to pay for the gift upgrade from the bot's balance, thereby making the upgrade free for the receiver",
+        "html_description": "<td>Pass <em>True</em> to pay for the gift upgrade from the bot's balance, thereby making the upgrade free for the receiver</td>",
+        "rst_description": "Pass :code:`True` to pay for the gift upgrade from the bot's balance, thereby making the upgrade free for the receiver\n",
+        "name": "pay_for_upgrade"
+      },
+      {
+        "type": "String",
+        "required": false,
+        "description": "Text that will be shown along with the gift; 0-128 characters",
+        "html_description": "<td>Text that will be shown along with the gift; 0-128 characters</td>",
+        "rst_description": "Text that will be shown along with the gift; 0-128 characters\n",
+        "name": "text"
+      },
+      {
+        "type": "String",
+        "required": false,
+        "description": "Mode for parsing entities in the text. See formatting options for more details. Entities other than 'bold', 'italic', 'underline', 'strikethrough', 'spoiler', 'custom_emoji', and 'date_time' are ignored.",
+        "html_description": "<td>Mode for parsing entities in the text. See <a href=\"#formatting-options\">formatting options</a> for more details. Entities other than &#8220;bold&#8221;, &#8220;italic&#8221;, &#8220;underline&#8221;, &#8220;strikethrough&#8221;, &#8220;spoiler&#8221;, &#8220;custom_emoji&#8221;, and &#8220;date_time&#8221; are ignored.</td>",
+        "rst_description": "Mode for parsing entities in the text. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details. Entities other than 'bold', 'italic', 'underline', 'strikethrough', 'spoiler', 'custom_emoji', and 'date_time' are ignored.\n",
+        "name": "text_parse_mode"
+      },
+      {
+        "type": "Array of MessageEntity",
+        "required": false,
+        "description": "A JSON-serialized list of special entities that appear in the gift text. It can be specified instead of text_parse_mode. Entities other than 'bold', 'italic', 'underline', 'strikethrough', 'spoiler', 'custom_emoji', and 'date_time' are ignored.",
+        "html_description": "<td>A JSON-serialized list of special entities that appear in the gift text. It can be specified instead of <em>text_parse_mode</em>. Entities other than &#8220;bold&#8221;, &#8220;italic&#8221;, &#8220;underline&#8221;, &#8220;strikethrough&#8221;, &#8220;spoiler&#8221;, &#8220;custom_emoji&#8221;, and &#8220;date_time&#8221; are ignored.</td>",
+        "rst_description": "A JSON-serialized list of special entities that appear in the gift text. It can be specified instead of *text_parse_mode*. Entities other than 'bold', 'italic', 'underline', 'strikethrough', 'spoiler', 'custom_emoji', and 'date_time' are ignored.\n",
+        "name": "text_entities"
+      }
+    ],
+    "category": "methods"
+  }
+}

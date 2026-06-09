@@ -1,0 +1,25 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Stickers",
+    "anchor": "stickers"
+  },
+  "object": {
+    "anchor": "getcustomemojistickers",
+    "name": "getCustomEmojiStickers",
+    "description": "Use this method to get information about custom emoji stickers by their identifiers. Returns an Array of Sticker objects.",
+    "html_description": "<p>Use this method to get information about custom emoji stickers by their identifiers. Returns an Array of <a href=\"#sticker\">Sticker</a> objects.</p>",
+    "rst_description": "Use this method to get information about custom emoji stickers by their identifiers. Returns an Array of :class:`aiogram.types.sticker.Sticker` objects.",
+    "annotations": [
+      {
+        "type": "Array of String",
+        "required": true,
+        "description": "A JSON-serialized list of custom emoji identifiers. At most 200 custom emoji identifiers can be specified.",
+        "html_description": "<td>A JSON-serialized list of custom emoji identifiers. At most 200 custom emoji identifiers can be specified.</td>",
+        "rst_description": "A JSON-serialized list of custom emoji identifiers. At most 200 custom emoji identifiers can be specified.\n",
+        "name": "custom_emoji_ids"
+      }
+    ],
+    "category": "methods"
+  }
+}

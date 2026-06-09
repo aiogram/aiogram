@@ -1,0 +1,71 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2022, aiogram Team
+# This file is distributed under the same license as the aiogram package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2022.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: aiogram \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-03-08 02:28+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.13.1\n"
+
+#: ../../api/types/inline_query_result_game.rst:3
+msgid "InlineQueryResultGame"
+msgstr ""
+
+#: aiogram.types.inline_query_result_game.InlineQueryResultGame:1 of
+msgid "Represents a `Game <https://core.telegram.org/bots/api#games>`_."
+msgstr ""
+
+#: aiogram.types.inline_query_result_game.InlineQueryResultGame:3 of
+msgid "Source: https://core.telegram.org/bots/api#inlinequeryresultgame"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.inline_query_result_game.InlineQueryResultGame.type:1 of
+msgid "Type of the result, must be *game*"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.inline_query_result_game.InlineQueryResultGame.id:1 of
+msgid "Unique identifier for this result, 1-64 bytes"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.inline_query_result_game.InlineQueryResultGame.game_short_name:1
+#: of
+msgid "Short name of the game"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.inline_query_result_game.InlineQueryResultGame.reply_markup:1
+#: of
+msgid ""
+"*Optional*. `Inline keyboard <https://core.telegram.org/bots/features"
+"#inline-keyboards>`_ attached to the message"
+msgstr ""
+
+#~ msgid ""
+#~ "*Optional*. `Inline keyboard "
+#~ "<https://core.telegram.org/bots#inline-keyboards-and-"
+#~ "on-the-fly-updating>`_ attached to "
+#~ "the message"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Represents a `Game "
+#~ "<https://core.telegram.org/bots/api#games>`_. **Note:** "
+#~ "This will only work in Telegram "
+#~ "versions released after October 1, 2016."
+#~ " Older clients will not display any"
+#~ " inline results if a game result "
+#~ "is among them."
+#~ msgstr ""

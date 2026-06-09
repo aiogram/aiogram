@@ -1,0 +1,57 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Payments",
+    "anchor": "payments"
+  },
+  "object": {
+    "anchor": "affiliateinfo",
+    "name": "AffiliateInfo",
+    "description": "Contains information about the affiliate that received a commission via this transaction.",
+    "html_description": "<p>Contains information about the affiliate that received a commission via this transaction.</p>",
+    "rst_description": "Contains information about the affiliate that received a commission via this transaction.",
+    "annotations": [
+      {
+        "type": "User",
+        "description": "The bot or the user that received an affiliate commission if it was received by a bot or a user",
+        "html_description": "<td><em>Optional</em>. The bot or the user that received an affiliate commission if it was received by a bot or a user</td>",
+        "rst_description": "*Optional*. The bot or the user that received an affiliate commission if it was received by a bot or a user\n",
+        "name": "affiliate_user",
+        "required": false
+      },
+      {
+        "type": "Chat",
+        "description": "The chat that received an affiliate commission if it was received by a chat",
+        "html_description": "<td><em>Optional</em>. The chat that received an affiliate commission if it was received by a chat</td>",
+        "rst_description": "*Optional*. The chat that received an affiliate commission if it was received by a chat\n",
+        "name": "affiliate_chat",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "The number of Telegram Stars received by the affiliate for each 1000 Telegram Stars received by the bot from referred users",
+        "html_description": "<td>The number of Telegram Stars received by the affiliate for each 1000 Telegram Stars received by the bot from referred users</td>",
+        "rst_description": "The number of Telegram Stars received by the affiliate for each 1000 Telegram Stars received by the bot from referred users\n",
+        "name": "commission_per_mille",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "Integer amount of Telegram Stars received by the affiliate from the transaction, rounded to 0; can be negative for refunds",
+        "html_description": "<td>Integer amount of Telegram Stars received by the affiliate from the transaction, rounded to 0; can be negative for refunds</td>",
+        "rst_description": "Integer amount of Telegram Stars received by the affiliate from the transaction, rounded to 0; can be negative for refunds\n",
+        "name": "amount",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "The number of 1/1000000000 shares of Telegram Stars received by the affiliate; from -999999999 to 999999999; can be negative for refunds",
+        "html_description": "<td><em>Optional</em>. The number of 1/1000000000 shares of Telegram Stars received by the affiliate; from -999999999 to 999999999; can be negative for refunds</td>",
+        "rst_description": "*Optional*. The number of 1/1000000000 shares of Telegram Stars received by the affiliate; from -999999999 to 999999999; can be negative for refunds\n",
+        "name": "nanostar_amount",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

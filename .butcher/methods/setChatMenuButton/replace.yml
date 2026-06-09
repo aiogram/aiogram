@@ -1,0 +1,17 @@
+annotations:
+  menu_button:
+    parsed_type:
+      type: union
+      items:
+        - type: entity
+          references:
+            category: types
+            name: MenuButtonDefault
+        - type: entity
+          references:
+            category: types
+            name: MenuButtonWebApp
+        - type: entity
+          references:
+            category: types
+            name: MenuButtonCommands

@@ -1,0 +1,92 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2022, aiogram Team
+# This file is distributed under the same license as the aiogram package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2022.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: aiogram \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-03-08 02:28+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.13.1\n"
+
+#: ../../api/types/animation.rst:3
+msgid "Animation"
+msgstr ""
+
+#: aiogram.types.animation.Animation:1 of
+msgid ""
+"This object represents an animation file (GIF or H.264/MPEG-4 AVC video "
+"without sound)."
+msgstr ""
+
+#: aiogram.types.animation.Animation:3 of
+msgid "Source: https://core.telegram.org/bots/api#animation"
+msgstr ""
+
+#: ../../docstring aiogram.types.animation.Animation.file_id:1 of
+msgid "Identifier for this file, which can be used to download or reuse the file"
+msgstr ""
+
+#: ../../docstring aiogram.types.animation.Animation.file_unique_id:1 of
+msgid ""
+"Unique identifier for this file, which is supposed to be the same over "
+"time and for different bots. Can't be used to download or reuse the file."
+msgstr ""
+
+#: ../../docstring aiogram.types.animation.Animation.width:1 of
+msgid "Video width as defined by the sender"
+msgstr ""
+
+#: ../../docstring aiogram.types.animation.Animation.height:1 of
+msgid "Video height as defined by the sender"
+msgstr ""
+
+#: ../../docstring aiogram.types.animation.Animation.duration:1 of
+msgid "Duration of the video in seconds as defined by the sender"
+msgstr ""
+
+#: ../../docstring aiogram.types.animation.Animation.thumbnail:1 of
+msgid "*Optional*. Animation thumbnail as defined by the sender"
+msgstr ""
+
+#: ../../docstring aiogram.types.animation.Animation.file_name:1 of
+msgid "*Optional*. Original animation filename as defined by the sender"
+msgstr ""
+
+#: ../../docstring aiogram.types.animation.Animation.mime_type:1 of
+msgid "*Optional*. MIME type of the file as defined by the sender"
+msgstr ""
+
+#: ../../docstring aiogram.types.animation.Animation.file_size:1 of
+msgid ""
+"*Optional*. File size in bytes. It can be bigger than 2^31 and some "
+"programming languages may have difficulty/silent defects in interpreting "
+"it. But it has at most 52 significant bits, so a signed 64-bit integer or"
+" double-precision float type are safe for storing this value."
+msgstr ""
+
+#~ msgid "Video width as defined by sender"
+#~ msgstr ""
+
+#~ msgid "Video height as defined by sender"
+#~ msgstr ""
+
+#~ msgid "Duration of the video in seconds as defined by sender"
+#~ msgstr ""
+
+#~ msgid "*Optional*. Animation thumbnail as defined by sender"
+#~ msgstr ""
+
+#~ msgid "*Optional*. Original animation filename as defined by sender"
+#~ msgstr ""
+
+#~ msgid "*Optional*. MIME type of the file as defined by sender"
+#~ msgstr ""

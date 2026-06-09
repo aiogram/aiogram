@@ -1,0 +1,25 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "copytextbutton",
+    "name": "CopyTextButton",
+    "description": "This object represents an inline keyboard button that copies specified text to the clipboard.",
+    "html_description": "<p>This object represents an inline keyboard button that copies specified text to the clipboard.</p>",
+    "rst_description": "This object represents an inline keyboard button that copies specified text to the clipboard.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "The text to be copied to the clipboard; 1-256 characters",
+        "html_description": "<td>The text to be copied to the clipboard; 1-256 characters</td>",
+        "rst_description": "The text to be copied to the clipboard; 1-256 characters\n",
+        "name": "text",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

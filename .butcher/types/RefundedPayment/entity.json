@@ -1,0 +1,57 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Payments",
+    "anchor": "payments"
+  },
+  "object": {
+    "anchor": "refundedpayment",
+    "name": "RefundedPayment",
+    "description": "This object contains basic information about a refunded payment.",
+    "html_description": "<p>This object contains basic information about a refunded payment.</p>",
+    "rst_description": "This object contains basic information about a refunded payment.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Three-letter ISO 4217 currency code, or 'XTR' for payments in Telegram Stars. Currently, always 'XTR'",
+        "html_description": "<td>Three-letter ISO 4217 <a href=\"/bots/payments#supported-currencies\">currency</a> code, or &#8220;XTR&#8221; for payments in <a href=\"https://t.me/BotNews/90\">Telegram Stars</a>. Currently, always &#8220;XTR&#8221;</td>",
+        "rst_description": "Three-letter ISO 4217 `currency <https://core.telegram.org/bots/payments#supported-currencies>`_ code, or 'XTR' for payments in `Telegram Stars <https://t.me/BotNews/90>`_. Currently, always 'XTR'\n",
+        "name": "currency",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "Total refunded price in the smallest units of the currency (integer, not float/double). For example, for a price of US$ 1.45, total_amount = 145. See the exp parameter in currencies.json, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies).",
+        "html_description": "<td>Total refunded price in the <em>smallest units</em> of the currency (integer, <strong>not</strong> float/double). For example, for a price of <code>US$ 1.45</code>, <code>total_amount = 145</code>. See the <em>exp</em> parameter in <a href=\"/bots/payments/currencies.json\">currencies.json</a>, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies).</td>",
+        "rst_description": "Total refunded price in the *smallest units* of the currency (integer, **not** float/double). For example, for a price of :code:`US$ 1.45`, :code:`total_amount = 145`. See the *exp* parameter in `currencies.json <https://core.telegram.org/bots/payments/currencies.json>`_, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies).\n",
+        "name": "total_amount",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Bot-specified invoice payload",
+        "html_description": "<td>Bot-specified invoice payload</td>",
+        "rst_description": "Bot-specified invoice payload\n",
+        "name": "invoice_payload",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Telegram payment identifier",
+        "html_description": "<td>Telegram payment identifier</td>",
+        "rst_description": "Telegram payment identifier\n",
+        "name": "telegram_payment_charge_id",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Provider payment identifier",
+        "html_description": "<td><em>Optional</em>. Provider payment identifier</td>",
+        "rst_description": "*Optional*. Provider payment identifier\n",
+        "name": "provider_payment_charge_id",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

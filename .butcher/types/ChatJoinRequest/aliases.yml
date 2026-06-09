@@ -1,0 +1,147 @@
+approve:
+  method: approveChatJoinRequest
+  fill: &request-target
+    chat_id: self.chat.id
+    user_id: self.from_user.id
+
+decline:
+  method: declineChatJoinRequest
+  fill: *request-target
+
+answer:
+  method: sendMessage
+  fill: &fill-answer-chat
+    chat_id: self.chat.id
+
+answer_pm:
+  method: sendMessage
+  fill: &fill-answer-user
+    chat_id: self.user_chat_id
+
+answer_animation:
+  method: sendAnimation
+  fill: *fill-answer-chat
+
+answer_animation_pm:
+  method: sendAnimation
+  fill: *fill-answer-user
+
+answer_audio:
+  method: sendAudio
+  fill: *fill-answer-chat
+
+answer_audio_pm:
+  method: sendAudio
+  fill: *fill-answer-user
+
+answer_contact:
+  method: sendContact
+  fill: *fill-answer-chat
+
+answer_contact_pm:
+  method: sendContact
+  fill: *fill-answer-user
+
+answer_document:
+  method: sendDocument
+  fill: *fill-answer-chat
+
+answer_document_pm:
+  method: sendDocument
+  fill: *fill-answer-user
+
+answer_game:
+  method: sendGame
+  fill: *fill-answer-chat
+
+answer_game_pm:
+  method: sendGame
+  fill: *fill-answer-user
+
+answer_invoice:
+  method: sendInvoice
+  fill: *fill-answer-chat
+
+answer_invoice_pm:
+  method: sendInvoice
+  fill: *fill-answer-user
+
+answer_location:
+  method: sendLocation
+  fill: *fill-answer-chat
+
+answer_location_pm:
+  method: sendLocation
+  fill: *fill-answer-user
+
+answer_media_group:
+  method: sendMediaGroup
+  fill: *fill-answer-chat
+
+answer_media_group_pm:
+  method: sendMediaGroup
+  fill: *fill-answer-user
+
+answer_photo:
+  method: sendPhoto
+  fill: *fill-answer-chat
+
+answer_photo_pm:
+  method: sendPhoto
+  fill: *fill-answer-user
+
+answer_poll:
+  method: sendPoll
+  fill: *fill-answer-chat
+
+answer_poll_pm:
+  method: sendPoll
+  fill: *fill-answer-user
+
+answer_dice:
+  method: sendDice
+  fill: *fill-answer-chat
+
+answer_dice_pm:
+  method: sendDice
+  fill: *fill-answer-user
+
+answer_sticker:
+  method: sendSticker
+  fill: *fill-answer-chat
+
+answer_sticker_pm:
+  method: sendSticker
+  fill: *fill-answer-user
+
+answer_venue:
+  method: sendVenue
+  fill: *fill-answer-chat
+
+answer_venue_pm:
+  method: sendVenue
+  fill: *fill-answer-user
+
+answer_video:
+  method: sendVideo
+  fill: *fill-answer-chat
+
+answer_video_pm:
+  method: sendVideo
+  fill: *fill-answer-user
+
+answer_video_note:
+  method: sendVideoNote
+  fill: *fill-answer-chat
+
+answer_video_note_pm:
+  method: sendVideoNote
+  fill: *fill-answer-user
+
+answer_voice:
+  method: sendVoice
+  fill: *fill-answer-chat
+
+answer_voice_pm:
+  method: sendVoice
+  fill: *fill-answer-user

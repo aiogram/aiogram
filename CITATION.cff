@@ -1,0 +1,23 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: aiogram
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - given-names: Oleksandr
+    family-names: Onufriichuk
+    email: im@aiogram.dev
+repository-code: 'https://github.com/aiogram/aiogram'
+url: 'https://aiogram.dev'
+abstract: >-
+  aiogram is a modern and fully asynchronous framework for
+  Telegram Bot API written in Python using asyncio
+keywords:
+  - aiogram
+  - telegram
+  - bot
+license: MIT

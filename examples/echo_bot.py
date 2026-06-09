@@ -1,47 +1,58 @@
 import asyncio
 import logging
+import sys
+from os import getenv
 
-from aiogram import Bot, types
-from aiogram.dispatcher import Dispatcher
+from aiogram import Bot, Dispatcher, html
+from aiogram.client.default import DefaultBotProperties
+from aiogram.enums import ParseMode
+from aiogram.filters import CommandStart
+from aiogram.types import Message
 
-API_TOKEN = 'BOT TOKEN HERE'
+# Bot token can be obtained via https://t.me/BotFather
+TOKEN = getenv("BOT_TOKEN")
 
-logging.basicConfig(level=logging.INFO)
+# All handlers should be attached to the Router (or Dispatcher)
 
-loop = asyncio.get_event_loop()
-bot = Bot(token=API_TOKEN, loop=loop)
-dp = Dispatcher(bot)
-
-
-@dp.message_handler(commands=['start', 'help'])
-async def send_welcome(message: types.Message):
-    await message.reply("Hi!\nI'm EchoBot!\nPowered by aiogram.")
-
-
-@dp.message_handler(regexp='(^cat[s]?$|puss)')
-async def cats(message: types.Message):
-    with open('data/cats.jpg', 'rb') as photo:
-        await bot.send_photo(message.chat.id, photo, caption='Cats is here 😺',
-                             reply_to_message_id=message.message_id)
+dp = Dispatcher()
 
 
-@dp.message_handler()
-async def echo(message: types.Message):
-    await bot.send_message(message.chat.id, message.text)
+@dp.message(CommandStart())
+async def command_start_handler(message: Message) -> None:
+    """
+    This handler receives messages with `/start` command
+    """
+    # Most event objects have aliases for API methods that can be called in events' context
+    # For example if you want to answer to incoming message you can use `message.answer(...)` alias
+    # and the target chat will be passed to :ref:`aiogram.methods.send_message.SendMessage`
+    # method automatically or call API method directly via
+    # Bot instance: `bot.send_message(chat_id=message.chat.id, ...)`
+    await message.answer(f"Hello, {html.bold(message.from_user.full_name)}!")
 
 
-async def main():
-    count = await dp.skip_updates()
-    print(f"Skipped {count} updates.")
-    await dp.start_pooling()
+@dp.message()
+async def echo_handler(message: Message) -> None:
+    """
+    Handler will forward receive a message back to the sender
 
-
-if __name__ == '__main__':
+    By default, message handler will handle all message types (like a text, photo, sticker etc.)
+    """
     try:
-        loop.run_until_complete(main())
-    except KeyboardInterrupt:
-        loop.stop()
+        # Send a copy of the received message
+        await message.send_copy(chat_id=message.chat.id)
+    except TypeError:
+        # But not all the types is supported to be copied so need to handle it
+        await message.answer("Nice try!")
 
-    # Also you can use another execution method
-    # >>> from aiogram.utils.executor import start_pooling
-    # >>> start_pooling(dp, loop=loop, on_startup=main, on_shutdown=shutdown)
+
+async def main() -> None:
+    # Initialize Bot instance with default bot properties which will be passed to all API calls
+    bot = Bot(token=TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
+
+    # And the run events dispatching
+    await dp.start_polling(bot)
+
+
+if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO, stream=sys.stdout)
+    asyncio.run(main())

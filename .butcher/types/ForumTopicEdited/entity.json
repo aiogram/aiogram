@@ -1,0 +1,33 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "forumtopicedited",
+    "name": "ForumTopicEdited",
+    "description": "This object represents a service message about an edited forum topic.",
+    "html_description": "<p>This object represents a service message about an edited forum topic.</p>",
+    "rst_description": "This object represents a service message about an edited forum topic.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "New name of the topic, if it was edited",
+        "html_description": "<td><em>Optional</em>. New name of the topic, if it was edited</td>",
+        "rst_description": "*Optional*. New name of the topic, if it was edited\n",
+        "name": "name",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "New identifier of the custom emoji shown as the topic icon, if it was edited; an empty string if the icon was removed",
+        "html_description": "<td><em>Optional</em>. New identifier of the custom emoji shown as the topic icon, if it was edited; an empty string if the icon was removed</td>",
+        "rst_description": "*Optional*. New identifier of the custom emoji shown as the topic icon, if it was edited; an empty string if the icon was removed\n",
+        "name": "icon_custom_emoji_id",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

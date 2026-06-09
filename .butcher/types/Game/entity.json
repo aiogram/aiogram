@@ -1,0 +1,65 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Games",
+    "anchor": "games"
+  },
+  "object": {
+    "anchor": "game",
+    "name": "Game",
+    "description": "This object represents a game. Use BotFather to create and edit games, their short names will act as unique identifiers.",
+    "html_description": "<p>This object represents a game. Use BotFather to create and edit games, their short names will act as unique identifiers.</p>",
+    "rst_description": "This object represents a game. Use BotFather to create and edit games, their short names will act as unique identifiers.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Title of the game",
+        "html_description": "<td>Title of the game</td>",
+        "rst_description": "Title of the game\n",
+        "name": "title",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Description of the game",
+        "html_description": "<td>Description of the game</td>",
+        "rst_description": "Description of the game\n",
+        "name": "description",
+        "required": true
+      },
+      {
+        "type": "Array of PhotoSize",
+        "description": "Photo that will be displayed in the game message in chats.",
+        "html_description": "<td>Photo that will be displayed in the game message in chats.</td>",
+        "rst_description": "Photo that will be displayed in the game message in chats.\n",
+        "name": "photo",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Brief description of the game or high scores included in the game message. Can be automatically edited to include current high scores for the game when the bot calls setGameScore, or manually edited using editMessageText. 0-4096 characters.",
+        "html_description": "<td><em>Optional</em>. Brief description of the game or high scores included in the game message. Can be automatically edited to include current high scores for the game when the bot calls <a href=\"#setgamescore\">setGameScore</a>, or manually edited using <a href=\"#editmessagetext\">editMessageText</a>. 0-4096 characters.</td>",
+        "rst_description": "*Optional*. Brief description of the game or high scores included in the game message. Can be automatically edited to include current high scores for the game when the bot calls :class:`aiogram.methods.set_game_score.SetGameScore`, or manually edited using :class:`aiogram.methods.edit_message_text.EditMessageText`. 0-4096 characters.\n",
+        "name": "text",
+        "required": false
+      },
+      {
+        "type": "Array of MessageEntity",
+        "description": "Special entities that appear in text, such as usernames, URLs, bot commands, etc.",
+        "html_description": "<td><em>Optional</em>. Special entities that appear in <em>text</em>, such as usernames, URLs, bot commands, etc.</td>",
+        "rst_description": "*Optional*. Special entities that appear in *text*, such as usernames, URLs, bot commands, etc.\n",
+        "name": "text_entities",
+        "required": false
+      },
+      {
+        "type": "Animation",
+        "description": "Animation that will be displayed in the game message in chats. Upload via BotFather",
+        "html_description": "<td><em>Optional</em>. Animation that will be displayed in the game message in chats. Upload via <a href=\"https://t.me/botfather\">BotFather</a></td>",
+        "rst_description": "*Optional*. Animation that will be displayed in the game message in chats. Upload via `BotFather <https://t.me/botfather>`_\n",
+        "name": "animation",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

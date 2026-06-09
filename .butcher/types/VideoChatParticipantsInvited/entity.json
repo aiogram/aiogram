@@ -1,0 +1,25 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "videochatparticipantsinvited",
+    "name": "VideoChatParticipantsInvited",
+    "description": "This object represents a service message about new members invited to a video chat.",
+    "html_description": "<p>This object represents a service message about new members invited to a video chat.</p>",
+    "rst_description": "This object represents a service message about new members invited to a video chat.",
+    "annotations": [
+      {
+        "type": "Array of User",
+        "description": "New members that were invited to the video chat",
+        "html_description": "<td>New members that were invited to the video chat</td>",
+        "rst_description": "New members that were invited to the video chat\n",
+        "name": "users",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

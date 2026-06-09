@@ -1,0 +1,33 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available methods",
+    "anchor": "available-methods"
+  },
+  "object": {
+    "anchor": "deletemycommands",
+    "name": "deleteMyCommands",
+    "description": "Use this method to delete the list of the bot's commands for the given scope and user language. After deletion, higher level commands will be shown to affected users. Returns True on success.",
+    "html_description": "<p>Use this method to delete the list of the bot's commands for the given scope and user language. After deletion, <a href=\"#determining-list-of-commands\">higher level commands</a> will be shown to affected users. Returns <em>True</em> on success.</p>",
+    "rst_description": "Use this method to delete the list of the bot's commands for the given scope and user language. After deletion, `higher level commands <https://core.telegram.org/bots/api#determining-list-of-commands>`_ will be shown to affected users. Returns :code:`True` on success.",
+    "annotations": [
+      {
+        "type": "BotCommandScope",
+        "required": false,
+        "description": "A JSON-serialized object, describing scope of users for which the commands are relevant. Defaults to BotCommandScopeDefault.",
+        "html_description": "<td>A JSON-serialized object, describing scope of users for which the commands are relevant. Defaults to <a href=\"#botcommandscopedefault\">BotCommandScopeDefault</a>.</td>",
+        "rst_description": "A JSON-serialized object, describing scope of users for which the commands are relevant. Defaults to :class:`aiogram.types.bot_command_scope_default.BotCommandScopeDefault`.\n",
+        "name": "scope"
+      },
+      {
+        "type": "String",
+        "required": false,
+        "description": "A two-letter ISO 639-1 language code. If empty, commands will be applied to all users from the given scope, for whose language there are no dedicated commands",
+        "html_description": "<td>A two-letter ISO 639-1 language code. If empty, commands will be applied to all users from the given scope, for whose language there are no dedicated commands</td>",
+        "rst_description": "A two-letter ISO 639-1 language code. If empty, commands will be applied to all users from the given scope, for whose language there are no dedicated commands\n",
+        "name": "language_code"
+      }
+    ],
+    "category": "methods"
+  }
+}

@@ -1,0 +1,105 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "chatinvitelink",
+    "name": "ChatInviteLink",
+    "description": "Represents an invite link for a chat.",
+    "html_description": "<p>Represents an invite link for a chat.</p>",
+    "rst_description": "Represents an invite link for a chat.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "The invite link. If the link was created by another chat administrator, then the second part of the link will be replaced with '…'.",
+        "html_description": "<td>The invite link. If the link was created by another chat administrator, then the second part of the link will be replaced with &#8220;&#8230;&#8221;.</td>",
+        "rst_description": "The invite link. If the link was created by another chat administrator, then the second part of the link will be replaced with '…'.\n",
+        "name": "invite_link",
+        "required": true
+      },
+      {
+        "type": "User",
+        "description": "Creator of the link",
+        "html_description": "<td>Creator of the link</td>",
+        "rst_description": "Creator of the link\n",
+        "name": "creator",
+        "required": true
+      },
+      {
+        "type": "Boolean",
+        "description": "True, if users joining the chat via the link need to be approved by chat administrators",
+        "html_description": "<td><em>True</em>, if users joining the chat via the link need to be approved by chat administrators</td>",
+        "rst_description": ":code:`True`, if users joining the chat via the link need to be approved by chat administrators\n",
+        "name": "creates_join_request",
+        "required": true
+      },
+      {
+        "type": "Boolean",
+        "description": "True, if the link is primary",
+        "html_description": "<td><em>True</em>, if the link is primary</td>",
+        "rst_description": ":code:`True`, if the link is primary\n",
+        "name": "is_primary",
+        "required": true
+      },
+      {
+        "type": "Boolean",
+        "description": "True, if the link is revoked",
+        "html_description": "<td><em>True</em>, if the link is revoked</td>",
+        "rst_description": ":code:`True`, if the link is revoked\n",
+        "name": "is_revoked",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Invite link name",
+        "html_description": "<td><em>Optional</em>. Invite link name</td>",
+        "rst_description": "*Optional*. Invite link name\n",
+        "name": "name",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "Point in time (Unix timestamp) when the link will expire or has been expired",
+        "html_description": "<td><em>Optional</em>. Point in time (Unix timestamp) when the link will expire or has been expired</td>",
+        "rst_description": "*Optional*. Point in time (Unix timestamp) when the link will expire or has been expired\n",
+        "name": "expire_date",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "The maximum number of users that can be members of the chat simultaneously after joining the chat via this invite link; 1-99999",
+        "html_description": "<td><em>Optional</em>. The maximum number of users that can be members of the chat simultaneously after joining the chat via this invite link; 1-99999</td>",
+        "rst_description": "*Optional*. The maximum number of users that can be members of the chat simultaneously after joining the chat via this invite link; 1-99999\n",
+        "name": "member_limit",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "Number of pending join requests created using this link",
+        "html_description": "<td><em>Optional</em>. Number of pending join requests created using this link</td>",
+        "rst_description": "*Optional*. Number of pending join requests created using this link\n",
+        "name": "pending_join_request_count",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "The number of seconds the subscription will be active for before the next payment",
+        "html_description": "<td><em>Optional</em>. The number of seconds the subscription will be active for before the next payment</td>",
+        "rst_description": "*Optional*. The number of seconds the subscription will be active for before the next payment\n",
+        "name": "subscription_period",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "The amount of Telegram Stars a user must pay initially and after each subsequent subscription period to be a member of the chat using the link",
+        "html_description": "<td><em>Optional</em>. The amount of Telegram Stars a user must pay initially and after each subsequent subscription period to be a member of the chat using the link</td>",
+        "rst_description": "*Optional*. The amount of Telegram Stars a user must pay initially and after each subsequent subscription period to be a member of the chat using the link\n",
+        "name": "subscription_price",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

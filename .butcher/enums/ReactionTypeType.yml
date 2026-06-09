@@ -1,0 +1,12 @@
+name: ReactionTypeType
+description: |
+  This object represents reaction type.
+
+  Source: https://core.telegram.org/bots/api#reactiontype
+multi_parse:
+  attribute: type
+  regexp: "'([a-z_]+)'"
+  entities:
+    - ReactionTypeEmoji
+    - ReactionTypeCustomEmoji
+    - ReactionTypePaid

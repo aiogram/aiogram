@@ -1,0 +1,57 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "messageoriginchannel",
+    "name": "MessageOriginChannel",
+    "description": "The message was originally sent to a channel chat.",
+    "html_description": "<p>The message was originally sent to a channel chat.</p>",
+    "rst_description": "The message was originally sent to a channel chat.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Type of the message origin, always 'channel'",
+        "html_description": "<td>Type of the message origin, always &#8220;channel&#8221;</td>",
+        "rst_description": "Type of the message origin, always 'channel'\n",
+        "name": "type",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "Date the message was sent originally in Unix time",
+        "html_description": "<td>Date the message was sent originally in Unix time</td>",
+        "rst_description": "Date the message was sent originally in Unix time\n",
+        "name": "date",
+        "required": true
+      },
+      {
+        "type": "Chat",
+        "description": "Channel chat to which the message was originally sent",
+        "html_description": "<td>Channel chat to which the message was originally sent</td>",
+        "rst_description": "Channel chat to which the message was originally sent\n",
+        "name": "chat",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "Unique message identifier inside the chat",
+        "html_description": "<td>Unique message identifier inside the chat</td>",
+        "rst_description": "Unique message identifier inside the chat\n",
+        "name": "message_id",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Signature of the original post author",
+        "html_description": "<td><em>Optional</em>. Signature of the original post author</td>",
+        "rst_description": "*Optional*. Signature of the original post author\n",
+        "name": "author_signature",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

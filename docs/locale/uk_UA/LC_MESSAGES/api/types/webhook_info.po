@@ -1,0 +1,82 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2022, aiogram Team
+# This file is distributed under the same license as the aiogram package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2022.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: aiogram \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-10-01 22:51+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.10.3\n"
+
+#: ../../api/types/webhook_info.rst:3
+msgid "WebhookInfo"
+msgstr ""
+
+#: aiogram.types.webhook_info.WebhookInfo:1 of
+msgid "Describes the current status of a webhook."
+msgstr ""
+
+#: aiogram.types.webhook_info.WebhookInfo:3 of
+msgid "Source: https://core.telegram.org/bots/api#webhookinfo"
+msgstr ""
+
+#: ../../docstring aiogram.types.webhook_info.WebhookInfo.url:1 of
+msgid "Webhook URL, may be empty if webhook is not set up"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.webhook_info.WebhookInfo.has_custom_certificate:1 of
+msgid ""
+":code:`True`, if a custom certificate was provided for webhook "
+"certificate checks"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.webhook_info.WebhookInfo.pending_update_count:1 of
+msgid "Number of updates awaiting delivery"
+msgstr ""
+
+#: ../../docstring aiogram.types.webhook_info.WebhookInfo.ip_address:1 of
+msgid "*Optional*. Currently used webhook IP address"
+msgstr ""
+
+#: ../../docstring aiogram.types.webhook_info.WebhookInfo.last_error_date:1 of
+msgid ""
+"*Optional*. Unix time for the most recent error that happened when trying"
+" to deliver an update via webhook"
+msgstr ""
+
+#: ../../docstring aiogram.types.webhook_info.WebhookInfo.last_error_message:1
+#: of
+msgid ""
+"*Optional*. Error message in human-readable format for the most recent "
+"error that happened when trying to deliver an update via webhook"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.webhook_info.WebhookInfo.last_synchronization_error_date:1 of
+msgid ""
+"*Optional*. Unix time of the most recent error that happened when trying "
+"to synchronize available updates with Telegram datacenters"
+msgstr ""
+
+#: ../../docstring aiogram.types.webhook_info.WebhookInfo.max_connections:1 of
+msgid ""
+"*Optional*. The maximum allowed number of simultaneous HTTPS connections "
+"to the webhook for update delivery"
+msgstr ""
+
+#: ../../docstring aiogram.types.webhook_info.WebhookInfo.allowed_updates:1 of
+msgid ""
+"*Optional*. A list of update types the bot is subscribed to. Defaults to "
+"all update types except *chat_member*"
+msgstr ""

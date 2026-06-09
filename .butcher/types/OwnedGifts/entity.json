@@ -1,0 +1,41 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "ownedgifts",
+    "name": "OwnedGifts",
+    "description": "Contains the list of gifts received and owned by a user or a chat.",
+    "html_description": "<p>Contains the list of gifts received and owned by a user or a chat.</p>",
+    "rst_description": "Contains the list of gifts received and owned by a user or a chat.",
+    "annotations": [
+      {
+        "type": "Integer",
+        "description": "The total number of gifts owned by the user or the chat",
+        "html_description": "<td>The total number of gifts owned by the user or the chat</td>",
+        "rst_description": "The total number of gifts owned by the user or the chat\n",
+        "name": "total_count",
+        "required": true
+      },
+      {
+        "type": "Array of OwnedGift",
+        "description": "The list of gifts",
+        "html_description": "<td>The list of gifts</td>",
+        "rst_description": "The list of gifts\n",
+        "name": "gifts",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Offset for the next request. If empty, then there are no more results",
+        "html_description": "<td><em>Optional</em>. Offset for the next request. If empty, then there are no more results</td>",
+        "rst_description": "*Optional*. Offset for the next request. If empty, then there are no more results\n",
+        "name": "next_offset",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

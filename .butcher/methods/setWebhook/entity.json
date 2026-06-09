@@ -1,0 +1,73 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Getting updates",
+    "anchor": "getting-updates"
+  },
+  "object": {
+    "anchor": "setwebhook",
+    "name": "setWebhook",
+    "description": "Use this method to specify a URL and receive incoming updates via an outgoing webhook. Whenever there is an update for the bot, we will send an HTTPS POST request to the specified URL, containing a JSON-serialized Update. In case of an unsuccessful request (a request with response HTTP status code different from 2XY), we will repeat the request and give up after a reasonable amount of attempts. Returns True on success.\nIf you'd like to make sure that the webhook was set by you, you can specify secret data in the parameter secret_token. If specified, the request will contain a header 'X-Telegram-Bot-Api-Secret-Token' with the secret token as content.\nNotes\n1. You will not be able to receive updates using getUpdates for as long as an outgoing webhook is set up.\n2. To use a self-signed certificate, you need to upload your public key certificate using certificate parameter. Please upload as InputFile, sending a String will not work.\n3. Ports currently supported for webhooks: 443, 80, 88, 8443.\nIf you're having any trouble setting up webhooks, please check out this amazing guide to webhooks.",
+    "html_description": "<p>Use this method to specify a URL and receive incoming updates via an outgoing webhook. Whenever there is an update for the bot, we will send an HTTPS POST request to the specified URL, containing a JSON-serialized <a href=\"#update\">Update</a>. In case of an unsuccessful request (a request with response <a href=\"https://en.wikipedia.org/wiki/List_of_HTTP_status_codes\">HTTP status code</a> different from <code>2XY</code>), we will repeat the request and give up after a reasonable amount of attempts. Returns <em>True</em> on success.</p><p>If you'd like to make sure that the webhook was set by you, you can specify secret data in the parameter <em>secret_token</em>. If specified, the request will contain a header &#8220;X-Telegram-Bot-Api-Secret-Token&#8221; with the secret token as content.</p><blockquote>\n<p><strong>Notes</strong><br/>\n<strong>1.</strong> You will not be able to receive updates using <a href=\"#getupdates\">getUpdates</a> for as long as an outgoing webhook is set up.<br/>\n<strong>2.</strong> To use a self-signed certificate, you need to upload your <a href=\"/bots/self-signed\">public key certificate</a> using <em>certificate</em> parameter. Please upload as InputFile, sending a String will not work.<br/>\n<strong>3.</strong> Ports currently supported <em>for webhooks</em>: <strong>443, 80, 88, 8443</strong>.</p>\n<p>If you're having any trouble setting up webhooks, please check out this <a href=\"/bots/webhooks\">amazing guide to webhooks</a>.</p>\n</blockquote>",
+    "rst_description": "Use this method to specify a URL and receive incoming updates via an outgoing webhook. Whenever there is an update for the bot, we will send an HTTPS POST request to the specified URL, containing a JSON-serialized :class:`aiogram.types.update.Update`. In case of an unsuccessful request (a request with response `HTTP status code <https://en.wikipedia.org/wiki/List_of_HTTP_status_codes>`_ different from :code:`2XY`), we will repeat the request and give up after a reasonable amount of attempts. Returns :code:`True` on success.\nIf you'd like to make sure that the webhook was set by you, you can specify secret data in the parameter *secret_token*. If specified, the request will contain a header 'X-Telegram-Bot-Api-Secret-Token' with the secret token as content.\n\n **Notes**\n \n **1.** You will not be able to receive updates using :class:`aiogram.methods.get_updates.GetUpdates` for as long as an outgoing webhook is set up.\n \n **2.** To use a self-signed certificate, you need to upload your `public key certificate <https://core.telegram.org/bots/self-signed>`_ using *certificate* parameter. Please upload as InputFile, sending a String will not work.\n \n **3.** Ports currently supported *for webhooks*: **443, 80, 88, 8443**.\n If you're having any trouble setting up webhooks, please check out this `amazing guide to webhooks <https://core.telegram.org/bots/webhooks>`_.",
+    "annotations": [
+      {
+        "type": "String",
+        "required": true,
+        "description": "HTTPS URL to send updates to. Use an empty string to remove webhook integration",
+        "html_description": "<td>HTTPS URL to send updates to. Use an empty string to remove webhook integration</td>",
+        "rst_description": "HTTPS URL to send updates to. Use an empty string to remove webhook integration\n",
+        "name": "url"
+      },
+      {
+        "type": "InputFile",
+        "required": false,
+        "description": "Upload your public key certificate so that the root certificate in use can be checked. See our self-signed guide for details.",
+        "html_description": "<td>Upload your public key certificate so that the root certificate in use can be checked. See our <a href=\"/bots/self-signed\">self-signed guide</a> for details.</td>",
+        "rst_description": "Upload your public key certificate so that the root certificate in use can be checked. See our `self-signed guide <https://core.telegram.org/bots/self-signed>`_ for details.\n",
+        "name": "certificate"
+      },
+      {
+        "type": "String",
+        "required": false,
+        "description": "The fixed IP address which will be used to send webhook requests instead of the IP address resolved through DNS",
+        "html_description": "<td>The fixed IP address which will be used to send webhook requests instead of the IP address resolved through DNS</td>",
+        "rst_description": "The fixed IP address which will be used to send webhook requests instead of the IP address resolved through DNS\n",
+        "name": "ip_address"
+      },
+      {
+        "type": "Integer",
+        "required": false,
+        "description": "The maximum allowed number of simultaneous HTTPS connections to the webhook for update delivery, 1-100. Defaults to 40. Use lower values to limit the load on your bot's server, and higher values to increase your bot's throughput.",
+        "html_description": "<td>The maximum allowed number of simultaneous HTTPS connections to the webhook for update delivery, 1-100. Defaults to <em>40</em>. Use lower values to limit the load on your bot's server, and higher values to increase your bot's throughput.</td>",
+        "rst_description": "The maximum allowed number of simultaneous HTTPS connections to the webhook for update delivery, 1-100. Defaults to *40*. Use lower values to limit the load on your bot's server, and higher values to increase your bot's throughput.\n",
+        "name": "max_connections"
+      },
+      {
+        "type": "Array of String",
+        "required": false,
+        "description": "A JSON-serialized list of the update types you want your bot to receive. For example, specify [\"message\", \"edited_channel_post\", \"callback_query\"] to only receive updates of these types. See Update for a complete list of available update types. Specify an empty list to receive all update types except chat_member, message_reaction, and message_reaction_count (default). If not specified, the previous setting will be used.\nPlease note that this parameter doesn't affect updates created before the call to the setWebhook, so unwanted updates may be received for a short period of time.",
+        "html_description": "<td>A JSON-serialized list of the update types you want your bot to receive. For example, specify <code>[\"message\", \"edited_channel_post\", \"callback_query\"]</code> to only receive updates of these types. See <a href=\"#update\">Update</a> for a complete list of available update types. Specify an empty list to receive all update types except <em>chat_member</em>, <em>message_reaction</em>, and <em>message_reaction_count</em> (default). If not specified, the previous setting will be used.<br/>\nPlease note that this parameter doesn't affect updates created before the call to the setWebhook, so unwanted updates may be received for a short period of time.</td>",
+        "rst_description": "A JSON-serialized list of the update types you want your bot to receive. For example, specify :code:`[\"message\", \"edited_channel_post\", \"callback_query\"]` to only receive updates of these types. See :class:`aiogram.types.update.Update` for a complete list of available update types. Specify an empty list to receive all update types except *chat_member*, *message_reaction*, and *message_reaction_count* (default). If not specified, the previous setting will be used.\n\nPlease note that this parameter doesn't affect updates created before the call to the setWebhook, so unwanted updates may be received for a short period of time.\n",
+        "name": "allowed_updates"
+      },
+      {
+        "type": "Boolean",
+        "required": false,
+        "description": "Pass True to drop all pending updates",
+        "html_description": "<td>Pass <em>True</em> to drop all pending updates</td>",
+        "rst_description": "Pass :code:`True` to drop all pending updates\n",
+        "name": "drop_pending_updates"
+      },
+      {
+        "type": "String",
+        "required": false,
+        "description": "A secret token to be sent in a header 'X-Telegram-Bot-Api-Secret-Token' in every webhook request, 1-256 characters. Only characters A-Z, a-z, 0-9, _ and - are allowed. The header is useful to ensure that the request comes from a webhook set by you.",
+        "html_description": "<td>A secret token to be sent in a header &#8220;X-Telegram-Bot-Api-Secret-Token&#8221; in every webhook request, 1-256 characters. Only characters <code>A-Z</code>, <code>a-z</code>, <code>0-9</code>, <code>_</code> and <code>-</code> are allowed. The header is useful to ensure that the request comes from a webhook set by you.</td>",
+        "rst_description": "A secret token to be sent in a header 'X-Telegram-Bot-Api-Secret-Token' in every webhook request, 1-256 characters. Only characters :code:`A-Z`, :code:`a-z`, :code:`0-9`, :code:`_` and :code:`-` are allowed. The header is useful to ensure that the request comes from a webhook set by you.\n",
+        "name": "secret_token"
+      }
+    ],
+    "category": "methods"
+  }
+}

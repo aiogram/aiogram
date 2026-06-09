@@ -1,0 +1,11 @@
+name: ChatType
+description: |
+  This object represents a chat type
+
+  Source: https://core.telegram.org/bots/api#chat
+parse:
+  entity: Chat
+  attribute: type
+  regexp: "'([a-z]+)'"
+static:
+  SENDER: sender

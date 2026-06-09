@@ -1,0 +1,100 @@
+name: Bug report
+description: Report issues affecting the framework or the documentation.
+labels:
+  - bug
+body:
+  - type: checkboxes
+    attributes:
+      label: Checklist
+      options:
+        - label: I am sure the error is coming from aiogram code
+          required: true
+        - label: I have searched in the issue tracker for similar bug reports, including closed ones
+          required: true
+
+  - type: markdown
+    attributes:
+      value: |
+        ## Context
+
+        Please provide as much information as possible. This will help us to reproduce the issue and fix it.
+
+  - type: input
+    attributes:
+      label: Operating system
+      placeholder: e.g. Ubuntu 20.04.2 LTS
+    validations:
+      required: true
+
+  - type: input
+    attributes:
+      label: Python version
+      description: (`python --version` inside your virtualenv)
+      placeholder: e.g. 3.10.1
+    validations:
+      required: true
+
+  - type: input
+    attributes:
+      label: aiogram version
+      description: (`pip show aiogram` inside your virtualenv)
+      placeholder: e.g. 2.21 or 3.0b3
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Expected behavior
+      description: Please describe the behavior you are expecting.
+      placeholder: E.g. the bot should send a message with the text "Hello, world!".
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Current behavior
+      description: Please describe the behavior you are currently experiencing.
+      placeholder: E.g. the bot doesn't send any message.
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Steps to reproduce
+      description: Please describe the steps you took to reproduce the behavior.
+      placeholder: |
+        1. step 1
+        2. step 2
+        3. ...
+        4. you get it...
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Code example
+      description: Provide a [minimal, reproducible](https://stackoverflow.com/help/minimal-reproducible-example) and properly formatted example (if applicable).
+      placeholder: |
+        from aiogram import Bot, Dispatcher
+        ...
+      render: python3
+
+  - type: textarea
+    attributes:
+      label: Logs
+      description: Provide the complete traceback (if applicable) or other kind of logs.
+      placeholder: |
+        Traceback (most recent call last):
+          File "main.py", line 1, in <module>
+            ...
+        SomeException: ...
+      render: sh
+
+  - type: textarea
+    attributes:
+      label: Additional information
+      description: Please provide any additional information that may help us to reproduce the issue.
+      placeholder: |
+        E.g. this behavior is reproducible only in group chats.
+
+        You can also attach additional screenshots, logs, or other files.

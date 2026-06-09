@@ -1,0 +1,17 @@
+name: Label new pull request
+
+on:
+  pull_request_target:
+    types:
+      - opened
+    branches:
+      - dev-3.x
+
+jobs:
+  put-label:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Add 3.x label
+        uses: andymckay/labeler@master
+        with:
+          add-labels: 3.x

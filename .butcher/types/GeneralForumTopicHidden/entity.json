@@ -1,0 +1,16 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "generalforumtopichidden",
+    "name": "GeneralForumTopicHidden",
+    "description": "This object represents a service message about General forum topic hidden in the chat. Currently holds no information.",
+    "html_description": "<p>This object represents a service message about General forum topic hidden in the chat. Currently holds no information.</p>",
+    "rst_description": "This object represents a service message about General forum topic hidden in the chat. Currently holds no information.",
+    "annotations": [],
+    "category": "types"
+  }
+}

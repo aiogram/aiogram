@@ -1,0 +1,60 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2024, aiogram Team
+# This file is distributed under the same license as the aiogram package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2024.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: aiogram \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-03-08 02:28+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: uk_UA\n"
+"Language-Team: uk_UA <LL@li.org>\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.13.1\n"
+
+#: ../../api/types/giveaway_completed.rst:3
+msgid "GiveawayCompleted"
+msgstr ""
+
+#: aiogram.types.giveaway_completed.GiveawayCompleted:1 of
+msgid ""
+"This object represents a service message about the completion of a "
+"giveaway without public winners."
+msgstr ""
+
+#: aiogram.types.giveaway_completed.GiveawayCompleted:3 of
+msgid "Source: https://core.telegram.org/bots/api#giveawaycompleted"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.giveaway_completed.GiveawayCompleted.winner_count:1 of
+msgid "Number of winners in the giveaway"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.giveaway_completed.GiveawayCompleted.unclaimed_prize_count:1
+#: of
+msgid "*Optional*. Number of undistributed prizes"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.giveaway_completed.GiveawayCompleted.giveaway_message:1 of
+msgid ""
+"*Optional*. Message with the giveaway that was completed, if it wasn't "
+"deleted"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.giveaway_completed.GiveawayCompleted.is_star_giveaway:1 of
+msgid ""
+"*Optional*. :code:`True`, if the giveaway is a Telegram Star giveaway. "
+"Otherwise, currently, the giveaway is a Telegram Premium giveaway."
+msgstr ""

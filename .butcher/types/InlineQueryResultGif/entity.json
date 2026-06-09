@@ -1,0 +1,137 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Inline mode",
+    "anchor": "inline-mode"
+  },
+  "object": {
+    "anchor": "inlinequeryresultgif",
+    "name": "InlineQueryResultGif",
+    "description": "Represents a link to an animated GIF file. By default, this animated GIF file will be sent by the user with optional caption. Alternatively, you can use input_message_content to send a message with the specified content instead of the animation.",
+    "html_description": "<p>Represents a link to an animated GIF file. By default, this animated GIF file will be sent by the user with optional caption. Alternatively, you can use <em>input_message_content</em> to send a message with the specified content instead of the animation.</p>",
+    "rst_description": "Represents a link to an animated GIF file. By default, this animated GIF file will be sent by the user with optional caption. Alternatively, you can use *input_message_content* to send a message with the specified content instead of the animation.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Type of the result, must be gif",
+        "html_description": "<td>Type of the result, must be <em>gif</em></td>",
+        "rst_description": "Type of the result, must be *gif*\n",
+        "name": "type",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Unique identifier for this result, 1-64 bytes",
+        "html_description": "<td>Unique identifier for this result, 1-64 bytes</td>",
+        "rst_description": "Unique identifier for this result, 1-64 bytes\n",
+        "name": "id",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "A valid URL for the GIF file",
+        "html_description": "<td>A valid URL for the GIF file</td>",
+        "rst_description": "A valid URL for the GIF file\n",
+        "name": "gif_url",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "Width of the GIF",
+        "html_description": "<td><em>Optional</em>. Width of the GIF</td>",
+        "rst_description": "*Optional*. Width of the GIF\n",
+        "name": "gif_width",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "Height of the GIF",
+        "html_description": "<td><em>Optional</em>. Height of the GIF</td>",
+        "rst_description": "*Optional*. Height of the GIF\n",
+        "name": "gif_height",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "Duration of the GIF in seconds",
+        "html_description": "<td><em>Optional</em>. Duration of the GIF in seconds</td>",
+        "rst_description": "*Optional*. Duration of the GIF in seconds\n",
+        "name": "gif_duration",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "URL of the static (JPEG or GIF) or animated (MPEG4) thumbnail for the result",
+        "html_description": "<td>URL of the static (JPEG or GIF) or animated (MPEG4) thumbnail for the result</td>",
+        "rst_description": "URL of the static (JPEG or GIF) or animated (MPEG4) thumbnail for the result\n",
+        "name": "thumbnail_url",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "MIME type of the thumbnail, must be one of 'image/jpeg', 'image/gif', or 'video/mp4'. Defaults to 'image/jpeg'",
+        "html_description": "<td><em>Optional</em>. MIME type of the thumbnail, must be one of &#8220;image/jpeg&#8221;, &#8220;image/gif&#8221;, or &#8220;video/mp4&#8221;. Defaults to &#8220;image/jpeg&#8221;</td>",
+        "rst_description": "*Optional*. MIME type of the thumbnail, must be one of 'image/jpeg', 'image/gif', or 'video/mp4'. Defaults to 'image/jpeg'\n",
+        "name": "thumbnail_mime_type",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "Title for the result",
+        "html_description": "<td><em>Optional</em>. Title for the result</td>",
+        "rst_description": "*Optional*. Title for the result\n",
+        "name": "title",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "Caption of the GIF file to be sent, 0-1024 characters after entities parsing",
+        "html_description": "<td><em>Optional</em>. Caption of the GIF file to be sent, 0-1024 characters after entities parsing</td>",
+        "rst_description": "*Optional*. Caption of the GIF file to be sent, 0-1024 characters after entities parsing\n",
+        "name": "caption",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "Mode for parsing entities in the caption. See formatting options for more details.",
+        "html_description": "<td><em>Optional</em>. Mode for parsing entities in the caption. See <a href=\"#formatting-options\">formatting options</a> for more details.</td>",
+        "rst_description": "*Optional*. Mode for parsing entities in the caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.\n",
+        "name": "parse_mode",
+        "required": false
+      },
+      {
+        "type": "Array of MessageEntity",
+        "description": "List of special entities that appear in the caption, which can be specified instead of parse_mode",
+        "html_description": "<td><em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em></td>",
+        "rst_description": "*Optional*. List of special entities that appear in the caption, which can be specified instead of *parse_mode*\n",
+        "name": "caption_entities",
+        "required": false
+      },
+      {
+        "type": "Boolean",
+        "description": "Pass True, if the caption must be shown above the message media",
+        "html_description": "<td><em>Optional</em>. Pass <em>True</em>, if the caption must be shown above the message media</td>",
+        "rst_description": "*Optional*. Pass :code:`True`, if the caption must be shown above the message media\n",
+        "name": "show_caption_above_media",
+        "required": false
+      },
+      {
+        "type": "InlineKeyboardMarkup",
+        "description": "Inline keyboard attached to the message",
+        "html_description": "<td><em>Optional</em>. <a href=\"/bots/features#inline-keyboards\">Inline keyboard</a> attached to the message</td>",
+        "rst_description": "*Optional*. `Inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_ attached to the message\n",
+        "name": "reply_markup",
+        "required": false
+      },
+      {
+        "type": "InputMessageContent",
+        "description": "Content of the message to be sent instead of the GIF animation",
+        "html_description": "<td><em>Optional</em>. Content of the message to be sent instead of the GIF animation</td>",
+        "rst_description": "*Optional*. Content of the message to be sent instead of the GIF animation\n",
+        "name": "input_message_content",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

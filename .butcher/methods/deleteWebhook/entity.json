@@ -1,0 +1,25 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Getting updates",
+    "anchor": "getting-updates"
+  },
+  "object": {
+    "anchor": "deletewebhook",
+    "name": "deleteWebhook",
+    "description": "Use this method to remove webhook integration if you decide to switch back to getUpdates. Returns True on success.",
+    "html_description": "<p>Use this method to remove webhook integration if you decide to switch back to <a href=\"#getupdates\">getUpdates</a>. Returns <em>True</em> on success.</p>",
+    "rst_description": "Use this method to remove webhook integration if you decide to switch back to :class:`aiogram.methods.get_updates.GetUpdates`. Returns :code:`True` on success.",
+    "annotations": [
+      {
+        "type": "Boolean",
+        "required": false,
+        "description": "Pass True to drop all pending updates",
+        "html_description": "<td>Pass <em>True</em> to drop all pending updates</td>",
+        "rst_description": "Pass :code:`True` to drop all pending updates\n",
+        "name": "drop_pending_updates"
+      }
+    ],
+    "category": "methods"
+  }
+}

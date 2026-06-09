@@ -1,0 +1,25 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "chatbackground",
+    "name": "ChatBackground",
+    "description": "This object represents a chat background.",
+    "html_description": "<p>This object represents a chat background.</p>",
+    "rst_description": "This object represents a chat background.",
+    "annotations": [
+      {
+        "type": "BackgroundType",
+        "description": "Type of the background",
+        "html_description": "<td>Type of the background</td>",
+        "rst_description": "Type of the background\n",
+        "name": "type",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

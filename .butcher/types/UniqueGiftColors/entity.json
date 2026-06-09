@@ -1,0 +1,65 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "uniquegiftcolors",
+    "name": "UniqueGiftColors",
+    "description": "This object contains information about the color scheme for a user's name, message replies and link previews based on a unique gift.",
+    "html_description": "<p>This object contains information about the color scheme for a user's name, message replies and link previews based on a unique gift.</p>",
+    "rst_description": "This object contains information about the color scheme for a user's name, message replies and link previews based on a unique gift.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Custom emoji identifier of the unique gift's model",
+        "html_description": "<td>Custom emoji identifier of the unique gift's model</td>",
+        "rst_description": "Custom emoji identifier of the unique gift's model\n",
+        "name": "model_custom_emoji_id",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Custom emoji identifier of the unique gift's symbol",
+        "html_description": "<td>Custom emoji identifier of the unique gift's symbol</td>",
+        "rst_description": "Custom emoji identifier of the unique gift's symbol\n",
+        "name": "symbol_custom_emoji_id",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "Main color used in light themes; RGB format",
+        "html_description": "<td>Main color used in light themes; RGB format</td>",
+        "rst_description": "Main color used in light themes; RGB format\n",
+        "name": "light_theme_main_color",
+        "required": true
+      },
+      {
+        "type": "Array of Integer",
+        "description": "List of 1-3 additional colors used in light themes; RGB format",
+        "html_description": "<td>List of 1-3 additional colors used in light themes; RGB format</td>",
+        "rst_description": "List of 1-3 additional colors used in light themes; RGB format\n",
+        "name": "light_theme_other_colors",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "Main color used in dark themes; RGB format",
+        "html_description": "<td>Main color used in dark themes; RGB format</td>",
+        "rst_description": "Main color used in dark themes; RGB format\n",
+        "name": "dark_theme_main_color",
+        "required": true
+      },
+      {
+        "type": "Array of Integer",
+        "description": "List of 1-3 additional colors used in dark themes; RGB format",
+        "html_description": "<td>List of 1-3 additional colors used in dark themes; RGB format</td>",
+        "rst_description": "List of 1-3 additional colors used in dark themes; RGB format\n",
+        "name": "dark_theme_other_colors",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

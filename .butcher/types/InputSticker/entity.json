@@ -1,0 +1,57 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Stickers",
+    "anchor": "stickers"
+  },
+  "object": {
+    "anchor": "inputsticker",
+    "name": "InputSticker",
+    "description": "This object describes a sticker to be added to a sticker set.",
+    "html_description": "<p>This object describes a sticker to be added to a sticker set.</p>",
+    "rst_description": "This object describes a sticker to be added to a sticker set.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "The added sticker. Pass a file_id as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or pass 'attach://<file_attach_name>' to upload a new file using multipart/form-data under <file_attach_name> name. Animated and video stickers can't be uploaded via HTTP URL. More information on Sending Files",
+        "html_description": "<td>The added sticker. Pass a <em>file_id</em> as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or pass &#8220;attach://&lt;file_attach_name&gt;&#8221; to upload a new file using multipart/form-data under &lt;file_attach_name&gt; name. Animated and video stickers can't be uploaded via HTTP URL. <a href=\"#sending-files\">More information on Sending Files &#187;</a></td>",
+        "rst_description": "The added sticker. Pass a *file_id* as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or pass 'attach://<file_attach_name>' to upload a new file using multipart/form-data under <file_attach_name> name. Animated and video stickers can't be uploaded via HTTP URL. :ref:`More information on Sending Files » <sending-files>`\n",
+        "name": "sticker",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Format of the added sticker, must be one of 'static' for a .WEBP or .PNG image, 'animated' for a .TGS animation, 'video' for a .WEBM video",
+        "html_description": "<td>Format of the added sticker, must be one of &#8220;static&#8221; for a <strong>.WEBP</strong> or <strong>.PNG</strong> image, &#8220;animated&#8221; for a <strong>.TGS</strong> animation, &#8220;video&#8221; for a <strong>.WEBM</strong> video</td>",
+        "rst_description": "Format of the added sticker, must be one of 'static' for a **.WEBP** or **.PNG** image, 'animated' for a **.TGS** animation, 'video' for a **.WEBM** video\n",
+        "name": "format",
+        "required": true
+      },
+      {
+        "type": "Array of String",
+        "description": "List of 1-20 emoji associated with the sticker",
+        "html_description": "<td>List of 1-20 emoji associated with the sticker</td>",
+        "rst_description": "List of 1-20 emoji associated with the sticker\n",
+        "name": "emoji_list",
+        "required": true
+      },
+      {
+        "type": "MaskPosition",
+        "description": "Position where the mask should be placed on faces. For 'mask' stickers only.",
+        "html_description": "<td><em>Optional</em>. Position where the mask should be placed on faces. For &#8220;mask&#8221; stickers only.</td>",
+        "rst_description": "*Optional*. Position where the mask should be placed on faces. For 'mask' stickers only.\n",
+        "name": "mask_position",
+        "required": false
+      },
+      {
+        "type": "Array of String",
+        "description": "List of 0-20 search keywords for the sticker with total length of up to 64 characters. For 'regular' and 'custom_emoji' stickers only.",
+        "html_description": "<td><em>Optional</em>. List of 0-20 search keywords for the sticker with total length of up to 64 characters. For &#8220;regular&#8221; and &#8220;custom_emoji&#8221; stickers only.</td>",
+        "rst_description": "*Optional*. List of 0-20 search keywords for the sticker with total length of up to 64 characters. For 'regular' and 'custom_emoji' stickers only.\n",
+        "name": "keywords",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

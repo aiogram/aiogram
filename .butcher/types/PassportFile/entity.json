@@ -1,0 +1,49 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Telegram Passport",
+    "anchor": "telegram-passport"
+  },
+  "object": {
+    "anchor": "passportfile",
+    "name": "PassportFile",
+    "description": "This object represents a file uploaded to Telegram Passport. Currently all Telegram Passport files are in JPEG format when decrypted and don't exceed 10MB.",
+    "html_description": "<p>This object represents a file uploaded to Telegram Passport. Currently all Telegram Passport files are in JPEG format when decrypted and don't exceed 10MB.</p>",
+    "rst_description": "This object represents a file uploaded to Telegram Passport. Currently all Telegram Passport files are in JPEG format when decrypted and don't exceed 10MB.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Identifier for this file, which can be used to download or reuse the file",
+        "html_description": "<td>Identifier for this file, which can be used to download or reuse the file</td>",
+        "rst_description": "Identifier for this file, which can be used to download or reuse the file\n",
+        "name": "file_id",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.",
+        "html_description": "<td>Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.</td>",
+        "rst_description": "Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.\n",
+        "name": "file_unique_id",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "File size in bytes",
+        "html_description": "<td>File size in bytes</td>",
+        "rst_description": "File size in bytes\n",
+        "name": "file_size",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "Unix time when the file was uploaded",
+        "html_description": "<td>Unix time when the file was uploaded</td>",
+        "rst_description": "Unix time when the file was uploaded\n",
+        "name": "file_date",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

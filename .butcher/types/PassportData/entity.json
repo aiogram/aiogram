@@ -1,0 +1,33 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Telegram Passport",
+    "anchor": "telegram-passport"
+  },
+  "object": {
+    "anchor": "passportdata",
+    "name": "PassportData",
+    "description": "Describes Telegram Passport data shared with the bot by the user.",
+    "html_description": "<p>Describes Telegram Passport data shared with the bot by the user.</p>",
+    "rst_description": "Describes Telegram Passport data shared with the bot by the user.",
+    "annotations": [
+      {
+        "type": "Array of EncryptedPassportElement",
+        "description": "Array with information about documents and other Telegram Passport elements that was shared with the bot",
+        "html_description": "<td>Array with information about documents and other Telegram Passport elements that was shared with the bot</td>",
+        "rst_description": "Array with information about documents and other Telegram Passport elements that was shared with the bot\n",
+        "name": "data",
+        "required": true
+      },
+      {
+        "type": "EncryptedCredentials",
+        "description": "Encrypted credentials required to decrypt the data",
+        "html_description": "<td>Encrypted credentials required to decrypt the data</td>",
+        "rst_description": "Encrypted credentials required to decrypt the data\n",
+        "name": "credentials",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

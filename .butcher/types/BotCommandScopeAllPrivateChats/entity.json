@@ -1,0 +1,25 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "botcommandscopeallprivatechats",
+    "name": "BotCommandScopeAllPrivateChats",
+    "description": "Represents the scope of bot commands, covering all private chats.",
+    "html_description": "<p>Represents the <a href=\"#botcommandscope\">scope</a> of bot commands, covering all private chats.</p>",
+    "rst_description": "Represents the `scope <https://core.telegram.org/bots/api#botcommandscope>`_ of bot commands, covering all private chats.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Scope type, must be all_private_chats",
+        "html_description": "<td>Scope type, must be <em>all_private_chats</em></td>",
+        "rst_description": "Scope type, must be *all_private_chats*\n",
+        "name": "type",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

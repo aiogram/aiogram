@@ -1,0 +1,49 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Inline mode",
+    "anchor": "inline-mode"
+  },
+  "object": {
+    "anchor": "inputcontactmessagecontent",
+    "name": "InputContactMessageContent",
+    "description": "Represents the content of a contact message to be sent as the result of an inline query.",
+    "html_description": "<p>Represents the <a href=\"#inputmessagecontent\">content</a> of a contact message to be sent as the result of an inline query.</p>",
+    "rst_description": "Represents the `content <https://core.telegram.org/bots/api#inputmessagecontent>`_ of a contact message to be sent as the result of an inline query.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Contact's phone number",
+        "html_description": "<td>Contact's phone number</td>",
+        "rst_description": "Contact's phone number\n",
+        "name": "phone_number",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Contact's first name",
+        "html_description": "<td>Contact's first name</td>",
+        "rst_description": "Contact's first name\n",
+        "name": "first_name",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Contact's last name",
+        "html_description": "<td><em>Optional</em>. Contact's last name</td>",
+        "rst_description": "*Optional*. Contact's last name\n",
+        "name": "last_name",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "Additional data about the contact in the form of a vCard, 0-2048 bytes",
+        "html_description": "<td><em>Optional</em>. Additional data about the contact in the form of a <a href=\"https://en.wikipedia.org/wiki/VCard\">vCard</a>, 0-2048 bytes</td>",
+        "rst_description": "*Optional*. Additional data about the contact in the form of a `vCard <https://en.wikipedia.org/wiki/VCard>`_, 0-2048 bytes\n",
+        "name": "vcard",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

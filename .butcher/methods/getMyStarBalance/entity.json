@@ -1,0 +1,16 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Payments",
+    "anchor": "payments"
+  },
+  "object": {
+    "anchor": "getmystarbalance",
+    "name": "getMyStarBalance",
+    "description": "A method to get the current Telegram Stars balance of the bot. Requires no parameters. On success, returns a StarAmount object.",
+    "html_description": "<p>A method to get the current Telegram Stars balance of the bot. Requires no parameters. On success, returns a <a href=\"#staramount\">StarAmount</a> object.</p>",
+    "rst_description": "A method to get the current Telegram Stars balance of the bot. Requires no parameters. On success, returns a :class:`aiogram.types.star_amount.StarAmount` object.",
+    "annotations": [],
+    "category": "methods"
+  }
+}

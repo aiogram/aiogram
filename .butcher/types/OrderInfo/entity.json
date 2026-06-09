@@ -1,0 +1,49 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Payments",
+    "anchor": "payments"
+  },
+  "object": {
+    "anchor": "orderinfo",
+    "name": "OrderInfo",
+    "description": "This object represents information about an order.",
+    "html_description": "<p>This object represents information about an order.</p>",
+    "rst_description": "This object represents information about an order.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "User name",
+        "html_description": "<td><em>Optional</em>. User name</td>",
+        "rst_description": "*Optional*. User name\n",
+        "name": "name",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "User's phone number",
+        "html_description": "<td><em>Optional</em>. User's phone number</td>",
+        "rst_description": "*Optional*. User's phone number\n",
+        "name": "phone_number",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "User email",
+        "html_description": "<td><em>Optional</em>. User email</td>",
+        "rst_description": "*Optional*. User email\n",
+        "name": "email",
+        "required": false
+      },
+      {
+        "type": "ShippingAddress",
+        "description": "User shipping address",
+        "html_description": "<td><em>Optional</em>. User shipping address</td>",
+        "rst_description": "*Optional*. User shipping address\n",
+        "name": "shipping_address",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

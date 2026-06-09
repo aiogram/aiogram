@@ -1,0 +1,33 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "chatmemberleft",
+    "name": "ChatMemberLeft",
+    "description": "Represents a chat member that isn't currently a member of the chat, but may join it themselves.",
+    "html_description": "<p>Represents a <a href=\"#chatmember\">chat member</a> that isn't currently a member of the chat, but may join it themselves.</p>",
+    "rst_description": "Represents a `chat member <https://core.telegram.org/bots/api#chatmember>`_ that isn't currently a member of the chat, but may join it themselves.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "The member's status in the chat, always 'left'",
+        "html_description": "<td>The member's status in the chat, always &#8220;left&#8221;</td>",
+        "rst_description": "The member's status in the chat, always 'left'\n",
+        "name": "status",
+        "required": true
+      },
+      {
+        "type": "User",
+        "description": "Information about the user",
+        "html_description": "<td>Information about the user</td>",
+        "rst_description": "Information about the user\n",
+        "name": "user",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

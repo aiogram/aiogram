@@ -1,0 +1,16 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "maybeinaccessiblemessage",
+    "name": "MaybeInaccessibleMessage",
+    "description": "This object describes a message that can be inaccessible to the bot. It can be one of\n - Message\n - InaccessibleMessage",
+    "html_description": "<p>This object describes a message that can be inaccessible to the bot. It can be one of</p><ul>\n<li><a href=\"#message\">Message</a></li>\n<li><a href=\"#inaccessiblemessage\">InaccessibleMessage</a></li>\n</ul>",
+    "rst_description": "This object describes a message that can be inaccessible to the bot. It can be one of\n\n - :class:`aiogram.types.message.Message`\n - :class:`aiogram.types.inaccessible_message.InaccessibleMessage`",
+    "annotations": [],
+    "category": "types"
+  }
+}

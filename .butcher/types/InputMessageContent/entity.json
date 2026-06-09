@@ -1,0 +1,16 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Inline mode",
+    "anchor": "inline-mode"
+  },
+  "object": {
+    "anchor": "inputmessagecontent",
+    "name": "InputMessageContent",
+    "description": "This object represents the content of a message to be sent as a result of an inline query. Telegram clients currently support the following 5 types:\n - InputTextMessageContent\n - InputLocationMessageContent\n - InputVenueMessageContent\n - InputContactMessageContent\n - InputInvoiceMessageContent",
+    "html_description": "<p>This object represents the content of a message to be sent as a result of an inline query. Telegram clients currently support the following 5 types:</p><ul>\n<li><a href=\"#inputtextmessagecontent\">InputTextMessageContent</a></li>\n<li><a href=\"#inputlocationmessagecontent\">InputLocationMessageContent</a></li>\n<li><a href=\"#inputvenuemessagecontent\">InputVenueMessageContent</a></li>\n<li><a href=\"#inputcontactmessagecontent\">InputContactMessageContent</a></li>\n<li><a href=\"#inputinvoicemessagecontent\">InputInvoiceMessageContent</a></li>\n</ul>",
+    "rst_description": "This object represents the content of a message to be sent as a result of an inline query. Telegram clients currently support the following 5 types:\n\n - :class:`aiogram.types.input_text_message_content.InputTextMessageContent`\n - :class:`aiogram.types.input_location_message_content.InputLocationMessageContent`\n - :class:`aiogram.types.input_venue_message_content.InputVenueMessageContent`\n - :class:`aiogram.types.input_contact_message_content.InputContactMessageContent`\n - :class:`aiogram.types.input_invoice_message_content.InputInvoiceMessageContent`",
+    "annotations": [],
+    "category": "types"
+  }
+}

@@ -1,0 +1,15 @@
+name: ChatMemberStatus
+description: |
+  This object represents chat member status.
+
+  Source: https://core.telegram.org/bots/api#chatmember
+multi_parse:
+  attribute: status
+  regexp: "'([a-z_]+)'"
+  entities:
+    - ChatMemberOwner
+    - ChatMemberAdministrator
+    - ChatMemberMember
+    - ChatMemberRestricted
+    - ChatMemberLeft
+    - ChatMemberBanned

@@ -1,0 +1,33 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Stickers",
+    "anchor": "stickers"
+  },
+  "object": {
+    "anchor": "setstickerpositioninset",
+    "name": "setStickerPositionInSet",
+    "description": "Use this method to move a sticker in a set created by the bot to a specific position. Returns True on success.",
+    "html_description": "<p>Use this method to move a sticker in a set created by the bot to a specific position. Returns <em>True</em> on success.</p>",
+    "rst_description": "Use this method to move a sticker in a set created by the bot to a specific position. Returns :code:`True` on success.",
+    "annotations": [
+      {
+        "type": "String",
+        "required": true,
+        "description": "File identifier of the sticker",
+        "html_description": "<td>File identifier of the sticker</td>",
+        "rst_description": "File identifier of the sticker\n",
+        "name": "sticker"
+      },
+      {
+        "type": "Integer",
+        "required": true,
+        "description": "New sticker position in the set, zero-based",
+        "html_description": "<td>New sticker position in the set, zero-based</td>",
+        "rst_description": "New sticker position in the set, zero-based\n",
+        "name": "position"
+      }
+    ],
+    "category": "methods"
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "paidmediainfo",
+    "name": "PaidMediaInfo",
+    "description": "Describes the paid media added to a message.",
+    "html_description": "<p>Describes the paid media added to a message.</p>",
+    "rst_description": "Describes the paid media added to a message.",
+    "annotations": [
+      {
+        "type": "Integer",
+        "description": "The number of Telegram Stars that must be paid to buy access to the media",
+        "html_description": "<td>The number of Telegram Stars that must be paid to buy access to the media</td>",
+        "rst_description": "The number of Telegram Stars that must be paid to buy access to the media\n",
+        "name": "star_count",
+        "required": true
+      },
+      {
+        "type": "Array of PaidMedia",
+        "description": "Information about the paid media",
+        "html_description": "<td>Information about the paid media</td>",
+        "rst_description": "Information about the paid media\n",
+        "name": "paid_media",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

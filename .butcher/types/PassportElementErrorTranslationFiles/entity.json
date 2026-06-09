@@ -1,0 +1,49 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Telegram Passport",
+    "anchor": "telegram-passport"
+  },
+  "object": {
+    "anchor": "passportelementerrortranslationfiles",
+    "name": "PassportElementErrorTranslationFiles",
+    "description": "Represents an issue with the translated version of a document. The error is considered resolved when a file with the document translation change.",
+    "html_description": "<p>Represents an issue with the translated version of a document. The error is considered resolved when a file with the document translation change.</p>",
+    "rst_description": "Represents an issue with the translated version of a document. The error is considered resolved when a file with the document translation change.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Error source, must be translation_files",
+        "html_description": "<td>Error source, must be <em>translation_files</em></td>",
+        "rst_description": "Error source, must be *translation_files*\n",
+        "name": "source",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Type of element of the user's Telegram Passport which has the issue, one of 'passport', 'driver_license', 'identity_card', 'internal_passport', 'utility_bill', 'bank_statement', 'rental_agreement', 'passport_registration', 'temporary_registration'",
+        "html_description": "<td>Type of element of the user's Telegram Passport which has the issue, one of &#8220;passport&#8221;, &#8220;driver_license&#8221;, &#8220;identity_card&#8221;, &#8220;internal_passport&#8221;, &#8220;utility_bill&#8221;, &#8220;bank_statement&#8221;, &#8220;rental_agreement&#8221;, &#8220;passport_registration&#8221;, &#8220;temporary_registration&#8221;</td>",
+        "rst_description": "Type of element of the user's Telegram Passport which has the issue, one of 'passport', 'driver_license', 'identity_card', 'internal_passport', 'utility_bill', 'bank_statement', 'rental_agreement', 'passport_registration', 'temporary_registration'\n",
+        "name": "type",
+        "required": true
+      },
+      {
+        "type": "Array of String",
+        "description": "List of base64-encoded file hashes",
+        "html_description": "<td>List of base64-encoded file hashes</td>",
+        "rst_description": "List of base64-encoded file hashes\n",
+        "name": "file_hashes",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Error message",
+        "html_description": "<td>Error message</td>",
+        "rst_description": "Error message\n",
+        "name": "message",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

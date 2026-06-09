@@ -1,0 +1,49 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Stickers",
+    "anchor": "stickers"
+  },
+  "object": {
+    "anchor": "maskposition",
+    "name": "MaskPosition",
+    "description": "This object describes the position on faces where a mask should be placed by default.",
+    "html_description": "<p>This object describes the position on faces where a mask should be placed by default.</p>",
+    "rst_description": "This object describes the position on faces where a mask should be placed by default.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "The part of the face relative to which the mask should be placed. One of 'forehead', 'eyes', 'mouth', or 'chin'.",
+        "html_description": "<td>The part of the face relative to which the mask should be placed. One of &#8220;forehead&#8221;, &#8220;eyes&#8221;, &#8220;mouth&#8221;, or &#8220;chin&#8221;.</td>",
+        "rst_description": "The part of the face relative to which the mask should be placed. One of 'forehead', 'eyes', 'mouth', or 'chin'.\n",
+        "name": "point",
+        "required": true
+      },
+      {
+        "type": "Float",
+        "description": "Shift by X-axis measured in widths of the mask scaled to the face size, from left to right. For example, choosing -1.0 will place mask just to the left of the default mask position.",
+        "html_description": "<td>Shift by X-axis measured in widths of the mask scaled to the face size, from left to right. For example, choosing -1.0 will place mask just to the left of the default mask position.</td>",
+        "rst_description": "Shift by X-axis measured in widths of the mask scaled to the face size, from left to right. For example, choosing -1.0 will place mask just to the left of the default mask position.\n",
+        "name": "x_shift",
+        "required": true
+      },
+      {
+        "type": "Float",
+        "description": "Shift by Y-axis measured in heights of the mask scaled to the face size, from top to bottom. For example, 1.0 will place the mask just below the default mask position.",
+        "html_description": "<td>Shift by Y-axis measured in heights of the mask scaled to the face size, from top to bottom. For example, 1.0 will place the mask just below the default mask position.</td>",
+        "rst_description": "Shift by Y-axis measured in heights of the mask scaled to the face size, from top to bottom. For example, 1.0 will place the mask just below the default mask position.\n",
+        "name": "y_shift",
+        "required": true
+      },
+      {
+        "type": "Float",
+        "description": "Mask scaling coefficient. For example, 2.0 means double size.",
+        "html_description": "<td>Mask scaling coefficient. For example, 2.0 means double size.</td>",
+        "rst_description": "Mask scaling coefficient. For example, 2.0 means double size.\n",
+        "name": "scale",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

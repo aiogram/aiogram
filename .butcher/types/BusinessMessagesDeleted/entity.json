@@ -1,0 +1,41 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "businessmessagesdeleted",
+    "name": "BusinessMessagesDeleted",
+    "description": "This object is received when messages are deleted from a connected business account.",
+    "html_description": "<p>This object is received when messages are deleted from a connected business account.</p>",
+    "rst_description": "This object is received when messages are deleted from a connected business account.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Unique identifier of the business connection",
+        "html_description": "<td>Unique identifier of the business connection</td>",
+        "rst_description": "Unique identifier of the business connection\n",
+        "name": "business_connection_id",
+        "required": true
+      },
+      {
+        "type": "Chat",
+        "description": "Information about a chat in the business account. The bot may not have access to the chat or the corresponding user.",
+        "html_description": "<td>Information about a chat in the business account. The bot may not have access to the chat or the corresponding user.</td>",
+        "rst_description": "Information about a chat in the business account. The bot may not have access to the chat or the corresponding user.\n",
+        "name": "chat",
+        "required": true
+      },
+      {
+        "type": "Array of Integer",
+        "description": "The list of identifiers of deleted messages in the chat of the business account",
+        "html_description": "<td>The list of identifiers of deleted messages in the chat of the business account</td>",
+        "rst_description": "The list of identifiers of deleted messages in the chat of the business account\n",
+        "name": "message_ids",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

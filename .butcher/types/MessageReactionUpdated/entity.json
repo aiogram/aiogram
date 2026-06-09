@@ -1,0 +1,73 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "messagereactionupdated",
+    "name": "MessageReactionUpdated",
+    "description": "This object represents a change of a reaction on a message performed by a user.",
+    "html_description": "<p>This object represents a change of a reaction on a message performed by a user.</p>",
+    "rst_description": "This object represents a change of a reaction on a message performed by a user.",
+    "annotations": [
+      {
+        "type": "Chat",
+        "description": "The chat containing the message the user reacted to",
+        "html_description": "<td>The chat containing the message the user reacted to</td>",
+        "rst_description": "The chat containing the message the user reacted to\n",
+        "name": "chat",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "Unique identifier of the message inside the chat",
+        "html_description": "<td>Unique identifier of the message inside the chat</td>",
+        "rst_description": "Unique identifier of the message inside the chat\n",
+        "name": "message_id",
+        "required": true
+      },
+      {
+        "type": "User",
+        "description": "The user that changed the reaction, if the user isn't anonymous",
+        "html_description": "<td><em>Optional</em>. The user that changed the reaction, if the user isn't anonymous</td>",
+        "rst_description": "*Optional*. The user that changed the reaction, if the user isn't anonymous\n",
+        "name": "user",
+        "required": false
+      },
+      {
+        "type": "Chat",
+        "description": "The chat on behalf of which the reaction was changed, if the user is anonymous",
+        "html_description": "<td><em>Optional</em>. The chat on behalf of which the reaction was changed, if the user is anonymous</td>",
+        "rst_description": "*Optional*. The chat on behalf of which the reaction was changed, if the user is anonymous\n",
+        "name": "actor_chat",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "Date of the change in Unix time",
+        "html_description": "<td>Date of the change in Unix time</td>",
+        "rst_description": "Date of the change in Unix time\n",
+        "name": "date",
+        "required": true
+      },
+      {
+        "type": "Array of ReactionType",
+        "description": "Previous list of reaction types that were set by the user",
+        "html_description": "<td>Previous list of reaction types that were set by the user</td>",
+        "rst_description": "Previous list of reaction types that were set by the user\n",
+        "name": "old_reaction",
+        "required": true
+      },
+      {
+        "type": "Array of ReactionType",
+        "description": "New list of reaction types that have been set by the user",
+        "html_description": "<td>New list of reaction types that have been set by the user</td>",
+        "rst_description": "New list of reaction types that have been set by the user\n",
+        "name": "new_reaction",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

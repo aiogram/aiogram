@@ -1,0 +1,22 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: "trailing-whitespace"
+      - id: "check-case-conflict"
+      - id: "check-merge-conflict"
+      - id: "debug-statements"
+      - id: "end-of-file-fixer"
+      - id: "mixed-line-ending"
+      - id: "detect-private-key"
+      - id: "check-yaml"
+      - id: "check-toml"
+      - id: "check-json"
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: 'v0.15.12'
+    hooks:
+      - id: ruff-check
+        files: &files '^(aiogram|tests|examples)'
+      - id: ruff-format
+        files: *files

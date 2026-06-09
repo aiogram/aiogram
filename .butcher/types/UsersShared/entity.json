@@ -1,0 +1,45 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "usersshared",
+    "name": "UsersShared",
+    "description": "This object contains information about the users whose identifiers were shared with the bot using a KeyboardButtonRequestUsers button.",
+    "html_description": "<p>This object contains information about the users whose identifiers were shared with the bot using a <a href=\"#keyboardbuttonrequestusers\">KeyboardButtonRequestUsers</a> button.</p>",
+    "rst_description": "This object contains information about the users whose identifiers were shared with the bot using a :class:`aiogram.types.keyboard_button_request_users.KeyboardButtonRequestUsers` button.",
+    "annotations": [
+      {
+        "type": "Integer",
+        "description": "Identifier of the request",
+        "html_description": "<td>Identifier of the request</td>",
+        "rst_description": "Identifier of the request\n",
+        "name": "request_id",
+        "required": true
+      },
+      {
+        "type": "Array of SharedUser",
+        "description": "Information about users shared with the bot.",
+        "html_description": "<td>Information about users shared with the bot.</td>",
+        "rst_description": "Information about users shared with the bot.\n",
+        "name": "users",
+        "required": true
+      },
+      {
+        "type": "Array of Integer",
+        "description": "Identifiers of the shared users. These numbers may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting them. But they have at most 52 significant bits, so 64-bit integers or double-precision float types are safe for storing these identifiers. The bot may not have access to the users and could be unable to use these identifiers, unless the users are already known to the bot by some other means.",
+        "html_description": "<td>Identifiers of the shared users. These numbers may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting them. But they have at most 52 significant bits, so 64-bit integers or double-precision float types are safe for storing these identifiers. The bot may not have access to the users and could be unable to use these identifiers, unless the users are already known to the bot by some other means.</td>",
+        "rst_description": "Identifiers of the shared users. These numbers may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting them. But they have at most 52 significant bits, so 64-bit integers or double-precision float types are safe for storing these identifiers. The bot may not have access to the users and could be unable to use these identifiers, unless the users are already known to the bot by some other means.\n",
+        "name": "user_ids",
+        "required": false,
+        "deprecated": {
+          "version": "7.2",
+          "release_date": "2024-03-31"
+        }
+      }
+    ],
+    "category": "types"
+  }
+}

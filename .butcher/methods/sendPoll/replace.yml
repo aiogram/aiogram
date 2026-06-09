@@ -1,0 +1,23 @@
+annotations:
+  close_date:
+    parsed_type:
+      type: union
+      items:
+        - type: std
+          name: datetime.datetime
+        - type: std
+          name: datetime.timedelta
+        - type: std
+          name: int
+  options:
+    parsed_type:
+      type: array
+      items:
+        type: union
+        items:
+          - type: entity
+            references:
+              category: types
+              name: InputPollOption
+          - type: std
+            name: str

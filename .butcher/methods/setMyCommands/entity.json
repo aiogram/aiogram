@@ -1,0 +1,41 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available methods",
+    "anchor": "available-methods"
+  },
+  "object": {
+    "anchor": "setmycommands",
+    "name": "setMyCommands",
+    "description": "Use this method to change the list of the bot's commands. See this manual for more details about bot commands. Returns True on success.",
+    "html_description": "<p>Use this method to change the list of the bot's commands. See <a href=\"/bots/features#commands\">this manual</a> for more details about bot commands. Returns <em>True</em> on success.</p>",
+    "rst_description": "Use this method to change the list of the bot's commands. See `this manual <https://core.telegram.org/bots/features#commands>`_ for more details about bot commands. Returns :code:`True` on success.",
+    "annotations": [
+      {
+        "type": "Array of BotCommand",
+        "required": true,
+        "description": "A JSON-serialized list of bot commands to be set as the list of the bot's commands. At most 100 commands can be specified.",
+        "html_description": "<td>A JSON-serialized list of bot commands to be set as the list of the bot's commands. At most 100 commands can be specified.</td>",
+        "rst_description": "A JSON-serialized list of bot commands to be set as the list of the bot's commands. At most 100 commands can be specified.\n",
+        "name": "commands"
+      },
+      {
+        "type": "BotCommandScope",
+        "required": false,
+        "description": "A JSON-serialized object, describing scope of users for which the commands are relevant. Defaults to BotCommandScopeDefault.",
+        "html_description": "<td>A JSON-serialized object, describing scope of users for which the commands are relevant. Defaults to <a href=\"#botcommandscopedefault\">BotCommandScopeDefault</a>.</td>",
+        "rst_description": "A JSON-serialized object, describing scope of users for which the commands are relevant. Defaults to :class:`aiogram.types.bot_command_scope_default.BotCommandScopeDefault`.\n",
+        "name": "scope"
+      },
+      {
+        "type": "String",
+        "required": false,
+        "description": "A two-letter ISO 639-1 language code. If empty, commands will be applied to all users from the given scope, for whose language there are no dedicated commands",
+        "html_description": "<td>A two-letter ISO 639-1 language code. If empty, commands will be applied to all users from the given scope, for whose language there are no dedicated commands</td>",
+        "rst_description": "A two-letter ISO 639-1 language code. If empty, commands will be applied to all users from the given scope, for whose language there are no dedicated commands\n",
+        "name": "language_code"
+      }
+    ],
+    "category": "methods"
+  }
+}

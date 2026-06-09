@@ -1,0 +1,65 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available methods",
+    "anchor": "available-methods"
+  },
+  "object": {
+    "anchor": "repoststory",
+    "name": "repostStory",
+    "description": "Reposts a story on behalf of a business account from another business account. Both business accounts must be managed by the same bot, and the story on the source account must have been posted (or reposted) by the bot. Requires the can_manage_stories business bot right for both business accounts. Returns Story on success.",
+    "html_description": "<p>Reposts a story on behalf of a business account from another business account. Both business accounts must be managed by the same bot, and the story on the source account must have been posted (or reposted) by the bot. Requires the <em>can_manage_stories</em> business bot right for both business accounts. Returns <a href=\"#story\">Story</a> on success.</p>",
+    "rst_description": "Reposts a story on behalf of a business account from another business account. Both business accounts must be managed by the same bot, and the story on the source account must have been posted (or reposted) by the bot. Requires the *can_manage_stories* business bot right for both business accounts. Returns :class:`aiogram.types.story.Story` on success.",
+    "annotations": [
+      {
+        "type": "String",
+        "required": true,
+        "description": "Unique identifier of the business connection",
+        "html_description": "<td>Unique identifier of the business connection</td>",
+        "rst_description": "Unique identifier of the business connection\n",
+        "name": "business_connection_id"
+      },
+      {
+        "type": "Integer",
+        "required": true,
+        "description": "Unique identifier of the chat which posted the story that should be reposted",
+        "html_description": "<td>Unique identifier of the chat which posted the story that should be reposted</td>",
+        "rst_description": "Unique identifier of the chat which posted the story that should be reposted\n",
+        "name": "from_chat_id"
+      },
+      {
+        "type": "Integer",
+        "required": true,
+        "description": "Unique identifier of the story that should be reposted",
+        "html_description": "<td>Unique identifier of the story that should be reposted</td>",
+        "rst_description": "Unique identifier of the story that should be reposted\n",
+        "name": "from_story_id"
+      },
+      {
+        "type": "Integer",
+        "required": true,
+        "description": "Period after which the story is moved to the archive, in seconds; must be one of 6 * 3600, 12 * 3600, 86400, or 2 * 86400",
+        "html_description": "<td>Period after which the story is moved to the archive, in seconds; must be one of <code>6 * 3600</code>, <code>12 * 3600</code>, <code>86400</code>, or <code>2 * 86400</code></td>",
+        "rst_description": "Period after which the story is moved to the archive, in seconds; must be one of :code:`6 * 3600`, :code:`12 * 3600`, :code:`86400`, or :code:`2 * 86400`\n",
+        "name": "active_period"
+      },
+      {
+        "type": "Boolean",
+        "required": false,
+        "description": "Pass True to keep the story accessible after it expires",
+        "html_description": "<td>Pass <em>True</em> to keep the story accessible after it expires</td>",
+        "rst_description": "Pass :code:`True` to keep the story accessible after it expires\n",
+        "name": "post_to_chat_page"
+      },
+      {
+        "type": "Boolean",
+        "required": false,
+        "description": "Pass True if the content of the story must be protected from forwarding and screenshotting",
+        "html_description": "<td>Pass <em>True</em> if the content of the story must be protected from forwarding and screenshotting</td>",
+        "rst_description": "Pass :code:`True` if the content of the story must be protected from forwarding and screenshotting\n",
+        "name": "protect_content"
+      }
+    ],
+    "category": "methods"
+  }
+}

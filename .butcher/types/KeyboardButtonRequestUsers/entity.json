@@ -1,0 +1,73 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "keyboardbuttonrequestusers",
+    "name": "KeyboardButtonRequestUsers",
+    "description": "This object defines the criteria used to request suitable users. Information about the selected users will be shared with the bot when the corresponding button is pressed.",
+    "html_description": "<p>This object defines the criteria used to request suitable users. Information about the selected users will be shared with the bot when the corresponding button is pressed. <a href=\"/bots/features#chat-and-user-selection\">More about requesting users &#187;</a></p>",
+    "rst_description": "This object defines the criteria used to request suitable users. Information about the selected users will be shared with the bot when the corresponding button is pressed. `More about requesting users » <https://core.telegram.org/bots/features#chat-and-user-selection>`_",
+    "annotations": [
+      {
+        "type": "Integer",
+        "description": "Signed 32-bit identifier of the request that will be received back in the UsersShared object. Must be unique within the message",
+        "html_description": "<td>Signed 32-bit identifier of the request that will be received back in the <a href=\"#usersshared\">UsersShared</a> object. Must be unique within the message</td>",
+        "rst_description": "Signed 32-bit identifier of the request that will be received back in the :class:`aiogram.types.users_shared.UsersShared` object. Must be unique within the message\n",
+        "name": "request_id",
+        "required": true
+      },
+      {
+        "type": "Boolean",
+        "description": "Pass True to request bots, pass False to request regular users. If not specified, no additional restrictions are applied.",
+        "html_description": "<td><em>Optional</em>. Pass <em>True</em> to request bots, pass <em>False</em> to request regular users. If not specified, no additional restrictions are applied.</td>",
+        "rst_description": "*Optional*. Pass :code:`True` to request bots, pass :code:`False` to request regular users. If not specified, no additional restrictions are applied.\n",
+        "name": "user_is_bot",
+        "required": false
+      },
+      {
+        "type": "Boolean",
+        "description": "Pass True to request premium users, pass False to request non-premium users. If not specified, no additional restrictions are applied.",
+        "html_description": "<td><em>Optional</em>. Pass <em>True</em> to request premium users, pass <em>False</em> to request non-premium users. If not specified, no additional restrictions are applied.</td>",
+        "rst_description": "*Optional*. Pass :code:`True` to request premium users, pass :code:`False` to request non-premium users. If not specified, no additional restrictions are applied.\n",
+        "name": "user_is_premium",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "The maximum number of users to be selected; 1-10. Defaults to 1.",
+        "html_description": "<td><em>Optional</em>. The maximum number of users to be selected; 1-10. Defaults to 1.</td>",
+        "rst_description": "*Optional*. The maximum number of users to be selected; 1-10. Defaults to 1.\n",
+        "name": "max_quantity",
+        "required": false
+      },
+      {
+        "type": "Boolean",
+        "description": "Pass True to request the users' first and last names",
+        "html_description": "<td><em>Optional</em>. Pass <em>True</em> to request the users' first and last names</td>",
+        "rst_description": "*Optional*. Pass :code:`True` to request the users' first and last names\n",
+        "name": "request_name",
+        "required": false
+      },
+      {
+        "type": "Boolean",
+        "description": "Pass True to request the users' usernames",
+        "html_description": "<td><em>Optional</em>. Pass <em>True</em> to request the users' usernames</td>",
+        "rst_description": "*Optional*. Pass :code:`True` to request the users' usernames\n",
+        "name": "request_username",
+        "required": false
+      },
+      {
+        "type": "Boolean",
+        "description": "Pass True to request the users' photos",
+        "html_description": "<td><em>Optional</em>. Pass <em>True</em> to request the users' photos</td>",
+        "rst_description": "*Optional*. Pass :code:`True` to request the users' photos\n",
+        "name": "request_photo",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

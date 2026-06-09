@@ -1,21 +1,38 @@
-from .base import Deserializable
-from .photo_size import PhotoSize
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any
+
+from .base import TelegramObject
+
+if TYPE_CHECKING:
+    from .photo_size import PhotoSize
 
 
-class UserProfilePhotos(Deserializable):
+class UserProfilePhotos(TelegramObject):
     """
     This object represent a user's profile pictures.
-    
-    https://core.telegram.org/bots/api#userprofilephotos
+
+    Source: https://core.telegram.org/bots/api#userprofilephotos
     """
 
-    def __init__(self, total_count, photos):
-        self.total_count: int = total_count
-        self.photos: [PhotoSize] = photos
+    total_count: int
+    """Total number of profile pictures the target user has"""
+    photos: list[list[PhotoSize]]
+    """Requested profile pictures (in up to 4 sizes each)"""
 
-    @classmethod
-    def de_json(cls, raw_data):
-        total_count = raw_data.get('total_count')
-        photos = [PhotoSize.deserialize(item) for item in raw_data.get('photos')]
+    if TYPE_CHECKING:
+        # DO NOT EDIT MANUALLY!!!
+        # This section was auto-generated via `butcher`
 
-        return UserProfilePhotos(total_count, photos)
+        def __init__(
+            __pydantic__self__,
+            *,
+            total_count: int,
+            photos: list[list[PhotoSize]],
+            **__pydantic_kwargs: Any,
+        ) -> None:
+            # DO NOT EDIT MANUALLY!!!
+            # This method was auto-generated via `butcher`
+            # Is needed only for type checking and IDE support without any additional plugins
+
+            super().__init__(total_count=total_count, photos=photos, **__pydantic_kwargs)

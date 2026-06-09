@@ -1,0 +1,33 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Payments",
+    "anchor": "payments"
+  },
+  "object": {
+    "anchor": "refundstarpayment",
+    "name": "refundStarPayment",
+    "description": "Refunds a successful payment in Telegram Stars. Returns True on success.",
+    "html_description": "<p>Refunds a successful payment in <a href=\"https://t.me/BotNews/90\">Telegram Stars</a>. Returns <em>True</em> on success.</p>",
+    "rst_description": "Refunds a successful payment in `Telegram Stars <https://t.me/BotNews/90>`_. Returns :code:`True` on success.",
+    "annotations": [
+      {
+        "type": "Integer",
+        "required": true,
+        "description": "Identifier of the user whose payment will be refunded",
+        "html_description": "<td>Identifier of the user whose payment will be refunded</td>",
+        "rst_description": "Identifier of the user whose payment will be refunded\n",
+        "name": "user_id"
+      },
+      {
+        "type": "String",
+        "required": true,
+        "description": "Telegram payment identifier",
+        "html_description": "<td>Telegram payment identifier</td>",
+        "rst_description": "Telegram payment identifier\n",
+        "name": "telegram_payment_charge_id"
+      }
+    ],
+    "category": "methods"
+  }
+}

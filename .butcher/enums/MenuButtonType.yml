@@ -1,0 +1,13 @@
+name: MenuButtonType
+description: |
+  This object represents an type of Menu button
+
+  Source: https://core.telegram.org/bots/api#menubuttondefault
+multi_parse:
+  format: rst
+  attribute: type
+  regexp: '\*([a-z_]+)\*'
+  entities:
+    - MenuButtonDefault
+    - MenuButtonCommands
+    - MenuButtonWebApp

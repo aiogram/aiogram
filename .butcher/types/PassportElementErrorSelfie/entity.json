@@ -1,0 +1,49 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Telegram Passport",
+    "anchor": "telegram-passport"
+  },
+  "object": {
+    "anchor": "passportelementerrorselfie",
+    "name": "PassportElementErrorSelfie",
+    "description": "Represents an issue with the selfie with a document. The error is considered resolved when the file with the selfie changes.",
+    "html_description": "<p>Represents an issue with the selfie with a document. The error is considered resolved when the file with the selfie changes.</p>",
+    "rst_description": "Represents an issue with the selfie with a document. The error is considered resolved when the file with the selfie changes.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Error source, must be selfie",
+        "html_description": "<td>Error source, must be <em>selfie</em></td>",
+        "rst_description": "Error source, must be *selfie*\n",
+        "name": "source",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "The section of the user's Telegram Passport which has the issue, one of 'passport', 'driver_license', 'identity_card', 'internal_passport'",
+        "html_description": "<td>The section of the user's Telegram Passport which has the issue, one of &#8220;passport&#8221;, &#8220;driver_license&#8221;, &#8220;identity_card&#8221;, &#8220;internal_passport&#8221;</td>",
+        "rst_description": "The section of the user's Telegram Passport which has the issue, one of 'passport', 'driver_license', 'identity_card', 'internal_passport'\n",
+        "name": "type",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Base64-encoded hash of the file with the selfie",
+        "html_description": "<td>Base64-encoded hash of the file with the selfie</td>",
+        "rst_description": "Base64-encoded hash of the file with the selfie\n",
+        "name": "file_hash",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Error message",
+        "html_description": "<td>Error message</td>",
+        "rst_description": "Error message\n",
+        "name": "message",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

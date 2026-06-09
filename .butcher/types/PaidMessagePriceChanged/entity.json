@@ -1,0 +1,25 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "paidmessagepricechanged",
+    "name": "PaidMessagePriceChanged",
+    "description": "Describes a service message about a change in the price of paid messages within a chat.",
+    "html_description": "<p>Describes a service message about a change in the price of paid messages within a chat.</p>",
+    "rst_description": "Describes a service message about a change in the price of paid messages within a chat.",
+    "annotations": [
+      {
+        "type": "Integer",
+        "description": "The new number of Telegram Stars that must be paid by non-administrator users of the supergroup chat for each sent message",
+        "html_description": "<td>The new number of Telegram Stars that must be paid by non-administrator users of the supergroup chat for each sent message</td>",
+        "rst_description": "The new number of Telegram Stars that must be paid by non-administrator users of the supergroup chat for each sent message\n",
+        "name": "paid_message_star_count",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

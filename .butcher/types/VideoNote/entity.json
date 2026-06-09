@@ -1,0 +1,65 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "videonote",
+    "name": "VideoNote",
+    "description": "This object represents a video message (available in Telegram apps as of v.4.0).",
+    "html_description": "<p>This object represents a <a href=\"https://telegram.org/blog/video-messages-and-telescope\">video message</a> (available in Telegram apps as of <a href=\"https://telegram.org/blog/video-messages-and-telescope\">v.4.0</a>).</p>",
+    "rst_description": "This object represents a `video message <https://telegram.org/blog/video-messages-and-telescope>`_ (available in Telegram apps as of `v.4.0 <https://telegram.org/blog/video-messages-and-telescope>`_).",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Identifier for this file, which can be used to download or reuse the file",
+        "html_description": "<td>Identifier for this file, which can be used to download or reuse the file</td>",
+        "rst_description": "Identifier for this file, which can be used to download or reuse the file\n",
+        "name": "file_id",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.",
+        "html_description": "<td>Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.</td>",
+        "rst_description": "Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.\n",
+        "name": "file_unique_id",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "Video width and height (diameter of the video message) as defined by the sender",
+        "html_description": "<td>Video width and height (diameter of the video message) as defined by the sender</td>",
+        "rst_description": "Video width and height (diameter of the video message) as defined by the sender\n",
+        "name": "length",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "Duration of the video in seconds as defined by the sender",
+        "html_description": "<td>Duration of the video in seconds as defined by the sender</td>",
+        "rst_description": "Duration of the video in seconds as defined by the sender\n",
+        "name": "duration",
+        "required": true
+      },
+      {
+        "type": "PhotoSize",
+        "description": "Video thumbnail",
+        "html_description": "<td><em>Optional</em>. Video thumbnail</td>",
+        "rst_description": "*Optional*. Video thumbnail\n",
+        "name": "thumbnail",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "File size in bytes",
+        "html_description": "<td><em>Optional</em>. File size in bytes</td>",
+        "rst_description": "*Optional*. File size in bytes\n",
+        "name": "file_size",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "uniquegiftbackdrop",
+    "name": "UniqueGiftBackdrop",
+    "description": "This object describes the backdrop of a unique gift.",
+    "html_description": "<p>This object describes the backdrop of a unique gift.</p>",
+    "rst_description": "This object describes the backdrop of a unique gift.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Name of the backdrop",
+        "html_description": "<td>Name of the backdrop</td>",
+        "rst_description": "Name of the backdrop\n",
+        "name": "name",
+        "required": true
+      },
+      {
+        "type": "UniqueGiftBackdropColors",
+        "description": "Colors of the backdrop",
+        "html_description": "<td>Colors of the backdrop</td>",
+        "rst_description": "Colors of the backdrop\n",
+        "name": "colors",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "The number of unique gifts that receive this backdrop for every 1000 gifts upgraded",
+        "html_description": "<td>The number of unique gifts that receive this backdrop for every 1000 gifts upgraded</td>",
+        "rst_description": "The number of unique gifts that receive this backdrop for every 1000 gifts upgraded\n",
+        "name": "rarity_per_mille",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

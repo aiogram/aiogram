@@ -1,0 +1,5 @@
+annotations:
+  expire_date:
+    parsed_type:
+      type: std
+      name: DateTime

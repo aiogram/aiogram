@@ -1,0 +1,41 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "birthdate",
+    "name": "Birthdate",
+    "description": "Describes the birthdate of a user.",
+    "html_description": "<p>Describes the birthdate of a user.</p>",
+    "rst_description": "Describes the birthdate of a user.",
+    "annotations": [
+      {
+        "type": "Integer",
+        "description": "Day of the user's birth; 1-31",
+        "html_description": "<td>Day of the user's birth; 1-31</td>",
+        "rst_description": "Day of the user's birth; 1-31\n",
+        "name": "day",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "Month of the user's birth; 1-12",
+        "html_description": "<td>Month of the user's birth; 1-12</td>",
+        "rst_description": "Month of the user's birth; 1-12\n",
+        "name": "month",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "Year of the user's birth",
+        "html_description": "<td><em>Optional</em>. Year of the user's birth</td>",
+        "rst_description": "*Optional*. Year of the user's birth\n",
+        "name": "year",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

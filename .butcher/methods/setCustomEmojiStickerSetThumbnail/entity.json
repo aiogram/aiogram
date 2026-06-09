@@ -1,0 +1,33 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Stickers",
+    "anchor": "stickers"
+  },
+  "object": {
+    "anchor": "setcustomemojistickersetthumbnail",
+    "name": "setCustomEmojiStickerSetThumbnail",
+    "description": "Use this method to set the thumbnail of a custom emoji sticker set. Returns True on success.",
+    "html_description": "<p>Use this method to set the thumbnail of a custom emoji sticker set. Returns <em>True</em> on success.</p>",
+    "rst_description": "Use this method to set the thumbnail of a custom emoji sticker set. Returns :code:`True` on success.",
+    "annotations": [
+      {
+        "type": "String",
+        "required": true,
+        "description": "Sticker set name",
+        "html_description": "<td>Sticker set name</td>",
+        "rst_description": "Sticker set name\n",
+        "name": "name"
+      },
+      {
+        "type": "String",
+        "required": false,
+        "description": "Custom emoji identifier of a sticker from the sticker set; pass an empty string to drop the thumbnail and use the first sticker as the thumbnail.",
+        "html_description": "<td>Custom emoji identifier of a sticker from the sticker set; pass an empty string to drop the thumbnail and use the first sticker as the thumbnail.</td>",
+        "rst_description": "Custom emoji identifier of a sticker from the sticker set; pass an empty string to drop the thumbnail and use the first sticker as the thumbnail.\n",
+        "name": "custom_emoji_id"
+      }
+    ],
+    "category": "methods"
+  }
+}

@@ -1,0 +1,137 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Stickers",
+    "anchor": "stickers"
+  },
+  "object": {
+    "anchor": "sticker",
+    "name": "Sticker",
+    "description": "This object represents a sticker.",
+    "html_description": "<p>This object represents a sticker.</p>",
+    "rst_description": "This object represents a sticker.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Identifier for this file, which can be used to download or reuse the file",
+        "html_description": "<td>Identifier for this file, which can be used to download or reuse the file</td>",
+        "rst_description": "Identifier for this file, which can be used to download or reuse the file\n",
+        "name": "file_id",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.",
+        "html_description": "<td>Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.</td>",
+        "rst_description": "Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.\n",
+        "name": "file_unique_id",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Type of the sticker, currently one of 'regular', 'mask', 'custom_emoji'. The type of the sticker is independent from its format, which is determined by the fields is_animated and is_video.",
+        "html_description": "<td>Type of the sticker, currently one of &#8220;regular&#8221;, &#8220;mask&#8221;, &#8220;custom_emoji&#8221;. The type of the sticker is independent from its format, which is determined by the fields <em>is_animated</em> and <em>is_video</em>.</td>",
+        "rst_description": "Type of the sticker, currently one of 'regular', 'mask', 'custom_emoji'. The type of the sticker is independent from its format, which is determined by the fields *is_animated* and *is_video*.\n",
+        "name": "type",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "Sticker width",
+        "html_description": "<td>Sticker width</td>",
+        "rst_description": "Sticker width\n",
+        "name": "width",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "Sticker height",
+        "html_description": "<td>Sticker height</td>",
+        "rst_description": "Sticker height\n",
+        "name": "height",
+        "required": true
+      },
+      {
+        "type": "Boolean",
+        "description": "True, if the sticker is animated",
+        "html_description": "<td><em>True</em>, if the sticker is <a href=\"https://telegram.org/blog/animated-stickers\">animated</a></td>",
+        "rst_description": ":code:`True`, if the sticker is `animated <https://telegram.org/blog/animated-stickers>`_\n",
+        "name": "is_animated",
+        "required": true
+      },
+      {
+        "type": "Boolean",
+        "description": "True, if the sticker is a video sticker",
+        "html_description": "<td><em>True</em>, if the sticker is a <a href=\"https://telegram.org/blog/video-stickers-better-reactions\">video sticker</a></td>",
+        "rst_description": ":code:`True`, if the sticker is a `video sticker <https://telegram.org/blog/video-stickers-better-reactions>`_\n",
+        "name": "is_video",
+        "required": true
+      },
+      {
+        "type": "PhotoSize",
+        "description": "Sticker thumbnail in the .WEBP or .JPG format",
+        "html_description": "<td><em>Optional</em>. Sticker thumbnail in the .WEBP or .JPG format</td>",
+        "rst_description": "*Optional*. Sticker thumbnail in the .WEBP or .JPG format\n",
+        "name": "thumbnail",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "Emoji associated with the sticker",
+        "html_description": "<td><em>Optional</em>. Emoji associated with the sticker</td>",
+        "rst_description": "*Optional*. Emoji associated with the sticker\n",
+        "name": "emoji",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "Name of the sticker set to which the sticker belongs",
+        "html_description": "<td><em>Optional</em>. Name of the sticker set to which the sticker belongs</td>",
+        "rst_description": "*Optional*. Name of the sticker set to which the sticker belongs\n",
+        "name": "set_name",
+        "required": false
+      },
+      {
+        "type": "File",
+        "description": "For premium regular stickers, premium animation for the sticker",
+        "html_description": "<td><em>Optional</em>. For premium regular stickers, premium animation for the sticker</td>",
+        "rst_description": "*Optional*. For premium regular stickers, premium animation for the sticker\n",
+        "name": "premium_animation",
+        "required": false
+      },
+      {
+        "type": "MaskPosition",
+        "description": "For mask stickers, the position where the mask should be placed",
+        "html_description": "<td><em>Optional</em>. For mask stickers, the position where the mask should be placed</td>",
+        "rst_description": "*Optional*. For mask stickers, the position where the mask should be placed\n",
+        "name": "mask_position",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "For custom emoji stickers, unique identifier of the custom emoji",
+        "html_description": "<td><em>Optional</em>. For custom emoji stickers, unique identifier of the custom emoji</td>",
+        "rst_description": "*Optional*. For custom emoji stickers, unique identifier of the custom emoji\n",
+        "name": "custom_emoji_id",
+        "required": false
+      },
+      {
+        "type": "True",
+        "description": "True, if the sticker must be repainted to a text color in messages, the color of the Telegram Premium badge in emoji status, white color on chat photos, or another appropriate color in other places",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the sticker must be repainted to a text color in messages, the color of the Telegram Premium badge in emoji status, white color on chat photos, or another appropriate color in other places</td>",
+        "rst_description": "*Optional*. :code:`True`, if the sticker must be repainted to a text color in messages, the color of the Telegram Premium badge in emoji status, white color on chat photos, or another appropriate color in other places\n",
+        "name": "needs_repainting",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "File size in bytes",
+        "html_description": "<td><em>Optional</em>. File size in bytes</td>",
+        "rst_description": "*Optional*. File size in bytes\n",
+        "name": "file_size",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

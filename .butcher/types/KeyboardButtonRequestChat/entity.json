@@ -1,0 +1,105 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "keyboardbuttonrequestchat",
+    "name": "KeyboardButtonRequestChat",
+    "description": "This object defines the criteria used to request a suitable chat. Information about the selected chat will be shared with the bot when the corresponding button is pressed. The bot will be granted requested rights in the chat if appropriate..",
+    "html_description": "<p>This object defines the criteria used to request a suitable chat. Information about the selected chat will be shared with the bot when the corresponding button is pressed. The bot will be granted requested rights in the chat if appropriate. <a href=\"/bots/features#chat-and-user-selection\">More about requesting chats &#187;</a>.</p>",
+    "rst_description": "This object defines the criteria used to request a suitable chat. Information about the selected chat will be shared with the bot when the corresponding button is pressed. The bot will be granted requested rights in the chat if appropriate. `More about requesting chats » <https://core.telegram.org/bots/features#chat-and-user-selection>`_.",
+    "annotations": [
+      {
+        "type": "Integer",
+        "description": "Signed 32-bit identifier of the request, which will be received back in the ChatShared object. Must be unique within the message",
+        "html_description": "<td>Signed 32-bit identifier of the request, which will be received back in the <a href=\"#chatshared\">ChatShared</a> object. Must be unique within the message</td>",
+        "rst_description": "Signed 32-bit identifier of the request, which will be received back in the :class:`aiogram.types.chat_shared.ChatShared` object. Must be unique within the message\n",
+        "name": "request_id",
+        "required": true
+      },
+      {
+        "type": "Boolean",
+        "description": "Pass True to request a channel chat, pass False to request a group or a supergroup chat.",
+        "html_description": "<td>Pass <em>True</em> to request a channel chat, pass <em>False</em> to request a group or a supergroup chat.</td>",
+        "rst_description": "Pass :code:`True` to request a channel chat, pass :code:`False` to request a group or a supergroup chat.\n",
+        "name": "chat_is_channel",
+        "required": true
+      },
+      {
+        "type": "Boolean",
+        "description": "Pass True to request a forum supergroup, pass False to request a non-forum chat. If not specified, no additional restrictions are applied.",
+        "html_description": "<td><em>Optional</em>. Pass <em>True</em> to request a forum supergroup, pass <em>False</em> to request a non-forum chat. If not specified, no additional restrictions are applied.</td>",
+        "rst_description": "*Optional*. Pass :code:`True` to request a forum supergroup, pass :code:`False` to request a non-forum chat. If not specified, no additional restrictions are applied.\n",
+        "name": "chat_is_forum",
+        "required": false
+      },
+      {
+        "type": "Boolean",
+        "description": "Pass True to request a supergroup or a channel with a username, pass False to request a chat without a username. If not specified, no additional restrictions are applied.",
+        "html_description": "<td><em>Optional</em>. Pass <em>True</em> to request a supergroup or a channel with a username, pass <em>False</em> to request a chat without a username. If not specified, no additional restrictions are applied.</td>",
+        "rst_description": "*Optional*. Pass :code:`True` to request a supergroup or a channel with a username, pass :code:`False` to request a chat without a username. If not specified, no additional restrictions are applied.\n",
+        "name": "chat_has_username",
+        "required": false
+      },
+      {
+        "type": "Boolean",
+        "description": "Pass True to request a chat owned by the user. Otherwise, no additional restrictions are applied.",
+        "html_description": "<td><em>Optional</em>. Pass <em>True</em> to request a chat owned by the user. Otherwise, no additional restrictions are applied.</td>",
+        "rst_description": "*Optional*. Pass :code:`True` to request a chat owned by the user. Otherwise, no additional restrictions are applied.\n",
+        "name": "chat_is_created",
+        "required": false
+      },
+      {
+        "type": "ChatAdministratorRights",
+        "description": "A JSON-serialized object listing the required administrator rights of the user in the chat. The rights must be a superset of bot_administrator_rights. If not specified, no additional restrictions are applied.",
+        "html_description": "<td><em>Optional</em>. A JSON-serialized object listing the required administrator rights of the user in the chat. The rights must be a superset of <em>bot_administrator_rights</em>. If not specified, no additional restrictions are applied.</td>",
+        "rst_description": "*Optional*. A JSON-serialized object listing the required administrator rights of the user in the chat. The rights must be a superset of *bot_administrator_rights*. If not specified, no additional restrictions are applied.\n",
+        "name": "user_administrator_rights",
+        "required": false
+      },
+      {
+        "type": "ChatAdministratorRights",
+        "description": "A JSON-serialized object listing the required administrator rights of the bot in the chat. The rights must be a subset of user_administrator_rights. If not specified, no additional restrictions are applied.",
+        "html_description": "<td><em>Optional</em>. A JSON-serialized object listing the required administrator rights of the bot in the chat. The rights must be a subset of <em>user_administrator_rights</em>. If not specified, no additional restrictions are applied.</td>",
+        "rst_description": "*Optional*. A JSON-serialized object listing the required administrator rights of the bot in the chat. The rights must be a subset of *user_administrator_rights*. If not specified, no additional restrictions are applied.\n",
+        "name": "bot_administrator_rights",
+        "required": false
+      },
+      {
+        "type": "Boolean",
+        "description": "Pass True to request a chat with the bot as a member. Otherwise, no additional restrictions are applied.",
+        "html_description": "<td><em>Optional</em>. Pass <em>True</em> to request a chat with the bot as a member. Otherwise, no additional restrictions are applied.</td>",
+        "rst_description": "*Optional*. Pass :code:`True` to request a chat with the bot as a member. Otherwise, no additional restrictions are applied.\n",
+        "name": "bot_is_member",
+        "required": false
+      },
+      {
+        "type": "Boolean",
+        "description": "Pass True to request the chat's title",
+        "html_description": "<td><em>Optional</em>. Pass <em>True</em> to request the chat's title</td>",
+        "rst_description": "*Optional*. Pass :code:`True` to request the chat's title\n",
+        "name": "request_title",
+        "required": false
+      },
+      {
+        "type": "Boolean",
+        "description": "Pass True to request the chat's username",
+        "html_description": "<td><em>Optional</em>. Pass <em>True</em> to request the chat's username</td>",
+        "rst_description": "*Optional*. Pass :code:`True` to request the chat's username\n",
+        "name": "request_username",
+        "required": false
+      },
+      {
+        "type": "Boolean",
+        "description": "Pass True to request the chat's photo",
+        "html_description": "<td><em>Optional</em>. Pass <em>True</em> to request the chat's photo</td>",
+        "rst_description": "*Optional*. Pass :code:`True` to request the chat's photo\n",
+        "name": "request_photo",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

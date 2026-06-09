@@ -1,0 +1,25 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "menubuttoncommands",
+    "name": "MenuButtonCommands",
+    "description": "Represents a menu button, which opens the bot's list of commands.",
+    "html_description": "<p>Represents a menu button, which opens the bot's list of commands.</p>",
+    "rst_description": "Represents a menu button, which opens the bot's list of commands.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Type of the button, must be commands",
+        "html_description": "<td>Type of the button, must be <em>commands</em></td>",
+        "rst_description": "Type of the button, must be *commands*\n",
+        "name": "type",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available methods",
+    "anchor": "available-methods"
+  },
+  "object": {
+    "anchor": "setchatmenubutton",
+    "name": "setChatMenuButton",
+    "description": "Use this method to change the bot's menu button in a private chat, or the default menu button. Returns True on success.",
+    "html_description": "<p>Use this method to change the bot's menu button in a private chat, or the default menu button. Returns <em>True</em> on success.</p>",
+    "rst_description": "Use this method to change the bot's menu button in a private chat, or the default menu button. Returns :code:`True` on success.",
+    "annotations": [
+      {
+        "type": "Integer",
+        "required": false,
+        "description": "Unique identifier for the target private chat. If not specified, default bot's menu button will be changed",
+        "html_description": "<td>Unique identifier for the target private chat. If not specified, default bot's menu button will be changed</td>",
+        "rst_description": "Unique identifier for the target private chat. If not specified, default bot's menu button will be changed\n",
+        "name": "chat_id"
+      },
+      {
+        "type": "MenuButton",
+        "required": false,
+        "description": "A JSON-serialized object for the bot's new menu button. Defaults to MenuButtonDefault",
+        "html_description": "<td>A JSON-serialized object for the bot's new menu button. Defaults to <a href=\"#menubuttondefault\">MenuButtonDefault</a></td>",
+        "rst_description": "A JSON-serialized object for the bot's new menu button. Defaults to :class:`aiogram.types.menu_button_default.MenuButtonDefault`\n",
+        "name": "menu_button"
+      }
+    ],
+    "category": "methods"
+  }
+}

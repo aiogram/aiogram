@@ -1,0 +1,49 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Games",
+    "anchor": "games"
+  },
+  "object": {
+    "anchor": "getgamehighscores",
+    "name": "getGameHighScores",
+    "description": "Use this method to get data for high score tables. Will return the score of the specified user and several of their neighbors in a game. Returns an Array of GameHighScore objects.\nThis method will currently return scores for the target user, plus two of their closest neighbors on each side. Will also return the top three users if the user and their neighbors are not among them. Please note that this behavior is subject to change.",
+    "html_description": "<p>Use this method to get data for high score tables. Will return the score of the specified user and several of their neighbors in a game. Returns an Array of <a href=\"#gamehighscore\">GameHighScore</a> objects.</p><blockquote>\n<p>This method will currently return scores for the target user, plus two of their closest neighbors on each side. Will also return the top three users if the user and their neighbors are not among them. Please note that this behavior is subject to change.</p>\n</blockquote>",
+    "rst_description": "Use this method to get data for high score tables. Will return the score of the specified user and several of their neighbors in a game. Returns an Array of :class:`aiogram.types.game_high_score.GameHighScore` objects.\n\n This method will currently return scores for the target user, plus two of their closest neighbors on each side. Will also return the top three users if the user and their neighbors are not among them. Please note that this behavior is subject to change.",
+    "annotations": [
+      {
+        "type": "Integer",
+        "required": true,
+        "description": "Target user id",
+        "html_description": "<td>Target user id</td>",
+        "rst_description": "Target user id\n",
+        "name": "user_id"
+      },
+      {
+        "type": "Integer",
+        "required": false,
+        "description": "Required if inline_message_id is not specified. Unique identifier for the target chat",
+        "html_description": "<td>Required if <em>inline_message_id</em> is not specified. Unique identifier for the target chat</td>",
+        "rst_description": "Required if *inline_message_id* is not specified. Unique identifier for the target chat\n",
+        "name": "chat_id"
+      },
+      {
+        "type": "Integer",
+        "required": false,
+        "description": "Required if inline_message_id is not specified. Identifier of the sent message",
+        "html_description": "<td>Required if <em>inline_message_id</em> is not specified. Identifier of the sent message</td>",
+        "rst_description": "Required if *inline_message_id* is not specified. Identifier of the sent message\n",
+        "name": "message_id"
+      },
+      {
+        "type": "String",
+        "required": false,
+        "description": "Required if chat_id and message_id are not specified. Identifier of the inline message",
+        "html_description": "<td>Required if <em>chat_id</em> and <em>message_id</em> are not specified. Identifier of the inline message</td>",
+        "rst_description": "Required if *chat_id* and *message_id* are not specified. Identifier of the inline message\n",
+        "name": "inline_message_id"
+      }
+    ],
+    "category": "methods"
+  }
+}

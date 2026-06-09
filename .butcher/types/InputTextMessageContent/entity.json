@@ -1,0 +1,61 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Inline mode",
+    "anchor": "inline-mode"
+  },
+  "object": {
+    "anchor": "inputtextmessagecontent",
+    "name": "InputTextMessageContent",
+    "description": "Represents the content of a text message to be sent as the result of an inline query.",
+    "html_description": "<p>Represents the <a href=\"#inputmessagecontent\">content</a> of a text message to be sent as the result of an inline query.</p>",
+    "rst_description": "Represents the `content <https://core.telegram.org/bots/api#inputmessagecontent>`_ of a text message to be sent as the result of an inline query.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Text of the message to be sent, 1-4096 characters",
+        "html_description": "<td>Text of the message to be sent, 1-4096 characters</td>",
+        "rst_description": "Text of the message to be sent, 1-4096 characters\n",
+        "name": "message_text",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Mode for parsing entities in the message text. See formatting options for more details.",
+        "html_description": "<td><em>Optional</em>. Mode for parsing entities in the message text. See <a href=\"#formatting-options\">formatting options</a> for more details.</td>",
+        "rst_description": "*Optional*. Mode for parsing entities in the message text. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.\n",
+        "name": "parse_mode",
+        "required": false
+      },
+      {
+        "type": "Array of MessageEntity",
+        "description": "List of special entities that appear in message text, which can be specified instead of parse_mode",
+        "html_description": "<td><em>Optional</em>. List of special entities that appear in message text, which can be specified instead of <em>parse_mode</em></td>",
+        "rst_description": "*Optional*. List of special entities that appear in message text, which can be specified instead of *parse_mode*\n",
+        "name": "entities",
+        "required": false
+      },
+      {
+        "type": "LinkPreviewOptions",
+        "description": "Link preview generation options for the message",
+        "html_description": "<td><em>Optional</em>. Link preview generation options for the message</td>",
+        "rst_description": "*Optional*. Link preview generation options for the message\n",
+        "name": "link_preview_options",
+        "required": false
+      },
+      {
+        "type": "Boolean",
+        "description": "Disables link previews for links in the sent message",
+        "html_description": "<td><em>Optional</em>. Disables link previews for links in the sent message</td>",
+        "rst_description": "*Optional*. Disables link previews for links in the sent message\n",
+        "name": "disable_web_page_preview",
+        "required": false,
+        "deprecated": {
+          "version": "7.0",
+          "release_date": "2023-12-29"
+        }
+      }
+    ],
+    "category": "types"
+  }
+}

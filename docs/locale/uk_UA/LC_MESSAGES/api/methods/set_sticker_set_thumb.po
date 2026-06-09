@@ -1,0 +1,136 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2022, aiogram Team
+# This file is distributed under the same license as the aiogram package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2022.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: aiogram\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-06-01 20:49+0300\n"
+"PO-Revision-Date: 2023-09-14 17:37+0300\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: uk\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.12.1\n"
+"X-Generator: Poedit 3.3.2\n"
+
+#: ../../api/methods/set_sticker_set_thumb.rst:3
+msgid "setStickerSetThumb"
+msgstr ""
+
+#: ../../api/methods/set_sticker_set_thumb.rst:5
+msgid "Returns: :obj:`bool`"
+msgstr "Повертає: :obj:`bool`"
+
+#: aiogram.methods.set_sticker_set_thumb.SetStickerSetThumbnail:1 of
+msgid "Use this method to set the thumbnail of a regular or mask sticker set. The format of the thumbnail file must match the format of the stickers in the set. Returns :code:`True` on success."
+msgstr "Використовуйте цей метод, щоб встановити мініатюру звичайного або маскового набору стікерів. Формат файлу мініатюри повинен відповідати формату стікерів у наборі. Повертає :code:`True` при успіху."
+
+#: aiogram.methods.set_sticker_set_thumb.SetStickerSetThumbnail:3 of
+msgid "Source: https://core.telegram.org/bots/api#setstickersetthumbnail"
+msgstr "Джерело: https://core.telegram.org/bots/api#setstickersetthumbnail"
+
+#: ../../docstring
+#: aiogram.methods.set_sticker_set_thumb.SetStickerSetThumbnail.name:1 of
+msgid "Sticker set name"
+msgstr "Назва набору стікерів"
+
+#: ../../docstring
+#: aiogram.methods.set_sticker_set_thumb.SetStickerSetThumbnail.user_id:1 of
+msgid "User identifier of the sticker set owner"
+msgstr "Ідентифікатор користувача власника набору стікерів "
+
+#: ../../docstring
+#: aiogram.methods.set_sticker_set_thumb.SetStickerSetThumbnail.thumbnail:1 of
+msgid "A **.WEBP** or **.PNG** image with the thumbnail, must be up to 128 kilobytes in size and have a width and height of exactly 100px, or a **.TGS** animation with a thumbnail up to 32 kilobytes in size (see `https://core.telegram.org/stickers#animated-sticker-requirements <https://core.telegram.org/stickers#animated-sticker-requirements>`_`https://core.telegram.org/stickers#animated-sticker-requirements <https://core.telegram.org/stickers#animated-sticker-requirements>`_ for animated sticker technical requirements), or a **WEBM** video with the thumbnail up to 32 kilobytes in size; see `https://core.telegram.org/stickers#video-sticker-requirements <https://core.telegram.org/stickers#video-sticker-requirements>`_`https://core.telegram.org/stickers#video-sticker-requirements <https://core.telegram.org/stickers#video-sticker-requirements>`_ for video sticker technical requirements. Pass a *file_id* as a String to send a file that already exists on the Telegram servers, pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`. Animated and video sticker set thumbnails can't be uploaded via HTTP URL. If omitted, then the thumbnail is dropped and the first sticker is used as the thumbnail."
+msgstr "Зображення у форматі **.WEBP** або **.PNG** з мініатюрою має бути розміром до 128 кілобайт і мати ширину та висоту рівно 100 пікселів, або анімацією у форматі **.TGS** з мініатюрою розміром до 32 кілобайт (див. `https://core.telegram.org/stickers#animated-sticker-requirements <https://core.telegram.org/stickers#animated-sticker-requirements>`_`https://core.telegram.org/stickers#animated-sticker-requirements <https://core.telegram. org/stickers#animated-sticker-requirements>`_ технічні вимоги до анімованих наліпок), або **WEBM** відео з мініатюрою розміром до 32 кілобайт; дивіться `https://core.telegram.org/stickers#video-sticker-requirements <https://core.telegram.org/stickers#video-sticker-requirements>`_`https://core.telegram.org/stickers#video-sticker-requirements <https://core.telegram.org/stickers#video-sticker-requirements>`_ технічні вимоги до відео наліпок. Передайте *file_id* як рядок, щоб надіслати файл, який вже існує на серверах Telegram, передайте HTTP URL як рядок, щоб Telegram отримав файл з Інтернету, або завантажте новий файл за допомогою мультичастини/форма-даних. :ref:`Додаткова інформація про надсилання файлів \" <sending-files>`. Ескізи анімованих і відео-наборів наклейок не можуть бути завантажені через HTTP URL. Якщо цей параметр не вказано, то мініатюру буде вилучено, а замість неї буде використано першу наліпку."
+
+#: ../../api/methods/set_sticker_set_thumb.rst:14
+msgid "Usage"
+msgstr "Використання"
+
+#: ../../api/methods/set_sticker_set_thumb.rst:17
+msgid "As bot method"
+msgstr "Як метод в bot"
+
+#: ../../api/methods/set_sticker_set_thumb.rst:25
+msgid "Method as object"
+msgstr ""
+
+#: ../../api/methods/set_sticker_set_thumb.rst:27
+msgid "Imports:"
+msgstr "Імпорти:"
+
+#: ../../api/methods/set_sticker_set_thumb.rst:29
+msgid ":code:`from aiogram.methods.set_sticker_set_thumb import SetStickerSetThumb`"
+msgstr ""
+
+#: ../../api/methods/set_sticker_set_thumb.rst:30
+msgid "alias: :code:`from aiogram.methods import SetStickerSetThumb`"
+msgstr ""
+
+#: ../../api/methods/set_sticker_set_thumb.rst:33
+msgid "With specific bot"
+msgstr "З конкретним bot"
+
+#: ../../api/methods/set_sticker_set_thumb.rst:40
+msgid "As reply into Webhook in handler"
+msgstr "Як відповідь у Webhook в обробнику"
+
+#~ msgid ""
+#~ "Use this method to set the "
+#~ "thumbnail of a sticker set. Animated "
+#~ "thumbnails can be set for animated "
+#~ "sticker sets only. Video thumbnails can"
+#~ " be set only for video sticker "
+#~ "sets only. Returns :code:`True` on "
+#~ "success."
+#~ msgstr ""
+
+#~ msgid "Source: https://core.telegram.org/bots/api#setstickersetthumb"
+#~ msgstr ""
+
+#~ msgid "Sticker set name"
+#~ msgstr ""
+
+#~ msgid "User identifier of the sticker set owner"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "A **PNG** image with the thumbnail, "
+#~ "must be up to 128 kilobytes in "
+#~ "size and have width and height "
+#~ "exactly 100px, or a **TGS** animation"
+#~ " with the thumbnail up to 32 "
+#~ "kilobytes in size; see "
+#~ "`https://core.telegram.org/stickers#animated-sticker-"
+#~ "requirements <https://core.telegram.org/stickers#animated-"
+#~ "sticker-requirements>`_`https://core.telegram.org/stickers"
+#~ "#animated-sticker-requirements "
+#~ "<https://core.telegram.org/stickers#animated-sticker-"
+#~ "requirements>`_ for animated sticker technical"
+#~ " requirements, or a **WEBM** video "
+#~ "with the thumbnail up to 32 "
+#~ "kilobytes in size; see "
+#~ "`https://core.telegram.org/stickers#video-sticker-"
+#~ "requirements <https://core.telegram.org/stickers#video-"
+#~ "sticker-requirements>`_`https://core.telegram.org/stickers"
+#~ "#video-sticker-requirements "
+#~ "<https://core.telegram.org/stickers#video-sticker-"
+#~ "requirements>`_ for video sticker technical"
+#~ " requirements. Pass a *file_id* as a"
+#~ " String to send a file that "
+#~ "already exists on the Telegram servers,"
+#~ " pass an HTTP URL as a String"
+#~ " for Telegram to get a file "
+#~ "from the Internet, or upload a new"
+#~ " one using multipart/form-data. :ref:`More"
+#~ " information on Sending Files » "
+#~ "<sending-files>`. Animated sticker set "
+#~ "thumbnails can't be uploaded via HTTP"
+#~ " URL."
+#~ msgstr ""

@@ -1,0 +1,97 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Telegram Passport",
+    "anchor": "telegram-passport"
+  },
+  "object": {
+    "anchor": "encryptedpassportelement",
+    "name": "EncryptedPassportElement",
+    "description": "Describes documents or other Telegram Passport elements shared with the bot by the user.",
+    "html_description": "<p>Describes documents or other Telegram Passport elements shared with the bot by the user.</p>",
+    "rst_description": "Describes documents or other Telegram Passport elements shared with the bot by the user.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Element type. One of 'personal_details', 'passport', 'driver_license', 'identity_card', 'internal_passport', 'address', 'utility_bill', 'bank_statement', 'rental_agreement', 'passport_registration', 'temporary_registration', 'phone_number', 'email'.",
+        "html_description": "<td>Element type. One of &#8220;personal_details&#8221;, &#8220;passport&#8221;, &#8220;driver_license&#8221;, &#8220;identity_card&#8221;, &#8220;internal_passport&#8221;, &#8220;address&#8221;, &#8220;utility_bill&#8221;, &#8220;bank_statement&#8221;, &#8220;rental_agreement&#8221;, &#8220;passport_registration&#8221;, &#8220;temporary_registration&#8221;, &#8220;phone_number&#8221;, &#8220;email&#8221;.</td>",
+        "rst_description": "Element type. One of 'personal_details', 'passport', 'driver_license', 'identity_card', 'internal_passport', 'address', 'utility_bill', 'bank_statement', 'rental_agreement', 'passport_registration', 'temporary_registration', 'phone_number', 'email'.\n",
+        "name": "type",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Base64-encoded encrypted Telegram Passport element data provided by the user; available only for 'personal_details', 'passport', 'driver_license', 'identity_card', 'internal_passport' and 'address' types. Can be decrypted and verified using the accompanying EncryptedCredentials.",
+        "html_description": "<td><em>Optional</em>. Base64-encoded encrypted Telegram Passport element data provided by the user; available only for &#8220;personal_details&#8221;, &#8220;passport&#8221;, &#8220;driver_license&#8221;, &#8220;identity_card&#8221;, &#8220;internal_passport&#8221; and &#8220;address&#8221; types. Can be decrypted and verified using the accompanying <a href=\"#encryptedcredentials\">EncryptedCredentials</a>.</td>",
+        "rst_description": "*Optional*. Base64-encoded encrypted Telegram Passport element data provided by the user; available only for 'personal_details', 'passport', 'driver_license', 'identity_card', 'internal_passport' and 'address' types. Can be decrypted and verified using the accompanying :class:`aiogram.types.encrypted_credentials.EncryptedCredentials`.\n",
+        "name": "data",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "User's verified phone number; available only for 'phone_number' type",
+        "html_description": "<td><em>Optional</em>. User's verified phone number; available only for &#8220;phone_number&#8221; type</td>",
+        "rst_description": "*Optional*. User's verified phone number; available only for 'phone_number' type\n",
+        "name": "phone_number",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "User's verified email address; available only for 'email' type",
+        "html_description": "<td><em>Optional</em>. User's verified email address; available only for &#8220;email&#8221; type</td>",
+        "rst_description": "*Optional*. User's verified email address; available only for 'email' type\n",
+        "name": "email",
+        "required": false
+      },
+      {
+        "type": "Array of PassportFile",
+        "description": "Array of encrypted files with documents provided by the user; available only for 'utility_bill', 'bank_statement', 'rental_agreement', 'passport_registration' and 'temporary_registration' types. Files can be decrypted and verified using the accompanying EncryptedCredentials.",
+        "html_description": "<td><em>Optional</em>. Array of encrypted files with documents provided by the user; available only for &#8220;utility_bill&#8221;, &#8220;bank_statement&#8221;, &#8220;rental_agreement&#8221;, &#8220;passport_registration&#8221; and &#8220;temporary_registration&#8221; types. Files can be decrypted and verified using the accompanying <a href=\"#encryptedcredentials\">EncryptedCredentials</a>.</td>",
+        "rst_description": "*Optional*. Array of encrypted files with documents provided by the user; available only for 'utility_bill', 'bank_statement', 'rental_agreement', 'passport_registration' and 'temporary_registration' types. Files can be decrypted and verified using the accompanying :class:`aiogram.types.encrypted_credentials.EncryptedCredentials`.\n",
+        "name": "files",
+        "required": false
+      },
+      {
+        "type": "PassportFile",
+        "description": "Encrypted file with the front side of the document, provided by the user; available only for 'passport', 'driver_license', 'identity_card' and 'internal_passport'. The file can be decrypted and verified using the accompanying EncryptedCredentials.",
+        "html_description": "<td><em>Optional</em>. Encrypted file with the front side of the document, provided by the user; available only for &#8220;passport&#8221;, &#8220;driver_license&#8221;, &#8220;identity_card&#8221; and &#8220;internal_passport&#8221;. The file can be decrypted and verified using the accompanying <a href=\"#encryptedcredentials\">EncryptedCredentials</a>.</td>",
+        "rst_description": "*Optional*. Encrypted file with the front side of the document, provided by the user; available only for 'passport', 'driver_license', 'identity_card' and 'internal_passport'. The file can be decrypted and verified using the accompanying :class:`aiogram.types.encrypted_credentials.EncryptedCredentials`.\n",
+        "name": "front_side",
+        "required": false
+      },
+      {
+        "type": "PassportFile",
+        "description": "Encrypted file with the reverse side of the document, provided by the user; available only for 'driver_license' and 'identity_card'. The file can be decrypted and verified using the accompanying EncryptedCredentials.",
+        "html_description": "<td><em>Optional</em>. Encrypted file with the reverse side of the document, provided by the user; available only for &#8220;driver_license&#8221; and &#8220;identity_card&#8221;. The file can be decrypted and verified using the accompanying <a href=\"#encryptedcredentials\">EncryptedCredentials</a>.</td>",
+        "rst_description": "*Optional*. Encrypted file with the reverse side of the document, provided by the user; available only for 'driver_license' and 'identity_card'. The file can be decrypted and verified using the accompanying :class:`aiogram.types.encrypted_credentials.EncryptedCredentials`.\n",
+        "name": "reverse_side",
+        "required": false
+      },
+      {
+        "type": "PassportFile",
+        "description": "Encrypted file with the selfie of the user holding a document, provided by the user; available if requested for 'passport', 'driver_license', 'identity_card' and 'internal_passport'. The file can be decrypted and verified using the accompanying EncryptedCredentials.",
+        "html_description": "<td><em>Optional</em>. Encrypted file with the selfie of the user holding a document, provided by the user; available if requested for &#8220;passport&#8221;, &#8220;driver_license&#8221;, &#8220;identity_card&#8221; and &#8220;internal_passport&#8221;. The file can be decrypted and verified using the accompanying <a href=\"#encryptedcredentials\">EncryptedCredentials</a>.</td>",
+        "rst_description": "*Optional*. Encrypted file with the selfie of the user holding a document, provided by the user; available if requested for 'passport', 'driver_license', 'identity_card' and 'internal_passport'. The file can be decrypted and verified using the accompanying :class:`aiogram.types.encrypted_credentials.EncryptedCredentials`.\n",
+        "name": "selfie",
+        "required": false
+      },
+      {
+        "type": "Array of PassportFile",
+        "description": "Array of encrypted files with translated versions of documents provided by the user; available if requested for 'passport', 'driver_license', 'identity_card', 'internal_passport', 'utility_bill', 'bank_statement', 'rental_agreement', 'passport_registration' and 'temporary_registration' types. Files can be decrypted and verified using the accompanying EncryptedCredentials.",
+        "html_description": "<td><em>Optional</em>. Array of encrypted files with translated versions of documents provided by the user; available if requested for &#8220;passport&#8221;, &#8220;driver_license&#8221;, &#8220;identity_card&#8221;, &#8220;internal_passport&#8221;, &#8220;utility_bill&#8221;, &#8220;bank_statement&#8221;, &#8220;rental_agreement&#8221;, &#8220;passport_registration&#8221; and &#8220;temporary_registration&#8221; types. Files can be decrypted and verified using the accompanying <a href=\"#encryptedcredentials\">EncryptedCredentials</a>.</td>",
+        "rst_description": "*Optional*. Array of encrypted files with translated versions of documents provided by the user; available if requested for 'passport', 'driver_license', 'identity_card', 'internal_passport', 'utility_bill', 'bank_statement', 'rental_agreement', 'passport_registration' and 'temporary_registration' types. Files can be decrypted and verified using the accompanying :class:`aiogram.types.encrypted_credentials.EncryptedCredentials`.\n",
+        "name": "translation",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "Base64-encoded element hash for using in PassportElementErrorUnspecified",
+        "html_description": "<td>Base64-encoded element hash for using in <a href=\"#passportelementerrorunspecified\">PassportElementErrorUnspecified</a></td>",
+        "rst_description": "Base64-encoded element hash for using in :class:`aiogram.types.passport_element_error_unspecified.PassportElementErrorUnspecified`\n",
+        "name": "hash",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

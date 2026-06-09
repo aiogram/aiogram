@@ -1,0 +1,33 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Telegram Passport",
+    "anchor": "telegram-passport"
+  },
+  "object": {
+    "anchor": "setpassportdataerrors",
+    "name": "setPassportDataErrors",
+    "description": "Informs a user that some of the Telegram Passport elements they provided contains errors. The user will not be able to re-submit their Passport to you until the errors are fixed (the contents of the field for which you returned the error must change). Returns True on success.\nUse this if the data submitted by the user doesn't satisfy the standards your service requires for any reason. For example, if a birthday date seems invalid, a submitted document is blurry, a scan shows evidence of tampering, etc. Supply some details in the error message to make sure the user knows how to correct the issues.",
+    "html_description": "<p>Informs a user that some of the Telegram Passport elements they provided contains errors. The user will not be able to re-submit their Passport to you until the errors are fixed (the contents of the field for which you returned the error must change). Returns <em>True</em> on success.</p><p>Use this if the data submitted by the user doesn't satisfy the standards your service requires for any reason. For example, if a birthday date seems invalid, a submitted document is blurry, a scan shows evidence of tampering, etc. Supply some details in the error message to make sure the user knows how to correct the issues.</p>",
+    "rst_description": "Informs a user that some of the Telegram Passport elements they provided contains errors. The user will not be able to re-submit their Passport to you until the errors are fixed (the contents of the field for which you returned the error must change). Returns :code:`True` on success.\nUse this if the data submitted by the user doesn't satisfy the standards your service requires for any reason. For example, if a birthday date seems invalid, a submitted document is blurry, a scan shows evidence of tampering, etc. Supply some details in the error message to make sure the user knows how to correct the issues.",
+    "annotations": [
+      {
+        "type": "Integer",
+        "required": true,
+        "description": "User identifier",
+        "html_description": "<td>User identifier</td>",
+        "rst_description": "User identifier\n",
+        "name": "user_id"
+      },
+      {
+        "type": "Array of PassportElementError",
+        "required": true,
+        "description": "A JSON-serialized array describing the errors",
+        "html_description": "<td>A JSON-serialized array describing the errors</td>",
+        "rst_description": "A JSON-serialized array describing the errors\n",
+        "name": "errors"
+      }
+    ],
+    "category": "methods"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Telegram Passport",
+    "anchor": "telegram-passport"
+  },
+  "object": {
+    "anchor": "passportelementerror",
+    "name": "PassportElementError",
+    "description": "This object represents an error in the Telegram Passport element which was submitted that should be resolved by the user. It should be one of:\n - PassportElementErrorDataField\n - PassportElementErrorFrontSide\n - PassportElementErrorReverseSide\n - PassportElementErrorSelfie\n - PassportElementErrorFile\n - PassportElementErrorFiles\n - PassportElementErrorTranslationFile\n - PassportElementErrorTranslationFiles\n - PassportElementErrorUnspecified",
+    "html_description": "<p>This object represents an error in the Telegram Passport element which was submitted that should be resolved by the user. It should be one of:</p><ul>\n<li><a href=\"#passportelementerrordatafield\">PassportElementErrorDataField</a></li>\n<li><a href=\"#passportelementerrorfrontside\">PassportElementErrorFrontSide</a></li>\n<li><a href=\"#passportelementerrorreverseside\">PassportElementErrorReverseSide</a></li>\n<li><a href=\"#passportelementerrorselfie\">PassportElementErrorSelfie</a></li>\n<li><a href=\"#passportelementerrorfile\">PassportElementErrorFile</a></li>\n<li><a href=\"#passportelementerrorfiles\">PassportElementErrorFiles</a></li>\n<li><a href=\"#passportelementerrortranslationfile\">PassportElementErrorTranslationFile</a></li>\n<li><a href=\"#passportelementerrortranslationfiles\">PassportElementErrorTranslationFiles</a></li>\n<li><a href=\"#passportelementerrorunspecified\">PassportElementErrorUnspecified</a></li>\n</ul>",
+    "rst_description": "This object represents an error in the Telegram Passport element which was submitted that should be resolved by the user. It should be one of:\n\n - :class:`aiogram.types.passport_element_error_data_field.PassportElementErrorDataField`\n - :class:`aiogram.types.passport_element_error_front_side.PassportElementErrorFrontSide`\n - :class:`aiogram.types.passport_element_error_reverse_side.PassportElementErrorReverseSide`\n - :class:`aiogram.types.passport_element_error_selfie.PassportElementErrorSelfie`\n - :class:`aiogram.types.passport_element_error_file.PassportElementErrorFile`\n - :class:`aiogram.types.passport_element_error_files.PassportElementErrorFiles`\n - :class:`aiogram.types.passport_element_error_translation_file.PassportElementErrorTranslationFile`\n - :class:`aiogram.types.passport_element_error_translation_files.PassportElementErrorTranslationFiles`\n - :class:`aiogram.types.passport_element_error_unspecified.PassportElementErrorUnspecified`",
+    "annotations": [],
+    "category": "types"
+  }
+}

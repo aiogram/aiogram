@@ -1,0 +1,41 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Payments",
+    "anchor": "payments"
+  },
+  "object": {
+    "anchor": "shippingoption",
+    "name": "ShippingOption",
+    "description": "This object represents one shipping option.",
+    "html_description": "<p>This object represents one shipping option.</p>",
+    "rst_description": "This object represents one shipping option.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Shipping option identifier",
+        "html_description": "<td>Shipping option identifier</td>",
+        "rst_description": "Shipping option identifier\n",
+        "name": "id",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Option title",
+        "html_description": "<td>Option title</td>",
+        "rst_description": "Option title\n",
+        "name": "title",
+        "required": true
+      },
+      {
+        "type": "Array of LabeledPrice",
+        "description": "List of price portions",
+        "html_description": "<td>List of price portions</td>",
+        "rst_description": "List of price portions\n",
+        "name": "prices",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

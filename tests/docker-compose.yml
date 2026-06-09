@@ -1,0 +1,13 @@
+services:
+  redis:
+    image: redis:8-alpine
+    ports:
+      - "${REDIS_PORT-6379}:6379"
+
+  mongo:
+    image: mongo:8.0.14
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: mongo
+      MONGO_INITDB_ROOT_PASSWORD: mongo
+    ports:
+      - "${MONGODB_PORT-27017}:27017"

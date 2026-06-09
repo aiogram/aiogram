@@ -1,0 +1,38 @@
+{
+  "meta": {
+    "deprecated": {
+      "version": "7.0",
+      "release_date": "2023-12-29"
+    }
+  },
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "usershared",
+    "name": "UserShared",
+    "description": "This object contains information about the user whose identifier was shared with the bot using a KeyboardButtonRequestUser button.",
+    "html_description": "<p>This object contains information about the user whose identifier was shared with the bot using a <a href=\"#keyboardbuttonrequestuser\">KeyboardButtonRequestUser</a> button.</p>",
+    "rst_description": "This object contains information about the user whose identifier was shared with the bot using a :class:`aiogram.types.keyboard_button_request_user.KeyboardButtonRequestUser` button.",
+    "annotations": [
+      {
+        "type": "Integer",
+        "description": "Identifier of the request",
+        "html_description": "<td>Identifier of the request</td>",
+        "rst_description": "Identifier of the request\n",
+        "name": "request_id",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "Identifier of the shared user. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier. The bot may not have access to the user and could be unable to use this identifier, unless the user is already known to the bot by some other means.",
+        "html_description": "<td>Identifier of the shared user. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier. The bot may not have access to the user and could be unable to use this identifier, unless the user is already known to the bot by some other means.</td>",
+        "rst_description": "Identifier of the shared user. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier. The bot may not have access to the user and could be unable to use this identifier, unless the user is already known to the bot by some other means.\n",
+        "name": "user_id",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "messageorigin",
+    "name": "MessageOrigin",
+    "description": "This object describes the origin of a message. It can be one of\n - MessageOriginUser\n - MessageOriginHiddenUser\n - MessageOriginChat\n - MessageOriginChannel",
+    "html_description": "<p>This object describes the origin of a message. It can be one of</p><ul>\n<li><a href=\"#messageoriginuser\">MessageOriginUser</a></li>\n<li><a href=\"#messageoriginhiddenuser\">MessageOriginHiddenUser</a></li>\n<li><a href=\"#messageoriginchat\">MessageOriginChat</a></li>\n<li><a href=\"#messageoriginchannel\">MessageOriginChannel</a></li>\n</ul>",
+    "rst_description": "This object describes the origin of a message. It can be one of\n\n - :class:`aiogram.types.message_origin_user.MessageOriginUser`\n - :class:`aiogram.types.message_origin_hidden_user.MessageOriginHiddenUser`\n - :class:`aiogram.types.message_origin_chat.MessageOriginChat`\n - :class:`aiogram.types.message_origin_channel.MessageOriginChannel`",
+    "annotations": [],
+    "category": "types"
+  }
+}

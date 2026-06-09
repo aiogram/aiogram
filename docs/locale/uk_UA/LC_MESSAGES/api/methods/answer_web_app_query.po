@@ -1,0 +1,82 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2022, aiogram Team
+# This file is distributed under the same license as the aiogram package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2022.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: aiogram \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-10-01 22:51+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.10.3\n"
+
+#: ../../api/methods/answer_web_app_query.rst:3
+msgid "answerWebAppQuery"
+msgstr ""
+
+#: ../../api/methods/answer_web_app_query.rst:5
+msgid "Returns: :obj:`SentWebAppMessage`"
+msgstr ""
+
+#: aiogram.methods.answer_web_app_query.AnswerWebAppQuery:1 of
+msgid ""
+"Use this method to set the result of an interaction with a `Web App "
+"<https://core.telegram.org/bots/webapps>`_ and send a corresponding "
+"message on behalf of the user to the chat from which the query "
+"originated. On success, a "
+":class:`aiogram.types.sent_web_app_message.SentWebAppMessage` object is "
+"returned."
+msgstr ""
+
+#: aiogram.methods.answer_web_app_query.AnswerWebAppQuery:3 of
+msgid "Source: https://core.telegram.org/bots/api#answerwebappquery"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.answer_web_app_query.AnswerWebAppQuery.web_app_query_id:1 of
+msgid "Unique identifier for the query to be answered"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.methods.answer_web_app_query.AnswerWebAppQuery.result:1 of
+msgid "A JSON-serialized object describing the message to be sent"
+msgstr ""
+
+#: ../../api/methods/answer_web_app_query.rst:14
+msgid "Usage"
+msgstr ""
+
+#: ../../api/methods/answer_web_app_query.rst:17
+msgid "As bot method"
+msgstr ""
+
+#: ../../api/methods/answer_web_app_query.rst:25
+msgid "Method as object"
+msgstr ""
+
+#: ../../api/methods/answer_web_app_query.rst:27
+msgid "Imports:"
+msgstr ""
+
+#: ../../api/methods/answer_web_app_query.rst:29
+msgid ":code:`from aiogram.methods.answer_web_app_query import AnswerWebAppQuery`"
+msgstr ""
+
+#: ../../api/methods/answer_web_app_query.rst:30
+msgid "alias: :code:`from aiogram.methods import AnswerWebAppQuery`"
+msgstr ""
+
+#: ../../api/methods/answer_web_app_query.rst:33
+msgid "With specific bot"
+msgstr ""
+
+#: ../../api/methods/answer_web_app_query.rst:40
+msgid "As reply into Webhook in handler"
+msgstr ""
