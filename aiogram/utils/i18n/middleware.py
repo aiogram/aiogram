@@ -126,17 +126,35 @@ class SimpleI18nMiddleware(I18nMiddleware):
             )
             raise RuntimeError(msg)
 
+
         event_from_user: User | None = data.get("event_from_user")
         if event_from_user is None or event_from_user.language_code is None:
             return self.i18n.default_locale
-        try:
-            locale = Locale.parse(event_from_user.language_code, sep="-")
-        except UnknownLocaleError:
-            return self.i18n.default_locale
 
-        if locale.language not in self.i18n.available_locales:
-            return self.i18n.default_locale
-        return locale.language
+        language_code = event_from_user.language_code
+
+        # Step 1: Try the language code as-is (handles already-normalized codes like "pt_BR")
+        if language_code in self.i18n.available_locales:
+            return language_code
+
+        # Step 2: Try Babel-normalized form (e.g., "pt-br" -> "pt_BR")
+        try:
+            normalized = Locale.parse(language_code, sep="-")
+            normalized_code = f"{normalized.language}_{normalized.territory}" if normalized.territory else normalized.language
+            if normalized_code in self.i18n.available_locales:
+                return normalized_code
+        except UnknownLocaleError:
+            pass
+
+        # Step 3: Fall back to base language only (e.g., "pt-br" -> "pt")
+        try:
+            base_locale = Locale.parse(language_code, sep="-")
+            if base_locale.language in self.i18n.available_locales:
+                return base_locale.language
+        except UnknownLocaleError:
+            pass
+
+        return self.i18n.default_locale
 
 
 class ConstI18nMiddleware(I18nMiddleware):

@@ -162,6 +162,41 @@ class TestSimpleI18nMiddleware:
         assert "middleware" in context
         assert context["middleware"] == middleware
 
+    @pytest.mark.parametrize(
+        "language_code,expected_locale",
+        [
+            ("pt-br", "pt_BR"),  # lowercase region code -> normalized
+            ("pt-BR", "pt_BR"),  # mixed case -> normalized
+            ("PT-BR", "pt_BR"),  # uppercase -> normalized
+            ("pt_BR", "pt_BR"),  # already normalized -> exact match
+            ("en", "en"),        # base language
+            ("en-US", "en"),     # US English -> base en (not in available)
+            ("uk", "uk"),        # available locale
+            ("zh-cn", "zh_CN"),  # Chinese simplified
+            ("zh-CN", "zh_CN"),  # Chinese simplified normalized
+            ("zh-TW", "zh_TW"),  # Chinese traditional
+            ("unknown", "en"),  # unknown -> default
+        ],
+    )
+    async def test_locale_region_code_detection(self, language_code, expected_locale):
+        """Test that region codes like pt-br are correctly resolved to pt_BR."""
+        from tests.conftest import DATA_DIR
+        i18n_with_regions = I18n(path=DATA_DIR / "locales")
+        middleware = SimpleI18nMiddleware(i18n=i18n_with_regions)
+
+        locale = await middleware.get_locale(
+            None,
+            {
+                "event_from_user": User(
+                    id=42,
+                    is_bot=False,
+                    first_name="Test",
+                    language_code=language_code,
+                )
+            },
+        )
+        assert locale == expected_locale
+
 
 class TestConstI18nMiddleware:
     async def test_middleware(self, i18n: I18n):
