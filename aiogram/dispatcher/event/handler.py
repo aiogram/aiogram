@@ -35,6 +35,14 @@ class CallableObject:
         callback = inspect.unwrap(self.callback)
         self.awaitable = inspect.isawaitable(callback) or inspect.iscoroutinefunction(callback)
 
+        # Handle callable objects with async __call__ (e.g., class instances)
+        if not self.awaitable and hasattr(callback, "__call__"):
+            self.awaitable = inspect.iscoroutinefunction(callback.__call__)
+
+        # Handle lambdas/callables that return coroutines (e.g., `lambda m: async_func(m)`)
+        if not self.awaitable:
+            self.awaitable = self._check_awaitable_via_call()
+
         kwargs: dict[str, Any] = {}
         if sys.version_info >= (3, 14):
             import annotationlib
@@ -58,6 +66,26 @@ class CallableObject:
                 varkw = True
         self.params = params
         self.varkw = varkw
+
+    def _check_awaitable_via_call(self) -> bool:
+        """
+        Check if calling the callback produces an awaitable.
+        
+        Handles cases like `lambda m: async_func(m)` where the lambda itself
+        is not a coroutine function but returns a coroutine when called.
+        """
+        sentinel = object()
+        for args in ((sentinel,), ()):
+            try:
+                result = self.callback(*args)
+                is_awaitable = inspect.isawaitable(result)
+                # Clean up without awaiting
+                if hasattr(result, "close"):
+                    result.close()
+                return is_awaitable
+            except (TypeError, ValueError):
+                continue
+        return False
 
     def _prepare_kwargs(self, kwargs: dict[str, Any]) -> dict[str, Any]:
         if self.varkw:

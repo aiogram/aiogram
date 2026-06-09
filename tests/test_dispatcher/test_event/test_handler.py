@@ -39,8 +39,13 @@ class SyncCallable:
         return locals()
 
 
+class AsyncCallable:
+    async def __call__(self, foo, bar, baz):
+        return locals()
+
+
 class TestCallableObject:
-    @pytest.mark.parametrize("callback", [callback2, TestFilter()])
+    @pytest.mark.parametrize("callback", [callback2, TestFilter(), AsyncCallable()])
     def test_init_awaitable(self, callback):
         obj = CallableObject(callback)
         assert obj.awaitable
@@ -51,6 +56,16 @@ class TestCallableObject:
         obj = CallableObject(callback)
         assert not obj.awaitable
         assert obj.callback == callback
+
+    def test_init_lambda_returning_coroutine(self):
+        """Lambda that wraps an async function should be detected as awaitable."""
+        obj = CallableObject(lambda msg: callback2(msg, 1, 2))
+        assert obj.awaitable
+
+    def test_init_sync_lambda(self):
+        """Sync lambda should not be detected as awaitable."""
+        obj = CallableObject(lambda msg: callback1(msg, 1, 2))
+        assert not obj.awaitable
 
     @pytest.mark.parametrize(
         "callback,args",
