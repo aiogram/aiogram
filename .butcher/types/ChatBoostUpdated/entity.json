@@ -1,0 +1,33 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "chatboostupdated",
+    "name": "ChatBoostUpdated",
+    "description": "This object represents a boost added to a chat or changed.",
+    "html_description": "<p>This object represents a boost added to a chat or changed.</p>",
+    "rst_description": "This object represents a boost added to a chat or changed.",
+    "annotations": [
+      {
+        "type": "Chat",
+        "description": "Chat which was boosted",
+        "html_description": "<td>Chat which was boosted</td>",
+        "rst_description": "Chat which was boosted\n",
+        "name": "chat",
+        "required": true
+      },
+      {
+        "type": "ChatBoost",
+        "description": "Information about the chat boost",
+        "html_description": "<td>Information about the chat boost</td>",
+        "rst_description": "Information about the chat boost\n",
+        "name": "boost",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

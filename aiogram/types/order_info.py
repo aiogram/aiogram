@@ -1,25 +1,50 @@
-from .base import Deserializable
-from .shipping_address import ShippingAddress
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any
+
+from .base import TelegramObject
+
+if TYPE_CHECKING:
+    from .shipping_address import ShippingAddress
 
 
-class OrderInfo(Deserializable):
+class OrderInfo(TelegramObject):
     """
-    his object represents information about an order.
-    
-    https://core.telegram.org/bots/api#orderinfo
+    This object represents information about an order.
+
+    Source: https://core.telegram.org/bots/api#orderinfo
     """
 
-    def __init__(self, name, phone_number, email, shipping_address):
-        self.name: str = name
-        self.phone_number: str = phone_number
-        self.email: str = email
-        self.shipping_address: ShippingAddress = shipping_address
+    name: str | None = None
+    """*Optional*. User name"""
+    phone_number: str | None = None
+    """*Optional*. User's phone number"""
+    email: str | None = None
+    """*Optional*. User email"""
+    shipping_address: ShippingAddress | None = None
+    """*Optional*. User shipping address"""
 
-    @classmethod
-    def de_json(cls, raw_data):
-        name = raw_data.get('name')
-        phone_number = raw_data.get('phone_number')
-        email = raw_data.get('email')
-        shipping_address = ShippingAddress.deserialize(raw_data.get('shipping_address'))
+    if TYPE_CHECKING:
+        # DO NOT EDIT MANUALLY!!!
+        # This section was auto-generated via `butcher`
 
-        return OrderInfo(name, phone_number, email, shipping_address)
+        def __init__(
+            __pydantic__self__,
+            *,
+            name: str | None = None,
+            phone_number: str | None = None,
+            email: str | None = None,
+            shipping_address: ShippingAddress | None = None,
+            **__pydantic_kwargs: Any,
+        ) -> None:
+            # DO NOT EDIT MANUALLY!!!
+            # This method was auto-generated via `butcher`
+            # Is needed only for type checking and IDE support without any additional plugins
+
+            super().__init__(
+                name=name,
+                phone_number=phone_number,
+                email=email,
+                shipping_address=shipping_address,
+                **__pydantic_kwargs,
+            )

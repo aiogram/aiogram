@@ -1,0 +1,49 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Telegram Passport",
+    "anchor": "telegram-passport"
+  },
+  "object": {
+    "anchor": "passportelementerrorfrontside",
+    "name": "PassportElementErrorFrontSide",
+    "description": "Represents an issue with the front side of a document. The error is considered resolved when the file with the front side of the document changes.",
+    "html_description": "<p>Represents an issue with the front side of a document. The error is considered resolved when the file with the front side of the document changes.</p>",
+    "rst_description": "Represents an issue with the front side of a document. The error is considered resolved when the file with the front side of the document changes.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Error source, must be front_side",
+        "html_description": "<td>Error source, must be <em>front_side</em></td>",
+        "rst_description": "Error source, must be *front_side*\n",
+        "name": "source",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "The section of the user's Telegram Passport which has the issue, one of 'passport', 'driver_license', 'identity_card', 'internal_passport'",
+        "html_description": "<td>The section of the user's Telegram Passport which has the issue, one of &#8220;passport&#8221;, &#8220;driver_license&#8221;, &#8220;identity_card&#8221;, &#8220;internal_passport&#8221;</td>",
+        "rst_description": "The section of the user's Telegram Passport which has the issue, one of 'passport', 'driver_license', 'identity_card', 'internal_passport'\n",
+        "name": "type",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Base64-encoded hash of the file with the front side of the document",
+        "html_description": "<td>Base64-encoded hash of the file with the front side of the document</td>",
+        "rst_description": "Base64-encoded hash of the file with the front side of the document\n",
+        "name": "file_hash",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Error message",
+        "html_description": "<td>Error message</td>",
+        "rst_description": "Error message\n",
+        "name": "message",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

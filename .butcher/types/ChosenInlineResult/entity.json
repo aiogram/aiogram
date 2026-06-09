@@ -1,0 +1,57 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Inline mode",
+    "anchor": "inline-mode"
+  },
+  "object": {
+    "anchor": "choseninlineresult",
+    "name": "ChosenInlineResult",
+    "description": "Represents a result of an inline query that was chosen by the user and sent to their chat partner.\nNote: It is necessary to enable inline feedback via @BotFather in order to receive these objects in updates.",
+    "html_description": "<p>Represents a <a href=\"#inlinequeryresult\">result</a> of an inline query that was chosen by the user and sent to their chat partner.</p><p><strong>Note:</strong> It is necessary to enable <a href=\"/bots/inline#collecting-feedback\">inline feedback</a> via <a href=\"https://t.me/botfather\">@BotFather</a> in order to receive these objects in updates.</p>",
+    "rst_description": "Represents a `result <https://core.telegram.org/bots/api#inlinequeryresult>`_ of an inline query that was chosen by the user and sent to their chat partner.\n**Note:** It is necessary to enable `inline feedback <https://core.telegram.org/bots/inline#collecting-feedback>`_ via `@BotFather <https://t.me/botfather>`_ in order to receive these objects in updates.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "The unique identifier for the result that was chosen",
+        "html_description": "<td>The unique identifier for the result that was chosen</td>",
+        "rst_description": "The unique identifier for the result that was chosen\n",
+        "name": "result_id",
+        "required": true
+      },
+      {
+        "type": "User",
+        "description": "The user that chose the result",
+        "html_description": "<td>The user that chose the result</td>",
+        "rst_description": "The user that chose the result\n",
+        "name": "from",
+        "required": true
+      },
+      {
+        "type": "Location",
+        "description": "Sender location, only for bots that require user location",
+        "html_description": "<td><em>Optional</em>. Sender location, only for bots that require user location</td>",
+        "rst_description": "*Optional*. Sender location, only for bots that require user location\n",
+        "name": "location",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "Identifier of the sent inline message. Available only if there is an inline keyboard attached to the message. Will be also received in callback queries and can be used to edit the message.",
+        "html_description": "<td><em>Optional</em>. Identifier of the sent inline message. Available only if there is an <a href=\"#inlinekeyboardmarkup\">inline keyboard</a> attached to the message. Will be also received in <a href=\"#callbackquery\">callback queries</a> and can be used to <a href=\"#updating-messages\">edit</a> the message.</td>",
+        "rst_description": "*Optional*. Identifier of the sent inline message. Available only if there is an `inline keyboard <https://core.telegram.org/bots/api#inlinekeyboardmarkup>`_ attached to the message. Will be also received in `callback queries <https://core.telegram.org/bots/api#callbackquery>`_ and can be used to `edit <https://core.telegram.org/bots/api#updating-messages>`_ the message.\n",
+        "name": "inline_message_id",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "The query that was used to obtain the result",
+        "html_description": "<td>The query that was used to obtain the result</td>",
+        "rst_description": "The query that was used to obtain the result\n",
+        "name": "query",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

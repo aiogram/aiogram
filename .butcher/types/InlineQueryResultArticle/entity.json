@@ -1,0 +1,109 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Inline mode",
+    "anchor": "inline-mode"
+  },
+  "object": {
+    "anchor": "inlinequeryresultarticle",
+    "name": "InlineQueryResultArticle",
+    "description": "Represents a link to an article or web page.",
+    "html_description": "<p>Represents a link to an article or web page.</p>",
+    "rst_description": "Represents a link to an article or web page.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Type of the result, must be article",
+        "html_description": "<td>Type of the result, must be <em>article</em></td>",
+        "rst_description": "Type of the result, must be *article*\n",
+        "name": "type",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Unique identifier for this result, 1-64 Bytes",
+        "html_description": "<td>Unique identifier for this result, 1-64 Bytes</td>",
+        "rst_description": "Unique identifier for this result, 1-64 Bytes\n",
+        "name": "id",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Title of the result",
+        "html_description": "<td>Title of the result</td>",
+        "rst_description": "Title of the result\n",
+        "name": "title",
+        "required": true
+      },
+      {
+        "type": "InputMessageContent",
+        "description": "Content of the message to be sent",
+        "html_description": "<td>Content of the message to be sent</td>",
+        "rst_description": "Content of the message to be sent\n",
+        "name": "input_message_content",
+        "required": true
+      },
+      {
+        "type": "InlineKeyboardMarkup",
+        "description": "Inline keyboard attached to the message",
+        "html_description": "<td><em>Optional</em>. <a href=\"/bots/features#inline-keyboards\">Inline keyboard</a> attached to the message</td>",
+        "rst_description": "*Optional*. `Inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_ attached to the message\n",
+        "name": "reply_markup",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "URL of the result",
+        "html_description": "<td><em>Optional</em>. URL of the result</td>",
+        "rst_description": "*Optional*. URL of the result\n",
+        "name": "url",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "Short description of the result",
+        "html_description": "<td><em>Optional</em>. Short description of the result</td>",
+        "rst_description": "*Optional*. Short description of the result\n",
+        "name": "description",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "Url of the thumbnail for the result",
+        "html_description": "<td><em>Optional</em>. Url of the thumbnail for the result</td>",
+        "rst_description": "*Optional*. Url of the thumbnail for the result\n",
+        "name": "thumbnail_url",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "Thumbnail width",
+        "html_description": "<td><em>Optional</em>. Thumbnail width</td>",
+        "rst_description": "*Optional*. Thumbnail width\n",
+        "name": "thumbnail_width",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "Thumbnail height",
+        "html_description": "<td><em>Optional</em>. Thumbnail height</td>",
+        "rst_description": "*Optional*. Thumbnail height\n",
+        "name": "thumbnail_height",
+        "required": false
+      },
+      {
+        "type": "Boolean",
+        "description": "Pass True if you don't want the URL to be shown in the message",
+        "html_description": "<td><em>Optional</em>. Pass <em>True</em> if you don't want the URL to be shown in the message</td>",
+        "rst_description": "*Optional*. Pass :code:`True` if you don't want the URL to be shown in the message\n",
+        "name": "hide_url",
+        "required": false,
+        "deprecated": {
+          "version": "8.2",
+          "release_date": "2025-01-01"
+        }
+      }
+    ],
+    "category": "types"
+  }
+}

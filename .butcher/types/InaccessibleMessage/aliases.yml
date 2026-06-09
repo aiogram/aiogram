@@ -1,0 +1,202 @@
+answer:
+  method: sendMessage
+  code: &assert-chat |
+    assert self.chat is not None, "This method can be used only if chat is present in the message."
+  fill: &fill-answer
+    chat_id: self.chat.id
+
+reply:
+  method: sendMessage
+  code: *assert-chat
+  fill: &fill-reply
+    <<: *fill-answer
+    reply_parameters: self.as_reply_parameters()
+  ignore: &ignore-reply
+    - reply_to_message_id
+
+answer_animation:
+  method: sendAnimation
+  code: *assert-chat
+  fill: *fill-answer
+
+reply_animation:
+  method: sendAnimation
+  code: *assert-chat
+  fill: *fill-reply
+  ignore: *ignore-reply
+
+answer_audio:
+  method: sendAudio
+  code: *assert-chat
+  fill: *fill-answer
+
+reply_audio:
+  method: sendAudio
+  code: *assert-chat
+  fill: *fill-reply
+  ignore: *ignore-reply
+
+answer_contact:
+  method: sendContact
+  code: *assert-chat
+  fill: *fill-answer
+
+reply_contact:
+  method: sendContact
+  code: *assert-chat
+  fill: *fill-reply
+  ignore: *ignore-reply
+
+answer_document:
+  method: sendDocument
+  code: *assert-chat
+  fill: *fill-answer
+
+reply_document:
+  method: sendDocument
+  code: *assert-chat
+  fill: *fill-reply
+  ignore: *ignore-reply
+
+answer_game:
+  method: sendGame
+  code: *assert-chat
+  fill: *fill-answer
+
+reply_game:
+  method: sendGame
+  code: *assert-chat
+  fill: *fill-reply
+  ignore: *ignore-reply
+
+answer_invoice:
+  method: sendInvoice
+  code: *assert-chat
+  fill: *fill-answer
+
+reply_invoice:
+  method: sendInvoice
+  code: *assert-chat
+  fill: *fill-reply
+  ignore: *ignore-reply
+
+answer_location:
+  method: sendLocation
+  code: *assert-chat
+  fill: *fill-answer
+
+reply_location:
+  method: sendLocation
+  code: *assert-chat
+  fill: *fill-reply
+  ignore: *ignore-reply
+
+answer_media_group:
+  method: sendMediaGroup
+  code: *assert-chat
+  fill: *fill-answer
+
+reply_media_group:
+  method: sendMediaGroup
+  code: *assert-chat
+  fill: *fill-reply
+  ignore: *ignore-reply
+
+answer_photo:
+  method: sendPhoto
+  code: *assert-chat
+  fill: *fill-answer
+
+reply_photo:
+  method: sendPhoto
+  code: *assert-chat
+  fill: *fill-reply
+  ignore: *ignore-reply
+
+answer_poll:
+  method: sendPoll
+  code: *assert-chat
+  fill: *fill-answer
+
+reply_poll:
+  method: sendPoll
+  code: *assert-chat
+  fill: *fill-reply
+  ignore: *ignore-reply
+
+answer_dice:
+  method: sendDice
+  code: *assert-chat
+  fill: *fill-answer
+
+reply_dice:
+  method: sendDice
+  code: *assert-chat
+  fill: *fill-reply
+  ignore: *ignore-reply
+
+answer_sticker:
+  method: sendSticker
+  code: *assert-chat
+  fill: *fill-answer
+
+reply_sticker:
+  method: sendSticker
+  code: *assert-chat
+  fill: *fill-reply
+  ignore: *ignore-reply
+
+answer_venue:
+  method: sendVenue
+  code: *assert-chat
+  fill: *fill-answer
+
+reply_venue:
+  method: sendVenue
+  code: *assert-chat
+  fill: *fill-reply
+  ignore: *ignore-reply
+
+answer_video:
+  method: sendVideo
+  code: *assert-chat
+  fill: *fill-answer
+
+reply_video:
+  method: sendVideo
+  code: *assert-chat
+  fill: *fill-reply
+  ignore: *ignore-reply
+
+answer_video_note:
+  method: sendVideoNote
+  code: *assert-chat
+  fill: *fill-answer
+
+reply_video_note:
+  method: sendVideoNote
+  code: *assert-chat
+  fill: *fill-reply
+  ignore: *ignore-reply
+
+answer_voice:
+  method: sendVoice
+  code: *assert-chat
+  fill: *fill-answer
+
+reply_voice:
+  method: sendVoice
+  code: *assert-chat
+  fill: *fill-reply
+  ignore: *ignore-reply
+
+answer_paid_media:
+  method: sendPaidMedia
+  code: *assert-chat
+  fill: *fill-answer
+
+reply_paid_media:
+  method: sendPaidMedia
+  code: *assert-chat
+  fill: *fill-reply
+  ignore: *ignore-reply

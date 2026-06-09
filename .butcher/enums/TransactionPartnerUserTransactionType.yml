@@ -1,0 +1,10 @@
+name: TransactionPartnerUserTransactionTypeEnum
+description: |
+  This object represents type of the transaction that were made by partner user.
+
+  Source: https://core.telegram.org/bots/api#transactionpartneruser
+parse:
+  entity: TransactionPartnerUser
+  category: types
+  attribute: transaction_type
+  regexp: "'([a-z_]+)'"

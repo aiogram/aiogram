@@ -1,0 +1,49 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "storyareatypelocation",
+    "name": "StoryAreaTypeLocation",
+    "description": "Describes a story area pointing to a location. Currently, a story can have up to 10 location areas.",
+    "html_description": "<p>Describes a story area pointing to a location. Currently, a story can have up to 10 location areas.</p>",
+    "rst_description": "Describes a story area pointing to a location. Currently, a story can have up to 10 location areas.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Type of the area, always 'location'",
+        "html_description": "<td>Type of the area, always &#8220;location&#8221;</td>",
+        "rst_description": "Type of the area, always 'location'\n",
+        "name": "type",
+        "required": true
+      },
+      {
+        "type": "Float",
+        "description": "Location latitude in degrees",
+        "html_description": "<td>Location latitude in degrees</td>",
+        "rst_description": "Location latitude in degrees\n",
+        "name": "latitude",
+        "required": true
+      },
+      {
+        "type": "Float",
+        "description": "Location longitude in degrees",
+        "html_description": "<td>Location longitude in degrees</td>",
+        "rst_description": "Location longitude in degrees\n",
+        "name": "longitude",
+        "required": true
+      },
+      {
+        "type": "LocationAddress",
+        "description": "Address of the location",
+        "html_description": "<td><em>Optional</em>. Address of the location</td>",
+        "rst_description": "*Optional*. Address of the location\n",
+        "name": "address",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

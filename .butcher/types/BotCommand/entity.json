@@ -1,0 +1,33 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "botcommand",
+    "name": "BotCommand",
+    "description": "This object represents a bot command.",
+    "html_description": "<p>This object represents a bot command.</p>",
+    "rst_description": "This object represents a bot command.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Text of the command; 1-32 characters. Can contain only lowercase English letters, digits and underscores.",
+        "html_description": "<td>Text of the command; 1-32 characters. Can contain only lowercase English letters, digits and underscores.</td>",
+        "rst_description": "Text of the command; 1-32 characters. Can contain only lowercase English letters, digits and underscores.\n",
+        "name": "command",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Description of the command; 1-256 characters.",
+        "html_description": "<td>Description of the command; 1-256 characters.</td>",
+        "rst_description": "Description of the command; 1-256 characters.\n",
+        "name": "description",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

@@ -1,0 +1,57 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Telegram Passport",
+    "anchor": "telegram-passport"
+  },
+  "object": {
+    "anchor": "passportelementerrordatafield",
+    "name": "PassportElementErrorDataField",
+    "description": "Represents an issue in one of the data fields that was provided by the user. The error is considered resolved when the field's value changes.",
+    "html_description": "<p>Represents an issue in one of the data fields that was provided by the user. The error is considered resolved when the field's value changes.</p>",
+    "rst_description": "Represents an issue in one of the data fields that was provided by the user. The error is considered resolved when the field's value changes.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Error source, must be data",
+        "html_description": "<td>Error source, must be <em>data</em></td>",
+        "rst_description": "Error source, must be *data*\n",
+        "name": "source",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "The section of the user's Telegram Passport which has the error, one of 'personal_details', 'passport', 'driver_license', 'identity_card', 'internal_passport', 'address'",
+        "html_description": "<td>The section of the user's Telegram Passport which has the error, one of &#8220;personal_details&#8221;, &#8220;passport&#8221;, &#8220;driver_license&#8221;, &#8220;identity_card&#8221;, &#8220;internal_passport&#8221;, &#8220;address&#8221;</td>",
+        "rst_description": "The section of the user's Telegram Passport which has the error, one of 'personal_details', 'passport', 'driver_license', 'identity_card', 'internal_passport', 'address'\n",
+        "name": "type",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Name of the data field which has the error",
+        "html_description": "<td>Name of the data field which has the error</td>",
+        "rst_description": "Name of the data field which has the error\n",
+        "name": "field_name",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Base64-encoded data hash",
+        "html_description": "<td>Base64-encoded data hash</td>",
+        "rst_description": "Base64-encoded data hash\n",
+        "name": "data_hash",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Error message",
+        "html_description": "<td>Error message</td>",
+        "rst_description": "Error message\n",
+        "name": "message",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

@@ -1,0 +1,57 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "photosize",
+    "name": "PhotoSize",
+    "description": "This object represents one size of a photo or a file / sticker thumbnail.",
+    "html_description": "<p>This object represents one size of a photo or a <a href=\"#document\">file</a> / <a href=\"#sticker\">sticker</a> thumbnail.</p>",
+    "rst_description": "This object represents one size of a photo or a `file <https://core.telegram.org/bots/api#document>`_ / :class:`aiogram.methods.sticker.Sticker` thumbnail.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Identifier for this file, which can be used to download or reuse the file",
+        "html_description": "<td>Identifier for this file, which can be used to download or reuse the file</td>",
+        "rst_description": "Identifier for this file, which can be used to download or reuse the file\n",
+        "name": "file_id",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.",
+        "html_description": "<td>Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.</td>",
+        "rst_description": "Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.\n",
+        "name": "file_unique_id",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "Photo width",
+        "html_description": "<td>Photo width</td>",
+        "rst_description": "Photo width\n",
+        "name": "width",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "Photo height",
+        "html_description": "<td>Photo height</td>",
+        "rst_description": "Photo height\n",
+        "name": "height",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "File size in bytes",
+        "html_description": "<td><em>Optional</em>. File size in bytes</td>",
+        "rst_description": "*Optional*. File size in bytes\n",
+        "name": "file_size",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

@@ -1,0 +1,311 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "aiogram"
+description = 'Modern and fully asynchronous framework for Telegram Bot API'
+readme = "README.rst"
+requires-python = ">=3.10,<3.15"
+license = "MIT"
+authors = [
+    { name = "Alex Root Junior", email = "jroot.junior@gmail.com" },
+]
+maintainers = [
+    { name = "Alex Root Junior", email = "jroot.junior@gmail.com" },
+]
+keywords = [
+    "telegram",
+    "bot",
+    "api",
+    "framework",
+    "wrapper",
+    "asyncio",
+]
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Console",
+    "Framework :: AsyncIO",
+    "Typing :: Typed",
+    "Intended Audience :: Developers",
+    "Intended Audience :: System Administrators",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: Implementation :: PyPy",
+    "Topic :: Software Development :: Libraries :: Application Frameworks",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Communications :: Chat",
+]
+dependencies = [
+    "magic-filter>=1.0.12,<1.1",
+    "aiohttp>=3.9.0,<3.14",
+    "pydantic>=2.4.1,<2.14",
+    "aiofiles>=23.2.1,<26.0",
+    "certifi>=2023.7.22",
+    "typing-extensions>=4.7.0,<=5.0",
+]
+dynamic = ["version"]
+
+[tool.hatch.version]
+path = "aiogram/__meta__.py"
+
+[project.optional-dependencies]
+fast = [
+    "uvloop>=0.17.0; (sys_platform == 'darwin' or sys_platform == 'linux') and platform_python_implementation != 'PyPy' and python_version < '3.13'",
+    "uvloop>=0.21.0; (sys_platform == 'darwin' or sys_platform == 'linux') and platform_python_implementation != 'PyPy' and python_version >= '3.13'",
+    "aiodns>=3.0.0",
+]
+redis = [
+    "redis[hiredis]>=6.2.0,<8",
+]
+mongo = [
+    "motor>=3.3.2,<3.8",
+    "pymongo>4.5,<4.17",
+]
+proxy = [
+    "aiohttp-socks~=0.10.1",
+]
+i18n = [
+    "Babel>=2.13.0,<3",
+]
+cli = [
+    "aiogram-cli>=1.1.0,<2.0.0",
+]
+signature = [
+    "cryptography>=46.0.0",
+]
+docs = [
+    "Sphinx~=8.0.2",
+    "sphinx-intl~=2.2.0",
+    "sphinx-autobuild~=2024.9.3",
+    "sphinx-copybutton~=0.5.2",
+    "furo~=2024.8.6",
+    "Sphinx-Substitution-Extensions~=2024.8.6",
+    "towncrier~=24.8.0",
+    "pygments~=2.18.0",
+    "pymdown-extensions~=10.3",
+    "markdown-include~=0.8.1",
+    "sphinxcontrib-towncrier~=0.4.0a0",
+]
+
+[dependency-groups]
+dev = [
+    "ruff~=0.15",
+    "mypy==2.0.0; platform_python_implementation != 'PyPy'",
+    "toml~=0.10.2",
+    "pre-commit~=4.3",
+    "packaging~=26.0",
+    "motor-types==1.0.0b4",
+]
+test = [
+    "pytest==9.0.3",
+    "pytest-html>=4.2,<4.3",
+    "pytest-mock==3.15.1",
+    "pytest-mypy==1.0.1; platform_python_implementation != 'PyPy'",
+    "pytest-cov>=7.1,<7.2",
+    "pytest-aiohttp==1.1.0",
+    "aresponses==3.0.0",
+    "pytz>=2026,<2027",
+    "pycryptodomex==3.23.0",
+]
+
+[project.urls]
+Homepage = "https://aiogram.dev/"
+Documentation = "https://docs.aiogram.dev/"
+Repository = "https://github.com/aiogram/aiogram/"
+
+[tool.ruff]
+line-length = 99
+src = ["aiogram", "tests"]
+exclude = [
+    ".git",
+    "build",
+    "dist",
+    "venv",
+    ".venv",
+    "docs",
+    "tests",
+    "dev",
+    "scripts",
+    "*.egg-info",
+]
+
+[tool.ruff.lint]
+select = [
+    # "C", # TODO: mccabe - code complecity
+    "A", # flake8-annotations
+    "B", # flake8-bugbear
+    "C4", # flake8-comprehensions
+    "DTZ", # flake8-datetimez
+    "E", # pycodestyle errors
+    "F", # pyflakes
+    "I", # isort
+    "PERF", # perflint
+    "PL", # pylint
+    "Q", # flake8-quotes
+    "RET", # flake8-return
+    "SIM", # flake8-simplify
+    "T10", # flake8-debugger
+    "T20", # flake8-print
+    "UP", # pyupgrade
+]
+ignore = [
+    "F401", # unused-import (handled by other tools)
+    "A002", # builtin-argument-shadowing (common in API: type, id, format, etc.)
+    "A005", # stdlib-module-shadowing (Module `types` shadows a Python standard-library module)
+    "B008", # function-call-in-default-argument (Pydantic Field() defaults)
+    "PLC0415", # import-outside-top-level (needed for circular imports)
+    "PLC1901", # compare-to-empty-string (sometimes more explicit is better)
+    "PLR0904", # too-many-public-methods (Bot class has many API methods)
+    "PLR0911", # too-many-return-statements
+    "PLR0912", # too-many-branches
+    "PLR0913", # too-many-arguments (Telegram API methods have many params)
+    "PLR0915", # too-many-statements
+    "PLR0917", # too-many-positional-arguments (Telegram API design)
+    "PLR6301", # no-self-use (sometimes methods are intentionally not static)
+    "PLW2901", # redefined-loop-name (intentional pattern in this codebase)
+    "PLW3201", # bad-dunder-method-name (custom dunders for framework design)
+]
+
+[tool.ruff.lint.isort]
+known-first-party = [
+    "aiogram",
+    "finite_state_machine",
+    "handlers",
+    "routes",
+]
+
+[tool.ruff.lint.per-file-ignores]
+"aiogram/client/bot.py" = ["E501"]
+"aiogram/types/*" = ["E501"]
+"aiogram/methods/*" = ["E501"]
+"aiogram/enums/*" = ["E501"]
+"tests/**" = [
+    "PLR0124",
+    "PLR2004",
+    "DTZ005",
+    "DTZ006",
+    "A001",
+    "A004",
+    "B018",
+    "B020",
+    "B904",
+    "E501",
+    "F821",
+    "UP",
+]
+
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = [
+    "tests",
+]
+filterwarnings = [
+    "error",
+    "ignore::pytest.PytestUnraisableExceptionWarning",
+    # Remove when uvloop fixes the issue
+    # https://github.com/MagicStack/uvloop/issues/703
+    # https://github.com/MagicStack/uvloop/pull/705
+    "ignore:.*asyncio.iscoroutinefunction.*:DeprecationWarning"
+]
+
+[tool.coverage.run]
+branch = false
+parallel = true
+omit = [
+    "aiogram/__meta__.py",
+    "aiogram/dispatcher/middlewares/data.py"
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "if __name__ == .__main__.:",
+    "pragma: no cover",
+    "if TYPE_CHECKING:",
+    "@abstractmethod",
+    "@overload",
+    "if sys.version_info",
+    "except ImportError:"
+]
+
+[tool.mypy]
+plugins = "pydantic.mypy"
+python_version = "3.10"
+show_error_codes = true
+show_error_context = true
+pretty = true
+ignore_missing_imports = false
+warn_unused_configs = true
+disallow_subclassing_any = true
+disallow_any_generics = true
+disallow_untyped_calls = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_return_any = true
+follow_imports_for_stubs = true
+namespace_packages = true
+show_absolute_path = true
+
+[[tool.mypy.overrides]]
+module = [
+    "aiofiles",
+    "uvloop",
+    "redis.*",
+    "babel.*",
+    "aiohttp_socks.*",
+]
+ignore_missing_imports = true
+disallow_untyped_defs = true
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "auto"
+
+[tool.towncrier]
+package = "aiogram"
+filename = "CHANGES.rst"
+directory = "CHANGES/"
+template = "CHANGES/.template.rst.jinja2"
+issue_format = "`#{issue} <https://github.com/aiogram/aiogram/issues/{issue}>`_"
+ignore = [
+    ".template.rst.jinja2",
+]
+
+[[tool.towncrier.section]]
+path = ""
+
+[[tool.towncrier.type]]
+directory = "feature"
+name = "Features"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "bugfix"
+name = "Bugfixes"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "doc"
+name = "Improved Documentation"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "removal"
+name = "Deprecations and Removals"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "misc"
+name = "Misc"
+showcontent = true

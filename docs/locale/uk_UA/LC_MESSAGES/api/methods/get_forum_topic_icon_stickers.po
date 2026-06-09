@@ -1,0 +1,70 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2022, aiogram Team
+# This file is distributed under the same license as the aiogram package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2022.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: aiogram \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-03-08 02:28+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.13.1\n"
+
+#: ../../api/methods/get_forum_topic_icon_stickers.rst:3
+msgid "getForumTopicIconStickers"
+msgstr ""
+
+#: ../../api/methods/get_forum_topic_icon_stickers.rst:5
+msgid "Returns: :obj:`list[Sticker]`"
+msgstr ""
+
+#: aiogram.methods.get_forum_topic_icon_stickers.GetForumTopicIconStickers:1 of
+msgid ""
+"Use this method to get custom emoji stickers, which can be used as a "
+"forum topic icon by any user. Requires no parameters. Returns an Array of"
+" :class:`aiogram.types.sticker.Sticker` objects."
+msgstr ""
+
+#: aiogram.methods.get_forum_topic_icon_stickers.GetForumTopicIconStickers:3 of
+msgid "Source: https://core.telegram.org/bots/api#getforumtopiciconstickers"
+msgstr ""
+
+#: ../../api/methods/get_forum_topic_icon_stickers.rst:15
+msgid "Usage"
+msgstr ""
+
+#: ../../api/methods/get_forum_topic_icon_stickers.rst:18
+msgid "As bot method"
+msgstr ""
+
+#: ../../api/methods/get_forum_topic_icon_stickers.rst:26
+msgid "Method as object"
+msgstr ""
+
+#: ../../api/methods/get_forum_topic_icon_stickers.rst:28
+msgid "Imports:"
+msgstr ""
+
+#: ../../api/methods/get_forum_topic_icon_stickers.rst:30
+msgid ""
+":code:`from aiogram.methods.get_forum_topic_icon_stickers import "
+"GetForumTopicIconStickers`"
+msgstr ""
+
+#: ../../api/methods/get_forum_topic_icon_stickers.rst:31
+msgid "alias: :code:`from aiogram.methods import GetForumTopicIconStickers`"
+msgstr ""
+
+#: ../../api/methods/get_forum_topic_icon_stickers.rst:34
+msgid "With specific bot"
+msgstr ""
+
+#~ msgid "Returns: :obj:`List[Sticker]`"
+#~ msgstr ""

@@ -1,0 +1,33 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "webappdata",
+    "name": "WebAppData",
+    "description": "Describes data sent from a Web App to the bot.",
+    "html_description": "<p>Describes data sent from a <a href=\"/bots/webapps\">Web App</a> to the bot.</p>",
+    "rst_description": "Describes data sent from a `Web App <https://core.telegram.org/bots/webapps>`_ to the bot.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "The data. Be aware that a bad client can send arbitrary data in this field.",
+        "html_description": "<td>The data. Be aware that a bad client can send arbitrary data in this field.</td>",
+        "rst_description": "The data. Be aware that a bad client can send arbitrary data in this field.\n",
+        "name": "data",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Text of the web_app keyboard button from which the Web App was opened. Be aware that a bad client can send arbitrary data in this field.",
+        "html_description": "<td>Text of the <em>web_app</em> keyboard button from which the Web App was opened. Be aware that a bad client can send arbitrary data in this field.</td>",
+        "rst_description": "Text of the *web_app* keyboard button from which the Web App was opened. Be aware that a bad client can send arbitrary data in this field.\n",
+        "name": "button_text",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

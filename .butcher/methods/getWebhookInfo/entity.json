@@ -1,0 +1,16 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Getting updates",
+    "anchor": "getting-updates"
+  },
+  "object": {
+    "anchor": "getwebhookinfo",
+    "name": "getWebhookInfo",
+    "description": "Use this method to get current webhook status. Requires no parameters. On success, returns a WebhookInfo object. If the bot is using getUpdates, will return an object with the url field empty.",
+    "html_description": "<p>Use this method to get current webhook status. Requires no parameters. On success, returns a <a href=\"#webhookinfo\">WebhookInfo</a> object. If the bot is using <a href=\"#getupdates\">getUpdates</a>, will return an object with the <em>url</em> field empty.</p>",
+    "rst_description": "Use this method to get current webhook status. Requires no parameters. On success, returns a :class:`aiogram.types.webhook_info.WebhookInfo` object. If the bot is using :class:`aiogram.methods.get_updates.GetUpdates`, will return an object with the *url* field empty.",
+    "annotations": [],
+    "category": "methods"
+  }
+}

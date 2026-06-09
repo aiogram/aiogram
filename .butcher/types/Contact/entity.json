@@ -1,0 +1,57 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "contact",
+    "name": "Contact",
+    "description": "This object represents a phone contact.",
+    "html_description": "<p>This object represents a phone contact.</p>",
+    "rst_description": "This object represents a phone contact.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Contact's phone number",
+        "html_description": "<td>Contact's phone number</td>",
+        "rst_description": "Contact's phone number\n",
+        "name": "phone_number",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Contact's first name",
+        "html_description": "<td>Contact's first name</td>",
+        "rst_description": "Contact's first name\n",
+        "name": "first_name",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Contact's last name",
+        "html_description": "<td><em>Optional</em>. Contact's last name</td>",
+        "rst_description": "*Optional*. Contact's last name\n",
+        "name": "last_name",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "Contact's user identifier in Telegram. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier.",
+        "html_description": "<td><em>Optional</em>. Contact's user identifier in Telegram. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier.</td>",
+        "rst_description": "*Optional*. Contact's user identifier in Telegram. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier.\n",
+        "name": "user_id",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "Additional data about the contact in the form of a vCard",
+        "html_description": "<td><em>Optional</em>. Additional data about the contact in the form of a <a href=\"https://en.wikipedia.org/wiki/VCard\">vCard</a></td>",
+        "rst_description": "*Optional*. Additional data about the contact in the form of a `vCard <https://en.wikipedia.org/wiki/VCard>`_\n",
+        "name": "vcard",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

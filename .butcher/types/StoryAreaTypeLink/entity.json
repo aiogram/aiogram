@@ -1,0 +1,33 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "storyareatypelink",
+    "name": "StoryAreaTypeLink",
+    "description": "Describes a story area pointing to an HTTP or tg:// link. Currently, a story can have up to 3 link areas.",
+    "html_description": "<p>Describes a story area pointing to an HTTP or tg:// link. Currently, a story can have up to 3 link areas.</p>",
+    "rst_description": "Describes a story area pointing to an HTTP or tg:// link. Currently, a story can have up to 3 link areas.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Type of the area, always 'link'",
+        "html_description": "<td>Type of the area, always &#8220;link&#8221;</td>",
+        "rst_description": "Type of the area, always 'link'\n",
+        "name": "type",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "HTTP or tg:// URL to be opened when the area is clicked",
+        "html_description": "<td>HTTP or tg:// URL to be opened when the area is clicked</td>",
+        "rst_description": "HTTP or tg:// URL to be opened when the area is clicked\n",
+        "name": "url",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

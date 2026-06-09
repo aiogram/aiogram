@@ -1,0 +1,73 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Payments",
+    "anchor": "payments"
+  },
+  "object": {
+    "anchor": "precheckoutquery",
+    "name": "PreCheckoutQuery",
+    "description": "This object contains information about an incoming pre-checkout query.",
+    "html_description": "<p>This object contains information about an incoming pre-checkout query.</p>",
+    "rst_description": "This object contains information about an incoming pre-checkout query.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Unique query identifier",
+        "html_description": "<td>Unique query identifier</td>",
+        "rst_description": "Unique query identifier\n",
+        "name": "id",
+        "required": true
+      },
+      {
+        "type": "User",
+        "description": "User who sent the query",
+        "html_description": "<td>User who sent the query</td>",
+        "rst_description": "User who sent the query\n",
+        "name": "from",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Three-letter ISO 4217 currency code, or 'XTR' for payments in Telegram Stars",
+        "html_description": "<td>Three-letter ISO 4217 <a href=\"/bots/payments#supported-currencies\">currency</a> code, or &#8220;XTR&#8221; for payments in <a href=\"https://t.me/BotNews/90\">Telegram Stars</a></td>",
+        "rst_description": "Three-letter ISO 4217 `currency <https://core.telegram.org/bots/payments#supported-currencies>`_ code, or 'XTR' for payments in `Telegram Stars <https://t.me/BotNews/90>`_\n",
+        "name": "currency",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "Total price in the smallest units of the currency (integer, not float/double). For example, for a price of US$ 1.45 pass amount = 145. See the exp parameter in currencies.json, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies).",
+        "html_description": "<td>Total price in the <em>smallest units</em> of the currency (integer, <strong>not</strong> float/double). For example, for a price of <code>US$ 1.45</code> pass <code>amount = 145</code>. See the <em>exp</em> parameter in <a href=\"/bots/payments/currencies.json\">currencies.json</a>, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies).</td>",
+        "rst_description": "Total price in the *smallest units* of the currency (integer, **not** float/double). For example, for a price of :code:`US$ 1.45` pass :code:`amount = 145`. See the *exp* parameter in `currencies.json <https://core.telegram.org/bots/payments/currencies.json>`_, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies).\n",
+        "name": "total_amount",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Bot-specified invoice payload",
+        "html_description": "<td>Bot-specified invoice payload</td>",
+        "rst_description": "Bot-specified invoice payload\n",
+        "name": "invoice_payload",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Identifier of the shipping option chosen by the user",
+        "html_description": "<td><em>Optional</em>. Identifier of the shipping option chosen by the user</td>",
+        "rst_description": "*Optional*. Identifier of the shipping option chosen by the user\n",
+        "name": "shipping_option_id",
+        "required": false
+      },
+      {
+        "type": "OrderInfo",
+        "description": "Order information provided by the user",
+        "html_description": "<td><em>Optional</em>. Order information provided by the user</td>",
+        "rst_description": "*Optional*. Order information provided by the user\n",
+        "name": "order_info",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

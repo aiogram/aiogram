@@ -1,0 +1,41 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available methods",
+    "anchor": "available-methods"
+  },
+  "object": {
+    "anchor": "setmanagedbotaccesssettings",
+    "name": "setManagedBotAccessSettings",
+    "description": "Use this method to change the access settings of a managed bot. Returns True on success.",
+    "html_description": "<p>Use this method to change the access settings of a managed bot. Returns <em>True</em> on success.</p>",
+    "rst_description": "Use this method to change the access settings of a managed bot. Returns :code:`True` on success.",
+    "annotations": [
+      {
+        "type": "Integer",
+        "required": true,
+        "description": "User identifier of the managed bot whose access settings will be changed",
+        "html_description": "<td>User identifier of the managed bot whose access settings will be changed</td>",
+        "rst_description": "User identifier of the managed bot whose access settings will be changed\n",
+        "name": "user_id"
+      },
+      {
+        "type": "Boolean",
+        "required": true,
+        "description": "Pass True, if only selected users can access the bot. The bot's owner can always access it.",
+        "html_description": "<td>Pass <em>True</em>, if only selected users can access the bot. The bot's owner can always access it.</td>",
+        "rst_description": "Pass :code:`True`, if only selected users can access the bot. The bot's owner can always access it.\n",
+        "name": "is_access_restricted"
+      },
+      {
+        "type": "Array of Integer",
+        "required": false,
+        "description": "A JSON-serialized list of up to 10 identifiers of users who will have access to the bot in addition to its owner. Ignored if is_access_restricted is false.",
+        "html_description": "<td>A JSON-serialized list of up to 10 identifiers of users who will have access to the bot in addition to its owner. Ignored if <em>is_access_restricted</em> is false.</td>",
+        "rst_description": "A JSON-serialized list of up to 10 identifiers of users who will have access to the bot in addition to its owner. Ignored if *is_access_restricted* is false.\n",
+        "name": "added_user_ids"
+      }
+    ],
+    "category": "methods"
+  }
+}

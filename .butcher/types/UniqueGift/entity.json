@@ -1,0 +1,113 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "uniquegift",
+    "name": "UniqueGift",
+    "description": "This object describes a unique gift that was upgraded from a regular gift.",
+    "html_description": "<p>This object describes a unique gift that was upgraded from a regular gift.</p>",
+    "rst_description": "This object describes a unique gift that was upgraded from a regular gift.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Identifier of the regular gift from which the gift was upgraded",
+        "html_description": "<td>Identifier of the regular gift from which the gift was upgraded</td>",
+        "rst_description": "Identifier of the regular gift from which the gift was upgraded\n",
+        "name": "gift_id",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Human-readable name of the regular gift from which this unique gift was upgraded",
+        "html_description": "<td>Human-readable name of the regular gift from which this unique gift was upgraded</td>",
+        "rst_description": "Human-readable name of the regular gift from which this unique gift was upgraded\n",
+        "name": "base_name",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Unique name of the gift. This name can be used in https://t.me/nft/... links and story areas",
+        "html_description": "<td>Unique name of the gift. This name can be used in <code>https://t.me/nft/...</code> links and story areas</td>",
+        "rst_description": "Unique name of the gift. This name can be used in :code:`https://t.me/nft/...` links and story areas\n",
+        "name": "name",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "Unique number of the upgraded gift among gifts upgraded from the same regular gift",
+        "html_description": "<td>Unique number of the upgraded gift among gifts upgraded from the same regular gift</td>",
+        "rst_description": "Unique number of the upgraded gift among gifts upgraded from the same regular gift\n",
+        "name": "number",
+        "required": true
+      },
+      {
+        "type": "UniqueGiftModel",
+        "description": "Model of the gift",
+        "html_description": "<td>Model of the gift</td>",
+        "rst_description": "Model of the gift\n",
+        "name": "model",
+        "required": true
+      },
+      {
+        "type": "UniqueGiftSymbol",
+        "description": "Symbol of the gift",
+        "html_description": "<td>Symbol of the gift</td>",
+        "rst_description": "Symbol of the gift\n",
+        "name": "symbol",
+        "required": true
+      },
+      {
+        "type": "UniqueGiftBackdrop",
+        "description": "Backdrop of the gift",
+        "html_description": "<td>Backdrop of the gift</td>",
+        "rst_description": "Backdrop of the gift\n",
+        "name": "backdrop",
+        "required": true
+      },
+      {
+        "type": "True",
+        "description": "True, if the original regular gift was exclusively purchaseable by Telegram Premium subscribers",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the original regular gift was exclusively purchaseable by Telegram Premium subscribers</td>",
+        "rst_description": "*Optional*. :code:`True`, if the original regular gift was exclusively purchaseable by Telegram Premium subscribers\n",
+        "name": "is_premium",
+        "required": false
+      },
+      {
+        "type": "True",
+        "description": "True, if the gift was used to craft another gift and isn't available anymore",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the gift was used to craft another gift and isn't available anymore</td>",
+        "rst_description": "*Optional*. :code:`True`, if the gift was used to craft another gift and isn't available anymore\n",
+        "name": "is_burned",
+        "required": false
+      },
+      {
+        "type": "True",
+        "description": "True, if the gift is assigned from the TON blockchain and can't be resold or transferred in Telegram",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the gift is assigned from the TON blockchain and can't be resold or transferred in Telegram</td>",
+        "rst_description": "*Optional*. :code:`True`, if the gift is assigned from the TON blockchain and can't be resold or transferred in Telegram\n",
+        "name": "is_from_blockchain",
+        "required": false
+      },
+      {
+        "type": "UniqueGiftColors",
+        "description": "The color scheme that can be used by the gift's owner for the chat's name, replies to messages and link previews; for business account gifts and gifts that are currently on sale only",
+        "html_description": "<td><em>Optional</em>. The color scheme that can be used by the gift's owner for the chat's name, replies to messages and link previews; for business account gifts and gifts that are currently on sale only</td>",
+        "rst_description": "*Optional*. The color scheme that can be used by the gift's owner for the chat's name, replies to messages and link previews; for business account gifts and gifts that are currently on sale only\n",
+        "name": "colors",
+        "required": false
+      },
+      {
+        "type": "Chat",
+        "description": "Information about the chat that published the gift",
+        "html_description": "<td><em>Optional</em>. Information about the chat that published the gift</td>",
+        "rst_description": "*Optional*. Information about the chat that published the gift\n",
+        "name": "publisher_chat",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

@@ -1,0 +1,93 @@
+name: Currency
+description: |
+  Currencies supported by Telegram Bot API
+
+  Source: https://core.telegram.org/bots/payments#supported-currencies
+
+static:
+  AED: "AED"  # United Arab Emirates Dirham
+  AFN: "AFN"  # Afghan Afghani
+  ALL: "ALL"  # Albanian Lek
+  AMD: "AMD"  # Armenian Dram
+  ARS: "ARS"  # Argentine Peso
+  AUD: "AUD"  # Australian Dollar
+  AZN: "AZN"  # Azerbaijani Manat
+  BAM: "BAM"  # Bosnia & Herzegovina Convertible Mark
+  BDT: "BDT"  # Bangladeshi Taka
+  BGN: "BGN"  # Bulgarian Lev
+  BND: "BND"  # Brunei Dollar
+  BOB: "BOB"  # Bolivian Boliviano
+  BRL: "BRL"  # Brazilian Real
+  BYN: "BYN"  # Belarusian ruble
+  CAD: "CAD"  # Canadian Dollar
+  CHF: "CHF"  # Swiss Franc
+  CLP: "CLP"  # Chilean Peso
+  CNY: "CNY"  # Chinese Renminbi Yuan
+  COP: "COP"  # Colombian Peso
+  CRC: "CRC"  # Costa Rican Colón
+  CZK: "CZK"  # Czech Koruna
+  DKK: "DKK"  # Danish Krone
+  DOP: "DOP"  # Dominican Peso
+  DZD: "DZD"  # Algerian Dinar
+  EGP: "EGP"  # Egyptian Pound
+  ETB: "ETB"  # Ethiopian Birr
+  EUR: "EUR"  # Euro
+  GBP: "GBP"  # British Pound
+  GEL: "GEL"  # Georgian Lari
+  GTQ: "GTQ"  # Guatemalan Quetzal
+  HKD: "HKD"  # Hong Kong Dollar
+  HNL: "HNL"  # Honduran Lempira
+  HRK: "HRK"  # Croatian Kuna
+  HUF: "HUF"  # Hungarian Forint
+  IDR: "IDR"  # Indonesian Rupiah
+  ILS: "ILS"  # Israeli New Sheqel
+  INR: "INR"  # Indian Rupee
+  ISK: "ISK"  # Icelandic Króna
+  JMD: "JMD"  # Jamaican Dollar
+  JPY: "JPY"  # Japanese Yen
+  KES: "KES"  # Kenyan Shilling
+  KGS: "KGS"  # Kyrgyzstani Som
+  KRW: "KRW"  # South Korean Won
+  KZT: "KZT"  # Kazakhstani Tenge
+  LBP: "LBP"  # Lebanese Pound
+  LKR: "LKR"  # Sri Lankan Rupee
+  MAD: "MAD"  # Moroccan Dirham
+  MDL: "MDL"  # Moldovan Leu
+  MNT: "MNT"  # Mongolian Tögrög
+  MUR: "MUR"  # Mauritian Rupee
+  MVR: "MVR"  # Maldivian Rufiyaa
+  MXN: "MXN"  # Mexican Peso
+  MYR: "MYR"  # Malaysian Ringgit
+  MZN: "MZN"  # Mozambican Metical
+  NGN: "NGN"  # Nigerian Naira
+  NIO: "NIO"  # Nicaraguan Córdoba
+  NOK: "NOK"  # Norwegian Krone
+  NPR: "NPR"  # Nepalese Rupee
+  NZD: "NZD"  # New Zealand Dollar
+  PAB: "PAB"  # Panamanian Balboa
+  PEN: "PEN"  # Peruvian Nuevo Sol
+  PHP: "PHP"  # Philippine Peso
+  PKR: "PKR"  # Pakistani Rupee
+  PLN: "PLN"  # Polish Złoty
+  PYG: "PYG"  # Paraguayan Guaraní
+  QAR: "QAR"  # Qatari Riyal
+  RON: "RON"  # Romanian Leu
+  RSD: "RSD"  # Serbian Dinar
+  RUB: "RUB"  # Russian Ruble
+  SAR: "SAR"  # Saudi Riyal
+  SEK: "SEK"  # Swedish Krona
+  SGD: "SGD"  # Singapore Dollar
+  THB: "THB"  # Thai Baht
+  TJS: "TJS"  # Tajikistani Somoni
+  TRY: "TRY"  # Turkish Lira
+  TTD: "TTD"  # Trinidad and Tobago Dollar
+  TWD: "TWD"  # New Taiwan Dollar
+  TZS: "TZS"  # Tanzanian Shilling
+  UAH: "UAH"  # Ukrainian Hryvnia
+  UGX: "UGX"  # Ugandan Shilling
+  USD: "USD"  # United States Dollar
+  UYU: "UYU"  # Uruguayan Peso
+  UZS: "UZS"  # Uzbekistani Som
+  VND: "VND"  # Vietnamese Đồng
+  YER: "YER"  # Yemeni Rial
+  ZAR: "ZAR"  # South African Rand

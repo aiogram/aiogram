@@ -1,0 +1,57 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Inline mode",
+    "anchor": "inline-mode"
+  },
+  "object": {
+    "anchor": "inlinequeryresultcachedsticker",
+    "name": "InlineQueryResultCachedSticker",
+    "description": "Represents a link to a sticker stored on the Telegram servers. By default, this sticker will be sent by the user. Alternatively, you can use input_message_content to send a message with the specified content instead of the sticker.",
+    "html_description": "<p>Represents a link to a sticker stored on the Telegram servers. By default, this sticker will be sent by the user. Alternatively, you can use <em>input_message_content</em> to send a message with the specified content instead of the sticker.</p>",
+    "rst_description": "Represents a link to a sticker stored on the Telegram servers. By default, this sticker will be sent by the user. Alternatively, you can use *input_message_content* to send a message with the specified content instead of the sticker.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Type of the result, must be sticker",
+        "html_description": "<td>Type of the result, must be <em>sticker</em></td>",
+        "rst_description": "Type of the result, must be *sticker*\n",
+        "name": "type",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Unique identifier for this result, 1-64 bytes",
+        "html_description": "<td>Unique identifier for this result, 1-64 bytes</td>",
+        "rst_description": "Unique identifier for this result, 1-64 bytes\n",
+        "name": "id",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "A valid file identifier of the sticker",
+        "html_description": "<td>A valid file identifier of the sticker</td>",
+        "rst_description": "A valid file identifier of the sticker\n",
+        "name": "sticker_file_id",
+        "required": true
+      },
+      {
+        "type": "InlineKeyboardMarkup",
+        "description": "Inline keyboard attached to the message",
+        "html_description": "<td><em>Optional</em>. <a href=\"/bots/features#inline-keyboards\">Inline keyboard</a> attached to the message</td>",
+        "rst_description": "*Optional*. `Inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_ attached to the message\n",
+        "name": "reply_markup",
+        "required": false
+      },
+      {
+        "type": "InputMessageContent",
+        "description": "Content of the message to be sent instead of the sticker",
+        "html_description": "<td><em>Optional</em>. Content of the message to be sent instead of the sticker</td>",
+        "rst_description": "*Optional*. Content of the message to be sent instead of the sticker\n",
+        "name": "input_message_content",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

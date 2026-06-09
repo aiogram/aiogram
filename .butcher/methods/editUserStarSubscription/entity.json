@@ -1,0 +1,41 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Payments",
+    "anchor": "payments"
+  },
+  "object": {
+    "anchor": "edituserstarsubscription",
+    "name": "editUserStarSubscription",
+    "description": "Allows the bot to cancel or re-enable extension of a subscription paid in Telegram Stars. Returns True on success.",
+    "html_description": "<p>Allows the bot to cancel or re-enable extension of a subscription paid in Telegram Stars. Returns <em>True</em> on success.</p>",
+    "rst_description": "Allows the bot to cancel or re-enable extension of a subscription paid in Telegram Stars. Returns :code:`True` on success.",
+    "annotations": [
+      {
+        "type": "Integer",
+        "required": true,
+        "description": "Identifier of the user whose subscription will be edited",
+        "html_description": "<td>Identifier of the user whose subscription will be edited</td>",
+        "rst_description": "Identifier of the user whose subscription will be edited\n",
+        "name": "user_id"
+      },
+      {
+        "type": "String",
+        "required": true,
+        "description": "Telegram payment identifier for the subscription",
+        "html_description": "<td>Telegram payment identifier for the subscription</td>",
+        "rst_description": "Telegram payment identifier for the subscription\n",
+        "name": "telegram_payment_charge_id"
+      },
+      {
+        "type": "Boolean",
+        "required": true,
+        "description": "Pass True to cancel extension of the user subscription; the subscription must be active up to the end of the current subscription period. Pass False to allow the user to re-enable a subscription that was previously canceled by the bot.",
+        "html_description": "<td>Pass <em>True</em> to cancel extension of the user subscription; the subscription must be active up to the end of the current subscription period. Pass <em>False</em> to allow the user to re-enable a subscription that was previously canceled by the bot.</td>",
+        "rst_description": "Pass :code:`True` to cancel extension of the user subscription; the subscription must be active up to the end of the current subscription period. Pass :code:`False` to allow the user to re-enable a subscription that was previously canceled by the bot.\n",
+        "name": "is_canceled"
+      }
+    ],
+    "category": "methods"
+  }
+}

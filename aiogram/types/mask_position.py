@@ -1,24 +1,43 @@
-from .base import Deserializable
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any
+
+from .base import TelegramObject
 
 
-class MaskPosition(Deserializable):
+class MaskPosition(TelegramObject):
     """
     This object describes the position on faces where a mask should be placed by default.
 
-    https://core.telegram.org/bots/api#maskposition
+    Source: https://core.telegram.org/bots/api#maskposition
     """
 
-    def __init__(self, point, x_shift, y_shift, zoom):
-        self.point: str = point
-        self.x_shift: float = x_shift
-        self.y_shift: float = y_shift
-        self.zoom: float = zoom
+    point: str
+    """The part of the face relative to which the mask should be placed. One of 'forehead', 'eyes', 'mouth', or 'chin'."""
+    x_shift: float
+    """Shift by X-axis measured in widths of the mask scaled to the face size, from left to right. For example, choosing -1.0 will place mask just to the left of the default mask position."""
+    y_shift: float
+    """Shift by Y-axis measured in heights of the mask scaled to the face size, from top to bottom. For example, 1.0 will place the mask just below the default mask position."""
+    scale: float
+    """Mask scaling coefficient. For example, 2.0 means double size."""
 
-    @classmethod
-    def de_json(cls, raw_data):
-        point = raw_data.get('point')
-        x_shift = raw_data.get('x_shift')
-        y_shift = raw_data.get('y_shift')
-        zoom = raw_data.get('zoom')
+    if TYPE_CHECKING:
+        # DO NOT EDIT MANUALLY!!!
+        # This section was auto-generated via `butcher`
 
-        return cls(point=point, x_shift=x_shift, y_shift=y_shift, zoom=zoom)
+        def __init__(
+            __pydantic__self__,
+            *,
+            point: str,
+            x_shift: float,
+            y_shift: float,
+            scale: float,
+            **__pydantic_kwargs: Any,
+        ) -> None:
+            # DO NOT EDIT MANUALLY!!!
+            # This method was auto-generated via `butcher`
+            # Is needed only for type checking and IDE support without any additional plugins
+
+            super().__init__(
+                point=point, x_shift=x_shift, y_shift=y_shift, scale=scale, **__pydantic_kwargs
+            )

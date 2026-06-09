@@ -1,0 +1,33 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "dice",
+    "name": "Dice",
+    "description": "This object represents an animated emoji that displays a random value.",
+    "html_description": "<p>This object represents an animated emoji that displays a random value.</p>",
+    "rst_description": "This object represents an animated emoji that displays a random value.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Emoji on which the dice throw animation is based",
+        "html_description": "<td>Emoji on which the dice throw animation is based</td>",
+        "rst_description": "Emoji on which the dice throw animation is based\n",
+        "name": "emoji",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "Value of the dice, 1-6 for '', '' and '' base emoji, 1-5 for '' and '' base emoji, 1-64 for '' base emoji",
+        "html_description": "<td>Value of the dice, 1-6 for &#8220;<img class=\"emoji\" src=\"//telegram.org/img/emoji/40/F09F8EB2.png\" width=\"20\" height=\"20\" alt=\"&#127922;\"/>&#8221;, &#8220;<img class=\"emoji\" src=\"//telegram.org/img/emoji/40/F09F8EAF.png\" width=\"20\" height=\"20\" alt=\"&#127919;\"/>&#8221; and &#8220;<img class=\"emoji\" src=\"//telegram.org/img/emoji/40/F09F8EB3.png\" width=\"20\" height=\"20\" alt=\"&#127923;\"/>&#8221; base emoji, 1-5 for &#8220;<img class=\"emoji\" src=\"//telegram.org/img/emoji/40/F09F8F80.png\" width=\"20\" height=\"20\" alt=\"&#127936;\"/>&#8221; and &#8220;<img class=\"emoji\" src=\"//telegram.org/img/emoji/40/E29ABD.png\" width=\"20\" height=\"20\" alt=\"&#9917;\"/>&#8221; base emoji, 1-64 for &#8220;<img class=\"emoji\" src=\"//telegram.org/img/emoji/40/F09F8EB0.png\" width=\"20\" height=\"20\" alt=\"&#127920;\"/>&#8221; base emoji</td>",
+        "rst_description": "Value of the dice, 1-6 for '🎲', '🎯' and '🎳' base emoji, 1-5 for '🏀' and '⚽' base emoji, 1-64 for '🎰' base emoji\n",
+        "name": "value",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

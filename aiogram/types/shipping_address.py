@@ -1,28 +1,55 @@
-from .base import Deserializable
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any
+
+from .base import TelegramObject
 
 
-class ShippingAddress(Deserializable):
+class ShippingAddress(TelegramObject):
     """
     This object represents a shipping address.
-    
-    https://core.telegram.org/bots/api#shippingaddress
+
+    Source: https://core.telegram.org/bots/api#shippingaddress
     """
 
-    def __init__(self, country_code, state, city, street_line1, street_line2, post_code):
-        self.country_code: str = country_code
-        self.state: str = state
-        self.city: str = city
-        self.street_line1: str = street_line1
-        self.street_line2: str = street_line2
-        self.post_code: str = post_code
+    country_code: str
+    """Two-letter `ISO 3166-1 alpha-2 <https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2>`_ country code"""
+    state: str
+    """State, if applicable"""
+    city: str
+    """City"""
+    street_line1: str
+    """First line for the address"""
+    street_line2: str
+    """Second line for the address"""
+    post_code: str
+    """Address post code"""
 
-    @classmethod
-    def de_json(cls, raw_data):
-        country_code = raw_data.get('country_code')
-        state = raw_data.get('state')
-        city = raw_data.get('city')
-        street_line1 = raw_data.get('street_line1')
-        street_line2 = raw_data.get('street_line2')
-        post_code = raw_data.get('post_code')
+    if TYPE_CHECKING:
+        # DO NOT EDIT MANUALLY!!!
+        # This section was auto-generated via `butcher`
 
-        return ShippingAddress(country_code, state, city, street_line1, street_line2, post_code)
+        def __init__(
+            __pydantic__self__,
+            *,
+            country_code: str,
+            state: str,
+            city: str,
+            street_line1: str,
+            street_line2: str,
+            post_code: str,
+            **__pydantic_kwargs: Any,
+        ) -> None:
+            # DO NOT EDIT MANUALLY!!!
+            # This method was auto-generated via `butcher`
+            # Is needed only for type checking and IDE support without any additional plugins
+
+            super().__init__(
+                country_code=country_code,
+                state=state,
+                city=city,
+                street_line1=street_line1,
+                street_line2=street_line2,
+                post_code=post_code,
+                **__pydantic_kwargs,
+            )

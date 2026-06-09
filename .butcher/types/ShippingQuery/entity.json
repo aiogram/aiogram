@@ -1,0 +1,49 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Payments",
+    "anchor": "payments"
+  },
+  "object": {
+    "anchor": "shippingquery",
+    "name": "ShippingQuery",
+    "description": "This object contains information about an incoming shipping query.",
+    "html_description": "<p>This object contains information about an incoming shipping query.</p>",
+    "rst_description": "This object contains information about an incoming shipping query.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Unique query identifier",
+        "html_description": "<td>Unique query identifier</td>",
+        "rst_description": "Unique query identifier\n",
+        "name": "id",
+        "required": true
+      },
+      {
+        "type": "User",
+        "description": "User who sent the query",
+        "html_description": "<td>User who sent the query</td>",
+        "rst_description": "User who sent the query\n",
+        "name": "from",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Bot-specified invoice payload",
+        "html_description": "<td>Bot-specified invoice payload</td>",
+        "rst_description": "Bot-specified invoice payload\n",
+        "name": "invoice_payload",
+        "required": true
+      },
+      {
+        "type": "ShippingAddress",
+        "description": "User specified shipping address",
+        "html_description": "<td>User specified shipping address</td>",
+        "rst_description": "User specified shipping address\n",
+        "name": "shipping_address",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

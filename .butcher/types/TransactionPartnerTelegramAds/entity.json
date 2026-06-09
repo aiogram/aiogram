@@ -1,0 +1,25 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Payments",
+    "anchor": "payments"
+  },
+  "object": {
+    "anchor": "transactionpartnertelegramads",
+    "name": "TransactionPartnerTelegramAds",
+    "description": "Describes a withdrawal transaction to the Telegram Ads platform.",
+    "html_description": "<p>Describes a withdrawal transaction to the Telegram Ads platform.</p>",
+    "rst_description": "Describes a withdrawal transaction to the Telegram Ads platform.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Type of the transaction partner, always 'telegram_ads'",
+        "html_description": "<td>Type of the transaction partner, always &#8220;telegram_ads&#8221;</td>",
+        "rst_description": "Type of the transaction partner, always 'telegram_ads'\n",
+        "name": "type",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

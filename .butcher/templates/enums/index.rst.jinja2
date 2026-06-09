@@ -1,0 +1,15 @@
+.. _enums:
+
+#####
+Enums
+#####
+
+Here is list of all available enums:
+
+{% for title, group in groups.items() %}
+.. toctree::
+    :maxdepth: 1
+{% for name in group %}
+    {{ name|pythonize_name }}
+{%- endfor %}
+{% endfor %}

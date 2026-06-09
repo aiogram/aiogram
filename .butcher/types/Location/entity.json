@@ -1,0 +1,65 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "location",
+    "name": "Location",
+    "description": "This object represents a point on the map.",
+    "html_description": "<p>This object represents a point on the map.</p>",
+    "rst_description": "This object represents a point on the map.",
+    "annotations": [
+      {
+        "type": "Float",
+        "description": "Latitude as defined by the sender",
+        "html_description": "<td>Latitude as defined by the sender</td>",
+        "rst_description": "Latitude as defined by the sender\n",
+        "name": "latitude",
+        "required": true
+      },
+      {
+        "type": "Float",
+        "description": "Longitude as defined by the sender",
+        "html_description": "<td>Longitude as defined by the sender</td>",
+        "rst_description": "Longitude as defined by the sender\n",
+        "name": "longitude",
+        "required": true
+      },
+      {
+        "type": "Float",
+        "description": "The radius of uncertainty for the location, measured in meters; 0-1500",
+        "html_description": "<td><em>Optional</em>. The radius of uncertainty for the location, measured in meters; 0-1500</td>",
+        "rst_description": "*Optional*. The radius of uncertainty for the location, measured in meters; 0-1500\n",
+        "name": "horizontal_accuracy",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "Time relative to the message sending date, during which the location can be updated; in seconds. For active live locations only.",
+        "html_description": "<td><em>Optional</em>. Time relative to the message sending date, during which the location can be updated; in seconds. For active live locations only.</td>",
+        "rst_description": "*Optional*. Time relative to the message sending date, during which the location can be updated; in seconds. For active live locations only.\n",
+        "name": "live_period",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "The direction in which user is moving, in degrees; 1-360. For active live locations only.",
+        "html_description": "<td><em>Optional</em>. The direction in which user is moving, in degrees; 1-360. For active live locations only.</td>",
+        "rst_description": "*Optional*. The direction in which user is moving, in degrees; 1-360. For active live locations only.\n",
+        "name": "heading",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "The maximum distance for proximity alerts about approaching another chat member, in meters. For sent live locations only.",
+        "html_description": "<td><em>Optional</em>. The maximum distance for proximity alerts about approaching another chat member, in meters. For sent live locations only.</td>",
+        "rst_description": "*Optional*. The maximum distance for proximity alerts about approaching another chat member, in meters. For sent live locations only.\n",
+        "name": "proximity_alert_radius",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

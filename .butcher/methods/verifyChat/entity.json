@@ -1,0 +1,33 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available methods",
+    "anchor": "available-methods"
+  },
+  "object": {
+    "anchor": "verifychat",
+    "name": "verifyChat",
+    "description": "Verifies a chat on behalf of the organization which is represented by the bot. Returns True on success.",
+    "html_description": "<p>Verifies a chat <a href=\"https://telegram.org/verify#third-party-verification\">on behalf of the organization</a> which is represented by the bot. Returns <em>True</em> on success.</p>",
+    "rst_description": "Verifies a chat `on behalf of the organization <https://telegram.org/verify#third-party-verification>`_ which is represented by the bot. Returns :code:`True` on success.",
+    "annotations": [
+      {
+        "type": "Integer or String",
+        "required": true,
+        "description": "Unique identifier for the target chat or username of the target bot, supergroup or channel in the format @username. Channel direct messages chats can't be verified.",
+        "html_description": "<td>Unique identifier for the target chat or username of the target bot, supergroup or channel in the format <code>@username</code>. Channel direct messages chats can't be verified.</td>",
+        "rst_description": "Unique identifier for the target chat or username of the target bot, supergroup or channel in the format :code:`@username`. Channel direct messages chats can't be verified.\n",
+        "name": "chat_id"
+      },
+      {
+        "type": "String",
+        "required": false,
+        "description": "Custom description for the verification; 0-70 characters. Must be empty if the organization isn't allowed to provide a custom verification description.",
+        "html_description": "<td>Custom description for the verification; 0-70 characters. Must be empty if the organization isn't allowed to provide a custom verification description.</td>",
+        "rst_description": "Custom description for the verification; 0-70 characters. Must be empty if the organization isn't allowed to provide a custom verification description.\n",
+        "name": "custom_description"
+      }
+    ],
+    "category": "methods"
+  }
+}

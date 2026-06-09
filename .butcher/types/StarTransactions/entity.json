@@ -1,0 +1,25 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Payments",
+    "anchor": "payments"
+  },
+  "object": {
+    "anchor": "startransactions",
+    "name": "StarTransactions",
+    "description": "Contains a list of Telegram Star transactions.",
+    "html_description": "<p>Contains a list of Telegram Star transactions.</p>",
+    "rst_description": "Contains a list of Telegram Star transactions.",
+    "annotations": [
+      {
+        "type": "Array of StarTransaction",
+        "description": "The list of transactions",
+        "html_description": "<td>The list of transactions</td>",
+        "rst_description": "The list of transactions\n",
+        "name": "transactions",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

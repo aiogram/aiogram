@@ -1,27 +1,58 @@
-from .base import Deserializable
-from .photo_size import PhotoSize
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any
+
+from .base import TelegramObject
+
+if TYPE_CHECKING:
+    from .photo_size import PhotoSize
 
 
-class Document(Deserializable):
+class Document(TelegramObject):
     """
-    This object represents a general file (as opposed to photos, voice messages and audio files).
-    
-    https://core.telegram.org/bots/api#document
+    This object represents a general file (as opposed to `photos <https://core.telegram.org/bots/api#photosize>`_, `voice messages <https://core.telegram.org/bots/api#voice>`_ and `audio files <https://core.telegram.org/bots/api#audio>`_).
+
+    Source: https://core.telegram.org/bots/api#document
     """
 
-    def __init__(self, file_id, thumb, file_name, mime_type, file_size):
-        self.file_id: str = file_id
-        self.thumb: PhotoSize = thumb
-        self.file_name: str = file_name
-        self.mime_type: str = mime_type
-        self.file_size: int = file_size
+    file_id: str
+    """Identifier for this file, which can be used to download or reuse the file"""
+    file_unique_id: str
+    """Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file."""
+    thumbnail: PhotoSize | None = None
+    """*Optional*. Document thumbnail as defined by the sender"""
+    file_name: str | None = None
+    """*Optional*. Original filename as defined by the sender"""
+    mime_type: str | None = None
+    """*Optional*. MIME type of the file as defined by the sender"""
+    file_size: int | None = None
+    """*Optional*. File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value."""
 
-    @classmethod
-    def de_json(cls, raw_data):
-        file_id = raw_data.get('file_id')
-        thumb = PhotoSize.deserialize(raw_data.get('thumb'))
-        file_name = raw_data.get('file_name')
-        mime_type = raw_data.get('mime_type')
-        file_size = raw_data.get('file_size')
+    if TYPE_CHECKING:
+        # DO NOT EDIT MANUALLY!!!
+        # This section was auto-generated via `butcher`
 
-        return Document(file_id, thumb, file_name, mime_type, file_size)
+        def __init__(
+            __pydantic__self__,
+            *,
+            file_id: str,
+            file_unique_id: str,
+            thumbnail: PhotoSize | None = None,
+            file_name: str | None = None,
+            mime_type: str | None = None,
+            file_size: int | None = None,
+            **__pydantic_kwargs: Any,
+        ) -> None:
+            # DO NOT EDIT MANUALLY!!!
+            # This method was auto-generated via `butcher`
+            # Is needed only for type checking and IDE support without any additional plugins
+
+            super().__init__(
+                file_id=file_id,
+                file_unique_id=file_unique_id,
+                thumbnail=thumbnail,
+                file_name=file_name,
+                mime_type=mime_type,
+                file_size=file_size,
+                **__pydantic_kwargs,
+            )

@@ -1,5 +1,0 @@
-Contrib
-=======
-
-.. toctree::
-    storages

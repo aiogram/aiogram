@@ -1,0 +1,25 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "webappinfo",
+    "name": "WebAppInfo",
+    "description": "Describes a Web App.",
+    "html_description": "<p>Describes a <a href=\"/bots/webapps\">Web App</a>.</p>",
+    "rst_description": "Describes a `Web App <https://core.telegram.org/bots/webapps>`_.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "An HTTPS URL of a Web App to be opened with additional data as specified in Initializing Web Apps",
+        "html_description": "<td>An HTTPS URL of a Web App to be opened with additional data as specified in <a href=\"/bots/webapps#initializing-mini-apps\">Initializing Web Apps</a></td>",
+        "rst_description": "An HTTPS URL of a Web App to be opened with additional data as specified in `Initializing Web Apps <https://core.telegram.org/bots/webapps#initializing-mini-apps>`_\n",
+        "name": "url",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

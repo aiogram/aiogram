@@ -1,0 +1,81 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Stickers",
+    "anchor": "stickers"
+  },
+  "object": {
+    "anchor": "stickerset",
+    "name": "StickerSet",
+    "description": "This object represents a sticker set.",
+    "html_description": "<p>This object represents a sticker set.</p>",
+    "rst_description": "This object represents a sticker set.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Sticker set name",
+        "html_description": "<td>Sticker set name</td>",
+        "rst_description": "Sticker set name\n",
+        "name": "name",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Sticker set title",
+        "html_description": "<td>Sticker set title</td>",
+        "rst_description": "Sticker set title\n",
+        "name": "title",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Type of stickers in the set, currently one of 'regular', 'mask', 'custom_emoji'",
+        "html_description": "<td>Type of stickers in the set, currently one of &#8220;regular&#8221;, &#8220;mask&#8221;, &#8220;custom_emoji&#8221;</td>",
+        "rst_description": "Type of stickers in the set, currently one of 'regular', 'mask', 'custom_emoji'\n",
+        "name": "sticker_type",
+        "required": true
+      },
+      {
+        "type": "Array of Sticker",
+        "description": "List of all set stickers",
+        "html_description": "<td>List of all set stickers</td>",
+        "rst_description": "List of all set stickers\n",
+        "name": "stickers",
+        "required": true
+      },
+      {
+        "type": "PhotoSize",
+        "description": "Sticker set thumbnail in the .WEBP, .TGS, or .WEBM format",
+        "html_description": "<td><em>Optional</em>. Sticker set thumbnail in the .WEBP, .TGS, or .WEBM format</td>",
+        "rst_description": "*Optional*. Sticker set thumbnail in the .WEBP, .TGS, or .WEBM format\n",
+        "name": "thumbnail",
+        "required": false
+      },
+      {
+        "type": "Boolean",
+        "description": "True, if the sticker set contains animated stickers",
+        "html_description": "<td><em>True</em>, if the sticker set contains <a href=\"https://telegram.org/blog/animated-stickers\">animated stickers</a></td>",
+        "rst_description": ":code:`True`, if the sticker set contains `animated stickers <https://telegram.org/blog/animated-stickers>`_\n",
+        "name": "is_animated",
+        "required": false,
+        "deprecated": {
+          "version": "7.2",
+          "release_date": "2024-03-31"
+        }
+      },
+      {
+        "type": "Boolean",
+        "description": "True, if the sticker set contains video stickers",
+        "html_description": "<td><em>True</em>, if the sticker set contains <a href=\"https://telegram.org/blog/video-stickers-better-reactions\">video stickers</a></td>",
+        "rst_description": ":code:`True`, if the sticker set contains `video stickers <https://telegram.org/blog/video-stickers-better-reactions>`_\n",
+        "name": "is_video",
+        "required": false,
+        "deprecated": {
+          "version": "7.2",
+          "release_date": "2024-03-31"
+        }
+      }
+    ],
+    "category": "types"
+  }
+}

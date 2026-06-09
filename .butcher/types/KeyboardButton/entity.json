@@ -1,0 +1,109 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "keyboardbutton",
+    "name": "KeyboardButton",
+    "description": "This object represents one button of the reply keyboard. At most one of the fields other than text, icon_custom_emoji_id, and style must be used to specify the type of the button. For simple text buttons, String can be used instead of this object to specify the button text.",
+    "html_description": "<p>This object represents one button of the reply keyboard. At most one of the fields other than <em>text</em>, <em>icon_custom_emoji_id</em>, and <em>style</em> must be used to specify the type of the button. For simple text buttons, <em>String</em> can be used instead of this object to specify the button text.</p>",
+    "rst_description": "This object represents one button of the reply keyboard. At most one of the fields other than *text*, *icon_custom_emoji_id*, and *style* must be used to specify the type of the button. For simple text buttons, *String* can be used instead of this object to specify the button text.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Text of the button. If none of the fields other than text, icon_custom_emoji_id, and style are used, it will be sent as a message when the button is pressed",
+        "html_description": "<td>Text of the button. If none of the fields other than <em>text</em>, <em>icon_custom_emoji_id</em>, and <em>style</em> are used, it will be sent as a message when the button is pressed</td>",
+        "rst_description": "Text of the button. If none of the fields other than *text*, *icon_custom_emoji_id*, and *style* are used, it will be sent as a message when the button is pressed\n",
+        "name": "text",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Unique identifier of the custom emoji shown before the text of the button. Can only be used by bots that purchased additional usernames on Fragment or in the messages directly sent by the bot to private, group and supergroup chats if the owner of the bot has a Telegram Premium subscription.",
+        "html_description": "<td><em>Optional</em>. Unique identifier of the custom emoji shown before the text of the button. Can only be used by bots that purchased additional usernames on <a href=\"https://fragment.com\">Fragment</a> or in the messages directly sent by the bot to private, group and supergroup chats if the owner of the bot has a Telegram Premium subscription.</td>",
+        "rst_description": "*Optional*. Unique identifier of the custom emoji shown before the text of the button. Can only be used by bots that purchased additional usernames on `Fragment <https://fragment.com>`_ or in the messages directly sent by the bot to private, group and supergroup chats if the owner of the bot has a Telegram Premium subscription.\n",
+        "name": "icon_custom_emoji_id",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "Style of the button. Must be one of 'danger' (red), 'success' (green) or 'primary' (blue). If omitted, then an app-specific style is used.",
+        "html_description": "<td><em>Optional</em>. Style of the button. Must be one of &#8220;danger&#8221; (red), &#8220;success&#8221; (green) or &#8220;primary&#8221; (blue). If omitted, then an app-specific style is used.</td>",
+        "rst_description": "*Optional*. Style of the button. Must be one of 'danger' (red), 'success' (green) or 'primary' (blue). If omitted, then an app-specific style is used.\n",
+        "name": "style",
+        "required": false
+      },
+      {
+        "type": "KeyboardButtonRequestUsers",
+        "description": "If specified, pressing the button will open a list of suitable users. Identifiers of selected users will be sent to the bot in a 'users_shared' service message. Available in private chats only.",
+        "html_description": "<td><em>Optional</em>. If specified, pressing the button will open a list of suitable users. Identifiers of selected users will be sent to the bot in a &#8220;users_shared&#8221; service message. Available in private chats only.</td>",
+        "rst_description": "*Optional*. If specified, pressing the button will open a list of suitable users. Identifiers of selected users will be sent to the bot in a 'users_shared' service message. Available in private chats only.\n",
+        "name": "request_users",
+        "required": false
+      },
+      {
+        "type": "KeyboardButtonRequestChat",
+        "description": "If specified, pressing the button will open a list of suitable chats. Tapping on a chat will send its identifier to the bot in a 'chat_shared' service message. Available in private chats only.",
+        "html_description": "<td><em>Optional</em>. If specified, pressing the button will open a list of suitable chats. Tapping on a chat will send its identifier to the bot in a &#8220;chat_shared&#8221; service message. Available in private chats only.</td>",
+        "rst_description": "*Optional*. If specified, pressing the button will open a list of suitable chats. Tapping on a chat will send its identifier to the bot in a 'chat_shared' service message. Available in private chats only.\n",
+        "name": "request_chat",
+        "required": false
+      },
+      {
+        "type": "KeyboardButtonRequestManagedBot",
+        "description": "If specified, pressing the button will ask the user to create and share a bot that will be managed by the current bot. Available for bots that enabled management of other bots in the @BotFather Mini App. Available in private chats only.",
+        "html_description": "<td><em>Optional</em>. If specified, pressing the button will ask the user to create and share a bot that will be managed by the current bot. Available for bots that enabled management of other bots in the <a href=\"https://t.me/BotFather\">@BotFather</a> Mini App. Available in private chats only.</td>",
+        "rst_description": "*Optional*. If specified, pressing the button will ask the user to create and share a bot that will be managed by the current bot. Available for bots that enabled management of other bots in the `@BotFather <https://t.me/BotFather>`_ Mini App. Available in private chats only.\n",
+        "name": "request_managed_bot",
+        "required": false
+      },
+      {
+        "type": "Boolean",
+        "description": "If True, the user's phone number will be sent as a contact when the button is pressed. Available in private chats only.",
+        "html_description": "<td><em>Optional</em>. If <em>True</em>, the user's phone number will be sent as a contact when the button is pressed. Available in private chats only.</td>",
+        "rst_description": "*Optional*. If :code:`True`, the user's phone number will be sent as a contact when the button is pressed. Available in private chats only.\n",
+        "name": "request_contact",
+        "required": false
+      },
+      {
+        "type": "Boolean",
+        "description": "If True, the user's current location will be sent when the button is pressed. Available in private chats only.",
+        "html_description": "<td><em>Optional</em>. If <em>True</em>, the user's current location will be sent when the button is pressed. Available in private chats only.</td>",
+        "rst_description": "*Optional*. If :code:`True`, the user's current location will be sent when the button is pressed. Available in private chats only.\n",
+        "name": "request_location",
+        "required": false
+      },
+      {
+        "type": "KeyboardButtonPollType",
+        "description": "If specified, the user will be asked to create a poll and send it to the bot when the button is pressed. Available in private chats only.",
+        "html_description": "<td><em>Optional</em>. If specified, the user will be asked to create a poll and send it to the bot when the button is pressed. Available in private chats only.</td>",
+        "rst_description": "*Optional*. If specified, the user will be asked to create a poll and send it to the bot when the button is pressed. Available in private chats only.\n",
+        "name": "request_poll",
+        "required": false
+      },
+      {
+        "type": "WebAppInfo",
+        "description": "If specified, the described Web App will be launched when the button is pressed. The Web App will be able to send a 'web_app_data' service message. Available in private chats only.",
+        "html_description": "<td><em>Optional</em>. If specified, the described <a href=\"/bots/webapps\">Web App</a> will be launched when the button is pressed. The Web App will be able to send a &#8220;web_app_data&#8221; service message. Available in private chats only.</td>",
+        "rst_description": "*Optional*. If specified, the described `Web App <https://core.telegram.org/bots/webapps>`_ will be launched when the button is pressed. The Web App will be able to send a 'web_app_data' service message. Available in private chats only.\n",
+        "name": "web_app",
+        "required": false
+      },
+      {
+        "type": "KeyboardButtonRequestUser",
+        "description": "If specified, pressing the button will open a list of suitable users. Tapping on any user will send their identifier to the bot in a 'user_shared' service message. Available in private chats only.",
+        "html_description": "<td><em>Optional.</em> If specified, pressing the button will open a list of suitable users. Tapping on any user will send their identifier to the bot in a &#8220;user_shared&#8221; service message. Available in private chats only.</td>",
+        "rst_description": "*Optional.* If specified, pressing the button will open a list of suitable users. Tapping on any user will send their identifier to the bot in a 'user_shared' service message. Available in private chats only.\n",
+        "name": "request_user",
+        "required": false,
+        "deprecated": {
+          "version": "7.0",
+          "release_date": "2023-12-29"
+        }
+      }
+    ],
+    "category": "types"
+  }
+}

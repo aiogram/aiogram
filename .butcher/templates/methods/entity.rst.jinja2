@@ -1,0 +1,55 @@
+{{ object.name|header('#') }}
+{{ object.name }}
+{{ object.name|header('#') }}
+
+Returns: :obj:`{{ object.returning.parsed_type|type }}`
+
+.. automodule:: aiogram.methods.{{ object.name|pythonize_name }}
+    :members:
+    :member-order: bysource
+    :undoc-members: True
+    :exclude-members: model_config,model_fields
+
+
+Usage
+=====
+
+As bot method
+-------------
+
+.. code-block::
+
+    result: {{ object.returning.parsed_type|type }} = await bot.{{ object.name|pythonize_name }}(...)
+
+
+Method as object
+----------------
+
+Imports:
+
+- :code:`from aiogram.methods.{{ object.name|pythonize_name }} import {{ object.name|pythonize_class_name }}`
+- alias: :code:`from aiogram.methods import {{ object.name|pythonize_class_name }}`
+
+With specific bot
+~~~~~~~~~~~~~~~~~
+
+.. code-block:: python
+
+    result: {{ object.returning.parsed_type|type }} = await bot({{ object.name|pythonize_class_name }}(...))
+
+{% if can_be_used_in_webhook -%}
+As reply into Webhook in handler
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: python
+
+    return {{ object.name|pythonize_class_name }}(...)
+{%- endif %}
+
+{% if aliased %}
+As shortcut from received object
+--------------------------------
+{% for alias in aliased %}
+- :meth:`aiogram.types.{{ alias.type|pythonize_name }}.{{ alias.type|pythonize_class_name }}.{{ alias.name }}`
+{%- endfor %}
+{% endif %}

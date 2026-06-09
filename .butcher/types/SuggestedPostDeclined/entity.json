@@ -1,0 +1,33 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "suggestedpostdeclined",
+    "name": "SuggestedPostDeclined",
+    "description": "Describes a service message about the rejection of a suggested post.",
+    "html_description": "<p>Describes a service message about the rejection of a suggested post.</p>",
+    "rst_description": "Describes a service message about the rejection of a suggested post.",
+    "annotations": [
+      {
+        "type": "Message",
+        "description": "Message containing the suggested post. Note that the Message object in this field will not contain the reply_to_message field even if it itself is a reply.",
+        "html_description": "<td><em>Optional</em>. Message containing the suggested post. Note that the <a href=\"#message\">Message</a> object in this field will not contain the <em>reply_to_message</em> field even if it itself is a reply.</td>",
+        "rst_description": "*Optional*. Message containing the suggested post. Note that the :class:`aiogram.types.message.Message` object in this field will not contain the *reply_to_message* field even if it itself is a reply.\n",
+        "name": "suggested_post_message",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "Comment with which the post was declined",
+        "html_description": "<td><em>Optional</em>. Comment with which the post was declined</td>",
+        "rst_description": "*Optional*. Comment with which the post was declined\n",
+        "name": "comment",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

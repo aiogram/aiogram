@@ -1,0 +1,16 @@
+name: BotCommandScopeType
+description: |
+  This object represents the scope to which bot commands are applied.
+
+  Source: https://core.telegram.org/bots/api#botcommandscope
+multi_parse:
+  attribute: type
+  regexp: "must be ([a-z_]+)"
+  entities:
+    - BotCommandScopeDefault
+    - BotCommandScopeAllPrivateChats
+    - BotCommandScopeAllGroupChats
+    - BotCommandScopeAllChatAdministrators
+    - BotCommandScopeChat
+    - BotCommandScopeChatAdministrators
+    - BotCommandScopeChatMember

@@ -1,0 +1,61 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2024, aiogram Team
+# This file is distributed under the same license as the aiogram package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2024.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: aiogram \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-02-16 01:15+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: uk_UA\n"
+"Language-Team: uk_UA <LL@li.org>\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.13.1\n"
+
+#: ../../api/types/message_reaction_count_updated.rst:3
+msgid "MessageReactionCountUpdated"
+msgstr ""
+
+#: aiogram.types.message_reaction_count_updated.MessageReactionCountUpdated:1
+#: of
+msgid ""
+"This object represents reaction changes on a message with anonymous "
+"reactions."
+msgstr ""
+
+#: aiogram.types.message_reaction_count_updated.MessageReactionCountUpdated:3
+#: of
+msgid "Source: https://core.telegram.org/bots/api#messagereactioncountupdated"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.message_reaction_count_updated.MessageReactionCountUpdated.chat:1
+#: of
+msgid "The chat containing the message"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.message_reaction_count_updated.MessageReactionCountUpdated.message_id:1
+#: of
+msgid "Unique message identifier inside the chat"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.message_reaction_count_updated.MessageReactionCountUpdated.date:1
+#: of
+msgid "Date of the change in Unix time"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.message_reaction_count_updated.MessageReactionCountUpdated.reactions:1
+#: of
+msgid "List of reactions that are present on the message"
+msgstr ""

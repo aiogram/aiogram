@@ -1,0 +1,25 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "messageautodeletetimerchanged",
+    "name": "MessageAutoDeleteTimerChanged",
+    "description": "This object represents a service message about a change in auto-delete timer settings.",
+    "html_description": "<p>This object represents a service message about a change in auto-delete timer settings.</p>",
+    "rst_description": "This object represents a service message about a change in auto-delete timer settings.",
+    "annotations": [
+      {
+        "type": "Integer",
+        "description": "New auto-delete time for messages in the chat; in seconds",
+        "html_description": "<td>New auto-delete time for messages in the chat; in seconds</td>",
+        "rst_description": "New auto-delete time for messages in the chat; in seconds\n",
+        "name": "message_auto_delete_time",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

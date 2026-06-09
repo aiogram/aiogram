@@ -1,0 +1,16 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "backgroundfill",
+    "name": "BackgroundFill",
+    "description": "This object describes the way a background is filled based on the selected colors. Currently, it can be one of\n - BackgroundFillSolid\n - BackgroundFillGradient\n - BackgroundFillFreeformGradient",
+    "html_description": "<p>This object describes the way a background is filled based on the selected colors. Currently, it can be one of</p><ul>\n<li><a href=\"#backgroundfillsolid\">BackgroundFillSolid</a></li>\n<li><a href=\"#backgroundfillgradient\">BackgroundFillGradient</a></li>\n<li><a href=\"#backgroundfillfreeformgradient\">BackgroundFillFreeformGradient</a></li>\n</ul>",
+    "rst_description": "This object describes the way a background is filled based on the selected colors. Currently, it can be one of\n\n - :class:`aiogram.types.background_fill_solid.BackgroundFillSolid`\n - :class:`aiogram.types.background_fill_gradient.BackgroundFillGradient`\n - :class:`aiogram.types.background_fill_freeform_gradient.BackgroundFillFreeformGradient`",
+    "annotations": [],
+    "category": "types"
+  }
+}

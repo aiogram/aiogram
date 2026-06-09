@@ -1,0 +1,25 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "videochatscheduled",
+    "name": "VideoChatScheduled",
+    "description": "This object represents a service message about a video chat scheduled in the chat.",
+    "html_description": "<p>This object represents a service message about a video chat scheduled in the chat.</p>",
+    "rst_description": "This object represents a service message about a video chat scheduled in the chat.",
+    "annotations": [
+      {
+        "type": "Integer",
+        "description": "Point in time (Unix timestamp) when the video chat is supposed to be started by a chat administrator",
+        "html_description": "<td>Point in time (Unix timestamp) when the video chat is supposed to be started by a chat administrator</td>",
+        "rst_description": "Point in time (Unix timestamp) when the video chat is supposed to be started by a chat administrator\n",
+        "name": "start_date",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

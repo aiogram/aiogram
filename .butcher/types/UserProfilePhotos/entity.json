@@ -1,0 +1,33 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "userprofilephotos",
+    "name": "UserProfilePhotos",
+    "description": "This object represent a user's profile pictures.",
+    "html_description": "<p>This object represent a user's profile pictures.</p>",
+    "rst_description": "This object represent a user's profile pictures.",
+    "annotations": [
+      {
+        "type": "Integer",
+        "description": "Total number of profile pictures the target user has",
+        "html_description": "<td>Total number of profile pictures the target user has</td>",
+        "rst_description": "Total number of profile pictures the target user has\n",
+        "name": "total_count",
+        "required": true
+      },
+      {
+        "type": "Array of Array of PhotoSize",
+        "description": "Requested profile pictures (in up to 4 sizes each)",
+        "html_description": "<td>Requested profile pictures (in up to 4 sizes each)</td>",
+        "rst_description": "Requested profile pictures (in up to 4 sizes each)\n",
+        "name": "photos",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Telegram Passport",
+    "anchor": "telegram-passport"
+  },
+  "object": {
+    "anchor": "encryptedcredentials",
+    "name": "EncryptedCredentials",
+    "description": "Describes data required for decrypting and authenticating EncryptedPassportElement. See the Telegram Passport Documentation for a complete description of the data decryption and authentication processes.",
+    "html_description": "<p>Describes data required for decrypting and authenticating <a href=\"#encryptedpassportelement\">EncryptedPassportElement</a>. See the <a href=\"/passport#receiving-information\">Telegram Passport Documentation</a> for a complete description of the data decryption and authentication processes.</p>",
+    "rst_description": "Describes data required for decrypting and authenticating :class:`aiogram.types.encrypted_passport_element.EncryptedPassportElement`. See the `Telegram Passport Documentation <https://core.telegram.org/passport#receiving-information>`_ for a complete description of the data decryption and authentication processes.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Base64-encoded encrypted JSON-serialized data with unique user's payload, data hashes and secrets required for EncryptedPassportElement decryption and authentication",
+        "html_description": "<td>Base64-encoded encrypted JSON-serialized data with unique user's payload, data hashes and secrets required for <a href=\"#encryptedpassportelement\">EncryptedPassportElement</a> decryption and authentication</td>",
+        "rst_description": "Base64-encoded encrypted JSON-serialized data with unique user's payload, data hashes and secrets required for :class:`aiogram.types.encrypted_passport_element.EncryptedPassportElement` decryption and authentication\n",
+        "name": "data",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Base64-encoded data hash for data authentication",
+        "html_description": "<td>Base64-encoded data hash for data authentication</td>",
+        "rst_description": "Base64-encoded data hash for data authentication\n",
+        "name": "hash",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Base64-encoded secret, encrypted with the bot's public RSA key, required for data decryption",
+        "html_description": "<td>Base64-encoded secret, encrypted with the bot's public RSA key, required for data decryption</td>",
+        "rst_description": "Base64-encoded secret, encrypted with the bot's public RSA key, required for data decryption\n",
+        "name": "secret",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

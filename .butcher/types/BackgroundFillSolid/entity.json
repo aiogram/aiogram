@@ -1,0 +1,33 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "backgroundfillsolid",
+    "name": "BackgroundFillSolid",
+    "description": "The background is filled using the selected color.",
+    "html_description": "<p>The background is filled using the selected color.</p>",
+    "rst_description": "The background is filled using the selected color.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Type of the background fill, always 'solid'",
+        "html_description": "<td>Type of the background fill, always &#8220;solid&#8221;</td>",
+        "rst_description": "Type of the background fill, always 'solid'\n",
+        "name": "type",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "The color of the background fill in the RGB24 format",
+        "html_description": "<td>The color of the background fill in the RGB24 format</td>",
+        "rst_description": "The color of the background fill in the RGB24 format\n",
+        "name": "color",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

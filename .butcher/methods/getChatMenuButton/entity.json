@@ -1,0 +1,25 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available methods",
+    "anchor": "available-methods"
+  },
+  "object": {
+    "anchor": "getchatmenubutton",
+    "name": "getChatMenuButton",
+    "description": "Use this method to get the current value of the bot's menu button in a private chat, or the default menu button. Returns MenuButton on success.",
+    "html_description": "<p>Use this method to get the current value of the bot's menu button in a private chat, or the default menu button. Returns <a href=\"#menubutton\">MenuButton</a> on success.</p>",
+    "rst_description": "Use this method to get the current value of the bot's menu button in a private chat, or the default menu button. Returns :class:`aiogram.types.menu_button.MenuButton` on success.",
+    "annotations": [
+      {
+        "type": "Integer",
+        "required": false,
+        "description": "Unique identifier for the target private chat. If not specified, default bot's menu button will be returned",
+        "html_description": "<td>Unique identifier for the target private chat. If not specified, default bot's menu button will be returned</td>",
+        "rst_description": "Unique identifier for the target private chat. If not specified, default bot's menu button will be returned\n",
+        "name": "chat_id"
+      }
+    ],
+    "category": "methods"
+  }
+}

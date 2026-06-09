@@ -1,0 +1,25 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "giveawaycreated",
+    "name": "GiveawayCreated",
+    "description": "This object represents a service message about the creation of a scheduled giveaway.",
+    "html_description": "<p>This object represents a service message about the creation of a scheduled giveaway.</p>",
+    "rst_description": "This object represents a service message about the creation of a scheduled giveaway.",
+    "annotations": [
+      {
+        "type": "Integer",
+        "description": "The number of Telegram Stars to be split between giveaway winners; for Telegram Star giveaways only",
+        "html_description": "<td><em>Optional</em>. The number of Telegram Stars to be split between giveaway winners; for Telegram Star giveaways only</td>",
+        "rst_description": "*Optional*. The number of Telegram Stars to be split between giveaway winners; for Telegram Star giveaways only\n",
+        "name": "prize_star_count",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

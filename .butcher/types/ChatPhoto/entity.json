@@ -1,0 +1,49 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "chatphoto",
+    "name": "ChatPhoto",
+    "description": "This object represents a chat photo.",
+    "html_description": "<p>This object represents a chat photo.</p>",
+    "rst_description": "This object represents a chat photo.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "File identifier of small (160x160) chat photo. This file_id can be used only for photo download and only for as long as the photo is not changed.",
+        "html_description": "<td>File identifier of small (160x160) chat photo. This file_id can be used only for photo download and only for as long as the photo is not changed.</td>",
+        "rst_description": "File identifier of small (160x160) chat photo. This file_id can be used only for photo download and only for as long as the photo is not changed.\n",
+        "name": "small_file_id",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Unique file identifier of small (160x160) chat photo, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.",
+        "html_description": "<td>Unique file identifier of small (160x160) chat photo, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.</td>",
+        "rst_description": "Unique file identifier of small (160x160) chat photo, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.\n",
+        "name": "small_file_unique_id",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "File identifier of big (640x640) chat photo. This file_id can be used only for photo download and only for as long as the photo is not changed.",
+        "html_description": "<td>File identifier of big (640x640) chat photo. This file_id can be used only for photo download and only for as long as the photo is not changed.</td>",
+        "rst_description": "File identifier of big (640x640) chat photo. This file_id can be used only for photo download and only for as long as the photo is not changed.\n",
+        "name": "big_file_id",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Unique file identifier of big (640x640) chat photo, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.",
+        "html_description": "<td>Unique file identifier of big (640x640) chat photo, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.</td>",
+        "rst_description": "Unique file identifier of big (640x640) chat photo, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.\n",
+        "name": "big_file_unique_id",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

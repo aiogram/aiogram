@@ -1,0 +1,50 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2022, aiogram Team
+# This file is distributed under the same license as the aiogram package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2022.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version:  aiogram\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-10-08 19:04+0300\n"
+"PO-Revision-Date: 2022-12-11 22:52+0200\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.12.1\n"
+
+#: ../../dispatcher/class_based_handlers/message.rst:3
+msgid "MessageHandler"
+msgstr "MessageHandler"
+
+#: ../../dispatcher/class_based_handlers/message.rst:5
+msgid "There is base class for message handlers."
+msgstr "Це базовий клас для обробників повідомлень."
+
+#: ../../dispatcher/class_based_handlers/message.rst:8
+msgid "Simple usage"
+msgstr "Просте застосування"
+
+#: ../../dispatcher/class_based_handlers/message.rst:22
+msgid "Extension"
+msgstr "Розширення"
+
+#: ../../dispatcher/class_based_handlers/message.rst:24
+#, fuzzy
+msgid ""
+"This base handler is subclass of :ref:`BaseHandler <cbh-base-handler>` "
+"with some extensions:"
+msgstr ""
+"Цей базовий обробник є підкласом [BaseHandler](basics.md#basehandler) з "
+"деякими розширеннями:"
+
+#: ../../dispatcher/class_based_handlers/message.rst:26
+msgid ":code:`self.chat` is alias for :code:`self.event.chat`"
+msgstr ":code:`self.chat` це псевдонім для :code:`self.event.chat`"
+
+#: ../../dispatcher/class_based_handlers/message.rst:27
+msgid ":code:`self.from_user` is alias for :code:`self.event.from_user`"
+msgstr ":code:`self.from_user` це псевдонім для :code:`self.event.from_user`"

@@ -1,0 +1,33 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "story",
+    "name": "Story",
+    "description": "This object represents a story.",
+    "html_description": "<p>This object represents a story.</p>",
+    "rst_description": "This object represents a story.",
+    "annotations": [
+      {
+        "type": "Chat",
+        "description": "Chat that posted the story",
+        "html_description": "<td>Chat that posted the story</td>",
+        "rst_description": "Chat that posted the story\n",
+        "name": "chat",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "Unique identifier for the story in the chat",
+        "html_description": "<td>Unique identifier for the story in the chat</td>",
+        "rst_description": "Unique identifier for the story in the chat\n",
+        "name": "id",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

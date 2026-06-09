@@ -1,0 +1,16 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "chatmember",
+    "name": "ChatMember",
+    "description": "This object contains information about one member of a chat. Currently, the following 6 types of chat members are supported:\n - ChatMemberOwner\n - ChatMemberAdministrator\n - ChatMemberMember\n - ChatMemberRestricted\n - ChatMemberLeft\n - ChatMemberBanned",
+    "html_description": "<p>This object contains information about one member of a chat. Currently, the following 6 types of chat members are supported:</p><ul>\n<li><a href=\"#chatmemberowner\">ChatMemberOwner</a></li>\n<li><a href=\"#chatmemberadministrator\">ChatMemberAdministrator</a></li>\n<li><a href=\"#chatmembermember\">ChatMemberMember</a></li>\n<li><a href=\"#chatmemberrestricted\">ChatMemberRestricted</a></li>\n<li><a href=\"#chatmemberleft\">ChatMemberLeft</a></li>\n<li><a href=\"#chatmemberbanned\">ChatMemberBanned</a></li>\n</ul>",
+    "rst_description": "This object contains information about one member of a chat. Currently, the following 6 types of chat members are supported:\n\n - :class:`aiogram.types.chat_member_owner.ChatMemberOwner`\n - :class:`aiogram.types.chat_member_administrator.ChatMemberAdministrator`\n - :class:`aiogram.types.chat_member_member.ChatMemberMember`\n - :class:`aiogram.types.chat_member_restricted.ChatMemberRestricted`\n - :class:`aiogram.types.chat_member_left.ChatMemberLeft`\n - :class:`aiogram.types.chat_member_banned.ChatMemberBanned`",
+    "annotations": [],
+    "category": "types"
+  }
+}

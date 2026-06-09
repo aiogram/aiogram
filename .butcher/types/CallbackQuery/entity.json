@@ -1,0 +1,73 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "callbackquery",
+    "name": "CallbackQuery",
+    "description": "This object represents an incoming callback query from a callback button in an inline keyboard. If the button that originated the query was attached to a message sent by the bot, the field message will be present. If the button was attached to a message sent via the bot (in inline mode), the field inline_message_id will be present. Exactly one of the fields data or game_short_name will be present.\nNOTE: After the user presses a callback button, Telegram clients will display a progress bar until you call answerCallbackQuery. It is, therefore, necessary to react by calling answerCallbackQuery even if no notification to the user is needed (e.g., without specifying any of the optional parameters).",
+    "html_description": "<p>This object represents an incoming callback query from a callback button in an <a href=\"/bots/features#inline-keyboards\">inline keyboard</a>. If the button that originated the query was attached to a message sent by the bot, the field <em>message</em> will be present. If the button was attached to a message sent via the bot (in <a href=\"#inline-mode\">inline mode</a>), the field <em>inline_message_id</em> will be present. Exactly one of the fields <em>data</em> or <em>game_short_name</em> will be present.</p><blockquote>\n<p><strong>NOTE:</strong> After the user presses a callback button, Telegram clients will display a progress bar until you call <a href=\"#answercallbackquery\">answerCallbackQuery</a>. It is, therefore, necessary to react by calling <a href=\"#answercallbackquery\">answerCallbackQuery</a> even if no notification to the user is needed (e.g., without specifying any of the optional parameters).</p>\n</blockquote>",
+    "rst_description": "This object represents an incoming callback query from a callback button in an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_. If the button that originated the query was attached to a message sent by the bot, the field *message* will be present. If the button was attached to a message sent via the bot (in `inline mode <https://core.telegram.org/bots/api#inline-mode>`_), the field *inline_message_id* will be present. Exactly one of the fields *data* or *game_short_name* will be present.\n\n **NOTE:** After the user presses a callback button, Telegram clients will display a progress bar until you call :class:`aiogram.methods.answer_callback_query.AnswerCallbackQuery`. It is, therefore, necessary to react by calling :class:`aiogram.methods.answer_callback_query.AnswerCallbackQuery` even if no notification to the user is needed (e.g., without specifying any of the optional parameters).",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Unique identifier for this query",
+        "html_description": "<td>Unique identifier for this query</td>",
+        "rst_description": "Unique identifier for this query\n",
+        "name": "id",
+        "required": true
+      },
+      {
+        "type": "User",
+        "description": "Sender",
+        "html_description": "<td>Sender</td>",
+        "rst_description": "Sender\n",
+        "name": "from",
+        "required": true
+      },
+      {
+        "type": "MaybeInaccessibleMessage",
+        "description": "Message sent by the bot with the callback button that originated the query",
+        "html_description": "<td><em>Optional</em>. Message sent by the bot with the callback button that originated the query</td>",
+        "rst_description": "*Optional*. Message sent by the bot with the callback button that originated the query\n",
+        "name": "message",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "Identifier of the message sent via the bot in inline mode, that originated the query.",
+        "html_description": "<td><em>Optional</em>. Identifier of the message sent via the bot in inline mode, that originated the query.</td>",
+        "rst_description": "*Optional*. Identifier of the message sent via the bot in inline mode, that originated the query.\n",
+        "name": "inline_message_id",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "Global identifier, uniquely corresponding to the chat to which the message with the callback button was sent. Useful for high scores in games.",
+        "html_description": "<td>Global identifier, uniquely corresponding to the chat to which the message with the callback button was sent. Useful for high scores in <a href=\"#games\">games</a>.</td>",
+        "rst_description": "Global identifier, uniquely corresponding to the chat to which the message with the callback button was sent. Useful for high scores in :class:`aiogram.methods.games.Games`.\n",
+        "name": "chat_instance",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Data associated with the callback button. Be aware that the message originated the query can contain no callback buttons with this data.",
+        "html_description": "<td><em>Optional</em>. Data associated with the callback button. Be aware that the message originated the query can contain no callback buttons with this data.</td>",
+        "rst_description": "*Optional*. Data associated with the callback button. Be aware that the message originated the query can contain no callback buttons with this data.\n",
+        "name": "data",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "Short name of a Game to be returned, serves as the unique identifier for the game",
+        "html_description": "<td><em>Optional</em>. Short name of a <a href=\"#games\">Game</a> to be returned, serves as the unique identifier for the game</td>",
+        "rst_description": "*Optional*. Short name of a `Game <https://core.telegram.org/bots/api#games>`_ to be returned, serves as the unique identifier for the game\n",
+        "name": "game_short_name",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

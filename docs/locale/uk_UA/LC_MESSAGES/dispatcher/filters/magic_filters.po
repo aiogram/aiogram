@@ -1,0 +1,204 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2022, aiogram Team
+# This file is distributed under the same license as the aiogram package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2022.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: aiogram\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-10-01 22:51+0300\n"
+"PO-Revision-Date: 2022-10-25 16:32+0300\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.10.3\n"
+"X-Generator: Poedit 3.1.1\n"
+
+#: ../../dispatcher/filters/magic_filters.rst:5
+msgid "Magic filters"
+msgstr "✨ Магічні 🔮 фільтри ✨"
+
+#: ../../dispatcher/filters/magic_filters.rst:9
+msgid "This page still in progress. Has many incorrectly worded sentences."
+msgstr ""
+"Ця сторінка все ще в розробці. Має багато неправильно сформульованих речень."
+
+#: ../../dispatcher/filters/magic_filters.rst:11
+msgid "Is external package maintained by *aiogram* core team."
+msgstr ""
+"Це зовнішній пакет, який підтримується основною командою розробки *aiogram*."
+
+#: ../../dispatcher/filters/magic_filters.rst:13
+msgid ""
+"By default installs with *aiogram* and also is available on `PyPi - magic-"
+"filter <https://pypi.org/project/magic-filter/>`_. That's mean you can "
+"install it and use with any other libraries and in own projects without "
+"depending *aiogram* installed."
+msgstr ""
+"За замовчуванням встановлюється разом з *aiogram* і, також, доступний в "
+"`PyPi - magic-filter <https://pypi.org/project/magic-filter/>`_. Це означає, "
+"що Ви можете встановити його та використовувати з будь-якими іншими "
+"бібліотеками та у власних проектах, незалежно від того встановлено *aiogram* "
+"чи ні."
+
+#: ../../dispatcher/filters/magic_filters.rst:17
+msgid "Usage"
+msgstr "Використання"
+
+#: ../../dispatcher/filters/magic_filters.rst:19
+msgid ""
+"The **magic_filter** package implements class shortly named :class:"
+"`magic_filter.F` that's mean :code:`F` can be imported from :code:`aiogram` "
+"or :code:`magic_filter`. :class:`F` is alias for :class:`MagicFilter`."
+msgstr ""
+"Пакет **magic_filter** реалізує клас із короткою назвою :class:`magic_filter."
+"F`, тобто :code:`F` можна імпортувати з :code:`aiogram` або :code:"
+"`magic_filter`. :class:`F` є псевдонімом для :class:`MagicFilter`."
+
+#: ../../dispatcher/filters/magic_filters.rst:23
+msgid ""
+"Note that *aiogram* has an small extension over magic-filter and if you want "
+"to use this extension you should import magic from *aiogram* instead of "
+"*magic_filter* package"
+msgstr ""
+"Зауважте, що *aiogram* має невелике розширення для magic-filter, і якщо Ви "
+"хочете використовувати це розширення, вам слід імпортувати магію з *aiogram* "
+"замість пакета *magic_filter*"
+
+#: ../../dispatcher/filters/magic_filters.rst:25
+msgid ""
+"The :class:`MagicFilter` object is callable, supports :ref:`some actions "
+"<magic-filter-possible-actions>` and memorize the attributes chain and the "
+"action which should be checked on demand."
+msgstr ""
+"Об'єкт классу :class:`MagicFilter` можна викликати, підтримує :ref:`деякі "
+"дії <magic-filter-possible-actions>` і запам’ятовує ланцюжок атрибутів і "
+"дію, яку слід перевіряти на вимогу."
+
+#: ../../dispatcher/filters/magic_filters.rst:28
+msgid ""
+"So that's mean you can chain attribute getters, describe simple data "
+"validations and then call the resulted object passing single object as "
+"argument, for example make attributes chain :code:`F.foo.bar.baz` then add "
+"action ':code:`F.foo.bar.baz == 'spam'` and then call the resulted object - :"
+"code:`(F.foo.bar.baz == 'spam').resolve(obj)`"
+msgstr ""
+"Тож це означає, що ви можете ланцюжком отримати атрибути, описати прості "
+"перевірки даних, а потім викликати отриманий об’єкт, передаючи один об’єкт "
+"як аргумент, наприклад, створити ланцюжок атрибутів :code:`F.foo.bar.baz`, а "
+"потім додати дію ':code:`F.foo.bar.baz == 'spam'`, після чого викликати "
+"отриманий об'єкт - :code:`(F.foo.bar.baz == 'spam').resolve(obj)`"
+
+#: ../../dispatcher/filters/magic_filters.rst:36
+msgid "Possible actions"
+msgstr "Можливі дії"
+
+#: ../../dispatcher/filters/magic_filters.rst:38
+msgid ""
+"Magic filter object supports some of basic logical operations over object "
+"attributes"
+msgstr ""
+"Об'єкт магічного фільтра підтримує деякі основні логічні операції над "
+"атрибутами об'єкта"
+
+#: ../../dispatcher/filters/magic_filters.rst:41
+msgid "Exists or not None"
+msgstr "Атрибут існує, або не \"None\""
+
+#: ../../dispatcher/filters/magic_filters.rst:43
+msgid "Default actions."
+msgstr "Дії за замовчуванням."
+
+#: ../../dispatcher/filters/magic_filters.rst:50
+msgid "Equals"
+msgstr "Перевірка на однаковість"
+
+#: ../../dispatcher/filters/magic_filters.rst:58
+msgid "Is one of"
+msgstr "Перевірка на приналежність"
+
+#: ../../dispatcher/filters/magic_filters.rst:60
+msgid ""
+"Can be used as method named :code:`in_` or as matmul operator :code:`@` with "
+"any iterable"
+msgstr ""
+"Може використовуватися як метод із назвою :code:`in_` або як оператор "
+"matmul :code:`@` з будь-яким ітерованим"
+
+#: ../../dispatcher/filters/magic_filters.rst:68
+msgid "Contains"
+msgstr "Перевірка на наявність"
+
+#: ../../dispatcher/filters/magic_filters.rst:75
+msgid "String startswith/endswith"
+msgstr "Рядок починається/закінчується на"
+
+#: ../../dispatcher/filters/magic_filters.rst:77
+msgid "Can be applied only for text attributes"
+msgstr "Може застосовуватися лише для текстових атрибутів"
+
+#: ../../dispatcher/filters/magic_filters.rst:85
+msgid "Regexp"
+msgstr "Перевірка регулярними виразами"
+
+#: ../../dispatcher/filters/magic_filters.rst:92
+msgid "Custom function"
+msgstr "Власні функції"
+
+#: ../../dispatcher/filters/magic_filters.rst:94
+msgid "Accepts any callable. Callback will be called when filter checks result"
+msgstr "Приймає будь-яку функцію"
+
+#: ../../dispatcher/filters/magic_filters.rst:101
+msgid "Inverting result"
+msgstr "Інвертування результату"
+
+#: ../../dispatcher/filters/magic_filters.rst:103
+msgid ""
+"Any of available operation can be inverted by bitwise inversion - :code:`~`"
+msgstr ""
+"Будь-яка доступна операція може бути інвертована за допомогою побітової "
+"інверсії - :code:`~`"
+
+#: ../../dispatcher/filters/magic_filters.rst:111
+msgid "Combining"
+msgstr "Комбінація"
+
+#: ../../dispatcher/filters/magic_filters.rst:113
+msgid ""
+"All operations can be combined via bitwise and/or operators - :code:`&`/:"
+"code:`|`"
+msgstr ""
+"Усі операції можна комбінувати за допомогою побітових і/або операторів - :"
+"code:`&`/:code:`|`"
+
+#: ../../dispatcher/filters/magic_filters.rst:123
+msgid "Attribute modifiers - string manipulations"
+msgstr "Модифікатори атрибутів - маніпуляції з рядками"
+
+#: ../../dispatcher/filters/magic_filters.rst:125
+msgid "Make text upper- or lower-case"
+msgstr "Робить текст верхнім або нижнім регістром"
+
+#: ../../dispatcher/filters/magic_filters.rst:127
+msgid "Can be used only with string attributes."
+msgstr "Можна використовувати лише з рядковими атрибутами."
+
+#: ../../dispatcher/filters/magic_filters.rst:137
+msgid "Get filter result as handler argument"
+msgstr "Отримати результат фільтра як аргумент обробника"
+
+#: ../../dispatcher/filters/magic_filters.rst:139
+msgid ""
+"This part is not available in *magic-filter* directly but can be used with "
+"*aiogram*"
+msgstr ""
+"Ця частина недоступна безпосередньо в *magic-filter*, але її можна "
+"використовувати з *aiogram*"
+
+#: ../../dispatcher/filters/magic_filters.rst:152
+msgid "Usage in *aiogram*"
+msgstr "Використання в *aiogram*"

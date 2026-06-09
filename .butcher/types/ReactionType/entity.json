@@ -1,0 +1,16 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "reactiontype",
+    "name": "ReactionType",
+    "description": "This object describes the type of a reaction. Currently, it can be one of\n - ReactionTypeEmoji\n - ReactionTypeCustomEmoji\n - ReactionTypePaid",
+    "html_description": "<p>This object describes the type of a reaction. Currently, it can be one of</p><ul>\n<li><a href=\"#reactiontypeemoji\">ReactionTypeEmoji</a></li>\n<li><a href=\"#reactiontypecustomemoji\">ReactionTypeCustomEmoji</a></li>\n<li><a href=\"#reactiontypepaid\">ReactionTypePaid</a></li>\n</ul>",
+    "rst_description": "This object describes the type of a reaction. Currently, it can be one of\n\n - :class:`aiogram.types.reaction_type_emoji.ReactionTypeEmoji`\n - :class:`aiogram.types.reaction_type_custom_emoji.ReactionTypeCustomEmoji`\n - :class:`aiogram.types.reaction_type_paid.ReactionTypePaid`",
+    "annotations": [],
+    "category": "types"
+  }
+}

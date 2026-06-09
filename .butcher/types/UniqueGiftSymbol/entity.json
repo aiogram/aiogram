@@ -1,0 +1,41 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "uniquegiftsymbol",
+    "name": "UniqueGiftSymbol",
+    "description": "This object describes the symbol shown on the pattern of a unique gift.",
+    "html_description": "<p>This object describes the symbol shown on the pattern of a unique gift.</p>",
+    "rst_description": "This object describes the symbol shown on the pattern of a unique gift.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Name of the symbol",
+        "html_description": "<td>Name of the symbol</td>",
+        "rst_description": "Name of the symbol\n",
+        "name": "name",
+        "required": true
+      },
+      {
+        "type": "Sticker",
+        "description": "The sticker that represents the unique gift",
+        "html_description": "<td>The sticker that represents the unique gift</td>",
+        "rst_description": "The sticker that represents the unique gift\n",
+        "name": "sticker",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "The number of unique gifts that receive this model for every 1000 gifts upgraded",
+        "html_description": "<td>The number of unique gifts that receive this model for every 1000 gifts upgraded</td>",
+        "rst_description": "The number of unique gifts that receive this model for every 1000 gifts upgraded\n",
+        "name": "rarity_per_mille",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

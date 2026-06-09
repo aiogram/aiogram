@@ -1,0 +1,256 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2022, aiogram Team
+# This file is distributed under the same license as the aiogram package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2022.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version:  aiogram\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-08-26 23:17+0300\n"
+"PO-Revision-Date: 2022-10-25 18:00+0300\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.12.1\n"
+
+#: ../../dispatcher/filters/chat_member_updated.rst:3
+msgid "ChatMemberUpdated"
+msgstr "Зміна статусу користувача в чаті"
+
+#: ../../dispatcher/filters/chat_member_updated.rst:6
+msgid "Usage"
+msgstr "Використання"
+
+#: ../../dispatcher/filters/chat_member_updated.rst:8
+msgid "Handle user leave or join events"
+msgstr "Керуйте подіями, які залишають користувачів або приєднуються"
+
+#: ../../dispatcher/filters/chat_member_updated.rst:20
+msgid ""
+"Or construct your own terms via using pre-defined set of statuses and "
+"transitions."
+msgstr ""
+"Або створіть власні умови, використовуючи попередньо визначений набір "
+"статусів і переходів."
+
+#: ../../dispatcher/filters/chat_member_updated.rst:24
+msgid "Explanation"
+msgstr ""
+
+#: ../../dispatcher/filters/chat_member_updated.rst:31
+msgid ""
+"You can import from :code:`aiogram.filters` all available variants of "
+"`statuses`_, `status groups`_ or `transitions`_:"
+msgstr ""
+"Ви можете імпортувати з :code:`aiogram.filters` усі доступні варіанти "
+"`statuses`_, `status group`_ або `transitions`_:"
+
+#: ../../dispatcher/filters/chat_member_updated.rst:35
+msgid "Statuses"
+msgstr "Статуси"
+
+#: ../../dispatcher/filters/chat_member_updated.rst:38
+#: ../../dispatcher/filters/chat_member_updated.rst:63
+#: ../../dispatcher/filters/chat_member_updated.rst:83
+msgid "name"
+msgstr "ім'я"
+
+#: ../../dispatcher/filters/chat_member_updated.rst:38
+#: ../../dispatcher/filters/chat_member_updated.rst:63
+#: ../../dispatcher/filters/chat_member_updated.rst:83
+msgid "Description"
+msgstr "Опис"
+
+#: ../../dispatcher/filters/chat_member_updated.rst:40
+msgid ":code:`CREATOR`"
+msgstr ":code:`CREATOR`"
+
+#: ../../dispatcher/filters/chat_member_updated.rst:40
+msgid "Chat owner"
+msgstr "Власник чату"
+
+#: ../../dispatcher/filters/chat_member_updated.rst:42
+msgid ":code:`ADMINISTRATOR`"
+msgstr ":code:`ADMINISTRATOR`"
+
+#: ../../dispatcher/filters/chat_member_updated.rst:42
+msgid "Chat administrator"
+msgstr "Адміністратор чату"
+
+#: ../../dispatcher/filters/chat_member_updated.rst:44
+msgid ":code:`MEMBER`"
+msgstr ":code:`MEMBER`"
+
+#: ../../dispatcher/filters/chat_member_updated.rst:44
+msgid "Member of the chat"
+msgstr "Учасник чату"
+
+#: ../../dispatcher/filters/chat_member_updated.rst:46
+msgid ":code:`RESTRICTED`"
+msgstr ":code:`RESTRICTED`"
+
+#: ../../dispatcher/filters/chat_member_updated.rst:46
+msgid "Restricted user (can be not member)"
+msgstr "Обмежений користувач (може бути не учасником)"
+
+#: ../../dispatcher/filters/chat_member_updated.rst:48
+msgid ":code:`LEFT`"
+msgstr ":code:`LEFT`"
+
+#: ../../dispatcher/filters/chat_member_updated.rst:48
+msgid "Isn't member of the chat"
+msgstr "Не є учасником чату"
+
+#: ../../dispatcher/filters/chat_member_updated.rst:50
+msgid ":code:`KICKED`"
+msgstr ":code:`KICKED`"
+
+#: ../../dispatcher/filters/chat_member_updated.rst:50
+msgid "Kicked member by administrators"
+msgstr "Вигнанийадміністраторами учасник"
+
+#: ../../dispatcher/filters/chat_member_updated.rst:53
+msgid ""
+"Statuses can be extended with `is_member` flag by prefixing with "
+":code:`+` (for :code:`is_member == True)` or :code:`-` (for "
+":code:`is_member == False`) symbol, like :code:`+RESTRICTED` or "
+":code:`-RESTRICTED`"
+msgstr ""
+"Статуси можна розширити маркером `is_member`, додавши префікс :code:`+` "
+"(для :code:`is_member == True)` або :code:`-` (для :code:`is_member == "
+"False`) , наприклад :code:`+RESTRICTED` або :code:`-RESTRICTED`"
+
+#: ../../dispatcher/filters/chat_member_updated.rst:58
+msgid "Status groups"
+msgstr "Групи статусів"
+
+#: ../../dispatcher/filters/chat_member_updated.rst:60
+msgid ""
+"The particular statuses can be combined via bitwise :code:`or` operator, "
+"like :code:`CREATOR | ADMINISTRATOR`"
+msgstr ""
+"Окремі статуси можна комбінувати за допомогою побітового оператора "
+":code:`or`, наприклад :code:`CREATOR | ADMINISTRATOR`"
+
+#: ../../dispatcher/filters/chat_member_updated.rst:65
+msgid ":code:`IS_MEMBER`"
+msgstr ":code:`IS_MEMBER`"
+
+#: ../../dispatcher/filters/chat_member_updated.rst:65
+msgid ""
+"Combination of :code:`(CREATOR | ADMINISTRATOR | MEMBER | +RESTRICTED)` "
+"statuses."
+msgstr ""
+"Комбінація статусів :code:`(CREATOR | ADMINISTRATOR | MEMBER | "
+"+RESTRICTED)`."
+
+#: ../../dispatcher/filters/chat_member_updated.rst:67
+msgid ":code:`IS_ADMIN`"
+msgstr ":code:`IS_ADMIN`"
+
+#: ../../dispatcher/filters/chat_member_updated.rst:67
+msgid "Combination of :code:`(CREATOR | ADMINISTRATOR)` statuses."
+msgstr "Комбінація статусів :code:`(CREATOR | ADMINISTRATOR)`."
+
+#: ../../dispatcher/filters/chat_member_updated.rst:69
+msgid ":code:`IS_NOT_MEMBER`"
+msgstr ":code:`IS_NOT_MEMBER`"
+
+#: ../../dispatcher/filters/chat_member_updated.rst:69
+msgid "Combination of :code:`(LEFT | KICKED | -RESTRICTED)` statuses."
+msgstr "Комбінація статусів :code:`(LEFT | KICKED | -RESTRICTED)` ."
+
+#: ../../dispatcher/filters/chat_member_updated.rst:73
+msgid "Transitions"
+msgstr "Переходи"
+
+#: ../../dispatcher/filters/chat_member_updated.rst:75
+msgid ""
+"Transitions can be defined via bitwise shift operators :code:`>>` and "
+":code:`<<`. Old chat member status should be defined in the left side for"
+" :code:`>>` operator (right side for :code:`<<`) and new status should be"
+" specified on the right side for :code:`>>` operator (left side for "
+":code:`<<`)"
+msgstr ""
+"Переходи можна визначити за допомогою операторів порозрядного зсуву "
+":code:`>>` і :code:`<<`. Старий статус учасника чату має бути визначений "
+"ліворуч для оператора :code:`>>` (праворуч для :code:`<<`), а новий "
+"статус має бути вказаний праворуч для :code:`>>` оператор (ліворуч для "
+":code:`<<`)"
+
+#: ../../dispatcher/filters/chat_member_updated.rst:79
+msgid ""
+"The direction of transition can be changed via bitwise inversion "
+"operator: :code:`~JOIN_TRANSITION` will produce swap of old and new "
+"statuses."
+msgstr ""
+"Напрямок переходу можна змінити за допомогою оператора побітової "
+"інверсії: :code:`~JOIN_TRANSITION` призведе до обміну старих і нових "
+"статусів."
+
+#: ../../dispatcher/filters/chat_member_updated.rst:85
+msgid ":code:`JOIN_TRANSITION`"
+msgstr ":code:`JOIN_TRANSITION`"
+
+#: ../../dispatcher/filters/chat_member_updated.rst:85
+msgid ""
+"Means status changed from :code:`IS_NOT_MEMBER` to :code:`IS_MEMBER` "
+"(:code:`IS_NOT_MEMBER >> IS_MEMBER`)"
+msgstr ""
+"Означає, що статус змінено з :code:`IS_NOT_MEMBER` на :code:`IS_MEMBER` "
+"(:code:`IS_NOT_MEMBER >> IS_MEMBER`)"
+
+#: ../../dispatcher/filters/chat_member_updated.rst:88
+msgid ":code:`LEAVE_TRANSITION`"
+msgstr ":code:`LEAVE_TRANSITION`"
+
+#: ../../dispatcher/filters/chat_member_updated.rst:88
+msgid ""
+"Means status changed from :code:`IS_MEMBER` to :code:`IS_NOT_MEMBER` "
+"(:code:`~JOIN_TRANSITION`)"
+msgstr ""
+"Означає, що статус змінено з :code:`IS_MEMBER` на :code:`IS_NOT_MEMBER` "
+"(:code:`~JOIN_TRANSITION`)"
+
+#: ../../dispatcher/filters/chat_member_updated.rst:91
+msgid ":code:`PROMOTED_TRANSITION`"
+msgstr ":code:`PROMOTED_TRANSITION`"
+
+#: ../../dispatcher/filters/chat_member_updated.rst:91
+msgid ""
+"Means status changed from :code:`(MEMBER | RESTRICTED | LEFT | KICKED) >>"
+" ADMINISTRATOR` (:code:`(MEMBER | RESTRICTED | LEFT | KICKED) >> "
+"ADMINISTRATOR`)"
+msgstr ""
+"Означає, що статус змінено з :code:`(MEMBER | RESTRICTED | LEFT | KICKED)"
+" >> ADMINISTRATOR` (:code:`(MEMBER | RESTRICTED | LEFT | KICKED) >> "
+"ADMINISTRATOR`)"
+
+#: ../../dispatcher/filters/chat_member_updated.rst:98
+msgid ""
+"Note that if you define the status unions (via :code:`|`) you will need "
+"to add brackets for the statement before use shift operator in due to "
+"operator priorities."
+msgstr ""
+"Зауважте, що якщо ви визначаєте об’єднання статусів (через :code:`|`), "
+"вам потрібно буде додати дужки для оператора перед використанням "
+"оператора зсуву через пріоритети оператора."
+
+#: ../../dispatcher/filters/chat_member_updated.rst:103
+msgid "Allowed handlers"
+msgstr "Дозволені обробники"
+
+#: ../../dispatcher/filters/chat_member_updated.rst:105
+msgid "Allowed update types for this filter:"
+msgstr "Дозволені типи оновлень для цього фільтра:"
+
+#: ../../dispatcher/filters/chat_member_updated.rst:107
+msgid "`my_chat_member`"
+msgstr "`my_chat_member`"
+
+#: ../../dispatcher/filters/chat_member_updated.rst:108
+msgid "`chat_member`"
+msgstr "`chat_member`"

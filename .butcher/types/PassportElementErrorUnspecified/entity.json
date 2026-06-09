@@ -1,0 +1,49 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Telegram Passport",
+    "anchor": "telegram-passport"
+  },
+  "object": {
+    "anchor": "passportelementerrorunspecified",
+    "name": "PassportElementErrorUnspecified",
+    "description": "Represents an issue in an unspecified place. The error is considered resolved when new data is added.",
+    "html_description": "<p>Represents an issue in an unspecified place. The error is considered resolved when new data is added.</p>",
+    "rst_description": "Represents an issue in an unspecified place. The error is considered resolved when new data is added.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Error source, must be unspecified",
+        "html_description": "<td>Error source, must be <em>unspecified</em></td>",
+        "rst_description": "Error source, must be *unspecified*\n",
+        "name": "source",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Type of element of the user's Telegram Passport which has the issue",
+        "html_description": "<td>Type of element of the user's Telegram Passport which has the issue</td>",
+        "rst_description": "Type of element of the user's Telegram Passport which has the issue\n",
+        "name": "type",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Base64-encoded element hash",
+        "html_description": "<td>Base64-encoded element hash</td>",
+        "rst_description": "Base64-encoded element hash\n",
+        "name": "element_hash",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Error message",
+        "html_description": "<td>Error message</td>",
+        "rst_description": "Error message\n",
+        "name": "message",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

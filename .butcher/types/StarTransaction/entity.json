@@ -1,0 +1,65 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Payments",
+    "anchor": "payments"
+  },
+  "object": {
+    "anchor": "startransaction",
+    "name": "StarTransaction",
+    "description": "Describes a Telegram Star transaction. Note that if the buyer initiates a chargeback with the payment provider from whom they acquired Stars (e.g., Apple, Google) following this transaction, the refunded Stars will be deducted from the bot's balance. This is outside of Telegram's control.",
+    "html_description": "<p>Describes a Telegram Star transaction. Note that if the buyer initiates a chargeback with the payment provider from whom they acquired Stars (e.g., Apple, Google) following this transaction, the refunded Stars will be deducted from the bot's balance. This is outside of Telegram's control.</p>",
+    "rst_description": "Describes a Telegram Star transaction. Note that if the buyer initiates a chargeback with the payment provider from whom they acquired Stars (e.g., Apple, Google) following this transaction, the refunded Stars will be deducted from the bot's balance. This is outside of Telegram's control.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Unique identifier of the transaction. Coincides with the identifier of the original transaction for refund transactions. Coincides with SuccessfulPayment.telegram_payment_charge_id for successful incoming payments from users.",
+        "html_description": "<td>Unique identifier of the transaction. Coincides with the identifier of the original transaction for refund transactions. Coincides with <em>SuccessfulPayment.telegram_payment_charge_id</em> for successful incoming payments from users.</td>",
+        "rst_description": "Unique identifier of the transaction. Coincides with the identifier of the original transaction for refund transactions. Coincides with *SuccessfulPayment.telegram_payment_charge_id* for successful incoming payments from users.\n",
+        "name": "id",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "Integer amount of Telegram Stars transferred by the transaction",
+        "html_description": "<td>Integer amount of Telegram Stars transferred by the transaction</td>",
+        "rst_description": "Integer amount of Telegram Stars transferred by the transaction\n",
+        "name": "amount",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "The number of 1/1000000000 shares of Telegram Stars transferred by the transaction; from 0 to 999999999",
+        "html_description": "<td><em>Optional</em>. The number of 1/1000000000 shares of Telegram Stars transferred by the transaction; from 0 to 999999999</td>",
+        "rst_description": "*Optional*. The number of 1/1000000000 shares of Telegram Stars transferred by the transaction; from 0 to 999999999\n",
+        "name": "nanostar_amount",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "Date the transaction was created in Unix time",
+        "html_description": "<td>Date the transaction was created in Unix time</td>",
+        "rst_description": "Date the transaction was created in Unix time\n",
+        "name": "date",
+        "required": true
+      },
+      {
+        "type": "TransactionPartner",
+        "description": "Source of an incoming transaction (e.g., a user purchasing goods or services, Fragment refunding a failed withdrawal). Only for incoming transactions",
+        "html_description": "<td><em>Optional</em>. Source of an incoming transaction (e.g., a user purchasing goods or services, Fragment refunding a failed withdrawal). Only for incoming transactions</td>",
+        "rst_description": "*Optional*. Source of an incoming transaction (e.g., a user purchasing goods or services, Fragment refunding a failed withdrawal). Only for incoming transactions\n",
+        "name": "source",
+        "required": false
+      },
+      {
+        "type": "TransactionPartner",
+        "description": "Receiver of an outgoing transaction (e.g., a user for a purchase refund, Fragment for a withdrawal). Only for outgoing transactions",
+        "html_description": "<td><em>Optional</em>. Receiver of an outgoing transaction (e.g., a user for a purchase refund, Fragment for a withdrawal). Only for outgoing transactions</td>",
+        "rst_description": "*Optional*. Receiver of an outgoing transaction (e.g., a user for a purchase refund, Fragment for a withdrawal). Only for outgoing transactions\n",
+        "name": "receiver",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

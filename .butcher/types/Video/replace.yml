@@ -1,0 +1,5 @@
+annotations:
+  start_timestamp:
+    parsed_type:
+      type: std
+      name: datetime.datetime

@@ -1,0 +1,73 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Games",
+    "anchor": "games"
+  },
+  "object": {
+    "anchor": "setgamescore",
+    "name": "setGameScore",
+    "description": "Use this method to set the score of the specified user in a game message. On success, if the message is not an inline message, the Message is returned, otherwise True is returned. Returns an error, if the new score is not greater than the user's current score in the chat and force is False.",
+    "html_description": "<p>Use this method to set the score of the specified user in a game message. On success, if the message is not an inline message, the <a href=\"#message\">Message</a> is returned, otherwise <em>True</em> is returned. Returns an error, if the new score is not greater than the user's current score in the chat and <em>force</em> is <em>False</em>.</p>",
+    "rst_description": "Use this method to set the score of the specified user in a game message. On success, if the message is not an inline message, the :class:`aiogram.types.message.Message` is returned, otherwise :code:`True` is returned. Returns an error, if the new score is not greater than the user's current score in the chat and *force* is :code:`False`.",
+    "annotations": [
+      {
+        "type": "Integer",
+        "required": true,
+        "description": "User identifier",
+        "html_description": "<td>User identifier</td>",
+        "rst_description": "User identifier\n",
+        "name": "user_id"
+      },
+      {
+        "type": "Integer",
+        "required": true,
+        "description": "New score, must be non-negative",
+        "html_description": "<td>New score, must be non-negative</td>",
+        "rst_description": "New score, must be non-negative\n",
+        "name": "score"
+      },
+      {
+        "type": "Boolean",
+        "required": false,
+        "description": "Pass True if the high score is allowed to decrease. This can be useful when fixing mistakes or banning cheaters",
+        "html_description": "<td>Pass <em>True</em> if the high score is allowed to decrease. This can be useful when fixing mistakes or banning cheaters</td>",
+        "rst_description": "Pass :code:`True` if the high score is allowed to decrease. This can be useful when fixing mistakes or banning cheaters\n",
+        "name": "force"
+      },
+      {
+        "type": "Boolean",
+        "required": false,
+        "description": "Pass True if the game message should not be automatically edited to include the current scoreboard",
+        "html_description": "<td>Pass <em>True</em> if the game message should not be automatically edited to include the current scoreboard</td>",
+        "rst_description": "Pass :code:`True` if the game message should not be automatically edited to include the current scoreboard\n",
+        "name": "disable_edit_message"
+      },
+      {
+        "type": "Integer",
+        "required": false,
+        "description": "Required if inline_message_id is not specified. Unique identifier for the target chat",
+        "html_description": "<td>Required if <em>inline_message_id</em> is not specified. Unique identifier for the target chat</td>",
+        "rst_description": "Required if *inline_message_id* is not specified. Unique identifier for the target chat\n",
+        "name": "chat_id"
+      },
+      {
+        "type": "Integer",
+        "required": false,
+        "description": "Required if inline_message_id is not specified. Identifier of the sent message",
+        "html_description": "<td>Required if <em>inline_message_id</em> is not specified. Identifier of the sent message</td>",
+        "rst_description": "Required if *inline_message_id* is not specified. Identifier of the sent message\n",
+        "name": "message_id"
+      },
+      {
+        "type": "String",
+        "required": false,
+        "description": "Required if chat_id and message_id are not specified. Identifier of the inline message",
+        "html_description": "<td>Required if <em>chat_id</em> and <em>message_id</em> are not specified. Identifier of the inline message</td>",
+        "rst_description": "Required if *chat_id* and *message_id* are not specified. Identifier of the inline message\n",
+        "name": "inline_message_id"
+      }
+    ],
+    "category": "methods"
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Payments",
+    "anchor": "payments"
+  },
+  "object": {
+    "anchor": "labeledprice",
+    "name": "LabeledPrice",
+    "description": "This object represents a portion of the price for goods or services.",
+    "html_description": "<p>This object represents a portion of the price for goods or services.</p>",
+    "rst_description": "This object represents a portion of the price for goods or services.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Portion label",
+        "html_description": "<td>Portion label</td>",
+        "rst_description": "Portion label\n",
+        "name": "label",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "Price of the product in the smallest units of the currency (integer, not float/double). For example, for a price of US$ 1.45 pass amount = 145. See the exp parameter in currencies.json, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies).",
+        "html_description": "<td>Price of the product in the <em>smallest units</em> of the <a href=\"/bots/payments#supported-currencies\">currency</a> (integer, <strong>not</strong> float/double). For example, for a price of <code>US$ 1.45</code> pass <code>amount = 145</code>. See the <em>exp</em> parameter in <a href=\"/bots/payments/currencies.json\">currencies.json</a>, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies).</td>",
+        "rst_description": "Price of the product in the *smallest units* of the `currency <https://core.telegram.org/bots/payments#supported-currencies>`_ (integer, **not** float/double). For example, for a price of :code:`US$ 1.45` pass :code:`amount = 145`. See the *exp* parameter in `currencies.json <https://core.telegram.org/bots/payments/currencies.json>`_, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies).\n",
+        "name": "amount",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "messageid",
+    "name": "MessageId",
+    "description": "This object represents a unique message identifier.",
+    "html_description": "<p>This object represents a unique message identifier.</p>",
+    "rst_description": "This object represents a unique message identifier.",
+    "annotations": [
+      {
+        "type": "Integer",
+        "description": "Unique message identifier. In specific instances (e.g., message containing a video sent to a big chat), the server might automatically schedule a message instead of sending it immediately. In such cases, this field will be 0 and the relevant message will be unusable until it is actually sent",
+        "html_description": "<td>Unique message identifier. In specific instances (e.g., message containing a video sent to a big chat), the server might automatically schedule a message instead of sending it immediately. In such cases, this field will be 0 and the relevant message will be unusable until it is actually sent</td>",
+        "rst_description": "Unique message identifier. In specific instances (e.g., message containing a video sent to a big chat), the server might automatically schedule a message instead of sending it immediately. In such cases, this field will be 0 and the relevant message will be unusable until it is actually sent\n",
+        "name": "message_id",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

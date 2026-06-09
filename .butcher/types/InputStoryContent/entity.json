@@ -1,0 +1,16 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "inputstorycontent",
+    "name": "InputStoryContent",
+    "description": "This object describes the content of a story to post. Currently, it can be one of\n - InputStoryContentPhoto\n - InputStoryContentVideo",
+    "html_description": "<p>This object describes the content of a story to post. Currently, it can be one of</p><ul>\n<li><a href=\"#inputstorycontentphoto\">InputStoryContentPhoto</a></li>\n<li><a href=\"#inputstorycontentvideo\">InputStoryContentVideo</a></li>\n</ul>",
+    "rst_description": "This object describes the content of a story to post. Currently, it can be one of\n\n - :class:`aiogram.types.input_story_content_photo.InputStoryContentPhoto`\n - :class:`aiogram.types.input_story_content_video.InputStoryContentVideo`",
+    "annotations": [],
+    "category": "types"
+  }
+}

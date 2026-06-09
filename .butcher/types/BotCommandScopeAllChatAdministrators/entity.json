@@ -1,0 +1,25 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "botcommandscopeallchatadministrators",
+    "name": "BotCommandScopeAllChatAdministrators",
+    "description": "Represents the scope of bot commands, covering all group and supergroup chat administrators.",
+    "html_description": "<p>Represents the <a href=\"#botcommandscope\">scope</a> of bot commands, covering all group and supergroup chat administrators.</p>",
+    "rst_description": "Represents the `scope <https://core.telegram.org/bots/api#botcommandscope>`_ of bot commands, covering all group and supergroup chat administrators.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Scope type, must be all_chat_administrators",
+        "html_description": "<td>Scope type, must be <em>all_chat_administrators</em></td>",
+        "rst_description": "Scope type, must be *all_chat_administrators*\n",
+        "name": "type",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

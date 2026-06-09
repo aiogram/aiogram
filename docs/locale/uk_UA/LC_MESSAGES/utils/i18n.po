@@ -1,0 +1,412 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2022, aiogram Team
+# This file is distributed under the same license as the aiogram package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2022.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version:  aiogram\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-02-16 01:15+0200\n"
+"PO-Revision-Date: 2022-10-13 20:56+0300\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.13.1\n"
+
+#: ../../utils/i18n.rst:3
+msgid "Translation"
+msgstr "Переклад"
+
+#: ../../utils/i18n.rst:5
+msgid ""
+"In order to make you bot translatable you have to add a minimal number of"
+" hooks to your Python code."
+msgstr ""
+"Для того, щоб Ваш бот володів декількома мовами, необхідно додати "
+"мінімальну кількість хуків до вашого Python коду"
+
+#: ../../utils/i18n.rst:7
+msgid "These hooks are called translation strings."
+msgstr "Ці хуки звуться рядками передкладу"
+
+#: ../../utils/i18n.rst:9
+msgid ""
+"The aiogram translation utils is build on top of `GNU gettext Python "
+"module <https://docs.python.org/3/library/gettext.html>`_ and `Babel "
+"library <http://babel.pocoo.org/en/latest/>`_."
+msgstr ""
+"Утиліти перекладу побудовані на основі модулю `GNU gettext Python "
+"<https://docs.python.org/3/library/gettext.html>`_ і `Babel library "
+"<http://babel.pocoo.org/en/latest/>`_."
+
+#: ../../utils/i18n.rst:13
+msgid "Installation"
+msgstr "Встановлення"
+
+#: ../../utils/i18n.rst:15
+msgid ""
+"Babel is required to make simple way to extract translation strings from "
+"your code"
+msgstr ""
+"Babel потрібний для забезпечення простоти експорту рядків перекладу з "
+"Вашого коду."
+
+#: ../../utils/i18n.rst:17
+msgid "Can be installed from pip directly:"
+msgstr "Можна встановити безпосередньо з pip:"
+
+#: ../../utils/i18n.rst:24
+msgid "or as `aiogram` extra dependency:"
+msgstr "чи як додаткову залежність `aiogram`:"
+
+#: ../../utils/i18n.rst:32
+msgid "Make messages translatable"
+msgstr "Як зробити повідомлення перекладаваними?"
+
+#: ../../utils/i18n.rst:34
+msgid ""
+"In order to gettext need to know what the strings should be translated "
+"you will need to write translation strings."
+msgstr ""
+"Для того, щоб gettext знав які рядки слід перекласти, Вам необхідно "
+"відмітити рядки перекладу."
+
+#: ../../utils/i18n.rst:36
+msgid "For example:"
+msgstr "Наприклад:"
+
+#: ../../utils/i18n.rst:54
+msgid ""
+"f-strings can't be used as translations string because any dynamic "
+"variables should be added to message after getting translated message"
+msgstr ""
+"f-рядки не можна використовувати як рядки перекладу, оскільки будь-які "
+"динамічні змінні слід додати до повідомлення після отримання "
+"перекладеного повідомлення"
+
+#: ../../utils/i18n.rst:57
+msgid ""
+"Also if you want to use translated string in keyword- or magic- filters "
+"you will need to use lazy gettext calls:"
+msgstr ""
+"Крім того, якщо Ви бажаєте використати перекладений рядок у фільтрах, Вам"
+" треба використати відкладений переклад (lazy gettext):"
+
+#: ../../utils/i18n.rst:72
+msgid ""
+"Lazy gettext calls should always be used when the current language is not"
+" know at the moment"
+msgstr ""
+"Відкладені виклики gettext слід завжди використовувати, коли поточна мова"
+" на даний момент невідома."
+
+#: ../../utils/i18n.rst:77
+msgid ""
+"Lazy gettext can't be used as value for API methods or any Telegram "
+"Object (like "
+":class:`aiogram.types.inline_keyboard_button.InlineKeyboardButton` or "
+"etc.)"
+msgstr ""
+"Відкладені виклики gettext не можна використовувати як значення для "
+"методів API або будь-якого об’єкта Telegram (наприклад, "
+":class:`aiogram.types.inline_keyboard_button.InlineKeyboardButton` тощо)"
+
+#: ../../utils/i18n.rst:79 ../../utils/i18n.rst:161
+msgid "**Working with plural forms**"
+msgstr ""
+
+#: ../../utils/i18n.rst:81
+msgid ""
+"The `gettext` from `aiogram.utils.i18n` is the one alias for two "
+"functions _gettext_ and _ngettext_ of `GNU gettext Python module "
+"<https://docs.python.org/3/library/gettext.html>`_. Therefore, the "
+"wrapper for message strings is the same `_()`. You need to pass three "
+"parameters to the function: a singular string, a plural string, and a "
+"value."
+msgstr ""
+
+#: ../../utils/i18n.rst:102
+msgid "Configuring engine"
+msgstr "Налаштування рушія"
+
+#: ../../utils/i18n.rst:104
+msgid ""
+"After you messages is already done to use gettext your bot should know "
+"how to detect user language"
+msgstr ""
+"Коли ваші повідомлення вже готові використовувати gettext, Ваш бот "
+"повинен знати, як визначити мову користувача."
+
+#: ../../utils/i18n.rst:106
+msgid ""
+"On top of your application the instance of "
+":class:`aiogram.utils.i18n.I18n` should be created"
+msgstr ""
+"Поруч з місцем ініціалізації диспетчера має бути створений екземпляр "
+"перекладача:class:`aiogram.utils.i18n.I18n`."
+
+#: ../../utils/i18n.rst:114
+msgid ""
+"After that you will need to choose one of builtin I18n middleware or "
+"write your own."
+msgstr ""
+"Після цього Вам потрібно буде вибрати одну з вбудованих проміжних програм"
+" (middleware) I18n або написати власну."
+
+#: ../../utils/i18n.rst:116
+msgid "Builtin middlewares:"
+msgstr "Вбудовані проміжні програми:"
+
+#: ../../utils/i18n.rst:120
+msgid "SimpleI18nMiddleware"
+msgstr "SimpleI18nMiddleware"
+
+#: aiogram.utils.i18n.middleware.SimpleI18nMiddleware:1 of
+msgid "Simple I18n middleware."
+msgstr "Проста I18n проміжна програма."
+
+#: aiogram.utils.i18n.middleware.SimpleI18nMiddleware:3 of
+msgid "Chooses language code from the User object received in event"
+msgstr "Вибирає код мови з об’єкта User, отриманого в події."
+
+#: aiogram.utils.i18n.middleware.ConstI18nMiddleware.__init__:1
+#: aiogram.utils.i18n.middleware.FSMI18nMiddleware.__init__:1
+#: aiogram.utils.i18n.middleware.I18nMiddleware.__init__:1
+#: aiogram.utils.i18n.middleware.SimpleI18nMiddleware.__init__:1 of
+msgid "Create an instance of middleware"
+msgstr "Створення екземпляру проміжної програми."
+
+#: aiogram.utils.i18n.middleware.ConstI18nMiddleware.__init__
+#: aiogram.utils.i18n.middleware.FSMI18nMiddleware.__init__
+#: aiogram.utils.i18n.middleware.FSMI18nMiddleware.set_locale
+#: aiogram.utils.i18n.middleware.I18nMiddleware.__init__
+#: aiogram.utils.i18n.middleware.I18nMiddleware.get_locale
+#: aiogram.utils.i18n.middleware.I18nMiddleware.setup
+#: aiogram.utils.i18n.middleware.SimpleI18nMiddleware.__init__ of
+msgid "Parameters"
+msgstr "Параметри"
+
+#: aiogram.utils.i18n.middleware.ConstI18nMiddleware.__init__:3
+#: aiogram.utils.i18n.middleware.FSMI18nMiddleware.__init__:3
+#: aiogram.utils.i18n.middleware.I18nMiddleware.__init__:3
+#: aiogram.utils.i18n.middleware.SimpleI18nMiddleware.__init__:3 of
+msgid "instance of I18n"
+msgstr "екземпляр I18n"
+
+#: aiogram.utils.i18n.middleware.ConstI18nMiddleware.__init__:4
+#: aiogram.utils.i18n.middleware.FSMI18nMiddleware.__init__:4
+#: aiogram.utils.i18n.middleware.I18nMiddleware.__init__:4
+#: aiogram.utils.i18n.middleware.SimpleI18nMiddleware.__init__:4 of
+msgid "context key for I18n instance"
+msgstr "ключ (назва ключа) екземпляру I18n в контексті"
+
+#: aiogram.utils.i18n.middleware.ConstI18nMiddleware.__init__:5
+#: aiogram.utils.i18n.middleware.FSMI18nMiddleware.__init__:5
+#: aiogram.utils.i18n.middleware.I18nMiddleware.__init__:5
+#: aiogram.utils.i18n.middleware.SimpleI18nMiddleware.__init__:5 of
+msgid "context key for this middleware"
+msgstr "контекстний ключ для цієї проміжної програми"
+
+#: ../../utils/i18n.rst:126
+msgid "ConstI18nMiddleware"
+msgstr "ConstI18nMiddleware"
+
+#: aiogram.utils.i18n.middleware.ConstI18nMiddleware:1 of
+msgid "Const middleware chooses statically defined locale"
+msgstr "Проміжна програма Const вибирає статично визначену локаль."
+
+#: ../../utils/i18n.rst:132
+msgid "FSMI18nMiddleware"
+msgstr "FSMI18nMiddleware"
+
+#: aiogram.utils.i18n.middleware.FSMI18nMiddleware:1 of
+msgid "This middleware stores locale in the FSM storage"
+msgstr "Ця проміжна програма зберігає локаль у сховищі FSM."
+
+#: aiogram.utils.i18n.middleware.FSMI18nMiddleware.set_locale:1 of
+msgid "Write new locale to the storage"
+msgstr "Запис нової локалі у сховище"
+
+#: aiogram.utils.i18n.middleware.FSMI18nMiddleware.set_locale:3 of
+msgid "instance of FSMContext"
+msgstr "екземпляр FSMContext"
+
+#: aiogram.utils.i18n.middleware.FSMI18nMiddleware.set_locale:4 of
+msgid "new locale"
+msgstr "нова локаль"
+
+#: ../../utils/i18n.rst:139
+msgid "I18nMiddleware"
+msgstr "I18nMiddleware"
+
+#: ../../utils/i18n.rst:141
+msgid "or define you own based on abstract I18nMiddleware middleware:"
+msgstr ""
+"або визначте вашу власну проміжну програму, основану на абстракції "
+"I18nMiddleware:"
+
+#: aiogram.utils.i18n.middleware.I18nMiddleware:1 of
+msgid "Abstract I18n middleware."
+msgstr "Абстракція проміжної програми I18n"
+
+#: aiogram.utils.i18n.middleware.I18nMiddleware.get_locale:1 of
+msgid "Detect current user locale based on event and context."
+msgstr "Визначення поточної мови користувача на основі події та контексту."
+
+#: aiogram.utils.i18n.middleware.I18nMiddleware.get_locale:3 of
+msgid "**This method must be defined in child classes**"
+msgstr "**Цей метод повинен бути перевизначеним у дочірніх класах**"
+
+#: aiogram.utils.i18n.middleware.I18nMiddleware.get_locale
+#: aiogram.utils.i18n.middleware.I18nMiddleware.setup of
+msgid "Returns"
+msgstr "Повертає"
+
+#: aiogram.utils.i18n.middleware.I18nMiddleware.setup:1 of
+msgid "Register middleware for all events in the Router"
+msgstr "Реєстрація проміжної програми для всіх подій у Роутері"
+
+#: ../../utils/i18n.rst:148
+msgid "Deal with Babel"
+msgstr "Працюємо з Babel"
+
+#: ../../utils/i18n.rst:151
+msgid "Step 1 Extract messages"
+msgstr "Крок 1: Видобування текстів"
+
+#: ../../utils/i18n.rst:158
+msgid ""
+"Here is :code:`--input-dirs=.` - path to code and the "
+":code:`locales/messages.pot` is template where messages will be extracted"
+" and `messages` is translation domain."
+msgstr ""
+"Де :code:`--input-dirs=.`- шлях до коду, :code:`locales/messages.pot` — "
+"це шаблон, куди витягуватимуться повідомлення, а `messages` — домен "
+"перекладу."
+
+#: ../../utils/i18n.rst:163
+msgid "Extracting with Pybabel all strings options:"
+msgstr ""
+
+#: ../../utils/i18n.rst:165
+msgid ":code:`-k _:1,1t -k _:1,2` - for both singular and plural"
+msgstr ""
+
+#: ../../utils/i18n.rst:166
+msgid ":code:`-k __` - for lazy strings"
+msgstr ""
+
+#: ../../utils/i18n.rst:174
+msgid "Some useful options:"
+msgstr "Деякі корисні опції:"
+
+#: ../../utils/i18n.rst:176
+msgid ""
+"Add comments for translators, you can use another tag if you want (TR) "
+":code:`--add-comments=NOTE`"
+msgstr ""
+"Для додавання коментарів для перекладачів, ви можете використовувати "
+"інший тег, якщо хочете (TR) :code:`--add-comments=NOTE`"
+
+#: ../../utils/i18n.rst:177
+msgid "Contact email for bugreport :code:`--msgid-bugs-address=EMAIL`"
+msgstr ""
+
+#: ../../utils/i18n.rst:178
+msgid "Disable comments with string location in code :code:`--no-location`"
+msgstr "Вимкнути коментарі з розташуванням рядків у коді :code:`--no-location`"
+
+#: ../../utils/i18n.rst:179
+msgid "Copyrights :code:`--copyright-holder=AUTHOR`"
+msgstr ""
+
+#: ../../utils/i18n.rst:180
+msgid "Set project name :code:`--project=MySuperBot`"
+msgstr "Встановлення назви проекту :code:`--project=MySuperBot`"
+
+#: ../../utils/i18n.rst:181
+msgid "Set version :code:`--version=2.2`"
+msgstr "Встановлення версії :code:`--version=2.2`"
+
+#: ../../utils/i18n.rst:185
+msgid "Step 2: Init language"
+msgstr "Крок 2: Ініціалізація перекладу"
+
+#: ../../utils/i18n.rst:191
+msgid ":code:`-i locales/messages.pot` - pre-generated template"
+msgstr ":code:`-i locales/messages.pot` - попередньо створений шаблон"
+
+#: ../../utils/i18n.rst:192
+msgid ":code:`-d locales` - translations directory"
+msgstr ":code:`-d locales`- тека перекладів"
+
+#: ../../utils/i18n.rst:193
+msgid ":code:`-D messages` - translations domain"
+msgstr ":code:`-D messages` - домен перекладів"
+
+#: ../../utils/i18n.rst:194
+msgid ""
+":code:`-l en` - language. Can be changed to any other valid language code"
+" (For example :code:`-l uk` for ukrainian language)"
+msgstr ""
+":code:`-l en` - мова. Може бути змінений на будь-який інший дійсний код "
+"мови (Наприклад :code:`-l uk` для української мови)"
+
+#: ../../utils/i18n.rst:198
+msgid "Step 3: Translate texts"
+msgstr "Крок 3: Переклад текстів"
+
+#: ../../utils/i18n.rst:200
+msgid ""
+"To open .po file you can use basic text editor or any PO editor, e.g. "
+"`Poedit <https://poedit.net/>`_"
+msgstr ""
+"Щоб відкрити файл .po, ви можете використовувати базовий текстовий "
+"редактор або будь-який редактор .po файлів, напр. `Poedit "
+"<https://poedit.net/>`_"
+
+#: ../../utils/i18n.rst:202
+msgid ""
+"Just open the file named "
+":code:`locales/{language}/LC_MESSAGES/messages.po` and write translations"
+msgstr ""
+"Просто відкрийте файл із назвою "
+":code:`locales/{language}/LC_MESSAGES/messages.po` і впишіть переклади"
+
+#: ../../utils/i18n.rst:205
+msgid "Step 4: Compile translations"
+msgstr "Крок 4: Компіляція перекладів"
+
+#: ../../utils/i18n.rst:213
+msgid "Step 5: Updating messages"
+msgstr "Крок 5: Оновлення текстів"
+
+#: ../../utils/i18n.rst:215
+msgid "When you change the code of your bot you need to update po & mo files"
+msgstr "Коли ви змінюєте код свого бота, вам потрібно оновити файли .po і .mo"
+
+#: ../../utils/i18n.rst:217
+msgid "Step 5.1: regenerate pot file: command from step 1"
+msgstr "Крок 5.1: відновлення файлу .pot: команда з кроку 1"
+
+#: ../../utils/i18n.rst:221
+msgid "Step 5.2: update po files"
+msgstr "Крок 5.2: оновлення .po файлів"
+
+#: ../../utils/i18n.rst:223
+msgid ""
+"Step 5.3: update your translations: location and tools you know from step"
+" 3"
+msgstr ""
+"Крок 5.3: оновлення Ваших перекладів: розміщення та інструменти Ви знаєте"
+" з кроку 3."
+
+#: ../../utils/i18n.rst:224
+msgid "Step 5.4: compile mo files: command from step 4"
+msgstr "Крок 5.4: компіляція .mo файлів : команда з кроку 4"
+
+#~ msgid "Extract texts with pluralization support :code:`-k __:1,2`"
+#~ msgstr "Витягувати тексти з підтримкою множини :code:`-k __:1,2`"

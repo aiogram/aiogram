@@ -1,0 +1,7 @@
+annotations:
+  thumbnail:
+    parsed_type:
+      type: entity
+      references:
+        category: types
+        name: InputFile

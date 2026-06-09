@@ -1,0 +1,41 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "proximityalerttriggered",
+    "name": "ProximityAlertTriggered",
+    "description": "This object represents the content of a service message, sent whenever a user in the chat triggers a proximity alert set by another user.",
+    "html_description": "<p>This object represents the content of a service message, sent whenever a user in the chat triggers a proximity alert set by another user.</p>",
+    "rst_description": "This object represents the content of a service message, sent whenever a user in the chat triggers a proximity alert set by another user.",
+    "annotations": [
+      {
+        "type": "User",
+        "description": "User that triggered the alert",
+        "html_description": "<td>User that triggered the alert</td>",
+        "rst_description": "User that triggered the alert\n",
+        "name": "traveler",
+        "required": true
+      },
+      {
+        "type": "User",
+        "description": "User that set the alert",
+        "html_description": "<td>User that set the alert</td>",
+        "rst_description": "User that set the alert\n",
+        "name": "watcher",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "The distance between the users",
+        "html_description": "<td>The distance between the users</td>",
+        "rst_description": "The distance between the users\n",
+        "name": "distance",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

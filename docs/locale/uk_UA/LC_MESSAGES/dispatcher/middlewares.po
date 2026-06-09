@@ -1,0 +1,220 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2022, aiogram Team
+# This file is distributed under the same license as the aiogram package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2022.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version:  aiogram\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-11-16 02:34+0200\n"
+"PO-Revision-Date: 2022-10-20 20:56+0300\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.13.1\n"
+
+#: ../../dispatcher/middlewares.rst:5
+msgid "Middlewares"
+msgstr "Проміжні програми"
+
+#: ../../dispatcher/middlewares.rst:7
+msgid ""
+"**aiogram** provides powerful mechanism for customizing event handlers "
+"via middlewares."
+msgstr ""
+"**aiogram** надає потужний механізм для налаштування обробників(handler) "
+"подій через проміжні програми."
+
+#: ../../dispatcher/middlewares.rst:9
+msgid ""
+"Middlewares in bot framework seems like Middlewares mechanism in web-"
+"frameworks like `aiohttp "
+"<https://docs.aiohttp.org/en/stable/web_advanced.html#aiohttp-web-"
+"middlewares>`_, `fastapi "
+"<https://fastapi.tiangolo.com/tutorial/middleware/>`_, `Django "
+"<https://docs.djangoproject.com/en/3.0/topics/http/middleware/>`_ or "
+"etc.) with small difference - here is implemented two layers of "
+"middlewares (before and after filters)."
+msgstr ""
+"Проміжні програми у фреймворку для ботів виглядають як механізм проміжних"
+" програм у веб-фреймворках, таких як `aiohttp "
+"<https://docs.aiohttp.org/en/stable/web_advanced.html#aiohttp-web-"
+"middlewares>`_, `fastapi "
+"<https://fastapi.tiangolo.com/tutorial/middleware/>`_, `Django "
+"<https://docs.djangoproject.com/en/3.0/topics/http/middleware/>`_  тощо) "
+"з невеликою різницею – тут реалізовано два рівні проміжного програмних "
+"програм (до та після фільтрів)."
+
+#: ../../dispatcher/middlewares.rst:17
+msgid ""
+"Middleware is function that triggered on every event received from "
+"Telegram Bot API in many points on processing pipeline."
+msgstr ""
+"Проміжна програма — це функція, яка запускається під час кожної події, "
+"отриманої від Telegram Bot API у багатьох точках процесу обробки."
+
+#: ../../dispatcher/middlewares.rst:21
+msgid "Base theory"
+msgstr "Основні поняття"
+
+#: ../../dispatcher/middlewares.rst:23
+msgid "As many books and other literature in internet says:"
+msgstr "Більшість книг та Інтернет-джерел стверджують:"
+
+#: ../../dispatcher/middlewares.rst:25
+msgid ""
+"Middleware is reusable software that leverages patterns and frameworks to"
+" bridge the gap between the functional requirements of applications and "
+"the underlying operating systems, network protocol stacks, and databases."
+msgstr ""
+"Проміжна програма — це програма, багаторазового використання, що "
+"використовує шаблони та фреймворки для ліквідування розриву між "
+"функціональними вимогами додатків і основними операційними системами, "
+"стеками мережевих протоколів і базами даних."
+
+#: ../../dispatcher/middlewares.rst:29
+msgid ""
+"Middleware can modify, extend or reject processing event in many places "
+"of pipeline."
+msgstr ""
+"Проміжна програма може змінювати, розширювати або відхиляти подію обробки"
+" у багатьох точках процесу обробки."
+
+#: ../../dispatcher/middlewares.rst:32
+msgid "Basics"
+msgstr "Основи"
+
+#: ../../dispatcher/middlewares.rst:34
+msgid ""
+"Middleware instance can be applied for every type of Telegram Event "
+"(Update, Message, etc.) in two places"
+msgstr ""
+"Екземпляр проміжної програми можна застосувати для кожного типу події "
+"Telegram (оновлення, повідомлення тощо) у двох місцях"
+
+#: ../../dispatcher/middlewares.rst:36
+msgid ""
+"Outer scope - before processing filters "
+"(:code:`<router>.<event>.outer_middleware(...)`)"
+msgstr ""
+"Зовнішня область - перед обробкою фільтрами "
+"(:code:`<router>.<event>.outer_middleware(...)`)"
+
+#: ../../dispatcher/middlewares.rst:37
+msgid ""
+"Inner scope - after processing filters but before handler "
+"(:code:`<router>.<event>.middleware(...)`)"
+msgstr ""
+"Внутрішня область – після обробки фільтрами, але перед обробником "
+"(handler) (:code:`<router>.<event>.middleware(...)`)"
+
+#: ../../dispatcher/middlewares.rst:-1
+msgid "Middleware basics"
+msgstr "Основи проміжних програм"
+
+#: ../../dispatcher/middlewares.rst:44
+msgid ""
+"Middleware should be subclass of :code:`BaseMiddleware` (:code:`from "
+"aiogram import BaseMiddleware`) or any async callable"
+msgstr ""
+"Проміжна програма має бути підкласом :code:`BaseMiddleware` (:code:`from "
+"aiogram import BaseMiddleware`) або будь-якою асинхронною функцією"
+
+#: ../../dispatcher/middlewares.rst:47
+msgid "Arguments specification"
+msgstr "Специфікація аргументів"
+
+#: aiogram.dispatcher.middlewares.base.BaseMiddleware:1 of
+msgid "Bases: :py:class:`~abc.ABC`"
+msgstr "Основа: :py:class:`~abc.ABC`"
+
+#: aiogram.dispatcher.middlewares.base.BaseMiddleware:1 of
+msgid "Generic middleware class"
+msgstr "Узагальнений клас проміжних програм"
+
+#: aiogram.dispatcher.middlewares.base.BaseMiddleware.__call__:1 of
+msgid "Execute middleware"
+msgstr "Виконання проміжної програми"
+
+#: aiogram.dispatcher.middlewares.base.BaseMiddleware.__call__ of
+msgid "Parameters"
+msgstr "Параметри"
+
+#: aiogram.dispatcher.middlewares.base.BaseMiddleware.__call__:3 of
+msgid "Wrapped handler in middlewares chain"
+msgstr "Обробник (handler), обгорнутий у ланцюжок проміжних програм"
+
+#: aiogram.dispatcher.middlewares.base.BaseMiddleware.__call__:4 of
+msgid "Incoming event (Subclass of :class:`aiogram.types.base.TelegramObject`)"
+msgstr "Вхідна подія (підклас :class:`aiogram.types.base.TelegramObject`)"
+
+#: aiogram.dispatcher.middlewares.base.BaseMiddleware.__call__:5 of
+msgid "Contextual data. Will be mapped to handler arguments"
+msgstr "Контекстні дані. Будуть зіставлені з аргументами обробника"
+
+#: aiogram.dispatcher.middlewares.base.BaseMiddleware.__call__ of
+msgid "Returns"
+msgstr "Повертає"
+
+#: aiogram.dispatcher.middlewares.base.BaseMiddleware.__call__:6 of
+msgid ":class:`Any`"
+msgstr ":class:`Any`"
+
+#: ../../dispatcher/middlewares.rst:58
+msgid "Examples"
+msgstr "Приклади"
+
+#: ../../dispatcher/middlewares.rst:62
+#, fuzzy
+msgid ""
+"Middleware should always call :code:`await handler(event, data)` to "
+"propagate event for next middleware/handler. If you want to stop "
+"processing event in middleware you should not call :code:`await "
+"handler(event, data)`."
+msgstr ""
+"Проміжні програми мають завжди викликати :code:`await handler(event, "
+"data)` , щоб передавати подію для наступної проміжної програми/обробника "
+"(handler)"
+
+#: ../../dispatcher/middlewares.rst:67
+msgid "Class-based"
+msgstr "Класово орієнтований"
+
+#: ../../dispatcher/middlewares.rst:88
+msgid "and then"
+msgstr "і тоді"
+
+#: ../../dispatcher/middlewares.rst:97
+msgid "Function-based"
+msgstr "Функціонально-орієнтований"
+
+#: ../../dispatcher/middlewares.rst:112
+msgid "Facts"
+msgstr "Факти"
+
+#: ../../dispatcher/middlewares.rst:114
+msgid "Middlewares from outer scope will be called on every incoming event"
+msgstr ""
+"Проміжні програми із зовнішньої області викликатимуться під час кожної "
+"вхідної події"
+
+#: ../../dispatcher/middlewares.rst:115
+msgid "Middlewares from inner scope will be called only when filters pass"
+msgstr ""
+"Проміжні програми із внутрішньої області викликатимуться лише після "
+"проходження фільтрів"
+
+#: ../../dispatcher/middlewares.rst:116
+msgid ""
+"Inner middlewares is always calls for "
+":class:`aiogram.types.update.Update` event type in due to all incoming "
+"updates going to specific event type handler through built in update "
+"handler"
+msgstr ""
+"Внутрішні проміжні програми викликають тип події "
+":class:`aiogram.types.update.Update` , через те, що всі вхідні оновлення "
+"надходять до обробника (handler) певного типу подій через вбудований "
+"обробник (handler) оновлень"

@@ -1,0 +1,49 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Payments",
+    "anchor": "payments"
+  },
+  "object": {
+    "anchor": "answershippingquery",
+    "name": "answerShippingQuery",
+    "description": "If you sent an invoice requesting a shipping address and the parameter is_flexible was specified, the Bot API will send an Update with a shipping_query field to the bot. Use this method to reply to shipping queries. On success, True is returned.",
+    "html_description": "<p>If you sent an invoice requesting a shipping address and the parameter <em>is_flexible</em> was specified, the Bot API will send an <a href=\"#update\">Update</a> with a <em>shipping_query</em> field to the bot. Use this method to reply to shipping queries. On success, <em>True</em> is returned.</p>",
+    "rst_description": "If you sent an invoice requesting a shipping address and the parameter *is_flexible* was specified, the Bot API will send an :class:`aiogram.types.update.Update` with a *shipping_query* field to the bot. Use this method to reply to shipping queries. On success, :code:`True` is returned.",
+    "annotations": [
+      {
+        "type": "String",
+        "required": true,
+        "description": "Unique identifier for the query to be answered",
+        "html_description": "<td>Unique identifier for the query to be answered</td>",
+        "rst_description": "Unique identifier for the query to be answered\n",
+        "name": "shipping_query_id"
+      },
+      {
+        "type": "Boolean",
+        "required": true,
+        "description": "Pass True if delivery to the specified address is possible and False if there are any problems (for example, if delivery to the specified address is not possible)",
+        "html_description": "<td>Pass <em>True</em> if delivery to the specified address is possible and <em>False</em> if there are any problems (for example, if delivery to the specified address is not possible)</td>",
+        "rst_description": "Pass :code:`True` if delivery to the specified address is possible and :code:`False` if there are any problems (for example, if delivery to the specified address is not possible)\n",
+        "name": "ok"
+      },
+      {
+        "type": "Array of ShippingOption",
+        "required": false,
+        "description": "Required if ok is True. A JSON-serialized array of available shipping options.",
+        "html_description": "<td>Required if <em>ok</em> is <em>True</em>. A JSON-serialized array of available shipping options.</td>",
+        "rst_description": "Required if *ok* is :code:`True`. A JSON-serialized array of available shipping options.\n",
+        "name": "shipping_options"
+      },
+      {
+        "type": "String",
+        "required": false,
+        "description": "Required if ok is False. Error message in human readable form that explains why it is impossible to complete the order (e.g. 'Sorry, delivery to your desired address is unavailable'). Telegram will display this message to the user.",
+        "html_description": "<td>Required if <em>ok</em> is <em>False</em>. Error message in human readable form that explains why it is impossible to complete the order (e.g. &#8220;Sorry, delivery to your desired address is unavailable&#8221;). Telegram will display this message to the user.</td>",
+        "rst_description": "Required if *ok* is :code:`False`. Error message in human readable form that explains why it is impossible to complete the order (e.g. 'Sorry, delivery to your desired address is unavailable'). Telegram will display this message to the user.\n",
+        "name": "error_message"
+      }
+    ],
+    "category": "methods"
+  }
+}

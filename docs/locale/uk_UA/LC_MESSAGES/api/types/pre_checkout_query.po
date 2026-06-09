@@ -1,0 +1,138 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2022, aiogram Team
+# This file is distributed under the same license as the aiogram package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2022.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: aiogram \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-03-08 02:28+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.13.1\n"
+
+#: ../../api/types/pre_checkout_query.rst:3
+msgid "PreCheckoutQuery"
+msgstr ""
+
+#: aiogram.types.pre_checkout_query.PreCheckoutQuery:1 of
+msgid "This object contains information about an incoming pre-checkout query."
+msgstr ""
+
+#: aiogram.types.pre_checkout_query.PreCheckoutQuery:3 of
+msgid "Source: https://core.telegram.org/bots/api#precheckoutquery"
+msgstr ""
+
+#: ../../docstring aiogram.types.pre_checkout_query.PreCheckoutQuery.id:1 of
+msgid "Unique query identifier"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.pre_checkout_query.PreCheckoutQuery.from_user:1 of
+msgid "User who sent the query"
+msgstr ""
+
+#: ../../docstring aiogram.types.pre_checkout_query.PreCheckoutQuery.currency:1
+#: of
+msgid ""
+"Three-letter ISO 4217 `currency <https://core.telegram.org/bots/payments"
+"#supported-currencies>`_ code, or 'XTR' for payments in `Telegram Stars "
+"<https://t.me/BotNews/90>`_"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.pre_checkout_query.PreCheckoutQuery.total_amount:1 of
+msgid ""
+"Total price in the *smallest units* of the currency (integer, **not** "
+"float/double). For example, for a price of :code:`US$ 1.45` pass "
+":code:`amount = 145`. See the *exp* parameter in `currencies.json "
+"<https://core.telegram.org/bots/payments/currencies.json>`_, it shows the"
+" number of digits past the decimal point for each currency (2 for the "
+"majority of currencies)."
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.pre_checkout_query.PreCheckoutQuery.invoice_payload:1 of
+msgid "Bot-specified invoice payload"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.pre_checkout_query.PreCheckoutQuery.shipping_option_id:1 of
+msgid "*Optional*. Identifier of the shipping option chosen by the user"
+msgstr ""
+
+#: ../../docstring
+#: aiogram.types.pre_checkout_query.PreCheckoutQuery.order_info:1 of
+msgid "*Optional*. Order information provided by the user"
+msgstr ""
+
+#: aiogram.types.pre_checkout_query.PreCheckoutQuery.answer:1 of
+msgid ""
+"Shortcut for method "
+":class:`aiogram.methods.answer_pre_checkout_query.AnswerPreCheckoutQuery`"
+" will automatically fill method attributes:"
+msgstr ""
+
+#: aiogram.types.pre_checkout_query.PreCheckoutQuery.answer:4 of
+msgid ":code:`pre_checkout_query_id`"
+msgstr ""
+
+#: aiogram.types.pre_checkout_query.PreCheckoutQuery.answer:6 of
+msgid ""
+"Once the user has confirmed their payment and shipping details, the Bot "
+"API sends the final confirmation in the form of an "
+":class:`aiogram.types.update.Update` with the field *pre_checkout_query*."
+" Use this method to respond to such pre-checkout queries. On success, "
+":code:`True` is returned. **Note:** The Bot API must receive an answer "
+"within 10 seconds after the pre-checkout query was sent."
+msgstr ""
+
+#: aiogram.types.pre_checkout_query.PreCheckoutQuery.answer:8 of
+msgid "Source: https://core.telegram.org/bots/api#answerprecheckoutquery"
+msgstr ""
+
+#: ../../api/types/pre_checkout_query.rst
+msgid "Parameters"
+msgstr ""
+
+#: aiogram.types.pre_checkout_query.PreCheckoutQuery.answer:10 of
+msgid ""
+"Specify :code:`True` if everything is alright (goods are available, etc.)"
+" and the bot is ready to proceed with the order. Use :code:`False` if "
+"there are any problems."
+msgstr ""
+
+#: aiogram.types.pre_checkout_query.PreCheckoutQuery.answer:11 of
+msgid ""
+"Required if *ok* is :code:`False`. Error message in human readable form "
+"that explains the reason for failure to proceed with the checkout (e.g. "
+"\"Sorry, somebody just bought the last of our amazing black T-shirts "
+"while you were busy filling out your payment details. Please choose a "
+"different color or garment!\"). Telegram will display this message to the"
+" user."
+msgstr ""
+
+#: ../../api/types/pre_checkout_query.rst
+msgid "Returns"
+msgstr ""
+
+#: aiogram.types.pre_checkout_query.PreCheckoutQuery.answer:12 of
+msgid ""
+"instance of method "
+":class:`aiogram.methods.answer_pre_checkout_query.AnswerPreCheckoutQuery`"
+msgstr ""
+
+#~ msgid ""
+#~ "Three-letter ISO 4217 `currency "
+#~ "<https://core.telegram.org/bots/payments#supported-currencies>`_"
+#~ " code"
+#~ msgstr ""
+
+#~ msgid "Bot specified invoice payload"
+#~ msgstr ""

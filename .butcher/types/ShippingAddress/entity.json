@@ -1,0 +1,65 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Payments",
+    "anchor": "payments"
+  },
+  "object": {
+    "anchor": "shippingaddress",
+    "name": "ShippingAddress",
+    "description": "This object represents a shipping address.",
+    "html_description": "<p>This object represents a shipping address.</p>",
+    "rst_description": "This object represents a shipping address.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Two-letter ISO 3166-1 alpha-2 country code",
+        "html_description": "<td>Two-letter <a href=\"https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2\">ISO 3166-1 alpha-2</a> country code</td>",
+        "rst_description": "Two-letter `ISO 3166-1 alpha-2 <https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2>`_ country code\n",
+        "name": "country_code",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "State, if applicable",
+        "html_description": "<td>State, if applicable</td>",
+        "rst_description": "State, if applicable\n",
+        "name": "state",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "City",
+        "html_description": "<td>City</td>",
+        "rst_description": "City\n",
+        "name": "city",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "First line for the address",
+        "html_description": "<td>First line for the address</td>",
+        "rst_description": "First line for the address\n",
+        "name": "street_line1",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Second line for the address",
+        "html_description": "<td>Second line for the address</td>",
+        "rst_description": "Second line for the address\n",
+        "name": "street_line2",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Address post code",
+        "html_description": "<td>Address post code</td>",
+        "rst_description": "Address post code\n",
+        "name": "post_code",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "chatlocation",
+    "name": "ChatLocation",
+    "description": "Represents a location to which a chat is connected.",
+    "html_description": "<p>Represents a location to which a chat is connected.</p>",
+    "rst_description": "Represents a location to which a chat is connected.",
+    "annotations": [
+      {
+        "type": "Location",
+        "description": "The location to which the supergroup is connected. Can't be a live location.",
+        "html_description": "<td>The location to which the supergroup is connected. Can't be a live location.</td>",
+        "rst_description": "The location to which the supergroup is connected. Can't be a live location.\n",
+        "name": "location",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Location address; 1-64 characters, as defined by the chat owner",
+        "html_description": "<td>Location address; 1-64 characters, as defined by the chat owner</td>",
+        "rst_description": "Location address; 1-64 characters, as defined by the chat owner\n",
+        "name": "address",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

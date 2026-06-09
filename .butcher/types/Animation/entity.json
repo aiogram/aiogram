@@ -1,0 +1,89 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "animation",
+    "name": "Animation",
+    "description": "This object represents an animation file (GIF or H.264/MPEG-4 AVC video without sound).",
+    "html_description": "<p>This object represents an animation file (GIF or H.264/MPEG-4 AVC video without sound).</p>",
+    "rst_description": "This object represents an animation file (GIF or H.264/MPEG-4 AVC video without sound).",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Identifier for this file, which can be used to download or reuse the file",
+        "html_description": "<td>Identifier for this file, which can be used to download or reuse the file</td>",
+        "rst_description": "Identifier for this file, which can be used to download or reuse the file\n",
+        "name": "file_id",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.",
+        "html_description": "<td>Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.</td>",
+        "rst_description": "Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.\n",
+        "name": "file_unique_id",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "Video width as defined by the sender",
+        "html_description": "<td>Video width as defined by the sender</td>",
+        "rst_description": "Video width as defined by the sender\n",
+        "name": "width",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "Video height as defined by the sender",
+        "html_description": "<td>Video height as defined by the sender</td>",
+        "rst_description": "Video height as defined by the sender\n",
+        "name": "height",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "Duration of the video in seconds as defined by the sender",
+        "html_description": "<td>Duration of the video in seconds as defined by the sender</td>",
+        "rst_description": "Duration of the video in seconds as defined by the sender\n",
+        "name": "duration",
+        "required": true
+      },
+      {
+        "type": "PhotoSize",
+        "description": "Animation thumbnail as defined by the sender",
+        "html_description": "<td><em>Optional</em>. Animation thumbnail as defined by the sender</td>",
+        "rst_description": "*Optional*. Animation thumbnail as defined by the sender\n",
+        "name": "thumbnail",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "Original animation filename as defined by the sender",
+        "html_description": "<td><em>Optional</em>. Original animation filename as defined by the sender</td>",
+        "rst_description": "*Optional*. Original animation filename as defined by the sender\n",
+        "name": "file_name",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "MIME type of the file as defined by the sender",
+        "html_description": "<td><em>Optional</em>. MIME type of the file as defined by the sender</td>",
+        "rst_description": "*Optional*. MIME type of the file as defined by the sender\n",
+        "name": "mime_type",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value.",
+        "html_description": "<td><em>Optional</em>. File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value.</td>",
+        "rst_description": "*Optional*. File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value.\n",
+        "name": "file_size",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

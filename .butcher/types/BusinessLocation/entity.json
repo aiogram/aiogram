@@ -1,0 +1,33 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "businesslocation",
+    "name": "BusinessLocation",
+    "description": "Contains information about the location of a Telegram Business account.",
+    "html_description": "<p>Contains information about the location of a Telegram Business account.</p>",
+    "rst_description": "Contains information about the location of a Telegram Business account.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Address of the business",
+        "html_description": "<td>Address of the business</td>",
+        "rst_description": "Address of the business\n",
+        "name": "address",
+        "required": true
+      },
+      {
+        "type": "Location",
+        "description": "Location of the business",
+        "html_description": "<td><em>Optional</em>. Location of the business</td>",
+        "rst_description": "*Optional*. Location of the business\n",
+        "name": "location",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

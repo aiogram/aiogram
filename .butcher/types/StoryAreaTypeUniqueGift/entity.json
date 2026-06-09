@@ -1,0 +1,33 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "storyareatypeuniquegift",
+    "name": "StoryAreaTypeUniqueGift",
+    "description": "Describes a story area pointing to a unique gift. Currently, a story can have at most 1 unique gift area.",
+    "html_description": "<p>Describes a story area pointing to a unique gift. Currently, a story can have at most 1 unique gift area.</p>",
+    "rst_description": "Describes a story area pointing to a unique gift. Currently, a story can have at most 1 unique gift area.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Type of the area, always 'unique_gift'",
+        "html_description": "<td>Type of the area, always &#8220;unique_gift&#8221;</td>",
+        "rst_description": "Type of the area, always 'unique_gift'\n",
+        "name": "type",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Unique name of the gift",
+        "html_description": "<td>Unique name of the gift</td>",
+        "rst_description": "Unique name of the gift\n",
+        "name": "name",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

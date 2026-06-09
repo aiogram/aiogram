@@ -1,0 +1,33 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "responseparameters",
+    "name": "ResponseParameters",
+    "description": "Describes why a request was unsuccessful.",
+    "html_description": "<p>Describes why a request was unsuccessful.</p>",
+    "rst_description": "Describes why a request was unsuccessful.",
+    "annotations": [
+      {
+        "type": "Integer",
+        "description": "The group has been migrated to a supergroup with the specified identifier. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this identifier.",
+        "html_description": "<td><em>Optional</em>. The group has been migrated to a supergroup with the specified identifier. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this identifier.</td>",
+        "rst_description": "*Optional*. The group has been migrated to a supergroup with the specified identifier. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this identifier.\n",
+        "name": "migrate_to_chat_id",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "In case of exceeding flood control, the number of seconds left to wait before the request can be repeated",
+        "html_description": "<td><em>Optional</em>. In case of exceeding flood control, the number of seconds left to wait before the request can be repeated</td>",
+        "rst_description": "*Optional*. In case of exceeding flood control, the number of seconds left to wait before the request can be repeated\n",
+        "name": "retry_after",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

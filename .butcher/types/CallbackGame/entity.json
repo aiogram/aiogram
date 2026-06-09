@@ -1,0 +1,16 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Games",
+    "anchor": "games"
+  },
+  "object": {
+    "anchor": "callbackgame",
+    "name": "CallbackGame",
+    "description": "A placeholder, currently holds no information. Use BotFather to set up your game.",
+    "html_description": "<p>A placeholder, currently holds no information. Use <a href=\"https://t.me/botfather\">BotFather</a> to set up your game.</p>",
+    "rst_description": "A placeholder, currently holds no information. Use `BotFather <https://t.me/botfather>`_ to set up your game.",
+    "annotations": [],
+    "category": "types"
+  }
+}

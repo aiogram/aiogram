@@ -1,0 +1,33 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "suggestedpostapprovalfailed",
+    "name": "SuggestedPostApprovalFailed",
+    "description": "Describes a service message about the failed approval of a suggested post. Currently, only caused by insufficient user funds at the time of approval.",
+    "html_description": "<p>Describes a service message about the failed approval of a suggested post. Currently, only caused by insufficient user funds at the time of approval.</p>",
+    "rst_description": "Describes a service message about the failed approval of a suggested post. Currently, only caused by insufficient user funds at the time of approval.",
+    "annotations": [
+      {
+        "type": "Message",
+        "description": "Message containing the suggested post whose approval has failed. Note that the Message object in this field will not contain the reply_to_message field even if it itself is a reply.",
+        "html_description": "<td><em>Optional</em>. Message containing the suggested post whose approval has failed. Note that the <a href=\"#message\">Message</a> object in this field will not contain the <em>reply_to_message</em> field even if it itself is a reply.</td>",
+        "rst_description": "*Optional*. Message containing the suggested post whose approval has failed. Note that the :class:`aiogram.types.message.Message` object in this field will not contain the *reply_to_message* field even if it itself is a reply.\n",
+        "name": "suggested_post_message",
+        "required": false
+      },
+      {
+        "type": "SuggestedPostPrice",
+        "description": "Expected price of the post",
+        "html_description": "<td>Expected price of the post</td>",
+        "rst_description": "Expected price of the post\n",
+        "name": "price",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

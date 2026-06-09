@@ -1,0 +1,41 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available methods",
+    "anchor": "available-methods"
+  },
+  "object": {
+    "anchor": "setuseremojistatus",
+    "name": "setUserEmojiStatus",
+    "description": "Changes the emoji status for a given user that previously allowed the bot to manage their emoji status via the Mini App method requestEmojiStatusAccess. Returns True on success.",
+    "html_description": "<p>Changes the emoji status for a given user that previously allowed the bot to manage their emoji status via the Mini App method <a href=\"/bots/webapps#initializing-mini-apps\">requestEmojiStatusAccess</a>. Returns <em>True</em> on success.</p>",
+    "rst_description": "Changes the emoji status for a given user that previously allowed the bot to manage their emoji status via the Mini App method `requestEmojiStatusAccess <https://core.telegram.org/bots/webapps#initializing-mini-apps>`_. Returns :code:`True` on success.",
+    "annotations": [
+      {
+        "type": "Integer",
+        "required": true,
+        "description": "Unique identifier of the target user",
+        "html_description": "<td>Unique identifier of the target user</td>",
+        "rst_description": "Unique identifier of the target user\n",
+        "name": "user_id"
+      },
+      {
+        "type": "String",
+        "required": false,
+        "description": "Custom emoji identifier of the emoji status to set. Pass an empty string to remove the status.",
+        "html_description": "<td>Custom emoji identifier of the emoji status to set. Pass an empty string to remove the status.</td>",
+        "rst_description": "Custom emoji identifier of the emoji status to set. Pass an empty string to remove the status.\n",
+        "name": "emoji_status_custom_emoji_id"
+      },
+      {
+        "type": "Integer",
+        "required": false,
+        "description": "Expiration date of the emoji status, if any",
+        "html_description": "<td>Expiration date of the emoji status, if any</td>",
+        "rst_description": "Expiration date of the emoji status, if any\n",
+        "name": "emoji_status_expiration_date"
+      }
+    ],
+    "category": "methods"
+  }
+}

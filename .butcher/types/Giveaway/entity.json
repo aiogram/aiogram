@@ -1,0 +1,89 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "giveaway",
+    "name": "Giveaway",
+    "description": "This object represents a message about a scheduled giveaway.",
+    "html_description": "<p>This object represents a message about a scheduled giveaway.</p>",
+    "rst_description": "This object represents a message about a scheduled giveaway.",
+    "annotations": [
+      {
+        "type": "Array of Chat",
+        "description": "The list of chats which the user must join to participate in the giveaway",
+        "html_description": "<td>The list of chats which the user must join to participate in the giveaway</td>",
+        "rst_description": "The list of chats which the user must join to participate in the giveaway\n",
+        "name": "chats",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "Point in time (Unix timestamp) when winners of the giveaway will be selected",
+        "html_description": "<td>Point in time (Unix timestamp) when winners of the giveaway will be selected</td>",
+        "rst_description": "Point in time (Unix timestamp) when winners of the giveaway will be selected\n",
+        "name": "winners_selection_date",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "The number of users which are supposed to be selected as winners of the giveaway",
+        "html_description": "<td>The number of users which are supposed to be selected as winners of the giveaway</td>",
+        "rst_description": "The number of users which are supposed to be selected as winners of the giveaway\n",
+        "name": "winner_count",
+        "required": true
+      },
+      {
+        "type": "True",
+        "description": "True, if only users who join the chats after the giveaway started should be eligible to win",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if only users who join the chats after the giveaway started should be eligible to win</td>",
+        "rst_description": "*Optional*. :code:`True`, if only users who join the chats after the giveaway started should be eligible to win\n",
+        "name": "only_new_members",
+        "required": false
+      },
+      {
+        "type": "True",
+        "description": "True, if the list of giveaway winners will be visible to everyone",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the list of giveaway winners will be visible to everyone</td>",
+        "rst_description": "*Optional*. :code:`True`, if the list of giveaway winners will be visible to everyone\n",
+        "name": "has_public_winners",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "Description of additional giveaway prize",
+        "html_description": "<td><em>Optional</em>. Description of additional giveaway prize</td>",
+        "rst_description": "*Optional*. Description of additional giveaway prize\n",
+        "name": "prize_description",
+        "required": false
+      },
+      {
+        "type": "Array of String",
+        "description": "A list of two-letter ISO 3166-1 alpha-2 country codes indicating the countries from which eligible users for the giveaway must come. If empty, then all users can participate in the giveaway. Users with a phone number that was bought on Fragment can always participate in giveaways.",
+        "html_description": "<td><em>Optional</em>. A list of two-letter <a href=\"https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2\">ISO 3166-1 alpha-2</a> country codes indicating the countries from which eligible users for the giveaway must come. If empty, then all users can participate in the giveaway. Users with a phone number that was bought on Fragment can always participate in giveaways.</td>",
+        "rst_description": "*Optional*. A list of two-letter `ISO 3166-1 alpha-2 <https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2>`_ country codes indicating the countries from which eligible users for the giveaway must come. If empty, then all users can participate in the giveaway. Users with a phone number that was bought on Fragment can always participate in giveaways.\n",
+        "name": "country_codes",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "The number of Telegram Stars to be split between giveaway winners; for Telegram Star giveaways only",
+        "html_description": "<td><em>Optional</em>. The number of Telegram Stars to be split between giveaway winners; for Telegram Star giveaways only</td>",
+        "rst_description": "*Optional*. The number of Telegram Stars to be split between giveaway winners; for Telegram Star giveaways only\n",
+        "name": "prize_star_count",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "The number of months the Telegram Premium subscription won from the giveaway will be active for; for Telegram Premium giveaways only",
+        "html_description": "<td><em>Optional</em>. The number of months the Telegram Premium subscription won from the giveaway will be active for; for Telegram Premium giveaways only</td>",
+        "rst_description": "*Optional*. The number of months the Telegram Premium subscription won from the giveaway will be active for; for Telegram Premium giveaways only\n",
+        "name": "premium_subscription_month_count",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

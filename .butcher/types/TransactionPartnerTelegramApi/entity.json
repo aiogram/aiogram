@@ -1,0 +1,33 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Payments",
+    "anchor": "payments"
+  },
+  "object": {
+    "anchor": "transactionpartnertelegramapi",
+    "name": "TransactionPartnerTelegramApi",
+    "description": "Describes a transaction with payment for paid broadcasting.",
+    "html_description": "<p>Describes a transaction with payment for <a href=\"#paid-broadcasts\">paid broadcasting</a>.</p>",
+    "rst_description": "Describes a transaction with payment for `paid broadcasting <https://core.telegram.org/bots/api#paid-broadcasts>`_.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Type of the transaction partner, always 'telegram_api'",
+        "html_description": "<td>Type of the transaction partner, always &#8220;telegram_api&#8221;</td>",
+        "rst_description": "Type of the transaction partner, always 'telegram_api'\n",
+        "name": "type",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "The number of successful requests that exceeded regular limits and were therefore billed",
+        "html_description": "<td>The number of successful requests that exceeded regular limits and were therefore billed</td>",
+        "rst_description": "The number of successful requests that exceeded regular limits and were therefore billed\n",
+        "name": "request_count",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

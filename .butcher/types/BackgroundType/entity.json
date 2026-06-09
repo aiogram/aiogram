@@ -1,0 +1,16 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "backgroundtype",
+    "name": "BackgroundType",
+    "description": "This object describes the type of a background. Currently, it can be one of\n - BackgroundTypeFill\n - BackgroundTypeWallpaper\n - BackgroundTypePattern\n - BackgroundTypeChatTheme",
+    "html_description": "<p>This object describes the type of a background. Currently, it can be one of</p><ul>\n<li><a href=\"#backgroundtypefill\">BackgroundTypeFill</a></li>\n<li><a href=\"#backgroundtypewallpaper\">BackgroundTypeWallpaper</a></li>\n<li><a href=\"#backgroundtypepattern\">BackgroundTypePattern</a></li>\n<li><a href=\"#backgroundtypechattheme\">BackgroundTypeChatTheme</a></li>\n</ul>",
+    "rst_description": "This object describes the type of a background. Currently, it can be one of\n\n - :class:`aiogram.types.background_type_fill.BackgroundTypeFill`\n - :class:`aiogram.types.background_type_wallpaper.BackgroundTypeWallpaper`\n - :class:`aiogram.types.background_type_pattern.BackgroundTypePattern`\n - :class:`aiogram.types.background_type_chat_theme.BackgroundTypeChatTheme`",
+    "annotations": [],
+    "category": "types"
+  }
+}

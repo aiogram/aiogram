@@ -1,0 +1,57 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "backgroundtypewallpaper",
+    "name": "BackgroundTypeWallpaper",
+    "description": "The background is a wallpaper in the JPEG format.",
+    "html_description": "<p>The background is a wallpaper in the JPEG format.</p>",
+    "rst_description": "The background is a wallpaper in the JPEG format.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Type of the background, always 'wallpaper'",
+        "html_description": "<td>Type of the background, always &#8220;wallpaper&#8221;</td>",
+        "rst_description": "Type of the background, always 'wallpaper'\n",
+        "name": "type",
+        "required": true
+      },
+      {
+        "type": "Document",
+        "description": "Document with the wallpaper",
+        "html_description": "<td>Document with the wallpaper</td>",
+        "rst_description": "Document with the wallpaper\n",
+        "name": "document",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "Dimming of the background in dark themes, as a percentage; 0-100",
+        "html_description": "<td>Dimming of the background in dark themes, as a percentage; 0-100</td>",
+        "rst_description": "Dimming of the background in dark themes, as a percentage; 0-100\n",
+        "name": "dark_theme_dimming",
+        "required": true
+      },
+      {
+        "type": "True",
+        "description": "True, if the wallpaper is downscaled to fit in a 450x450 square and then box-blurred with radius 12",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the wallpaper is downscaled to fit in a 450x450 square and then box-blurred with radius 12</td>",
+        "rst_description": "*Optional*. :code:`True`, if the wallpaper is downscaled to fit in a 450x450 square and then box-blurred with radius 12\n",
+        "name": "is_blurred",
+        "required": false
+      },
+      {
+        "type": "True",
+        "description": "True, if the background moves slightly when the device is tilted",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the background moves slightly when the device is tilted</td>",
+        "rst_description": "*Optional*. :code:`True`, if the background moves slightly when the device is tilted\n",
+        "name": "is_moving",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

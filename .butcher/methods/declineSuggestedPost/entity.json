@@ -1,0 +1,41 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Updating messages",
+    "anchor": "updating-messages"
+  },
+  "object": {
+    "anchor": "declinesuggestedpost",
+    "name": "declineSuggestedPost",
+    "description": "Use this method to decline a suggested post in a direct messages chat. The bot must have the 'can_manage_direct_messages' administrator right in the corresponding channel chat. Returns True on success.",
+    "html_description": "<p>Use this method to decline a suggested post in a direct messages chat. The bot must have the 'can_manage_direct_messages' administrator right in the corresponding channel chat. Returns <em>True</em> on success.</p>",
+    "rst_description": "Use this method to decline a suggested post in a direct messages chat. The bot must have the 'can_manage_direct_messages' administrator right in the corresponding channel chat. Returns :code:`True` on success.",
+    "annotations": [
+      {
+        "type": "Integer",
+        "required": true,
+        "description": "Unique identifier for the target direct messages chat",
+        "html_description": "<td>Unique identifier for the target direct messages chat</td>",
+        "rst_description": "Unique identifier for the target direct messages chat\n",
+        "name": "chat_id"
+      },
+      {
+        "type": "Integer",
+        "required": true,
+        "description": "Identifier of a suggested post message to decline",
+        "html_description": "<td>Identifier of a suggested post message to decline</td>",
+        "rst_description": "Identifier of a suggested post message to decline\n",
+        "name": "message_id"
+      },
+      {
+        "type": "String",
+        "required": false,
+        "description": "Comment for the creator of the suggested post; 0-128 characters",
+        "html_description": "<td>Comment for the creator of the suggested post; 0-128 characters</td>",
+        "rst_description": "Comment for the creator of the suggested post; 0-128 characters\n",
+        "name": "comment"
+      }
+    ],
+    "category": "methods"
+  }
+}

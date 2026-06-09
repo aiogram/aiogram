@@ -1,0 +1,65 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Inline mode",
+    "anchor": "inline-mode"
+  },
+  "object": {
+    "anchor": "inputlocationmessagecontent",
+    "name": "InputLocationMessageContent",
+    "description": "Represents the content of a location message to be sent as the result of an inline query.",
+    "html_description": "<p>Represents the <a href=\"#inputmessagecontent\">content</a> of a location message to be sent as the result of an inline query.</p>",
+    "rst_description": "Represents the `content <https://core.telegram.org/bots/api#inputmessagecontent>`_ of a location message to be sent as the result of an inline query.",
+    "annotations": [
+      {
+        "type": "Float",
+        "description": "Latitude of the location in degrees",
+        "html_description": "<td>Latitude of the location in degrees</td>",
+        "rst_description": "Latitude of the location in degrees\n",
+        "name": "latitude",
+        "required": true
+      },
+      {
+        "type": "Float",
+        "description": "Longitude of the location in degrees",
+        "html_description": "<td>Longitude of the location in degrees</td>",
+        "rst_description": "Longitude of the location in degrees\n",
+        "name": "longitude",
+        "required": true
+      },
+      {
+        "type": "Float",
+        "description": "The radius of uncertainty for the location, measured in meters; 0-1500",
+        "html_description": "<td><em>Optional</em>. The radius of uncertainty for the location, measured in meters; 0-1500</td>",
+        "rst_description": "*Optional*. The radius of uncertainty for the location, measured in meters; 0-1500\n",
+        "name": "horizontal_accuracy",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "Period in seconds during which the location can be updated, should be between 60 and 86400, or 0x7FFFFFFF for live locations that can be edited indefinitely.",
+        "html_description": "<td><em>Optional</em>. Period in seconds during which the location can be updated, should be between 60 and 86400, or 0x7FFFFFFF for live locations that can be edited indefinitely.</td>",
+        "rst_description": "*Optional*. Period in seconds during which the location can be updated, should be between 60 and 86400, or 0x7FFFFFFF for live locations that can be edited indefinitely.\n",
+        "name": "live_period",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "For live locations, a direction in which the user is moving, in degrees. Must be between 1 and 360 if specified.",
+        "html_description": "<td><em>Optional</em>. For live locations, a direction in which the user is moving, in degrees. Must be between 1 and 360 if specified.</td>",
+        "rst_description": "*Optional*. For live locations, a direction in which the user is moving, in degrees. Must be between 1 and 360 if specified.\n",
+        "name": "heading",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "For live locations, a maximum distance for proximity alerts about approaching another chat member, in meters. Must be between 1 and 100000 if specified.",
+        "html_description": "<td><em>Optional</em>. For live locations, a maximum distance for proximity alerts about approaching another chat member, in meters. Must be between 1 and 100000 if specified.</td>",
+        "rst_description": "*Optional*. For live locations, a maximum distance for proximity alerts about approaching another chat member, in meters. Must be between 1 and 100000 if specified.\n",
+        "name": "proximity_alert_radius",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

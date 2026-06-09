@@ -1,0 +1,81 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Inline mode",
+    "anchor": "inline-mode"
+  },
+  "object": {
+    "anchor": "inputvenuemessagecontent",
+    "name": "InputVenueMessageContent",
+    "description": "Represents the content of a venue message to be sent as the result of an inline query.",
+    "html_description": "<p>Represents the <a href=\"#inputmessagecontent\">content</a> of a venue message to be sent as the result of an inline query.</p>",
+    "rst_description": "Represents the `content <https://core.telegram.org/bots/api#inputmessagecontent>`_ of a venue message to be sent as the result of an inline query.",
+    "annotations": [
+      {
+        "type": "Float",
+        "description": "Latitude of the venue in degrees",
+        "html_description": "<td>Latitude of the venue in degrees</td>",
+        "rst_description": "Latitude of the venue in degrees\n",
+        "name": "latitude",
+        "required": true
+      },
+      {
+        "type": "Float",
+        "description": "Longitude of the venue in degrees",
+        "html_description": "<td>Longitude of the venue in degrees</td>",
+        "rst_description": "Longitude of the venue in degrees\n",
+        "name": "longitude",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Name of the venue",
+        "html_description": "<td>Name of the venue</td>",
+        "rst_description": "Name of the venue\n",
+        "name": "title",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Address of the venue",
+        "html_description": "<td>Address of the venue</td>",
+        "rst_description": "Address of the venue\n",
+        "name": "address",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Foursquare identifier of the venue, if known",
+        "html_description": "<td><em>Optional</em>. Foursquare identifier of the venue, if known</td>",
+        "rst_description": "*Optional*. Foursquare identifier of the venue, if known\n",
+        "name": "foursquare_id",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "Foursquare type of the venue, if known. (For example, 'arts_entertainment/default', 'arts_entertainment/aquarium' or 'food/icecream'.)",
+        "html_description": "<td><em>Optional</em>. Foursquare type of the venue, if known. (For example, &#8220;arts_entertainment/default&#8221;, &#8220;arts_entertainment/aquarium&#8221; or &#8220;food/icecream&#8221;.)</td>",
+        "rst_description": "*Optional*. Foursquare type of the venue, if known. (For example, 'arts_entertainment/default', 'arts_entertainment/aquarium' or 'food/icecream'.)\n",
+        "name": "foursquare_type",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "Google Places identifier of the venue",
+        "html_description": "<td><em>Optional</em>. Google Places identifier of the venue</td>",
+        "rst_description": "*Optional*. Google Places identifier of the venue\n",
+        "name": "google_place_id",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "Google Places type of the venue. (See supported types.)",
+        "html_description": "<td><em>Optional</em>. Google Places type of the venue. (See <a href=\"https://developers.google.com/places/web-service/supported_types\">supported types</a>.)</td>",
+        "rst_description": "*Optional*. Google Places type of the venue. (See `supported types <https://developers.google.com/places/web-service/supported_types>`_.)\n",
+        "name": "google_place_type",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

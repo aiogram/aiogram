@@ -1,0 +1,25 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available methods",
+    "anchor": "available-methods"
+  },
+  "object": {
+    "anchor": "getmydefaultadministratorrights",
+    "name": "getMyDefaultAdministratorRights",
+    "description": "Use this method to get the current default administrator rights of the bot. Returns ChatAdministratorRights on success.",
+    "html_description": "<p>Use this method to get the current default administrator rights of the bot. Returns <a href=\"#chatadministratorrights\">ChatAdministratorRights</a> on success.</p>",
+    "rst_description": "Use this method to get the current default administrator rights of the bot. Returns :class:`aiogram.types.chat_administrator_rights.ChatAdministratorRights` on success.",
+    "annotations": [
+      {
+        "type": "Boolean",
+        "required": false,
+        "description": "Pass True to get default administrator rights of the bot in channels. Otherwise, default administrator rights of the bot for groups and supergroups will be returned.",
+        "html_description": "<td>Pass <em>True</em> to get default administrator rights of the bot in channels. Otherwise, default administrator rights of the bot for groups and supergroups will be returned.</td>",
+        "rst_description": "Pass :code:`True` to get default administrator rights of the bot in channels. Otherwise, default administrator rights of the bot for groups and supergroups will be returned.\n",
+        "name": "for_channels"
+      }
+    ],
+    "category": "methods"
+  }
+}

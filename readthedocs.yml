@@ -1,5 +1,0 @@
-conda:
-  file: environment.yml
-python:
-  version: 3
-  pip_install: true

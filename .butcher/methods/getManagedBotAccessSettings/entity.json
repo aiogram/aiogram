@@ -1,0 +1,25 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available methods",
+    "anchor": "available-methods"
+  },
+  "object": {
+    "anchor": "getmanagedbotaccesssettings",
+    "name": "getManagedBotAccessSettings",
+    "description": "Use this method to get the access settings of a managed bot. Returns a BotAccessSettings object on success.",
+    "html_description": "<p>Use this method to get the access settings of a managed bot. Returns a <a href=\"#botaccesssettings\">BotAccessSettings</a> object on success.</p>",
+    "rst_description": "Use this method to get the access settings of a managed bot. Returns a :class:`aiogram.types.bot_access_settings.BotAccessSettings` object on success.",
+    "annotations": [
+      {
+        "type": "Integer",
+        "required": true,
+        "description": "User identifier of the managed bot whose access settings will be returned",
+        "html_description": "<td>User identifier of the managed bot whose access settings will be returned</td>",
+        "rst_description": "User identifier of the managed bot whose access settings will be returned\n",
+        "name": "user_id"
+      }
+    ],
+    "category": "methods"
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available methods",
+    "anchor": "available-methods"
+  },
+  "object": {
+    "anchor": "getuserpersonalchatmessages",
+    "name": "getUserPersonalChatMessages",
+    "description": "Use this method to get the last messages from the personal chat (i.e., the chat currently added to their profile) of a given user. On success, an array of Message objects is returned.",
+    "html_description": "<p>Use this method to get the last messages from the personal chat (i.e., the chat currently added to their profile) of a given user. On success, an array of <a href=\"#message\">Message</a> objects is returned.</p>",
+    "rst_description": "Use this method to get the last messages from the personal chat (i.e., the chat currently added to their profile) of a given user. On success, an array of :class:`aiogram.types.message.Message` objects is returned.",
+    "annotations": [
+      {
+        "type": "Integer",
+        "required": true,
+        "description": "Unique identifier for the target user",
+        "html_description": "<td>Unique identifier for the target user</td>",
+        "rst_description": "Unique identifier for the target user\n",
+        "name": "user_id"
+      },
+      {
+        "type": "Integer",
+        "required": true,
+        "description": "The maximum number of messages to return; 1-20",
+        "html_description": "<td>The maximum number of messages to return; 1-20</td>",
+        "rst_description": "The maximum number of messages to return; 1-20\n",
+        "name": "limit"
+      }
+    ],
+    "category": "methods"
+  }
+}

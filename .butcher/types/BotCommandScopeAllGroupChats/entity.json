@@ -1,0 +1,25 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "botcommandscopeallgroupchats",
+    "name": "BotCommandScopeAllGroupChats",
+    "description": "Represents the scope of bot commands, covering all group and supergroup chats.",
+    "html_description": "<p>Represents the <a href=\"#botcommandscope\">scope</a> of bot commands, covering all group and supergroup chats.</p>",
+    "rst_description": "Represents the `scope <https://core.telegram.org/bots/api#botcommandscope>`_ of bot commands, covering all group and supergroup chats.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Scope type, must be all_group_chats",
+        "html_description": "<td>Scope type, must be <em>all_group_chats</em></td>",
+        "rst_description": "Scope type, must be *all_group_chats*\n",
+        "name": "type",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

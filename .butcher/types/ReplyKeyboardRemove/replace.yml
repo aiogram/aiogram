@@ -1,0 +1,5 @@
+bases:
+  - MutableTelegramObject
+annotations:
+  remove_keyboard:
+    const: "True"

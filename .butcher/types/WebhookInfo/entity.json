@@ -1,0 +1,89 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Getting updates",
+    "anchor": "getting-updates"
+  },
+  "object": {
+    "anchor": "webhookinfo",
+    "name": "WebhookInfo",
+    "description": "Describes the current status of a webhook.",
+    "html_description": "<p>Describes the current status of a webhook.</p>",
+    "rst_description": "Describes the current status of a webhook.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Webhook URL, may be empty if webhook is not set up",
+        "html_description": "<td>Webhook URL, may be empty if webhook is not set up</td>",
+        "rst_description": "Webhook URL, may be empty if webhook is not set up\n",
+        "name": "url",
+        "required": true
+      },
+      {
+        "type": "Boolean",
+        "description": "True, if a custom certificate was provided for webhook certificate checks",
+        "html_description": "<td><em>True</em>, if a custom certificate was provided for webhook certificate checks</td>",
+        "rst_description": ":code:`True`, if a custom certificate was provided for webhook certificate checks\n",
+        "name": "has_custom_certificate",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "Number of updates awaiting delivery",
+        "html_description": "<td>Number of updates awaiting delivery</td>",
+        "rst_description": "Number of updates awaiting delivery\n",
+        "name": "pending_update_count",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Currently used webhook IP address",
+        "html_description": "<td><em>Optional</em>. Currently used webhook IP address</td>",
+        "rst_description": "*Optional*. Currently used webhook IP address\n",
+        "name": "ip_address",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "Unix time for the most recent error that happened when trying to deliver an update via webhook",
+        "html_description": "<td><em>Optional</em>. Unix time for the most recent error that happened when trying to deliver an update via webhook</td>",
+        "rst_description": "*Optional*. Unix time for the most recent error that happened when trying to deliver an update via webhook\n",
+        "name": "last_error_date",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "Error message in human-readable format for the most recent error that happened when trying to deliver an update via webhook",
+        "html_description": "<td><em>Optional</em>. Error message in human-readable format for the most recent error that happened when trying to deliver an update via webhook</td>",
+        "rst_description": "*Optional*. Error message in human-readable format for the most recent error that happened when trying to deliver an update via webhook\n",
+        "name": "last_error_message",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "Unix time of the most recent error that happened when trying to synchronize available updates with Telegram datacenters",
+        "html_description": "<td><em>Optional</em>. Unix time of the most recent error that happened when trying to synchronize available updates with Telegram datacenters</td>",
+        "rst_description": "*Optional*. Unix time of the most recent error that happened when trying to synchronize available updates with Telegram datacenters\n",
+        "name": "last_synchronization_error_date",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "The maximum allowed number of simultaneous HTTPS connections to the webhook for update delivery",
+        "html_description": "<td><em>Optional</em>. The maximum allowed number of simultaneous HTTPS connections to the webhook for update delivery</td>",
+        "rst_description": "*Optional*. The maximum allowed number of simultaneous HTTPS connections to the webhook for update delivery\n",
+        "name": "max_connections",
+        "required": false
+      },
+      {
+        "type": "Array of String",
+        "description": "A list of update types the bot is subscribed to. Defaults to all update types except chat_member",
+        "html_description": "<td><em>Optional</em>. A list of update types the bot is subscribed to. Defaults to all update types except <em>chat_member</em></td>",
+        "rst_description": "*Optional*. A list of update types the bot is subscribed to. Defaults to all update types except *chat_member*\n",
+        "name": "allowed_updates",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

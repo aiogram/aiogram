@@ -1,0 +1,173 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2022, aiogram Team
+# This file is distributed under the same license as the aiogram package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2022.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: aiogram \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-03-11 01:52+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.11.0\n"
+
+#: ../../api/types/sticker.rst:3
+msgid "Sticker"
+msgstr ""
+
+#: aiogram.types.sticker.Sticker:1 of
+msgid "This object represents a sticker."
+msgstr ""
+
+#: aiogram.types.sticker.Sticker:3 of
+msgid "Source: https://core.telegram.org/bots/api#sticker"
+msgstr ""
+
+#: ../../docstring aiogram.types.sticker.Sticker.file_id:1 of
+msgid "Identifier for this file, which can be used to download or reuse the file"
+msgstr ""
+
+#: ../../docstring aiogram.types.sticker.Sticker.file_unique_id:1 of
+msgid ""
+"Unique identifier for this file, which is supposed to be the same over "
+"time and for different bots. Can't be used to download or reuse the file."
+msgstr ""
+
+#: ../../docstring aiogram.types.sticker.Sticker.type:1 of
+msgid ""
+"Type of the sticker, currently one of 'regular', 'mask', 'custom_emoji'. "
+"The type of the sticker is independent from its format, which is "
+"determined by the fields *is_animated* and *is_video*."
+msgstr ""
+
+#: ../../docstring aiogram.types.sticker.Sticker.width:1 of
+msgid "Sticker width"
+msgstr ""
+
+#: ../../docstring aiogram.types.sticker.Sticker.height:1 of
+msgid "Sticker height"
+msgstr ""
+
+#: ../../docstring aiogram.types.sticker.Sticker.is_animated:1 of
+msgid ""
+":code:`True`, if the sticker is `animated <https://telegram.org/blog"
+"/animated-stickers>`_"
+msgstr ""
+
+#: ../../docstring aiogram.types.sticker.Sticker.is_video:1 of
+msgid ""
+":code:`True`, if the sticker is a `video sticker "
+"<https://telegram.org/blog/video-stickers-better-reactions>`_"
+msgstr ""
+
+#: ../../docstring aiogram.types.sticker.Sticker.thumbnail:1 of
+msgid "*Optional*. Sticker thumbnail in the .WEBP or .JPG format"
+msgstr ""
+
+#: ../../docstring aiogram.types.sticker.Sticker.emoji:1 of
+msgid "*Optional*. Emoji associated with the sticker"
+msgstr ""
+
+#: ../../docstring aiogram.types.sticker.Sticker.set_name:1 of
+msgid "*Optional*. Name of the sticker set to which the sticker belongs"
+msgstr ""
+
+#: ../../docstring aiogram.types.sticker.Sticker.premium_animation:1 of
+msgid ""
+"*Optional*. For premium regular stickers, premium animation for the "
+"sticker"
+msgstr ""
+
+#: ../../docstring aiogram.types.sticker.Sticker.mask_position:1 of
+msgid ""
+"*Optional*. For mask stickers, the position where the mask should be "
+"placed"
+msgstr ""
+
+#: ../../docstring aiogram.types.sticker.Sticker.custom_emoji_id:1 of
+msgid ""
+"*Optional*. For custom emoji stickers, unique identifier of the custom "
+"emoji"
+msgstr ""
+
+#: ../../docstring aiogram.types.sticker.Sticker.needs_repainting:1 of
+msgid ""
+"*Optional*. :code:`True`, if the sticker must be repainted to a text "
+"color in messages, the color of the Telegram Premium badge in emoji "
+"status, white color on chat photos, or another appropriate color in other"
+" places"
+msgstr ""
+
+#: ../../docstring aiogram.types.sticker.Sticker.file_size:1 of
+msgid "*Optional*. File size in bytes"
+msgstr ""
+
+#: aiogram.types.sticker.Sticker.set_position_in_set:1 of
+msgid ""
+"Shortcut for method "
+":class:`aiogram.methods.set_sticker_position_in_set.SetStickerPositionInSet`"
+" will automatically fill method attributes:"
+msgstr ""
+
+#: aiogram.types.sticker.Sticker.delete_from_set:4
+#: aiogram.types.sticker.Sticker.set_position_in_set:4 of
+msgid ":code:`sticker`"
+msgstr ""
+
+#: aiogram.types.sticker.Sticker.set_position_in_set:6 of
+msgid ""
+"Use this method to move a sticker in a set created by the bot to a "
+"specific position. Returns :code:`True` on success."
+msgstr ""
+
+#: aiogram.types.sticker.Sticker.set_position_in_set:8 of
+msgid "Source: https://core.telegram.org/bots/api#setstickerpositioninset"
+msgstr ""
+
+#: aiogram.types.sticker.Sticker.set_position_in_set of
+msgid "Parameters"
+msgstr ""
+
+#: aiogram.types.sticker.Sticker.set_position_in_set:10 of
+msgid "New sticker position in the set, zero-based"
+msgstr ""
+
+#: aiogram.types.sticker.Sticker.delete_from_set
+#: aiogram.types.sticker.Sticker.set_position_in_set of
+msgid "Returns"
+msgstr ""
+
+#: aiogram.types.sticker.Sticker.set_position_in_set:11 of
+msgid ""
+"instance of method "
+":class:`aiogram.methods.set_sticker_position_in_set.SetStickerPositionInSet`"
+msgstr ""
+
+#: aiogram.types.sticker.Sticker.delete_from_set:1 of
+msgid ""
+"Shortcut for method "
+":class:`aiogram.methods.delete_sticker_from_set.DeleteStickerFromSet` "
+"will automatically fill method attributes:"
+msgstr ""
+
+#: aiogram.types.sticker.Sticker.delete_from_set:6 of
+msgid ""
+"Use this method to delete a sticker from a set created by the bot. "
+"Returns :code:`True` on success."
+msgstr ""
+
+#: aiogram.types.sticker.Sticker.delete_from_set:8 of
+msgid "Source: https://core.telegram.org/bots/api#deletestickerfromset"
+msgstr ""
+
+#: aiogram.types.sticker.Sticker.delete_from_set:10 of
+msgid ""
+"instance of method "
+":class:`aiogram.methods.delete_sticker_from_set.DeleteStickerFromSet`"
+msgstr ""

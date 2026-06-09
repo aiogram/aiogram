@@ -1,0 +1,33 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "storyarea",
+    "name": "StoryArea",
+    "description": "Describes a clickable area on a story media.",
+    "html_description": "<p>Describes a clickable area on a story media.</p>",
+    "rst_description": "Describes a clickable area on a story media.",
+    "annotations": [
+      {
+        "type": "StoryAreaPosition",
+        "description": "Position of the area",
+        "html_description": "<td>Position of the area</td>",
+        "rst_description": "Position of the area\n",
+        "name": "position",
+        "required": true
+      },
+      {
+        "type": "StoryAreaType",
+        "description": "Type of the area",
+        "html_description": "<td>Type of the area</td>",
+        "rst_description": "Type of the area\n",
+        "name": "type",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

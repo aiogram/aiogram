@@ -1,0 +1,11 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Discuss anything related to the framework
+    url: https://github.com/aiogram/aiogram/discussions
+    about: Ask a question about aiogram or share your code snippets and ideas.
+  - name: Join our Telegram channel
+    url: https://t.me/aiogram_live
+    about: Get the latest updates about the framework.
+  - name: Join our Telegram chat
+    url: https://t.me/aiogram
+    about: Get help, ask questions, and discuss the framework in real-time.

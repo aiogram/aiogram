@@ -1,0 +1,73 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "inputmediadocument",
+    "name": "InputMediaDocument",
+    "description": "Represents a general file to be sent.",
+    "html_description": "<p>Represents a general file to be sent.</p>",
+    "rst_description": "Represents a general file to be sent.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Type of the result, must be document",
+        "html_description": "<td>Type of the result, must be <em>document</em></td>",
+        "rst_description": "Type of the result, must be *document*\n",
+        "name": "type",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass 'attach://<file_attach_name>' to upload a new one using multipart/form-data under <file_attach_name> name. More information on Sending Files",
+        "html_description": "<td>File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass &#8220;attach://&lt;file_attach_name&gt;&#8221; to upload a new one using multipart/form-data under &lt;file_attach_name&gt; name. <a href=\"#sending-files\">More information on Sending Files &#187;</a></td>",
+        "rst_description": "File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass 'attach://<file_attach_name>' to upload a new one using multipart/form-data under <file_attach_name> name. :ref:`More information on Sending Files » <sending-files>`\n",
+        "name": "media",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. More information on Sending Files",
+        "html_description": "<td><em>Optional</em>. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass &#8220;attach://&lt;file_attach_name&gt;&#8221; if the thumbnail was uploaded using multipart/form-data under &lt;file_attach_name&gt;. <a href=\"#sending-files\">More information on Sending Files &#187;</a></td>",
+        "rst_description": "*Optional*. Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side. The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail's width and height should not exceed 320. Ignored if the file is not uploaded using multipart/form-data. Thumbnails can't be reused and can be only uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the thumbnail was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`\n",
+        "name": "thumbnail",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "Caption of the document to be sent, 0-1024 characters after entities parsing",
+        "html_description": "<td><em>Optional</em>. Caption of the document to be sent, 0-1024 characters after entities parsing</td>",
+        "rst_description": "*Optional*. Caption of the document to be sent, 0-1024 characters after entities parsing\n",
+        "name": "caption",
+        "required": false
+      },
+      {
+        "type": "String",
+        "description": "Mode for parsing entities in the document caption. See formatting options for more details.",
+        "html_description": "<td><em>Optional</em>. Mode for parsing entities in the document caption. See <a href=\"#formatting-options\">formatting options</a> for more details.</td>",
+        "rst_description": "*Optional*. Mode for parsing entities in the document caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.\n",
+        "name": "parse_mode",
+        "required": false
+      },
+      {
+        "type": "Array of MessageEntity",
+        "description": "List of special entities that appear in the caption, which can be specified instead of parse_mode",
+        "html_description": "<td><em>Optional</em>. List of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em></td>",
+        "rst_description": "*Optional*. List of special entities that appear in the caption, which can be specified instead of *parse_mode*\n",
+        "name": "caption_entities",
+        "required": false
+      },
+      {
+        "type": "Boolean",
+        "description": "Disables automatic server-side content type detection for files uploaded using multipart/form-data. Always True, if the document is sent as part of an album.",
+        "html_description": "<td><em>Optional</em>. Disables automatic server-side content type detection for files uploaded using multipart/form-data. Always <em>True</em>, if the document is sent as part of an album.</td>",
+        "rst_description": "*Optional*. Disables automatic server-side content type detection for files uploaded using multipart/form-data. Always :code:`True`, if the document is sent as part of an album.\n",
+        "name": "disable_content_type_detection",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

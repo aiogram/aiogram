@@ -1,0 +1,16 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available methods",
+    "anchor": "available-methods"
+  },
+  "object": {
+    "anchor": "getme",
+    "name": "getMe",
+    "description": "A simple method for testing your bot's authentication token. Requires no parameters. Returns basic information about the bot in form of a User object.",
+    "html_description": "<p>A simple method for testing your bot's authentication token. Requires no parameters. Returns basic information about the bot in form of a <a href=\"#user\">User</a> object.</p>",
+    "rst_description": "A simple method for testing your bot's authentication token. Requires no parameters. Returns basic information about the bot in form of a :class:`aiogram.types.user.User` object.",
+    "annotations": [],
+    "category": "methods"
+  }
+}

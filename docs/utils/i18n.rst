@@ -1,0 +1,224 @@
+===========
+Translation
+===========
+
+In order to make you bot translatable you have to add a minimal number of hooks to your Python code.
+
+These hooks are called translation strings.
+
+The aiogram translation utils is build on top of `GNU gettext Python module <https://docs.python.org/3/library/gettext.html>`_
+and `Babel library <http://babel.pocoo.org/en/latest/>`_.
+
+Installation
+============
+
+Babel is required to make simple way to extract translation strings from your code
+
+Can be installed from pip directly:
+
+.. code-block:: bash
+
+    pip install Babel
+
+
+or as `aiogram` extra dependency:
+
+.. code-block:: bash
+
+    pip install aiogram[i18n]
+
+
+Make messages translatable
+==========================
+
+In order to gettext need to know what the strings should be translated you will need to write translation strings.
+
+For example:
+
+.. code-block:: python
+    :emphasize-lines: 6-8
+
+    from aiogram import html
+    from aiogram.utils.i18n import gettext as _
+
+    async def my_handler(message: Message) -> None:
+        await message.answer(
+            _("Hello, {name}!").format(
+                name=html.quote(message.from_user.full_name)
+            )
+        )
+
+
+.. danger::
+
+    f-strings can't be used as translations string because any dynamic variables should be added to message after getting translated message
+
+
+Also if you want to use translated string in keyword- or magic- filters you will need to use lazy gettext calls:
+
+
+.. code-block:: python
+    :emphasize-lines: 4
+
+    from aiogram import F
+    from aiogram.utils.i18n import lazy_gettext as __
+
+    @router.message(F.text == __("My menu entry"))
+    ...
+
+
+.. danger::
+
+    Lazy gettext calls should always be used when the current language is not know at the moment
+
+
+.. danger::
+
+    Lazy gettext can't be used as value for API methods or any Telegram Object (like :class:`aiogram.types.inline_keyboard_button.InlineKeyboardButton` or etc.)
+
+**Working with plural forms**
+
+The `gettext` from `aiogram.utils.i18n` is the one alias for two functions _gettext_ and _ngettext_
+of `GNU gettext Python module <https://docs.python.org/3/library/gettext.html>`_. Therefore, the wrapper for message
+strings is the same `_()`. You need to pass three parameters to the function:
+a singular string, a plural string, and a value.
+
+.. code-block:: python
+    :emphasize-lines: 6, 10
+    from aiogram import html
+    from aiogram.utils.i18n import gettext as _
+
+    async def my_handler(message: Message) -> None:
+        try:
+            n = int(message.text)
+        except ValueError:
+            n = 1
+        await message.answer(
+            _("You ordered {n} piece.", "You ordered {n} pieces.",n).format(n)
+            )
+        )
+
+Configuring engine
+==================
+
+After you messages is already done to use gettext your bot should know how to detect user language
+
+On top of your application the instance of :class:`aiogram.utils.i18n.I18n` should be created
+
+
+.. code-block::
+
+    i18n = I18n(path="locales", default_locale="en", domain="messages")
+
+
+After that you will need to choose one of builtin I18n middleware or write your own.
+
+Builtin middlewares:
+
+
+SimpleI18nMiddleware
+~~~~~~~~~~~~~~~~~~~~
+
+.. autoclass:: aiogram.utils.i18n.middleware.SimpleI18nMiddleware
+    :members: __init__
+
+ConstI18nMiddleware
+~~~~~~~~~~~~~~~~~~~
+
+.. autoclass:: aiogram.utils.i18n.middleware.ConstI18nMiddleware
+    :members: __init__
+
+FSMI18nMiddleware
+~~~~~~~~~~~~~~~~~
+
+.. autoclass:: aiogram.utils.i18n.middleware.FSMI18nMiddleware
+    :members: __init__,set_locale
+
+
+I18nMiddleware
+~~~~~~~~~~~~~~
+
+or define you own based on abstract I18nMiddleware middleware:
+
+.. autoclass:: aiogram.utils.i18n.middleware.I18nMiddleware
+    :members: __init__,setup,get_locale
+
+
+Deal with Babel
+===============
+
+Step 1 Extract messages
+~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: bash
+
+    pybabel extract --input-dirs=. -o locales/messages.pot
+
+
+Here is :code:`--input-dirs=.` - path to code and the :code:`locales/messages.pot`
+is template where messages will be extracted and `messages` is translation domain.
+
+**Working with plural forms**
+
+Extracting with Pybabel all strings options:
+
+- :code:`-k _:1,1t -k _:1,2` - for both singular and plural
+- :code:`-k __` - for lazy strings
+
+.. code-block:: bash
+
+    pybabel extract -k _:1,1t -k _:1,2 -k __ --input-dirs=. -o locales/messages.pot
+
+.. note::
+
+    Some useful options:
+
+    - Add comments for translators, you can use another tag if you want (TR) :code:`--add-comments=NOTE`
+    - Contact email for bugreport :code:`--msgid-bugs-address=EMAIL`
+    - Disable comments with string location in code :code:`--no-location`
+    - Copyrights :code:`--copyright-holder=AUTHOR`
+    - Set project name :code:`--project=MySuperBot`
+    - Set version :code:`--version=2.2`
+
+
+Step 2: Init language
+~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: bash
+
+    pybabel init -i locales/messages.pot -d locales -D messages -l en
+
+- :code:`-i locales/messages.pot` - pre-generated template
+- :code:`-d locales` - translations directory
+- :code:`-D messages` - translations domain
+- :code:`-l en` - language. Can be changed to any other valid language code (For example :code:`-l uk` for ukrainian language)
+
+
+Step 3: Translate texts
+~~~~~~~~~~~~~~~~~~~~~~~
+
+To open .po file you can use basic text editor or any PO editor, e.g. `Poedit <https://poedit.net/>`_
+
+Just open the file named :code:`locales/{language}/LC_MESSAGES/messages.po` and write translations
+
+Step 4: Compile translations
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: bash
+
+    pybabel compile -d locales -D messages
+
+
+Step 5: Updating messages
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+When you change the code of your bot you need to update po & mo files
+
+- Step 5.1: regenerate pot file: command from step 1
+- Step 5.2: update po files
+    .. code-block::
+
+        pybabel update -d locales -D messages -i locales/messages.pot
+
+- Step 5.3: update your translations: location and tools you know from step 3
+- Step 5.4: compile mo files: command from step 4

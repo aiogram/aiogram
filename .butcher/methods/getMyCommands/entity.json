@@ -1,0 +1,33 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available methods",
+    "anchor": "available-methods"
+  },
+  "object": {
+    "anchor": "getmycommands",
+    "name": "getMyCommands",
+    "description": "Use this method to get the current list of the bot's commands for the given scope and user language. Returns an Array of BotCommand objects. If commands aren't set, an empty list is returned.",
+    "html_description": "<p>Use this method to get the current list of the bot's commands for the given scope and user language. Returns an Array of <a href=\"#botcommand\">BotCommand</a> objects. If commands aren't set, an empty list is returned.</p>",
+    "rst_description": "Use this method to get the current list of the bot's commands for the given scope and user language. Returns an Array of :class:`aiogram.types.bot_command.BotCommand` objects. If commands aren't set, an empty list is returned.",
+    "annotations": [
+      {
+        "type": "BotCommandScope",
+        "required": false,
+        "description": "A JSON-serialized object, describing scope of users. Defaults to BotCommandScopeDefault.",
+        "html_description": "<td>A JSON-serialized object, describing scope of users. Defaults to <a href=\"#botcommandscopedefault\">BotCommandScopeDefault</a>.</td>",
+        "rst_description": "A JSON-serialized object, describing scope of users. Defaults to :class:`aiogram.types.bot_command_scope_default.BotCommandScopeDefault`.\n",
+        "name": "scope"
+      },
+      {
+        "type": "String",
+        "required": false,
+        "description": "A two-letter ISO 639-1 language code or an empty string",
+        "html_description": "<td>A two-letter ISO 639-1 language code or an empty string</td>",
+        "rst_description": "A two-letter ISO 639-1 language code or an empty string\n",
+        "name": "language_code"
+      }
+    ],
+    "category": "methods"
+  }
+}

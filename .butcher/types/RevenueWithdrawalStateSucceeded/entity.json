@@ -1,0 +1,41 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Payments",
+    "anchor": "payments"
+  },
+  "object": {
+    "anchor": "revenuewithdrawalstatesucceeded",
+    "name": "RevenueWithdrawalStateSucceeded",
+    "description": "The withdrawal succeeded.",
+    "html_description": "<p>The withdrawal succeeded.</p>",
+    "rst_description": "The withdrawal succeeded.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Type of the state, always 'succeeded'",
+        "html_description": "<td>Type of the state, always &#8220;succeeded&#8221;</td>",
+        "rst_description": "Type of the state, always 'succeeded'\n",
+        "name": "type",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "Date the withdrawal was completed in Unix time",
+        "html_description": "<td>Date the withdrawal was completed in Unix time</td>",
+        "rst_description": "Date the withdrawal was completed in Unix time\n",
+        "name": "date",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "An HTTPS URL that can be used to see transaction details",
+        "html_description": "<td>An HTTPS URL that can be used to see transaction details</td>",
+        "rst_description": "An HTTPS URL that can be used to see transaction details\n",
+        "name": "url",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

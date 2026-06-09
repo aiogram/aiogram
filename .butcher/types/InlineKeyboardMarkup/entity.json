@@ -1,0 +1,25 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "inlinekeyboardmarkup",
+    "name": "InlineKeyboardMarkup",
+    "description": "This object represents an inline keyboard that appears right next to the message it belongs to.",
+    "html_description": "<p>This object represents an <a href=\"/bots/features#inline-keyboards\">inline keyboard</a> that appears right next to the message it belongs to.</p>",
+    "rst_description": "This object represents an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_ that appears right next to the message it belongs to.",
+    "annotations": [
+      {
+        "type": "Array of Array of InlineKeyboardButton",
+        "description": "Array of button rows, each represented by an Array of InlineKeyboardButton objects",
+        "html_description": "<td>Array of button rows, each represented by an Array of <a href=\"#inlinekeyboardbutton\">InlineKeyboardButton</a> objects</td>",
+        "rst_description": "Array of button rows, each represented by an Array of :class:`aiogram.types.inline_keyboard_button.InlineKeyboardButton` objects\n",
+        "name": "inline_keyboard",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

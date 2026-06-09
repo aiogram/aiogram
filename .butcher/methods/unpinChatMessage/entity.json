@@ -1,0 +1,41 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available methods",
+    "anchor": "available-methods"
+  },
+  "object": {
+    "anchor": "unpinchatmessage",
+    "name": "unpinChatMessage",
+    "description": "Use this method to remove a message from the list of pinned messages in a chat. In private chats and channel direct messages chats, all messages can be unpinned. Conversely, the bot must be an administrator with the 'can_pin_messages' right or the 'can_edit_messages' right to unpin messages in groups and channels respectively. Returns True on success.",
+    "html_description": "<p>Use this method to remove a message from the list of pinned messages in a chat. In private chats and channel direct messages chats, all messages can be unpinned. Conversely, the bot must be an administrator with the 'can_pin_messages' right or the 'can_edit_messages' right to unpin messages in groups and channels respectively. Returns <em>True</em> on success.</p>",
+    "rst_description": "Use this method to remove a message from the list of pinned messages in a chat. In private chats and channel direct messages chats, all messages can be unpinned. Conversely, the bot must be an administrator with the 'can_pin_messages' right or the 'can_edit_messages' right to unpin messages in groups and channels respectively. Returns :code:`True` on success.",
+    "annotations": [
+      {
+        "type": "String",
+        "required": false,
+        "description": "Unique identifier of the business connection on behalf of which the message will be unpinned",
+        "html_description": "<td>Unique identifier of the business connection on behalf of which the message will be unpinned</td>",
+        "rst_description": "Unique identifier of the business connection on behalf of which the message will be unpinned\n",
+        "name": "business_connection_id"
+      },
+      {
+        "type": "Integer or String",
+        "required": true,
+        "description": "Unique identifier for the target chat or username of the target channel in the format @username",
+        "html_description": "<td>Unique identifier for the target chat or username of the target channel in the format <code>@username</code></td>",
+        "rst_description": "Unique identifier for the target chat or username of the target channel in the format :code:`@username`\n",
+        "name": "chat_id"
+      },
+      {
+        "type": "Integer",
+        "required": false,
+        "description": "Identifier of the message to unpin. Required if business_connection_id is specified. If not specified, the most recent pinned message (by sending date) will be unpinned.",
+        "html_description": "<td>Identifier of the message to unpin. Required if <em>business_connection_id</em> is specified. If not specified, the most recent pinned message (by sending date) will be unpinned.</td>",
+        "rst_description": "Identifier of the message to unpin. Required if *business_connection_id* is specified. If not specified, the most recent pinned message (by sending date) will be unpinned.\n",
+        "name": "message_id"
+      }
+    ],
+    "category": "methods"
+  }
+}

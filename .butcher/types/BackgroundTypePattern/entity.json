@@ -1,0 +1,65 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "backgroundtypepattern",
+    "name": "BackgroundTypePattern",
+    "description": "The background is a .PNG or .TGV (gzipped subset of SVG with MIME type 'application/x-tgwallpattern') pattern to be combined with the background fill chosen by the user.",
+    "html_description": "<p>The background is a .PNG or .TGV (gzipped subset of SVG with MIME type &#8220;application/x-tgwallpattern&#8221;) pattern to be combined with the background fill chosen by the user.</p>",
+    "rst_description": "The background is a .PNG or .TGV (gzipped subset of SVG with MIME type 'application/x-tgwallpattern') pattern to be combined with the background fill chosen by the user.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Type of the background, always 'pattern'",
+        "html_description": "<td>Type of the background, always &#8220;pattern&#8221;</td>",
+        "rst_description": "Type of the background, always 'pattern'\n",
+        "name": "type",
+        "required": true
+      },
+      {
+        "type": "Document",
+        "description": "Document with the pattern",
+        "html_description": "<td>Document with the pattern</td>",
+        "rst_description": "Document with the pattern\n",
+        "name": "document",
+        "required": true
+      },
+      {
+        "type": "BackgroundFill",
+        "description": "The background fill that is combined with the pattern",
+        "html_description": "<td>The background fill that is combined with the pattern</td>",
+        "rst_description": "The background fill that is combined with the pattern\n",
+        "name": "fill",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "Intensity of the pattern when it is shown above the filled background; 0-100",
+        "html_description": "<td>Intensity of the pattern when it is shown above the filled background; 0-100</td>",
+        "rst_description": "Intensity of the pattern when it is shown above the filled background; 0-100\n",
+        "name": "intensity",
+        "required": true
+      },
+      {
+        "type": "True",
+        "description": "True, if the background fill must be applied only to the pattern itself. All other pixels are black in this case. For dark themes only",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the background fill must be applied only to the pattern itself. All other pixels are black in this case. For dark themes only</td>",
+        "rst_description": "*Optional*. :code:`True`, if the background fill must be applied only to the pattern itself. All other pixels are black in this case. For dark themes only\n",
+        "name": "is_inverted",
+        "required": false
+      },
+      {
+        "type": "True",
+        "description": "True, if the background moves slightly when the device is tilted",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the background moves slightly when the device is tilted</td>",
+        "rst_description": "*Optional*. :code:`True`, if the background moves slightly when the device is tilted\n",
+        "name": "is_moving",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

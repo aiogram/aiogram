@@ -1,0 +1,25 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Stickers",
+    "anchor": "stickers"
+  },
+  "object": {
+    "anchor": "getstickerset",
+    "name": "getStickerSet",
+    "description": "Use this method to get a sticker set. On success, a StickerSet object is returned.",
+    "html_description": "<p>Use this method to get a sticker set. On success, a <a href=\"#stickerset\">StickerSet</a> object is returned.</p>",
+    "rst_description": "Use this method to get a sticker set. On success, a :class:`aiogram.types.sticker_set.StickerSet` object is returned.",
+    "annotations": [
+      {
+        "type": "String",
+        "required": true,
+        "description": "Name of the sticker set",
+        "html_description": "<td>Name of the sticker set</td>",
+        "rst_description": "Name of the sticker set\n",
+        "name": "name"
+      }
+    ],
+    "category": "methods"
+  }
+}

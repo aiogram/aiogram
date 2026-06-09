@@ -1,0 +1,12 @@
+name: ChatBoostSourceType
+description: |
+  This object represents a type of chat boost source.
+
+  Source: https://core.telegram.org/bots/api#chatboostsource
+multi_parse:
+  attribute: source
+  regexp: "'([a-z_]+)'"
+  entities:
+    - ChatBoostSourcePremium
+    - ChatBoostSourceGiftCode
+    - ChatBoostSourceGiveaway

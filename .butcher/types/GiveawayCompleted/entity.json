@@ -1,0 +1,49 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "giveawaycompleted",
+    "name": "GiveawayCompleted",
+    "description": "This object represents a service message about the completion of a giveaway without public winners.",
+    "html_description": "<p>This object represents a service message about the completion of a giveaway without public winners.</p>",
+    "rst_description": "This object represents a service message about the completion of a giveaway without public winners.",
+    "annotations": [
+      {
+        "type": "Integer",
+        "description": "Number of winners in the giveaway",
+        "html_description": "<td>Number of winners in the giveaway</td>",
+        "rst_description": "Number of winners in the giveaway\n",
+        "name": "winner_count",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "Number of undistributed prizes",
+        "html_description": "<td><em>Optional</em>. Number of undistributed prizes</td>",
+        "rst_description": "*Optional*. Number of undistributed prizes\n",
+        "name": "unclaimed_prize_count",
+        "required": false
+      },
+      {
+        "type": "Message",
+        "description": "Message with the giveaway that was completed, if it wasn't deleted",
+        "html_description": "<td><em>Optional</em>. Message with the giveaway that was completed, if it wasn't deleted</td>",
+        "rst_description": "*Optional*. Message with the giveaway that was completed, if it wasn't deleted\n",
+        "name": "giveaway_message",
+        "required": false
+      },
+      {
+        "type": "True",
+        "description": "True, if the giveaway is a Telegram Star giveaway. Otherwise, currently, the giveaway is a Telegram Premium giveaway.",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the giveaway is a Telegram Star giveaway. Otherwise, currently, the giveaway is a Telegram Premium giveaway.</td>",
+        "rst_description": "*Optional*. :code:`True`, if the giveaway is a Telegram Star giveaway. Otherwise, currently, the giveaway is a Telegram Premium giveaway.\n",
+        "name": "is_star_giveaway",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

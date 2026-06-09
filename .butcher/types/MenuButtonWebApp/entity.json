@@ -1,0 +1,41 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "menubuttonwebapp",
+    "name": "MenuButtonWebApp",
+    "description": "Represents a menu button, which launches a Web App.",
+    "html_description": "<p>Represents a menu button, which launches a <a href=\"/bots/webapps\">Web App</a>.</p>",
+    "rst_description": "Represents a menu button, which launches a `Web App <https://core.telegram.org/bots/webapps>`_.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Type of the button, must be web_app",
+        "html_description": "<td>Type of the button, must be <em>web_app</em></td>",
+        "rst_description": "Type of the button, must be *web_app*\n",
+        "name": "type",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Text on the button",
+        "html_description": "<td>Text on the button</td>",
+        "rst_description": "Text on the button\n",
+        "name": "text",
+        "required": true
+      },
+      {
+        "type": "WebAppInfo",
+        "description": "Description of the Web App that will be launched when the user presses the button. The Web App will be able to send an arbitrary message on behalf of the user using the method answerWebAppQuery. Alternatively, a t.me link to a Web App of the bot can be specified in the object instead of the Web App's URL, in which case the Web App will be opened as if the user pressed the link.",
+        "html_description": "<td>Description of the Web App that will be launched when the user presses the button. The Web App will be able to send an arbitrary message on behalf of the user using the method <a href=\"#answerwebappquery\">answerWebAppQuery</a>. Alternatively, a <code>t.me</code> link to a Web App of the bot can be specified in the object instead of the Web App's URL, in which case the Web App will be opened as if the user pressed the link.</td>",
+        "rst_description": "Description of the Web App that will be launched when the user presses the button. The Web App will be able to send an arbitrary message on behalf of the user using the method :class:`aiogram.methods.answer_web_app_query.AnswerWebAppQuery`. Alternatively, a :code:`t.me` link to a Web App of the bot can be specified in the object instead of the Web App's URL, in which case the Web App will be opened as if the user pressed the link.\n",
+        "name": "web_app",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}
