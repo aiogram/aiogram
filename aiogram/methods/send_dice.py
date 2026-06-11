@@ -34,7 +34,7 @@ class SendDice(TelegramMethod[Message]):
     direct_messages_topic_id: int | None = None
     """Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat"""
     emoji: str | None = None
-    """Emoji on which the dice throw animation is based. Currently, must be one of '🎲', '🎯', '🏀', '⚽', '🎳', or '🎰'. Dice can have values 1-6 for '🎲', '🎯' and '🎳', values 1-5 for '🏀' and '⚽', and values 1-64 for '🎰'. Defaults to '🎲'"""
+    """Emoji on which the dice throw animation is based. Currently, must be one of '🎲', '🎯', '🏀', '⚽', '🎳', or '🎰'. Dice can have values 1-6 for '🎲', '🎯' and '🎳', values 1-5 for '🏀' and '⚽', and values 1-64 for '🎰'. Defaults to '🎲'."""
     disable_notification: bool | None = None
     """Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound."""
     protect_content: bool | Default | None = Default("protect_content")
@@ -48,7 +48,7 @@ class SendDice(TelegramMethod[Message]):
     reply_parameters: ReplyParameters | None = None
     """Description of the message to reply to"""
     reply_markup: ReplyMarkupUnion | None = None
-    """Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user"""
+    """Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user."""
     allow_sending_without_reply: bool | None = Field(None, json_schema_extra={"deprecated": True})
     """Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
 

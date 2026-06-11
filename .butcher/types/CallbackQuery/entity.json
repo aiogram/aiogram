@@ -37,9 +37,9 @@
       },
       {
         "type": "String",
-        "description": "Identifier of the message sent via the bot in inline mode, that originated the query.",
-        "html_description": "<td><em>Optional</em>. Identifier of the message sent via the bot in inline mode, that originated the query.</td>",
-        "rst_description": "*Optional*. Identifier of the message sent via the bot in inline mode, that originated the query.\n",
+        "description": "Identifier of the message sent via the bot in inline mode, that originated the query",
+        "html_description": "<td><em>Optional</em>. Identifier of the message sent via the bot in inline mode, that originated the query</td>",
+        "rst_description": "*Optional*. Identifier of the message sent via the bot in inline mode, that originated the query\n",
         "name": "inline_message_id",
         "required": false
       },

@@ -21,7 +21,7 @@ class ApproveSuggestedPost(TelegramMethod[bool]):
     message_id: int
     """Identifier of a suggested post message to approve"""
     send_date: DateTimeUnion | None = None
-    """Point in time (Unix timestamp) when the post is expected to be published; omit if the date has already been specified when the suggested post was created. If specified, then the date must be not more than 2678400 seconds (30 days) in the future"""
+    """Point in time (Unix timestamp) when the post is expected to be published; omit if the date has already been specified when the suggested post was created. If specified, then the date must be not more than 2678400 seconds (30 days) in the future."""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!

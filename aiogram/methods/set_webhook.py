@@ -27,7 +27,7 @@ class SetWebhook(TelegramMethod[bool]):
     __api_method__ = "setWebhook"
 
     url: str
-    """HTTPS URL to send updates to. Use an empty string to remove webhook integration"""
+    """HTTPS URL to send updates to. Use an empty string to remove webhook integration."""
     certificate: InputFile | None = None
     """Upload your public key certificate so that the root certificate in use can be checked. See our `self-signed guide <https://core.telegram.org/bots/self-signed>`_ for details."""
     ip_address: str | None = None

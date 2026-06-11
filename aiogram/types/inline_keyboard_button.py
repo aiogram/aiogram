@@ -40,7 +40,7 @@ class InlineKeyboardButton(MutableTelegramObject):
     switch_inline_query_chosen_chat: SwitchInlineQueryChosenChat | None = None
     """*Optional*. If set, pressing the button will prompt the user to select one of their chats of the specified type, open that chat and insert the bot's username and the specified inline query in the input field. Not supported for messages sent in channel direct messages chats and on behalf of a business account."""
     copy_text: CopyTextButton | None = None
-    """*Optional*. Description of the button that copies the specified text to the clipboard."""
+    """*Optional*. Description of the button that copies the specified text to the clipboard"""
     callback_game: CallbackGame | None = None
     """*Optional*. Description of the game that will be launched when the user presses the button."""
     pay: bool | None = None

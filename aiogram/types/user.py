@@ -51,6 +51,8 @@ class User(TelegramObject):
     """*Optional*. :code:`True`, if the bot allows users to create and delete topics in private chats. Returned only in :class:`aiogram.methods.get_me.GetMe`."""
     can_manage_bots: bool | None = None
     """*Optional*. :code:`True`, if other bots can be created to be controlled by the bot. Returned only in :class:`aiogram.methods.get_me.GetMe`."""
+    supports_join_request_queries: bool | None = None
+    """*Optional*. :code:`True`, if the bot supports join request queries and can be assigned to process them. Returned only in :class:`aiogram.methods.get_me.GetMe`."""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!
@@ -76,6 +78,7 @@ class User(TelegramObject):
             has_topics_enabled: bool | None = None,
             allows_users_to_create_topics: bool | None = None,
             can_manage_bots: bool | None = None,
+            supports_join_request_queries: bool | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!
@@ -100,6 +103,7 @@ class User(TelegramObject):
                 has_topics_enabled=has_topics_enabled,
                 allows_users_to_create_topics=allows_users_to_create_topics,
                 can_manage_bots=can_manage_bots,
+                supports_join_request_queries=supports_join_request_queries,
                 **__pydantic_kwargs,
             )
 

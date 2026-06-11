@@ -24,7 +24,7 @@ class ChatMemberRestricted(ChatMember):
     is_member: bool
     """:code:`True`, if the user is a member of the chat at the moment of the request"""
     can_send_messages: bool
-    """:code:`True`, if the user is allowed to send text messages, contacts, giveaways, giveaway winners, invoices, locations and venues"""
+    """:code:`True`, if the user is allowed to send text messages, rich messages, contacts, giveaways, giveaway winners, invoices, locations and venues"""
     can_send_audios: bool
     """:code:`True`, if the user is allowed to send audios"""
     can_send_documents: bool
@@ -56,7 +56,7 @@ class ChatMemberRestricted(ChatMember):
     can_manage_topics: bool
     """:code:`True`, if the user is allowed to create forum topics"""
     until_date: DateTime
-    """Date when restrictions will be lifted for this user; Unix time. If 0, then the user is restricted forever"""
+    """Date when restrictions will be lifted for this user; Unix time. If 0, then the user is restricted forever."""
     tag: str | None = None
     """*Optional*. Tag of the member"""
 

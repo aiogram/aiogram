@@ -15,7 +15,7 @@ class DeleteAllMessageReactions(TelegramMethod[bool]):
     __api_method__ = "deleteAllMessageReactions"
 
     chat_id: ChatIdUnion
-    """Unique identifier for the target chat or username of the target supergroup (in the format :code:`@username`)"""
+    """Unique identifier for the target chat or username of the target supergroup in the format :code:`@username`"""
     user_id: int | None = None
     """Identifier of the user whose reactions will be removed, if the reactions were added by a user"""
     actor_chat_id: int | None = None

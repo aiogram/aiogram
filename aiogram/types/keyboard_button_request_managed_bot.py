@@ -11,7 +11,7 @@ class KeyboardButtonRequestManagedBot(TelegramObject):
     """
 
     request_id: int
-    """Signed 32-bit identifier of the request. Must be unique within the message"""
+    """Signed 32-bit identifier of the request. Must be unique within the message."""
     suggested_name: str | None = None
     """*Optional*. Suggested name for the bot"""
     suggested_username: str | None = None

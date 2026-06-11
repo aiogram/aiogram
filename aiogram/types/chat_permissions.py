@@ -13,7 +13,7 @@ class ChatPermissions(MutableTelegramObject):
     """
 
     can_send_messages: bool | None = None
-    """*Optional*. :code:`True`, if the user is allowed to send text messages, contacts, giveaways, giveaway winners, invoices, locations and venues"""
+    """*Optional*. :code:`True`, if the user is allowed to send text messages, rich messages, contacts, giveaways, giveaway winners, invoices, locations and venues"""
     can_send_audios: bool | None = None
     """*Optional*. :code:`True`, if the user is allowed to send audios"""
     can_send_documents: bool | None = None
@@ -37,13 +37,13 @@ class ChatPermissions(MutableTelegramObject):
     can_edit_tag: bool | None = None
     """*Optional*. :code:`True`, if the user is allowed to edit their own tag. If omitted, defaults to the value of *can_pin_messages*."""
     can_change_info: bool | None = None
-    """*Optional*. :code:`True`, if the user is allowed to change the chat title, photo and other settings. Ignored in public supergroups"""
+    """*Optional*. :code:`True`, if the user is allowed to change the chat title, photo and other settings. Ignored in public supergroups."""
     can_invite_users: bool | None = None
     """*Optional*. :code:`True`, if the user is allowed to invite new users to the chat"""
     can_pin_messages: bool | None = None
-    """*Optional*. :code:`True`, if the user is allowed to pin messages. Ignored in public supergroups"""
+    """*Optional*. :code:`True`, if the user is allowed to pin messages. Ignored in public supergroups."""
     can_manage_topics: bool | None = None
-    """*Optional*. :code:`True`, if the user is allowed to create forum topics. If omitted defaults to the value of can_pin_messages"""
+    """*Optional*. :code:`True`, if the user is allowed to create forum topics. If omitted defaults to the value of can_pin_messages."""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!

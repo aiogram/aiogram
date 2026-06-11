@@ -1,0 +1,49 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Rich messages",
+    "anchor": "rich-messages"
+  },
+  "object": {
+    "anchor": "sendrichmessagedraft",
+    "name": "sendRichMessageDraft",
+    "description": "Use this method to stream a partial rich message to a user while the message is being generated. Note that the streamed draft is ephemeral and acts as a temporary 30-second preview - once the output is finalized, you must call sendRichMessage with the complete message to persist it in the user's chat. Returns True on success.",
+    "html_description": "<p>Use this method to stream a partial rich message to a user while the message is being generated. Note that the streamed draft is ephemeral and acts as a temporary 30-second preview - once the output is finalized, you <strong>must</strong> call <a href=\"#sendrichmessage\">sendRichMessage</a> with the complete message to persist it in the user's chat. Returns <em>True</em> on success.</p>",
+    "rst_description": "Use this method to stream a partial rich message to a user while the message is being generated. Note that the streamed draft is ephemeral and acts as a temporary 30-second preview - once the output is finalized, you **must** call :class:`aiogram.methods.send_rich_message.SendRichMessage` with the complete message to persist it in the user's chat. Returns :code:`True` on success.",
+    "annotations": [
+      {
+        "type": "Integer",
+        "required": true,
+        "description": "Unique identifier for the target private chat",
+        "html_description": "<td>Unique identifier for the target private chat</td>",
+        "rst_description": "Unique identifier for the target private chat\n",
+        "name": "chat_id"
+      },
+      {
+        "type": "Integer",
+        "required": false,
+        "description": "Unique identifier for the target message thread",
+        "html_description": "<td>Unique identifier for the target message thread</td>",
+        "rst_description": "Unique identifier for the target message thread\n",
+        "name": "message_thread_id"
+      },
+      {
+        "type": "Integer",
+        "required": true,
+        "description": "Unique identifier of the message draft; must be non-zero. Changes to drafts with the same identifier are animated.",
+        "html_description": "<td>Unique identifier of the message draft; must be non-zero. Changes to drafts with the same identifier are animated.</td>",
+        "rst_description": "Unique identifier of the message draft; must be non-zero. Changes to drafts with the same identifier are animated.\n",
+        "name": "draft_id"
+      },
+      {
+        "type": "InputRichMessage",
+        "required": true,
+        "description": "The partial message to be streamed",
+        "html_description": "<td>The partial message to be streamed</td>",
+        "rst_description": "The partial message to be streamed\n",
+        "name": "rich_message"
+      }
+    ],
+    "category": "methods"
+  }
+}

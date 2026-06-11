@@ -30,17 +30,17 @@
       {
         "type": "Integer",
         "required": false,
-        "description": "Required if inline_message_id is not specified. Identifier of the message to edit",
-        "html_description": "<td>Required if <em>inline_message_id</em> is not specified. Identifier of the message to edit</td>",
-        "rst_description": "Required if *inline_message_id* is not specified. Identifier of the message to edit\n",
+        "description": "Required if inline_message_id is not specified. Identifier of the message to edit.",
+        "html_description": "<td>Required if <em>inline_message_id</em> is not specified. Identifier of the message to edit.</td>",
+        "rst_description": "Required if *inline_message_id* is not specified. Identifier of the message to edit.\n",
         "name": "message_id"
       },
       {
         "type": "String",
         "required": false,
-        "description": "Required if chat_id and message_id are not specified. Identifier of the inline message",
-        "html_description": "<td>Required if <em>chat_id</em> and <em>message_id</em> are not specified. Identifier of the inline message</td>",
-        "rst_description": "Required if *chat_id* and *message_id* are not specified. Identifier of the inline message\n",
+        "description": "Required if chat_id and message_id are not specified. Identifier of the inline message.",
+        "html_description": "<td>Required if <em>chat_id</em> and <em>message_id</em> are not specified. Identifier of the inline message.</td>",
+        "rst_description": "Required if *chat_id* and *message_id* are not specified. Identifier of the inline message.\n",
         "name": "inline_message_id"
       },
       {
@@ -62,9 +62,9 @@
       {
         "type": "Integer",
         "required": false,
-        "description": "New period in seconds during which the location can be updated, starting from the message send date. If 0x7FFFFFFF is specified, then the location can be updated forever. Otherwise, the new value must not exceed the current live_period by more than a day, and the live location expiration date must remain within the next 90 days. If not specified, then live_period remains unchanged",
-        "html_description": "<td>New period in seconds during which the location can be updated, starting from the message send date. If 0x7FFFFFFF is specified, then the location can be updated forever. Otherwise, the new value must not exceed the current <em>live_period</em> by more than a day, and the live location expiration date must remain within the next 90 days. If not specified, then <em>live_period</em> remains unchanged</td>",
-        "rst_description": "New period in seconds during which the location can be updated, starting from the message send date. If 0x7FFFFFFF is specified, then the location can be updated forever. Otherwise, the new value must not exceed the current *live_period* by more than a day, and the live location expiration date must remain within the next 90 days. If not specified, then *live_period* remains unchanged\n",
+        "description": "New period in seconds during which the location can be updated, starting from the message send date. If 0x7FFFFFFF is specified, then the location can be updated forever. Otherwise, the new value must not exceed the current live_period by more than a day, and the live location expiration date must remain within the next 90 days. If not specified, then live_period remains unchanged.",
+        "html_description": "<td>New period in seconds during which the location can be updated, starting from the message send date. If 0x7FFFFFFF is specified, then the location can be updated forever. Otherwise, the new value must not exceed the current <em>live_period</em> by more than a day, and the live location expiration date must remain within the next 90 days. If not specified, then <em>live_period</em> remains unchanged.</td>",
+        "rst_description": "New period in seconds during which the location can be updated, starting from the message send date. If 0x7FFFFFFF is specified, then the location can be updated forever. Otherwise, the new value must not exceed the current *live_period* by more than a day, and the live location expiration date must remain within the next 90 days. If not specified, then *live_period* remains unchanged.\n",
         "name": "live_period"
       },
       {
@@ -94,9 +94,9 @@
       {
         "type": "InlineKeyboardMarkup",
         "required": false,
-        "description": "A JSON-serialized object for a new inline keyboard.",
-        "html_description": "<td>A JSON-serialized object for a new <a href=\"/bots/features#inline-keyboards\">inline keyboard</a>.</td>",
-        "rst_description": "A JSON-serialized object for a new `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_.\n",
+        "description": "A JSON-serialized object for a new inline keyboard",
+        "html_description": "<td>A JSON-serialized object for a new <a href=\"/bots/features#inline-keyboards\">inline keyboard</a></td>",
+        "rst_description": "A JSON-serialized object for a new `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_\n",
         "name": "reply_markup"
       }
     ],

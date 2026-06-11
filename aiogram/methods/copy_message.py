@@ -40,7 +40,7 @@ class CopyMessage(TelegramMethod[MessageId]):
     video_start_timestamp: DateTimeUnion | None = None
     """New start timestamp for the copied video in the message"""
     caption: str | None = None
-    """New caption for media, 0-1024 characters after entities parsing. If not specified, the original caption is kept"""
+    """New caption for media, 0-1024 characters after entities parsing. If not specified, the original caption is kept."""
     parse_mode: str | Default | None = Default("parse_mode")
     """Mode for parsing entities in the new caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details."""
     caption_entities: list[MessageEntity] | None = None
@@ -60,7 +60,7 @@ class CopyMessage(TelegramMethod[MessageId]):
     reply_parameters: ReplyParameters | None = None
     """Description of the message to reply to"""
     reply_markup: ReplyMarkupUnion | None = None
-    """Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user"""
+    """Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user."""
     allow_sending_without_reply: bool | None = Field(None, json_schema_extra={"deprecated": True})
     """Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
 

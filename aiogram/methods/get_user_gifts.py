@@ -33,7 +33,7 @@ class GetUserGifts(TelegramMethod[OwnedGifts]):
     offset: str | None = None
     """Offset of the first entry to return as received from the previous request; use an empty string to get the first chunk of results"""
     limit: int | None = None
-    """The maximum number of gifts to be returned; 1-100. Defaults to 100"""
+    """The maximum number of gifts to be returned; 1-100. Defaults to 100."""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!

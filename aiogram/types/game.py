@@ -22,13 +22,13 @@ class Game(TelegramObject):
     description: str
     """Description of the game"""
     photo: list[PhotoSize]
-    """Photo that will be displayed in the game message in chats."""
+    """Photo that will be displayed in the game message in chats"""
     text: str | None = None
     """*Optional*. Brief description of the game or high scores included in the game message. Can be automatically edited to include current high scores for the game when the bot calls :class:`aiogram.methods.set_game_score.SetGameScore`, or manually edited using :class:`aiogram.methods.edit_message_text.EditMessageText`. 0-4096 characters."""
     text_entities: list[MessageEntity] | None = None
     """*Optional*. Special entities that appear in *text*, such as usernames, URLs, bot commands, etc."""
     animation: Animation | None = None
-    """*Optional*. Animation that will be displayed in the game message in chats. Upload via `BotFather <https://t.me/botfather>`_"""
+    """*Optional*. Animation that will be displayed in the game message in chats. Upload via `BotFather <https://t.me/botfather>`_."""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!

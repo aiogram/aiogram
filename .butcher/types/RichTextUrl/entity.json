@@ -1,0 +1,41 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Rich messages",
+    "anchor": "rich-messages"
+  },
+  "object": {
+    "anchor": "richtexturl",
+    "name": "RichTextUrl",
+    "description": "A text with a link.",
+    "html_description": "<p>A text with a link.</p>",
+    "rst_description": "A text with a link.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Type of the rich text, always 'url'",
+        "html_description": "<td>Type of the rich text, always &#8220;url&#8221;</td>",
+        "rst_description": "Type of the rich text, always 'url'\n",
+        "name": "type",
+        "required": true
+      },
+      {
+        "type": "RichText",
+        "description": "The text",
+        "html_description": "<td>The text</td>",
+        "rst_description": "The text\n",
+        "name": "text",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "URL of the link",
+        "html_description": "<td>URL of the link</td>",
+        "rst_description": "URL of the link\n",
+        "name": "url",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

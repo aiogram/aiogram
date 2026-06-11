@@ -22,9 +22,9 @@ class EditMessageCaption(TelegramMethod[Message | bool]):
     chat_id: ChatIdUnion | None = None
     """Required if *inline_message_id* is not specified. Unique identifier for the target chat or username of the target bot, supergroup or channel in the format :code:`@username`."""
     message_id: int | None = None
-    """Required if *inline_message_id* is not specified. Identifier of the message to edit"""
+    """Required if *inline_message_id* is not specified. Identifier of the message to edit."""
     inline_message_id: str | None = None
-    """Required if *chat_id* and *message_id* are not specified. Identifier of the inline message"""
+    """Required if *chat_id* and *message_id* are not specified. Identifier of the inline message."""
     caption: str | None = None
     """New caption of the message, 0-1024 characters after entities parsing"""
     parse_mode: str | Default | None = Default("parse_mode")
@@ -34,7 +34,7 @@ class EditMessageCaption(TelegramMethod[Message | bool]):
     show_caption_above_media: bool | Default | None = Default("show_caption_above_media")
     """Pass :code:`True`, if the caption must be shown above the message media. Supported only for animation, photo and video messages."""
     reply_markup: InlineKeyboardMarkup | None = None
-    """A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_."""
+    """A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!

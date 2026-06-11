@@ -1,0 +1,33 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "inputmedialink",
+    "name": "InputMediaLink",
+    "description": "Represents an HTTP link to be sent.",
+    "html_description": "<p>Represents an HTTP link to be sent.</p>",
+    "rst_description": "Represents an HTTP link to be sent.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Type of the result, must be link",
+        "html_description": "<td>Type of the result, must be <em>link</em></td>",
+        "rst_description": "Type of the result, must be *link*\n",
+        "name": "type",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "HTTP URL of the link",
+        "html_description": "<td>HTTP URL of the link</td>",
+        "rst_description": "HTTP URL of the link\n",
+        "name": "url",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

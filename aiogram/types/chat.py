@@ -587,7 +587,7 @@ class Chat(TelegramObject):
         :param name: Invite link name; 0-32 characters
         :param expire_date: Point in time (Unix timestamp) when the link will expire
         :param member_limit: The maximum number of users that can be members of the chat simultaneously after joining the chat via this invite link; 1-99999
-        :param creates_join_request: :code:`True`, if users joining the chat via the link need to be approved by chat administrators. If :code:`True`, *member_limit* can't be specified
+        :param creates_join_request: :code:`True`, if users joining the chat via the link need to be approved by chat administrators. If :code:`True`, *member_limit* can't be specified.
         :return: instance of method :class:`aiogram.methods.edit_chat_invite_link.EditChatInviteLink`
         """
         # DO NOT EDIT MANUALLY!!!
@@ -626,7 +626,7 @@ class Chat(TelegramObject):
         :param name: Invite link name; 0-32 characters
         :param expire_date: Point in time (Unix timestamp) when the link will expire
         :param member_limit: The maximum number of users that can be members of the chat simultaneously after joining the chat via this invite link; 1-99999
-        :param creates_join_request: :code:`True`, if users joining the chat via the link need to be approved by chat administrators. If :code:`True`, *member_limit* can't be specified
+        :param creates_join_request: :code:`True`, if users joining the chat via the link need to be approved by chat administrators. If :code:`True`, *member_limit* can't be specified.
         :return: instance of method :class:`aiogram.methods.create_chat_invite_link.CreateChatInviteLink`
         """
         # DO NOT EDIT MANUALLY!!!
@@ -1072,7 +1072,7 @@ class Chat(TelegramObject):
         :param can_manage_chat: Pass :code:`True` if the administrator can access the chat event log, get boost list, see hidden supergroup and channel members, report spam messages, ignore slow mode, and send messages to the chat without paying Telegram Stars. Implied by any other administrator privilege.
         :param can_delete_messages: Pass :code:`True` if the administrator can delete messages of other users
         :param can_manage_video_chats: Pass :code:`True` if the administrator can manage video chats
-        :param can_restrict_members: Pass :code:`True` if the administrator can restrict, ban or unban chat members, or access supergroup statistics. For backward compatibility, defaults to :code:`True` for promotions of channel administrators
+        :param can_restrict_members: Pass :code:`True` if the administrator can restrict, ban or unban chat members, or access supergroup statistics. For backward compatibility, defaults to :code:`True` for promotions of channel administrators.
         :param can_promote_members: Pass :code:`True` if the administrator can add new administrators with a subset of their own privileges or demote administrators that they have promoted, directly or indirectly (promoted by administrators that were appointed by him)
         :param can_change_info: Pass :code:`True` if the administrator can change chat title, photo and other settings
         :param can_invite_users: Pass :code:`True` if the administrator can invite new users to the chat
@@ -1136,7 +1136,7 @@ class Chat(TelegramObject):
         :param user_id: Unique identifier of the target user
         :param permissions: A JSON-serialized object for new user permissions
         :param use_independent_chat_permissions: Pass :code:`True` if chat permissions are set independently. Otherwise, the *can_send_other_messages* and *can_add_web_page_previews* permissions will imply the *can_send_messages*, *can_send_audios*, *can_send_documents*, *can_send_photos*, *can_send_videos*, *can_send_video_notes*, and *can_send_voice_notes* permissions; the *can_send_polls* permission will imply the *can_send_messages* permission.
-        :param until_date: Date when restrictions will be lifted for the user; Unix time. If user is restricted for more than 366 days or less than 30 seconds from the current time, they are considered to be restricted forever
+        :param until_date: Date when restrictions will be lifted for the user; Unix time. If user is restricted for more than 366 days or less than 30 seconds from the current time, they are considered to be restricted forever.
         :return: instance of method :class:`aiogram.methods.restrict_chat_member.RestrictChatMember`
         """
         # DO NOT EDIT MANUALLY!!!

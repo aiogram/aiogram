@@ -16,9 +16,9 @@ class KeyboardButtonRequestChat(TelegramObject):
     """
 
     request_id: int
-    """Signed 32-bit identifier of the request, which will be received back in the :class:`aiogram.types.chat_shared.ChatShared` object. Must be unique within the message"""
+    """Signed 32-bit identifier of the request, which will be received back in the :class:`aiogram.types.chat_shared.ChatShared` object. Must be unique within the message."""
     chat_is_channel: bool
-    """Pass :code:`True` to request a channel chat, pass :code:`False` to request a group or a supergroup chat."""
+    """Pass :code:`True` to request a channel chat, pass :code:`False` to request a group or a supergroup chat"""
     chat_is_forum: bool | None = None
     """*Optional*. Pass :code:`True` to request a forum supergroup, pass :code:`False` to request a non-forum chat. If not specified, no additional restrictions are applied."""
     chat_has_username: bool | None = None

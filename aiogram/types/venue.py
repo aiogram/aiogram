@@ -16,7 +16,7 @@ class Venue(TelegramObject):
     """
 
     location: Location
-    """Venue location. Can't be a live location"""
+    """Venue location. Can't be a live location."""
     title: str
     """Name of the venue"""
     address: str

@@ -66,13 +66,13 @@ class Update(TelegramObject):
     callback_query: CallbackQuery | None = None
     """*Optional*. New incoming callback query"""
     shipping_query: ShippingQuery | None = None
-    """*Optional*. New incoming shipping query. Only for invoices with flexible price"""
+    """*Optional*. New incoming shipping query. Only for invoices with flexible price."""
     pre_checkout_query: PreCheckoutQuery | None = None
-    """*Optional*. New incoming pre-checkout query. Contains full information about checkout"""
+    """*Optional*. New incoming pre-checkout query. Contains full information about checkout."""
     purchased_paid_media: PaidMediaPurchased | None = None
     """*Optional*. A user purchased paid media with a non-empty payload sent by the bot in a non-channel chat"""
     poll: Poll | None = None
-    """*Optional*. New poll state. Bots receive only updates about manually stopped polls and polls, which are sent by the bot"""
+    """*Optional*. New poll state. Bots receive only updates about manually stopped polls and polls, which are sent by the bot."""
     poll_answer: PollAnswer | None = None
     """*Optional*. A user changed their answer in a non-anonymous poll. Bots receive new votes only in polls that were sent by the bot itself."""
     my_chat_member: ChatMemberUpdated | None = None

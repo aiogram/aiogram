@@ -77,9 +77,9 @@
       },
       {
         "type": "Integer",
-        "description": "Point in time (Unix timestamp) when the gift can be transferred. If it is in the past, then the gift can be transferred now",
-        "html_description": "<td><em>Optional</em>. Point in time (Unix timestamp) when the gift can be transferred. If it is in the past, then the gift can be transferred now</td>",
-        "rst_description": "*Optional*. Point in time (Unix timestamp) when the gift can be transferred. If it is in the past, then the gift can be transferred now\n",
+        "description": "Point in time (Unix timestamp) when the gift can be transferred. If it is in the past, then the gift can be transferred now.",
+        "html_description": "<td><em>Optional</em>. Point in time (Unix timestamp) when the gift can be transferred. If it is in the past, then the gift can be transferred now.</td>",
+        "rst_description": "*Optional*. Point in time (Unix timestamp) when the gift can be transferred. If it is in the past, then the gift can be transferred now.\n",
         "name": "next_transfer_date",
         "required": false
       }

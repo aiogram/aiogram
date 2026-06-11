@@ -9,6 +9,7 @@ class ContentType(str, Enum):
     UNKNOWN = "unknown"
     ANY = "any"
     TEXT = "text"
+    RICH_MESSAGE = "rich_message"
     ANIMATION = "animation"
     AUDIO = "audio"
     DOCUMENT = "document"

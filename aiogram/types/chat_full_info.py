@@ -20,6 +20,7 @@ if TYPE_CHECKING:
     from .message import Message
     from .reaction_type_union import ReactionTypeUnion
     from .unique_gift_colors import UniqueGiftColors
+    from .user import User
     from .user_rating import UserRating
 
 
@@ -131,7 +132,9 @@ class ChatFullInfo(Chat):
     unique_gift_colors: UniqueGiftColors | None = None
     """*Optional*. The color scheme based on a unique gift that must be used for the chat's name, message replies and link previews"""
     paid_message_star_count: int | None = None
-    """*Optional*. The number of Telegram Stars a general user have to pay to send a message to the chat"""
+    """*Optional*. The number of Telegram Stars a general user has to pay to send a message to the chat"""
+    guard_bot: User | None = None
+    """*Optional*. The bot that processes join request queries in the chat. The field is only available to chat administrators."""
     can_send_gift: bool | None = Field(None, json_schema_extra={"deprecated": True})
     """*Optional*. :code:`True`, if gifts can be sent to the chat
 
@@ -196,6 +199,7 @@ class ChatFullInfo(Chat):
             first_profile_audio: Audio | None = None,
             unique_gift_colors: UniqueGiftColors | None = None,
             paid_message_star_count: int | None = None,
+            guard_bot: User | None = None,
             can_send_gift: bool | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
@@ -255,6 +259,7 @@ class ChatFullInfo(Chat):
                 first_profile_audio=first_profile_audio,
                 unique_gift_colors=unique_gift_colors,
                 paid_message_star_count=paid_message_star_count,
+                guard_bot=guard_bot,
                 can_send_gift=can_send_gift,
                 **__pydantic_kwargs,
             )

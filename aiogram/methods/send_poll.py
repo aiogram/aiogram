@@ -39,9 +39,9 @@ class SendPoll(TelegramMethod[Message]):
     message_thread_id: int | None = None
     """Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only"""
     question_parse_mode: str | Default | None = Default("parse_mode")
-    """Mode for parsing entities in the question. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details. Currently, only custom emoji entities are allowed"""
+    """Mode for parsing entities in the question. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details. Currently, only custom emoji entities are allowed."""
     question_entities: list[MessageEntity] | None = None
-    """A JSON-serialized list of special entities that appear in the poll question. It can be specified instead of *question_parse_mode*"""
+    """A JSON-serialized list of special entities that appear in the poll question. It can be specified instead of *question_parse_mode*."""
     is_anonymous: bool | None = None
     """:code:`True`, if the poll needs to be anonymous, defaults to :code:`True`"""
     type: str | None = None
@@ -59,7 +59,7 @@ class SendPoll(TelegramMethod[Message]):
     members_only: bool | None = None
     """Pass :code:`True`, if voting is limited to users who have been members of the chat where the poll is being sent for more than 24 hours; for channel chats only"""
     country_codes: list[str] | None = None
-    """A JSON-serialized list of 0-12 two-letter `ISO 3166-1 alpha-2 <https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2>`_ country codes indicating the countries from which users can vote in the poll; for channel chats only. If omitted or empty, then users from any country can participate in the poll."""
+    """A JSON-serialized list of 0-12 two-letter `ISO 3166-1 alpha-2 <https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2>`_ country codes indicating the countries from which users can vote in the poll; for channel chats only. Use 'FT' as a country code to allow users with anonymous numbers to vote. If omitted or empty, then users from any country can participate in the poll."""
     correct_option_ids: list[int] | None = None
     """A JSON-serialized list of monotonically increasing 0-based identifiers of the correct answer options, required for polls in quiz mode"""
     explanation: str | None = None
@@ -67,7 +67,7 @@ class SendPoll(TelegramMethod[Message]):
     explanation_parse_mode: str | Default | None = Default("parse_mode")
     """Mode for parsing entities in the explanation. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details."""
     explanation_entities: list[MessageEntity] | None = None
-    """A JSON-serialized list of special entities that appear in the poll explanation. It can be specified instead of *explanation_parse_mode*"""
+    """A JSON-serialized list of special entities that appear in the poll explanation. It can be specified instead of *explanation_parse_mode*."""
     explanation_media: InputPollMediaUnion | None = None
     """Media added to the quiz explanation"""
     open_period: int | None = None
@@ -95,7 +95,7 @@ class SendPoll(TelegramMethod[Message]):
     reply_parameters: ReplyParameters | None = None
     """Description of the message to reply to"""
     reply_markup: ReplyMarkupUnion | None = None
-    """Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user"""
+    """Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user."""
     allow_sending_without_reply: bool | None = Field(None, json_schema_extra={"deprecated": True})
     """Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
 

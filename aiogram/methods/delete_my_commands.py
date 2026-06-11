@@ -19,7 +19,7 @@ class DeleteMyCommands(TelegramMethod[bool]):
     scope: BotCommandScopeUnion | None = None
     """A JSON-serialized object, describing scope of users for which the commands are relevant. Defaults to :class:`aiogram.types.bot_command_scope_default.BotCommandScopeDefault`."""
     language_code: str | None = None
-    """A two-letter ISO 639-1 language code. If empty, commands will be applied to all users from the given scope, for whose language there are no dedicated commands"""
+    """A two-letter ISO 639-1 language code. If empty, commands will be applied to all users from the given scope, for whose language there are no dedicated commands."""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!

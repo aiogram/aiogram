@@ -36,6 +36,14 @@
         "required": false
       },
       {
+        "type": "Link",
+        "description": "The HTTP link attached to the poll option",
+        "html_description": "<td><em>Optional</em>. The HTTP link attached to the poll option</td>",
+        "rst_description": "*Optional*. The HTTP link attached to the poll option\n",
+        "name": "link",
+        "required": false
+      },
+      {
         "type": "LivePhoto",
         "description": "Media is a live photo, information about the live photo",
         "html_description": "<td><em>Optional</em>. Media is a live photo, information about the live photo</td>",

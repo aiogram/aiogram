@@ -48,7 +48,7 @@ class OwnedGiftRegular(OwnedGift):
     is_upgrade_separate: bool | None = None
     """*Optional*. :code:`True`, if the gift's upgrade was purchased after the gift was sent; for gifts received on behalf of business accounts only"""
     unique_gift_number: int | None = None
-    """*Optional*. Unique number reserved for this gift when upgraded. See the *number* field in :class:`aiogram.types.unique_gift.UniqueGift`"""
+    """*Optional*. Unique number reserved for this gift when upgraded. See the *number* field in :class:`aiogram.types.unique_gift.UniqueGift`."""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!

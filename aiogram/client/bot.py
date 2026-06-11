@@ -19,6 +19,7 @@ from aiogram.utils.token import extract_bot_id, validate_token
 from ..methods import (
     AddStickerToSet,
     AnswerCallbackQuery,
+    AnswerChatJoinRequestQuery,
     AnswerGuestQuery,
     AnswerInlineQuery,
     AnswerPreCheckoutQuery,
@@ -126,6 +127,7 @@ from ..methods import (
     SendAnimation,
     SendAudio,
     SendChatAction,
+    SendChatJoinRequestWebApp,
     SendChecklist,
     SendContact,
     SendDice,
@@ -141,6 +143,8 @@ from ..methods import (
     SendPaidMedia,
     SendPhoto,
     SendPoll,
+    SendRichMessage,
+    SendRichMessageDraft,
     SendSticker,
     SendVenue,
     SendVideo,
@@ -227,6 +231,7 @@ from ..types import (
     InputPollMediaUnion,
     InputPollOptionUnion,
     InputProfilePhotoUnion,
+    InputRichMessage,
     InputSticker,
     InputStoryContentUnion,
     KeyboardButton,
@@ -565,7 +570,7 @@ class Bot:
         Source: https://core.telegram.org/bots/api#answercallbackquery
 
         :param callback_query_id: Unique identifier for the query to be answered
-        :param text: Text of the notification. If not specified, nothing will be shown to the user, 0-200 characters
+        :param text: Text of the notification. If not specified, nothing will be shown to the user, 0-200 characters.
         :param show_alert: If :code:`True`, an alert will be shown by the client instead of a notification at the top of the chat screen. Defaults to *false*.
         :param url: URL that will be opened by the user's client. If you have created a :class:`aiogram.types.game.Game` and accepted the conditions via `@BotFather <https://t.me/botfather>`_, specify the URL that opens your game - note that this will only work if the query comes from a `https://core.telegram.org/bots/api#inlinekeyboardbutton <https://core.telegram.org/bots/api#inlinekeyboardbutton>`_ *callback_game* button.
         :param cache_time: The maximum amount of time in seconds that the result of the callback query may be cached client-side. Telegram apps will support caching starting in version 3.14. Defaults to 0.
@@ -851,7 +856,7 @@ class Bot:
         :param message_thread_id: Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only
         :param direct_messages_topic_id: Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat
         :param video_start_timestamp: New start timestamp for the copied video in the message
-        :param caption: New caption for media, 0-1024 characters after entities parsing. If not specified, the original caption is kept
+        :param caption: New caption for media, 0-1024 characters after entities parsing. If not specified, the original caption is kept.
         :param parse_mode: Mode for parsing entities in the new caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.
         :param caption_entities: A JSON-serialized list of special entities that appear in the new caption, which can be specified instead of *parse_mode*
         :param show_caption_above_media: Pass :code:`True`, if the caption must be shown above the message media. Ignored if a new caption isn't specified.
@@ -861,7 +866,7 @@ class Bot:
         :param message_effect_id: Unique identifier of the message effect to be added to the message; only available when copying to private chats
         :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined.
         :param reply_parameters: Description of the message to reply to
-        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
+        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user.
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :param request_timeout: Request timeout
@@ -909,7 +914,7 @@ class Bot:
         :param name: Invite link name; 0-32 characters
         :param expire_date: Point in time (Unix timestamp) when the link will expire
         :param member_limit: The maximum number of users that can be members of the chat simultaneously after joining the chat via this invite link; 1-99999
-        :param creates_join_request: :code:`True`, if users joining the chat via the link need to be approved by chat administrators. If :code:`True`, *member_limit* can't be specified
+        :param creates_join_request: :code:`True`, if users joining the chat via the link need to be approved by chat administrators. If :code:`True`, *member_limit* can't be specified.
         :param request_timeout: Request timeout
         :return: Returns the new invite link as :class:`aiogram.types.chat_invite_link.ChatInviteLink` object.
         """
@@ -938,7 +943,7 @@ class Bot:
 
         :param chat_id: Unique identifier for the target chat or username of the target supergroup in the format :code:`@username`
         :param name: Topic name, 1-128 characters
-        :param icon_color: Color of the topic icon in RGB format. Currently, must be one of 7322096 (0x6FB9F0), 16766590 (0xFFD67E), 13338331 (0xCB86DB), 9367192 (0x8EEE98), 16749490 (0xFF93B2), or 16478047 (0xFB6F5F)
+        :param icon_color: Color of the topic icon in RGB format. Currently, must be one of 7322096 (0x6FB9F0), 16766590 (0xFFD67E), 13338331 (0xCB86DB), 9367192 (0x8EEE98), 16749490 (0xFF93B2), or 16478047 (0xFB6F5F).
         :param icon_custom_emoji_id: Unique identifier of the custom emoji shown as the topic icon. Use :class:`aiogram.methods.get_forum_topic_icon_stickers.GetForumTopicIconStickers` to get all allowed custom emoji identifiers.
         :param request_timeout: Request timeout
         :return: Returns information about the created topic as a :class:`aiogram.types.forum_topic.ForumTopic` object.
@@ -1214,7 +1219,7 @@ class Bot:
         Source: https://core.telegram.org/bots/api#deletemycommands
 
         :param scope: A JSON-serialized object, describing scope of users for which the commands are relevant. Defaults to :class:`aiogram.types.bot_command_scope_default.BotCommandScopeDefault`.
-        :param language_code: A two-letter ISO 639-1 language code. If empty, commands will be applied to all users from the given scope, for whose language there are no dedicated commands
+        :param language_code: A two-letter ISO 639-1 language code. If empty, commands will be applied to all users from the given scope, for whose language there are no dedicated commands.
         :param request_timeout: Request timeout
         :return: Returns :code:`True` on success.
         """
@@ -1285,7 +1290,7 @@ class Bot:
         :param name: Invite link name; 0-32 characters
         :param expire_date: Point in time (Unix timestamp) when the link will expire
         :param member_limit: The maximum number of users that can be members of the chat simultaneously after joining the chat via this invite link; 1-99999
-        :param creates_join_request: :code:`True`, if users joining the chat via the link need to be approved by chat administrators. If :code:`True`, *member_limit* can't be specified
+        :param creates_join_request: :code:`True`, if users joining the chat via the link need to be approved by chat administrators. If :code:`True`, *member_limit* can't be specified.
         :param request_timeout: Request timeout
         :return: Returns the edited invite link as a :class:`aiogram.types.chat_invite_link.ChatInviteLink` object.
         """
@@ -1315,8 +1320,8 @@ class Bot:
 
         :param chat_id: Unique identifier for the target chat or username of the target supergroup in the format :code:`@username`
         :param message_thread_id: Unique identifier for the target message thread of the forum topic
-        :param name: New topic name, 0-128 characters. If not specified or empty, the current name of the topic will be kept
-        :param icon_custom_emoji_id: New unique identifier of the custom emoji shown as the topic icon. Use :class:`aiogram.methods.get_forum_topic_icon_stickers.GetForumTopicIconStickers` to get all allowed custom emoji identifiers. Pass an empty string to remove the icon. If not specified, the current icon will be kept
+        :param name: New topic name, 0-128 characters. If not specified or empty, the current name of the topic will be kept.
+        :param icon_custom_emoji_id: New unique identifier of the custom emoji shown as the topic icon. Use :class:`aiogram.methods.get_forum_topic_icon_stickers.GetForumTopicIconStickers` to get all allowed custom emoji identifiers. Pass an empty string to remove the icon. If not specified, the current icon will be kept.
         :param request_timeout: Request timeout
         :return: Returns :code:`True` on success.
         """
@@ -1349,13 +1354,13 @@ class Bot:
 
         :param business_connection_id: Unique identifier of the business connection on behalf of which the message to be edited was sent
         :param chat_id: Required if *inline_message_id* is not specified. Unique identifier for the target chat or username of the target bot, supergroup or channel in the format :code:`@username`.
-        :param message_id: Required if *inline_message_id* is not specified. Identifier of the message to edit
-        :param inline_message_id: Required if *chat_id* and *message_id* are not specified. Identifier of the inline message
+        :param message_id: Required if *inline_message_id* is not specified. Identifier of the message to edit.
+        :param inline_message_id: Required if *chat_id* and *message_id* are not specified. Identifier of the inline message.
         :param caption: New caption of the message, 0-1024 characters after entities parsing
         :param parse_mode: Mode for parsing entities in the message caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.
         :param caption_entities: A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*
         :param show_caption_above_media: Pass :code:`True`, if the caption must be shown above the message media. Supported only for animation, photo and video messages.
-        :param reply_markup: A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_.
+        :param reply_markup: A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_
         :param request_timeout: Request timeout
         :return: Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within **48 hours** from the time they were sent.
         """
@@ -1397,13 +1402,13 @@ class Bot:
         :param longitude: Longitude of new location
         :param business_connection_id: Unique identifier of the business connection on behalf of which the message to be edited was sent
         :param chat_id: Required if *inline_message_id* is not specified. Unique identifier for the target chat or username of the target bot, supergroup or channel in the format :code:`@username`.
-        :param message_id: Required if *inline_message_id* is not specified. Identifier of the message to edit
-        :param inline_message_id: Required if *chat_id* and *message_id* are not specified. Identifier of the inline message
-        :param live_period: New period in seconds during which the location can be updated, starting from the message send date. If 0x7FFFFFFF is specified, then the location can be updated forever. Otherwise, the new value must not exceed the current *live_period* by more than a day, and the live location expiration date must remain within the next 90 days. If not specified, then *live_period* remains unchanged
+        :param message_id: Required if *inline_message_id* is not specified. Identifier of the message to edit.
+        :param inline_message_id: Required if *chat_id* and *message_id* are not specified. Identifier of the inline message.
+        :param live_period: New period in seconds during which the location can be updated, starting from the message send date. If 0x7FFFFFFF is specified, then the location can be updated forever. Otherwise, the new value must not exceed the current *live_period* by more than a day, and the live location expiration date must remain within the next 90 days. If not specified, then *live_period* remains unchanged.
         :param horizontal_accuracy: The radius of uncertainty for the location, measured in meters; 0-1500
         :param heading: Direction in which the user is moving, in degrees. Must be between 1 and 360 if specified.
         :param proximity_alert_radius: The maximum distance for proximity alerts about approaching another chat member, in meters. Must be between 1 and 100000 if specified.
-        :param reply_markup: A JSON-serialized object for a new `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_.
+        :param reply_markup: A JSON-serialized object for a new `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_
         :param request_timeout: Request timeout
         :return: On success, if the edited message is not an inline message, the edited :class:`aiogram.types.message.Message` is returned, otherwise :code:`True` is returned.
         """
@@ -1434,16 +1439,16 @@ class Bot:
         request_timeout: int | None = None,
     ) -> Message | bool:
         """
-        Use this method to edit animation, audio, document, live photo, photo, or video messages, or to add media to text messages. If a message is part of a message album, then it can be edited only to an audio for audio albums, only to a document for document albums and to a photo, a live photo, or a video otherwise. When an inline message is edited, a new file can't be uploaded; use a previously uploaded file via its file_id or specify a URL. On success, if the edited message is not an inline message, the edited :class:`aiogram.types.message.Message` is returned, otherwise :code:`True` is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within **48 hours** from the time they were sent.
+        Use this method to edit animation, audio, document, live photo, photo, or video messages, or to replace a text or a rich message with a media. If a message is part of a message album, then it can be edited only to an audio for audio albums, only to a document for document albums and to a photo, a live photo, or a video otherwise. When an inline message is edited, a new file can't be uploaded; use a previously uploaded file via its file_id or specify a URL. On success, if the edited message is not an inline message, the edited :class:`aiogram.types.message.Message` is returned, otherwise :code:`True` is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within **48 hours** from the time they were sent.
 
         Source: https://core.telegram.org/bots/api#editmessagemedia
 
         :param media: A JSON-serialized object for a new media content of the message
         :param business_connection_id: Unique identifier of the business connection on behalf of which the message to be edited was sent
         :param chat_id: Required if *inline_message_id* is not specified. Unique identifier for the target chat or username of the target bot, supergroup or channel in the format :code:`@username`.
-        :param message_id: Required if *inline_message_id* is not specified. Identifier of the message to edit
-        :param inline_message_id: Required if *chat_id* and *message_id* are not specified. Identifier of the inline message
-        :param reply_markup: A JSON-serialized object for a new `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_.
+        :param message_id: Required if *inline_message_id* is not specified. Identifier of the message to edit.
+        :param inline_message_id: Required if *chat_id* and *message_id* are not specified. Identifier of the inline message.
+        :param reply_markup: A JSON-serialized object for a new `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_
         :param request_timeout: Request timeout
         :return: Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within **48 hours** from the time they were sent.
         """
@@ -1474,9 +1479,9 @@ class Bot:
 
         :param business_connection_id: Unique identifier of the business connection on behalf of which the message to be edited was sent
         :param chat_id: Required if *inline_message_id* is not specified. Unique identifier for the target chat or username of the target bot, supergroup or channel in the format :code:`@username`.
-        :param message_id: Required if *inline_message_id* is not specified. Identifier of the message to edit
-        :param inline_message_id: Required if *chat_id* and *message_id* are not specified. Identifier of the inline message
-        :param reply_markup: A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_.
+        :param message_id: Required if *inline_message_id* is not specified. Identifier of the message to edit.
+        :param inline_message_id: Required if *chat_id* and *message_id* are not specified. Identifier of the inline message.
+        :param reply_markup: A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_
         :param request_timeout: Request timeout
         :return: Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within **48 hours** from the time they were sent.
         """
@@ -1492,46 +1497,49 @@ class Bot:
 
     async def edit_message_text(
         self,
-        text: str,
         business_connection_id: str | None = None,
         chat_id: ChatIdUnion | None = None,
         message_id: int | None = None,
         inline_message_id: str | None = None,
+        text: str | None = None,
         parse_mode: str | Default | None = Default("parse_mode"),
         entities: list[MessageEntity] | None = None,
         link_preview_options: LinkPreviewOptions | Default | None = Default("link_preview"),
+        rich_message: InputRichMessage | None = None,
         reply_markup: InlineKeyboardMarkup | None = None,
         disable_web_page_preview: bool | Default | None = Default("link_preview_is_disabled"),
         request_timeout: int | None = None,
     ) -> Message | bool:
         """
-        Use this method to edit text and `game <https://core.telegram.org/bots/api#games>`_ messages. On success, if the edited message is not an inline message, the edited :class:`aiogram.types.message.Message` is returned, otherwise :code:`True` is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within **48 hours** from the time they were sent.
+        Use this method to edit text, rich and `game <https://core.telegram.org/bots/api#games>`_ messages. On success, if the edited message is not an inline message, the edited :class:`aiogram.types.message.Message` is returned, otherwise :code:`True` is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within **48 hours** from the time they were sent.
 
         Source: https://core.telegram.org/bots/api#editmessagetext
 
-        :param text: New text of the message, 1-4096 characters after entities parsing
         :param business_connection_id: Unique identifier of the business connection on behalf of which the message to be edited was sent
         :param chat_id: Required if *inline_message_id* is not specified. Unique identifier for the target chat or username of the target bot, supergroup or channel in the format :code:`@username`.
-        :param message_id: Required if *inline_message_id* is not specified. Identifier of the message to edit
-        :param inline_message_id: Required if *chat_id* and *message_id* are not specified. Identifier of the inline message
+        :param message_id: Required if *inline_message_id* is not specified. Identifier of the message to edit.
+        :param inline_message_id: Required if *chat_id* and *message_id* are not specified. Identifier of the inline message.
+        :param text: New text of the message, 1-4096 characters after entity parsing; required if *rich_message* isn't specified
         :param parse_mode: Mode for parsing entities in the message text. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.
         :param entities: A JSON-serialized list of special entities that appear in message text, which can be specified instead of *parse_mode*
         :param link_preview_options: Link preview generation options for the message
-        :param reply_markup: A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_.
+        :param rich_message: New rich content of the message; required if *text* isn't specified
+        :param reply_markup: A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_
         :param disable_web_page_preview: Disables link previews for links in this message
         :param request_timeout: Request timeout
         :return: Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within **48 hours** from the time they were sent.
         """
 
         call = EditMessageText(
-            text=text,
             business_connection_id=business_connection_id,
             chat_id=chat_id,
             message_id=message_id,
             inline_message_id=inline_message_id,
+            text=text,
             parse_mode=parse_mode,
             entities=entities,
             link_preview_options=link_preview_options,
+            rich_message=rich_message,
             reply_markup=reply_markup,
             disable_web_page_preview=disable_web_page_preview,
         )
@@ -1702,7 +1710,7 @@ class Bot:
 
         Source: https://core.telegram.org/bots/api#getchatmenubutton
 
-        :param chat_id: Unique identifier for the target private chat. If not specified, default bot's menu button will be returned
+        :param chat_id: Unique identifier for the target private chat. If not specified, the bot's default menu button will be returned.
         :param request_timeout: Request timeout
         :return: Returns :class:`aiogram.types.menu_button.MenuButton` on success.
         """
@@ -1785,9 +1793,9 @@ class Bot:
         Source: https://core.telegram.org/bots/api#getgamehighscores
 
         :param user_id: Target user id
-        :param chat_id: Required if *inline_message_id* is not specified. Unique identifier for the target chat
-        :param message_id: Required if *inline_message_id* is not specified. Identifier of the sent message
-        :param inline_message_id: Required if *chat_id* and *message_id* are not specified. Identifier of the inline message
+        :param chat_id: Required if *inline_message_id* is not specified. Unique identifier for the target chat.
+        :param message_id: Required if *inline_message_id* is not specified. Identifier of the sent message.
+        :param inline_message_id: Required if *chat_id* and *message_id* are not specified. Identifier of the inline message.
         :param request_timeout: Request timeout
         :return: Please note that this behavior is subject to change.
         """
@@ -2055,7 +2063,7 @@ class Bot:
         :param can_manage_chat: Pass :code:`True` if the administrator can access the chat event log, get boost list, see hidden supergroup and channel members, report spam messages, ignore slow mode, and send messages to the chat without paying Telegram Stars. Implied by any other administrator privilege.
         :param can_delete_messages: Pass :code:`True` if the administrator can delete messages of other users
         :param can_manage_video_chats: Pass :code:`True` if the administrator can manage video chats
-        :param can_restrict_members: Pass :code:`True` if the administrator can restrict, ban or unban chat members, or access supergroup statistics. For backward compatibility, defaults to :code:`True` for promotions of channel administrators
+        :param can_restrict_members: Pass :code:`True` if the administrator can restrict, ban or unban chat members, or access supergroup statistics. For backward compatibility, defaults to :code:`True` for promotions of channel administrators.
         :param can_promote_members: Pass :code:`True` if the administrator can add new administrators with a subset of their own privileges or demote administrators that they have promoted, directly or indirectly (promoted by administrators that were appointed by him)
         :param can_change_info: Pass :code:`True` if the administrator can change chat title, photo and other settings
         :param can_invite_users: Pass :code:`True` if the administrator can invite new users to the chat
@@ -2136,7 +2144,7 @@ class Bot:
         :param user_id: Unique identifier of the target user
         :param permissions: A JSON-serialized object for new user permissions
         :param use_independent_chat_permissions: Pass :code:`True` if chat permissions are set independently. Otherwise, the *can_send_other_messages* and *can_add_web_page_previews* permissions will imply the *can_send_messages*, *can_send_audios*, *can_send_documents*, *can_send_photos*, *can_send_videos*, *can_send_video_notes*, and *can_send_voice_notes* permissions; the *can_send_polls* permission will imply the *can_send_messages* permission.
-        :param until_date: Date when restrictions will be lifted for the user; Unix time. If user is restricted for more than 366 days or less than 30 seconds from the current time, they are considered to be restricted forever
+        :param until_date: Date when restrictions will be lifted for the user; Unix time. If user is restricted for more than 366 days or less than 30 seconds from the current time, they are considered to be restricted forever.
         :param request_timeout: Request timeout
         :return: Returns :code:`True` on success.
         """
@@ -2225,7 +2233,7 @@ class Bot:
         :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined.
         :param reply_parameters: Description of the message to reply to
-        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
+        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user.
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :param request_timeout: Request timeout
@@ -2308,7 +2316,7 @@ class Bot:
         :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined.
         :param reply_parameters: Description of the message to reply to
-        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
+        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user.
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :param request_timeout: Request timeout
@@ -2357,7 +2365,7 @@ class Bot:
 
         Source: https://core.telegram.org/bots/api#sendchataction
 
-        :param chat_id: Unique identifier for the target chat or username of the target bot, supergroup or channel in the format :code:`@username`. Channel chats and channel direct messages chats aren't supported.
+        :param chat_id: Unique identifier for the target chat or username of the target bot or supergroup in the format :code:`@username`. Channel chats and channel direct messages chats aren't supported.
         :param action: Type of action to broadcast. Choose one, depending on what the user is about to receive: *typing* for `text messages <https://core.telegram.org/bots/api#sendmessage>`_, *upload_photo* for `photos <https://core.telegram.org/bots/api#sendphoto>`_, *record_video* or *upload_video* for `videos <https://core.telegram.org/bots/api#sendvideo>`_, *record_voice* or *upload_voice* for `voice notes <https://core.telegram.org/bots/api#sendvoice>`_, *upload_document* for `general files <https://core.telegram.org/bots/api#senddocument>`_, *choose_sticker* for `stickers <https://core.telegram.org/bots/api#sendsticker>`_, *find_location* for `location data <https://core.telegram.org/bots/api#sendlocation>`_, *record_video_note* or *upload_video_note* for `video notes <https://core.telegram.org/bots/api#sendvideonote>`_.
         :param business_connection_id: Unique identifier of the business connection on behalf of which the action will be sent
         :param message_thread_id: Unique identifier for the target message thread or topic of a forum; for supergroups and private chats of bots with forum topic mode enabled only
@@ -2413,7 +2421,7 @@ class Bot:
         :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined.
         :param reply_parameters: Description of the message to reply to
-        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
+        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user.
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :param request_timeout: Request timeout
@@ -2468,14 +2476,14 @@ class Bot:
         :param business_connection_id: Unique identifier of the business connection on behalf of which the message will be sent
         :param message_thread_id: Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only
         :param direct_messages_topic_id: Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat
-        :param emoji: Emoji on which the dice throw animation is based. Currently, must be one of '🎲', '🎯', '🏀', '⚽', '🎳', or '🎰'. Dice can have values 1-6 for '🎲', '🎯' and '🎳', values 1-5 for '🏀' and '⚽', and values 1-64 for '🎰'. Defaults to '🎲'
+        :param emoji: Emoji on which the dice throw animation is based. Currently, must be one of '🎲', '🎯', '🏀', '⚽', '🎳', or '🎰'. Dice can have values 1-6 for '🎲', '🎯' and '🎳', values 1-5 for '🏀' and '⚽', and values 1-64 for '🎰'. Defaults to '🎲'.
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
         :param protect_content: Protects the contents of the sent message from forwarding
         :param allow_paid_broadcast: Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance.
         :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined.
         :param reply_parameters: Description of the message to reply to
-        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
+        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user.
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :param request_timeout: Request timeout
@@ -2544,7 +2552,7 @@ class Bot:
         :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined.
         :param reply_parameters: Description of the message to reply to
-        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
+        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user.
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :param request_timeout: Request timeout
@@ -2680,7 +2688,7 @@ class Bot:
         :param provider_token: Payment provider token, obtained via `@BotFather <https://t.me/botfather>`_. Pass an empty string for payments in `Telegram Stars <https://t.me/BotNews/90>`_.
         :param max_tip_amount: The maximum accepted amount for tips in the *smallest units* of the currency (integer, **not** float/double). For example, for a maximum tip of :code:`US$ 1.45` pass :code:`max_tip_amount = 145`. See the *exp* parameter in `currencies.json <https://core.telegram.org/bots/payments/currencies.json>`_, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies). Defaults to 0. Not supported for payments in `Telegram Stars <https://t.me/BotNews/90>`_.
         :param suggested_tip_amounts: A JSON-serialized array of suggested amounts of tips in the *smallest units* of the currency (integer, **not** float/double). At most 4 suggested tip amounts can be specified. The suggested tip amounts must be positive, passed in a strictly increased order and must not exceed *max_tip_amount*.
-        :param start_parameter: Unique deep-linking parameter. If left empty, **forwarded copies** of the sent message will have a *Pay* button, allowing multiple users to pay directly from the forwarded message, using the same invoice. If non-empty, forwarded copies of the sent message will have a *URL* button with a deep link to the bot (instead of a *Pay* button), with the value used as the start parameter
+        :param start_parameter: Unique deep-linking parameter. If left empty, **forwarded copies** of the sent message will have a *Pay* button, allowing multiple users to pay directly from the forwarded message, using the same invoice. If non-empty, forwarded copies of the sent message will have a *URL* button with a deep link to the bot (instead of a *Pay* button), with the value used as the start parameter.
         :param provider_data: JSON-serialized data about the invoice, which will be shared with the payment provider. A detailed description of required fields should be provided by the payment provider.
         :param photo_url: URL of the product photo for the invoice. Can be a photo of the goods or a marketing image for a service. People like it better when they see what they are paying for.
         :param photo_size: Photo size in bytes
@@ -2778,7 +2786,7 @@ class Bot:
         :param message_thread_id: Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only
         :param direct_messages_topic_id: Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat
         :param horizontal_accuracy: The radius of uncertainty for the location, measured in meters; 0-1500
-        :param live_period: Period in seconds during which the location will be updated (see `Live Locations <https://telegram.org/blog/live-locations>`_, should be between 60 and 86400, or 0x7FFFFFFF for live locations that can be edited indefinitely.
+        :param live_period: Period in seconds during which the location will be updated (see `Live Locations <https://telegram.org/blog/live-locations>`_, should be between 60 and 86400, or 0x7FFFFFFF for live locations that can be edited indefinitely
         :param heading: For live locations, a direction in which the user is moving, in degrees. Must be between 1 and 360 if specified.
         :param proximity_alert_radius: For live locations, a maximum distance for proximity alerts about approaching another chat member, in meters. Must be between 1 and 100000 if specified.
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
@@ -2787,7 +2795,7 @@ class Bot:
         :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined.
         :param reply_parameters: Description of the message to reply to
-        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
+        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user.
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :param request_timeout: Request timeout
@@ -2911,7 +2919,7 @@ class Bot:
         :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined.
         :param reply_parameters: Description of the message to reply to
-        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
+        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user.
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :param disable_web_page_preview: Disables link previews for links in this message
         :param reply_to_message_id: If the message is a reply, ID of the original message
@@ -2985,7 +2993,7 @@ class Bot:
         :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined.
         :param reply_parameters: Description of the message to reply to
-        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
+        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user.
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :param request_timeout: Request timeout
@@ -3066,8 +3074,8 @@ class Bot:
         :param options: A JSON-serialized list of 1-12 answer options
         :param business_connection_id: Unique identifier of the business connection on behalf of which the message will be sent
         :param message_thread_id: Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only
-        :param question_parse_mode: Mode for parsing entities in the question. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details. Currently, only custom emoji entities are allowed
-        :param question_entities: A JSON-serialized list of special entities that appear in the poll question. It can be specified instead of *question_parse_mode*
+        :param question_parse_mode: Mode for parsing entities in the question. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details. Currently, only custom emoji entities are allowed.
+        :param question_entities: A JSON-serialized list of special entities that appear in the poll question. It can be specified instead of *question_parse_mode*.
         :param is_anonymous: :code:`True`, if the poll needs to be anonymous, defaults to :code:`True`
         :param type: Poll type, 'quiz' or 'regular', defaults to 'regular'
         :param allows_multiple_answers: Pass :code:`True`, if the poll allows multiple answers, defaults to :code:`False`
@@ -3076,11 +3084,11 @@ class Bot:
         :param allow_adding_options: Pass :code:`True`, if answer options can be added to the poll after creation; not supported for anonymous polls and quizzes
         :param hide_results_until_closes: Pass :code:`True`, if poll results must be shown only after the poll closes
         :param members_only: Pass :code:`True`, if voting is limited to users who have been members of the chat where the poll is being sent for more than 24 hours; for channel chats only
-        :param country_codes: A JSON-serialized list of 0-12 two-letter `ISO 3166-1 alpha-2 <https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2>`_ country codes indicating the countries from which users can vote in the poll; for channel chats only. If omitted or empty, then users from any country can participate in the poll.
+        :param country_codes: A JSON-serialized list of 0-12 two-letter `ISO 3166-1 alpha-2 <https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2>`_ country codes indicating the countries from which users can vote in the poll; for channel chats only. Use 'FT' as a country code to allow users with anonymous numbers to vote. If omitted or empty, then users from any country can participate in the poll.
         :param correct_option_ids: A JSON-serialized list of monotonically increasing 0-based identifiers of the correct answer options, required for polls in quiz mode
         :param explanation: Text that is shown when a user chooses an incorrect answer or taps on the lamp icon in a quiz-style poll, 0-200 characters with at most 2 line feeds after entities parsing
         :param explanation_parse_mode: Mode for parsing entities in the explanation. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.
-        :param explanation_entities: A JSON-serialized list of special entities that appear in the poll explanation. It can be specified instead of *explanation_parse_mode*
+        :param explanation_entities: A JSON-serialized list of special entities that appear in the poll explanation. It can be specified instead of *explanation_parse_mode*.
         :param explanation_media: Media added to the quiz explanation
         :param open_period: Amount of time in seconds the poll will be active after creation, 5-2628000. Can't be used together with *close_date*.
         :param close_date: Point in time (Unix timestamp) when the poll will be automatically closed. Must be at least 5 and no more than 2628000 seconds in the future. Can't be used together with *open_period*.
@@ -3094,7 +3102,7 @@ class Bot:
         :param allow_paid_broadcast: Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance.
         :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param reply_parameters: Description of the message to reply to
-        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
+        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user.
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :param correct_option_id: 0-based identifier of the correct answer option, required for polls in quiz mode
         :param reply_to_message_id: If the message is a reply, ID of the original message
@@ -3179,7 +3187,7 @@ class Bot:
         :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined.
         :param reply_parameters: Description of the message to reply to
-        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
+        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user.
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :param request_timeout: Request timeout
@@ -3253,7 +3261,7 @@ class Bot:
         :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined.
         :param reply_parameters: Description of the message to reply to
-        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
+        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user.
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :param request_timeout: Request timeout
@@ -3343,7 +3351,7 @@ class Bot:
         :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined.
         :param reply_parameters: Description of the message to reply to
-        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
+        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user.
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :param request_timeout: Request timeout
@@ -3407,7 +3415,7 @@ class Bot:
         Source: https://core.telegram.org/bots/api#sendvideonote
 
         :param chat_id: Unique identifier for the target chat or username of the target bot, supergroup or channel in the format :code:`@username`
-        :param video_note: Video note to send. Pass a file_id as String to send a video note that exists on the Telegram servers (recommended) or upload a new video using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`. Sending video notes by a URL is currently unsupported
+        :param video_note: Video note to send. Pass a file_id as String to send a video note that exists on the Telegram servers (recommended) or upload a new video using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`. Sending video notes by a URL is currently unsupported.
         :param business_connection_id: Unique identifier of the business connection on behalf of which the message will be sent
         :param message_thread_id: Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only
         :param direct_messages_topic_id: Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat
@@ -3420,7 +3428,7 @@ class Bot:
         :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined.
         :param reply_parameters: Description of the message to reply to
-        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
+        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user.
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :param request_timeout: Request timeout
@@ -3490,7 +3498,7 @@ class Bot:
         :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined.
         :param reply_parameters: Description of the message to reply to
-        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
+        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user.
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :param request_timeout: Request timeout
@@ -3579,8 +3587,8 @@ class Bot:
 
         Source: https://core.telegram.org/bots/api#setchatmenubutton
 
-        :param chat_id: Unique identifier for the target private chat. If not specified, default bot's menu button will be changed
-        :param menu_button: A JSON-serialized object for the bot's new menu button. Defaults to :class:`aiogram.types.menu_button_default.MenuButtonDefault`
+        :param chat_id: Unique identifier for the target private chat. If not specified, the bot's default menu button will be changed.
+        :param menu_button: A JSON-serialized object for the bot's new menu button. Defaults to :class:`aiogram.types.menu_button_default.MenuButtonDefault`.
         :param request_timeout: Request timeout
         :return: Returns :code:`True` on success.
         """
@@ -3704,11 +3712,11 @@ class Bot:
 
         :param user_id: User identifier
         :param score: New score, must be non-negative
-        :param force: Pass :code:`True` if the high score is allowed to decrease. This can be useful when fixing mistakes or banning cheaters
+        :param force: Pass :code:`True` if the high score is allowed to decrease. This can be useful when fixing mistakes or banning cheaters.
         :param disable_edit_message: Pass :code:`True` if the game message should not be automatically edited to include the current scoreboard
-        :param chat_id: Required if *inline_message_id* is not specified. Unique identifier for the target chat
-        :param message_id: Required if *inline_message_id* is not specified. Identifier of the sent message
-        :param inline_message_id: Required if *chat_id* and *message_id* are not specified. Identifier of the inline message
+        :param chat_id: Required if *inline_message_id* is not specified. Unique identifier for the target chat.
+        :param message_id: Required if *inline_message_id* is not specified. Identifier of the sent message.
+        :param inline_message_id: Required if *chat_id* and *message_id* are not specified. Identifier of the inline message.
         :param request_timeout: Request timeout
         :return: Returns an error, if the new score is not greater than the user's current score in the chat and *force* is :code:`False`.
         """
@@ -3738,7 +3746,7 @@ class Bot:
 
         :param commands: A JSON-serialized list of bot commands to be set as the list of the bot's commands. At most 100 commands can be specified.
         :param scope: A JSON-serialized object, describing scope of users for which the commands are relevant. Defaults to :class:`aiogram.types.bot_command_scope_default.BotCommandScopeDefault`.
-        :param language_code: A two-letter ISO 639-1 language code. If empty, commands will be applied to all users from the given scope, for whose language there are no dedicated commands
+        :param language_code: A two-letter ISO 639-1 language code. If empty, commands will be applied to all users from the given scope, for whose language there are no dedicated commands.
         :param request_timeout: Request timeout
         :return: Returns :code:`True` on success.
         """
@@ -3846,7 +3854,7 @@ class Bot:
 
         Source: https://core.telegram.org/bots/api#setwebhook
 
-        :param url: HTTPS URL to send updates to. Use an empty string to remove webhook integration
+        :param url: HTTPS URL to send updates to. Use an empty string to remove webhook integration.
         :param certificate: Upload your public key certificate so that the root certificate in use can be checked. See our `self-signed guide <https://core.telegram.org/bots/self-signed>`_ for details.
         :param ip_address: The fixed IP address which will be used to send webhook requests instead of the IP address resolved through DNS
         :param max_connections: The maximum allowed number of simultaneous HTTPS connections to the webhook for update delivery, 1-100. Defaults to *40*. Use lower values to limit the load on your bot's server, and higher values to increase your bot's throughput.
@@ -3884,9 +3892,9 @@ class Bot:
 
         :param business_connection_id: Unique identifier of the business connection on behalf of which the message to be edited was sent
         :param chat_id: Required if *inline_message_id* is not specified. Unique identifier for the target chat or username of the target bot, supergroup or channel in the format :code:`@username`.
-        :param message_id: Required if *inline_message_id* is not specified. Identifier of the message with live location to stop
-        :param inline_message_id: Required if *chat_id* and *message_id* are not specified. Identifier of the inline message
-        :param reply_markup: A JSON-serialized object for a new `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_.
+        :param message_id: Required if *inline_message_id* is not specified. Identifier of the message with live location to stop.
+        :param inline_message_id: Required if *chat_id* and *message_id* are not specified. Identifier of the inline message.
+        :param reply_markup: A JSON-serialized object for a new `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_
         :param request_timeout: Request timeout
         :return: On success, if the message is not an inline message, the edited :class:`aiogram.types.message.Message` is returned, otherwise :code:`True` is returned.
         """
@@ -3916,7 +3924,7 @@ class Bot:
         :param chat_id: Unique identifier for the target chat or username of the target bot, supergroup or channel in the format :code:`@username`
         :param message_id: Identifier of the original message with the poll
         :param business_connection_id: Unique identifier of the business connection on behalf of which the message to be edited was sent
-        :param reply_markup: A JSON-serialized object for a new message `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_.
+        :param reply_markup: A JSON-serialized object for a new message `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_
         :param request_timeout: Request timeout
         :return: On success, the stopped :class:`aiogram.types.poll.Poll` is returned.
         """
@@ -4248,7 +4256,7 @@ class Bot:
         Source: https://core.telegram.org/bots/api#setcustomemojistickersetthumbnail
 
         :param name: Sticker set name
-        :param custom_emoji_id: Custom emoji identifier of a sticker from the sticker set; pass an empty string to drop the thumbnail and use the first sticker as the thumbnail.
+        :param custom_emoji_id: Custom emoji identifier of a sticker from the sticker set; pass an empty string to drop the thumbnail and use the first sticker as the thumbnail
         :param request_timeout: Request timeout
         :return: Returns :code:`True` on success.
         """
@@ -4542,7 +4550,7 @@ class Bot:
         Source: https://core.telegram.org/bots/api#deletemessages
 
         :param chat_id: Unique identifier for the target chat or username of the target bot, supergroup or channel in the format :code:`@username`
-        :param message_ids: A JSON-serialized list of 1-100 identifiers of messages to delete. See :class:`aiogram.methods.delete_message.DeleteMessage` for limitations on which messages can be deleted
+        :param message_ids: A JSON-serialized list of 1-100 identifiers of messages to delete. See :class:`aiogram.methods.delete_message.DeleteMessage` for limitations on which messages can be deleted.
         :param request_timeout: Request timeout
         :return: Returns :code:`True` on success.
         """
@@ -4780,7 +4788,7 @@ class Bot:
         :param allow_paid_broadcast: Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance.
         :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined.
         :param reply_parameters: Description of the message to reply to
-        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
+        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user.
         :param request_timeout: Request timeout
         :return: On success, the sent :class:`aiogram.types.message.Message` is returned.
         """
@@ -5123,7 +5131,7 @@ class Bot:
         Source: https://core.telegram.org/bots/api#deletebusinessmessages
 
         :param business_connection_id: Unique identifier of the business connection on behalf of which to delete the messages
-        :param message_ids: A JSON-serialized list of 1-100 identifiers of messages to delete. All messages must be from the same chat. See :class:`aiogram.methods.delete_message.DeleteMessage` for limitations on which messages can be deleted
+        :param message_ids: A JSON-serialized list of 1-100 identifiers of messages to delete. All messages must be from the same chat. See :class:`aiogram.methods.delete_message.DeleteMessage` for limitations on which messages can be deleted.
         :param request_timeout: Request timeout
         :return: Returns :code:`True` on success.
         """
@@ -5226,7 +5234,7 @@ class Bot:
         :param exclude_from_blockchain: Pass :code:`True` to exclude gifts that were assigned from the TON blockchain and can't be resold or transferred in Telegram
         :param sort_by_price: Pass :code:`True` to sort results by gift price instead of send date. Sorting is applied before pagination.
         :param offset: Offset of the first entry to return as received from the previous request; use empty string to get the first chunk of results
-        :param limit: The maximum number of gifts to be returned; 1-100. Defaults to 100
+        :param limit: The maximum number of gifts to be returned; 1-100. Defaults to 100.
         :param exclude_limited: Pass :code:`True` to exclude gifts that can be purchased a limited number of times
         :param request_timeout: Request timeout
         :return: Returns :class:`aiogram.types.owned_gifts.OwnedGifts` on success.
@@ -5704,7 +5712,7 @@ class Bot:
 
         :param chat_id: Unique identifier for the target direct messages chat
         :param message_id: Identifier of a suggested post message to approve
-        :param send_date: Point in time (Unix timestamp) when the post is expected to be published; omit if the date has already been specified when the suggested post was created. If specified, then the date must be not more than 2678400 seconds (30 days) in the future
+        :param send_date: Point in time (Unix timestamp) when the post is expected to be published; omit if the date has already been specified when the suggested post was created. If specified, then the date must be not more than 2678400 seconds (30 days) in the future.
         :param request_timeout: Request timeout
         :return: Returns :code:`True` on success.
         """
@@ -5772,7 +5780,7 @@ class Bot:
         :param exclude_unique: Pass :code:`True` to exclude unique gifts
         :param sort_by_price: Pass :code:`True` to sort results by gift price instead of send date. Sorting is applied before pagination.
         :param offset: Offset of the first entry to return as received from the previous request; use an empty string to get the first chunk of results
-        :param limit: The maximum number of gifts to be returned; 1-100. Defaults to 100
+        :param limit: The maximum number of gifts to be returned; 1-100. Defaults to 100.
         :param request_timeout: Request timeout
         :return: Returns :class:`aiogram.types.owned_gifts.OwnedGifts` on success.
         """
@@ -5818,7 +5826,7 @@ class Bot:
         :param exclude_unique: Pass :code:`True` to exclude unique gifts
         :param sort_by_price: Pass :code:`True` to sort results by gift price instead of send date. Sorting is applied before pagination.
         :param offset: Offset of the first entry to return as received from the previous request; use an empty string to get the first chunk of results
-        :param limit: The maximum number of gifts to be returned; 1-100. Defaults to 100
+        :param limit: The maximum number of gifts to be returned; 1-100. Defaults to 100.
         :param request_timeout: Request timeout
         :return: Returns :class:`aiogram.types.owned_gifts.OwnedGifts` on success.
         """
@@ -6046,7 +6054,7 @@ class Bot:
         Source: https://core.telegram.org/bots/api#savepreparedkeyboardbutton
 
         :param user_id: Unique identifier of the target user that can use the button
-        :param button: A JSON-serialized object describing the button to be saved. The button must be of the type *request_users*, *request_chat*, or *request_managed_bot*
+        :param button: A JSON-serialized object describing the button to be saved. The button must be of the type *request_users*, *request_chat*, or *request_managed_bot*.
         :param request_timeout: Request timeout
         :return: Returns a :class:`aiogram.types.prepared_keyboard_button.PreparedKeyboardButton` object.
         """
@@ -6092,7 +6100,7 @@ class Bot:
 
         Source: https://core.telegram.org/bots/api#deleteallmessagereactions
 
-        :param chat_id: Unique identifier for the target chat or username of the target supergroup (in the format :code:`@username`)
+        :param chat_id: Unique identifier for the target chat or username of the target supergroup in the format :code:`@username`
         :param user_id: Identifier of the user whose reactions will be removed, if the reactions were added by a user
         :param actor_chat_id: Identifier of the chat whose reactions will be removed, if the reactions were added by a chat
         :param request_timeout: Request timeout
@@ -6119,7 +6127,7 @@ class Bot:
 
         Source: https://core.telegram.org/bots/api#deletemessagereaction
 
-        :param chat_id: Unique identifier for the target chat or username of the target supergroup (in the format :code:`@username`)
+        :param chat_id: Unique identifier for the target chat or username of the target supergroup in the format :code:`@username`
         :param message_id: Identifier of the target message
         :param user_id: Identifier of the user whose reaction will be removed, if the reaction was added by a user
         :param actor_chat_id: Identifier of the chat whose reaction will be removed, if the reaction was added by a chat
@@ -6272,5 +6280,133 @@ class Bot:
             user_id=user_id,
             is_access_restricted=is_access_restricted,
             added_user_ids=added_user_ids,
+        )
+        return await self(call, request_timeout=request_timeout)
+
+    async def answer_chat_join_request_query(
+        self,
+        chat_join_request_query_id: str,
+        result: str,
+        request_timeout: int | None = None,
+    ) -> bool:
+        """
+        Use this method to process a received chat join request query. Returns :code:`True` on success.
+
+        Source: https://core.telegram.org/bots/api#answerchatjoinrequestquery
+
+        :param chat_join_request_query_id: Unique identifier of the join request query
+        :param result: Result of the query. Must be either 'approve' to allow the user to join the chat, 'decline' to disallow the user to join the chat, or 'queue' to leave the decision to other administrators.
+        :param request_timeout: Request timeout
+        :return: Returns :code:`True` on success.
+        """
+
+        call = AnswerChatJoinRequestQuery(
+            chat_join_request_query_id=chat_join_request_query_id,
+            result=result,
+        )
+        return await self(call, request_timeout=request_timeout)
+
+    async def send_chat_join_request_web_app(
+        self,
+        chat_join_request_query_id: str,
+        web_app_url: str,
+        request_timeout: int | None = None,
+    ) -> bool:
+        """
+        Use this method to process a received chat join request query by showing a Mini App to the user before deciding the outcome. Returns :code:`True` on success.
+
+        Source: https://core.telegram.org/bots/api#sendchatjoinrequestwebapp
+
+        :param chat_join_request_query_id: Unique identifier of the join request query
+        :param web_app_url: The URL of the Mini App to be opened
+        :param request_timeout: Request timeout
+        :return: Returns :code:`True` on success.
+        """
+
+        call = SendChatJoinRequestWebApp(
+            chat_join_request_query_id=chat_join_request_query_id,
+            web_app_url=web_app_url,
+        )
+        return await self(call, request_timeout=request_timeout)
+
+    async def send_rich_message(
+        self,
+        chat_id: ChatIdUnion,
+        rich_message: InputRichMessage,
+        business_connection_id: str | None = None,
+        message_thread_id: int | None = None,
+        direct_messages_topic_id: int | None = None,
+        disable_notification: bool | None = None,
+        protect_content: bool | None = None,
+        allow_paid_broadcast: bool | None = None,
+        message_effect_id: str | None = None,
+        suggested_post_parameters: SuggestedPostParameters | None = None,
+        reply_parameters: ReplyParameters | None = None,
+        reply_markup: ReplyMarkupUnion | None = None,
+        request_timeout: int | None = None,
+    ) -> Message:
+        """
+        Use this method to send rich messages. If the message contains a block with a media element, then the bot must have the right to send the media to the chat. On success, the sent :class:`aiogram.types.message.Message` is returned.
+
+        Source: https://core.telegram.org/bots/api#sendrichmessage
+
+        :param chat_id: Unique identifier for the target chat or username of the target bot, supergroup or channel in the format :code:`@username`
+        :param rich_message: The message to be sent
+        :param business_connection_id: Unique identifier of the business connection on behalf of which the message will be sent
+        :param message_thread_id: Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only
+        :param direct_messages_topic_id: Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat
+        :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound.
+        :param protect_content: Protects the contents of the sent message from forwarding and saving
+        :param allow_paid_broadcast: Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance.
+        :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
+        :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined.
+        :param reply_parameters: Description of the message to reply to
+        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user.
+        :param request_timeout: Request timeout
+        :return: On success, the sent :class:`aiogram.types.message.Message` is returned.
+        """
+
+        call = SendRichMessage(
+            chat_id=chat_id,
+            rich_message=rich_message,
+            business_connection_id=business_connection_id,
+            message_thread_id=message_thread_id,
+            direct_messages_topic_id=direct_messages_topic_id,
+            disable_notification=disable_notification,
+            protect_content=protect_content,
+            allow_paid_broadcast=allow_paid_broadcast,
+            message_effect_id=message_effect_id,
+            suggested_post_parameters=suggested_post_parameters,
+            reply_parameters=reply_parameters,
+            reply_markup=reply_markup,
+        )
+        return await self(call, request_timeout=request_timeout)
+
+    async def send_rich_message_draft(
+        self,
+        chat_id: int,
+        draft_id: int,
+        rich_message: InputRichMessage,
+        message_thread_id: int | None = None,
+        request_timeout: int | None = None,
+    ) -> bool:
+        """
+        Use this method to stream a partial rich message to a user while the message is being generated. Note that the streamed draft is ephemeral and acts as a temporary 30-second preview - once the output is finalized, you **must** call :class:`aiogram.methods.send_rich_message.SendRichMessage` with the complete message to persist it in the user's chat. Returns :code:`True` on success.
+
+        Source: https://core.telegram.org/bots/api#sendrichmessagedraft
+
+        :param chat_id: Unique identifier for the target private chat
+        :param draft_id: Unique identifier of the message draft; must be non-zero. Changes to drafts with the same identifier are animated.
+        :param rich_message: The partial message to be streamed
+        :param message_thread_id: Unique identifier for the target message thread
+        :param request_timeout: Request timeout
+        :return: Returns :code:`True` on success.
+        """
+
+        call = SendRichMessageDraft(
+            chat_id=chat_id,
+            draft_id=draft_id,
+            rich_message=rich_message,
+            message_thread_id=message_thread_id,
         )
         return await self(call, request_timeout=request_timeout)

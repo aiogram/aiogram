@@ -43,7 +43,7 @@ class Poll(TelegramObject):
     question_entities: list[MessageEntity] | None = None
     """*Optional*. Special entities that appear in the *question*. Currently, only custom emoji entities are allowed in poll questions"""
     country_codes: list[str] | None = None
-    """*Optional*. A list of two-letter `ISO 3166-1 alpha-2 <https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2>`_ country codes indicating the countries from which users can vote in the poll. If omitted, then users from any country can participate in the poll."""
+    """*Optional*. A list of two-letter `ISO 3166-1 alpha-2 <https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2>`_ country codes indicating the countries from which users can vote in the poll. The country code 'FT' is used for users with anonymous numbers. If omitted, then users from any country can participate in the poll."""
     correct_option_ids: list[int] | None = None
     """*Optional*. Array of 0-based identifiers of the correct answer options. Available only for polls in quiz mode which are closed or were sent (not forwarded) by the bot or to the private chat with the bot."""
     explanation: str | None = None

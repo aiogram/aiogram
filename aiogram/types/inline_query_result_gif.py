@@ -34,7 +34,7 @@ class InlineQueryResultGif(InlineQueryResult):
     gif_duration: int | None = None
     """*Optional*. Duration of the GIF in seconds"""
     thumbnail_mime_type: str | None = None
-    """*Optional*. MIME type of the thumbnail, must be one of 'image/jpeg', 'image/gif', or 'video/mp4'. Defaults to 'image/jpeg'"""
+    """*Optional*. MIME type of the thumbnail, must be one of 'image/jpeg', 'image/gif', or 'video/mp4'. Defaults to 'image/jpeg'."""
     title: str | None = None
     """*Optional*. Title for the result"""
     caption: str | None = None

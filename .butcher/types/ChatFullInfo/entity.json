@@ -413,10 +413,18 @@
       },
       {
         "type": "Integer",
-        "description": "The number of Telegram Stars a general user have to pay to send a message to the chat",
-        "html_description": "<td><em>Optional</em>. The number of Telegram Stars a general user have to pay to send a message to the chat</td>",
-        "rst_description": "*Optional*. The number of Telegram Stars a general user have to pay to send a message to the chat\n",
+        "description": "The number of Telegram Stars a general user has to pay to send a message to the chat",
+        "html_description": "<td><em>Optional</em>. The number of Telegram Stars a general user has to pay to send a message to the chat</td>",
+        "rst_description": "*Optional*. The number of Telegram Stars a general user has to pay to send a message to the chat\n",
         "name": "paid_message_star_count",
+        "required": false
+      },
+      {
+        "type": "User",
+        "description": "The bot that processes join request queries in the chat. The field is only available to chat administrators.",
+        "html_description": "<td><em>Optional</em>. The bot that processes join request queries in the chat. The field is only available to chat administrators.</td>",
+        "rst_description": "*Optional*. The bot that processes join request queries in the chat. The field is only available to chat administrators.\n",
+        "name": "guard_bot",
         "required": false
       },
       {

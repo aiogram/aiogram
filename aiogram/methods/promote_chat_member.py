@@ -29,7 +29,7 @@ class PromoteChatMember(TelegramMethod[bool]):
     can_manage_video_chats: bool | None = None
     """Pass :code:`True` if the administrator can manage video chats"""
     can_restrict_members: bool | None = None
-    """Pass :code:`True` if the administrator can restrict, ban or unban chat members, or access supergroup statistics. For backward compatibility, defaults to :code:`True` for promotions of channel administrators"""
+    """Pass :code:`True` if the administrator can restrict, ban or unban chat members, or access supergroup statistics. For backward compatibility, defaults to :code:`True` for promotions of channel administrators."""
     can_promote_members: bool | None = None
     """Pass :code:`True` if the administrator can add new administrators with a subset of their own privileges or demote administrators that they have promoted, directly or indirectly (promoted by administrators that were appointed by him)"""
     can_change_info: bool | None = None

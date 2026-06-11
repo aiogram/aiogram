@@ -17,7 +17,7 @@ class SavePreparedKeyboardButton(TelegramMethod[PreparedKeyboardButton]):
     user_id: int
     """Unique identifier of the target user that can use the button"""
     button: KeyboardButton
-    """A JSON-serialized object describing the button to be saved. The button must be of the type *request_users*, *request_chat*, or *request_managed_bot*"""
+    """A JSON-serialized object describing the button to be saved. The button must be of the type *request_users*, *request_chat*, or *request_managed_bot*."""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!

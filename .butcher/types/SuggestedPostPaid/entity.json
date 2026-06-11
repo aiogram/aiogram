@@ -21,9 +21,9 @@
       },
       {
         "type": "String",
-        "description": "Currency in which the payment was made. Currently, one of 'XTR' for Telegram Stars or 'TON' for toncoins",
-        "html_description": "<td>Currency in which the payment was made. Currently, one of &#8220;XTR&#8221; for Telegram Stars or &#8220;TON&#8221; for toncoins</td>",
-        "rst_description": "Currency in which the payment was made. Currently, one of 'XTR' for Telegram Stars or 'TON' for toncoins\n",
+        "description": "Currency in which the payment was made. Currently, one of 'XTR' for Telegram Stars or 'TON' for toncoins.",
+        "html_description": "<td>Currency in which the payment was made. Currently, one of &#8220;XTR&#8221; for Telegram Stars or &#8220;TON&#8221; for toncoins.</td>",
+        "rst_description": "Currency in which the payment was made. Currently, one of 'XTR' for Telegram Stars or 'TON' for toncoins.\n",
         "name": "currency",
         "required": true
       },
