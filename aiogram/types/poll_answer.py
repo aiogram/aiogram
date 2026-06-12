@@ -19,9 +19,9 @@ class PollAnswer(TelegramObject):
     poll_id: str
     """Unique poll identifier"""
     option_ids: list[int]
-    """0-based identifiers of chosen answer options. May be empty if the vote was retracted."""
+    """0-based identifiers of chosen answer options. May be empty if the vote was retracted"""
     option_persistent_ids: list[str]
-    """Persistent identifiers of the chosen answer options. May be empty if the vote was retracted."""
+    """Persistent identifiers of the chosen answer options. May be empty if the vote was retracted"""
     voter_chat: Chat | None = None
     """*Optional*. The chat that changed the answer to the poll, if the voter is anonymous"""
     user: User | None = None

@@ -56,7 +56,7 @@ class ChatMemberRestricted(ChatMember):
     can_manage_topics: bool
     """:code:`True`, if the user is allowed to create forum topics"""
     until_date: DateTime
-    """Date when restrictions will be lifted for this user; Unix time. If 0, then the user is restricted forever."""
+    """Date when restrictions will be lifted for this user; Unix time. If 0, then the user is restricted forever"""
     tag: str | None = None
     """*Optional*. Tag of the member"""
 

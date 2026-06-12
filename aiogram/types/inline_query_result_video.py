@@ -36,7 +36,7 @@ class InlineQueryResultVideo(InlineQueryResult):
     caption: str | None = None
     """*Optional*. Caption of the video to be sent, 0-1024 characters after entities parsing"""
     parse_mode: str | Default | None = Default("parse_mode")
-    """*Optional*. Mode for parsing entities in the video caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details."""
+    """*Optional*. Mode for parsing entities in the video caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details"""
     caption_entities: list[MessageEntity] | None = None
     """*Optional*. List of special entities that appear in the caption, which can be specified instead of *parse_mode*"""
     show_caption_above_media: bool | Default | None = Default("show_caption_above_media")
@@ -52,7 +52,7 @@ class InlineQueryResultVideo(InlineQueryResult):
     reply_markup: InlineKeyboardMarkup | None = None
     """*Optional*. `Inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_ attached to the message"""
     input_message_content: InputMessageContentUnion | None = None
-    """*Optional*. Content of the message to be sent instead of the video. This field is **required** if InlineQueryResultVideo is used to send an HTML-page as a result (e.g., a YouTube video)."""
+    """*Optional*. Content of the message to be sent instead of the video. This field is **required** if InlineQueryResultVideo is used to send an HTML-page as a result (e.g., a YouTube video)"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!

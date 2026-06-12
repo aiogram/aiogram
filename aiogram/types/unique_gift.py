@@ -24,7 +24,7 @@ class UniqueGift(TelegramObject):
     base_name: str
     """Human-readable name of the regular gift from which this unique gift was upgraded"""
     name: str
-    """Unique name of the gift. This name can be used in :code:`https://t.me/nft/...` links and story areas."""
+    """Unique name of the gift. This name can be used in :code:`https://t.me/nft/...` links and story areas"""
     number: int
     """Unique number of the upgraded gift among gifts upgraded from the same regular gift"""
     model: UniqueGiftModel

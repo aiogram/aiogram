@@ -20,9 +20,9 @@ class TransferGift(TelegramMethod[bool]):
     owned_gift_id: str
     """Unique identifier of the regular gift that should be transferred"""
     new_owner_chat_id: int
-    """Unique identifier of the chat which will own the gift. The chat must be active in the last 24 hours."""
+    """Unique identifier of the chat which will own the gift. The chat must be active in the last 24 hours"""
     star_count: int | None = None
-    """The amount of Telegram Stars that will be paid for the transfer from the business account balance. If positive, then the *can_transfer_stars* business bot right is required."""
+    """The amount of Telegram Stars that will be paid for the transfer from the business account balance. If positive, then the *can_transfer_stars* business bot right is required"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!

@@ -29,15 +29,15 @@ class EditMessageText(TelegramMethod[Message | bool]):
     business_connection_id: str | None = None
     """Unique identifier of the business connection on behalf of which the message to be edited was sent"""
     chat_id: ChatIdUnion | None = None
-    """Required if *inline_message_id* is not specified. Unique identifier for the target chat or username of the target bot, supergroup or channel in the format :code:`@username`."""
+    """Required if *inline_message_id* is not specified. Unique identifier for the target chat or username of the target bot, supergroup or channel in the format :code:`@username`"""
     message_id: int | None = None
-    """Required if *inline_message_id* is not specified. Identifier of the message to edit."""
+    """Required if *inline_message_id* is not specified. Identifier of the message to edit"""
     inline_message_id: str | None = None
-    """Required if *chat_id* and *message_id* are not specified. Identifier of the inline message."""
+    """Required if *chat_id* and *message_id* are not specified. Identifier of the inline message"""
     text: str | None = None
     """New text of the message, 1-4096 characters after entity parsing; required if *rich_message* isn't specified"""
     parse_mode: str | Default | None = Default("parse_mode")
-    """Mode for parsing entities in the message text. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details."""
+    """Mode for parsing entities in the message text. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details"""
     entities: list[MessageEntity] | None = None
     """A JSON-serialized list of special entities that appear in message text, which can be specified instead of *parse_mode*"""
     link_preview_options: LinkPreviewOptions | Default | None = Default("link_preview")

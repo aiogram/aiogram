@@ -17,7 +17,7 @@ class DeleteMessages(TelegramMethod[bool]):
     chat_id: ChatIdUnion
     """Unique identifier for the target chat or username of the target bot, supergroup or channel in the format :code:`@username`"""
     message_ids: list[int]
-    """A JSON-serialized list of 1-100 identifiers of messages to delete. See :class:`aiogram.methods.delete_message.DeleteMessage` for limitations on which messages can be deleted."""
+    """A JSON-serialized list of 1-100 identifiers of messages to delete. See :class:`aiogram.methods.delete_message.DeleteMessage` for limitations on which messages can be deleted"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!

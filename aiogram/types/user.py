@@ -18,7 +18,7 @@ class User(TelegramObject):
     """
 
     id: int
-    """Unique identifier for this user or bot. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier."""
+    """Unique identifier for this user or bot. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier"""
     is_bot: bool
     """:code:`True`, if this user is a bot"""
     first_name: str
@@ -34,25 +34,25 @@ class User(TelegramObject):
     added_to_attachment_menu: bool | None = None
     """*Optional*. :code:`True`, if this user added the bot to the attachment menu"""
     can_join_groups: bool | None = None
-    """*Optional*. :code:`True`, if the bot can be invited to groups. Returned only in :class:`aiogram.methods.get_me.GetMe`."""
+    """*Optional*. :code:`True`, if the bot can be invited to groups. Returned only in :class:`aiogram.methods.get_me.GetMe`"""
     can_read_all_group_messages: bool | None = None
-    """*Optional*. :code:`True`, if `privacy mode <https://core.telegram.org/bots/features#privacy-mode>`_ is disabled for the bot. Returned only in :class:`aiogram.methods.get_me.GetMe`."""
+    """*Optional*. :code:`True`, if `privacy mode <https://core.telegram.org/bots/features#privacy-mode>`_ is disabled for the bot. Returned only in :class:`aiogram.methods.get_me.GetMe`"""
     supports_guest_queries: bool | None = None
-    """*Optional*. :code:`True`, if the bot supports guest queries from chats it is not a member of. Returned only in :class:`aiogram.methods.get_me.GetMe`."""
+    """*Optional*. :code:`True`, if the bot supports guest queries from chats it is not a member of. Returned only in :class:`aiogram.methods.get_me.GetMe`"""
     supports_inline_queries: bool | None = None
-    """*Optional*. :code:`True`, if the bot supports inline queries. Returned only in :class:`aiogram.methods.get_me.GetMe`."""
+    """*Optional*. :code:`True`, if the bot supports inline queries. Returned only in :class:`aiogram.methods.get_me.GetMe`"""
     can_connect_to_business: bool | None = None
-    """*Optional*. :code:`True`, if the bot can be connected to a user account to manage it. Returned only in :class:`aiogram.methods.get_me.GetMe`."""
+    """*Optional*. :code:`True`, if the bot can be connected to a user account to manage it. Returned only in :class:`aiogram.methods.get_me.GetMe`"""
     has_main_web_app: bool | None = None
-    """*Optional*. :code:`True`, if the bot has a main Web App. Returned only in :class:`aiogram.methods.get_me.GetMe`."""
+    """*Optional*. :code:`True`, if the bot has a main Web App. Returned only in :class:`aiogram.methods.get_me.GetMe`"""
     has_topics_enabled: bool | None = None
-    """*Optional*. :code:`True`, if the bot has forum topic mode enabled in private chats. Returned only in :class:`aiogram.methods.get_me.GetMe`."""
+    """*Optional*. :code:`True`, if the bot has forum topic mode enabled in private chats. Returned only in :class:`aiogram.methods.get_me.GetMe`"""
     allows_users_to_create_topics: bool | None = None
-    """*Optional*. :code:`True`, if the bot allows users to create and delete topics in private chats. Returned only in :class:`aiogram.methods.get_me.GetMe`."""
+    """*Optional*. :code:`True`, if the bot allows users to create and delete topics in private chats. Returned only in :class:`aiogram.methods.get_me.GetMe`"""
     can_manage_bots: bool | None = None
-    """*Optional*. :code:`True`, if other bots can be created to be controlled by the bot. Returned only in :class:`aiogram.methods.get_me.GetMe`."""
+    """*Optional*. :code:`True`, if other bots can be created to be controlled by the bot. Returned only in :class:`aiogram.methods.get_me.GetMe`"""
     supports_join_request_queries: bool | None = None
-    """*Optional*. :code:`True`, if the bot supports join request queries and can be assigned to process them. Returned only in :class:`aiogram.methods.get_me.GetMe`."""
+    """*Optional*. :code:`True`, if the bot supports join request queries and can be assigned to process them. Returned only in :class:`aiogram.methods.get_me.GetMe`"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!
@@ -143,8 +143,8 @@ class User(TelegramObject):
 
         Source: https://core.telegram.org/bots/api#getuserprofilephotos
 
-        :param offset: Sequential number of the first photo to be returned. By default, all photos are returned.
-        :param limit: Limits the number of photos to be retrieved. Values between 1-100 are accepted. Defaults to 100.
+        :param offset: Sequential number of the first photo to be returned. By default, all photos are returned
+        :param limit: Limits the number of photos to be retrieved. Values between 1-100 are accepted. Defaults to 100
         :return: instance of method :class:`aiogram.methods.get_user_profile_photos.GetUserProfilePhotos`
         """
         # DO NOT EDIT MANUALLY!!!
@@ -175,8 +175,8 @@ class User(TelegramObject):
 
         Source: https://core.telegram.org/bots/api#getuserprofileaudios
 
-        :param offset: Sequential number of the first audio to be returned. By default, all audios are returned.
-        :param limit: Limits the number of audios to be retrieved. Values between 1-100 are accepted. Defaults to 100.
+        :param offset: Sequential number of the first audio to be returned. By default, all audios are returned
+        :param limit: Limits the number of audios to be retrieved. Values between 1-100 are accepted. Defaults to 100
         :return: instance of method :class:`aiogram.methods.get_user_profile_audios.GetUserProfileAudios`
         """
         # DO NOT EDIT MANUALLY!!!

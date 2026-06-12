@@ -17,11 +17,11 @@ class RichBlockTableCell(TelegramObject):
     """
 
     align: str
-    """Horizontal cell content alignment. Currently, must be one of 'left', 'center', or 'right'."""
+    """Horizontal cell content alignment. Currently, must be one of 'left', 'center', or 'right'"""
     valign: str
-    """Vertical cell content alignment. Currently, must be one of 'top', 'middle', or 'bottom'."""
+    """Vertical cell content alignment. Currently, must be one of 'top', 'middle', or 'bottom'"""
     text: RichTextUnion | None = None
-    """*Optional*. Text in the cell. If omitted, then the cell is invisible."""
+    """*Optional*. Text in the cell. If omitted, then the cell is invisible"""
     is_header: bool | None = None
     """*Optional*. :code:`True`, if the cell is a header cell"""
     colspan: int | None = None

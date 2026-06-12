@@ -16,7 +16,7 @@ class AnswerChatJoinRequestQuery(TelegramMethod[bool]):
     chat_join_request_query_id: str
     """Unique identifier of the join request query"""
     result: str
-    """Result of the query. Must be either 'approve' to allow the user to join the chat, 'decline' to disallow the user to join the chat, or 'queue' to leave the decision to other administrators."""
+    """Result of the query. Must be either 'approve' to allow the user to join the chat, 'decline' to disallow the user to join the chat, or 'queue' to leave the decision to other administrators"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!

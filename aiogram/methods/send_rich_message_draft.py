@@ -17,7 +17,7 @@ class SendRichMessageDraft(TelegramMethod[bool]):
     chat_id: int
     """Unique identifier for the target private chat"""
     draft_id: int
-    """Unique identifier of the message draft; must be non-zero. Changes to drafts with the same identifier are animated."""
+    """Unique identifier of the message draft; must be non-zero. Changes to drafts with the same identifier are animated"""
     rich_message: InputRichMessage
     """The partial message to be streamed"""
     message_thread_id: int | None = None

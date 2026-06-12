@@ -14,7 +14,7 @@ class LinkPreviewOptions(TelegramObject):
     is_disabled: bool | Default | None = Default("link_preview_is_disabled")
     """*Optional*. :code:`True`, if the link preview is disabled"""
     url: str | None = None
-    """*Optional*. URL to use for the link preview. If empty, then the first URL found in the message text will be used."""
+    """*Optional*. URL to use for the link preview. If empty, then the first URL found in the message text will be used"""
     prefer_small_media: bool | Default | None = Default("link_preview_prefer_small_media")
     """*Optional*. :code:`True`, if the media in the link preview is supposed to be shrunk; ignored if the URL isn't explicitly specified or media size change isn't supported for the preview"""
     prefer_large_media: bool | Default | None = Default("link_preview_prefer_large_media")

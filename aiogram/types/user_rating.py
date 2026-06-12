@@ -13,7 +13,7 @@ class UserRating(TelegramObject):
     """
 
     level: int
-    """Current level of the user, indicating their reliability when purchasing digital goods and services. A higher level suggests a more trustworthy customer; a negative level is likely reason for concern."""
+    """Current level of the user, indicating their reliability when purchasing digital goods and services. A higher level suggests a more trustworthy customer; a negative level is likely reason for concern"""
     rating: int
     """Numerical value of the user's rating; the higher the rating, the better"""
     current_level_rating: int

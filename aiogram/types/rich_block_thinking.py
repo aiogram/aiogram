@@ -20,7 +20,7 @@ class RichBlockThinking(RichBlock):
     type: Literal["thinking"] = "thinking"
     """Type of the block, always 'thinking'"""
     text: RichTextUnion
-    """Text of the block. See `https://t.me/addemoji/AIActions <https://t.me/addemoji/AIActions>`_`https://t.me/addemoji/AIActions <https://t.me/addemoji/AIActions>`_ for examples of custom emoji, which are recommended for usage in the block."""
+    """Text of the block. See `https://t.me/addemoji/AIActions <https://t.me/addemoji/AIActions>`_`https://t.me/addemoji/AIActions <https://t.me/addemoji/AIActions>`_ for examples of custom emoji, which are recommended for usage in the block"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!

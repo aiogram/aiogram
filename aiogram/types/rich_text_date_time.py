@@ -24,7 +24,7 @@ class RichTextDateTime(RichText):
     unix_time: int
     """The Unix time associated with the entity"""
     date_time_format: str
-    """The string that defines the formatting of the date and time. See `date-time entity formatting <https://core.telegram.org/bots/api#date-time-entity-formatting>`_ for more details."""
+    """The string that defines the formatting of the date and time. See `date-time entity formatting <https://core.telegram.org/bots/api#date-time-entity-formatting>`_ for more details"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!

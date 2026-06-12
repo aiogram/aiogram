@@ -13,7 +13,7 @@ class BotCommand(MutableTelegramObject):
     """
 
     command: str
-    """Text of the command; 1-32 characters. Can contain only lowercase English letters, digits and underscores."""
+    """Text of the command; 1-32 characters. Can contain only lowercase English letters, digits and underscores"""
     description: str
     """Description of the command; 1-256 characters"""
 

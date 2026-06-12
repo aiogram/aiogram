@@ -14,7 +14,7 @@ class RichTextCustomEmoji(RichText):
     type: Literal["custom_emoji"] = "custom_emoji"
     """Type of the rich text, always 'custom_emoji'"""
     custom_emoji_id: str
-    """Unique identifier of the custom emoji. Use :class:`aiogram.methods.get_custom_emoji_stickers.GetCustomEmojiStickers` to get full information about the sticker."""
+    """Unique identifier of the custom emoji. Use :class:`aiogram.methods.get_custom_emoji_stickers.GetCustomEmojiStickers` to get full information about the sticker"""
     alternative_text: str
     """Alternative emoji for the custom emoji"""
 

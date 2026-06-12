@@ -34,13 +34,13 @@ class InlineQueryResultMpeg4Gif(InlineQueryResult):
     mpeg4_duration: int | None = None
     """*Optional*. Video duration in seconds"""
     thumbnail_mime_type: str | None = None
-    """*Optional*. MIME type of the thumbnail, must be one of 'image/jpeg', 'image/gif', or 'video/mp4'. Defaults to 'image/jpeg'."""
+    """*Optional*. MIME type of the thumbnail, must be one of 'image/jpeg', 'image/gif', or 'video/mp4'. Defaults to 'image/jpeg'"""
     title: str | None = None
     """*Optional*. Title for the result"""
     caption: str | None = None
     """*Optional*. Caption of the MPEG-4 file to be sent, 0-1024 characters after entities parsing"""
     parse_mode: str | Default | None = Default("parse_mode")
-    """*Optional*. Mode for parsing entities in the caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details."""
+    """*Optional*. Mode for parsing entities in the caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details"""
     caption_entities: list[MessageEntity] | None = None
     """*Optional*. List of special entities that appear in the caption, which can be specified instead of *parse_mode*"""
     show_caption_above_media: bool | Default | None = Default("show_caption_above_media")

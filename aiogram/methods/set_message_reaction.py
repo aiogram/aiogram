@@ -17,9 +17,9 @@ class SetMessageReaction(TelegramMethod[bool]):
     chat_id: ChatIdUnion
     """Unique identifier for the target chat or username of the target bot, supergroup or channel in the format :code:`@username`"""
     message_id: int
-    """Identifier of the target message. If the message belongs to a media group, the reaction is set to the first non-deleted message in the group instead."""
+    """Identifier of the target message. If the message belongs to a media group, the reaction is set to the first non-deleted message in the group instead"""
     reaction: list[ReactionTypeUnion] | None = None
-    """A JSON-serialized list of reaction types to set on the message. Currently, as non-premium users, bots can set up to one reaction per message. A custom emoji reaction can be used if it is either already present on the message or explicitly allowed by chat administrators. Paid reactions can't be used by bots."""
+    """A JSON-serialized list of reaction types to set on the message. Currently, as non-premium users, bots can set up to one reaction per message. A custom emoji reaction can be used if it is either already present on the message or explicitly allowed by chat administrators. Paid reactions can't be used by bots"""
     is_big: bool | None = None
     """Pass :code:`True` to set the reaction with a big animation"""
 

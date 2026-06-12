@@ -18,7 +18,7 @@ class ReadBusinessMessage(TelegramMethod[bool]):
     business_connection_id: str
     """Unique identifier of the business connection on behalf of which to read the message"""
     chat_id: int
-    """Unique identifier of the chat in which the message was received. The chat must have been active in the last 24 hours."""
+    """Unique identifier of the chat in which the message was received. The chat must have been active in the last 24 hours"""
     message_id: int
     """Unique identifier of the message to mark as read"""
 

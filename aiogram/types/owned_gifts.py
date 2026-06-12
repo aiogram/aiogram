@@ -20,7 +20,7 @@ class OwnedGifts(TelegramObject):
     gifts: list[OwnedGiftUnion]
     """The list of gifts"""
     next_offset: str | None = None
-    """*Optional*. Offset for the next request. If empty, then there are no more results."""
+    """*Optional*. Offset for the next request. If empty, then there are no more results"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!

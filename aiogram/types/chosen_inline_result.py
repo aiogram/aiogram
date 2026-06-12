@@ -28,7 +28,7 @@ class ChosenInlineResult(TelegramObject):
     location: Location | None = None
     """*Optional*. Sender location, only for bots that require user location"""
     inline_message_id: str | None = None
-    """*Optional*. Identifier of the sent inline message. Available only if there is an `inline keyboard <https://core.telegram.org/bots/api#inlinekeyboardmarkup>`_ attached to the message. Will be also received in `callback queries <https://core.telegram.org/bots/api#callbackquery>`_ and can be used to `edit <https://core.telegram.org/bots/api#updating-messages>`_ the message."""
+    """*Optional*. Identifier of the sent inline message. Available only if there is an `inline keyboard <https://core.telegram.org/bots/api#inlinekeyboardmarkup>`_ attached to the message. Will be also received in `callback queries <https://core.telegram.org/bots/api#callbackquery>`_ and can be used to `edit <https://core.telegram.org/bots/api#updating-messages>`_ the message"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!

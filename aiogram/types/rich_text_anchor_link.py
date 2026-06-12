@@ -22,7 +22,7 @@ class RichTextAnchorLink(RichText):
     text: RichTextUnion
     """The link text"""
     anchor_name: str
-    """The name of the anchor. If the name is empty, then the link brings back to the top of the message."""
+    """The name of the anchor. If the name is empty, then the link brings back to the top of the message"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!

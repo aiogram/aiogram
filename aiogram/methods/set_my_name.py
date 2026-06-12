@@ -14,9 +14,9 @@ class SetMyName(TelegramMethod[bool]):
     __api_method__ = "setMyName"
 
     name: str | None = None
-    """New bot name; 0-64 characters. Pass an empty string to remove the dedicated name for the given language."""
+    """New bot name; 0-64 characters. Pass an empty string to remove the dedicated name for the given language"""
     language_code: str | None = None
-    """A two-letter ISO 639-1 language code. If empty, the name will be shown to all users for whose language there is no dedicated name."""
+    """A two-letter ISO 639-1 language code. If empty, the name will be shown to all users for whose language there is no dedicated name"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!

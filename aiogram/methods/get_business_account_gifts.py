@@ -35,11 +35,11 @@ class GetBusinessAccountGifts(TelegramMethod[OwnedGifts]):
     exclude_from_blockchain: bool | None = None
     """Pass :code:`True` to exclude gifts that were assigned from the TON blockchain and can't be resold or transferred in Telegram"""
     sort_by_price: bool | None = None
-    """Pass :code:`True` to sort results by gift price instead of send date. Sorting is applied before pagination."""
+    """Pass :code:`True` to sort results by gift price instead of send date. Sorting is applied before pagination"""
     offset: str | None = None
     """Offset of the first entry to return as received from the previous request; use empty string to get the first chunk of results"""
     limit: int | None = None
-    """The maximum number of gifts to be returned; 1-100. Defaults to 100."""
+    """The maximum number of gifts to be returned; 1-100. Defaults to 100"""
     exclude_limited: bool | None = Field(None, json_schema_extra={"deprecated": True})
     """Pass :code:`True` to exclude gifts that can be purchased a limited number of times
 

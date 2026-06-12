@@ -36,7 +36,7 @@ class OwnedGiftUnique(OwnedGift):
     transfer_star_count: int | None = None
     """*Optional*. Number of Telegram Stars that must be paid to transfer the gift; omitted if the bot cannot transfer the gift"""
     next_transfer_date: DateTime | None = None
-    """*Optional*. Point in time (Unix timestamp) when the gift can be transferred. If it is in the past, then the gift can be transferred now."""
+    """*Optional*. Point in time (Unix timestamp) when the gift can be transferred. If it is in the past, then the gift can be transferred now"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!

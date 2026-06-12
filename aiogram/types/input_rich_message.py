@@ -11,9 +11,9 @@ class InputRichMessage(TelegramObject):
     """
 
     html: str | None = None
-    """*Optional*. Content of the rich message to send described using HTML formatting. See `rich message formatting options <https://core.telegram.org/bots/api#rich-message-formatting-options>`_ for more details."""
+    """*Optional*. Content of the rich message to send described using HTML formatting. See `rich message formatting options <https://core.telegram.org/bots/api#rich-message-formatting-options>`_ for more details"""
     markdown: str | None = None
-    """*Optional*. Content of the rich message to send described using Markdown formatting. See `rich message formatting options <https://core.telegram.org/bots/api#rich-message-formatting-options>`_ for more details."""
+    """*Optional*. Content of the rich message to send described using Markdown formatting. See `rich message formatting options <https://core.telegram.org/bots/api#rich-message-formatting-options>`_ for more details"""
     is_rtl: bool | None = None
     """*Optional*. Pass :code:`True` if the rich message must be shown right-to-left"""
     skip_entity_detection: bool | None = None

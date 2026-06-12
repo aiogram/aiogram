@@ -35,7 +35,7 @@ class GiftInfo(TelegramObject):
     is_private: bool | None = None
     """*Optional*. :code:`True`, if the sender and gift text are shown only to the gift receiver; otherwise, everyone will be able to see them"""
     unique_gift_number: int | None = None
-    """*Optional*. Unique number reserved for this gift when upgraded. See the *number* field in :class:`aiogram.types.unique_gift.UniqueGift`."""
+    """*Optional*. Unique number reserved for this gift when upgraded. See the *number* field in :class:`aiogram.types.unique_gift.UniqueGift`"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!

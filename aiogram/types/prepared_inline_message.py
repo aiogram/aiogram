@@ -18,7 +18,7 @@ class PreparedInlineMessage(TelegramObject):
     id: str
     """Unique identifier of the prepared message"""
     expiration_date: DateTimeUnion
-    """Expiration date of the prepared message, in Unix time. Expired prepared messages can no longer be used."""
+    """Expiration date of the prepared message, in Unix time. Expired prepared messages can no longer be used"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!

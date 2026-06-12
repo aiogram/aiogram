@@ -25,7 +25,7 @@ class BackgroundTypePattern(BackgroundType):
     intensity: int
     """Intensity of the pattern when it is shown above the filled background; 0-100"""
     is_inverted: bool | None = None
-    """*Optional*. :code:`True`, if the background fill must be applied only to the pattern itself. All other pixels are black in this case. For dark themes only."""
+    """*Optional*. :code:`True`, if the background fill must be applied only to the pattern itself. All other pixels are black in this case. For dark themes only"""
     is_moving: bool | None = None
     """*Optional*. :code:`True`, if the background moves slightly when the device is tilted"""
 
