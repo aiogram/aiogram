@@ -95,6 +95,8 @@ from aiogram.types import (
     ProximityAlertTriggered,
     ReactionTypeCustomEmoji,
     RefundedPayment,
+    RichBlockParagraph,
+    RichMessage,
     SharedUser,
     Sticker,
     Story,
@@ -909,6 +911,15 @@ TEST_MESSAGE_LIVE_PHOTO = Message(
     chat=Chat(id=42, type="private"),
     from_user=User(id=42, is_bot=False, first_name="Test"),
 )
+TEST_MESSAGE_RICH_MESSAGE = Message(
+    message_id=42,
+    date=datetime.datetime.now(),
+    chat=Chat(id=42, type="private"),
+    from_user=User(id=42, is_bot=False, first_name="Test"),
+    rich_message=RichMessage(
+        blocks=[RichBlockParagraph(text="Test")],
+    ),
+)
 
 MESSAGES_AND_CONTENT_TYPES = [
     [TEST_MESSAGE_TEXT, ContentType.TEXT],
@@ -992,6 +1003,7 @@ MESSAGES_AND_CONTENT_TYPES = [
     [TEST_MESSAGE_POLL_OPTION_ADDED, ContentType.POLL_OPTION_ADDED],
     [TEST_MESSAGE_POLL_OPTION_DELETED, ContentType.POLL_OPTION_DELETED],
     [TEST_MESSAGE_LIVE_PHOTO, ContentType.LIVE_PHOTO],
+    [TEST_MESSAGE_RICH_MESSAGE, ContentType.RICH_MESSAGE],
     [TEST_MESSAGE_UNKNOWN, ContentType.UNKNOWN],
 ]
 
@@ -1072,6 +1084,7 @@ MESSAGES_AND_COPY_METHODS = [
     [TEST_MESSAGE_POLL_OPTION_ADDED, None],
     [TEST_MESSAGE_POLL_OPTION_DELETED, None],
     [TEST_MESSAGE_LIVE_PHOTO, None],
+    [TEST_MESSAGE_RICH_MESSAGE, None],
     [TEST_MESSAGE_UNKNOWN, None],
 ]
 
