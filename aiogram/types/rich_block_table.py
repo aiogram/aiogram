@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Literal
 
+from ..enums import RichBlockType
 from .base import TelegramObject
 from .rich_block import RichBlock
 
@@ -18,7 +19,7 @@ class RichBlockTable(RichBlock):
     Source: https://core.telegram.org/bots/api#richblocktable
     """
 
-    type: Literal["table"] = "table"
+    type: Literal[RichBlockType.TABLE] = RichBlockType.TABLE
     """Type of the block, always 'table'"""
     cells: list[list[RichBlockTableCell]]
     """Cells of the table"""
@@ -36,7 +37,7 @@ class RichBlockTable(RichBlock):
         def __init__(
             __pydantic__self__,
             *,
-            type: Literal["table"] = "table",
+            type: Literal[RichBlockType.TABLE] = RichBlockType.TABLE,
             cells: list[list[RichBlockTableCell]],
             is_bordered: bool | None = None,
             is_striped: bool | None = None,

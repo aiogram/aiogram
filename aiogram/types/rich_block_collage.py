@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Literal
 
+from ..enums import RichBlockType
 from .base import TelegramObject
 from .rich_block import RichBlock
 
@@ -18,7 +19,7 @@ class RichBlockCollage(RichBlock):
     Source: https://core.telegram.org/bots/api#richblockcollage
     """
 
-    type: Literal["collage"] = "collage"
+    type: Literal[RichBlockType.COLLAGE] = RichBlockType.COLLAGE
     """Type of the block, always 'collage'"""
     blocks: list[RichBlockUnion]
     """Elements of the collage"""
@@ -32,7 +33,7 @@ class RichBlockCollage(RichBlock):
         def __init__(
             __pydantic__self__,
             *,
-            type: Literal["collage"] = "collage",
+            type: Literal[RichBlockType.COLLAGE] = RichBlockType.COLLAGE,
             blocks: list[RichBlockUnion],
             caption: RichBlockCaption | None = None,
             **__pydantic_kwargs: Any,

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Literal
 
+from ..enums import RichTextType
 from .base import TelegramObject
 from .rich_text import RichText
 
@@ -17,7 +18,7 @@ class RichTextSpoiler(RichText):
     Source: https://core.telegram.org/bots/api#richtextspoiler
     """
 
-    type: Literal["spoiler"] = "spoiler"
+    type: Literal[RichTextType.SPOILER] = RichTextType.SPOILER
     """Type of the rich text, always 'spoiler'"""
     text: RichTextUnion
     """The text"""
@@ -29,7 +30,7 @@ class RichTextSpoiler(RichText):
         def __init__(
             __pydantic__self__,
             *,
-            type: Literal["spoiler"] = "spoiler",
+            type: Literal[RichTextType.SPOILER] = RichTextType.SPOILER,
             text: RichTextUnion,
             **__pydantic_kwargs: Any,
         ) -> None:

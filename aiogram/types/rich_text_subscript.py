@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Literal
 
+from ..enums import RichTextType
 from .base import TelegramObject
 from .rich_text import RichText
 
@@ -17,7 +18,7 @@ class RichTextSubscript(RichText):
     Source: https://core.telegram.org/bots/api#richtextsubscript
     """
 
-    type: Literal["subscript"] = "subscript"
+    type: Literal[RichTextType.SUBSCRIPT] = RichTextType.SUBSCRIPT
     """Type of the rich text, always 'subscript'"""
     text: RichTextUnion
     """The text"""
@@ -29,7 +30,7 @@ class RichTextSubscript(RichText):
         def __init__(
             __pydantic__self__,
             *,
-            type: Literal["subscript"] = "subscript",
+            type: Literal[RichTextType.SUBSCRIPT] = RichTextType.SUBSCRIPT,
             text: RichTextUnion,
             **__pydantic_kwargs: Any,
         ) -> None:

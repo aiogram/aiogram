@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING, Any, Literal
 
+from ..enums import RichBlockType
 from .base import TelegramObject
 from .rich_block import RichBlock
 
@@ -11,7 +12,7 @@ class RichBlockAnchor(RichBlock):
     Source: https://core.telegram.org/bots/api#richblockanchor
     """
 
-    type: Literal["anchor"] = "anchor"
+    type: Literal[RichBlockType.ANCHOR] = RichBlockType.ANCHOR
     """Type of the block, always 'anchor'"""
     name: str
     """The name of the anchor"""
@@ -23,7 +24,7 @@ class RichBlockAnchor(RichBlock):
         def __init__(
             __pydantic__self__,
             *,
-            type: Literal["anchor"] = "anchor",
+            type: Literal[RichBlockType.ANCHOR] = RichBlockType.ANCHOR,
             name: str,
             **__pydantic_kwargs: Any,
         ) -> None:

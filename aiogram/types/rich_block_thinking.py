@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Literal
 
+from ..enums import RichBlockType
 from .base import TelegramObject
 from .rich_block import RichBlock
 
@@ -17,7 +18,7 @@ class RichBlockThinking(RichBlock):
     Source: https://core.telegram.org/bots/api#richblockthinking
     """
 
-    type: Literal["thinking"] = "thinking"
+    type: Literal[RichBlockType.THINKING] = RichBlockType.THINKING
     """Type of the block, always 'thinking'"""
     text: RichTextUnion
     """Text of the block. See `https://t.me/addemoji/AIActions <https://t.me/addemoji/AIActions>`_`https://t.me/addemoji/AIActions <https://t.me/addemoji/AIActions>`_ for examples of custom emoji, which are recommended for usage in the block"""
@@ -29,7 +30,7 @@ class RichBlockThinking(RichBlock):
         def __init__(
             __pydantic__self__,
             *,
-            type: Literal["thinking"] = "thinking",
+            type: Literal[RichBlockType.THINKING] = RichBlockType.THINKING,
             text: RichTextUnion,
             **__pydantic_kwargs: Any,
         ) -> None:

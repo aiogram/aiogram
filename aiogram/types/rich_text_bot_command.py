@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Literal
 
+from ..enums import RichTextType
 from .base import TelegramObject
 from .rich_text import RichText
 
@@ -17,7 +18,7 @@ class RichTextBotCommand(RichText):
     Source: https://core.telegram.org/bots/api#richtextbotcommand
     """
 
-    type: Literal["bot_command"] = "bot_command"
+    type: Literal[RichTextType.BOT_COMMAND] = RichTextType.BOT_COMMAND
     """Type of the rich text, always 'bot_command'"""
     text: RichTextUnion
     """The text"""
@@ -31,7 +32,7 @@ class RichTextBotCommand(RichText):
         def __init__(
             __pydantic__self__,
             *,
-            type: Literal["bot_command"] = "bot_command",
+            type: Literal[RichTextType.BOT_COMMAND] = RichTextType.BOT_COMMAND,
             text: RichTextUnion,
             bot_command: str,
             **__pydantic_kwargs: Any,

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Literal
 
+from ..enums import RichTextType
 from .base import TelegramObject
 from .rich_text import RichText
 
@@ -18,7 +19,7 @@ class RichTextTextMention(RichText):
     Source: https://core.telegram.org/bots/api#richtexttextmention
     """
 
-    type: Literal["text_mention"] = "text_mention"
+    type: Literal[RichTextType.TEXT_MENTION] = RichTextType.TEXT_MENTION
     """Type of the rich text, always 'text_mention'"""
     text: RichTextUnion
     """The text"""
@@ -32,7 +33,7 @@ class RichTextTextMention(RichText):
         def __init__(
             __pydantic__self__,
             *,
-            type: Literal["text_mention"] = "text_mention",
+            type: Literal[RichTextType.TEXT_MENTION] = RichTextType.TEXT_MENTION,
             text: RichTextUnion,
             user: User,
             **__pydantic_kwargs: Any,

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Literal
 
+from ..enums import RichTextType
 from .base import TelegramObject
 from .rich_text import RichText
 
@@ -17,7 +18,7 @@ class RichTextCashtag(RichText):
     Source: https://core.telegram.org/bots/api#richtextcashtag
     """
 
-    type: Literal["cashtag"] = "cashtag"
+    type: Literal[RichTextType.CASHTAG] = RichTextType.CASHTAG
     """Type of the rich text, always 'cashtag'"""
     text: RichTextUnion
     """The text"""
@@ -31,7 +32,7 @@ class RichTextCashtag(RichText):
         def __init__(
             __pydantic__self__,
             *,
-            type: Literal["cashtag"] = "cashtag",
+            type: Literal[RichTextType.CASHTAG] = RichTextType.CASHTAG,
             text: RichTextUnion,
             cashtag: str,
             **__pydantic_kwargs: Any,

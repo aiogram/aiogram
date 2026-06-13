@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Literal
 
+from ..enums import RichBlockType
 from .base import TelegramObject
 from .rich_block import RichBlock
 
@@ -19,7 +20,7 @@ class RichBlockBlockQuotation(RichBlock):
     Source: https://core.telegram.org/bots/api#richblockblockquotation
     """
 
-    type: Literal["blockquote"] = "blockquote"
+    type: Literal[RichBlockType.BLOCKQUOTE] = RichBlockType.BLOCKQUOTE
     """Type of the block, always 'blockquote'"""
     blocks: list[RichBlockUnion]
     """Content of the block"""
@@ -33,7 +34,7 @@ class RichBlockBlockQuotation(RichBlock):
         def __init__(
             __pydantic__self__,
             *,
-            type: Literal["blockquote"] = "blockquote",
+            type: Literal[RichBlockType.BLOCKQUOTE] = RichBlockType.BLOCKQUOTE,
             blocks: list[RichBlockUnion],
             credit: RichTextUnion | None = None,
             **__pydantic_kwargs: Any,

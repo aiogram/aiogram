@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING, Any, Literal
 
+from ..enums import RichTextType
 from .base import TelegramObject
 from .rich_text import RichText
 
@@ -11,7 +12,7 @@ class RichTextCustomEmoji(RichText):
     Source: https://core.telegram.org/bots/api#richtextcustomemoji
     """
 
-    type: Literal["custom_emoji"] = "custom_emoji"
+    type: Literal[RichTextType.CUSTOM_EMOJI] = RichTextType.CUSTOM_EMOJI
     """Type of the rich text, always 'custom_emoji'"""
     custom_emoji_id: str
     """Unique identifier of the custom emoji. Use :class:`aiogram.methods.get_custom_emoji_stickers.GetCustomEmojiStickers` to get full information about the sticker"""
@@ -25,7 +26,7 @@ class RichTextCustomEmoji(RichText):
         def __init__(
             __pydantic__self__,
             *,
-            type: Literal["custom_emoji"] = "custom_emoji",
+            type: Literal[RichTextType.CUSTOM_EMOJI] = RichTextType.CUSTOM_EMOJI,
             custom_emoji_id: str,
             alternative_text: str,
             **__pydantic_kwargs: Any,

@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING, Any, Literal
 
+from ..enums import RichTextType
 from .base import TelegramObject
 from .rich_text import RichText
 
@@ -11,7 +12,7 @@ class RichTextAnchor(RichText):
     Source: https://core.telegram.org/bots/api#richtextanchor
     """
 
-    type: Literal["anchor"] = "anchor"
+    type: Literal[RichTextType.ANCHOR] = RichTextType.ANCHOR
     """Type of the rich text, always 'anchor'"""
     name: str
     """The name of the anchor"""
@@ -23,7 +24,7 @@ class RichTextAnchor(RichText):
         def __init__(
             __pydantic__self__,
             *,
-            type: Literal["anchor"] = "anchor",
+            type: Literal[RichTextType.ANCHOR] = RichTextType.ANCHOR,
             name: str,
             **__pydantic_kwargs: Any,
         ) -> None:

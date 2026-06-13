@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Literal
 
+from ..enums import RichBlockType
 from .base import TelegramObject
 from .rich_block import RichBlock
 
@@ -17,7 +18,7 @@ class RichBlockParagraph(RichBlock):
     Source: https://core.telegram.org/bots/api#richblockparagraph
     """
 
-    type: Literal["paragraph"] = "paragraph"
+    type: Literal[RichBlockType.PARAGRAPH] = RichBlockType.PARAGRAPH
     """Type of the block, always 'paragraph'"""
     text: RichTextUnion
     """Text of the block"""
@@ -29,7 +30,7 @@ class RichBlockParagraph(RichBlock):
         def __init__(
             __pydantic__self__,
             *,
-            type: Literal["paragraph"] = "paragraph",
+            type: Literal[RichBlockType.PARAGRAPH] = RichBlockType.PARAGRAPH,
             text: RichTextUnion,
             **__pydantic_kwargs: Any,
         ) -> None:

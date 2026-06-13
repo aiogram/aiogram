@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Literal
 
+from ..enums import RichBlockType
 from .base import TelegramObject
 from .rich_block import RichBlock
 
@@ -18,7 +19,7 @@ class RichBlockSlideshow(RichBlock):
     Source: https://core.telegram.org/bots/api#richblockslideshow
     """
 
-    type: Literal["slideshow"] = "slideshow"
+    type: Literal[RichBlockType.SLIDESHOW] = RichBlockType.SLIDESHOW
     """Type of the block, always 'slideshow'"""
     blocks: list[RichBlockUnion]
     """Elements of the slideshow"""
@@ -32,7 +33,7 @@ class RichBlockSlideshow(RichBlock):
         def __init__(
             __pydantic__self__,
             *,
-            type: Literal["slideshow"] = "slideshow",
+            type: Literal[RichBlockType.SLIDESHOW] = RichBlockType.SLIDESHOW,
             blocks: list[RichBlockUnion],
             caption: RichBlockCaption | None = None,
             **__pydantic_kwargs: Any,

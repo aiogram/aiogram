@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Literal
 
+from ..enums import RichBlockType
 from .base import TelegramObject
 from .rich_block import RichBlock
 
@@ -17,7 +18,7 @@ class RichBlockPhoto(RichBlock):
     Source: https://core.telegram.org/bots/api#richblockphoto
     """
 
-    type: Literal["photo"] = "photo"
+    type: Literal[RichBlockType.PHOTO] = RichBlockType.PHOTO
     """Type of the block, always 'photo'"""
     photo: list[PhotoSize]
     """Available sizes of the photo"""
@@ -33,7 +34,7 @@ class RichBlockPhoto(RichBlock):
         def __init__(
             __pydantic__self__,
             *,
-            type: Literal["photo"] = "photo",
+            type: Literal[RichBlockType.PHOTO] = RichBlockType.PHOTO,
             photo: list[PhotoSize],
             has_spoiler: bool | None = None,
             caption: RichBlockCaption | None = None,

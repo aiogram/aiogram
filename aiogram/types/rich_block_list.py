@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Literal
 
+from ..enums import RichBlockType
 from .base import TelegramObject
 from .rich_block import RichBlock
 
@@ -16,7 +17,7 @@ class RichBlockList(RichBlock):
     Source: https://core.telegram.org/bots/api#richblocklist
     """
 
-    type: Literal["list"] = "list"
+    type: Literal[RichBlockType.LIST] = RichBlockType.LIST
     """Type of the block, always 'list'"""
     items: list[RichBlockListItem]
     """Items of the list"""
@@ -28,7 +29,7 @@ class RichBlockList(RichBlock):
         def __init__(
             __pydantic__self__,
             *,
-            type: Literal["list"] = "list",
+            type: Literal[RichBlockType.LIST] = RichBlockType.LIST,
             items: list[RichBlockListItem],
             **__pydantic_kwargs: Any,
         ) -> None:

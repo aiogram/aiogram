@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Literal
 
+from ..enums import RichTextType
 from .base import TelegramObject
 from .rich_text import RichText
 
@@ -17,7 +18,7 @@ class RichTextHashtag(RichText):
     Source: https://core.telegram.org/bots/api#richtexthashtag
     """
 
-    type: Literal["hashtag"] = "hashtag"
+    type: Literal[RichTextType.HASHTAG] = RichTextType.HASHTAG
     """Type of the rich text, always 'hashtag'"""
     text: RichTextUnion
     """The text"""
@@ -31,7 +32,7 @@ class RichTextHashtag(RichText):
         def __init__(
             __pydantic__self__,
             *,
-            type: Literal["hashtag"] = "hashtag",
+            type: Literal[RichTextType.HASHTAG] = RichTextType.HASHTAG,
             text: RichTextUnion,
             hashtag: str,
             **__pydantic_kwargs: Any,

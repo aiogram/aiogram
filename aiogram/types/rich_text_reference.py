@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Literal
 
+from ..enums import RichTextType
 from .base import TelegramObject
 from .rich_text import RichText
 
@@ -17,7 +18,7 @@ class RichTextReference(RichText):
     Source: https://core.telegram.org/bots/api#richtextreference
     """
 
-    type: Literal["reference"] = "reference"
+    type: Literal[RichTextType.REFERENCE] = RichTextType.REFERENCE
     """Type of the rich text, always 'reference'"""
     text: RichTextUnion
     """Text of the reference"""
@@ -31,7 +32,7 @@ class RichTextReference(RichText):
         def __init__(
             __pydantic__self__,
             *,
-            type: Literal["reference"] = "reference",
+            type: Literal[RichTextType.REFERENCE] = RichTextType.REFERENCE,
             text: RichTextUnion,
             name: str,
             **__pydantic_kwargs: Any,

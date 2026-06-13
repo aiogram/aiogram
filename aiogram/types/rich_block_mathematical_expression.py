@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING, Any, Literal
 
+from ..enums import RichBlockType
 from .base import TelegramObject
 from .rich_block import RichBlock
 
@@ -11,7 +12,7 @@ class RichBlockMathematicalExpression(RichBlock):
     Source: https://core.telegram.org/bots/api#richblockmathematicalexpression
     """
 
-    type: Literal["mathematical_expression"] = "mathematical_expression"
+    type: Literal[RichBlockType.MATHEMATICAL_EXPRESSION] = RichBlockType.MATHEMATICAL_EXPRESSION
     """Type of the block, always 'mathematical_expression'"""
     expression: str
     """The mathematical expression in LaTeX format"""
@@ -23,7 +24,9 @@ class RichBlockMathematicalExpression(RichBlock):
         def __init__(
             __pydantic__self__,
             *,
-            type: Literal["mathematical_expression"] = "mathematical_expression",
+            type: Literal[
+                RichBlockType.MATHEMATICAL_EXPRESSION
+            ] = RichBlockType.MATHEMATICAL_EXPRESSION,
             expression: str,
             **__pydantic_kwargs: Any,
         ) -> None:

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Literal
 
+from ..enums import RichTextType
 from .base import TelegramObject
 from .rich_text import RichText
 
@@ -17,7 +18,7 @@ class RichTextReferenceLink(RichText):
     Source: https://core.telegram.org/bots/api#richtextreferencelink
     """
 
-    type: Literal["reference_link"] = "reference_link"
+    type: Literal[RichTextType.REFERENCE_LINK] = RichTextType.REFERENCE_LINK
     """Type of the rich text, always 'reference_link'"""
     text: RichTextUnion
     """The link text"""
@@ -31,7 +32,7 @@ class RichTextReferenceLink(RichText):
         def __init__(
             __pydantic__self__,
             *,
-            type: Literal["reference_link"] = "reference_link",
+            type: Literal[RichTextType.REFERENCE_LINK] = RichTextType.REFERENCE_LINK,
             text: RichTextUnion,
             reference_name: str,
             **__pydantic_kwargs: Any,

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Literal
 
+from ..enums import RichBlockType
 from .base import TelegramObject
 from .rich_block import RichBlock
 
@@ -17,7 +18,7 @@ class RichBlockSectionHeading(RichBlock):
     Source: https://core.telegram.org/bots/api#richblocksectionheading
     """
 
-    type: Literal["heading"] = "heading"
+    type: Literal[RichBlockType.HEADING] = RichBlockType.HEADING
     """Type of the block, always 'heading'"""
     text: RichTextUnion
     """Text of the block"""
@@ -31,7 +32,7 @@ class RichBlockSectionHeading(RichBlock):
         def __init__(
             __pydantic__self__,
             *,
-            type: Literal["heading"] = "heading",
+            type: Literal[RichBlockType.HEADING] = RichBlockType.HEADING,
             text: RichTextUnion,
             size: int,
             **__pydantic_kwargs: Any,

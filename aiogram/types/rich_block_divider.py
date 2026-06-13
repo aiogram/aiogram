@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING, Any, Literal
 
+from ..enums import RichBlockType
 from .base import TelegramObject
 from .rich_block import RichBlock
 
@@ -11,7 +12,7 @@ class RichBlockDivider(RichBlock):
     Source: https://core.telegram.org/bots/api#richblockdivider
     """
 
-    type: Literal["divider"] = "divider"
+    type: Literal[RichBlockType.DIVIDER] = RichBlockType.DIVIDER
     """Type of the block, always 'divider'"""
 
     if TYPE_CHECKING:
@@ -19,7 +20,10 @@ class RichBlockDivider(RichBlock):
         # This section was auto-generated via `butcher`
 
         def __init__(
-            __pydantic__self__, *, type: Literal["divider"] = "divider", **__pydantic_kwargs: Any
+            __pydantic__self__,
+            *,
+            type: Literal[RichBlockType.DIVIDER] = RichBlockType.DIVIDER,
+            **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!
             # This method was auto-generated via `butcher`

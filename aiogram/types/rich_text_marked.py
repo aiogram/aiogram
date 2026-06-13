@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Literal
 
+from ..enums import RichTextType
 from .base import TelegramObject
 from .rich_text import RichText
 
@@ -17,7 +18,7 @@ class RichTextMarked(RichText):
     Source: https://core.telegram.org/bots/api#richtextmarked
     """
 
-    type: Literal["marked"] = "marked"
+    type: Literal[RichTextType.MARKED] = RichTextType.MARKED
     """Type of the rich text, always 'marked'"""
     text: RichTextUnion
     """The text"""
@@ -29,7 +30,7 @@ class RichTextMarked(RichText):
         def __init__(
             __pydantic__self__,
             *,
-            type: Literal["marked"] = "marked",
+            type: Literal[RichTextType.MARKED] = RichTextType.MARKED,
             text: RichTextUnion,
             **__pydantic_kwargs: Any,
         ) -> None:

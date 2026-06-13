@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Literal
 
+from ..enums import RichTextType
 from .base import TelegramObject
 from .rich_text import RichText
 
@@ -17,7 +18,7 @@ class RichTextUnderline(RichText):
     Source: https://core.telegram.org/bots/api#richtextunderline
     """
 
-    type: Literal["underline"] = "underline"
+    type: Literal[RichTextType.UNDERLINE] = RichTextType.UNDERLINE
     """Type of the rich text, always 'underline'"""
     text: RichTextUnion
     """The text"""
@@ -29,7 +30,7 @@ class RichTextUnderline(RichText):
         def __init__(
             __pydantic__self__,
             *,
-            type: Literal["underline"] = "underline",
+            type: Literal[RichTextType.UNDERLINE] = RichTextType.UNDERLINE,
             text: RichTextUnion,
             **__pydantic_kwargs: Any,
         ) -> None:

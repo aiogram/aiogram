@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Literal
 
+from ..enums import RichBlockType
 from .base import TelegramObject
 from .rich_block import RichBlock
 
@@ -17,7 +18,7 @@ class RichBlockAudio(RichBlock):
     Source: https://core.telegram.org/bots/api#richblockaudio
     """
 
-    type: Literal["audio"] = "audio"
+    type: Literal[RichBlockType.AUDIO] = RichBlockType.AUDIO
     """Type of the block, always 'audio'"""
     audio: Audio
     """The audio"""
@@ -31,7 +32,7 @@ class RichBlockAudio(RichBlock):
         def __init__(
             __pydantic__self__,
             *,
-            type: Literal["audio"] = "audio",
+            type: Literal[RichBlockType.AUDIO] = RichBlockType.AUDIO,
             audio: Audio,
             caption: RichBlockCaption | None = None,
             **__pydantic_kwargs: Any,

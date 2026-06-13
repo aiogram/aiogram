@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Literal
 
+from ..enums import RichTextType
 from .base import TelegramObject
 from .rich_text import RichText
 
@@ -17,7 +18,7 @@ class RichTextDateTime(RichText):
     Source: https://core.telegram.org/bots/api#richtextdatetime
     """
 
-    type: Literal["date_time"] = "date_time"
+    type: Literal[RichTextType.DATE_TIME] = RichTextType.DATE_TIME
     """Type of the rich text, always 'date_time'"""
     text: RichTextUnion
     """The text"""
@@ -33,7 +34,7 @@ class RichTextDateTime(RichText):
         def __init__(
             __pydantic__self__,
             *,
-            type: Literal["date_time"] = "date_time",
+            type: Literal[RichTextType.DATE_TIME] = RichTextType.DATE_TIME,
             text: RichTextUnion,
             unix_time: int,
             date_time_format: str,

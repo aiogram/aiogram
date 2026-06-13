@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Literal
 
+from ..enums import RichBlockType
 from .base import TelegramObject
 from .rich_block import RichBlock
 
@@ -17,7 +18,7 @@ class RichBlockAnimation(RichBlock):
     Source: https://core.telegram.org/bots/api#richblockanimation
     """
 
-    type: Literal["animation"] = "animation"
+    type: Literal[RichBlockType.ANIMATION] = RichBlockType.ANIMATION
     """Type of the block, always 'animation'"""
     animation: Animation
     """The animation"""
@@ -33,7 +34,7 @@ class RichBlockAnimation(RichBlock):
         def __init__(
             __pydantic__self__,
             *,
-            type: Literal["animation"] = "animation",
+            type: Literal[RichBlockType.ANIMATION] = RichBlockType.ANIMATION,
             animation: Animation,
             has_spoiler: bool | None = None,
             caption: RichBlockCaption | None = None,

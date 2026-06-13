@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Literal
 
+from ..enums import RichBlockType
 from .base import TelegramObject
 from .rich_block import RichBlock
 
@@ -17,7 +18,7 @@ class RichBlockPreformatted(RichBlock):
     Source: https://core.telegram.org/bots/api#richblockpreformatted
     """
 
-    type: Literal["pre"] = "pre"
+    type: Literal[RichBlockType.PRE] = RichBlockType.PRE
     """Type of the block, always 'pre'"""
     text: RichTextUnion
     """Text of the block"""
@@ -31,7 +32,7 @@ class RichBlockPreformatted(RichBlock):
         def __init__(
             __pydantic__self__,
             *,
-            type: Literal["pre"] = "pre",
+            type: Literal[RichBlockType.PRE] = RichBlockType.PRE,
             text: RichTextUnion,
             language: str | None = None,
             **__pydantic_kwargs: Any,

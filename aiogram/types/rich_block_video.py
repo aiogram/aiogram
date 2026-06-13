@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Literal
 
+from ..enums import RichBlockType
 from .base import TelegramObject
 from .rich_block import RichBlock
 
@@ -17,7 +18,7 @@ class RichBlockVideo(RichBlock):
     Source: https://core.telegram.org/bots/api#richblockvideo
     """
 
-    type: Literal["video"] = "video"
+    type: Literal[RichBlockType.VIDEO] = RichBlockType.VIDEO
     """Type of the block, always 'video'"""
     video: Video
     """The video"""
@@ -33,7 +34,7 @@ class RichBlockVideo(RichBlock):
         def __init__(
             __pydantic__self__,
             *,
-            type: Literal["video"] = "video",
+            type: Literal[RichBlockType.VIDEO] = RichBlockType.VIDEO,
             video: Video,
             has_spoiler: bool | None = None,
             caption: RichBlockCaption | None = None,

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Literal
 
+from ..enums import RichTextType
 from .base import TelegramObject
 from .rich_text import RichText
 
@@ -17,7 +18,7 @@ class RichTextUrl(RichText):
     Source: https://core.telegram.org/bots/api#richtexturl
     """
 
-    type: Literal["url"] = "url"
+    type: Literal[RichTextType.URL] = RichTextType.URL
     """Type of the rich text, always 'url'"""
     text: RichTextUnion
     """The text"""
@@ -31,7 +32,7 @@ class RichTextUrl(RichText):
         def __init__(
             __pydantic__self__,
             *,
-            type: Literal["url"] = "url",
+            type: Literal[RichTextType.URL] = RichTextType.URL,
             text: RichTextUnion,
             url: str,
             **__pydantic_kwargs: Any,

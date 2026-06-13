@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Literal
 
+from ..enums import RichTextType
 from .base import TelegramObject
 from .rich_text import RichText
 
@@ -17,7 +18,7 @@ class RichTextPhoneNumber(RichText):
     Source: https://core.telegram.org/bots/api#richtextphonenumber
     """
 
-    type: Literal["phone_number"] = "phone_number"
+    type: Literal[RichTextType.PHONE_NUMBER] = RichTextType.PHONE_NUMBER
     """Type of the rich text, always 'phone_number'"""
     text: RichTextUnion
     """The text"""
@@ -31,7 +32,7 @@ class RichTextPhoneNumber(RichText):
         def __init__(
             __pydantic__self__,
             *,
-            type: Literal["phone_number"] = "phone_number",
+            type: Literal[RichTextType.PHONE_NUMBER] = RichTextType.PHONE_NUMBER,
             text: RichTextUnion,
             phone_number: str,
             **__pydantic_kwargs: Any,

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Literal
 
+from ..enums import RichTextType
 from .base import TelegramObject
 from .rich_text import RichText
 
@@ -17,7 +18,7 @@ class RichTextEmailAddress(RichText):
     Source: https://core.telegram.org/bots/api#richtextemailaddress
     """
 
-    type: Literal["email_address"] = "email_address"
+    type: Literal[RichTextType.EMAIL_ADDRESS] = RichTextType.EMAIL_ADDRESS
     """Type of the rich text, always 'email_address'"""
     text: RichTextUnion
     """The text"""
@@ -31,7 +32,7 @@ class RichTextEmailAddress(RichText):
         def __init__(
             __pydantic__self__,
             *,
-            type: Literal["email_address"] = "email_address",
+            type: Literal[RichTextType.EMAIL_ADDRESS] = RichTextType.EMAIL_ADDRESS,
             text: RichTextUnion,
             email_address: str,
             **__pydantic_kwargs: Any,

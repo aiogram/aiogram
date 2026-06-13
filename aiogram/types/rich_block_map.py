@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Literal
 
+from ..enums import RichBlockType
 from .base import TelegramObject
 from .rich_block import RichBlock
 
@@ -17,7 +18,7 @@ class RichBlockMap(RichBlock):
     Source: https://core.telegram.org/bots/api#richblockmap
     """
 
-    type: Literal["map"] = "map"
+    type: Literal[RichBlockType.MAP] = RichBlockType.MAP
     """Type of the block, always 'map'"""
     location: Location
     """Location of the center of the map"""
@@ -37,7 +38,7 @@ class RichBlockMap(RichBlock):
         def __init__(
             __pydantic__self__,
             *,
-            type: Literal["map"] = "map",
+            type: Literal[RichBlockType.MAP] = RichBlockType.MAP,
             location: Location,
             zoom: int,
             width: int,

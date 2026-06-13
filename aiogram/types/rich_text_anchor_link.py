@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Literal
 
+from ..enums import RichTextType
 from .base import TelegramObject
 from .rich_text import RichText
 
@@ -17,7 +18,7 @@ class RichTextAnchorLink(RichText):
     Source: https://core.telegram.org/bots/api#richtextanchorlink
     """
 
-    type: Literal["anchor_link"] = "anchor_link"
+    type: Literal[RichTextType.ANCHOR_LINK] = RichTextType.ANCHOR_LINK
     """Type of the rich text, always 'anchor_link'"""
     text: RichTextUnion
     """The link text"""
@@ -31,7 +32,7 @@ class RichTextAnchorLink(RichText):
         def __init__(
             __pydantic__self__,
             *,
-            type: Literal["anchor_link"] = "anchor_link",
+            type: Literal[RichTextType.ANCHOR_LINK] = RichTextType.ANCHOR_LINK,
             text: RichTextUnion,
             anchor_name: str,
             **__pydantic_kwargs: Any,
