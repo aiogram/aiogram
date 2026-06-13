@@ -28,6 +28,7 @@ from aiogram.methods import (
     SendPaidMedia,
     SendPhoto,
     SendPoll,
+    SendRichMessage,
     SendSticker,
     SendVenue,
     SendVideo,
@@ -95,6 +96,7 @@ from aiogram.types import (
     ProximityAlertTriggered,
     ReactionTypeCustomEmoji,
     RefundedPayment,
+    InputRichMessage,
     RichBlockParagraph,
     RichMessage,
     SharedUser,
@@ -1182,6 +1184,7 @@ class TestMessage:
             ["video_note", {"video_note": "video_note"}, SendVideoNote],
             ["voice", {"voice": "voice"}, SendVoice],
             ["paid_media", {"media": [], "star_count": 42}, SendPaidMedia],
+            ["rich", {"rich_message": InputRichMessage(html="<p>Test</p>")}, SendRichMessage],
         ],
     )
     @pytest.mark.parametrize("alias_type", ["reply", "answer"])
@@ -1209,6 +1212,7 @@ class TestMessage:
             | SendVideoNote
             | SendVoice
             | SendPaidMedia
+            | SendRichMessage
         ],
     ):
         message = Message(

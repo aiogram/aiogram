@@ -23,6 +23,8 @@ if TYPE_CHECKING:
         SendPaidMedia,
         SendPhoto,
         SendPoll,
+        SendRichMessage,
+        SendRichMessageDraft,
         SendSticker,
         SendVenue,
         SendVideo,
@@ -36,6 +38,7 @@ if TYPE_CHECKING:
     from .input_paid_media_union import InputPaidMediaUnion
     from .input_poll_media_union import InputPollMediaUnion
     from .input_poll_option_union import InputPollOptionUnion
+    from .input_rich_message import InputRichMessage
     from .labeled_price import LabeledPrice
     from .link_preview_options import LinkPreviewOptions
     from .media_union import MediaUnion
@@ -3148,3 +3151,128 @@ class InaccessibleMessage(MaybeInaccessibleMessage):
             quote_entities=quote_entities,
             quote_position=quote_position,
         )
+
+    def answer_rich(
+        self,
+        rich_message: InputRichMessage,
+        business_connection_id: str | None = None,
+        message_thread_id: int | None = None,
+        direct_messages_topic_id: int | None = None,
+        disable_notification: bool | None = None,
+        protect_content: bool | None = None,
+        allow_paid_broadcast: bool | None = None,
+        message_effect_id: str | None = None,
+        suggested_post_parameters: SuggestedPostParameters | None = None,
+        reply_parameters: ReplyParameters | None = None,
+        reply_markup: ReplyMarkupUnion | None = None,
+        **kwargs: Any,
+    ) -> SendRichMessage:
+        """
+        Shortcut for method :class:`aiogram.methods.send_rich_message.SendRichMessage`
+        will automatically fill method attributes:
+
+        - :code:`chat_id`
+
+        Use this method to send rich messages. If the message contains a block with a media element, then the bot must have the right to send the media to the chat. On success, the sent :class:`aiogram.types.message.Message` is returned.
+
+        Source: https://core.telegram.org/bots/api#sendrichmessage
+
+        :param rich_message: The message to be sent
+        :param business_connection_id: Unique identifier of the business connection on behalf of which the message will be sent
+        :param message_thread_id: Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only
+        :param direct_messages_topic_id: Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat
+        :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound
+        :param protect_content: Protects the contents of the sent message from forwarding and saving
+        :param allow_paid_broadcast: Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
+        :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
+        :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined
+        :param reply_parameters: Description of the message to reply to
+        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
+        :return: instance of method :class:`aiogram.methods.send_rich_message.SendRichMessage`
+        """
+        # DO NOT EDIT MANUALLY!!!
+        # This method was auto-generated via `butcher`
+
+        from aiogram.methods import SendRichMessage
+
+        assert self.chat is not None, (
+            "This method can be used only if chat is present in the message."
+        )
+
+        return SendRichMessage(
+            chat_id=self.chat.id,
+            rich_message=rich_message,
+            business_connection_id=business_connection_id,
+            message_thread_id=message_thread_id,
+            direct_messages_topic_id=direct_messages_topic_id,
+            disable_notification=disable_notification,
+            protect_content=protect_content,
+            allow_paid_broadcast=allow_paid_broadcast,
+            message_effect_id=message_effect_id,
+            suggested_post_parameters=suggested_post_parameters,
+            reply_parameters=reply_parameters,
+            reply_markup=reply_markup,
+            **kwargs,
+        ).as_(self._bot)
+
+    def reply_rich(
+        self,
+        rich_message: InputRichMessage,
+        business_connection_id: str | None = None,
+        message_thread_id: int | None = None,
+        direct_messages_topic_id: int | None = None,
+        disable_notification: bool | None = None,
+        protect_content: bool | None = None,
+        allow_paid_broadcast: bool | None = None,
+        message_effect_id: str | None = None,
+        suggested_post_parameters: SuggestedPostParameters | None = None,
+        reply_markup: ReplyMarkupUnion | None = None,
+        **kwargs: Any,
+    ) -> SendRichMessage:
+        """
+        Shortcut for method :class:`aiogram.methods.send_rich_message.SendRichMessage`
+        will automatically fill method attributes:
+
+        - :code:`chat_id`
+        - :code:`reply_parameters`
+
+        Use this method to send rich messages. If the message contains a block with a media element, then the bot must have the right to send the media to the chat. On success, the sent :class:`aiogram.types.message.Message` is returned.
+
+        Source: https://core.telegram.org/bots/api#sendrichmessage
+
+        :param rich_message: The message to be sent
+        :param business_connection_id: Unique identifier of the business connection on behalf of which the message will be sent
+        :param message_thread_id: Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only
+        :param direct_messages_topic_id: Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat
+        :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound
+        :param protect_content: Protects the contents of the sent message from forwarding and saving
+        :param allow_paid_broadcast: Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
+        :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
+        :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined
+        :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
+        :return: instance of method :class:`aiogram.methods.send_rich_message.SendRichMessage`
+        """
+        # DO NOT EDIT MANUALLY!!!
+        # This method was auto-generated via `butcher`
+
+        from aiogram.methods import SendRichMessage
+
+        assert self.chat is not None, (
+            "This method can be used only if chat is present in the message."
+        )
+
+        return SendRichMessage(
+            chat_id=self.chat.id,
+            reply_parameters=self.as_reply_parameters(),
+            rich_message=rich_message,
+            business_connection_id=business_connection_id,
+            message_thread_id=message_thread_id,
+            direct_messages_topic_id=direct_messages_topic_id,
+            disable_notification=disable_notification,
+            protect_content=protect_content,
+            allow_paid_broadcast=allow_paid_broadcast,
+            message_effect_id=message_effect_id,
+            suggested_post_parameters=suggested_post_parameters,
+            reply_markup=reply_markup,
+            **kwargs,
+        ).as_(self._bot)

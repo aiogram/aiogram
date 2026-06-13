@@ -145,3 +145,12 @@ answer_voice:
 answer_voice_pm:
   method: sendVoice
   fill: *fill-answer-user
+
+answer_query:
+  method: answerChatJoinRequestQuery
+  fill: &fill-query-id
+    chat_join_request_query_id: self.query_id
+
+send_webapp:
+  method: sendChatJoinRequestWebApp
+  fill: *fill-query-id

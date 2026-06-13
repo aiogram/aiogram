@@ -43,3 +43,9 @@ As reply into Webhook in handler
 .. code-block:: python
 
     return AnswerChatJoinRequestQuery(...)
+
+
+As shortcut from received object
+--------------------------------
+
+- :meth:`aiogram.types.chat_join_request.ChatJoinRequest.answer_query`

@@ -43,3 +43,12 @@ As reply into Webhook in handler
 .. code-block:: python
 
     return SendRichMessage(...)
+
+
+As shortcut from received object
+--------------------------------
+
+- :meth:`aiogram.types.message.Message.answer_rich`
+- :meth:`aiogram.types.message.Message.reply_rich`
+- :meth:`aiogram.types.inaccessible_message.InaccessibleMessage.answer_rich`
+- :meth:`aiogram.types.inaccessible_message.InaccessibleMessage.reply_rich`

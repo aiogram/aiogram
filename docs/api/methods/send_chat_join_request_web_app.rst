@@ -43,3 +43,9 @@ As reply into Webhook in handler
 .. code-block:: python
 
     return SendChatJoinRequestWebApp(...)
+
+
+As shortcut from received object
+--------------------------------
+
+- :meth:`aiogram.types.chat_join_request.ChatJoinRequest.send_webapp`

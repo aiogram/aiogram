@@ -10,10 +10,12 @@ from .custom import DateTime
 
 if TYPE_CHECKING:
     from ..methods import (
+        AnswerChatJoinRequestQuery,
         ApproveChatJoinRequest,
         DeclineChatJoinRequest,
         SendAnimation,
         SendAudio,
+        SendChatJoinRequestWebApp,
         SendContact,
         SendDice,
         SendDocument,
@@ -2984,5 +2986,63 @@ class ChatJoinRequest(TelegramObject):
             reply_markup=reply_markup,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_to_message_id=reply_to_message_id,
+            **kwargs,
+        ).as_(self._bot)
+
+    def answer_query(
+        self,
+        result: str,
+        **kwargs: Any,
+    ) -> AnswerChatJoinRequestQuery:
+        """
+        Shortcut for method :class:`aiogram.methods.answer_chat_join_request_query.AnswerChatJoinRequestQuery`
+        will automatically fill method attributes:
+
+        - :code:`chat_join_request_query_id`
+
+        Use this method to process a received chat join request query. Returns :code:`True` on success.
+
+        Source: https://core.telegram.org/bots/api#answerchatjoinrequestquery
+
+        :param result: Result of the query. Must be either 'approve' to allow the user to join the chat, 'decline' to disallow the user to join the chat, or 'queue' to leave the decision to other administrators
+        :return: instance of method :class:`aiogram.methods.answer_chat_join_request_query.AnswerChatJoinRequestQuery`
+        """
+        # DO NOT EDIT MANUALLY!!!
+        # This method was auto-generated via `butcher`
+
+        from aiogram.methods import AnswerChatJoinRequestQuery
+
+        return AnswerChatJoinRequestQuery(
+            chat_join_request_query_id=self.query_id,
+            result=result,
+            **kwargs,
+        ).as_(self._bot)
+
+    def send_webapp(
+        self,
+        web_app_url: str,
+        **kwargs: Any,
+    ) -> SendChatJoinRequestWebApp:
+        """
+        Shortcut for method :class:`aiogram.methods.send_chat_join_request_web_app.SendChatJoinRequestWebApp`
+        will automatically fill method attributes:
+
+        - :code:`chat_join_request_query_id`
+
+        Use this method to process a received chat join request query by showing a Mini App to the user before deciding the outcome. Returns :code:`True` on success.
+
+        Source: https://core.telegram.org/bots/api#sendchatjoinrequestwebapp
+
+        :param web_app_url: The URL of the Mini App to be opened
+        :return: instance of method :class:`aiogram.methods.send_chat_join_request_web_app.SendChatJoinRequestWebApp`
+        """
+        # DO NOT EDIT MANUALLY!!!
+        # This method was auto-generated via `butcher`
+
+        from aiogram.methods import SendChatJoinRequestWebApp
+
+        return SendChatJoinRequestWebApp(
+            chat_join_request_query_id=self.query_id,
+            web_app_url=web_app_url,
             **kwargs,
         ).as_(self._bot)
