@@ -3012,6 +3012,10 @@ class ChatJoinRequest(TelegramObject):
 
         from aiogram.methods import AnswerChatJoinRequestQuery
 
+        assert self.query_id is not None, (
+            "This method can be used only if query_id is present in the chat join request."
+        )
+
         return AnswerChatJoinRequestQuery(
             chat_join_request_query_id=self.query_id,
             result=result,
@@ -3040,6 +3044,10 @@ class ChatJoinRequest(TelegramObject):
         # This method was auto-generated via `butcher`
 
         from aiogram.methods import SendChatJoinRequestWebApp
+
+        assert self.query_id is not None, (
+            "This method can be used only if query_id is present in the chat join request."
+        )
 
         return SendChatJoinRequestWebApp(
             chat_join_request_query_id=self.query_id,
