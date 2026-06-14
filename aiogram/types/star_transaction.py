@@ -17,7 +17,7 @@ class StarTransaction(TelegramObject):
     """
 
     id: str
-    """Unique identifier of the transaction. Coincides with the identifier of the original transaction for refund transactions. Coincides with *SuccessfulPayment.telegram_payment_charge_id* for successful incoming payments from users."""
+    """Unique identifier of the transaction. Coincides with the identifier of the original transaction for refund transactions. Coincides with *SuccessfulPayment.telegram_payment_charge_id* for successful incoming payments from users"""
     amount: int
     """Integer amount of Telegram Stars transferred by the transaction"""
     date: DateTime

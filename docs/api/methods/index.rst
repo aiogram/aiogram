@@ -35,6 +35,7 @@ Available methods
     :maxdepth: 1
 
     answer_callback_query
+    answer_chat_join_request_query
     answer_guest_query
     answer_web_app_query
     approve_chat_join_request
@@ -112,6 +113,7 @@ Available methods
     send_animation
     send_audio
     send_chat_action
+    send_chat_join_request_web_app
     send_checklist
     send_contact
     send_dice
@@ -184,6 +186,15 @@ Updating messages
     edit_message_text
     stop_message_live_location
     stop_poll
+
+Rich messages
+=============
+
+.. toctree::
+    :maxdepth: 1
+
+    send_rich_message
+    send_rich_message_draft
 
 Games
 =====

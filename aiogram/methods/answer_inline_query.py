@@ -25,15 +25,15 @@ class AnswerInlineQuery(TelegramMethod[bool]):
     results: list[InlineQueryResultUnion]
     """A JSON-serialized array of results for the inline query"""
     cache_time: int | None = None
-    """The maximum amount of time in seconds that the result of the inline query may be cached on the server. Defaults to 300."""
+    """The maximum amount of time in seconds that the result of the inline query may be cached on the server. Defaults to 300"""
     is_personal: bool | None = None
-    """Pass :code:`True` if results may be cached on the server side only for the user that sent the query. By default, results may be returned to any user who sends the same query."""
+    """Pass :code:`True` if results may be cached on the server side only for the user that sent the query. By default, results may be returned to any user who sends the same query"""
     next_offset: str | None = None
-    """Pass the offset that a client should send in the next query with the same text to receive more results. Pass an empty string if there are no more results or if you don't support pagination. Offset length can't exceed 64 bytes."""
+    """Pass the offset that a client should send in the next query with the same text to receive more results. Pass an empty string if there are no more results or if you don't support pagination. Offset length can't exceed 64 bytes"""
     button: InlineQueryResultsButton | None = None
     """A JSON-serialized object describing a button to be shown above inline query results"""
     switch_pm_parameter: str | None = Field(None, json_schema_extra={"deprecated": True})
-    """`Deep-linking <https://core.telegram.org/bots/features#deep-linking>`_ parameter for the /start message sent to the bot when user presses the switch button. 1-64 characters, only :code:`A-Z`, :code:`a-z`, :code:`0-9`, :code:`_` and :code:`-` are allowed.
+    """`Deep-linking <https://core.telegram.org/bots/features#deep-linking>`_ parameter for the /start message sent to the bot when user presses the switch button. 1-64 characters, only :code:`A-Z`, :code:`a-z`, :code:`0-9`, :code:`_` and :code:`-` are allowed
 
 .. deprecated:: API:6.7
    https://core.telegram.org/bots/api-changelog#april-21-2023"""

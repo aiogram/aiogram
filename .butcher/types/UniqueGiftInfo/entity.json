@@ -21,9 +21,9 @@
       },
       {
         "type": "String",
-        "description": "Origin of the gift. Currently, either 'upgrade' for gifts upgraded from regular gifts, 'transfer' for gifts transferred from other users or channels, 'resale' for gifts bought from other users, 'gifted_upgrade' for upgrades purchased after the gift was sent, or 'offer' for gifts bought or sold through gift purchase offers",
-        "html_description": "<td>Origin of the gift. Currently, either &#8220;upgrade&#8221; for gifts upgraded from regular gifts, &#8220;transfer&#8221; for gifts transferred from other users or channels, &#8220;resale&#8221; for gifts bought from other users, &#8220;gifted_upgrade&#8221; for upgrades purchased after the gift was sent, or &#8220;offer&#8221; for gifts bought or sold through gift purchase offers</td>",
-        "rst_description": "Origin of the gift. Currently, either 'upgrade' for gifts upgraded from regular gifts, 'transfer' for gifts transferred from other users or channels, 'resale' for gifts bought from other users, 'gifted_upgrade' for upgrades purchased after the gift was sent, or 'offer' for gifts bought or sold through gift purchase offers\n",
+        "description": "Origin of the gift. Currently, either 'upgrade' for gifts upgraded from regular gifts, 'transfer' for gifts transferred from other users or channels, 'resale' for gifts bought from other users, 'gifted_upgrade' for upgrades purchased after the gift was sent, or 'offer' for gifts bought or sold through gift purchase offers.",
+        "html_description": "<td>Origin of the gift. Currently, either &#8220;upgrade&#8221; for gifts upgraded from regular gifts, &#8220;transfer&#8221; for gifts transferred from other users or channels, &#8220;resale&#8221; for gifts bought from other users, &#8220;gifted_upgrade&#8221; for upgrades purchased after the gift was sent, or &#8220;offer&#8221; for gifts bought or sold through gift purchase offers.</td>",
+        "rst_description": "Origin of the gift. Currently, either 'upgrade' for gifts upgraded from regular gifts, 'transfer' for gifts transferred from other users or channels, 'resale' for gifts bought from other users, 'gifted_upgrade' for upgrades purchased after the gift was sent, or 'offer' for gifts bought or sold through gift purchase offers.\n",
         "name": "origin",
         "required": true
       },
@@ -61,9 +61,9 @@
       },
       {
         "type": "Integer",
-        "description": "Point in time (Unix timestamp) when the gift can be transferred. If it is in the past, then the gift can be transferred now",
-        "html_description": "<td><em>Optional</em>. Point in time (Unix timestamp) when the gift can be transferred. If it is in the past, then the gift can be transferred now</td>",
-        "rst_description": "*Optional*. Point in time (Unix timestamp) when the gift can be transferred. If it is in the past, then the gift can be transferred now\n",
+        "description": "Point in time (Unix timestamp) when the gift can be transferred. If it is in the past, then the gift can be transferred now.",
+        "html_description": "<td><em>Optional</em>. Point in time (Unix timestamp) when the gift can be transferred. If it is in the past, then the gift can be transferred now.</td>",
+        "rst_description": "*Optional*. Point in time (Unix timestamp) when the gift can be transferred. If it is in the past, then the gift can be transferred now.\n",
         "name": "next_transfer_date",
         "required": false
       },

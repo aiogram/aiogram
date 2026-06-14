@@ -1,0 +1,41 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Rich messages",
+    "anchor": "rich-messages"
+  },
+  "object": {
+    "anchor": "richtextphonenumber",
+    "name": "RichTextPhoneNumber",
+    "description": "A text with a phone number.",
+    "html_description": "<p>A text with a phone number.</p>",
+    "rst_description": "A text with a phone number.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Type of the rich text, always 'phone_number'",
+        "html_description": "<td>Type of the rich text, always &#8220;phone_number&#8221;</td>",
+        "rst_description": "Type of the rich text, always 'phone_number'\n",
+        "name": "type",
+        "required": true
+      },
+      {
+        "type": "RichText",
+        "description": "The text",
+        "html_description": "<td>The text</td>",
+        "rst_description": "The text\n",
+        "name": "text",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "The phone number",
+        "html_description": "<td>The phone number</td>",
+        "rst_description": "The phone number\n",
+        "name": "phone_number",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

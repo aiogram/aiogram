@@ -19,9 +19,9 @@ class GetChatGifts(TelegramMethod[OwnedGifts]):
     chat_id: ChatIdUnion
     """Unique identifier for the target chat or username of the target channel in the format :code:`@username`"""
     exclude_unsaved: bool | None = None
-    """Pass :code:`True` to exclude gifts that aren't saved to the chat's profile page. Always :code:`True`, unless the bot has the *can_post_messages* administrator right in the channel."""
+    """Pass :code:`True` to exclude gifts that aren't saved to the chat's profile page. Always :code:`True`, unless the bot has the *can_post_messages* administrator right in the channel"""
     exclude_saved: bool | None = None
-    """Pass :code:`True` to exclude gifts that are saved to the chat's profile page. Always :code:`False`, unless the bot has the *can_post_messages* administrator right in the channel."""
+    """Pass :code:`True` to exclude gifts that are saved to the chat's profile page. Always :code:`False`, unless the bot has the *can_post_messages* administrator right in the channel"""
     exclude_unlimited: bool | None = None
     """Pass :code:`True` to exclude gifts that can be purchased an unlimited number of times"""
     exclude_limited_upgradable: bool | None = None
@@ -33,7 +33,7 @@ class GetChatGifts(TelegramMethod[OwnedGifts]):
     exclude_unique: bool | None = None
     """Pass :code:`True` to exclude unique gifts"""
     sort_by_price: bool | None = None
-    """Pass :code:`True` to sort results by gift price instead of send date. Sorting is applied before pagination."""
+    """Pass :code:`True` to sort results by gift price instead of send date. Sorting is applied before pagination"""
     offset: str | None = None
     """Offset of the first entry to return as received from the previous request; use an empty string to get the first chunk of results"""
     limit: int | None = None

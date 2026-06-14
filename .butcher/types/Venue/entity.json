@@ -13,9 +13,9 @@
     "annotations": [
       {
         "type": "Location",
-        "description": "Venue location. Can't be a live location",
-        "html_description": "<td>Venue location. Can't be a live location</td>",
-        "rst_description": "Venue location. Can't be a live location\n",
+        "description": "Venue location. Can't be a live location.",
+        "html_description": "<td>Venue location. Can't be a live location.</td>",
+        "rst_description": "Venue location. Can't be a live location.\n",
         "name": "location",
         "required": true
       },

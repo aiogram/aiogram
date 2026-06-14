@@ -8,6 +8,7 @@ if TYPE_CHECKING:
     from .animation import Animation
     from .audio import Audio
     from .document import Document
+    from .link import Link
     from .live_photo import LivePhoto
     from .location import Location
     from .photo_size import PhotoSize
@@ -41,6 +42,8 @@ class PollMedia(TelegramObject):
     """*Optional*. Media is a venue, information about the venue"""
     video: Video | None = None
     """*Optional*. Media is a video, information about the video"""
+    link: Link | None = None
+    """*Optional*. The HTTP link attached to the poll option"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!
@@ -58,6 +61,7 @@ class PollMedia(TelegramObject):
             sticker: Sticker | None = None,
             venue: Venue | None = None,
             video: Video | None = None,
+            link: Link | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!
@@ -74,5 +78,6 @@ class PollMedia(TelegramObject):
                 sticker=sticker,
                 venue=venue,
                 video=video,
+                link=link,
                 **__pydantic_kwargs,
             )

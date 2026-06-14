@@ -20,17 +20,17 @@ class SendGift(TelegramMethod[bool]):
     gift_id: str
     """Identifier of the gift; limited gifts can't be sent to channel chats"""
     user_id: int | None = None
-    """Required if *chat_id* is not specified. Unique identifier of the target user who will receive the gift."""
+    """Required if *chat_id* is not specified. Unique identifier of the target user who will receive the gift"""
     chat_id: ChatIdUnion | None = None
-    """Required if *user_id* is not specified. Unique identifier for the chat or username of the channel (in the format :code:`@username`) that will receive the gift."""
+    """Required if *user_id* is not specified. Unique identifier for the chat or username of the channel (in the format :code:`@username`) that will receive the gift"""
     pay_for_upgrade: bool | None = None
     """Pass :code:`True` to pay for the gift upgrade from the bot's balance, thereby making the upgrade free for the receiver"""
     text: str | None = None
     """Text that will be shown along with the gift; 0-128 characters"""
     text_parse_mode: str | None = None
-    """Mode for parsing entities in the text. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details. Entities other than 'bold', 'italic', 'underline', 'strikethrough', 'spoiler', 'custom_emoji', and 'date_time' are ignored."""
+    """Mode for parsing entities in the text. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details. Entities other than 'bold', 'italic', 'underline', 'strikethrough', 'spoiler', 'custom_emoji', and 'date_time' are ignored"""
     text_entities: list[MessageEntity] | None = None
-    """A JSON-serialized list of special entities that appear in the gift text. It can be specified instead of *text_parse_mode*. Entities other than 'bold', 'italic', 'underline', 'strikethrough', 'spoiler', 'custom_emoji', and 'date_time' are ignored."""
+    """A JSON-serialized list of special entities that appear in the gift text. It can be specified instead of *text_parse_mode*. Entities other than 'bold', 'italic', 'underline', 'strikethrough', 'spoiler', 'custom_emoji', and 'date_time' are ignored"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!

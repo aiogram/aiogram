@@ -12,20 +12,28 @@
     "rst_description": "Use this method to send a group of photos, live photos, videos, documents or audios as an album. Documents and audio files can be only grouped in an album with messages of the same type. On success, an array of :class:`aiogram.types.message.Message` objects that were sent is returned.",
     "annotations": [
       {
-        "type": "String",
-        "required": false,
-        "description": "Unique identifier of the business connection on behalf of which the message will be sent",
-        "html_description": "<td>Unique identifier of the business connection on behalf of which the message will be sent</td>",
-        "rst_description": "Unique identifier of the business connection on behalf of which the message will be sent\n",
-        "name": "business_connection_id"
-      },
-      {
         "type": "Integer or String",
         "required": true,
         "description": "Unique identifier for the target chat or username of the target bot, supergroup or channel in the format @username",
         "html_description": "<td>Unique identifier for the target chat or username of the target bot, supergroup or channel in the format <code>@username</code></td>",
         "rst_description": "Unique identifier for the target chat or username of the target bot, supergroup or channel in the format :code:`@username`\n",
         "name": "chat_id"
+      },
+      {
+        "type": "Array of InputMediaAudio, InputMediaDocument, InputMediaLivePhoto, InputMediaPhoto and InputMediaVideo",
+        "required": true,
+        "description": "A JSON-serialized array describing messages to be sent, must include 2-10 items",
+        "html_description": "<td>A JSON-serialized array describing messages to be sent, must include 2-10 items</td>",
+        "rst_description": "A JSON-serialized array describing messages to be sent, must include 2-10 items\n",
+        "name": "media"
+      },
+      {
+        "type": "String",
+        "required": false,
+        "description": "Unique identifier of the business connection on behalf of which the message will be sent",
+        "html_description": "<td>Unique identifier of the business connection on behalf of which the message will be sent</td>",
+        "rst_description": "Unique identifier of the business connection on behalf of which the message will be sent\n",
+        "name": "business_connection_id"
       },
       {
         "type": "Integer",
@@ -42,14 +50,6 @@
         "html_description": "<td>Identifier of the direct messages topic to which the messages will be sent; required if the messages are sent to a direct messages chat</td>",
         "rst_description": "Identifier of the direct messages topic to which the messages will be sent; required if the messages are sent to a direct messages chat\n",
         "name": "direct_messages_topic_id"
-      },
-      {
-        "type": "Array of InputMediaAudio, InputMediaDocument, InputMediaLivePhoto, InputMediaPhoto and InputMediaVideo",
-        "required": true,
-        "description": "A JSON-serialized array describing messages to be sent, must include 2-10 items",
-        "html_description": "<td>A JSON-serialized array describing messages to be sent, must include 2-10 items</td>",
-        "rst_description": "A JSON-serialized array describing messages to be sent, must include 2-10 items\n",
-        "name": "media"
       },
       {
         "type": "Boolean",

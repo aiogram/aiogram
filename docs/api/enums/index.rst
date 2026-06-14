@@ -37,6 +37,8 @@ Here is list of all available enums:
     poll_type
     reaction_type_type
     revenue_withdrawal_state_type
+    rich_block_type
+    rich_text_type
     sticker_format
     sticker_type
     story_area_type_type

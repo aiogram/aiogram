@@ -82,6 +82,14 @@
         "rst_description": "*Optional*. Media is a video, information about the video\n",
         "name": "video",
         "required": false
+      },
+      {
+        "type": "Link",
+        "description": "The HTTP link attached to the poll option",
+        "html_description": "<td><em>Optional</em>. The HTTP link attached to the poll option</td>",
+        "rst_description": "*Optional*. The HTTP link attached to the poll option\n",
+        "name": "link",
+        "required": false
       }
     ],
     "category": "types"

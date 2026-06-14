@@ -1,0 +1,41 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Rich messages",
+    "anchor": "rich-messages"
+  },
+  "object": {
+    "anchor": "richtextcashtag",
+    "name": "RichTextCashtag",
+    "description": "A cashtag.",
+    "html_description": "<p>A cashtag.</p>",
+    "rst_description": "A cashtag.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Type of the rich text, always 'cashtag'",
+        "html_description": "<td>Type of the rich text, always &#8220;cashtag&#8221;</td>",
+        "rst_description": "Type of the rich text, always 'cashtag'\n",
+        "name": "type",
+        "required": true
+      },
+      {
+        "type": "RichText",
+        "description": "The text",
+        "html_description": "<td>The text</td>",
+        "rst_description": "The text\n",
+        "name": "text",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "The cashtag",
+        "html_description": "<td>The cashtag</td>",
+        "rst_description": "The cashtag\n",
+        "name": "cashtag",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

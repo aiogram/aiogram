@@ -29,7 +29,7 @@ class SendPoll(TelegramMethod[Message]):
     __api_method__ = "sendPoll"
 
     chat_id: ChatIdUnion
-    """Unique identifier for the target chat or username of the target bot, supergroup or channel in the format :code:`@username`. Polls can't be sent to channel direct messages chats."""
+    """Unique identifier for the target chat or username of the target bot, supergroup or channel in the format :code:`@username`. Polls can't be sent to channel direct messages chats"""
     question: str
     """Poll question, 1-300 characters"""
     options: list[InputPollOptionUnion]
@@ -59,37 +59,37 @@ class SendPoll(TelegramMethod[Message]):
     members_only: bool | None = None
     """Pass :code:`True`, if voting is limited to users who have been members of the chat where the poll is being sent for more than 24 hours; for channel chats only"""
     country_codes: list[str] | None = None
-    """A JSON-serialized list of 0-12 two-letter `ISO 3166-1 alpha-2 <https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2>`_ country codes indicating the countries from which users can vote in the poll; for channel chats only. If omitted or empty, then users from any country can participate in the poll."""
+    """A JSON-serialized list of 0-12 two-letter `ISO 3166-1 alpha-2 <https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2>`_ country codes indicating the countries from which users can vote in the poll; for channel chats only. Use 'FT' as a country code to allow users with anonymous numbers to vote. If omitted or empty, then users from any country can participate in the poll"""
     correct_option_ids: list[int] | None = None
     """A JSON-serialized list of monotonically increasing 0-based identifiers of the correct answer options, required for polls in quiz mode"""
     explanation: str | None = None
     """Text that is shown when a user chooses an incorrect answer or taps on the lamp icon in a quiz-style poll, 0-200 characters with at most 2 line feeds after entities parsing"""
     explanation_parse_mode: str | Default | None = Default("parse_mode")
-    """Mode for parsing entities in the explanation. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details."""
+    """Mode for parsing entities in the explanation. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details"""
     explanation_entities: list[MessageEntity] | None = None
     """A JSON-serialized list of special entities that appear in the poll explanation. It can be specified instead of *explanation_parse_mode*"""
     explanation_media: InputPollMediaUnion | None = None
     """Media added to the quiz explanation"""
     open_period: int | None = None
-    """Amount of time in seconds the poll will be active after creation, 5-2628000. Can't be used together with *close_date*."""
+    """Amount of time in seconds the poll will be active after creation, 5-2628000. Can't be used together with *close_date*"""
     close_date: DateTimeUnion | None = None
-    """Point in time (Unix timestamp) when the poll will be automatically closed. Must be at least 5 and no more than 2628000 seconds in the future. Can't be used together with *open_period*."""
+    """Point in time (Unix timestamp) when the poll will be automatically closed. Must be at least 5 and no more than 2628000 seconds in the future. Can't be used together with *open_period*"""
     is_closed: bool | None = None
-    """Pass :code:`True` if the poll needs to be immediately closed. This can be useful for poll preview."""
+    """Pass :code:`True` if the poll needs to be immediately closed. This can be useful for poll preview"""
     description: str | None = None
     """Description of the poll to be sent, 0-1024 characters after entities parsing"""
     description_parse_mode: str | Default | None = Default("parse_mode")
-    """Mode for parsing entities in the poll description. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details."""
+    """Mode for parsing entities in the poll description. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details"""
     description_entities: list[MessageEntity] | None = None
     """A JSON-serialized list of special entities that appear in the poll description, which can be specified instead of *description_parse_mode*"""
     media: InputPollMediaUnion | None = None
     """Media added to the poll description"""
     disable_notification: bool | None = None
-    """Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound."""
+    """Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound"""
     protect_content: bool | Default | None = Default("protect_content")
     """Protects the contents of the sent message from forwarding and saving"""
     allow_paid_broadcast: bool | None = None
-    """Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance."""
+    """Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance"""
     message_effect_id: str | None = None
     """Unique identifier of the message effect to be added to the message; for private chats only"""
     reply_parameters: ReplyParameters | None = None

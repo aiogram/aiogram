@@ -19,15 +19,15 @@ class InputMediaLivePhoto(InputMedia, InputPollMedia, InputPollOptionMedia):
     """
 
     type: Literal[InputMediaType.LIVE_PHOTO] = InputMediaType.LIVE_PHOTO
-    """Type of the result, must be *live_photo*"""
+    """Type of the media, must be *live_photo*"""
     media: str
-    """Video of the live photo to send. Pass a file_id to send a file that exists on the Telegram servers (recommended) or pass 'attach://<file_attach_name>' to upload a new one using multipart/form-data under <file_attach_name> name. :ref:`More information on Sending Files » <sending-files>`. Sending live photos by a URL is currently unsupported."""
+    """Video of the live photo to send. Pass a file_id to send a file that exists on the Telegram servers (recommended) or pass 'attach://<file_attach_name>' to upload a new one using multipart/form-data under <file_attach_name> name. :ref:`More information on Sending Files » <sending-files>`. Sending live photos by a URL is currently unsupported"""
     photo: str
-    """The static photo to send. Pass a file_id to send a file that exists on the Telegram servers (recommended) or pass 'attach://<file_attach_name>' to upload a new one using multipart/form-data under <file_attach_name> name. :ref:`More information on Sending Files » <sending-files>`. Sending live photos by a URL is currently unsupported."""
+    """The static photo to send. Pass a file_id to send a file that exists on the Telegram servers (recommended) or pass 'attach://<file_attach_name>' to upload a new one using multipart/form-data under <file_attach_name> name. :ref:`More information on Sending Files » <sending-files>`. Sending live photos by a URL is currently unsupported"""
     caption: str | None = None
     """*Optional*. Caption of the live photo to be sent, 0-1024 characters after entities parsing"""
     parse_mode: str | None = None
-    """*Optional*. Mode for parsing entities in the live photo caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details."""
+    """*Optional*. Mode for parsing entities in the live photo caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details"""
     caption_entities: list[MessageEntity] | None = None
     """*Optional*. List of special entities that appear in the caption, which can be specified instead of *parse_mode*"""
     show_caption_above_media: bool | None = None

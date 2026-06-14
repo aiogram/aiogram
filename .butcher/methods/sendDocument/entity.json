@@ -12,20 +12,28 @@
     "rst_description": "Use this method to send general files. On success, the sent :class:`aiogram.types.message.Message` is returned. Bots can currently send files of any type of up to 50 MB in size, this limit may be changed in the future.",
     "annotations": [
       {
-        "type": "String",
-        "required": false,
-        "description": "Unique identifier of the business connection on behalf of which the message will be sent",
-        "html_description": "<td>Unique identifier of the business connection on behalf of which the message will be sent</td>",
-        "rst_description": "Unique identifier of the business connection on behalf of which the message will be sent\n",
-        "name": "business_connection_id"
-      },
-      {
         "type": "Integer or String",
         "required": true,
         "description": "Unique identifier for the target chat or username of the target bot, supergroup or channel in the format @username",
         "html_description": "<td>Unique identifier for the target chat or username of the target bot, supergroup or channel in the format <code>@username</code></td>",
         "rst_description": "Unique identifier for the target chat or username of the target bot, supergroup or channel in the format :code:`@username`\n",
         "name": "chat_id"
+      },
+      {
+        "type": "InputFile or String",
+        "required": true,
+        "description": "File to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. More information on Sending Files",
+        "html_description": "<td>File to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. <a href=\"#sending-files\">More information on Sending Files &#187;</a></td>",
+        "rst_description": "File to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`\n",
+        "name": "document"
+      },
+      {
+        "type": "String",
+        "required": false,
+        "description": "Unique identifier of the business connection on behalf of which the message will be sent",
+        "html_description": "<td>Unique identifier of the business connection on behalf of which the message will be sent</td>",
+        "rst_description": "Unique identifier of the business connection on behalf of which the message will be sent\n",
+        "name": "business_connection_id"
       },
       {
         "type": "Integer",
@@ -42,14 +50,6 @@
         "html_description": "<td>Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat</td>",
         "rst_description": "Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat\n",
         "name": "direct_messages_topic_id"
-      },
-      {
-        "type": "InputFile or String",
-        "required": true,
-        "description": "File to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. More information on Sending Files",
-        "html_description": "<td>File to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. <a href=\"#sending-files\">More information on Sending Files &#187;</a></td>",
-        "rst_description": "File to send. Pass a file_id as String to send a file that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a file from the Internet, or upload a new one using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`\n",
-        "name": "document"
       },
       {
         "type": "InputFile or String",
@@ -142,9 +142,9 @@
       {
         "type": "InlineKeyboardMarkup or ReplyKeyboardMarkup or ReplyKeyboardRemove or ForceReply",
         "required": false,
-        "description": "Additional interface options. A JSON-serialized object for an inline keyboard, custom reply keyboard, instructions to remove a reply keyboard or to force a reply from the user",
-        "html_description": "<td>Additional interface options. A JSON-serialized object for an <a href=\"/bots/features#inline-keyboards\">inline keyboard</a>, <a href=\"/bots/features#keyboards\">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user</td>",
-        "rst_description": "Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user\n",
+        "description": "Additional interface options. A JSON-serialized object for an inline keyboard, custom reply keyboard, instructions to remove a reply keyboard or to force a reply from the user.",
+        "html_description": "<td>Additional interface options. A JSON-serialized object for an <a href=\"/bots/features#inline-keyboards\">inline keyboard</a>, <a href=\"/bots/features#keyboards\">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user.</td>",
+        "rst_description": "Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user.\n",
         "name": "reply_markup"
       },
       {

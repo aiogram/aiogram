@@ -23,7 +23,7 @@ class StopPoll(TelegramMethod[Poll]):
     business_connection_id: str | None = None
     """Unique identifier of the business connection on behalf of which the message to be edited was sent"""
     reply_markup: InlineKeyboardMarkup | None = None
-    """A JSON-serialized object for a new message `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_."""
+    """A JSON-serialized object for a new message `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!

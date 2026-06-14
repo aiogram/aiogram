@@ -37,14 +37,6 @@
       },
       {
         "type": "String",
-        "description": "Payment provider token, obtained via @BotFather. Pass an empty string for payments in Telegram Stars.",
-        "html_description": "<td><em>Optional</em>. Payment provider token, obtained via <a href=\"https://t.me/botfather\">@BotFather</a>. Pass an empty string for payments in <a href=\"https://t.me/BotNews/90\">Telegram Stars</a>.</td>",
-        "rst_description": "*Optional*. Payment provider token, obtained via `@BotFather <https://t.me/botfather>`_. Pass an empty string for payments in `Telegram Stars <https://t.me/BotNews/90>`_.\n",
-        "name": "provider_token",
-        "required": false
-      },
-      {
-        "type": "String",
         "description": "Three-letter ISO 4217 currency code, see more on currencies. Pass 'XTR' for payments in Telegram Stars.",
         "html_description": "<td>Three-letter ISO 4217 currency code, see <a href=\"/bots/payments#supported-currencies\">more on currencies</a>. Pass &#8220;XTR&#8221; for payments in <a href=\"https://t.me/BotNews/90\">Telegram Stars</a>.</td>",
         "rst_description": "Three-letter ISO 4217 currency code, see `more on currencies <https://core.telegram.org/bots/payments#supported-currencies>`_. Pass 'XTR' for payments in `Telegram Stars <https://t.me/BotNews/90>`_.\n",
@@ -58,6 +50,14 @@
         "rst_description": "Price breakdown, a JSON-serialized list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.). Must contain exactly one item for payments in `Telegram Stars <https://t.me/BotNews/90>`_.\n",
         "name": "prices",
         "required": true
+      },
+      {
+        "type": "String",
+        "description": "Payment provider token, obtained via @BotFather. Pass an empty string for payments in Telegram Stars.",
+        "html_description": "<td><em>Optional</em>. Payment provider token, obtained via <a href=\"https://t.me/botfather\">@BotFather</a>. Pass an empty string for payments in <a href=\"https://t.me/BotNews/90\">Telegram Stars</a>.</td>",
+        "rst_description": "*Optional*. Payment provider token, obtained via `@BotFather <https://t.me/botfather>`_. Pass an empty string for payments in `Telegram Stars <https://t.me/BotNews/90>`_.\n",
+        "name": "provider_token",
+        "required": false
       },
       {
         "type": "Integer",

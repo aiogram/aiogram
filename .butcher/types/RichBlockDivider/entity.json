@@ -1,0 +1,25 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Rich messages",
+    "anchor": "rich-messages"
+  },
+  "object": {
+    "anchor": "richblockdivider",
+    "name": "RichBlockDivider",
+    "description": "A divider, corresponding to the HTML tag <hr/>.",
+    "html_description": "<p>A divider, corresponding to the HTML tag <code>&lt;hr/&gt;</code>.</p>",
+    "rst_description": "A divider, corresponding to the HTML tag :code:`<hr/>`.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Type of the block, always 'divider'",
+        "html_description": "<td>Type of the block, always &#8220;divider&#8221;</td>",
+        "rst_description": "Type of the block, always 'divider'\n",
+        "name": "type",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Rich messages",
+    "anchor": "rich-messages"
+  },
+  "object": {
+    "anchor": "richblockphoto",
+    "name": "RichBlockPhoto",
+    "description": "A block with a photo, corresponding to the HTML tag <photo>.",
+    "html_description": "<p>A block with a photo, corresponding to the HTML tag <code>&lt;photo&gt;</code>.</p>",
+    "rst_description": "A block with a photo, corresponding to the HTML tag :code:`<photo>`.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Type of the block, always 'photo'",
+        "html_description": "<td>Type of the block, always &#8220;photo&#8221;</td>",
+        "rst_description": "Type of the block, always 'photo'\n",
+        "name": "type",
+        "required": true
+      },
+      {
+        "type": "Array of PhotoSize",
+        "description": "Available sizes of the photo",
+        "html_description": "<td>Available sizes of the photo</td>",
+        "rst_description": "Available sizes of the photo\n",
+        "name": "photo",
+        "required": true
+      },
+      {
+        "type": "True",
+        "description": "True, if the media preview is covered by a spoiler animation",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the media preview is covered by a spoiler animation</td>",
+        "rst_description": "*Optional*. :code:`True`, if the media preview is covered by a spoiler animation\n",
+        "name": "has_spoiler",
+        "required": false
+      },
+      {
+        "type": "RichBlockCaption",
+        "description": "Caption of the block",
+        "html_description": "<td><em>Optional</em>. Caption of the block</td>",
+        "rst_description": "*Optional*. Caption of the block\n",
+        "name": "caption",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

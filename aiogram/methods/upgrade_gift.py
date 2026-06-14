@@ -22,7 +22,7 @@ class UpgradeGift(TelegramMethod[bool]):
     keep_original_details: bool | None = None
     """Pass :code:`True` to keep the original gift text, sender and receiver in the upgraded gift"""
     star_count: int | None = None
-    """The amount of Telegram Stars that will be paid for the upgrade from the business account balance. If :code:`gift.prepaid_upgrade_star_count > 0`, then pass 0, otherwise, the *can_transfer_stars* business bot right is required and :code:`gift.upgrade_star_count` must be passed."""
+    """The amount of Telegram Stars that will be paid for the upgrade from the business account balance. If :code:`gift.prepaid_upgrade_star_count > 0`, then pass 0, otherwise, the *can_transfer_stars* business bot right is required and :code:`gift.upgrade_star_count` must be passed"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!

@@ -23,7 +23,7 @@ class SendChecklist(TelegramMethod[Message]):
     checklist: InputChecklist
     """A JSON-serialized object for the checklist to send"""
     disable_notification: bool | None = None
-    """Sends the message silently. Users will receive a notification with no sound."""
+    """Sends the message silently. Users will receive a notification with no sound"""
     protect_content: bool | None = None
     """Protects the contents of the sent message from forwarding and saving"""
     message_effect_id: str | None = None

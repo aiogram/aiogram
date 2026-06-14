@@ -21,9 +21,9 @@
       },
       {
         "type": "String",
-        "description": "Description of the command; 1-256 characters.",
-        "html_description": "<td>Description of the command; 1-256 characters.</td>",
-        "rst_description": "Description of the command; 1-256 characters.\n",
+        "description": "Description of the command; 1-256 characters",
+        "html_description": "<td>Description of the command; 1-256 characters</td>",
+        "rst_description": "Description of the command; 1-256 characters\n",
         "name": "description",
         "required": true
       }
