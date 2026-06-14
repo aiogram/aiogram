@@ -74,7 +74,7 @@ Updated to `Bot API 10.1 <https://core.telegram.org/bots/api-changelog#june-11-2
 
 *Changed Parameters for* :class:`aiogram.methods.edit_message_text.EditMessageText`:
 
-- :code:`text` is now **optional** (``str | None``) — previously it was a required positional argument; now either :code:`text` or :code:`rich_message` must be provided. **Breaking change:** code that passed :code:`text` as a positional argument to :class:`~aiogram.methods.edit_message_text.EditMessageText` or :meth:`~aiogram.types.message.Message.edit_text` must be updated to use the keyword form (``text="..."``)
+- :code:`text` is now **optional** (``str | None``) — previously it was a required positional argument; now either :code:`text` or :code:`rich_message` must be provided.
 
 **Join Request Queries**
 
