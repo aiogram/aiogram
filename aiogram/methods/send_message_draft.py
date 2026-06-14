@@ -19,7 +19,7 @@ class SendMessageDraft(TelegramMethod[bool]):
     chat_id: int
     """Unique identifier for the target private chat"""
     draft_id: int
-    """Unique identifier of the message draft; must be non-zero. Changes of drafts with the same identifier are animated"""
+    """Unique identifier of the message draft; must be non-zero. Changes to drafts with the same identifier are animated"""
     message_thread_id: int | None = None
     """Unique identifier for the target message thread"""
     text: str | None = None

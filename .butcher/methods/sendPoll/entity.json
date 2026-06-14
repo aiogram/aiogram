@@ -12,14 +12,6 @@
     "rst_description": "Use this method to send a native poll. On success, the sent :class:`aiogram.types.message.Message` is returned.",
     "annotations": [
       {
-        "type": "String",
-        "required": false,
-        "description": "Unique identifier of the business connection on behalf of which the message will be sent",
-        "html_description": "<td>Unique identifier of the business connection on behalf of which the message will be sent</td>",
-        "rst_description": "Unique identifier of the business connection on behalf of which the message will be sent\n",
-        "name": "business_connection_id"
-      },
-      {
         "type": "Integer or String",
         "required": true,
         "description": "Unique identifier for the target chat or username of the target bot, supergroup or channel in the format @username. Polls can't be sent to channel direct messages chats.",
@@ -28,20 +20,36 @@
         "name": "chat_id"
       },
       {
-        "type": "Integer",
-        "required": false,
-        "description": "Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only",
-        "html_description": "<td>Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only</td>",
-        "rst_description": "Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only\n",
-        "name": "message_thread_id"
-      },
-      {
         "type": "String",
         "required": true,
         "description": "Poll question, 1-300 characters",
         "html_description": "<td>Poll question, 1-300 characters</td>",
         "rst_description": "Poll question, 1-300 characters\n",
         "name": "question"
+      },
+      {
+        "type": "Array of InputPollOption",
+        "required": true,
+        "description": "A JSON-serialized list of 1-12 answer options",
+        "html_description": "<td>A JSON-serialized list of 1-12 answer options</td>",
+        "rst_description": "A JSON-serialized list of 1-12 answer options\n",
+        "name": "options"
+      },
+      {
+        "type": "String",
+        "required": false,
+        "description": "Unique identifier of the business connection on behalf of which the message will be sent",
+        "html_description": "<td>Unique identifier of the business connection on behalf of which the message will be sent</td>",
+        "rst_description": "Unique identifier of the business connection on behalf of which the message will be sent\n",
+        "name": "business_connection_id"
+      },
+      {
+        "type": "Integer",
+        "required": false,
+        "description": "Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only",
+        "html_description": "<td>Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only</td>",
+        "rst_description": "Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only\n",
+        "name": "message_thread_id"
       },
       {
         "type": "String",
@@ -58,14 +66,6 @@
         "html_description": "<td>A JSON-serialized list of special entities that appear in the poll question. It can be specified instead of <em>question_parse_mode</em>.</td>",
         "rst_description": "A JSON-serialized list of special entities that appear in the poll question. It can be specified instead of *question_parse_mode*.\n",
         "name": "question_entities"
-      },
-      {
-        "type": "Array of InputPollOption",
-        "required": true,
-        "description": "A JSON-serialized list of 1-12 answer options",
-        "html_description": "<td>A JSON-serialized list of 1-12 answer options</td>",
-        "rst_description": "A JSON-serialized list of 1-12 answer options\n",
-        "name": "options"
       },
       {
         "type": "Boolean",

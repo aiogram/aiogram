@@ -12,20 +12,28 @@
     "rst_description": "As of `v.4.0 <https://telegram.org/blog/video-messages-and-telescope>`_, Telegram clients support rounded square MPEG4 videos of up to 1 minute long. Use this method to send video messages. On success, the sent :class:`aiogram.types.message.Message` is returned.",
     "annotations": [
       {
-        "type": "String",
-        "required": false,
-        "description": "Unique identifier of the business connection on behalf of which the message will be sent",
-        "html_description": "<td>Unique identifier of the business connection on behalf of which the message will be sent</td>",
-        "rst_description": "Unique identifier of the business connection on behalf of which the message will be sent\n",
-        "name": "business_connection_id"
-      },
-      {
         "type": "Integer or String",
         "required": true,
         "description": "Unique identifier for the target chat or username of the target bot, supergroup or channel in the format @username",
         "html_description": "<td>Unique identifier for the target chat or username of the target bot, supergroup or channel in the format <code>@username</code></td>",
         "rst_description": "Unique identifier for the target chat or username of the target bot, supergroup or channel in the format :code:`@username`\n",
         "name": "chat_id"
+      },
+      {
+        "type": "InputFile or String",
+        "required": true,
+        "description": "Video note to send. Pass a file_id as String to send a video note that exists on the Telegram servers (recommended) or upload a new video using multipart/form-data. More information on Sending Files. Sending video notes by a URL is currently unsupported.",
+        "html_description": "<td>Video note to send. Pass a file_id as String to send a video note that exists on the Telegram servers (recommended) or upload a new video using multipart/form-data. <a href=\"#sending-files\">More information on Sending Files &#187;</a>. Sending video notes by a URL is currently unsupported.</td>",
+        "rst_description": "Video note to send. Pass a file_id as String to send a video note that exists on the Telegram servers (recommended) or upload a new video using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`. Sending video notes by a URL is currently unsupported.\n",
+        "name": "video_note"
+      },
+      {
+        "type": "String",
+        "required": false,
+        "description": "Unique identifier of the business connection on behalf of which the message will be sent",
+        "html_description": "<td>Unique identifier of the business connection on behalf of which the message will be sent</td>",
+        "rst_description": "Unique identifier of the business connection on behalf of which the message will be sent\n",
+        "name": "business_connection_id"
       },
       {
         "type": "Integer",
@@ -42,14 +50,6 @@
         "html_description": "<td>Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat</td>",
         "rst_description": "Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat\n",
         "name": "direct_messages_topic_id"
-      },
-      {
-        "type": "InputFile or String",
-        "required": true,
-        "description": "Video note to send. Pass a file_id as String to send a video note that exists on the Telegram servers (recommended) or upload a new video using multipart/form-data. More information on Sending Files. Sending video notes by a URL is currently unsupported.",
-        "html_description": "<td>Video note to send. Pass a file_id as String to send a video note that exists on the Telegram servers (recommended) or upload a new video using multipart/form-data. <a href=\"#sending-files\">More information on Sending Files &#187;</a>. Sending video notes by a URL is currently unsupported.</td>",
-        "rst_description": "Video note to send. Pass a file_id as String to send a video note that exists on the Telegram servers (recommended) or upload a new video using multipart/form-data. :ref:`More information on Sending Files » <sending-files>`. Sending video notes by a URL is currently unsupported.\n",
-        "name": "video_note"
       },
       {
         "type": "Integer",

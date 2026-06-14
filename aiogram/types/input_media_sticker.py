@@ -13,7 +13,7 @@ class InputMediaSticker(InputPollOptionMedia):
     """
 
     type: Literal[InputMediaType.STICKER] = InputMediaType.STICKER
-    """Type of the result, must be *sticker*"""
+    """Type of the media, must be *sticker*"""
     media: str
     """File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a .WEBP sticker from the Internet, or pass 'attach://<file_attach_name>' to upload a new .WEBP, .TGS, or .WEBM sticker using multipart/form-data under <file_attach_name> name. :ref:`More information on Sending Files » <sending-files>`"""
     emoji: str | None = None

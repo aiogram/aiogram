@@ -12,20 +12,28 @@
     "rst_description": "Use this method to send photos. On success, the sent :class:`aiogram.types.message.Message` is returned.",
     "annotations": [
       {
-        "type": "String",
-        "required": false,
-        "description": "Unique identifier of the business connection on behalf of which the message will be sent",
-        "html_description": "<td>Unique identifier of the business connection on behalf of which the message will be sent</td>",
-        "rst_description": "Unique identifier of the business connection on behalf of which the message will be sent\n",
-        "name": "business_connection_id"
-      },
-      {
         "type": "Integer or String",
         "required": true,
         "description": "Unique identifier for the target chat or username of the target bot, supergroup or channel in the format @username",
         "html_description": "<td>Unique identifier for the target chat or username of the target bot, supergroup or channel in the format <code>@username</code></td>",
         "rst_description": "Unique identifier for the target chat or username of the target bot, supergroup or channel in the format :code:`@username`\n",
         "name": "chat_id"
+      },
+      {
+        "type": "InputFile or String",
+        "required": true,
+        "description": "Photo to send. Pass a file_id as String to send a photo that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a photo from the Internet, or upload a new photo using multipart/form-data. The photo must be at most 10 MB in size. The photo's width and height must not exceed 10000 in total. Width and height ratio must be at most 20. More information on Sending Files",
+        "html_description": "<td>Photo to send. Pass a file_id as String to send a photo that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a photo from the Internet, or upload a new photo using multipart/form-data. The photo must be at most 10 MB in size. The photo's width and height must not exceed 10000 in total. Width and height ratio must be at most 20. <a href=\"#sending-files\">More information on Sending Files &#187;</a></td>",
+        "rst_description": "Photo to send. Pass a file_id as String to send a photo that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a photo from the Internet, or upload a new photo using multipart/form-data. The photo must be at most 10 MB in size. The photo's width and height must not exceed 10000 in total. Width and height ratio must be at most 20. :ref:`More information on Sending Files » <sending-files>`\n",
+        "name": "photo"
+      },
+      {
+        "type": "String",
+        "required": false,
+        "description": "Unique identifier of the business connection on behalf of which the message will be sent",
+        "html_description": "<td>Unique identifier of the business connection on behalf of which the message will be sent</td>",
+        "rst_description": "Unique identifier of the business connection on behalf of which the message will be sent\n",
+        "name": "business_connection_id"
       },
       {
         "type": "Integer",
@@ -42,14 +50,6 @@
         "html_description": "<td>Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat</td>",
         "rst_description": "Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat\n",
         "name": "direct_messages_topic_id"
-      },
-      {
-        "type": "InputFile or String",
-        "required": true,
-        "description": "Photo to send. Pass a file_id as String to send a photo that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a photo from the Internet, or upload a new photo using multipart/form-data. The photo must be at most 10 MB in size. The photo's width and height must not exceed 10000 in total. Width and height ratio must be at most 20. More information on Sending Files",
-        "html_description": "<td>Photo to send. Pass a file_id as String to send a photo that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a photo from the Internet, or upload a new photo using multipart/form-data. The photo must be at most 10 MB in size. The photo's width and height must not exceed 10000 in total. Width and height ratio must be at most 20. <a href=\"#sending-files\">More information on Sending Files &#187;</a></td>",
-        "rst_description": "Photo to send. Pass a file_id as String to send a photo that exists on the Telegram servers (recommended), pass an HTTP URL as a String for Telegram to get a photo from the Internet, or upload a new photo using multipart/form-data. The photo must be at most 10 MB in size. The photo's width and height must not exceed 10000 in total. Width and height ratio must be at most 20. :ref:`More information on Sending Files » <sending-files>`\n",
-        "name": "photo"
       },
       {
         "type": "String",

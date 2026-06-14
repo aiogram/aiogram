@@ -36,6 +36,14 @@
         "required": true
       },
       {
+        "type": "String",
+        "description": "URL of the static (JPEG or GIF) or animated (MPEG4) thumbnail for the result",
+        "html_description": "<td>URL of the static (JPEG or GIF) or animated (MPEG4) thumbnail for the result</td>",
+        "rst_description": "URL of the static (JPEG or GIF) or animated (MPEG4) thumbnail for the result\n",
+        "name": "thumbnail_url",
+        "required": true
+      },
+      {
         "type": "Integer",
         "description": "Width of the GIF",
         "html_description": "<td><em>Optional</em>. Width of the GIF</td>",
@@ -58,14 +66,6 @@
         "rst_description": "*Optional*. Duration of the GIF in seconds\n",
         "name": "gif_duration",
         "required": false
-      },
-      {
-        "type": "String",
-        "description": "URL of the static (JPEG or GIF) or animated (MPEG4) thumbnail for the result",
-        "html_description": "<td>URL of the static (JPEG or GIF) or animated (MPEG4) thumbnail for the result</td>",
-        "rst_description": "URL of the static (JPEG or GIF) or animated (MPEG4) thumbnail for the result\n",
-        "name": "thumbnail_url",
-        "required": true
       },
       {
         "type": "String",

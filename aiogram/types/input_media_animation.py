@@ -22,7 +22,7 @@ class InputMediaAnimation(InputMedia, InputPollMedia, InputPollOptionMedia):
     """
 
     type: Literal[InputMediaType.ANIMATION] = InputMediaType.ANIMATION
-    """Type of the result, must be *animation*"""
+    """Type of the media, must be *animation*"""
     media: InputFileUnion
     """File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass 'attach://<file_attach_name>' to upload a new one using multipart/form-data under <file_attach_name> name. :ref:`More information on Sending Files » <sending-files>`"""
     thumbnail: InputFile | None = None

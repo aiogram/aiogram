@@ -21,7 +21,7 @@ class InputMediaPhoto(InputMedia, InputPollMedia, InputPollOptionMedia):
     """
 
     type: Literal[InputMediaType.PHOTO] = InputMediaType.PHOTO
-    """Type of the result, must be *photo*"""
+    """Type of the media, must be *photo*"""
     media: InputFileUnion
     """File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass 'attach://<file_attach_name>' to upload a new one using multipart/form-data under <file_attach_name> name. :ref:`More information on Sending Files » <sending-files>`"""
     caption: str | None = None

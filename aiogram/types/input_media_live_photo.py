@@ -19,7 +19,7 @@ class InputMediaLivePhoto(InputMedia, InputPollMedia, InputPollOptionMedia):
     """
 
     type: Literal[InputMediaType.LIVE_PHOTO] = InputMediaType.LIVE_PHOTO
-    """Type of the result, must be *live_photo*"""
+    """Type of the media, must be *live_photo*"""
     media: str
     """Video of the live photo to send. Pass a file_id to send a file that exists on the Telegram servers (recommended) or pass 'attach://<file_attach_name>' to upload a new one using multipart/form-data under <file_attach_name> name. :ref:`More information on Sending Files » <sending-files>`. Sending live photos by a URL is currently unsupported"""
     photo: str

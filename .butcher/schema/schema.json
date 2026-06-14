@@ -10523,9 +10523,9 @@
           "annotations": [
             {
               "type": "String",
-              "description": "Type of the result, must be animation",
-              "html_description": "<td>Type of the result, must be <em>animation</em></td>",
-              "rst_description": "Type of the result, must be *animation*\n",
+              "description": "Type of the media, must be animation",
+              "html_description": "<td>Type of the media, must be <em>animation</em></td>",
+              "rst_description": "Type of the media, must be *animation*\n",
               "name": "type",
               "required": true
             },
@@ -10621,9 +10621,9 @@
           "annotations": [
             {
               "type": "String",
-              "description": "Type of the result, must be audio",
-              "html_description": "<td>Type of the result, must be <em>audio</em></td>",
-              "rst_description": "Type of the result, must be *audio*\n",
+              "description": "Type of the media, must be audio",
+              "html_description": "<td>Type of the media, must be <em>audio</em></td>",
+              "rst_description": "Type of the media, must be *audio*\n",
               "name": "type",
               "required": true
             },
@@ -10703,9 +10703,9 @@
           "annotations": [
             {
               "type": "String",
-              "description": "Type of the result, must be document",
-              "html_description": "<td>Type of the result, must be <em>document</em></td>",
-              "rst_description": "Type of the result, must be *document*\n",
+              "description": "Type of the media, must be document",
+              "html_description": "<td>Type of the media, must be <em>document</em></td>",
+              "rst_description": "Type of the media, must be *document*\n",
               "name": "type",
               "required": true
             },
@@ -10769,9 +10769,9 @@
           "annotations": [
             {
               "type": "String",
-              "description": "Type of the result, must be link",
-              "html_description": "<td>Type of the result, must be <em>link</em></td>",
-              "rst_description": "Type of the result, must be *link*\n",
+              "description": "Type of the media, must be link",
+              "html_description": "<td>Type of the media, must be <em>link</em></td>",
+              "rst_description": "Type of the media, must be *link*\n",
               "name": "type",
               "required": true
             },
@@ -10795,9 +10795,9 @@
           "annotations": [
             {
               "type": "String",
-              "description": "Type of the result, must be live_photo",
-              "html_description": "<td>Type of the result, must be <em>live_photo</em></td>",
-              "rst_description": "Type of the result, must be *live_photo*\n",
+              "description": "Type of the media, must be live_photo",
+              "html_description": "<td>Type of the media, must be <em>live_photo</em></td>",
+              "rst_description": "Type of the media, must be *live_photo*\n",
               "name": "type",
               "required": true
             },
@@ -10869,9 +10869,9 @@
           "annotations": [
             {
               "type": "String",
-              "description": "Type of the result, must be location",
-              "html_description": "<td>Type of the result, must be <em>location</em></td>",
-              "rst_description": "Type of the result, must be *location*\n",
+              "description": "Type of the media, must be location",
+              "html_description": "<td>Type of the media, must be <em>location</em></td>",
+              "rst_description": "Type of the media, must be *location*\n",
               "name": "type",
               "required": true
             },
@@ -10911,9 +10911,9 @@
           "annotations": [
             {
               "type": "String",
-              "description": "Type of the result, must be photo",
-              "html_description": "<td>Type of the result, must be <em>photo</em></td>",
-              "rst_description": "Type of the result, must be *photo*\n",
+              "description": "Type of the media, must be photo",
+              "html_description": "<td>Type of the media, must be <em>photo</em></td>",
+              "rst_description": "Type of the media, must be *photo*\n",
               "name": "type",
               "required": true
             },
@@ -10977,9 +10977,9 @@
           "annotations": [
             {
               "type": "String",
-              "description": "Type of the result, must be sticker",
-              "html_description": "<td>Type of the result, must be <em>sticker</em></td>",
-              "rst_description": "Type of the result, must be *sticker*\n",
+              "description": "Type of the media, must be sticker",
+              "html_description": "<td>Type of the media, must be <em>sticker</em></td>",
+              "rst_description": "Type of the media, must be *sticker*\n",
               "name": "type",
               "required": true
             },
@@ -11011,9 +11011,9 @@
           "annotations": [
             {
               "type": "String",
-              "description": "Type of the result, must be venue",
-              "html_description": "<td>Type of the result, must be <em>venue</em></td>",
-              "rst_description": "Type of the result, must be *venue*\n",
+              "description": "Type of the media, must be venue",
+              "html_description": "<td>Type of the media, must be <em>venue</em></td>",
+              "rst_description": "Type of the media, must be *venue*\n",
               "name": "type",
               "required": true
             },
@@ -11093,9 +11093,9 @@
           "annotations": [
             {
               "type": "String",
-              "description": "Type of the result, must be video",
-              "html_description": "<td>Type of the result, must be <em>video</em></td>",
-              "rst_description": "Type of the result, must be *video*\n",
+              "description": "Type of the media, must be video",
+              "html_description": "<td>Type of the media, must be <em>video</em></td>",
+              "rst_description": "Type of the media, must be *video*\n",
               "name": "type",
               "required": true
             },
@@ -14478,9 +14478,9 @@
             {
               "type": "Integer",
               "required": true,
-              "description": "Unique identifier of the message draft; must be non-zero. Changes of drafts with the same identifier are animated.",
-              "html_description": "<td>Unique identifier of the message draft; must be non-zero. Changes of drafts with the same identifier are animated.</td>",
-              "rst_description": "Unique identifier of the message draft; must be non-zero. Changes of drafts with the same identifier are animated.\n",
+              "description": "Unique identifier of the message draft; must be non-zero. Changes to drafts with the same identifier are animated.",
+              "html_description": "<td>Unique identifier of the message draft; must be non-zero. Changes to drafts with the same identifier are animated.</td>",
+              "rst_description": "Unique identifier of the message draft; must be non-zero. Changes to drafts with the same identifier are animated.\n",
               "name": "draft_id"
             },
             {
@@ -23582,9 +23582,9 @@
           "annotations": [
             {
               "type": "InputRichMessage",
-              "description": "Yes",
-              "html_description": "<td>Yes</td>",
-              "rst_description": "Yes\n",
+              "description": "The message to be sent",
+              "html_description": "<td>The message to be sent</td>",
+              "rst_description": "The message to be sent\n",
               "name": "rich_message",
               "required": true
             }

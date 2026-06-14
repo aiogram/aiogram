@@ -30,8 +30,6 @@ class PollMedia(TelegramObject):
     """*Optional*. Media is an audio file, information about the file; currently, can't be received in a poll option"""
     document: Document | None = None
     """*Optional*. Media is a general file, information about the file; currently, can't be received in a poll option"""
-    link: Link | None = None
-    """*Optional*. The HTTP link attached to the poll option"""
     live_photo: LivePhoto | None = None
     """*Optional*. Media is a live photo, information about the live photo"""
     location: Location | None = None
@@ -44,6 +42,8 @@ class PollMedia(TelegramObject):
     """*Optional*. Media is a venue, information about the venue"""
     video: Video | None = None
     """*Optional*. Media is a video, information about the video"""
+    link: Link | None = None
+    """*Optional*. The HTTP link attached to the poll option"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!
@@ -55,13 +55,13 @@ class PollMedia(TelegramObject):
             animation: Animation | None = None,
             audio: Audio | None = None,
             document: Document | None = None,
-            link: Link | None = None,
             live_photo: LivePhoto | None = None,
             location: Location | None = None,
             photo: list[PhotoSize] | None = None,
             sticker: Sticker | None = None,
             venue: Venue | None = None,
             video: Video | None = None,
+            link: Link | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!
@@ -72,12 +72,12 @@ class PollMedia(TelegramObject):
                 animation=animation,
                 audio=audio,
                 document=document,
-                link=link,
                 live_photo=live_photo,
                 location=location,
                 photo=photo,
                 sticker=sticker,
                 venue=venue,
                 video=video,
+                link=link,
                 **__pydantic_kwargs,
             )

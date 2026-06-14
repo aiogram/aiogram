@@ -21,6 +21,22 @@
       },
       {
         "type": "Integer",
+        "description": "Date the message was sent in Unix time. It is always a positive number, representing a valid date.",
+        "html_description": "<td>Date the message was sent in Unix time. It is always a positive number, representing a valid date.</td>",
+        "rst_description": "Date the message was sent in Unix time. It is always a positive number, representing a valid date.\n",
+        "name": "date",
+        "required": true
+      },
+      {
+        "type": "Chat",
+        "description": "Chat the message belongs to",
+        "html_description": "<td>Chat the message belongs to</td>",
+        "rst_description": "Chat the message belongs to\n",
+        "name": "chat",
+        "required": true
+      },
+      {
+        "type": "Integer",
         "description": "Unique identifier of a message thread or forum topic to which the message belongs; for supergroups and private chats only",
         "html_description": "<td><em>Optional</em>. Unique identifier of a message thread or forum topic to which the message belongs; for supergroups and private chats only</td>",
         "rst_description": "*Optional*. Unique identifier of a message thread or forum topic to which the message belongs; for supergroups and private chats only\n",
@@ -76,14 +92,6 @@
         "required": false
       },
       {
-        "type": "Integer",
-        "description": "Date the message was sent in Unix time. It is always a positive number, representing a valid date.",
-        "html_description": "<td>Date the message was sent in Unix time. It is always a positive number, representing a valid date.</td>",
-        "rst_description": "Date the message was sent in Unix time. It is always a positive number, representing a valid date.\n",
-        "name": "date",
-        "required": true
-      },
-      {
         "type": "String",
         "description": "The unique identifier for the guest query. Use this identifier with the method answerGuestQuery to send a response message. If non-empty, the message belongs to the chat where the guest bot was summoned, which may not coincide with other existing bot chats sharing the same identifier.",
         "html_description": "<td><em>Optional</em>. The unique identifier for the guest query. Use this identifier with the method <a href=\"#answerguestquery\">answerGuestQuery</a> to send a response message. If non-empty, the message belongs to the chat where the guest bot was summoned, which may not coincide with other existing bot chats sharing the same identifier.</td>",
@@ -98,14 +106,6 @@
         "rst_description": "*Optional*. Unique identifier of the business connection from which the message was received. If non-empty, the message belongs to a chat of the corresponding business account that is independent from any potential bot chat which might share the same identifier.\n",
         "name": "business_connection_id",
         "required": false
-      },
-      {
-        "type": "Chat",
-        "description": "Chat the message belongs to",
-        "html_description": "<td>Chat the message belongs to</td>",
-        "rst_description": "Chat the message belongs to\n",
-        "name": "chat",
-        "required": true
       },
       {
         "type": "MessageOrigin",
@@ -297,14 +297,6 @@
         "html_description": "<td><em>Optional</em>. Unique identifier of the message effect added to the message</td>",
         "rst_description": "*Optional*. Unique identifier of the message effect added to the message\n",
         "name": "effect_id",
-        "required": false
-      },
-      {
-        "type": "RichMessage",
-        "description": "Message is a rich formatted message",
-        "html_description": "<td><em>Optional</em>. Message is a rich formatted message</td>",
-        "rst_description": "*Optional*. Message is a rich formatted message\n",
-        "name": "rich_message",
         "required": false
       },
       {
@@ -929,6 +921,14 @@
         "html_description": "<td><em>Optional</em>. <a href=\"/bots/features#inline-keyboards\">Inline keyboard</a> attached to the message. <code>login_url</code> buttons are represented as ordinary <code>url</code> buttons.</td>",
         "rst_description": "*Optional*. `Inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_ attached to the message. :code:`login_url` buttons are represented as ordinary :code:`url` buttons.\n",
         "name": "reply_markup",
+        "required": false
+      },
+      {
+        "type": "RichMessage",
+        "description": "Message is a rich formatted message",
+        "html_description": "<td><em>Optional</em>. Message is a rich formatted message</td>",
+        "rst_description": "*Optional*. Message is a rich formatted message\n",
+        "name": "rich_message",
         "required": false
       },
       {

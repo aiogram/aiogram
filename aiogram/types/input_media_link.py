@@ -11,7 +11,7 @@ class InputMediaLink(InputPollOptionMedia):
     """
 
     type: Literal["link"] = "link"
-    """Type of the result, must be *link*"""
+    """Type of the media, must be *link*"""
     url: str
     """HTTP URL of the link"""
 

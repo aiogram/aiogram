@@ -12,6 +12,22 @@
     "rst_description": "Use this method to edit live location messages. A location can be edited until its *live_period* expires or editing is explicitly disabled by a call to :class:`aiogram.methods.stop_message_live_location.StopMessageLiveLocation`. On success, if the edited message is not an inline message, the edited :class:`aiogram.types.message.Message` is returned, otherwise :code:`True` is returned.",
     "annotations": [
       {
+        "type": "Float",
+        "required": true,
+        "description": "Latitude of new location",
+        "html_description": "<td>Latitude of new location</td>",
+        "rst_description": "Latitude of new location\n",
+        "name": "latitude"
+      },
+      {
+        "type": "Float",
+        "required": true,
+        "description": "Longitude of new location",
+        "html_description": "<td>Longitude of new location</td>",
+        "rst_description": "Longitude of new location\n",
+        "name": "longitude"
+      },
+      {
         "type": "String",
         "required": false,
         "description": "Unique identifier of the business connection on behalf of which the message to be edited was sent",
@@ -42,22 +58,6 @@
         "html_description": "<td>Required if <em>chat_id</em> and <em>message_id</em> are not specified. Identifier of the inline message.</td>",
         "rst_description": "Required if *chat_id* and *message_id* are not specified. Identifier of the inline message.\n",
         "name": "inline_message_id"
-      },
-      {
-        "type": "Float",
-        "required": true,
-        "description": "Latitude of new location",
-        "html_description": "<td>Latitude of new location</td>",
-        "rst_description": "Latitude of new location\n",
-        "name": "latitude"
-      },
-      {
-        "type": "Float",
-        "required": true,
-        "description": "Longitude of new location",
-        "html_description": "<td>Longitude of new location</td>",
-        "rst_description": "Longitude of new location\n",
-        "name": "longitude"
       },
       {
         "type": "Integer",

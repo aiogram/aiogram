@@ -12,6 +12,14 @@
     "rst_description": "Use this method to edit animation, audio, document, live photo, photo, or video messages, or to replace a text or a rich message with a media. If a message is part of a message album, then it can be edited only to an audio for audio albums, only to a document for document albums and to a photo, a live photo, or a video otherwise. When an inline message is edited, a new file can't be uploaded; use a previously uploaded file via its file_id or specify a URL. On success, if the edited message is not an inline message, the edited :class:`aiogram.types.message.Message` is returned, otherwise :code:`True` is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within **48 hours** from the time they were sent.",
     "annotations": [
       {
+        "type": "InputMedia",
+        "required": true,
+        "description": "A JSON-serialized object for a new media content of the message",
+        "html_description": "<td>A JSON-serialized object for a new media content of the message</td>",
+        "rst_description": "A JSON-serialized object for a new media content of the message\n",
+        "name": "media"
+      },
+      {
         "type": "String",
         "required": false,
         "description": "Unique identifier of the business connection on behalf of which the message to be edited was sent",
@@ -42,14 +50,6 @@
         "html_description": "<td>Required if <em>chat_id</em> and <em>message_id</em> are not specified. Identifier of the inline message.</td>",
         "rst_description": "Required if *chat_id* and *message_id* are not specified. Identifier of the inline message.\n",
         "name": "inline_message_id"
-      },
-      {
-        "type": "InputMedia",
-        "required": true,
-        "description": "A JSON-serialized object for a new media content of the message",
-        "html_description": "<td>A JSON-serialized object for a new media content of the message</td>",
-        "rst_description": "A JSON-serialized object for a new media content of the message\n",
-        "name": "media"
       },
       {
         "type": "InlineKeyboardMarkup",

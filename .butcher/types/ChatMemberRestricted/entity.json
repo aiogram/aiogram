@@ -20,14 +20,6 @@
         "required": true
       },
       {
-        "type": "String",
-        "description": "Tag of the member",
-        "html_description": "<td><em>Optional</em>. Tag of the member</td>",
-        "rst_description": "*Optional*. Tag of the member\n",
-        "name": "tag",
-        "required": false
-      },
-      {
         "type": "User",
         "description": "Information about the user",
         "html_description": "<td>Information about the user</td>",
@@ -178,6 +170,14 @@
         "rst_description": "Date when restrictions will be lifted for this user; Unix time. If 0, then the user is restricted forever.\n",
         "name": "until_date",
         "required": true
+      },
+      {
+        "type": "String",
+        "description": "Tag of the member",
+        "html_description": "<td><em>Optional</em>. Tag of the member</td>",
+        "rst_description": "*Optional*. Tag of the member\n",
+        "name": "tag",
+        "required": false
       }
     ],
     "category": "types"

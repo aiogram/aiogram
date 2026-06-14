@@ -16,7 +16,7 @@ class InputRichMessageContent(InputMessageContent):
     """
 
     rich_message: InputRichMessage
-    """Yes"""
+    """The message to be sent"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!

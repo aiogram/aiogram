@@ -21,7 +21,7 @@ class InputMediaDocument(InputMedia, InputPollMedia):
     """
 
     type: Literal[InputMediaType.DOCUMENT] = InputMediaType.DOCUMENT
-    """Type of the result, must be *document*"""
+    """Type of the media, must be *document*"""
     media: InputFileUnion
     """File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass 'attach://<file_attach_name>' to upload a new one using multipart/form-data under <file_attach_name> name. :ref:`More information on Sending Files » <sending-files>`"""
     thumbnail: InputFile | None = None

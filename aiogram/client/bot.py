@@ -1497,16 +1497,16 @@ class Bot:
 
     async def edit_message_text(
         self,
+        text: str | None = None,
         business_connection_id: str | None = None,
         chat_id: ChatIdUnion | None = None,
         message_id: int | None = None,
         inline_message_id: str | None = None,
-        text: str | None = None,
         parse_mode: str | Default | None = Default("parse_mode"),
         entities: list[MessageEntity] | None = None,
         link_preview_options: LinkPreviewOptions | Default | None = Default("link_preview"),
-        rich_message: InputRichMessage | None = None,
         reply_markup: InlineKeyboardMarkup | None = None,
+        rich_message: InputRichMessage | None = None,
         disable_web_page_preview: bool | Default | None = Default("link_preview_is_disabled"),
         request_timeout: int | None = None,
     ) -> Message | bool:
@@ -1515,32 +1515,32 @@ class Bot:
 
         Source: https://core.telegram.org/bots/api#editmessagetext
 
+        :param text: New text of the message, 1-4096 characters after entity parsing; required if *rich_message* isn't specified
         :param business_connection_id: Unique identifier of the business connection on behalf of which the message to be edited was sent
         :param chat_id: Required if *inline_message_id* is not specified. Unique identifier for the target chat or username of the target bot, supergroup or channel in the format :code:`@username`.
         :param message_id: Required if *inline_message_id* is not specified. Identifier of the message to edit.
         :param inline_message_id: Required if *chat_id* and *message_id* are not specified. Identifier of the inline message.
-        :param text: New text of the message, 1-4096 characters after entity parsing; required if *rich_message* isn't specified
         :param parse_mode: Mode for parsing entities in the message text. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.
         :param entities: A JSON-serialized list of special entities that appear in message text, which can be specified instead of *parse_mode*
         :param link_preview_options: Link preview generation options for the message
-        :param rich_message: New rich content of the message; required if *text* isn't specified
         :param reply_markup: A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_
+        :param rich_message: New rich content of the message; required if *text* isn't specified
         :param disable_web_page_preview: Disables link previews for links in this message
         :param request_timeout: Request timeout
         :return: Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within **48 hours** from the time they were sent.
         """
 
         call = EditMessageText(
+            text=text,
             business_connection_id=business_connection_id,
             chat_id=chat_id,
             message_id=message_id,
             inline_message_id=inline_message_id,
-            text=text,
             parse_mode=parse_mode,
             entities=entities,
             link_preview_options=link_preview_options,
-            rich_message=rich_message,
             reply_markup=reply_markup,
+            rich_message=rich_message,
             disable_web_page_preview=disable_web_page_preview,
         )
         return await self(call, request_timeout=request_timeout)
@@ -5895,7 +5895,7 @@ class Bot:
         Source: https://core.telegram.org/bots/api#sendmessagedraft
 
         :param chat_id: Unique identifier for the target private chat
-        :param draft_id: Unique identifier of the message draft; must be non-zero. Changes of drafts with the same identifier are animated.
+        :param draft_id: Unique identifier of the message draft; must be non-zero. Changes to drafts with the same identifier are animated.
         :param message_thread_id: Unique identifier for the target message thread
         :param text: Text of the message to be sent, 0-4096 characters after entities parsing. Pass an empty text to show a 'Thinking…' placeholder.
         :param parse_mode: Mode for parsing entities in the message text. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.

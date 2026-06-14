@@ -222,8 +222,6 @@ class Message(MaybeInaccessibleMessage):
     """*Optional*. Information about suggested post parameters if the message is a suggested post in a channel direct messages chat. If the message is an approved or declined suggested post, then it can't be edited"""
     effect_id: str | None = None
     """*Optional*. Unique identifier of the message effect added to the message"""
-    rich_message: RichMessage | None = None
-    """*Optional*. Message is a rich formatted message"""
     animation: Animation | None = None
     """*Optional*. Message is an animation, information about the animation. For backward compatibility, when this field is set, the *document* field will also be set"""
     audio: Audio | None = None
@@ -380,6 +378,8 @@ class Message(MaybeInaccessibleMessage):
     """*Optional*. Service message: data sent by a Web App"""
     reply_markup: InlineKeyboardMarkup | None = None
     """*Optional*. `Inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_ attached to the message. :code:`login_url` buttons are represented as ordinary :code:`url` buttons"""
+    rich_message: RichMessage | None = None
+    """*Optional*. Message is a rich formatted message"""
     forward_date: DateTime | None = Field(None, json_schema_extra={"deprecated": True})
     """*Optional*. For forwarded messages, date the original message was sent in Unix time
 
@@ -459,7 +459,6 @@ class Message(MaybeInaccessibleMessage):
             link_preview_options: LinkPreviewOptions | None = None,
             suggested_post_info: SuggestedPostInfo | None = None,
             effect_id: str | None = None,
-            rich_message: RichMessage | None = None,
             animation: Animation | None = None,
             audio: Audio | None = None,
             document: Document | None = None,
@@ -538,6 +537,7 @@ class Message(MaybeInaccessibleMessage):
             video_chat_participants_invited: VideoChatParticipantsInvited | None = None,
             web_app_data: WebAppData | None = None,
             reply_markup: InlineKeyboardMarkup | None = None,
+            rich_message: RichMessage | None = None,
             forward_date: DateTime | None = None,
             forward_from: User | None = None,
             forward_from_chat: Chat | None = None,
@@ -588,7 +588,6 @@ class Message(MaybeInaccessibleMessage):
                 link_preview_options=link_preview_options,
                 suggested_post_info=suggested_post_info,
                 effect_id=effect_id,
-                rich_message=rich_message,
                 animation=animation,
                 audio=audio,
                 document=document,
@@ -667,6 +666,7 @@ class Message(MaybeInaccessibleMessage):
                 video_chat_participants_invited=video_chat_participants_invited,
                 web_app_data=web_app_data,
                 reply_markup=reply_markup,
+                rich_message=rich_message,
                 forward_date=forward_date,
                 forward_from=forward_from,
                 forward_from_chat=forward_from_chat,
@@ -3989,13 +3989,13 @@ class Message(MaybeInaccessibleMessage):
 
     def edit_text(
         self,
-        inline_message_id: str | None = None,
         text: str | None = None,
+        inline_message_id: str | None = None,
         parse_mode: str | Default | None = Default("parse_mode"),
         entities: list[MessageEntity] | None = None,
         link_preview_options: LinkPreviewOptions | Default | None = Default("link_preview"),
-        rich_message: InputRichMessage | None = None,
         reply_markup: InlineKeyboardMarkup | None = None,
+        rich_message: InputRichMessage | None = None,
         disable_web_page_preview: bool | Default | None = Default("link_preview_is_disabled"),
         **kwargs: Any,
     ) -> EditMessageText:
@@ -4011,13 +4011,13 @@ class Message(MaybeInaccessibleMessage):
 
         Source: https://core.telegram.org/bots/api#editmessagetext
 
-        :param inline_message_id: Required if *chat_id* and *message_id* are not specified. Identifier of the inline message
         :param text: New text of the message, 1-4096 characters after entity parsing; required if *rich_message* isn't specified
+        :param inline_message_id: Required if *chat_id* and *message_id* are not specified. Identifier of the inline message
         :param parse_mode: Mode for parsing entities in the message text. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details
         :param entities: A JSON-serialized list of special entities that appear in message text, which can be specified instead of *parse_mode*
         :param link_preview_options: Link preview generation options for the message
-        :param rich_message: New rich content of the message; required if *text* isn't specified
         :param reply_markup: A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_
+        :param rich_message: New rich content of the message; required if *text* isn't specified
         :param disable_web_page_preview: Disables link previews for links in this message
         :return: instance of method :class:`aiogram.methods.edit_message_text.EditMessageText`
         """
@@ -4034,13 +4034,13 @@ class Message(MaybeInaccessibleMessage):
             chat_id=self.chat.id,
             message_id=self.message_id,
             business_connection_id=self.business_connection_id,
-            inline_message_id=inline_message_id,
             text=text,
+            inline_message_id=inline_message_id,
             parse_mode=parse_mode,
             entities=entities,
             link_preview_options=link_preview_options,
-            rich_message=rich_message,
             reply_markup=reply_markup,
+            rich_message=rich_message,
             disable_web_page_preview=disable_web_page_preview,
             **kwargs,
         ).as_(self._bot)

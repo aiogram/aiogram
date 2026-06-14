@@ -13,9 +13,9 @@
     "annotations": [
       {
         "type": "String",
-        "description": "Type of the result, must be link",
-        "html_description": "<td>Type of the result, must be <em>link</em></td>",
-        "rst_description": "Type of the result, must be *link*\n",
+        "description": "Type of the media, must be link",
+        "html_description": "<td>Type of the media, must be <em>link</em></td>",
+        "rst_description": "Type of the media, must be *link*\n",
         "name": "type",
         "required": true
       },

@@ -12,6 +12,22 @@
     "rst_description": "Cell in a table.",
     "annotations": [
       {
+        "type": "String",
+        "description": "Horizontal cell content alignment. Currently, must be one of 'left', 'center', or 'right'.",
+        "html_description": "<td>Horizontal cell content alignment. Currently, must be one of &#8220;left&#8221;, &#8220;center&#8221;, or &#8220;right&#8221;.</td>",
+        "rst_description": "Horizontal cell content alignment. Currently, must be one of 'left', 'center', or 'right'.\n",
+        "name": "align",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Vertical cell content alignment. Currently, must be one of 'top', 'middle', or 'bottom'.",
+        "html_description": "<td>Vertical cell content alignment. Currently, must be one of &#8220;top&#8221;, &#8220;middle&#8221;, or &#8220;bottom&#8221;.</td>",
+        "rst_description": "Vertical cell content alignment. Currently, must be one of 'top', 'middle', or 'bottom'.\n",
+        "name": "valign",
+        "required": true
+      },
+      {
         "type": "RichText",
         "description": "Text in the cell. If omitted, then the cell is invisible.",
         "html_description": "<td><em>Optional</em>. Text in the cell. If omitted, then the cell is invisible.</td>",
@@ -42,22 +58,6 @@
         "rst_description": "*Optional*. The number of rows the cell spans if it is bigger than 1\n",
         "name": "rowspan",
         "required": false
-      },
-      {
-        "type": "String",
-        "description": "Horizontal cell content alignment. Currently, must be one of 'left', 'center', or 'right'.",
-        "html_description": "<td>Horizontal cell content alignment. Currently, must be one of &#8220;left&#8221;, &#8220;center&#8221;, or &#8220;right&#8221;.</td>",
-        "rst_description": "Horizontal cell content alignment. Currently, must be one of 'left', 'center', or 'right'.\n",
-        "name": "align",
-        "required": true
-      },
-      {
-        "type": "String",
-        "description": "Vertical cell content alignment. Currently, must be one of 'top', 'middle', or 'bottom'.",
-        "html_description": "<td>Vertical cell content alignment. Currently, must be one of &#8220;top&#8221;, &#8220;middle&#8221;, or &#8220;bottom&#8221;.</td>",
-        "rst_description": "Vertical cell content alignment. Currently, must be one of 'top', 'middle', or 'bottom'.\n",
-        "name": "valign",
-        "required": true
       }
     ],
     "category": "types"

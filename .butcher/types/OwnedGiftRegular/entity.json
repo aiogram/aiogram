@@ -28,6 +28,14 @@
         "required": true
       },
       {
+        "type": "Integer",
+        "description": "Date the gift was sent in Unix time",
+        "html_description": "<td>Date the gift was sent in Unix time</td>",
+        "rst_description": "Date the gift was sent in Unix time\n",
+        "name": "send_date",
+        "required": true
+      },
+      {
         "type": "String",
         "description": "Unique identifier of the gift for the bot; for gifts received on behalf of business accounts only",
         "html_description": "<td><em>Optional</em>. Unique identifier of the gift for the bot; for gifts received on behalf of business accounts only</td>",
@@ -42,14 +50,6 @@
         "rst_description": "*Optional*. Sender of the gift if it is a known user\n",
         "name": "sender_user",
         "required": false
-      },
-      {
-        "type": "Integer",
-        "description": "Date the gift was sent in Unix time",
-        "html_description": "<td>Date the gift was sent in Unix time</td>",
-        "rst_description": "Date the gift was sent in Unix time\n",
-        "name": "send_date",
-        "required": true
       },
       {
         "type": "String",

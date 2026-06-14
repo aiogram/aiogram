@@ -13,9 +13,9 @@
     "annotations": [
       {
         "type": "InputRichMessage",
-        "description": "Yes",
-        "html_description": "<td>Yes</td>",
-        "rst_description": "Yes\n",
+        "description": "The message to be sent",
+        "html_description": "<td>The message to be sent</td>",
+        "rst_description": "The message to be sent\n",
         "name": "rich_message",
         "required": true
       }

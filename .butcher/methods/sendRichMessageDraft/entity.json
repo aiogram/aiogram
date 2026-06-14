@@ -21,14 +21,6 @@
       },
       {
         "type": "Integer",
-        "required": false,
-        "description": "Unique identifier for the target message thread",
-        "html_description": "<td>Unique identifier for the target message thread</td>",
-        "rst_description": "Unique identifier for the target message thread\n",
-        "name": "message_thread_id"
-      },
-      {
-        "type": "Integer",
         "required": true,
         "description": "Unique identifier of the message draft; must be non-zero. Changes to drafts with the same identifier are animated.",
         "html_description": "<td>Unique identifier of the message draft; must be non-zero. Changes to drafts with the same identifier are animated.</td>",
@@ -42,6 +34,14 @@
         "html_description": "<td>The partial message to be streamed</td>",
         "rst_description": "The partial message to be streamed\n",
         "name": "rich_message"
+      },
+      {
+        "type": "Integer",
+        "required": false,
+        "description": "Unique identifier for the target message thread",
+        "html_description": "<td>Unique identifier for the target message thread</td>",
+        "rst_description": "Unique identifier for the target message thread\n",
+        "name": "message_thread_id"
       }
     ],
     "category": "methods"

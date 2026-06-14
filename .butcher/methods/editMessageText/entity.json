@@ -14,6 +14,14 @@
       {
         "type": "String",
         "required": false,
+        "description": "New text of the message, 1-4096 characters after entity parsing; required if rich_message isn't specified",
+        "html_description": "<td>New text of the message, 1-4096 characters after entity parsing; required if <em>rich_message</em> isn't specified</td>",
+        "rst_description": "New text of the message, 1-4096 characters after entity parsing; required if *rich_message* isn't specified\n",
+        "name": "text"
+      },
+      {
+        "type": "String",
+        "required": false,
         "description": "Unique identifier of the business connection on behalf of which the message to be edited was sent",
         "html_description": "<td>Unique identifier of the business connection on behalf of which the message to be edited was sent</td>",
         "rst_description": "Unique identifier of the business connection on behalf of which the message to be edited was sent\n",
@@ -46,14 +54,6 @@
       {
         "type": "String",
         "required": false,
-        "description": "New text of the message, 1-4096 characters after entity parsing; required if rich_message isn't specified",
-        "html_description": "<td>New text of the message, 1-4096 characters after entity parsing; required if <em>rich_message</em> isn't specified</td>",
-        "rst_description": "New text of the message, 1-4096 characters after entity parsing; required if *rich_message* isn't specified\n",
-        "name": "text"
-      },
-      {
-        "type": "String",
-        "required": false,
         "description": "Mode for parsing entities in the message text. See formatting options for more details.",
         "html_description": "<td>Mode for parsing entities in the message text. See <a href=\"#formatting-options\">formatting options</a> for more details.</td>",
         "rst_description": "Mode for parsing entities in the message text. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.\n",
@@ -76,20 +76,20 @@
         "name": "link_preview_options"
       },
       {
-        "type": "InputRichMessage",
-        "required": false,
-        "description": "New rich content of the message; required if text isn't specified",
-        "html_description": "<td>New rich content of the message; required if <em>text</em> isn't specified</td>",
-        "rst_description": "New rich content of the message; required if *text* isn't specified\n",
-        "name": "rich_message"
-      },
-      {
         "type": "InlineKeyboardMarkup",
         "required": false,
         "description": "A JSON-serialized object for an inline keyboard",
         "html_description": "<td>A JSON-serialized object for an <a href=\"/bots/features#inline-keyboards\">inline keyboard</a></td>",
         "rst_description": "A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_\n",
         "name": "reply_markup"
+      },
+      {
+        "type": "InputRichMessage",
+        "required": false,
+        "description": "New rich content of the message; required if text isn't specified",
+        "html_description": "<td>New rich content of the message; required if <em>text</em> isn't specified</td>",
+        "rst_description": "New rich content of the message; required if *text* isn't specified\n",
+        "name": "rich_message"
       },
       {
         "type": "Boolean",
