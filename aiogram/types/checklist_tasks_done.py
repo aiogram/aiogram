@@ -16,7 +16,7 @@ class ChecklistTasksDone(TelegramObject):
     """
 
     checklist_message: Message | None = None
-    """*Optional*. Message containing the checklist whose tasks were marked as done or not done. Note that the :class:`aiogram.types.message.Message` object in this field will not contain the *reply_to_message* field even if it itself is a reply."""
+    """*Optional*. Message containing the checklist whose tasks were marked as done or not done. Note that the :class:`aiogram.types.message.Message` object in this field will not contain the *reply_to_message* field even if it itself is a reply"""
     marked_as_done_task_ids: list[int] | None = None
     """*Optional*. Identifiers of the tasks that were marked as done"""
     marked_as_not_done_task_ids: list[int] | None = None

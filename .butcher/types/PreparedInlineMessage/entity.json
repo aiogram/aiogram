@@ -21,9 +21,9 @@
       },
       {
         "type": "Integer",
-        "description": "Expiration date of the prepared message, in Unix time. Expired prepared messages can no longer be used",
-        "html_description": "<td>Expiration date of the prepared message, in Unix time. Expired prepared messages can no longer be used</td>",
-        "rst_description": "Expiration date of the prepared message, in Unix time. Expired prepared messages can no longer be used\n",
+        "description": "Expiration date of the prepared message, in Unix time. Expired prepared messages can no longer be used.",
+        "html_description": "<td>Expiration date of the prepared message, in Unix time. Expired prepared messages can no longer be used.</td>",
+        "rst_description": "Expiration date of the prepared message, in Unix time. Expired prepared messages can no longer be used.\n",
         "name": "expiration_date",
         "required": true
       }

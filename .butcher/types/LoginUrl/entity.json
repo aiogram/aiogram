@@ -21,9 +21,9 @@
       },
       {
         "type": "String",
-        "description": "New text of the button in forwarded messages.",
-        "html_description": "<td><em>Optional</em>. New text of the button in forwarded messages.</td>",
-        "rst_description": "*Optional*. New text of the button in forwarded messages.\n",
+        "description": "New text of the button in forwarded messages",
+        "html_description": "<td><em>Optional</em>. New text of the button in forwarded messages</td>",
+        "rst_description": "*Optional*. New text of the button in forwarded messages\n",
         "name": "forward_text",
         "required": false
       },
@@ -37,9 +37,9 @@
       },
       {
         "type": "Boolean",
-        "description": "Pass True to request the permission for your bot to send messages to the user.",
-        "html_description": "<td><em>Optional</em>. Pass <em>True</em> to request the permission for your bot to send messages to the user.</td>",
-        "rst_description": "*Optional*. Pass :code:`True` to request the permission for your bot to send messages to the user.\n",
+        "description": "Pass True to request the permission for your bot to send messages to the user",
+        "html_description": "<td><em>Optional</em>. Pass <em>True</em> to request the permission for your bot to send messages to the user</td>",
+        "rst_description": "*Optional*. Pass :code:`True` to request the permission for your bot to send messages to the user\n",
         "name": "request_write_access",
         "required": false
       }

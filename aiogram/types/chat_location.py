@@ -16,7 +16,7 @@ class ChatLocation(TelegramObject):
     """
 
     location: Location
-    """The location to which the supergroup is connected. Can't be a live location."""
+    """The location to which the supergroup is connected. Can't be a live location"""
     address: str
     """Location address; 1-64 characters, as defined by the chat owner"""
 

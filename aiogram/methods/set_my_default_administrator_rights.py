@@ -17,9 +17,9 @@ class SetMyDefaultAdministratorRights(TelegramMethod[bool]):
     __api_method__ = "setMyDefaultAdministratorRights"
 
     rights: ChatAdministratorRights | None = None
-    """A JSON-serialized object describing new default administrator rights. If not specified, the default administrator rights will be cleared."""
+    """A JSON-serialized object describing new default administrator rights. If not specified, the default administrator rights will be cleared"""
     for_channels: bool | None = None
-    """Pass :code:`True` to change the default administrator rights of the bot in channels. Otherwise, the default administrator rights of the bot for groups and supergroups will be changed."""
+    """Pass :code:`True` to change the default administrator rights of the bot in channels. Otherwise, the default administrator rights of the bot for groups and supergroups will be changed"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!

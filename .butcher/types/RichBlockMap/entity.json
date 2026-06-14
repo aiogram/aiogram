@@ -1,0 +1,65 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Rich messages",
+    "anchor": "rich-messages"
+  },
+  "object": {
+    "anchor": "richblockmap",
+    "name": "RichBlockMap",
+    "description": "A block with a map, corresponding to the custom HTML tag <tg-map>.",
+    "html_description": "<p>A block with a map, corresponding to the custom HTML tag <code>&lt;tg-map&gt;</code>.</p>",
+    "rst_description": "A block with a map, corresponding to the custom HTML tag :code:`<tg-map>`.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Type of the block, always 'map'",
+        "html_description": "<td>Type of the block, always &#8220;map&#8221;</td>",
+        "rst_description": "Type of the block, always 'map'\n",
+        "name": "type",
+        "required": true
+      },
+      {
+        "type": "Location",
+        "description": "Location of the center of the map",
+        "html_description": "<td>Location of the center of the map</td>",
+        "rst_description": "Location of the center of the map\n",
+        "name": "location",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "Map zoom level; 13-20",
+        "html_description": "<td>Map zoom level; 13-20</td>",
+        "rst_description": "Map zoom level; 13-20\n",
+        "name": "zoom",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "Expected width of the map",
+        "html_description": "<td>Expected width of the map</td>",
+        "rst_description": "Expected width of the map\n",
+        "name": "width",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "Expected height of the map",
+        "html_description": "<td>Expected height of the map</td>",
+        "rst_description": "Expected height of the map\n",
+        "name": "height",
+        "required": true
+      },
+      {
+        "type": "RichBlockCaption",
+        "description": "Caption of the block",
+        "html_description": "<td><em>Optional</em>. Caption of the block</td>",
+        "rst_description": "*Optional*. Caption of the block\n",
+        "name": "caption",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

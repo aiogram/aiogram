@@ -12,20 +12,36 @@
     "rst_description": "Use this method to send a native poll. On success, the sent :class:`aiogram.types.message.Message` is returned.",
     "annotations": [
       {
-        "type": "String",
-        "required": false,
-        "description": "Unique identifier of the business connection on behalf of which the message will be sent",
-        "html_description": "<td>Unique identifier of the business connection on behalf of which the message will be sent</td>",
-        "rst_description": "Unique identifier of the business connection on behalf of which the message will be sent\n",
-        "name": "business_connection_id"
-      },
-      {
         "type": "Integer or String",
         "required": true,
         "description": "Unique identifier for the target chat or username of the target bot, supergroup or channel in the format @username. Polls can't be sent to channel direct messages chats.",
         "html_description": "<td>Unique identifier for the target chat or username of the target bot, supergroup or channel in the format <code>@username</code>. Polls can't be sent to channel direct messages chats.</td>",
         "rst_description": "Unique identifier for the target chat or username of the target bot, supergroup or channel in the format :code:`@username`. Polls can't be sent to channel direct messages chats.\n",
         "name": "chat_id"
+      },
+      {
+        "type": "String",
+        "required": true,
+        "description": "Poll question, 1-300 characters",
+        "html_description": "<td>Poll question, 1-300 characters</td>",
+        "rst_description": "Poll question, 1-300 characters\n",
+        "name": "question"
+      },
+      {
+        "type": "Array of InputPollOption",
+        "required": true,
+        "description": "A JSON-serialized list of 1-12 answer options",
+        "html_description": "<td>A JSON-serialized list of 1-12 answer options</td>",
+        "rst_description": "A JSON-serialized list of 1-12 answer options\n",
+        "name": "options"
+      },
+      {
+        "type": "String",
+        "required": false,
+        "description": "Unique identifier of the business connection on behalf of which the message will be sent",
+        "html_description": "<td>Unique identifier of the business connection on behalf of which the message will be sent</td>",
+        "rst_description": "Unique identifier of the business connection on behalf of which the message will be sent\n",
+        "name": "business_connection_id"
       },
       {
         "type": "Integer",
@@ -37,35 +53,19 @@
       },
       {
         "type": "String",
-        "required": true,
-        "description": "Poll question, 1-300 characters",
-        "html_description": "<td>Poll question, 1-300 characters</td>",
-        "rst_description": "Poll question, 1-300 characters\n",
-        "name": "question"
-      },
-      {
-        "type": "String",
         "required": false,
-        "description": "Mode for parsing entities in the question. See formatting options for more details. Currently, only custom emoji entities are allowed",
-        "html_description": "<td>Mode for parsing entities in the question. See <a href=\"#formatting-options\">formatting options</a> for more details. Currently, only custom emoji entities are allowed</td>",
-        "rst_description": "Mode for parsing entities in the question. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details. Currently, only custom emoji entities are allowed\n",
+        "description": "Mode for parsing entities in the question. See formatting options for more details. Currently, only custom emoji entities are allowed.",
+        "html_description": "<td>Mode for parsing entities in the question. See <a href=\"#formatting-options\">formatting options</a> for more details. Currently, only custom emoji entities are allowed.</td>",
+        "rst_description": "Mode for parsing entities in the question. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details. Currently, only custom emoji entities are allowed.\n",
         "name": "question_parse_mode"
       },
       {
         "type": "Array of MessageEntity",
         "required": false,
-        "description": "A JSON-serialized list of special entities that appear in the poll question. It can be specified instead of question_parse_mode",
-        "html_description": "<td>A JSON-serialized list of special entities that appear in the poll question. It can be specified instead of <em>question_parse_mode</em></td>",
-        "rst_description": "A JSON-serialized list of special entities that appear in the poll question. It can be specified instead of *question_parse_mode*\n",
+        "description": "A JSON-serialized list of special entities that appear in the poll question. It can be specified instead of question_parse_mode.",
+        "html_description": "<td>A JSON-serialized list of special entities that appear in the poll question. It can be specified instead of <em>question_parse_mode</em>.</td>",
+        "rst_description": "A JSON-serialized list of special entities that appear in the poll question. It can be specified instead of *question_parse_mode*.\n",
         "name": "question_entities"
-      },
-      {
-        "type": "Array of InputPollOption",
-        "required": true,
-        "description": "A JSON-serialized list of 1-12 answer options",
-        "html_description": "<td>A JSON-serialized list of 1-12 answer options</td>",
-        "rst_description": "A JSON-serialized list of 1-12 answer options\n",
-        "name": "options"
       },
       {
         "type": "Boolean",
@@ -134,9 +134,9 @@
       {
         "type": "Array of String",
         "required": false,
-        "description": "A JSON-serialized list of 0-12 two-letter ISO 3166-1 alpha-2 country codes indicating the countries from which users can vote in the poll; for channel chats only. If omitted or empty, then users from any country can participate in the poll.",
-        "html_description": "<td>A JSON-serialized list of 0-12 two-letter <a href=\"https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2\">ISO 3166-1 alpha-2</a> country codes indicating the countries from which users can vote in the poll; for channel chats only. If omitted or empty, then users from any country can participate in the poll.</td>",
-        "rst_description": "A JSON-serialized list of 0-12 two-letter `ISO 3166-1 alpha-2 <https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2>`_ country codes indicating the countries from which users can vote in the poll; for channel chats only. If omitted or empty, then users from any country can participate in the poll.\n",
+        "description": "A JSON-serialized list of 0-12 two-letter ISO 3166-1 alpha-2 country codes indicating the countries from which users can vote in the poll; for channel chats only. Use 'FT' as a country code to allow users with anonymous numbers to vote. If omitted or empty, then users from any country can participate in the poll.",
+        "html_description": "<td>A JSON-serialized list of 0-12 two-letter <a href=\"https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2\">ISO 3166-1 alpha-2</a> country codes indicating the countries from which users can vote in the poll; for channel chats only. Use &#8220;FT&#8221; as a country code to allow users with anonymous numbers to vote. If omitted or empty, then users from any country can participate in the poll.</td>",
+        "rst_description": "A JSON-serialized list of 0-12 two-letter `ISO 3166-1 alpha-2 <https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2>`_ country codes indicating the countries from which users can vote in the poll; for channel chats only. Use 'FT' as a country code to allow users with anonymous numbers to vote. If omitted or empty, then users from any country can participate in the poll.\n",
         "name": "country_codes"
       },
       {
@@ -166,9 +166,9 @@
       {
         "type": "Array of MessageEntity",
         "required": false,
-        "description": "A JSON-serialized list of special entities that appear in the poll explanation. It can be specified instead of explanation_parse_mode",
-        "html_description": "<td>A JSON-serialized list of special entities that appear in the poll explanation. It can be specified instead of <em>explanation_parse_mode</em></td>",
-        "rst_description": "A JSON-serialized list of special entities that appear in the poll explanation. It can be specified instead of *explanation_parse_mode*\n",
+        "description": "A JSON-serialized list of special entities that appear in the poll explanation. It can be specified instead of explanation_parse_mode.",
+        "html_description": "<td>A JSON-serialized list of special entities that appear in the poll explanation. It can be specified instead of <em>explanation_parse_mode</em>.</td>",
+        "rst_description": "A JSON-serialized list of special entities that appear in the poll explanation. It can be specified instead of *explanation_parse_mode*.\n",
         "name": "explanation_entities"
       },
       {
@@ -278,9 +278,9 @@
       {
         "type": "InlineKeyboardMarkup or ReplyKeyboardMarkup or ReplyKeyboardRemove or ForceReply",
         "required": false,
-        "description": "Additional interface options. A JSON-serialized object for an inline keyboard, custom reply keyboard, instructions to remove a reply keyboard or to force a reply from the user",
-        "html_description": "<td>Additional interface options. A JSON-serialized object for an <a href=\"/bots/features#inline-keyboards\">inline keyboard</a>, <a href=\"/bots/features#keyboards\">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user</td>",
-        "rst_description": "Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user\n",
+        "description": "Additional interface options. A JSON-serialized object for an inline keyboard, custom reply keyboard, instructions to remove a reply keyboard or to force a reply from the user.",
+        "html_description": "<td>Additional interface options. A JSON-serialized object for an <a href=\"/bots/features#inline-keyboards\">inline keyboard</a>, <a href=\"/bots/features#keyboards\">custom reply keyboard</a>, instructions to remove a reply keyboard or to force a reply from the user.</td>",
+        "rst_description": "Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user.\n",
         "name": "reply_markup"
       },
       {

@@ -16,6 +16,121 @@ Changelog
 
 .. towncrier release notes start
 
+3.29.0 (2026-06-14)
+====================
+
+Misc
+----
+
+- Updated to `Bot API 10.1 <https://core.telegram.org/bots/api-changelog#june-11-2026>`_
+
+  **Rich Messages**
+
+  *New Methods:*
+
+  - Added :class:`aiogram.methods.send_rich_message.SendRichMessage` method - sends a rich formatted message to a chat
+  - Added :class:`aiogram.methods.send_rich_message_draft.SendRichMessageDraft` method - streams a partial rich message draft to a user while the message is being generated
+
+  *New Types:*
+
+  - Added :class:`aiogram.types.rich_message.RichMessage` type - represents a rich formatted message received in a chat
+  - Added :class:`aiogram.types.input_rich_message.InputRichMessage` type - describes a rich message to be sent, using HTML or Markdown formatting
+  - Added :class:`aiogram.types.input_rich_message_content.InputRichMessageContent` type - inline query result content backed by a rich message
+  - Added :class:`aiogram.types.rich_text.RichText` type - base class for all rich text formatting nodes
+  - Added :class:`aiogram.types.rich_text_bold.RichTextBold` type - bold rich text node
+  - Added :class:`aiogram.types.rich_text_italic.RichTextItalic` type - italic rich text node
+  - Added :class:`aiogram.types.rich_text_underline.RichTextUnderline` type - underline rich text node
+  - Added :class:`aiogram.types.rich_text_strikethrough.RichTextStrikethrough` type - strikethrough rich text node
+  - Added :class:`aiogram.types.rich_text_spoiler.RichTextSpoiler` type - spoiler rich text node
+  - Added :class:`aiogram.types.rich_text_date_time.RichTextDateTime` type - date/time rich text node
+  - Added :class:`aiogram.types.rich_text_text_mention.RichTextTextMention` type - text mention rich text node
+  - Added :class:`aiogram.types.rich_text_subscript.RichTextSubscript` type - subscript rich text node
+  - Added :class:`aiogram.types.rich_text_superscript.RichTextSuperscript` type - superscript rich text node
+  - Added :class:`aiogram.types.rich_text_marked.RichTextMarked` type - highlighted/marked rich text node
+  - Added :class:`aiogram.types.rich_text_code.RichTextCode` type - inline code rich text node
+  - Added :class:`aiogram.types.rich_text_custom_emoji.RichTextCustomEmoji` type - custom emoji rich text node
+  - Added :class:`aiogram.types.rich_text_mathematical_expression.RichTextMathematicalExpression` type - mathematical expression rich text node
+  - Added :class:`aiogram.types.rich_text_url.RichTextUrl` type - URL rich text node
+  - Added :class:`aiogram.types.rich_text_email_address.RichTextEmailAddress` type - email address rich text node
+  - Added :class:`aiogram.types.rich_text_phone_number.RichTextPhoneNumber` type - phone number rich text node
+  - Added :class:`aiogram.types.rich_text_bank_card_number.RichTextBankCardNumber` type - bank card number rich text node
+  - Added :class:`aiogram.types.rich_text_mention.RichTextMention` type - user mention rich text node
+  - Added :class:`aiogram.types.rich_text_hashtag.RichTextHashtag` type - hashtag rich text node
+  - Added :class:`aiogram.types.rich_text_cashtag.RichTextCashtag` type - cashtag rich text node
+  - Added :class:`aiogram.types.rich_text_bot_command.RichTextBotCommand` type - bot command rich text node
+  - Added :class:`aiogram.types.rich_text_anchor.RichTextAnchor` type - anchor (named target) rich text node
+  - Added :class:`aiogram.types.rich_text_anchor_link.RichTextAnchorLink` type - link to an in-message anchor rich text node
+  - Added :class:`aiogram.types.rich_text_reference.RichTextReference` type - footnote reference rich text node
+  - Added :class:`aiogram.types.rich_text_reference_link.RichTextReferenceLink` type - link to a footnote reference rich text node
+  - Added :class:`aiogram.types.rich_block.RichBlock` type - base class for all rich block elements
+  - Added :class:`aiogram.types.rich_block_paragraph.RichBlockParagraph` type - text paragraph block
+  - Added :class:`aiogram.types.rich_block_section_heading.RichBlockSectionHeading` type - section heading block
+  - Added :class:`aiogram.types.rich_block_preformatted.RichBlockPreformatted` type - preformatted (code) block
+  - Added :class:`aiogram.types.rich_block_footer.RichBlockFooter` type - footer block
+  - Added :class:`aiogram.types.rich_block_divider.RichBlockDivider` type - horizontal divider block
+  - Added :class:`aiogram.types.rich_block_mathematical_expression.RichBlockMathematicalExpression` type - mathematical expression block
+  - Added :class:`aiogram.types.rich_block_anchor.RichBlockAnchor` type - anchor/target block
+  - Added :class:`aiogram.types.rich_block_list.RichBlockList` type - ordered or unordered list block
+  - Added :class:`aiogram.types.rich_block_block_quotation.RichBlockBlockQuotation` type - block quotation block
+  - Added :class:`aiogram.types.rich_block_pull_quotation.RichBlockPullQuotation` type - pull quotation block
+  - Added :class:`aiogram.types.rich_block_collage.RichBlockCollage` type - collage of media items block
+  - Added :class:`aiogram.types.rich_block_slideshow.RichBlockSlideshow` type - slideshow block
+  - Added :class:`aiogram.types.rich_block_table.RichBlockTable` type - table block
+  - Added :class:`aiogram.types.rich_block_details.RichBlockDetails` type - expandable details/summary block
+  - Added :class:`aiogram.types.rich_block_map.RichBlockMap` type - embedded map block
+  - Added :class:`aiogram.types.rich_block_animation.RichBlockAnimation` type - animation (GIF) block
+  - Added :class:`aiogram.types.rich_block_audio.RichBlockAudio` type - audio block
+  - Added :class:`aiogram.types.rich_block_photo.RichBlockPhoto` type - photo block
+  - Added :class:`aiogram.types.rich_block_video.RichBlockVideo` type - video block
+  - Added :class:`aiogram.types.rich_block_voice_note.RichBlockVoiceNote` type - voice note block
+  - Added :class:`aiogram.types.rich_block_thinking.RichBlockThinking` type - thinking/reasoning block for AI-generated content
+  - Added :class:`aiogram.types.rich_block_caption.RichBlockCaption` type - caption for a rich block media element
+  - Added :class:`aiogram.types.rich_block_list_item.RichBlockListItem` type - individual item in a rich block list
+  - Added :class:`aiogram.types.rich_block_table_cell.RichBlockTableCell` type - individual cell in a rich block table
+
+  *New Fields:*
+
+  - Added :code:`rich_message` field to :class:`aiogram.types.message.Message` - the rich formatted message contained in the message
+
+  *New Parameters for* :class:`aiogram.methods.edit_message_text.EditMessageText`:
+
+  - Added :code:`rich_message` - new rich content of the message; required if :code:`text` is not specified
+
+  *Changed Parameters for* :class:`aiogram.methods.edit_message_text.EditMessageText`:
+
+  - :code:`text` is now **optional** (``str | None``) — previously it was a required positional argument; now either :code:`text` or :code:`rich_message` must be provided.
+
+  **Join Request Queries**
+
+  *New Methods:*
+
+  - Added :class:`aiogram.methods.answer_chat_join_request_query.AnswerChatJoinRequestQuery` method - processes a received chat join request query
+  - Added :class:`aiogram.methods.send_chat_join_request_web_app.SendChatJoinRequestWebApp` method - processes a join request query by showing a Mini App to the user before deciding the outcome
+
+  *New Shortcuts:*
+
+  - Added :meth:`aiogram.types.chat_join_request.ChatJoinRequest.answer_query` shortcut - answers a join request query using the request's :code:`query_id`
+  - Added :meth:`aiogram.types.chat_join_request.ChatJoinRequest.send_webapp` shortcut - shows a Mini App to the user for a join request query using the request's :code:`query_id`
+
+  *New Fields:*
+
+  - Added :code:`supports_join_request_queries` field to :class:`aiogram.types.user.User` - indicates whether the user supports join request queries
+  - Added :code:`guard_bot` field to :class:`aiogram.types.chat_full_info.ChatFullInfo` - the guard bot configured for the chat, if any
+  - Added :code:`query_id` field to :class:`aiogram.types.chat_join_request.ChatJoinRequest` - unique identifier of the join request query
+
+  **Polls**
+
+  *New Types:*
+
+  - Added :class:`aiogram.types.link.Link` type - represents a hyperlink for use in poll media
+  - Added :class:`aiogram.types.input_media_link.InputMediaLink` type - represents a link as poll option media input
+
+  *New Fields:*
+
+  - Added :code:`link` field to :class:`aiogram.types.poll_media.PollMedia` - hyperlink associated with the poll media
+  `#1830 <https://github.com/aiogram/aiogram/issues/1830>`_
+
+
 3.28.1 and 3.28.2 (2026-05-10)
 ==============================
 

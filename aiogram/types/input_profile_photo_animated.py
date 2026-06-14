@@ -20,7 +20,7 @@ class InputProfilePhotoAnimated(InputProfilePhoto):
     animation: InputFileUnion
     """The animated profile photo. Profile photos can't be reused and can only be uploaded as a new file, so you can pass 'attach://<file_attach_name>' if the photo was uploaded using multipart/form-data under <file_attach_name>. :ref:`More information on Sending Files » <sending-files>`"""
     main_frame_timestamp: float | None = None
-    """*Optional*. Timestamp in seconds of the frame that will be used as the static profile photo. Defaults to 0.0."""
+    """*Optional*. Timestamp in seconds of the frame that will be used as the static profile photo. Defaults to 0.0"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!

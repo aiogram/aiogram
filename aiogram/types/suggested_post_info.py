@@ -17,11 +17,11 @@ class SuggestedPostInfo(TelegramObject):
     """
 
     state: str
-    """State of the suggested post. Currently, it can be one of 'pending', 'approved', 'declined'."""
+    """State of the suggested post. Currently, it can be one of 'pending', 'approved', 'declined'"""
     price: SuggestedPostPrice | None = None
-    """*Optional*. Proposed price of the post. If the field is omitted, then the post is unpaid."""
+    """*Optional*. Proposed price of the post. If the field is omitted, then the post is unpaid"""
     send_date: DateTime | None = None
-    """*Optional*. Proposed send date of the post. If the field is omitted, then the post can be published at any time within 30 days at the sole discretion of the user or administrator who approves it."""
+    """*Optional*. Proposed send date of the post. If the field is omitted, then the post can be published at any time within 30 days at the sole discretion of the user or administrator who approves it"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!

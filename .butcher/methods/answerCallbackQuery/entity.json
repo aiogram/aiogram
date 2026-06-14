@@ -22,9 +22,9 @@
       {
         "type": "String",
         "required": false,
-        "description": "Text of the notification. If not specified, nothing will be shown to the user, 0-200 characters",
-        "html_description": "<td>Text of the notification. If not specified, nothing will be shown to the user, 0-200 characters</td>",
-        "rst_description": "Text of the notification. If not specified, nothing will be shown to the user, 0-200 characters\n",
+        "description": "Text of the notification. If not specified, nothing will be shown to the user, 0-200 characters.",
+        "html_description": "<td>Text of the notification. If not specified, nothing will be shown to the user, 0-200 characters.</td>",
+        "rst_description": "Text of the notification. If not specified, nothing will be shown to the user, 0-200 characters.\n",
         "name": "text"
       },
       {

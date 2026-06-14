@@ -28,6 +28,14 @@
         "required": true
       },
       {
+        "type": "Integer",
+        "description": "Date the gift was sent in Unix time",
+        "html_description": "<td>Date the gift was sent in Unix time</td>",
+        "rst_description": "Date the gift was sent in Unix time\n",
+        "name": "send_date",
+        "required": true
+      },
+      {
         "type": "String",
         "description": "Unique identifier of the gift for the bot; for gifts received on behalf of business accounts only",
         "html_description": "<td><em>Optional</em>. Unique identifier of the gift for the bot; for gifts received on behalf of business accounts only</td>",
@@ -42,14 +50,6 @@
         "rst_description": "*Optional*. Sender of the gift if it is a known user\n",
         "name": "sender_user",
         "required": false
-      },
-      {
-        "type": "Integer",
-        "description": "Date the gift was sent in Unix time",
-        "html_description": "<td>Date the gift was sent in Unix time</td>",
-        "rst_description": "Date the gift was sent in Unix time\n",
-        "name": "send_date",
-        "required": true
       },
       {
         "type": "String",
@@ -125,9 +125,9 @@
       },
       {
         "type": "Integer",
-        "description": "Unique number reserved for this gift when upgraded. See the number field in UniqueGift",
-        "html_description": "<td><em>Optional</em>. Unique number reserved for this gift when upgraded. See the <em>number</em> field in <a href=\"#uniquegift\">UniqueGift</a></td>",
-        "rst_description": "*Optional*. Unique number reserved for this gift when upgraded. See the *number* field in :class:`aiogram.types.unique_gift.UniqueGift`\n",
+        "description": "Unique number reserved for this gift when upgraded. See the number field in UniqueGift.",
+        "html_description": "<td><em>Optional</em>. Unique number reserved for this gift when upgraded. See the <em>number</em> field in <a href=\"#uniquegift\">UniqueGift</a>.</td>",
+        "rst_description": "*Optional*. Unique number reserved for this gift when upgraded. See the *number* field in :class:`aiogram.types.unique_gift.UniqueGift`.\n",
         "name": "unique_gift_number",
         "required": false
       }

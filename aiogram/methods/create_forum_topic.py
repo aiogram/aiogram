@@ -23,7 +23,7 @@ class CreateForumTopic(TelegramMethod[ForumTopic]):
     icon_color: int | None = None
     """Color of the topic icon in RGB format. Currently, must be one of 7322096 (0x6FB9F0), 16766590 (0xFFD67E), 13338331 (0xCB86DB), 9367192 (0x8EEE98), 16749490 (0xFF93B2), or 16478047 (0xFB6F5F)"""
     icon_custom_emoji_id: str | None = None
-    """Unique identifier of the custom emoji shown as the topic icon. Use :class:`aiogram.methods.get_forum_topic_icon_stickers.GetForumTopicIconStickers` to get all allowed custom emoji identifiers."""
+    """Unique identifier of the custom emoji shown as the topic icon. Use :class:`aiogram.methods.get_forum_topic_icon_stickers.GetForumTopicIconStickers` to get all allowed custom emoji identifiers"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!

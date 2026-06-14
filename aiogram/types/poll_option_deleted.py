@@ -21,7 +21,7 @@ class PollOptionDeleted(TelegramObject):
     option_text: str
     """Option text"""
     poll_message: MaybeInaccessibleMessageUnion | None = None
-    """*Optional*. Message containing the poll from which the option was deleted, if known. Note that the :class:`aiogram.types.message.Message` object in this field will not contain the *reply_to_message* field even if it itself is a reply."""
+    """*Optional*. Message containing the poll from which the option was deleted, if known. Note that the :class:`aiogram.types.message.Message` object in this field will not contain the *reply_to_message* field even if it itself is a reply"""
     option_text_entities: list[MessageEntity] | None = None
     """*Optional*. Special entities that appear in the *option_text*"""
 

@@ -13,9 +13,9 @@
     "annotations": [
       {
         "type": "String",
-        "description": "The default inline query to be inserted in the input field. If left empty, only the bot's username will be inserted",
-        "html_description": "<td><em>Optional</em>. The default inline query to be inserted in the input field. If left empty, only the bot's username will be inserted</td>",
-        "rst_description": "*Optional*. The default inline query to be inserted in the input field. If left empty, only the bot's username will be inserted\n",
+        "description": "The default inline query to be inserted in the input field. If left empty, only the bot's username will be inserted.",
+        "html_description": "<td><em>Optional</em>. The default inline query to be inserted in the input field. If left empty, only the bot's username will be inserted.</td>",
+        "rst_description": "*Optional*. The default inline query to be inserted in the input field. If left empty, only the bot's username will be inserted.\n",
         "name": "query",
         "required": false
       },

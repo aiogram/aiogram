@@ -20,7 +20,7 @@ class EditUserStarSubscription(TelegramMethod[bool]):
     telegram_payment_charge_id: str
     """Telegram payment identifier for the subscription"""
     is_canceled: bool
-    """Pass :code:`True` to cancel extension of the user subscription; the subscription must be active up to the end of the current subscription period. Pass :code:`False` to allow the user to re-enable a subscription that was previously canceled by the bot."""
+    """Pass :code:`True` to cancel extension of the user subscription; the subscription must be active up to the end of the current subscription period. Pass :code:`False` to allow the user to re-enable a subscription that was previously canceled by the bot"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!

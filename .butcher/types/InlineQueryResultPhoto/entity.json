@@ -29,9 +29,9 @@
       },
       {
         "type": "String",
-        "description": "A valid URL of the photo. Photo must be in JPEG format. Photo size must not exceed 5MB",
-        "html_description": "<td>A valid URL of the photo. Photo must be in <strong>JPEG</strong> format. Photo size must not exceed 5MB</td>",
-        "rst_description": "A valid URL of the photo. Photo must be in **JPEG** format. Photo size must not exceed 5MB\n",
+        "description": "A valid URL of the photo. Photo must be in JPEG format. Photo size must not exceed 5MB.",
+        "html_description": "<td>A valid URL of the photo. Photo must be in <strong>JPEG</strong> format. Photo size must not exceed 5MB.</td>",
+        "rst_description": "A valid URL of the photo. Photo must be in **JPEG** format. Photo size must not exceed 5MB.\n",
         "name": "photo_url",
         "required": true
       },

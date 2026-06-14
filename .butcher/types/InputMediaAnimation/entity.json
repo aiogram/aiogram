@@ -13,9 +13,9 @@
     "annotations": [
       {
         "type": "String",
-        "description": "Type of the result, must be animation",
-        "html_description": "<td>Type of the result, must be <em>animation</em></td>",
-        "rst_description": "Type of the result, must be *animation*\n",
+        "description": "Type of the media, must be animation",
+        "html_description": "<td>Type of the media, must be <em>animation</em></td>",
+        "rst_description": "Type of the media, must be *animation*\n",
         "name": "type",
         "required": true
       },

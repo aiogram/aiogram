@@ -21,6 +21,14 @@
       },
       {
         "type": "String",
+        "description": "Base64-encoded element hash for using in PassportElementErrorUnspecified",
+        "html_description": "<td>Base64-encoded element hash for using in <a href=\"#passportelementerrorunspecified\">PassportElementErrorUnspecified</a></td>",
+        "rst_description": "Base64-encoded element hash for using in :class:`aiogram.types.passport_element_error_unspecified.PassportElementErrorUnspecified`\n",
+        "name": "hash",
+        "required": true
+      },
+      {
+        "type": "String",
         "description": "Base64-encoded encrypted Telegram Passport element data provided by the user; available only for 'personal_details', 'passport', 'driver_license', 'identity_card', 'internal_passport' and 'address' types. Can be decrypted and verified using the accompanying EncryptedCredentials.",
         "html_description": "<td><em>Optional</em>. Base64-encoded encrypted Telegram Passport element data provided by the user; available only for &#8220;personal_details&#8221;, &#8220;passport&#8221;, &#8220;driver_license&#8221;, &#8220;identity_card&#8221;, &#8220;internal_passport&#8221; and &#8220;address&#8221; types. Can be decrypted and verified using the accompanying <a href=\"#encryptedcredentials\">EncryptedCredentials</a>.</td>",
         "rst_description": "*Optional*. Base64-encoded encrypted Telegram Passport element data provided by the user; available only for 'personal_details', 'passport', 'driver_license', 'identity_card', 'internal_passport' and 'address' types. Can be decrypted and verified using the accompanying :class:`aiogram.types.encrypted_credentials.EncryptedCredentials`.\n",
@@ -82,14 +90,6 @@
         "rst_description": "*Optional*. Array of encrypted files with translated versions of documents provided by the user; available if requested for 'passport', 'driver_license', 'identity_card', 'internal_passport', 'utility_bill', 'bank_statement', 'rental_agreement', 'passport_registration' and 'temporary_registration' types. Files can be decrypted and verified using the accompanying :class:`aiogram.types.encrypted_credentials.EncryptedCredentials`.\n",
         "name": "translation",
         "required": false
-      },
-      {
-        "type": "String",
-        "description": "Base64-encoded element hash for using in PassportElementErrorUnspecified",
-        "html_description": "<td>Base64-encoded element hash for using in <a href=\"#passportelementerrorunspecified\">PassportElementErrorUnspecified</a></td>",
-        "rst_description": "Base64-encoded element hash for using in :class:`aiogram.types.passport_element_error_unspecified.PassportElementErrorUnspecified`\n",
-        "name": "hash",
-        "required": true
       }
     ],
     "category": "types"

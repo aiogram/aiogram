@@ -111,6 +111,7 @@ Available types
     input_media_animation
     input_media_audio
     input_media_document
+    input_media_link
     input_media_live_photo
     input_media_location
     input_media_photo
@@ -136,6 +137,7 @@ Available types
     keyboard_button_request_managed_bot
     keyboard_button_request_user
     keyboard_button_request_users
+    link
     link_preview_options
     live_photo
     location
@@ -273,8 +275,69 @@ Inline mode
     input_invoice_message_content
     input_location_message_content
     input_message_content
+    input_rich_message_content
     input_text_message_content
     input_venue_message_content
+
+Rich messages
+=============
+
+.. toctree::
+    :maxdepth: 1
+
+    input_rich_message
+    rich_block
+    rich_block_anchor
+    rich_block_animation
+    rich_block_audio
+    rich_block_block_quotation
+    rich_block_caption
+    rich_block_collage
+    rich_block_details
+    rich_block_divider
+    rich_block_footer
+    rich_block_list
+    rich_block_list_item
+    rich_block_map
+    rich_block_mathematical_expression
+    rich_block_paragraph
+    rich_block_photo
+    rich_block_preformatted
+    rich_block_pull_quotation
+    rich_block_section_heading
+    rich_block_slideshow
+    rich_block_table
+    rich_block_table_cell
+    rich_block_thinking
+    rich_block_video
+    rich_block_voice_note
+    rich_message
+    rich_text
+    rich_text_anchor
+    rich_text_anchor_link
+    rich_text_bank_card_number
+    rich_text_bold
+    rich_text_bot_command
+    rich_text_cashtag
+    rich_text_code
+    rich_text_custom_emoji
+    rich_text_date_time
+    rich_text_email_address
+    rich_text_hashtag
+    rich_text_italic
+    rich_text_marked
+    rich_text_mathematical_expression
+    rich_text_mention
+    rich_text_phone_number
+    rich_text_reference
+    rich_text_reference_link
+    rich_text_spoiler
+    rich_text_strikethrough
+    rich_text_subscript
+    rich_text_superscript
+    rich_text_text_mention
+    rich_text_underline
+    rich_text_url
 
 Payments
 ========

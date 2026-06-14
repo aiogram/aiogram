@@ -25,7 +25,7 @@ class EditStory(TelegramMethod[Story]):
     caption: str | None = None
     """Caption of the story, 0-2048 characters after entities parsing"""
     parse_mode: str | None = None
-    """Mode for parsing entities in the story caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details."""
+    """Mode for parsing entities in the story caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details"""
     caption_entities: list[MessageEntity] | None = None
     """A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*"""
     areas: list[StoryArea] | None = None

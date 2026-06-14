@@ -22,11 +22,11 @@ class AnswerCallbackQuery(TelegramMethod[bool]):
     text: str | None = None
     """Text of the notification. If not specified, nothing will be shown to the user, 0-200 characters"""
     show_alert: bool | None = None
-    """If :code:`True`, an alert will be shown by the client instead of a notification at the top of the chat screen. Defaults to *false*."""
+    """If :code:`True`, an alert will be shown by the client instead of a notification at the top of the chat screen. Defaults to *false*"""
     url: str | None = None
-    """URL that will be opened by the user's client. If you have created a :class:`aiogram.types.game.Game` and accepted the conditions via `@BotFather <https://t.me/botfather>`_, specify the URL that opens your game - note that this will only work if the query comes from a `https://core.telegram.org/bots/api#inlinekeyboardbutton <https://core.telegram.org/bots/api#inlinekeyboardbutton>`_ *callback_game* button."""
+    """URL that will be opened by the user's client. If you have created a :class:`aiogram.types.game.Game` and accepted the conditions via `@BotFather <https://t.me/botfather>`_, specify the URL that opens your game - note that this will only work if the query comes from a `https://core.telegram.org/bots/api#inlinekeyboardbutton <https://core.telegram.org/bots/api#inlinekeyboardbutton>`_ *callback_game* button"""
     cache_time: int | None = None
-    """The maximum amount of time in seconds that the result of the callback query may be cached client-side. Telegram apps will support caching starting in version 3.14. Defaults to 0."""
+    """The maximum amount of time in seconds that the result of the callback query may be cached client-side. Telegram apps will support caching starting in version 3.14. Defaults to 0"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!

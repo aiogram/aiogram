@@ -19,7 +19,7 @@ class SetUserEmojiStatus(TelegramMethod[bool]):
     user_id: int
     """Unique identifier of the target user"""
     emoji_status_custom_emoji_id: str | None = None
-    """Custom emoji identifier of the emoji status to set. Pass an empty string to remove the status."""
+    """Custom emoji identifier of the emoji status to set. Pass an empty string to remove the status"""
     emoji_status_expiration_date: DateTimeUnion | None = None
     """Expiration date of the emoji status, if any"""
 

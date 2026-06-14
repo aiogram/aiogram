@@ -19,13 +19,13 @@ class CopyMessages(TelegramMethod[list[MessageId]]):
     from_chat_id: ChatIdUnion
     """Unique identifier for the chat where the original messages were sent (or username of the target bot, supergroup or channel in the format :code:`@username`)"""
     message_ids: list[int]
-    """A JSON-serialized list of 1-100 identifiers of messages in the chat *from_chat_id* to copy. The identifiers must be specified in a strictly increasing order."""
+    """A JSON-serialized list of 1-100 identifiers of messages in the chat *from_chat_id* to copy. The identifiers must be specified in a strictly increasing order"""
     message_thread_id: int | None = None
     """Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only"""
     direct_messages_topic_id: int | None = None
     """Identifier of the direct messages topic to which the messages will be sent; required if the messages are sent to a direct messages chat"""
     disable_notification: bool | None = None
-    """Sends the messages `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound."""
+    """Sends the messages `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound"""
     protect_content: bool | None = None
     """Protects the contents of the sent messages from forwarding and saving"""
     remove_caption: bool | None = None

@@ -133,17 +133,17 @@
       },
       {
         "type": "ShippingQuery",
-        "description": "New incoming shipping query. Only for invoices with flexible price",
-        "html_description": "<td><em>Optional</em>. New incoming shipping query. Only for invoices with flexible price</td>",
-        "rst_description": "*Optional*. New incoming shipping query. Only for invoices with flexible price\n",
+        "description": "New incoming shipping query. Only for invoices with flexible price.",
+        "html_description": "<td><em>Optional</em>. New incoming shipping query. Only for invoices with flexible price.</td>",
+        "rst_description": "*Optional*. New incoming shipping query. Only for invoices with flexible price.\n",
         "name": "shipping_query",
         "required": false
       },
       {
         "type": "PreCheckoutQuery",
-        "description": "New incoming pre-checkout query. Contains full information about checkout",
-        "html_description": "<td><em>Optional</em>. New incoming pre-checkout query. Contains full information about checkout</td>",
-        "rst_description": "*Optional*. New incoming pre-checkout query. Contains full information about checkout\n",
+        "description": "New incoming pre-checkout query. Contains full information about checkout.",
+        "html_description": "<td><em>Optional</em>. New incoming pre-checkout query. Contains full information about checkout.</td>",
+        "rst_description": "*Optional*. New incoming pre-checkout query. Contains full information about checkout.\n",
         "name": "pre_checkout_query",
         "required": false
       },
@@ -157,9 +157,9 @@
       },
       {
         "type": "Poll",
-        "description": "New poll state. Bots receive only updates about manually stopped polls and polls, which are sent by the bot",
-        "html_description": "<td><em>Optional</em>. New poll state. Bots receive only updates about manually stopped polls and polls, which are sent by the bot</td>",
-        "rst_description": "*Optional*. New poll state. Bots receive only updates about manually stopped polls and polls, which are sent by the bot\n",
+        "description": "New poll state. Bots receive only updates about manually stopped polls and polls, which are sent by the bot.",
+        "html_description": "<td><em>Optional</em>. New poll state. Bots receive only updates about manually stopped polls and polls, which are sent by the bot.</td>",
+        "rst_description": "*Optional*. New poll state. Bots receive only updates about manually stopped polls and polls, which are sent by the bot.\n",
         "name": "poll",
         "required": false
       },

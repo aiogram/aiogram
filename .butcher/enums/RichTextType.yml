@@ -1,0 +1,34 @@
+name: RichTextType
+description: |
+  This object represents the rich text type.
+
+  Source: https://core.telegram.org/bots/api#richtext
+multi_parse:
+  attribute: type
+  regexp: "always '([a-z_]+)'"
+  entities:
+    - RichTextBold
+    - RichTextItalic
+    - RichTextUnderline
+    - RichTextStrikethrough
+    - RichTextSpoiler
+    - RichTextDateTime
+    - RichTextTextMention
+    - RichTextSubscript
+    - RichTextSuperscript
+    - RichTextMarked
+    - RichTextCode
+    - RichTextCustomEmoji
+    - RichTextMathematicalExpression
+    - RichTextUrl
+    - RichTextEmailAddress
+    - RichTextPhoneNumber
+    - RichTextBankCardNumber
+    - RichTextMention
+    - RichTextHashtag
+    - RichTextCashtag
+    - RichTextBotCommand
+    - RichTextAnchor
+    - RichTextAnchorLink
+    - RichTextReference
+    - RichTextReferenceLink

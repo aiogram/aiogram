@@ -1,0 +1,41 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Rich messages",
+    "anchor": "rich-messages"
+  },
+  "object": {
+    "anchor": "richtextcustomemoji",
+    "name": "RichTextCustomEmoji",
+    "description": "A custom emoji.",
+    "html_description": "<p>A custom emoji.</p>",
+    "rst_description": "A custom emoji.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Type of the rich text, always 'custom_emoji'",
+        "html_description": "<td>Type of the rich text, always &#8220;custom_emoji&#8221;</td>",
+        "rst_description": "Type of the rich text, always 'custom_emoji'\n",
+        "name": "type",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Unique identifier of the custom emoji. Use getCustomEmojiStickers to get full information about the sticker.",
+        "html_description": "<td>Unique identifier of the custom emoji. Use <a href=\"#getcustomemojistickers\">getCustomEmojiStickers</a> to get full information about the sticker.</td>",
+        "rst_description": "Unique identifier of the custom emoji. Use :class:`aiogram.methods.get_custom_emoji_stickers.GetCustomEmojiStickers` to get full information about the sticker.\n",
+        "name": "custom_emoji_id",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Alternative emoji for the custom emoji",
+        "html_description": "<td>Alternative emoji for the custom emoji</td>",
+        "rst_description": "Alternative emoji for the custom emoji\n",
+        "name": "alternative_text",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

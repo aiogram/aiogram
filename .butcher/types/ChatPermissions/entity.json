@@ -13,9 +13,9 @@
     "annotations": [
       {
         "type": "Boolean",
-        "description": "True, if the user is allowed to send text messages, contacts, giveaways, giveaway winners, invoices, locations and venues",
-        "html_description": "<td><em>Optional</em>. <em>True</em>, if the user is allowed to send text messages, contacts, giveaways, giveaway winners, invoices, locations and venues</td>",
-        "rst_description": "*Optional*. :code:`True`, if the user is allowed to send text messages, contacts, giveaways, giveaway winners, invoices, locations and venues\n",
+        "description": "True, if the user is allowed to send text messages, rich messages, contacts, giveaways, giveaway winners, invoices, locations and venues",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the user is allowed to send text messages, rich messages, contacts, giveaways, giveaway winners, invoices, locations and venues</td>",
+        "rst_description": "*Optional*. :code:`True`, if the user is allowed to send text messages, rich messages, contacts, giveaways, giveaway winners, invoices, locations and venues\n",
         "name": "can_send_messages",
         "required": false
       },
@@ -109,9 +109,9 @@
       },
       {
         "type": "Boolean",
-        "description": "True, if the user is allowed to change the chat title, photo and other settings. Ignored in public supergroups",
-        "html_description": "<td><em>Optional</em>. <em>True</em>, if the user is allowed to change the chat title, photo and other settings. Ignored in public supergroups</td>",
-        "rst_description": "*Optional*. :code:`True`, if the user is allowed to change the chat title, photo and other settings. Ignored in public supergroups\n",
+        "description": "True, if the user is allowed to change the chat title, photo and other settings. Ignored in public supergroups.",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the user is allowed to change the chat title, photo and other settings. Ignored in public supergroups.</td>",
+        "rst_description": "*Optional*. :code:`True`, if the user is allowed to change the chat title, photo and other settings. Ignored in public supergroups.\n",
         "name": "can_change_info",
         "required": false
       },
@@ -125,17 +125,17 @@
       },
       {
         "type": "Boolean",
-        "description": "True, if the user is allowed to pin messages. Ignored in public supergroups",
-        "html_description": "<td><em>Optional</em>. <em>True</em>, if the user is allowed to pin messages. Ignored in public supergroups</td>",
-        "rst_description": "*Optional*. :code:`True`, if the user is allowed to pin messages. Ignored in public supergroups\n",
+        "description": "True, if the user is allowed to pin messages. Ignored in public supergroups.",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the user is allowed to pin messages. Ignored in public supergroups.</td>",
+        "rst_description": "*Optional*. :code:`True`, if the user is allowed to pin messages. Ignored in public supergroups.\n",
         "name": "can_pin_messages",
         "required": false
       },
       {
         "type": "Boolean",
-        "description": "True, if the user is allowed to create forum topics. If omitted defaults to the value of can_pin_messages",
-        "html_description": "<td><em>Optional</em>. <em>True</em>, if the user is allowed to create forum topics. If omitted defaults to the value of can_pin_messages</td>",
-        "rst_description": "*Optional*. :code:`True`, if the user is allowed to create forum topics. If omitted defaults to the value of can_pin_messages\n",
+        "description": "True, if the user is allowed to create forum topics. If omitted defaults to the value of can_pin_messages.",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the user is allowed to create forum topics. If omitted defaults to the value of can_pin_messages.</td>",
+        "rst_description": "*Optional*. :code:`True`, if the user is allowed to create forum topics. If omitted defaults to the value of can_pin_messages.\n",
         "name": "can_manage_topics",
         "required": false
       }
