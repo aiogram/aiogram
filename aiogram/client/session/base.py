@@ -125,6 +125,9 @@ class BaseSession(abc.ABC):
             raise TelegramConflictError(method=method, message=description)
         if status_code == HTTPStatus.UNAUTHORIZED:
             raise TelegramUnauthorizedError(method=method, message=description)
+        raise TelegramServerError(method=method, message=description)
+:
+            raise TelegramUnauthorizedError(method=method, message=description)
         if status_code == HTTPStatus.FORBIDDEN:
             raise TelegramForbiddenError(method=method, message=description)
         if status_code == HTTPStatus.REQUEST_ENTITY_TOO_LARGE:
