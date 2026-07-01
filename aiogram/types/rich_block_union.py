@@ -1,4 +1,6 @@
-from typing import TypeAlias
+from typing import Annotated, TypeAlias
+
+from pydantic import Field
 
 from .rich_block_anchor import RichBlockAnchor
 from .rich_block_animation import RichBlockAnimation
@@ -22,7 +24,7 @@ from .rich_block_thinking import RichBlockThinking
 from .rich_block_video import RichBlockVideo
 from .rich_block_voice_note import RichBlockVoiceNote
 
-RichBlockUnion: TypeAlias = (
+RichBlockUnion: TypeAlias = Annotated[
     RichBlockParagraph
     | RichBlockSectionHeading
     | RichBlockPreformatted
@@ -43,5 +45,6 @@ RichBlockUnion: TypeAlias = (
     | RichBlockPhoto
     | RichBlockVideo
     | RichBlockVoiceNote
-    | RichBlockThinking
-)
+    | RichBlockThinking,
+    Field(discriminator="type"),
+]
