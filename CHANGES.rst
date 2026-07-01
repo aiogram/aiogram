@@ -16,6 +16,21 @@ Changelog
 
 .. towncrier release notes start
 
+3.29.1 (2026-07-02)
+====================
+
+Bugfixes
+--------
+
+- Fixed severe (exponential) slowdown when validating nested :class:`aiogram.types.rich_block.RichBlock`
+  structures (e.g. nested ``blockquote``/``collage``/``details`` blocks).
+  Subtype unions whose members share a unique constant tag field (``RichBlockUnion``, ``ReactionTypeUnion``,
+  ``ChatMemberUnion``, ``MessageOriginUnion`` and others) are now generated as Pydantic *discriminated* unions
+  keyed on that field (``type``/``status``/``source``), so the correct member is selected directly instead of
+  being found via smart-union backtracking.
+  `#1842 <https://github.com/aiogram/aiogram/issues/1842>`_
+
+
 3.29.0 (2026-06-14)
 ====================
 
