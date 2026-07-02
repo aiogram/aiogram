@@ -1,0 +1,2 @@
+Fixed message.content_type returning PHOTO instead of LIVE_PHOTO for messages containing a live photo. Live photo check is now performed before the regular photo check.
+-- by :user:.

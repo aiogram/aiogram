@@ -689,6 +689,8 @@ class Message(MaybeInaccessibleMessage):
             return ContentType.DOCUMENT
         if self.game:
             return ContentType.GAME
+        if self.live_photo:
+            return ContentType.LIVE_PHOTO
         if self.photo:
             return ContentType.PHOTO
         if self.sticker:
