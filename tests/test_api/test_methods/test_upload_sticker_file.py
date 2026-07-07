@@ -15,5 +15,5 @@ class TestUploadStickerFile:
             sticker=BufferedInputFile(b"", "file.png"),
             sticker_format=StickerFormat.STATIC,
         )
-        request = bot.get_request()
+        bot.get_request()
         assert response == prepare_result.result

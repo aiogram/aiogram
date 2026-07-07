@@ -17,5 +17,5 @@ class TestGetBusinessAccountStarBalance:
         response: StarAmount = await bot.get_business_account_star_balance(
             business_connection_id="test_connection_id",
         )
-        request = bot.get_request()
+        bot.get_request()
         assert response == prepare_result.result

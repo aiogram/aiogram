@@ -42,6 +42,14 @@
         "rst_description": ":code:`True`, if a Telegram Premium subscription is accepted\n",
         "name": "premium_subscription",
         "required": true
+      },
+      {
+        "type": "Boolean",
+        "description": "True, if transfers of unique gifts from channels are accepted",
+        "html_description": "<td><em>True</em>, if transfers of unique gifts from channels are accepted</td>",
+        "rst_description": ":code:`True`, if transfers of unique gifts from channels are accepted\n",
+        "name": "gifts_from_channels",
+        "required": true
       }
     ],
     "category": "types"

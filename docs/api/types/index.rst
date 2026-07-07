@@ -24,6 +24,7 @@ Available types
     background_type_pattern
     background_type_wallpaper
     birthdate
+    bot_access_settings
     bot_command
     bot_command_scope
     bot_command_scope_all_chat_administrators
@@ -67,6 +68,8 @@ Available types
     chat_member_owner
     chat_member_restricted
     chat_member_updated
+    chat_owner_changed
+    chat_owner_left
     chat_permissions
     chat_photo
     chat_shared
@@ -78,6 +81,7 @@ Available types
     copy_text_button
     dice
     direct_message_price_changed
+    direct_messages_topic
     document
     external_reply_info
     file
@@ -90,6 +94,7 @@ Available types
     general_forum_topic_hidden
     general_forum_topic_unhidden
     gift
+    gift_background
     gift_info
     gifts
     giveaway
@@ -106,12 +111,20 @@ Available types
     input_media_animation
     input_media_audio
     input_media_document
+    input_media_link
+    input_media_live_photo
+    input_media_location
     input_media_photo
+    input_media_sticker
+    input_media_venue
     input_media_video
     input_paid_media
+    input_paid_media_live_photo
     input_paid_media_photo
     input_paid_media_video
+    input_poll_media
     input_poll_option
+    input_poll_option_media
     input_profile_photo
     input_profile_photo_animated
     input_profile_photo_static
@@ -121,12 +134,17 @@ Available types
     keyboard_button
     keyboard_button_poll_type
     keyboard_button_request_chat
+    keyboard_button_request_managed_bot
     keyboard_button_request_user
     keyboard_button_request_users
+    link
     link_preview_options
+    live_photo
     location
     location_address
     login_url
+    managed_bot_created
+    managed_bot_updated
     maybe_inaccessible_message
     menu_button
     menu_button_commands
@@ -149,6 +167,7 @@ Available types
     owned_gifts
     paid_media
     paid_media_info
+    paid_media_live_photo
     paid_media_photo
     paid_media_preview
     paid_media_video
@@ -156,7 +175,12 @@ Available types
     photo_size
     poll
     poll_answer
+    poll_media
     poll_option
+    poll_option_added
+    poll_option_deleted
+    prepared_inline_message
+    prepared_keyboard_button
     proximity_alert_triggered
     reaction_count
     reaction_type
@@ -167,6 +191,8 @@ Available types
     reply_keyboard_remove
     reply_parameters
     response_parameters
+    sent_guest_message
+    sent_web_app_message
     shared_user
     star_amount
     story
@@ -178,17 +204,28 @@ Available types
     story_area_type_suggested_reaction
     story_area_type_unique_gift
     story_area_type_weather
+    suggested_post_approval_failed
+    suggested_post_approved
+    suggested_post_declined
+    suggested_post_info
+    suggested_post_paid
+    suggested_post_parameters
+    suggested_post_price
+    suggested_post_refunded
     switch_inline_query_chosen_chat
     text_quote
     unique_gift
     unique_gift_backdrop
     unique_gift_backdrop_colors
+    unique_gift_colors
     unique_gift_info
     unique_gift_model
     unique_gift_symbol
     user
     user_chat_boosts
+    user_profile_audios
     user_profile_photos
+    user_rating
     user_shared
     users_shared
     venue
@@ -198,6 +235,7 @@ Available types
     video_chat_scheduled
     video_chat_started
     video_note
+    video_quality
     voice
     web_app_data
     web_app_info
@@ -237,10 +275,69 @@ Inline mode
     input_invoice_message_content
     input_location_message_content
     input_message_content
+    input_rich_message_content
     input_text_message_content
     input_venue_message_content
-    prepared_inline_message
-    sent_web_app_message
+
+Rich messages
+=============
+
+.. toctree::
+    :maxdepth: 1
+
+    input_rich_message
+    rich_block
+    rich_block_anchor
+    rich_block_animation
+    rich_block_audio
+    rich_block_block_quotation
+    rich_block_caption
+    rich_block_collage
+    rich_block_details
+    rich_block_divider
+    rich_block_footer
+    rich_block_list
+    rich_block_list_item
+    rich_block_map
+    rich_block_mathematical_expression
+    rich_block_paragraph
+    rich_block_photo
+    rich_block_preformatted
+    rich_block_pull_quotation
+    rich_block_section_heading
+    rich_block_slideshow
+    rich_block_table
+    rich_block_table_cell
+    rich_block_thinking
+    rich_block_video
+    rich_block_voice_note
+    rich_message
+    rich_text
+    rich_text_anchor
+    rich_text_anchor_link
+    rich_text_bank_card_number
+    rich_text_bold
+    rich_text_bot_command
+    rich_text_cashtag
+    rich_text_code
+    rich_text_custom_emoji
+    rich_text_date_time
+    rich_text_email_address
+    rich_text_hashtag
+    rich_text_italic
+    rich_text_marked
+    rich_text_mathematical_expression
+    rich_text_mention
+    rich_text_phone_number
+    rich_text_reference
+    rich_text_reference_link
+    rich_text_spoiler
+    rich_text_strikethrough
+    rich_text_subscript
+    rich_text_superscript
+    rich_text_text_mention
+    rich_text_underline
+    rich_text_url
 
 Payments
 ========

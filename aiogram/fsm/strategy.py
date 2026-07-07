@@ -1,5 +1,4 @@
 from enum import Enum, auto
-from typing import Optional, Tuple
 
 
 class FSMStrategy(Enum):
@@ -23,8 +22,8 @@ def apply_strategy(
     strategy: FSMStrategy,
     chat_id: int,
     user_id: int,
-    thread_id: Optional[int] = None,
-) -> Tuple[int, int, Optional[int]]:
+    thread_id: int | None = None,
+) -> tuple[int, int, int | None]:
     if strategy == FSMStrategy.CHAT:
         return chat_id, chat_id, None
     if strategy == FSMStrategy.GLOBAL_USER:

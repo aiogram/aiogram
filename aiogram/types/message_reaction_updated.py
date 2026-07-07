@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from .base import TelegramObject
 
@@ -28,9 +28,9 @@ class MessageReactionUpdated(TelegramObject):
     """Previous list of reaction types that were set by the user"""
     new_reaction: list[ReactionTypeUnion]
     """New list of reaction types that have been set by the user"""
-    user: Optional[User] = None
+    user: User | None = None
     """*Optional*. The user that changed the reaction, if the user isn't anonymous"""
-    actor_chat: Optional[Chat] = None
+    actor_chat: Chat | None = None
     """*Optional*. The chat on behalf of which the reaction was changed, if the user is anonymous"""
 
     if TYPE_CHECKING:
@@ -45,8 +45,8 @@ class MessageReactionUpdated(TelegramObject):
             date: DateTime,
             old_reaction: list[ReactionTypeUnion],
             new_reaction: list[ReactionTypeUnion],
-            user: Optional[User] = None,
-            actor_chat: Optional[Chat] = None,
+            user: User | None = None,
+            actor_chat: Chat | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

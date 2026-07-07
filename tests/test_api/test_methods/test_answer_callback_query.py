@@ -7,5 +7,5 @@ class TestAnswerCallbackQuery:
         prepare_result = bot.add_result_for(AnswerCallbackQuery, ok=True, result=True)
 
         response: bool = await bot.answer_callback_query(callback_query_id="cq id", text="OK")
-        request = bot.get_request()
+        bot.get_request()
         assert response == prepare_result.result

@@ -8,7 +8,7 @@ class TestCallbackQuery:
             id="id", from_user=User(id=42, is_bot=False, first_name="name"), chat_instance="chat"
         )
 
-        kwargs = dict(text="foo", show_alert=True, url="https://foo.bar/", cache_time=123)
+        kwargs = {"text": "foo", "show_alert": True, "url": "https://foo.bar/", "cache_time": 123}
 
         api_method = callback_query.answer(**kwargs)
 

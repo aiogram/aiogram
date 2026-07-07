@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from .base import TelegramMethod
 
@@ -15,7 +15,7 @@ class DeleteWebhook(TelegramMethod[bool]):
     __returning__ = bool
     __api_method__ = "deleteWebhook"
 
-    drop_pending_updates: Optional[bool] = None
+    drop_pending_updates: bool | None = None
     """Pass :code:`True` to drop all pending updates"""
 
     if TYPE_CHECKING:
@@ -25,7 +25,7 @@ class DeleteWebhook(TelegramMethod[bool]):
         def __init__(
             __pydantic__self__,
             *,
-            drop_pending_updates: Optional[bool] = None,
+            drop_pending_updates: bool | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from .base import TelegramObject
 
@@ -27,19 +27,19 @@ class GiveawayWinners(TelegramObject):
     """Total number of winners in the giveaway"""
     winners: list[User]
     """List of up to 100 winners of the giveaway"""
-    additional_chat_count: Optional[int] = None
+    additional_chat_count: int | None = None
     """*Optional*. The number of other chats the user had to join in order to be eligible for the giveaway"""
-    prize_star_count: Optional[int] = None
+    prize_star_count: int | None = None
     """*Optional*. The number of Telegram Stars that were split between giveaway winners; for Telegram Star giveaways only"""
-    premium_subscription_month_count: Optional[int] = None
+    premium_subscription_month_count: int | None = None
     """*Optional*. The number of months the Telegram Premium subscription won from the giveaway will be active for; for Telegram Premium giveaways only"""
-    unclaimed_prize_count: Optional[int] = None
+    unclaimed_prize_count: int | None = None
     """*Optional*. Number of undistributed prizes"""
-    only_new_members: Optional[bool] = None
+    only_new_members: bool | None = None
     """*Optional*. :code:`True`, if only users who had joined the chats after the giveaway started were eligible to win"""
-    was_refunded: Optional[bool] = None
+    was_refunded: bool | None = None
     """*Optional*. :code:`True`, if the giveaway was canceled because the payment for it was refunded"""
-    prize_description: Optional[str] = None
+    prize_description: str | None = None
     """*Optional*. Description of additional giveaway prize"""
 
     if TYPE_CHECKING:
@@ -54,13 +54,13 @@ class GiveawayWinners(TelegramObject):
             winners_selection_date: DateTime,
             winner_count: int,
             winners: list[User],
-            additional_chat_count: Optional[int] = None,
-            prize_star_count: Optional[int] = None,
-            premium_subscription_month_count: Optional[int] = None,
-            unclaimed_prize_count: Optional[int] = None,
-            only_new_members: Optional[bool] = None,
-            was_refunded: Optional[bool] = None,
-            prize_description: Optional[str] = None,
+            additional_chat_count: int | None = None,
+            prize_star_count: int | None = None,
+            premium_subscription_month_count: int | None = None,
+            unclaimed_prize_count: int | None = None,
+            only_new_members: bool | None = None,
+            was_refunded: bool | None = None,
+            prize_description: str | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

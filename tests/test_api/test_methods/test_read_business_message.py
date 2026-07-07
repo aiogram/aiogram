@@ -9,5 +9,5 @@ class TestReadBusinessMessage:
         response: bool = await bot.read_business_message(
             business_connection_id="test_connection_id", chat_id=123456789, message_id=42
         )
-        request = bot.get_request()
+        bot.get_request()
         assert response == prepare_result.result

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from .base import TelegramObject
 
@@ -17,7 +17,7 @@ class BusinessLocation(TelegramObject):
 
     address: str
     """Address of the business"""
-    location: Optional[Location] = None
+    location: Location | None = None
     """*Optional*. Location of the business"""
 
     if TYPE_CHECKING:
@@ -28,7 +28,7 @@ class BusinessLocation(TelegramObject):
             __pydantic__self__,
             *,
             address: str,
-            location: Optional[Location] = None,
+            location: Location | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

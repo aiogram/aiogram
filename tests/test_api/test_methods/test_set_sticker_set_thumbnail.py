@@ -10,5 +10,5 @@ class TestSetStickerSetThumbnail:
         response: bool = await bot.set_sticker_set_thumbnail(
             name="test", format=StickerFormat.STATIC, user_id=42
         )
-        request = bot.get_request()
+        bot.get_request()
         assert response == prepare_result.result

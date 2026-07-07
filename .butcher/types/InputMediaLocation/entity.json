@@ -1,0 +1,49 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "inputmedialocation",
+    "name": "InputMediaLocation",
+    "description": "Represents a location to be sent.",
+    "html_description": "<p>Represents a location to be sent.</p>",
+    "rst_description": "Represents a location to be sent.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Type of the media, must be location",
+        "html_description": "<td>Type of the media, must be <em>location</em></td>",
+        "rst_description": "Type of the media, must be *location*\n",
+        "name": "type",
+        "required": true
+      },
+      {
+        "type": "Float",
+        "description": "Latitude of the location",
+        "html_description": "<td>Latitude of the location</td>",
+        "rst_description": "Latitude of the location\n",
+        "name": "latitude",
+        "required": true
+      },
+      {
+        "type": "Float",
+        "description": "Longitude of the location",
+        "html_description": "<td>Longitude of the location</td>",
+        "rst_description": "Longitude of the location\n",
+        "name": "longitude",
+        "required": true
+      },
+      {
+        "type": "Float",
+        "description": "The radius of uncertainty for the location, measured in meters; 0-1500",
+        "html_description": "<td><em>Optional</em>. The radius of uncertainty for the location, measured in meters; 0-1500</td>",
+        "rst_description": "*Optional*. The radius of uncertainty for the location, measured in meters; 0-1500\n",
+        "name": "horizontal_accuracy",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

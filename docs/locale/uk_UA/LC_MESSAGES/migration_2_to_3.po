@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  aiogram\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-08 02:28+0200\n"
+"POT-Creation-Date: 2026-05-09 01:04+0300\n"
 "PO-Revision-Date: 2023-09-14 18:34+0300\n"
 "Last-Translator: \n"
 "Language: uk_UA\n"
@@ -17,7 +17,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.13.1\n"
+"Generated-By: Babel 2.18.0\n"
 
 #: ../../migration_2_to_3.rst:7
 msgid "Migration FAQ (2.x -> 3.0)"
@@ -75,7 +75,10 @@ msgid ""
 "The dependencies required for :code:`i18n` are no longer part of the "
 "default package. If your application uses translation functionality, be "
 "sure to add an optional dependency:"
-msgstr "Залежності, необхідні для :code:`i18n`, більше не є частиною пакету за замовчуванням. Якщо ваш додаток використовує функціональність перекладу, обов'язково додайте необов'язкову залежність:"
+msgstr ""
+"Залежності, необхідні для :code:`i18n`, більше не є частиною пакету за "
+"замовчуванням. Якщо ваш додаток використовує функціональність перекладу, "
+"обов'язково додайте необов'язкову залежність:"
 
 #: ../../migration_2_to_3.rst:34
 msgid ":code:`pip install aiogram[i18n]`"
@@ -247,11 +250,11 @@ msgstr ""
 #: ../../migration_2_to_3.rst:85
 msgid ""
 "All API methods are now classes with validation, implemented via "
-"`pydantic <https://docs.pydantic.dev/>`. These API calls are also "
+"`pydantic <https://docs.pydantic.dev/>`_. These API calls are also "
 "available as methods in the Bot class."
 msgstr ""
 "Всі методи API тепер є класами з валідацією, реалізованими через "
-"`pydantic <https://docs.pydantic.dev/>`. Ці виклики API також доступні як"
+"`pydantic <https://docs.pydantic.dev/>`_. Ці виклики API також доступні як"
 " методи в класі Bot."
 
 #: ../../migration_2_to_3.rst:88
@@ -275,13 +278,15 @@ msgstr ""
 "використовувати для різних екземплярів бота в додатку."
 
 #: ../../migration_2_to_3.rst:92
+#, fuzzy
 msgid ""
 "API Exceptions are no longer classified by specific messages, as Telegram"
 " has no documented error codes. However, all errors are classified by "
 "HTTP status codes, and for each method, only one type of error can be "
 "associated with a given code. Therefore, in most cases, you should check "
 "only the error type (by status code) without inspecting the error "
-"message."
+"message. More details can be found in the :ref:`exceptions section » "
+"<exceptions>`."
 msgstr ""
 "Виключення API більше не класифікуються за конкретними повідомленнями, "
 "оскільки Telegram не має задокументованих кодів помилок. Проте всі "
@@ -291,10 +296,137 @@ msgstr ""
 "перевіряючи повідомлення про помилку."
 
 #: ../../migration_2_to_3.rst:102
+msgid "Exceptions"
+msgstr ""
+
+#: ../../migration_2_to_3.rst:105
+msgid "Mapping (v2 -> v3)"
+msgstr ""
+
+#: ../../migration_2_to_3.rst:107
+msgid ""
+"RetryAfter -> :class:`TelegramRetryAfter` (:mod:`aiogram.exceptions`) - "
+"Important attribute in v3: ``retry_after`` (int)."
+msgstr ""
+
+#: ../../migration_2_to_3.rst:110
+msgid ""
+"ChatMigrated / MigrateToChat -> :class:`TelegramMigrateToChat` - "
+"Important attribute in v3: ``migrate_to_chat_id`` (int)."
+msgstr ""
+
+#: ../../migration_2_to_3.rst:113
+msgid ""
+"ClientDecodeError -> :class:`ClientDecodeError` - Important attributes in"
+" v3: ``original`` (Exception) and ``data`` (response body)."
+msgstr ""
+
+#: ../../migration_2_to_3.rst:116
+msgid "BadRequest -> :class:`TelegramBadRequest`"
+msgstr ""
+
+#: ../../migration_2_to_3.rst:117
+msgid "Unauthorized -> :class:`TelegramUnauthorizedError`"
+msgstr ""
+
+#: ../../migration_2_to_3.rst:118
+msgid "Forbidden -> :class:`TelegramForbiddenError`"
+msgstr ""
+
+#: ../../migration_2_to_3.rst:119
+msgid "NotFound -> :class:`TelegramNotFound`"
+msgstr ""
+
+#: ../../migration_2_to_3.rst:120
+msgid "Conflict -> :class:`TelegramConflictError`"
+msgstr ""
+
+#: ../../migration_2_to_3.rst:121
+msgid "ServerError -> :class:`TelegramServerError`"
+msgstr ""
+
+#: ../../migration_2_to_3.rst:122
+msgid "NetworkError -> :class:`TelegramNetworkError`"
+msgstr ""
+
+#: ../../migration_2_to_3.rst:123
+msgid "EntityTooLarge -> :class:`TelegramEntityTooLarge`"
+msgstr ""
+
+#: ../../migration_2_to_3.rst:127
+msgid "Exceptions removed in v3 (from v2)"
+msgstr ""
+
+#: ../../migration_2_to_3.rst:129
+msgid ""
+"The list below contains common exception names that appeared in aiogram "
+"v2 but are not defined as separate classes in the v3 codebase. For each "
+"v2 name, a recommended v3 replacement (or handling) is provided — keep "
+"your migration logic simple and rely on the v3 exception classes and "
+"their attributes."
+msgstr ""
+
+#: ../../migration_2_to_3.rst:134
+msgid "MessageNotModified -> :class:`TelegramBadRequest`"
+msgstr ""
+
+#: ../../migration_2_to_3.rst:135
+msgid "MessageToEditNotFound -> :class:`TelegramNotFound`"
+msgstr ""
+
+#: ../../migration_2_to_3.rst:136
+msgid "MessageToDeleteNotFound -> :class:`TelegramNotFound`"
+msgstr ""
+
+#: ../../migration_2_to_3.rst:137
+msgid ""
+"MessageCantBeDeleted -> :class:`TelegramForbiddenError` / "
+":class:`TelegramBadRequest`"
+msgstr ""
+
+#: ../../migration_2_to_3.rst:138
+msgid "CantParseEntities -> :class:`TelegramBadRequest`"
+msgstr ""
+
+#: ../../migration_2_to_3.rst:139
+msgid "MessageIsTooLong -> :class:`TelegramEntityTooLarge`"
+msgstr ""
+
+#: ../../migration_2_to_3.rst:140
+msgid "MessageIdentifierNotFound -> :class:`TelegramNotFound`"
+msgstr ""
+
+#: ../../migration_2_to_3.rst:141
+msgid "UserDeactivated -> :class:`TelegramForbiddenError`"
+msgstr ""
+
+#: ../../migration_2_to_3.rst:142
+msgid "CantInitiateConversation -> :class:`TelegramBadRequest`"
+msgstr ""
+
+#: ../../migration_2_to_3.rst:143
+msgid "StickerSetNameInvalid -> :class:`TelegramBadRequest`"
+msgstr ""
+
+#: ../../migration_2_to_3.rst:144
+msgid "ChatAdminRequired -> :class:`TelegramForbiddenError`"
+msgstr ""
+
+#: ../../migration_2_to_3.rst:146
+msgid ""
+"Use these replacements when migrating exception handling from v2 to v3. "
+"If you relied on catching very specific v2 exception classes, replace "
+"those handlers with the corresponding v3 class above (or catch a broader "
+"v3 class such as :class:`TelegramBadRequest` / :class:`TelegramAPIError`)"
+" and inspect available attributes (see \"Mapping (v2 -> v3)\") for any "
+"required details."
+msgstr ""
+
+#: ../../migration_2_to_3.rst:154
 msgid "Middlewares"
 msgstr "Проміжне ПО (Middlewares)"
 
-#: ../../migration_2_to_3.rst:104
+#: ../../migration_2_to_3.rst:156
 msgid ""
 "Middlewares can now control an execution context, e.g., using context "
 "managers. (:ref:`Read more » <middlewares>`)"
@@ -303,7 +435,7 @@ msgstr ""
 " наприклад, за допомогою менеджерів контексту. (:ref:`Детальніше » "
 "<middlewares>`)"
 
-#: ../../migration_2_to_3.rst:106
+#: ../../migration_2_to_3.rst:158
 msgid ""
 "All contextual data is now shared end-to-end between middlewares, "
 "filters, and handlers. For example now you can easily pass some data into"
@@ -316,7 +448,7 @@ msgstr ""
 "забезпеченні і отримати їх у шарі фільтрів так само, як і в обробниках "
 "через аргументи ключових слів."
 
-#: ../../migration_2_to_3.rst:109
+#: ../../migration_2_to_3.rst:161
 msgid ""
 "Added a mechanism named **flags** that helps customize handler behavior "
 "in conjunction with middlewares. (:ref:`Read more » <flags>`)"
@@ -325,11 +457,11 @@ msgstr ""
 "поведінку обробника у поєднанні з проміжним програмним забезпеченням. "
 "(:ref:`Детальніше про » <flags>`)"
 
-#: ../../migration_2_to_3.rst:114
+#: ../../migration_2_to_3.rst:166
 msgid "Keyboard Markup"
 msgstr "Розмітка клавіатури"
 
-#: ../../migration_2_to_3.rst:116
+#: ../../migration_2_to_3.rst:168
 msgid ""
 "Now :class:`aiogram.types.inline_keyboard_markup.InlineKeyboardMarkup` "
 "and :class:`aiogram.types.reply_keyboard_markup.ReplyKeyboardMarkup` no "
@@ -346,11 +478,11 @@ msgstr ""
 ":class:`aiogram.utils.keyboard.InlineKeyboardBuilder` відповідно "
 "(:ref:`Детальніше » <Keyboard builder>`)"
 
-#: ../../migration_2_to_3.rst:124
+#: ../../migration_2_to_3.rst:176
 msgid "Callbacks data"
 msgstr "Дані зворотного виклику"
 
-#: ../../migration_2_to_3.rst:126
+#: ../../migration_2_to_3.rst:178
 msgid ""
 "The callback data factory is now strictly typed using `pydantic "
 "<https://docs.pydantic.dev/>`_ models. (:ref:`Read more » <Callback data "
@@ -360,11 +492,11 @@ msgstr ""
 "моделей `pydantic <https://docs.pydantic.dev/>`_. (:ref:`Детальніше » "
 "<Callback data factory>`)"
 
-#: ../../migration_2_to_3.rst:131
+#: ../../migration_2_to_3.rst:183
 msgid "Finite State machine"
 msgstr "Скінченний автомат"
 
-#: ../../migration_2_to_3.rst:133
+#: ../../migration_2_to_3.rst:185
 msgid ""
 "State filters will no longer be automatically added to all handlers; you "
 "will need to specify the state if you want to use it."
@@ -373,7 +505,7 @@ msgstr ""
 "обробників; вам потрібно буде вказати стан, якщо ви хочете його "
 "використати."
 
-#: ../../migration_2_to_3.rst:135
+#: ../../migration_2_to_3.rst:187
 msgid ""
 "Added the possibility to change the FSM strategy. For example, if you "
 "want to control the state for each user based on chat topics rather than "
@@ -383,7 +515,7 @@ msgstr ""
 "контролювати стан для кожного користувача на основі топіків чату, а не "
 "користувача в чаті, ви можете вказати це в Диспетчері."
 
-#: ../../migration_2_to_3.rst:138
+#: ../../migration_2_to_3.rst:190
 #, fuzzy
 msgid ""
 "Now :class:`aiogram.fsm.state.State` and "
@@ -396,7 +528,7 @@ msgstr ""
 ":class:`aiogram.fsm.state.StateGroup` не мають допоміжних методів, таких "
 "як :code:`.set()`, :code:`.next()` тощо."
 
-#: ../../migration_2_to_3.rst:142
+#: ../../migration_2_to_3.rst:194
 msgid ""
 "The state proxy is deprecated; you should update the state data by "
 "calling :code:`state.set_data(...)` and :code:`state.get_data()` "
@@ -405,11 +537,11 @@ msgstr ""
 "Проксі стану є застарілим; вам слід оновити дані стану, викликавши "
 ":code:`state.set_data(...)` та :code:`state.get_data()` відповідно."
 
-#: ../../migration_2_to_3.rst:147
+#: ../../migration_2_to_3.rst:199
 msgid "Sending Files"
 msgstr "Надсилання файлів"
 
-#: ../../migration_2_to_3.rst:149
+#: ../../migration_2_to_3.rst:201
 msgid ""
 "From now on, you should wrap files in an InputFile object before sending "
 "them, instead of passing the IO object directly to the API method. "
@@ -419,27 +551,30 @@ msgstr ""
 "замість того, щоб передавати об'єкт вводу-виводу безпосередньо до методу "
 "API. (:ref:`Детальніше » <sending-files>`)"
 
-#: ../../migration_2_to_3.rst:154
+#: ../../migration_2_to_3.rst:206
 msgid "Webhook"
 msgstr "Вебхук"
 
-#: ../../migration_2_to_3.rst:156
+#: ../../migration_2_to_3.rst:208
 msgid "The aiohttp web app configuration has been simplified."
 msgstr "Спрощено налаштування веб-застосунку aiohttp."
 
-#: ../../migration_2_to_3.rst:157
+#: ../../migration_2_to_3.rst:209
 msgid ""
 "By default, the ability to upload files has been added when you `make "
 "requests in response to updates <https://core.telegram.org/bots/faq#how-"
 "can-i-make-requests-in-response-to-updates>`_ (available for webhook "
 "only)."
-msgstr "За замовчуванням додана можливість завантаження файлів при `відповідях на оновлення <https://core.telegram.org/bots/faq#how-can-i-make-requests-in-response-to-updates>`_ (доступно тільки для вебхука)."
+msgstr ""
+"За замовчуванням додана можливість завантаження файлів при `відповідях на"
+" оновлення <https://core.telegram.org/bots/faq#how-can-i-make-requests-"
+"in-response-to-updates>`_ (доступно тільки для вебхука)."
 
-#: ../../migration_2_to_3.rst:161
+#: ../../migration_2_to_3.rst:213
 msgid "Telegram API Server"
 msgstr "Сервер Telegram API"
 
-#: ../../migration_2_to_3.rst:163
+#: ../../migration_2_to_3.rst:215
 #, fuzzy
 msgid ""
 "The :obj:`server` parameter has been moved from the |Bot| instance to "
@@ -449,7 +584,7 @@ msgstr ""
 "Параметр `server` було перенесено з екземпляра `Bot` до `api` в "
 "`BaseSession`."
 
-#: ../../migration_2_to_3.rst:164
+#: ../../migration_2_to_3.rst:216
 #, fuzzy
 msgid ""
 "The constant :obj:`aiogram.bot.api.TELEGRAM_PRODUCTION` has been moved to"
@@ -458,90 +593,102 @@ msgstr ""
 "Константа `aiogram.bot.api.TELEGRAM_PRODUCTION` була переміщена на "
 "`aiogram.client.telegram.PRODUCTION`."
 
-#: ../../migration_2_to_3.rst:168
+#: ../../migration_2_to_3.rst:220
 msgid "Telegram objects transformation (to dict, to json, from json)"
 msgstr "Перетворення об'єктів Telegram (у словник, у json, з json)"
 
-#: ../../migration_2_to_3.rst:170
+#: ../../migration_2_to_3.rst:222
 msgid ""
 "Methods :code:`TelegramObject.to_object()`, "
 ":code:`TelegramObject.to_json()` and :code:`TelegramObject.to_python()` "
 "have been removed due to the use of `pydantic "
 "<https://docs.pydantic.dev/>`_ models."
-msgstr "Методи :code:`TelegramObject.to_object()`, :code:`TelegramObject.to_json()` та :code:`TelegramObject.to_python()` були вилучені через використання моделей `pydantic <https://docs.pydantic.dev/>`_."
+msgstr ""
+"Методи :code:`TelegramObject.to_object()`, "
+":code:`TelegramObject.to_json()` та :code:`TelegramObject.to_python()` "
+"були вилучені через використання моделей `pydantic "
+"<https://docs.pydantic.dev/>`_."
 
-
-#: ../../migration_2_to_3.rst:172
+#: ../../migration_2_to_3.rst:224
 msgid ""
 ":code:`TelegramObject.to_object()` should be replaced by "
 ":code:`TelegramObject.model_validate()` (`Read more "
 "<https://docs.pydantic.dev/2.7/api/base_model/#pydantic.BaseModel.model_validate>`_)"
-msgstr ":code:`TelegramObject.to_object()` слід замінити на "
+msgstr ""
+":code:`TelegramObject.to_object()` слід замінити на "
 ":code:`TelegramObject.model_validate()` (`Детальніше "
 "<https://docs.pydantic.dev/2.7/api/base_model/#pydantic.BaseModel.model_validate>`_)"
 
-#: ../../migration_2_to_3.rst:174
+#: ../../migration_2_to_3.rst:226
 msgid ""
 ":code:`TelegramObject.as_json()` should be replaced by "
 ":func:`aiogram.utils.serialization.deserialize_telegram_object_to_python`"
-msgstr ":code:`TelegramObject.as_json()` слід замінити на "
+msgstr ""
+":code:`TelegramObject.as_json()` слід замінити на "
 ":func:`aiogram.utils.serialization.deserialize_telegram_object_to_python`"
 
-#: ../../migration_2_to_3.rst:175
+#: ../../migration_2_to_3.rst:227
 msgid ""
 ":code:`<TelegramObject>.to_python()` should be replaced by "
 ":code:`json.dumps(deserialize_telegram_object_to_python(<TelegramObject>))`"
-msgstr ":code:`<TelegramObject>.to_python()` слід замінити на "
+msgstr ""
+":code:`<TelegramObject>.to_python()` слід замінити на "
 ":code:`json.dumps(deserialize_telegram_object_to_python(<TelegramObject>))`"
 
-
-#: ../../migration_2_to_3.rst:177
+#: ../../migration_2_to_3.rst:229
 msgid "Here are some usage examples:"
 msgstr "Ось деякі приклади використання:"
 
-#: ../../migration_2_to_3.rst:179
+#: ../../migration_2_to_3.rst:231
 msgid "Creating an object from a dictionary representation of an object"
 msgstr "Створення об'єкта з представлення об'єкта у вигляді словника"
 
-#: ../../migration_2_to_3.rst:201
+#: ../../migration_2_to_3.rst:253
 msgid "Creating a json representation of an object"
 msgstr "Cтворення представлення об'єкта у вигляді json"
 
-#: ../../migration_2_to_3.rst:223
+#: ../../migration_2_to_3.rst:275
 msgid "Creating a dictionary representation of an object"
 msgstr "Створення представлення об'єкта у вигляді словника"
 
-#: ../../migration_2_to_3.rst:247
+#: ../../migration_2_to_3.rst:299
 msgid "ChatMember tools"
 msgstr "Інструменти ChatMember"
 
-#: ../../migration_2_to_3.rst:249
+#: ../../migration_2_to_3.rst:301
 msgid ""
 "Now :class:`aiogram.types.chat_member.ChatMember` no longer contains "
 "tools to resolve an object with the appropriate status."
-msgstr "Тепер :class:`aiogram.types.chat_member.ChatMember` більше не містить "
+msgstr ""
+"Тепер :class:`aiogram.types.chat_member.ChatMember` більше не містить "
 "інструментів для вирішення об'єкта з відповідним статусом."
 
-#: ../../migration_2_to_3.rst:266
+#: ../../migration_2_to_3.rst:318
 msgid ""
 "Now :class:`aiogram.types.chat_member.ChatMember` and all its child "
 "classes no longer contain methods for checking for membership in certain "
 "logical groups. As a substitute, you can use pre-defined groups or create"
 " such groups yourself and check their entry using the :func:`isinstance` "
 "function"
-msgstr "Відтепер :class:`aiogram.types.chat_member.ChatMember` та всі його "
-"дочірні класи більше не містять методів для перевірки належності до певних логічних груп. "
-"Замість цього ви можете використовувати попередньо визначені групи або створювати такі "
-"групи самостійно та перевіряти їх входження за допомогою функції :func:`isinstance`"
+msgstr ""
+"Відтепер :class:`aiogram.types.chat_member.ChatMember` та всі його "
+"дочірні класи більше не містять методів для перевірки належності до "
+"певних логічних груп. Замість цього ви можете використовувати попередньо "
+"визначені групи або створювати такі групи самостійно та перевіряти їх "
+"входження за допомогою функції :func:`isinstance`"
 
-#: ../../migration_2_to_3.rst:294
+#: ../../migration_2_to_3.rst:346
 msgid ""
 "You also can independently create group similar to ADMINS that fits the "
 "logic of your application."
-msgstr "Також ви можете самостійно створити групу, подібну до ADMINS, яка відповідає логіці вашого застосунку."
+msgstr ""
+"Також ви можете самостійно створити групу, подібну до ADMINS, яка "
+"відповідає логіці вашого застосунку."
 
-#: ../../migration_2_to_3.rst:296
+#: ../../migration_2_to_3.rst:348
 msgid ""
 "E.g., you can create a PUNISHED group and include banned and restricted "
 "members there!"
-msgstr "Наприклад, ви можете створити групу PUNISHED та включити туди заблокованих та обмежених учасників!"
+msgstr ""
+"Наприклад, ви можете створити групу PUNISHED та включити туди "
+"заблокованих та обмежених учасників!"

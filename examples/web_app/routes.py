@@ -1,10 +1,11 @@
+from __future__ import annotations
+
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 from aiohttp.web_fileresponse import FileResponse
-from aiohttp.web_request import Request
 from aiohttp.web_response import json_response
 
-from aiogram import Bot
 from aiogram.types import (
     InlineKeyboardButton,
     InlineKeyboardMarkup,
@@ -14,12 +15,18 @@ from aiogram.types import (
 )
 from aiogram.utils.web_app import check_webapp_signature, safe_parse_webapp_init_data
 
+if TYPE_CHECKING:
+    from aiohttp.web_request import Request
+    from aiohttp.web_response import Response
 
-async def demo_handler(request: Request):
+    from aiogram import Bot
+
+
+async def demo_handler(request: Request) -> FileResponse:
     return FileResponse(Path(__file__).parent.resolve() / "demo.html")
 
 
-async def check_data_handler(request: Request):
+async def check_data_handler(request: Request) -> Response:
     bot: Bot = request.app["bot"]
 
     data = await request.post()
@@ -28,7 +35,7 @@ async def check_data_handler(request: Request):
     return json_response({"ok": False, "err": "Unauthorized"}, status=401)
 
 
-async def send_message_handler(request: Request):
+async def send_message_handler(request: Request) -> Response:
     bot: Bot = request.app["bot"]
     data = await request.post()
     try:
@@ -44,11 +51,11 @@ async def send_message_handler(request: Request):
                     InlineKeyboardButton(
                         text="Open",
                         web_app=WebAppInfo(
-                            url=str(request.url.with_scheme("https").with_path("demo"))
+                            url=str(request.url.with_scheme("https").with_path("demo")),
                         ),
-                    )
-                ]
-            ]
+                    ),
+                ],
+            ],
         )
     await bot.answer_web_app_query(
         web_app_query_id=web_app_init_data.query_id,

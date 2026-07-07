@@ -9,5 +9,5 @@ class TestTransferBusinessAccountStars:
         response: bool = await bot.transfer_business_account_stars(
             business_connection_id="test_connection_id", star_count=100
         )
-        request = bot.get_request()
+        bot.get_request()
         assert response == prepare_result.result

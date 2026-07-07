@@ -10,5 +10,5 @@ class TestUnbanChatSenderChat:
             chat_id=-42,
             sender_chat_id=-1337,
         )
-        request = bot.get_request()
+        bot.get_request()
         assert response == prepare_result.result

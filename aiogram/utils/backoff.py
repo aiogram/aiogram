@@ -13,9 +13,11 @@ class BackoffConfig:
 
     def __post_init__(self) -> None:
         if self.max_delay <= self.min_delay:
-            raise ValueError("`max_delay` should be greater than `min_delay`")
+            msg = "`max_delay` should be greater than `min_delay`"
+            raise ValueError(msg)
         if self.factor <= 1:
-            raise ValueError("`factor` should be greater than 1")
+            msg = "`factor` should be greater than 1"
+            raise ValueError(msg)
 
 
 class Backoff:

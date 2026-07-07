@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Literal, Optional
+from typing import TYPE_CHECKING, Any, Literal
 
 from aiogram.enums import StoryAreaTypeType
 
@@ -21,9 +21,9 @@ class StoryAreaTypeSuggestedReaction(StoryAreaType):
     """Type of the area, always 'suggested_reaction'"""
     reaction_type: ReactionTypeUnion
     """Type of the reaction"""
-    is_dark: Optional[bool] = None
+    is_dark: bool | None = None
     """*Optional*. Pass :code:`True` if the reaction area has a dark background"""
-    is_flipped: Optional[bool] = None
+    is_flipped: bool | None = None
     """*Optional*. Pass :code:`True` if reaction area corner is flipped"""
 
     if TYPE_CHECKING:
@@ -37,8 +37,8 @@ class StoryAreaTypeSuggestedReaction(StoryAreaType):
                 StoryAreaTypeType.SUGGESTED_REACTION
             ] = StoryAreaTypeType.SUGGESTED_REACTION,
             reaction_type: ReactionTypeUnion,
-            is_dark: Optional[bool] = None,
-            is_flipped: Optional[bool] = None,
+            is_dark: bool | None = None,
+            is_flipped: bool | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

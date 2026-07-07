@@ -20,6 +20,22 @@
         "required": true
       },
       {
+        "type": "Array of Integer",
+        "description": "0-based identifiers of chosen answer options. May be empty if the vote was retracted.",
+        "html_description": "<td>0-based identifiers of chosen answer options. May be empty if the vote was retracted.</td>",
+        "rst_description": "0-based identifiers of chosen answer options. May be empty if the vote was retracted.\n",
+        "name": "option_ids",
+        "required": true
+      },
+      {
+        "type": "Array of String",
+        "description": "Persistent identifiers of the chosen answer options. May be empty if the vote was retracted.",
+        "html_description": "<td>Persistent identifiers of the chosen answer options. May be empty if the vote was retracted.</td>",
+        "rst_description": "Persistent identifiers of the chosen answer options. May be empty if the vote was retracted.\n",
+        "name": "option_persistent_ids",
+        "required": true
+      },
+      {
         "type": "Chat",
         "description": "The chat that changed the answer to the poll, if the voter is anonymous",
         "html_description": "<td><em>Optional</em>. The chat that changed the answer to the poll, if the voter is anonymous</td>",
@@ -34,14 +50,6 @@
         "rst_description": "*Optional*. The user that changed the answer to the poll, if the voter isn't anonymous\n",
         "name": "user",
         "required": false
-      },
-      {
-        "type": "Array of Integer",
-        "description": "0-based identifiers of chosen answer options. May be empty if the vote was retracted.",
-        "html_description": "<td>0-based identifiers of chosen answer options. May be empty if the vote was retracted.</td>",
-        "rst_description": "0-based identifiers of chosen answer options. May be empty if the vote was retracted.\n",
-        "name": "option_ids",
-        "required": true
       }
     ],
     "category": "types"

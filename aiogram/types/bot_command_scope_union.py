@@ -1,6 +1,8 @@
 from __future__ import annotations
 
-from typing import Union
+from typing import Annotated, TypeAlias
+
+from pydantic import Field
 
 from .bot_command_scope_all_chat_administrators import (
     BotCommandScopeAllChatAdministrators,
@@ -12,12 +14,13 @@ from .bot_command_scope_chat_administrators import BotCommandScopeChatAdministra
 from .bot_command_scope_chat_member import BotCommandScopeChatMember
 from .bot_command_scope_default import BotCommandScopeDefault
 
-BotCommandScopeUnion = Union[
-    BotCommandScopeDefault,
-    BotCommandScopeAllPrivateChats,
-    BotCommandScopeAllGroupChats,
-    BotCommandScopeAllChatAdministrators,
-    BotCommandScopeChat,
-    BotCommandScopeChatAdministrators,
-    BotCommandScopeChatMember,
+BotCommandScopeUnion: TypeAlias = Annotated[
+    BotCommandScopeDefault
+    | BotCommandScopeAllPrivateChats
+    | BotCommandScopeAllGroupChats
+    | BotCommandScopeAllChatAdministrators
+    | BotCommandScopeChat
+    | BotCommandScopeChatAdministrators
+    | BotCommandScopeChatMember,
+    Field(discriminator="type"),
 ]

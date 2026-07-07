@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from .base import TelegramObject
 
@@ -20,11 +20,11 @@ class Checklist(TelegramObject):
     """Title of the checklist"""
     tasks: list[ChecklistTask]
     """List of tasks in the checklist"""
-    title_entities: Optional[list[MessageEntity]] = None
+    title_entities: list[MessageEntity] | None = None
     """*Optional*. Special entities that appear in the checklist title"""
-    others_can_add_tasks: Optional[bool] = None
+    others_can_add_tasks: bool | None = None
     """*Optional*. :code:`True`, if users other than the creator of the list can add tasks to the list"""
-    others_can_mark_tasks_as_done: Optional[bool] = None
+    others_can_mark_tasks_as_done: bool | None = None
     """*Optional*. :code:`True`, if users other than the creator of the list can mark tasks as done or not done"""
 
     if TYPE_CHECKING:
@@ -36,9 +36,9 @@ class Checklist(TelegramObject):
             *,
             title: str,
             tasks: list[ChecklistTask],
-            title_entities: Optional[list[MessageEntity]] = None,
-            others_can_add_tasks: Optional[bool] = None,
-            others_can_mark_tasks_as_done: Optional[bool] = None,
+            title_entities: list[MessageEntity] | None = None,
+            others_can_add_tasks: bool | None = None,
+            others_can_mark_tasks_as_done: bool | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Literal, Optional
+from typing import TYPE_CHECKING, Any, Literal
 
 from ..enums import TransactionPartnerType
 from .transaction_partner import TransactionPartner
@@ -21,7 +21,7 @@ class TransactionPartnerChat(TransactionPartner):
     """Type of the transaction partner, always 'chat'"""
     chat: Chat
     """Information about the chat"""
-    gift: Optional[Gift] = None
+    gift: Gift | None = None
     """*Optional*. The gift sent to the chat by the bot"""
 
     if TYPE_CHECKING:
@@ -33,7 +33,7 @@ class TransactionPartnerChat(TransactionPartner):
             *,
             type: Literal[TransactionPartnerType.CHAT] = TransactionPartnerType.CHAT,
             chat: Chat,
-            gift: Optional[Gift] = None,
+            gift: Gift | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

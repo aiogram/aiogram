@@ -45,9 +45,9 @@
       },
       {
         "type": "True",
-        "description": "True, if the background fill must be applied only to the pattern itself. All other pixels are black in this case. For dark themes only",
-        "html_description": "<td><em>Optional</em>. <em>True</em>, if the background fill must be applied only to the pattern itself. All other pixels are black in this case. For dark themes only</td>",
-        "rst_description": "*Optional*. :code:`True`, if the background fill must be applied only to the pattern itself. All other pixels are black in this case. For dark themes only\n",
+        "description": "True, if the background fill must be applied only to the pattern itself. All other pixels are black in this case. For dark themes only.",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the background fill must be applied only to the pattern itself. All other pixels are black in this case. For dark themes only.</td>",
+        "rst_description": "*Optional*. :code:`True`, if the background fill must be applied only to the pattern itself. All other pixels are black in this case. For dark themes only.\n",
         "name": "is_inverted",
         "required": false
       },

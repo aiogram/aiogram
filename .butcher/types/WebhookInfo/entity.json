@@ -77,9 +77,9 @@
       },
       {
         "type": "Array of String",
-        "description": "A list of update types the bot is subscribed to. Defaults to all update types except chat_member",
-        "html_description": "<td><em>Optional</em>. A list of update types the bot is subscribed to. Defaults to all update types except <em>chat_member</em></td>",
-        "rst_description": "*Optional*. A list of update types the bot is subscribed to. Defaults to all update types except *chat_member*\n",
+        "description": "A list of update types the bot is subscribed to. Defaults to all update types except chat_member, message_reaction, and message_reaction_count.",
+        "html_description": "<td><em>Optional</em>. A list of update types the bot is subscribed to. Defaults to all update types except <em>chat_member</em>, <em>message_reaction</em>, and <em>message_reaction_count</em>.</td>",
+        "rst_description": "*Optional*. A list of update types the bot is subscribed to. Defaults to all update types except *chat_member*, *message_reaction*, and *message_reaction_count*.\n",
         "name": "allowed_updates",
         "required": false
       }

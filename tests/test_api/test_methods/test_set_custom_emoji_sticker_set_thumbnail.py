@@ -11,5 +11,5 @@ class TestSetCustomEmojiStickerSetThumbnail:
         response: bool = await bot.set_custom_emoji_sticker_set_thumbnail(
             name="test", custom_emoji_id="custom id"
         )
-        request = bot.get_request()
+        bot.get_request()
         assert response == prepare_result.result

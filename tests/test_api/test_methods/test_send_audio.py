@@ -19,5 +19,5 @@ class TestSendAudio:
         )
 
         response: Message = await bot.send_audio(chat_id=42, audio="file id")
-        request = bot.get_request()
+        bot.get_request()
         assert response == prepare_result.result

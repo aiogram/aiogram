@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Literal, Optional
+from typing import TYPE_CHECKING, Any, Literal
 
 from .background_type import BackgroundType
 
@@ -21,9 +21,9 @@ class BackgroundTypeWallpaper(BackgroundType):
     """Document with the wallpaper"""
     dark_theme_dimming: int
     """Dimming of the background in dark themes, as a percentage; 0-100"""
-    is_blurred: Optional[bool] = None
+    is_blurred: bool | None = None
     """*Optional*. :code:`True`, if the wallpaper is downscaled to fit in a 450x450 square and then box-blurred with radius 12"""
-    is_moving: Optional[bool] = None
+    is_moving: bool | None = None
     """*Optional*. :code:`True`, if the background moves slightly when the device is tilted"""
 
     if TYPE_CHECKING:
@@ -36,8 +36,8 @@ class BackgroundTypeWallpaper(BackgroundType):
             type: Literal["wallpaper"] = "wallpaper",
             document: Document,
             dark_theme_dimming: int,
-            is_blurred: Optional[bool] = None,
-            is_moving: Optional[bool] = None,
+            is_blurred: bool | None = None,
+            is_moving: bool | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

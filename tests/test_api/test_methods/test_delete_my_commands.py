@@ -7,5 +7,5 @@ class TestKickChatMember:
         prepare_result = bot.add_result_for(DeleteMyCommands, ok=True, result=True)
 
         response: bool = await bot.delete_my_commands()
-        request = bot.get_request()
+        bot.get_request()
         assert response == prepare_result.result

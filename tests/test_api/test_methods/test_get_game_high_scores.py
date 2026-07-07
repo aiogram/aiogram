@@ -1,5 +1,3 @@
-from typing import List
-
 from aiogram.methods import GetGameHighScores
 from aiogram.types import GameHighScore, User
 from tests.mocked_bot import MockedBot
@@ -17,6 +15,6 @@ class TestGetGameHighScores:
             ],
         )
 
-        response: List[GameHighScore] = await bot.get_game_high_scores(user_id=42)
-        request = bot.get_request()
+        response: list[GameHighScore] = await bot.get_game_high_scores(user_id=42)
+        bot.get_request()
         assert response == prepare_result.result

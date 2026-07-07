@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Literal, Optional
+from typing import TYPE_CHECKING, Any, Literal
 
 from ..enums import PaidMediaType
 from .paid_media import PaidMedia
@@ -15,11 +15,11 @@ class PaidMediaPreview(PaidMedia):
 
     type: Literal[PaidMediaType.PREVIEW] = PaidMediaType.PREVIEW
     """Type of the paid media, always 'preview'"""
-    width: Optional[int] = None
+    width: int | None = None
     """*Optional*. Media width as defined by the sender"""
-    height: Optional[int] = None
+    height: int | None = None
     """*Optional*. Media height as defined by the sender"""
-    duration: Optional[int] = None
+    duration: int | None = None
     """*Optional*. Duration of the media in seconds as defined by the sender"""
 
     if TYPE_CHECKING:
@@ -30,9 +30,9 @@ class PaidMediaPreview(PaidMedia):
             __pydantic__self__,
             *,
             type: Literal[PaidMediaType.PREVIEW] = PaidMediaType.PREVIEW,
-            width: Optional[int] = None,
-            height: Optional[int] = None,
-            duration: Optional[int] = None,
+            width: int | None = None,
+            height: int | None = None,
+            duration: int | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

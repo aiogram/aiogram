@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Literal, Optional
+from typing import TYPE_CHECKING, Any, Literal
 
 from .background_type import BackgroundType
 
@@ -24,9 +24,9 @@ class BackgroundTypePattern(BackgroundType):
     """The background fill that is combined with the pattern"""
     intensity: int
     """Intensity of the pattern when it is shown above the filled background; 0-100"""
-    is_inverted: Optional[bool] = None
+    is_inverted: bool | None = None
     """*Optional*. :code:`True`, if the background fill must be applied only to the pattern itself. All other pixels are black in this case. For dark themes only"""
-    is_moving: Optional[bool] = None
+    is_moving: bool | None = None
     """*Optional*. :code:`True`, if the background moves slightly when the device is tilted"""
 
     if TYPE_CHECKING:
@@ -40,8 +40,8 @@ class BackgroundTypePattern(BackgroundType):
             document: Document,
             fill: BackgroundFillUnion,
             intensity: int,
-            is_inverted: Optional[bool] = None,
-            is_moving: Optional[bool] = None,
+            is_inverted: bool | None = None,
+            is_moving: bool | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

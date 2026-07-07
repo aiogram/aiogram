@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
-from ..types import InlineKeyboardMarkup, InputChecklist, Message, ReplyParameters
+from ..types import ChatIdUnion, InlineKeyboardMarkup, InputChecklist, Message, ReplyParameters
 from .base import TelegramMethod
 
 
@@ -18,20 +18,20 @@ class SendChecklist(TelegramMethod[Message]):
 
     business_connection_id: str
     """Unique identifier of the business connection on behalf of which the message will be sent"""
-    chat_id: int
-    """Unique identifier for the target chat"""
+    chat_id: ChatIdUnion
+    """Unique identifier for the target chat or username of the target bot in the format :code:`@username`"""
     checklist: InputChecklist
     """A JSON-serialized object for the checklist to send"""
-    disable_notification: Optional[bool] = None
-    """Sends the message silently. Users will receive a notification with no sound."""
-    protect_content: Optional[bool] = None
+    disable_notification: bool | None = None
+    """Sends the message silently. Users will receive a notification with no sound"""
+    protect_content: bool | None = None
     """Protects the contents of the sent message from forwarding and saving"""
-    message_effect_id: Optional[str] = None
+    message_effect_id: str | None = None
     """Unique identifier of the message effect to be added to the message"""
-    reply_parameters: Optional[ReplyParameters] = None
+    reply_parameters: ReplyParameters | None = None
     """A JSON-serialized object for description of the message to reply to"""
-    reply_markup: Optional[InlineKeyboardMarkup] = None
-    """A JSON-serialized object for an inline keyboard"""
+    reply_markup: InlineKeyboardMarkup | None = None
+    """A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!
@@ -41,13 +41,13 @@ class SendChecklist(TelegramMethod[Message]):
             __pydantic__self__,
             *,
             business_connection_id: str,
-            chat_id: int,
+            chat_id: ChatIdUnion,
             checklist: InputChecklist,
-            disable_notification: Optional[bool] = None,
-            protect_content: Optional[bool] = None,
-            message_effect_id: Optional[str] = None,
-            reply_parameters: Optional[ReplyParameters] = None,
-            reply_markup: Optional[InlineKeyboardMarkup] = None,
+            disable_notification: bool | None = None,
+            protect_content: bool | None = None,
+            message_effect_id: str | None = None,
+            reply_parameters: ReplyParameters | None = None,
+            reply_markup: InlineKeyboardMarkup | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

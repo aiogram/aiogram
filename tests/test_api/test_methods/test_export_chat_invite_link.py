@@ -9,5 +9,5 @@ class TestExportChatInviteLink:
         )
 
         response: str = await bot.export_chat_invite_link(chat_id=42)
-        request = bot.get_request()
+        bot.get_request()
         assert response == prepare_result.result

@@ -1,5 +1,3 @@
-import datetime
-
 from aiogram.methods import EditStory
 from aiogram.types import Chat, InputStoryContentPhoto, Story
 from tests.mocked_bot import MockedBot
@@ -22,5 +20,5 @@ class TestEditStory:
             content=InputStoryContentPhoto(type="photo", photo="test_photo"),
             caption="Test caption",
         )
-        request = bot.get_request()
+        bot.get_request()
         assert response == prepare_result.result

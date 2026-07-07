@@ -1,5 +1,8 @@
+from __future__ import annotations
+
+from collections.abc import Callable
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Any, Callable, Dict, Optional, Union, cast, overload
+from typing import TYPE_CHECKING, Any, cast, overload
 
 from magic_filter import AttrDict, MagicFilter
 
@@ -18,32 +21,33 @@ class FlagDecorator:
     flag: Flag
 
     @classmethod
-    def _with_flag(cls, flag: Flag) -> "FlagDecorator":
+    def _with_flag(cls, flag: Flag) -> FlagDecorator:
         return cls(flag)
 
-    def _with_value(self, value: Any) -> "FlagDecorator":
+    def _with_value(self, value: Any) -> FlagDecorator:
         new_flag = Flag(self.flag.name, value)
         return self._with_flag(new_flag)
 
     @overload
-    def __call__(self, value: Callable[..., Any], /) -> Callable[..., Any]:  # type: ignore
+    def __call__(self, value: Callable[..., Any], /) -> Callable[..., Any]:
         pass
 
     @overload
-    def __call__(self, value: Any, /) -> "FlagDecorator":
+    def __call__(self, value: Any, /) -> FlagDecorator:
         pass
 
     @overload
-    def __call__(self, **kwargs: Any) -> "FlagDecorator":
+    def __call__(self, **kwargs: Any) -> FlagDecorator:
         pass
 
     def __call__(
         self,
-        value: Optional[Any] = None,
+        value: Any | None = None,
         **kwargs: Any,
-    ) -> Union[Callable[..., Any], "FlagDecorator"]:
+    ) -> Callable[..., Any] | FlagDecorator:
         if value and kwargs:
-            raise ValueError("The arguments `value` and **kwargs can not be used together")
+            msg = "The arguments `value` and **kwargs can not be used together"
+            raise ValueError(msg)
 
         if value is not None and callable(value):
             value.aiogram_flag = {
@@ -70,20 +74,21 @@ if TYPE_CHECKING:
 class FlagGenerator:
     def __getattr__(self, name: str) -> FlagDecorator:
         if name[0] == "_":
-            raise AttributeError("Flag name must NOT start with underscore")
+            msg = "Flag name must NOT start with underscore"
+            raise AttributeError(msg)
         return FlagDecorator(Flag(name, True))
 
     if TYPE_CHECKING:
         chat_action: _ChatActionFlagProtocol
 
 
-def extract_flags_from_object(obj: Any) -> Dict[str, Any]:
+def extract_flags_from_object(obj: Any) -> dict[str, Any]:
     if not hasattr(obj, "aiogram_flag"):
         return {}
-    return cast(Dict[str, Any], obj.aiogram_flag)
+    return cast(dict[str, Any], obj.aiogram_flag)
 
 
-def extract_flags(handler: Union["HandlerObject", Dict[str, Any]]) -> Dict[str, Any]:
+def extract_flags(handler: HandlerObject | dict[str, Any]) -> dict[str, Any]:
     """
     Extract flags from handler or middleware context data
 
@@ -98,10 +103,10 @@ def extract_flags(handler: Union["HandlerObject", Dict[str, Any]]) -> Dict[str, 
 
 
 def get_flag(
-    handler: Union["HandlerObject", Dict[str, Any]],
+    handler: HandlerObject | dict[str, Any],
     name: str,
     *,
-    default: Optional[Any] = None,
+    default: Any | None = None,
 ) -> Any:
     """
     Get flag by name
@@ -115,7 +120,7 @@ def get_flag(
     return flags.get(name, default)
 
 
-def check_flags(handler: Union["HandlerObject", Dict[str, Any]], magic: MagicFilter) -> Any:
+def check_flags(handler: HandlerObject | dict[str, Any], magic: MagicFilter) -> Any:
     """
     Check flags via magic filter
 

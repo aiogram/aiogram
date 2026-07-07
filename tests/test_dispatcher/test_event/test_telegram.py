@@ -1,6 +1,6 @@
 import datetime
 import functools
-from typing import Any, Dict, NoReturn, Optional, Union
+from typing import Any, NoReturn
 
 import pytest
 from pydantic import BaseModel
@@ -31,7 +31,7 @@ async def pipe_handler(*args, **kwargs):
 class MyFilter1(Filter, BaseModel):
     test: str
 
-    async def __call__(self, *args: Any, **kwargs: Any) -> Union[bool, Dict[str, Any]]:
+    async def __call__(self, *args: Any, **kwargs: Any) -> bool | dict[str, Any]:
         return True
 
 
@@ -44,16 +44,16 @@ class MyFilter3(MyFilter1):
 
 
 class OptionalFilter(Filter, BaseModel):
-    optional: Optional[str]
+    optional: str | None
 
-    async def __call__(self, *args: Any, **kwargs: Any) -> Union[bool, Dict[str, Any]]:
+    async def __call__(self, *args: Any, **kwargs: Any) -> bool | dict[str, Any]:
         return True
 
 
 class DefaultFilter(Filter, BaseModel):
     default: str = "Default"
 
-    async def __call__(self, *args: Any, **kwargs: Any) -> Union[bool, Dict[str, Any]]:
+    async def __call__(self, *args: Any, **kwargs: Any) -> bool | dict[str, Any]:
         return True
 
 

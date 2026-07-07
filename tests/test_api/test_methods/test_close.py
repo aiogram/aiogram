@@ -7,5 +7,5 @@ class TestClose:
         prepare_result = bot.add_result_for(Close, ok=True, result=True)
 
         response: bool = await bot.close()
-        request = bot.get_request()
+        bot.get_request()
         assert response == prepare_result.result

@@ -24,8 +24,6 @@ class TestDataclassKwargs:
     @pytest.mark.parametrize(
         "py_version,expected",
         [
-            ((3, 9, 0), ALL_VERSIONS),
-            ((3, 9, 2), ALL_VERSIONS),
             ((3, 10, 2), PY_310),
             ((3, 11, 0), PY_311),
             ((4, 13, 0), LATEST_PY),
@@ -33,7 +31,6 @@ class TestDataclassKwargs:
     )
     def test_dataclass_kwargs(self, py_version, expected):
         with patch("sys.version_info", py_version):
-
             assert (
                 dataclass_kwargs(
                     init=True,

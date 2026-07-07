@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from ..types import ChatIdUnion, ReactionTypeUnion
 from .base import TelegramMethod
@@ -15,12 +15,12 @@ class SetMessageReaction(TelegramMethod[bool]):
     __api_method__ = "setMessageReaction"
 
     chat_id: ChatIdUnion
-    """Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)"""
+    """Unique identifier for the target chat or username of the target bot, supergroup or channel in the format :code:`@username`"""
     message_id: int
-    """Identifier of the target message. If the message belongs to a media group, the reaction is set to the first non-deleted message in the group instead."""
-    reaction: Optional[list[ReactionTypeUnion]] = None
-    """A JSON-serialized list of reaction types to set on the message. Currently, as non-premium users, bots can set up to one reaction per message. A custom emoji reaction can be used if it is either already present on the message or explicitly allowed by chat administrators. Paid reactions can't be used by bots."""
-    is_big: Optional[bool] = None
+    """Identifier of the target message. If the message belongs to a media group, the reaction is set to the first non-deleted message in the group instead"""
+    reaction: list[ReactionTypeUnion] | None = None
+    """A JSON-serialized list of reaction types to set on the message. Currently, as non-premium users, bots can set up to one reaction per message. A custom emoji reaction can be used if it is either already present on the message or explicitly allowed by chat administrators. Paid reactions can't be used by bots"""
+    is_big: bool | None = None
     """Pass :code:`True` to set the reaction with a big animation"""
 
     if TYPE_CHECKING:
@@ -32,8 +32,8 @@ class SetMessageReaction(TelegramMethod[bool]):
             *,
             chat_id: ChatIdUnion,
             message_id: int,
-            reaction: Optional[list[ReactionTypeUnion]] = None,
-            is_big: Optional[bool] = None,
+            reaction: list[ReactionTypeUnion] | None = None,
+            is_big: bool | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

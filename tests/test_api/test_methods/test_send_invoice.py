@@ -34,5 +34,5 @@ class TestSendInvoice:
             currency="BTC",
             prices=[LabeledPrice(amount=1, label="test")],
         )
-        request = bot.get_request()
+        bot.get_request()
         assert response == prepare_result.result

@@ -12,3 +12,7 @@ multi_parse:
     - InputMediaDocument
     - InputMediaPhoto
     - InputMediaVideo
+    - InputMediaLivePhoto
+    - InputMediaVenue
+    - InputMediaSticker
+    - InputMediaLocation

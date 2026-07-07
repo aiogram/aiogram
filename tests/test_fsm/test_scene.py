@@ -253,6 +253,7 @@ class TestSceneHandlerWrapper:
 
         state_mock = AsyncMock(spec=FSMContext)
         scenes_mock = AsyncMock(spec=ScenesManager)
+        scenes_mock.data = {}
         event_update_mock = Update(
             update_id=42,
             message=Message(
@@ -282,6 +283,7 @@ class TestSceneHandlerWrapper:
 
         state_mock = AsyncMock(spec=FSMContext)
         scenes_mock = AsyncMock(spec=ScenesManager)
+        scenes_mock.data = {}
         event_update_mock = Update(
             update_id=42,
             message=Message(
@@ -308,6 +310,34 @@ class TestSceneHandlerWrapper:
 
             # Check whether result is correct
             assert result == 42
+
+    async def test_scene_handler_wrapper_call_without_scene_context(self):
+        class MyScene(Scene):
+            pass
+
+        async def handler_mock(*args, **kwargs):
+            return 42
+
+        event_update_mock = Update(
+            update_id=42,
+            message=Message(
+                message_id=42,
+                text="test",
+                date=datetime.now(),
+                chat=Chat(
+                    type="private",
+                    id=42,
+                ),
+            ),
+        )
+
+        scene_handler_wrapper = SceneHandlerWrapper(MyScene, handler_mock)
+
+        with pytest.raises(
+            SceneException,
+            match="Scene context key 'state' is not available. Ensure FSM is enabled and pipeline is intact.",
+        ):
+            await scene_handler_wrapper(event_update_mock, event_update=event_update_mock)
 
     def test_scene_handler_wrapper_str(self):
         class MyScene(Scene):
@@ -1558,6 +1588,27 @@ class TestSceneRegistry:
         handler.assert_called_once_with(event, data)
         assert result == handler.return_value
 
+    async def test_scene_registry_update_middleware_without_state(self):
+        router = Router()
+        registry = SceneRegistry(router)
+        handler = AsyncMock(spec=NextMiddlewareType)
+        event = Update(
+            update_id=42,
+            message=Message(
+                message_id=42,
+                text="test",
+                date=datetime.now(),
+                chat=Chat(id=42, type="private"),
+            ),
+        )
+        data = {}
+
+        result = await registry._update_middleware(handler, event, data)
+
+        assert "scenes" not in data
+        handler.assert_called_once_with(event, data)
+        assert result == handler.return_value
+
     async def test_scene_registry_update_middleware_not_update(self, bot: MockedBot):
         router = Router()
         registry = SceneRegistry(router)
@@ -1601,6 +1652,24 @@ class TestSceneRegistry:
 
         assert "scenes" in data
         assert isinstance(data["scenes"], ScenesManager)
+        handler.assert_called_once_with(event, data)
+        assert result == handler.return_value
+
+    async def test_scene_registry_middleware_without_state(self):
+        router = Router()
+        registry = SceneRegistry(router)
+        handler = AsyncMock(spec=NextMiddlewareType)
+        event = Message(
+            message_id=42,
+            text="test",
+            date=datetime.now(),
+            chat=Chat(id=42, type="private"),
+        )
+        data = {}
+
+        result = await registry._middleware(handler, event, data)
+
+        assert "scenes" not in data
         handler.assert_called_once_with(event, data)
         assert result == handler.return_value
 

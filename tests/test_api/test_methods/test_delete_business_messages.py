@@ -9,5 +9,5 @@ class TestDeleteBusinessMessages:
         response: bool = await bot.delete_business_messages(
             business_connection_id="test_connection_id", message_ids=[1, 2, 3]
         )
-        request = bot.get_request()
+        bot.get_request()
         assert response == prepare_result.result

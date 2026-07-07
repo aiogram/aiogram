@@ -1,5 +1,3 @@
-from typing import List
-
 from aiogram.methods import GetChatAdministrators
 from aiogram.types import ChatMember, ChatMemberOwner, User
 from tests.mocked_bot import MockedBot
@@ -16,6 +14,6 @@ class TestGetChatAdministrators:
                 )
             ],
         )
-        response: List[ChatMember] = await bot.get_chat_administrators(chat_id=-42)
-        request = bot.get_request()
+        response: list[ChatMember] = await bot.get_chat_administrators(chat_id=-42)
+        bot.get_request()
         assert response == prepare_result.result

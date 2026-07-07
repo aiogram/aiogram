@@ -1,7 +1,8 @@
 import inspect
+from collections.abc import Generator
 from dataclasses import dataclass
 from operator import itemgetter
-from typing import Any, Generator, NamedTuple, Protocol
+from typing import Any, NamedTuple, Protocol
 
 from aiogram.utils.dataclass import dataclass_kwargs
 

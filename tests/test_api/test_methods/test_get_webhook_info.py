@@ -14,5 +14,5 @@ class TestGetWebhookInfo:
         )
 
         response: WebhookInfo = await bot.get_webhook_info()
-        request = bot.get_request()
+        bot.get_request()
         assert response == prepare_result.result

@@ -14,9 +14,9 @@
       {
         "type": "String",
         "required": true,
-        "description": "HTTPS URL to send updates to. Use an empty string to remove webhook integration",
-        "html_description": "<td>HTTPS URL to send updates to. Use an empty string to remove webhook integration</td>",
-        "rst_description": "HTTPS URL to send updates to. Use an empty string to remove webhook integration\n",
+        "description": "HTTPS URL to send updates to. Use an empty string to remove webhook integration.",
+        "html_description": "<td>HTTPS URL to send updates to. Use an empty string to remove webhook integration.</td>",
+        "rst_description": "HTTPS URL to send updates to. Use an empty string to remove webhook integration.\n",
         "name": "url"
       },
       {

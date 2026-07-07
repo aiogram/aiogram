@@ -14,8 +14,8 @@
       {
         "type": "Message",
         "description": "Message containing the checklist whose tasks were marked as done or not done. Note that the Message object in this field will not contain the reply_to_message field even if it itself is a reply.",
-        "html_description": "<td><em>Optional</em>. Message containing the checklist whose tasks were marked as done or not done. Note that the Message object in this field will not contain the <em>reply_to_message</em> field even if it itself is a reply.</td>",
-        "rst_description": "*Optional*. Message containing the checklist whose tasks were marked as done or not done. Note that the Message object in this field will not contain the *reply_to_message* field even if it itself is a reply.\n",
+        "html_description": "<td><em>Optional</em>. Message containing the checklist whose tasks were marked as done or not done. Note that the <a href=\"#message\">Message</a> object in this field will not contain the <em>reply_to_message</em> field even if it itself is a reply.</td>",
+        "rst_description": "*Optional*. Message containing the checklist whose tasks were marked as done or not done. Note that the :class:`aiogram.types.message.Message` object in this field will not contain the *reply_to_message* field even if it itself is a reply.\n",
         "name": "checklist_message",
         "required": false
       },

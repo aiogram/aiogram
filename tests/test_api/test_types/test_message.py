@@ -1,10 +1,11 @@
 import datetime
-from typing import Any, Dict, Optional, Type, Union
+from typing import Any
 
 import pytest
 
 from aiogram.enums import ParseMode
 from aiogram.methods import (
+    AnswerGuestQuery,
     CopyMessage,
     DeleteMessage,
     EditMessageCaption,
@@ -16,7 +17,6 @@ from aiogram.methods import (
     PinChatMessage,
     SendAnimation,
     SendAudio,
-    SendChecklist,
     SendContact,
     SendDice,
     SendDocument,
@@ -28,6 +28,7 @@ from aiogram.methods import (
     SendPaidMedia,
     SendPhoto,
     SendPoll,
+    SendRichMessage,
     SendSticker,
     SendVenue,
     SendVideo,
@@ -47,6 +48,8 @@ from aiogram.types import (
     Chat,
     ChatBackground,
     ChatBoostAdded,
+    ChatOwnerChanged,
+    ChatOwnerLeft,
     ChatShared,
     Checklist,
     ChecklistTask,
@@ -72,9 +75,14 @@ from aiogram.types import (
     GiveawayWinners,
     InlineKeyboardButton,
     InlineKeyboardMarkup,
+    InlineQueryResultPhoto,
     InputMediaPhoto,
+    InputRichMessage,
     Invoice,
+    LinkPreviewOptions,
+    LivePhoto,
     Location,
+    ManagedBotCreated,
     MessageAutoDeleteTimerChanged,
     MessageEntity,
     PaidMediaInfo,
@@ -84,13 +92,23 @@ from aiogram.types import (
     PhotoSize,
     Poll,
     PollOption,
+    PollOptionAdded,
+    PollOptionDeleted,
     ProximityAlertTriggered,
     ReactionTypeCustomEmoji,
     RefundedPayment,
+    RichBlockParagraph,
+    RichMessage,
     SharedUser,
     Sticker,
     Story,
     SuccessfulPayment,
+    SuggestedPostApprovalFailed,
+    SuggestedPostApproved,
+    SuggestedPostDeclined,
+    SuggestedPostPaid,
+    SuggestedPostPrice,
+    SuggestedPostRefunded,
     UniqueGift,
     UniqueGiftBackdrop,
     UniqueGiftBackdropColors,
@@ -248,6 +266,31 @@ TEST_MESSAGE_LEFT_CHAT_MEMBER = Message(
     chat=Chat(id=42, type="private"),
     from_user=User(id=42, is_bot=False, first_name="Test"),
 )
+TEST_MESSAGE_CHAT_OWNER_LEFT = Message(
+    message_id=42,
+    date=datetime.datetime.now(),
+    chat_owner_left=ChatOwnerLeft(
+        new_owner=User(id=43, is_bot=False, first_name="NewOwner"),
+    ),
+    chat=Chat(id=42, type="private"),
+    from_user=User(id=42, is_bot=False, first_name="Test"),
+)
+TEST_MESSAGE_CHAT_OWNER_LEFT_NO_SUCCESSOR = Message(
+    message_id=42,
+    date=datetime.datetime.now(),
+    chat_owner_left=ChatOwnerLeft(),
+    chat=Chat(id=42, type="private"),
+    from_user=User(id=42, is_bot=False, first_name="Test"),
+)
+TEST_MESSAGE_CHAT_OWNER_CHANGED = Message(
+    message_id=42,
+    date=datetime.datetime.now(),
+    chat_owner_changed=ChatOwnerChanged(
+        new_owner=User(id=43, is_bot=False, first_name="NewOwner"),
+    ),
+    chat=Chat(id=42, type="private"),
+    from_user=User(id=42, is_bot=False, first_name="Test"),
+)
 TEST_MESSAGE_INVOICE = Message(
     message_id=42,
     date=datetime.datetime.now(),
@@ -394,13 +437,15 @@ TEST_MESSAGE_POLL = Message(
         id="QA",
         question="Q",
         options=[
-            PollOption(text="A", voter_count=0),
-            PollOption(text="B", voter_count=0),
+            PollOption(persistent_id="1", text="A", voter_count=0),
+            PollOption(persistent_id="2", text="B", voter_count=0),
         ],
         is_closed=False,
         is_anonymous=False,
         type="quiz",
         allows_multiple_answers=False,
+        allows_revoting=False,
+        members_only=False,
         total_voter_count=0,
         correct_option_id=1,
     ),
@@ -655,6 +700,7 @@ TEST_MESSAGE_UNIQUE_GIFT = Message(
     from_user=User(id=42, is_bot=False, first_name="Test"),
     unique_gift=UniqueGiftInfo(
         gift=UniqueGift(
+            gift_id="test_gift_id",
             base_name="test_gift",
             name="test_unique_gift",
             number=1,
@@ -696,6 +742,33 @@ TEST_MESSAGE_UNIQUE_GIFT = Message(
             ),
         ),
         origin="upgrade",
+    ),
+)
+TEST_MESSAGE_GIFT_UPGRADE_SENT = Message(
+    message_id=42,
+    chat=Chat(id=42, type="private"),
+    from_user=User(id=42, is_bot=False, first_name="Test"),
+    date=datetime.datetime.now(),
+    gift_upgrade_sent=GiftInfo(
+        gift=Gift(
+            id="test_gift_id",
+            sticker=Sticker(
+                file_id="test_file_id",
+                file_unique_id="test_file_unique_id",
+                type="regular",
+                width=512,
+                height=512,
+                is_animated=False,
+                is_video=False,
+            ),
+            star_count=100,
+        ),
+        owned_gift_id="test_owned_gift_id",
+        convert_star_count=50,
+        prepaid_upgrade_star_count=25,
+        can_be_upgraded=True,
+        text="Test gift message",
+        is_private=False,
     ),
 )
 TEST_MESSAGE_CHECKLIST = Message(
@@ -759,6 +832,96 @@ TEST_MESSAGE_PAID_MESSAGE_PRICE_CHANGED = Message(
         paid_message_star_count=100,
     ),
 )
+TEST_MESSAGE_SUGGESTED_POST_APPROVED = Message(
+    message_id=42,
+    date=datetime.datetime.now(),
+    chat=Chat(id=42, type="private"),
+    from_user=User(id=42, is_bot=False, first_name="Test"),
+    suggested_post_approved=SuggestedPostApproved(
+        send_date=1234567890,
+    ),
+)
+TEST_MESSAGE_SUGGESTED_POST_APPROVAL_FAILED = Message(
+    message_id=42,
+    date=datetime.datetime.now(),
+    chat=Chat(id=42, type="private"),
+    from_user=User(id=42, is_bot=False, first_name="Test"),
+    suggested_post_approval_failed=SuggestedPostApprovalFailed(
+        price=SuggestedPostPrice(currency="XTR", amount=100),
+    ),
+)
+TEST_MESSAGE_SUGGESTED_POST_DECLINED = Message(
+    message_id=42,
+    date=datetime.datetime.now(),
+    chat=Chat(id=42, type="private"),
+    from_user=User(id=42, is_bot=False, first_name="Test"),
+    suggested_post_declined=SuggestedPostDeclined(),
+)
+TEST_MESSAGE_SUGGESTED_POST_PAID = Message(
+    message_id=42,
+    date=datetime.datetime.now(),
+    chat=Chat(id=42, type="private"),
+    from_user=User(id=42, is_bot=False, first_name="Test"),
+    suggested_post_paid=SuggestedPostPaid(currency="XTR"),
+)
+TEST_MESSAGE_SUGGESTED_POST_REFUNDED = Message(
+    message_id=42,
+    date=datetime.datetime.now(),
+    chat=Chat(id=42, type="private"),
+    from_user=User(id=42, is_bot=False, first_name="Test"),
+    suggested_post_refunded=SuggestedPostRefunded(reason="post_deleted"),
+)
+TEST_MESSAGE_MANAGED_BOT_CREATED = Message(
+    message_id=42,
+    date=datetime.datetime.now(),
+    chat=Chat(id=42, type="private"),
+    from_user=User(id=42, is_bot=False, first_name="Test"),
+    managed_bot_created=ManagedBotCreated(
+        bot_user=User(id=100, is_bot=True, first_name="ManagedBot"),
+    ),
+)
+TEST_MESSAGE_POLL_OPTION_ADDED = Message(
+    message_id=42,
+    date=datetime.datetime.now(),
+    chat=Chat(id=42, type="private"),
+    from_user=User(id=42, is_bot=False, first_name="Test"),
+    poll_option_added=PollOptionAdded(
+        option_persistent_id="1",
+        option_text="New option",
+    ),
+)
+TEST_MESSAGE_POLL_OPTION_DELETED = Message(
+    message_id=42,
+    date=datetime.datetime.now(),
+    chat=Chat(id=42, type="private"),
+    from_user=User(id=42, is_bot=False, first_name="Test"),
+    poll_option_deleted=PollOptionDeleted(
+        option_persistent_id="1",
+        option_text="Deleted option",
+    ),
+)
+TEST_MESSAGE_LIVE_PHOTO = Message(
+    message_id=42,
+    date=datetime.datetime.now(),
+    live_photo=LivePhoto(
+        file_id="file id",
+        file_unique_id="file unique id",
+        width=640,
+        height=480,
+        duration=3,
+    ),
+    chat=Chat(id=42, type="private"),
+    from_user=User(id=42, is_bot=False, first_name="Test"),
+)
+TEST_MESSAGE_RICH_MESSAGE = Message(
+    message_id=42,
+    date=datetime.datetime.now(),
+    chat=Chat(id=42, type="private"),
+    from_user=User(id=42, is_bot=False, first_name="Test"),
+    rich_message=RichMessage(
+        blocks=[RichBlockParagraph(text="Test")],
+    ),
+)
 
 MESSAGES_AND_CONTENT_TYPES = [
     [TEST_MESSAGE_TEXT, ContentType.TEXT],
@@ -777,6 +940,8 @@ MESSAGES_AND_CONTENT_TYPES = [
     [TEST_MESSAGE_LOCATION, ContentType.LOCATION],
     [TEST_MESSAGE_NEW_CHAT_MEMBERS, ContentType.NEW_CHAT_MEMBERS],
     [TEST_MESSAGE_LEFT_CHAT_MEMBER, ContentType.LEFT_CHAT_MEMBER],
+    [TEST_MESSAGE_CHAT_OWNER_LEFT, ContentType.CHAT_OWNER_LEFT],
+    [TEST_MESSAGE_CHAT_OWNER_CHANGED, ContentType.CHAT_OWNER_CHANGED],
     [TEST_MESSAGE_INVOICE, ContentType.INVOICE],
     [TEST_MESSAGE_SUCCESSFUL_PAYMENT, ContentType.SUCCESSFUL_PAYMENT],
     [TEST_MESSAGE_CONNECTED_WEBSITE, ContentType.CONNECTED_WEBSITE],
@@ -829,7 +994,18 @@ MESSAGES_AND_CONTENT_TYPES = [
     [TEST_REFUND_PAYMENT, ContentType.REFUNDED_PAYMENT],
     [TEST_MESSAGE_GIFT, ContentType.GIFT],
     [TEST_MESSAGE_UNIQUE_GIFT, ContentType.UNIQUE_GIFT],
+    [TEST_MESSAGE_GIFT_UPGRADE_SENT, ContentType.GIFT_UPGRADE_SENT],
     [TEST_MESSAGE_PAID_MESSAGE_PRICE_CHANGED, ContentType.PAID_MESSAGE_PRICE_CHANGED],
+    [TEST_MESSAGE_SUGGESTED_POST_APPROVED, ContentType.SUGGESTED_POST_APPROVED],
+    [TEST_MESSAGE_SUGGESTED_POST_APPROVAL_FAILED, ContentType.SUGGESTED_POST_APPROVAL_FAILED],
+    [TEST_MESSAGE_SUGGESTED_POST_DECLINED, ContentType.SUGGESTED_POST_DECLINED],
+    [TEST_MESSAGE_SUGGESTED_POST_PAID, ContentType.SUGGESTED_POST_PAID],
+    [TEST_MESSAGE_SUGGESTED_POST_REFUNDED, ContentType.SUGGESTED_POST_REFUNDED],
+    [TEST_MESSAGE_MANAGED_BOT_CREATED, ContentType.MANAGED_BOT_CREATED],
+    [TEST_MESSAGE_POLL_OPTION_ADDED, ContentType.POLL_OPTION_ADDED],
+    [TEST_MESSAGE_POLL_OPTION_DELETED, ContentType.POLL_OPTION_DELETED],
+    [TEST_MESSAGE_LIVE_PHOTO, ContentType.LIVE_PHOTO],
+    [TEST_MESSAGE_RICH_MESSAGE, ContentType.RICH_MESSAGE],
     [TEST_MESSAGE_UNKNOWN, ContentType.UNKNOWN],
 ]
 
@@ -852,6 +1028,8 @@ MESSAGES_AND_COPY_METHODS = [
     [TEST_MESSAGE_STORY, ForwardMessage],
     [TEST_MESSAGE_NEW_CHAT_MEMBERS, None],
     [TEST_MESSAGE_LEFT_CHAT_MEMBER, None],
+    [TEST_MESSAGE_CHAT_OWNER_LEFT, None],
+    [TEST_MESSAGE_CHAT_OWNER_CHANGED, None],
     [TEST_MESSAGE_INVOICE, None],
     [TEST_MESSAGE_SUCCESSFUL_PAYMENT, None],
     [TEST_MESSAGE_CONNECTED_WEBSITE, None],
@@ -897,7 +1075,18 @@ MESSAGES_AND_COPY_METHODS = [
     [TEST_REFUND_PAYMENT, None],
     [TEST_MESSAGE_GIFT, None],
     [TEST_MESSAGE_UNIQUE_GIFT, None],
+    [TEST_MESSAGE_GIFT_UPGRADE_SENT, None],
     [TEST_MESSAGE_PAID_MESSAGE_PRICE_CHANGED, None],
+    [TEST_MESSAGE_SUGGESTED_POST_APPROVED, None],
+    [TEST_MESSAGE_SUGGESTED_POST_APPROVAL_FAILED, None],
+    [TEST_MESSAGE_SUGGESTED_POST_DECLINED, None],
+    [TEST_MESSAGE_SUGGESTED_POST_PAID, None],
+    [TEST_MESSAGE_SUGGESTED_POST_REFUNDED, None],
+    [TEST_MESSAGE_MANAGED_BOT_CREATED, None],
+    [TEST_MESSAGE_POLL_OPTION_ADDED, None],
+    [TEST_MESSAGE_POLL_OPTION_DELETED, None],
+    [TEST_MESSAGE_LIVE_PHOTO, None],
+    [TEST_MESSAGE_RICH_MESSAGE, None],
     [TEST_MESSAGE_UNKNOWN, None],
 ]
 
@@ -905,7 +1094,7 @@ MESSAGES_AND_COPY_METHODS = [
 class TestAllMessageTypesTested:
     @pytest.fixture(scope="function")
     def known_content_types(self):
-        content_types = {t for t in ContentType}
+        content_types = set(ContentType)
         content_types.remove(ContentType.ANY)
         return content_types
 
@@ -939,6 +1128,11 @@ class TestMessage:
     def test_content_type(self, message: Message, content_type: str):
         assert message.content_type == content_type
 
+    def test_chat_owner_left_no_successor(self):
+        assert (
+            TEST_MESSAGE_CHAT_OWNER_LEFT_NO_SUCCESSOR.content_type == ContentType.CHAT_OWNER_LEFT
+        )
+
     def test_as_reply_parameters(self):
         message = Message(
             message_id=42, chat=Chat(id=42, type="private"), date=datetime.datetime.now()
@@ -950,46 +1144,47 @@ class TestMessage:
     @pytest.mark.parametrize(
         "alias_for_method,kwargs,method_class",
         [
-            ["animation", dict(animation="animation"), SendAnimation],
-            ["audio", dict(audio="audio"), SendAudio],
-            ["contact", dict(phone_number="+000000000000", first_name="Test"), SendContact],
-            ["document", dict(document="document"), SendDocument],
-            ["game", dict(game_short_name="game"), SendGame],
+            ["animation", {"animation": "animation"}, SendAnimation],
+            ["audio", {"audio": "audio"}, SendAudio],
+            ["contact", {"phone_number": "+000000000000", "first_name": "Test"}, SendContact],
+            ["document", {"document": "document"}, SendDocument],
+            ["game", {"game_short_name": "game"}, SendGame],
             [
                 "invoice",
-                dict(
-                    title="title",
-                    description="description",
-                    payload="payload",
-                    provider_token="provider_token",
-                    start_parameter="start_parameter",
-                    currency="currency",
-                    prices=[],
-                ),
+                {
+                    "title": "title",
+                    "description": "description",
+                    "payload": "payload",
+                    "provider_token": "provider_token",
+                    "start_parameter": "start_parameter",
+                    "currency": "currency",
+                    "prices": [],
+                },
                 SendInvoice,
             ],
-            ["location", dict(latitude=0.42, longitude=0.42), SendLocation],
-            ["media_group", dict(media=[]), SendMediaGroup],
-            ["", dict(text="test"), SendMessage],
-            ["photo", dict(photo="photo"), SendPhoto],
-            ["poll", dict(question="Q?", options=[]), SendPoll],
-            ["dice", dict(), SendDice],
-            ["sticker", dict(sticker="sticker"), SendSticker],
-            ["sticker", dict(sticker="sticker"), SendSticker],
+            ["location", {"latitude": 0.42, "longitude": 0.42}, SendLocation],
+            ["media_group", {"media": []}, SendMediaGroup],
+            ["", {"text": "test"}, SendMessage],
+            ["photo", {"photo": "photo"}, SendPhoto],
+            ["poll", {"question": "Q?", "options": []}, SendPoll],
+            ["dice", {}, SendDice],
+            ["sticker", {"sticker": "sticker"}, SendSticker],
+            ["sticker", {"sticker": "sticker"}, SendSticker],
             [
                 "venue",
-                dict(
-                    latitude=0.42,
-                    longitude=0.42,
-                    title="title",
-                    address="address",
-                ),
+                {
+                    "latitude": 0.42,
+                    "longitude": 0.42,
+                    "title": "title",
+                    "address": "address",
+                },
                 SendVenue,
             ],
-            ["video", dict(video="video"), SendVideo],
-            ["video_note", dict(video_note="video_note"), SendVideoNote],
-            ["voice", dict(voice="voice"), SendVoice],
-            ["paid_media", dict(media=[], star_count=42), SendPaidMedia],
+            ["video", {"video": "video"}, SendVideo],
+            ["video_note", {"video_note": "video_note"}, SendVideoNote],
+            ["voice", {"voice": "voice"}, SendVoice],
+            ["paid_media", {"media": [], "star_count": 42}, SendPaidMedia],
+            ["rich", {"rich_message": InputRichMessage(html="<p>Test</p>")}, SendRichMessage],
         ],
     )
     @pytest.mark.parametrize("alias_type", ["reply", "answer"])
@@ -997,28 +1192,27 @@ class TestMessage:
         self,
         alias_for_method: str,
         alias_type: str,
-        kwargs: Dict[str, Any],
-        method_class: Type[
-            Union[
-                SendAnimation,
-                SendAudio,
-                SendContact,
-                SendDocument,
-                SendGame,
-                SendInvoice,
-                SendLocation,
-                SendMediaGroup,
-                SendMessage,
-                SendPhoto,
-                SendPoll,
-                SendSticker,
-                SendSticker,
-                SendVenue,
-                SendVideo,
-                SendVideoNote,
-                SendVoice,
-                SendPaidMedia,
-            ]
+        kwargs: dict[str, Any],
+        method_class: type[
+            SendAnimation
+            | SendAudio
+            | SendContact
+            | SendDocument
+            | SendGame
+            | SendInvoice
+            | SendLocation
+            | SendMediaGroup
+            | SendMessage
+            | SendPhoto
+            | SendPoll
+            | SendSticker
+            | SendSticker
+            | SendVenue
+            | SendVideo
+            | SendVideoNote
+            | SendVoice
+            | SendPaidMedia
+            | SendRichMessage
         ],
     ):
         message = Message(
@@ -1061,7 +1255,7 @@ class TestMessage:
     def test_send_copy(
         self,
         message: Message,
-        expected_method: Optional[Type[TelegramMethod]],
+        expected_method: type[TelegramMethod] | None,
     ):
         if expected_method is None:
             with pytest.raises(TypeError, match="This type of message can't be copied."):
@@ -1097,8 +1291,8 @@ class TestMessage:
     def test_send_copy_custom_parse_mode(
         self,
         message: Message,
-        expected_method: Optional[Type[TelegramMethod]],
-        custom_parse_mode: Optional[str],
+        expected_method: type[TelegramMethod] | None,
+        custom_parse_mode: str | None,
     ):
         method = message.send_copy(
             chat_id=42,
@@ -1106,6 +1300,27 @@ class TestMessage:
         )
         assert isinstance(method, expected_method)
         assert method.parse_mode == custom_parse_mode
+
+    def test_send_copy_link_preview_options_forwarded(self):
+        options = LinkPreviewOptions(is_disabled=True)
+        method = TEST_MESSAGE_TEXT.send_copy(chat_id=42, link_preview_options=options)
+        assert isinstance(method, SendMessage)
+        assert method.link_preview_options is options
+
+    def test_send_copy_link_preview_options_inherits_from_source(self):
+        source_options = LinkPreviewOptions(prefer_small_media=True)
+        message = TEST_MESSAGE_TEXT.model_copy(update={"link_preview_options": source_options})
+        method = message.send_copy(chat_id=42)
+        assert isinstance(method, SendMessage)
+        assert method.link_preview_options is source_options
+
+    def test_send_copy_link_preview_options_explicit_overrides_source(self):
+        source_options = LinkPreviewOptions(prefer_small_media=True)
+        override = LinkPreviewOptions(is_disabled=True)
+        message = TEST_MESSAGE_TEXT.model_copy(update={"link_preview_options": source_options})
+        method = message.send_copy(chat_id=42, link_preview_options=override)
+        assert isinstance(method, SendMessage)
+        assert method.link_preview_options is override
 
     def test_edit_text(self):
         message = Message(
@@ -1272,3 +1487,36 @@ class TestMessage:
             entities=entities,
         )
         assert getattr(message, f"{mode}_text") == expected_value
+
+    def test_answer_guest_query(self):
+        result = InlineQueryResultPhoto(
+            id="result_id",
+            photo_url="https://example.com/photo.jpg",
+            thumbnail_url="https://example.com/thumb.jpg",
+        )
+
+        message = Message(
+            message_id=42,
+            chat=Chat(id=42, type="private"),
+            date=datetime.datetime.now(),
+            guest_query_id="query_id",
+        )
+        method = message.answer_guest_query(result=result)
+        assert isinstance(method, AnswerGuestQuery)
+        assert method.guest_query_id == message.guest_query_id
+        assert method.result == result
+
+    def test_answer_guest_query_no_guest_query_id(self):
+        message = Message(
+            message_id=42,
+            chat=Chat(id=42, type="private"),
+            date=datetime.datetime.now(),
+        )
+        with pytest.raises(AssertionError):
+            message.answer_guest_query(
+                result=InlineQueryResultPhoto(
+                    id="result_id",
+                    photo_url="https://example.com/photo.jpg",
+                    thumbnail_url="https://example.com/thumb.jpg",
+                )
+            )

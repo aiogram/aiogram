@@ -11,5 +11,5 @@ class TestUnpinAllForumTopicMessages:
         response: bool = await bot.unpin_all_general_forum_topic_messages(
             chat_id=42,
         )
-        request = bot.get_request()
+        bot.get_request()
         assert response == prepare_result.result

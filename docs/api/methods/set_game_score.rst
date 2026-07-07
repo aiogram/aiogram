@@ -2,7 +2,7 @@
 setGameScore
 ############
 
-Returns: :obj:`Union[Message, bool]`
+Returns: :obj:`Message | bool`
 
 .. automodule:: aiogram.methods.set_game_score
     :members:
@@ -19,7 +19,7 @@ As bot method
 
 .. code-block::
 
-    result: Union[Message, bool] = await bot.set_game_score(...)
+    result: Message | bool = await bot.set_game_score(...)
 
 
 Method as object
@@ -35,7 +35,7 @@ With specific bot
 
 .. code-block:: python
 
-    result: Union[Message, bool] = await bot(SetGameScore(...))
+    result: Message | bool = await bot(SetGameScore(...))
 
 As reply into Webhook in handler
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

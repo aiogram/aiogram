@@ -22,6 +22,10 @@ RedisStorage
 MongoStorage
 ------------
 
+.. autoclass:: aiogram.fsm.storage.pymongo.PyMongoStorage
+    :members: __init__, from_url
+    :member-order: bysource
+
 .. autoclass:: aiogram.fsm.storage.mongo.MongoStorage
     :members: __init__, from_url
     :member-order: bysource

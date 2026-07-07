@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from typing import Union
+from typing import TypeAlias
 
 from .input_file import InputFile
 
-InputFileUnion = Union[str, InputFile]
+InputFileUnion: TypeAlias = str | InputFile

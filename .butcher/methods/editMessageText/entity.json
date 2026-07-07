@@ -7,10 +7,18 @@
   "object": {
     "anchor": "editmessagetext",
     "name": "editMessageText",
-    "description": "Use this method to edit text and game messages. On success, if the edited message is not an inline message, the edited Message is returned, otherwise True is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within 48 hours from the time they were sent.",
-    "html_description": "<p>Use this method to edit text and <a href=\"#games\">game</a> messages. On success, if the edited message is not an inline message, the edited <a href=\"#message\">Message</a> is returned, otherwise <em>True</em> is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within <strong>48 hours</strong> from the time they were sent.</p>",
-    "rst_description": "Use this method to edit text and `game <https://core.telegram.org/bots/api#games>`_ messages. On success, if the edited message is not an inline message, the edited :class:`aiogram.types.message.Message` is returned, otherwise :code:`True` is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within **48 hours** from the time they were sent.",
+    "description": "Use this method to edit text, rich and game messages. On success, if the edited message is not an inline message, the edited Message is returned, otherwise True is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within 48 hours from the time they were sent.",
+    "html_description": "<p>Use this method to edit text, rich and <a href=\"#games\">game</a> messages. On success, if the edited message is not an inline message, the edited <a href=\"#message\">Message</a> is returned, otherwise <em>True</em> is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within <strong>48 hours</strong> from the time they were sent.</p>",
+    "rst_description": "Use this method to edit text, rich and `game <https://core.telegram.org/bots/api#games>`_ messages. On success, if the edited message is not an inline message, the edited :class:`aiogram.types.message.Message` is returned, otherwise :code:`True` is returned. Note that business messages that were not sent by the bot and do not contain an inline keyboard can only be edited within **48 hours** from the time they were sent.",
     "annotations": [
+      {
+        "type": "String",
+        "required": false,
+        "description": "New text of the message, 1-4096 characters after entity parsing; required if rich_message isn't specified",
+        "html_description": "<td>New text of the message, 1-4096 characters after entity parsing; required if <em>rich_message</em> isn't specified</td>",
+        "rst_description": "New text of the message, 1-4096 characters after entity parsing; required if *rich_message* isn't specified\n",
+        "name": "text"
+      },
       {
         "type": "String",
         "required": false,
@@ -22,34 +30,26 @@
       {
         "type": "Integer or String",
         "required": false,
-        "description": "Required if inline_message_id is not specified. Unique identifier for the target chat or username of the target channel (in the format @channelusername)",
-        "html_description": "<td>Required if <em>inline_message_id</em> is not specified. Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)</td>",
-        "rst_description": "Required if *inline_message_id* is not specified. Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)\n",
+        "description": "Required if inline_message_id is not specified. Unique identifier for the target chat or username of the target bot, supergroup or channel in the format @username.",
+        "html_description": "<td>Required if <em>inline_message_id</em> is not specified. Unique identifier for the target chat or username of the target bot, supergroup or channel in the format <code>@username</code>.</td>",
+        "rst_description": "Required if *inline_message_id* is not specified. Unique identifier for the target chat or username of the target bot, supergroup or channel in the format :code:`@username`.\n",
         "name": "chat_id"
       },
       {
         "type": "Integer",
         "required": false,
-        "description": "Required if inline_message_id is not specified. Identifier of the message to edit",
-        "html_description": "<td>Required if <em>inline_message_id</em> is not specified. Identifier of the message to edit</td>",
-        "rst_description": "Required if *inline_message_id* is not specified. Identifier of the message to edit\n",
+        "description": "Required if inline_message_id is not specified. Identifier of the message to edit.",
+        "html_description": "<td>Required if <em>inline_message_id</em> is not specified. Identifier of the message to edit.</td>",
+        "rst_description": "Required if *inline_message_id* is not specified. Identifier of the message to edit.\n",
         "name": "message_id"
       },
       {
         "type": "String",
         "required": false,
-        "description": "Required if chat_id and message_id are not specified. Identifier of the inline message",
-        "html_description": "<td>Required if <em>chat_id</em> and <em>message_id</em> are not specified. Identifier of the inline message</td>",
-        "rst_description": "Required if *chat_id* and *message_id* are not specified. Identifier of the inline message\n",
+        "description": "Required if chat_id and message_id are not specified. Identifier of the inline message.",
+        "html_description": "<td>Required if <em>chat_id</em> and <em>message_id</em> are not specified. Identifier of the inline message.</td>",
+        "rst_description": "Required if *chat_id* and *message_id* are not specified. Identifier of the inline message.\n",
         "name": "inline_message_id"
-      },
-      {
-        "type": "String",
-        "required": true,
-        "description": "New text of the message, 1-4096 characters after entities parsing",
-        "html_description": "<td>New text of the message, 1-4096 characters after entities parsing</td>",
-        "rst_description": "New text of the message, 1-4096 characters after entities parsing\n",
-        "name": "text"
       },
       {
         "type": "String",
@@ -78,10 +78,18 @@
       {
         "type": "InlineKeyboardMarkup",
         "required": false,
-        "description": "A JSON-serialized object for an inline keyboard.",
-        "html_description": "<td>A JSON-serialized object for an <a href=\"/bots/features#inline-keyboards\">inline keyboard</a>.</td>",
-        "rst_description": "A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_.\n",
+        "description": "A JSON-serialized object for an inline keyboard",
+        "html_description": "<td>A JSON-serialized object for an <a href=\"/bots/features#inline-keyboards\">inline keyboard</a></td>",
+        "rst_description": "A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_\n",
         "name": "reply_markup"
+      },
+      {
+        "type": "InputRichMessage",
+        "required": false,
+        "description": "New rich content of the message; required if text isn't specified",
+        "html_description": "<td>New rich content of the message; required if <em>text</em> isn't specified</td>",
+        "rst_description": "New rich content of the message; required if *text* isn't specified\n",
+        "name": "rich_message"
       },
       {
         "type": "Boolean",

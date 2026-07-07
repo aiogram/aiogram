@@ -12,5 +12,5 @@ class TestGiftPremiumSubscription:
             star_count=1000,
             text="Enjoy your premium subscription!",
         )
-        request = bot.get_request()
+        bot.get_request()
         assert response == prepare_result.result

@@ -1,0 +1,25 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available methods",
+    "anchor": "available-methods"
+  },
+  "object": {
+    "anchor": "setmyprofilephoto",
+    "name": "setMyProfilePhoto",
+    "description": "Changes the profile photo of the bot. Returns True on success.",
+    "html_description": "<p>Changes the profile photo of the bot. Returns <em>True</em> on success.</p>",
+    "rst_description": "Changes the profile photo of the bot. Returns :code:`True` on success.",
+    "annotations": [
+      {
+        "type": "InputProfilePhoto",
+        "required": true,
+        "description": "The new profile photo to set",
+        "html_description": "<td>The new profile photo to set</td>",
+        "rst_description": "The new profile photo to set\n",
+        "name": "photo"
+      }
+    ],
+    "category": "methods"
+  }
+}

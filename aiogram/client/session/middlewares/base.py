@@ -3,17 +3,17 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING, Protocol
 
-from aiogram.methods import Response, TelegramMethod
 from aiogram.methods.base import TelegramType
 
 if TYPE_CHECKING:
-    from ...bot import Bot
+    from aiogram.client.bot import Bot
+    from aiogram.methods import Response, TelegramMethod
 
 
 class NextRequestMiddlewareType(Protocol[TelegramType]):  # pragma: no cover
     async def __call__(
         self,
-        bot: "Bot",
+        bot: Bot,
         method: TelegramMethod[TelegramType],
     ) -> Response[TelegramType]:
         pass
@@ -23,7 +23,7 @@ class RequestMiddlewareType(Protocol):  # pragma: no cover
     async def __call__(
         self,
         make_request: NextRequestMiddlewareType[TelegramType],
-        bot: "Bot",
+        bot: Bot,
         method: TelegramMethod[TelegramType],
     ) -> Response[TelegramType]:
         pass
@@ -38,7 +38,7 @@ class BaseRequestMiddleware(ABC):
     async def __call__(
         self,
         make_request: NextRequestMiddlewareType[TelegramType],
-        bot: "Bot",
+        bot: Bot,
         method: TelegramMethod[TelegramType],
     ) -> Response[TelegramType]:
         """
@@ -50,4 +50,3 @@ class BaseRequestMiddleware(ABC):
 
         :return: :class:`aiogram.methods.Response`
         """
-        pass

@@ -3,8 +3,9 @@ from __future__ import annotations
 import io
 import os
 from abc import ABC, abstractmethod
+from collections.abc import AsyncGenerator
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, AsyncGenerator, Dict, Optional, Union
+from typing import TYPE_CHECKING, Any
 
 import aiofiles
 
@@ -21,7 +22,7 @@ class InputFile(ABC):
     Source: https://core.telegram.org/bots/api#inputfile
     """
 
-    def __init__(self, filename: Optional[str] = None, chunk_size: int = DEFAULT_CHUNK_SIZE):
+    def __init__(self, filename: str | None = None, chunk_size: int = DEFAULT_CHUNK_SIZE):
         """
         Base class for input files. Should not be used directly.
         Look at :class:`BufferedInputFile`, :class:`FSInputFile` :class:`URLInputFile`
@@ -33,7 +34,7 @@ class InputFile(ABC):
         self.chunk_size = chunk_size
 
     @abstractmethod
-    async def read(self, bot: "Bot") -> AsyncGenerator[bytes, None]:  # pragma: no cover
+    async def read(self, bot: Bot) -> AsyncGenerator[bytes, None]:  # pragma: no cover
         yield b""
 
 
@@ -53,8 +54,8 @@ class BufferedInputFile(InputFile):
     @classmethod
     def from_file(
         cls,
-        path: Union[str, Path],
-        filename: Optional[str] = None,
+        path: str | Path,
+        filename: str | None = None,
         chunk_size: int = DEFAULT_CHUNK_SIZE,
     ) -> BufferedInputFile:
         """
@@ -72,7 +73,7 @@ class BufferedInputFile(InputFile):
             data = f.read()
         return cls(data, filename=filename, chunk_size=chunk_size)
 
-    async def read(self, bot: "Bot") -> AsyncGenerator[bytes, None]:
+    async def read(self, bot: Bot) -> AsyncGenerator[bytes, None]:
         buffer = io.BytesIO(self.data)
         while chunk := buffer.read(self.chunk_size):
             yield chunk
@@ -81,8 +82,8 @@ class BufferedInputFile(InputFile):
 class FSInputFile(InputFile):
     def __init__(
         self,
-        path: Union[str, Path],
-        filename: Optional[str] = None,
+        path: str | Path,
+        filename: str | None = None,
         chunk_size: int = DEFAULT_CHUNK_SIZE,
     ):
         """
@@ -99,7 +100,7 @@ class FSInputFile(InputFile):
 
         self.path = path
 
-    async def read(self, bot: "Bot") -> AsyncGenerator[bytes, None]:
+    async def read(self, bot: Bot) -> AsyncGenerator[bytes, None]:
         async with aiofiles.open(self.path, "rb") as f:
             while chunk := await f.read(self.chunk_size):
                 yield chunk
@@ -109,11 +110,11 @@ class URLInputFile(InputFile):
     def __init__(
         self,
         url: str,
-        headers: Optional[Dict[str, Any]] = None,
-        filename: Optional[str] = None,
+        headers: dict[str, Any] | None = None,
+        filename: str | None = None,
         chunk_size: int = DEFAULT_CHUNK_SIZE,
         timeout: int = 30,
-        bot: Optional["Bot"] = None,
+        bot: Bot | None = None,
     ):
         """
         Represents object for streaming files from internet
@@ -135,7 +136,7 @@ class URLInputFile(InputFile):
         self.timeout = timeout
         self.bot = bot
 
-    async def read(self, bot: "Bot") -> AsyncGenerator[bytes, None]:
+    async def read(self, bot: Bot) -> AsyncGenerator[bytes, None]:
         bot = self.bot or bot
         stream = bot.session.stream_content(
             url=self.url,

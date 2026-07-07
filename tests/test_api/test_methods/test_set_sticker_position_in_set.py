@@ -7,5 +7,5 @@ class TestSetStickerPositionInSet:
         prepare_result = bot.add_result_for(SetStickerPositionInSet, ok=True, result=True)
 
         response: bool = await bot.set_sticker_position_in_set(sticker="sticker", position=42)
-        request = bot.get_request()
+        bot.get_request()
         assert response == prepare_result.result

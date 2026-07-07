@@ -7,14 +7,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  aiogram\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-14 17:21+0300\n"
+"POT-Creation-Date: 2026-05-09 01:04+0300\n"
 "PO-Revision-Date: 2022-10-25 15:53+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.12.1\n"
+"Generated-By: Babel 2.18.0\n"
 
 #: ../../dispatcher/filters/index.rst:5
 msgid "Filtering events"
@@ -111,12 +111,13 @@ msgstr "Цей метод слід перевизначити."
 msgid "Accepts incoming event and should return boolean or dict."
 msgstr "Приймає вхідну подію та має повертати логічне (bool) значення або dict."
 
-#: aiogram.filters.base.Filter.__call__ of
+#: ../../dispatcher/filters/index.rst
 msgid "Returns"
 msgstr "Повертає"
 
 #: aiogram.filters.base.Filter.__call__:5 of
-msgid ":class:`bool` or :class:`Dict[str, Any]`"
+#, fuzzy
+msgid ":class:`bool` or :class:`dict[str, Any]`"
 msgstr ":class:`bool` or :class:`Dict[str, Any]`"
 
 #: aiogram.filters.base.Filter.update_handler_flags:1 of
@@ -127,7 +128,7 @@ msgstr ""
 "Крім того, якщо ви хочете розширити маркери обробника (handler) за "
 "допомогою цього фільтра, вам слід реалізувати цей метод"
 
-#: aiogram.filters.base.Filter.update_handler_flags of
+#: ../../dispatcher/filters/index.rst
 msgid "Parameters"
 msgstr "Параметри"
 
@@ -195,4 +196,3 @@ msgstr ""
 "Альтернативним способом є об’єднання за допомогою спеціальних функцій "
 "(:func:`and_f`, :func:`or_f`, :func:`invert_f` з модуля "
 ":code:`aiogram.filters`):"
-

@@ -9,7 +9,7 @@ class TestGetMe:
             GetMe, ok=True, result=User(id=42, is_bot=False, first_name="User")
         )
         response: User = await bot.get_me()
-        request = bot.get_request()
+        bot.get_request()
         assert response == prepare_result.result
 
     async def test_me_property(self, bot: MockedBot):

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from pydantic import Field
 
@@ -24,14 +24,14 @@ class BusinessConnection(TelegramObject):
     user: User
     """Business account user that created the business connection"""
     user_chat_id: int
-    """Identifier of a private chat with the user who created the business connection. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier."""
+    """Identifier of a private chat with the user who created the business connection. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a 64-bit integer or double-precision float type are safe for storing this identifier"""
     date: DateTime
     """Date the connection was established in Unix time"""
     is_enabled: bool
     """:code:`True`, if the connection is active"""
-    rights: Optional[BusinessBotRights] = None
+    rights: BusinessBotRights | None = None
     """*Optional*. Rights of the business bot"""
-    can_reply: Optional[bool] = Field(None, json_schema_extra={"deprecated": True})
+    can_reply: bool | None = Field(None, json_schema_extra={"deprecated": True})
     """True, if the bot can act on behalf of the business account in chats that were active in the last 24 hours
 
 .. deprecated:: API:9.0
@@ -49,8 +49,8 @@ class BusinessConnection(TelegramObject):
             user_chat_id: int,
             date: DateTime,
             is_enabled: bool,
-            rights: Optional[BusinessBotRights] = None,
-            can_reply: Optional[bool] = None,
+            rights: BusinessBotRights | None = None,
+            can_reply: bool | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

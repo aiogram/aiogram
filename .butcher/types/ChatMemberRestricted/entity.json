@@ -37,9 +37,9 @@
       },
       {
         "type": "Boolean",
-        "description": "True, if the user is allowed to send text messages, contacts, giveaways, giveaway winners, invoices, locations and venues",
-        "html_description": "<td><em>True</em>, if the user is allowed to send text messages, contacts, giveaways, giveaway winners, invoices, locations and venues</td>",
-        "rst_description": ":code:`True`, if the user is allowed to send text messages, contacts, giveaways, giveaway winners, invoices, locations and venues\n",
+        "description": "True, if the user is allowed to send text messages, rich messages, contacts, giveaways, giveaway winners, invoices, locations and venues",
+        "html_description": "<td><em>True</em>, if the user is allowed to send text messages, rich messages, contacts, giveaways, giveaway winners, invoices, locations and venues</td>",
+        "rst_description": ":code:`True`, if the user is allowed to send text messages, rich messages, contacts, giveaways, giveaway winners, invoices, locations and venues\n",
         "name": "can_send_messages",
         "required": true
       },
@@ -117,6 +117,22 @@
       },
       {
         "type": "Boolean",
+        "description": "True, if the user is allowed to react to messages",
+        "html_description": "<td><em>True</em>, if the user is allowed to react to messages</td>",
+        "rst_description": ":code:`True`, if the user is allowed to react to messages\n",
+        "name": "can_react_to_messages",
+        "required": true
+      },
+      {
+        "type": "Boolean",
+        "description": "True, if the user is allowed to edit their own tag",
+        "html_description": "<td><em>True</em>, if the user is allowed to edit their own tag</td>",
+        "rst_description": ":code:`True`, if the user is allowed to edit their own tag\n",
+        "name": "can_edit_tag",
+        "required": true
+      },
+      {
+        "type": "Boolean",
         "description": "True, if the user is allowed to change the chat title, photo and other settings",
         "html_description": "<td><em>True</em>, if the user is allowed to change the chat title, photo and other settings</td>",
         "rst_description": ":code:`True`, if the user is allowed to change the chat title, photo and other settings\n",
@@ -149,11 +165,19 @@
       },
       {
         "type": "Integer",
-        "description": "Date when restrictions will be lifted for this user; Unix time. If 0, then the user is restricted forever",
-        "html_description": "<td>Date when restrictions will be lifted for this user; Unix time. If 0, then the user is restricted forever</td>",
-        "rst_description": "Date when restrictions will be lifted for this user; Unix time. If 0, then the user is restricted forever\n",
+        "description": "Date when restrictions will be lifted for this user; Unix time. If 0, then the user is restricted forever.",
+        "html_description": "<td>Date when restrictions will be lifted for this user; Unix time. If 0, then the user is restricted forever.</td>",
+        "rst_description": "Date when restrictions will be lifted for this user; Unix time. If 0, then the user is restricted forever.\n",
         "name": "until_date",
         "required": true
+      },
+      {
+        "type": "String",
+        "description": "Tag of the member",
+        "html_description": "<td><em>Optional</em>. Tag of the member</td>",
+        "rst_description": "*Optional*. Tag of the member\n",
+        "name": "tag",
+        "required": false
       }
     ],
     "category": "types"

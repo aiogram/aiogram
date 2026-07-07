@@ -7,5 +7,5 @@ class TestCloseGeneralForumTopic:
         prepare_result = bot.add_result_for(EditGeneralForumTopic, ok=True, result=True)
 
         response: bool = await bot.edit_general_forum_topic(chat_id=42, name="Test")
-        request = bot.get_request()
+        bot.get_request()
         assert response == prepare_result.result

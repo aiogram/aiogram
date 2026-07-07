@@ -21,5 +21,5 @@ class TestSendVideo:
         )
 
         response: Message = await bot.send_video(chat_id=42, video="file id")
-        request = bot.get_request()
+        bot.get_request()
         assert response == prepare_result.result

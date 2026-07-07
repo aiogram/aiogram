@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from pydantic import Field
 
@@ -28,6 +28,7 @@ if TYPE_CHECKING:
         SendChatAction,
         SetChatAdministratorCustomTitle,
         SetChatDescription,
+        SetChatMemberTag,
         SetChatPermissions,
         SetChatPhoto,
         SetChatStickerSet,
@@ -59,209 +60,207 @@ class Chat(TelegramObject):
     """
 
     id: int
-    """Unique identifier for this chat. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this identifier."""
+    """Unique identifier for this chat. This number may have more than 32 significant bits and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this identifier"""
     type: str
     """Type of the chat, can be either 'private', 'group', 'supergroup' or 'channel'"""
-    title: Optional[str] = None
+    title: str | None = None
     """*Optional*. Title, for supergroups, channels and group chats"""
-    username: Optional[str] = None
+    username: str | None = None
     """*Optional*. Username, for private chats, supergroups and channels if available"""
-    first_name: Optional[str] = None
+    first_name: str | None = None
     """*Optional*. First name of the other party in a private chat"""
-    last_name: Optional[str] = None
+    last_name: str | None = None
     """*Optional*. Last name of the other party in a private chat"""
-    is_forum: Optional[bool] = None
+    is_forum: bool | None = None
     """*Optional*. :code:`True`, if the supergroup chat is a forum (has `topics <https://telegram.org/blog/topics-in-groups-collectible-usernames#topics-in-groups>`_ enabled)"""
-    accent_color_id: Optional[int] = Field(None, json_schema_extra={"deprecated": True})
-    """*Optional*. Identifier of the accent color for the chat name and backgrounds of the chat photo, reply header, and link preview. See `accent colors <https://core.telegram.org/bots/api#accent-colors>`_ for more details. Returned only in :class:`aiogram.methods.get_chat.GetChat`. Always returned in :class:`aiogram.methods.get_chat.GetChat`.
+    is_direct_messages: bool | None = None
+    """*Optional*. :code:`True`, if the chat is the direct messages chat of a channel"""
+    accent_color_id: int | None = Field(None, json_schema_extra={"deprecated": True})
+    """*Optional*. Identifier of the accent color for the chat name and backgrounds of the chat photo, reply header, and link preview. See `accent colors <https://core.telegram.org/bots/api#accent-colors>`_ for more details. Returned only in :class:`aiogram.methods.get_chat.GetChat`. Always returned in :class:`aiogram.methods.get_chat.GetChat`
 
 .. deprecated:: API:7.3
    https://core.telegram.org/bots/api-changelog#may-6-2024"""
-    active_usernames: Optional[list[str]] = Field(None, json_schema_extra={"deprecated": True})
-    """*Optional*. If non-empty, the list of all `active chat usernames <https://telegram.org/blog/topics-in-groups-collectible-usernames#collectible-usernames>`_; for private chats, supergroups and channels. Returned only in :class:`aiogram.methods.get_chat.GetChat`.
+    active_usernames: list[str] | None = Field(None, json_schema_extra={"deprecated": True})
+    """*Optional*. If non-empty, the list of all `active chat usernames <https://telegram.org/blog/topics-in-groups-collectible-usernames#collectible-usernames>`_; for private chats, supergroups and channels. Returned only in :class:`aiogram.methods.get_chat.GetChat`
 
 .. deprecated:: API:7.3
    https://core.telegram.org/bots/api-changelog#may-6-2024"""
-    available_reactions: Optional[list[ReactionTypeUnion]] = Field(
+    available_reactions: list[ReactionTypeUnion] | None = Field(
         None, json_schema_extra={"deprecated": True}
     )
-    """*Optional*. List of available reactions allowed in the chat. If omitted, then all `emoji reactions <https://core.telegram.org/bots/api#reactiontypeemoji>`_ are allowed. Returned only in :class:`aiogram.methods.get_chat.GetChat`.
+    """*Optional*. List of available reactions allowed in the chat. If omitted, then all `emoji reactions <https://core.telegram.org/bots/api#reactiontypeemoji>`_ are allowed. Returned only in :class:`aiogram.methods.get_chat.GetChat`
 
 .. deprecated:: API:7.3
    https://core.telegram.org/bots/api-changelog#may-6-2024"""
-    background_custom_emoji_id: Optional[str] = Field(None, json_schema_extra={"deprecated": True})
-    """*Optional*. Custom emoji identifier of emoji chosen by the chat for the reply header and link preview background. Returned only in :class:`aiogram.methods.get_chat.GetChat`.
+    background_custom_emoji_id: str | None = Field(None, json_schema_extra={"deprecated": True})
+    """*Optional*. Custom emoji identifier of emoji chosen by the chat for the reply header and link preview background. Returned only in :class:`aiogram.methods.get_chat.GetChat`
 
 .. deprecated:: API:7.3
    https://core.telegram.org/bots/api-changelog#may-6-2024"""
-    bio: Optional[str] = Field(None, json_schema_extra={"deprecated": True})
-    """*Optional*. Bio of the other party in a private chat. Returned only in :class:`aiogram.methods.get_chat.GetChat`.
+    bio: str | None = Field(None, json_schema_extra={"deprecated": True})
+    """*Optional*. Bio of the other party in a private chat. Returned only in :class:`aiogram.methods.get_chat.GetChat`
 
 .. deprecated:: API:7.3
    https://core.telegram.org/bots/api-changelog#may-6-2024"""
-    birthdate: Optional[Birthdate] = Field(None, json_schema_extra={"deprecated": True})
-    """*Optional*. For private chats, the date of birth of the user. Returned only in :class:`aiogram.methods.get_chat.GetChat`.
+    birthdate: Birthdate | None = Field(None, json_schema_extra={"deprecated": True})
+    """*Optional*. For private chats, the date of birth of the user. Returned only in :class:`aiogram.methods.get_chat.GetChat`
 
 .. deprecated:: API:7.3
    https://core.telegram.org/bots/api-changelog#may-6-2024"""
-    business_intro: Optional[BusinessIntro] = Field(None, json_schema_extra={"deprecated": True})
-    """*Optional*. For private chats with business accounts, the intro of the business. Returned only in :class:`aiogram.methods.get_chat.GetChat`.
+    business_intro: BusinessIntro | None = Field(None, json_schema_extra={"deprecated": True})
+    """*Optional*. For private chats with business accounts, the intro of the business. Returned only in :class:`aiogram.methods.get_chat.GetChat`
 
 .. deprecated:: API:7.3
    https://core.telegram.org/bots/api-changelog#may-6-2024"""
-    business_location: Optional[BusinessLocation] = Field(
+    business_location: BusinessLocation | None = Field(
         None, json_schema_extra={"deprecated": True}
     )
-    """*Optional*. For private chats with business accounts, the location of the business. Returned only in :class:`aiogram.methods.get_chat.GetChat`.
+    """*Optional*. For private chats with business accounts, the location of the business. Returned only in :class:`aiogram.methods.get_chat.GetChat`
 
 .. deprecated:: API:7.3
    https://core.telegram.org/bots/api-changelog#may-6-2024"""
-    business_opening_hours: Optional[BusinessOpeningHours] = Field(
+    business_opening_hours: BusinessOpeningHours | None = Field(
         None, json_schema_extra={"deprecated": True}
     )
-    """*Optional*. For private chats with business accounts, the opening hours of the business. Returned only in :class:`aiogram.methods.get_chat.GetChat`.
+    """*Optional*. For private chats with business accounts, the opening hours of the business. Returned only in :class:`aiogram.methods.get_chat.GetChat`
 
 .. deprecated:: API:7.3
    https://core.telegram.org/bots/api-changelog#may-6-2024"""
-    can_set_sticker_set: Optional[bool] = Field(None, json_schema_extra={"deprecated": True})
-    """*Optional*. :code:`True`, if the bot can change the group sticker set. Returned only in :class:`aiogram.methods.get_chat.GetChat`.
+    can_set_sticker_set: bool | None = Field(None, json_schema_extra={"deprecated": True})
+    """*Optional*. :code:`True`, if the bot can change the group sticker set. Returned only in :class:`aiogram.methods.get_chat.GetChat`
 
 .. deprecated:: API:7.3
    https://core.telegram.org/bots/api-changelog#may-6-2024"""
-    custom_emoji_sticker_set_name: Optional[str] = Field(
+    custom_emoji_sticker_set_name: str | None = Field(None, json_schema_extra={"deprecated": True})
+    """*Optional*. For supergroups, the name of the group's custom emoji sticker set. Custom emoji from this set can be used by all users and bots in the group. Returned only in :class:`aiogram.methods.get_chat.GetChat`
+
+.. deprecated:: API:7.3
+   https://core.telegram.org/bots/api-changelog#may-6-2024"""
+    description: str | None = Field(None, json_schema_extra={"deprecated": True})
+    """*Optional*. Description, for groups, supergroups and channel chats. Returned only in :class:`aiogram.methods.get_chat.GetChat`
+
+.. deprecated:: API:7.3
+   https://core.telegram.org/bots/api-changelog#may-6-2024"""
+    emoji_status_custom_emoji_id: str | None = Field(None, json_schema_extra={"deprecated": True})
+    """*Optional*. Custom emoji identifier of the emoji status of the chat or the other party in a private chat. Returned only in :class:`aiogram.methods.get_chat.GetChat`
+
+.. deprecated:: API:7.3
+   https://core.telegram.org/bots/api-changelog#may-6-2024"""
+    emoji_status_expiration_date: DateTime | None = Field(
         None, json_schema_extra={"deprecated": True}
     )
-    """*Optional*. For supergroups, the name of the group's custom emoji sticker set. Custom emoji from this set can be used by all users and bots in the group. Returned only in :class:`aiogram.methods.get_chat.GetChat`.
+    """*Optional*. Expiration date of the emoji status of the chat or the other party in a private chat, in Unix time, if any. Returned only in :class:`aiogram.methods.get_chat.GetChat`
 
 .. deprecated:: API:7.3
    https://core.telegram.org/bots/api-changelog#may-6-2024"""
-    description: Optional[str] = Field(None, json_schema_extra={"deprecated": True})
-    """*Optional*. Description, for groups, supergroups and channel chats. Returned only in :class:`aiogram.methods.get_chat.GetChat`.
-
-.. deprecated:: API:7.3
-   https://core.telegram.org/bots/api-changelog#may-6-2024"""
-    emoji_status_custom_emoji_id: Optional[str] = Field(
+    has_aggressive_anti_spam_enabled: bool | None = Field(
         None, json_schema_extra={"deprecated": True}
     )
-    """*Optional*. Custom emoji identifier of the emoji status of the chat or the other party in a private chat. Returned only in :class:`aiogram.methods.get_chat.GetChat`.
+    """*Optional*. :code:`True`, if aggressive anti-spam checks are enabled in the supergroup. The field is only available to chat administrators. Returned only in :class:`aiogram.methods.get_chat.GetChat`
 
 .. deprecated:: API:7.3
    https://core.telegram.org/bots/api-changelog#may-6-2024"""
-    emoji_status_expiration_date: Optional[DateTime] = Field(
+    has_hidden_members: bool | None = Field(None, json_schema_extra={"deprecated": True})
+    """*Optional*. :code:`True`, if non-administrators can only get the list of bots and administrators in the chat. Returned only in :class:`aiogram.methods.get_chat.GetChat`
+
+.. deprecated:: API:7.3
+   https://core.telegram.org/bots/api-changelog#may-6-2024"""
+    has_private_forwards: bool | None = Field(None, json_schema_extra={"deprecated": True})
+    """*Optional*. :code:`True`, if privacy settings of the other party in the private chat allows to use :code:`tg://user?id=<user_id>` links only in chats with the user. Returned only in :class:`aiogram.methods.get_chat.GetChat`
+
+.. deprecated:: API:7.3
+   https://core.telegram.org/bots/api-changelog#may-6-2024"""
+    has_protected_content: bool | None = Field(None, json_schema_extra={"deprecated": True})
+    """*Optional*. :code:`True`, if messages from the chat can't be forwarded to other chats. Returned only in :class:`aiogram.methods.get_chat.GetChat`
+
+.. deprecated:: API:7.3
+   https://core.telegram.org/bots/api-changelog#may-6-2024"""
+    has_restricted_voice_and_video_messages: bool | None = Field(
         None, json_schema_extra={"deprecated": True}
     )
-    """*Optional*. Expiration date of the emoji status of the chat or the other party in a private chat, in Unix time, if any. Returned only in :class:`aiogram.methods.get_chat.GetChat`.
+    """*Optional*. :code:`True`, if the privacy settings of the other party restrict sending voice and video note messages in the private chat. Returned only in :class:`aiogram.methods.get_chat.GetChat`
 
 .. deprecated:: API:7.3
    https://core.telegram.org/bots/api-changelog#may-6-2024"""
-    has_aggressive_anti_spam_enabled: Optional[bool] = Field(
+    has_visible_history: bool | None = Field(None, json_schema_extra={"deprecated": True})
+    """*Optional*. :code:`True`, if new chat members will have access to old messages; available only to chat administrators. Returned only in :class:`aiogram.methods.get_chat.GetChat`
+
+.. deprecated:: API:7.3
+   https://core.telegram.org/bots/api-changelog#may-6-2024"""
+    invite_link: str | None = Field(None, json_schema_extra={"deprecated": True})
+    """*Optional*. Primary invite link, for groups, supergroups and channel chats. Returned only in :class:`aiogram.methods.get_chat.GetChat`
+
+.. deprecated:: API:7.3
+   https://core.telegram.org/bots/api-changelog#may-6-2024"""
+    join_by_request: bool | None = Field(None, json_schema_extra={"deprecated": True})
+    """*Optional*. :code:`True`, if all users directly joining the supergroup need to be approved by supergroup administrators. Returned only in :class:`aiogram.methods.get_chat.GetChat`
+
+.. deprecated:: API:7.3
+   https://core.telegram.org/bots/api-changelog#may-6-2024"""
+    join_to_send_messages: bool | None = Field(None, json_schema_extra={"deprecated": True})
+    """*Optional*. :code:`True`, if users need to join the supergroup before they can send messages. Returned only in :class:`aiogram.methods.get_chat.GetChat`
+
+.. deprecated:: API:7.3
+   https://core.telegram.org/bots/api-changelog#may-6-2024"""
+    linked_chat_id: int | None = Field(None, json_schema_extra={"deprecated": True})
+    """*Optional*. Unique identifier for the linked chat, i.e. the discussion group identifier for a channel and vice versa; for supergroups and channel chats. This identifier may be greater than 32 bits and some programming languages may have difficulty/silent defects in interpreting it. But it is smaller than 52 bits, so a signed 64 bit integer or double-precision float type are safe for storing this identifier. Returned only in :class:`aiogram.methods.get_chat.GetChat`
+
+.. deprecated:: API:7.3
+   https://core.telegram.org/bots/api-changelog#may-6-2024"""
+    location: ChatLocation | None = Field(None, json_schema_extra={"deprecated": True})
+    """*Optional*. For supergroups, the location to which the supergroup is connected. Returned only in :class:`aiogram.methods.get_chat.GetChat`
+
+.. deprecated:: API:7.3
+   https://core.telegram.org/bots/api-changelog#may-6-2024"""
+    message_auto_delete_time: int | None = Field(None, json_schema_extra={"deprecated": True})
+    """*Optional*. The time after which all messages sent to the chat will be automatically deleted; in seconds. Returned only in :class:`aiogram.methods.get_chat.GetChat`
+
+.. deprecated:: API:7.3
+   https://core.telegram.org/bots/api-changelog#may-6-2024"""
+    permissions: ChatPermissions | None = Field(None, json_schema_extra={"deprecated": True})
+    """*Optional*. Default chat member permissions, for groups and supergroups. Returned only in :class:`aiogram.methods.get_chat.GetChat`
+
+.. deprecated:: API:7.3
+   https://core.telegram.org/bots/api-changelog#may-6-2024"""
+    personal_chat: Chat | None = Field(None, json_schema_extra={"deprecated": True})
+    """*Optional*. For private chats, the personal channel of the user. Returned only in :class:`aiogram.methods.get_chat.GetChat`
+
+.. deprecated:: API:7.3
+   https://core.telegram.org/bots/api-changelog#may-6-2024"""
+    photo: ChatPhoto | None = Field(None, json_schema_extra={"deprecated": True})
+    """*Optional*. Chat photo. Returned only in :class:`aiogram.methods.get_chat.GetChat`
+
+.. deprecated:: API:7.3
+   https://core.telegram.org/bots/api-changelog#may-6-2024"""
+    pinned_message: Message | None = Field(None, json_schema_extra={"deprecated": True})
+    """*Optional*. The most recent pinned message (by sending date). Returned only in :class:`aiogram.methods.get_chat.GetChat`
+
+.. deprecated:: API:7.3
+   https://core.telegram.org/bots/api-changelog#may-6-2024"""
+    profile_accent_color_id: int | None = Field(None, json_schema_extra={"deprecated": True})
+    """*Optional*. Identifier of the accent color for the chat's profile background. See `profile accent colors <https://core.telegram.org/bots/api#profile-accent-colors>`_ for more details. Returned only in :class:`aiogram.methods.get_chat.GetChat`
+
+.. deprecated:: API:7.3
+   https://core.telegram.org/bots/api-changelog#may-6-2024"""
+    profile_background_custom_emoji_id: str | None = Field(
         None, json_schema_extra={"deprecated": True}
     )
-    """*Optional*. :code:`True`, if aggressive anti-spam checks are enabled in the supergroup. The field is only available to chat administrators. Returned only in :class:`aiogram.methods.get_chat.GetChat`.
+    """*Optional*. Custom emoji identifier of the emoji chosen by the chat for its profile background. Returned only in :class:`aiogram.methods.get_chat.GetChat`
 
 .. deprecated:: API:7.3
    https://core.telegram.org/bots/api-changelog#may-6-2024"""
-    has_hidden_members: Optional[bool] = Field(None, json_schema_extra={"deprecated": True})
-    """*Optional*. :code:`True`, if non-administrators can only get the list of bots and administrators in the chat. Returned only in :class:`aiogram.methods.get_chat.GetChat`.
+    slow_mode_delay: int | None = Field(None, json_schema_extra={"deprecated": True})
+    """*Optional*. For supergroups, the minimum allowed delay between consecutive messages sent by each unprivileged user; in seconds. Returned only in :class:`aiogram.methods.get_chat.GetChat`
 
 .. deprecated:: API:7.3
    https://core.telegram.org/bots/api-changelog#may-6-2024"""
-    has_private_forwards: Optional[bool] = Field(None, json_schema_extra={"deprecated": True})
-    """*Optional*. :code:`True`, if privacy settings of the other party in the private chat allows to use :code:`tg://user?id=<user_id>` links only in chats with the user. Returned only in :class:`aiogram.methods.get_chat.GetChat`.
+    sticker_set_name: str | None = Field(None, json_schema_extra={"deprecated": True})
+    """*Optional*. For supergroups, name of group sticker set. Returned only in :class:`aiogram.methods.get_chat.GetChat`
 
 .. deprecated:: API:7.3
    https://core.telegram.org/bots/api-changelog#may-6-2024"""
-    has_protected_content: Optional[bool] = Field(None, json_schema_extra={"deprecated": True})
-    """*Optional*. :code:`True`, if messages from the chat can't be forwarded to other chats. Returned only in :class:`aiogram.methods.get_chat.GetChat`.
-
-.. deprecated:: API:7.3
-   https://core.telegram.org/bots/api-changelog#may-6-2024"""
-    has_restricted_voice_and_video_messages: Optional[bool] = Field(
-        None, json_schema_extra={"deprecated": True}
-    )
-    """*Optional*. :code:`True`, if the privacy settings of the other party restrict sending voice and video note messages in the private chat. Returned only in :class:`aiogram.methods.get_chat.GetChat`.
-
-.. deprecated:: API:7.3
-   https://core.telegram.org/bots/api-changelog#may-6-2024"""
-    has_visible_history: Optional[bool] = Field(None, json_schema_extra={"deprecated": True})
-    """*Optional*. :code:`True`, if new chat members will have access to old messages; available only to chat administrators. Returned only in :class:`aiogram.methods.get_chat.GetChat`.
-
-.. deprecated:: API:7.3
-   https://core.telegram.org/bots/api-changelog#may-6-2024"""
-    invite_link: Optional[str] = Field(None, json_schema_extra={"deprecated": True})
-    """*Optional*. Primary invite link, for groups, supergroups and channel chats. Returned only in :class:`aiogram.methods.get_chat.GetChat`.
-
-.. deprecated:: API:7.3
-   https://core.telegram.org/bots/api-changelog#may-6-2024"""
-    join_by_request: Optional[bool] = Field(None, json_schema_extra={"deprecated": True})
-    """*Optional*. :code:`True`, if all users directly joining the supergroup need to be approved by supergroup administrators. Returned only in :class:`aiogram.methods.get_chat.GetChat`.
-
-.. deprecated:: API:7.3
-   https://core.telegram.org/bots/api-changelog#may-6-2024"""
-    join_to_send_messages: Optional[bool] = Field(None, json_schema_extra={"deprecated": True})
-    """*Optional*. :code:`True`, if users need to join the supergroup before they can send messages. Returned only in :class:`aiogram.methods.get_chat.GetChat`.
-
-.. deprecated:: API:7.3
-   https://core.telegram.org/bots/api-changelog#may-6-2024"""
-    linked_chat_id: Optional[int] = Field(None, json_schema_extra={"deprecated": True})
-    """*Optional*. Unique identifier for the linked chat, i.e. the discussion group identifier for a channel and vice versa; for supergroups and channel chats. This identifier may be greater than 32 bits and some programming languages may have difficulty/silent defects in interpreting it. But it is smaller than 52 bits, so a signed 64 bit integer or double-precision float type are safe for storing this identifier. Returned only in :class:`aiogram.methods.get_chat.GetChat`.
-
-.. deprecated:: API:7.3
-   https://core.telegram.org/bots/api-changelog#may-6-2024"""
-    location: Optional[ChatLocation] = Field(None, json_schema_extra={"deprecated": True})
-    """*Optional*. For supergroups, the location to which the supergroup is connected. Returned only in :class:`aiogram.methods.get_chat.GetChat`.
-
-.. deprecated:: API:7.3
-   https://core.telegram.org/bots/api-changelog#may-6-2024"""
-    message_auto_delete_time: Optional[int] = Field(None, json_schema_extra={"deprecated": True})
-    """*Optional*. The time after which all messages sent to the chat will be automatically deleted; in seconds. Returned only in :class:`aiogram.methods.get_chat.GetChat`.
-
-.. deprecated:: API:7.3
-   https://core.telegram.org/bots/api-changelog#may-6-2024"""
-    permissions: Optional[ChatPermissions] = Field(None, json_schema_extra={"deprecated": True})
-    """*Optional*. Default chat member permissions, for groups and supergroups. Returned only in :class:`aiogram.methods.get_chat.GetChat`.
-
-.. deprecated:: API:7.3
-   https://core.telegram.org/bots/api-changelog#may-6-2024"""
-    personal_chat: Optional[Chat] = Field(None, json_schema_extra={"deprecated": True})
-    """*Optional*. For private chats, the personal channel of the user. Returned only in :class:`aiogram.methods.get_chat.GetChat`.
-
-.. deprecated:: API:7.3
-   https://core.telegram.org/bots/api-changelog#may-6-2024"""
-    photo: Optional[ChatPhoto] = Field(None, json_schema_extra={"deprecated": True})
-    """*Optional*. Chat photo. Returned only in :class:`aiogram.methods.get_chat.GetChat`.
-
-.. deprecated:: API:7.3
-   https://core.telegram.org/bots/api-changelog#may-6-2024"""
-    pinned_message: Optional[Message] = Field(None, json_schema_extra={"deprecated": True})
-    """*Optional*. The most recent pinned message (by sending date). Returned only in :class:`aiogram.methods.get_chat.GetChat`.
-
-.. deprecated:: API:7.3
-   https://core.telegram.org/bots/api-changelog#may-6-2024"""
-    profile_accent_color_id: Optional[int] = Field(None, json_schema_extra={"deprecated": True})
-    """*Optional*. Identifier of the accent color for the chat's profile background. See `profile accent colors <https://core.telegram.org/bots/api#profile-accent-colors>`_ for more details. Returned only in :class:`aiogram.methods.get_chat.GetChat`.
-
-.. deprecated:: API:7.3
-   https://core.telegram.org/bots/api-changelog#may-6-2024"""
-    profile_background_custom_emoji_id: Optional[str] = Field(
-        None, json_schema_extra={"deprecated": True}
-    )
-    """*Optional*. Custom emoji identifier of the emoji chosen by the chat for its profile background. Returned only in :class:`aiogram.methods.get_chat.GetChat`.
-
-.. deprecated:: API:7.3
-   https://core.telegram.org/bots/api-changelog#may-6-2024"""
-    slow_mode_delay: Optional[int] = Field(None, json_schema_extra={"deprecated": True})
-    """*Optional*. For supergroups, the minimum allowed delay between consecutive messages sent by each unprivileged user; in seconds. Returned only in :class:`aiogram.methods.get_chat.GetChat`.
-
-.. deprecated:: API:7.3
-   https://core.telegram.org/bots/api-changelog#may-6-2024"""
-    sticker_set_name: Optional[str] = Field(None, json_schema_extra={"deprecated": True})
-    """*Optional*. For supergroups, name of group sticker set. Returned only in :class:`aiogram.methods.get_chat.GetChat`.
-
-.. deprecated:: API:7.3
-   https://core.telegram.org/bots/api-changelog#may-6-2024"""
-    unrestrict_boost_count: Optional[int] = Field(None, json_schema_extra={"deprecated": True})
-    """*Optional*. For supergroups, the minimum number of boosts that a non-administrator user needs to add in order to ignore slow mode and chat permissions. Returned only in :class:`aiogram.methods.get_chat.GetChat`.
+    unrestrict_boost_count: int | None = Field(None, json_schema_extra={"deprecated": True})
+    """*Optional*. For supergroups, the minimum number of boosts that a non-administrator user needs to add in order to ignore slow mode and chat permissions. Returned only in :class:`aiogram.methods.get_chat.GetChat`
 
 .. deprecated:: API:7.3
    https://core.telegram.org/bots/api-changelog#may-6-2024"""
@@ -275,46 +274,47 @@ class Chat(TelegramObject):
             *,
             id: int,
             type: str,
-            title: Optional[str] = None,
-            username: Optional[str] = None,
-            first_name: Optional[str] = None,
-            last_name: Optional[str] = None,
-            is_forum: Optional[bool] = None,
-            accent_color_id: Optional[int] = None,
-            active_usernames: Optional[list[str]] = None,
-            available_reactions: Optional[list[ReactionTypeUnion]] = None,
-            background_custom_emoji_id: Optional[str] = None,
-            bio: Optional[str] = None,
-            birthdate: Optional[Birthdate] = None,
-            business_intro: Optional[BusinessIntro] = None,
-            business_location: Optional[BusinessLocation] = None,
-            business_opening_hours: Optional[BusinessOpeningHours] = None,
-            can_set_sticker_set: Optional[bool] = None,
-            custom_emoji_sticker_set_name: Optional[str] = None,
-            description: Optional[str] = None,
-            emoji_status_custom_emoji_id: Optional[str] = None,
-            emoji_status_expiration_date: Optional[DateTime] = None,
-            has_aggressive_anti_spam_enabled: Optional[bool] = None,
-            has_hidden_members: Optional[bool] = None,
-            has_private_forwards: Optional[bool] = None,
-            has_protected_content: Optional[bool] = None,
-            has_restricted_voice_and_video_messages: Optional[bool] = None,
-            has_visible_history: Optional[bool] = None,
-            invite_link: Optional[str] = None,
-            join_by_request: Optional[bool] = None,
-            join_to_send_messages: Optional[bool] = None,
-            linked_chat_id: Optional[int] = None,
-            location: Optional[ChatLocation] = None,
-            message_auto_delete_time: Optional[int] = None,
-            permissions: Optional[ChatPermissions] = None,
-            personal_chat: Optional[Chat] = None,
-            photo: Optional[ChatPhoto] = None,
-            pinned_message: Optional[Message] = None,
-            profile_accent_color_id: Optional[int] = None,
-            profile_background_custom_emoji_id: Optional[str] = None,
-            slow_mode_delay: Optional[int] = None,
-            sticker_set_name: Optional[str] = None,
-            unrestrict_boost_count: Optional[int] = None,
+            title: str | None = None,
+            username: str | None = None,
+            first_name: str | None = None,
+            last_name: str | None = None,
+            is_forum: bool | None = None,
+            is_direct_messages: bool | None = None,
+            accent_color_id: int | None = None,
+            active_usernames: list[str] | None = None,
+            available_reactions: list[ReactionTypeUnion] | None = None,
+            background_custom_emoji_id: str | None = None,
+            bio: str | None = None,
+            birthdate: Birthdate | None = None,
+            business_intro: BusinessIntro | None = None,
+            business_location: BusinessLocation | None = None,
+            business_opening_hours: BusinessOpeningHours | None = None,
+            can_set_sticker_set: bool | None = None,
+            custom_emoji_sticker_set_name: str | None = None,
+            description: str | None = None,
+            emoji_status_custom_emoji_id: str | None = None,
+            emoji_status_expiration_date: DateTime | None = None,
+            has_aggressive_anti_spam_enabled: bool | None = None,
+            has_hidden_members: bool | None = None,
+            has_private_forwards: bool | None = None,
+            has_protected_content: bool | None = None,
+            has_restricted_voice_and_video_messages: bool | None = None,
+            has_visible_history: bool | None = None,
+            invite_link: str | None = None,
+            join_by_request: bool | None = None,
+            join_to_send_messages: bool | None = None,
+            linked_chat_id: int | None = None,
+            location: ChatLocation | None = None,
+            message_auto_delete_time: int | None = None,
+            permissions: ChatPermissions | None = None,
+            personal_chat: Chat | None = None,
+            photo: ChatPhoto | None = None,
+            pinned_message: Message | None = None,
+            profile_accent_color_id: int | None = None,
+            profile_background_custom_emoji_id: str | None = None,
+            slow_mode_delay: int | None = None,
+            sticker_set_name: str | None = None,
+            unrestrict_boost_count: int | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!
@@ -329,6 +329,7 @@ class Chat(TelegramObject):
                 first_name=first_name,
                 last_name=last_name,
                 is_forum=is_forum,
+                is_direct_messages=is_direct_messages,
                 accent_color_id=accent_color_id,
                 active_usernames=active_usernames,
                 available_reactions=available_reactions,
@@ -458,6 +459,7 @@ class Chat(TelegramObject):
 
     def get_administrators(
         self,
+        return_bots: bool | None = None,
         **kwargs: Any,
     ) -> GetChatAdministrators:
         """
@@ -466,10 +468,11 @@ class Chat(TelegramObject):
 
         - :code:`chat_id`
 
-        Use this method to get a list of administrators in a chat, which aren't bots. Returns an Array of :class:`aiogram.types.chat_member.ChatMember` objects.
+        Use this method to get a list of administrators in a chat. Returns an Array of :class:`aiogram.types.chat_member.ChatMember` objects.
 
         Source: https://core.telegram.org/bots/api#getchatadministrators
 
+        :param return_bots: Pass :code:`True` to additionally receive all bots that are administrators of the chat. By default, bots other than the current bot are omitted
         :return: instance of method :class:`aiogram.methods.get_chat_administrators.GetChatAdministrators`
         """
         # DO NOT EDIT MANUALLY!!!
@@ -479,6 +482,7 @@ class Chat(TelegramObject):
 
         return GetChatAdministrators(
             chat_id=self.id,
+            return_bots=return_bots,
             **kwargs,
         ).as_(self._bot)
 
@@ -509,7 +513,9 @@ class Chat(TelegramObject):
 
         - If the bot is an administrator of a group, it can delete any message there.
 
-        - If the bot has *can_delete_messages* permission in a supergroup or a channel, it can delete any message there.
+        - If the bot has *can_delete_messages* administrator right in a supergroup or a channel, it can delete any message there.
+
+        - If the bot has *can_manage_direct_messages* administrator right in a channel, it can delete any message in the corresponding direct messages chat.
 
         Returns :code:`True` on success.
 
@@ -561,10 +567,10 @@ class Chat(TelegramObject):
     def edit_invite_link(
         self,
         invite_link: str,
-        name: Optional[str] = None,
-        expire_date: Optional[DateTimeUnion] = None,
-        member_limit: Optional[int] = None,
-        creates_join_request: Optional[bool] = None,
+        name: str | None = None,
+        expire_date: DateTimeUnion | None = None,
+        member_limit: int | None = None,
+        creates_join_request: bool | None = None,
         **kwargs: Any,
     ) -> EditChatInviteLink:
         """
@@ -601,10 +607,10 @@ class Chat(TelegramObject):
 
     def create_invite_link(
         self,
-        name: Optional[str] = None,
-        expire_date: Optional[DateTimeUnion] = None,
-        member_limit: Optional[int] = None,
-        creates_join_request: Optional[bool] = None,
+        name: str | None = None,
+        expire_date: DateTimeUnion | None = None,
+        member_limit: int | None = None,
+        creates_join_request: bool | None = None,
         **kwargs: Any,
     ) -> CreateChatInviteLink:
         """
@@ -668,8 +674,8 @@ class Chat(TelegramObject):
     def do(
         self,
         action: str,
-        business_connection_id: Optional[str] = None,
-        message_thread_id: Optional[int] = None,
+        business_connection_id: str | None = None,
+        message_thread_id: int | None = None,
         **kwargs: Any,
     ) -> SendChatAction:
         """
@@ -686,9 +692,9 @@ class Chat(TelegramObject):
 
         Source: https://core.telegram.org/bots/api#sendchataction
 
-        :param action: Type of action to broadcast. Choose one, depending on what the user is about to receive: *typing* for `text messages <https://core.telegram.org/bots/api#sendmessage>`_, *upload_photo* for `photos <https://core.telegram.org/bots/api#sendphoto>`_, *record_video* or *upload_video* for `videos <https://core.telegram.org/bots/api#sendvideo>`_, *record_voice* or *upload_voice* for `voice notes <https://core.telegram.org/bots/api#sendvoice>`_, *upload_document* for `general files <https://core.telegram.org/bots/api#senddocument>`_, *choose_sticker* for `stickers <https://core.telegram.org/bots/api#sendsticker>`_, *find_location* for `location data <https://core.telegram.org/bots/api#sendlocation>`_, *record_video_note* or *upload_video_note* for `video notes <https://core.telegram.org/bots/api#sendvideonote>`_.
+        :param action: Type of action to broadcast. Choose one, depending on what the user is about to receive: *typing* for `text messages <https://core.telegram.org/bots/api#sendmessage>`_, *upload_photo* for `photos <https://core.telegram.org/bots/api#sendphoto>`_, *record_video* or *upload_video* for `videos <https://core.telegram.org/bots/api#sendvideo>`_, *record_voice* or *upload_voice* for `voice notes <https://core.telegram.org/bots/api#sendvoice>`_, *upload_document* for `general files <https://core.telegram.org/bots/api#senddocument>`_, *choose_sticker* for `stickers <https://core.telegram.org/bots/api#sendsticker>`_, *find_location* for `location data <https://core.telegram.org/bots/api#sendlocation>`_, *record_video_note* or *upload_video_note* for `video notes <https://core.telegram.org/bots/api#sendvideonote>`_
         :param business_connection_id: Unique identifier of the business connection on behalf of which the action will be sent
-        :param message_thread_id: Unique identifier for the target message thread; for supergroups only
+        :param message_thread_id: Unique identifier for the target message thread or topic of a forum; for supergroups and private chats of bots with forum topic mode enabled only
         :return: instance of method :class:`aiogram.methods.send_chat_action.SendChatAction`
         """
         # DO NOT EDIT MANUALLY!!!
@@ -850,7 +856,7 @@ class Chat(TelegramObject):
 
         - :code:`chat_id`
 
-        Use this method to clear the list of pinned messages in a chat. If the chat is not a private chat, the bot must be an administrator in the chat for this to work and must have the 'can_pin_messages' administrator right in a supergroup or 'can_edit_messages' administrator right in a channel. Returns :code:`True` on success.
+        Use this method to clear the list of pinned messages in a chat. In private chats and channel direct messages chats, no additional rights are required to unpin all pinned messages. Conversely, the bot must be an administrator with the 'can_pin_messages' right or the 'can_edit_messages' right to unpin all pinned messages in groups and channels respectively. Returns :code:`True` on success.
 
         Source: https://core.telegram.org/bots/api#unpinallchatmessages
 
@@ -868,8 +874,8 @@ class Chat(TelegramObject):
 
     def unpin_message(
         self,
-        business_connection_id: Optional[str] = None,
-        message_id: Optional[int] = None,
+        business_connection_id: str | None = None,
+        message_id: int | None = None,
         **kwargs: Any,
     ) -> UnpinChatMessage:
         """
@@ -878,12 +884,12 @@ class Chat(TelegramObject):
 
         - :code:`chat_id`
 
-        Use this method to remove a message from the list of pinned messages in a chat. If the chat is not a private chat, the bot must be an administrator in the chat for this to work and must have the 'can_pin_messages' administrator right in a supergroup or 'can_edit_messages' administrator right in a channel. Returns :code:`True` on success.
+        Use this method to remove a message from the list of pinned messages in a chat. In private chats and channel direct messages chats, all messages can be unpinned. Conversely, the bot must be an administrator with the 'can_pin_messages' right or the 'can_edit_messages' right to unpin messages in groups and channels respectively. Returns :code:`True` on success.
 
         Source: https://core.telegram.org/bots/api#unpinchatmessage
 
         :param business_connection_id: Unique identifier of the business connection on behalf of which the message will be unpinned
-        :param message_id: Identifier of the message to unpin. Required if *business_connection_id* is specified. If not specified, the most recent pinned message (by sending date) will be unpinned.
+        :param message_id: Identifier of the message to unpin. Required if *business_connection_id* is specified. If not specified, the most recent pinned message (by sending date) will be unpinned
         :return: instance of method :class:`aiogram.methods.unpin_chat_message.UnpinChatMessage`
         """
         # DO NOT EDIT MANUALLY!!!
@@ -901,8 +907,8 @@ class Chat(TelegramObject):
     def pin_message(
         self,
         message_id: int,
-        business_connection_id: Optional[str] = None,
-        disable_notification: Optional[bool] = None,
+        business_connection_id: str | None = None,
+        disable_notification: bool | None = None,
         **kwargs: Any,
     ) -> PinChatMessage:
         """
@@ -911,13 +917,13 @@ class Chat(TelegramObject):
 
         - :code:`chat_id`
 
-        Use this method to add a message to the list of pinned messages in a chat. If the chat is not a private chat, the bot must be an administrator in the chat for this to work and must have the 'can_pin_messages' administrator right in a supergroup or 'can_edit_messages' administrator right in a channel. Returns :code:`True` on success.
+        Use this method to add a message to the list of pinned messages in a chat. In private chats and channel direct messages chats, all non-service messages can be pinned. Conversely, the bot must be an administrator with the 'can_pin_messages' right or the 'can_edit_messages' right to pin messages in groups and channels respectively. Returns :code:`True` on success.
 
         Source: https://core.telegram.org/bots/api#pinchatmessage
 
         :param message_id: Identifier of a message to pin
         :param business_connection_id: Unique identifier of the business connection on behalf of which the message will be pinned
-        :param disable_notification: Pass :code:`True` if it is not necessary to send a notification to all chat members about the new pinned message. Notifications are always disabled in channels and private chats.
+        :param disable_notification: Pass :code:`True` if it is not necessary to send a notification to all chat members about the new pinned message. Notifications are always disabled in channels and private chats
         :return: instance of method :class:`aiogram.methods.pin_chat_message.PinChatMessage`
         """
         # DO NOT EDIT MANUALLY!!!
@@ -965,10 +971,42 @@ class Chat(TelegramObject):
             **kwargs,
         ).as_(self._bot)
 
+    def set_member_tag(
+        self,
+        user_id: int,
+        tag: str | None = None,
+        **kwargs: Any,
+    ) -> SetChatMemberTag:
+        """
+        Shortcut for method :class:`aiogram.methods.set_chat_member_tag.SetChatMemberTag`
+        will automatically fill method attributes:
+
+        - :code:`chat_id`
+
+        Use this method to set a tag for a regular member in a group or a supergroup. The bot must be an administrator in the chat for this to work and must have the *can_manage_tags* administrator right. Returns :code:`True` on success.
+
+        Source: https://core.telegram.org/bots/api#setchatmembertag
+
+        :param user_id: Unique identifier of the target user
+        :param tag: New tag for the member; 0-16 characters, emoji are not allowed
+        :return: instance of method :class:`aiogram.methods.set_chat_member_tag.SetChatMemberTag`
+        """
+        # DO NOT EDIT MANUALLY!!!
+        # This method was auto-generated via `butcher`
+
+        from aiogram.methods import SetChatMemberTag
+
+        return SetChatMemberTag(
+            chat_id=self.id,
+            user_id=user_id,
+            tag=tag,
+            **kwargs,
+        ).as_(self._bot)
+
     def set_permissions(
         self,
         permissions: ChatPermissions,
-        use_independent_chat_permissions: Optional[bool] = None,
+        use_independent_chat_permissions: bool | None = None,
         **kwargs: Any,
     ) -> SetChatPermissions:
         """
@@ -982,7 +1020,7 @@ class Chat(TelegramObject):
         Source: https://core.telegram.org/bots/api#setchatpermissions
 
         :param permissions: A JSON-serialized object for new default chat permissions
-        :param use_independent_chat_permissions: Pass :code:`True` if chat permissions are set independently. Otherwise, the *can_send_other_messages* and *can_add_web_page_previews* permissions will imply the *can_send_messages*, *can_send_audios*, *can_send_documents*, *can_send_photos*, *can_send_videos*, *can_send_video_notes*, and *can_send_voice_notes* permissions; the *can_send_polls* permission will imply the *can_send_messages* permission.
+        :param use_independent_chat_permissions: Pass :code:`True` if chat permissions are set independently. Otherwise, the *can_send_other_messages* and *can_add_web_page_previews* permissions will imply the *can_send_messages*, *can_send_audios*, *can_send_documents*, *can_send_photos*, *can_send_videos*, *can_send_video_notes*, and *can_send_voice_notes* permissions; the *can_send_polls* permission will imply the *can_send_messages* permission
         :return: instance of method :class:`aiogram.methods.set_chat_permissions.SetChatPermissions`
         """
         # DO NOT EDIT MANUALLY!!!
@@ -1000,21 +1038,23 @@ class Chat(TelegramObject):
     def promote(
         self,
         user_id: int,
-        is_anonymous: Optional[bool] = None,
-        can_manage_chat: Optional[bool] = None,
-        can_delete_messages: Optional[bool] = None,
-        can_manage_video_chats: Optional[bool] = None,
-        can_restrict_members: Optional[bool] = None,
-        can_promote_members: Optional[bool] = None,
-        can_change_info: Optional[bool] = None,
-        can_invite_users: Optional[bool] = None,
-        can_post_stories: Optional[bool] = None,
-        can_edit_stories: Optional[bool] = None,
-        can_delete_stories: Optional[bool] = None,
-        can_post_messages: Optional[bool] = None,
-        can_edit_messages: Optional[bool] = None,
-        can_pin_messages: Optional[bool] = None,
-        can_manage_topics: Optional[bool] = None,
+        is_anonymous: bool | None = None,
+        can_manage_chat: bool | None = None,
+        can_delete_messages: bool | None = None,
+        can_manage_video_chats: bool | None = None,
+        can_restrict_members: bool | None = None,
+        can_promote_members: bool | None = None,
+        can_change_info: bool | None = None,
+        can_invite_users: bool | None = None,
+        can_post_stories: bool | None = None,
+        can_edit_stories: bool | None = None,
+        can_delete_stories: bool | None = None,
+        can_post_messages: bool | None = None,
+        can_edit_messages: bool | None = None,
+        can_pin_messages: bool | None = None,
+        can_manage_topics: bool | None = None,
+        can_manage_direct_messages: bool | None = None,
+        can_manage_tags: bool | None = None,
         **kwargs: Any,
     ) -> PromoteChatMember:
         """
@@ -1029,10 +1069,10 @@ class Chat(TelegramObject):
 
         :param user_id: Unique identifier of the target user
         :param is_anonymous: Pass :code:`True` if the administrator's presence in the chat is hidden
-        :param can_manage_chat: Pass :code:`True` if the administrator can access the chat event log, get boost list, see hidden supergroup and channel members, report spam messages, ignore slow mode, and send messages to the chat without paying Telegram Stars. Implied by any other administrator privilege.
+        :param can_manage_chat: Pass :code:`True` if the administrator can access the chat event log, get boost list, see hidden supergroup and channel members, report spam messages, ignore slow mode, and send messages to the chat without paying Telegram Stars. Implied by any other administrator privilege
         :param can_delete_messages: Pass :code:`True` if the administrator can delete messages of other users
         :param can_manage_video_chats: Pass :code:`True` if the administrator can manage video chats
-        :param can_restrict_members: Pass :code:`True` if the administrator can restrict, ban or unban chat members, or access supergroup statistics
+        :param can_restrict_members: Pass :code:`True` if the administrator can restrict, ban or unban chat members, or access supergroup statistics. For backward compatibility, defaults to :code:`True` for promotions of channel administrators
         :param can_promote_members: Pass :code:`True` if the administrator can add new administrators with a subset of their own privileges or demote administrators that they have promoted, directly or indirectly (promoted by administrators that were appointed by him)
         :param can_change_info: Pass :code:`True` if the administrator can change chat title, photo and other settings
         :param can_invite_users: Pass :code:`True` if the administrator can invite new users to the chat
@@ -1043,6 +1083,8 @@ class Chat(TelegramObject):
         :param can_edit_messages: Pass :code:`True` if the administrator can edit messages of other users and can pin messages; for channels only
         :param can_pin_messages: Pass :code:`True` if the administrator can pin messages; for supergroups only
         :param can_manage_topics: Pass :code:`True` if the user is allowed to create, rename, close, and reopen forum topics; for supergroups only
+        :param can_manage_direct_messages: Pass :code:`True` if the administrator can manage direct messages within the channel and decline suggested posts; for channels only
+        :param can_manage_tags: Pass :code:`True` if the administrator can edit the tags of regular members; for groups and supergroups only
         :return: instance of method :class:`aiogram.methods.promote_chat_member.PromoteChatMember`
         """
         # DO NOT EDIT MANUALLY!!!
@@ -1068,6 +1110,8 @@ class Chat(TelegramObject):
             can_edit_messages=can_edit_messages,
             can_pin_messages=can_pin_messages,
             can_manage_topics=can_manage_topics,
+            can_manage_direct_messages=can_manage_direct_messages,
+            can_manage_tags=can_manage_tags,
             **kwargs,
         ).as_(self._bot)
 
@@ -1075,8 +1119,8 @@ class Chat(TelegramObject):
         self,
         user_id: int,
         permissions: ChatPermissions,
-        use_independent_chat_permissions: Optional[bool] = None,
-        until_date: Optional[DateTimeUnion] = None,
+        use_independent_chat_permissions: bool | None = None,
+        until_date: DateTimeUnion | None = None,
         **kwargs: Any,
     ) -> RestrictChatMember:
         """
@@ -1091,7 +1135,7 @@ class Chat(TelegramObject):
 
         :param user_id: Unique identifier of the target user
         :param permissions: A JSON-serialized object for new user permissions
-        :param use_independent_chat_permissions: Pass :code:`True` if chat permissions are set independently. Otherwise, the *can_send_other_messages* and *can_add_web_page_previews* permissions will imply the *can_send_messages*, *can_send_audios*, *can_send_documents*, *can_send_photos*, *can_send_videos*, *can_send_video_notes*, and *can_send_voice_notes* permissions; the *can_send_polls* permission will imply the *can_send_messages* permission.
+        :param use_independent_chat_permissions: Pass :code:`True` if chat permissions are set independently. Otherwise, the *can_send_other_messages* and *can_add_web_page_previews* permissions will imply the *can_send_messages*, *can_send_audios*, *can_send_documents*, *can_send_photos*, *can_send_videos*, *can_send_video_notes*, and *can_send_voice_notes* permissions; the *can_send_polls* permission will imply the *can_send_messages* permission
         :param until_date: Date when restrictions will be lifted for the user; Unix time. If user is restricted for more than 366 days or less than 30 seconds from the current time, they are considered to be restricted forever
         :return: instance of method :class:`aiogram.methods.restrict_chat_member.RestrictChatMember`
         """
@@ -1112,7 +1156,7 @@ class Chat(TelegramObject):
     def unban(
         self,
         user_id: int,
-        only_if_banned: Optional[bool] = None,
+        only_if_banned: bool | None = None,
         **kwargs: Any,
     ) -> UnbanChatMember:
         """
@@ -1144,8 +1188,8 @@ class Chat(TelegramObject):
     def ban(
         self,
         user_id: int,
-        until_date: Optional[DateTimeUnion] = None,
-        revoke_messages: Optional[bool] = None,
+        until_date: DateTimeUnion | None = None,
+        revoke_messages: bool | None = None,
         **kwargs: Any,
     ) -> BanChatMember:
         """
@@ -1159,8 +1203,8 @@ class Chat(TelegramObject):
         Source: https://core.telegram.org/bots/api#banchatmember
 
         :param user_id: Unique identifier of the target user
-        :param until_date: Date when the user will be unbanned; Unix time. If user is banned for more than 366 days or less than 30 seconds from the current time they are considered to be banned forever. Applied for supergroups and channels only.
-        :param revoke_messages: Pass :code:`True` to delete all messages from the chat for the user that is being removed. If :code:`False`, the user will be able to see messages in the group that were sent before the user was removed. Always :code:`True` for supergroups and channels.
+        :param until_date: Date when the user will be unbanned; Unix time. If user is banned for more than 366 days or less than 30 seconds from the current time they are considered to be banned forever. Applied for supergroups and channels only
+        :param revoke_messages: Pass :code:`True` to delete all messages from the chat for the user that is being removed. If :code:`False`, the user will be able to see messages in the group that were sent before the user was removed. Always :code:`True` for supergroups and channels
         :return: instance of method :class:`aiogram.methods.ban_chat_member.BanChatMember`
         """
         # DO NOT EDIT MANUALLY!!!
@@ -1178,7 +1222,7 @@ class Chat(TelegramObject):
 
     def set_description(
         self,
-        description: Optional[str] = None,
+        description: str | None = None,
         **kwargs: Any,
     ) -> SetChatDescription:
         """

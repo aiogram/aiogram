@@ -12,7 +12,7 @@ class TestPreCheckoutQuery:
             invoice_payload="payload",
         )
 
-        kwargs = dict(ok=True, error_message="foo")
+        kwargs = {"ok": True, "error_message": "foo"}
 
         api_method = pre_checkout_query.answer(**kwargs)
 

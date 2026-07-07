@@ -1,5 +1,4 @@
 import datetime
-from typing import Optional
 
 import pytest
 
@@ -31,9 +30,9 @@ class TestGetMessageUrl:
         bot: MockedBot,
         chat_type: str,
         chat_id: int,
-        chat_username: Optional[str],
+        chat_username: str | None,
         force_private: bool,
-        expected_result: Optional[str],
+        expected_result: str | None,
     ):
         fake_chat = Chat(id=chat_id, username=chat_username, type=chat_type)
         fake_message_id = 10
@@ -80,11 +79,11 @@ class TestGetMessageUrl:
     def test_get_url_if_topic_message(
         self,
         bot: MockedBot,
-        chat_username: Optional[str],
+        chat_username: str | None,
         force_private: bool,
         include_thread_id: bool,
-        fake_thread_id_topic: Optional[int],
-        expected_result: Optional[str],
+        fake_thread_id_topic: int | None,
+        expected_result: str | None,
     ):
         fake_message_id = 10
         fake_chat_id = -1001234567890

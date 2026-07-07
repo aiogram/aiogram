@@ -1,14 +1,16 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Awaitable, Callable, Dict, cast
+from collections.abc import Awaitable, Callable
+from typing import TYPE_CHECKING, Any, cast
 
-from ...types import TelegramObject, Update
-from ...types.error_event import ErrorEvent
-from ..event.bases import UNHANDLED, CancelHandler, SkipHandler
+from aiogram.dispatcher.event.bases import UNHANDLED, CancelHandler, SkipHandler
+from aiogram.types import TelegramObject, Update
+from aiogram.types.error_event import ErrorEvent
+
 from .base import BaseMiddleware
 
 if TYPE_CHECKING:
-    from ..router import Router
+    from aiogram.dispatcher.router import Router
 
 
 class ErrorsMiddleware(BaseMiddleware):
@@ -17,9 +19,9 @@ class ErrorsMiddleware(BaseMiddleware):
 
     async def __call__(
         self,
-        handler: Callable[[TelegramObject, Dict[str, Any]], Awaitable[Any]],
+        handler: Callable[[TelegramObject, dict[str, Any]], Awaitable[Any]],
         event: TelegramObject,
-        data: Dict[str, Any],
+        data: dict[str, Any],
     ) -> Any:
         try:
             return await handler(event, data)

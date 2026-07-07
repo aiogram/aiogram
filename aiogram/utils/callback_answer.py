@@ -1,4 +1,5 @@
-from typing import Any, Awaitable, Callable, Dict, Optional, Union
+from collections.abc import Awaitable, Callable
+from typing import Any
 
 from aiogram import BaseMiddleware, loggers
 from aiogram.dispatcher.flags import get_flag
@@ -12,10 +13,10 @@ class CallbackAnswer:
         self,
         answered: bool,
         disabled: bool = False,
-        text: Optional[str] = None,
-        show_alert: Optional[bool] = None,
-        url: Optional[str] = None,
-        cache_time: Optional[int] = None,
+        text: str | None = None,
+        show_alert: bool | None = None,
+        url: str | None = None,
+        cache_time: int | None = None,
     ) -> None:
         """
         Callback answer configuration
@@ -48,7 +49,8 @@ class CallbackAnswer:
     @disabled.setter
     def disabled(self, value: bool) -> None:
         if self._answered:
-            raise CallbackAnswerException("Can't change disabled state after answer")
+            msg = "Can't change disabled state after answer"
+            raise CallbackAnswerException(msg)
         self._disabled = value
 
     @property
@@ -59,7 +61,7 @@ class CallbackAnswer:
         return self._answered
 
     @property
-    def text(self) -> Optional[str]:
+    def text(self) -> str | None:
         """
         Response text
         :return:
@@ -67,48 +69,52 @@ class CallbackAnswer:
         return self._text
 
     @text.setter
-    def text(self, value: Optional[str]) -> None:
+    def text(self, value: str | None) -> None:
         if self._answered:
-            raise CallbackAnswerException("Can't change text after answer")
+            msg = "Can't change text after answer"
+            raise CallbackAnswerException(msg)
         self._text = value
 
     @property
-    def show_alert(self) -> Optional[bool]:
+    def show_alert(self) -> bool | None:
         """
         Whether to display an alert
         """
         return self._show_alert
 
     @show_alert.setter
-    def show_alert(self, value: Optional[bool]) -> None:
+    def show_alert(self, value: bool | None) -> None:
         if self._answered:
-            raise CallbackAnswerException("Can't change show_alert after answer")
+            msg = "Can't change show_alert after answer"
+            raise CallbackAnswerException(msg)
         self._show_alert = value
 
     @property
-    def url(self) -> Optional[str]:
+    def url(self) -> str | None:
         """
         Game url
         """
         return self._url
 
     @url.setter
-    def url(self, value: Optional[str]) -> None:
+    def url(self, value: str | None) -> None:
         if self._answered:
-            raise CallbackAnswerException("Can't change url after answer")
+            msg = "Can't change url after answer"
+            raise CallbackAnswerException(msg)
         self._url = value
 
     @property
-    def cache_time(self) -> Optional[int]:
+    def cache_time(self) -> int | None:
         """
         Response cache time
         """
         return self._cache_time
 
     @cache_time.setter
-    def cache_time(self, value: Optional[int]) -> None:
+    def cache_time(self, value: int | None) -> None:
         if self._answered:
-            raise CallbackAnswerException("Can't change cache_time after answer")
+            msg = "Can't change cache_time after answer"
+            raise CallbackAnswerException(msg)
         self._cache_time = value
 
     def __str__(self) -> str:
@@ -131,10 +137,10 @@ class CallbackAnswerMiddleware(BaseMiddleware):
     def __init__(
         self,
         pre: bool = False,
-        text: Optional[str] = None,
-        show_alert: Optional[bool] = None,
-        url: Optional[str] = None,
-        cache_time: Optional[int] = None,
+        text: str | None = None,
+        show_alert: bool | None = None,
+        url: str | None = None,
+        cache_time: int | None = None,
     ) -> None:
         """
         Inner middleware for callback query handlers, can be useful in bots with a lot of callback
@@ -154,15 +160,15 @@ class CallbackAnswerMiddleware(BaseMiddleware):
 
     async def __call__(
         self,
-        handler: Callable[[TelegramObject, Dict[str, Any]], Awaitable[Any]],
+        handler: Callable[[TelegramObject, dict[str, Any]], Awaitable[Any]],
         event: TelegramObject,
-        data: Dict[str, Any],
+        data: dict[str, Any],
     ) -> Any:
         if not isinstance(event, CallbackQuery):
             return await handler(event, data)
 
         callback_answer = data["callback_answer"] = self.construct_callback_answer(
-            properties=get_flag(data, "callback_answer")
+            properties=get_flag(data, "callback_answer"),
         )
 
         if not callback_answer.disabled and callback_answer.answered:
@@ -174,7 +180,8 @@ class CallbackAnswerMiddleware(BaseMiddleware):
                 await self.answer(event, callback_answer)
 
     def construct_callback_answer(
-        self, properties: Optional[Union[Dict[str, Any], bool]]
+        self,
+        properties: dict[str, Any] | bool | None,
     ) -> CallbackAnswer:
         pre, disabled, text, show_alert, url, cache_time = (
             self.pre,

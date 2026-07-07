@@ -1,4 +1,4 @@
-from typing import Literal, Optional
+from typing import Literal
 
 import pytest
 
@@ -67,7 +67,7 @@ class TestDefaultKeyBuilder:
     async def test_generate_key(
         self,
         key_builder: DefaultKeyBuilder,
-        field: Optional[Literal["data", "state", "lock"]],
+        field: Literal["data", "state", "lock"] | None,
         result: str,
     ):
         key = StorageKey(

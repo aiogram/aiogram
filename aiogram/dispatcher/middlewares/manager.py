@@ -1,5 +1,6 @@
 import functools
-from typing import Any, Callable, Dict, List, Optional, Sequence, Union, overload
+from collections.abc import Callable, Sequence
+from typing import Any, overload
 
 from aiogram.dispatcher.event.bases import (
     MiddlewareEventType,
@@ -12,7 +13,7 @@ from aiogram.types import TelegramObject
 
 class MiddlewareManager(Sequence[MiddlewareType[TelegramObject]]):
     def __init__(self) -> None:
-        self._middlewares: List[MiddlewareType[TelegramObject]] = []
+        self._middlewares: list[MiddlewareType[TelegramObject]] = []
 
     def register(
         self,
@@ -26,11 +27,11 @@ class MiddlewareManager(Sequence[MiddlewareType[TelegramObject]]):
 
     def __call__(
         self,
-        middleware: Optional[MiddlewareType[TelegramObject]] = None,
-    ) -> Union[
-        Callable[[MiddlewareType[TelegramObject]], MiddlewareType[TelegramObject]],
-        MiddlewareType[TelegramObject],
-    ]:
+        middleware: MiddlewareType[TelegramObject] | None = None,
+    ) -> (
+        Callable[[MiddlewareType[TelegramObject]], MiddlewareType[TelegramObject]]
+        | MiddlewareType[TelegramObject]
+    ):
         if middleware is None:
             return self.register
         return self.register(middleware)
@@ -44,8 +45,9 @@ class MiddlewareManager(Sequence[MiddlewareType[TelegramObject]]):
         pass
 
     def __getitem__(
-        self, item: Union[int, slice]
-    ) -> Union[MiddlewareType[TelegramObject], Sequence[MiddlewareType[TelegramObject]]]:
+        self,
+        item: int | slice,
+    ) -> MiddlewareType[TelegramObject] | Sequence[MiddlewareType[TelegramObject]]:
         return self._middlewares[item]
 
     def __len__(self) -> int:
@@ -53,10 +55,11 @@ class MiddlewareManager(Sequence[MiddlewareType[TelegramObject]]):
 
     @staticmethod
     def wrap_middlewares(
-        middlewares: Sequence[MiddlewareType[MiddlewareEventType]], handler: CallbackType
+        middlewares: Sequence[MiddlewareType[MiddlewareEventType]],
+        handler: CallbackType,
     ) -> NextMiddlewareType[MiddlewareEventType]:
         @functools.wraps(handler)
-        def handler_wrapper(event: TelegramObject, kwargs: Dict[str, Any]) -> Any:
+        def handler_wrapper(event: TelegramObject, kwargs: dict[str, Any]) -> Any:
             return handler(event, **kwargs)
 
         middleware = handler_wrapper

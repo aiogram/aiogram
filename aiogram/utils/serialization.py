@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Any, Dict, Optional
+from typing import Any
 
 from pydantic import BaseModel
 
@@ -9,7 +9,7 @@ from aiogram.methods import TelegramMethod
 from aiogram.types import InputFile
 
 
-def _get_fake_bot(default: Optional[DefaultBotProperties] = None) -> Bot:
+def _get_fake_bot(default: DefaultBotProperties | None = None) -> Bot:
     if default is None:
         default = DefaultBotProperties()
     return Bot(token="42:Fake", default=default)
@@ -24,16 +24,16 @@ class DeserializedTelegramObject:
     :type data: Any
     :param files: The dictionary containing the file names as keys
         and the corresponding `InputFile` objects as values.
-    :type files: Dict[str, InputFile]
+    :type files: dict[str, InputFile]
     """
 
     data: Any
-    files: Dict[str, InputFile]
+    files: dict[str, InputFile]
 
 
 def deserialize_telegram_object(
     obj: Any,
-    default: Optional[DefaultBotProperties] = None,
+    default: DefaultBotProperties | None = None,
     include_api_method_name: bool = True,
 ) -> DeserializedTelegramObject:
     """
@@ -55,7 +55,7 @@ def deserialize_telegram_object(
     # Fake bot is needed to exclude global defaults from the object.
     fake_bot = _get_fake_bot(default=default)
 
-    files: Dict[str, InputFile] = {}
+    files: dict[str, InputFile] = {}
     prepared = fake_bot.session.prepare_value(
         obj,
         bot=fake_bot,
@@ -70,7 +70,7 @@ def deserialize_telegram_object(
 
 def deserialize_telegram_object_to_python(
     obj: Any,
-    default: Optional[DefaultBotProperties] = None,
+    default: DefaultBotProperties | None = None,
     include_api_method_name: bool = True,
 ) -> Any:
     """

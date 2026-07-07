@@ -76,6 +76,14 @@
         "required": false
       },
       {
+        "type": "Array of VideoQuality",
+        "description": "List of available qualities of the video",
+        "html_description": "<td><em>Optional</em>. List of available qualities of the video</td>",
+        "rst_description": "*Optional*. List of available qualities of the video\n",
+        "name": "qualities",
+        "required": false
+      },
+      {
         "type": "String",
         "description": "Original filename as defined by the sender",
         "html_description": "<td><em>Optional</em>. Original filename as defined by the sender</td>",

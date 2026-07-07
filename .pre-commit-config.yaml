@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.6.0
+    rev: v6.0.0
     hooks:
       - id: "trailing-whitespace"
       - id: "check-case-conflict"
@@ -13,13 +13,10 @@ repos:
       - id: "check-toml"
       - id: "check-json"
 
-  - repo: https://github.com/psf/black
-    rev: 24.4.2
-    hooks:
-      - id: black
-        files: &files '^(aiogram|tests|examples)'
-
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: 'v0.5.1'
+    rev: 'v0.15.12'
     hooks:
-      - id: ruff
+      - id: ruff-check
+        files: &files '^(aiogram|tests|examples)'
+      - id: ruff-format
+        files: *files

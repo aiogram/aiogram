@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from ..types import BotCommand, BotCommandScopeUnion
 from .base import TelegramMethod
@@ -17,10 +17,10 @@ class SetMyCommands(TelegramMethod[bool]):
     __api_method__ = "setMyCommands"
 
     commands: list[BotCommand]
-    """A JSON-serialized list of bot commands to be set as the list of the bot's commands. At most 100 commands can be specified."""
-    scope: Optional[BotCommandScopeUnion] = None
-    """A JSON-serialized object, describing scope of users for which the commands are relevant. Defaults to :class:`aiogram.types.bot_command_scope_default.BotCommandScopeDefault`."""
-    language_code: Optional[str] = None
+    """A JSON-serialized list of bot commands to be set as the list of the bot's commands. At most 100 commands can be specified"""
+    scope: BotCommandScopeUnion | None = None
+    """A JSON-serialized object, describing scope of users for which the commands are relevant. Defaults to :class:`aiogram.types.bot_command_scope_default.BotCommandScopeDefault`"""
+    language_code: str | None = None
     """A two-letter ISO 639-1 language code. If empty, commands will be applied to all users from the given scope, for whose language there are no dedicated commands"""
 
     if TYPE_CHECKING:
@@ -31,8 +31,8 @@ class SetMyCommands(TelegramMethod[bool]):
             __pydantic__self__,
             *,
             commands: list[BotCommand],
-            scope: Optional[BotCommandScopeUnion] = None,
-            language_code: Optional[str] = None,
+            scope: BotCommandScopeUnion | None = None,
+            language_code: str | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

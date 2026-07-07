@@ -2,7 +2,7 @@
 editMessageReplyMarkup
 ######################
 
-Returns: :obj:`Union[Message, bool]`
+Returns: :obj:`Message | bool`
 
 .. automodule:: aiogram.methods.edit_message_reply_markup
     :members:
@@ -19,7 +19,7 @@ As bot method
 
 .. code-block::
 
-    result: Union[Message, bool] = await bot.edit_message_reply_markup(...)
+    result: Message | bool = await bot.edit_message_reply_markup(...)
 
 
 Method as object
@@ -35,7 +35,7 @@ With specific bot
 
 .. code-block:: python
 
-    result: Union[Message, bool] = await bot(EditMessageReplyMarkup(...))
+    result: Message | bool = await bot(EditMessageReplyMarkup(...))
 
 As reply into Webhook in handler
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

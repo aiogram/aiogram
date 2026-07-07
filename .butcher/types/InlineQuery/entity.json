@@ -45,9 +45,9 @@
       },
       {
         "type": "String",
-        "description": "Type of the chat from which the inline query was sent. Can be either 'sender' for a private chat with the inline query sender, 'private', 'group', 'supergroup', or 'channel'. The chat type should be always known for requests sent from official clients and most third-party clients, unless the request was sent from a secret chat",
-        "html_description": "<td><em>Optional</em>. Type of the chat from which the inline query was sent. Can be either &#8220;sender&#8221; for a private chat with the inline query sender, &#8220;private&#8221;, &#8220;group&#8221;, &#8220;supergroup&#8221;, or &#8220;channel&#8221;. The chat type should be always known for requests sent from official clients and most third-party clients, unless the request was sent from a secret chat</td>",
-        "rst_description": "*Optional*. Type of the chat from which the inline query was sent. Can be either 'sender' for a private chat with the inline query sender, 'private', 'group', 'supergroup', or 'channel'. The chat type should be always known for requests sent from official clients and most third-party clients, unless the request was sent from a secret chat\n",
+        "description": "Type of the chat from which the inline query was sent. Can be either 'sender' for a private chat with the inline query sender, 'private', 'group', 'supergroup', or 'channel'. The chat type should be always known for requests sent from official clients and most third-party clients, unless the request was sent from a secret chat.",
+        "html_description": "<td><em>Optional</em>. Type of the chat from which the inline query was sent. Can be either &#8220;sender&#8221; for a private chat with the inline query sender, &#8220;private&#8221;, &#8220;group&#8221;, &#8220;supergroup&#8221;, or &#8220;channel&#8221;. The chat type should be always known for requests sent from official clients and most third-party clients, unless the request was sent from a secret chat.</td>",
+        "rst_description": "*Optional*. Type of the chat from which the inline query was sent. Can be either 'sender' for a private chat with the inline query sender, 'private', 'group', 'supergroup', or 'channel'. The chat type should be always known for requests sent from official clients and most third-party clients, unless the request was sent from a secret chat.\n",
         "name": "chat_type",
         "required": false
       },

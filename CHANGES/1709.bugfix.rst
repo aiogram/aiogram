@@ -1,1 +1,0 @@
-Use `hmac.compare_digest` for validating WebApp data to prevent timing attacks.

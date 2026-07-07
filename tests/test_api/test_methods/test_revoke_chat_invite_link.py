@@ -21,5 +21,5 @@ class TestRevokeChatInviteLink:
             chat_id=-42,
             invite_link="https://t.me/username",
         )
-        request = bot.get_request()
+        bot.get_request()
         assert response == prepare_result.result

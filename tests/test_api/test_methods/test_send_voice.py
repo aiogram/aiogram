@@ -19,5 +19,5 @@ class TestSendVoice:
         )
 
         response: Message = await bot.send_voice(chat_id=42, voice="file id")
-        request = bot.get_request()
+        bot.get_request()
         assert response == prepare_result.result

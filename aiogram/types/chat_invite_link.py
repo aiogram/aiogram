@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from .base import TelegramObject
 from .custom import DateTime
@@ -17,7 +17,7 @@ class ChatInviteLink(TelegramObject):
     """
 
     invite_link: str
-    """The invite link. If the link was created by another chat administrator, then the second part of the link will be replaced with '…'."""
+    """The invite link. If the link was created by another chat administrator, then the second part of the link will be replaced with '…'"""
     creator: User
     """Creator of the link"""
     creates_join_request: bool
@@ -26,17 +26,17 @@ class ChatInviteLink(TelegramObject):
     """:code:`True`, if the link is primary"""
     is_revoked: bool
     """:code:`True`, if the link is revoked"""
-    name: Optional[str] = None
+    name: str | None = None
     """*Optional*. Invite link name"""
-    expire_date: Optional[DateTime] = None
+    expire_date: DateTime | None = None
     """*Optional*. Point in time (Unix timestamp) when the link will expire or has been expired"""
-    member_limit: Optional[int] = None
+    member_limit: int | None = None
     """*Optional*. The maximum number of users that can be members of the chat simultaneously after joining the chat via this invite link; 1-99999"""
-    pending_join_request_count: Optional[int] = None
+    pending_join_request_count: int | None = None
     """*Optional*. Number of pending join requests created using this link"""
-    subscription_period: Optional[int] = None
+    subscription_period: int | None = None
     """*Optional*. The number of seconds the subscription will be active for before the next payment"""
-    subscription_price: Optional[int] = None
+    subscription_price: int | None = None
     """*Optional*. The amount of Telegram Stars a user must pay initially and after each subsequent subscription period to be a member of the chat using the link"""
 
     if TYPE_CHECKING:
@@ -51,12 +51,12 @@ class ChatInviteLink(TelegramObject):
             creates_join_request: bool,
             is_primary: bool,
             is_revoked: bool,
-            name: Optional[str] = None,
-            expire_date: Optional[DateTime] = None,
-            member_limit: Optional[int] = None,
-            pending_join_request_count: Optional[int] = None,
-            subscription_period: Optional[int] = None,
-            subscription_price: Optional[int] = None,
+            name: str | None = None,
+            expire_date: DateTime | None = None,
+            member_limit: int | None = None,
+            pending_join_request_count: int | None = None,
+            subscription_period: int | None = None,
+            subscription_price: int | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

@@ -1,0 +1,65 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "videoquality",
+    "name": "VideoQuality",
+    "description": "This object represents a video file of a specific quality.",
+    "html_description": "<p>This object represents a video file of a specific quality.</p>",
+    "rst_description": "This object represents a video file of a specific quality.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Identifier for this file, which can be used to download or reuse the file",
+        "html_description": "<td>Identifier for this file, which can be used to download or reuse the file</td>",
+        "rst_description": "Identifier for this file, which can be used to download or reuse the file\n",
+        "name": "file_id",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.",
+        "html_description": "<td>Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.</td>",
+        "rst_description": "Unique identifier for this file, which is supposed to be the same over time and for different bots. Can't be used to download or reuse the file.\n",
+        "name": "file_unique_id",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "Video width",
+        "html_description": "<td>Video width</td>",
+        "rst_description": "Video width\n",
+        "name": "width",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "Video height",
+        "html_description": "<td>Video height</td>",
+        "rst_description": "Video height\n",
+        "name": "height",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Codec that was used to encode the video, for example, 'h264', 'h265', or 'av01'",
+        "html_description": "<td>Codec that was used to encode the video, for example, &#8220;h264&#8221;, &#8220;h265&#8221;, or &#8220;av01&#8221;</td>",
+        "rst_description": "Codec that was used to encode the video, for example, 'h264', 'h265', or 'av01'\n",
+        "name": "codec",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value.",
+        "html_description": "<td><em>Optional</em>. File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value.</td>",
+        "rst_description": "*Optional*. File size in bytes. It can be bigger than 2^31 and some programming languages may have difficulty/silent defects in interpreting it. But it has at most 52 significant bits, so a signed 64-bit integer or double-precision float type are safe for storing this value.\n",
+        "name": "file_size",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

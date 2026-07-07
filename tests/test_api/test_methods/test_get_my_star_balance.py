@@ -14,5 +14,5 @@ class TestGetMyStarBalance:
         )
 
         response: StarAmount = await bot.get_my_star_balance()
-        request = bot.get_request()
+        bot.get_request()
         assert response == prepare_result.result

@@ -15,5 +15,5 @@ class TestCreateForumTopic:
             chat_id=42,
             name="test",
         )
-        request = bot.get_request()
+        bot.get_request()
         assert response == prepare_result.result

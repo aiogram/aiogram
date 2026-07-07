@@ -10,5 +10,5 @@ class TestGetFile:
         )
 
         response: File = await bot.get_file(file_id="file id")
-        request = bot.get_request()
+        bot.get_request()
         assert response == prepare_result.result

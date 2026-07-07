@@ -2,7 +2,7 @@ import asyncio
 import logging
 import sys
 from os import getenv
-from typing import Any, Dict
+from typing import Any
 
 from aiogram import Bot, Dispatcher, F, Router, html
 from aiogram.client.default import DefaultBotProperties
@@ -66,7 +66,7 @@ async def process_name(message: Message, state: FSMContext) -> None:
                 [
                     KeyboardButton(text="Yes"),
                     KeyboardButton(text="No"),
-                ]
+                ],
             ],
             resize_keyboard=True,
         ),
@@ -106,13 +106,13 @@ async def process_language(message: Message, state: FSMContext) -> None:
 
     if message.text.casefold() == "python":
         await message.reply(
-            "Python, you say? That's the language that makes my circuits light up! 😉"
+            "Python, you say? That's the language that makes my circuits light up! 😉",
         )
 
     await show_summary(message=message, data=data)
 
 
-async def show_summary(message: Message, data: Dict[str, Any], positive: bool = True) -> None:
+async def show_summary(message: Message, data: dict[str, Any], positive: bool = True) -> None:
     name = data["name"]
     language = data.get("language", "<something unexpected>")
     text = f"I'll keep in mind that, {html.quote(name)}, "
@@ -124,7 +124,7 @@ async def show_summary(message: Message, data: Dict[str, Any], positive: bool = 
     await message.answer(text=text, reply_markup=ReplyKeyboardRemove())
 
 
-async def main():
+async def main() -> None:
     # Initialize Bot instance with default bot properties which will be passed to all API calls
     bot = Bot(token=TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
 

@@ -19,5 +19,5 @@ class TestSendDocument:
         )
 
         response: Message = await bot.send_document(chat_id=42, document="file id")
-        request = bot.get_request()
+        bot.get_request()
         assert response == prepare_result.result

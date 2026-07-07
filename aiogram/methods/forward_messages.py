@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from ..types import ChatIdUnion, MessageId
 from .base import TelegramMethod
@@ -15,16 +15,18 @@ class ForwardMessages(TelegramMethod[list[MessageId]]):
     __api_method__ = "forwardMessages"
 
     chat_id: ChatIdUnion
-    """Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)"""
+    """Unique identifier for the target chat or username of the target bot, supergroup or channel in the format :code:`@username`"""
     from_chat_id: ChatIdUnion
-    """Unique identifier for the chat where the original messages were sent (or channel username in the format :code:`@channelusername`)"""
+    """Unique identifier for the chat where the original messages were sent (or username of the target bot, supergroup or channel in the format :code:`@username`)"""
     message_ids: list[int]
-    """A JSON-serialized list of 1-100 identifiers of messages in the chat *from_chat_id* to forward. The identifiers must be specified in a strictly increasing order."""
-    message_thread_id: Optional[int] = None
-    """Unique identifier for the target message thread (topic) of the forum; for forum supergroups only"""
-    disable_notification: Optional[bool] = None
-    """Sends the messages `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound."""
-    protect_content: Optional[bool] = None
+    """A JSON-serialized list of 1-100 identifiers of messages in the chat *from_chat_id* to forward. The identifiers must be specified in a strictly increasing order"""
+    message_thread_id: int | None = None
+    """Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only"""
+    direct_messages_topic_id: int | None = None
+    """Identifier of the direct messages topic to which the messages will be forwarded; required if the messages are forwarded to a direct messages chat"""
+    disable_notification: bool | None = None
+    """Sends the messages `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound"""
+    protect_content: bool | None = None
     """Protects the contents of the forwarded messages from forwarding and saving"""
 
     if TYPE_CHECKING:
@@ -37,9 +39,10 @@ class ForwardMessages(TelegramMethod[list[MessageId]]):
             chat_id: ChatIdUnion,
             from_chat_id: ChatIdUnion,
             message_ids: list[int],
-            message_thread_id: Optional[int] = None,
-            disable_notification: Optional[bool] = None,
-            protect_content: Optional[bool] = None,
+            message_thread_id: int | None = None,
+            direct_messages_topic_id: int | None = None,
+            disable_notification: bool | None = None,
+            protect_content: bool | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!
@@ -51,6 +54,7 @@ class ForwardMessages(TelegramMethod[list[MessageId]]):
                 from_chat_id=from_chat_id,
                 message_ids=message_ids,
                 message_thread_id=message_thread_id,
+                direct_messages_topic_id=direct_messages_topic_id,
                 disable_notification=disable_notification,
                 protect_content=protect_content,
                 **__pydantic_kwargs,

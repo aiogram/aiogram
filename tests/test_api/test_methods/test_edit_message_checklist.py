@@ -31,5 +31,5 @@ class TestEditMessageChecklist:
             message_id=42,
             checklist=checklist,
         )
-        request = bot.get_request()
+        bot.get_request()
         assert response == prepare_result.result

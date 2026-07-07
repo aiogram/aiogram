@@ -16,6 +16,17 @@ reply:
   ignore: &ignore-reply
     - reply_to_message_id
 
+answer_rich:
+  method: sendRichMessage
+  code: *assert-chat
+  fill: *fill-answer
+
+reply_rich:
+  method: sendRichMessage
+  code: *assert-chat
+  fill: *fill-reply
+  ignore: *ignore-reply
+
 answer_animation:
   method: sendAnimation
   code: *assert-chat
@@ -276,3 +287,10 @@ react:
   method: setMessageReaction
   code: *assert-chat
   fill: *message-target
+
+answer_guest_query:
+  method: answerGuestQuery
+  code: |
+    assert self.guest_query_id is not None, "This method can be used only if `guest_query_id` is present in the message."
+  fill:
+    guest_query_id: self.guest_query_id

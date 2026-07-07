@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from ..types import ChatIdUnion
 from .base import TelegramMethod
@@ -8,7 +8,7 @@ from .base import TelegramMethod
 
 class UnpinChatMessage(TelegramMethod[bool]):
     """
-    Use this method to remove a message from the list of pinned messages in a chat. If the chat is not a private chat, the bot must be an administrator in the chat for this to work and must have the 'can_pin_messages' administrator right in a supergroup or 'can_edit_messages' administrator right in a channel. Returns :code:`True` on success.
+    Use this method to remove a message from the list of pinned messages in a chat. In private chats and channel direct messages chats, all messages can be unpinned. Conversely, the bot must be an administrator with the 'can_pin_messages' right or the 'can_edit_messages' right to unpin messages in groups and channels respectively. Returns :code:`True` on success.
 
     Source: https://core.telegram.org/bots/api#unpinchatmessage
     """
@@ -17,11 +17,11 @@ class UnpinChatMessage(TelegramMethod[bool]):
     __api_method__ = "unpinChatMessage"
 
     chat_id: ChatIdUnion
-    """Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)"""
-    business_connection_id: Optional[str] = None
+    """Unique identifier for the target chat or username of the target channel in the format :code:`@username`"""
+    business_connection_id: str | None = None
     """Unique identifier of the business connection on behalf of which the message will be unpinned"""
-    message_id: Optional[int] = None
-    """Identifier of the message to unpin. Required if *business_connection_id* is specified. If not specified, the most recent pinned message (by sending date) will be unpinned."""
+    message_id: int | None = None
+    """Identifier of the message to unpin. Required if *business_connection_id* is specified. If not specified, the most recent pinned message (by sending date) will be unpinned"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!
@@ -31,8 +31,8 @@ class UnpinChatMessage(TelegramMethod[bool]):
             __pydantic__self__,
             *,
             chat_id: ChatIdUnion,
-            business_connection_id: Optional[str] = None,
-            message_id: Optional[int] = None,
+            business_connection_id: str | None = None,
+            message_id: int | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

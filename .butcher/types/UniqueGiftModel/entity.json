@@ -29,11 +29,19 @@
       },
       {
         "type": "Integer",
-        "description": "The number of unique gifts that receive this model for every 1000 gifts upgraded",
-        "html_description": "<td>The number of unique gifts that receive this model for every 1000 gifts upgraded</td>",
-        "rst_description": "The number of unique gifts that receive this model for every 1000 gifts upgraded\n",
+        "description": "The number of unique gifts that receive this model for every 1000 gift upgrades. Always 0 for crafted gifts.",
+        "html_description": "<td>The number of unique gifts that receive this model for every 1000 gift upgrades. Always 0 for crafted gifts.</td>",
+        "rst_description": "The number of unique gifts that receive this model for every 1000 gift upgrades. Always 0 for crafted gifts.\n",
         "name": "rarity_per_mille",
         "required": true
+      },
+      {
+        "type": "String",
+        "description": "Rarity of the model if it is a crafted model. Currently, can be 'uncommon', 'rare', 'epic', or 'legendary'.",
+        "html_description": "<td><em>Optional</em>. Rarity of the model if it is a crafted model. Currently, can be &#8220;uncommon&#8221;, &#8220;rare&#8221;, &#8220;epic&#8221;, or &#8220;legendary&#8221;.</td>",
+        "rst_description": "*Optional*. Rarity of the model if it is a crafted model. Currently, can be 'uncommon', 'rare', 'epic', or 'legendary'.\n",
+        "name": "rarity",
+        "required": false
       }
     ],
     "category": "types"

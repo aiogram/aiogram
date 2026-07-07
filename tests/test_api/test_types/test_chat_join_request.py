@@ -1,13 +1,15 @@
 import datetime
-from typing import Any, Dict, Type, Union
+from typing import Any
 
 import pytest
 
 from aiogram.methods import (
+    AnswerChatJoinRequestQuery,
     ApproveChatJoinRequest,
     DeclineChatJoinRequest,
     SendAnimation,
     SendAudio,
+    SendChatJoinRequestWebApp,
     SendContact,
     SendDice,
     SendDocument,
@@ -56,48 +58,82 @@ class TestChatJoinRequest:
         assert api_method.chat_id == chat_join_request.chat.id
         assert api_method.user_id == chat_join_request.from_user.id
 
+    def test_answer_query_alias(self):
+        chat_join_request = ChatJoinRequest(
+            chat=Chat(id=-42, type="supergroup"),
+            from_user=User(id=42, is_bot=False, first_name="Test"),
+            user_chat_id=42,
+            date=datetime.datetime.now(),
+            query_id="test_query_id",
+        )
+
+        api_method = chat_join_request.answer_query(result="approve")
+
+        assert isinstance(api_method, AnswerChatJoinRequestQuery)
+        assert api_method.chat_join_request_query_id == chat_join_request.query_id
+        assert api_method.result == "approve"
+
+    def test_send_webapp_alias(self):
+        chat_join_request = ChatJoinRequest(
+            chat=Chat(id=-42, type="supergroup"),
+            from_user=User(id=42, is_bot=False, first_name="Test"),
+            user_chat_id=42,
+            date=datetime.datetime.now(),
+            query_id="test_query_id",
+        )
+
+        api_method = chat_join_request.send_webapp(web_app_url="https://example.com/app")
+
+        assert isinstance(api_method, SendChatJoinRequestWebApp)
+        assert api_method.chat_join_request_query_id == chat_join_request.query_id
+        assert api_method.web_app_url == "https://example.com/app"
+
     @pytest.mark.parametrize(
         "alias_for_method,kwargs,method_class",
         [
-            ["answer_animation", dict(animation="animation"), SendAnimation],
-            ["answer_audio", dict(audio="audio"), SendAudio],
-            ["answer_contact", dict(phone_number="+000000000000", first_name="Test"), SendContact],
-            ["answer_document", dict(document="document"), SendDocument],
-            ["answer_game", dict(game_short_name="game"), SendGame],
+            ["answer_animation", {"animation": "animation"}, SendAnimation],
+            ["answer_audio", {"audio": "audio"}, SendAudio],
+            [
+                "answer_contact",
+                {"phone_number": "+000000000000", "first_name": "Test"},
+                SendContact,
+            ],
+            ["answer_document", {"document": "document"}, SendDocument],
+            ["answer_game", {"game_short_name": "game"}, SendGame],
             [
                 "answer_invoice",
-                dict(
-                    title="title",
-                    description="description",
-                    payload="payload",
-                    provider_token="provider_token",
-                    start_parameter="start_parameter",
-                    currency="currency",
-                    prices=[],
-                ),
+                {
+                    "title": "title",
+                    "description": "description",
+                    "payload": "payload",
+                    "provider_token": "provider_token",
+                    "start_parameter": "start_parameter",
+                    "currency": "currency",
+                    "prices": [],
+                },
                 SendInvoice,
             ],
-            ["answer_location", dict(latitude=0.42, longitude=0.42), SendLocation],
-            ["answer_media_group", dict(media=[]), SendMediaGroup],
-            ["answer", dict(text="test"), SendMessage],
-            ["answer_photo", dict(photo="photo"), SendPhoto],
-            ["answer_poll", dict(question="Q?", options=[]), SendPoll],
-            ["answer_dice", dict(), SendDice],
-            ["answer_sticker", dict(sticker="sticker"), SendSticker],
-            ["answer_sticker", dict(sticker="sticker"), SendSticker],
+            ["answer_location", {"latitude": 0.42, "longitude": 0.42}, SendLocation],
+            ["answer_media_group", {"media": []}, SendMediaGroup],
+            ["answer", {"text": "test"}, SendMessage],
+            ["answer_photo", {"photo": "photo"}, SendPhoto],
+            ["answer_poll", {"question": "Q?", "options": []}, SendPoll],
+            ["answer_dice", {}, SendDice],
+            ["answer_sticker", {"sticker": "sticker"}, SendSticker],
+            ["answer_sticker", {"sticker": "sticker"}, SendSticker],
             [
                 "answer_venue",
-                dict(
-                    latitude=0.42,
-                    longitude=0.42,
-                    title="title",
-                    address="address",
-                ),
+                {
+                    "latitude": 0.42,
+                    "longitude": 0.42,
+                    "title": "title",
+                    "address": "address",
+                },
                 SendVenue,
             ],
-            ["answer_video", dict(video="video"), SendVideo],
-            ["answer_video_note", dict(video_note="video_note"), SendVideoNote],
-            ["answer_voice", dict(voice="voice"), SendVoice],
+            ["answer_video", {"video": "video"}, SendVideo],
+            ["answer_video_note", {"video_note": "video_note"}, SendVideoNote],
+            ["answer_voice", {"voice": "voice"}, SendVoice],
         ],
     )
     @pytest.mark.parametrize("suffix", ["", "_pm"])
@@ -105,27 +141,25 @@ class TestChatJoinRequest:
         self,
         alias_for_method: str,
         suffix: str,
-        kwargs: Dict[str, Any],
-        method_class: Type[
-            Union[
-                SendAnimation,
-                SendAudio,
-                SendContact,
-                SendDocument,
-                SendGame,
-                SendInvoice,
-                SendLocation,
-                SendMediaGroup,
-                SendMessage,
-                SendPhoto,
-                SendPoll,
-                SendSticker,
-                SendSticker,
-                SendVenue,
-                SendVideo,
-                SendVideoNote,
-                SendVoice,
-            ]
+        kwargs: dict[str, Any],
+        method_class: type[
+            SendAnimation
+            | SendAudio
+            | SendContact
+            | SendDocument
+            | SendGame
+            | SendInvoice
+            | SendLocation
+            | SendMediaGroup
+            | SendMessage
+            | SendPhoto
+            | SendPoll
+            | SendSticker
+            | SendSticker
+            | SendVenue
+            | SendVideo
+            | SendVideoNote
+            | SendVoice
         ],
     ):
         event = ChatJoinRequest(

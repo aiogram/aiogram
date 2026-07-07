@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from .base import TelegramObject
 
@@ -18,22 +18,22 @@ class SuccessfulPayment(TelegramObject):
     currency: str
     """Three-letter ISO 4217 `currency <https://core.telegram.org/bots/payments#supported-currencies>`_ code, or 'XTR' for payments in `Telegram Stars <https://t.me/BotNews/90>`_"""
     total_amount: int
-    """Total price in the *smallest units* of the currency (integer, **not** float/double). For example, for a price of :code:`US$ 1.45` pass :code:`amount = 145`. See the *exp* parameter in `currencies.json <https://core.telegram.org/bots/payments/currencies.json>`_, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies)."""
+    """Total price in the *smallest units* of the currency (integer, **not** float/double). For example, for a price of :code:`US$ 1.45` pass :code:`amount = 145`. See the *exp* parameter in `currencies.json <https://core.telegram.org/bots/payments/currencies.json>`_, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies)"""
     invoice_payload: str
     """Bot-specified invoice payload"""
     telegram_payment_charge_id: str
     """Telegram payment identifier"""
     provider_payment_charge_id: str
     """Provider payment identifier"""
-    subscription_expiration_date: Optional[int] = None
+    subscription_expiration_date: int | None = None
     """*Optional*. Expiration date of the subscription, in Unix time; for recurring payments only"""
-    is_recurring: Optional[bool] = None
+    is_recurring: bool | None = None
     """*Optional*. :code:`True`, if the payment is a recurring payment for a subscription"""
-    is_first_recurring: Optional[bool] = None
+    is_first_recurring: bool | None = None
     """*Optional*. :code:`True`, if the payment is the first payment for a subscription"""
-    shipping_option_id: Optional[str] = None
+    shipping_option_id: str | None = None
     """*Optional*. Identifier of the shipping option chosen by the user"""
-    order_info: Optional[OrderInfo] = None
+    order_info: OrderInfo | None = None
     """*Optional*. Order information provided by the user"""
 
     if TYPE_CHECKING:
@@ -48,11 +48,11 @@ class SuccessfulPayment(TelegramObject):
             invoice_payload: str,
             telegram_payment_charge_id: str,
             provider_payment_charge_id: str,
-            subscription_expiration_date: Optional[int] = None,
-            is_recurring: Optional[bool] = None,
-            is_first_recurring: Optional[bool] = None,
-            shipping_option_id: Optional[str] = None,
-            order_info: Optional[OrderInfo] = None,
+            subscription_expiration_date: int | None = None,
+            is_recurring: bool | None = None,
+            is_first_recurring: bool | None = None,
+            shipping_option_id: str | None = None,
+            order_info: OrderInfo | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

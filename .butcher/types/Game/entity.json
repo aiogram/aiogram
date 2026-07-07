@@ -29,9 +29,9 @@
       },
       {
         "type": "Array of PhotoSize",
-        "description": "Photo that will be displayed in the game message in chats.",
-        "html_description": "<td>Photo that will be displayed in the game message in chats.</td>",
-        "rst_description": "Photo that will be displayed in the game message in chats.\n",
+        "description": "Photo that will be displayed in the game message in chats",
+        "html_description": "<td>Photo that will be displayed in the game message in chats</td>",
+        "rst_description": "Photo that will be displayed in the game message in chats\n",
         "name": "photo",
         "required": true
       },
@@ -53,9 +53,9 @@
       },
       {
         "type": "Animation",
-        "description": "Animation that will be displayed in the game message in chats. Upload via BotFather",
-        "html_description": "<td><em>Optional</em>. Animation that will be displayed in the game message in chats. Upload via <a href=\"https://t.me/botfather\">BotFather</a></td>",
-        "rst_description": "*Optional*. Animation that will be displayed in the game message in chats. Upload via `BotFather <https://t.me/botfather>`_\n",
+        "description": "Animation that will be displayed in the game message in chats. Upload via BotFather.",
+        "html_description": "<td><em>Optional</em>. Animation that will be displayed in the game message in chats. Upload via <a href=\"https://t.me/botfather\">BotFather</a>.</td>",
+        "rst_description": "*Optional*. Animation that will be displayed in the game message in chats. Upload via `BotFather <https://t.me/botfather>`_.\n",
         "name": "animation",
         "required": false
       }

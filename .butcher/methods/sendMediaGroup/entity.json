@@ -7,10 +7,26 @@
   "object": {
     "anchor": "sendmediagroup",
     "name": "sendMediaGroup",
-    "description": "Use this method to send a group of photos, videos, documents or audios as an album. Documents and audio files can be only grouped in an album with messages of the same type. On success, an array of Messages that were sent is returned.",
-    "html_description": "<p>Use this method to send a group of photos, videos, documents or audios as an album. Documents and audio files can be only grouped in an album with messages of the same type. On success, an array of <a href=\"#message\">Messages</a> that were sent is returned.</p>",
-    "rst_description": "Use this method to send a group of photos, videos, documents or audios as an album. Documents and audio files can be only grouped in an album with messages of the same type. On success, an array of `Messages <https://core.telegram.org/bots/api#message>`_ that were sent is returned.",
+    "description": "Use this method to send a group of photos, live photos, videos, documents or audios as an album. Documents and audio files can be only grouped in an album with messages of the same type. On success, an array of Message objects that were sent is returned.",
+    "html_description": "<p>Use this method to send a group of photos, live photos, videos, documents or audios as an album. Documents and audio files can be only grouped in an album with messages of the same type. On success, an array of <a href=\"#message\">Message</a> objects that were sent is returned.</p>",
+    "rst_description": "Use this method to send a group of photos, live photos, videos, documents or audios as an album. Documents and audio files can be only grouped in an album with messages of the same type. On success, an array of :class:`aiogram.types.message.Message` objects that were sent is returned.",
     "annotations": [
+      {
+        "type": "Integer or String",
+        "required": true,
+        "description": "Unique identifier for the target chat or username of the target bot, supergroup or channel in the format @username",
+        "html_description": "<td>Unique identifier for the target chat or username of the target bot, supergroup or channel in the format <code>@username</code></td>",
+        "rst_description": "Unique identifier for the target chat or username of the target bot, supergroup or channel in the format :code:`@username`\n",
+        "name": "chat_id"
+      },
+      {
+        "type": "Array of InputMediaAudio, InputMediaDocument, InputMediaLivePhoto, InputMediaPhoto and InputMediaVideo",
+        "required": true,
+        "description": "A JSON-serialized array describing messages to be sent, must include 2-10 items",
+        "html_description": "<td>A JSON-serialized array describing messages to be sent, must include 2-10 items</td>",
+        "rst_description": "A JSON-serialized array describing messages to be sent, must include 2-10 items\n",
+        "name": "media"
+      },
       {
         "type": "String",
         "required": false,
@@ -20,28 +36,20 @@
         "name": "business_connection_id"
       },
       {
-        "type": "Integer or String",
-        "required": true,
-        "description": "Unique identifier for the target chat or username of the target channel (in the format @channelusername)",
-        "html_description": "<td>Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)</td>",
-        "rst_description": "Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)\n",
-        "name": "chat_id"
+        "type": "Integer",
+        "required": false,
+        "description": "Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only",
+        "html_description": "<td>Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only</td>",
+        "rst_description": "Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only\n",
+        "name": "message_thread_id"
       },
       {
         "type": "Integer",
         "required": false,
-        "description": "Unique identifier for the target message thread (topic) of the forum; for forum supergroups only",
-        "html_description": "<td>Unique identifier for the target message thread (topic) of the forum; for forum supergroups only</td>",
-        "rst_description": "Unique identifier for the target message thread (topic) of the forum; for forum supergroups only\n",
-        "name": "message_thread_id"
-      },
-      {
-        "type": "Array of InputMediaAudio, InputMediaDocument, InputMediaPhoto and InputMediaVideo",
-        "required": true,
-        "description": "A JSON-serialized array describing messages to be sent, must include 2-10 items",
-        "html_description": "<td>A JSON-serialized array describing messages to be sent, must include 2-10 items</td>",
-        "rst_description": "A JSON-serialized array describing messages to be sent, must include 2-10 items\n",
-        "name": "media"
+        "description": "Identifier of the direct messages topic to which the messages will be sent; required if the messages are sent to a direct messages chat",
+        "html_description": "<td>Identifier of the direct messages topic to which the messages will be sent; required if the messages are sent to a direct messages chat</td>",
+        "rst_description": "Identifier of the direct messages topic to which the messages will be sent; required if the messages are sent to a direct messages chat\n",
+        "name": "direct_messages_topic_id"
       },
       {
         "type": "Boolean",
@@ -62,9 +70,9 @@
       {
         "type": "Boolean",
         "required": false,
-        "description": "Pass True to allow up to 1000 messages per second, ignoring broadcasting limits for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance",
-        "html_description": "<td>Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href=\"https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once\">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance</td>",
-        "rst_description": "Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance\n",
+        "description": "Pass True to allow up to 1000 messages per second, ignoring broadcasting limits for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance.",
+        "html_description": "<td>Pass <em>True</em> to allow up to 1000 messages per second, ignoring <a href=\"https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once\">broadcasting limits</a> for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance.</td>",
+        "rst_description": "Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance.\n",
         "name": "allow_paid_broadcast"
       },
       {

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from ..types import InlineQueryResultUnion, PreparedInlineMessage
 from .base import TelegramMethod
@@ -20,13 +20,13 @@ class SavePreparedInlineMessage(TelegramMethod[PreparedInlineMessage]):
     """Unique identifier of the target user that can use the prepared message"""
     result: InlineQueryResultUnion
     """A JSON-serialized object describing the message to be sent"""
-    allow_user_chats: Optional[bool] = None
+    allow_user_chats: bool | None = None
     """Pass :code:`True` if the message can be sent to private chats with users"""
-    allow_bot_chats: Optional[bool] = None
+    allow_bot_chats: bool | None = None
     """Pass :code:`True` if the message can be sent to private chats with bots"""
-    allow_group_chats: Optional[bool] = None
+    allow_group_chats: bool | None = None
     """Pass :code:`True` if the message can be sent to group and supergroup chats"""
-    allow_channel_chats: Optional[bool] = None
+    allow_channel_chats: bool | None = None
     """Pass :code:`True` if the message can be sent to channel chats"""
 
     if TYPE_CHECKING:
@@ -38,10 +38,10 @@ class SavePreparedInlineMessage(TelegramMethod[PreparedInlineMessage]):
             *,
             user_id: int,
             result: InlineQueryResultUnion,
-            allow_user_chats: Optional[bool] = None,
-            allow_bot_chats: Optional[bool] = None,
-            allow_group_chats: Optional[bool] = None,
-            allow_channel_chats: Optional[bool] = None,
+            allow_user_chats: bool | None = None,
+            allow_bot_chats: bool | None = None,
+            allow_group_chats: bool | None = None,
+            allow_channel_chats: bool | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

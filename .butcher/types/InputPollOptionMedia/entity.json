@@ -1,0 +1,16 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "inputpolloptionmedia",
+    "name": "InputPollOptionMedia",
+    "description": "This object represents the content of a poll option to be sent. It should be one of\n - InputMediaAnimation\n - InputMediaLink\n - InputMediaLivePhoto\n - InputMediaLocation\n - InputMediaPhoto\n - InputMediaSticker\n - InputMediaVenue\n - InputMediaVideo",
+    "html_description": "<p>This object represents the content of a poll option to be sent. It should be one of</p><ul>\n<li><a href=\"#inputmediaanimation\">InputMediaAnimation</a></li>\n<li><a href=\"#inputmedialink\">InputMediaLink</a></li>\n<li><a href=\"#inputmedialivephoto\">InputMediaLivePhoto</a></li>\n<li><a href=\"#inputmedialocation\">InputMediaLocation</a></li>\n<li><a href=\"#inputmediaphoto\">InputMediaPhoto</a></li>\n<li><a href=\"#inputmediasticker\">InputMediaSticker</a></li>\n<li><a href=\"#inputmediavenue\">InputMediaVenue</a></li>\n<li><a href=\"#inputmediavideo\">InputMediaVideo</a></li>\n</ul>",
+    "rst_description": "This object represents the content of a poll option to be sent. It should be one of\n\n - :class:`aiogram.types.input_media_animation.InputMediaAnimation`\n - :class:`aiogram.types.input_media_link.InputMediaLink`\n - :class:`aiogram.types.input_media_live_photo.InputMediaLivePhoto`\n - :class:`aiogram.types.input_media_location.InputMediaLocation`\n - :class:`aiogram.types.input_media_photo.InputMediaPhoto`\n - :class:`aiogram.types.input_media_sticker.InputMediaSticker`\n - :class:`aiogram.types.input_media_venue.InputMediaVenue`\n - :class:`aiogram.types.input_media_video.InputMediaVideo`",
+    "annotations": [],
+    "category": "types"
+  }
+}

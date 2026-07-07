@@ -31,5 +31,5 @@ class TestSendVenue:
             address="Under the stairs, 4 Privet Drive, "
             "Little Whinging, Surrey, England, Great Britain",
         )
-        request = bot.get_request()
+        bot.get_request()
         assert response == prepare_result.result

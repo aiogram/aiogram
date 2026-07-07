@@ -1,5 +1,3 @@
-import datetime
-
 from aiogram.methods import PostStory
 from aiogram.types import Chat, InputStoryContentPhoto, Story
 from tests.mocked_bot import MockedBot
@@ -22,5 +20,5 @@ class TestPostStory:
             active_period=6 * 3600,  # 6 hours
             caption="Test story caption",
         )
-        request = bot.get_request()
+        bot.get_request()
         assert response == prepare_result.result

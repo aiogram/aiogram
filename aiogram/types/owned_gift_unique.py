@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Literal, Optional
+from typing import TYPE_CHECKING, Any, Literal
 
 from aiogram.enums import OwnedGiftType
 
@@ -25,17 +25,17 @@ class OwnedGiftUnique(OwnedGift):
     """Information about the unique gift"""
     send_date: int
     """Date the gift was sent in Unix time"""
-    owned_gift_id: Optional[str] = None
+    owned_gift_id: str | None = None
     """*Optional*. Unique identifier of the received gift for the bot; for gifts received on behalf of business accounts only"""
-    sender_user: Optional[User] = None
+    sender_user: User | None = None
     """*Optional*. Sender of the gift if it is a known user"""
-    is_saved: Optional[bool] = None
+    is_saved: bool | None = None
     """*Optional*. :code:`True`, if the gift is displayed on the account's profile page; for gifts received on behalf of business accounts only"""
-    can_be_transferred: Optional[bool] = None
+    can_be_transferred: bool | None = None
     """*Optional*. :code:`True`, if the gift can be transferred to another owner; for gifts received on behalf of business accounts only"""
-    transfer_star_count: Optional[int] = None
+    transfer_star_count: int | None = None
     """*Optional*. Number of Telegram Stars that must be paid to transfer the gift; omitted if the bot cannot transfer the gift"""
-    next_transfer_date: Optional[DateTime] = None
+    next_transfer_date: DateTime | None = None
     """*Optional*. Point in time (Unix timestamp) when the gift can be transferred. If it is in the past, then the gift can be transferred now"""
 
     if TYPE_CHECKING:
@@ -48,12 +48,12 @@ class OwnedGiftUnique(OwnedGift):
             type: Literal[OwnedGiftType.UNIQUE] = OwnedGiftType.UNIQUE,
             gift: UniqueGift,
             send_date: int,
-            owned_gift_id: Optional[str] = None,
-            sender_user: Optional[User] = None,
-            is_saved: Optional[bool] = None,
-            can_be_transferred: Optional[bool] = None,
-            transfer_star_count: Optional[int] = None,
-            next_transfer_date: Optional[DateTime] = None,
+            owned_gift_id: str | None = None,
+            sender_user: User | None = None,
+            is_saved: bool | None = None,
+            can_be_transferred: bool | None = None,
+            transfer_star_count: int | None = None,
+            next_transfer_date: DateTime | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

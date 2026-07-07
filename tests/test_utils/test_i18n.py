@@ -1,4 +1,4 @@
-from typing import Any, Dict
+from typing import Any
 
 import pytest
 
@@ -26,6 +26,10 @@ def i18n_fixture() -> I18n:
 class TestI18nCore:
     def test_init(self, i18n: I18n):
         assert set(i18n.available_locales) == {"en", "uk"}
+
+    def test_init_relative(self):
+        i18n_relative = I18n(path="tests/data/locales")
+        assert set(i18n_relative.available_locales) == {"en", "uk"}
 
     def test_reload(self, i18n: I18n):
         i18n.reload()
@@ -76,7 +80,7 @@ class TestI18nCore:
             ["it", {"singular": "test", "plural": "test2", "n": 2}, "test2"],
         ],
     )
-    def test_gettext(self, i18n: I18n, locale: str, case: Dict[str, Any], result: str):
+    def test_gettext(self, i18n: I18n, locale: str, case: dict[str, Any], result: str):
         if locale is not None:
             i18n.current_locale = locale
         with i18n.context():

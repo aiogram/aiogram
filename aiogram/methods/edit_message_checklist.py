@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
-from ..types import InlineKeyboardMarkup, InputChecklist, Message
+from ..types import ChatIdUnion, InlineKeyboardMarkup, InputChecklist, Message
 from .base import TelegramMethod
 
 
@@ -18,14 +18,14 @@ class EditMessageChecklist(TelegramMethod[Message]):
 
     business_connection_id: str
     """Unique identifier of the business connection on behalf of which the message will be sent"""
-    chat_id: int
-    """Unique identifier for the target chat"""
+    chat_id: ChatIdUnion
+    """Unique identifier for the target chat or username of the target bot in the format :code:`@username`"""
     message_id: int
     """Unique identifier for the target message"""
     checklist: InputChecklist
     """A JSON-serialized object for the new checklist"""
-    reply_markup: Optional[InlineKeyboardMarkup] = None
-    """A JSON-serialized object for the new inline keyboard for the message"""
+    reply_markup: InlineKeyboardMarkup | None = None
+    """A JSON-serialized object for the new `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_ for the message"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!
@@ -35,10 +35,10 @@ class EditMessageChecklist(TelegramMethod[Message]):
             __pydantic__self__,
             *,
             business_connection_id: str,
-            chat_id: int,
+            chat_id: ChatIdUnion,
             message_id: int,
             checklist: InputChecklist,
-            reply_markup: Optional[InlineKeyboardMarkup] = None,
+            reply_markup: InlineKeyboardMarkup | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

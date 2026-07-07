@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from pydantic import Field
 
@@ -26,12 +26,12 @@ class PreCheckoutQuery(TelegramObject):
     currency: str
     """Three-letter ISO 4217 `currency <https://core.telegram.org/bots/payments#supported-currencies>`_ code, or 'XTR' for payments in `Telegram Stars <https://t.me/BotNews/90>`_"""
     total_amount: int
-    """Total price in the *smallest units* of the currency (integer, **not** float/double). For example, for a price of :code:`US$ 1.45` pass :code:`amount = 145`. See the *exp* parameter in `currencies.json <https://core.telegram.org/bots/payments/currencies.json>`_, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies)."""
+    """Total price in the *smallest units* of the currency (integer, **not** float/double). For example, for a price of :code:`US$ 1.45` pass :code:`amount = 145`. See the *exp* parameter in `currencies.json <https://core.telegram.org/bots/payments/currencies.json>`_, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies)"""
     invoice_payload: str
     """Bot-specified invoice payload"""
-    shipping_option_id: Optional[str] = None
+    shipping_option_id: str | None = None
     """*Optional*. Identifier of the shipping option chosen by the user"""
-    order_info: Optional[OrderInfo] = None
+    order_info: OrderInfo | None = None
     """*Optional*. Order information provided by the user"""
 
     if TYPE_CHECKING:
@@ -46,8 +46,8 @@ class PreCheckoutQuery(TelegramObject):
             currency: str,
             total_amount: int,
             invoice_payload: str,
-            shipping_option_id: Optional[str] = None,
-            order_info: Optional[OrderInfo] = None,
+            shipping_option_id: str | None = None,
+            order_info: OrderInfo | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!
@@ -68,7 +68,7 @@ class PreCheckoutQuery(TelegramObject):
     def answer(
         self,
         ok: bool,
-        error_message: Optional[str] = None,
+        error_message: str | None = None,
         **kwargs: Any,
     ) -> AnswerPreCheckoutQuery:
         """
@@ -81,8 +81,8 @@ class PreCheckoutQuery(TelegramObject):
 
         Source: https://core.telegram.org/bots/api#answerprecheckoutquery
 
-        :param ok: Specify :code:`True` if everything is alright (goods are available, etc.) and the bot is ready to proceed with the order. Use :code:`False` if there are any problems.
-        :param error_message: Required if *ok* is :code:`False`. Error message in human readable form that explains the reason for failure to proceed with the checkout (e.g. "Sorry, somebody just bought the last of our amazing black T-shirts while you were busy filling out your payment details. Please choose a different color or garment!"). Telegram will display this message to the user.
+        :param ok: Specify :code:`True` if everything is alright (goods are available, etc.) and the bot is ready to proceed with the order. Use :code:`False` if there are any problems
+        :param error_message: Required if *ok* is :code:`False`. Error message in human readable form that explains the reason for failure to proceed with the checkout (e.g. "Sorry, somebody just bought the last of our amazing black T-shirts while you were busy filling out your payment details. Please choose a different color or garment!"). Telegram will display this message to the user
         :return: instance of method :class:`aiogram.methods.answer_pre_checkout_query.AnswerPreCheckoutQuery`
         """
         # DO NOT EDIT MANUALLY!!!

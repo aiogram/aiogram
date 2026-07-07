@@ -9,5 +9,5 @@ class TestUnpinAllChatMessages:
         response: bool = await bot.unpin_all_chat_messages(
             chat_id=42,
         )
-        request = bot.get_request()
+        bot.get_request()
         assert response == prepare_result.result

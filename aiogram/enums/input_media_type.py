@@ -13,3 +13,7 @@ class InputMediaType(str, Enum):
     DOCUMENT = "document"
     PHOTO = "photo"
     VIDEO = "video"
+    LIVE_PHOTO = "live_photo"
+    VENUE = "venue"
+    STICKER = "sticker"
+    LOCATION = "location"

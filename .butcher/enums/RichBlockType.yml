@@ -1,0 +1,30 @@
+name: RichBlockType
+description: |
+  This object represents a block in a rich formatted message.
+
+  Source: https://core.telegram.org/bots/api#richtext
+multi_parse:
+  attribute: type
+  regexp: "always '([a-z_]+)'"
+  entities:
+    - RichBlockParagraph
+    - RichBlockSectionHeading
+    - RichBlockPreformatted
+    - RichBlockFooter
+    - RichBlockDivider
+    - RichBlockMathematicalExpression
+    - RichBlockAnchor
+    - RichBlockList
+    - RichBlockBlockQuotation
+    - RichBlockPullQuotation
+    - RichBlockCollage
+    - RichBlockSlideshow
+    - RichBlockTable
+    - RichBlockDetails
+    - RichBlockMap
+    - RichBlockAnimation
+    - RichBlockAudio
+    - RichBlockPhoto
+    - RichBlockVideo
+    - RichBlockVoiceNote
+    - RichBlockThinking

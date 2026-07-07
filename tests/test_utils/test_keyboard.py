@@ -207,21 +207,73 @@ class TestKeyboardBuilder:
         markup = builder.export()
 
         assert len(markup) == len(shape)
-        for row, expected_size in zip(markup, shape):
+        for row, expected_size in zip(markup, shape, strict=False):
             assert len(row) == expected_size
 
     @pytest.mark.parametrize(
         "builder_type,kwargs,expected",
         [
-            [ReplyKeyboardBuilder, dict(text="test"), KeyboardButton(text="test")],
+            [ReplyKeyboardBuilder, {"text": "test"}, KeyboardButton(text="test")],
+            [
+                ReplyKeyboardBuilder,
+                {"text": "test", "icon_custom_emoji_id": "emoji-id"},
+                KeyboardButton(text="test", icon_custom_emoji_id="emoji-id"),
+            ],
+            [
+                ReplyKeyboardBuilder,
+                {"text": "test", "style": "success"},
+                KeyboardButton(text="test", style="success"),
+            ],
+            [
+                ReplyKeyboardBuilder,
+                {"text": "test", "icon_custom_emoji_id": "emoji-id", "style": "success"},
+                KeyboardButton(
+                    text="test",
+                    icon_custom_emoji_id="emoji-id",
+                    style="success",
+                ),
+            ],
             [
                 InlineKeyboardBuilder,
-                dict(text="test", callback_data="callback"),
+                {"text": "test", "callback_data": "callback"},
                 InlineKeyboardButton(text="test", callback_data="callback"),
             ],
             [
                 InlineKeyboardBuilder,
-                dict(text="test", callback_data=MyCallback(value="test")),
+                {
+                    "text": "test",
+                    "icon_custom_emoji_id": "emoji-id",
+                    "callback_data": "callback",
+                },
+                InlineKeyboardButton(
+                    text="test",
+                    icon_custom_emoji_id="emoji-id",
+                    callback_data="callback",
+                ),
+            ],
+            [
+                InlineKeyboardBuilder,
+                {"text": "test", "style": "primary", "callback_data": "callback"},
+                InlineKeyboardButton(text="test", style="primary", callback_data="callback"),
+            ],
+            [
+                InlineKeyboardBuilder,
+                {
+                    "text": "test",
+                    "icon_custom_emoji_id": "emoji-id",
+                    "style": "primary",
+                    "callback_data": "callback",
+                },
+                InlineKeyboardButton(
+                    text="test",
+                    icon_custom_emoji_id="emoji-id",
+                    style="primary",
+                    callback_data="callback",
+                ),
+            ],
+            [
+                InlineKeyboardBuilder,
+                {"text": "test", "callback_data": MyCallback(value="test")},
                 InlineKeyboardButton(text="test", callback_data="test:test"),
             ],
         ],
@@ -241,6 +293,45 @@ class TestKeyboardBuilder:
     )
     def test_as_markup(self, builder, expected):
         assert isinstance(builder.as_markup(), expected)
+
+    @pytest.mark.parametrize(
+        "builder,button_kwargs,icon_custom_emoji_id,style",
+        [
+            [
+                ReplyKeyboardBuilder(),
+                {"text": "test", "icon_custom_emoji_id": "emoji-id", "style": "success"},
+                "emoji-id",
+                "success",
+            ],
+            [
+                InlineKeyboardBuilder(),
+                {
+                    "text": "test",
+                    "icon_custom_emoji_id": "emoji-id",
+                    "style": "primary",
+                    "callback_data": "callback",
+                },
+                "emoji-id",
+                "primary",
+            ],
+        ],
+    )
+    def test_as_markup_preserves_icon_and_style(
+        self,
+        builder,
+        button_kwargs,
+        icon_custom_emoji_id,
+        style,
+    ):
+        builder.button(**button_kwargs)
+        markup = builder.as_markup()
+        if isinstance(markup, ReplyKeyboardMarkup):
+            button = markup.keyboard[0][0]
+        else:
+            button = markup.inline_keyboard[0][0]
+
+        assert button.icon_custom_emoji_id == icon_custom_emoji_id
+        assert button.style == style
 
     @pytest.mark.parametrize(
         "markup,builder_type",

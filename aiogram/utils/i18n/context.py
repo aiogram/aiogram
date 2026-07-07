@@ -7,7 +7,8 @@ from aiogram.utils.i18n.lazy_proxy import LazyProxy
 def get_i18n() -> I18n:
     i18n = I18n.get_current(no_error=True)
     if i18n is None:
-        raise LookupError("I18n context is not set")
+        msg = "I18n context is not set"
+        raise LookupError(msg)
     return i18n
 
 

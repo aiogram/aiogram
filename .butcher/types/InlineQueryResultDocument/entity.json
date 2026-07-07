@@ -37,6 +37,22 @@
       },
       {
         "type": "String",
+        "description": "A valid URL for the file",
+        "html_description": "<td>A valid URL for the file</td>",
+        "rst_description": "A valid URL for the file\n",
+        "name": "document_url",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "MIME type of the content of the file, either 'application/pdf' or 'application/zip'",
+        "html_description": "<td>MIME type of the content of the file, either &#8220;application/pdf&#8221; or &#8220;application/zip&#8221;</td>",
+        "rst_description": "MIME type of the content of the file, either 'application/pdf' or 'application/zip'\n",
+        "name": "mime_type",
+        "required": true
+      },
+      {
+        "type": "String",
         "description": "Caption of the document to be sent, 0-1024 characters after entities parsing",
         "html_description": "<td><em>Optional</em>. Caption of the document to be sent, 0-1024 characters after entities parsing</td>",
         "rst_description": "*Optional*. Caption of the document to be sent, 0-1024 characters after entities parsing\n",
@@ -61,22 +77,6 @@
       },
       {
         "type": "String",
-        "description": "A valid URL for the file",
-        "html_description": "<td>A valid URL for the file</td>",
-        "rst_description": "A valid URL for the file\n",
-        "name": "document_url",
-        "required": true
-      },
-      {
-        "type": "String",
-        "description": "MIME type of the content of the file, either 'application/pdf' or 'application/zip'",
-        "html_description": "<td>MIME type of the content of the file, either &#8220;application/pdf&#8221; or &#8220;application/zip&#8221;</td>",
-        "rst_description": "MIME type of the content of the file, either 'application/pdf' or 'application/zip'\n",
-        "name": "mime_type",
-        "required": true
-      },
-      {
-        "type": "String",
         "description": "Short description of the result",
         "html_description": "<td><em>Optional</em>. Short description of the result</td>",
         "rst_description": "*Optional*. Short description of the result\n",
@@ -86,8 +86,8 @@
       {
         "type": "InlineKeyboardMarkup",
         "description": "Inline keyboard attached to the message",
-        "html_description": "<td><em>Optional</em>. Inline keyboard attached to the message</td>",
-        "rst_description": "*Optional*. Inline keyboard attached to the message\n",
+        "html_description": "<td><em>Optional</em>. <a href=\"/bots/features#inline-keyboards\">Inline keyboard</a> attached to the message</td>",
+        "rst_description": "*Optional*. `Inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_ attached to the message\n",
         "name": "reply_markup",
         "required": false
       },

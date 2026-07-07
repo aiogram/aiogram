@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Literal, Optional
+from typing import TYPE_CHECKING, Any, Literal
 
 from ..enums import InlineQueryResultType
 from .inline_query_result import InlineQueryResult
@@ -23,9 +23,9 @@ class InlineQueryResultCachedSticker(InlineQueryResult):
     """Unique identifier for this result, 1-64 bytes"""
     sticker_file_id: str
     """A valid file identifier of the sticker"""
-    reply_markup: Optional[InlineKeyboardMarkup] = None
+    reply_markup: InlineKeyboardMarkup | None = None
     """*Optional*. `Inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_ attached to the message"""
-    input_message_content: Optional[InputMessageContentUnion] = None
+    input_message_content: InputMessageContentUnion | None = None
     """*Optional*. Content of the message to be sent instead of the sticker"""
 
     if TYPE_CHECKING:
@@ -38,8 +38,8 @@ class InlineQueryResultCachedSticker(InlineQueryResult):
             type: Literal[InlineQueryResultType.STICKER] = InlineQueryResultType.STICKER,
             id: str,
             sticker_file_id: str,
-            reply_markup: Optional[InlineKeyboardMarkup] = None,
-            input_message_content: Optional[InputMessageContentUnion] = None,
+            reply_markup: InlineKeyboardMarkup | None = None,
+            input_message_content: InputMessageContentUnion | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

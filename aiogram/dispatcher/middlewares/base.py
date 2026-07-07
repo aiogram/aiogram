@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
-from typing import Any, Awaitable, Callable, Dict, TypeVar
+from collections.abc import Awaitable, Callable
+from typing import Any, TypeVar
 
 from aiogram.types import TelegramObject
 
@@ -14,9 +15,9 @@ class BaseMiddleware(ABC):
     @abstractmethod
     async def __call__(
         self,
-        handler: Callable[[TelegramObject, Dict[str, Any]], Awaitable[Any]],
+        handler: Callable[[TelegramObject, dict[str, Any]], Awaitable[Any]],
         event: TelegramObject,
-        data: Dict[str, Any],
+        data: dict[str, Any],
     ) -> Any:  # pragma: no cover
         """
         Execute middleware
@@ -26,4 +27,3 @@ class BaseMiddleware(ABC):
         :param data: Contextual data. Will be mapped to handler arguments
         :return: :class:`Any`
         """
-        pass

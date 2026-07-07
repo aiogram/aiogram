@@ -25,5 +25,5 @@ class TestSendVideoNote:
             video_note="file id",
             thumbnail=BufferedInputFile(b"", "file.png"),
         )
-        request = bot.get_request()
+        bot.get_request()
         assert response == prepare_result.result

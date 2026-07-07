@@ -1,6 +1,7 @@
 import datetime
 import json
-from typing import Any, AsyncContextManager, AsyncGenerator, Dict, Optional
+from collections.abc import AsyncGenerator
+from typing import Any, AsyncContextManager
 from unittest.mock import AsyncMock, patch
 
 import pytest
@@ -39,7 +40,7 @@ class CustomSession(BaseSession):
         self,
         token: str,
         method: TelegramMethod[TelegramType],
-        timeout: Optional[int] = UNSET_PARSE_MODE,
+        timeout: int | None = UNSET_PARSE_MODE,
     ) -> None:  # type: ignore
         assert isinstance(token, str)
         assert isinstance(method, TelegramMethod)
@@ -47,7 +48,7 @@ class CustomSession(BaseSession):
     async def stream_content(
         self,
         url: str,
-        headers: Optional[Dict[str, Any]] = None,
+        headers: dict[str, Any] | None = None,
         timeout: int = 30,
         chunk_size: int = 65536,
         raise_for_status: bool = True,

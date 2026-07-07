@@ -28,7 +28,7 @@ class TestInlineQuery:
             ShippingOption(id="id", title="foo", prices=[LabeledPrice(label="foo", amount=123)])
         ]
 
-        kwargs = dict(ok=True, shipping_options=shipping_options, error_message="foo")
+        kwargs = {"ok": True, "shipping_options": shipping_options, "error_message": "foo"}
 
         api_method = shipping_query.answer(**kwargs)
 

@@ -39,5 +39,5 @@ class TestSendPaidMedia:
         response: Message = await bot.send_paid_media(
             chat_id=-42, star_count=1, media=[InputPaidMediaPhoto(media="file_id")]
         )
-        request = bot.get_request()
+        bot.get_request()
         assert response == prepare_result.result

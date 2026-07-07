@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from .base import TelegramObject
 
@@ -15,13 +15,13 @@ class OrderInfo(TelegramObject):
     Source: https://core.telegram.org/bots/api#orderinfo
     """
 
-    name: Optional[str] = None
+    name: str | None = None
     """*Optional*. User name"""
-    phone_number: Optional[str] = None
+    phone_number: str | None = None
     """*Optional*. User's phone number"""
-    email: Optional[str] = None
+    email: str | None = None
     """*Optional*. User email"""
-    shipping_address: Optional[ShippingAddress] = None
+    shipping_address: ShippingAddress | None = None
     """*Optional*. User shipping address"""
 
     if TYPE_CHECKING:
@@ -31,10 +31,10 @@ class OrderInfo(TelegramObject):
         def __init__(
             __pydantic__self__,
             *,
-            name: Optional[str] = None,
-            phone_number: Optional[str] = None,
-            email: Optional[str] = None,
-            shipping_address: Optional[ShippingAddress] = None,
+            name: str | None = None,
+            phone_number: str | None = None,
+            email: str | None = None,
+            shipping_address: ShippingAddress | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

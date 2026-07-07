@@ -1,4 +1,4 @@
-from typing import Any, Optional
+from typing import Any
 
 from aiogram.methods import TelegramMethod
 from aiogram.methods.base import TelegramType
@@ -16,7 +16,7 @@ class DetailedAiogramError(AiogramError):
     Base exception for all aiogram errors with detailed message.
     """
 
-    url: Optional[str] = None
+    url: str | None = None
 
     def __init__(self, message: str) -> None:
         self.message = message

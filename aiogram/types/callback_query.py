@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from pydantic import Field
 
@@ -26,14 +26,14 @@ class CallbackQuery(TelegramObject):
     from_user: User = Field(..., alias="from")
     """Sender"""
     chat_instance: str
-    """Global identifier, uniquely corresponding to the chat to which the message with the callback button was sent. Useful for high scores in :class:`aiogram.methods.games.Games`."""
-    message: Optional[MaybeInaccessibleMessageUnion] = None
+    """Global identifier, uniquely corresponding to the chat to which the message with the callback button was sent. Useful for high scores in :class:`aiogram.methods.games.Games`"""
+    message: MaybeInaccessibleMessageUnion | None = None
     """*Optional*. Message sent by the bot with the callback button that originated the query"""
-    inline_message_id: Optional[str] = None
-    """*Optional*. Identifier of the message sent via the bot in inline mode, that originated the query."""
-    data: Optional[str] = None
-    """*Optional*. Data associated with the callback button. Be aware that the message originated the query can contain no callback buttons with this data."""
-    game_short_name: Optional[str] = None
+    inline_message_id: str | None = None
+    """*Optional*. Identifier of the message sent via the bot in inline mode, that originated the query"""
+    data: str | None = None
+    """*Optional*. Data associated with the callback button. Be aware that the message originated the query can contain no callback buttons with this data"""
+    game_short_name: str | None = None
     """*Optional*. Short name of a `Game <https://core.telegram.org/bots/api#games>`_ to be returned, serves as the unique identifier for the game"""
 
     if TYPE_CHECKING:
@@ -46,10 +46,10 @@ class CallbackQuery(TelegramObject):
             id: str,
             from_user: User,
             chat_instance: str,
-            message: Optional[MaybeInaccessibleMessageUnion] = None,
-            inline_message_id: Optional[str] = None,
-            data: Optional[str] = None,
-            game_short_name: Optional[str] = None,
+            message: MaybeInaccessibleMessageUnion | None = None,
+            inline_message_id: str | None = None,
+            data: str | None = None,
+            game_short_name: str | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!
@@ -69,10 +69,10 @@ class CallbackQuery(TelegramObject):
 
     def answer(
         self,
-        text: Optional[str] = None,
-        show_alert: Optional[bool] = None,
-        url: Optional[str] = None,
-        cache_time: Optional[int] = None,
+        text: str | None = None,
+        show_alert: bool | None = None,
+        url: str | None = None,
+        cache_time: int | None = None,
         **kwargs: Any,
     ) -> AnswerCallbackQuery:
         """
@@ -88,9 +88,9 @@ class CallbackQuery(TelegramObject):
         Source: https://core.telegram.org/bots/api#answercallbackquery
 
         :param text: Text of the notification. If not specified, nothing will be shown to the user, 0-200 characters
-        :param show_alert: If :code:`True`, an alert will be shown by the client instead of a notification at the top of the chat screen. Defaults to *false*.
-        :param url: URL that will be opened by the user's client. If you have created a :class:`aiogram.types.game.Game` and accepted the conditions via `@BotFather <https://t.me/botfather>`_, specify the URL that opens your game - note that this will only work if the query comes from a `https://core.telegram.org/bots/api#inlinekeyboardbutton <https://core.telegram.org/bots/api#inlinekeyboardbutton>`_ *callback_game* button.
-        :param cache_time: The maximum amount of time in seconds that the result of the callback query may be cached client-side. Telegram apps will support caching starting in version 3.14. Defaults to 0.
+        :param show_alert: If :code:`True`, an alert will be shown by the client instead of a notification at the top of the chat screen. Defaults to *false*
+        :param url: URL that will be opened by the user's client. If you have created a :class:`aiogram.types.game.Game` and accepted the conditions via `@BotFather <https://t.me/botfather>`_, specify the URL that opens your game - note that this will only work if the query comes from a `https://core.telegram.org/bots/api#inlinekeyboardbutton <https://core.telegram.org/bots/api#inlinekeyboardbutton>`_ *callback_game* button
+        :param cache_time: The maximum amount of time in seconds that the result of the callback query may be cached client-side. Telegram apps will support caching starting in version 3.14. Defaults to 0
         :return: instance of method :class:`aiogram.methods.answer_callback_query.AnswerCallbackQuery`
         """
         # DO NOT EDIT MANUALLY!!!

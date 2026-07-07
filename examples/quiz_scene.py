@@ -263,7 +263,7 @@ quiz_router.message.register(QuizScene.as_handler(), Command("quiz"))
 
 
 @quiz_router.message(Command("start"))
-async def command_start(message: Message, scenes: ScenesManager):
+async def command_start(message: Message, scenes: ScenesManager) -> None:
     await scenes.close()
     await message.answer(
         "Hi! This is a quiz bot. To start the quiz, use the /quiz command.",
@@ -271,7 +271,7 @@ async def command_start(message: Message, scenes: ScenesManager):
     )
 
 
-def create_dispatcher():
+def create_dispatcher() -> Dispatcher:
     # Event isolation is needed to correctly handle fast user responses
     dispatcher = Dispatcher(
         events_isolation=SimpleEventIsolation(),
@@ -288,7 +288,7 @@ def create_dispatcher():
     return dispatcher
 
 
-async def main():
+async def main() -> None:
     dp = create_dispatcher()
     bot = Bot(token=TOKEN)
     await dp.start_polling(bot)

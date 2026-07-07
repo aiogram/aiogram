@@ -1,12 +1,8 @@
 import asyncio
+from collections.abc import AsyncGenerator, AsyncIterable
 from typing import (
     Any,
     AsyncContextManager,
-    AsyncGenerator,
-    AsyncIterable,
-    Dict,
-    List,
-    Union,
 )
 from unittest.mock import AsyncMock, patch
 
@@ -115,10 +111,10 @@ class TestAiohttpSession:
             str_: str
             int_: int
             bool_: bool
-            unset_: Union[str, Default] = Default("parse_mode")
+            unset_: str | Default = Default("parse_mode")
             null_: None
-            list_: List[str]
-            dict_: Dict[str, Any]
+            list_: list[str]
+            dict_: dict[str, Any]
 
         session = AiohttpSession()
         form = session.build_form_data(

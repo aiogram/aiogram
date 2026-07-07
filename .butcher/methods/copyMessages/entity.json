@@ -14,25 +14,17 @@
       {
         "type": "Integer or String",
         "required": true,
-        "description": "Unique identifier for the target chat or username of the target channel (in the format @channelusername)",
-        "html_description": "<td>Unique identifier for the target chat or username of the target channel (in the format <code>@channelusername</code>)</td>",
-        "rst_description": "Unique identifier for the target chat or username of the target channel (in the format :code:`@channelusername`)\n",
+        "description": "Unique identifier for the target chat or username of the target bot, supergroup or channel in the format @username",
+        "html_description": "<td>Unique identifier for the target chat or username of the target bot, supergroup or channel in the format <code>@username</code></td>",
+        "rst_description": "Unique identifier for the target chat or username of the target bot, supergroup or channel in the format :code:`@username`\n",
         "name": "chat_id"
-      },
-      {
-        "type": "Integer",
-        "required": false,
-        "description": "Unique identifier for the target message thread (topic) of the forum; for forum supergroups only",
-        "html_description": "<td>Unique identifier for the target message thread (topic) of the forum; for forum supergroups only</td>",
-        "rst_description": "Unique identifier for the target message thread (topic) of the forum; for forum supergroups only\n",
-        "name": "message_thread_id"
       },
       {
         "type": "Integer or String",
         "required": true,
-        "description": "Unique identifier for the chat where the original messages were sent (or channel username in the format @channelusername)",
-        "html_description": "<td>Unique identifier for the chat where the original messages were sent (or channel username in the format <code>@channelusername</code>)</td>",
-        "rst_description": "Unique identifier for the chat where the original messages were sent (or channel username in the format :code:`@channelusername`)\n",
+        "description": "Unique identifier for the chat where the original messages were sent (or username of the target bot, supergroup or channel in the format @username)",
+        "html_description": "<td>Unique identifier for the chat where the original messages were sent (or username of the target bot, supergroup or channel in the format <code>@username</code>)</td>",
+        "rst_description": "Unique identifier for the chat where the original messages were sent (or username of the target bot, supergroup or channel in the format :code:`@username`)\n",
         "name": "from_chat_id"
       },
       {
@@ -42,6 +34,22 @@
         "html_description": "<td>A JSON-serialized list of 1-100 identifiers of messages in the chat <em>from_chat_id</em> to copy. The identifiers must be specified in a strictly increasing order.</td>",
         "rst_description": "A JSON-serialized list of 1-100 identifiers of messages in the chat *from_chat_id* to copy. The identifiers must be specified in a strictly increasing order.\n",
         "name": "message_ids"
+      },
+      {
+        "type": "Integer",
+        "required": false,
+        "description": "Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only",
+        "html_description": "<td>Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only</td>",
+        "rst_description": "Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only\n",
+        "name": "message_thread_id"
+      },
+      {
+        "type": "Integer",
+        "required": false,
+        "description": "Identifier of the direct messages topic to which the messages will be sent; required if the messages are sent to a direct messages chat",
+        "html_description": "<td>Identifier of the direct messages topic to which the messages will be sent; required if the messages are sent to a direct messages chat</td>",
+        "rst_description": "Identifier of the direct messages topic to which the messages will be sent; required if the messages are sent to a direct messages chat\n",
+        "name": "direct_messages_topic_id"
       },
       {
         "type": "Boolean",

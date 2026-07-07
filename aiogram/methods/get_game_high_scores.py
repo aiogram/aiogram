@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from ..types import GameHighScore
 from .base import TelegramMethod
@@ -20,11 +20,11 @@ class GetGameHighScores(TelegramMethod[list[GameHighScore]]):
 
     user_id: int
     """Target user id"""
-    chat_id: Optional[int] = None
+    chat_id: int | None = None
     """Required if *inline_message_id* is not specified. Unique identifier for the target chat"""
-    message_id: Optional[int] = None
+    message_id: int | None = None
     """Required if *inline_message_id* is not specified. Identifier of the sent message"""
-    inline_message_id: Optional[str] = None
+    inline_message_id: str | None = None
     """Required if *chat_id* and *message_id* are not specified. Identifier of the inline message"""
 
     if TYPE_CHECKING:
@@ -35,9 +35,9 @@ class GetGameHighScores(TelegramMethod[list[GameHighScore]]):
             __pydantic__self__,
             *,
             user_id: int,
-            chat_id: Optional[int] = None,
-            message_id: Optional[int] = None,
-            inline_message_id: Optional[str] = None,
+            chat_id: int | None = None,
+            message_id: int | None = None,
+            inline_message_id: str | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

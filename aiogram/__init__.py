@@ -1,6 +1,3 @@
-import asyncio as _asyncio
-from contextlib import suppress
-
 from aiogram.dispatcher.flags import FlagGenerator
 
 from . import enums, methods, types
@@ -14,28 +11,22 @@ from .utils.magic_filter import MagicFilter
 from .utils.text_decorations import html_decoration as html
 from .utils.text_decorations import markdown_decoration as md
 
-with suppress(ImportError):
-    import uvloop as _uvloop
-
-    _asyncio.set_event_loop_policy(_uvloop.EventLoopPolicy())
-
-
 F = MagicFilter()
 flags = FlagGenerator()
 
 __all__ = (
+    "BaseMiddleware",
+    "Bot",
+    "Dispatcher",
+    "F",
+    "Router",
     "__api_version__",
     "__version__",
-    "types",
-    "methods",
     "enums",
-    "Bot",
-    "session",
-    "Dispatcher",
-    "Router",
-    "BaseMiddleware",
-    "F",
+    "flags",
     "html",
     "md",
-    "flags",
+    "methods",
+    "session",
+    "types",
 )

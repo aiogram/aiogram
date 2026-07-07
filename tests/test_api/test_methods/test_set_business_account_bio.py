@@ -10,5 +10,5 @@ class TestSetBusinessAccountBio:
             business_connection_id="test_connection_id",
             bio="This is a test bio for the business account",
         )
-        request = bot.get_request()
+        bot.get_request()
         assert response == prepare_result.result

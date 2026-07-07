@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from pydantic import Field
 
@@ -21,16 +21,16 @@ class CreateNewStickerSet(TelegramMethod[bool]):
     user_id: int
     """User identifier of created sticker set owner"""
     name: str
-    """Short name of sticker set, to be used in :code:`t.me/addstickers/` URLs (e.g., *animals*). Can contain only English letters, digits and underscores. Must begin with a letter, can't contain consecutive underscores and must end in :code:`"_by_<bot_username>"`. :code:`<bot_username>` is case insensitive. 1-64 characters."""
+    """Short name of sticker set, to be used in :code:`t.me/addstickers/` URLs (e.g., *animals*). Can contain only English letters, digits and underscores. Must begin with a letter, can't contain consecutive underscores and must end in :code:`"_by_<bot_username>"`. :code:`<bot_username>` is case insensitive. 1-64 characters"""
     title: str
     """Sticker set title, 1-64 characters"""
     stickers: list[InputSticker]
     """A JSON-serialized list of 1-50 initial stickers to be added to the sticker set"""
-    sticker_type: Optional[str] = None
-    """Type of stickers in the set, pass 'regular', 'mask', or 'custom_emoji'. By default, a regular sticker set is created."""
-    needs_repainting: Optional[bool] = None
+    sticker_type: str | None = None
+    """Type of stickers in the set, pass 'regular', 'mask', or 'custom_emoji'. By default, a regular sticker set is created"""
+    needs_repainting: bool | None = None
     """Pass :code:`True` if stickers in the sticker set must be repainted to the color of text when used in messages, the accent color if used as emoji status, white on chat photos, or another appropriate color based on context; for custom emoji sticker sets only"""
-    sticker_format: Optional[str] = Field(None, json_schema_extra={"deprecated": True})
+    sticker_format: str | None = Field(None, json_schema_extra={"deprecated": True})
     """Format of stickers in the set, must be one of 'static', 'animated', 'video'
 
 .. deprecated:: API:7.2
@@ -47,9 +47,9 @@ class CreateNewStickerSet(TelegramMethod[bool]):
             name: str,
             title: str,
             stickers: list[InputSticker],
-            sticker_type: Optional[str] = None,
-            needs_repainting: Optional[bool] = None,
-            sticker_format: Optional[str] = None,
+            sticker_type: str | None = None,
+            needs_repainting: bool | None = None,
+            sticker_format: str | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!

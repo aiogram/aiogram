@@ -1,10 +1,11 @@
 import asyncio
-import contextvars
 import inspect
+import sys
 import warnings
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from functools import partial
-from typing import Any, Callable, Dict, List, Optional, Set, Tuple
+from typing import Any
 
 from magic_filter.magic import MagicFilter as OriginalMagicFilter
 
@@ -16,22 +17,49 @@ from aiogram.utils.warnings import Recommendation
 
 CallbackType = Callable[..., Any]
 
+_ACCEPTED_PARAM_KINDS = {
+    inspect.Parameter.POSITIONAL_ONLY,
+    inspect.Parameter.POSITIONAL_OR_KEYWORD,
+    inspect.Parameter.KEYWORD_ONLY,
+}
+
 
 @dataclass
 class CallableObject:
     callback: CallbackType
     awaitable: bool = field(init=False)
-    params: Set[str] = field(init=False)
+    params: set[str] = field(init=False)
     varkw: bool = field(init=False)
 
     def __post_init__(self) -> None:
         callback = inspect.unwrap(self.callback)
         self.awaitable = inspect.isawaitable(callback) or inspect.iscoroutinefunction(callback)
-        spec = inspect.getfullargspec(callback)
-        self.params = {*spec.args, *spec.kwonlyargs}
-        self.varkw = spec.varkw is not None
 
-    def _prepare_kwargs(self, kwargs: Dict[str, Any]) -> Dict[str, Any]:
+        kwargs: dict[str, Any] = {}
+        if sys.version_info >= (3, 14):
+            import annotationlib
+
+            kwargs["annotation_format"] = annotationlib.Format.FORWARDREF
+
+        try:
+            signature = inspect.signature(callback, **kwargs)
+        except (ValueError, TypeError):  # pragma: no cover
+            self.params = set()
+            self.varkw = False
+            return
+
+        params: set[str] = set()
+        varkw: bool = False
+
+        for p in signature.parameters.values():
+            if p.kind in _ACCEPTED_PARAM_KINDS:
+                params.add(p.name)
+            elif p.kind == inspect.Parameter.VAR_KEYWORD:
+                varkw = True
+        self.params = params
+        self.varkw = varkw
+
+    def _prepare_kwargs(self, kwargs: dict[str, Any]) -> dict[str, Any]:
         if self.varkw:
             return kwargs
 
@@ -46,7 +74,7 @@ class CallableObject:
 
 @dataclass
 class FilterObject(CallableObject):
-    magic: Optional[MagicFilter] = None
+    magic: OriginalMagicFilter | None = None
 
     def __post_init__(self) -> None:
         if isinstance(self.callback, OriginalMagicFilter):
@@ -65,7 +93,7 @@ class FilterObject(CallableObject):
                     stacklevel=6,
                 )
 
-        super(FilterObject, self).__post_init__()
+        super().__post_init__()
 
         if isinstance(self.callback, Filter):
             self.awaitable = True
@@ -73,17 +101,17 @@ class FilterObject(CallableObject):
 
 @dataclass
 class HandlerObject(CallableObject):
-    filters: Optional[List[FilterObject]] = None
-    flags: Dict[str, Any] = field(default_factory=dict)
+    filters: list[FilterObject] | None = None
+    flags: dict[str, Any] = field(default_factory=dict)
 
     def __post_init__(self) -> None:
-        super(HandlerObject, self).__post_init__()
+        super().__post_init__()
         callback = inspect.unwrap(self.callback)
         if inspect.isclass(callback) and issubclass(callback, BaseHandler):
             self.awaitable = True
         self.flags.update(extract_flags_from_object(callback))
 
-    async def check(self, *args: Any, **kwargs: Any) -> Tuple[bool, Dict[str, Any]]:
+    async def check(self, *args: Any, **kwargs: Any) -> tuple[bool, dict[str, Any]]:
         if not self.filters:
             return True, kwargs
         for event_filter in self.filters:

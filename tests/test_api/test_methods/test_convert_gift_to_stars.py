@@ -9,5 +9,5 @@ class TestConvertGiftToStars:
         response: bool = await bot.convert_gift_to_stars(
             business_connection_id="test_connection_id", owned_gift_id="test_gift_id"
         )
-        request = bot.get_request()
+        bot.get_request()
         assert response == prepare_result.result

@@ -1,4 +1,5 @@
-from typing import Any, Iterable
+from collections.abc import Iterable
+from typing import Any
 
 from magic_filter import MagicFilter as _MagicFilter
 from magic_filter import MagicT as _MagicT

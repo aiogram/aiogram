@@ -1,5 +1,4 @@
 from datetime import datetime
-from typing import Optional
 
 import pytest
 
@@ -27,7 +26,7 @@ from aiogram.types import (
 
 class ChatMemberCustom(ChatMember):
     status: str
-    is_member: Optional[bool] = None
+    is_member: bool | None = None
 
 
 class TestMemberStatusMarker:
@@ -315,6 +314,8 @@ class TestChatMemberUpdatedStatusFilter:
         "can_send_polls": True,
         "can_send_other_messages": True,
         "can_add_web_page_previews": True,
+        "can_react_to_messages": True,
+        "can_edit_tag": True,
         "can_post_stories": True,
         "can_edit_stories": True,
         "can_delete_stories": True,

@@ -13,5 +13,5 @@ class TestSetUserEmojiStatus:
             emoji_status_custom_emoji_id="emoji_status_custom_emoji_id",
             emoji_status_expiration_date=datetime.now() + timedelta(days=1),
         )
-        request = bot.get_request()
+        bot.get_request()
         assert response == prepare_result.result

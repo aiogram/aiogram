@@ -1,0 +1,41 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Rich messages",
+    "anchor": "rich-messages"
+  },
+  "object": {
+    "anchor": "richtextreference",
+    "name": "RichTextReference",
+    "description": "A reference.",
+    "html_description": "<p>A reference.</p>",
+    "rst_description": "A reference.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Type of the rich text, always 'reference'",
+        "html_description": "<td>Type of the rich text, always &#8220;reference&#8221;</td>",
+        "rst_description": "Type of the rich text, always 'reference'\n",
+        "name": "type",
+        "required": true
+      },
+      {
+        "type": "RichText",
+        "description": "Text of the reference",
+        "html_description": "<td>Text of the reference</td>",
+        "rst_description": "Text of the reference\n",
+        "name": "text",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "The name of the reference",
+        "html_description": "<td>The name of the reference</td>",
+        "rst_description": "The name of the reference\n",
+        "name": "name",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

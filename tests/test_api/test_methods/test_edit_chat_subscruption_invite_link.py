@@ -22,5 +22,5 @@ class TestEditChatSubscriptionInviteLink:
             invite_link="https://t.me/username/test",
             name="test",
         )
-        request = bot.get_request()
+        bot.get_request()
         assert response == prepare_result.result

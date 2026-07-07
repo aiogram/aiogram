@@ -1,5 +1,4 @@
 from abc import ABC
-from typing import Optional
 
 from aiogram.handlers import BaseHandler
 from aiogram.types import CallbackQuery, MaybeInaccessibleMessage, User
@@ -29,14 +28,14 @@ class CallbackQueryHandler(BaseHandler[CallbackQuery], ABC):
         return self.event.from_user
 
     @property
-    def message(self) -> Optional[MaybeInaccessibleMessage]:
+    def message(self) -> MaybeInaccessibleMessage | None:
         """
         Is alias for `event.message`
         """
         return self.event.message
 
     @property
-    def callback_data(self) -> Optional[str]:
+    def callback_data(self) -> str | None:
         """
         Is alias for `event.data`
         """

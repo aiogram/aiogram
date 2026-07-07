@@ -1,0 +1,25 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "chatownerchanged",
+    "name": "ChatOwnerChanged",
+    "description": "Describes a service message about an ownership change in the chat.",
+    "html_description": "<p>Describes a service message about an ownership change in the chat.</p>",
+    "rst_description": "Describes a service message about an ownership change in the chat.",
+    "annotations": [
+      {
+        "type": "User",
+        "description": "The new owner of the chat",
+        "html_description": "<td>The new owner of the chat</td>",
+        "rst_description": "The new owner of the chat\n",
+        "name": "new_owner",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

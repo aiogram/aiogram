@@ -19,10 +19,11 @@ class TestGetChat:
                     limited_gifts=True,
                     unique_gifts=True,
                     premium_subscription=True,
+                    gifts_from_channels=True,
                 ),
             ),
         )
 
         response: ChatFullInfo = await bot.get_chat(chat_id=-42)
-        request = bot.get_request()
+        bot.get_request()
         assert response == prepare_result.result

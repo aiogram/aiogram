@@ -1,5 +1,4 @@
 import datetime
-from typing import Union
 
 from aiogram.methods import EditMessageCaption
 from aiogram.types import Chat, Message
@@ -19,6 +18,6 @@ class TestEditMessageCaption:
             ),
         )
 
-        response: Union[Message, bool] = await bot.edit_message_caption()
-        request = bot.get_request()
+        response: Message | bool = await bot.edit_message_caption()
+        bot.get_request()
         assert response == prepare_result.result

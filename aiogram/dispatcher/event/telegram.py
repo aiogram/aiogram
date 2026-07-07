@@ -1,17 +1,18 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional
+from collections.abc import Callable
+from typing import TYPE_CHECKING, Any
 
 from aiogram.dispatcher.middlewares.manager import MiddlewareManager
+from aiogram.exceptions import UnsupportedKeywordArgument
+from aiogram.filters.base import Filter
 
-from ...exceptions import UnsupportedKeywordArgument
-from ...filters.base import Filter
-from ...types import TelegramObject
 from .bases import UNHANDLED, MiddlewareType, SkipHandler
 from .handler import CallbackType, FilterObject, HandlerObject
 
 if TYPE_CHECKING:
     from aiogram.dispatcher.router import Router
+    from aiogram.types import TelegramObject
 
 
 class TelegramEventObserver:
@@ -26,7 +27,7 @@ class TelegramEventObserver:
         self.router: Router = router
         self.event_name: str = event_name
 
-        self.handlers: List[HandlerObject] = []
+        self.handlers: list[HandlerObject] = []
 
         self.middleware = MiddlewareManager()
         self.outer_middleware = MiddlewareManager()
@@ -45,8 +46,8 @@ class TelegramEventObserver:
             self._handler.filters = []
         self._handler.filters.extend([FilterObject(filter_) for filter_ in filters])
 
-    def _resolve_middlewares(self) -> List[MiddlewareType[TelegramObject]]:
-        middlewares: List[MiddlewareType[TelegramObject]] = []
+    def _resolve_middlewares(self) -> list[MiddlewareType[TelegramObject]]:
+        middlewares: list[MiddlewareType[TelegramObject]] = []
         for router in reversed(tuple(self.router.chain_head)):
             observer = router.observers.get(self.event_name)
             if observer:
@@ -58,14 +59,14 @@ class TelegramEventObserver:
         self,
         callback: CallbackType,
         *filters: CallbackType,
-        flags: Optional[Dict[str, Any]] = None,
+        flags: dict[str, Any] | None = None,
         **kwargs: Any,
     ) -> CallbackType:
         """
         Register event handler
         """
         if kwargs:
-            raise UnsupportedKeywordArgument(
+            msg = (
                 "Passing any additional keyword arguments to the registrar method "
                 "is not supported.\n"
                 "This error may be caused when you are trying to register filters like in 2.x "
@@ -73,6 +74,7 @@ class TelegramEventObserver:
                 "documentation pages.\n"
                 f"Please remove the {set(kwargs.keys())} arguments from this call.\n"
             )
+            raise UnsupportedKeywordArgument(msg)
 
         if flags is None:
             flags = {}
@@ -86,13 +88,16 @@ class TelegramEventObserver:
                 callback=callback,
                 filters=[FilterObject(filter_) for filter_ in filters],
                 flags=flags,
-            )
+            ),
         )
 
         return callback
 
     def wrap_outer_middleware(
-        self, callback: Any, event: TelegramObject, data: Dict[str, Any]
+        self,
+        callback: Any,
+        event: TelegramObject,
+        data: dict[str, Any],
     ) -> Any:
         wrapped_outer = self.middleware.wrap_middlewares(
             self.outer_middleware,
@@ -127,7 +132,7 @@ class TelegramEventObserver:
     def __call__(
         self,
         *filters: CallbackType,
-        flags: Optional[Dict[str, Any]] = None,
+        flags: dict[str, Any] | None = None,
         **kwargs: Any,
     ) -> Callable[[CallbackType], CallbackType]:
         """

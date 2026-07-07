@@ -1,5 +1,4 @@
-from aiogram.methods import RemoveChatVerification, VerifyChat
-from aiogram.types import Poll
+from aiogram.methods import RemoveChatVerification
 from tests.mocked_bot import MockedBot
 
 
@@ -8,5 +7,5 @@ class TestRemoveChatVerification:
         prepare_result = bot.add_result_for(RemoveChatVerification, ok=True, result=True)
 
         response: bool = await bot.remove_chat_verification(chat_id=42)
-        request = bot.get_request()
+        bot.get_request()
         assert response == prepare_result.result

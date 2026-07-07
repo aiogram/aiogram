@@ -6,7 +6,7 @@ import warnings
 from asyncio import Event
 from collections import Counter
 from contextlib import suppress
-from typing import Any, Optional
+from typing import Any
 from unittest.mock import AsyncMock, patch
 
 import pytest
@@ -30,6 +30,7 @@ from aiogram.types import (
     ChatMemberUpdated,
     ChosenInlineResult,
     InlineQuery,
+    ManagedBotUpdated,
     Message,
     MessageReactionCountUpdated,
     MessageReactionUpdated,
@@ -199,7 +200,7 @@ class TestDispatcher:
     async def test_process_update_empty(self, bot: MockedBot):
         dispatcher = Dispatcher()
 
-        with pytest.warns(RuntimeWarning, match="Detected unknown update type") as record:
+        with pytest.warns(RuntimeWarning, match="Detected unknown update type"):
             result = await dispatcher._process_update(bot=bot, update=Update(update_id=42))
             assert not result
 
@@ -380,13 +381,15 @@ class TestDispatcher:
                         id="poll id",
                         question="Q?",
                         options=[
-                            PollOption(text="A1", voter_count=2),
-                            PollOption(text="A2", voter_count=3),
+                            PollOption(persistent_id="1", text="A1", voter_count=2),
+                            PollOption(persistent_id="2", text="A2", voter_count=3),
                         ],
                         is_closed=False,
                         is_anonymous=False,
                         type="quiz",
                         allows_multiple_answers=False,
+                        allows_revoting=False,
+                        members_only=False,
                         total_voter_count=0,
                         correct_option_id=1,
                     ),
@@ -402,6 +405,7 @@ class TestDispatcher:
                         poll_id="poll id",
                         user=User(id=42, is_bot=False, first_name="Test"),
                         option_ids=[42],
+                        option_persistent_ids=["1"],
                     ),
                 ),
                 False,
@@ -600,6 +604,33 @@ class TestDispatcher:
                 False,
                 True,
             ),
+            pytest.param(
+                "managed_bot",
+                Update(
+                    update_id=42,
+                    managed_bot=ManagedBotUpdated(
+                        user=User(id=42, is_bot=False, first_name="Test"),
+                        bot_user=User(id=100, is_bot=True, first_name="ManagedBot"),
+                    ),
+                ),
+                False,
+                True,
+            ),
+            pytest.param(
+                "guest_message",
+                Update(
+                    update_id=42,
+                    guest_message=Message(
+                        message_id=42,
+                        date=datetime.datetime.now(),
+                        text="test",
+                        chat=Chat(id=42, type="private"),
+                        from_user=User(id=42, is_bot=False, first_name="Test"),
+                    ),
+                ),
+                True,
+                True,
+            ),
         ],
     )
     async def test_listen_update(
@@ -655,13 +686,15 @@ class TestDispatcher:
                     id="poll id",
                     question="Q?",
                     options=[
-                        PollOption(text="A1", voter_count=2),
-                        PollOption(text="A2", voter_count=3),
+                        PollOption(persistent_id="1", text="A1", voter_count=2),
+                        PollOption(persistent_id="2", text="A2", voter_count=3),
                     ],
                     is_closed=False,
                     is_anonymous=False,
                     type="quiz",
                     allows_multiple_answers=False,
+                    allows_revoting=False,
+                    members_only=False,
                     total_voter_count=0,
                     correct_option_id=0,
                 ),
@@ -819,7 +852,7 @@ class TestDispatcher:
         with (
             patch(
                 "aiogram.dispatcher.dispatcher.Dispatcher._process_update", new_callable=AsyncMock
-            ) as mocked_process_update,
+            ),
             patch(
                 "aiogram.dispatcher.dispatcher.Dispatcher._listen_updates"
             ) as patched_listen_updates,
@@ -913,7 +946,7 @@ class TestDispatcher:
             patch(
                 "aiogram.dispatcher.dispatcher.Dispatcher._process_update",
                 side_effect=mock_process_update,
-            ) as mocked_process_update,
+            ),
             patch(
                 "aiogram.dispatcher.dispatcher.Dispatcher._listen_updates"
             ) as patched_listen_updates,

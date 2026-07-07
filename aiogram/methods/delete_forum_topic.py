@@ -8,7 +8,7 @@ from .base import TelegramMethod
 
 class DeleteForumTopic(TelegramMethod[bool]):
     """
-    Use this method to delete a forum topic along with all its messages in a forum supergroup chat. The bot must be an administrator in the chat for this to work and must have the *can_delete_messages* administrator rights. Returns :code:`True` on success.
+    Use this method to delete a forum topic along with all its messages in a forum supergroup chat or a private chat with a user. In the case of a supergroup chat the bot must be an administrator in the chat for this to work and must have the *can_delete_messages* administrator rights. Returns :code:`True` on success.
 
     Source: https://core.telegram.org/bots/api#deleteforumtopic
     """
@@ -17,7 +17,7 @@ class DeleteForumTopic(TelegramMethod[bool]):
     __api_method__ = "deleteForumTopic"
 
     chat_id: ChatIdUnion
-    """Unique identifier for the target chat or username of the target supergroup (in the format :code:`@supergroupusername`)"""
+    """Unique identifier for the target chat or username of the target supergroup in the format :code:`@username`"""
     message_thread_id: int
     """Unique identifier for the target message thread of the forum topic"""
 

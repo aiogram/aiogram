@@ -7,5 +7,5 @@ class TestLeaveChat:
         prepare_result = bot.add_result_for(LeaveChat, ok=True, result=True)
 
         response: bool = await bot.leave_chat(chat_id=-42)
-        request = bot.get_request()
+        bot.get_request()
         assert response == prepare_result.result

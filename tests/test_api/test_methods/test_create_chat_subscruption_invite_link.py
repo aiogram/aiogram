@@ -24,5 +24,5 @@ class TestCreateChatSubscriptionInviteLink:
             subscription_period=timedelta(days=30),
             subscription_price=42,
         )
-        request = bot.get_request()
+        bot.get_request()
         assert response == prepare_result.result
