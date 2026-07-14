@@ -13,6 +13,8 @@ reply:
   fill: &fill-reply
     <<: *fill-answer
     reply_parameters: self.as_reply_parameters()
+    # A reply to an ephemeral message must itself be an ephemeral message.
+    receiver_user_id: self.receiver_user.id if self.receiver_user else None
   ignore: &ignore-reply
     - reply_to_message_id
 
@@ -272,6 +274,37 @@ delete:
   method: deleteMessage
   code: *assert-chat
   fill: *message-target
+
+edit_ephemeral_text:
+  method: editEphemeralMessageText
+  code: &assert-ephemeral |
+    assert self.chat is not None, "This method can be used only if chat is present in the message."
+    assert self.receiver_user is not None, "This method can be used only if `receiver_user` is present in the message."
+    assert self.ephemeral_message_id is not None, "This method can be used only if `ephemeral_message_id` is present in the message."
+  fill: &ephemeral-target
+    chat_id: self.chat.id
+    receiver_user_id: self.receiver_user.id
+    ephemeral_message_id: self.ephemeral_message_id
+
+edit_ephemeral_caption:
+  method: editEphemeralMessageCaption
+  code: *assert-ephemeral
+  fill: *ephemeral-target
+
+edit_ephemeral_media:
+  method: editEphemeralMessageMedia
+  code: *assert-ephemeral
+  fill: *ephemeral-target
+
+edit_ephemeral_reply_markup:
+  method: editEphemeralMessageReplyMarkup
+  code: *assert-ephemeral
+  fill: *ephemeral-target
+
+delete_ephemeral:
+  method: deleteEphemeralMessage
+  code: *assert-ephemeral
+  fill: *ephemeral-target
 
 pin:
   method: pinChatMessage

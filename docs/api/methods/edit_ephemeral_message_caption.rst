@@ -43,3 +43,9 @@ As reply into Webhook in handler
 .. code-block:: python
 
     return EditEphemeralMessageCaption(...)
+
+
+As shortcut from received object
+--------------------------------
+
+- :meth:`aiogram.types.message.Message.edit_ephemeral_caption`
