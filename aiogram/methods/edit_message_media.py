@@ -17,7 +17,7 @@ class EditMessageMedia(TelegramMethod[Message | bool]):
     __api_method__ = "editMessageMedia"
 
     media: InputMediaUnion
-    """A JSON-serialized object for a new media content of the message"""
+    """A JSON-serialized object for the new media content of the message"""
     business_connection_id: str | None = None
     """Unique identifier of the business connection on behalf of which the message to be edited was sent"""
     chat_id: ChatIdUnion | None = None

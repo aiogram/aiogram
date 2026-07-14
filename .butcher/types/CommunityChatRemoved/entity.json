@@ -1,0 +1,16 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "communitychatremoved",
+    "name": "CommunityChatRemoved",
+    "description": "Describes a service message about a chat being removed from a community. Currently holds no information.",
+    "html_description": "<p>Describes a service message about a chat being removed from a community. Currently holds no information.</p>",
+    "rst_description": "Describes a service message about a chat being removed from a community. Currently holds no information.",
+    "annotations": [],
+    "category": "types"
+  }
+}

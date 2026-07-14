@@ -7,23 +7,23 @@
   "object": {
     "anchor": "inputrichmessage",
     "name": "InputRichMessage",
-    "description": "Describes a rich message to be sent. Exactly one of the fields html or markdown must be used.",
-    "html_description": "<p>Describes a rich message to be sent. Exactly <strong>one</strong> of the fields <em>html</em> or <em>markdown</em> must be used.</p>",
-    "rst_description": "Describes a rich message to be sent. Exactly **one** of the fields *html* or *markdown* must be used.",
+    "description": "Describes a rich message to be sent. Exactly one of the fields html, markdown, or blocks must be used.",
+    "html_description": "<p>Describes a rich message to be sent. Exactly <strong>one</strong> of the fields <em>html</em>, <em>markdown</em>, or <em>blocks</em> must be used.</p>",
+    "rst_description": "Describes a rich message to be sent. Exactly **one** of the fields *html*, *markdown*, or *blocks* must be used.",
     "annotations": [
       {
         "type": "String",
-        "description": "Content of the rich message to send described using HTML formatting. See rich message formatting options for more details.",
-        "html_description": "<td><em>Optional</em>. Content of the rich message to send described using HTML formatting. See <a href=\"#rich-message-formatting-options\">rich message formatting options</a> for more details.</td>",
-        "rst_description": "*Optional*. Content of the rich message to send described using HTML formatting. See `rich message formatting options <https://core.telegram.org/bots/api#rich-message-formatting-options>`_ for more details.\n",
+        "description": "Content of the rich message to send described using HTML formatting. See rich message formatting options for more details. Use media field to specify the media used in the message.",
+        "html_description": "<td><em>Optional</em>. Content of the rich message to send described using HTML formatting. See <a href=\"#rich-message-formatting-options\">rich message formatting options</a> for more details. Use <em>media</em> field to specify the media used in the message.</td>",
+        "rst_description": "*Optional*. Content of the rich message to send described using HTML formatting. See `rich message formatting options <https://core.telegram.org/bots/api#rich-message-formatting-options>`_ for more details. Use *media* field to specify the media used in the message.\n",
         "name": "html",
         "required": false
       },
       {
         "type": "String",
-        "description": "Content of the rich message to send described using Markdown formatting. See rich message formatting options for more details.",
-        "html_description": "<td><em>Optional</em>. Content of the rich message to send described using Markdown formatting. See <a href=\"#rich-message-formatting-options\">rich message formatting options</a> for more details.</td>",
-        "rst_description": "*Optional*. Content of the rich message to send described using Markdown formatting. See `rich message formatting options <https://core.telegram.org/bots/api#rich-message-formatting-options>`_ for more details.\n",
+        "description": "Content of the rich message to send described using Markdown formatting. See rich message formatting options for more details. Use media field to specify the media used in the message.",
+        "html_description": "<td><em>Optional</em>. Content of the rich message to send described using Markdown formatting. See <a href=\"#rich-message-formatting-options\">rich message formatting options</a> for more details. Use <em>media</em> field to specify the media used in the message.</td>",
+        "rst_description": "*Optional*. Content of the rich message to send described using Markdown formatting. See `rich message formatting options <https://core.telegram.org/bots/api#rich-message-formatting-options>`_ for more details. Use *media* field to specify the media used in the message.\n",
         "name": "markdown",
         "required": false
       },
@@ -41,6 +41,22 @@
         "html_description": "<td><em>Optional</em>. Pass <em>True</em> to skip automatic detection of entities (e.g., URLs, email addresses, username mentions, hashtags, cashtags, bot commands, or phone numbers) in the text</td>",
         "rst_description": "*Optional*. Pass :code:`True` to skip automatic detection of entities (e.g., URLs, email addresses, username mentions, hashtags, cashtags, bot commands, or phone numbers) in the text\n",
         "name": "skip_entity_detection",
+        "required": false
+      },
+      {
+        "type": "Array of InputRichBlock",
+        "description": "Content of the rich message to send described as a list of blocks",
+        "html_description": "<td><em>Optional</em>. Content of the rich message to send described as a list of blocks</td>",
+        "rst_description": "*Optional*. Content of the rich message to send described as a list of blocks\n",
+        "name": "blocks",
+        "required": false
+      },
+      {
+        "type": "Array of InputRichMessageMedia",
+        "description": "List of media that are specified in the markdown or html fields using tg://photo?id=, tg://video?id=, and tg://audio?id= links",
+        "html_description": "<td><em>Optional</em>. List of media that are specified in the <em>markdown</em> or <em>html</em> fields using <code>tg://photo?id=</code>, <code>tg://video?id=</code>, and <code>tg://audio?id=</code> links</td>",
+        "rst_description": "*Optional*. List of media that are specified in the *markdown* or *html* fields using :code:`tg://photo?id=`, :code:`tg://video?id=`, and :code:`tg://audio?id=` links\n",
+        "name": "media",
         "required": false
       }
     ],

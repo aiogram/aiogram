@@ -55,6 +55,9 @@ from aiogram.types import (
     ChecklistTask,
     ChecklistTasksAdded,
     ChecklistTasksDone,
+    Community,
+    CommunityChatAdded,
+    CommunityChatRemoved,
     Contact,
     Dice,
     DirectMessagePriceChanged,
@@ -922,6 +925,22 @@ TEST_MESSAGE_RICH_MESSAGE = Message(
         blocks=[RichBlockParagraph(text="Test")],
     ),
 )
+TEST_MESSAGE_COMMUNITY_CHAT_ADDED = Message(
+    message_id=42,
+    date=datetime.datetime.now(),
+    chat=Chat(id=42, type="private"),
+    from_user=User(id=42, is_bot=False, first_name="Test"),
+    community_chat_added=CommunityChatAdded(
+        community=Community(id=42, name="Test community"),
+    ),
+)
+TEST_MESSAGE_COMMUNITY_CHAT_REMOVED = Message(
+    message_id=42,
+    date=datetime.datetime.now(),
+    chat=Chat(id=42, type="private"),
+    from_user=User(id=42, is_bot=False, first_name="Test"),
+    community_chat_removed=CommunityChatRemoved(),
+)
 
 MESSAGES_AND_CONTENT_TYPES = [
     [TEST_MESSAGE_TEXT, ContentType.TEXT],
@@ -1006,6 +1025,8 @@ MESSAGES_AND_CONTENT_TYPES = [
     [TEST_MESSAGE_POLL_OPTION_DELETED, ContentType.POLL_OPTION_DELETED],
     [TEST_MESSAGE_LIVE_PHOTO, ContentType.LIVE_PHOTO],
     [TEST_MESSAGE_RICH_MESSAGE, ContentType.RICH_MESSAGE],
+    [TEST_MESSAGE_COMMUNITY_CHAT_ADDED, ContentType.COMMUNITY_CHAT_ADDED],
+    [TEST_MESSAGE_COMMUNITY_CHAT_REMOVED, ContentType.COMMUNITY_CHAT_REMOVED],
     [TEST_MESSAGE_UNKNOWN, ContentType.UNKNOWN],
 ]
 
@@ -1087,6 +1108,8 @@ MESSAGES_AND_COPY_METHODS = [
     [TEST_MESSAGE_POLL_OPTION_DELETED, None],
     [TEST_MESSAGE_LIVE_PHOTO, None],
     [TEST_MESSAGE_RICH_MESSAGE, None],
+    [TEST_MESSAGE_COMMUNITY_CHAT_ADDED, None],
+    [TEST_MESSAGE_COMMUNITY_CHAT_REMOVED, None],
     [TEST_MESSAGE_UNKNOWN, None],
 ]
 

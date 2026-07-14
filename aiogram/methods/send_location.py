@@ -40,7 +40,7 @@ class SendLocation(TelegramMethod[Message]):
     horizontal_accuracy: float | None = None
     """The radius of uncertainty for the location, measured in meters; 0-1500"""
     live_period: int | None = None
-    """Period in seconds during which the location will be updated (see `Live Locations <https://telegram.org/blog/live-locations>`_, should be between 60 and 86400, or 0x7FFFFFFF for live locations that can be edited indefinitely"""
+    """Period in seconds during which the location will be updated (see `Live Locations <https://telegram.org/blog/live-locations>`_), must be between 60 and 86400, or 0x7FFFFFFF for live locations that can be edited indefinitely. Must be 0 for ephemeral messages"""
     heading: int | None = None
     """For live locations, a direction in which the user is moving, in degrees. Must be between 1 and 360 if specified"""
     proximity_alert_radius: int | None = None
@@ -59,6 +59,10 @@ class SendLocation(TelegramMethod[Message]):
     """Description of the message to reply to"""
     reply_markup: ReplyMarkupUnion | None = None
     """Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user"""
+    receiver_user_id: int | None = None
+    """For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See `ephemeral message sending <https://core.telegram.org/bots/api#ephemeral-messages-and-commands>`_ for more details"""
+    callback_query_id: str | None = None
+    """For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any"""
     allow_sending_without_reply: bool | None = Field(None, json_schema_extra={"deprecated": True})
     """Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
 
@@ -94,6 +98,8 @@ class SendLocation(TelegramMethod[Message]):
             suggested_post_parameters: SuggestedPostParameters | None = None,
             reply_parameters: ReplyParameters | None = None,
             reply_markup: ReplyMarkupUnion | None = None,
+            receiver_user_id: int | None = None,
+            callback_query_id: str | None = None,
             allow_sending_without_reply: bool | None = None,
             reply_to_message_id: int | None = None,
             **__pydantic_kwargs: Any,
@@ -120,6 +126,8 @@ class SendLocation(TelegramMethod[Message]):
                 suggested_post_parameters=suggested_post_parameters,
                 reply_parameters=reply_parameters,
                 reply_markup=reply_markup,
+                receiver_user_id=receiver_user_id,
+                callback_query_id=callback_query_id,
                 allow_sending_without_reply=allow_sending_without_reply,
                 reply_to_message_id=reply_to_message_id,
                 **__pydantic_kwargs,

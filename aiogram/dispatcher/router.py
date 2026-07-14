@@ -87,6 +87,7 @@ class Router:
         )
         self.managed_bot = TelegramEventObserver(router=self, event_name="managed_bot")
         self.guest_message = TelegramEventObserver(router=self, event_name="guest_message")
+        self.subscription = TelegramEventObserver(router=self, event_name="subscription")
 
         self.errors = self.error = TelegramEventObserver(router=self, event_name="error")
 
@@ -119,6 +120,7 @@ class Router:
             "purchased_paid_media": self.purchased_paid_media,
             "managed_bot": self.managed_bot,
             "guest_message": self.guest_message,
+            "subscription": self.subscription,
             "error": self.errors,
         }
 

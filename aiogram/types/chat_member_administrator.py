@@ -55,7 +55,7 @@ class ChatMemberAdministrator(ChatMember):
     can_manage_direct_messages: bool | None = None
     """*Optional*. :code:`True`, if the administrator can manage direct messages of the channel and decline suggested posts; for channels only"""
     can_manage_tags: bool | None = None
-    """*Optional*. :code:`True`, if the administrator can edit the tags of regular members; for groups and supergroups only. If omitted defaults to the value of can_pin_messages"""
+    """*Optional*. :code:`True`, if the administrator can edit the tags of regular members; for groups and supergroups only. If omitted, defaults to the value of can_pin_messages"""
     custom_title: str | None = None
     """*Optional*. Custom title for this user"""
 

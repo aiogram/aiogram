@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 
 class RichBlockPhoto(RichBlock):
     """
-    A block with a photo, corresponding to the HTML tag :code:`<photo>`.
+    A block with a photo, corresponding to the HTML tag :code:`<img>`.
 
     Source: https://core.telegram.org/bots/api#richblockphoto
     """

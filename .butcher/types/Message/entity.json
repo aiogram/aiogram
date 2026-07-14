@@ -13,9 +13,9 @@
     "annotations": [
       {
         "type": "Integer",
-        "description": "Unique message identifier inside this chat. In specific instances (e.g., message containing a video sent to a big chat), the server might automatically schedule a message instead of sending it immediately. In such cases, this field will be 0 and the relevant message will be unusable until it is actually sent.",
-        "html_description": "<td>Unique message identifier inside this chat. In specific instances (e.g., message containing a video sent to a big chat), the server might automatically schedule a message instead of sending it immediately. In such cases, this field will be 0 and the relevant message will be unusable until it is actually sent.</td>",
-        "rst_description": "Unique message identifier inside this chat. In specific instances (e.g., message containing a video sent to a big chat), the server might automatically schedule a message instead of sending it immediately. In such cases, this field will be 0 and the relevant message will be unusable until it is actually sent.\n",
+        "description": "Unique message identifier inside this chat; 0 for ephemeral messages. In specific instances (e.g., a message containing a video sent to a big chat), the server might automatically schedule a message instead of sending it immediately. In such cases, this field will be 0 and the relevant message will be unusable until it is actually sent.",
+        "html_description": "<td>Unique message identifier inside this chat; 0 for ephemeral messages. In specific instances (e.g., a message containing a video sent to a big chat), the server might automatically schedule a message instead of sending it immediately. In such cases, this field will be 0 and the relevant message will be unusable until it is actually sent.</td>",
+        "rst_description": "Unique message identifier inside this chat; 0 for ephemeral messages. In specific instances (e.g., a message containing a video sent to a big chat), the server might automatically schedule a message instead of sending it immediately. In such cases, this field will be 0 and the relevant message will be unusable until it is actually sent.\n",
         "name": "message_id",
         "required": true
       },
@@ -133,9 +133,9 @@
       },
       {
         "type": "Message",
-        "description": "For replies in the same chat and message thread, the original message. Note that the Message object in this field will not contain further reply_to_message fields even if it itself is a reply.",
-        "html_description": "<td><em>Optional</em>. For replies in the same chat and message thread, the original message. Note that the <a href=\"#message\">Message</a> object in this field will not contain further <em>reply_to_message</em> fields even if it itself is a reply.</td>",
-        "rst_description": "*Optional*. For replies in the same chat and message thread, the original message. Note that the :class:`aiogram.types.message.Message` object in this field will not contain further *reply_to_message* fields even if it itself is a reply.\n",
+        "description": "For replies in the same chat and message thread, the original message. Note that the Message object in this field will not contain further reply_to_message fields even if it itself is a reply. If the message is a reply to an ephemeral message, then this field may be omitted.",
+        "html_description": "<td><em>Optional</em>. For replies in the same chat and message thread, the original message. Note that the <a href=\"#message\">Message</a> object in this field will not contain further <em>reply_to_message</em> fields even if it itself is a reply. If the message is a reply to an ephemeral message, then this field may be omitted.</td>",
+        "rst_description": "*Optional*. For replies in the same chat and message thread, the original message. Note that the :class:`aiogram.types.message.Message` object in this field will not contain further *reply_to_message* fields even if it itself is a reply. If the message is a reply to an ephemeral message, then this field may be omitted.\n",
         "name": "reply_to_message",
         "required": false
       },
@@ -929,6 +929,38 @@
         "html_description": "<td><em>Optional</em>. Message is a rich formatted message</td>",
         "rst_description": "*Optional*. Message is a rich formatted message\n",
         "name": "rich_message",
+        "required": false
+      },
+      {
+        "type": "User",
+        "description": "For ephemeral messages, the user who received the message",
+        "html_description": "<td><em>Optional</em>. For ephemeral messages, the user who received the message</td>",
+        "rst_description": "*Optional*. For ephemeral messages, the user who received the message\n",
+        "name": "receiver_user",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "For ephemeral messages, identifier of the ephemeral message inside this chat. The identifier may be reused for another ephemeral message after the message is deleted or expires.",
+        "html_description": "<td><em>Optional</em>. For ephemeral messages, identifier of the ephemeral message inside this chat. The identifier may be reused for another ephemeral message after the message is deleted or expires.</td>",
+        "rst_description": "*Optional*. For ephemeral messages, identifier of the ephemeral message inside this chat. The identifier may be reused for another ephemeral message after the message is deleted or expires.\n",
+        "name": "ephemeral_message_id",
+        "required": false
+      },
+      {
+        "type": "CommunityChatAdded",
+        "description": "Service message: chat added to a Community",
+        "html_description": "<td><em>Optional</em>. Service message: chat added to a <a href=\"#community\">Community</a></td>",
+        "rst_description": "*Optional*. Service message: chat added to a :class:`aiogram.types.community.Community`\n",
+        "name": "community_chat_added",
+        "required": false
+      },
+      {
+        "type": "CommunityChatRemoved",
+        "description": "Service message: chat removed from a Community",
+        "html_description": "<td><em>Optional</em>. Service message: chat removed from a <a href=\"#community\">Community</a></td>",
+        "rst_description": "*Optional*. Service message: chat removed from a :class:`aiogram.types.community.Community`\n",
+        "name": "community_chat_removed",
         "required": false
       },
       {

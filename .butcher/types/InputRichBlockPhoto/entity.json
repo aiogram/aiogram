@@ -1,0 +1,41 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Rich messages",
+    "anchor": "rich-messages"
+  },
+  "object": {
+    "anchor": "inputrichblockphoto",
+    "name": "InputRichBlockPhoto",
+    "description": "A block with a photo, corresponding to the HTML tag <img>.",
+    "html_description": "<p>A block with a photo, corresponding to the HTML tag <code>&lt;img&gt;</code>.</p>",
+    "rst_description": "A block with a photo, corresponding to the HTML tag :code:`<img>`.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Type of the block, always 'photo'",
+        "html_description": "<td>Type of the block, always &#8220;photo&#8221;</td>",
+        "rst_description": "Type of the block, always 'photo'\n",
+        "name": "type",
+        "required": true
+      },
+      {
+        "type": "InputMediaPhoto",
+        "description": "The photo. Caption is ignored.",
+        "html_description": "<td>The photo. Caption is ignored.</td>",
+        "rst_description": "The photo. Caption is ignored.\n",
+        "name": "photo",
+        "required": true
+      },
+      {
+        "type": "RichBlockCaption",
+        "description": "Caption of the block",
+        "html_description": "<td><em>Optional</em>. Caption of the block</td>",
+        "rst_description": "*Optional*. Caption of the block\n",
+        "name": "caption",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

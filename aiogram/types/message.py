@@ -64,6 +64,8 @@ if TYPE_CHECKING:
     from .checklist import Checklist
     from .checklist_tasks_added import ChecklistTasksAdded
     from .checklist_tasks_done import ChecklistTasksDone
+    from .community_chat_added import CommunityChatAdded
+    from .community_chat_removed import CommunityChatRemoved
     from .contact import Contact
     from .date_time_union import DateTimeUnion
     from .dice import Dice
@@ -151,7 +153,7 @@ class Message(MaybeInaccessibleMessage):
     """
 
     message_id: int
-    """Unique message identifier inside this chat. In specific instances (e.g., message containing a video sent to a big chat), the server might automatically schedule a message instead of sending it immediately. In such cases, this field will be 0 and the relevant message will be unusable until it is actually sent"""
+    """Unique message identifier inside this chat; 0 for ephemeral messages. In specific instances (e.g., a message containing a video sent to a big chat), the server might automatically schedule a message instead of sending it immediately. In such cases, this field will be 0 and the relevant message will be unusable until it is actually sent"""
     date: DateTime
     """Date the message was sent in Unix time. It is always a positive number, representing a valid date"""
     chat: Chat
@@ -181,7 +183,7 @@ class Message(MaybeInaccessibleMessage):
     is_automatic_forward: bool | None = None
     """*Optional*. :code:`True`, if the message is a channel post that was automatically forwarded to the connected discussion group"""
     reply_to_message: Message | None = None
-    """*Optional*. For replies in the same chat and message thread, the original message. Note that the :class:`aiogram.types.message.Message` object in this field will not contain further *reply_to_message* fields even if it itself is a reply"""
+    """*Optional*. For replies in the same chat and message thread, the original message. Note that the :class:`aiogram.types.message.Message` object in this field will not contain further *reply_to_message* fields even if it itself is a reply. If the message is a reply to an ephemeral message, then this field may be omitted"""
     external_reply: ExternalReplyInfo | None = None
     """*Optional*. Information about the message that is being replied to, which may come from another chat or forum topic"""
     quote: TextQuote | None = None
@@ -380,6 +382,14 @@ class Message(MaybeInaccessibleMessage):
     """*Optional*. `Inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_ attached to the message. :code:`login_url` buttons are represented as ordinary :code:`url` buttons"""
     rich_message: RichMessage | None = None
     """*Optional*. Message is a rich formatted message"""
+    receiver_user: User | None = None
+    """*Optional*. For ephemeral messages, the user who received the message"""
+    ephemeral_message_id: int | None = None
+    """*Optional*. For ephemeral messages, identifier of the ephemeral message inside this chat. The identifier may be reused for another ephemeral message after the message is deleted or expires"""
+    community_chat_added: CommunityChatAdded | None = None
+    """*Optional*. Service message: chat added to a :class:`aiogram.types.community.Community`"""
+    community_chat_removed: CommunityChatRemoved | None = None
+    """*Optional*. Service message: chat removed from a :class:`aiogram.types.community.Community`"""
     forward_date: DateTime | None = Field(None, json_schema_extra={"deprecated": True})
     """*Optional*. For forwarded messages, date the original message was sent in Unix time
 
@@ -538,6 +548,10 @@ class Message(MaybeInaccessibleMessage):
             web_app_data: WebAppData | None = None,
             reply_markup: InlineKeyboardMarkup | None = None,
             rich_message: RichMessage | None = None,
+            receiver_user: User | None = None,
+            ephemeral_message_id: int | None = None,
+            community_chat_added: CommunityChatAdded | None = None,
+            community_chat_removed: CommunityChatRemoved | None = None,
             forward_date: DateTime | None = None,
             forward_from: User | None = None,
             forward_from_chat: Chat | None = None,
@@ -667,6 +681,10 @@ class Message(MaybeInaccessibleMessage):
                 web_app_data=web_app_data,
                 reply_markup=reply_markup,
                 rich_message=rich_message,
+                receiver_user=receiver_user,
+                ephemeral_message_id=ephemeral_message_id,
+                community_chat_added=community_chat_added,
+                community_chat_removed=community_chat_removed,
                 forward_date=forward_date,
                 forward_from=forward_from,
                 forward_from_chat=forward_from_chat,
@@ -831,6 +849,10 @@ class Message(MaybeInaccessibleMessage):
             return ContentType.LIVE_PHOTO
         if self.rich_message:
             return ContentType.RICH_MESSAGE
+        if self.community_chat_added:
+            return ContentType.COMMUNITY_CHAT_ADDED
+        if self.community_chat_removed:
+            return ContentType.COMMUNITY_CHAT_REMOVED
         return ContentType.UNKNOWN
 
     def _unparse_entities(self, text_decoration: TextDecoration) -> str:
@@ -885,6 +907,8 @@ class Message(MaybeInaccessibleMessage):
         message_effect_id: str | None = None,
         suggested_post_parameters: SuggestedPostParameters | None = None,
         reply_markup: ReplyMarkupUnion | None = None,
+        receiver_user_id: int | None = None,
+        callback_query_id: str | None = None,
         allow_sending_without_reply: bool | None = None,
         **kwargs: Any,
     ) -> SendAnimation:
@@ -910,7 +934,7 @@ class Message(MaybeInaccessibleMessage):
         :param caption: Animation caption (may also be used when resending animation by *file_id*), 0-1024 characters after entities parsing
         :param parse_mode: Mode for parsing entities in the animation caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details
         :param caption_entities: A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*
-        :param show_caption_above_media: Pass :code:`True`, if the caption must be shown above the message media
+        :param show_caption_above_media: Pass :code:`True` if the caption must be shown above the message media
         :param has_spoiler: Pass :code:`True` if the animation needs to be covered with a spoiler animation
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound
         :param protect_content: Protects the contents of the sent message from forwarding and saving
@@ -918,6 +942,8 @@ class Message(MaybeInaccessibleMessage):
         :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
+        :param receiver_user_id: For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See `ephemeral message sending <https://core.telegram.org/bots/api#ephemeral-messages-and-commands>`_ for more details
+        :param callback_query_id: For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :return: instance of method :class:`aiogram.methods.send_animation.SendAnimation`
         """
@@ -952,6 +978,8 @@ class Message(MaybeInaccessibleMessage):
             message_effect_id=message_effect_id,
             suggested_post_parameters=suggested_post_parameters,
             reply_markup=reply_markup,
+            receiver_user_id=receiver_user_id,
+            callback_query_id=callback_query_id,
             allow_sending_without_reply=allow_sending_without_reply,
             **kwargs,
         ).as_(self._bot)
@@ -976,6 +1004,8 @@ class Message(MaybeInaccessibleMessage):
         suggested_post_parameters: SuggestedPostParameters | None = None,
         reply_parameters: ReplyParameters | None = None,
         reply_markup: ReplyMarkupUnion | None = None,
+        receiver_user_id: int | None = None,
+        callback_query_id: str | None = None,
         allow_sending_without_reply: bool | None = None,
         reply_to_message_id: int | None = None,
         **kwargs: Any,
@@ -1001,7 +1031,7 @@ class Message(MaybeInaccessibleMessage):
         :param caption: Animation caption (may also be used when resending animation by *file_id*), 0-1024 characters after entities parsing
         :param parse_mode: Mode for parsing entities in the animation caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details
         :param caption_entities: A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*
-        :param show_caption_above_media: Pass :code:`True`, if the caption must be shown above the message media
+        :param show_caption_above_media: Pass :code:`True` if the caption must be shown above the message media
         :param has_spoiler: Pass :code:`True` if the animation needs to be covered with a spoiler animation
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound
         :param protect_content: Protects the contents of the sent message from forwarding and saving
@@ -1010,6 +1040,8 @@ class Message(MaybeInaccessibleMessage):
         :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined
         :param reply_parameters: Description of the message to reply to
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
+        :param receiver_user_id: For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See `ephemeral message sending <https://core.telegram.org/bots/api#ephemeral-messages-and-commands>`_ for more details
+        :param callback_query_id: For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :return: instance of method :class:`aiogram.methods.send_animation.SendAnimation`
@@ -1045,6 +1077,8 @@ class Message(MaybeInaccessibleMessage):
             suggested_post_parameters=suggested_post_parameters,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
+            receiver_user_id=receiver_user_id,
+            callback_query_id=callback_query_id,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_to_message_id=reply_to_message_id,
             **kwargs,
@@ -1067,6 +1101,8 @@ class Message(MaybeInaccessibleMessage):
         message_effect_id: str | None = None,
         suggested_post_parameters: SuggestedPostParameters | None = None,
         reply_markup: ReplyMarkupUnion | None = None,
+        receiver_user_id: int | None = None,
+        callback_query_id: str | None = None,
         allow_sending_without_reply: bool | None = None,
         **kwargs: Any,
     ) -> SendAudio:
@@ -1099,6 +1135,8 @@ class Message(MaybeInaccessibleMessage):
         :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
+        :param receiver_user_id: For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See `ephemeral message sending <https://core.telegram.org/bots/api#ephemeral-messages-and-commands>`_ for more details
+        :param callback_query_id: For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :return: instance of method :class:`aiogram.methods.send_audio.SendAudio`
         """
@@ -1131,6 +1169,8 @@ class Message(MaybeInaccessibleMessage):
             message_effect_id=message_effect_id,
             suggested_post_parameters=suggested_post_parameters,
             reply_markup=reply_markup,
+            receiver_user_id=receiver_user_id,
+            callback_query_id=callback_query_id,
             allow_sending_without_reply=allow_sending_without_reply,
             **kwargs,
         ).as_(self._bot)
@@ -1153,6 +1193,8 @@ class Message(MaybeInaccessibleMessage):
         suggested_post_parameters: SuggestedPostParameters | None = None,
         reply_parameters: ReplyParameters | None = None,
         reply_markup: ReplyMarkupUnion | None = None,
+        receiver_user_id: int | None = None,
+        callback_query_id: str | None = None,
         allow_sending_without_reply: bool | None = None,
         reply_to_message_id: int | None = None,
         **kwargs: Any,
@@ -1186,6 +1228,8 @@ class Message(MaybeInaccessibleMessage):
         :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined
         :param reply_parameters: Description of the message to reply to
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
+        :param receiver_user_id: For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See `ephemeral message sending <https://core.telegram.org/bots/api#ephemeral-messages-and-commands>`_ for more details
+        :param callback_query_id: For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :return: instance of method :class:`aiogram.methods.send_audio.SendAudio`
@@ -1219,6 +1263,8 @@ class Message(MaybeInaccessibleMessage):
             suggested_post_parameters=suggested_post_parameters,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
+            receiver_user_id=receiver_user_id,
+            callback_query_id=callback_query_id,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_to_message_id=reply_to_message_id,
             **kwargs,
@@ -1237,6 +1283,8 @@ class Message(MaybeInaccessibleMessage):
         message_effect_id: str | None = None,
         suggested_post_parameters: SuggestedPostParameters | None = None,
         reply_markup: ReplyMarkupUnion | None = None,
+        receiver_user_id: int | None = None,
+        callback_query_id: str | None = None,
         allow_sending_without_reply: bool | None = None,
         **kwargs: Any,
     ) -> SendContact:
@@ -1264,6 +1312,8 @@ class Message(MaybeInaccessibleMessage):
         :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
+        :param receiver_user_id: For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See `ephemeral message sending <https://core.telegram.org/bots/api#ephemeral-messages-and-commands>`_ for more details
+        :param callback_query_id: For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :return: instance of method :class:`aiogram.methods.send_contact.SendContact`
         """
@@ -1292,6 +1342,8 @@ class Message(MaybeInaccessibleMessage):
             message_effect_id=message_effect_id,
             suggested_post_parameters=suggested_post_parameters,
             reply_markup=reply_markup,
+            receiver_user_id=receiver_user_id,
+            callback_query_id=callback_query_id,
             allow_sending_without_reply=allow_sending_without_reply,
             **kwargs,
         ).as_(self._bot)
@@ -1310,6 +1362,8 @@ class Message(MaybeInaccessibleMessage):
         suggested_post_parameters: SuggestedPostParameters | None = None,
         reply_parameters: ReplyParameters | None = None,
         reply_markup: ReplyMarkupUnion | None = None,
+        receiver_user_id: int | None = None,
+        callback_query_id: str | None = None,
         allow_sending_without_reply: bool | None = None,
         reply_to_message_id: int | None = None,
         **kwargs: Any,
@@ -1338,6 +1392,8 @@ class Message(MaybeInaccessibleMessage):
         :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined
         :param reply_parameters: Description of the message to reply to
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
+        :param receiver_user_id: For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See `ephemeral message sending <https://core.telegram.org/bots/api#ephemeral-messages-and-commands>`_ for more details
+        :param callback_query_id: For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :return: instance of method :class:`aiogram.methods.send_contact.SendContact`
@@ -1367,6 +1423,8 @@ class Message(MaybeInaccessibleMessage):
             suggested_post_parameters=suggested_post_parameters,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
+            receiver_user_id=receiver_user_id,
+            callback_query_id=callback_query_id,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_to_message_id=reply_to_message_id,
             **kwargs,
@@ -1387,6 +1445,8 @@ class Message(MaybeInaccessibleMessage):
         message_effect_id: str | None = None,
         suggested_post_parameters: SuggestedPostParameters | None = None,
         reply_markup: ReplyMarkupUnion | None = None,
+        receiver_user_id: int | None = None,
+        callback_query_id: str | None = None,
         allow_sending_without_reply: bool | None = None,
         **kwargs: Any,
     ) -> SendDocument:
@@ -1416,6 +1476,8 @@ class Message(MaybeInaccessibleMessage):
         :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
+        :param receiver_user_id: For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See `ephemeral message sending <https://core.telegram.org/bots/api#ephemeral-messages-and-commands>`_ for more details
+        :param callback_query_id: For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :return: instance of method :class:`aiogram.methods.send_document.SendDocument`
         """
@@ -1446,6 +1508,8 @@ class Message(MaybeInaccessibleMessage):
             message_effect_id=message_effect_id,
             suggested_post_parameters=suggested_post_parameters,
             reply_markup=reply_markup,
+            receiver_user_id=receiver_user_id,
+            callback_query_id=callback_query_id,
             allow_sending_without_reply=allow_sending_without_reply,
             **kwargs,
         ).as_(self._bot)
@@ -1466,6 +1530,8 @@ class Message(MaybeInaccessibleMessage):
         suggested_post_parameters: SuggestedPostParameters | None = None,
         reply_parameters: ReplyParameters | None = None,
         reply_markup: ReplyMarkupUnion | None = None,
+        receiver_user_id: int | None = None,
+        callback_query_id: str | None = None,
         allow_sending_without_reply: bool | None = None,
         reply_to_message_id: int | None = None,
         **kwargs: Any,
@@ -1496,6 +1562,8 @@ class Message(MaybeInaccessibleMessage):
         :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined
         :param reply_parameters: Description of the message to reply to
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
+        :param receiver_user_id: For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See `ephemeral message sending <https://core.telegram.org/bots/api#ephemeral-messages-and-commands>`_ for more details
+        :param callback_query_id: For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :return: instance of method :class:`aiogram.methods.send_document.SendDocument`
@@ -1527,6 +1595,8 @@ class Message(MaybeInaccessibleMessage):
             suggested_post_parameters=suggested_post_parameters,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
+            receiver_user_id=receiver_user_id,
+            callback_query_id=callback_query_id,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_to_message_id=reply_to_message_id,
             **kwargs,
@@ -1704,7 +1774,7 @@ class Message(MaybeInaccessibleMessage):
         :param direct_messages_topic_id: Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat
         :param provider_token: Payment provider token, obtained via `@BotFather <https://t.me/botfather>`_. Pass an empty string for payments in `Telegram Stars <https://t.me/BotNews/90>`_
         :param max_tip_amount: The maximum accepted amount for tips in the *smallest units* of the currency (integer, **not** float/double). For example, for a maximum tip of :code:`US$ 1.45` pass :code:`max_tip_amount = 145`. See the *exp* parameter in `currencies.json <https://core.telegram.org/bots/payments/currencies.json>`_, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies). Defaults to 0. Not supported for payments in `Telegram Stars <https://t.me/BotNews/90>`_
-        :param suggested_tip_amounts: A JSON-serialized array of suggested amounts of tips in the *smallest units* of the currency (integer, **not** float/double). At most 4 suggested tip amounts can be specified. The suggested tip amounts must be positive, passed in a strictly increased order and must not exceed *max_tip_amount*
+        :param suggested_tip_amounts: A JSON-serialized Array of suggested amounts of tips in the *smallest units* of the currency (integer, **not** float/double). At most 4 suggested tip amounts can be specified. The suggested tip amounts must be positive, passed in a strictly increased order and must not exceed *max_tip_amount*
         :param start_parameter: Unique deep-linking parameter. If left empty, **forwarded copies** of the sent message will have a *Pay* button, allowing multiple users to pay directly from the forwarded message, using the same invoice. If non-empty, forwarded copies of the sent message will have a *URL* button with a deep link to the bot (instead of a *Pay* button), with the value used as the start parameter
         :param provider_data: JSON-serialized data about the invoice, which will be shared with the payment provider. A detailed description of required fields should be provided by the payment provider
         :param photo_url: URL of the product photo for the invoice. Can be a photo of the goods or a marketing image for a service. People like it better when they see what they are paying for
@@ -1828,7 +1898,7 @@ class Message(MaybeInaccessibleMessage):
         :param direct_messages_topic_id: Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat
         :param provider_token: Payment provider token, obtained via `@BotFather <https://t.me/botfather>`_. Pass an empty string for payments in `Telegram Stars <https://t.me/BotNews/90>`_
         :param max_tip_amount: The maximum accepted amount for tips in the *smallest units* of the currency (integer, **not** float/double). For example, for a maximum tip of :code:`US$ 1.45` pass :code:`max_tip_amount = 145`. See the *exp* parameter in `currencies.json <https://core.telegram.org/bots/payments/currencies.json>`_, it shows the number of digits past the decimal point for each currency (2 for the majority of currencies). Defaults to 0. Not supported for payments in `Telegram Stars <https://t.me/BotNews/90>`_
-        :param suggested_tip_amounts: A JSON-serialized array of suggested amounts of tips in the *smallest units* of the currency (integer, **not** float/double). At most 4 suggested tip amounts can be specified. The suggested tip amounts must be positive, passed in a strictly increased order and must not exceed *max_tip_amount*
+        :param suggested_tip_amounts: A JSON-serialized Array of suggested amounts of tips in the *smallest units* of the currency (integer, **not** float/double). At most 4 suggested tip amounts can be specified. The suggested tip amounts must be positive, passed in a strictly increased order and must not exceed *max_tip_amount*
         :param start_parameter: Unique deep-linking parameter. If left empty, **forwarded copies** of the sent message will have a *Pay* button, allowing multiple users to pay directly from the forwarded message, using the same invoice. If non-empty, forwarded copies of the sent message will have a *URL* button with a deep link to the bot (instead of a *Pay* button), with the value used as the start parameter
         :param provider_data: JSON-serialized data about the invoice, which will be shared with the payment provider. A detailed description of required fields should be provided by the payment provider
         :param photo_url: URL of the product photo for the invoice. Can be a photo of the goods or a marketing image for a service. People like it better when they see what they are paying for
@@ -1915,6 +1985,8 @@ class Message(MaybeInaccessibleMessage):
         message_effect_id: str | None = None,
         suggested_post_parameters: SuggestedPostParameters | None = None,
         reply_markup: ReplyMarkupUnion | None = None,
+        receiver_user_id: int | None = None,
+        callback_query_id: str | None = None,
         allow_sending_without_reply: bool | None = None,
         **kwargs: Any,
     ) -> SendLocation:
@@ -1935,7 +2007,7 @@ class Message(MaybeInaccessibleMessage):
         :param longitude: Longitude of the location
         :param direct_messages_topic_id: Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat
         :param horizontal_accuracy: The radius of uncertainty for the location, measured in meters; 0-1500
-        :param live_period: Period in seconds during which the location will be updated (see `Live Locations <https://telegram.org/blog/live-locations>`_, should be between 60 and 86400, or 0x7FFFFFFF for live locations that can be edited indefinitely
+        :param live_period: Period in seconds during which the location will be updated (see `Live Locations <https://telegram.org/blog/live-locations>`_), must be between 60 and 86400, or 0x7FFFFFFF for live locations that can be edited indefinitely. Must be 0 for ephemeral messages
         :param heading: For live locations, a direction in which the user is moving, in degrees. Must be between 1 and 360 if specified
         :param proximity_alert_radius: For live locations, a maximum distance for proximity alerts about approaching another chat member, in meters. Must be between 1 and 100000 if specified
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound
@@ -1944,6 +2016,8 @@ class Message(MaybeInaccessibleMessage):
         :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
+        :param receiver_user_id: For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See `ephemeral message sending <https://core.telegram.org/bots/api#ephemeral-messages-and-commands>`_ for more details
+        :param callback_query_id: For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :return: instance of method :class:`aiogram.methods.send_location.SendLocation`
         """
@@ -1974,6 +2048,8 @@ class Message(MaybeInaccessibleMessage):
             message_effect_id=message_effect_id,
             suggested_post_parameters=suggested_post_parameters,
             reply_markup=reply_markup,
+            receiver_user_id=receiver_user_id,
+            callback_query_id=callback_query_id,
             allow_sending_without_reply=allow_sending_without_reply,
             **kwargs,
         ).as_(self._bot)
@@ -1994,6 +2070,8 @@ class Message(MaybeInaccessibleMessage):
         suggested_post_parameters: SuggestedPostParameters | None = None,
         reply_parameters: ReplyParameters | None = None,
         reply_markup: ReplyMarkupUnion | None = None,
+        receiver_user_id: int | None = None,
+        callback_query_id: str | None = None,
         allow_sending_without_reply: bool | None = None,
         reply_to_message_id: int | None = None,
         **kwargs: Any,
@@ -2014,7 +2092,7 @@ class Message(MaybeInaccessibleMessage):
         :param longitude: Longitude of the location
         :param direct_messages_topic_id: Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat
         :param horizontal_accuracy: The radius of uncertainty for the location, measured in meters; 0-1500
-        :param live_period: Period in seconds during which the location will be updated (see `Live Locations <https://telegram.org/blog/live-locations>`_, should be between 60 and 86400, or 0x7FFFFFFF for live locations that can be edited indefinitely
+        :param live_period: Period in seconds during which the location will be updated (see `Live Locations <https://telegram.org/blog/live-locations>`_), must be between 60 and 86400, or 0x7FFFFFFF for live locations that can be edited indefinitely. Must be 0 for ephemeral messages
         :param heading: For live locations, a direction in which the user is moving, in degrees. Must be between 1 and 360 if specified
         :param proximity_alert_radius: For live locations, a maximum distance for proximity alerts about approaching another chat member, in meters. Must be between 1 and 100000 if specified
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound
@@ -2024,6 +2102,8 @@ class Message(MaybeInaccessibleMessage):
         :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined
         :param reply_parameters: Description of the message to reply to
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
+        :param receiver_user_id: For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See `ephemeral message sending <https://core.telegram.org/bots/api#ephemeral-messages-and-commands>`_ for more details
+        :param callback_query_id: For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :return: instance of method :class:`aiogram.methods.send_location.SendLocation`
@@ -2055,6 +2135,8 @@ class Message(MaybeInaccessibleMessage):
             suggested_post_parameters=suggested_post_parameters,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
+            receiver_user_id=receiver_user_id,
+            callback_query_id=callback_query_id,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_to_message_id=reply_to_message_id,
             **kwargs,
@@ -2080,11 +2162,11 @@ class Message(MaybeInaccessibleMessage):
         - :code:`business_connection_id`
         - :code:`reply_parameters`
 
-        Use this method to send a group of photos, live photos, videos, documents or audios as an album. Documents and audio files can be only grouped in an album with messages of the same type. On success, an array of :class:`aiogram.types.message.Message` objects that were sent is returned.
+        Use this method to send a group of photos, live photos, videos, documents or audios as an album. Documents and audio files can be only grouped in an album with messages of the same type. On success, an Array of :class:`aiogram.types.message.Message` objects that were sent is returned.
 
         Source: https://core.telegram.org/bots/api#sendmediagroup
 
-        :param media: A JSON-serialized array describing messages to be sent, must include 2-10 items
+        :param media: A JSON-serialized Array describing messages to be sent, must include 2-10 items
         :param direct_messages_topic_id: Identifier of the direct messages topic to which the messages will be sent; required if the messages are sent to a direct messages chat
         :param disable_notification: Sends messages `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound
         :param protect_content: Protects the contents of the sent messages from forwarding and saving
@@ -2138,11 +2220,11 @@ class Message(MaybeInaccessibleMessage):
         - :code:`message_thread_id`
         - :code:`business_connection_id`
 
-        Use this method to send a group of photos, live photos, videos, documents or audios as an album. Documents and audio files can be only grouped in an album with messages of the same type. On success, an array of :class:`aiogram.types.message.Message` objects that were sent is returned.
+        Use this method to send a group of photos, live photos, videos, documents or audios as an album. Documents and audio files can be only grouped in an album with messages of the same type. On success, an Array of :class:`aiogram.types.message.Message` objects that were sent is returned.
 
         Source: https://core.telegram.org/bots/api#sendmediagroup
 
-        :param media: A JSON-serialized array describing messages to be sent, must include 2-10 items
+        :param media: A JSON-serialized Array describing messages to be sent, must include 2-10 items
         :param direct_messages_topic_id: Identifier of the direct messages topic to which the messages will be sent; required if the messages are sent to a direct messages chat
         :param disable_notification: Sends messages `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound
         :param protect_content: Protects the contents of the sent messages from forwarding and saving
@@ -2191,6 +2273,8 @@ class Message(MaybeInaccessibleMessage):
         message_effect_id: str | None = None,
         suggested_post_parameters: SuggestedPostParameters | None = None,
         reply_markup: ReplyMarkupUnion | None = None,
+        receiver_user_id: int | None = None,
+        callback_query_id: str | None = None,
         allow_sending_without_reply: bool | None = None,
         disable_web_page_preview: bool | Default | None = Default("link_preview_is_disabled"),
         **kwargs: Any,
@@ -2219,6 +2303,8 @@ class Message(MaybeInaccessibleMessage):
         :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
+        :param receiver_user_id: For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See `ephemeral message sending <https://core.telegram.org/bots/api#ephemeral-messages-and-commands>`_ for more details
+        :param callback_query_id: For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :param disable_web_page_preview: Disables link previews for links in this message
         :return: instance of method :class:`aiogram.methods.send_message.SendMessage`
@@ -2248,6 +2334,8 @@ class Message(MaybeInaccessibleMessage):
             message_effect_id=message_effect_id,
             suggested_post_parameters=suggested_post_parameters,
             reply_markup=reply_markup,
+            receiver_user_id=receiver_user_id,
+            callback_query_id=callback_query_id,
             allow_sending_without_reply=allow_sending_without_reply,
             disable_web_page_preview=disable_web_page_preview,
             **kwargs,
@@ -2267,6 +2355,8 @@ class Message(MaybeInaccessibleMessage):
         suggested_post_parameters: SuggestedPostParameters | None = None,
         reply_parameters: ReplyParameters | None = None,
         reply_markup: ReplyMarkupUnion | None = None,
+        receiver_user_id: int | None = None,
+        callback_query_id: str | None = None,
         allow_sending_without_reply: bool | None = None,
         disable_web_page_preview: bool | Default | None = Default("link_preview_is_disabled"),
         reply_to_message_id: int | None = None,
@@ -2296,6 +2386,8 @@ class Message(MaybeInaccessibleMessage):
         :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined
         :param reply_parameters: Description of the message to reply to
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
+        :param receiver_user_id: For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See `ephemeral message sending <https://core.telegram.org/bots/api#ephemeral-messages-and-commands>`_ for more details
+        :param callback_query_id: For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :param disable_web_page_preview: Disables link previews for links in this message
         :param reply_to_message_id: If the message is a reply, ID of the original message
@@ -2326,6 +2418,8 @@ class Message(MaybeInaccessibleMessage):
             suggested_post_parameters=suggested_post_parameters,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
+            receiver_user_id=receiver_user_id,
+            callback_query_id=callback_query_id,
             allow_sending_without_reply=allow_sending_without_reply,
             disable_web_page_preview=disable_web_page_preview,
             reply_to_message_id=reply_to_message_id,
@@ -2347,6 +2441,8 @@ class Message(MaybeInaccessibleMessage):
         message_effect_id: str | None = None,
         suggested_post_parameters: SuggestedPostParameters | None = None,
         reply_markup: ReplyMarkupUnion | None = None,
+        receiver_user_id: int | None = None,
+        callback_query_id: str | None = None,
         allow_sending_without_reply: bool | None = None,
         **kwargs: Any,
     ) -> SendPhoto:
@@ -2368,7 +2464,7 @@ class Message(MaybeInaccessibleMessage):
         :param caption: Photo caption (may also be used when resending photos by *file_id*), 0-1024 characters after entities parsing
         :param parse_mode: Mode for parsing entities in the photo caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details
         :param caption_entities: A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*
-        :param show_caption_above_media: Pass :code:`True`, if the caption must be shown above the message media
+        :param show_caption_above_media: Pass :code:`True` if the caption must be shown above the message media
         :param has_spoiler: Pass :code:`True` if the photo needs to be covered with a spoiler animation
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound
         :param protect_content: Protects the contents of the sent message from forwarding and saving
@@ -2376,6 +2472,8 @@ class Message(MaybeInaccessibleMessage):
         :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
+        :param receiver_user_id: For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See `ephemeral message sending <https://core.telegram.org/bots/api#ephemeral-messages-and-commands>`_ for more details
+        :param callback_query_id: For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :return: instance of method :class:`aiogram.methods.send_photo.SendPhoto`
         """
@@ -2406,6 +2504,8 @@ class Message(MaybeInaccessibleMessage):
             message_effect_id=message_effect_id,
             suggested_post_parameters=suggested_post_parameters,
             reply_markup=reply_markup,
+            receiver_user_id=receiver_user_id,
+            callback_query_id=callback_query_id,
             allow_sending_without_reply=allow_sending_without_reply,
             **kwargs,
         ).as_(self._bot)
@@ -2426,6 +2526,8 @@ class Message(MaybeInaccessibleMessage):
         suggested_post_parameters: SuggestedPostParameters | None = None,
         reply_parameters: ReplyParameters | None = None,
         reply_markup: ReplyMarkupUnion | None = None,
+        receiver_user_id: int | None = None,
+        callback_query_id: str | None = None,
         allow_sending_without_reply: bool | None = None,
         reply_to_message_id: int | None = None,
         **kwargs: Any,
@@ -2447,7 +2549,7 @@ class Message(MaybeInaccessibleMessage):
         :param caption: Photo caption (may also be used when resending photos by *file_id*), 0-1024 characters after entities parsing
         :param parse_mode: Mode for parsing entities in the photo caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details
         :param caption_entities: A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*
-        :param show_caption_above_media: Pass :code:`True`, if the caption must be shown above the message media
+        :param show_caption_above_media: Pass :code:`True` if the caption must be shown above the message media
         :param has_spoiler: Pass :code:`True` if the photo needs to be covered with a spoiler animation
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound
         :param protect_content: Protects the contents of the sent message from forwarding and saving
@@ -2456,6 +2558,8 @@ class Message(MaybeInaccessibleMessage):
         :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined
         :param reply_parameters: Description of the message to reply to
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
+        :param receiver_user_id: For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See `ephemeral message sending <https://core.telegram.org/bots/api#ephemeral-messages-and-commands>`_ for more details
+        :param callback_query_id: For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :return: instance of method :class:`aiogram.methods.send_photo.SendPhoto`
@@ -2487,6 +2591,8 @@ class Message(MaybeInaccessibleMessage):
             suggested_post_parameters=suggested_post_parameters,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
+            receiver_user_id=receiver_user_id,
+            callback_query_id=callback_query_id,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_to_message_id=reply_to_message_id,
             **kwargs,
@@ -2547,12 +2653,12 @@ class Message(MaybeInaccessibleMessage):
         :param question_entities: A JSON-serialized list of special entities that appear in the poll question. It can be specified instead of *question_parse_mode*
         :param is_anonymous: :code:`True`, if the poll needs to be anonymous, defaults to :code:`True`
         :param type: Poll type, 'quiz' or 'regular', defaults to 'regular'
-        :param allows_multiple_answers: Pass :code:`True`, if the poll allows multiple answers, defaults to :code:`False`
-        :param allows_revoting: Pass :code:`True`, if the poll allows to change chosen answer options, defaults to :code:`False` for quizzes and to :code:`True` for regular polls
-        :param shuffle_options: Pass :code:`True`, if the poll options must be shown in random order
-        :param allow_adding_options: Pass :code:`True`, if answer options can be added to the poll after creation; not supported for anonymous polls and quizzes
-        :param hide_results_until_closes: Pass :code:`True`, if poll results must be shown only after the poll closes
-        :param members_only: Pass :code:`True`, if voting is limited to users who have been members of the chat where the poll is being sent for more than 24 hours; for channel chats only
+        :param allows_multiple_answers: Pass :code:`True` if the poll allows multiple answers, defaults to :code:`False`
+        :param allows_revoting: Pass :code:`True` if the poll allows to change chosen answer options, defaults to :code:`False` for quizzes and to :code:`True` for regular polls
+        :param shuffle_options: Pass :code:`True` if the poll options must be shown in random order
+        :param allow_adding_options: Pass :code:`True` if answer options can be added to the poll after creation; not supported for anonymous polls and quizzes
+        :param hide_results_until_closes: Pass :code:`True` if poll results must be shown only after the poll closes
+        :param members_only: Pass :code:`True` if voting is limited to users who have been members of the chat where the poll is being sent for more than 24 hours; for channel chats only
         :param country_codes: A JSON-serialized list of 0-12 two-letter `ISO 3166-1 alpha-2 <https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2>`_ country codes indicating the countries from which users can vote in the poll; for channel chats only. Use 'FT' as a country code to allow users with anonymous numbers to vote. If omitted or empty, then users from any country can participate in the poll
         :param correct_option_ids: A JSON-serialized list of monotonically increasing 0-based identifiers of the correct answer options, required for polls in quiz mode
         :param explanation: Text that is shown when a user chooses an incorrect answer or taps on the lamp icon in a quiz-style poll, 0-200 characters with at most 2 line feeds after entities parsing
@@ -2680,12 +2786,12 @@ class Message(MaybeInaccessibleMessage):
         :param question_entities: A JSON-serialized list of special entities that appear in the poll question. It can be specified instead of *question_parse_mode*
         :param is_anonymous: :code:`True`, if the poll needs to be anonymous, defaults to :code:`True`
         :param type: Poll type, 'quiz' or 'regular', defaults to 'regular'
-        :param allows_multiple_answers: Pass :code:`True`, if the poll allows multiple answers, defaults to :code:`False`
-        :param allows_revoting: Pass :code:`True`, if the poll allows to change chosen answer options, defaults to :code:`False` for quizzes and to :code:`True` for regular polls
-        :param shuffle_options: Pass :code:`True`, if the poll options must be shown in random order
-        :param allow_adding_options: Pass :code:`True`, if answer options can be added to the poll after creation; not supported for anonymous polls and quizzes
-        :param hide_results_until_closes: Pass :code:`True`, if poll results must be shown only after the poll closes
-        :param members_only: Pass :code:`True`, if voting is limited to users who have been members of the chat where the poll is being sent for more than 24 hours; for channel chats only
+        :param allows_multiple_answers: Pass :code:`True` if the poll allows multiple answers, defaults to :code:`False`
+        :param allows_revoting: Pass :code:`True` if the poll allows to change chosen answer options, defaults to :code:`False` for quizzes and to :code:`True` for regular polls
+        :param shuffle_options: Pass :code:`True` if the poll options must be shown in random order
+        :param allow_adding_options: Pass :code:`True` if answer options can be added to the poll after creation; not supported for anonymous polls and quizzes
+        :param hide_results_until_closes: Pass :code:`True` if poll results must be shown only after the poll closes
+        :param members_only: Pass :code:`True` if voting is limited to users who have been members of the chat where the poll is being sent for more than 24 hours; for channel chats only
         :param country_codes: A JSON-serialized list of 0-12 two-letter `ISO 3166-1 alpha-2 <https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2>`_ country codes indicating the countries from which users can vote in the poll; for channel chats only. Use 'FT' as a country code to allow users with anonymous numbers to vote. If omitted or empty, then users from any country can participate in the poll
         :param correct_option_ids: A JSON-serialized list of monotonically increasing 0-based identifiers of the correct answer options, required for polls in quiz mode
         :param explanation: Text that is shown when a user chooses an incorrect answer or taps on the lamp icon in a quiz-style poll, 0-200 characters with at most 2 line feeds after entities parsing
@@ -2901,6 +3007,8 @@ class Message(MaybeInaccessibleMessage):
         message_effect_id: str | None = None,
         suggested_post_parameters: SuggestedPostParameters | None = None,
         reply_markup: ReplyMarkupUnion | None = None,
+        receiver_user_id: int | None = None,
+        callback_query_id: str | None = None,
         allow_sending_without_reply: bool | None = None,
         **kwargs: Any,
     ) -> SendSticker:
@@ -2926,6 +3034,8 @@ class Message(MaybeInaccessibleMessage):
         :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
+        :param receiver_user_id: For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See `ephemeral message sending <https://core.telegram.org/bots/api#ephemeral-messages-and-commands>`_ for more details
+        :param callback_query_id: For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :return: instance of method :class:`aiogram.methods.send_sticker.SendSticker`
         """
@@ -2952,6 +3062,8 @@ class Message(MaybeInaccessibleMessage):
             message_effect_id=message_effect_id,
             suggested_post_parameters=suggested_post_parameters,
             reply_markup=reply_markup,
+            receiver_user_id=receiver_user_id,
+            callback_query_id=callback_query_id,
             allow_sending_without_reply=allow_sending_without_reply,
             **kwargs,
         ).as_(self._bot)
@@ -2968,6 +3080,8 @@ class Message(MaybeInaccessibleMessage):
         suggested_post_parameters: SuggestedPostParameters | None = None,
         reply_parameters: ReplyParameters | None = None,
         reply_markup: ReplyMarkupUnion | None = None,
+        receiver_user_id: int | None = None,
+        callback_query_id: str | None = None,
         allow_sending_without_reply: bool | None = None,
         reply_to_message_id: int | None = None,
         **kwargs: Any,
@@ -2994,6 +3108,8 @@ class Message(MaybeInaccessibleMessage):
         :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined
         :param reply_parameters: Description of the message to reply to
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
+        :param receiver_user_id: For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See `ephemeral message sending <https://core.telegram.org/bots/api#ephemeral-messages-and-commands>`_ for more details
+        :param callback_query_id: For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :return: instance of method :class:`aiogram.methods.send_sticker.SendSticker`
@@ -3021,6 +3137,8 @@ class Message(MaybeInaccessibleMessage):
             suggested_post_parameters=suggested_post_parameters,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
+            receiver_user_id=receiver_user_id,
+            callback_query_id=callback_query_id,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_to_message_id=reply_to_message_id,
             **kwargs,
@@ -3043,6 +3161,8 @@ class Message(MaybeInaccessibleMessage):
         message_effect_id: str | None = None,
         suggested_post_parameters: SuggestedPostParameters | None = None,
         reply_markup: ReplyMarkupUnion | None = None,
+        receiver_user_id: int | None = None,
+        callback_query_id: str | None = None,
         allow_sending_without_reply: bool | None = None,
         **kwargs: Any,
     ) -> SendVenue:
@@ -3074,6 +3194,8 @@ class Message(MaybeInaccessibleMessage):
         :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
+        :param receiver_user_id: For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See `ephemeral message sending <https://core.telegram.org/bots/api#ephemeral-messages-and-commands>`_ for more details
+        :param callback_query_id: For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :return: instance of method :class:`aiogram.methods.send_venue.SendVenue`
         """
@@ -3106,6 +3228,8 @@ class Message(MaybeInaccessibleMessage):
             message_effect_id=message_effect_id,
             suggested_post_parameters=suggested_post_parameters,
             reply_markup=reply_markup,
+            receiver_user_id=receiver_user_id,
+            callback_query_id=callback_query_id,
             allow_sending_without_reply=allow_sending_without_reply,
             **kwargs,
         ).as_(self._bot)
@@ -3128,6 +3252,8 @@ class Message(MaybeInaccessibleMessage):
         suggested_post_parameters: SuggestedPostParameters | None = None,
         reply_parameters: ReplyParameters | None = None,
         reply_markup: ReplyMarkupUnion | None = None,
+        receiver_user_id: int | None = None,
+        callback_query_id: str | None = None,
         allow_sending_without_reply: bool | None = None,
         reply_to_message_id: int | None = None,
         **kwargs: Any,
@@ -3160,6 +3286,8 @@ class Message(MaybeInaccessibleMessage):
         :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined
         :param reply_parameters: Description of the message to reply to
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
+        :param receiver_user_id: For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See `ephemeral message sending <https://core.telegram.org/bots/api#ephemeral-messages-and-commands>`_ for more details
+        :param callback_query_id: For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :return: instance of method :class:`aiogram.methods.send_venue.SendVenue`
@@ -3193,6 +3321,8 @@ class Message(MaybeInaccessibleMessage):
             suggested_post_parameters=suggested_post_parameters,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
+            receiver_user_id=receiver_user_id,
+            callback_query_id=callback_query_id,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_to_message_id=reply_to_message_id,
             **kwargs,
@@ -3220,6 +3350,8 @@ class Message(MaybeInaccessibleMessage):
         message_effect_id: str | None = None,
         suggested_post_parameters: SuggestedPostParameters | None = None,
         reply_markup: ReplyMarkupUnion | None = None,
+        receiver_user_id: int | None = None,
+        callback_query_id: str | None = None,
         allow_sending_without_reply: bool | None = None,
         **kwargs: Any,
     ) -> SendVideo:
@@ -3247,7 +3379,7 @@ class Message(MaybeInaccessibleMessage):
         :param caption: Video caption (may also be used when resending videos by *file_id*), 0-1024 characters after entities parsing
         :param parse_mode: Mode for parsing entities in the video caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details
         :param caption_entities: A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*
-        :param show_caption_above_media: Pass :code:`True`, if the caption must be shown above the message media
+        :param show_caption_above_media: Pass :code:`True` if the caption must be shown above the message media
         :param has_spoiler: Pass :code:`True` if the video needs to be covered with a spoiler animation
         :param supports_streaming: Pass :code:`True` if the uploaded video is suitable for streaming
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound
@@ -3256,6 +3388,8 @@ class Message(MaybeInaccessibleMessage):
         :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
+        :param receiver_user_id: For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See `ephemeral message sending <https://core.telegram.org/bots/api#ephemeral-messages-and-commands>`_ for more details
+        :param callback_query_id: For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :return: instance of method :class:`aiogram.methods.send_video.SendVideo`
         """
@@ -3293,6 +3427,8 @@ class Message(MaybeInaccessibleMessage):
             message_effect_id=message_effect_id,
             suggested_post_parameters=suggested_post_parameters,
             reply_markup=reply_markup,
+            receiver_user_id=receiver_user_id,
+            callback_query_id=callback_query_id,
             allow_sending_without_reply=allow_sending_without_reply,
             **kwargs,
         ).as_(self._bot)
@@ -3320,6 +3456,8 @@ class Message(MaybeInaccessibleMessage):
         suggested_post_parameters: SuggestedPostParameters | None = None,
         reply_parameters: ReplyParameters | None = None,
         reply_markup: ReplyMarkupUnion | None = None,
+        receiver_user_id: int | None = None,
+        callback_query_id: str | None = None,
         allow_sending_without_reply: bool | None = None,
         reply_to_message_id: int | None = None,
         **kwargs: Any,
@@ -3347,7 +3485,7 @@ class Message(MaybeInaccessibleMessage):
         :param caption: Video caption (may also be used when resending videos by *file_id*), 0-1024 characters after entities parsing
         :param parse_mode: Mode for parsing entities in the video caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details
         :param caption_entities: A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*
-        :param show_caption_above_media: Pass :code:`True`, if the caption must be shown above the message media
+        :param show_caption_above_media: Pass :code:`True` if the caption must be shown above the message media
         :param has_spoiler: Pass :code:`True` if the video needs to be covered with a spoiler animation
         :param supports_streaming: Pass :code:`True` if the uploaded video is suitable for streaming
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound
@@ -3357,6 +3495,8 @@ class Message(MaybeInaccessibleMessage):
         :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined
         :param reply_parameters: Description of the message to reply to
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
+        :param receiver_user_id: For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See `ephemeral message sending <https://core.telegram.org/bots/api#ephemeral-messages-and-commands>`_ for more details
+        :param callback_query_id: For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :return: instance of method :class:`aiogram.methods.send_video.SendVideo`
@@ -3395,6 +3535,8 @@ class Message(MaybeInaccessibleMessage):
             suggested_post_parameters=suggested_post_parameters,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
+            receiver_user_id=receiver_user_id,
+            callback_query_id=callback_query_id,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_to_message_id=reply_to_message_id,
             **kwargs,
@@ -3413,6 +3555,8 @@ class Message(MaybeInaccessibleMessage):
         message_effect_id: str | None = None,
         suggested_post_parameters: SuggestedPostParameters | None = None,
         reply_markup: ReplyMarkupUnion | None = None,
+        receiver_user_id: int | None = None,
+        callback_query_id: str | None = None,
         allow_sending_without_reply: bool | None = None,
         **kwargs: Any,
     ) -> SendVideoNote:
@@ -3440,6 +3584,8 @@ class Message(MaybeInaccessibleMessage):
         :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
+        :param receiver_user_id: For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See `ephemeral message sending <https://core.telegram.org/bots/api#ephemeral-messages-and-commands>`_ for more details
+        :param callback_query_id: For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :return: instance of method :class:`aiogram.methods.send_video_note.SendVideoNote`
         """
@@ -3468,6 +3614,8 @@ class Message(MaybeInaccessibleMessage):
             message_effect_id=message_effect_id,
             suggested_post_parameters=suggested_post_parameters,
             reply_markup=reply_markup,
+            receiver_user_id=receiver_user_id,
+            callback_query_id=callback_query_id,
             allow_sending_without_reply=allow_sending_without_reply,
             **kwargs,
         ).as_(self._bot)
@@ -3486,6 +3634,8 @@ class Message(MaybeInaccessibleMessage):
         suggested_post_parameters: SuggestedPostParameters | None = None,
         reply_parameters: ReplyParameters | None = None,
         reply_markup: ReplyMarkupUnion | None = None,
+        receiver_user_id: int | None = None,
+        callback_query_id: str | None = None,
         allow_sending_without_reply: bool | None = None,
         reply_to_message_id: int | None = None,
         **kwargs: Any,
@@ -3514,6 +3664,8 @@ class Message(MaybeInaccessibleMessage):
         :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined
         :param reply_parameters: Description of the message to reply to
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
+        :param receiver_user_id: For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See `ephemeral message sending <https://core.telegram.org/bots/api#ephemeral-messages-and-commands>`_ for more details
+        :param callback_query_id: For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :return: instance of method :class:`aiogram.methods.send_video_note.SendVideoNote`
@@ -3543,6 +3695,8 @@ class Message(MaybeInaccessibleMessage):
             suggested_post_parameters=suggested_post_parameters,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
+            receiver_user_id=receiver_user_id,
+            callback_query_id=callback_query_id,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_to_message_id=reply_to_message_id,
             **kwargs,
@@ -3562,6 +3716,8 @@ class Message(MaybeInaccessibleMessage):
         message_effect_id: str | None = None,
         suggested_post_parameters: SuggestedPostParameters | None = None,
         reply_markup: ReplyMarkupUnion | None = None,
+        receiver_user_id: int | None = None,
+        callback_query_id: str | None = None,
         allow_sending_without_reply: bool | None = None,
         **kwargs: Any,
     ) -> SendVoice:
@@ -3590,6 +3746,8 @@ class Message(MaybeInaccessibleMessage):
         :param message_effect_id: Unique identifier of the message effect to be added to the message; for private chats only
         :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
+        :param receiver_user_id: For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See `ephemeral message sending <https://core.telegram.org/bots/api#ephemeral-messages-and-commands>`_ for more details
+        :param callback_query_id: For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :return: instance of method :class:`aiogram.methods.send_voice.SendVoice`
         """
@@ -3619,6 +3777,8 @@ class Message(MaybeInaccessibleMessage):
             message_effect_id=message_effect_id,
             suggested_post_parameters=suggested_post_parameters,
             reply_markup=reply_markup,
+            receiver_user_id=receiver_user_id,
+            callback_query_id=callback_query_id,
             allow_sending_without_reply=allow_sending_without_reply,
             **kwargs,
         ).as_(self._bot)
@@ -3638,6 +3798,8 @@ class Message(MaybeInaccessibleMessage):
         suggested_post_parameters: SuggestedPostParameters | None = None,
         reply_parameters: ReplyParameters | None = None,
         reply_markup: ReplyMarkupUnion | None = None,
+        receiver_user_id: int | None = None,
+        callback_query_id: str | None = None,
         allow_sending_without_reply: bool | None = None,
         reply_to_message_id: int | None = None,
         **kwargs: Any,
@@ -3667,6 +3829,8 @@ class Message(MaybeInaccessibleMessage):
         :param suggested_post_parameters: A JSON-serialized object containing the parameters of the suggested post to send; for direct messages chats only. If the message is sent as a reply to another suggested post, then that suggested post is automatically declined
         :param reply_parameters: Description of the message to reply to
         :param reply_markup: Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user
+        :param receiver_user_id: For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See `ephemeral message sending <https://core.telegram.org/bots/api#ephemeral-messages-and-commands>`_ for more details
+        :param callback_query_id: For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any
         :param allow_sending_without_reply: Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
         :param reply_to_message_id: If the message is a reply, ID of the original message
         :return: instance of method :class:`aiogram.methods.send_voice.SendVoice`
@@ -3697,6 +3861,8 @@ class Message(MaybeInaccessibleMessage):
             suggested_post_parameters=suggested_post_parameters,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
+            receiver_user_id=receiver_user_id,
+            callback_query_id=callback_query_id,
             allow_sending_without_reply=allow_sending_without_reply,
             reply_to_message_id=reply_to_message_id,
             **kwargs,
@@ -3943,7 +4109,7 @@ class Message(MaybeInaccessibleMessage):
         :param caption: New caption for media, 0-1024 characters after entities parsing. If not specified, the original caption is kept
         :param parse_mode: Mode for parsing entities in the new caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details
         :param caption_entities: A JSON-serialized list of special entities that appear in the new caption, which can be specified instead of *parse_mode*
-        :param show_caption_above_media: Pass :code:`True`, if the caption must be shown above the message media. Ignored if a new caption isn't specified
+        :param show_caption_above_media: Pass :code:`True` if the caption must be shown above the message media. Ignored if a new caption isn't specified
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound
         :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param allow_paid_broadcast: Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
@@ -4017,7 +4183,7 @@ class Message(MaybeInaccessibleMessage):
         :param entities: A JSON-serialized list of special entities that appear in message text, which can be specified instead of *parse_mode*
         :param link_preview_options: Link preview generation options for the message
         :param reply_markup: A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_
-        :param rich_message: New rich content of the message; required if *text* isn't specified
+        :param rich_message: New rich content of the message; required if *text* isn't specified. Direct upload of new files isn't supported when an inline message is edited
         :param disable_web_page_preview: Disables link previews for links in this message
         :return: instance of method :class:`aiogram.methods.edit_message_text.EditMessageText`
         """
@@ -4120,7 +4286,7 @@ class Message(MaybeInaccessibleMessage):
 
         Source: https://core.telegram.org/bots/api#editmessagemedia
 
-        :param media: A JSON-serialized object for a new media content of the message
+        :param media: A JSON-serialized object for the new media content of the message
         :param inline_message_id: Required if *chat_id* and *message_id* are not specified. Identifier of the inline message
         :param reply_markup: A JSON-serialized object for a new `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_
         :return: instance of method :class:`aiogram.methods.edit_message_media.EditMessageMedia`
@@ -4347,7 +4513,7 @@ class Message(MaybeInaccessibleMessage):
         :param caption: New caption of the message, 0-1024 characters after entities parsing
         :param parse_mode: Mode for parsing entities in the message caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details
         :param caption_entities: A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*
-        :param show_caption_above_media: Pass :code:`True`, if the caption must be shown above the message media. Supported only for animation, photo and video messages
+        :param show_caption_above_media: Pass :code:`True` if the caption must be shown above the message media. Supported only for animation, photo and video messages
         :param reply_markup: A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_
         :return: instance of method :class:`aiogram.methods.edit_message_caption.EditMessageCaption`
         """
@@ -4596,13 +4762,13 @@ class Message(MaybeInaccessibleMessage):
         Source: https://core.telegram.org/bots/api#sendpaidmedia
 
         :param star_count: The number of Telegram Stars that must be paid to buy access to the media; 1-25000
-        :param media: A JSON-serialized array describing the media to be sent; up to 10 items
+        :param media: A JSON-serialized Array describing the media to be sent; up to 10 items
         :param direct_messages_topic_id: Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat
         :param payload: Bot-defined paid media payload, 0-128 bytes. This will not be displayed to the user, use it for your internal processes
         :param caption: Media caption, 0-1024 characters after entities parsing
         :param parse_mode: Mode for parsing entities in the media caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details
         :param caption_entities: A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*
-        :param show_caption_above_media: Pass :code:`True`, if the caption must be shown above the message media
+        :param show_caption_above_media: Pass :code:`True` if the caption must be shown above the message media
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound
         :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param allow_paid_broadcast: Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance
@@ -4672,13 +4838,13 @@ class Message(MaybeInaccessibleMessage):
         Source: https://core.telegram.org/bots/api#sendpaidmedia
 
         :param star_count: The number of Telegram Stars that must be paid to buy access to the media; 1-25000
-        :param media: A JSON-serialized array describing the media to be sent; up to 10 items
+        :param media: A JSON-serialized Array describing the media to be sent; up to 10 items
         :param direct_messages_topic_id: Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat
         :param payload: Bot-defined paid media payload, 0-128 bytes. This will not be displayed to the user, use it for your internal processes
         :param caption: Media caption, 0-1024 characters after entities parsing
         :param parse_mode: Mode for parsing entities in the media caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details
         :param caption_entities: A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*
-        :param show_caption_above_media: Pass :code:`True`, if the caption must be shown above the message media
+        :param show_caption_above_media: Pass :code:`True` if the caption must be shown above the message media
         :param disable_notification: Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound
         :param protect_content: Protects the contents of the sent message from forwarding and saving
         :param allow_paid_broadcast: Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance

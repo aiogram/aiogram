@@ -1,0 +1,57 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Rich messages",
+    "anchor": "rich-messages"
+  },
+  "object": {
+    "anchor": "inputrichblocktable",
+    "name": "InputRichBlockTable",
+    "description": "A table, corresponding to the HTML tag <table>.",
+    "html_description": "<p>A table, corresponding to the HTML tag <code>&lt;table&gt;</code>.</p>",
+    "rst_description": "A table, corresponding to the HTML tag :code:`<table>`.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Type of the block, always 'table'",
+        "html_description": "<td>Type of the block, always &#8220;table&#8221;</td>",
+        "rst_description": "Type of the block, always 'table'\n",
+        "name": "type",
+        "required": true
+      },
+      {
+        "type": "Array of Array of RichBlockTableCell",
+        "description": "Cells of the table",
+        "html_description": "<td>Cells of the table</td>",
+        "rst_description": "Cells of the table\n",
+        "name": "cells",
+        "required": true
+      },
+      {
+        "type": "True",
+        "description": "Pass True if the table has borders",
+        "html_description": "<td><em>Optional</em>. Pass <em>True</em> if the table has borders</td>",
+        "rst_description": "*Optional*. Pass :code:`True` if the table has borders\n",
+        "name": "is_bordered",
+        "required": false
+      },
+      {
+        "type": "True",
+        "description": "Pass True if the table is striped",
+        "html_description": "<td><em>Optional</em>. Pass <em>True</em> if the table is striped</td>",
+        "rst_description": "*Optional*. Pass :code:`True` if the table is striped\n",
+        "name": "is_striped",
+        "required": false
+      },
+      {
+        "type": "RichText",
+        "description": "Caption of the table",
+        "html_description": "<td><em>Optional</em>. Caption of the table</td>",
+        "rst_description": "*Optional*. Caption of the table\n",
+        "name": "caption",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

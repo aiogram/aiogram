@@ -17,11 +17,11 @@ class SuggestedPostPaid(TelegramObject):
     """
 
     currency: str
-    """Currency in which the payment was made. Currently, one of 'XTR' for Telegram Stars or 'TON' for toncoins"""
+    """Currency in which the payment was made. Currently, one of 'XTR' for Telegram Stars or 'TON' for TON grams"""
     suggested_post_message: Message | None = None
     """*Optional*. Message containing the suggested post. Note that the :class:`aiogram.types.message.Message` object in this field will not contain the *reply_to_message* field even if it itself is a reply"""
     amount: int | None = None
-    """*Optional*. The amount of the currency that was received by the channel in nanotoncoins; for payments in toncoins only"""
+    """*Optional*. The amount of the currency that was received by the channel in nanograms; for payments in TON grams only"""
     star_amount: StarAmount | None = None
     """*Optional*. The amount of Telegram Stars that was received by the channel; for payments in Telegram Stars only"""
 

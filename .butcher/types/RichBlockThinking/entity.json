@@ -7,9 +7,9 @@
   "object": {
     "anchor": "richblockthinking",
     "name": "RichBlockThinking",
-    "description": "A block with a 'Thinking…' placeholder, corresponding to the custom HTML tag <tg-thinking>. The block may be used only in sendRichMessageDraft, therefore it can't be received in messages. See https://t.me/addemoji/AIActions for examples of custom emoji, which are recommended for usage in the block.",
-    "html_description": "<p>A block with a &#8220;Thinking&#8230;&#8221; placeholder, corresponding to the custom HTML tag <code>&lt;tg-thinking&gt;</code>. The block may be used only in <a href=\"#sendrichmessagedraft\">sendRichMessageDraft</a>, therefore it can't be received in messages. See <a href=\"https://t.me/addemoji/AIActions\"/><a href=\"https://t.me/addemoji/AIActions\">https://t.me/addemoji/AIActions</a> for examples of custom emoji, which are recommended for usage in the block.</p>",
-    "rst_description": "A block with a 'Thinking…' placeholder, corresponding to the custom HTML tag :code:`<tg-thinking>`. The block may be used only in :class:`aiogram.methods.send_rich_message_draft.SendRichMessageDraft`, therefore it can't be received in messages. See `https://t.me/addemoji/AIActions <https://t.me/addemoji/AIActions>`_`https://t.me/addemoji/AIActions <https://t.me/addemoji/AIActions>`_ for examples of custom emoji, which are recommended for usage in the block.",
+    "description": "A block with a 'Thinking…' placeholder, corresponding to the custom HTML tag <tg-thinking>. The block may be used only in sendRichMessageDraft, therefore it can't be received in messages. See https://t.me/addemoji/AIActions for examples of custom emoji that are recommended for usage in the block.",
+    "html_description": "<p>A block with a &#8220;Thinking&#8230;&#8221; placeholder, corresponding to the custom HTML tag <code>&lt;tg-thinking&gt;</code>. The block may be used only in <a href=\"#sendrichmessagedraft\">sendRichMessageDraft</a>, therefore it can't be received in messages. See <a href=\"https://t.me/addemoji/AIActions\"/><a href=\"https://t.me/addemoji/AIActions\">https://t.me/addemoji/AIActions</a> for examples of custom emoji that are recommended for usage in the block.</p>",
+    "rst_description": "A block with a 'Thinking…' placeholder, corresponding to the custom HTML tag :code:`<tg-thinking>`. The block may be used only in :class:`aiogram.methods.send_rich_message_draft.SendRichMessageDraft`, therefore it can't be received in messages. See `https://t.me/addemoji/AIActions <https://t.me/addemoji/AIActions>`_`https://t.me/addemoji/AIActions <https://t.me/addemoji/AIActions>`_ for examples of custom emoji that are recommended for usage in the block.",
     "annotations": [
       {
         "type": "String",
@@ -21,9 +21,9 @@
       },
       {
         "type": "RichText",
-        "description": "Text of the block. See https://t.me/addemoji/AIActions for examples of custom emoji, which are recommended for usage in the block.",
-        "html_description": "<td>Text of the block. See <a href=\"https://t.me/addemoji/AIActions\"/><a href=\"https://t.me/addemoji/AIActions\">https://t.me/addemoji/AIActions</a> for examples of custom emoji, which are recommended for usage in the block.</td>",
-        "rst_description": "Text of the block. See `https://t.me/addemoji/AIActions <https://t.me/addemoji/AIActions>`_`https://t.me/addemoji/AIActions <https://t.me/addemoji/AIActions>`_ for examples of custom emoji, which are recommended for usage in the block.\n",
+        "description": "Text of the block. See https://t.me/addemoji/AIActions for examples of custom emoji that are recommended for usage in the block.",
+        "html_description": "<td>Text of the block. See <a href=\"https://t.me/addemoji/AIActions\"/><a href=\"https://t.me/addemoji/AIActions\">https://t.me/addemoji/AIActions</a> for examples of custom emoji that are recommended for usage in the block.</td>",
+        "rst_description": "Text of the block. See `https://t.me/addemoji/AIActions <https://t.me/addemoji/AIActions>`_`https://t.me/addemoji/AIActions <https://t.me/addemoji/AIActions>`_ for examples of custom emoji that are recommended for usage in the block.\n",
         "name": "text",
         "required": true
       }

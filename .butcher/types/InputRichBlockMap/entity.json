@@ -1,0 +1,65 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Rich messages",
+    "anchor": "rich-messages"
+  },
+  "object": {
+    "anchor": "inputrichblockmap",
+    "name": "InputRichBlockMap",
+    "description": "A block with a map, corresponding to the custom HTML tag <tg-map>. The map's width and height must not exceed 10000 in total. The width and height ratio must be at most 20.",
+    "html_description": "<p>A block with a map, corresponding to the custom HTML tag <code>&lt;tg-map&gt;</code>. The map's width and height must not exceed 10000 in total. The width and height ratio must be at most 20.</p>",
+    "rst_description": "A block with a map, corresponding to the custom HTML tag :code:`<tg-map>`. The map's width and height must not exceed 10000 in total. The width and height ratio must be at most 20.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Type of the block, always 'map'",
+        "html_description": "<td>Type of the block, always &#8220;map&#8221;</td>",
+        "rst_description": "Type of the block, always 'map'\n",
+        "name": "type",
+        "required": true
+      },
+      {
+        "type": "Location",
+        "description": "Location of the center of the map",
+        "html_description": "<td>Location of the center of the map</td>",
+        "rst_description": "Location of the center of the map\n",
+        "name": "location",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "Map zoom level; 0-24",
+        "html_description": "<td>Map zoom level; 0-24</td>",
+        "rst_description": "Map zoom level; 0-24\n",
+        "name": "zoom",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "Map width; 0-10000",
+        "html_description": "<td>Map width; 0-10000</td>",
+        "rst_description": "Map width; 0-10000\n",
+        "name": "width",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "Map height; 0-10000",
+        "html_description": "<td>Map height; 0-10000</td>",
+        "rst_description": "Map height; 0-10000\n",
+        "name": "height",
+        "required": true
+      },
+      {
+        "type": "RichBlockCaption",
+        "description": "Caption of the block",
+        "html_description": "<td><em>Optional</em>. Caption of the block</td>",
+        "rst_description": "*Optional*. Caption of the block\n",
+        "name": "caption",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

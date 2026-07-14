@@ -26,6 +26,14 @@
         "rst_description": "Description of the command; 1-256 characters\n",
         "name": "description",
         "required": true
+      },
+      {
+        "type": "Boolean",
+        "description": "True, if the command sends an ephemeral message, which can be seen only by the sender of the message and the bot",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the command sends an ephemeral message, which can be seen only by the sender of the message and the bot</td>",
+        "rst_description": "*Optional*. :code:`True`, if the command sends an ephemeral message, which can be seen only by the sender of the message and the bot\n",
+        "name": "is_ephemeral",
+        "required": false
       }
     ],
     "category": "types"

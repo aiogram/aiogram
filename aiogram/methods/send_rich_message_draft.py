@@ -19,7 +19,7 @@ class SendRichMessageDraft(TelegramMethod[bool]):
     draft_id: int
     """Unique identifier of the message draft; must be non-zero. Changes to drafts with the same identifier are animated"""
     rich_message: InputRichMessage
-    """The partial message to be streamed"""
+    """The partial message to be streamed. Direct upload of new files isn't supported"""
     message_thread_id: int | None = None
     """Unique identifier for the target message thread"""
 
