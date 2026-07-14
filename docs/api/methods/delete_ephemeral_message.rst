@@ -43,3 +43,9 @@ As reply into Webhook in handler
 .. code-block:: python
 
     return DeleteEphemeralMessage(...)
+
+
+As shortcut from received object
+--------------------------------
+
+- :meth:`aiogram.types.message.Message.delete_ephemeral`

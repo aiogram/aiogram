@@ -52,6 +52,21 @@ Updated to `Bot API 10.2 <https://core.telegram.org/bots/api-changelog#july-14-2
 - Added :code:`ephemeral_message_id` field to :class:`aiogram.types.message.Message` - identifier of the ephemeral message, unique for its receiver
 - Added :code:`ephemeral_message_id` field to :class:`aiogram.types.reply_parameters.ReplyParameters` - identifier of the ephemeral message to reply to
 
+*New Shortcuts:*
+
+- Added :meth:`aiogram.types.message.Message.edit_ephemeral_text` shortcut - edits the text of an ephemeral message
+- Added :meth:`aiogram.types.message.Message.edit_ephemeral_caption` shortcut - edits the caption of an ephemeral message
+- Added :meth:`aiogram.types.message.Message.edit_ephemeral_media` shortcut - replaces the media of an ephemeral message
+- Added :meth:`aiogram.types.message.Message.edit_ephemeral_reply_markup` shortcut - edits the reply markup of an ephemeral message
+- Added :meth:`aiogram.types.message.Message.delete_ephemeral` shortcut - deletes an ephemeral message
+
+  All of them fill :code:`chat_id`, :code:`receiver_user_id` and :code:`ephemeral_message_id` from the message itself.
+
+*Changed Shortcuts:*
+
+- :meth:`aiogram.types.message.Message.as_reply_parameters` now targets an ephemeral message by its :code:`ephemeral_message_id` instead of :code:`message_id`/:code:`chat_id` - an ephemeral message has :code:`message_id` equal to 0, and :code:`chat_id` is not supported for it
+- The :code:`reply_*` shortcuts of :class:`aiogram.types.message.Message` now fill :code:`receiver_user_id` automatically, because a reply to an ephemeral message must itself be an ephemeral message. As a result they no longer accept :code:`receiver_user_id` as an argument. To send an ephemeral message *in reply to a regular one*, use :meth:`aiogram.types.message.Message.answer` with an explicit :code:`receiver_user_id` and :code:`reply_parameters`.
+
 *Changed Fields:*
 
 - :code:`message_id` in :class:`aiogram.types.reply_parameters.ReplyParameters` is now **optional** (``int | None``) - it may be omitted when :code:`ephemeral_message_id` is specified instead
