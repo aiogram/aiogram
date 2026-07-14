@@ -26,10 +26,17 @@ def i18n_fixture() -> I18n:
 class TestI18nCore:
     def test_init(self, i18n: I18n):
         assert set(i18n.available_locales) == {"en", "uk"}
+        assert i18n.source_locale == "en"
 
     def test_init_relative(self):
         i18n_relative = I18n(path="tests/data/locales")
         assert set(i18n_relative.available_locales) == {"en", "uk"}
+        assert i18n_relative.source_locale == "en"
+
+    def test_init_source_locale(self, i18n: I18n):
+        i18n_with_source = I18n(path=(i18n.path), default_locale="ru", source_locale="en")
+        assert i18n_with_source.source_locale == "en"
+        assert i18n_with_source.default_locale == "ru"
 
     def test_reload(self, i18n: I18n):
         i18n.reload()
@@ -148,6 +155,42 @@ class TestSimpleI18nMiddleware:
             },
         )
         assert locale == i18n.default_locale
+
+    @pytest.mark.parametrize(
+        ("available_locales", "default_locale", "language_code", "expected_locale"),
+        [
+            ({"pt-br": None}, "en", "pt-br", "pt-br"),
+            ({"pt_BR": None}, "en", "pt-br", "pt_BR"),
+            ({"pt-br": None, "pt_BR": None}, "en", "pt-br", "pt-br"),
+            ({"en": None}, "uk", "en-US", "en"),
+            ({"uk": None}, "en", "uk-UA", "uk"),
+        ],
+    )
+    async def test_get_locale_region_code_variants(
+        self,
+        i18n: I18n,
+        available_locales: dict[str, None],
+        default_locale: str,
+        language_code: str,
+        expected_locale: str,
+    ):
+        i18n.default_locale = default_locale
+        middleware = SimpleI18nMiddleware(i18n=i18n)
+        i18n.locales = available_locales
+
+        locale = await middleware.get_locale(
+            None,
+            {
+                "event_from_user": User(
+                    id=42,
+                    is_bot=False,
+                    first_name="Test",
+                    language_code=language_code,
+                )
+            },
+        )
+
+        assert locale == expected_locale
 
     async def test_custom_keys(self, i18n: I18n):
         async def handler(event, data):
