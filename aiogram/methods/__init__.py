@@ -28,6 +28,7 @@ from .delete_all_message_reactions import DeleteAllMessageReactions
 from .delete_business_messages import DeleteBusinessMessages
 from .delete_chat_photo import DeleteChatPhoto
 from .delete_chat_sticker_set import DeleteChatStickerSet
+from .delete_ephemeral_message import DeleteEphemeralMessage
 from .delete_forum_topic import DeleteForumTopic
 from .delete_message import DeleteMessage
 from .delete_message_reaction import DeleteMessageReaction
@@ -39,6 +40,10 @@ from .delete_story import DeleteStory
 from .delete_webhook import DeleteWebhook
 from .edit_chat_invite_link import EditChatInviteLink
 from .edit_chat_subscription_invite_link import EditChatSubscriptionInviteLink
+from .edit_ephemeral_message_caption import EditEphemeralMessageCaption
+from .edit_ephemeral_message_media import EditEphemeralMessageMedia
+from .edit_ephemeral_message_reply_markup import EditEphemeralMessageReplyMarkup
+from .edit_ephemeral_message_text import EditEphemeralMessageText
 from .edit_forum_topic import EditForumTopic
 from .edit_general_forum_topic import EditGeneralForumTopic
 from .edit_message_caption import EditMessageCaption
@@ -210,6 +215,7 @@ __all__ = (
     "DeleteBusinessMessages",
     "DeleteChatPhoto",
     "DeleteChatStickerSet",
+    "DeleteEphemeralMessage",
     "DeleteForumTopic",
     "DeleteMessage",
     "DeleteMessageReaction",
@@ -221,6 +227,10 @@ __all__ = (
     "DeleteWebhook",
     "EditChatInviteLink",
     "EditChatSubscriptionInviteLink",
+    "EditEphemeralMessageCaption",
+    "EditEphemeralMessageMedia",
+    "EditEphemeralMessageReplyMarkup",
+    "EditEphemeralMessageText",
     "EditForumTopic",
     "EditGeneralForumTopic",
     "EditMessageCaption",

@@ -428,6 +428,14 @@
         "required": false
       },
       {
+        "type": "Community",
+        "description": "The Community to which the chat belongs",
+        "html_description": "<td><em>Optional</em>. The <a href=\"#community\">Community</a> to which the chat belongs</td>",
+        "rst_description": "*Optional*. The :class:`aiogram.types.community.Community` to which the chat belongs\n",
+        "name": "community",
+        "required": false
+      },
+      {
         "type": "True",
         "description": "True, if gifts can be sent to the chat",
         "html_description": "<td><em>Optional</em>. <em>True</em>, if gifts can be sent to the chat</td>",

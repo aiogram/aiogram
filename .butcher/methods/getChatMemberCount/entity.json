@@ -7,9 +7,9 @@
   "object": {
     "anchor": "getchatmembercount",
     "name": "getChatMemberCount",
-    "description": "Use this method to get the number of members in a chat. Returns Int on success.",
-    "html_description": "<p>Use this method to get the number of members in a chat. Returns <em>Int</em> on success.</p>",
-    "rst_description": "Use this method to get the number of members in a chat. Returns *Int* on success.",
+    "description": "Use this method to get the number of members in a chat. Returns Integer on success.",
+    "html_description": "<p>Use this method to get the number of members in a chat. Returns <em>Integer</em> on success.</p>",
+    "rst_description": "Use this method to get the number of members in a chat. Returns *Integer* on success.",
     "annotations": [
       {
         "type": "Integer or String",

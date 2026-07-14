@@ -7,9 +7,9 @@
   "object": {
     "anchor": "richblockphoto",
     "name": "RichBlockPhoto",
-    "description": "A block with a photo, corresponding to the HTML tag <photo>.",
-    "html_description": "<p>A block with a photo, corresponding to the HTML tag <code>&lt;photo&gt;</code>.</p>",
-    "rst_description": "A block with a photo, corresponding to the HTML tag :code:`<photo>`.",
+    "description": "A block with a photo, corresponding to the HTML tag <img>.",
+    "html_description": "<p>A block with a photo, corresponding to the HTML tag <code>&lt;img&gt;</code>.</p>",
+    "rst_description": "A block with a photo, corresponding to the HTML tag :code:`<img>`.",
     "annotations": [
       {
         "type": "String",

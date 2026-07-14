@@ -7,9 +7,9 @@
   "object": {
     "anchor": "sendchatjoinrequestwebapp",
     "name": "sendChatJoinRequestWebApp",
-    "description": "Use this method to process a received chat join request query by showing a Mini App to the user before deciding the outcome. Returns True on success.",
-    "html_description": "<p>Use this method to process a received chat join request query by showing a Mini App to the user before deciding the outcome. Returns <em>True</em> on success.</p>",
-    "rst_description": "Use this method to process a received chat join request query by showing a Mini App to the user before deciding the outcome. Returns :code:`True` on success.",
+    "description": "Use this method to process a received chat join request query by showing a Mini App to the user before deciding the outcome. Call answerChatJoinRequestQuery to resolve the join request query based on the user interaction with the Mini App. Returns True on success.",
+    "html_description": "<p>Use this method to process a received chat join request query by showing a Mini App to the user before deciding the outcome. Call <a href=\"#answerchatjoinrequestquery\">answerChatJoinRequestQuery</a> to resolve the join request query based on the user interaction with the Mini App. Returns <em>True</em> on success.</p>",
+    "rst_description": "Use this method to process a received chat join request query by showing a Mini App to the user before deciding the outcome. Call :class:`aiogram.methods.answer_chat_join_request_query.AnswerChatJoinRequestQuery` to resolve the join request query based on the user interaction with the Mini App. Returns :code:`True` on success.",
     "annotations": [
       {
         "type": "String",
@@ -22,9 +22,9 @@
       {
         "type": "String",
         "required": true,
-        "description": "The URL of the Mini App to be opened",
-        "html_description": "<td>The URL of the Mini App to be opened</td>",
-        "rst_description": "The URL of the Mini App to be opened\n",
+        "description": "An HTTPS URL of a Web App to be opened with additional data as specified in Initializing Web Apps",
+        "html_description": "<td>An HTTPS URL of a Web App to be opened with additional data as specified in <a href=\"/bots/webapps#initializing-mini-apps\">Initializing Web Apps</a></td>",
+        "rst_description": "An HTTPS URL of a Web App to be opened with additional data as specified in `Initializing Web Apps <https://core.telegram.org/bots/webapps#initializing-mini-apps>`_\n",
         "name": "web_app_url"
       }
     ],

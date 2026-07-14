@@ -5,7 +5,7 @@ Subtype unions whose members share a unique constant tag field (``type`` /
 keeps validation linear: Pydantic jumps straight to the matching member instead
 of trying every option with smart-union backtracking, which is exponential for
 nested structures such as ``RichBlockUnion`` (``blockquote`` inside
-``blockquote`` ...).
+``blockquote`` ...) and its input-side mirror ``InputRichBlockUnion``.
 
 These tests guard two things against future Pydantic updates:
 
@@ -22,6 +22,9 @@ from pydantic import ValidationError
 from aiogram.methods import AnswerWebAppQuery, EditMessageMedia
 from aiogram.types import (
     InputMediaPhoto,
+    InputRichBlockBlockQuotation,
+    InputRichBlockParagraph,
+    InputRichMessage,
     RichBlockBlockQuotation,
     RichBlockParagraph,
     RichMessage,
@@ -29,7 +32,11 @@ from aiogram.types import (
 
 
 def _nested_blockquote(depth: int) -> dict:
-    """Build ``depth`` nested ``blockquote`` blocks with a paragraph at the leaf."""
+    """Build ``depth`` nested ``blockquote`` blocks with a paragraph at the leaf.
+
+    The input-side blocks use the same ``type`` tags and field names as the
+    output-side ones, so the same payload validates against both unions.
+    """
     node: dict = {"type": "blockquote", "blocks": [{"type": "paragraph", "text": "leaf"}]}
     for _ in range(depth):
         node = {"type": "blockquote", "blocks": [node]}
@@ -85,6 +92,57 @@ def test_nested_rich_block_validation_is_not_exponential():
         pytest.fail(
             "Validating a depth-30 nested RichBlock exceeded 5s -- "
             "RichBlockUnion likely regressed to a non-discriminated (exponential) union."
+        )
+    finally:
+        signal.setitimer(signal.ITIMER_REAL, 0)
+        signal.signal(signal.SIGALRM, previous_handler)
+
+    assert elapsed < 1.0
+
+
+class TestInputRichBlockUnionIsDiscriminated:
+    def test_invalid_block_type_raises_discriminated_union_error(self):
+        with pytest.raises(ValidationError) as exc_info:
+            InputRichMessage.model_validate({"blocks": [{"type": "definitely_not_a_block"}]})
+
+        errors = exc_info.value.errors()
+        assert len(errors) == 1
+        assert errors[0]["type"] == "union_tag_invalid"
+        assert errors[0]["loc"] == ("blocks", 0)
+
+    def test_nested_blocks_resolve_to_concrete_types(self):
+        message = InputRichMessage.model_validate({"blocks": [_nested_blockquote(depth=4)]})
+
+        node = message.blocks[0]
+        for _ in range(5):  # 1 outer + 4 nested blockquotes
+            assert isinstance(node, InputRichBlockBlockQuotation)
+            node = node.blocks[0]
+        assert isinstance(node, InputRichBlockParagraph)
+        assert node.text == "leaf"
+
+
+@pytest.mark.skipif(
+    not hasattr(signal, "SIGALRM"),
+    reason="performance guard relies on SIGALRM (POSIX only)",
+)
+def test_nested_input_rich_block_validation_is_not_exponential():
+    # Same guard as test_nested_rich_block_validation_is_not_exponential, but
+    # for the input-side mirror InputRichBlockUnion / InputRichMessage.
+    payload = {"blocks": [_nested_blockquote(depth=30)]}
+
+    def _abort(signum, frame):
+        raise TimeoutError
+
+    previous_handler = signal.signal(signal.SIGALRM, _abort)
+    try:
+        signal.setitimer(signal.ITIMER_REAL, 5.0)
+        start = time.perf_counter()
+        InputRichMessage.model_validate(payload)
+        elapsed = time.perf_counter() - start
+    except TimeoutError:
+        pytest.fail(
+            "Validating a depth-30 nested InputRichBlock exceeded 5s -- "
+            "InputRichBlockUnion likely regressed to a non-discriminated (exponential) union."
         )
     finally:
         signal.setitimer(signal.ITIMER_REAL, 0)

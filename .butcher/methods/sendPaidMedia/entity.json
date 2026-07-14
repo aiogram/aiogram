@@ -30,9 +30,9 @@
       {
         "type": "Array of InputPaidMedia",
         "required": true,
-        "description": "A JSON-serialized array describing the media to be sent; up to 10 items",
-        "html_description": "<td>A JSON-serialized array describing the media to be sent; up to 10 items</td>",
-        "rst_description": "A JSON-serialized array describing the media to be sent; up to 10 items\n",
+        "description": "A JSON-serialized Array describing the media to be sent; up to 10 items",
+        "html_description": "<td>A JSON-serialized Array describing the media to be sent; up to 10 items</td>",
+        "rst_description": "A JSON-serialized Array describing the media to be sent; up to 10 items\n",
         "name": "media"
       },
       {
@@ -94,9 +94,9 @@
       {
         "type": "Boolean",
         "required": false,
-        "description": "Pass True, if the caption must be shown above the message media",
-        "html_description": "<td>Pass <em>True</em>, if the caption must be shown above the message media</td>",
-        "rst_description": "Pass :code:`True`, if the caption must be shown above the message media\n",
+        "description": "Pass True if the caption must be shown above the message media",
+        "html_description": "<td>Pass <em>True</em> if the caption must be shown above the message media</td>",
+        "rst_description": "Pass :code:`True` if the caption must be shown above the message media\n",
         "name": "show_caption_above_media"
       },
       {

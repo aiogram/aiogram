@@ -1,0 +1,33 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Rich messages",
+    "anchor": "rich-messages"
+  },
+  "object": {
+    "anchor": "inputrichblockmathematicalexpression",
+    "name": "InputRichBlockMathematicalExpression",
+    "description": "A block with a mathematical expression in LaTeX format, corresponding to the custom HTML tag <tg-math-block>.",
+    "html_description": "<p>A block with a mathematical expression in LaTeX format, corresponding to the custom HTML tag <code>&lt;tg-math-block&gt;</code>.</p>",
+    "rst_description": "A block with a mathematical expression in LaTeX format, corresponding to the custom HTML tag :code:`<tg-math-block>`.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Type of the block, always 'mathematical_expression'",
+        "html_description": "<td>Type of the block, always &#8220;mathematical_expression&#8221;</td>",
+        "rst_description": "Type of the block, always 'mathematical_expression'\n",
+        "name": "type",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "The mathematical expression in LaTeX format",
+        "html_description": "<td>The mathematical expression in LaTeX format</td>",
+        "rst_description": "The mathematical expression in LaTeX format\n",
+        "name": "expression",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

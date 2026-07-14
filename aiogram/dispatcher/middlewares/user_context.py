@@ -195,4 +195,6 @@ class UserContextMiddleware(BaseMiddleware):
                     else None
                 ),
             )
+        if event.subscription:
+            return EventContext(user=event.subscription.user)
         return EventContext()

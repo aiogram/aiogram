@@ -46,7 +46,7 @@ class CopyMessage(TelegramMethod[MessageId]):
     caption_entities: list[MessageEntity] | None = None
     """A JSON-serialized list of special entities that appear in the new caption, which can be specified instead of *parse_mode*"""
     show_caption_above_media: bool | Default | None = Default("show_caption_above_media")
-    """Pass :code:`True`, if the caption must be shown above the message media. Ignored if a new caption isn't specified"""
+    """Pass :code:`True` if the caption must be shown above the message media. Ignored if a new caption isn't specified"""
     disable_notification: bool | None = None
     """Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound"""
     protect_content: bool | Default | None = Default("protect_content")

@@ -175,9 +175,14 @@ Updating messages
     approve_suggested_post
     decline_suggested_post
     delete_all_message_reactions
+    delete_ephemeral_message
     delete_message
     delete_message_reaction
     delete_messages
+    edit_ephemeral_message_caption
+    edit_ephemeral_message_media
+    edit_ephemeral_message_reply_markup
+    edit_ephemeral_message_text
     edit_message_caption
     edit_message_checklist
     edit_message_live_location

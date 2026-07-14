@@ -7,9 +7,9 @@
   "object": {
     "anchor": "getuserpersonalchatmessages",
     "name": "getUserPersonalChatMessages",
-    "description": "Use this method to get the last messages from the personal chat (i.e., the chat currently added to their profile) of a given user. On success, an array of Message objects is returned.",
-    "html_description": "<p>Use this method to get the last messages from the personal chat (i.e., the chat currently added to their profile) of a given user. On success, an array of <a href=\"#message\">Message</a> objects is returned.</p>",
-    "rst_description": "Use this method to get the last messages from the personal chat (i.e., the chat currently added to their profile) of a given user. On success, an array of :class:`aiogram.types.message.Message` objects is returned.",
+    "description": "Use this method to get the last messages from the personal chat (i.e., the chat currently added to their profile) of a given user. On success, an Array of Message objects is returned.",
+    "html_description": "<p>Use this method to get the last messages from the personal chat (i.e., the chat currently added to their profile) of a given user. On success, an Array of <a href=\"#message\">Message</a> objects is returned.</p>",
+    "rst_description": "Use this method to get the last messages from the personal chat (i.e., the chat currently added to their profile) of a given user. On success, an Array of :class:`aiogram.types.message.Message` objects is returned.",
     "annotations": [
       {
         "type": "Integer",

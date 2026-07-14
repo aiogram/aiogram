@@ -1,4 +1,5 @@
 from .bot_command_scope_type import BotCommandScopeType
+from .bot_subscription_updated_state import BotSubscriptionUpdatedState
 from .button_style import ButtonStyle
 from .chat_action import ChatAction
 from .chat_boost_source_type import ChatBoostSourceType
@@ -12,6 +13,7 @@ from .inline_query_result_type import InlineQueryResultType
 from .input_media_type import InputMediaType
 from .input_paid_media_type import InputPaidMediaType
 from .input_profile_photo_type import InputProfilePhotoType
+from .input_rich_block_type import InputRichBlockType
 from .input_story_content_type import InputStoryContentType
 from .keyboard_button_poll_type_type import KeyboardButtonPollTypeType
 from .mask_position_point import MaskPositionPoint
@@ -39,6 +41,7 @@ from .update_type import UpdateType
 
 __all__ = (
     "BotCommandScopeType",
+    "BotSubscriptionUpdatedState",
     "ButtonStyle",
     "ChatAction",
     "ChatBoostSourceType",
@@ -52,6 +55,7 @@ __all__ = (
     "InputMediaType",
     "InputPaidMediaType",
     "InputProfilePhotoType",
+    "InputRichBlockType",
     "InputStoryContentType",
     "KeyboardButtonPollTypeType",
     "MaskPositionPoint",

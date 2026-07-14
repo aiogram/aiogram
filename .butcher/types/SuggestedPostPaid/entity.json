@@ -13,9 +13,9 @@
     "annotations": [
       {
         "type": "String",
-        "description": "Currency in which the payment was made. Currently, one of 'XTR' for Telegram Stars or 'TON' for toncoins.",
-        "html_description": "<td>Currency in which the payment was made. Currently, one of &#8220;XTR&#8221; for Telegram Stars or &#8220;TON&#8221; for toncoins.</td>",
-        "rst_description": "Currency in which the payment was made. Currently, one of 'XTR' for Telegram Stars or 'TON' for toncoins.\n",
+        "description": "Currency in which the payment was made. Currently, one of 'XTR' for Telegram Stars or 'TON' for TON grams.",
+        "html_description": "<td>Currency in which the payment was made. Currently, one of &#8220;XTR&#8221; for Telegram Stars or &#8220;TON&#8221; for TON grams.</td>",
+        "rst_description": "Currency in which the payment was made. Currently, one of 'XTR' for Telegram Stars or 'TON' for TON grams.\n",
         "name": "currency",
         "required": true
       },
@@ -29,9 +29,9 @@
       },
       {
         "type": "Integer",
-        "description": "The amount of the currency that was received by the channel in nanotoncoins; for payments in toncoins only",
-        "html_description": "<td><em>Optional</em>. The amount of the currency that was received by the channel in nanotoncoins; for payments in toncoins only</td>",
-        "rst_description": "*Optional*. The amount of the currency that was received by the channel in nanotoncoins; for payments in toncoins only\n",
+        "description": "The amount of the currency that was received by the channel in nanograms; for payments in TON grams only",
+        "html_description": "<td><em>Optional</em>. The amount of the currency that was received by the channel in nanograms; for payments in TON grams only</td>",
+        "rst_description": "*Optional*. The amount of the currency that was received by the channel in nanograms; for payments in TON grams only\n",
         "name": "amount",
         "required": false
       },

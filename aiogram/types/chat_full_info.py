@@ -17,6 +17,7 @@ if TYPE_CHECKING:
     from .chat_location import ChatLocation
     from .chat_permissions import ChatPermissions
     from .chat_photo import ChatPhoto
+    from .community import Community
     from .message import Message
     from .reaction_type_union import ReactionTypeUnion
     from .unique_gift_colors import UniqueGiftColors
@@ -135,6 +136,8 @@ class ChatFullInfo(Chat):
     """*Optional*. The number of Telegram Stars a general user has to pay to send a message to the chat"""
     guard_bot: User | None = None
     """*Optional*. The bot that processes join request queries in the chat. The field is only available to chat administrators"""
+    community: Community | None = None
+    """*Optional*. The :class:`aiogram.types.community.Community` to which the chat belongs"""
     can_send_gift: bool | None = Field(None, json_schema_extra={"deprecated": True})
     """*Optional*. :code:`True`, if gifts can be sent to the chat
 
@@ -200,6 +203,7 @@ class ChatFullInfo(Chat):
             unique_gift_colors: UniqueGiftColors | None = None,
             paid_message_star_count: int | None = None,
             guard_bot: User | None = None,
+            community: Community | None = None,
             can_send_gift: bool | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
@@ -260,6 +264,7 @@ class ChatFullInfo(Chat):
                 unique_gift_colors=unique_gift_colors,
                 paid_message_star_count=paid_message_star_count,
                 guard_bot=guard_bot,
+                community=community,
                 can_send_gift=can_send_gift,
                 **__pydantic_kwargs,
             )

@@ -13,9 +13,9 @@
     "annotations": [
       {
         "type": "Boolean",
-        "description": "True, if direct messages are enabled for the channel chat; false otherwise",
-        "html_description": "<td><em>True</em>, if direct messages are enabled for the channel chat; false otherwise</td>",
-        "rst_description": ":code:`True`, if direct messages are enabled for the channel chat; false otherwise\n",
+        "description": "True, if direct messages are enabled for the channel chat; False otherwise",
+        "html_description": "<td><em>True</em>, if direct messages are enabled for the channel chat; <em>False</em> otherwise</td>",
+        "rst_description": ":code:`True`, if direct messages are enabled for the channel chat; :code:`False` otherwise\n",
         "name": "are_direct_messages_enabled",
         "required": true
       },

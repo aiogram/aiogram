@@ -14,9 +14,9 @@
       {
         "type": "InputMedia",
         "required": true,
-        "description": "A JSON-serialized object for a new media content of the message",
-        "html_description": "<td>A JSON-serialized object for a new media content of the message</td>",
-        "rst_description": "A JSON-serialized object for a new media content of the message\n",
+        "description": "A JSON-serialized object for the new media content of the message",
+        "html_description": "<td>A JSON-serialized object for the new media content of the message</td>",
+        "rst_description": "A JSON-serialized object for the new media content of the message\n",
         "name": "media"
       },
       {

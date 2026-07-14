@@ -148,6 +148,22 @@
         "name": "reply_markup"
       },
       {
+        "type": "Integer",
+        "required": false,
+        "description": "For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See ephemeral message sending for more details.",
+        "html_description": "<td>For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See <a href=\"#ephemeral-messages-and-commands\">ephemeral message sending</a> for more details.</td>",
+        "rst_description": "For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See `ephemeral message sending <https://core.telegram.org/bots/api#ephemeral-messages-and-commands>`_ for more details.\n",
+        "name": "receiver_user_id"
+      },
+      {
+        "type": "String",
+        "required": false,
+        "description": "For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any",
+        "html_description": "<td>For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any</td>",
+        "rst_description": "For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any\n",
+        "name": "callback_query_id"
+      },
+      {
         "type": "Boolean",
         "required": false,
         "description": "Pass True if the message should be sent even if the specified replied-to message is not found",

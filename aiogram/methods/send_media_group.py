@@ -11,7 +11,7 @@ from .base import TelegramMethod
 
 class SendMediaGroup(TelegramMethod[list[Message]]):
     """
-    Use this method to send a group of photos, live photos, videos, documents or audios as an album. Documents and audio files can be only grouped in an album with messages of the same type. On success, an array of :class:`aiogram.types.message.Message` objects that were sent is returned.
+    Use this method to send a group of photos, live photos, videos, documents or audios as an album. Documents and audio files can be only grouped in an album with messages of the same type. On success, an Array of :class:`aiogram.types.message.Message` objects that were sent is returned.
 
     Source: https://core.telegram.org/bots/api#sendmediagroup
     """
@@ -22,7 +22,7 @@ class SendMediaGroup(TelegramMethod[list[Message]]):
     chat_id: ChatIdUnion
     """Unique identifier for the target chat or username of the target bot, supergroup or channel in the format :code:`@username`"""
     media: list[MediaUnion]
-    """A JSON-serialized array describing messages to be sent, must include 2-10 items"""
+    """A JSON-serialized Array describing messages to be sent, must include 2-10 items"""
     business_connection_id: str | None = None
     """Unique identifier of the business connection on behalf of which the message will be sent"""
     message_thread_id: int | None = None

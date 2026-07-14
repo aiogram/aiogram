@@ -6,6 +6,7 @@ from ..utils.mypy_hacks import lru_cache
 from .base import TelegramObject
 
 if TYPE_CHECKING:
+    from .bot_subscription_updated import BotSubscriptionUpdated
     from .business_connection import BusinessConnection
     from .business_messages_deleted import BusinessMessagesDeleted
     from .callback_query import CallbackQuery
@@ -87,6 +88,8 @@ class Update(TelegramObject):
     """*Optional*. A boost was removed from a chat. The bot must be an administrator in the chat to receive these updates"""
     managed_bot: ManagedBotUpdated | None = None
     """*Optional*. A new bot was created to be managed by the bot, or token or owner of a managed bot was changed"""
+    subscription: BotSubscriptionUpdated | None = None
+    """*Optional*. User payment subscription has changed"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!
@@ -121,6 +124,7 @@ class Update(TelegramObject):
             chat_boost: ChatBoostUpdated | None = None,
             removed_chat_boost: ChatBoostRemoved | None = None,
             managed_bot: ManagedBotUpdated | None = None,
+            subscription: BotSubscriptionUpdated | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!
@@ -154,6 +158,7 @@ class Update(TelegramObject):
                 chat_boost=chat_boost,
                 removed_chat_boost=removed_chat_boost,
                 managed_bot=managed_bot,
+                subscription=subscription,
                 **__pydantic_kwargs,
             )
 
@@ -219,6 +224,8 @@ class Update(TelegramObject):
             return "guest_message"
         if self.managed_bot:
             return "managed_bot"
+        if self.subscription:
+            return "subscription"
 
         raise UpdateTypeLookupError("Update does not contain any known event type.")
 
