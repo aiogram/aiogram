@@ -1207,7 +1207,7 @@ class TestMessage:
         # so `receiver_user_id` is filled from the replied-to message.
         message = TEST_MESSAGE_EPHEMERAL
         method = message.reply("pong")
-        assert method.receiver_user_id == message.receiver_user.id
+        assert method.receiver_user_id == message.from_user.id
         assert method.reply_parameters.ephemeral_message_id == message.ephemeral_message_id
 
     def test_reply_to_regular_message_is_not_ephemeral(self):

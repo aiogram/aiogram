@@ -14,7 +14,7 @@ reply:
     <<: *fill-answer
     reply_parameters: self.as_reply_parameters()
     # A reply to an ephemeral message must itself be an ephemeral message.
-    receiver_user_id: self.receiver_user.id if self.receiver_user else None
+    receiver_user_id: self.from_user.id if self.ephemeral_message_id and self.from_user else None
   ignore: &ignore-reply
     - reply_to_message_id
 

@@ -969,7 +969,9 @@ class Message(MaybeInaccessibleMessage):
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
             business_connection_id=self.business_connection_id,
             reply_parameters=self.as_reply_parameters(),
-            receiver_user_id=self.receiver_user.id if self.receiver_user else None,
+            receiver_user_id=(
+                self.from_user.id if self.ephemeral_message_id and self.from_user else None
+            ),
             animation=animation,
             direct_messages_topic_id=direct_messages_topic_id,
             duration=duration,
@@ -1161,7 +1163,9 @@ class Message(MaybeInaccessibleMessage):
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
             business_connection_id=self.business_connection_id,
             reply_parameters=self.as_reply_parameters(),
-            receiver_user_id=self.receiver_user.id if self.receiver_user else None,
+            receiver_user_id=(
+                self.from_user.id if self.ephemeral_message_id and self.from_user else None
+            ),
             audio=audio,
             direct_messages_topic_id=direct_messages_topic_id,
             caption=caption,
@@ -1337,7 +1341,9 @@ class Message(MaybeInaccessibleMessage):
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
             business_connection_id=self.business_connection_id,
             reply_parameters=self.as_reply_parameters(),
-            receiver_user_id=self.receiver_user.id if self.receiver_user else None,
+            receiver_user_id=(
+                self.from_user.id if self.ephemeral_message_id and self.from_user else None
+            ),
             phone_number=phone_number,
             first_name=first_name,
             direct_messages_topic_id=direct_messages_topic_id,
@@ -1500,7 +1506,9 @@ class Message(MaybeInaccessibleMessage):
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
             business_connection_id=self.business_connection_id,
             reply_parameters=self.as_reply_parameters(),
-            receiver_user_id=self.receiver_user.id if self.receiver_user else None,
+            receiver_user_id=(
+                self.from_user.id if self.ephemeral_message_id and self.from_user else None
+            ),
             document=document,
             direct_messages_topic_id=direct_messages_topic_id,
             thumbnail=thumbnail,
@@ -1655,7 +1663,9 @@ class Message(MaybeInaccessibleMessage):
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
             business_connection_id=self.business_connection_id,
             reply_parameters=self.as_reply_parameters(),
-            receiver_user_id=self.receiver_user.id if self.receiver_user else None,
+            receiver_user_id=(
+                self.from_user.id if self.ephemeral_message_id and self.from_user else None
+            ),
             game_short_name=game_short_name,
             disable_notification=disable_notification,
             protect_content=protect_content,
@@ -1819,7 +1829,9 @@ class Message(MaybeInaccessibleMessage):
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
             business_connection_id=self.business_connection_id,
             reply_parameters=self.as_reply_parameters(),
-            receiver_user_id=self.receiver_user.id if self.receiver_user else None,
+            receiver_user_id=(
+                self.from_user.id if self.ephemeral_message_id and self.from_user else None
+            ),
             title=title,
             description=description,
             payload=payload,
@@ -2043,7 +2055,9 @@ class Message(MaybeInaccessibleMessage):
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
             business_connection_id=self.business_connection_id,
             reply_parameters=self.as_reply_parameters(),
-            receiver_user_id=self.receiver_user.id if self.receiver_user else None,
+            receiver_user_id=(
+                self.from_user.id if self.ephemeral_message_id and self.from_user else None
+            ),
             latitude=latitude,
             longitude=longitude,
             direct_messages_topic_id=direct_messages_topic_id,
@@ -2198,7 +2212,9 @@ class Message(MaybeInaccessibleMessage):
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
             business_connection_id=self.business_connection_id,
             reply_parameters=self.as_reply_parameters(),
-            receiver_user_id=self.receiver_user.id if self.receiver_user else None,
+            receiver_user_id=(
+                self.from_user.id if self.ephemeral_message_id and self.from_user else None
+            ),
             media=media,
             direct_messages_topic_id=direct_messages_topic_id,
             disable_notification=disable_notification,
@@ -2332,7 +2348,9 @@ class Message(MaybeInaccessibleMessage):
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
             business_connection_id=self.business_connection_id,
             reply_parameters=self.as_reply_parameters(),
-            receiver_user_id=self.receiver_user.id if self.receiver_user else None,
+            receiver_user_id=(
+                self.from_user.id if self.ephemeral_message_id and self.from_user else None
+            ),
             text=text,
             direct_messages_topic_id=direct_messages_topic_id,
             parse_mode=parse_mode,
@@ -2499,7 +2517,9 @@ class Message(MaybeInaccessibleMessage):
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
             business_connection_id=self.business_connection_id,
             reply_parameters=self.as_reply_parameters(),
-            receiver_user_id=self.receiver_user.id if self.receiver_user else None,
+            receiver_user_id=(
+                self.from_user.id if self.ephemeral_message_id and self.from_user else None
+            ),
             photo=photo,
             direct_messages_topic_id=direct_messages_topic_id,
             caption=caption,
@@ -2704,7 +2724,9 @@ class Message(MaybeInaccessibleMessage):
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
             business_connection_id=self.business_connection_id,
             reply_parameters=self.as_reply_parameters(),
-            receiver_user_id=self.receiver_user.id if self.receiver_user else None,
+            receiver_user_id=(
+                self.from_user.id if self.ephemeral_message_id and self.from_user else None
+            ),
             question=question,
             options=options,
             question_parse_mode=question_parse_mode,
@@ -2928,7 +2950,9 @@ class Message(MaybeInaccessibleMessage):
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
             business_connection_id=self.business_connection_id,
             reply_parameters=self.as_reply_parameters(),
-            receiver_user_id=self.receiver_user.id if self.receiver_user else None,
+            receiver_user_id=(
+                self.from_user.id if self.ephemeral_message_id and self.from_user else None
+            ),
             direct_messages_topic_id=direct_messages_topic_id,
             emoji=emoji,
             disable_notification=disable_notification,
@@ -3064,7 +3088,9 @@ class Message(MaybeInaccessibleMessage):
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
             business_connection_id=self.business_connection_id,
             reply_parameters=self.as_reply_parameters(),
-            receiver_user_id=self.receiver_user.id if self.receiver_user else None,
+            receiver_user_id=(
+                self.from_user.id if self.ephemeral_message_id and self.from_user else None
+            ),
             sticker=sticker,
             direct_messages_topic_id=direct_messages_topic_id,
             emoji=emoji,
@@ -3223,7 +3249,9 @@ class Message(MaybeInaccessibleMessage):
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
             business_connection_id=self.business_connection_id,
             reply_parameters=self.as_reply_parameters(),
-            receiver_user_id=self.receiver_user.id if self.receiver_user else None,
+            receiver_user_id=(
+                self.from_user.id if self.ephemeral_message_id and self.from_user else None
+            ),
             latitude=latitude,
             longitude=longitude,
             title=title,
@@ -3416,7 +3444,9 @@ class Message(MaybeInaccessibleMessage):
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
             business_connection_id=self.business_connection_id,
             reply_parameters=self.as_reply_parameters(),
-            receiver_user_id=self.receiver_user.id if self.receiver_user else None,
+            receiver_user_id=(
+                self.from_user.id if self.ephemeral_message_id and self.from_user else None
+            ),
             video=video,
             direct_messages_topic_id=direct_messages_topic_id,
             duration=duration,
@@ -3611,7 +3641,9 @@ class Message(MaybeInaccessibleMessage):
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
             business_connection_id=self.business_connection_id,
             reply_parameters=self.as_reply_parameters(),
-            receiver_user_id=self.receiver_user.id if self.receiver_user else None,
+            receiver_user_id=(
+                self.from_user.id if self.ephemeral_message_id and self.from_user else None
+            ),
             video_note=video_note,
             direct_messages_topic_id=direct_messages_topic_id,
             duration=duration,
@@ -3772,7 +3804,9 @@ class Message(MaybeInaccessibleMessage):
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
             business_connection_id=self.business_connection_id,
             reply_parameters=self.as_reply_parameters(),
-            receiver_user_id=self.receiver_user.id if self.receiver_user else None,
+            receiver_user_id=(
+                self.from_user.id if self.ephemeral_message_id and self.from_user else None
+            ),
             voice=voice,
             direct_messages_topic_id=direct_messages_topic_id,
             caption=caption,
@@ -5110,7 +5144,9 @@ class Message(MaybeInaccessibleMessage):
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
             business_connection_id=self.business_connection_id,
             reply_parameters=self.as_reply_parameters(),
-            receiver_user_id=self.receiver_user.id if self.receiver_user else None,
+            receiver_user_id=(
+                self.from_user.id if self.ephemeral_message_id and self.from_user else None
+            ),
             star_count=star_count,
             media=media,
             direct_messages_topic_id=direct_messages_topic_id,
@@ -5271,7 +5307,9 @@ class Message(MaybeInaccessibleMessage):
             message_thread_id=self.message_thread_id if self.is_topic_message else None,
             business_connection_id=self.business_connection_id,
             reply_parameters=self.as_reply_parameters(),
-            receiver_user_id=self.receiver_user.id if self.receiver_user else None,
+            receiver_user_id=(
+                self.from_user.id if self.ephemeral_message_id and self.from_user else None
+            ),
             rich_message=rich_message,
             direct_messages_topic_id=direct_messages_topic_id,
             disable_notification=disable_notification,
