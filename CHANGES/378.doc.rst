@@ -1,1 +1,0 @@
-Added documentation with examples for testing handlers directly and routing updates through ``Dispatcher.feed_raw_update``.
