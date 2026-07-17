@@ -16,9 +16,9 @@ class SetManagedBotAccessSettings(TelegramMethod[bool]):
     user_id: int
     """User identifier of the managed bot whose access settings will be changed"""
     is_access_restricted: bool
-    """Pass :code:`True`, if only selected users can access the bot. The bot's owner can always access it"""
+    """Pass :code:`True` if only selected users can access the bot. The bot's owner can always access it"""
     added_user_ids: list[int] | None = None
-    """A JSON-serialized list of up to 10 identifiers of users who will have access to the bot in addition to its owner. Ignored if *is_access_restricted* is false"""
+    """A JSON-serialized list of up to 10 identifiers of users who will have access to the bot in addition to its owner. Ignored if *is_access_restricted* is :code:`False`"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!

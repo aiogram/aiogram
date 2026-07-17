@@ -1,0 +1,32 @@
+name: InputRichBlockType
+description: |
+  This object represents a block in a rich formatted message to be sent.
+
+  Source: https://core.telegram.org/bots/api#inputrichblock
+multi_parse:
+  attribute: type
+  regexp: "always '([a-z_]+)'"
+  entities:
+    - InputMediaVoiceNote
+    - InputRichBlockAnchor
+    - InputRichBlockAnimation
+    - InputRichBlockAudio
+    - InputRichBlockBlockQuotation
+    - InputRichBlockCollage
+    - InputRichBlockDetails
+    - InputRichBlockDivider
+    - InputRichBlockFooter
+    - InputRichBlockList
+    - InputRichBlockListItem
+    - InputRichBlockMap
+    - InputRichBlockMathematicalExpression
+    - InputRichBlockParagraph
+    - InputRichBlockPhoto
+    - InputRichBlockPreformatted
+    - InputRichBlockPullQuotation
+    - InputRichBlockSectionHeading
+    - InputRichBlockSlideshow
+    - InputRichBlockTable
+    - InputRichBlockThinking
+    - InputRichBlockVideo
+    - InputRichBlockVoiceNote

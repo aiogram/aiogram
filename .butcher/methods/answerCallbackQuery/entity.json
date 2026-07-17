@@ -30,9 +30,9 @@
       {
         "type": "Boolean",
         "required": false,
-        "description": "If True, an alert will be shown by the client instead of a notification at the top of the chat screen. Defaults to false.",
-        "html_description": "<td>If <em>True</em>, an alert will be shown by the client instead of a notification at the top of the chat screen. Defaults to <em>false</em>.</td>",
-        "rst_description": "If :code:`True`, an alert will be shown by the client instead of a notification at the top of the chat screen. Defaults to *false*.\n",
+        "description": "If True, an alert will be shown by the client instead of a notification at the top of the chat screen. Defaults to False.",
+        "html_description": "<td>If <em>True</em>, an alert will be shown by the client instead of a notification at the top of the chat screen. Defaults to <em>False</em>.</td>",
+        "rst_description": "If :code:`True`, an alert will be shown by the client instead of a notification at the top of the chat screen. Defaults to :code:`False`.\n",
         "name": "show_alert"
       },
       {

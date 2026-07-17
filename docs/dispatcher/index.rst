@@ -27,6 +27,7 @@ So, you can use both of them with *aiogram*.
     router
     dispatcher
     dependency_injection
+    testing
     filters/index
     long_polling
     finite_state_machine/index

@@ -32,7 +32,7 @@ class EditMessageCaption(TelegramMethod[Message | bool]):
     caption_entities: list[MessageEntity] | None = None
     """A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*"""
     show_caption_above_media: bool | Default | None = Default("show_caption_above_media")
-    """Pass :code:`True`, if the caption must be shown above the message media. Supported only for animation, photo and video messages"""
+    """Pass :code:`True` if the caption must be shown above the message media. Supported only for animation, photo and video messages"""
     reply_markup: InlineKeyboardMarkup | None = None
     """A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_"""
 

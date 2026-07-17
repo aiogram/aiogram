@@ -23,7 +23,7 @@ class AnswerInlineQuery(TelegramMethod[bool]):
     inline_query_id: str
     """Unique identifier for the answered query"""
     results: list[InlineQueryResultUnion]
-    """A JSON-serialized array of results for the inline query"""
+    """A JSON-serialized Array of results for the inline query"""
     cache_time: int | None = None
     """The maximum amount of time in seconds that the result of the inline query may be cached on the server. Defaults to 300"""
     is_personal: bool | None = None

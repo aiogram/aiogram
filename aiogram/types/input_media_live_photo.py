@@ -31,7 +31,7 @@ class InputMediaLivePhoto(InputMedia, InputPollMedia, InputPollOptionMedia):
     caption_entities: list[MessageEntity] | None = None
     """*Optional*. List of special entities that appear in the caption, which can be specified instead of *parse_mode*"""
     show_caption_above_media: bool | None = None
-    """*Optional*. Pass :code:`True`, if the caption must be shown above the message media"""
+    """*Optional*. Pass :code:`True` if the caption must be shown above the message media"""
     has_spoiler: bool | None = None
     """*Optional*. Pass :code:`True` if the live photo needs to be covered with a spoiler animation"""
 

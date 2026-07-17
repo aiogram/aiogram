@@ -16,16 +16,28 @@ class BotCommand(MutableTelegramObject):
     """Text of the command; 1-32 characters. Can contain only lowercase English letters, digits and underscores"""
     description: str
     """Description of the command; 1-256 characters"""
+    is_ephemeral: bool | None = None
+    """*Optional*. :code:`True`, if the command sends an ephemeral message, which can be seen only by the sender of the message and the bot"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!
         # This section was auto-generated via `butcher`
 
         def __init__(
-            __pydantic__self__, *, command: str, description: str, **__pydantic_kwargs: Any
+            __pydantic__self__,
+            *,
+            command: str,
+            description: str,
+            is_ephemeral: bool | None = None,
+            **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!
             # This method was auto-generated via `butcher`
             # Is needed only for type checking and IDE support without any additional plugins
 
-            super().__init__(command=command, description=description, **__pydantic_kwargs)
+            super().__init__(
+                command=command,
+                description=description,
+                is_ephemeral=is_ephemeral,
+                **__pydantic_kwargs,
+            )

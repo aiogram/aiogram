@@ -1,0 +1,73 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Updating messages",
+    "anchor": "updating-messages"
+  },
+  "object": {
+    "anchor": "editephemeralmessagecaption",
+    "name": "editEphemeralMessageCaption",
+    "description": "Use this method to edit the caption of an ephemeral message. Note that it is not guaranteed that the user will receive the message edit event, especially if they are offline. On success, True is returned.",
+    "html_description": "<p>Use this method to edit the caption of an ephemeral message. Note that it is not guaranteed that the user will receive the message edit event, especially if they are offline. On success, <em>True</em> is returned.</p>",
+    "rst_description": "Use this method to edit the caption of an ephemeral message. Note that it is not guaranteed that the user will receive the message edit event, especially if they are offline. On success, :code:`True` is returned.",
+    "annotations": [
+      {
+        "type": "Integer or String",
+        "required": true,
+        "description": "Unique identifier for the target chat or username of the target supergroup in the format @username",
+        "html_description": "<td>Unique identifier for the target chat or username of the target supergroup in the format <code>@username</code></td>",
+        "rst_description": "Unique identifier for the target chat or username of the target supergroup in the format :code:`@username`\n",
+        "name": "chat_id"
+      },
+      {
+        "type": "Integer",
+        "required": true,
+        "description": "Identifier of the user who received the message",
+        "html_description": "<td>Identifier of the user who received the message</td>",
+        "rst_description": "Identifier of the user who received the message\n",
+        "name": "receiver_user_id"
+      },
+      {
+        "type": "Integer",
+        "required": true,
+        "description": "Identifier of the ephemeral message to edit",
+        "html_description": "<td>Identifier of the ephemeral message to edit</td>",
+        "rst_description": "Identifier of the ephemeral message to edit\n",
+        "name": "ephemeral_message_id"
+      },
+      {
+        "type": "String",
+        "required": false,
+        "description": "New caption of the message, 0-1024 characters after entities parsing",
+        "html_description": "<td>New caption of the message, 0-1024 characters after entities parsing</td>",
+        "rst_description": "New caption of the message, 0-1024 characters after entities parsing\n",
+        "name": "caption"
+      },
+      {
+        "type": "String",
+        "required": false,
+        "description": "Mode for parsing entities in the message caption. See formatting options for more details.",
+        "html_description": "<td>Mode for parsing entities in the message caption. See <a href=\"#formatting-options\">formatting options</a> for more details.</td>",
+        "rst_description": "Mode for parsing entities in the message caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details.\n",
+        "name": "parse_mode"
+      },
+      {
+        "type": "Array of MessageEntity",
+        "required": false,
+        "description": "A JSON-serialized list of special entities that appear in the caption, which can be specified instead of parse_mode",
+        "html_description": "<td>A JSON-serialized list of special entities that appear in the caption, which can be specified instead of <em>parse_mode</em></td>",
+        "rst_description": "A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*\n",
+        "name": "caption_entities"
+      },
+      {
+        "type": "InlineKeyboardMarkup",
+        "required": false,
+        "description": "A JSON-serialized object for an inline keyboard",
+        "html_description": "<td>A JSON-serialized object for an <a href=\"/bots/features#inline-keyboards\">inline keyboard</a></td>",
+        "rst_description": "A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_\n",
+        "name": "reply_markup"
+      }
+    ],
+    "category": "methods"
+  }
+}

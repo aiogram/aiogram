@@ -11,6 +11,7 @@ Here is list of all available enums:
     :maxdepth: 1
 
     bot_command_scope_type
+    bot_subscription_updated_state
     button_style
     chat_action
     chat_boost_source_type
@@ -24,6 +25,7 @@ Here is list of all available enums:
     input_media_type
     input_paid_media_type
     input_profile_photo_type
+    input_rich_block_type
     input_story_content_type
     keyboard_button_poll_type_type
     mask_position_point

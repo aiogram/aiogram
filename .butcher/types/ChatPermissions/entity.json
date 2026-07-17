@@ -133,9 +133,9 @@
       },
       {
         "type": "Boolean",
-        "description": "True, if the user is allowed to create forum topics. If omitted defaults to the value of can_pin_messages.",
-        "html_description": "<td><em>Optional</em>. <em>True</em>, if the user is allowed to create forum topics. If omitted defaults to the value of can_pin_messages.</td>",
-        "rst_description": "*Optional*. :code:`True`, if the user is allowed to create forum topics. If omitted defaults to the value of can_pin_messages.\n",
+        "description": "True, if the user is allowed to create forum topics. If omitted, defaults to the value of can_pin_messages.",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if the user is allowed to create forum topics. If omitted, defaults to the value of can_pin_messages.</td>",
+        "rst_description": "*Optional*. :code:`True`, if the user is allowed to create forum topics. If omitted, defaults to the value of can_pin_messages.\n",
         "name": "can_manage_topics",
         "required": false
       }

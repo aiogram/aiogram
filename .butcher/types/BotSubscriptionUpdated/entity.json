@@ -1,0 +1,41 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "botsubscriptionupdated",
+    "name": "BotSubscriptionUpdated",
+    "description": "This object contains information about changes to a user payment subscription toward the current bot.",
+    "html_description": "<p>This object contains information about changes to a user payment subscription toward the current bot.</p>",
+    "rst_description": "This object contains information about changes to a user payment subscription toward the current bot.",
+    "annotations": [
+      {
+        "type": "User",
+        "description": "User who subscribed for payments toward the bot",
+        "html_description": "<td>User who subscribed for payments toward the bot</td>",
+        "rst_description": "User who subscribed for payments toward the bot\n",
+        "name": "user",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "Bot-specified invoice payload",
+        "html_description": "<td>Bot-specified invoice payload</td>",
+        "rst_description": "Bot-specified invoice payload\n",
+        "name": "invoice_payload",
+        "required": true
+      },
+      {
+        "type": "String",
+        "description": "The new state of the subscription. Currently, it can be one of 'canceled' if the user canceled the subscription, 'active' if the user re-enabled a previously canceled subscription, or 'failed' if payment for the subscription failed.",
+        "html_description": "<td>The new state of the subscription. Currently, it can be one of &#8220;canceled&#8221; if the user canceled the subscription, &#8220;active&#8221; if the user re-enabled a previously canceled subscription, or &#8220;failed&#8221; if payment for the subscription failed.</td>",
+        "rst_description": "The new state of the subscription. Currently, it can be one of 'canceled' if the user canceled the subscription, 'active' if the user re-enabled a previously canceled subscription, or 'failed' if payment for the subscription failed.\n",
+        "name": "state",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

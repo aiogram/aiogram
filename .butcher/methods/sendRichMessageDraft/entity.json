@@ -30,9 +30,9 @@
       {
         "type": "InputRichMessage",
         "required": true,
-        "description": "The partial message to be streamed",
-        "html_description": "<td>The partial message to be streamed</td>",
-        "rst_description": "The partial message to be streamed\n",
+        "description": "The partial message to be streamed. Direct upload of new files isn't supported.",
+        "html_description": "<td>The partial message to be streamed. Direct upload of new files isn't supported.</td>",
+        "rst_description": "The partial message to be streamed. Direct upload of new files isn't supported.\n",
         "name": "rich_message"
       },
       {
