@@ -218,6 +218,14 @@
         "rst_description": "*Optional*. A new bot was created to be managed by the bot, or token or owner of a managed bot was changed\n",
         "name": "managed_bot",
         "required": false
+      },
+      {
+        "type": "BotSubscriptionUpdated",
+        "description": "User payment subscription has changed",
+        "html_description": "<td><em>Optional</em>. User payment subscription has changed</td>",
+        "rst_description": "*Optional*. User payment subscription has changed\n",
+        "name": "subscription",
+        "required": false
       }
     ],
     "category": "types"

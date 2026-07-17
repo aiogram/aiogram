@@ -45,7 +45,7 @@ class EditMessageText(TelegramMethod[Message | bool]):
     reply_markup: InlineKeyboardMarkup | None = None
     """A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_"""
     rich_message: InputRichMessage | None = None
-    """New rich content of the message; required if *text* isn't specified"""
+    """New rich content of the message; required if *text* isn't specified. Direct upload of new files isn't supported when an inline message is edited"""
     disable_web_page_preview: bool | Default | None = Field(
         Default("link_preview_is_disabled"), json_schema_extra={"deprecated": True}
     )

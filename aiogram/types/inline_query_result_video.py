@@ -40,7 +40,7 @@ class InlineQueryResultVideo(InlineQueryResult):
     caption_entities: list[MessageEntity] | None = None
     """*Optional*. List of special entities that appear in the caption, which can be specified instead of *parse_mode*"""
     show_caption_above_media: bool | Default | None = Default("show_caption_above_media")
-    """*Optional*. Pass :code:`True`, if the caption must be shown above the message media"""
+    """*Optional*. Pass :code:`True` if the caption must be shown above the message media"""
     video_width: int | None = None
     """*Optional*. Video width"""
     video_height: int | None = None

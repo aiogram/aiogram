@@ -5,7 +5,7 @@ from .base import TelegramMethod
 
 class SendChatJoinRequestWebApp(TelegramMethod[bool]):
     """
-    Use this method to process a received chat join request query by showing a Mini App to the user before deciding the outcome. Returns :code:`True` on success.
+    Use this method to process a received chat join request query by showing a Mini App to the user before deciding the outcome. Call :class:`aiogram.methods.answer_chat_join_request_query.AnswerChatJoinRequestQuery` to resolve the join request query based on the user interaction with the Mini App. Returns :code:`True` on success.
 
     Source: https://core.telegram.org/bots/api#sendchatjoinrequestwebapp
     """
@@ -16,7 +16,7 @@ class SendChatJoinRequestWebApp(TelegramMethod[bool]):
     chat_join_request_query_id: str
     """Unique identifier of the join request query"""
     web_app_url: str
-    """The URL of the Mini App to be opened"""
+    """An HTTPS URL of a Web App to be opened with additional data as specified in `Initializing Web Apps <https://core.telegram.org/bots/webapps#initializing-mini-apps>`_"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!

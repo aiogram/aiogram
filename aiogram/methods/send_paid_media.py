@@ -29,7 +29,7 @@ class SendPaidMedia(TelegramMethod[Message]):
     star_count: int
     """The number of Telegram Stars that must be paid to buy access to the media; 1-25000"""
     media: list[InputPaidMediaUnion]
-    """A JSON-serialized array describing the media to be sent; up to 10 items"""
+    """A JSON-serialized Array describing the media to be sent; up to 10 items"""
     business_connection_id: str | None = None
     """Unique identifier of the business connection on behalf of which the message will be sent"""
     message_thread_id: int | None = None
@@ -45,7 +45,7 @@ class SendPaidMedia(TelegramMethod[Message]):
     caption_entities: list[MessageEntity] | None = None
     """A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*"""
     show_caption_above_media: bool | None = None
-    """Pass :code:`True`, if the caption must be shown above the message media"""
+    """Pass :code:`True` if the caption must be shown above the message media"""
     disable_notification: bool | None = None
     """Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound"""
     protect_content: bool | None = None

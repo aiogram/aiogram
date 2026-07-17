@@ -57,6 +57,10 @@ class SendMessage(TelegramMethod[Message]):
     """Description of the message to reply to"""
     reply_markup: ReplyMarkupUnion | None = None
     """Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user"""
+    receiver_user_id: int | None = None
+    """For outgoing ephemeral messages, unique identifier of the user who will receive the message; for group and supergroup chats only. It is not guaranteed that the user will receive the message, especially if they are offline. See `ephemeral message sending <https://core.telegram.org/bots/api#ephemeral-messages-and-commands>`_ for more details"""
+    callback_query_id: str | None = None
+    """For outgoing ephemeral messages, identifier of the callback query which triggerred the message if any"""
     allow_sending_without_reply: bool | None = Field(None, json_schema_extra={"deprecated": True})
     """Pass :code:`True` if the message should be sent even if the specified replied-to message is not found
 
@@ -97,6 +101,8 @@ class SendMessage(TelegramMethod[Message]):
             suggested_post_parameters: SuggestedPostParameters | None = None,
             reply_parameters: ReplyParameters | None = None,
             reply_markup: ReplyMarkupUnion | None = None,
+            receiver_user_id: int | None = None,
+            callback_query_id: str | None = None,
             allow_sending_without_reply: bool | None = None,
             disable_web_page_preview: bool | Default | None = Default("link_preview_is_disabled"),
             reply_to_message_id: int | None = None,
@@ -122,6 +128,8 @@ class SendMessage(TelegramMethod[Message]):
                 suggested_post_parameters=suggested_post_parameters,
                 reply_parameters=reply_parameters,
                 reply_markup=reply_markup,
+                receiver_user_id=receiver_user_id,
+                callback_query_id=callback_query_id,
                 allow_sending_without_reply=allow_sending_without_reply,
                 disable_web_page_preview=disable_web_page_preview,
                 reply_to_message_id=reply_to_message_id,

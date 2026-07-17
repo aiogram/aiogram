@@ -86,9 +86,9 @@
       {
         "type": "InputRichMessage",
         "required": false,
-        "description": "New rich content of the message; required if text isn't specified",
-        "html_description": "<td>New rich content of the message; required if <em>text</em> isn't specified</td>",
-        "rst_description": "New rich content of the message; required if *text* isn't specified\n",
+        "description": "New rich content of the message; required if text isn't specified. Direct upload of new files isn't supported when an inline message is edited.",
+        "html_description": "<td>New rich content of the message; required if <em>text</em> isn't specified. Direct upload of new files isn't supported when an inline message is edited.</td>",
+        "rst_description": "New rich content of the message; required if *text* isn't specified. Direct upload of new files isn't supported when an inline message is edited.\n",
         "name": "rich_message"
       },
       {

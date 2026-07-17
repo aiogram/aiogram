@@ -1,0 +1,49 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Rich messages",
+    "anchor": "rich-messages"
+  },
+  "object": {
+    "anchor": "inputrichblockdetails",
+    "name": "InputRichBlockDetails",
+    "description": "An expandable block for details disclosure, corresponding to the HTML tag <details>.",
+    "html_description": "<p>An expandable block for details disclosure, corresponding to the HTML tag <code>&lt;details&gt;</code>.</p>",
+    "rst_description": "An expandable block for details disclosure, corresponding to the HTML tag :code:`<details>`.",
+    "annotations": [
+      {
+        "type": "String",
+        "description": "Type of the block, always 'details'",
+        "html_description": "<td>Type of the block, always &#8220;details&#8221;</td>",
+        "rst_description": "Type of the block, always 'details'\n",
+        "name": "type",
+        "required": true
+      },
+      {
+        "type": "RichText",
+        "description": "Always shown summary of the block",
+        "html_description": "<td>Always shown summary of the block</td>",
+        "rst_description": "Always shown summary of the block\n",
+        "name": "summary",
+        "required": true
+      },
+      {
+        "type": "Array of InputRichBlock",
+        "description": "Content of the block",
+        "html_description": "<td>Content of the block</td>",
+        "rst_description": "Content of the block\n",
+        "name": "blocks",
+        "required": true
+      },
+      {
+        "type": "True",
+        "description": "Pass True if the content of the block is visible by default",
+        "html_description": "<td><em>Optional</em>. Pass <em>True</em> if the content of the block is visible by default</td>",
+        "rst_description": "*Optional*. Pass :code:`True` if the content of the block is visible by default\n",
+        "name": "is_open",
+        "required": false
+      }
+    ],
+    "category": "types"
+  }
+}

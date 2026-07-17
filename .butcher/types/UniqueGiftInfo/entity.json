@@ -29,17 +29,17 @@
       },
       {
         "type": "String",
-        "description": "For gifts bought from other users, the currency in which the payment for the gift was done. Currently, one of 'XTR' for Telegram Stars or 'TON' for toncoins.",
-        "html_description": "<td><em>Optional</em>. For gifts bought from other users, the currency in which the payment for the gift was done. Currently, one of &#8220;XTR&#8221; for Telegram Stars or &#8220;TON&#8221; for toncoins.</td>",
-        "rst_description": "*Optional*. For gifts bought from other users, the currency in which the payment for the gift was done. Currently, one of 'XTR' for Telegram Stars or 'TON' for toncoins.\n",
+        "description": "For gifts bought from other users, the currency in which the payment for the gift was done. Currently, one of 'XTR' for Telegram Stars or 'TON' for TON grams.",
+        "html_description": "<td><em>Optional</em>. For gifts bought from other users, the currency in which the payment for the gift was done. Currently, one of &#8220;XTR&#8221; for Telegram Stars or &#8220;TON&#8221; for TON grams.</td>",
+        "rst_description": "*Optional*. For gifts bought from other users, the currency in which the payment for the gift was done. Currently, one of 'XTR' for Telegram Stars or 'TON' for TON grams.\n",
         "name": "last_resale_currency",
         "required": false
       },
       {
         "type": "Integer",
-        "description": "For gifts bought from other users, the price paid for the gift in either Telegram Stars or nanotoncoins",
-        "html_description": "<td><em>Optional</em>. For gifts bought from other users, the price paid for the gift in either Telegram Stars or nanotoncoins</td>",
-        "rst_description": "*Optional*. For gifts bought from other users, the price paid for the gift in either Telegram Stars or nanotoncoins\n",
+        "description": "For gifts bought from other users, the price paid for the gift in either Telegram Stars or nanograms",
+        "html_description": "<td><em>Optional</em>. For gifts bought from other users, the price paid for the gift in either Telegram Stars or nanograms</td>",
+        "rst_description": "*Optional*. For gifts bought from other users, the price paid for the gift in either Telegram Stars or nanograms\n",
         "name": "last_resale_amount",
         "required": false
       },

@@ -30,9 +30,9 @@
       {
         "type": "Array of ShippingOption",
         "required": false,
-        "description": "Required if ok is True. A JSON-serialized array of available shipping options.",
-        "html_description": "<td>Required if <em>ok</em> is <em>True</em>. A JSON-serialized array of available shipping options.</td>",
-        "rst_description": "Required if *ok* is :code:`True`. A JSON-serialized array of available shipping options.\n",
+        "description": "Required if ok is True. A JSON-serialized Array of available shipping options.",
+        "html_description": "<td>Required if <em>ok</em> is <em>True</em>. A JSON-serialized Array of available shipping options.</td>",
+        "rst_description": "Required if *ok* is :code:`True`. A JSON-serialized Array of available shipping options.\n",
         "name": "shipping_options"
       },
       {

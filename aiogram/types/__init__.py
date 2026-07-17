@@ -352,6 +352,7 @@ __all__ = (
     "BotDescription",
     "BotName",
     "BotShortDescription",
+    "BotSubscriptionUpdated",
     "BufferedInputFile",
     "BusinessBotRights",
     "BusinessConnection",
@@ -398,6 +399,9 @@ __all__ = (
     "ChecklistTasksAdded",
     "ChecklistTasksDone",
     "ChosenInlineResult",
+    "Community",
+    "CommunityChatAdded",
+    "CommunityChatRemoved",
     "Contact",
     "ContentType",
     "CopyTextButton",
@@ -478,6 +482,7 @@ __all__ = (
     "InputMediaUnion",
     "InputMediaVenue",
     "InputMediaVideo",
+    "InputMediaVoiceNote",
     "InputMessageContent",
     "InputMessageContentUnion",
     "InputPaidMedia",
@@ -495,8 +500,34 @@ __all__ = (
     "InputProfilePhotoAnimated",
     "InputProfilePhotoStatic",
     "InputProfilePhotoUnion",
+    "InputRichBlock",
+    "InputRichBlockAnchor",
+    "InputRichBlockAnimation",
+    "InputRichBlockAudio",
+    "InputRichBlockBlockQuotation",
+    "InputRichBlockCollage",
+    "InputRichBlockDetails",
+    "InputRichBlockDivider",
+    "InputRichBlockFooter",
+    "InputRichBlockList",
+    "InputRichBlockListItem",
+    "InputRichBlockMap",
+    "InputRichBlockMathematicalExpression",
+    "InputRichBlockParagraph",
+    "InputRichBlockPhoto",
+    "InputRichBlockPreformatted",
+    "InputRichBlockPullQuotation",
+    "InputRichBlockSectionHeading",
+    "InputRichBlockSlideshow",
+    "InputRichBlockTable",
+    "InputRichBlockThinking",
+    "InputRichBlockUnion",
+    "InputRichBlockVideo",
+    "InputRichBlockVoiceNote",
     "InputRichMessage",
     "InputRichMessageContent",
+    "InputRichMessageMedia",
+    "InputRichMessageMediaUnion",
     "InputSticker",
     "InputStoryContent",
     "InputStoryContentPhoto",
@@ -729,20 +760,51 @@ __all__ = (
 
 from ..client.default import Default as _Default
 from .bot_access_settings import BotAccessSettings
+from .bot_subscription_updated import BotSubscriptionUpdated
 from .chat_owner_changed import ChatOwnerChanged
 from .chat_owner_left import ChatOwnerLeft
+from .community import Community
+from .community_chat_added import CommunityChatAdded
+from .community_chat_removed import CommunityChatRemoved
 from .input_media_link import InputMediaLink
 from .input_media_live_photo import InputMediaLivePhoto
 from .input_media_location import InputMediaLocation
 from .input_media_sticker import InputMediaSticker
 from .input_media_venue import InputMediaVenue
+from .input_media_voice_note import InputMediaVoiceNote
 from .input_paid_media_live_photo import InputPaidMediaLivePhoto
 from .input_poll_media import InputPollMedia
 from .input_poll_media_union import InputPollMediaUnion
 from .input_poll_option_media import InputPollOptionMedia
 from .input_poll_option_media_union import InputPollOptionMediaUnion
+from .input_rich_block import InputRichBlock
+from .input_rich_block_anchor import InputRichBlockAnchor
+from .input_rich_block_animation import InputRichBlockAnimation
+from .input_rich_block_audio import InputRichBlockAudio
+from .input_rich_block_block_quotation import InputRichBlockBlockQuotation
+from .input_rich_block_collage import InputRichBlockCollage
+from .input_rich_block_details import InputRichBlockDetails
+from .input_rich_block_divider import InputRichBlockDivider
+from .input_rich_block_footer import InputRichBlockFooter
+from .input_rich_block_list import InputRichBlockList
+from .input_rich_block_list_item import InputRichBlockListItem
+from .input_rich_block_map import InputRichBlockMap
+from .input_rich_block_mathematical_expression import InputRichBlockMathematicalExpression
+from .input_rich_block_paragraph import InputRichBlockParagraph
+from .input_rich_block_photo import InputRichBlockPhoto
+from .input_rich_block_preformatted import InputRichBlockPreformatted
+from .input_rich_block_pull_quotation import InputRichBlockPullQuotation
+from .input_rich_block_section_heading import InputRichBlockSectionHeading
+from .input_rich_block_slideshow import InputRichBlockSlideshow
+from .input_rich_block_table import InputRichBlockTable
+from .input_rich_block_thinking import InputRichBlockThinking
+from .input_rich_block_union import InputRichBlockUnion
+from .input_rich_block_video import InputRichBlockVideo
+from .input_rich_block_voice_note import InputRichBlockVoiceNote
 from .input_rich_message import InputRichMessage
 from .input_rich_message_content import InputRichMessageContent
+from .input_rich_message_media import InputRichMessageMedia
+from .input_rich_message_media_union import InputRichMessageMediaUnion
 from .keyboard_button_request_managed_bot import KeyboardButtonRequestManagedBot
 from .link import Link
 from .live_photo import LivePhoto

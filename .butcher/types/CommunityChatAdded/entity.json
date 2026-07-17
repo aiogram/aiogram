@@ -1,0 +1,25 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "communitychatadded",
+    "name": "CommunityChatAdded",
+    "description": "Describes a service message about a chat being added to a community.",
+    "html_description": "<p>Describes a service message about a chat being added to a community.</p>",
+    "rst_description": "Describes a service message about a chat being added to a community.",
+    "annotations": [
+      {
+        "type": "Community",
+        "description": "The new community to which the chat belongs",
+        "html_description": "<td>The new community to which the chat belongs</td>",
+        "rst_description": "The new community to which the chat belongs\n",
+        "name": "community",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

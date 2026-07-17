@@ -26,7 +26,7 @@ class SendRichMessage(TelegramMethod[Message]):
     rich_message: InputRichMessage
     """The message to be sent"""
     business_connection_id: str | None = None
-    """Unique identifier of the business connection on behalf of which the message will be sent"""
+    """Unique identifier of the business connection on behalf of which the message will be sent. Bot can send rich messages on behalf of a business account only if the corresponding user can send rich messages"""
     message_thread_id: int | None = None
     """Unique identifier for the target message thread (topic) of a forum; for forum supergroups and private chats of bots with forum topic mode enabled only"""
     direct_messages_topic_id: int | None = None

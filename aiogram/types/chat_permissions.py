@@ -43,7 +43,7 @@ class ChatPermissions(MutableTelegramObject):
     can_pin_messages: bool | None = None
     """*Optional*. :code:`True`, if the user is allowed to pin messages. Ignored in public supergroups"""
     can_manage_topics: bool | None = None
-    """*Optional*. :code:`True`, if the user is allowed to create forum topics. If omitted defaults to the value of can_pin_messages"""
+    """*Optional*. :code:`True`, if the user is allowed to create forum topics. If omitted, defaults to the value of can_pin_messages"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!

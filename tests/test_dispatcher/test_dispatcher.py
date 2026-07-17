@@ -17,6 +17,7 @@ from aiogram.dispatcher.event.bases import UNHANDLED, SkipHandler
 from aiogram.dispatcher.router import Router
 from aiogram.methods import GetMe, GetUpdates, SendMessage, TelegramMethod
 from aiogram.types import (
+    BotSubscriptionUpdated,
     BusinessConnection,
     BusinessMessagesDeleted,
     CallbackQuery,
@@ -629,6 +630,19 @@ class TestDispatcher:
                     ),
                 ),
                 True,
+                True,
+            ),
+            pytest.param(
+                "subscription",
+                Update(
+                    update_id=42,
+                    subscription=BotSubscriptionUpdated(
+                        user=User(id=42, is_bot=False, first_name="Test"),
+                        invoice_payload="payload",
+                        state="canceled",
+                    ),
+                ),
+                False,
                 True,
             ),
         ],

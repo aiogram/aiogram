@@ -37,6 +37,7 @@ Available types
     bot_description
     bot_name
     bot_short_description
+    bot_subscription_updated
     business_bot_rights
     business_connection
     business_intro
@@ -77,6 +78,9 @@ Available types
     checklist_task
     checklist_tasks_added
     checklist_tasks_done
+    community
+    community_chat_added
+    community_chat_removed
     contact
     copy_text_button
     dice
@@ -118,6 +122,7 @@ Available types
     input_media_sticker
     input_media_venue
     input_media_video
+    input_media_voice_note
     input_paid_media
     input_paid_media_live_photo
     input_paid_media_photo
@@ -285,7 +290,31 @@ Rich messages
 .. toctree::
     :maxdepth: 1
 
+    input_rich_block
+    input_rich_block_anchor
+    input_rich_block_animation
+    input_rich_block_audio
+    input_rich_block_block_quotation
+    input_rich_block_collage
+    input_rich_block_details
+    input_rich_block_divider
+    input_rich_block_footer
+    input_rich_block_list
+    input_rich_block_list_item
+    input_rich_block_map
+    input_rich_block_mathematical_expression
+    input_rich_block_paragraph
+    input_rich_block_photo
+    input_rich_block_preformatted
+    input_rich_block_pull_quotation
+    input_rich_block_section_heading
+    input_rich_block_slideshow
+    input_rich_block_table
+    input_rich_block_thinking
+    input_rich_block_video
+    input_rich_block_voice_note
     input_rich_message
+    input_rich_message_media
     rich_block
     rich_block_anchor
     rich_block_animation

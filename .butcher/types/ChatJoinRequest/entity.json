@@ -61,9 +61,9 @@
       },
       {
         "type": "String",
-        "description": "Identifier of the join request query. If present, then the bot must call sendChatJoinRequestWebApp or directly call answerChatJoinRequestQuery within 10 seconds.",
-        "html_description": "<td><em>Optional</em>. Identifier of the join request query. If present, then the bot must call <a href=\"#sendchatjoinrequestwebapp\">sendChatJoinRequestWebApp</a> or directly call <a href=\"#answerchatjoinrequestquery\">answerChatJoinRequestQuery</a> within 10 seconds.</td>",
-        "rst_description": "*Optional*. Identifier of the join request query. If present, then the bot must call :class:`aiogram.methods.send_chat_join_request_web_app.SendChatJoinRequestWebApp` or directly call :class:`aiogram.methods.answer_chat_join_request_query.AnswerChatJoinRequestQuery` within 10 seconds.\n",
+        "description": "Identifier of the join request query; for bots assigned to process join requests only. If present, then the bot must call sendChatJoinRequestWebApp or directly call answerChatJoinRequestQuery within 10 seconds.",
+        "html_description": "<td><em>Optional</em>. Identifier of the join request query; for bots assigned to process join requests only. If present, then the bot must call <a href=\"#sendchatjoinrequestwebapp\">sendChatJoinRequestWebApp</a> or directly call <a href=\"#answerchatjoinrequestquery\">answerChatJoinRequestQuery</a> within 10 seconds.</td>",
+        "rst_description": "*Optional*. Identifier of the join request query; for bots assigned to process join requests only. If present, then the bot must call :class:`aiogram.methods.send_chat_join_request_web_app.SendChatJoinRequestWebApp` or directly call :class:`aiogram.methods.answer_chat_join_request_query.AnswerChatJoinRequestQuery` within 10 seconds.\n",
         "name": "query_id",
         "required": false
       }
