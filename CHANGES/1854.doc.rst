@@ -1,0 +1,1 @@
+Remove await from `dispatcher.fsm.get_context` in "Changing state for another user" doc 
