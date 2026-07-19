@@ -17,6 +17,8 @@ from aiogram.fsm.storage.base import BaseEventIsolation, BaseStorage
 from aiogram.fsm.storage.memory import DisabledEventIsolation, MemoryStorage
 from aiogram.fsm.strategy import FSMStrategy
 from aiogram.methods import GetUpdates, TelegramMethod
+from aiogram.tracer import AbstractTracer, TracerProxy, execute_with_tracing
+from aiogram.tracer import tracer as tracer_var
 from aiogram.types import Update, User
 from aiogram.types.base import UNSET, UNSET_TYPE
 from aiogram.types.update import UpdateTypeLookupError
@@ -48,6 +50,7 @@ class Dispatcher(Router):
         events_isolation: BaseEventIsolation | None = None,
         disable_fsm: bool = False,
         name: str | None = None,
+        tracer: AbstractTracer | None = None,
         **kwargs: Any,
     ) -> None:
         """
@@ -58,12 +61,16 @@ class Dispatcher(Router):
         :param events_isolation: Events isolation
         :param disable_fsm: Disable FSM, note that if you disable FSM
             then you should not use storage and events isolation
+        :param tracer: Tracer instance for telemetry and performance monitoring
         :param kwargs: Other arguments, will be passed as keyword arguments to handlers
         """
         super().__init__(name=name)
 
         if storage and not isinstance(storage, BaseStorage):
             msg = f"FSM storage should be instance of 'BaseStorage' not {type(storage).__name__}"
+            raise TypeError(msg)
+        if tracer and not isinstance(tracer, AbstractTracer):
+            msg = f"Tracer should be instance of 'AbstractTracer' not {type(tracer).__name__}"
             raise TypeError(msg)
 
         # Telegram API provides originally only one event type - Update
@@ -73,6 +80,7 @@ class Dispatcher(Router):
             router=self,
             event_name="update",
         )
+        self.tracer = TracerProxy(tracer) if tracer else None
         self.update.register(self._listen_update)
 
         # Error handlers should work is out of all other functions
@@ -159,20 +167,25 @@ class Dispatcher(Router):
             # The preferred way is that pass already mounted Bot instance to this update
             # before call feed_update method
             update = Update.model_validate(update.model_dump(), context={"bot": bot})
-
+        token = tracer_var.set(self.tracer) if self.tracer else None
         try:
-            response = await self.update.wrap_outer_middleware(
-                self.update.trigger,
-                update,
-                {
-                    **self.workflow_data,
-                    **kwargs,
-                    "bot": bot,
-                },
+            response = await execute_with_tracing(
+                self.tracer.get_trigger_span_manager(update.event) if self.tracer else None,
+                self.update.wrap_outer_middleware(
+                    self.update.trigger,
+                    update,
+                    {
+                        **self.workflow_data,
+                        **kwargs,
+                        "bot": bot,
+                    },
+                ),
             )
             handled = response is not UNHANDLED
             return response
         finally:
+            if token:
+                tracer_var.reset(token)
             finish_time = loop.time()
             duration = (finish_time - start_time) * 1000
             loggers.event.info(
@@ -279,7 +292,6 @@ class Dispatcher(Router):
             raise SkipHandler() from e
 
         kwargs.update(event_update=update)
-
         return await self.propagate_event(update_type=update_type, event=event, **kwargs)
 
     @classmethod

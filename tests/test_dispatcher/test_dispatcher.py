@@ -91,6 +91,8 @@ class TestDispatcher:
             Dispatcher(bot)
         with pytest.raises(TypeError):
             Dispatcher(storage=bot)
+        with pytest.raises(TypeError):
+            Dispatcher(tracer=bot)
 
     def test_data_bind(self):
         dp = Dispatcher()
