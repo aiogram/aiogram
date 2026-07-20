@@ -40,6 +40,7 @@ if TYPE_CHECKING:
         SendDocument,
         SendGame,
         SendInvoice,
+        SendLivePhoto,
         SendLocation,
         SendMediaGroup,
         SendMessage,
@@ -712,6 +713,8 @@ class Message(MaybeInaccessibleMessage):
             return ContentType.DOCUMENT
         if self.game:
             return ContentType.GAME
+        if self.live_photo:
+            return ContentType.LIVE_PHOTO
         if self.photo:
             return ContentType.PHOTO
         if self.sticker:
@@ -850,8 +853,6 @@ class Message(MaybeInaccessibleMessage):
             return ContentType.POLL_OPTION_ADDED
         if self.poll_option_deleted:
             return ContentType.POLL_OPTION_DELETED
-        if self.live_photo:
-            return ContentType.LIVE_PHOTO
         if self.rich_message:
             return ContentType.RICH_MESSAGE
         if self.community_chat_added:
@@ -3930,6 +3931,7 @@ class Message(MaybeInaccessibleMessage):
         | SendDocument
         | SendLocation
         | SendMessage
+        | SendLivePhoto
         | SendPhoto
         | SendPoll
         | SendDice
@@ -3974,6 +3976,7 @@ class Message(MaybeInaccessibleMessage):
             SendDocument,
             SendLocation,
             SendMessage,
+            SendLivePhoto,
             SendPhoto,
             SendPoll,
             SendSticker,
@@ -3998,118 +4001,127 @@ class Message(MaybeInaccessibleMessage):
             "message_effect_id": message_effect_id or self.effect_id,
         }
 
-        if self.text:
-            return SendMessage(
-                text=self.text,
-                entities=self.entities,
-                link_preview_options=link_preview_options or self.link_preview_options,
-                **kwargs,
-            ).as_(self._bot)
-        if self.audio:
-            return SendAudio(
-                audio=self.audio.file_id,
-                caption=self.caption,
-                title=self.audio.title,
-                performer=self.audio.performer,
-                duration=self.audio.duration,
-                caption_entities=self.caption_entities,
-                **kwargs,
-            ).as_(self._bot)
-        if self.animation:
-            return SendAnimation(
-                animation=self.animation.file_id,
-                caption=self.caption,
-                caption_entities=self.caption_entities,
-                **kwargs,
-            ).as_(self._bot)
-        if self.document:
-            return SendDocument(
-                document=self.document.file_id,
-                caption=self.caption,
-                caption_entities=self.caption_entities,
-                **kwargs,
-            ).as_(self._bot)
-        if self.photo:
-            return SendPhoto(
-                photo=self.photo[-1].file_id,
-                caption=self.caption,
-                caption_entities=self.caption_entities,
-                **kwargs,
-            ).as_(self._bot)
-        if self.sticker:
-            return SendSticker(
-                sticker=self.sticker.file_id,
-                **kwargs,
-            ).as_(self._bot)
-        if self.video:
-            return SendVideo(
-                video=self.video.file_id,
-                caption=self.caption,
-                caption_entities=self.caption_entities,
-                **kwargs,
-            ).as_(self._bot)
-        if self.video_note:
-            return SendVideoNote(
-                video_note=self.video_note.file_id,
-                **kwargs,
-            ).as_(self._bot)
-        if self.voice:
-            return SendVoice(
-                voice=self.voice.file_id,
-                **kwargs,
-            ).as_(self._bot)
-        if self.contact:
-            return SendContact(
-                phone_number=self.contact.phone_number,
-                first_name=self.contact.first_name,
-                last_name=self.contact.last_name,
-                vcard=self.contact.vcard,
-                **kwargs,
-            ).as_(self._bot)
-        if self.venue:
-            return SendVenue(
-                latitude=self.venue.location.latitude,
-                longitude=self.venue.location.longitude,
-                title=self.venue.title,
-                address=self.venue.address,
-                foursquare_id=self.venue.foursquare_id,
-                foursquare_type=self.venue.foursquare_type,
-                **kwargs,
-            ).as_(self._bot)
-        if self.location:
-            return SendLocation(
-                latitude=self.location.latitude,
-                longitude=self.location.longitude,
-                **kwargs,
-            ).as_(self._bot)
-        if self.poll:
-            from .input_poll_option import InputPollOption
+        match (self.content_type):
+            case ContentType.TEXT:
+                return SendMessage(
+                    text=self.text,
+                    entities=self.entities,
+                    link_preview_options=link_preview_options or self.link_preview_options,
+                    **kwargs,
+                ).as_(self._bot)
+            case ContentType.AUDIO:
+                return SendAudio(
+                    audio=self.audio.file_id,
+                    caption=self.caption,
+                    title=self.audio.title,
+                    performer=self.audio.performer,
+                    duration=self.audio.duration,
+                    caption_entities=self.caption_entities,
+                    **kwargs,
+                ).as_(self._bot)
+            case ContentType.ANIMATION:
+                return SendAnimation(
+                    animation=self.animation.file_id,
+                    caption=self.caption,
+                    caption_entities=self.caption_entities,
+                    **kwargs,
+                ).as_(self._bot)
+            case ContentType.DOCUMENT:
+                return SendDocument(
+                    document=self.document.file_id,
+                    caption=self.caption,
+                    caption_entities=self.caption_entities,
+                    **kwargs,
+                ).as_(self._bot)
+            case ContentType.PHOTO:
+                return SendPhoto(
+                    photo=self.photo[-1].file_id,
+                    caption=self.caption,
+                    caption_entities=self.caption_entities,
+                    **kwargs,
+                ).as_(self._bot)
+            case ContentType.LIVE_PHOTO:
+                return SendLivePhoto(
+                    photo=self.photo[-1].file_id,
+                    live_photo=self.live_photo.file_id,
+                    caption=self.caption,
+                    caption_entities=self.caption_entities,
+                    **kwargs,
+                ).as_(self._bot)
+            case ContentType.STICKER:
+                return SendSticker(
+                    sticker=self.sticker.file_id,
+                    **kwargs,
+                ).as_(self._bot)
+            case ContentType.VIDEO:
+                return SendVideo(
+                    video=self.video.file_id,
+                    caption=self.caption,
+                    caption_entities=self.caption_entities,
+                    **kwargs,
+                ).as_(self._bot)
+            case ContentType.VIDEO_NOTE:
+                return SendVideoNote(
+                    video_note=self.video_note.file_id,
+                    **kwargs,
+                ).as_(self._bot)
+            case ContentType.VOICE:
+                return SendVoice(
+                    voice=self.voice.file_id,
+                    **kwargs,
+                ).as_(self._bot)
+            case ContentType.CONTACT:
+                return SendContact(
+                    phone_number=self.contact.phone_number,
+                    first_name=self.contact.first_name,
+                    last_name=self.contact.last_name,
+                    vcard=self.contact.vcard,
+                    **kwargs,
+                ).as_(self._bot)
+            case ContentType.VENUE:
+                return SendVenue(
+                    latitude=self.venue.location.latitude,
+                    longitude=self.venue.location.longitude,
+                    title=self.venue.title,
+                    address=self.venue.address,
+                    foursquare_id=self.venue.foursquare_id,
+                    foursquare_type=self.venue.foursquare_type,
+                    **kwargs,
+                ).as_(self._bot)
+            case ContentType.LOCATION:
+                return SendLocation(
+                    latitude=self.location.latitude,
+                    longitude=self.location.longitude,
+                    **kwargs,
+                ).as_(self._bot)
+            case ContentType.POLL:
+                from .input_poll_option import InputPollOption
 
-            return SendPoll(
-                question=self.poll.question,
-                options=[
-                    InputPollOption(
-                        text=option.text,
-                        voter_count=option.voter_count,
-                        text_entities=option.text_entities,
-                        text_parse_mode=None,
-                    )
-                    for option in self.poll.options
-                ],
-                **kwargs,
-            ).as_(self._bot)
-        if self.dice:  # Dice value can't be controlled
-            return SendDice(
-                **kwargs,
-            ).as_(self._bot)
-        if self.story:
-            return ForwardMessage(
-                from_chat_id=self.chat.id,
-                message_id=self.message_id,
-                **kwargs,
-            ).as_(self._bot)
-
-        raise TypeError("This type of message can't be copied.")
+                return SendPoll(
+                    question=self.poll.question,
+                    options=[
+                        InputPollOption(
+                            text=option.text,
+                            voter_count=option.voter_count,
+                            text_entities=option.text_entities,
+                            text_parse_mode=None,
+                        )
+                        for option in self.poll.options
+                    ],
+                    **kwargs,
+                ).as_(self._bot)
+            case ContentType.DICE: # Dice value can't be controlled
+                return SendDice(
+                    **kwargs,
+                ).as_(self._bot)
+            case ContentType.STORY:
+                return ForwardMessage(
+                    from_chat_id=self.chat.id,
+                    message_id=self.message_id,
+                    **kwargs,
+                ).as_(self._bot)
+            case _:
+                raise TypeError("This type of message can't be copied.")
 
     def copy_to(
         self,
