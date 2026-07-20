@@ -1,0 +1,7 @@
+Fixed missing ``dispatcher`` contextual argument for filters, handlers and middlewares
+when updates are fed via webhook (:class:`aiogram.webhook.aiohttp_server.SimpleRequestHandler`,
+:class:`aiogram.webhook.aiohttp_server.TokenBasedRequestHandler`) or direct
+:meth:`aiogram.dispatcher.dispatcher.Dispatcher.feed_update` calls.
+Previously it was only injected by ``start_polling``, so a callback declaring a required
+``dispatcher`` parameter worked in polling mode but failed with ``TypeError`` in webhook mode,
+aborting event propagation for sibling handlers as well.
