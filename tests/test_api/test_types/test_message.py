@@ -27,6 +27,7 @@ from aiogram.methods import (
     SendDocument,
     SendGame,
     SendInvoice,
+    SendLivePhoto,
     SendLocation,
     SendMediaGroup,
     SendMessage,
@@ -911,6 +912,7 @@ TEST_MESSAGE_POLL_OPTION_DELETED = Message(
 TEST_MESSAGE_LIVE_PHOTO = Message(
     message_id=42,
     date=datetime.datetime.now(),
+    photo=[PhotoSize(file_id="file id", file_unique_id="file id", width=42, height=42)],
     live_photo=LivePhoto(
         file_id="file id",
         file_unique_id="file unique id",
@@ -1122,7 +1124,7 @@ MESSAGES_AND_COPY_METHODS = [
     [TEST_MESSAGE_MANAGED_BOT_CREATED, None],
     [TEST_MESSAGE_POLL_OPTION_ADDED, None],
     [TEST_MESSAGE_POLL_OPTION_DELETED, None],
-    [TEST_MESSAGE_LIVE_PHOTO, None],
+    [TEST_MESSAGE_LIVE_PHOTO, SendLivePhoto],
     [TEST_MESSAGE_RICH_MESSAGE, None],
     [TEST_MESSAGE_COMMUNITY_CHAT_ADDED, None],
     [TEST_MESSAGE_COMMUNITY_CHAT_REMOVED, None],
