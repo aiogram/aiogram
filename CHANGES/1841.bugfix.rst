@@ -1,0 +1,1 @@
+Fix invalid `content_type` property identification for a live photo message
