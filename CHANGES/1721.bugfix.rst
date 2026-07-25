@@ -1,0 +1,1 @@
+Fixed detection of asynchronous callable objects: an instance whose :code:`__call__` is a coroutine function is now recognized as awaitable, so such handlers and filters are awaited instead of returning a never-awaited coroutine.
