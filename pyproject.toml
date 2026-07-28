@@ -87,7 +87,7 @@ docs = [
     "Sphinx-Substitution-Extensions~=2024.8.6",
     "towncrier~=24.8.0",
     "pygments~=2.18.0",
-    "pymdown-extensions~=10.3",
+    "pymdown-extensions>=10.3,<12.0",
     "markdown-include~=0.8.1",
     "sphinxcontrib-towncrier~=0.4.0a0",
 ]
