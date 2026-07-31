@@ -874,20 +874,20 @@ from .user_profile_audios import UserProfileAudios
 from .video_quality import VideoQuality
 
 # Load typing forward refs for every TelegramObject
+_types_namespace = {
+    "List": list,
+    "Optional": Optional,
+    "Union": Union,
+    "Literal": Literal,
+    "Default": _Default,
+    **{name: globals()[name] for name in __all__},
+}
+
 for _entity_name in __all__:
     _entity = globals()[_entity_name]
-    if not hasattr(_entity, "model_rebuild"):
-        continue
-    _entity.model_rebuild(
-        _types_namespace={
-            "List": list,
-            "Optional": Optional,
-            "Union": Union,
-            "Literal": Literal,
-            "Default": _Default,
-            **{k: v for k, v in globals().items() if k in __all__},
-        }
-    )
+    if hasattr(_entity, "model_rebuild"):
+        _entity.model_rebuild(_types_namespace=_types_namespace)
 
 del _entity
 del _entity_name
+del _types_namespace
