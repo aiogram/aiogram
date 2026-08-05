@@ -27,9 +27,14 @@ class Command(Filter):
     This filter can be helpful for handling commands from the text messages.
 
     Works only with :class:`aiogram.types.message.Message` events which have the :code:`text`.
+
+    Any :class:`aiogram.types.bot_command.BotCommand` passed to the filter is kept as-is in
+    :code:`bot_commands`, so it can be collected later (e.g. via
+    :code:`Router.resolve_bot_commands()`) without losing its metadata.
     """
 
     __slots__ = (
+        "bot_commands",
         "commands",
         "ignore_case",
         "ignore_mention",
@@ -70,8 +75,10 @@ class Command(Filter):
             raise ValueError(msg)
 
         items = []
+        bot_commands = []
         for command in (*values, *commands):
             if isinstance(command, BotCommand):
+                bot_commands.append(command)
                 command = command.command
             if not isinstance(command, (str, re.Pattern)):
                 msg = (
@@ -87,6 +94,7 @@ class Command(Filter):
             msg = "At least one command should be specified"
             raise ValueError(msg)
 
+        self.bot_commands = tuple(bot_commands)
         self.commands = tuple(items)
         self.prefix = prefix
         self.ignore_case = ignore_case

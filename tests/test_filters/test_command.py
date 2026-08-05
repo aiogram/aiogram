@@ -24,9 +24,12 @@ class TestCommandFilter:
             Command()
 
     def test_resolve_bot_command(self):
-        command = Command(BotCommand(command="test", description="Test"))
+        bot_command = BotCommand(command="test", description="Test")
+        command = Command(bot_command)
         assert isinstance(command.commands[0], str)
         assert command.commands[0] == "test"
+        assert isinstance(command.bot_commands, tuple)
+        assert command.bot_commands[0] is bot_command
 
     def test_convert_to_list(self):
         cmd = Command(commands="start")
@@ -34,6 +37,10 @@ class TestCommandFilter:
         assert isinstance(cmd.commands, tuple)
         assert cmd.commands[0] == "start"
         # assert cmd == Command(commands=["start"])
+
+    def test_empty_bot_commands(self):
+        command = Command(re.compile(r"test(\d+)"), "test")
+        assert len(command.bot_commands) == 0
 
     @pytest.mark.parametrize(
         "commands,checklist",
