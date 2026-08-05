@@ -5,8 +5,8 @@ import pytest
 
 from aiogram import F
 from aiogram.filters import Command, CommandObject
-from aiogram.filters.command import CommandStart
-from aiogram.types import BotCommand, Chat, Message, User
+from aiogram.filters.command import BotCommandMeta, CommandStart
+from aiogram.types import BotCommand, BotCommandScopeDefault, Chat, Message, User
 from tests.mocked_bot import MockedBot
 
 
@@ -23,8 +23,9 @@ class TestCommandFilter:
         with pytest.raises(ValueError):
             Command()
 
-    def test_resolve_bot_command(self):
-        bot_command = BotCommand(command="test", description="Test")
+    @pytest.mark.parametrize("bot_command_cls", [BotCommand, BotCommandMeta])
+    def test_resolve_bot_command(self, bot_command_cls: type[BotCommand]):
+        bot_command = bot_command_cls(command="test", description="Test")
         command = Command(bot_command)
         assert isinstance(command.commands[0], str)
         assert command.commands[0] == "test"
@@ -41,6 +42,15 @@ class TestCommandFilter:
     def test_empty_bot_commands(self):
         command = Command(re.compile(r"test(\d+)"), "test")
         assert len(command.bot_commands) == 0
+
+    def test_bot_command_meta_fields_preserved(self):
+        meta = BotCommandMeta(
+            command="test", description="Test", scope=BotCommandScopeDefault(), language_code="en"
+        )
+        command = Command(meta)
+        assert isinstance(command.bot_commands[0], BotCommandMeta)
+        assert command.bot_commands[0].scope == meta.scope
+        assert command.bot_commands[0].language_code == "en"
 
     @pytest.mark.parametrize(
         "commands,checklist",
@@ -67,6 +77,19 @@ class TestCommandFilter:
             [
                 "/test@tbot",
                 Command(BotCommand(command="test", description="description"), prefix="/"),
+                True,
+            ],
+            [
+                "/test@tbot",
+                Command(
+                    BotCommandMeta(
+                        command="test",
+                        description="description",
+                        scope=BotCommandScopeDefault(),
+                        language_code="en",
+                    ),
+                    prefix="/",
+                ),
                 True,
             ],
             ["!test", Command(commands=["test"], prefix="/"), False],

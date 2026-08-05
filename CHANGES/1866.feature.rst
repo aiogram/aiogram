@@ -8,3 +8,9 @@ for bootstrapping :code:`bot.set_my_commands()` without maintaining a separate m
 command list. Mirrors :meth:`~aiogram.dispatcher.router.Router.resolve_used_update_types`,
 including the ``skip_events`` opt-out and collecting from all observers by default (not just
 ``message``).
+
+Added :class:`aiogram.filters.command.BotCommandMeta` — a :class:`~aiogram.types.bot_command.BotCommand`
+subclass that additionally carries a ``scope``/``language_code``, for grouping commands collected via
+``resolve_bot_commands()`` by scope/locale before calling ``bot.set_my_commands()``. Not meant to be
+passed directly to ``set_my_commands()`` — build a plain :class:`~aiogram.types.bot_command.BotCommand`
+from ``command``/``description`` first.
