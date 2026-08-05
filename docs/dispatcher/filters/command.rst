@@ -29,6 +29,17 @@ When filter is passed the :class:`aiogram.filters.command.CommandObject` will be
     :member-order: bysource
     :undoc-members: False
 
+:class:`aiogram.filters.command.BotCommandMeta` can be used instead of a plain
+:class:`~aiogram.types.bot_command.BotCommand` to additionally carry a scope and a language
+code, for grouping commands collected via :meth:`aiogram.dispatcher.router.Router.resolve_bot_commands`
+by scope/locale before calling :code:`bot.set_my_commands()`. It is not meant to be passed
+directly to :code:`set_my_commands()`.
+
+.. autoclass:: aiogram.filters.command.BotCommandMeta
+    :members:
+    :member-order: bysource
+    :undoc-members: False
+
 Allowed handlers
 ================
 
