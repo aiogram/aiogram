@@ -867,10 +867,18 @@ class Message(MaybeInaccessibleMessage):
 
     @property
     def html_text(self) -> str:
+        if self.rich_message:
+            from aiogram.utils.rich_text import rich_message_to_html
+
+            return rich_message_to_html(self.rich_message)
         return self._unparse_entities(html_decoration)
 
     @property
     def md_text(self) -> str:
+        if self.rich_message:
+            from aiogram.utils.rich_text import rich_message_to_markdown
+
+            return rich_message_to_markdown(self.rich_message)
         return self._unparse_entities(markdown_decoration)
 
     def as_reply_parameters(

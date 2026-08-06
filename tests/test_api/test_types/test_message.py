@@ -106,7 +106,10 @@ from aiogram.types import (
     ReactionTypeCustomEmoji,
     RefundedPayment,
     RichBlockParagraph,
+    RichBlockSectionHeading,
     RichMessage,
+    RichTextBold,
+    RichTextItalic,
     SharedUser,
     Sticker,
     Story,
@@ -1619,6 +1622,43 @@ class TestMessage:
             entities=entities,
         )
         assert getattr(message, f"{mode}_text") == expected_value
+
+    @pytest.mark.parametrize(
+        "message,expected_html,expected_md",
+        [
+            [
+                TEST_MESSAGE_RICH_MESSAGE,
+                "<p>Test</p>",
+                "Test",
+            ],
+            [
+                Message(
+                    message_id=42,
+                    chat=Chat(id=42, type="private"),
+                    date=datetime.datetime.now(),
+                    rich_message=RichMessage(
+                        blocks=[
+                            RichBlockSectionHeading(text="Title", size=2),
+                            RichBlockParagraph(
+                                text=[RichTextBold(text="bold"), RichTextItalic(text="italic")]
+                            ),
+                        ],
+                    ),
+                ),
+                "<h2>Title</h2>\n<p><b>bold</b><i>italic</i></p>",
+                "## Title\n**bold***italic*",
+            ],
+        ],
+    )
+    def test_html_text_rich_message(self, message, expected_html, expected_md):
+        assert message.html_text == expected_html
+        assert message.md_text == expected_md
+
+    def test_html_text_rich_message_no_entities(self):
+        assert TEST_MESSAGE_RICH_MESSAGE.text is None
+        assert TEST_MESSAGE_RICH_MESSAGE.entities is None
+        assert TEST_MESSAGE_RICH_MESSAGE.html_text == "<p>Test</p>"
+        assert TEST_MESSAGE_RICH_MESSAGE.md_text == "Test"
 
     def test_answer_guest_query(self):
         result = InlineQueryResultPhoto(
