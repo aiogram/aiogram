@@ -1187,7 +1187,9 @@ class TestMessage:
         message = TEST_MESSAGE_LIVE_PHOTO.model_copy(
             update={
                 "photo": [
-                    PhotoSize(file_id="file id", file_unique_id="file id", width=1, height=1)
+                    PhotoSize(
+                        file_id="file id", file_unique_id="file unique id", width=1, height=1
+                    )
                 ]
             }
         )
