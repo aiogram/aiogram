@@ -40,6 +40,7 @@ if TYPE_CHECKING:
         SendDocument,
         SendGame,
         SendInvoice,
+        SendLivePhoto,
         SendLocation,
         SendMediaGroup,
         SendMessage,
@@ -712,6 +713,8 @@ class Message(MaybeInaccessibleMessage):
             return ContentType.DOCUMENT
         if self.game:
             return ContentType.GAME
+        if self.live_photo:
+            return ContentType.LIVE_PHOTO
         if self.photo:
             return ContentType.PHOTO
         if self.sticker:
@@ -850,8 +853,6 @@ class Message(MaybeInaccessibleMessage):
             return ContentType.POLL_OPTION_ADDED
         if self.poll_option_deleted:
             return ContentType.POLL_OPTION_DELETED
-        if self.live_photo:
-            return ContentType.LIVE_PHOTO
         if self.rich_message:
             return ContentType.RICH_MESSAGE
         if self.community_chat_added:
@@ -3928,6 +3929,7 @@ class Message(MaybeInaccessibleMessage):
         | SendAudio
         | SendContact
         | SendDocument
+        | SendLivePhoto
         | SendLocation
         | SendMessage
         | SendPhoto
@@ -3972,6 +3974,7 @@ class Message(MaybeInaccessibleMessage):
             SendContact,
             SendDice,
             SendDocument,
+            SendLivePhoto,
             SendLocation,
             SendMessage,
             SendPhoto,
@@ -4029,6 +4032,16 @@ class Message(MaybeInaccessibleMessage):
                 caption_entities=self.caption_entities,
                 **kwargs,
             ).as_(self._bot)
+        if self.live_photo:
+            photo = self.photo or self.live_photo.photo
+            if photo:
+                return SendLivePhoto(
+                    live_photo=self.live_photo.file_id,
+                    photo=photo[-1].file_id,
+                    caption=self.caption,
+                    caption_entities=self.caption_entities,
+                    **kwargs,
+                ).as_(self._bot)
         if self.photo:
             return SendPhoto(
                 photo=self.photo[-1].file_id,

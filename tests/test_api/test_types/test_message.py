@@ -27,6 +27,7 @@ from aiogram.methods import (
     SendDocument,
     SendGame,
     SendInvoice,
+    SendLivePhoto,
     SendLocation,
     SendMediaGroup,
     SendMessage,
@@ -917,6 +918,7 @@ TEST_MESSAGE_LIVE_PHOTO = Message(
         width=640,
         height=480,
         duration=3,
+        photo=[PhotoSize(file_id="file id", file_unique_id="file unique id", width=1, height=1)],
     ),
     chat=Chat(id=42, type="private"),
     from_user=User(id=42, is_bot=False, first_name="Test"),
@@ -1122,7 +1124,7 @@ MESSAGES_AND_COPY_METHODS = [
     [TEST_MESSAGE_MANAGED_BOT_CREATED, None],
     [TEST_MESSAGE_POLL_OPTION_ADDED, None],
     [TEST_MESSAGE_POLL_OPTION_DELETED, None],
-    [TEST_MESSAGE_LIVE_PHOTO, None],
+    [TEST_MESSAGE_LIVE_PHOTO, SendLivePhoto],
     [TEST_MESSAGE_RICH_MESSAGE, None],
     [TEST_MESSAGE_COMMUNITY_CHAT_ADDED, None],
     [TEST_MESSAGE_COMMUNITY_CHAT_REMOVED, None],
@@ -1179,6 +1181,17 @@ class TestMessage:
     )
     def test_content_type(self, message: Message, content_type: str):
         assert message.content_type == content_type
+
+    def test_live_photo_takes_precedence_over_photo(self):
+        # Telegram sends a regular `photo` alongside `live_photo`
+        message = TEST_MESSAGE_LIVE_PHOTO.model_copy(
+            update={
+                "photo": [
+                    PhotoSize(file_id="file id", file_unique_id="file id", width=1, height=1)
+                ]
+            }
+        )
+        assert message.content_type == ContentType.LIVE_PHOTO
 
     def test_chat_owner_left_no_successor(self):
         assert (
