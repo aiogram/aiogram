@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING, Any
 
+from ..client.default import Default
 from ..types import (
     ChatIdUnion,
     InputFileUnion,
@@ -36,7 +37,7 @@ class SendLivePhoto(TelegramMethod[Message]):
     """Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat"""
     caption: str | None = None
     """Video caption (may also be used when resending videos by *file_id*), 0-1024 characters after entities parsing"""
-    parse_mode: str | None = None
+    parse_mode: str | Default | None = Default("parse_mode")
     """Mode for parsing entities in the video caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details"""
     caption_entities: list[MessageEntity] | None = None
     """A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*"""
@@ -77,7 +78,7 @@ class SendLivePhoto(TelegramMethod[Message]):
             message_thread_id: int | None = None,
             direct_messages_topic_id: int | None = None,
             caption: str | None = None,
-            parse_mode: str | None = None,
+            parse_mode: str | Default | None = Default("parse_mode"),
             caption_entities: list[MessageEntity] | None = None,
             show_caption_above_media: bool | None = None,
             has_spoiler: bool | None = None,

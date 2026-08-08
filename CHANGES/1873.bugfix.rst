@@ -1,0 +1,9 @@
+Fixed bot-level ``parse_mode`` default not being applied to recently added methods and types.
+``sendGift``, ``giftPremiumSubscription``, ``sendPaidMedia``, ``sendLivePhoto``, ``sendMessageDraft``,
+``postStory``, ``editStory``, ``editEphemeralMessageText``, ``editEphemeralMessageCaption``,
+:class:`aiogram.types.input_checklist.InputChecklist`,
+:class:`aiogram.types.input_checklist_task.InputChecklistTask`,
+:class:`aiogram.types.input_media_live_photo.InputMediaLivePhoto` and
+:class:`aiogram.types.input_media_voice_note.InputMediaVoiceNote`
+were missing the ``Default("parse_mode")`` sentinel, so
+``Bot(default=DefaultBotProperties(parse_mode=...))`` was silently ignored and captions were sent unformatted.

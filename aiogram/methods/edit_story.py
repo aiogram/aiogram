@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
+from ..client.default import Default
 from ..types import InputStoryContentUnion, MessageEntity, Story, StoryArea
 from .base import TelegramMethod
 
@@ -24,7 +25,7 @@ class EditStory(TelegramMethod[Story]):
     """Content of the story"""
     caption: str | None = None
     """Caption of the story, 0-2048 characters after entities parsing"""
-    parse_mode: str | None = None
+    parse_mode: str | Default | None = Default("parse_mode")
     """Mode for parsing entities in the story caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details"""
     caption_entities: list[MessageEntity] | None = None
     """A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*"""
@@ -42,7 +43,7 @@ class EditStory(TelegramMethod[Story]):
             story_id: int,
             content: InputStoryContentUnion,
             caption: str | None = None,
-            parse_mode: str | None = None,
+            parse_mode: str | Default | None = Default("parse_mode"),
             caption_entities: list[MessageEntity] | None = None,
             areas: list[StoryArea] | None = None,
             **__pydantic_kwargs: Any,

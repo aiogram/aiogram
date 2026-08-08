@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Literal
 
+from ..client.default import Default
 from .base import TelegramObject
 
 if TYPE_CHECKING:
@@ -21,7 +22,7 @@ class InputMediaVoiceNote(TelegramObject):
     """File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass "attach://<file_attach_name>" to upload a new one using multipart/form-data under <file_attach_name> name. :ref:`More information on Sending Files » <sending-files>`"""
     caption: str | None = None
     """*Optional*. Caption of the voice message to be sent, 0-1024 characters after entities parsing"""
-    parse_mode: str | None = None
+    parse_mode: str | Default | None = Default("parse_mode")
     """*Optional*. Mode for parsing entities in the voice message caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details"""
     caption_entities: list[MessageEntity] | None = None
     """*Optional*. List of special entities that appear in the caption, which can be specified instead of *parse_mode*"""
@@ -38,7 +39,7 @@ class InputMediaVoiceNote(TelegramObject):
             type: Literal["voice_note"] = "voice_note",
             media: str,
             caption: str | None = None,
-            parse_mode: str | None = None,
+            parse_mode: str | Default | None = Default("parse_mode"),
             caption_entities: list[MessageEntity] | None = None,
             duration: int | None = None,
             **__pydantic_kwargs: Any,

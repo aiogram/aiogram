@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING, Any
 
+from ..client.default import Default
 from ..types import ChatIdUnion, InlineKeyboardMarkup, LinkPreviewOptions, MessageEntity
 from .base import TelegramMethod
 
@@ -22,7 +23,7 @@ class EditEphemeralMessageText(TelegramMethod[bool]):
     """Identifier of the ephemeral message to edit"""
     text: str
     """New text of the message, 1-4096 characters after entity parsing"""
-    parse_mode: str | None = None
+    parse_mode: str | Default | None = Default("parse_mode")
     """Mode for parsing entities in the message text. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details"""
     entities: list[MessageEntity] | None = None
     """A JSON-serialized list of special entities that appear in message text, which can be specified instead of *parse_mode*"""
@@ -42,7 +43,7 @@ class EditEphemeralMessageText(TelegramMethod[bool]):
             receiver_user_id: int,
             ephemeral_message_id: int,
             text: str,
-            parse_mode: str | None = None,
+            parse_mode: str | Default | None = Default("parse_mode"),
             entities: list[MessageEntity] | None = None,
             link_preview_options: LinkPreviewOptions | None = None,
             reply_markup: InlineKeyboardMarkup | None = None,

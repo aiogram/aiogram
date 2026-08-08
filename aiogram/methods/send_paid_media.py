@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
+from ..client.default import Default
 from ..types import (
     ChatIdUnion,
     InputPaidMediaUnion,
@@ -40,7 +41,7 @@ class SendPaidMedia(TelegramMethod[Message]):
     """Bot-defined paid media payload, 0-128 bytes. This will not be displayed to the user, use it for your internal processes"""
     caption: str | None = None
     """Media caption, 0-1024 characters after entities parsing"""
-    parse_mode: str | None = None
+    parse_mode: str | Default | None = Default("parse_mode")
     """Mode for parsing entities in the media caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details"""
     caption_entities: list[MessageEntity] | None = None
     """A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*"""
@@ -74,7 +75,7 @@ class SendPaidMedia(TelegramMethod[Message]):
             direct_messages_topic_id: int | None = None,
             payload: str | None = None,
             caption: str | None = None,
-            parse_mode: str | None = None,
+            parse_mode: str | Default | None = Default("parse_mode"),
             caption_entities: list[MessageEntity] | None = None,
             show_caption_above_media: bool | None = None,
             disable_notification: bool | None = None,

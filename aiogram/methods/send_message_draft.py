@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
+from ..client.default import Default
 from ..types import MessageEntity
 from .base import TelegramMethod
 
@@ -24,7 +25,7 @@ class SendMessageDraft(TelegramMethod[bool]):
     """Unique identifier for the target message thread"""
     text: str | None = None
     """Text of the message to be sent, 0-4096 characters after entities parsing. Pass an empty text to show a 'Thinking…' placeholder"""
-    parse_mode: str | None = None
+    parse_mode: str | Default | None = Default("parse_mode")
     """Mode for parsing entities in the message text. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details"""
     entities: list[MessageEntity] | None = None
     """A JSON-serialized list of special entities that appear in message text, which can be specified instead of *parse_mode*"""
@@ -40,7 +41,7 @@ class SendMessageDraft(TelegramMethod[bool]):
             draft_id: int,
             message_thread_id: int | None = None,
             text: str | None = None,
-            parse_mode: str | None = None,
+            parse_mode: str | Default | None = Default("parse_mode"),
             entities: list[MessageEntity] | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:

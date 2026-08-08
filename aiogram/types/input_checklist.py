@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
+from ..client.default import Default
 from .base import TelegramObject
 
 if TYPE_CHECKING:
@@ -20,7 +21,7 @@ class InputChecklist(TelegramObject):
     """Title of the checklist; 1-255 characters after entities parsing"""
     tasks: list[InputChecklistTask]
     """List of 1-30 tasks in the checklist"""
-    parse_mode: str | None = None
+    parse_mode: str | Default | None = Default("parse_mode")
     """*Optional*. Mode for parsing entities in the title. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details"""
     title_entities: list[MessageEntity] | None = None
     """*Optional*. List of special entities that appear in the title, which can be specified instead of parse_mode. Currently, only *bold*, *italic*, *underline*, *strikethrough*, *spoiler*, *custom_emoji*, and *date_time* entities are allowed"""
@@ -38,7 +39,7 @@ class InputChecklist(TelegramObject):
             *,
             title: str,
             tasks: list[InputChecklistTask],
-            parse_mode: str | None = None,
+            parse_mode: str | Default | None = Default("parse_mode"),
             title_entities: list[MessageEntity] | None = None,
             others_can_add_tasks: bool | None = None,
             others_can_mark_tasks_as_done: bool | None = None,
