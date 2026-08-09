@@ -76,6 +76,20 @@ def _html_style_for_tests():
     return _html_style
 
 
+def _markdown_style_for_tests():
+    from aiogram.utils.rich_text import _markdown_style  # noqa: PLC2701
+
+    return _markdown_style
+
+
+def _bold_chain(depth: int, *, wrap_in_list: bool) -> RichTextBold:
+    """Build a chain of ``depth`` nested ``RichTextBold`` nodes around a leaf string."""
+    node: RichTextBold | str = "deep"
+    for _ in range(depth):
+        node = RichTextBold(text=[node]) if wrap_in_list else RichTextBold(text=node)
+    return node
+
+
 class TestRichTextEntities:
     @pytest.mark.parametrize(
         "text_node,expected_html,expected_md",
@@ -236,6 +250,16 @@ class TestRichTextEntities:
         node = RichTextCode(text="<b>&")
         assert render_html([RichBlockParagraph(text=node)]) == "<p><code><b>&</code></p>"
 
+    def test_code_plain_text_extraction(self):
+        from aiogram.utils.rich_text import _plain_text  # noqa: PLC2701
+
+        assert _plain_text([RichTextItalic(text="a"), RichTextBold(text="b")]) == "ab"
+        assert (
+            _plain_text(RichTextCustomEmoji(custom_emoji_id="id", alternative_text=":emoji:"))
+            == ":emoji:"
+        )
+        assert _plain_text(RichTextAnchor(name="x")) == ""
+
 
 class TestRichBlocks:
     def test_paragraph(self):
@@ -324,6 +348,23 @@ class TestRichBlocks:
         )
         assert render_md([block]) == "3. a\n4. b"
 
+    def test_ordered_list_with_type(self):
+        block = RichBlockList(
+            items=[
+                RichBlockListItem(
+                    label="a",
+                    blocks=[RichBlockParagraph(text="a")],
+                    value=3,
+                    type="a",
+                )
+            ]
+        )
+        assert (
+            render_html([block]) == '<ol start="3" type="a">'
+            '<li value="3" type="a"><p>a</p></li></ol>'
+        )
+        assert render_md([block]) == "3. a"
+
     def test_block_quotation(self):
         block = RichBlockBlockQuotation(
             blocks=[RichBlockParagraph(text="quoted")],
@@ -390,6 +431,52 @@ class TestRichBlocks:
         )
         assert render_md([block]) == "| H |\n| :--- |\nTable caption"
 
+    def test_table_cell_span(self):
+        block = RichBlockTable(
+            cells=[
+                [
+                    RichBlockTableCell(
+                        text="x",
+                        align="left",
+                        valign="top",
+                        colspan=2,
+                        rowspan=2,
+                    )
+                ]
+            ]
+        )
+        assert (
+            render_html([block])
+            == '<table><tr><td align="left" valign="top" colspan="2" rowspan="2">x</td></tr></table>'
+        )
+
+    def test_table_striped(self):
+        block = RichBlockTable(
+            cells=[
+                [
+                    RichBlockTableCell(text="H", align="left", valign="top", is_header=True),
+                ]
+            ],
+            is_striped=True,
+        )
+        assert (
+            render_html([block])
+            == '<table striped><tr><th align="left" valign="top">H</th></tr></table>'
+        )
+
+    def test_empty_table(self):
+        block = RichBlockTable(cells=[])
+        assert render_html([block]) == "<table></table>"
+        assert render_md([block]) == ""
+
+    def test_markdown_style_shims(self):
+        from aiogram.utils.rich_text import _MarkdownStyle  # noqa: PLC2701
+
+        style = _MarkdownStyle()
+        assert style.table("x") == "x"
+        assert style.list("x") == "x"
+        assert style.list_item("x") == "x"
+
     def test_map(self):
         block = RichBlockMap(
             location=Location(latitude=41.9, longitude=12.5),
@@ -441,6 +528,14 @@ class TestRichBlocks:
         assert render_html([block]) == "<figcaption>Caption</figcaption>"
         assert render_md([block]) == "Caption"
 
+    def test_media_blocks_with_caption_credit(self):
+        block = RichBlockPhoto(
+            photo=[PhotoSize(file_id="f", file_unique_id="u", width=1, height=1)],
+            caption=RichBlockCaption(text="Caption", credit="By"),
+        )
+        assert render_html([block]) == "<figcaption>Caption<cite>By</cite></figcaption>"
+        assert render_md([block]) == "Caption\n> By"
+
     def test_unsupported_block_type(self):
         from aiogram.utils.rich_text import _render_block  # noqa: PLC2701
 
@@ -467,6 +562,72 @@ class TestNesting:
             node = RichTextBold(text=[node])
         with pytest.raises(ValueError, match="nesting exceeds the maximum of 16"):
             render_html([RichBlockParagraph(text=node)])
+
+    def test_depth_boundary_plain(self):
+        from aiogram.utils.rich_text import _render_text  # noqa: PLC2701
+
+        for style in (_html_style_for_tests(), _markdown_style_for_tests()):
+            assert _render_text(_bold_chain(16, wrap_in_list=False), style)
+            with pytest.raises(ValueError, match="nesting exceeds the maximum of 16"):
+                _render_text(_bold_chain(17, wrap_in_list=False), style)
+
+    def test_depth_boundary_list_wrapped(self):
+        from aiogram.utils.rich_text import _render_text  # noqa: PLC2701
+
+        for style in (_html_style_for_tests(), _markdown_style_for_tests()):
+            assert _render_text(_bold_chain(16, wrap_in_list=True), style)
+            with pytest.raises(ValueError, match="nesting exceeds the maximum of 16"):
+                _render_text(_bold_chain(17, wrap_in_list=True), style)
+
+    def test_depth_guard_via_list_item(self):
+        block = RichBlockList(
+            items=[
+                RichBlockListItem(
+                    label="x",
+                    blocks=[RichBlockParagraph(text=_bold_chain(15, wrap_in_list=False))],
+                )
+            ]
+        )
+        with pytest.raises(ValueError, match="nesting exceeds the maximum of 16"):
+            render_html([block])
+        with pytest.raises(ValueError, match="nesting exceeds the maximum of 16"):
+            render_md([block])
+
+    def test_depth_guard_via_table_cell(self):
+        block = RichBlockTable(
+            cells=[
+                [
+                    RichBlockTableCell(
+                        text=_bold_chain(16, wrap_in_list=False),
+                        align="left",
+                        valign="top",
+                    )
+                ]
+            ]
+        )
+        with pytest.raises(ValueError, match="nesting exceeds the maximum of 16"):
+            render_html([block])
+        with pytest.raises(ValueError, match="nesting exceeds the maximum of 16"):
+            render_md([block])
+
+    def test_depth_guard_via_media_caption(self):
+        block = RichBlockPhoto(
+            photo=[PhotoSize(file_id="f", file_unique_id="u", width=1, height=1)],
+            caption=RichBlockCaption(text=_bold_chain(16, wrap_in_list=False)),
+        )
+        with pytest.raises(ValueError, match="nesting exceeds the maximum of 16"):
+            render_html([block])
+        with pytest.raises(ValueError, match="nesting exceeds the maximum of 16"):
+            render_md([block])
+
+    def test_depth_guard_via_blockquote(self):
+        node = RichBlockParagraph(text="x")
+        for _ in range(17):
+            node = RichBlockBlockQuotation(blocks=[node])
+        with pytest.raises(ValueError, match="nesting exceeds the maximum of 16"):
+            render_html([node])
+        with pytest.raises(ValueError, match="nesting exceeds the maximum of 16"):
+            render_md([node])
 
 
 class TestRichMessageHelper:

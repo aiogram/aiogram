@@ -252,7 +252,7 @@ def _render_text(node: Any, style: _HtmlStyle | _MarkdownStyle, depth: int = 0) 
     if isinstance(node, str):
         return style.quote(node)
     if isinstance(node, list):
-        return "".join(_render_text(item, style, depth + 1) for item in node)
+        return "".join(_render_text(item, style, depth) for item in node)
 
     from aiogram.types import (
         RichTextAnchor,
@@ -356,24 +356,24 @@ def _plain_text(node: Any) -> str:
     return ""
 
 
-def _render_caption(caption: Any, style: _HtmlStyle | _MarkdownStyle) -> str:
+def _render_caption(caption: Any, style: _HtmlStyle | _MarkdownStyle, depth: int = 0) -> str:
     if caption is None:
         return ""
-    credit = _render_text(caption.credit, style) if caption.credit else ""
-    return style.caption(_render_text(caption.text, style), credit)
+    credit = _render_text(caption.credit, style, depth + 1) if caption.credit else ""
+    return style.caption(_render_text(caption.text, style, depth + 1), credit)
 
 
-def _render_media(block: Any, style: _HtmlStyle | _MarkdownStyle) -> str:
+def _render_media(block: Any, style: _HtmlStyle | _MarkdownStyle, depth: int = 0) -> str:
     """Media blocks can't be represented in the output because received media
     carry `file_id` objects, not URLs. Only the caption is rendered.
     """
     caption = getattr(block, "caption", None)
     if caption is None:
         return ""
-    return _render_caption(caption, style)
+    return _render_caption(caption, style, depth)
 
 
-def _render_list(block: Any, style: _HtmlStyle | _MarkdownStyle) -> str:
+def _render_list(block: Any, style: _HtmlStyle | _MarkdownStyle, depth: int = 0) -> str:
     from aiogram.types import RichBlockListItem
 
     items: list[Any] = block.items
@@ -388,7 +388,7 @@ def _render_list(block: Any, style: _HtmlStyle | _MarkdownStyle) -> str:
         if has_checkbox:
             rendered = "".join(
                 style.checkbox_item(
-                    _render_list_item_content(item, style),
+                    _render_list_item_content(item, style, depth + 1),
                     bool(item.is_checked),
                 )
                 for item in items
@@ -405,7 +405,7 @@ def _render_list(block: Any, style: _HtmlStyle | _MarkdownStyle) -> str:
             tag = f"<ol{attrs_str}>"
             rendered = "".join(
                 style.list_item(
-                    _render_list_item_content(item, style),
+                    _render_list_item_content(item, style, depth + 1),
                     value_=getattr(item, "value", None),
                     type_=getattr(item, "type", None),
                 )
@@ -413,13 +413,14 @@ def _render_list(block: Any, style: _HtmlStyle | _MarkdownStyle) -> str:
             )
             return f"{tag}{rendered}</ol>"
         rendered = "".join(
-            style.list_item(_render_list_item_content(item, style)) for item in items
+            style.list_item(_render_list_item_content(item, style, depth + 1)) for item in items
         )
         return style.list(rendered, ordered=False)
 
     if has_checkbox:
         return "\n".join(
-            f"- [{'x' if item.is_checked else ' '}] {_render_list_item_content(item, style)}"
+            f"- [{'x' if item.is_checked else ' '}] "
+            f"{_render_list_item_content(item, style, depth + 1)}"
             for item in items
         )
     if ordered:
@@ -429,18 +430,20 @@ def _render_list(block: Any, style: _HtmlStyle | _MarkdownStyle) -> str:
             value = getattr(item, "value", None)
             if value is not None:
                 counter = value
-            lines.append(f"{counter}. {_render_list_item_content(item, style)}")
+            lines.append(f"{counter}. {_render_list_item_content(item, style, depth + 1)}")
             counter += 1
         return "\n".join(lines)
-    return "\n".join(f"- {_render_list_item_content(item, style)}" for item in items)
+    return "\n".join(f"- {_render_list_item_content(item, style, depth + 1)}" for item in items)
 
 
-def _render_list_item_content(item: Any, style: _HtmlStyle | _MarkdownStyle) -> str:
-    content = "\n".join(_render_block(block, style) for block in item.blocks)
+def _render_list_item_content(
+    item: Any, style: _HtmlStyle | _MarkdownStyle, depth: int = 0
+) -> str:
+    content = "\n".join(_render_block(block, style, depth) for block in item.blocks)
     return content.strip()
 
 
-def _render_table(block: Any, style: _HtmlStyle | _MarkdownStyle) -> str:
+def _render_table(block: Any, style: _HtmlStyle | _MarkdownStyle, depth: int = 0) -> str:
     from aiogram.types import RichBlockTableCell
 
     rows = [[cell for cell in row if isinstance(cell, RichBlockTableCell)] for row in block.cells]
@@ -450,7 +453,7 @@ def _render_table(block: Any, style: _HtmlStyle | _MarkdownStyle) -> str:
         for row in rows:
             rendered_cells = "".join(
                 style.table_cell(
-                    _render_text(cell.text, style) if cell.text else "",
+                    _render_text(cell.text, style, depth + 1) if cell.text else "",
                     is_header=bool(cell.is_header),
                     align=cell.align,
                     valign=cell.valign,
@@ -460,7 +463,11 @@ def _render_table(block: Any, style: _HtmlStyle | _MarkdownStyle) -> str:
                 for cell in row
             )
             rendered_rows.append(f"<tr>{rendered_cells}</tr>")
-        caption = style.table_caption(_render_text(block.caption, style)) if block.caption else ""
+        caption = (
+            style.table_caption(_render_text(block.caption, style, depth + 1))
+            if block.caption
+            else ""
+        )
         return style.table(
             f"{caption}{''.join(rendered_rows)}",
             bordered=bool(block.is_bordered),
@@ -479,7 +486,7 @@ def _render_table(block: Any, style: _HtmlStyle | _MarkdownStyle) -> str:
     body = normalized[1:]
 
     def render_cell(cell: RichBlockTableCell) -> str:
-        text = _render_text(cell.text, style) if cell.text else ""
+        text = _render_text(cell.text, style, depth + 1) if cell.text else ""
         return text.replace("|", "\\|")
 
     align_map = {"left": ":---", "center": ":---:", "right": "---:"}
@@ -490,7 +497,7 @@ def _render_table(block: Any, style: _HtmlStyle | _MarkdownStyle) -> str:
     lines = [header, separator]
     lines.extend("| " + " | ".join(render_cell(cell) for cell in row) + " |" for row in body)
     if block.caption:
-        lines.append(_render_text(block.caption, style))
+        lines.append(_render_text(block.caption, style, depth + 1))
     return "\n".join(lines)
 
 
@@ -540,27 +547,27 @@ def _render_block(block: Any, style: _HtmlStyle | _MarkdownStyle, depth: int = 0
     if isinstance(block, RichBlockAnchor):
         return style.anchor(block.name)
     if isinstance(block, RichBlockList):
-        return _render_list(block, style)
+        return _render_list(block, style, depth + 1)
     if isinstance(block, RichBlockBlockQuotation):
         content = "\n".join(_render_block(inner, style, depth + 1) for inner in block.blocks)
-        credit = _render_text(block.credit, style) if block.credit else ""
+        credit = _render_text(block.credit, style, depth + 1) if block.credit else ""
         return style.blockquote(content, credit)
     if isinstance(block, RichBlockPullQuotation):
         content = _render_text(block.text, style, depth + 1)
-        credit = _render_text(block.credit, style) if block.credit else ""
+        credit = _render_text(block.credit, style, depth + 1) if block.credit else ""
         return style.pullquote(content, credit)
     if isinstance(block, RichBlockCollage):
         content = "".join(_render_block(inner, style, depth + 1) for inner in block.blocks)
-        caption = _render_caption(block.caption, style)
+        caption = _render_caption(block.caption, style, depth + 1)
         tag = "tg-collage"
         return f"<{tag}>{content}</{tag}>{caption}"
     if isinstance(block, RichBlockSlideshow):
         content = "".join(_render_block(inner, style, depth + 1) for inner in block.blocks)
-        caption = _render_caption(block.caption, style)
+        caption = _render_caption(block.caption, style, depth + 1)
         tag = "tg-slideshow"
         return f"<{tag}>{content}</{tag}>{caption}"
     if isinstance(block, RichBlockTable):
-        return _render_table(block, style)
+        return _render_table(block, style, depth + 1)
     if isinstance(block, RichBlockDetails):
         summary = _render_text(block.summary, style, depth + 1)
         content = "\n".join(_render_block(inner, style, depth + 1) for inner in block.blocks)
@@ -568,7 +575,7 @@ def _render_block(block: Any, style: _HtmlStyle | _MarkdownStyle, depth: int = 0
     if isinstance(block, RichBlockMap):
         lat = f"{html.escape(str(block.location.latitude), quote=True)}"
         long = f"{html.escape(str(block.location.longitude), quote=True)}"
-        caption = _render_caption(block.caption, style)
+        caption = _render_caption(block.caption, style, depth + 1)
         map_tag = f'<tg-map lat="{lat}" long="{long}" zoom="{block.zoom}"/>'
         return f"{map_tag}{caption}"
     if isinstance(block, RichBlockThinking):
@@ -577,7 +584,7 @@ def _render_block(block: Any, style: _HtmlStyle | _MarkdownStyle, depth: int = 0
         block,
         (RichBlockAnimation, RichBlockAudio, RichBlockPhoto, RichBlockVideo, RichBlockVoiceNote),
     ):
-        return _render_media(block, style)
+        return _render_media(block, style, depth + 1)
 
     raise TypeError(f"Unsupported rich block: {type(block).__name__}")
 
