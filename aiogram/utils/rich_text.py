@@ -299,7 +299,8 @@ def _render_text(node: Any, style: _HtmlStyle | _MarkdownStyle, depth: int = 0) 
     if isinstance(node, RichTextSuperscript):
         return style.superscript(_render_text(node.text, style, depth + 1))
     if isinstance(node, RichTextCode):
-        return style.code(_plain_text(node.text))
+        # Known gap: MarkdownDecoration.code() has no backtick-fence-width safety.
+        return style.code(style.quote(_plain_text(node.text)))
     if isinstance(node, RichTextCustomEmoji):
         return style.custom_emoji(node.alternative_text, node.custom_emoji_id)
     if isinstance(node, RichTextDateTime):
@@ -309,7 +310,8 @@ def _render_text(node: Any, style: _HtmlStyle | _MarkdownStyle, depth: int = 0) 
             node.date_time_format,
         )
     if isinstance(node, RichTextMathematicalExpression):
-        return style.math(node.expression)
+        expr = style.quote(node.expression) if isinstance(style, _HtmlStyle) else node.expression
+        return style.math(expr)
     if isinstance(node, RichTextUrl):
         return style.link(_render_text(node.text, style, depth + 1), node.url)
     if isinstance(node, RichTextEmailAddress):
@@ -534,7 +536,7 @@ def _render_block(block: Any, style: _HtmlStyle | _MarkdownStyle, depth: int = 0
     if isinstance(block, RichBlockSectionHeading):
         return style.heading(_render_text(block.text, style, depth + 1), block.size)
     if isinstance(block, RichBlockPreformatted):
-        text = _plain_text(block.text)
+        text = style.quote(_plain_text(block.text))
         if block.language:
             return style.pre_language(text, block.language)
         return style.pre(text)
@@ -543,7 +545,8 @@ def _render_block(block: Any, style: _HtmlStyle | _MarkdownStyle, depth: int = 0
     if isinstance(block, RichBlockDivider):
         return "<hr/>" if isinstance(style, _HtmlStyle) else "---"
     if isinstance(block, RichBlockMathematicalExpression):
-        return style.math_block(block.expression)
+        expr = style.quote(block.expression) if isinstance(style, _HtmlStyle) else block.expression
+        return style.math_block(expr)
     if isinstance(block, RichBlockAnchor):
         return style.anchor(block.name)
     if isinstance(block, RichBlockList):

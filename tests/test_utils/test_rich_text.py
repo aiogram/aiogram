@@ -246,9 +246,29 @@ class TestRichTextEntities:
             == '<p><b>&lt;b&gt;&amp;&lt;/b&gt;"</b></p>'
         )
 
-    def test_code_not_escaped(self):
+    def test_code_escaped(self):
         node = RichTextCode(text="<b>&")
-        assert render_html([RichBlockParagraph(text=node)]) == "<p><code><b>&</code></p>"
+        assert render_html([RichBlockParagraph(text=node)]) == "<p><code>&lt;b&gt;&amp;</code></p>"
+        assert render_md([RichBlockParagraph(text=node)]) == "`<b\\>&`"
+
+    @pytest.mark.xfail(
+        reason="MarkdownDecoration.code() has no backtick-fence-width safety",
+    )
+    def test_markdown_code_span_with_backtick(self):
+        node = RichTextCode(text="a`b")
+        assert render_md([RichBlockParagraph(text=node)]) == "``a`b``"
+
+    @pytest.mark.parametrize(
+        "expression,expected_html,expected_md",
+        [
+            ["a < b & c", "<tg-math>a &lt; b &amp; c</tg-math>", "$a < b & c$"],
+            [r"\alpha_1", "<tg-math>\\alpha_1</tg-math>", r"$\alpha_1$"],
+        ],
+    )
+    def test_math_escaping(self, expression, expected_html, expected_md):
+        node = RichTextMathematicalExpression(expression=expression)
+        assert render_html([RichBlockParagraph(text=node)]) == f"<p>{expected_html}</p>"
+        assert render_md([RichBlockParagraph(text=node)]) == expected_md
 
     def test_code_plain_text_extraction(self):
         from aiogram.utils.rich_text import _plain_text  # noqa: PLC2701
@@ -276,12 +296,31 @@ class TestRichBlocks:
         assert (
             render_html([block]) == "<pre><code class=\"language-python\">print('hi')</code></pre>"
         )
-        assert render_md([block]) == "```python\nprint('hi')\n```"
+        assert render_md([block]) == "```python\nprint\\('hi'\\)\n```"
 
     def test_preformatted_without_language(self):
         block = RichBlockPreformatted(text="plain")
         assert render_html([block]) == "<pre>plain</pre>"
         assert render_md([block]) == "```\nplain\n```"
+
+    @pytest.mark.parametrize(
+        "block,expected_html,expected_md",
+        [
+            [
+                RichBlockPreformatted(text="<b>&"),
+                "<pre>&lt;b&gt;&amp;</pre>",
+                "```\n<b\\>&\n```",
+            ],
+            [
+                RichBlockPreformatted(text="<b>&", language="html"),
+                '<pre><code class="language-html">&lt;b&gt;&amp;</code></pre>',
+                "```html\n<b\\>&\n```",
+            ],
+        ],
+    )
+    def test_preformatted_escaped(self, block, expected_html, expected_md):
+        assert render_html([block]) == expected_html
+        assert render_md([block]) == expected_md
 
     def test_footer(self):
         block = RichBlockFooter(text="foot")
@@ -296,6 +335,18 @@ class TestRichBlocks:
         block = RichBlockMathematicalExpression(expression="E = mc^2")
         assert render_html([block]) == "<tg-math-block>E = mc^2</tg-math-block>"
         assert render_md([block]) == "$$E = mc^2$$"
+
+    @pytest.mark.parametrize(
+        "expression,expected_html,expected_md",
+        [
+            ["a < b & c", "<tg-math-block>a &lt; b &amp; c</tg-math-block>", "$$a < b & c$$"],
+            [r"\alpha_1", "<tg-math-block>\\alpha_1</tg-math-block>", r"$$\alpha_1$$"],
+        ],
+    )
+    def test_block_math_escaping(self, expression, expected_html, expected_md):
+        block = RichBlockMathematicalExpression(expression=expression)
+        assert render_html([block]) == expected_html
+        assert render_md([block]) == expected_md
 
     def test_anchor(self):
         block = RichBlockAnchor(name="top")
