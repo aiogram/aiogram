@@ -1,0 +1,1 @@
+Added a Requirements section to install.rst specifying the minimum required Python version.
