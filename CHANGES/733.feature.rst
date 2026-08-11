@@ -1,0 +1,3 @@
+Add ``source_locale`` parameter to :class:`aiogram.utils.i18n.I18n` and handle source locale in :class:`aiogram.utils.i18n.middleware.SimpleI18nMiddleware`.
+
+When ``source_locale`` is set and the user language matches it, ``gettext`` returns the original text even if the source locale is not compiled. This fixes the issue where English (or any source language) users would receive the default locale text instead of the original.

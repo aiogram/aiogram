@@ -20,10 +20,12 @@ class I18n(ContextInstanceMixin["I18n"]):
         path: str | Path,
         default_locale: str = "en",
         domain: str = "messages",
+        source_locale: str | None = None,
     ) -> None:
         self.path = Path(path).resolve()
         self.default_locale = default_locale
         self.domain = domain
+        self.source_locale = source_locale or default_locale
         self.ctx_locale = ContextVar("aiogram_ctx_locale", default=default_locale)
         self.locales = self.find_locales()
 
@@ -112,6 +114,11 @@ class I18n(ContextInstanceMixin["I18n"]):
         """
         if locale is None:
             locale = self.current_locale
+
+        if locale == self.source_locale:
+            if n == 1:
+                return singular
+            return plural or singular
 
         if locale not in self.locales:
             if n == 1:
