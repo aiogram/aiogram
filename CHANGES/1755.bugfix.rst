@@ -1,0 +1,5 @@
+Fixed :class:`aiogram.utils.i18n.SimpleI18nMiddleware` never resolving
+territory-specific locales: a Telegram ``language_code`` like ``pt-br`` now
+selects an available ``pt_BR`` translations directory (falling back to the
+bare language when only it exists), instead of always resolving to the bare
+language and missing the territory directory.
