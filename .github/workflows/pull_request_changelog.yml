@@ -41,7 +41,15 @@ jobs:
         if: "always()"
         env:
           CHECK_OUTCOME: ${{ steps.towncrier.outcome }}
-        run: echo "${CHECK_OUTCOME}" > "${RUNNER_TEMP}/changelog-state.txt"
+        # The outcome can also be `skipped`/`cancelled` (e.g. when checkout
+        # fails); report those as `inconclusive` so the comment workflow
+        # neither asks for a changelog nor confirms one.
+        run: |
+          case "${CHECK_OUTCOME}" in
+            success|failure) state="${CHECK_OUTCOME}" ;;
+            *) state="inconclusive" ;;
+          esac
+          echo "${state}" > "${RUNNER_TEMP}/changelog-state.txt"
 
       - name: Upload check result
         if: "always()"

@@ -34,10 +34,13 @@ jobs:
         # The artifact was produced under the unprivileged `pull_request`
         # workflow, so treat its content as untrusted: accept only the known
         # state values and never interpolate the raw content anywhere else.
+        # `inconclusive` means the check job aborted before towncrier ran
+        # (e.g. checkout failure); it is accepted here but matches no comment
+        # step below, so no comment is posted or updated for it.
         run: |
           state="$(head -c 32 changelog-state.txt | tr -d '[:space:]')"
           case "${state}" in
-            success|failure|skip-news) ;;
+            success|failure|skip-news|inconclusive) ;;
             *)
               echo "Unexpected changelog check state" >&2
               exit 1
