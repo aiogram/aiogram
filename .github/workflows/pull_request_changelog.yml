@@ -1,12 +1,15 @@
 name: "Check that changes are described"
 on:
-  pull_request_target:
+  pull_request:
     types:
       - "opened"
       - "reopened"
       - "synchronize"
       - "labeled"
       - "unlabeled"
+
+permissions:
+  contents: read
 
 jobs:
   changes-required:
@@ -16,7 +19,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.pull_request.head.sha }}
           fetch-depth: '0'
 
       - name: Set up Python 3.12
@@ -28,72 +30,35 @@ jobs:
         run: pip install -U towncrier
 
       - name: Check changelog
+        id: towncrier
         env:
           BASE_BRANCH: ${{ github.base_ref }}
         run: |
           git fetch --no-tags origin +refs/heads/${BASE_BRANCH}:refs/remotes/origin/${BASE_BRANCH}
           towncrier check --compare-with origin/${BASE_BRANCH}
 
-      - name: Find bot comment
+      - name: Save check result
         if: "always()"
-        uses: peter-evans/find-comment@v3
-        id: fc
+        env:
+          CHECK_OUTCOME: ${{ steps.towncrier.outcome }}
+        run: echo "${CHECK_OUTCOME}" > "${RUNNER_TEMP}/changelog-state.txt"
+
+      - name: Upload check result
+        if: "always()"
+        uses: actions/upload-artifact@v4
         with:
-          issue-number: ${{ github.event.pull_request.number }}
-          comment-author: 'github-actions[bot]'
-          body-includes: Changelog
-
-      - name: Ask for changelog
-        if: "failure()"
-        uses: peter-evans/create-or-update-comment@v4
-        with:
-          edit-mode: replace
-          comment-id: ${{ steps.fc.outputs.comment-id }}
-          issue-number: ${{ github.event.pull_request.number }}
-          body: |
-            # :x: Changelog is required!
-
-            You need to add a brief description of the changes to the `CHANGES` directory.
-
-            Changes file should be named like `<issue or PR number>.<category>.rst`,
-            example `1234.bugfix.rst` where `1234` is the PR or issue number and `bugfix` is the category.
-
-            The content of the file should be a brief description of the changes in
-            the PR in the format of a description of what has been done.
-
-            Possible categories are: `feature`, `bugfix`, `doc`, `removal` and `misc`.
-
-      - name: Changelog found
-        if: "success()"
-        uses: peter-evans/create-or-update-comment@v4
-        with:
-          edit-mode: replace
-          comment-id: ${{ steps.fc.outputs.comment-id }}
-          issue-number: ${{ github.event.pull_request.number }}
-          body: |
-            # :heavy_check_mark: Changelog found.
-
-            Thank you for adding a description of the changes
+          name: changelog-check
+          path: ${{ runner.temp }}/changelog-state.txt
 
   skip-news:
     runs-on: ubuntu-latest
     if: "contains(github.event.pull_request.labels.*.name, 'skip news')"
     steps:
-      - name: Find bot comment
-        uses: peter-evans/find-comment@v3
-        id: fc
-        with:
-          issue-number: ${{ github.event.pull_request.number }}
-          comment-author: 'github-actions[bot]'
-          body-includes: Changelog
+      - name: Save check result
+        run: echo "skip-news" > "${RUNNER_TEMP}/changelog-state.txt"
 
-      - name: Comment when docs is not needed
-        uses: peter-evans/create-or-update-comment@v4
+      - name: Upload check result
+        uses: actions/upload-artifact@v4
         with:
-          edit-mode: replace
-          comment-id: ${{ steps.fc.outputs.comment-id }}
-          issue-number: ${{ github.event.pull_request.number }}
-          body: |
-            # :corn: Changelog is not needed.
-
-            This PR does not require a changelog because `skip news` label is present.
+          name: changelog-check
+          path: ${{ runner.temp }}/changelog-state.txt

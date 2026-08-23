@@ -1,0 +1,117 @@
+# Posts/updates the changelog check comment on the PR.
+#
+# Runs in a separate workflow_run-triggered workflow because the check itself
+# runs on the unprivileged `pull_request` event (fork PRs get a read-only
+# token there and cannot comment), while this workflow has write access but
+# never checks out or executes PR code.
+name: "Comment changelog check result"
+on:
+  workflow_run:
+    workflows:
+      - "Check that changes are described"
+    types:
+      - "completed"
+
+permissions:
+  actions: read
+  contents: read
+  pull-requests: write
+
+jobs:
+  comment:
+    runs-on: ubuntu-latest
+    if: "github.event.workflow_run.event == 'pull_request'"
+    steps:
+      - name: Download check result
+        uses: actions/download-artifact@v4
+        with:
+          name: changelog-check
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Read check result
+        id: result
+        # The artifact was produced under the unprivileged `pull_request`
+        # workflow, so treat its content as untrusted: accept only the known
+        # state values and never interpolate the raw content anywhere else.
+        run: |
+          state="$(head -c 32 changelog-state.txt | tr -d '[:space:]')"
+          case "${state}" in
+            success|failure|skip-news) ;;
+            *)
+              echo "Unexpected changelog check state" >&2
+              exit 1
+              ;;
+          esac
+          echo "state=${state}" >> "${GITHUB_OUTPUT}"
+
+      - name: Resolve pull request
+        id: pr
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const headSha = context.payload.workflow_run.head_sha;
+            const { data: prs } = await github.rest.repos.listPullRequestsAssociatedWithCommit({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              commit_sha: headSha,
+            });
+            const pr = prs.find((item) => item.head.sha === headSha);
+            if (!pr) {
+              core.info(`No pull request found for head ${headSha}, skipping comment`);
+              return;
+            }
+            core.setOutput("number", pr.number);
+
+      - name: Find bot comment
+        if: "steps.pr.outputs.number"
+        uses: peter-evans/find-comment@v3
+        id: fc
+        with:
+          issue-number: ${{ steps.pr.outputs.number }}
+          comment-author: 'github-actions[bot]'
+          body-includes: Changelog
+
+      - name: Ask for changelog
+        if: "steps.pr.outputs.number && steps.result.outputs.state == 'failure'"
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          edit-mode: replace
+          comment-id: ${{ steps.fc.outputs.comment-id }}
+          issue-number: ${{ steps.pr.outputs.number }}
+          body: |
+            # :x: Changelog is required!
+
+            You need to add a brief description of the changes to the `CHANGES` directory.
+
+            Changes file should be named like `<issue or PR number>.<category>.rst`,
+            example `1234.bugfix.rst` where `1234` is the PR or issue number and `bugfix` is the category.
+
+            The content of the file should be a brief description of the changes in
+            the PR in the format of a description of what has been done.
+
+            Possible categories are: `feature`, `bugfix`, `doc`, `removal` and `misc`.
+
+      - name: Changelog found
+        if: "steps.pr.outputs.number && steps.result.outputs.state == 'success'"
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          edit-mode: replace
+          comment-id: ${{ steps.fc.outputs.comment-id }}
+          issue-number: ${{ steps.pr.outputs.number }}
+          body: |
+            # :heavy_check_mark: Changelog found.
+
+            Thank you for adding a description of the changes
+
+      - name: Comment when docs is not needed
+        if: "steps.pr.outputs.number && steps.result.outputs.state == 'skip-news'"
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          edit-mode: replace
+          comment-id: ${{ steps.fc.outputs.comment-id }}
+          issue-number: ${{ steps.pr.outputs.number }}
+          body: |
+            # :corn: Changelog is not needed.
+
+            This PR does not require a changelog because `skip news` label is present.
