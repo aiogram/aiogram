@@ -35,6 +35,10 @@ async def poll_until(
 
     ``describe_timeout`` builds the failure message and is called only when the wait
     actually fails, so an expensive description costs nothing on the happy path.
+
+    Sleeps are clamped to what is left of the timeout, so ``timeout`` is the promise it
+    reads as: a wait with a coarse ``interval`` gives up on time instead of overshooting by
+    up to a full interval.
     """
     loop = asyncio.get_running_loop()
     deadline = loop.time() + timeout
@@ -44,9 +48,10 @@ async def poll_until(
             result = await result
         if result:
             return result
-        if loop.time() >= deadline:
+        remaining = deadline - loop.time()
+        if remaining <= 0:
             raise WaitTimeoutError(describe_timeout())
-        await asyncio.sleep(interval)
+        await asyncio.sleep(min(interval, remaining))
 
 
 def describe_callable(target: object) -> str:

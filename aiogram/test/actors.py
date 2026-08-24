@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from collections.abc import Iterable, Iterator
 from typing import TYPE_CHECKING, Any, NamedTuple
 from urllib.parse import parse_qs, urlsplit
 
@@ -55,8 +56,32 @@ class _DeepLink(NamedTuple):
     """A URL button parsed as a Telegram deep link, regardless of which bot it targets."""
 
     username: str
-    kind: str  # "start" or "startgroup"
+    kind: str
+    """
+    One of ``"start"``, ``"startgroup"``, ``"startapp"``, ``"startchannel"``,
+    ``"startattach"``, ``"attach"``, ``"invite"``, ``"joinchat"`` or ``"extra_path"``.
+    """
     payload: str
+
+
+# `kind` values whose url does not resolve to a plain bot deep link at all — a chat
+# invite link or a link with extra path segments (a message link, a Mini App shortlink).
+# `username` is meaningless for these, so `follow_deep_link` rejects them before ever
+# comparing against the bot's username.
+_UNRESOLVABLE_LINK_KINDS: dict[str, str] = {
+    "invite": "a chat invite link",
+    "joinchat": "a chat invite link",
+    "extra_path": "a link with extra path segments (a message link or a Mini App shortlink)",
+}
+
+# `kind` values that do resolve to a bot username but open something this toolkit does
+# not simulate — Mini Apps, a channel chooser, or the attachment menu.
+_UNSUPPORTED_START_KINDS: dict[str, str] = {
+    "startapp": "opens a Mini App",
+    "startchannel": "opens a channel chooser",
+    "startattach": "opens the attachment-menu chooser",
+    "attach": "opens the attachment menu",
+}
 
 
 class UserActor:
@@ -242,17 +267,28 @@ class UserActor:
         else:
             url = target
 
-        scope = [message] if message is not None else list(reversed(self.chat.messages))
+        scope: Iterable[Message] = (
+            [message] if message is not None else reversed(self.chat.messages)
+        )
+        deep_link: _DeepLink | None
         if url is None:
-            url = self._find_deep_link_url(scope, message, bot_username)
+            url, deep_link = self._find_deep_link_url(scope, message, bot_username)
         else:
             self._require_button_url(scope, message, url)
+            deep_link = self._parse_deep_link(url)
 
-        deep_link = self._parse_deep_link(url)
         if deep_link is None:
             msg = (
                 f"{url!r} is not a Telegram deep-link url (expected a t.me link or a "
                 f"tg://resolve link)"
+            )
+            raise WorldLookupError(msg)
+        if deep_link.kind in _UNRESOLVABLE_LINK_KINDS:
+            msg = (
+                f"{url!r} is {_UNRESOLVABLE_LINK_KINDS[deep_link.kind]}, not a bot deep "
+                f"link; only `t.me/<username>[?start=<payload>]` and "
+                f"`tg://resolve?domain=<username>[&start=<payload>]` links can be followed "
+                f"here"
             )
             raise WorldLookupError(msg)
         if deep_link.username.lower() != bot_username.lower():
@@ -263,6 +299,14 @@ class UserActor:
                 f"{url!r} is a `startgroup` link, which opens a group chooser in a real "
                 f"Telegram client; only `start` deep links can be followed here — drive "
                 f"a group flow directly with `add_bot()` instead"
+            )
+            raise WorldLookupError(msg)
+        if deep_link.kind in _UNSUPPORTED_START_KINDS:
+            msg = (
+                f"{url!r} is a `{deep_link.kind}` link, which "
+                f"{_UNSUPPORTED_START_KINDS[deep_link.kind]} in a real Telegram client; "
+                f"only `start` deep links can be followed here — Mini Apps, channel "
+                f"targets and the attachment menu are not simulated"
             )
             raise WorldLookupError(msg)
 
@@ -654,15 +698,23 @@ class UserActor:
         values.update(fields or {})
         return Message(**values)
 
-    def _find_button_message(self, callback_data: str) -> Message:
-        for message in reversed(self.chat.messages):
-            markup = message.reply_markup
+    @staticmethod
+    def _iter_buttons(
+        scope: Iterable[Message],
+    ) -> Iterator[tuple[Message, InlineKeyboardButton]]:
+        """Walk message → markup → row → button once, front-to-back, for every searcher."""
+        for candidate in scope:
+            markup = candidate.reply_markup
             if markup is None:
                 continue
             for row in markup.inline_keyboard:
                 for button in row:
-                    if button.callback_data == callback_data:
-                        return message
+                    yield candidate, button
+
+    def _find_button_message(self, callback_data: str) -> Message:
+        for candidate, button in self._iter_buttons(reversed(self.chat.messages)):
+            if button.callback_data == callback_data:
+                return candidate
         msg = (
             f"No message in chat {self.chat.id} carries a button with "
             f"callback_data={callback_data!r}"
@@ -671,24 +723,16 @@ class UserActor:
 
     def _find_deep_link_url(
         self,
-        scope: list[Message],
+        scope: Iterable[Message],
         message: Message | None,
         bot_username: str,
-    ) -> str:
-        for candidate in scope:
-            markup = candidate.reply_markup
-            if markup is None:
+    ) -> tuple[str, _DeepLink]:
+        for _candidate, button in self._iter_buttons(scope):
+            if button.url is None:
                 continue
-            for row in markup.inline_keyboard:
-                for button in row:
-                    if button.url is None:
-                        continue
-                    deep_link = self._parse_deep_link(button.url)
-                    if (
-                        deep_link is not None
-                        and deep_link.username.lower() == bot_username.lower()
-                    ):
-                        return button.url
+            deep_link = self._parse_deep_link(button.url)
+            if deep_link is not None and deep_link.username.lower() == bot_username.lower():
+                return button.url, deep_link
         if message is not None:
             msg = f"Message {message.message_id} carries no deep-link button to @{bot_username}"
         else:
@@ -699,18 +743,13 @@ class UserActor:
 
     def _require_button_url(
         self,
-        scope: list[Message],
+        scope: Iterable[Message],
         message: Message | None,
         url: str,
     ) -> None:
-        for candidate in scope:
-            markup = candidate.reply_markup
-            if markup is None:
-                continue
-            for row in markup.inline_keyboard:
-                for button in row:
-                    if button.url == url:
-                        return
+        for _candidate, button in self._iter_buttons(scope):
+            if button.url == url:
+                return
         if message is not None:
             msg = f"Message {message.message_id} does not carry a button with url={url!r}"
         else:
@@ -720,11 +759,22 @@ class UserActor:
     @staticmethod
     def _parse_deep_link(url: str) -> _DeepLink | None:
         """
-        Parse a `t.me` / `tg://resolve` url into the bot username and start payload.
+        Parse a `t.me` / `tg://resolve` url into a bot username, kind and start payload.
 
-        Recognizes ``https://t.me/<username>?start=<payload>`` (also ``http://`` and
-        schemeless ``t.me/...``) and ``tg://resolve?domain=<username>&start=<payload>``.
-        Returns ``None`` for anything else, including a `t.me` link with no username.
+        Recognizes ``https://t.me/<username>[?start=<payload>]`` (also ``http://`` and
+        schemeless ``t.me/...``) and ``tg://resolve?domain=<username>[&start=<payload>]``,
+        with no path beyond the username — a bare profile link parses as a plain start
+        with no payload.
+
+        Also recognizes, but tags as unsupported rather than silently downgrading to a
+        plain start: Mini App / channel / attachment-menu launches (``startapp``,
+        ``startchannel``, ``startattach``, ``attach``), chat invite links
+        (``t.me/+<hash>``, ``t.me/joinchat/<hash>``), and any url with extra path
+        segments beyond the username (a message link like ``t.me/<username>/42``, or a
+        Mini App shortlink like ``t.me/<username>/<shortname>``). Callers reject these
+        `kind`s explicitly instead of treating every recognized url as a bare `/start`.
+
+        Returns ``None`` only for urls that are not Telegram links at all.
         """
         candidate = url if "://" in url else f"https://{url}"
         parsed = urlsplit(candidate)
@@ -735,7 +785,14 @@ class UserActor:
             segments = [segment for segment in parsed.path.split("/") if segment]
             if not segments:
                 return None
-            username = segments[0]
+            first = segments[0]
+            if first.startswith("+"):
+                return _DeepLink(username="", kind="invite", payload="")
+            if first.lower() == "joinchat":
+                return _DeepLink(username="", kind="joinchat", payload="")
+            if len(segments) > 1:
+                return _DeepLink(username=first, kind="extra_path", payload="")
+            username = first
         elif scheme == "tg":
             if parsed.netloc.lower() != "resolve":
                 return None
@@ -747,12 +804,10 @@ class UserActor:
             return None
 
         query = parse_qs(parsed.query, keep_blank_values=True)
-        if "startgroup" in query:
-            payload = query["startgroup"][0] if query["startgroup"] else ""
-            return _DeepLink(username=username, kind="startgroup", payload=payload)
-        if "start" in query:
-            payload = query["start"][0] if query["start"] else ""
-            return _DeepLink(username=username, kind="start", payload=payload)
+        for kind in ("startgroup", "startapp", "startchannel", "startattach", "attach", "start"):
+            if kind in query:
+                payload = query[kind][0] if query[kind] else ""
+                return _DeepLink(username=username, kind=kind, payload=payload)
         return _DeepLink(username=username, kind="start", payload="")
 
     @property

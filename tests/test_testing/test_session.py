@@ -1,9 +1,19 @@
 import pytest
 
+from aiogram import Bot
+from aiogram.client.default import DefaultBotProperties
 from aiogram.methods import GetChatAdministrators, GetMe, SendMessage
 from aiogram.test import FakeTelegramSession
 from aiogram.test.errors import NoFileContentError
-from aiogram.types import Chat, Message, ReplyParameters, User
+from aiogram.test.mounting import mount
+from aiogram.types import (
+    Chat,
+    InlineKeyboardButton,
+    InlineKeyboardMarkup,
+    Message,
+    ReplyParameters,
+    User,
+)
 
 
 class TestFakeTelegramSession:
@@ -170,12 +180,157 @@ class TestResultsAreMountedToTheBot:
         looping = message.model_copy()
         # `frozen=True` forbids assignment, so plant the cycle in the field storage itself.
         looping.__dict__["pinned_message"] = looping
+        looping.as_(None)
         assert looping.pinned_message is looping
         env.on(GetChatAdministrators).returns([looping])
 
         result = await env.bot.get_chat_administrators(chat_id=private.id)
 
         assert result[0].bot is env.bot
+
+    async def test_a_keyboard_on_a_result_is_mounted(self, env, private):
+        """The markup and every button in it, not only the message that carries them."""
+        markup = InlineKeyboardMarkup(
+            inline_keyboard=[[InlineKeyboardButton(text="Go", callback_data="go")]],
+        )
+
+        message = await env.bot.send_message(chat_id=private.id, text="pick", reply_markup=markup)
+
+        assert message.reply_markup.bot is env.bot
+        assert message.reply_markup.inline_keyboard[0][0].bot is env.bot
+
+    async def test_a_keyboard_added_by_an_edit_is_mounted(self, env, private):
+        """The edited message is a copy of an already-bound one, so it is easy to miss."""
+        message = await env.bot.send_message(chat_id=private.id, text="pick")
+
+        edited = await message.edit_reply_markup(
+            reply_markup=InlineKeyboardMarkup(
+                inline_keyboard=[[InlineKeyboardButton(text="Go", callback_data="go")]],
+            ),
+        )
+
+        assert edited.bot is env.bot
+        assert edited.reply_markup.bot is env.bot
+        assert edited.reply_markup.inline_keyboard[0][0].bot is env.bot
+
+    async def test_a_deep_reply_chain_is_mounted_without_recursion(self, env, private):
+        """
+        The walk must be iterative: a modeled reply chain nests as deep as it is long.
+
+        A recursive walker died at a few hundred replies — a length a chat simulated over
+        a whole test can plausibly reach, and a failure that would look like a toolkit
+        crash rather than anything the bot under test did.
+        """
+        chain = Message(
+            message_id=1,
+            date=env.world.next_date(),
+            chat=private.as_chat(),
+            text="0",
+        )
+        for index in range(1500):
+            chain = Message(
+                message_id=index + 2,
+                date=env.world.next_date(),
+                chat=private.as_chat(),
+                text=str(index + 1),
+                reply_to_message=chain,
+            )
+
+        mount(chain, env.bot)
+
+        deepest = chain
+        while deepest.reply_to_message is not None:
+            deepest = deepest.reply_to_message
+        assert chain.bot is env.bot
+        assert deepest.bot is env.bot
+
+    async def test_a_long_modeled_reply_chain_is_answered(self, env, private):
+        """The same depth, built the way a test actually builds it."""
+        previous = await env.bot.send_message(chat_id=private.id, text="start")
+        for _ in range(1200):
+            previous = await env.bot.send_message(
+                chat_id=private.id,
+                text="re",
+                reply_parameters=ReplyParameters(message_id=previous.message_id),
+            )
+
+        assert previous.bot is env.bot
+        assert previous.reply_to_message.bot is env.bot
+
+
+class TestTheWorldOwnsWhatItStores:
+    """
+    Everything is bound the moment it enters the world, and stays bound to its owner.
+
+    Binding at storage time is what makes the world's own objects usable — a message a
+    *user* sent never passes through a result, so nothing else would ever bind it — and
+    the ownership rule is what keeps a second bot sharing the session from stealing them.
+    """
+
+    async def test_a_message_a_user_sent_is_bound(self, env, alice, private):
+        await alice.send("hello")
+
+        stored = private.messages[-1]
+        assert stored.bot is env.bot
+        # The shortcut is the point: unbound, this raises "not mounted to any bot".
+        answer = await stored.answer("hi")
+
+        assert [item.text for item in private.messages] == ["hello", "hi"]
+        assert answer.reply_to_message is None
+
+    async def test_a_handler_receives_the_world_s_own_message(self, env, dp, alice, private):
+        """
+        Not a copy of it: identity is the whole reason the update is mounted before it is
+        fed. A dispatcher re-mounts an update built for another bot by round-tripping it
+        through JSON, and a handler would then hold a twin of the stored message.
+        """
+        seen = {}
+
+        @dp.message()
+        async def handler(message):
+            seen["message"] = message
+
+        await alice.send("hello")
+
+        assert seen["message"] is private.messages[-1]
+        assert seen["message"].bot is env.bot
+
+    async def test_a_service_message_nobody_returned_is_bound(self, env, team):
+        """`setChatTitle` posts a service message the result never carries."""
+        await env.bot.set_chat_title(chat_id=team.id, title="Renamed")
+
+        service = team.messages[-1]
+        assert service.new_chat_title == "Renamed"
+        assert service.bot is env.bot
+        assert service.chat.bot is env.bot
+
+    async def test_a_second_bot_does_not_steal_a_stored_message(self, env, private):
+        """
+        The documented recipe for a bot that sends through a module-level instance points
+        that instance at the same session. Its calls land in the same world — but the
+        objects the world already owns stay bound to the environment's bot, or every later
+        shortcut on them would silently resolve another bot's defaults.
+        """
+        other = Bot(
+            token="43:OTHER",
+            session=env.session,
+            default=DefaultBotProperties(parse_mode="MarkdownV2"),
+        )
+
+        returned = await other.send_message(chat_id=private.id, text="from the singleton")
+
+        assert returned is private.messages[-1]
+        assert returned.bot is env.bot
+        # And the defaults that shortcut resolves are still the environment's own.
+        await returned.answer("re")
+        assert env.calls.last(SendMessage).parse_mode is None
+
+    async def test_a_second_bot_still_gets_its_own_fresh_results_bound(self, env, private):
+        other = Bot(token="43:OTHER", session=env.session)
+
+        me = await other.get_me()
+
+        assert me.bot is other
 
 
 class TestDisposal:

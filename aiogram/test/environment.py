@@ -25,6 +25,7 @@ from .calls import CallLog
 from .defaults import resolve_defaults
 from .errors import raise_api_error
 from .modeling import find_handler
+from .mounting import mount
 from .overrides import OverrideBuilder, OverrideRegistry
 from .session import FakeTelegramSession
 from .synthesis import SynthesisContext, synthesize_result
@@ -64,6 +65,9 @@ class BotTestEnvironment:
             default=self.blueprint.default,
         )
         self.bot._me = self.world.bot_user.as_user()
+        # From here on everything the world stores is bound to this bot, so a message a
+        # test reads out of a chat is as usable as one a call returned.
+        self.world.bind(self.bot)
         self.calls = CallLog()
         self.overrides = OverrideRegistry()
 
@@ -197,6 +201,18 @@ class BotTestEnvironment:
         return context
 
     async def feed(self, update: Update, **kwargs: Any) -> Any:
+        """
+        Run an update through the dispatcher, as this environment's bot.
+
+        The update is mounted first, and that is load-bearing rather than tidy:
+        :meth:`~aiogram.dispatcher.dispatcher.Dispatcher.feed_update` re-mounts an update
+        that carries a different bot by dumping it to JSON and validating it again, which
+        mints copies of everything inside. A handler would then receive a *twin* of the
+        message the chat stores, so ``message is bot_chat.messages[-1]`` would be false and
+        an edit applied through the handler's object would land on an orphan. Arriving
+        already mounted skips that round-trip: handlers work on the world's own objects.
+        """
+        mount(update, self.bot)
         return await self.dispatcher.feed_update(self.bot, update, **kwargs)
 
     # -- waiting ----------------------------------------------------------------------

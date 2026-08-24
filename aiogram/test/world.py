@@ -4,7 +4,7 @@ import datetime
 from collections.abc import Callable
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, cast
+from typing import TYPE_CHECKING, Any, cast
 
 from aiogram.enums import ChatMemberStatus, ChatType
 from aiogram.types import (
@@ -39,7 +39,11 @@ from aiogram.types import (
     User,
 )
 
+from .mounting import mount
 from .waiting import describe_callable, poll_until
+
+if TYPE_CHECKING:
+    from aiogram.client.bot import Bot
 
 BASE_DATE: datetime.datetime = datetime.datetime(
     2026,
@@ -495,6 +499,9 @@ class ChatState:
     general_topic: TopicState = field(
         default_factory=lambda: TopicState(message_thread_id=None, is_general=True),
     )
+    #: The bot every message stored here is bound to; installed by :meth:`World.bind`.
+    #: Excluded from equality and repr — it is wiring, not state a test asserts on.
+    bound_bot: Bot | None = field(default=None, compare=False, repr=False)
 
     def __post_init__(self) -> None:
         self.general_topic.chat = self
@@ -515,8 +522,17 @@ class ChatState:
         return self.last_message_id
 
     def add_message(self, message: Message) -> Message:
+        """
+        Store a message, bound to the bot this world belongs to.
+
+        Storage is the moment an object *enters* the fake world, and it is the only such
+        moment for every producer at once — a user actor's message, a modeled send, a
+        service message no result ever carries. Binding here is therefore what makes the
+        rule "everything the world holds is usable" hold without a special case per
+        producer: ``chat.messages[-1].answer(...)`` works whoever put the message there.
+        """
         self.messages.append(message)
-        return message
+        return self._bind(message)
 
     def find_message(self, message_id: int) -> Message | None:
         for message in self.messages:
@@ -535,8 +551,18 @@ class ChatState:
         """Replace a stored message with an edited copy — API types are frozen."""
         message = self.require_message(message_id)
         edited = message.model_copy(update=changes)
+        # The copy inherits the original's binding, which would make `_bind` prune it as
+        # an object the world already owns — leaving whatever the edit brought along, a new
+        # keyboard for instance, unbound. It is a fresh object; let it be mounted as one.
+        edited.as_(None)
         self.messages[self.messages.index(message)] = edited
-        return edited
+        return self._bind(edited)
+
+    def _bind(self, message: Message) -> Message:
+        """Mount a message and everything new in it to the world's bot, if there is one."""
+        if self.bound_bot is not None:
+            mount(message, self.bound_bot)
+        return message
 
     def delete_message(self, message_id: int) -> None:
         message = self.require_message(message_id)
@@ -568,12 +594,31 @@ class ChatState:
 
             reply = await bot_chat.wait_for_message(lambda m: m.text.startswith("Night"))
 
+        A predicate that *raises* on a message counts as "does not match" rather than
+        failing the wait, because a chat holds messages of every shape: the natural
+        ``m.text.startswith(...)`` above blows up on the first service message —
+        ``forum_topic_created``, a pin — whose ``text`` is ``None``, and a wait has no
+        business dying on a message it was not asking about. The exceptions are not
+        swallowed, though: if the wait times out, the failure message reports what the
+        predicate raised and on which message, so a predicate that is simply buggy still
+        fails visibly and with its real cause.
+
         :raises aiogram.test.errors.WaitTimeoutError: if no such message ever appeared.
         """
+        # message id -> what the predicate raised on it during the most recent pass.
+        raised: dict[int, Exception] = {}
 
         def find() -> Message | None:
+            raised.clear()
             for message in reversed(self.messages):
-                if predicate is None or predicate(message):
+                if predicate is None:
+                    return message
+                try:
+                    matched = predicate(message)
+                except Exception as error:
+                    raised[message.message_id] = error
+                    continue
+                if matched:
                     return message
             return None
 
@@ -583,9 +628,19 @@ class ChatState:
                 if predicate is None
                 else f"a message matching {describe_callable(predicate)}"
             )
+            problems = ""
+            if raised:
+                details = "; ".join(
+                    f"{type(error).__name__}({str(error)!r}) on message #{message_id}"
+                    for message_id, error in sorted(raised.items())
+                )
+                problems = (
+                    f" The predicate raised on {len(raised)} of them, which counted as no "
+                    f"match: {details}."
+                )
             return (
                 f"Timed out after {timeout}s waiting for {wanted} in chat {self.id}. "
-                f"{self.describe_messages()}"
+                f"{self.describe_messages()}{problems}"
             )
 
         return cast(
@@ -645,10 +700,23 @@ class ChatState:
         user_id: int,
         reaction: list[ReactionTypeUnion],
     ) -> None:
-        """Replace a reactor's reactions; an empty list removes them entirely."""
+        """
+        Replace a reactor's reactions; an empty list removes them entirely.
+
+        The reactions are stored as copies. The very same instances travel on the update
+        that announces them, where they are mounted to the bot like everything an update
+        carries — and pydantic counts that binding in ``__eq__`` while hiding it from
+        ``__repr__``. Reactions, unlike messages, are value objects a test compares against
+        plainly declared ones::
+
+            assert chat.reactions_for(message.message_id) == {alice.id: [THUMBS_UP]}
+
+        Sharing the instances would make that assertion fail with two identical-looking
+        sides, so the store keeps its own unbound copies.
+        """
         per_message = self.reactions.setdefault(message_id, {})
         if reaction:
-            per_message[user_id] = list(reaction)
+            per_message[user_id] = [item.model_copy() for item in reaction]
         else:
             per_message.pop(user_id, None)
 
@@ -660,8 +728,11 @@ class ChatState:
                 key = reaction.model_dump_json()
                 current = totals.get(key)
                 totals[key] = (reaction, (current[1] if current else 0) + 1)
+        # Copies again, for the reason `set_reaction` explains: a count travels outwards,
+        # on an update or in a result, and gets mounted there.
         return [
-            ReactionCount(type=reaction, total_count=count) for reaction, count in totals.values()
+            ReactionCount(type=reaction.model_copy(), total_count=count)
+            for reaction, count in totals.values()
         ]
 
     def topic(self, message_thread_id: int | None) -> TopicState:
@@ -757,6 +828,20 @@ class World:
     sticker_sets: dict[str, StickerSetState] = field(default_factory=dict)
     last_update_id: int = 0
     last_query_id: int = 0
+    #: The bot this world belongs to; see :meth:`bind`.
+    bound_bot: Bot | None = field(default=None, compare=False, repr=False)
+
+    def bind(self, bot: Bot) -> None:
+        """
+        Declare which bot owns this world, so stored objects can be bound to it.
+
+        Called once by :class:`aiogram.test.BotTestEnvironment` as soon as it has a bot.
+        A world without an owner still works — it just stores unbound objects, which is
+        all a world built and inspected on its own can offer.
+        """
+        self.bound_bot = bot
+        for chat in self.chats.values():
+            chat.bound_bot = bot
 
     def user(self, user_id: int) -> UserState:
         if user_id == self.bot_user.id:
@@ -772,6 +857,9 @@ class World:
         if chat is None:
             msg = f"Chat {chat_id} is not declared in the blueprint"
             raise WorldLookupError(msg)
+        # Chats installed after `bind()` — a test may drop one straight into `chats` —
+        # inherit the owner on the way out, so their messages are bound like any other.
+        chat.bound_bot = self.bound_bot
         return chat
 
     def business_connection(self, connection_id: str) -> BusinessConnectionState:

@@ -195,7 +195,7 @@ class Blueprint:
         *,
         members: dict[UserSpec, str] | None = None,
         id: int | None = None,
-        bot_status: str = ChatMemberStatus.MEMBER,
+        bot_status: str | None = None,
     ) -> ChatSpec:
         return self._add_group_like(
             chat_type=ChatType.GROUP,
@@ -211,7 +211,7 @@ class Blueprint:
         *,
         members: dict[UserSpec, str] | None = None,
         id: int | None = None,
-        bot_status: str = ChatMemberStatus.MEMBER,
+        bot_status: str | None = None,
     ) -> ChatSpec:
         return self._add_group_like(
             chat_type=ChatType.SUPERGROUP,
@@ -227,7 +227,7 @@ class Blueprint:
         *,
         members: dict[UserSpec, str] | None = None,
         id: int | None = None,
-        bot_status: str = ChatMemberStatus.MEMBER,
+        bot_status: str | None = None,
     ) -> ChatSpec:
         return self._add_group_like(
             chat_type=ChatType.CHANNEL,
@@ -243,14 +243,15 @@ class Blueprint:
         title: str,
         members: dict[UserSpec, str] | None,
         chat_id: int,
-        bot_status: str = ChatMemberStatus.MEMBER,
+        bot_status: str | None = None,
     ) -> ChatSpec:
         members = members or {}
         bot_membership = members.get(self.bot)
         # `bot_status` and a `members[blueprint.bot]` entry are two ways of saying the
-        # same thing; accepting both silently would let one shadow the other, so a
-        # non-default `bot_status` alongside an explicit entry is rejected as ambiguous.
-        if bot_membership is not None and bot_status != ChatMemberStatus.MEMBER:
+        # same thing; accepting both silently would let one shadow the other, so passing
+        # `bot_status` (any value, including MEMBER) alongside an explicit entry is
+        # rejected as ambiguous rather than letting one silently win.
+        if bot_membership is not None and bot_status is not None:
             msg = (
                 "The bot's status was given both via `members` and via `bot_status`; "
                 "pass only one of them."
@@ -268,7 +269,9 @@ class Blueprint:
         # always a member of the chats it is declared into — as itself if `members`
         # already named it, otherwise appended with `bot_status` (default: MEMBER).
         if bot_membership is None:
-            chat.members.append(MemberSpec(user_id=self.bot.id, status=bot_status))
+            chat.members.append(
+                MemberSpec(user_id=self.bot.id, status=bot_status or ChatMemberStatus.MEMBER)
+            )
         self.chats.append(chat)
         return chat
 

@@ -113,9 +113,42 @@ class TestAssertionReporting:
 
         assert "SendMessage != DeleteMessage" in lines[0]
 
+    async def test_objects_differing_only_in_their_binding_are_explained(self, env, private):
+        """
+        Pydantic compares private attributes, and ``_bot`` is one; the repr hides it.
+
+        So a mounted object and an identical unmounted one print the same and compare
+        unequal — a failure that reads as if pytest had lost its mind.
+        """
+        returned = await env.bot.send_message(chat_id=private.id, text="hi")
+        twin = returned.model_copy().as_(None)
+
+        lines = pytest_assertrepr_compare("==", returned, twin)
+
+        assert any("differ only in the bot they are bound to" in line for line in lines)
+        assert any("mounted to bot id=42" in line and "not mounted" in line for line in lines)
+        assert any("model_dump()" in line for line in lines)
+
+    async def test_objects_that_really_differ_are_left_alone(self, env, private):
+        returned = await env.bot.send_message(chat_id=private.id, text="hi")
+        other = returned.model_copy(update={"text": "different"})
+
+        assert pytest_assertrepr_compare("==", returned, other) is None
+
     def test_other_comparisons_are_left_alone(self):
+        from aiogram.types import Chat, User
+
         assert pytest_assertrepr_compare("==", 1, 2) is None
         assert pytest_assertrepr_compare("<", ChatState(id=1), ChatState(id=2)) is None
+        # Same payload is not enough: these are different types.
+        assert (
+            pytest_assertrepr_compare(
+                "==",
+                Chat(id=1, type="private"),
+                User(id=1, is_bot=False, first_name="A"),
+            )
+            is None
+        )
 
 
 def _message(chat: ChatState):

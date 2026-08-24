@@ -281,6 +281,18 @@ class TestBotAdminStatus:
                 bot_status=ChatMemberStatus.CREATOR,
             )
 
+    async def test_declaring_both_is_ambiguous_even_when_bot_status_is_member(self):
+        # `bot_status=MEMBER` is still an explicit choice, not "unset" — it must not
+        # silently lose to a contradicting `members` entry.
+        blueprint = Blueprint()
+
+        with pytest.raises(ValueError, match="both"):
+            blueprint.add_supergroup(
+                "Team",
+                members={blueprint.bot: ChatMemberStatus.ADMINISTRATOR},
+                bot_status=ChatMemberStatus.MEMBER,
+            )
+
     async def test_bot_status_defaults_to_member(self, env, team):
         member = await env.bot.get_chat_member(chat_id=team.id, user_id=env.bot.id)
 

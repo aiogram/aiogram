@@ -7,7 +7,7 @@ from aiogram.filters import Command
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.test import Blueprint, BotTestEnvironment, build_environment
 from aiogram.test.world import WorldLookupError
-from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Update
 
 
 class Form(StatesGroup):
@@ -75,6 +75,25 @@ class TestTriggers:
 
         assert private.messages[-1].text == "hello"
         assert private.messages[-1].from_user.id == alice.user.id
+
+    async def test_a_fed_update_arrives_mounted_and_uncopied(self, env, dp, private):
+        """
+        ``feed`` mounts the update before the dispatcher sees it, and that is why a
+        handler works on the world's own objects: an update carrying a different bot is
+        re-mounted by round-tripping it through JSON, which replaces everything in it with
+        a copy.
+        """
+        seen = {}
+
+        @dp.message()
+        async def handler(message):
+            seen["message"] = message
+
+        stored = await env.bot.send_message(chat_id=private.id, text="hi")
+        await env.feed(Update(update_id=99, message=stored))
+
+        assert seen["message"] is stored
+        assert seen["message"].bot is env.bot
 
     async def test_filters_are_not_bypassed(self, env, dp, alice):
         @dp.message(F.text == "expected")

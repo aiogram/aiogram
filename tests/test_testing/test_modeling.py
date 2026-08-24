@@ -508,3 +508,36 @@ class TestFallback:
         recorded = env.calls.last(SendMessage)
         assert recorded.chat_id == private.id
         assert not isinstance(recorded.parse_mode, object.__class__)
+
+
+class TestStoredMessagesAreUsable:
+    """
+    A message the world stores carries the bot, whoever put it there.
+
+    Service messages are the case no result covers: nothing hands one back, so if binding
+    happened only on the way out of a call they would be the one kind of message a test
+    could read but not act on.
+    """
+
+    async def test_a_topic_creation_message_is_bound(self, env, team):
+        await env.bot.create_forum_topic(chat_id=team.id, name="Support")
+
+        service = team.messages[-1]
+        assert service.forum_topic_created is not None
+        assert service.bot is env.bot
+        assert service.forum_topic_created.bot is env.bot
+
+        await service.answer("welcome")
+
+        assert team.messages[-1].text == "welcome"
+
+    async def test_an_edited_message_keeps_the_worlds_bot(self, env, private):
+        message = await env.bot.send_message(chat_id=private.id, text="hi")
+
+        await env.bot.edit_message_text(
+            chat_id=private.id,
+            message_id=message.message_id,
+            text="bye",
+        )
+
+        assert private.messages[-1].bot is env.bot

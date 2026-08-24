@@ -1,10 +1,15 @@
 from __future__ import annotations
 
+import copy
 from dataclasses import dataclass
 from typing import Any
 
+from pydantic import BaseModel
+
 from aiogram.exceptions import TelegramAPIError, TelegramBadRequest
 from aiogram.methods import TelegramMethod
+
+from .mounting import bindables
 
 
 @dataclass
@@ -26,10 +31,45 @@ class Outcome:
 
     def apply(self, method: TelegramMethod[Any]) -> Any:
         if self.error is None:
-            return self.result
+            return fresh_result(self.result)
         if isinstance(self.error, TelegramAPIError):
             raise self.error
         raise self.error(method=method, message=self.message)
+
+
+def fresh_result(result: Any) -> Any:
+    """
+    Hand out a copy of a declared result, unbound, the way a real answer is freshly parsed.
+
+    The declared object belongs to the test — it is often built once at module level and
+    reused — while the answer belongs to the caller: it gets mounted to the calling bot,
+    and a modeled follow-up may edit it. Returning the very object the test declared would
+    mean the test's own object is mutated by the call it describes, and that it holds a
+    reference to every :class:`~aiogram.client.bot.Bot` that ever received it, long after
+    those environments were disposed. Copying also makes a repeated override (``times=None``)
+    behave like the API it stands in for: each call gets its own response.
+
+    Copying deeply, but never following a binding: ``_bot`` is a live bot with a session,
+    a world and a dispatcher behind it, so the memo maps every bot already in the graph to
+    itself. The copy is then handed over unbound, leaving
+    :func:`aiogram.test.mounting.mount` to bind it to whoever asked, exactly as it does for
+    a modeled or synthesized answer.
+    """
+    if isinstance(result, list):
+        return [fresh_result(item) for item in result]
+    if isinstance(result, tuple):
+        return tuple(fresh_result(item) for item in result)
+    if not isinstance(result, BaseModel):
+        # `bool`, `int`, `str` and friends are the common case, and immutable anyway.
+        return result
+
+    memo: dict[int, Any] = {
+        id(node.bot): node.bot for node in bindables(result) if node.bot is not None
+    }
+    copied = copy.deepcopy(result, memo)
+    for node in bindables(copied):
+        node.as_(None)
+    return copied
 
 
 class OverrideRegistry:

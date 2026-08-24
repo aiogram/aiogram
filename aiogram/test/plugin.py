@@ -7,7 +7,7 @@ import pytest
 
 from aiogram.dispatcher.dispatcher import Dispatcher
 from aiogram.methods import TelegramMethod
-from aiogram.types import Message
+from aiogram.types import Message, TelegramObject
 
 from .blueprint import Blueprint, default_blueprint
 from .environment import BotTestEnvironment
@@ -84,7 +84,33 @@ def pytest_assertrepr_compare(op: str, left: object, right: object) -> list[str]
             else f"{type(left).__name__} fields differ:",
             *_describe_diff(left, right),
         ]
+    if _differ_only_in_binding(left, right):
+        assert isinstance(left, TelegramObject)
+        assert isinstance(right, TelegramObject)
+        return [
+            f"two {type(left).__name__} objects that differ only in the bot they are bound to:",
+            f"  left is {_describe_binding(left)}, right is {_describe_binding(right)}",
+            "Pydantic compares private attributes, and `_bot` is one of them, while the",
+            "repr hides it — which is why these two print identically yet are not equal.",
+            "Objects the fake world hands out are mounted to a bot the way parsed ones",
+            "are; an object built inside the test is not. Compare the payload instead:",
+            "  assert left.model_dump() == right.model_dump()",
+        ]
     return None
+
+
+def _differ_only_in_binding(left: object, right: object) -> bool:
+    """Same type, same payload, different bot — the only thing left to disagree about."""
+    if not isinstance(left, TelegramObject) or not isinstance(right, TelegramObject):
+        return False
+    if type(left) is not type(right) or left.bot is right.bot:
+        return False
+    return left.model_dump() == right.model_dump()
+
+
+def _describe_binding(item: TelegramObject) -> str:
+    bot = item.bot
+    return "not mounted to any bot" if bot is None else f"mounted to bot id={bot.id}"
 
 
 def _describe_message(message: Message) -> str:

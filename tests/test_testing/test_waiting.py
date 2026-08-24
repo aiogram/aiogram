@@ -73,6 +73,21 @@ class TestWaitFor:
         with pytest.raises(WaitTimeoutError, match="description="):
             await env.wait_for(lambda: False, timeout=0.05)
 
+    async def test_the_timeout_is_honoured_with_a_coarser_interval(self, env):
+        """
+        The last sleep is clamped to what is left, so ``timeout`` means what it says.
+
+        Sleeping a full interval regardless made a wait with a coarse interval overshoot
+        by up to that interval — a 0.05s timeout returning after a full second.
+        """
+        loop = asyncio.get_running_loop()
+        started = loop.time()
+
+        with pytest.raises(WaitTimeoutError):
+            await env.wait_for(lambda: False, timeout=0.05, interval=1.0, description="x")
+
+        assert loop.time() - started < 0.5
+
     async def test_a_predicate_without_a_name_falls_back_to_its_repr(self, env):
         class NeverReady:
             def __call__(self):
@@ -170,3 +185,62 @@ class TestWaitForMessage:
 
         assert "x" * 60 + "'..." in str(exc_info.value)
         assert "x" * 100 not in str(exc_info.value)
+
+    async def test_the_message_it_returns_is_usable(self, env, alice, private):
+        """A user's message is stored, not returned by any call — and still mounted."""
+        await alice.send("ping")
+
+        message = await private.wait_for_message(lambda item: item.text == "ping")
+        await message.answer("pong")
+
+        assert [item.text for item in private.messages] == ["ping", "pong"]
+
+
+class TestAPredicateThatRaises:
+    """
+    A chat holds messages of every shape, so a natural predicate blows up on some of them.
+
+    ``lambda m: m.text.startswith(...)`` meets a service message whose ``text`` is
+    ``None`` — a renamed chat, a new topic — and used to fail the wait with an
+    ``AttributeError`` from inside the toolkit instead of ever reaching the timeout. Such
+    a message now simply does not match; but if the wait does time out, the failure names
+    what the predicate raised, so a predicate that is merely broken still says so.
+    """
+
+    async def test_a_service_message_does_not_break_the_wait(self, env, team):
+        await env.bot.set_chat_title(chat_id=team.id, title="Renamed")
+
+        async def announce():
+            await asyncio.sleep(0.02)
+            await env.bot.send_message(chat_id=team.id, text="Night falls")
+
+        task = asyncio.create_task(announce())
+        try:
+            message = await team.wait_for_message(lambda item: item.text.startswith("Night"))
+        finally:
+            await task
+
+        assert message.text == "Night falls"
+
+    async def test_the_timeout_reports_what_the_predicate_raised(self, env, team):
+        await env.bot.set_chat_title(chat_id=team.id, title="Renamed")
+        service_id = team.messages[-1].message_id
+
+        with pytest.raises(WaitTimeoutError) as exc_info:
+            await team.wait_for_message(lambda item: item.text.startswith("Night"), timeout=0.05)
+
+        text = str(exc_info.value)
+        assert "The predicate raised on 1 of them" in text
+        assert "AttributeError(" in text
+        assert f"on message #{service_id}" in text
+
+    async def test_a_predicate_that_always_raises_still_fails_with_its_cause(self, env, private):
+        await env.bot.send_message(chat_id=private.id, text="hi")
+
+        def broken(message):
+            raise ValueError("the predicate itself is wrong")
+
+        with pytest.raises(WaitTimeoutError) as exc_info:
+            await private.wait_for_message(broken, timeout=0.05)
+
+        assert "ValueError('the predicate itself is wrong')" in str(exc_info.value)

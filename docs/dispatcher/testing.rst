@@ -279,13 +279,16 @@ The **call log** shows what was requested, with bot-level defaults already resol
     assert bot_env.calls.last(AnswerCallbackQuery).text == "Saved"
     assert bot_env.calls.count(DeleteMessage) == 0
 
-Results carry the bot
-=====================
+Everything carries the bot
+==========================
 
 A real session parses every response with the bot in the validation context, which is what
-lets you call a shortcut on whatever a method returned. The fake does the same to the
-objects it hands back, so results — and everything nested inside them, including the items
-of a list result — are usable, not just readable:
+lets you call a shortcut on whatever a method returned. The fake mounts every object the
+same way, and it does so the moment the object *enters* the world rather than only on the
+way out of a call. Three consequences, all of them things a test leans on:
+
+**Results are usable, not just readable** — including everything nested inside them and the
+items of a list result:
 
 .. code-block:: python
 
@@ -298,13 +301,48 @@ of a list result — are usable, not just readable:
     for admin in await bot_env.bot.get_chat_administrators(chat_id=bot_chat.id):
         await admin.user.get_profile_photos()  # so are the items of a list result
 
+**So is anything the world holds**, whoever put it there — a message a *user* sent, which
+no call ever returned, and a service message the bot's own call produced as a side effect:
+
+.. code-block:: python
+
+    await alice.send("hello")
+
+    await bot_chat.messages[-1].answer("hi")            # a user's message is mounted
+    await (await bot_chat.wait_for_message()).answer("hi")   # so is one a wait returned
+
+    await bot_env.bot.set_chat_title(chat_id=group.id, title="Renamed")
+    assert bot_chat.messages[-1].new_chat_title == "Renamed"  # and the service message
+
+**A handler receives the world's own object, not a copy of it.** Updates are mounted before
+they reach the dispatcher, which skips the JSON round-trip the dispatcher would otherwise
+use to re-mount them — so identity survives the trip:
+
+.. code-block:: python
+
+    @router.message()
+    async def handler(message: Message):
+        seen.append(message)
+
+
+    await alice.send("hello")
+    assert seen[-1] is bot_chat.messages[-1]
+
+An object that already carries a bot keeps it. That matters when a second ``Bot`` shares the
+session (see `Bots that use a global Bot instance`_): objects the world already owns stay
+mounted to ``bot_env.bot``, whose defaults are the ones the world was built with, instead of
+being claimed by whichever bot happened to ask for them last.
+
 One consequence is shared with production: the bot an object is mounted to is part of its
-identity for pydantic, so a returned object never compares equal to an identical one built
-inside the test. Compare the payload instead:
+identity for pydantic, so an object the fake hands out never compares equal to an identical
+one built inside the test — while the two print identically, since the repr hides the
+binding. Compare the payload instead:
 
 .. code-block:: python
 
     assert message.reply_markup.model_dump() == markup.model_dump()
+
+A failing ``==`` between two such objects says so, so the puzzle only costs one run.
 
 What the fake models
 ====================
@@ -574,6 +612,11 @@ with ``times=``, so consecutive calls can return different outcomes. Errors are 
 the framework's own :mod:`aiogram.exceptions` types, through the same code path a real
 response takes.
 
+A declared result stays the test's own: each call is answered with a fresh copy of it, the
+way a real response is parsed anew every time. So ``some_administrator`` above can be a
+module-level object shared by the whole suite — the call cannot mutate it, and it never
+ends up holding a reference to a bot from an environment that is already gone.
+
 Finite state machine
 ====================
 
@@ -619,6 +662,7 @@ chance to run.
     await env.wait_for(lambda: game.mode is Mode.NIGHT, description="night to begin")
 
     message = await env.chat(group).wait_for_message(lambda m: m.reply_markup is not None)
+    await message.answer("go on")  # whatever a wait returns is mounted, like any result
 
 :meth:`aiogram.test.BotTestEnvironment.wait_for` re-checks any predicate — synchronous or
 returning an awaitable — until it produces something truthy, and hands that value back, so
@@ -627,7 +671,16 @@ specialized form for the case that dominates these tests: something the trigger 
 await is expected to post into a chat. Both give up with
 :class:`aiogram.test.WaitTimeoutError`, a :class:`TimeoutError` whose message names what
 was awaited and enumerates the chat's messages, so a failure shows what actually arrived
-instead of just "timed out".
+instead of just "timed out"; neither overshoots its ``timeout``, whatever ``interval`` it
+was given.
+
+``wait_for_message`` matches its predicate against every message the chat holds, and those
+come in every shape — so a predicate that raises on one of them counts as "no match" rather
+than failing the wait. ``lambda m: m.text.startswith("Night")`` would otherwise die on the
+first service message, whose ``text`` is ``None``, having nothing to do with what the test
+is waiting for. The exceptions are not swallowed: if the wait times out, the failure
+message reports what the predicate raised and on which message, so a predicate that is
+simply wrong still fails with its real cause.
 
 A real engine's own ``sleep()`` calls make a test that waits on them real-time slow, and
 this proof of concept deliberately ships no fake clock of its own. A time-control library
@@ -657,6 +710,14 @@ pre-seeding the environment already does for its own bot, so ``await bot.me()`` 
 declared identity immediately rather than paying for a round trip the first time something
 calls it. Calls made through the global instance land in the same call log as calls made
 through the injected one, so ``env.calls`` and ``env.chat(...)`` see both.
+
+What the global instance does *not* take over is the world's objects: a message it sends is
+stored mounted to ``env.bot``, and a call of its own that returns that stored message hands
+it back still mounted to ``env.bot``. Only objects minted for that call are mounted to the
+global instance. Otherwise a single call through the singleton would re-point every later
+shortcut on a stored message at the singleton's
+:class:`~aiogram.client.default.DefaultBotProperties` — silently changing the ``parse_mode``
+of messages sent much later in the test.
 
 Joining and leaving
 ===================

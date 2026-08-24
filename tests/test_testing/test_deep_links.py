@@ -86,6 +86,73 @@ class TestFollowDeepLink:
 
         assert seen == ["/start"]
 
+    async def test_startapp_link_is_rejected(self, env, team, alice):
+        await _post_deep_link(env, team, "https://t.me/test_bot?startapp=abc")
+
+        with pytest.raises(WorldLookupError, match="startapp"):
+            await alice.in_(team).follow_deep_link("https://t.me/test_bot?startapp=abc")
+
+    async def test_startchannel_link_is_rejected(self, env, team, alice):
+        await _post_deep_link(env, team, "https://t.me/test_bot?startchannel=abc")
+
+        with pytest.raises(WorldLookupError, match="startchannel"):
+            await alice.in_(team).follow_deep_link("https://t.me/test_bot?startchannel=abc")
+
+    async def test_startattach_link_is_rejected(self, env, team, alice):
+        await _post_deep_link(env, team, "https://t.me/test_bot?startattach=abc")
+
+        with pytest.raises(WorldLookupError, match="startattach"):
+            await alice.in_(team).follow_deep_link("https://t.me/test_bot?startattach=abc")
+
+    async def test_attach_link_is_rejected(self, env, team, alice):
+        await _post_deep_link(env, team, "https://t.me/test_bot?attach=abc")
+
+        with pytest.raises(WorldLookupError, match="attach"):
+            await alice.in_(team).follow_deep_link("https://t.me/test_bot?attach=abc")
+
+    async def test_mini_app_button_is_not_silently_followed_as_plain_start(self, env, team, alice):
+        """
+        A Mini App button must never be replayed as a bare `/start` — a tapping user's
+        client opens the Mini App, it never sends `/start` at all. The automatic scan
+        (no explicit target) must surface this button and reject it rather than either
+        skipping it or misreading it as a start deep link.
+        """
+        seen = []
+        env.dispatcher.message.register(
+            lambda message, command: seen.append(message.text),
+            CommandStart(deep_link=True),
+        )
+        await _post_deep_link(env, team, "https://t.me/test_bot?startapp=abc")
+
+        with pytest.raises(WorldLookupError, match="startapp"):
+            await alice.in_(team).follow_deep_link()
+
+        assert seen == []
+
+    async def test_message_link_is_rejected(self, env, team, alice):
+        await _post_deep_link(env, team, "https://t.me/test_bot/42")
+
+        with pytest.raises(WorldLookupError, match="extra path segments"):
+            await alice.in_(team).follow_deep_link("https://t.me/test_bot/42")
+
+    async def test_extra_path_link_is_rejected(self, env, team, alice):
+        await _post_deep_link(env, team, "https://t.me/test_bot/shop")
+
+        with pytest.raises(WorldLookupError, match="extra path segments"):
+            await alice.in_(team).follow_deep_link("https://t.me/test_bot/shop")
+
+    async def test_invite_hash_link_is_rejected(self, env, team, alice):
+        await _post_deep_link(env, team, "https://t.me/+AbCdEfGhIj")
+
+        with pytest.raises(WorldLookupError, match="chat invite link"):
+            await alice.in_(team).follow_deep_link("https://t.me/+AbCdEfGhIj")
+
+    async def test_joinchat_link_is_rejected(self, env, team, alice):
+        await _post_deep_link(env, team, "https://t.me/joinchat/AbCdEfGhIj")
+
+        with pytest.raises(WorldLookupError, match="chat invite link"):
+            await alice.in_(team).follow_deep_link("https://t.me/joinchat/AbCdEfGhIj")
+
     async def test_message_scopes_the_search_to_that_message(self, env, team, alice):
         await _post_deep_link(env, team, "https://t.me/test_bot?start=only-here", text="Invite")
         other = await env.bot.send_message(chat_id=team.id, text="No button here")

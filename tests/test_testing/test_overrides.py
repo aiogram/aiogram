@@ -1,9 +1,20 @@
+import datetime
+
 import pytest
 
 from aiogram.exceptions import TelegramBadRequest, TelegramForbiddenError, TelegramRetryAfter
-from aiogram.methods import GetChatMember, SendMessage
+from aiogram.methods import GetChatAdministrators, GetChatMember, SendMessage
 from aiogram.test import BotTestEnvironment
-from aiogram.types import ChatMemberMember, Message, User
+from aiogram.types import Chat, ChatMemberMember, Message, User
+
+#: Declared once and reused by every test below, the way a real suite declares a fixture
+#: response — which is exactly the object an override must never hand out by reference.
+SHARED_ANSWER = Message(
+    message_id=4242,
+    date=datetime.datetime(2026, 1, 1, tzinfo=datetime.timezone.utc),
+    chat=Chat(id=1000, type="private"),
+    text="canned",
+)
 
 
 class TestOverrides:
@@ -103,3 +114,73 @@ class TestOverrides:
         env.overrides.clear()
 
         assert env.overrides.take(SendMessage(chat_id=1, text="x")) is None
+
+
+class TestADeclaredResultStaysTheTestsOwn:
+    """
+    An override hands out a copy, the way a real answer is freshly parsed every time.
+
+    The declared object belongs to the test; the answer belongs to the caller, which
+    mounts it to a bot and may go on to edit it. Handing out the declared object itself
+    would mutate the test's own — often module-level — object and leave it holding a
+    reference to a bot whose environment is long gone.
+    """
+
+    async def test_the_declared_object_is_neither_returned_nor_mounted(self, env, private):
+        env.on(SendMessage).returns(SHARED_ANSWER)
+
+        result = await env.bot.send_message(chat_id=private.id, text="ignored")
+
+        assert result is not SHARED_ANSWER
+        assert result.model_dump() == SHARED_ANSWER.model_dump()
+        assert result.bot is env.bot
+        assert SHARED_ANSWER.bot is None
+        assert SHARED_ANSWER.chat.bot is None
+
+    async def test_every_call_gets_its_own_copy(self, env, private):
+        env.on(SendMessage).returns(SHARED_ANSWER)
+
+        first = await env.bot.send_message(chat_id=private.id, text="one")
+        second = await env.bot.send_message(chat_id=private.id, text="two")
+
+        assert first is not second
+        assert first.chat is not second.chat
+
+    async def test_the_items_of_a_declared_list_are_copied_too(self, env, team):
+        member = ChatMemberMember(user=User(id=5, is_bot=False, first_name="Fixed"))
+        env.on(GetChatAdministrators).returns([member])
+
+        result = await env.bot.get_chat_administrators(chat_id=team.id)
+
+        assert result[0] is not member
+        assert result[0].bot is env.bot
+        assert member.bot is None
+        assert member.user.bot is None
+
+    async def test_a_declared_tuple_is_copied_item_by_item(self, env, team):
+        """Any sequence a test declares, not only the list the real API would send."""
+        member = ChatMemberMember(user=User(id=6, is_bot=False, first_name="Tupled"))
+        env.on(GetChatAdministrators).returns((member,))
+
+        result = await env.bot.get_chat_administrators(chat_id=team.id)
+
+        assert isinstance(result, tuple)
+        assert result[0] is not member
+        assert result[0].bot is env.bot
+        assert member.bot is None
+
+    async def test_no_bot_leaks_from_one_environment_into_the_next(self, blueprint, dp):
+        first = BotTestEnvironment(blueprint=blueprint, dispatcher=dp)
+        first.on(SendMessage).returns(SHARED_ANSWER)
+        chat_id = blueprint.chats[0].id
+        from_first = await first.bot.send_message(chat_id=chat_id, text="hi")
+        await first.dispose()
+
+        second = BotTestEnvironment(blueprint=blueprint, dispatcher=dp)
+        second.on(SendMessage).returns(SHARED_ANSWER)
+        from_second = await second.bot.send_message(chat_id=chat_id, text="hi")
+        await second.dispose()
+
+        assert SHARED_ANSWER.bot is None
+        assert from_first.bot is first.bot
+        assert from_second.bot is second.bot

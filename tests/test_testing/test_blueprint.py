@@ -107,6 +107,29 @@ class TestDeclaration:
                 bot_status=ChatMemberStatus.CREATOR,
             )
 
+    def test_bot_status_conflict_is_rejected_even_when_explicitly_member(self):
+        # `bot_status=MEMBER` alongside a contradicting `members` entry used to pass
+        # silently because MEMBER was indistinguishable from "not passed"; it must be
+        # rejected just like any other explicit `bot_status`.
+        blueprint = Blueprint()
+
+        with pytest.raises(ValueError, match="both"):
+            blueprint.add_supergroup(
+                "Team",
+                members={blueprint.bot: ChatMemberStatus.ADMINISTRATOR},
+                bot_status=ChatMemberStatus.MEMBER,
+            )
+
+    def test_bot_status_member_alone_is_accepted(self):
+        blueprint = Blueprint()
+
+        chat = blueprint.add_supergroup("Team", bot_status=ChatMemberStatus.MEMBER)
+
+        statuses = {member.user_id: member.status for member in chat.members}
+        assert statuses[blueprint.bot.id] == ChatMemberStatus.MEMBER
+        bot_specs = [member for member in chat.members if member.user_id == blueprint.bot.id]
+        assert len(bot_specs) == 1
+
     def test_bot_id_is_taken_from_the_token(self):
         assert Blueprint(token="123456:ABC").bot.id == 123456
 

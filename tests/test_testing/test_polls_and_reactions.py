@@ -332,7 +332,11 @@ class TestReactionTriggers:
     async def test_reacting_with_explicit_reaction_types(self, env, private, alice):
         message = await env.bot.send_message(chat_id=private.id, text="hi")
 
-        await alice.react(message, [HEART])
+        # A fresh instance rather than the module-level `HEART`: an actor puts the
+        # reactions it is given on the update it feeds, and everything an update carries is
+        # mounted to the bot — after which the constant would no longer compare equal to
+        # the unmounted copy the world keeps.
+        await alice.react(message, [ReactionTypeEmoji(emoji="❤")])
 
         assert private.reactions_for(message.message_id) == {alice.user.id: [HEART]}
 
