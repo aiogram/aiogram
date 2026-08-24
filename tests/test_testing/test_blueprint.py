@@ -63,6 +63,50 @@ class TestDeclaration:
         assert statuses[alice.id] == ChatMemberStatus.ADMINISTRATOR
         assert statuses[blueprint.bot.id] == ChatMemberStatus.MEMBER
 
+    @pytest.mark.parametrize(
+        "factory",
+        ["add_group", "add_supergroup", "add_channel"],
+    )
+    def test_bot_status_defaults_to_member(self, factory):
+        blueprint = Blueprint()
+
+        chat = getattr(blueprint, factory)("Team")
+
+        statuses = {member.user_id: member.status for member in chat.members}
+        assert statuses[blueprint.bot.id] == ChatMemberStatus.MEMBER
+
+    def test_bot_status_can_be_declared(self):
+        blueprint = Blueprint()
+
+        chat = blueprint.add_supergroup("Team", bot_status=ChatMemberStatus.ADMINISTRATOR)
+
+        statuses = {member.user_id: member.status for member in chat.members}
+        assert statuses[blueprint.bot.id] == ChatMemberStatus.ADMINISTRATOR
+        bot_specs = [member for member in chat.members if member.user_id == blueprint.bot.id]
+        assert len(bot_specs) == 1
+
+    def test_bot_can_be_declared_via_members(self):
+        blueprint = Blueprint()
+
+        chat = blueprint.add_supergroup(
+            "Team",
+            members={blueprint.bot: ChatMemberStatus.ADMINISTRATOR},
+        )
+
+        bot_specs = [member for member in chat.members if member.user_id == blueprint.bot.id]
+        assert len(bot_specs) == 1
+        assert bot_specs[0].status == ChatMemberStatus.ADMINISTRATOR
+
+    def test_bot_status_conflict_is_rejected(self):
+        blueprint = Blueprint()
+
+        with pytest.raises(ValueError, match="both"):
+            blueprint.add_supergroup(
+                "Team",
+                members={blueprint.bot: ChatMemberStatus.ADMINISTRATOR},
+                bot_status=ChatMemberStatus.CREATOR,
+            )
+
     def test_bot_id_is_taken_from_the_token(self):
         assert Blueprint(token="123456:ABC").bot.id == 123456
 

@@ -3,7 +3,12 @@ import pytest
 from aiogram.enums import ChatMemberStatus
 from aiogram.exceptions import TelegramBadRequest
 from aiogram.test import Blueprint, BotTestEnvironment
-from aiogram.types import ChatPermissions, ChatPhoto
+from aiogram.types import (
+    ChatMemberAdministrator,
+    ChatMemberMember,
+    ChatPermissions,
+    ChatPhoto,
+)
 
 SILENCED = ChatPermissions(can_send_messages=False, can_send_other_messages=False)
 
@@ -236,6 +241,63 @@ class TestMemberAnnotations:
     async def test_annotating_an_unknown_user_fails(self, env, team):
         with pytest.raises(TelegramBadRequest, match="not declared in the blueprint"):
             await env.bot.set_chat_member_tag(chat_id=team.id, user_id=424242, tag="VIP")
+
+
+class TestBotAdminStatus:
+    async def test_bot_status_can_be_declared_as_administrator(self, dp):
+        blueprint = Blueprint()
+        team = blueprint.add_supergroup("Team", bot_status=ChatMemberStatus.ADMINISTRATOR)
+        env = BotTestEnvironment(blueprint=blueprint, dispatcher=dp)
+        try:
+            member = await env.bot.get_chat_member(chat_id=team.id, user_id=env.bot.id)
+
+            assert isinstance(member, ChatMemberAdministrator)
+            assert [m.user_id for m in blueprint.chats[0].members].count(env.bot.id) == 1
+        finally:
+            env.dispose_sync()
+
+    async def test_bot_can_be_declared_admin_via_members(self, dp):
+        blueprint = Blueprint()
+        team = blueprint.add_supergroup(
+            "Team",
+            members={blueprint.bot: ChatMemberStatus.ADMINISTRATOR},
+        )
+        env = BotTestEnvironment(blueprint=blueprint, dispatcher=dp)
+        try:
+            member = await env.bot.get_chat_member(chat_id=team.id, user_id=env.bot.id)
+
+            assert isinstance(member, ChatMemberAdministrator)
+            assert [m.user_id for m in blueprint.chats[0].members].count(env.bot.id) == 1
+        finally:
+            env.dispose_sync()
+
+    async def test_declaring_both_is_ambiguous(self):
+        blueprint = Blueprint()
+
+        with pytest.raises(ValueError, match="both"):
+            blueprint.add_supergroup(
+                "Team",
+                members={blueprint.bot: ChatMemberStatus.ADMINISTRATOR},
+                bot_status=ChatMemberStatus.CREATOR,
+            )
+
+    async def test_bot_status_defaults_to_member(self, env, team):
+        member = await env.bot.get_chat_member(chat_id=team.id, user_id=env.bot.id)
+
+        assert isinstance(member, ChatMemberMember)
+
+    async def test_the_synthesized_administrator_carries_ordinary_admin_rights(
+        self,
+        env,
+        team,
+        alice,
+    ):
+        """A bot/user admin checked for a specific right must pass that check."""
+        member = await env.bot.get_chat_member(chat_id=team.id, user_id=alice.user.id)
+
+        assert isinstance(member, ChatMemberAdministrator)
+        assert member.can_pin_messages is True
+        assert member.can_manage_topics is True
 
 
 class TestPermissionsAreNotEnforced:

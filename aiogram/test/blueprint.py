@@ -195,12 +195,14 @@ class Blueprint:
         *,
         members: dict[UserSpec, str] | None = None,
         id: int | None = None,
+        bot_status: str = ChatMemberStatus.MEMBER,
     ) -> ChatSpec:
         return self._add_group_like(
             chat_type=ChatType.GROUP,
             title=title,
             members=members,
             chat_id=id if id is not None else FIRST_GROUP_ID - len(self.chats),
+            bot_status=bot_status,
         )
 
     def add_supergroup(
@@ -209,12 +211,14 @@ class Blueprint:
         *,
         members: dict[UserSpec, str] | None = None,
         id: int | None = None,
+        bot_status: str = ChatMemberStatus.MEMBER,
     ) -> ChatSpec:
         return self._add_group_like(
             chat_type=ChatType.SUPERGROUP,
             title=title,
             members=members,
             chat_id=id if id is not None else FIRST_SUPERGROUP_ID - len(self.chats),
+            bot_status=bot_status,
         )
 
     def add_channel(
@@ -223,12 +227,14 @@ class Blueprint:
         *,
         members: dict[UserSpec, str] | None = None,
         id: int | None = None,
+        bot_status: str = ChatMemberStatus.MEMBER,
     ) -> ChatSpec:
         return self._add_group_like(
             chat_type=ChatType.CHANNEL,
             title=title,
             members=members,
             chat_id=id if id is not None else FIRST_SUPERGROUP_ID - len(self.chats),
+            bot_status=bot_status,
         )
 
     def _add_group_like(
@@ -237,17 +243,32 @@ class Blueprint:
         title: str,
         members: dict[UserSpec, str] | None,
         chat_id: int,
+        bot_status: str = ChatMemberStatus.MEMBER,
     ) -> ChatSpec:
+        members = members or {}
+        bot_membership = members.get(self.bot)
+        # `bot_status` and a `members[blueprint.bot]` entry are two ways of saying the
+        # same thing; accepting both silently would let one shadow the other, so a
+        # non-default `bot_status` alongside an explicit entry is rejected as ambiguous.
+        if bot_membership is not None and bot_status != ChatMemberStatus.MEMBER:
+            msg = (
+                "The bot's status was given both via `members` and via `bot_status`; "
+                "pass only one of them."
+            )
+            raise ValueError(msg)
         chat = ChatSpec(
             id=chat_id,
             type=chat_type,
             title=title,
             members=[
-                MemberSpec(user_id=user.id, status=status)
-                for user, status in (members or {}).items()
+                MemberSpec(user_id=user.id, status=status) for user, status in members.items()
             ],
         )
-        chat.members.append(MemberSpec(user_id=self.bot.id, status=ChatMemberStatus.MEMBER))
+        # Almost every group bot's first move is checking its own rights, so the bot is
+        # always a member of the chats it is declared into — as itself if `members`
+        # already named it, otherwise appended with `bot_status` (default: MEMBER).
+        if bot_membership is None:
+            chat.members.append(MemberSpec(user_id=self.bot.id, status=bot_status))
         self.chats.append(chat)
         return chat
 
