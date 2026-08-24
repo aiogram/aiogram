@@ -32,13 +32,13 @@ from aiogram.types import (
     Update,
 )
 
+from .overrides import fresh_result
 from .synthesis import SynthesisContext, synthesize
 from .world import (
     BusinessConnectionState,
     ChargeState,
     ChatState,
     CommunityState,
-    MemberState,
     QueryKind,
     TopicState,
     UserState,
@@ -82,6 +82,24 @@ _UNSUPPORTED_START_KINDS: dict[str, str] = {
     "startattach": "opens the attachment-menu chooser",
     "attach": "opens the attachment menu",
 }
+
+
+def _detached(value: Any) -> Any:
+    """
+    Copy what the caller handed a trigger, before an update carries it into the world.
+
+    An update is mounted to the bot on the way in, and everything nested inside it is
+    mounted with it — so a trigger that embeds the very object a test passed
+    (``reaction=[HEART]``, ``fields={"reply_markup": MENU}``) binds that object to a bot,
+    and a module-level constant stays bound for the rest of the session, no longer equal
+    to the unbound copy the world keeps. The same reasoning made declared results copies
+    rather than the test's own objects, so this reuses
+    :func:`aiogram.test.overrides.fresh_result` — the input side of a trigger is that
+    problem seen from the other end.
+    """
+    if isinstance(value, dict):
+        return {name: _detached(item) for name, item in value.items()}
+    return fresh_result(value)
 
 
 class UserActor:
@@ -199,7 +217,7 @@ class UserActor:
         **data: Any,
     ) -> Any:
         """Edit a message this user sent earlier."""
-        changes: dict[str, Any] = {"text": text, **(fields or {})}
+        changes: dict[str, Any] = {"text": text, **_detached(fields or {})}
         edited = self.chat.update_message(message.message_id, **changes)
         if self.business is not None:
             return await self._feed(
@@ -311,8 +329,10 @@ class UserActor:
             raise WorldLookupError(msg)
 
         text = f"/start {deep_link.payload}" if deep_link.payload else "/start"
-        private_actor = self.environment.user(self.user.id)
-        return await private_actor.send(text, **data)
+        # Tapping the link is what opens the private chat, so the world opens it here
+        # rather than refusing an interaction a real client performs unprompted.
+        private_chat = self.environment.world.ensure_private_chat(self.user)
+        return await UserActor(self.environment, self.user, private_chat).send(text, **data)
 
     async def inline_query(self, query: str = "", *, offset: str = "", **data: Any) -> Any:
         inline = InlineQuery(
@@ -593,16 +613,21 @@ class UserActor:
             msg = f"Message {message_id} does not exist in chat {chat.id}"
             raise WorldLookupError(msg)
         if isinstance(reaction, str):
-            reaction = [ReactionTypeEmoji(emoji=reaction)]
-        old = list(chat.reactions_for(message_id).get(self.user.id, []))
-        chat.set_reaction(message_id, self.user.id, reaction or [])
+            new_reaction: list[ReactionTypeUnion] = [ReactionTypeEmoji(emoji=reaction)]
+        else:
+            new_reaction = _detached(reaction or [])
+        # The stored reactions are copied out for the same reason the incoming ones are
+        # copied in: the update binds whatever it carries, and the world's own objects are
+        # compared against plainly declared ones.
+        old = _detached(list(chat.reactions_for(message_id).get(self.user.id, [])))
+        chat.set_reaction(message_id, self.user.id, new_reaction)
         event = MessageReactionUpdated(
             chat=chat.as_chat(),
             message_id=message_id,
             user=self.user.as_user(),
             date=self.environment.world.next_date(),
             old_reaction=old,
-            new_reaction=reaction or [],
+            new_reaction=new_reaction,
         )
         return await self._feed(
             Update(update_id=self._next_update_id(), message_reaction=event),
@@ -695,7 +720,7 @@ class UserActor:
             values["is_topic_message"] = True
         if self.business is not None:
             values["business_connection_id"] = self.business.id
-        values.update(fields or {})
+        values.update(_detached(fields or {}))
         return Message(**values)
 
     @staticmethod
@@ -831,14 +856,12 @@ class UserActor:
         target = subject if subject is not None else self.user
         member = chat.member(target.id)
         user = target.as_user()
-        old = member.as_chat_member(user)
+        # Read before the mutation and after it, off the one membership the world holds:
+        # everything else it carries — a custom title, a tag, granted rights — survives a
+        # join or a leave, and rebuilding the "new" side from a subset would drop it.
+        old = member.as_chat_member(user, chat.type)
         member.status = status
-        new = MemberState(
-            user_id=member.user_id,
-            status=status,
-            custom_title=member.custom_title,
-            until_date=member.until_date,
-        ).as_chat_member(user)
+        new = member.as_chat_member(user, chat.type)
         event = ChatMemberUpdated(
             chat=chat.as_chat(),
             from_user=self.user.as_user(),

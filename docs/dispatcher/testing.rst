@@ -107,6 +107,29 @@ thing, so combining them raises rather than letting one silently shadow the othe
 Either way, ``get_chat_member`` on the bot's own id reports the declared status, so a
 handler that gates itself on its own rights takes the same branch it would in production.
 
+A status says what a member *is*; ``set_member`` says what they may **do**. An
+administrator declared without rights has the ordinary ones, and the interesting case —
+"the bot is an admin but cannot delete messages, so warn the user" — is a declaration of
+its own:
+
+.. code-block:: python
+
+    from aiogram.test import administrator_rights
+
+    team = blueprint.add_supergroup("Team", bot_status=ChatMemberStatus.ADMINISTRATOR)
+    blueprint.set_member(
+        team,
+        blueprint.bot,
+        rights=administrator_rights(can_delete_messages=False),
+    )
+    blueprint.set_member(team, alice, permissions=ChatPermissions(can_send_messages=False))
+
+``administrator_rights(**overrides)`` builds the ordinary rights of a chat type with the
+overrides applied, so a nearly-ordinary admin is one line rather than a seventeen-field
+literal. Passing ``rights`` or ``permissions`` implies the status that carries it
+(administrator, restricted); an explicit ``status`` wins, and declaring both for one member
+raises, since they belong to different statuses.
+
 Triggering events
 =================
 
@@ -164,6 +187,11 @@ bot and sends ``/start <payload>`` there.
         await bot_env.user(alice).in_(team).follow_deep_link()
 
         assert bot_env.chat(alice.id).messages[-1].text == "/start team-42"
+
+The private chat is opened if the blueprint never declared one, because that is what the
+tap itself does in a real client: a user reached through a group button has a private chat
+with the bot from the moment they follow the link. It is shaped exactly like
+``add_private_chat`` builds one, so what it holds is as usable as any declared chat's.
 
 ``https://t.me/<username>?start=<payload>`` is recognized, along with its ``http://`` and
 schemeless ``t.me/...`` forms, and ``tg://resolve?domain=<username>&start=<payload>``. A
@@ -668,9 +696,15 @@ chance to run.
 returning an awaitable — until it produces something truthy, and hands that value back, so
 it can fetch as well as test. :meth:`~aiogram.test.world.ChatState.wait_for_message` is the
 specialized form for the case that dominates these tests: something the trigger did not
-await is expected to post into a chat. Both give up with
+await is expected to post into a chat. A topic waits the same way, over its own filtered
+view of the chat's messages, so a message posted into a sibling topic never satisfies it::
+
+    message = await env.topic(forum, support).wait_for_message(lambda m: m.text == "done")
+
+Both give up with
 :class:`aiogram.test.WaitTimeoutError`, a :class:`TimeoutError` whose message names what
-was awaited and enumerates the chat's messages, so a failure shows what actually arrived
+was awaited and enumerates the messages of the chat or topic it waited in, so a failure
+shows what actually arrived
 instead of just "timed out"; neither overshoots its ``timeout``, whatever ``interval`` it
 was given.
 
@@ -770,6 +804,30 @@ and restrict methods already maintain, so :code:`getChatAdministrators` and
 :code:`getChatMemberCount` cannot disagree with them. Administrators come back creator
 first, and — as Telegram does — bots other than the one under test are omitted unless
 ``return_bots`` is passed.
+
+Rights are stored, not invented. :code:`promoteChatMember` sets the whole rights mask on
+every call, so that is what the world stores: a right the request does not pass is not
+granted, and reading the member back says so.
+
+.. code-block:: python
+
+    await env.bot.promote_chat_member(chat_id=group.id, user_id=alice.id, can_pin_messages=True)
+
+    member = await env.bot.get_chat_member(chat_id=group.id, user_id=alice.id)
+    assert member.can_pin_messages is True
+    assert member.can_delete_messages is False   # never granted
+
+A promotion in which nothing comes out true — every flag ``False``, or none passed at all —
+is the demotion the Bot API documents; anything true keeps the member an administrator,
+``is_anonymous`` included. :code:`restrictChatMember` likewise persists the
+:class:`aiogram.types.chat_permissions.ChatPermissions` it was given, so
+:code:`getChatMember` reports the permissions that were actually set.
+
+What a member's rights *are* also depends on where they hold them, and so do the answers
+here: ``can_post_messages`` and ``can_edit_messages`` are reported only in channels,
+``can_manage_topics`` only in supergroups, ``can_pin_messages`` only in groups and
+supergroups — everywhere else they come back ``None``, exactly as from the real API. A
+right granted where it cannot exist is dropped rather than reported back as if it did.
 
 Where Telegram posts a service message, so does the environment:
 
@@ -1183,12 +1241,20 @@ API reference
 =============
 
 .. automodule:: aiogram.test
-    :members: Blueprint, BotTestEnvironment, UserActor, CallLog, build_environment, default_blueprint, detach_router
+    :members: Blueprint, BotTestEnvironment, UserActor, CallLog, build_environment, default_blueprint, detach_router, administrator_rights
     :member-order: bysource
     :undoc-members: False
 
 .. autoclass:: aiogram.test.world.ChatState
     :members: messages, members, pinned_message_ids, member, find_message, wait_for_message
+    :member-order: bysource
+
+.. autoclass:: aiogram.test.world.TopicState
+    :members: messages, wait_for_message
+    :member-order: bysource
+
+.. autoclass:: aiogram.test.world.MemberState
+    :members: status, rights, permissions, as_chat_member
     :member-order: bysource
 
 .. autoclass:: aiogram.test.overrides.OverrideBuilder

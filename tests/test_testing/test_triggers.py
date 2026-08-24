@@ -463,3 +463,60 @@ class TestBotMembership:
         await actor.remove_bot()
 
         assert not team.member(env.world.bot_user.id).is_present
+
+    async def test_a_membership_change_keeps_what_the_membership_carries(self, env, team, alice):
+        """A join or a leave changes the status, not the rights that came with it."""
+        seen = []
+        env.dispatcher.chat_member.register(seen.append)
+        actor = alice.in_(team)
+        await env.bot.promote_chat_member(
+            chat_id=team.id,
+            user_id=alice.user.id,
+            can_delete_messages=True,
+        )
+
+        await actor.leave()
+
+        event = seen[-1]
+        assert event.old_chat_member.can_delete_messages is True
+        assert event.old_chat_member.can_manage_chat is False
+        assert event.new_chat_member.status == "left"
+
+
+class TestCallerSuppliedObjects:
+    """
+    What a test hands a trigger stays the test's own.
+
+    An update is mounted to the bot on the way in, and everything nested in it with it, so
+    a trigger that embedded the caller's object would bind a shared constant to a bot for
+    the rest of the session — and it would no longer compare equal to the copy the world
+    keeps, since the binding counts towards equality.
+    """
+
+    async def test_a_field_object_is_copied_before_it_is_stored(self, env, private, alice):
+        markup = InlineKeyboardMarkup(
+            inline_keyboard=[[InlineKeyboardButton(text="Go", callback_data="go")]],
+        )
+
+        await alice.send("menu", fields={"reply_markup": markup})
+
+        stored = private.messages[-1].reply_markup
+        assert stored is not markup
+        assert stored.inline_keyboard[0][0].callback_data == "go"
+        # The stored copy is bound to the bot, like everything the world holds; the
+        # test's own object is left alone.
+        assert stored.bot is env.bot
+        assert markup.bot is None
+
+    async def test_an_edit_copies_its_fields_too(self, env, private, alice):
+        markup = InlineKeyboardMarkup(
+            inline_keyboard=[[InlineKeyboardButton(text="Go", callback_data="go")]],
+        )
+        await alice.send("menu")
+
+        await alice.edit(private.messages[-1], "menu", fields={"reply_markup": markup})
+
+        stored = private.messages[-1].reply_markup
+        assert stored.inline_keyboard[0][0].callback_data == "go"
+        assert stored is not markup
+        assert markup.bot is None

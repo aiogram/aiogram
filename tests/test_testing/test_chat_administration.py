@@ -2,7 +2,7 @@ import pytest
 
 from aiogram.enums import ChatMemberStatus
 from aiogram.exceptions import TelegramBadRequest
-from aiogram.test import Blueprint, BotTestEnvironment
+from aiogram.test import Blueprint, BotTestEnvironment, administrator_rights
 from aiogram.types import (
     ChatMemberAdministrator,
     ChatMemberMember,
@@ -298,7 +298,7 @@ class TestBotAdminStatus:
 
         assert isinstance(member, ChatMemberMember)
 
-    async def test_the_synthesized_administrator_carries_ordinary_admin_rights(
+    async def test_an_administrator_declared_without_rights_carries_the_ordinary_ones(
         self,
         env,
         team,
@@ -310,6 +310,282 @@ class TestBotAdminStatus:
         assert isinstance(member, ChatMemberAdministrator)
         assert member.can_pin_messages is True
         assert member.can_manage_topics is True
+
+
+class TestDeclaredRights:
+    """What a declared member may do, which the status alone does not say."""
+
+    @pytest.fixture
+    def rights_env(self, dp):
+        blueprint = Blueprint()
+        moderator = blueprint.add_user("Moderator")
+        team = blueprint.add_supergroup("Team")
+        blueprint.set_member(
+            team,
+            moderator,
+            rights=administrator_rights(can_restrict_members=False),
+            custom_title="Mod",
+        )
+        blueprint.set_member(
+            team,
+            blueprint.bot,
+            rights=administrator_rights(can_delete_messages=False),
+        )
+        environment = BotTestEnvironment(blueprint=blueprint, dispatcher=dp)
+        try:
+            yield environment, team, moderator
+        finally:
+            environment.dispose_sync()
+
+    async def test_a_partial_rights_admin_reads_back_as_declared(self, rights_env):
+        env, team, moderator = rights_env
+
+        member = await env.bot.get_chat_member(chat_id=team.id, user_id=moderator.id)
+
+        assert isinstance(member, ChatMemberAdministrator)
+        assert member.can_restrict_members is False
+        assert member.can_delete_messages is True
+        assert member.custom_title == "Mod"
+
+    async def test_the_bot_can_be_declared_to_lack_a_right(self, rights_env):
+        """The case behind every "give me that right" branch a group bot has."""
+        env, team, _moderator = rights_env
+
+        member = await env.bot.get_chat_member(chat_id=team.id, user_id=env.bot.id)
+
+        assert member.can_delete_messages is False
+        assert member.can_manage_chat is True
+
+    async def test_declared_rights_reach_the_administrator_list(self, rights_env):
+        env, team, moderator = rights_env
+
+        admins = await env.bot.get_chat_administrators(chat_id=team.id, return_bots=True)
+
+        assert {admin.user.id: admin.can_delete_messages for admin in admins} == {
+            moderator.id: True,
+            env.bot.id: False,
+        }
+
+    async def test_a_restricted_member_can_be_declared(self, dp):
+        blueprint = Blueprint()
+        quiet = blueprint.add_user("Quiet")
+        team = blueprint.add_supergroup("Team")
+        blueprint.set_member(
+            team,
+            quiet,
+            permissions=ChatPermissions(can_send_messages=False, can_send_polls=True),
+        )
+        env = BotTestEnvironment(blueprint=blueprint, dispatcher=dp)
+        try:
+            member = await env.bot.get_chat_member(chat_id=team.id, user_id=quiet.id)
+
+            assert member.status == ChatMemberStatus.RESTRICTED
+            assert member.can_send_messages is False
+            assert member.can_send_polls is True
+        finally:
+            env.dispose_sync()
+
+    async def test_amending_a_member_declared_by_the_shorthand(self, dp):
+        blueprint = Blueprint()
+        alice = blueprint.add_user("Alice")
+        team = blueprint.add_supergroup("Team", members={alice: ChatMemberStatus.ADMINISTRATOR})
+        blueprint.set_member(team, alice, tag="VIP", status=ChatMemberStatus.MEMBER)
+        env = BotTestEnvironment(blueprint=blueprint, dispatcher=dp)
+        try:
+            member = await env.bot.get_chat_member(chat_id=team.id, user_id=alice.id)
+
+            assert len([item for item in team.members if item.user_id == alice.id]) == 1
+            assert isinstance(member, ChatMemberMember)
+            assert member.tag == "VIP"
+        finally:
+            env.dispose_sync()
+
+    def test_rights_and_permissions_belong_to_different_statuses(self):
+        blueprint = Blueprint()
+        alice = blueprint.add_user("Alice")
+        team = blueprint.add_supergroup("Team")
+
+        with pytest.raises(ValueError, match="only one of them"):
+            blueprint.set_member(
+                team,
+                alice,
+                rights=administrator_rights(),
+                permissions=ChatPermissions(),
+            )
+
+
+class TestRightsFollowTheChatType:
+    """The Bot API reports some rights only in some chat types, and so does the world."""
+
+    @pytest.fixture
+    def typed_env(self, dp):
+        blueprint = Blueprint()
+        alice = blueprint.add_user("Alice")
+        supergroup = blueprint.add_supergroup(
+            "Team",
+            members={alice: ChatMemberStatus.ADMINISTRATOR},
+        )
+        channel = blueprint.add_channel("News", members={alice: ChatMemberStatus.ADMINISTRATOR})
+        environment = BotTestEnvironment(blueprint=blueprint, dispatcher=dp)
+        try:
+            yield environment, supergroup, channel, alice
+        finally:
+            environment.dispose_sync()
+
+    async def test_a_supergroup_administrator(self, typed_env):
+        env, supergroup, _channel, alice = typed_env
+
+        member = await env.bot.get_chat_member(chat_id=supergroup.id, user_id=alice.id)
+
+        assert member.can_manage_topics is True
+        assert member.can_pin_messages is True
+        assert member.can_post_messages is None
+        assert member.can_edit_messages is None
+
+    async def test_a_channel_administrator(self, typed_env):
+        env, _supergroup, channel, alice = typed_env
+
+        member = await env.bot.get_chat_member(chat_id=channel.id, user_id=alice.id)
+
+        assert member.can_post_messages is True
+        assert member.can_edit_messages is True
+        assert member.can_manage_topics is None
+        assert member.can_pin_messages is None
+
+    async def test_promoted_rights_are_scoped_too(self, typed_env):
+        """A right granted where it cannot exist is not reported back as if it did."""
+        env, supergroup, _channel, alice = typed_env
+
+        await env.bot.promote_chat_member(
+            chat_id=supergroup.id,
+            user_id=alice.id,
+            can_post_messages=True,
+            can_manage_topics=True,
+        )
+        member = await env.bot.get_chat_member(chat_id=supergroup.id, user_id=alice.id)
+
+        assert member.can_post_messages is None
+        assert member.can_manage_topics is True
+
+
+class TestPromoteAndRestrictPersist:
+    async def test_promote_grants_exactly_what_was_asked_for(self, env, team, alice):
+        await env.bot.promote_chat_member(
+            chat_id=team.id,
+            user_id=alice.user.id,
+            can_pin_messages=True,
+        )
+
+        member = await env.bot.get_chat_member(chat_id=team.id, user_id=alice.user.id)
+
+        assert isinstance(member, ChatMemberAdministrator)
+        assert member.can_pin_messages is True
+        # Not asked for, so not granted — `promoteChatMember` sets the whole mask.
+        assert member.can_delete_messages is False
+        assert member.can_manage_chat is False
+
+    async def test_a_second_promotion_replaces_the_first(self, env, team, alice):
+        await env.bot.promote_chat_member(
+            chat_id=team.id,
+            user_id=alice.user.id,
+            can_delete_messages=True,
+        )
+
+        await env.bot.promote_chat_member(
+            chat_id=team.id,
+            user_id=alice.user.id,
+            can_invite_users=True,
+        )
+
+        member = await env.bot.get_chat_member(chat_id=team.id, user_id=alice.user.id)
+        assert member.can_invite_users is True
+        assert member.can_delete_messages is False
+
+    async def test_promoting_only_is_anonymous_keeps_the_administrator(self, env, team, alice):
+        """Hiding an administrator is a right like any other, not a demotion."""
+        await env.bot.promote_chat_member(
+            chat_id=team.id,
+            user_id=alice.user.id,
+            is_anonymous=True,
+        )
+
+        member = await env.bot.get_chat_member(chat_id=team.id, user_id=alice.user.id)
+
+        assert isinstance(member, ChatMemberAdministrator)
+        assert member.is_anonymous is True
+
+    @pytest.mark.parametrize(
+        "kwargs",
+        [
+            pytest.param({}, id="nothing-passed"),
+            pytest.param(
+                {"can_delete_messages": False, "can_pin_messages": False},
+                id="explicitly-false",
+            ),
+        ],
+    )
+    async def test_a_promotion_that_grants_nothing_demotes(self, env, team, alice, kwargs):
+        await env.bot.promote_chat_member(chat_id=team.id, user_id=alice.user.id, **kwargs)
+
+        member = await env.bot.get_chat_member(chat_id=team.id, user_id=alice.user.id)
+
+        assert isinstance(member, ChatMemberMember)
+
+    async def test_a_demoted_administrator_can_be_promoted_again(self, env, team, alice):
+        await env.bot.promote_chat_member(chat_id=team.id, user_id=alice.user.id)
+
+        await env.bot.promote_chat_member(
+            chat_id=team.id,
+            user_id=alice.user.id,
+            can_manage_chat=True,
+        )
+
+        member = await env.bot.get_chat_member(chat_id=team.id, user_id=alice.user.id)
+        assert member.can_manage_chat is True
+        assert member.can_delete_messages is False
+
+    async def test_restrict_persists_the_permissions_it_was_given(self, env, team, alice):
+        await env.bot.restrict_chat_member(
+            chat_id=team.id,
+            user_id=alice.user.id,
+            permissions=ChatPermissions(can_send_messages=True, can_send_photos=True),
+        )
+
+        member = await env.bot.get_chat_member(chat_id=team.id, user_id=alice.user.id)
+
+        assert member.status == ChatMemberStatus.RESTRICTED
+        assert member.can_send_messages is True
+        assert member.can_send_photos is True
+        assert member.can_send_polls is False
+
+    async def test_restrict_does_not_keep_the_callers_permissions_object(self, env, team, alice):
+        """A shared constant stays what the test wrote, whatever the world does with it."""
+        await env.bot.restrict_chat_member(
+            chat_id=team.id,
+            user_id=alice.user.id,
+            permissions=SILENCED,
+        )
+
+        assert team.member(alice.user.id).permissions is not SILENCED
+        assert SILENCED.can_send_messages is False
+        assert SILENCED.bot is None
+
+    async def test_restricting_an_administrator_drops_their_rights(self, env, team, alice):
+        await env.bot.restrict_chat_member(
+            chat_id=team.id,
+            user_id=alice.user.id,
+            permissions=SILENCED,
+        )
+        await env.bot.promote_chat_member(
+            chat_id=team.id,
+            user_id=alice.user.id,
+            can_pin_messages=True,
+        )
+
+        member = await env.bot.get_chat_member(chat_id=team.id, user_id=alice.user.id)
+
+        assert isinstance(member, ChatMemberAdministrator)
+        assert member.can_pin_messages is True
 
 
 class TestPermissionsAreNotEnforced:

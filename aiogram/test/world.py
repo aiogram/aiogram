@@ -60,6 +60,81 @@ GENERAL_TOPIC_NAME = "General"
 #: How much of a message's text a failure message shows before cutting it off.
 MESSAGE_PREVIEW_LIMIT = 60
 
+#: Administrator rights the Bot API only reports in some chat types, and in which. Outside
+#: them the real API leaves the field unset, so a bot that reads
+#: ``member.can_post_messages`` in a supergroup gets ``None`` there and must not get a
+#: fabricated ``True`` here either.
+CHAT_TYPE_SCOPED_RIGHTS: dict[str, frozenset[str]] = {
+    "can_post_messages": frozenset({ChatType.CHANNEL}),
+    "can_edit_messages": frozenset({ChatType.CHANNEL}),
+    "can_manage_direct_messages": frozenset({ChatType.CHANNEL}),
+    "can_pin_messages": frozenset({ChatType.GROUP, ChatType.SUPERGROUP}),
+    "can_manage_tags": frozenset({ChatType.GROUP, ChatType.SUPERGROUP}),
+    "can_manage_topics": frozenset({ChatType.SUPERGROUP}),
+}
+
+#: What an administrator promoted the ordinary way can do: everything a moderator needs,
+#: minus the two things a chat owner grants deliberately (promoting others, stories).
+#: Rights a future Bot API version adds default to ``False`` rather than breaking the call.
+_ORDINARY_ADMIN_RIGHTS: dict[str, bool] = {
+    "is_anonymous": False,
+    "can_manage_chat": True,
+    "can_delete_messages": True,
+    "can_manage_video_chats": True,
+    "can_restrict_members": True,
+    "can_promote_members": False,
+    "can_change_info": True,
+    "can_invite_users": True,
+    "can_post_stories": False,
+    "can_edit_stories": False,
+    "can_delete_stories": False,
+    "can_post_messages": True,
+    "can_edit_messages": True,
+    "can_manage_direct_messages": True,
+    "can_pin_messages": True,
+    "can_manage_tags": True,
+    "can_manage_topics": True,
+}
+
+
+def scoped_rights(rights: ChatAdministratorRights, chat_type: str) -> ChatAdministratorRights:
+    """
+    Fit the rights to what the Bot API reports for ``chat_type``.
+
+    Applied to declared and granted rights alike, so a right that cannot exist in a chat
+    reads back as ``None`` there however it was set, and a right that *can* exist reads
+    back as a plain boolean even when it was left unstated — which is how the real API
+    answers, and what a bot writing ``if member.can_pin_messages:`` relies on.
+    """
+    values: dict[str, Any] = {
+        name: getattr(rights, name) for name in ChatAdministratorRights.model_fields
+    }
+    for name, chat_types in CHAT_TYPE_SCOPED_RIGHTS.items():
+        values[name] = bool(values[name]) if chat_type in chat_types else None
+    return ChatAdministratorRights(**values)
+
+
+def administrator_rights(
+    chat_type: str = ChatType.SUPERGROUP,
+    **overrides: bool | None,
+) -> ChatAdministratorRights:
+    """
+    The rights of an ordinary administrator of a ``chat_type`` chat, with ``overrides``.
+
+    The one place the permissive default is built: it is what an administrator declared
+    or promoted without explicit rights gets, and it is how a test declares an
+    almost-ordinary admin without spelling out seventeen fields::
+
+        administrator_rights(can_delete_messages=False)
+
+    The result is already scoped to the chat type, so the channel-only and
+    supergroup-only fields are ``None`` where they do not apply.
+    """
+    values: dict[str, Any] = dict.fromkeys(ChatAdministratorRights.model_fields, False)
+    values.update(_ORDINARY_ADMIN_RIGHTS)
+    values.update(overrides)
+    return scoped_rights(ChatAdministratorRights(**values), chat_type)
+
 
 class QueryKind(str, Enum):
     """Kinds of query a trigger can issue and an answer method must consume."""
@@ -92,6 +167,81 @@ def describe_message(message: Message) -> str:
     return f"#{message.message_id} {preview}{keyboard}"
 
 
+def _describe_messages(messages: list[Message], noun: str) -> str:
+    """One-line-per-message rendering of a message view, for failure messages."""
+    if not messages:
+        return f"The {noun} holds no messages."
+    lines = [f"The {noun} holds {len(messages)} message(s):"]
+    lines.extend(f"  {describe_message(message)}" for message in messages)
+    return "\n".join(lines)
+
+
+async def _wait_for_message(
+    view: Callable[[], list[Message]],
+    predicate: Callable[[Message], object] | None,
+    *,
+    noun: str,
+    where: str,
+    timeout: float,
+    interval: float,
+) -> Message:
+    """
+    The polling core behind :meth:`ChatState.wait_for_message` and its topic-scoped twin.
+
+    ``view`` is a callable rather than a list because a topic's messages are a filtered
+    view recomputed on every read — capturing the list once would wait on a snapshot taken
+    before the message being waited for arrived. ``noun`` and ``where`` are how the failure
+    message names the view ("the topic holds…", "…in topic #7 'Support' of chat -100").
+    """
+    # message id -> what the predicate raised on it during the most recent pass.
+    raised: dict[int, Exception] = {}
+
+    def find() -> Message | None:
+        raised.clear()
+        for message in reversed(view()):
+            if predicate is None:
+                return message
+            try:
+                matched = predicate(message)
+            except Exception as error:
+                raised[message.message_id] = error
+                continue
+            if matched:
+                return message
+        return None
+
+    def describe_timeout() -> str:
+        wanted = (
+            "any message"
+            if predicate is None
+            else f"a message matching {describe_callable(predicate)}"
+        )
+        problems = ""
+        if raised:
+            details = "; ".join(
+                f"{type(error).__name__}({str(error)!r}) on message #{message_id}"
+                for message_id, error in sorted(raised.items())
+            )
+            problems = (
+                f" The predicate raised on {len(raised)} of them, which counted as no "
+                f"match: {details}."
+            )
+        return (
+            f"Timed out after {timeout}s waiting for {wanted} in {where}. "
+            f"{_describe_messages(view(), noun)}{problems}"
+        )
+
+    return cast(
+        Message,
+        await poll_until(
+            find,
+            timeout=timeout,
+            interval=interval,
+            describe_timeout=describe_timeout,
+        ),
+    )
+
+
 @dataclass
 class UserState:
     """Mutable state of a single user known to the environment."""
@@ -116,7 +266,14 @@ class UserState:
 
 @dataclass
 class MemberState:
-    """Membership of a user in a chat."""
+    """
+    Membership of a user in a chat, including what that membership lets them do.
+
+    The rights are stored rather than invented on conversion: ``promoteChatMember`` and a
+    blueprint declaration both write them here, so ``getChatMember`` reports exactly what
+    was granted — a bot that gates itself on ``can_delete_messages`` sees the right it was
+    actually given, not a flattering default.
+    """
 
     user_id: int
     status: str = ChatMemberStatus.MEMBER
@@ -125,61 +282,57 @@ class MemberState:
     custom_title: str | None = None
     tag: str | None = None
     until_date: datetime.datetime | None = None
+    #: What an administrator (or an anonymous owner) may do. ``None`` means "not stated",
+    #: which reads back as the ordinary administrator rights of the chat's type.
+    rights: ChatAdministratorRights | None = None
+    #: What a restricted member may do. ``None`` means every permission is denied, which is
+    #: what a restriction with no permissions passed amounts to.
+    permissions: ChatPermissions | None = None
 
     @property
     def is_present(self) -> bool:
         return self.status not in {ChatMemberStatus.LEFT, ChatMemberStatus.KICKED}
 
-    def as_chat_member(self, user: User) -> ChatMemberUnion:
+    def as_chat_member(self, user: User, chat_type: str) -> ChatMemberUnion:
+        """
+        The Bot API's view of this membership in a chat of ``chat_type``.
+
+        The chat type is a parameter because the answer depends on it: the Bot API reports
+        ``can_post_messages`` only for channels and ``can_manage_topics`` only for
+        supergroups, so a variant built without knowing where the member is cannot be
+        truthful about either.
+        """
         if self.status == ChatMemberStatus.CREATOR:
             return ChatMemberOwner(
                 user=user,
-                is_anonymous=False,
+                is_anonymous=self.rights.is_anonymous if self.rights is not None else False,
                 custom_title=self.custom_title,
             )
         if self.status == ChatMemberStatus.ADMINISTRATOR:
+            rights = (
+                administrator_rights(chat_type)
+                if self.rights is None
+                else scoped_rights(self.rights, chat_type)
+            )
             return ChatMemberAdministrator(
                 user=user,
                 custom_title=self.custom_title,
                 can_be_edited=False,
-                is_anonymous=False,
-                can_manage_chat=True,
-                can_delete_messages=True,
-                can_manage_video_chats=True,
-                can_restrict_members=True,
-                can_promote_members=False,
-                can_change_info=True,
-                can_invite_users=True,
-                can_pin_messages=True,
-                can_manage_topics=True,
-                can_post_messages=True,
-                can_edit_messages=True,
-                can_post_stories=False,
-                can_edit_stories=False,
-                can_delete_stories=False,
+                **{name: getattr(rights, name) for name in ChatAdministratorRights.model_fields},
             )
         if self.status == ChatMemberStatus.RESTRICTED:
+            permissions = self.permissions if self.permissions is not None else ChatPermissions()
+            # An unset permission is a denied one: the Bot API's own restricted member
+            # carries plain booleans, while a request omits what it does not grant.
+            allowed: dict[str, Any] = {
+                name: bool(getattr(permissions, name)) for name in ChatPermissions.model_fields
+            }
             return ChatMemberRestricted(
                 user=user,
                 is_member=True,
-                can_send_messages=False,
-                can_send_audios=False,
-                can_send_documents=False,
-                can_send_photos=False,
-                can_send_videos=False,
-                can_send_video_notes=False,
-                can_send_voice_notes=False,
-                can_send_polls=False,
-                can_send_other_messages=False,
-                can_add_web_page_previews=False,
-                can_react_to_messages=False,
-                can_edit_tag=False,
-                can_change_info=False,
-                can_invite_users=False,
-                can_pin_messages=False,
-                can_manage_topics=False,
                 tag=self.tag,
                 until_date=self.until_date or BASE_DATE,
+                **allowed,
             )
         if self.status == ChatMemberStatus.KICKED:
             return ChatMemberBanned(user=user, until_date=self.until_date or BASE_DATE)
@@ -215,6 +368,47 @@ class TopicState:
         return [
             item for item in self.chat.messages if item.message_thread_id == self.message_thread_id
         ]
+
+    @property
+    def label(self) -> str:
+        """How a failure message names this topic."""
+        # A topic is always registered on a chat; a hand-built one still names itself.
+        chat = "" if self.chat is None else f" of chat {self.chat.id}"
+        if self.is_general:
+            return f"the General topic{chat}"
+        return f"topic #{self.message_thread_id} {self.name!r}{chat}"
+
+    async def wait_for_message(
+        self,
+        predicate: Callable[[Message], object] | None = None,
+        *,
+        timeout: float = 5.0,
+        interval: float = 0.01,
+    ) -> Message:
+        """
+        Wait until a message matching ``predicate`` is in **this topic**, and return it.
+
+        :meth:`ChatState.wait_for_message` scoped to one topic: it waits on the same
+        filtered view :attr:`messages` exposes, so a message posted into a sibling topic
+        never satisfies it, and the failure message enumerates this topic rather than the
+        whole forum. Everything else — matching against messages that are already there,
+        a raising predicate counting as "no match", the reporting of what it raised — works
+        exactly as it does for a chat, because it is the same implementation.
+
+        :raises aiogram.test.errors.WaitTimeoutError: if no such message ever appeared.
+        """
+        return await _wait_for_message(
+            lambda: self.messages,
+            predicate,
+            noun="topic",
+            where=self.label,
+            timeout=timeout,
+            interval=interval,
+        )
+
+    def describe_messages(self) -> str:
+        """One-line-per-message rendering of the topic, for failure messages."""
+        return _describe_messages(self.messages, "topic")
 
     def as_forum_topic(self) -> ForumTopic:
         if self.message_thread_id is None:
@@ -605,61 +799,18 @@ class ChatState:
 
         :raises aiogram.test.errors.WaitTimeoutError: if no such message ever appeared.
         """
-        # message id -> what the predicate raised on it during the most recent pass.
-        raised: dict[int, Exception] = {}
-
-        def find() -> Message | None:
-            raised.clear()
-            for message in reversed(self.messages):
-                if predicate is None:
-                    return message
-                try:
-                    matched = predicate(message)
-                except Exception as error:
-                    raised[message.message_id] = error
-                    continue
-                if matched:
-                    return message
-            return None
-
-        def describe_timeout() -> str:
-            wanted = (
-                "any message"
-                if predicate is None
-                else f"a message matching {describe_callable(predicate)}"
-            )
-            problems = ""
-            if raised:
-                details = "; ".join(
-                    f"{type(error).__name__}({str(error)!r}) on message #{message_id}"
-                    for message_id, error in sorted(raised.items())
-                )
-                problems = (
-                    f" The predicate raised on {len(raised)} of them, which counted as no "
-                    f"match: {details}."
-                )
-            return (
-                f"Timed out after {timeout}s waiting for {wanted} in chat {self.id}. "
-                f"{self.describe_messages()}{problems}"
-            )
-
-        return cast(
-            Message,
-            await poll_until(
-                find,
-                timeout=timeout,
-                interval=interval,
-                describe_timeout=describe_timeout,
-            ),
+        return await _wait_for_message(
+            lambda: self.messages,
+            predicate,
+            noun="chat",
+            where=f"chat {self.id}",
+            timeout=timeout,
+            interval=interval,
         )
 
     def describe_messages(self) -> str:
         """One-line-per-message rendering of the chat, for failure messages."""
-        if not self.messages:
-            return "The chat holds no messages."
-        lines = [f"The chat holds {len(self.messages)} message(s):"]
-        lines.extend(f"  {describe_message(message)}" for message in self.messages)
-        return "\n".join(lines)
+        return _describe_messages(self.messages, "chat")
 
     def invite_link(self, url: str) -> InviteLinkState:
         for link in self.invite_links:
@@ -861,6 +1012,32 @@ class World:
         # inherit the owner on the way out, so their messages are bound like any other.
         chat.bound_bot = self.bound_bot
         return chat
+
+    def ensure_private_chat(self, user: UserState) -> ChatState:
+        """
+        The user's private chat with the bot, opened if it does not exist yet.
+
+        Every Telegram user *can* open a private chat with a bot, and some actions — tapping
+        a `/start` deep link, most of all — open it as a side effect. A blueprint that did
+        not declare one is therefore not saying "this user has no private chat"; it is only
+        saying the test did not need to name it. So the chat is created here, shaped exactly
+        like :meth:`aiogram.test.Blueprint.add_private_chat` builds one, rather than the
+        world refusing an interaction Telegram itself would allow.
+        """
+        chat = self.chats.get(user.id)
+        if chat is None:
+            chat = ChatState(
+                id=user.id,
+                type=ChatType.PRIVATE,
+                username=user.username,
+                first_name=user.first_name,
+                last_name=user.last_name,
+                members={user.id: MemberState(user_id=user.id)},
+            )
+            self.chats[user.id] = chat
+        # Through `chat()` rather than the dict, so the new chat inherits the bound bot and
+        # its messages are as usable as any declared chat's.
+        return self.chat(chat.id)
 
     def business_connection(self, connection_id: str) -> BusinessConnectionState:
         connection = self.business_connections.get(connection_id)

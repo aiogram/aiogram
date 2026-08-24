@@ -60,12 +60,22 @@ class UserSpec:
 
 @dataclass
 class MemberSpec:
-    """Declaration of a user's membership in a chat."""
+    """
+    Declaration of a user's membership in a chat.
+
+    ``rights`` and ``permissions`` say what the membership *allows*, which the status alone
+    does not: an administrator without declared rights has the ordinary ones, but an
+    administrator the test declared as lacking one is the whole point of a test that checks
+    the bot warns about a missing right. Declare either through
+    :meth:`Blueprint.set_member`.
+    """
 
     user_id: int
     status: str = ChatMemberStatus.MEMBER
     custom_title: str | None = None
     tag: str | None = None
+    rights: ChatAdministratorRights | None = None
+    permissions: ChatPermissions | None = None
 
 
 @dataclass(eq=False)
@@ -275,6 +285,64 @@ class Blueprint:
         self.chats.append(chat)
         return chat
 
+    def set_member(
+        self,
+        chat: ChatSpec,
+        user: UserSpec,
+        *,
+        status: str | None = None,
+        rights: ChatAdministratorRights | None = None,
+        permissions: ChatPermissions | None = None,
+        custom_title: str | None = None,
+        tag: str | None = None,
+    ) -> MemberSpec:
+        """
+        Declare, or amend, one member of a declared chat.
+
+        The ``members=`` shorthand of the ``add_*`` helpers says what a user *is*; this says
+        what they may **do**, which is what a bot gating itself on a right actually reads.
+        The bot is a member like any other, so "the bot is an admin but cannot delete
+        messages" — the case behind every "I can't do that, give me the right" branch — is
+        declarable::
+
+            team = blueprint.add_supergroup("Team")
+            blueprint.set_member(
+                team,
+                blueprint.bot,
+                rights=administrator_rights(can_delete_messages=False),
+            )
+
+        Passing ``rights`` or ``permissions`` implies the status that carries it, so the
+        common cases are one call; an explicit ``status`` wins. The two belong to different
+        statuses, so declaring both for one member is rejected rather than silently
+        resolved.
+        """
+        if rights is not None and permissions is not None:
+            msg = (
+                "A member is either an administrator with `rights` or a restricted member "
+                "with `permissions`; pass only one of them."
+            )
+            raise ValueError(msg)
+        member = next((item for item in chat.members if item.user_id == user.id), None)
+        if member is None:
+            member = MemberSpec(user_id=user.id)
+            chat.members.append(member)
+        if status is not None:
+            member.status = status
+        elif rights is not None:
+            member.status = ChatMemberStatus.ADMINISTRATOR
+        elif permissions is not None:
+            member.status = ChatMemberStatus.RESTRICTED
+        if rights is not None:
+            member.rights = rights
+        if permissions is not None:
+            member.permissions = permissions
+        if custom_title is not None:
+            member.custom_title = custom_title
+        if tag is not None:
+            member.tag = tag
+        return member
+
     def add_topic(
         self,
         chat: ChatSpec,
@@ -481,6 +549,8 @@ class Blueprint:
                         status=member.status,
                         custom_title=member.custom_title,
                         tag=member.tag,
+                        rights=member.rights,
+                        permissions=member.permissions,
                     )
                     for member in chat.members
                 },

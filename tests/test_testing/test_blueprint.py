@@ -8,6 +8,8 @@ from aiogram.test.blueprint import (
     Blueprint,
     default_blueprint,
 )
+from aiogram.test.world import administrator_rights
+from aiogram.types import ChatPermissions
 
 
 class TestDeclaration:
@@ -181,3 +183,36 @@ class TestBuild:
         world.chats[blueprint.chats[0].id].members.clear()
 
         assert [(chat.id, len(chat.members)) for chat in blueprint.chats] == before
+
+    def test_declared_rights_and_permissions_reach_the_world(self):
+        blueprint = Blueprint()
+        admin = blueprint.add_user("Admin")
+        quiet = blueprint.add_user("Quiet")
+        team = blueprint.add_supergroup("Team")
+        blueprint.set_member(team, admin, rights=administrator_rights(can_change_info=False))
+        blueprint.set_member(team, quiet, permissions=ChatPermissions(can_send_messages=True))
+
+        world = blueprint.build()
+
+        chat = world.chat(team.id)
+        assert chat.member(admin.id).status == ChatMemberStatus.ADMINISTRATOR
+        assert chat.member(admin.id).rights.can_change_info is False
+        assert chat.member(quiet.id).status == ChatMemberStatus.RESTRICTED
+        assert chat.member(quiet.id).permissions.can_send_messages is True
+
+    def test_declared_rights_are_not_shared_between_worlds(self):
+        blueprint = Blueprint()
+        admin = blueprint.add_user("Admin")
+        team = blueprint.add_supergroup("Team")
+        declared = administrator_rights()
+        blueprint.set_member(team, admin, rights=declared)
+
+        first = blueprint.build()
+        second = blueprint.build()
+
+        assert first.chat(team.id).member(admin.id).rights == declared
+        assert first.chat(team.id).member(admin.id).rights is not declared
+        assert (
+            first.chat(team.id).member(admin.id).rights
+            is not second.chat(team.id).member(admin.id).rights
+        )

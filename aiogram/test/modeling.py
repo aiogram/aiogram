@@ -897,22 +897,50 @@ def handle_unban(env: BotTestEnvironment, method: UnbanChatMember) -> bool:
 
 @models(PromoteChatMember)
 def handle_promote(env: BotTestEnvironment, method: PromoteChatMember) -> bool:
+    """
+    Promote or demote a member, persisting exactly the rights the request granted.
+
+    ``promoteChatMember`` sets the *whole* rights mask on every call, so this stores the
+    whole mask: a right the request does not pass is not granted, and a later
+    ``getChatMember`` reports it as not granted rather than as whatever an earlier
+    promotion or a permissive default would have claimed. A request that passes only
+    ``can_pin_messages`` therefore produces an administrator who can pin and nothing else.
+
+    The Bot API documents demotion as "pass :code:`False` for all boolean parameters", and
+    an omitted parameter is not granted either — so a request in which nothing comes out
+    true is a demotion to a plain member. Anything true keeps the member an administrator,
+    including ``is_anonymous`` alone: hiding an administrator's presence is a right like
+    any other, and reading it as a demotion is what made
+    ``promote_chat_member(is_anonymous=True)`` silently strip an admin here before.
+    """
     chat = resolve_chat(env, method.chat_id)
     member = chat.member(method.user_id)
-    demoted = not any(
-        getattr(method, name, None)
-        for name in type(method).model_fields
-        if name.startswith("can_")
-    )
-    member.status = ChatMemberStatus.MEMBER if demoted else ChatMemberStatus.ADMINISTRATOR
+    granted = {
+        name: bool(getattr(method, name, None)) for name in ChatAdministratorRights.model_fields
+    }
+    if not any(granted.values()):
+        member.status = ChatMemberStatus.MEMBER
+        member.rights = None
+        return True
+    member.status = ChatMemberStatus.ADMINISTRATOR
+    member.rights = ChatAdministratorRights(**granted)
     return True
 
 
 @models(RestrictChatMember)
 def handle_restrict(env: BotTestEnvironment, method: RestrictChatMember) -> bool:
+    """
+    Restrict a member, persisting the permissions the request set.
+
+    The permissions are copied: they belong to the caller — a module-level constant shared
+    by a whole test file, as often as not — and what the world stores must not be an object
+    the test can still mutate, nor one that a later read hands back out.
+    """
     chat = resolve_chat(env, method.chat_id)
     member = chat.member(method.user_id)
     member.status = ChatMemberStatus.RESTRICTED
+    member.permissions = method.permissions.model_copy()
+    member.rights = None
     member.until_date = _as_datetime(method.until_date)
     return True
 
@@ -928,7 +956,7 @@ def handle_leave(env: BotTestEnvironment, method: LeaveChat) -> bool:
 def handle_get_chat_member(env: BotTestEnvironment, method: GetChatMember) -> Any:
     chat = resolve_chat(env, method.chat_id)
     user = env.world.user(method.user_id)
-    return chat.member(method.user_id).as_chat_member(user.as_user())
+    return chat.member(method.user_id).as_chat_member(user.as_user(), chat.type)
 
 
 @models(GetChat)
@@ -1454,8 +1482,13 @@ def handle_set_chat_description(env: BotTestEnvironment, method: SetChatDescript
 
 @models(SetChatPermissions)
 def handle_set_chat_permissions(env: BotTestEnvironment, method: SetChatPermissions) -> bool:
-    """Stored, never enforced: the fake models the shape of administration, not its policy."""
-    _administrable(env, method).permissions = method.permissions
+    """
+    Stored, never enforced: the fake models the shape of administration, not its policy.
+
+    Stored as a copy, for the reason :func:`handle_restrict` gives: what a later ``getChat``
+    hands back — and mounts to the calling bot — must not be the caller's own object.
+    """
+    _administrable(env, method).permissions = method.permissions.model_copy()
     return True
 
 
@@ -1510,7 +1543,10 @@ def handle_get_chat_administrators(
         ]
     # Creator first, then a stable order, so a test indexing [0] is not flaky.
     admins.sort(key=lambda member: (member.status != ChatMemberStatus.CREATOR, member.user_id))
-    return [member.as_chat_member(env.world.user(member.user_id).as_user()) for member in admins]
+    return [
+        member.as_chat_member(env.world.user(member.user_id).as_user(), chat.type)
+        for member in admins
+    ]
 
 
 def _annotated_member(

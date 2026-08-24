@@ -40,6 +40,7 @@ from .world import (
     UserState,
     World,
     WorldLookupError,
+    administrator_rights,
 )
 
 __all__ = (
@@ -71,6 +72,7 @@ __all__ = (
     "WaitTimeoutError",
     "World",
     "WorldLookupError",
+    "administrator_rights",
     "build_environment",
     "default_blueprint",
     "detach_router",

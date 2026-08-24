@@ -1,6 +1,6 @@
 import pytest
 
-from aiogram.enums import ChatMemberStatus
+from aiogram.enums import ChatMemberStatus, ChatType
 from aiogram.filters import Command, CommandStart
 from aiogram.test import Blueprint, BotTestEnvironment, WorldLookupError
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
@@ -164,12 +164,17 @@ class TestFollowDeepLink:
         with pytest.raises(WorldLookupError, match="deep-link button"):
             await alice.in_(team).follow_deep_link()
 
-    async def test_no_private_chat_raises_a_helpful_error(self, dp):
-        """Following a deep link needs a private chat to land the `/start` in."""
+    async def test_an_undeclared_private_chat_is_opened_by_the_tap(self, dp):
+        """Opening the private chat is exactly what tapping a start link does."""
         blueprint = Blueprint()
-        bob = blueprint.add_user("Bob")
+        bob = blueprint.add_user("Bob", username="bob")
         team = blueprint.add_supergroup("Team", members={bob: ChatMemberStatus.MEMBER})
         environment = BotTestEnvironment(blueprint=blueprint, dispatcher=dp)
+        seen = []
+        environment.dispatcher.message.register(
+            lambda message, command: seen.append((message.chat.id, command.args)),
+            CommandStart(deep_link=True),
+        )
         try:
             bob_actor = environment.user(bob).in_(team)
             await environment.bot.send_message(
@@ -178,7 +183,76 @@ class TestFollowDeepLink:
                 reply_markup=_join_button("https://t.me/test_bot?start=x"),
             )
 
-            with pytest.raises(WorldLookupError, match="no private chat"):
-                await bob_actor.follow_deep_link()
+            await bob_actor.follow_deep_link()
+
+            private = environment.chat(bob.id)
+            assert seen == [(bob.id, "x")]
+            assert private.type == ChatType.PRIVATE
+            assert private.username == "bob"
+            assert private.messages[-1].text == "/start x"
+            # Opened the way a declared chat is, so what it holds is usable as usual.
+            assert private.messages[-1].bot is environment.bot
         finally:
             environment.dispose_sync()
+
+    async def test_an_actor_without_a_chat_still_says_where_to_bind_it(self, dp):
+        """Sending, unlike tapping a link, names no chat for the world to open."""
+        blueprint = Blueprint()
+        bob = blueprint.add_user("Bob")
+        blueprint.add_supergroup("Team", members={bob: ChatMemberStatus.MEMBER})
+        environment = BotTestEnvironment(blueprint=blueprint, dispatcher=dp)
+        try:
+            with pytest.raises(WorldLookupError, match="no private chat"):
+                await environment.user(bob).send("hi")
+        finally:
+            environment.dispose_sync()
+
+
+class TestUrlsThatAreNotDeepLinks:
+    """A button url that is not a bot deep link is rejected, saying what was expected."""
+
+    @pytest.mark.parametrize(
+        "url",
+        [
+            pytest.param("https://example.com/promo", id="another-host"),
+            pytest.param("https://t.me/", id="no-username"),
+            pytest.param("tg://join?invite=abc", id="tg-but-not-resolve"),
+            pytest.param("tg://resolve?domain=", id="tg-resolve-without-domain"),
+            pytest.param("ftp://t.me/test_bot", id="another-scheme"),
+        ],
+    )
+    async def test_it_is_not_followable(self, env, team, alice, url):
+        await _post_deep_link(env, team, url)
+
+        with pytest.raises(WorldLookupError, match="not a Telegram deep-link url"):
+            await alice.in_(team).follow_deep_link(url)
+
+    async def test_a_button_without_a_url_is_skipped_by_the_scan(self, env, team, alice):
+        """The scan walks back from the newest message, past buttons that carry no url."""
+        await _post_deep_link(env, team, "https://t.me/test_bot?start=found")
+        await env.bot.send_message(
+            chat_id=team.id,
+            text="Menu",
+            reply_markup=InlineKeyboardMarkup(
+                inline_keyboard=[[InlineKeyboardButton(text="Go", callback_data="go")]],
+            ),
+        )
+        seen = []
+        env.dispatcher.message.register(
+            lambda message, command: seen.append(command.args),
+            CommandStart(deep_link=True),
+        )
+
+        await alice.in_(team).follow_deep_link()
+
+        assert seen == ["found"]
+
+    async def test_a_named_url_missing_from_a_named_message_says_which(self, env, team, alice):
+        await _post_deep_link(env, team, "https://t.me/test_bot?start=here")
+        other = await env.bot.send_message(chat_id=team.id, text="No button here")
+
+        with pytest.raises(WorldLookupError, match=f"Message {other.message_id} does not carry"):
+            await alice.in_(team).follow_deep_link(
+                "https://t.me/test_bot?start=here",
+                message=other,
+            )

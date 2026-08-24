@@ -2,7 +2,7 @@ import asyncio
 
 import pytest
 
-from aiogram.test import WaitTimeoutError
+from aiogram.test import Blueprint, BotTestEnvironment, TopicState, WaitTimeoutError
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
 
@@ -186,6 +186,9 @@ class TestWaitForMessage:
         assert "x" * 60 + "'..." in str(exc_info.value)
         assert "x" * 100 not in str(exc_info.value)
 
+    def test_describe_messages_names_the_chat(self, env, private):
+        assert private.describe_messages() == "The chat holds no messages."
+
     async def test_the_message_it_returns_is_usable(self, env, alice, private):
         """A user's message is stored, not returned by any call — and still mounted."""
         await alice.send("ping")
@@ -244,3 +247,100 @@ class TestAPredicateThatRaises:
             await private.wait_for_message(broken, timeout=0.05)
 
         assert "ValueError('the predicate itself is wrong')" in str(exc_info.value)
+
+
+class TestWaitForMessageInATopic:
+    """The same wait, scoped to one topic's view of the chat's messages."""
+
+    @pytest.fixture
+    def forum(self, dp):
+        blueprint = Blueprint()
+        chat = blueprint.add_supergroup("Team")
+        blueprint.add_topic(chat, "Support")
+        blueprint.add_topic(chat, "Random")
+        environment = BotTestEnvironment(blueprint=blueprint, dispatcher=dp)
+        try:
+            yield environment, environment.chat(chat), blueprint.topics
+        finally:
+            environment.dispose_sync()
+
+    async def test_a_message_posted_into_the_topic_matches(self, forum):
+        env, chat, topics = forum
+        support = chat.topic(topics[0].message_thread_id)
+
+        async def announce():
+            await asyncio.sleep(0.02)
+            await env.bot.send_message(
+                chat_id=chat.id,
+                text="Night falls",
+                message_thread_id=support.message_thread_id,
+            )
+
+        task = asyncio.create_task(announce())
+        try:
+            message = await support.wait_for_message(lambda item: item.text == "Night falls")
+        finally:
+            await task
+
+        assert message.message_thread_id == support.message_thread_id
+
+    async def test_a_message_in_a_sibling_topic_does_not_satisfy_the_wait(self, forum):
+        env, chat, topics = forum
+        support = chat.topic(topics[0].message_thread_id)
+        random = chat.topic(topics[1].message_thread_id)
+        await env.bot.send_message(
+            chat_id=chat.id,
+            text="elsewhere",
+            message_thread_id=random.message_thread_id,
+        )
+
+        with pytest.raises(WaitTimeoutError) as exc_info:
+            await support.wait_for_message(lambda item: item.text == "elsewhere", timeout=0.05)
+
+        text = str(exc_info.value)
+        assert f"topic #{support.message_thread_id} 'Support' of chat {chat.id}" in text
+        # Only this topic's own messages are enumerated — the sibling's is not one of them.
+        assert "The topic holds 1 message(s)" in text
+        assert "elsewhere" not in text
+
+    async def test_the_general_topic_names_itself(self, forum):
+        env, chat, _topics = forum
+
+        with pytest.raises(WaitTimeoutError) as exc_info:
+            await chat.general_topic.wait_for_message(timeout=0.05)
+
+        text = str(exc_info.value)
+        assert f"the General topic of chat {chat.id}" in text
+        assert "The topic holds no messages" in text
+
+    async def test_a_hand_built_topic_still_names_itself(self):
+        assert TopicState(message_thread_id=7, name="Loose").label == "topic #7 'Loose'"
+
+    async def test_the_message_it_returns_is_usable(self, forum):
+        env, chat, topics = forum
+        support = chat.topic(topics[0].message_thread_id)
+        await env.bot.send_message(
+            chat_id=chat.id,
+            text="ping",
+            message_thread_id=support.message_thread_id,
+        )
+
+        message = await support.wait_for_message(lambda item: item.text == "ping")
+        await message.answer("pong")
+
+        assert [item.text for item in support.messages][-1] == "pong"
+
+    async def test_a_raising_predicate_is_reported_for_a_topic_too(self, forum):
+        env, chat, topics = forum
+        support = chat.topic(topics[0].message_thread_id)
+
+        with pytest.raises(WaitTimeoutError) as exc_info:
+            await support.wait_for_message(lambda item: item.text.startswith("x"), timeout=0.05)
+
+        assert "The predicate raised on 1 of them" in str(exc_info.value)
+
+    def test_describe_messages_names_the_topic(self, forum):
+        _env, chat, topics = forum
+        support = chat.topic(topics[0].message_thread_id)
+
+        assert support.describe_messages().startswith("The topic holds 1 message(s)")
