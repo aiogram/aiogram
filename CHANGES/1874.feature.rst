@@ -1,0 +1,35 @@
+Added :mod:`aiogram.test` — an integration testing toolkit for bots, available as the
+``aiogram[test]`` extra and registered as a pytest plugin.
+
+Updates are fed through a real :class:`aiogram.dispatcher.dispatcher.Dispatcher`, so
+filters, middlewares, dependency injection, FSM and Scenes run as they do in production,
+while a stateful fake Telegram answers every Bot API call and applies it to an isolated
+in-memory world.
+
+Declare the world with :class:`aiogram.test.Blueprint` — chats, users, memberships, forum
+topics, business connections, communities and invite links — then drive it through actors
+(``await user.send("/start")``, ``await user.click(button)``) and assert on the resulting
+chat state or on the recorded calls. There is a trigger for every
+:class:`aiogram.types.Update` variant, so no registered handler is unreachable from a test.
+
+The world models the surfaces a bot's own logic depends on: sending, editing, moving,
+pinning and deleting messages; polls and reactions; chat administration and membership,
+including join requests; the bot's own profile; forum topics; business connections; invite
+links; sticker sets; and Telegram Stars and gifts, where a payment credits a real balance
+and a refund resolves the charge id the handler was given. Methods it does not model are recorded and answered with a schema-valid
+result derived from their declared return type, so no test has to pre-register results just
+to keep the bot running, and :meth:`aiogram.test.BotTestEnvironment.on` overrides any of
+them per test. The documentation names which surfaces are deliberately left that way, and
+which are merely waiting for demand.
+
+File content is supported where it can be honest: a file uploaded as a
+:class:`aiogram.types.input_file.BufferedInputFile` can be downloaded again in the same
+test, and other content is declared with :meth:`aiogram.test.Blueprint.add_file`.
+Downloading content the environment does not hold raises rather than returning empty
+bytes, which would be indistinguishable from a genuinely empty file.
+
+.. warning::
+
+    This is a **proof of concept**. The module name, the fixtures, the blueprint and actor
+    APIs, the world model and the set of modeled methods are all subject to change, and may
+    change incompatibly between releases while the design settles.

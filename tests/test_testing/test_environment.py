@@ -1,0 +1,265 @@
+import pytest
+
+from aiogram import F
+from aiogram.dispatcher.event.bases import UNHANDLED
+from aiogram.enums import ChatMemberStatus
+from aiogram.filters import Command
+from aiogram.fsm.state import State, StatesGroup
+from aiogram.test import Blueprint, BotTestEnvironment, build_environment
+from aiogram.test.world import WorldLookupError
+from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+
+
+class Form(StatesGroup):
+    name = State()
+
+
+class TestAccessors:
+    def test_chat_and_user_accept_specs_and_ids(self, env, blueprint):
+        chat_spec = blueprint.chats[0]
+        user_spec = blueprint.users[0]
+
+        assert env.chat(chat_spec).id == chat_spec.id
+        assert env.chat(chat_spec.id).id == chat_spec.id
+        assert env.user(user_spec).user.id == user_spec.id
+        assert env.user(user_spec.id).user.id == user_spec.id
+
+    def test_defaults_are_used_when_nothing_is_supplied(self):
+        environment = build_environment()
+        try:
+            assert environment.blueprint.users
+            assert environment.dispatcher is not None
+        finally:
+            environment.dispose_sync()
+
+    def test_actor_binding_is_not_shared(self, env, blueprint, team):
+        actor = env.user(blueprint.users[0])
+
+        bound = actor.in_(team)
+
+        assert bound.chat.id == team.id
+        assert actor.chat.id == blueprint.chats[0].id
+
+    def test_actor_accepts_state_spec_and_id(self, env, blueprint, team):
+        actor = env.user(blueprint.users[0])
+
+        assert actor.in_(team).chat.id == team.id
+        assert actor.in_(blueprint.chats[1]).chat.id == team.id
+        assert actor.in_(team.id).chat.id == team.id
+
+    def test_actor_without_a_private_chat(self):
+        blueprint = Blueprint()
+        lonely = blueprint.add_user("Lonely")
+        environment = BotTestEnvironment(blueprint=blueprint)
+        try:
+            with pytest.raises(WorldLookupError, match="no private chat"):
+                _ = environment.user(lonely).chat
+        finally:
+            environment.dispose_sync()
+
+
+class TestTriggers:
+    async def test_send_reaches_the_handler(self, env, dp, alice):
+        @dp.message(Command("start"))
+        async def handler(message):
+            return "handled"
+
+        assert await alice.send("/start") == "handled"
+
+    async def test_message_is_stored_in_the_chat(self, env, dp, alice, private):
+        @dp.message()
+        async def handler(message):
+            return None
+
+        await alice.send("hello")
+
+        assert private.messages[-1].text == "hello"
+        assert private.messages[-1].from_user.id == alice.user.id
+
+    async def test_filters_are_not_bypassed(self, env, dp, alice):
+        @dp.message(F.text == "expected")
+        async def handler(message):
+            return "handled"
+
+        assert await alice.send("something else") is UNHANDLED
+
+    async def test_middleware_runs(self, env, dp, alice):
+        seen = []
+
+        @dp.message.outer_middleware()
+        async def middleware(handler, event, data):
+            seen.append(event.text)
+            data["injected"] = "from middleware"
+            return await handler(event, data)
+
+        @dp.message()
+        async def handler(message, injected: str):
+            return injected
+
+        assert await alice.send("hi") == "from middleware"
+        assert seen == ["hi"]
+
+    async def test_dependencies_are_injected(self, env, dp, alice):
+        @dp.message()
+        async def handler(message, repository):
+            return repository.upper()
+
+        assert await alice.send("hi", repository="value") == "VALUE"
+
+    async def test_event_context_is_resolved(self, env, dp, alice, private):
+        @dp.message()
+        async def handler(message, event_from_user, event_chat):
+            return event_from_user.id, event_chat.id
+
+        assert await alice.send("hi") == (alice.user.id, private.id)
+
+    async def test_edit_triggers_edited_message(self, env, dp, alice, private):
+        @dp.edited_message()
+        async def handler(message, event_from_user):
+            return "edited"
+
+        await alice.send("before", fields={})
+        original = private.messages[-1]
+
+        assert await alice.edit(original, "after") == "edited"
+        assert private.messages[-1].text == "after"
+
+    async def test_send_with_raw_fields(self, env, dp, alice, private):
+        @dp.message()
+        async def handler(message):
+            return None
+
+        await alice.send("hi", fields={"message_thread_id": 7})
+
+        assert private.messages[-1].message_thread_id == 7
+
+    async def test_inline_query(self, env, dp, alice):
+        @dp.inline_query()
+        async def handler(query):
+            return query.query
+
+        assert await alice.inline_query("search") == "search"
+
+    async def test_join_and_leave(self, env, dp, blueprint, team):
+        transitions = []
+
+        @dp.chat_member()
+        async def handler(event):
+            transitions.append(
+                (event.old_chat_member.status, event.new_chat_member.status),
+            )
+            return "seen"
+
+        bob = env.user(blueprint.users[0]).in_(team)
+
+        assert await bob.leave() == "seen"
+        assert team.member(bob.user.id).status == ChatMemberStatus.LEFT
+
+        assert await bob.join() == "seen"
+        assert team.member(bob.user.id).status == ChatMemberStatus.MEMBER
+        assert transitions[-1] == (ChatMemberStatus.LEFT, ChatMemberStatus.MEMBER)
+
+
+class TestClicking:
+    @staticmethod
+    def keyboard(data: str = "go") -> InlineKeyboardMarkup:
+        return InlineKeyboardMarkup(
+            inline_keyboard=[[InlineKeyboardButton(text="Go", callback_data=data)]],
+        )
+
+    async def test_click_resolves_the_real_button(self, env, dp, alice, private):
+        @dp.message()
+        async def start(message):
+            await message.answer("pick", reply_markup=TestClicking.keyboard())
+
+        @dp.callback_query(F.data == "go")
+        async def clicked(query):
+            return query.message.text
+
+        await alice.send("/start")
+
+        assert await alice.click("go") == "pick"
+
+    async def test_click_accepts_a_button_object(self, env, dp, alice, private):
+        button = InlineKeyboardButton(text="Go", callback_data="go")
+
+        @dp.message()
+        async def start(message):
+            await message.answer(
+                "pick",
+                reply_markup=InlineKeyboardMarkup(inline_keyboard=[[button]]),
+            )
+
+        @dp.callback_query()
+        async def clicked(query):
+            return query.data
+
+        await alice.send("/start")
+
+        assert await alice.click(button) == "go"
+
+    async def test_click_with_an_explicit_message(self, env, dp, alice, private):
+        @dp.callback_query()
+        async def clicked(query):
+            return query.message.message_id
+
+        await alice.send("hi")
+        message = private.messages[-1]
+
+        assert await alice.click("anything", message=message) == message.message_id
+
+    async def test_click_skips_messages_without_a_keyboard(self, env, dp, alice, private):
+        @dp.message()
+        async def start(message):
+            if message.text == "/start":
+                await message.answer("pick", reply_markup=TestClicking.keyboard())
+
+        @dp.callback_query()
+        async def clicked(query):
+            return query.message.text
+
+        await alice.send("/start")
+        await alice.send("chatter")  # newer message, no keyboard
+
+        assert await alice.click("go") == "pick"
+
+    async def test_click_on_a_button_that_was_never_sent(self, env, alice):
+        with pytest.raises(WorldLookupError, match="carries a button"):
+            await alice.click("missing")
+
+    async def test_click_on_a_button_without_callback_data(self, env, alice):
+        button = InlineKeyboardButton(text="Open", url="https://example.com")
+
+        with pytest.raises(WorldLookupError, match="no callback_data"):
+            await alice.click(button)
+
+
+class TestFsmAccess:
+    async def test_state_can_be_read_after_a_flow(self, env, dp, alice, blueprint):
+        @dp.message()
+        async def handler(message, state):
+            await state.set_state(Form.name)
+            await state.update_data(step=1)
+
+        await alice.send("hi")
+
+        context = env.state(blueprint.users[0], blueprint.chats[0])
+        assert await context.get_state() == Form.name.state
+        assert await context.get_data() == {"step": 1}
+
+    async def test_state_can_be_arranged_up_front(self, env, dp, alice, blueprint):
+        @dp.message(Form.name)
+        async def handler(message, state):
+            data = await state.get_data()
+            return data["prefilled"]
+
+        context = env.state(blueprint.users[0])
+        await context.set_state(Form.name)
+        await context.update_data(prefilled="yes")
+
+        assert await alice.send("hi") == "yes"
+
+    async def test_state_defaults_to_the_private_chat(self, env, blueprint):
+        context = env.state(blueprint.users[0])
+
+        assert context.key.chat_id == blueprint.users[0].id

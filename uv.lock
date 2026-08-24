@@ -81,6 +81,9 @@ redis = [
 signature = [
     { name = "cryptography" },
 ]
+test = [
+    { name = "pytest" },
+]
 
 [package.dev-dependencies]
 dev = [
@@ -121,6 +124,7 @@ requires-dist = [
     { name = "pygments", marker = "extra == 'docs'", specifier = ">=2.18,<2.21" },
     { name = "pymdown-extensions", marker = "extra == 'docs'", specifier = ">=10.3,<12.0" },
     { name = "pymongo", marker = "extra == 'mongo'", specifier = ">4.5,<4.18" },
+    { name = "pytest", marker = "extra == 'test'", specifier = ">=8,<10" },
     { name = "redis", extras = ["hiredis"], marker = "extra == 'redis'", specifier = ">=6.2.0,<8" },
     { name = "sphinx", marker = "extra == 'docs'", specifier = "~=8.0.2" },
     { name = "sphinx-autobuild", marker = "extra == 'docs'", specifier = "~=2024.9.3" },
@@ -133,7 +137,7 @@ requires-dist = [
     { name = "uvloop", marker = "(python_full_version >= '3.13' and platform_python_implementation != 'PyPy' and sys_platform == 'darwin' and extra == 'fast') or (python_full_version >= '3.13' and platform_python_implementation != 'PyPy' and sys_platform == 'linux' and extra == 'fast')", specifier = ">=0.21.0" },
     { name = "uvloop", marker = "(python_full_version < '3.13' and platform_python_implementation != 'PyPy' and sys_platform == 'darwin' and extra == 'fast') or (python_full_version < '3.13' and platform_python_implementation != 'PyPy' and sys_platform == 'linux' and extra == 'fast')", specifier = ">=0.17.0" },
 ]
-provides-extras = ["cli", "docs", "fast", "i18n", "mongo", "proxy", "redis", "signature"]
+provides-extras = ["cli", "docs", "fast", "i18n", "mongo", "proxy", "redis", "signature", "test"]
 
 [package.metadata.requires-dev]
 dev = [
