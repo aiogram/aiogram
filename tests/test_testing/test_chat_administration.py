@@ -469,6 +469,18 @@ class TestRightsFollowTheChatType:
 
 
 class TestPromoteAndRestrictPersist:
+    @pytest.fixture
+    def owned(self):
+        """A supergroup with a declared owner, plus the environment it lives in."""
+        blueprint = Blueprint()
+        owner = blueprint.add_user("Owner")
+        team = blueprint.add_supergroup("Team", members={owner: ChatMemberStatus.CREATOR})
+        environment = BotTestEnvironment(blueprint=blueprint)
+        try:
+            yield environment, team, owner
+        finally:
+            environment.dispose_sync()
+
     async def test_promote_grants_exactly_what_was_asked_for(self, env, team, alice):
         await env.bot.promote_chat_member(
             chat_id=team.id,
@@ -543,6 +555,35 @@ class TestPromoteAndRestrictPersist:
         member = await env.bot.get_chat_member(chat_id=team.id, user_id=alice.user.id)
         assert member.can_manage_chat is True
         assert member.can_delete_messages is False
+
+    async def test_the_chat_owner_cannot_be_promoted(self, owned):
+        """
+        Telegram refuses; without the guard the fake was more permissive than the API.
+
+        And permissive in the one direction a test cannot notice: a bot that promotes a
+        list of users would quietly turn the owner into an administrator here, keep passing,
+        and fail only in production.
+        """
+        env, team, owner = owned
+
+        with pytest.raises(TelegramBadRequest, match="can't remove chat owner"):
+            await env.bot.promote_chat_member(
+                chat_id=team.id,
+                user_id=owner.id,
+                can_delete_messages=True,
+            )
+
+        assert env.chat(team.id).member(owner.id).status == ChatMemberStatus.CREATOR
+
+    async def test_the_chat_owner_cannot_be_demoted_either(self, owned):
+        """A promotion granting nothing is a demotion, and the owner is not demotable."""
+        env, team, owner = owned
+
+        with pytest.raises(TelegramBadRequest, match="can't remove chat owner"):
+            await env.bot.promote_chat_member(chat_id=team.id, user_id=owner.id)
+
+        member = await env.bot.get_chat_member(chat_id=team.id, user_id=owner.id)
+        assert member.status == ChatMemberStatus.CREATOR
 
     async def test_restrict_persists_the_permissions_it_was_given(self, env, team, alice):
         await env.bot.restrict_chat_member(

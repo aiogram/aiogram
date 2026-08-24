@@ -25,7 +25,7 @@ from .calls import CallLog
 from .defaults import resolve_defaults
 from .errors import raise_api_error
 from .modeling import find_handler
-from .mounting import mount
+from .mounting import bound_elsewhere, detached_copy, mount
 from .overrides import OverrideBuilder, OverrideRegistry
 from .session import FakeTelegramSession
 from .synthesis import SynthesisContext, synthesize_result
@@ -36,6 +36,7 @@ from .world import (
     CommunityState,
     TopicState,
     WorldLookupError,
+    resolve_topic,
 )
 
 if TYPE_CHECKING:
@@ -133,10 +134,7 @@ class BotTestEnvironment:
         topic: TopicSpec | TopicState | int,
     ) -> TopicState:
         chat_state = chat if isinstance(chat, ChatState) else self.chat(chat)
-        if isinstance(topic, TopicState):
-            return topic
-        thread_id = topic if isinstance(topic, int) else topic.message_thread_id
-        return chat_state.topic(thread_id)
+        return resolve_topic(chat_state, topic)
 
     def business_connection(
         self,
@@ -211,7 +209,17 @@ class BotTestEnvironment:
         message the chat stores, so ``message is bot_chat.messages[-1]`` would be false and
         an edit applied through the handler's object would land on an orphan. Arriving
         already mounted skips that round-trip: handlers work on the world's own objects.
+
+        An update built by an actor is mounted in place, because that identity is the whole
+        point. An update carrying objects that belong to *another* environment cannot be:
+        :func:`~aiogram.test.mounting.mount` stops at anything already bound, so a
+        module-level update fed to two environments would keep the first one's bot and every
+        reply the second one's handlers send would land in the first one's world — silently,
+        since two bots built from one blueprint compare equal. Such an update is copied
+        first, and the copy is this environment's.
         """
+        if bound_elsewhere(update, self.bot):
+            update = detached_copy(update, bot=self.bot)
         mount(update, self.bot)
         return await self.dispatcher.feed_update(self.bot, update, **kwargs)
 
@@ -302,7 +310,9 @@ class BotTestEnvironment:
 
         outcome = self.overrides.take(resolved)
         if outcome is not None:
-            return outcome.apply(resolved)
+            # The destination is known here, so the copy is minted already bound and the
+            # session's `mount` prunes at its root instead of walking it again.
+            return outcome.apply(resolved, bot)
 
         handler = find_handler(resolved)
         if handler is not None:

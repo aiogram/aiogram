@@ -129,6 +129,110 @@ class TestFollowDeepLink:
 
         assert seen == []
 
+    async def test_scan_looks_past_an_unfollowable_button_to_find_the_start_link(
+        self, env, team, alice
+    ):
+        """
+        A keyboard mixing a `startapp` button with a real `start` button must not let the
+        unfollowable one shadow the followable one — the automatic scan matches on
+        followability, not merely on which button targets this bot first.
+        """
+        seen = []
+        env.dispatcher.message.register(
+            lambda message, command: seen.append(command.args),
+            CommandStart(deep_link=True),
+        )
+        await env.bot.send_message(
+            chat_id=team.id,
+            text="Choose one",
+            reply_markup=InlineKeyboardMarkup(
+                inline_keyboard=[
+                    [
+                        InlineKeyboardButton(
+                            text="Mini App", url="https://t.me/test_bot?startapp=abc"
+                        ),
+                    ],
+                    [
+                        InlineKeyboardButton(
+                            text="Start", url="https://t.me/test_bot?start=team-1"
+                        ),
+                    ],
+                ],
+            ),
+        )
+
+        await alice.in_(team).follow_deep_link()
+
+        assert seen == ["team-1"]
+
+    async def test_scan_with_only_unfollowable_candidates_names_each_and_why(
+        self, env, team, alice
+    ):
+        await env.bot.send_message(
+            chat_id=team.id,
+            text="Choose one",
+            reply_markup=InlineKeyboardMarkup(
+                inline_keyboard=[
+                    [
+                        InlineKeyboardButton(
+                            text="Mini App", url="https://t.me/test_bot?startapp=abc"
+                        ),
+                    ],
+                    [
+                        InlineKeyboardButton(
+                            text="Group", url="https://t.me/test_bot?startgroup=abc"
+                        ),
+                    ],
+                ],
+            ),
+        )
+
+        with pytest.raises(WorldLookupError, match="startapp") as exc_info:
+            await alice.in_(team).follow_deep_link()
+
+        assert "startgroup" in str(exc_info.value)
+
+    async def test_scan_skips_buttons_that_link_to_another_bot(self, env, team, alice):
+        seen = []
+        env.dispatcher.message.register(
+            lambda message, command: seen.append(command.args),
+            CommandStart(deep_link=True),
+        )
+        await env.bot.send_message(
+            chat_id=team.id,
+            text="Pick",
+            reply_markup=InlineKeyboardMarkup(
+                inline_keyboard=[
+                    [
+                        InlineKeyboardButton(
+                            text="Other bot", url="https://t.me/other_bot?start=nope"
+                        ),
+                        InlineKeyboardButton(text="Ours", url="https://t.me/test_bot?start=ours"),
+                    ],
+                ],
+            ),
+        )
+
+        await alice.in_(team).follow_deep_link()
+
+        assert seen == ["ours"]
+
+    async def test_explicit_message_with_only_unfollowable_candidates_names_it(
+        self, env, team, alice
+    ):
+        await env.bot.send_message(
+            chat_id=team.id,
+            text="App only",
+            reply_markup=_join_button("https://t.me/test_bot?startapp=abc", text="Mini App"),
+        )
+
+        with pytest.raises(WorldLookupError, match="startapp") as exc_info:
+            await alice.in_(team).follow_deep_link(
+                message=env.chat(team.id).messages[-1],
+            )
+
+        assert str(env.chat(team.id).messages[-1].message_id) in str(exc_info.value)
+
     async def test_message_link_is_rejected(self, env, team, alice):
         await _post_deep_link(env, team, "https://t.me/test_bot/42")
 
@@ -195,15 +299,30 @@ class TestFollowDeepLink:
         finally:
             environment.dispose_sync()
 
-    async def test_an_actor_without_a_chat_still_says_where_to_bind_it(self, dp):
-        """Sending, unlike tapping a link, names no chat for the world to open."""
+    async def test_an_unbound_send_also_opens_the_actor_s_own_private_chat(self, dp):
+        """
+        A plain `send()` from an unbound actor names no chat, but it is still the same
+        user tapping their own client open — so it opens the private chat exactly like
+        `follow_deep_link` does, rather than the two triggers disagreeing on whether an
+        undeclared private chat may be invented.
+        """
         blueprint = Blueprint()
-        bob = blueprint.add_user("Bob")
+        bob = blueprint.add_user("Bob", username="bob")
         blueprint.add_supergroup("Team", members={bob: ChatMemberStatus.MEMBER})
         environment = BotTestEnvironment(blueprint=blueprint, dispatcher=dp)
+        seen = []
+        environment.dispatcher.message.register(
+            lambda message: seen.append(message.chat.id),
+            Command("start"),
+        )
         try:
-            with pytest.raises(WorldLookupError, match="no private chat"):
-                await environment.user(bob).send("hi")
+            await environment.user(bob).send("/start")
+
+            private = environment.chat(bob.id)
+            assert seen == [bob.id]
+            assert private.type == ChatType.PRIVATE
+            assert private.username == "bob"
+            assert private.messages[-1].text == "/start"
         finally:
             environment.dispose_sync()
 

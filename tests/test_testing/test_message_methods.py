@@ -373,6 +373,80 @@ class TestBatchForwardAndCopy:
             )
 
 
+class TestADerivedMessageIsAFreshObject:
+    """
+    A forward, a copy and an edit all derive one message from another.
+
+    ``model_copy`` carries the original's binding over, which makes ``mount`` prune the
+    derived message at its root and leave everything the derivation brought along — a new
+    chat, a new sender, a forward origin — unbound. The damaged message is then *stored*,
+    so a bot reading it back out of the chat gets shortcuts that raise, long after the call
+    that made it. All three go through one derive primitive, and this asserts it.
+    """
+
+    async def test_a_forward_binds_what_it_brought_with_it(self, env, private, team, alice):
+        await alice.send("original")
+
+        forwarded = await env.bot.forward_message(
+            chat_id=team.id,
+            from_chat_id=private.id,
+            message_id=private.messages[-1].message_id,
+        )
+
+        assert forwarded.bot is env.bot
+        assert forwarded.chat.bot is env.bot
+        assert forwarded.forward_origin.bot is env.bot
+        # A shortcut on the new chat is what a bot actually reaches for next.
+        assert await forwarded.chat.get_member(alice.user.id)
+
+    async def test_the_stored_forward_is_the_damaged_one_if_anything_is(
+        self,
+        env,
+        private,
+        team,
+        alice,
+    ):
+        """The result may look fine while the message the world keeps does not."""
+        await alice.send("original")
+
+        await env.bot.forward_message(
+            chat_id=team.id,
+            from_chat_id=private.id,
+            message_id=private.messages[-1].message_id,
+        )
+
+        stored = team.messages[-1]
+        assert stored.chat.bot is env.bot
+        assert stored.chat.id == team.id
+
+    async def test_a_copy_binds_what_it_brought_with_it(self, env, private, team, alice):
+        await alice.send("original")
+
+        await env.bot.copy_message(
+            chat_id=team.id,
+            from_chat_id=private.id,
+            message_id=private.messages[-1].message_id,
+        )
+
+        stored = team.messages[-1]
+        assert stored.chat.bot is env.bot
+        assert stored.from_user.bot is env.bot
+
+    async def test_the_original_is_left_alone(self, env, private, team, alice):
+        await alice.send("original")
+        original = private.messages[-1]
+
+        await env.bot.forward_message(
+            chat_id=team.id,
+            from_chat_id=private.id,
+            message_id=original.message_id,
+        )
+
+        assert private.messages[-1] is original
+        assert original.chat.id == private.id
+        assert original.forward_origin is None
+
+
 class TestUnpinningEverything:
     async def test_unpin_all_clears_the_pinned_list(self, env, private, alice):
         for text in ("one", "two"):

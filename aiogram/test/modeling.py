@@ -226,6 +226,7 @@ from aiogram.types import (
     User,
 )
 
+from .mounting import detached_copy
 from .synthesis import annotation_accepts, synthesize
 from .world import (
     BASE_DATE,
@@ -240,6 +241,7 @@ from .world import (
     TopicState,
     WorldLookupError,
     create_topic,
+    mask,
     scope_key,
 )
 
@@ -389,6 +391,21 @@ def find_handler(method: TelegramMethod[Any]) -> MethodHandler | None:
 # -- helpers ---------------------------------------------------------------------------
 
 
+def _supplied(value: Any) -> Any:
+    """
+    A copy of something the caller passed in, for the world to keep.
+
+    A request's ``reply_markup``, entities, permissions, commands or menu button belong to
+    the code under test — a module-level constant as often as not. Storing the very object
+    would put it *in* the world, where it is bound to the bot the moment any result carries
+    it back out: the test's own constant would then hold a reference to an environment long
+    after it was disposed, and would no longer compare equal to its unbound twin, since
+    pydantic counts the binding in ``__eq__`` while hiding it from ``__repr__``. What the
+    world keeps is a copy, exactly as what it hands out is.
+    """
+    return detached_copy(value)
+
+
 def resolve_chat(env: BotTestEnvironment, chat_id: Any) -> ChatState:
     """Resolve a ``chat_id`` (numeric or ``@username``) against the world."""
     if isinstance(chat_id, int):
@@ -444,11 +461,11 @@ def build_message(
     for name in _COPIED_FIELDS:
         value = getattr(method, name, None)
         if value is not None:
-            values[name] = value
+            values[name] = _supplied(value)
 
     reply_markup = getattr(method, "reply_markup", None)
     if isinstance(reply_markup, InlineKeyboardMarkup):
-        values["reply_markup"] = reply_markup
+        values["reply_markup"] = _supplied(reply_markup)
     if getattr(method, "protect_content", None):
         values["has_protected_content"] = True
     if thread_id is not None and chat.is_forum:
@@ -506,7 +523,7 @@ def _carry_request_values(method: TelegramMethod[Any], payload: Any) -> Any:
     if not isinstance(payload, BaseModel):
         return payload
     carried = {
-        name: value
+        name: _supplied(value)
         for name, info in type(payload).model_fields.items()
         if (value := getattr(method, name, None)) is not None
         and annotation_accepts(info.annotation, type(value))
@@ -578,21 +595,19 @@ def forward_one(
     original = source.find_message(message_id)
     if original is None:
         raise WorldLookupError("message to forward not found")
-    forwarded = original.model_copy(
-        update={
-            "message_id": target.allocate_message_id(),
-            "chat": target.as_chat(),
-            "date": env.world.next_date(),
-            "from_user": env.world.bot_user.as_user(),
-            # Stored messages always carry a sender; the bot stands in only for typing.
-            "forward_origin": forward_origin(
-                source,
-                original,
-                original.from_user or env.world.bot_user.as_user(),
-            ),
-        },
+    return target.add_derived(
+        original,
+        message_id=target.allocate_message_id(),
+        chat=target.as_chat(),
+        date=env.world.next_date(),
+        from_user=env.world.bot_user.as_user(),
+        # Stored messages always carry a sender; the bot stands in only for typing.
+        forward_origin=forward_origin(
+            source,
+            original,
+            original.from_user or env.world.bot_user.as_user(),
+        ),
     )
-    return target.add_message(forwarded)
 
 
 @models(ForwardMessage)
@@ -625,18 +640,16 @@ def copy_one(
     original = source.find_message(message_id)
     if original is None:
         raise WorldLookupError("message to copy not found")
-    copied = original.model_copy(
-        update={
-            "message_id": target.allocate_message_id(),
-            "chat": target.as_chat(),
-            "date": env.world.next_date(),
-            "from_user": env.world.bot_user.as_user(),
-            "caption": caption if caption is not None else original.caption,
-            # A copy carries no trace of where it came from — that is the whole difference.
-            "forward_origin": None,
-        },
+    return target.add_derived(
+        original,
+        message_id=target.allocate_message_id(),
+        chat=target.as_chat(),
+        date=env.world.next_date(),
+        from_user=env.world.bot_user.as_user(),
+        caption=caption if caption is not None else original.caption,
+        # A copy carries no trace of where it came from — that is the whole difference.
+        forward_origin=None,
     )
-    return target.add_message(copied)
 
 
 @models(CopyMessage)
@@ -912,12 +925,18 @@ def handle_promote(env: BotTestEnvironment, method: PromoteChatMember) -> bool:
     including ``is_anonymous`` alone: hiding an administrator's presence is a right like
     any other, and reading it as a demotion is what made
     ``promote_chat_member(is_anonymous=True)`` silently strip an admin here before.
+
+    The chat's owner is not promotable or demotable — their rights are not the bot's to
+    change, and Telegram refuses. Without that guard the fake was *more* permissive than
+    the API it stands in for, and in the one direction a test cannot notice: a bot that
+    promotes a list of users would quietly turn the owner into an ordinary member here and
+    fail only in production.
     """
     chat = resolve_chat(env, method.chat_id)
     member = chat.member(method.user_id)
-    granted = {
-        name: bool(getattr(method, name, None)) for name in ChatAdministratorRights.model_fields
-    }
+    if member.status == ChatMemberStatus.CREATOR:
+        raise WorldLookupError("can't remove chat owner")
+    granted = mask(ChatAdministratorRights, method, coerce=True)
     if not any(granted.values()):
         member.status = ChatMemberStatus.MEMBER
         member.rights = None
@@ -939,7 +958,7 @@ def handle_restrict(env: BotTestEnvironment, method: RestrictChatMember) -> bool
     chat = resolve_chat(env, method.chat_id)
     member = chat.member(method.user_id)
     member.status = ChatMemberStatus.RESTRICTED
-    member.permissions = method.permissions.model_copy()
+    member.permissions = _supplied(method.permissions)
     member.rights = None
     member.until_date = _as_datetime(method.until_date)
     return True
@@ -961,6 +980,14 @@ def handle_get_chat_member(env: BotTestEnvironment, method: GetChatMember) -> An
 
 @models(GetChat)
 def handle_get_chat(env: BotTestEnvironment, method: GetChat) -> ChatFullInfo:
+    """
+    The chat as the Bot API reports it, carrying copies of what the world stores.
+
+    The permissions and the photo are the chat's own objects, and a result is mounted to
+    the calling bot — so handing them out directly would bind the world's state and leave
+    ``chat.permissions == DECLARED`` failing with two identical-looking sides. Only value
+    objects are copied; a message the world holds is deliberately shared.
+    """
     chat = resolve_chat(env, method.chat_id)
     template: ChatFullInfo = synthesize(ChatFullInfo, env.synthesis_context(), name="chat")
     updated: ChatFullInfo = template.model_copy(
@@ -973,8 +1000,8 @@ def handle_get_chat(env: BotTestEnvironment, method: GetChat) -> ChatFullInfo:
             "last_name": chat.last_name,
             "is_forum": chat.is_forum or None,
             "description": chat.description,
-            "permissions": chat.permissions,
-            "photo": chat.photo,
+            "permissions": detached_copy(chat.permissions),
+            "photo": detached_copy(chat.photo),
             "sticker_set_name": chat.sticker_set_name,
             "invite_link": (
                 chat.primary_invite_link.invite_link
@@ -1488,7 +1515,7 @@ def handle_set_chat_permissions(env: BotTestEnvironment, method: SetChatPermissi
     Stored as a copy, for the reason :func:`handle_restrict` gives: what a later ``getChat``
     hands back — and mounts to the calling bot — must not be the caller's own object.
     """
-    _administrable(env, method).permissions = method.permissions.model_copy()
+    _administrable(env, method).permissions = _supplied(method.permissions)
     return True
 
 
@@ -1598,7 +1625,7 @@ def handle_set_member_tag(env: BotTestEnvironment, method: SetChatMemberTag) -> 
 @models(SetMyCommands)
 def handle_set_my_commands(env: BotTestEnvironment, method: SetMyCommands) -> bool:
     key = scope_key(method.scope, method.language_code)
-    env.world.profile.commands[key] = list(method.commands)
+    env.world.profile.commands[key] = _supplied(list(method.commands))
     return True
 
 
@@ -1607,10 +1634,11 @@ def handle_get_my_commands(env: BotTestEnvironment, method: GetMyCommands) -> li
     """
     Exactly what was set for this scope and language, or nothing.
 
-    The Bot API does not fall back to a broader scope here — see design decision D2.
+    The Bot API does not fall back to a broader scope here — see design decision D2. The
+    commands come back as copies, for the reason :func:`handle_get_chat` gives.
     """
     key = scope_key(method.scope, method.language_code)
-    return list(env.world.profile.commands.get(key, []))
+    return detached_copy(env.world.profile.commands.get(key, []))  # type: ignore[no-any-return]
 
 
 @models(DeleteMyCommands)
@@ -1686,7 +1714,7 @@ def handle_set_default_admin_rights(
         # Omitting the rights clears them, as the Bot API documents.
         rights.pop(scope, None)
     else:
-        rights[scope] = method.rights
+        rights[scope] = _supplied(method.rights)
     return True
 
 
@@ -1697,7 +1725,7 @@ def handle_get_default_admin_rights(
 ) -> ChatAdministratorRights:
     stored = env.world.profile.default_admin_rights.get(bool(method.for_channels))
     if stored is not None:
-        return stored
+        return detached_copy(stored)  # type: ignore[no-any-return]
     return ChatAdministratorRights(
         **dict.fromkeys(ChatAdministratorRights.model_fields, False),
     )
@@ -1708,7 +1736,7 @@ def handle_set_chat_menu_button(env: BotTestEnvironment, method: SetChatMenuButt
     if method.chat_id is not None:
         resolve_chat(env, method.chat_id)
     button = method.menu_button if method.menu_button is not None else MenuButtonDefault()
-    env.world.profile.menu_buttons[method.chat_id] = button
+    env.world.profile.menu_buttons[method.chat_id] = _supplied(button)
     return True
 
 
@@ -1718,7 +1746,8 @@ def handle_get_chat_menu_button(env: BotTestEnvironment, method: GetChatMenuButt
     buttons = env.world.profile.menu_buttons
     if method.chat_id is not None:
         resolve_chat(env, method.chat_id)
-    return buttons.get(method.chat_id, buttons.get(None, MenuButtonDefault()))
+    stored = buttons.get(method.chat_id, buttons.get(None))
+    return MenuButtonDefault() if stored is None else detached_copy(stored)
 
 
 # -- polls -----------------------------------------------------------------------------

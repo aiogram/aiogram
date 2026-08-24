@@ -43,6 +43,7 @@ from .world import (
     TopicState,
     UserState,
     WorldLookupError,
+    resolve_topic,
 )
 
 if TYPE_CHECKING:
@@ -64,24 +65,111 @@ class _DeepLink(NamedTuple):
     payload: str
 
 
-# `kind` values whose url does not resolve to a plain bot deep link at all — a chat
-# invite link or a link with extra path segments (a message link, a Mini App shortlink).
-# `username` is meaningless for these, so `follow_deep_link` rejects them before ever
-# comparing against the bot's username.
-_UNRESOLVABLE_LINK_KINDS: dict[str, str] = {
-    "invite": "a chat invite link",
-    "joinchat": "a chat invite link",
-    "extra_path": "a link with extra path segments (a message link or a Mini App shortlink)",
+class _LinkKindPolicy(NamedTuple):
+    """How a parsed deep-link `kind` behaves in `follow_deep_link`."""
+
+    resolvable: bool
+    """
+    Whether `username` is meaningful for this kind. False for a chat invite link or a
+    link with extra path segments, where the parsed username should never be compared
+    against the bot's — `follow_deep_link` rejects these before that comparison, and the
+    automatic scan never treats them as targeting this bot in the first place.
+    """
+
+    followable: bool
+    """Whether `follow_deep_link` can replay this kind as a `/start` — only `start`."""
+
+    rejection: str
+    """
+    The message raised when this kind is used as an explicit target, or is the reason
+    given when it is the only kind the automatic scan finds. A format string taking
+    `url` and `kind`; unused (left empty) for the one followable kind.
+    """
+
+
+def _unresolvable_rejection(reason: str) -> str:
+    return (
+        f"{{url!r}} is {reason}, not a bot deep link; only "
+        f"`t.me/<username>[?start=<payload>]` and "
+        f"`tg://resolve?domain=<username>[&start=<payload>]` links can be followed here"
+    )
+
+
+def _unfollowable_start_rejection(reason: str) -> str:
+    return (
+        f"{{url!r}} is a `{{kind}}` link, which {reason} in a real Telegram client; only "
+        f"`start` deep links can be followed here — Mini Apps, channel targets and the "
+        f"attachment menu are not simulated"
+    )
+
+
+# Single source of truth for how each parsed `kind` behaves: whether `username` is
+# meaningful for it, whether `follow_deep_link` can replay it, and the message when it
+# can't. `_parse_deep_link` classifies by iterating this table's keys (via
+# `_QUERY_PARAM_KINDS`), and `follow_deep_link` and the automatic scan each do a single
+# lookup here instead of consulting separate dicts and a bespoke `if` that have to be
+# kept in sync by hand. Adding a future kind is a one-row change.
+_LINK_KINDS: dict[str, _LinkKindPolicy] = {
+    "startgroup": _LinkKindPolicy(
+        resolvable=True,
+        followable=False,
+        rejection=(
+            "{url!r} is a `startgroup` link, which opens a group chooser in a real "
+            "Telegram client; only `start` deep links can be followed here — drive "
+            "a group flow directly with `add_bot()` instead"
+        ),
+    ),
+    "startapp": _LinkKindPolicy(
+        resolvable=True,
+        followable=False,
+        rejection=_unfollowable_start_rejection("opens a Mini App"),
+    ),
+    "startchannel": _LinkKindPolicy(
+        resolvable=True,
+        followable=False,
+        rejection=_unfollowable_start_rejection("opens a channel chooser"),
+    ),
+    "startattach": _LinkKindPolicy(
+        resolvable=True,
+        followable=False,
+        rejection=_unfollowable_start_rejection("opens the attachment-menu chooser"),
+    ),
+    "attach": _LinkKindPolicy(
+        resolvable=True,
+        followable=False,
+        rejection=_unfollowable_start_rejection("opens the attachment menu"),
+    ),
+    "start": _LinkKindPolicy(resolvable=True, followable=True, rejection=""),
+    "invite": _LinkKindPolicy(
+        resolvable=False,
+        followable=False,
+        rejection=_unresolvable_rejection("a chat invite link"),
+    ),
+    "joinchat": _LinkKindPolicy(
+        resolvable=False,
+        followable=False,
+        rejection=_unresolvable_rejection("a chat invite link"),
+    ),
+    "extra_path": _LinkKindPolicy(
+        resolvable=False,
+        followable=False,
+        rejection=_unresolvable_rejection(
+            "a link with extra path segments (a message link or a Mini App shortlink)"
+        ),
+    ),
 }
 
-# `kind` values that do resolve to a bot username but open something this toolkit does
-# not simulate — Mini Apps, a channel chooser, or the attachment menu.
-_UNSUPPORTED_START_KINDS: dict[str, str] = {
-    "startapp": "opens a Mini App",
-    "startchannel": "opens a channel chooser",
-    "startattach": "opens the attachment-menu chooser",
-    "attach": "opens the attachment menu",
-}
+# `kind` values checked as query parameters on a `t.me` / `tg://resolve` url, in the
+# order they are looked for — every table entry except the path-derived ones (`invite`,
+# `joinchat`, `extra_path`), which `_parse_deep_link` recognizes from the path shape
+# before any query parameter is looked at.
+_QUERY_PARAM_KINDS = tuple(
+    kind for kind in _LINK_KINDS if kind not in ("invite", "joinchat", "extra_path")
+)
+
+
+def _rejection_message(url: str, deep_link: _DeepLink) -> str:
+    return _LINK_KINDS[deep_link.kind].rejection.format(url=url, kind=deep_link.kind)
 
 
 def _detached(value: Any) -> Any:
@@ -159,10 +247,7 @@ class UserActor:
     ) -> TopicState | None:
         if topic is None:
             return None
-        if isinstance(topic, TopicState):
-            return topic
-        thread_id = topic if isinstance(topic, int) else topic.message_thread_id
-        return chat.topic(thread_id)
+        return resolve_topic(chat, topic)
 
     def state(self) -> FSMContext:
         """FSM context for this actor's binding — the key the dispatcher itself would use."""
@@ -175,16 +260,18 @@ class UserActor:
 
     @property
     def chat(self) -> ChatState:
+        """
+        The chat this actor sends into — its own private chat when unbound.
+
+        An unbound actor has no group or channel to guess at, but every Telegram user
+        *can* open a private chat with the bot, so a plain `send()` opens it exactly like
+        tapping a `/start` deep link does — see `World.ensure_private_chat`. `.in_(chat)`
+        is still required for anywhere else: the world cannot invent a group's title,
+        type or membership from a bare id.
+        """
         if self._chat is not None:
             return self._chat
-        chat = self.environment.world.chats.get(self.user.id)
-        if chat is None:
-            msg = (
-                f"User {self.user.id} has no private chat in this world; "
-                f"bind the actor to a chat with `.in_(chat)` first"
-            )
-            raise WorldLookupError(msg)
-        return chat
+        return self.environment.world.ensure_private_chat(self.user)
 
     # -- triggers ---------------------------------------------------------------------
 
@@ -301,38 +388,21 @@ class UserActor:
                 f"tg://resolve link)"
             )
             raise WorldLookupError(msg)
-        if deep_link.kind in _UNRESOLVABLE_LINK_KINDS:
-            msg = (
-                f"{url!r} is {_UNRESOLVABLE_LINK_KINDS[deep_link.kind]}, not a bot deep "
-                f"link; only `t.me/<username>[?start=<payload>]` and "
-                f"`tg://resolve?domain=<username>[&start=<payload>]` links can be followed "
-                f"here"
-            )
-            raise WorldLookupError(msg)
+        policy = _LINK_KINDS[deep_link.kind]
+        if not policy.resolvable:
+            raise WorldLookupError(_rejection_message(url, deep_link))
         if deep_link.username.lower() != bot_username.lower():
             msg = f"{url!r} deep-links to @{deep_link.username}, not to this bot (@{bot_username})"
             raise WorldLookupError(msg)
-        if deep_link.kind == "startgroup":
-            msg = (
-                f"{url!r} is a `startgroup` link, which opens a group chooser in a real "
-                f"Telegram client; only `start` deep links can be followed here — drive "
-                f"a group flow directly with `add_bot()` instead"
-            )
-            raise WorldLookupError(msg)
-        if deep_link.kind in _UNSUPPORTED_START_KINDS:
-            msg = (
-                f"{url!r} is a `{deep_link.kind}` link, which "
-                f"{_UNSUPPORTED_START_KINDS[deep_link.kind]} in a real Telegram client; "
-                f"only `start` deep links can be followed here — Mini Apps, channel "
-                f"targets and the attachment menu are not simulated"
-            )
-            raise WorldLookupError(msg)
+        if not policy.followable:
+            raise WorldLookupError(_rejection_message(url, deep_link))
 
         text = f"/start {deep_link.payload}" if deep_link.payload else "/start"
-        # Tapping the link is what opens the private chat, so the world opens it here
-        # rather than refusing an interaction a real client performs unprompted.
-        private_chat = self.environment.world.ensure_private_chat(self.user)
-        return await UserActor(self.environment, self.user, private_chat).send(text, **data)
+        # Tapping the link is what opens the private chat — `UserActor.chat` now does
+        # that for any unbound actor, the same as a plain `send()` from one, so this
+        # just sends through a fresh actor for the same user rather than opening the
+        # chat itself.
+        return await UserActor(self.environment, self.user).send(text, **data)
 
     async def inline_query(self, query: str = "", *, offset: str = "", **data: Any) -> Any:
         inline = InlineQuery(
@@ -752,12 +822,38 @@ class UserActor:
         message: Message | None,
         bot_username: str,
     ) -> tuple[str, _DeepLink]:
+        """
+        Scan buttons front-to-back for the newest followable (`start`) link to this bot.
+
+        A button that targets this bot with some other kind — a `startgroup` chooser, a
+        Mini App, an attachment-menu launch — is never picked as if it were a plain
+        `start` link; it is remembered as a candidate instead, so a keyboard mixing such
+        a button with a real `start` link still finds the `start` link, and one that
+        carries only unfollowable candidates says exactly why each was rejected.
+        """
+        candidates: list[tuple[str, _DeepLink]] = []
         for _candidate, button in self._iter_buttons(scope):
             if button.url is None:
                 continue
             deep_link = self._parse_deep_link(button.url)
-            if deep_link is not None and deep_link.username.lower() == bot_username.lower():
+            if deep_link is None or deep_link.username.lower() != bot_username.lower():
+                continue
+            if _LINK_KINDS[deep_link.kind].followable:
                 return button.url, deep_link
+            candidates.append((button.url, deep_link))
+        if candidates:
+            details = "; ".join(_rejection_message(url, dl) for url, dl in candidates)
+            if message is not None:
+                msg = (
+                    f"Message {message.message_id} carries no followable (`start`) "
+                    f"deep-link button to @{bot_username}, only unfollowable ones: {details}"
+                )
+            else:
+                msg = (
+                    f"No message in chat {self.chat.id} carries a followable (`start`) "
+                    f"deep-link button to @{bot_username}, only unfollowable ones: {details}"
+                )
+            raise WorldLookupError(msg)
         if message is not None:
             msg = f"Message {message.message_id} carries no deep-link button to @{bot_username}"
         else:
@@ -829,7 +925,7 @@ class UserActor:
             return None
 
         query = parse_qs(parsed.query, keep_blank_values=True)
-        for kind in ("startgroup", "startapp", "startchannel", "startattach", "attach", "start"):
+        for kind in _QUERY_PARAM_KINDS:
             if kind in query:
                 payload = query[kind][0] if query[kind] else ""
                 return _DeepLink(username=username, kind=kind, payload=payload)

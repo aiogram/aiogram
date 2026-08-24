@@ -14,12 +14,13 @@ resulting chat state or on the recorded calls. There is a trigger for every
 :class:`aiogram.types.Update` variant, so no registered handler is unreachable from a test.
 
 Results are mounted to the bot exactly as parsed responses are, so shortcuts work on them
-and on every object nested inside them.
+and on every object nested inside them, while the objects a test hands to a call stay the
+test's own — the world keeps copies of them, and hands out copies of what it stores.
 
 The world models the surfaces a bot's own logic depends on: sending, editing, moving,
 pinning and deleting messages; polls and reactions; chat administration and membership,
-including join requests and administrator rights — which are declared, granted and reported
-per chat type rather than assumed; the bot's own profile; forum topics; business
+including join requests and administrator rights — which are declared and granted as a whole
+and reported per chat type rather than assumed; the bot's own profile; forum topics; business
 connections; invite links; sticker sets; and Telegram Stars and gifts, where a payment
 credits a real balance and a refund resolves the charge id the handler was given. Methods
 it does not model are recorded and answered with a schema-valid result derived from their

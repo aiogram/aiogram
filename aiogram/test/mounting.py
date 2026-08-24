@@ -1,7 +1,24 @@
+"""
+The boundary between the fake world and the code under test.
+
+Every object in a test either belongs to the world — bound to the environment's bot, so
+its shortcuts work — or belongs to whoever built it and must stay unbound. This module
+owns both halves of that policy, and nothing else does:
+
+* :func:`mount` claims genuinely fresh objects for a bot as they leave towards the code
+  under test, and leaves alone anything that already has an owner;
+* :func:`detach` and :func:`detached_copy` produce objects nobody owns, for the moments
+  something crosses the boundary the other way — a canned result handed out, a caller's
+  constant taken into the world, an update arriving from another environment.
+
+:func:`bindables` is the single walk underneath all of them.
+"""
+
 from __future__ import annotations
 
+import copy
 from collections.abc import Iterable, Iterator, Mapping
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, TypeVar
 
 from pydantic import BaseModel
 
@@ -10,7 +27,9 @@ from aiogram.client.context_controller import BotContextController
 if TYPE_CHECKING:
     from aiogram.client.bot import Bot
 
-__all__ = ("bindables", "mount")
+__all__ = ("bindables", "bound_elsewhere", "detach", "detached_copy", "mount")
+
+_Value = TypeVar("_Value")
 
 
 def mount(value: Any, bot: Bot) -> Any:
@@ -52,8 +71,142 @@ def mount(value: Any, bot: Bot) -> Any:
     walk at that message instead of re-walking everything it transitively refers to.
     """
     for node in bindables(value, prune_bound=True):
-        node.as_(bot)
+        if node.bot is None:
+            node.as_(bot)
     return value
+
+
+def detach(value: _Value) -> _Value:
+    """
+    Unbind every object reachable from ``value``, in place, and return ``value``.
+
+    The inverse of :func:`mount`, for an object that is *derived* from one the world owns:
+    :meth:`~pydantic.BaseModel.model_copy` carries the original's binding over, so the
+    derived object would be pruned at its root and everything the derivation brought with
+    it — a new chat, a new sender, a new keyboard — would stay unbound and raise on its
+    first shortcut. A derived object is a fresh object; this is what makes it one.
+
+    Use :func:`detached_copy` instead when the original must survive untouched.
+    """
+    for node in bindables(value):
+        node.as_(None)
+    return value
+
+
+def bound_elsewhere(value: Any, bot: Bot) -> bool:
+    """
+    Whether anything reachable from ``value`` already belongs to a *different* bot.
+
+    Identity, not equality: :meth:`aiogram.client.bot.Bot.__eq__` compares token hashes, so
+    two environments built from the same blueprint have equal — and therefore
+    indistinguishable — bots, while only one of them owns any given object.
+    """
+    return any(
+        node.bot is not None and node.bot is not bot for node in bindables(value, prune_bound=True)
+    )
+
+
+def detached_copy(value: Any, *, bot: Bot | None = None) -> Any:
+    """
+    A deep copy of ``value`` that shares nothing with it, bound to ``bot`` or to nobody.
+
+    Copying is what keeps two owners apart when neither may be disturbed: a canned result
+    the test declared once at module level and the answer a call hands out, a caller's
+    ``reply_markup`` constant and the message the world stores, an update fed to a second
+    environment and the first environment that still owns it.
+
+    The copy is built iteratively, for the same reason :func:`bindables` is: a reply chain
+    or a canned result is as deep as a test cares to build, and :func:`copy.deepcopy`
+    recurses once per level — it gives up around 200 levels deep, far short of what the
+    mount walk handles. Round-tripping through ``model_dump``/``model_validate`` is no
+    better: pydantic-core's serializer refuses even sooner, reporting the depth as a
+    circular reference.
+
+    Binding is decided while the copy is made rather than by a second pass over it: a
+    model's ``_bot`` lives in its private attributes, which the walk never follows, so the
+    live :class:`~aiogram.client.bot.Bot` behind an object — a session, a world and a
+    dispatcher — is never something the copy could reach into. Passing ``bot`` also lets
+    the answer path hand the session an already-owned object, whose :func:`mount` then
+    prunes at the root instead of walking the whole graph again.
+    """
+    # id() -> the copy of the object with that id. Every original stays alive through
+    # `value` for as long as this runs, so the ids cannot be recycled underneath us.
+    memo: dict[int, Any] = {}
+    # Containers whose copy exists but is still empty, in discovery order.
+    shells: list[tuple[Any, Any]] = []
+    # Containers that cannot be filled after the fact, so they have to be built from
+    # finished children — innermost first, and before the mutable shells start looking
+    # them up. Reserved with `None` in the memo until then.
+    immutable: list[Any] = []
+
+    stack: list[Any] = [value]
+    while stack:
+        node = stack.pop()
+        # Cheap rejection first, exactly as in `bindables`.
+        if node is None or isinstance(node, (str, bytes, int, float)) or id(node) in memo:
+            continue
+        if isinstance(node, BaseModel):
+            shell = copy.copy(node)
+            if isinstance(shell, BotContextController):
+                shell.as_(bot)
+            memo[id(node)] = shell
+            shells.append((node, shell))
+            stack.extend(node.__dict__.values())
+            stack.extend((node.__pydantic_extra__ or {}).values())
+        elif isinstance(node, Mapping):
+            mapping: dict[Any, Any] = {}
+            memo[id(node)] = mapping
+            shells.append((node, mapping))
+            stack.extend(node.values())
+        elif isinstance(node, (tuple, set, frozenset)):
+            # Reserved, so the walk does not revisit it; resolved below.
+            memo[id(node)] = None
+            immutable.append(node)
+            stack.extend(node)
+        elif isinstance(node, list):
+            items: list[Any] = []
+            memo[id(node)] = items
+            shells.append((node, items))
+            stack.extend(node)
+        # Anything else is a leaf — a date, an enum, a plain object — and is copied by
+        # `copied` on the way into whatever holds it.
+
+    def copied(item: Any) -> Any:
+        if id(item) in memo:
+            return memo[id(item)]
+        # Leaves only, so this cannot recurse deeply; the memo is shared so a leaf that
+        # several holders point at is copied once.
+        return copy.deepcopy(item, memo)
+
+    # Discovery order is no help here: a nested tuple reachable through a list as well may
+    # be found before the tuple that holds it. So each pass builds whatever has no
+    # unfinished sibling left, and defers the rest — which terminates, because a tuple
+    # cannot contain itself.
+    while immutable:
+        deferred: list[Any] = []
+        for node in immutable:
+            # `False` stands in for "absent", since `None` is the reservation itself.
+            if any(memo.get(id(item), False) is None for item in node):
+                deferred.append(node)
+                continue
+            contents = [copied(item) for item in node]
+            memo[id(node)] = tuple(contents) if isinstance(node, tuple) else type(node)(contents)
+        immutable = deferred
+
+    for node, shell in shells:
+        if isinstance(node, BaseModel):
+            shell.__dict__.update((name, copied(item)) for name, item in node.__dict__.items())
+            extra = node.__pydantic_extra__
+            if extra:
+                shell.__pydantic_extra__.update(
+                    (name, copied(item)) for name, item in extra.items()
+                )
+        elif isinstance(shell, dict):
+            shell.update((key, copied(item)) for key, item in node.items())
+        else:
+            shell.extend(copied(item) for item in node)
+
+    return copied(value)
 
 
 def bindables(value: Any, *, prune_bound: bool = False) -> Iterator[BotContextController]:
@@ -65,7 +218,9 @@ def bindables(value: Any, *, prune_bound: bool = False) -> Iterator[BotContextCo
     walker hit Python's recursion limit on chains a test can plausibly build.
 
     ``prune_bound`` stops the walk at objects that already carry a bot — see :func:`mount`
-    for why that is the correct ownership rule and not merely an optimization.
+    for why that is the correct ownership rule and not merely an optimization. Such an
+    object is still yielded, so a caller can see *whose* it is; what it holds is not, since
+    that belongs to the same owner.
     """
     seen: set[int] = set()
     stack: list[Any] = [value]
@@ -84,9 +239,13 @@ def bindables(value: Any, *, prune_bound: bool = False) -> Iterator[BotContextCo
 
         if isinstance(current, BaseModel):
             if isinstance(current, BotContextController):
-                if prune_bound and current.bot is not None:
-                    continue
+                # Read before yielding: the consumer is `mount` as often as not, and it
+                # binds what it is handed — asking afterwards would prune every object the
+                # walk had just claimed, and with it everything nested inside.
+                owned = current.bot is not None
                 yield current
+                if prune_bound and owned:
+                    continue
             # `__dict__` holds the validated fields; `extra="allow"` parks unknown ones,
             # which may carry objects from a future Bot API version, in
             # `__pydantic_extra__`.

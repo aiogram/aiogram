@@ -78,6 +78,15 @@ independent world from it:
         )
         return blueprint
 
+A user's own private chat with the bot opens on demand; every other chat must be declared.
+Telegram lets any user open a DM with any bot — tapping a ``/start`` deep link does it as a
+side effect — so a blueprint that never called ``add_private_chat`` is not saying "this user
+has no private chat", only that the test did not need to name it. Both
+``bot_env.user(alice).send("/start")`` and a followed deep link therefore work, and open a
+chat shaped exactly like a declared one. A *group*, on the other hand, is a place the bot
+was added to: ``.in_(chat)`` on a chat nobody declared raises, because a bot cannot post
+into a chat it does not know.
+
 The handles returned by ``add_user`` / ``add_private_chat`` / ``add_group`` are how you
 address participants later:
 
@@ -124,9 +133,23 @@ its own:
     )
     blueprint.set_member(team, alice, permissions=ChatPermissions(can_send_messages=False))
 
-``administrator_rights(**overrides)`` builds the ordinary rights of a chat type with the
+``administrator_rights(**overrides)`` builds the ordinary administrator rights with the
 overrides applied, so a nearly-ordinary admin is one line rather than a seventeen-field
-literal. Passing ``rights`` or ``permissions`` implies the status that carries it
+literal. The mask it returns is not tied to a chat type: which rights a chat actually
+*reports* is decided when the membership is read, where the chat type is known — the Bot
+API reports ``can_post_messages`` only for channels and ``can_manage_topics`` only for
+supergroups, and a right that cannot exist in a chat reads back as ``None`` there. So one
+declaration is truthful in every chat, and stating a right explicitly never grants less
+than staying silent would:
+
+.. code-block:: python
+
+    # In a channel, both of these report `can_post_messages is True`.
+    posting = administrator_rights(can_post_messages=True)
+    blueprint.set_member(channel, blueprint.bot, rights=posting)
+    blueprint.set_member(channel, blueprint.bot, status=ChatMemberStatus.ADMINISTRATOR)
+
+Passing ``rights`` or ``permissions`` implies the status that carries it
 (administrator, restricted); an explicit ``status`` wins, and declaring both for one member
 raises, since they belong to different statuses.
 
@@ -188,16 +211,18 @@ bot and sends ``/start <payload>`` there.
 
         assert bot_env.chat(alice.id).messages[-1].text == "/start team-42"
 
-The private chat is opened if the blueprint never declared one, because that is what the
-tap itself does in a real client: a user reached through a group button has a private chat
-with the bot from the moment they follow the link. It is shaped exactly like
-``add_private_chat`` builds one, so what it holds is as usable as any declared chat's.
+The private chat is opened if the blueprint never declared one — the general rule that a
+user's own private chat opens on demand, applied here: a user reached through a group button
+has a DM with the bot from the moment they follow the link.
 
 ``https://t.me/<username>?start=<payload>`` is recognized, along with its ``http://`` and
 schemeless ``t.me/...`` forms, and ``tg://resolve?domain=<username>&start=<payload>``. A
-link to a different bot, or one with no ``start`` parameter, is not followable.
-``startgroup`` is not simulated — a real client shows a group chooser for it, which has no
-equivalent here — so drive that flow directly with ``add_bot()`` instead.
+bare profile link — ``https://t.me/<username>`` with no parameter — is followable too, and
+replays as a plain ``/start``, because that is what tapping it sends. A link to a *different*
+bot is not followable, and neither are the kinds that open something this toolkit does not
+simulate: ``startgroup`` (a group chooser — drive that flow directly with ``add_bot()``
+instead), ``startapp``, ``startchannel``, ``startattach`` and ``attach``. Each is refused by
+name rather than quietly downgraded to a plain ``/start``.
 
 Every update kind has a trigger
 -------------------------------
@@ -361,6 +386,15 @@ session (see `Bots that use a global Bot instance`_): objects the world already 
 mounted to ``bot_env.bot``, whose defaults are the ones the world was built with, instead of
 being claimed by whichever bot happened to ask for them last.
 
+**Your own objects stay yours.** Mounting only ever reaches things the world minted. A
+``reply_markup``, a ``ChatPermissions`` or a ``BotCommand`` list you pass to a call is
+*copied* on the way in, so the module-level constant a whole test file shares is never
+bound to a bot and never left holding a disposed environment; the value objects the world
+stores are copied again on the way out, so reading them back does not bind the world's own
+state. Messages are the deliberate exception — a returned message *is* the one the chat
+holds, and that identity is the point. The same applies to an ``Update`` you build once and
+feed to two environments: the second one gets a copy, so its replies land in its own world.
+
 One consequence is shared with production: the bot an object is mounted to is part of its
 identity for pydantic, so an object the fake hands out never compares equal to an identical
 one built inside the test — while the two print identically, since the repr hides the
@@ -370,7 +404,13 @@ binding. Compare the payload instead:
 
     assert message.reply_markup.model_dump() == markup.model_dump()
 
-A failing ``==`` between two such objects says so, so the puzzle only costs one run.
+A failing ``==`` between two such objects says so, so the puzzle only costs one run. What
+the *world* stores is unbound, though, so an assertion against a declared constant works
+there:
+
+.. code-block:: python
+
+    assert bot_env.chat(group.id).permissions == ChatPermissions(can_send_messages=False)
 
 What the fake models
 ====================
@@ -819,7 +859,10 @@ granted, and reading the member back says so.
 
 A promotion in which nothing comes out true — every flag ``False``, or none passed at all —
 is the demotion the Bot API documents; anything true keeps the member an administrator,
-``is_anonymous`` included. :code:`restrictChatMember` likewise persists the
+``is_anonymous`` included. The chat's **owner** is neither promotable nor demotable, and
+promoting one raises :class:`aiogram.exceptions.TelegramBadRequest` the way Telegram does —
+so a bot that promotes a list of users fails here rather than only in production.
+:code:`restrictChatMember` likewise persists the
 :class:`aiogram.types.chat_permissions.ChatPermissions` it was given, so
 :code:`getChatMember` reports the permissions that were actually set.
 

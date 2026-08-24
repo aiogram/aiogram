@@ -5,6 +5,7 @@ import pytest
 from aiogram.exceptions import TelegramBadRequest, TelegramForbiddenError, TelegramRetryAfter
 from aiogram.methods import GetChatAdministrators, GetChatMember, SendMessage
 from aiogram.test import BotTestEnvironment
+from aiogram.test.overrides import fresh_result
 from aiogram.types import Chat, ChatMemberMember, Message, User
 
 #: Declared once and reused by every test below, the way a real suite declares a fixture
@@ -168,6 +169,58 @@ class TestADeclaredResultStaysTheTestsOwn:
         assert result[0] is not member
         assert result[0].bot is env.bot
         assert member.bot is None
+
+    async def test_a_deeply_nested_result_is_copied_without_recursion(self, env, private):
+        """
+        A canned result nests as deep as the test that built it, and copying must follow.
+
+        The mount walk was made iterative precisely for reply chains this long; a copy that
+        recursed died on the same shape, with a `RecursionError` from inside the toolkit
+        rather than anything the bot under test did.
+        """
+        chain = Message(
+            message_id=1,
+            date=datetime.datetime(2026, 1, 1, tzinfo=datetime.timezone.utc),
+            chat=Chat(id=1000, type="private"),
+            text="0",
+        )
+        for index in range(1500):
+            chain = Message(
+                message_id=index + 2,
+                date=chain.date,
+                chat=Chat(id=1000, type="private"),
+                reply_to_message=chain,
+            )
+        env.on(SendMessage).returns(chain)
+
+        result = await env.bot.send_message(chat_id=private.id, text="ignored")
+
+        assert result is not chain
+        assert result.reply_to_message.bot is env.bot
+        assert chain.reply_to_message.bot is None
+
+    async def test_the_copy_arrives_already_bound(self, env, private):
+        """
+        The destination is known where the copy is made, so it is made bound.
+
+        The alternative — copy unbound, then let the session's `mount` walk the whole graph
+        to bind it — is a second full walk of something that was just built object by
+        object, on a shape that can be thousands of nodes deep.
+        """
+        env.on(SendMessage).returns(SHARED_ANSWER)
+
+        result = await env.bot.send_message(chat_id=private.id, text="ignored")
+
+        assert result.bot is env.bot
+        assert result.chat.bot is env.bot
+
+    async def test_fresh_result_still_hands_out_an_unbound_copy(self, env):
+        """The named entry point other modules import; the policy lives in `mounting`."""
+        copied = fresh_result(SHARED_ANSWER)
+
+        assert copied is not SHARED_ANSWER
+        assert copied.bot is None
+        assert copied.model_dump() == SHARED_ANSWER.model_dump()
 
     async def test_no_bot_leaks_from_one_environment_into_the_next(self, blueprint, dp):
         first = BotTestEnvironment(blueprint=blueprint, dispatcher=dp)

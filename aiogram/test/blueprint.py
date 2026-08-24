@@ -31,6 +31,7 @@ from .world import (
     UserState,
     World,
     create_topic,
+    private_chat_shape,
     scope_key,
 )
 
@@ -188,14 +189,7 @@ class Blueprint:
 
     def add_private_chat(self, user: UserSpec) -> ChatSpec:
         """A private chat between the bot and ``user``; its id is the user's id."""
-        chat = ChatSpec(
-            id=user.id,
-            type=ChatType.PRIVATE,
-            username=user.username,
-            first_name=user.first_name,
-            last_name=user.last_name,
-            members=[MemberSpec(user_id=user.id)],
-        )
+        chat = ChatSpec(**private_chat_shape(user), members=[MemberSpec(user_id=user.id)])
         self.chats.append(chat)
         return chat
 

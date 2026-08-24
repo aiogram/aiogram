@@ -6,6 +6,8 @@ from dataclasses import dataclass, field
 from enum import Enum
 from typing import TYPE_CHECKING, Any, cast
 
+from pydantic import BaseModel
+
 from aiogram.enums import ChatMemberStatus, ChatType
 from aiogram.types import (
     BotCommand,
@@ -39,11 +41,13 @@ from aiogram.types import (
     User,
 )
 
-from .mounting import mount
+from .mounting import detach, detached_copy, mount
 from .waiting import describe_callable, poll_until
 
 if TYPE_CHECKING:
     from aiogram.client.bot import Bot
+
+    from .blueprint import TopicSpec, UserSpec
 
 BASE_DATE: datetime.datetime = datetime.datetime(
     2026,
@@ -97,29 +101,44 @@ _ORDINARY_ADMIN_RIGHTS: dict[str, bool] = {
 }
 
 
+def mask(model: type[BaseModel], source: Any, *, coerce: bool = False) -> dict[str, Any]:
+    """
+    Read every field of ``model`` off ``source``, by name.
+
+    The Bot API's rights and permissions objects are flat boolean masks, and the fake reads
+    them off differently-shaped sources: a rights object, a permissions object, a request
+    that simply omits what it does not grant. ``coerce`` turns an unset flag into a denied
+    one, which is what an omitted request parameter and an unset permission both mean —
+    so the coercion is stated once instead of in each reader's own comprehension.
+
+    Reflecting over ``model_fields`` rather than a hand-kept list is what makes a right a
+    future Bot API version adds flow through every one of these readers unchanged.
+    """
+    return {
+        name: bool(getattr(source, name, None)) if coerce else getattr(source, name, None)
+        for name in model.model_fields
+    }
+
+
 def scoped_rights(rights: ChatAdministratorRights, chat_type: str) -> ChatAdministratorRights:
     """
     Fit the rights to what the Bot API reports for ``chat_type``.
 
-    Applied to declared and granted rights alike, so a right that cannot exist in a chat
-    reads back as ``None`` there however it was set, and a right that *can* exist reads
-    back as a plain boolean even when it was left unstated — which is how the real API
-    answers, and what a bot writing ``if member.can_pin_messages:`` relies on.
+    The single normalizer, applied where the chat type is in hand — which is only when a
+    membership is *read*. A right that cannot exist in a chat reads back as ``None`` there
+    however it was set, and a right that *can* exist reads back as a plain boolean even
+    when it was left unstated, which is how the real API answers and what a bot writing
+    ``if member.can_pin_messages:`` relies on.
     """
-    values: dict[str, Any] = {
-        name: getattr(rights, name) for name in ChatAdministratorRights.model_fields
-    }
+    values = mask(ChatAdministratorRights, rights)
     for name, chat_types in CHAT_TYPE_SCOPED_RIGHTS.items():
         values[name] = bool(values[name]) if chat_type in chat_types else None
     return ChatAdministratorRights(**values)
 
 
-def administrator_rights(
-    chat_type: str = ChatType.SUPERGROUP,
-    **overrides: bool | None,
-) -> ChatAdministratorRights:
+def administrator_rights(**overrides: bool | None) -> ChatAdministratorRights:
     """
-    The rights of an ordinary administrator of a ``chat_type`` chat, with ``overrides``.
+    The rights of an ordinary administrator, with ``overrides``.
 
     The one place the permissive default is built: it is what an administrator declared
     or promoted without explicit rights gets, and it is how a test declares an
@@ -127,13 +146,20 @@ def administrator_rights(
 
         administrator_rights(can_delete_messages=False)
 
-    The result is already scoped to the chat type, so the channel-only and
-    supergroup-only fields are ``None`` where they do not apply.
+    The mask is deliberately *unscoped* — every right the Bot API knows carries a plain
+    boolean, including the ones only a channel or only a supergroup reports. Which of them
+    a given chat actually reports is :func:`scoped_rights`' job, at the moment the
+    membership is read and the chat type is known. Scoping here as well would mean
+    declaring a right explicitly grants *fewer* rights than saying nothing at all::
+
+        # In a channel, both of these report `can_post_messages is True`.
+        set_member(channel, bot, rights=administrator_rights(can_post_messages=True))
+        set_member(channel, bot, status=ChatMemberStatus.ADMINISTRATOR)
     """
     values: dict[str, Any] = dict.fromkeys(ChatAdministratorRights.model_fields, False)
     values.update(_ORDINARY_ADMIN_RIGHTS)
     values.update(overrides)
-    return scoped_rights(ChatAdministratorRights(**values), chat_type)
+    return ChatAdministratorRights(**values)
 
 
 class QueryKind(str, Enum):
@@ -309,30 +335,23 @@ class MemberState:
                 custom_title=self.custom_title,
             )
         if self.status == ChatMemberStatus.ADMINISTRATOR:
-            rights = (
-                administrator_rights(chat_type)
-                if self.rights is None
-                else scoped_rights(self.rights, chat_type)
-            )
+            declared = self.rights if self.rights is not None else administrator_rights()
             return ChatMemberAdministrator(
                 user=user,
                 custom_title=self.custom_title,
                 can_be_edited=False,
-                **{name: getattr(rights, name) for name in ChatAdministratorRights.model_fields},
+                **mask(ChatAdministratorRights, scoped_rights(declared, chat_type)),
             )
         if self.status == ChatMemberStatus.RESTRICTED:
             permissions = self.permissions if self.permissions is not None else ChatPermissions()
-            # An unset permission is a denied one: the Bot API's own restricted member
-            # carries plain booleans, while a request omits what it does not grant.
-            allowed: dict[str, Any] = {
-                name: bool(getattr(permissions, name)) for name in ChatPermissions.model_fields
-            }
             return ChatMemberRestricted(
                 user=user,
                 is_member=True,
                 tag=self.tag,
                 until_date=self.until_date or BASE_DATE,
-                **allowed,
+                # An unset permission is a denied one: the Bot API's own restricted member
+                # carries plain booleans, while a request omits what it does not grant.
+                **mask(ChatPermissions, permissions, coerce=True),
             )
         if self.status == ChatMemberStatus.KICKED:
             return ChatMemberBanned(user=user, until_date=self.until_date or BASE_DATE)
@@ -435,6 +454,8 @@ class BusinessConnectionState:
     date: datetime.datetime = BASE_DATE
 
     def as_business_connection(self, user: User) -> BusinessConnection:
+        # The rights are the world's own object, and a result gets mounted — see the note
+        # on `StickerSetState.as_sticker_set`.
         return BusinessConnection(
             id=self.id,
             user=user,
@@ -442,7 +463,7 @@ class BusinessConnectionState:
             date=self.date,
             is_enabled=self.is_enabled,
             can_reply=self.can_reply,
-            rights=self.rights,
+            rights=detached_copy(self.rights),
         )
 
 
@@ -469,11 +490,21 @@ class StickerSetState:
         raise WorldLookupError(msg)
 
     def as_sticker_set(self) -> StickerSet:
+        """
+        The Bot API's view of this set, carrying copies of the stickers.
+
+        A result is mounted to the calling bot, and the world's stickers are *value*
+        objects a test compares against declared ones — pydantic counts a binding in
+        ``__eq__`` while hiding it from ``__repr__``, so handing out the stored instances
+        would bind the world's own state and break ``set.stickers == DECLARED`` with two
+        identical-looking sides. Messages are the deliberate exception: their identity
+        with what the chat holds is the feature.
+        """
         return StickerSet(
             name=self.name,
             title=self.title,
             sticker_type=self.sticker_type,
-            stickers=list(self.stickers),
+            stickers=detached_copy(self.stickers),
         )
 
 
@@ -664,6 +695,28 @@ class CommunityState:
         return Community(id=self.id, name=self.name)
 
 
+def derive_message(original: Message, **changes: Any) -> Message:
+    """
+    A copy of ``original`` with ``changes`` applied — a genuinely fresh message.
+
+    Every message the world derives from another goes through here: an edit replacing the
+    message it derives from, a forward and a copy landing in some other chat. They differ
+    in where the result goes, not in what it is, and what it is has to be said once:
+    :meth:`~pydantic.BaseModel.model_copy` carries the original's ``_bot`` over, which makes
+    :func:`~aiogram.test.mounting.mount` prune the new message at its root and leave
+    everything the change brought along — a new chat, a new sender, a forward origin, a new
+    keyboard — unbound, raising on its first shortcut. Detaching says what a copy is, and
+    the mount that follows binds all of it.
+
+    The ``changes`` are copied on the way in, for the reason
+    :func:`~aiogram.test.mounting.detached_copy` gives: an edit carries the caller's own
+    ``reply_markup`` or entities, and what the world stores must not be an object the code
+    under test still holds — it would be bound to a bot the moment the edited message is
+    handed back.
+    """
+    return detach(original.model_copy(update=detached_copy(changes)))
+
+
 @dataclass
 class ChatState:
     """Mutable state of a single chat: its members, its messages and what is pinned."""
@@ -693,12 +746,24 @@ class ChatState:
     general_topic: TopicState = field(
         default_factory=lambda: TopicState(message_thread_id=None, is_general=True),
     )
-    #: The bot every message stored here is bound to; installed by :meth:`World.bind`.
-    #: Excluded from equality and repr — it is wiring, not state a test asserts on.
-    bound_bot: Bot | None = field(default=None, compare=False, repr=False)
+    #: The world this chat is part of, installed by :class:`ChatRegistry` when the chat is
+    #: registered. Excluded from equality and repr — it is wiring, not state a test asserts
+    #: on, and comparing it would recurse straight back into this chat.
+    world: World | None = field(default=None, compare=False, repr=False)
 
     def __post_init__(self) -> None:
         self.general_topic.chat = self
+
+    @property
+    def bound_bot(self) -> Bot | None:
+        """
+        The bot every message stored here is bound to, derived from the world.
+
+        Derived rather than stored: a copy of the owner kept per chat has to be refreshed
+        whenever either side changes, and a chat that missed a refresh silently stores
+        unbound messages. There is one owner — the world's — and this reads it.
+        """
+        return self.world.bound_bot if self.world is not None else None
 
     def as_chat(self) -> Chat:
         return Chat(
@@ -744,13 +809,13 @@ class ChatState:
     def update_message(self, message_id: int, **changes: Any) -> Message:
         """Replace a stored message with an edited copy — API types are frozen."""
         message = self.require_message(message_id)
-        edited = message.model_copy(update=changes)
-        # The copy inherits the original's binding, which would make `_bind` prune it as
-        # an object the world already owns — leaving whatever the edit brought along, a new
-        # keyboard for instance, unbound. It is a fresh object; let it be mounted as one.
-        edited.as_(None)
+        edited = derive_message(message, **changes)
         self.messages[self.messages.index(message)] = edited
         return self._bind(edited)
+
+    def add_derived(self, original: Message, **changes: Any) -> Message:
+        """Store a copy of ``original`` in this chat — see :func:`derive_message`."""
+        return self.add_message(derive_message(original, **changes))
 
     def _bind(self, message: Message) -> Message:
         """Mount a message and everything new in it to the world's bot, if there is one."""
@@ -867,7 +932,7 @@ class ChatState:
         """
         per_message = self.reactions.setdefault(message_id, {})
         if reaction:
-            per_message[user_id] = [item.model_copy() for item in reaction]
+            per_message[user_id] = detached_copy(list(reaction))
         else:
             per_message.pop(user_id, None)
 
@@ -882,7 +947,7 @@ class ChatState:
         # Copies again, for the reason `set_reaction` explains: a count travels outwards,
         # on an update or in a result, and gets mounted there.
         return [
-            ReactionCount(type=reaction.model_copy(), total_count=count)
+            ReactionCount(type=detached_copy(reaction), total_count=count)
             for reaction, count in totals.values()
         ]
 
@@ -958,6 +1023,26 @@ class BotProfileState:
             texts.pop(key, None)
 
 
+class ChatRegistry(dict[int, ChatState]):
+    """
+    The world's chats, which hand every chat put into them a way back to the world.
+
+    A chat needs the world to know which bot its messages are bound to, and there is
+    exactly one moment when a chat becomes part of a world: when it is put here. Doing the
+    wiring at that moment rather than in a later sweep is what lets every reader be a plain
+    reader — ``world.chats.get(id)`` is as safe as :meth:`World.chat`, and a test that
+    drops a chat straight into the mapping gets a working one.
+    """
+
+    def __init__(self, world: World) -> None:
+        super().__init__()
+        self.world = world
+
+    def __setitem__(self, chat_id: int, chat: ChatState) -> None:
+        chat.world = self.world
+        super().__setitem__(chat_id, chat)
+
+
 @dataclass
 class World:
     """Everything the environment knows: the bot, the users, the chats and the counters."""
@@ -982,6 +1067,12 @@ class World:
     #: The bot this world belongs to; see :meth:`bind`.
     bound_bot: Bot | None = field(default=None, compare=False, repr=False)
 
+    def __post_init__(self) -> None:
+        declared = self.chats
+        self.chats = ChatRegistry(self)
+        for chat_id, chat in declared.items():
+            self.chats[chat_id] = chat
+
     def bind(self, bot: Bot) -> None:
         """
         Declare which bot owns this world, so stored objects can be bound to it.
@@ -989,10 +1080,11 @@ class World:
         Called once by :class:`aiogram.test.BotTestEnvironment` as soon as it has a bot.
         A world without an owner still works — it just stores unbound objects, which is
         all a world built and inspected on its own can offer.
+
+        One assignment, and every chat follows: a chat reads the owner off the world it was
+        registered in rather than keeping a copy that would have to be kept in step.
         """
         self.bound_bot = bot
-        for chat in self.chats.values():
-            chat.bound_bot = bot
 
     def user(self, user_id: int) -> UserState:
         if user_id == self.bot_user.id:
@@ -1008,9 +1100,6 @@ class World:
         if chat is None:
             msg = f"Chat {chat_id} is not declared in the blueprint"
             raise WorldLookupError(msg)
-        # Chats installed after `bind()` — a test may drop one straight into `chats` —
-        # inherit the owner on the way out, so their messages are bound like any other.
-        chat.bound_bot = self.bound_bot
         return chat
 
     def ensure_private_chat(self, user: UserState) -> ChatState:
@@ -1020,24 +1109,20 @@ class World:
         Every Telegram user *can* open a private chat with a bot, and some actions — tapping
         a `/start` deep link, most of all — open it as a side effect. A blueprint that did
         not declare one is therefore not saying "this user has no private chat"; it is only
-        saying the test did not need to name it. So the chat is created here, shaped exactly
-        like :meth:`aiogram.test.Blueprint.add_private_chat` builds one, rather than the
-        world refusing an interaction Telegram itself would allow.
+        saying the test did not need to name it. So the chat is created here, from the same
+        description :meth:`aiogram.test.Blueprint.add_private_chat` declares one from,
+        rather than the world refusing an interaction Telegram itself would allow.
         """
         chat = self.chats.get(user.id)
         if chat is None:
             chat = ChatState(
-                id=user.id,
-                type=ChatType.PRIVATE,
-                username=user.username,
-                first_name=user.first_name,
-                last_name=user.last_name,
+                **private_chat_shape(user),
                 members={user.id: MemberState(user_id=user.id)},
             )
+            # Registering is what hands the chat the world, so its messages are bound like
+            # any declared chat's.
             self.chats[user.id] = chat
-        # Through `chat()` rather than the dict, so the new chat inherits the bound bot and
-        # its messages are as usable as any declared chat's.
-        return self.chat(chat.id)
+        return chat
 
     def business_connection(self, connection_id: str) -> BusinessConnectionState:
         connection = self.business_connections.get(connection_id)
@@ -1113,6 +1198,39 @@ class World:
 
     def next_date(self) -> datetime.datetime:
         return BASE_DATE + datetime.timedelta(seconds=self.last_update_id)
+
+
+def private_chat_shape(user: UserState | UserSpec) -> dict[str, Any]:
+    """
+    What a private chat between the bot and ``user`` looks like.
+
+    A private chat is described in two places — declared by
+    :meth:`aiogram.test.Blueprint.add_private_chat`, opened on demand by
+    :meth:`World.ensure_private_chat` — and the two must agree, or a user whose chat the
+    blueprint happened to declare would live in a differently-shaped chat than one whose
+    chat a deep link opened. The shape is stated here; each caller only adds the membership
+    in the type it deals in.
+    """
+    return {
+        "id": user.id,
+        "type": ChatType.PRIVATE,
+        "username": user.username,
+        "first_name": user.first_name,
+        "last_name": user.last_name,
+    }
+
+
+def resolve_topic(chat: ChatState, topic: TopicSpec | TopicState | int) -> TopicState:
+    """
+    The topic a declaration, a state or a thread id names, within ``chat``.
+
+    A topic can be addressed by any of the three, and every caller that accepts one accepts
+    all three; an unknown thread id fails here rather than producing an untagged message.
+    """
+    if isinstance(topic, TopicState):
+        return topic
+    thread_id = topic if isinstance(topic, int) else topic.message_thread_id
+    return chat.topic(thread_id)
 
 
 def create_topic(

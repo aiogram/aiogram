@@ -1,15 +1,15 @@
 from __future__ import annotations
 
-import copy
 from dataclasses import dataclass
-from typing import Any
-
-from pydantic import BaseModel
+from typing import TYPE_CHECKING, Any
 
 from aiogram.exceptions import TelegramAPIError, TelegramBadRequest
 from aiogram.methods import TelegramMethod
 
-from .mounting import bindables
+from .mounting import detached_copy
+
+if TYPE_CHECKING:
+    from aiogram.client.bot import Bot
 
 
 @dataclass
@@ -29,9 +29,25 @@ class Outcome:
     def exhausted(self) -> bool:
         return self.remaining is not None and self.remaining <= 0
 
-    def apply(self, method: TelegramMethod[Any]) -> Any:
+    def apply(self, method: TelegramMethod[Any], bot: Bot | None = None) -> Any:
+        """
+        The declared answer, as a fresh object bound to whoever asked for it.
+
+        The declared object belongs to the test — it is often built once at module level
+        and reused — while the answer belongs to the caller: it gets mounted to the calling
+        bot, and a modeled follow-up may edit it. Handing out the very object the test
+        declared would mean the test's own object is mutated by the call it describes, and
+        that it holds a reference to every :class:`~aiogram.client.bot.Bot` that ever
+        received it, long after those environments were disposed. Copying also makes a
+        repeated override (``times=None``) behave like the API it stands in for: each call
+        gets its own response.
+
+        The caller's bot is known here, so the copy is bound as it is made and the session's
+        own :func:`~aiogram.test.mounting.mount` prunes at its root — one walk instead of a
+        walk to bind, a walk to unbind, and a walk to bind again.
+        """
         if self.error is None:
-            return fresh_result(self.result)
+            return detached_copy(self.result, bot=bot)
         if isinstance(self.error, TelegramAPIError):
             raise self.error
         raise self.error(method=method, message=self.message)
@@ -39,37 +55,12 @@ class Outcome:
 
 def fresh_result(result: Any) -> Any:
     """
-    Hand out a copy of a declared result, unbound, the way a real answer is freshly parsed.
+    A copy of a declared result, unbound, the way a real answer is freshly parsed.
 
-    The declared object belongs to the test — it is often built once at module level and
-    reused — while the answer belongs to the caller: it gets mounted to the calling bot,
-    and a modeled follow-up may edit it. Returning the very object the test declared would
-    mean the test's own object is mutated by the call it describes, and that it holds a
-    reference to every :class:`~aiogram.client.bot.Bot` that ever received it, long after
-    those environments were disposed. Copying also makes a repeated override (``times=None``)
-    behave like the API it stands in for: each call gets its own response.
-
-    Copying deeply, but never following a binding: ``_bot`` is a live bot with a session,
-    a world and a dispatcher behind it, so the memo maps every bot already in the graph to
-    itself. The copy is then handed over unbound, leaving
-    :func:`aiogram.test.mounting.mount` to bind it to whoever asked, exactly as it does for
-    a modeled or synthesized answer.
+    Kept as the name for the unbound half of :meth:`Outcome.apply`; the policy itself lives
+    in :func:`aiogram.test.mounting.detached_copy`.
     """
-    if isinstance(result, list):
-        return [fresh_result(item) for item in result]
-    if isinstance(result, tuple):
-        return tuple(fresh_result(item) for item in result)
-    if not isinstance(result, BaseModel):
-        # `bool`, `int`, `str` and friends are the common case, and immutable anyway.
-        return result
-
-    memo: dict[int, Any] = {
-        id(node.bot): node.bot for node in bindables(result) if node.bot is not None
-    }
-    copied = copy.deepcopy(result, memo)
-    for node in bindables(copied):
-        node.as_(None)
-    return copied
+    return detached_copy(result)
 
 
 class OverrideRegistry:

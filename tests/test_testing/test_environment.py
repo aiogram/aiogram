@@ -1,13 +1,21 @@
 import pytest
 
-from aiogram import F
+from aiogram import Dispatcher, F
 from aiogram.dispatcher.event.bases import UNHANDLED
-from aiogram.enums import ChatMemberStatus
+from aiogram.enums import ChatMemberStatus, ChatType
 from aiogram.filters import Command
 from aiogram.fsm.state import State, StatesGroup
-from aiogram.test import Blueprint, BotTestEnvironment, build_environment
+from aiogram.methods import SendMessage
+from aiogram.test import BASE_DATE, Blueprint, BotTestEnvironment, build_environment
 from aiogram.test.world import WorldLookupError
-from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Update
+from aiogram.types import (
+    Chat,
+    InlineKeyboardButton,
+    InlineKeyboardMarkup,
+    Message,
+    Update,
+    User,
+)
 
 
 class Form(StatesGroup):
@@ -47,13 +55,21 @@ class TestAccessors:
         assert actor.in_(blueprint.chats[1]).chat.id == team.id
         assert actor.in_(team.id).chat.id == team.id
 
-    def test_actor_without_a_private_chat(self):
+    def test_actor_without_a_private_chat_gets_one_opened(self):
+        """
+        An unbound actor names no chat, but `.chat` opens its own private chat rather
+        than refusing — the same auto-creation a followed deep link relies on, see
+        `World.ensure_private_chat`.
+        """
         blueprint = Blueprint()
         lonely = blueprint.add_user("Lonely")
         environment = BotTestEnvironment(blueprint=blueprint)
         try:
-            with pytest.raises(WorldLookupError, match="no private chat"):
-                _ = environment.user(lonely).chat
+            chat = environment.user(lonely).chat
+
+            assert chat.id == lonely.id
+            assert chat.type == ChatType.PRIVATE
+            assert environment.world.chats[lonely.id] is chat
         finally:
             environment.dispose_sync()
 
@@ -94,6 +110,75 @@ class TestTriggers:
 
         assert seen["message"] is stored
         assert seen["message"].bot is env.bot
+
+    async def test_an_update_from_another_environment_is_copied_first(self, blueprint):
+        """
+        Two environments, one module-level update: the second must not answer into the
+        first one's world.
+
+        ``mount`` stops at anything already bound, so the update kept its first
+        environment's bot — and since two bots built from one blueprint compare equal,
+        every reply the second one's handlers sent landed in the first one's world and its
+        call log, with nothing to show that it had. The fix is a copy, and the tell that it
+        happened is that the update the second environment fed is not the one it was given.
+        """
+        seen = []
+
+        def environment():
+            dispatcher = Dispatcher()
+
+            @dispatcher.message()
+            async def handler(message):
+                seen.append(message.bot)
+                await message.answer("pong")
+
+            return BotTestEnvironment(blueprint=blueprint, dispatcher=dispatcher)
+
+        chat_id = blueprint.chats[0].id
+        shared = Update(
+            update_id=7,
+            message=Message(
+                message_id=1,
+                date=BASE_DATE,
+                chat=Chat(id=chat_id, type=ChatType.PRIVATE),
+                from_user=User(id=blueprint.users[0].id, is_bot=False, first_name="Alice"),
+                text="ping",
+            ),
+        )
+
+        first, second = environment(), environment()
+        try:
+            await first.feed(shared)
+            await second.feed(shared)
+
+            assert seen == [first.bot, second.bot]
+            assert first.calls.count(SendMessage) == 1
+            assert second.calls.count(SendMessage) == 1
+            assert [item.text for item in first.chat(chat_id).messages] == ["pong"]
+            assert [item.text for item in second.chat(chat_id).messages] == ["pong"]
+        finally:
+            first.dispose_sync()
+            second.dispose_sync()
+
+    async def test_an_actor_built_update_is_fed_without_a_copy(self, env, dp, alice, private):
+        """
+        The other side of the same rule: an update this environment already owns keeps its
+        identity, however many times it is fed, so a handler still works on the world's own
+        objects.
+        """
+        seen = []
+
+        @dp.message()
+        async def handler(message):
+            seen.append(message)
+
+        stored = await env.bot.send_message(chat_id=private.id, text="hi")
+        update = Update(update_id=99, message=stored)
+        await env.feed(update)
+        await env.feed(update)
+
+        assert seen == [stored, stored]
+        assert all(item is stored for item in seen)
 
     async def test_filters_are_not_bypassed(self, env, dp, alice):
         @dp.message(F.text == "expected")

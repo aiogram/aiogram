@@ -290,6 +290,31 @@ class TestDeclaredSets:
             second.dispose_sync()
 
 
+class TestTheSetKeepsItsOwnStickers:
+    async def test_a_reported_set_carries_copies(self, packs):
+        """
+        A result is mounted to the calling bot, and the world's stickers are values.
+
+        Handing out the stored instances would bind the world's own state, so a second read
+        would come back already owned and a test comparing a sticker against a declared one
+        would fail on the binding alone.
+        """
+        env, owner = packs
+        await env.bot.create_new_sticker_set(
+            user_id=owner.id,
+            name=PACK,
+            title="My pack",
+            stickers=[sticker("file-1")],
+        )
+
+        first = await env.bot.get_sticker_set(name=PACK)
+        second = await env.bot.get_sticker_set(name=PACK)
+
+        assert first.stickers[0] is not second.stickers[0]
+        assert first.stickers[0].file_id == second.stickers[0].file_id
+        assert env.world.sticker_set(PACK).stickers[0].bot is None
+
+
 class TestAttributeSettersStayRecordOnly:
     async def test_setting_keywords_changes_nothing(self, packs):
         env, owner = packs

@@ -3,14 +3,17 @@ import pytest
 from aiogram import Bot
 from aiogram.client.default import DefaultBotProperties
 from aiogram.methods import GetChatAdministrators, GetMe, SendMessage
-from aiogram.test import FakeTelegramSession
+from aiogram.test import BotTestEnvironment, FakeTelegramSession
 from aiogram.test.errors import NoFileContentError
 from aiogram.test.mounting import mount
 from aiogram.types import (
     Chat,
+    ChatPermissions,
+    ChatPhoto,
     InlineKeyboardButton,
     InlineKeyboardMarkup,
     Message,
+    MessageEntity,
     ReplyParameters,
     User,
 )
@@ -331,6 +334,118 @@ class TestTheWorldOwnsWhatItStores:
         me = await other.get_me()
 
         assert me.bot is other
+
+
+class TestTheCallersObjectsStayTheCallers:
+    """
+    A request's models belong to the code under test; the world keeps copies of them.
+
+    Storing the caller's own object puts it *in* the world, where it is bound to the bot
+    the moment any result carries it back out. A module-level ``reply_markup`` would then
+    hold a reference to an environment long after it was disposed, and would stop comparing
+    equal to a plainly declared twin, since pydantic counts the binding in ``__eq__`` while
+    hiding it from ``__repr__``. This is the outbound twin of what a trigger does with the
+    fields a test hands it.
+    """
+
+    async def test_a_reply_markup_constant_is_not_captured(self, env, private):
+        button = InlineKeyboardButton(text="Go", callback_data="go")
+        markup = InlineKeyboardMarkup(inline_keyboard=[[button]])
+
+        message = await env.bot.send_message(chat_id=private.id, text="pick", reply_markup=markup)
+
+        assert message.reply_markup is not markup
+        assert message.reply_markup.inline_keyboard[0][0] is not button
+        assert markup.bot is None
+        assert button.bot is None
+        # ...and the constant still compares equal to a freshly declared twin.
+        assert markup == InlineKeyboardMarkup(
+            inline_keyboard=[[InlineKeyboardButton(text="Go", callback_data="go")]],
+        )
+
+    async def test_entities_are_not_captured(self, env, private):
+        entity = MessageEntity(type="bold", offset=0, length=4)
+
+        await env.bot.send_message(chat_id=private.id, text="bold", entities=[entity])
+
+        assert private.messages[-1].entities[0] is not entity
+        assert entity.bot is None
+
+    async def test_an_edit_does_not_capture_its_markup(self, env, private):
+        markup = InlineKeyboardMarkup(
+            inline_keyboard=[[InlineKeyboardButton(text="Go", callback_data="go")]],
+        )
+        message = await env.bot.send_message(chat_id=private.id, text="pick")
+
+        await env.bot.edit_message_reply_markup(
+            chat_id=private.id,
+            message_id=message.message_id,
+            reply_markup=markup,
+        )
+
+        assert private.messages[-1].reply_markup is not markup
+        assert markup.bot is None
+
+    async def test_a_disposed_environment_is_not_kept_alive_by_a_constant(self, blueprint, dp):
+        """The reason it matters beyond equality: constants outlive environments."""
+        markup = InlineKeyboardMarkup(
+            inline_keyboard=[[InlineKeyboardButton(text="Go", callback_data="go")]],
+        )
+
+        for _ in range(2):
+            environment = BotTestEnvironment(blueprint=blueprint, dispatcher=dp)
+            await environment.bot.send_message(
+                chat_id=blueprint.chats[0].id,
+                text="pick",
+                reply_markup=markup,
+            )
+            await environment.dispose()
+
+        assert markup.bot is None
+
+
+class TestTheWorldsValueObjectsStayTheWorlds:
+    """
+    A result carries copies of the value objects the world stores, never the objects.
+
+    The result is mounted to the calling bot, so handing out the stored object binds the
+    world's own state — and a test asserting ``chat.permissions == DECLARED`` then fails
+    with two identical-looking sides. Messages are the deliberate exception: a returned
+    message *is* the one the chat holds, and that identity is a feature.
+    """
+
+    async def test_get_chat_does_not_hand_out_the_stored_permissions(self, env, team):
+        permissions = ChatPermissions(can_send_messages=True)
+        await env.bot.set_chat_permissions(chat_id=team.id, permissions=permissions)
+
+        full = await env.bot.get_chat(chat_id=team.id)
+
+        assert full.permissions is not team.permissions
+        assert team.permissions.bot is None
+        assert team.permissions == permissions
+
+    async def test_get_chat_does_not_hand_out_the_stored_photo(self, env, blueprint, dp):
+        photo = ChatPhoto(
+            small_file_id="s",
+            small_file_unique_id="su",
+            big_file_id="b",
+            big_file_unique_id="bu",
+        )
+        blueprint.chats[1].photo = photo
+        environment = BotTestEnvironment(blueprint=blueprint, dispatcher=dp)
+        try:
+            full = await environment.bot.get_chat(chat_id=blueprint.chats[1].id)
+
+            assert full.photo is not environment.chat(blueprint.chats[1].id).photo
+            assert environment.chat(blueprint.chats[1].id).photo.bot is None
+        finally:
+            environment.dispose_sync()
+
+    async def test_a_returned_message_is_still_the_stored_one(self, env, private):
+        """The exception, stated as a test so the copying does not spread to messages."""
+        message = await env.bot.send_message(chat_id=private.id, text="hi")
+
+        assert message is private.messages[-1]
 
 
 class TestDisposal:
