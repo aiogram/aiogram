@@ -84,3 +84,5 @@ Updated to `Bot API 10.3 <https://core.telegram.org/bots/api-changelog#august-24
 **aiogram-specific changes**
 
 - :meth:`aiogram.types.message.Message.reply` and the other :code:`reply_*` shortcuts now fill :code:`ephemeral_message_parameters` instead of the deprecated :code:`receiver_user_id` when replying to an ephemeral message
+- :code:`receiver_user_id` is no longer emitted as a parameter of the :code:`reply_*` shortcuts; it was never one before Bot API 10.3, since the shortcuts filled it themselves
+- Added :meth:`aiogram.types.message.Message.as_ephemeral_message_parameters` shortcut - builds the :class:`aiogram.types.ephemeral_message_parameters.EphemeralMessageParameters` for an ephemeral message, and accepts :code:`callback_query_id` and :code:`replace_callback_query_message`, which cannot be derived from a message

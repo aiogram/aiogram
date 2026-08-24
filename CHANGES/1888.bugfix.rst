@@ -13,3 +13,16 @@ was silently dropped by :class:`aiogram.methods.copy_messages.CopyMessages`,
 :class:`aiogram.types.input_media_live_photo.InputMediaLivePhoto`,
 which declared no :code:`Default(...)` sentinel for those fields.
 This is the same class of bug as the :code:`parse_mode` one fixed in 3.30.0.
+
+Fixed :code:`ephemeral_message_parameters` being sent to methods that do not accept it.
+:meth:`aiogram.types.message.Message.reply_dice`,
+:meth:`aiogram.types.message.Message.reply_game`,
+:meth:`aiogram.types.message.Message.reply_invoice`,
+:meth:`aiogram.types.message.Message.reply_media_group`,
+:meth:`aiogram.types.message.Message.reply_poll` and
+:meth:`aiogram.types.message.Message.reply_paid_media`
+prefilled the parameter even though :code:`sendDice`, :code:`sendGame`,
+:code:`sendInvoice`, :code:`sendMediaGroup`, :code:`sendPoll` and :code:`sendPaidMedia`
+do not declare it, so on a reply to an ephemeral message it was carried into the
+request as an extra field. The predecessor of that parameter,
+:code:`receiver_user_id`, leaked through the same six shortcuts since 3.30.0.
