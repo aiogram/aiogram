@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, NamedTuple
+from urllib.parse import parse_qs, urlsplit
 
 from aiogram.enums import ChatMemberStatus, ChatType
 from aiogram.types import (
@@ -48,6 +49,14 @@ if TYPE_CHECKING:
 
     from .blueprint import BusinessConnectionSpec, ChatSpec, CommunitySpec, TopicSpec
     from .environment import BotTestEnvironment
+
+
+class _DeepLink(NamedTuple):
+    """A URL button parsed as a Telegram deep link, regardless of which bot it targets."""
+
+    username: str
+    kind: str  # "start" or "startgroup"
+    payload: str
 
 
 class UserActor:
@@ -206,6 +215,60 @@ class UserActor:
             Update(update_id=self._next_update_id(), callback_query=query),
             data,
         )
+
+    async def follow_deep_link(
+        self,
+        target: str | InlineKeyboardButton | None = None,
+        *,
+        message: Message | None = None,
+        **data: Any,
+    ) -> Any:
+        """
+        Follow a `t.me` deep-link button of a message the bot actually sent.
+
+        Mirrors `click`'s validation guarantee — the button must really be there — but
+        over `url` buttons that deep-link to this bot rather than `callback_data`
+        buttons. Following the link is what a tapping user actually causes: their
+        Telegram client opens a private chat with the bot and sends ``/start <payload>``
+        there, so that is what this replays, through the same private-chat actor a test
+        would build by hand.
+        """
+        bot_username = self.bot_user.username or ""
+        if isinstance(target, InlineKeyboardButton):
+            url = target.url
+            if url is None:
+                msg = "The button carries no url and cannot be followed as a deep link"
+                raise WorldLookupError(msg)
+        else:
+            url = target
+
+        scope = [message] if message is not None else list(reversed(self.chat.messages))
+        if url is None:
+            url = self._find_deep_link_url(scope, message, bot_username)
+        else:
+            self._require_button_url(scope, message, url)
+
+        deep_link = self._parse_deep_link(url)
+        if deep_link is None:
+            msg = (
+                f"{url!r} is not a Telegram deep-link url (expected a t.me link or a "
+                f"tg://resolve link)"
+            )
+            raise WorldLookupError(msg)
+        if deep_link.username.lower() != bot_username.lower():
+            msg = f"{url!r} deep-links to @{deep_link.username}, not to this bot (@{bot_username})"
+            raise WorldLookupError(msg)
+        if deep_link.kind == "startgroup":
+            msg = (
+                f"{url!r} is a `startgroup` link, which opens a group chooser in a real "
+                f"Telegram client; only `start` deep links can be followed here — drive "
+                f"a group flow directly with `add_bot()` instead"
+            )
+            raise WorldLookupError(msg)
+
+        text = f"/start {deep_link.payload}" if deep_link.payload else "/start"
+        private_actor = self.environment.user(self.user.id)
+        return await private_actor.send(text, **data)
 
     async def inline_query(self, query: str = "", *, offset: str = "", **data: Any) -> Any:
         inline = InlineQuery(
@@ -605,6 +668,92 @@ class UserActor:
             f"callback_data={callback_data!r}"
         )
         raise WorldLookupError(msg)
+
+    def _find_deep_link_url(
+        self,
+        scope: list[Message],
+        message: Message | None,
+        bot_username: str,
+    ) -> str:
+        for candidate in scope:
+            markup = candidate.reply_markup
+            if markup is None:
+                continue
+            for row in markup.inline_keyboard:
+                for button in row:
+                    if button.url is None:
+                        continue
+                    deep_link = self._parse_deep_link(button.url)
+                    if (
+                        deep_link is not None
+                        and deep_link.username.lower() == bot_username.lower()
+                    ):
+                        return button.url
+        if message is not None:
+            msg = f"Message {message.message_id} carries no deep-link button to @{bot_username}"
+        else:
+            msg = (
+                f"No message in chat {self.chat.id} carries a deep-link button to @{bot_username}"
+            )
+        raise WorldLookupError(msg)
+
+    def _require_button_url(
+        self,
+        scope: list[Message],
+        message: Message | None,
+        url: str,
+    ) -> None:
+        for candidate in scope:
+            markup = candidate.reply_markup
+            if markup is None:
+                continue
+            for row in markup.inline_keyboard:
+                for button in row:
+                    if button.url == url:
+                        return
+        if message is not None:
+            msg = f"Message {message.message_id} does not carry a button with url={url!r}"
+        else:
+            msg = f"No message in chat {self.chat.id} carries a button with url={url!r}"
+        raise WorldLookupError(msg)
+
+    @staticmethod
+    def _parse_deep_link(url: str) -> _DeepLink | None:
+        """
+        Parse a `t.me` / `tg://resolve` url into the bot username and start payload.
+
+        Recognizes ``https://t.me/<username>?start=<payload>`` (also ``http://`` and
+        schemeless ``t.me/...``) and ``tg://resolve?domain=<username>&start=<payload>``.
+        Returns ``None`` for anything else, including a `t.me` link with no username.
+        """
+        candidate = url if "://" in url else f"https://{url}"
+        parsed = urlsplit(candidate)
+        scheme = parsed.scheme.lower()
+        if scheme in ("http", "https"):
+            if parsed.netloc.lower() not in ("t.me", "telegram.me"):
+                return None
+            segments = [segment for segment in parsed.path.split("/") if segment]
+            if not segments:
+                return None
+            username = segments[0]
+        elif scheme == "tg":
+            if parsed.netloc.lower() != "resolve":
+                return None
+            domains = parse_qs(parsed.query, keep_blank_values=True).get("domain")
+            if not domains or not domains[0]:
+                return None
+            username = domains[0]
+        else:
+            return None
+
+        query = parse_qs(parsed.query, keep_blank_values=True)
+        if "startgroup" in query:
+            payload = query["startgroup"][0] if query["startgroup"] else ""
+            return _DeepLink(username=username, kind="startgroup", payload=payload)
+        if "start" in query:
+            payload = query["start"][0] if query["start"] else ""
+            return _DeepLink(username=username, kind="start", payload=payload)
+        return _DeepLink(username=username, kind="start", payload="")
 
     @property
     def bot_user(self) -> UserState:
