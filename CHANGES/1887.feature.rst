@@ -6,10 +6,11 @@ filters, middlewares, dependency injection, FSM and Scenes run as they do in pro
 while a stateful fake Telegram answers every Bot API call and applies it to an isolated
 in-memory world.
 
-Declare the world with :class:`aiogram.test.Blueprint` — chats, users, memberships, forum
-topics, business connections, communities and invite links — then drive it through actors
-(``await user.send("/start")``, ``await user.click(button)``) and assert on the resulting
-chat state or on the recorded calls. There is a trigger for every
+Declare the world with :class:`aiogram.test.Blueprint` — chats, users, memberships
+(including the bot's own status in a group), forum topics, business connections,
+communities and invite links — then drive it through actors (``await user.send("/start")``,
+``await user.click(button)``, ``await user.follow_deep_link()``) and assert on the
+resulting chat state or on the recorded calls. There is a trigger for every
 :class:`aiogram.types.Update` variant, so no registered handler is unreachable from a test.
 
 Results are mounted to the bot exactly as parsed responses are, so shortcuts work on them
@@ -19,11 +20,12 @@ The world models the surfaces a bot's own logic depends on: sending, editing, mo
 pinning and deleting messages; polls and reactions; chat administration and membership,
 including join requests; the bot's own profile; forum topics; business connections; invite
 links; sticker sets; and Telegram Stars and gifts, where a payment credits a real balance
-and a refund resolves the charge id the handler was given. Methods it does not model are recorded and answered with a schema-valid
-result derived from their declared return type, so no test has to pre-register results just
-to keep the bot running, and :meth:`aiogram.test.BotTestEnvironment.on` overrides any of
-them per test. The documentation names which surfaces are deliberately left that way, and
-which are merely waiting for demand.
+and a refund resolves the charge id the handler was given. Methods it does not model are
+recorded and answered with a schema-valid result derived from their declared return type,
+so no test has to pre-register results just to keep the bot running, and
+:meth:`aiogram.test.BotTestEnvironment.on` overrides any of them per test. The
+documentation names which surfaces are deliberately left that way, and which are merely
+waiting for demand.
 
 File content is supported where it can be honest: a file uploaded as a
 :class:`aiogram.types.input_file.BufferedInputFile` can be downloaded again in the same

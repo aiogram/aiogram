@@ -91,6 +91,22 @@ address participants later:
 
         assert bot_env.chat(team).messages[-1].text.startswith("Report")
 
+A group bot's first move is almost always checking its own rights, so the bot's status in
+a group-like chat is worth declaring rather than left at the default ``MEMBER``.
+``add_group``, ``add_supergroup`` and ``add_channel`` accept ``bot_status``, and
+``blueprint.bot`` can appear directly in ``members`` instead — two ways of saying the same
+thing, so combining them raises rather than letting one silently shadow the other:
+
+.. code-block:: python
+
+    blueprint.add_supergroup("Team", bot_status=ChatMemberStatus.ADMINISTRATOR)
+
+    # equivalent
+    blueprint.add_supergroup("Team", members={blueprint.bot: ChatMemberStatus.ADMINISTRATOR})
+
+Either way, ``get_chat_member`` on the bot's own id reports the declared status, so a
+handler that gates itself on its own rights takes the same branch it would in production.
+
 Triggering events
 =================
 
@@ -120,6 +136,40 @@ as handler dependencies:
         await bot_user.click("answer:no")
 
         assert bot_chat.messages[-1].text == "You chose no"
+
+Deep links
+----------
+
+A group message often carries a button that deep-links back to the bot instead of a
+``callback_data`` button — "Continue in DM" and similar patterns. ``follow_deep_link``
+validates it with the same guarantee as ``click`` — the button must really be there — then
+replays what tapping it actually causes: the user's client opens a private chat with the
+bot and sends ``/start <payload>`` there.
+
+.. code-block:: python
+
+    async def test_continue_in_dm(bot_env, bot_blueprint):
+        alice, team = bot_blueprint.users[0], bot_blueprint.chats[1]
+
+        await bot_env.bot.send_message(
+            chat_id=team.id,
+            text="Tap to continue",
+            reply_markup=InlineKeyboardMarkup(
+                inline_keyboard=[[
+                    InlineKeyboardButton(text="Continue", url="https://t.me/test_bot?start=team-42"),
+                ]],
+            ),
+        )
+
+        await bot_env.user(alice).in_(team).follow_deep_link()
+
+        assert bot_env.chat(alice.id).messages[-1].text == "/start team-42"
+
+``https://t.me/<username>?start=<payload>`` is recognized, along with its ``http://`` and
+schemeless ``t.me/...`` forms, and ``tg://resolve?domain=<username>&start=<payload>``. A
+link to a different bot, or one with no ``start`` parameter, is not followable.
+``startgroup`` is not simulated — a real client shows a group chooser for it, which has no
+equivalent here — so drive that flow directly with ``add_bot()`` instead.
 
 Every update kind has a trigger
 -------------------------------
@@ -554,6 +604,59 @@ context you get back is a *different* key than the one the dispatcher used:
 
     # Or let the actor's own binding fill both in:
     state = actor.state()
+
+Bots with background tasks
+==========================
+
+A bot that runs an engine of its own — timers, a scheduler, a game loop — keeps changing
+the world after a trigger has already returned, while every assertion on the world is a
+snapshot taken the instant it runs. ``wait_for`` and ``wait_for_message`` close that gap:
+both poll, yielding to the event loop between checks so the bot's background tasks get a
+chance to run.
+
+.. code-block:: python
+
+    await env.wait_for(lambda: game.mode is Mode.NIGHT, description="night to begin")
+
+    message = await env.chat(group).wait_for_message(lambda m: m.reply_markup is not None)
+
+:meth:`aiogram.test.BotTestEnvironment.wait_for` re-checks any predicate — synchronous or
+returning an awaitable — until it produces something truthy, and hands that value back, so
+it can fetch as well as test. :meth:`~aiogram.test.world.ChatState.wait_for_message` is the
+specialized form for the case that dominates these tests: something the trigger did not
+await is expected to post into a chat. Both give up with
+:class:`aiogram.test.WaitTimeoutError`, a :class:`TimeoutError` whose message names what
+was awaited and enumerates the chat's messages, so a failure shows what actually arrived
+instead of just "timed out".
+
+A real engine's own ``sleep()`` calls make a test that waits on them real-time slow, and
+this proof of concept deliberately ships no fake clock of its own. A time-control library
+that reimplements the event loop's own clock — ``looptime`` is one — can in principle be
+layered on top without conflict, since the fake world never touches the network or the
+wall clock itself; that combination has not been exercised here, so treat it as a starting
+point rather than a promise.
+
+Bots that use a global Bot instance
+===================================
+
+Many older codebases send through a module-level singleton — ``bot = get_bot()`` — rather
+than the ``bot`` a handler receives through dependency injection. One fake session can
+serve both:
+
+.. code-block:: python
+
+    bot = get_bot()
+    bot.session = env.session
+    bot._me = env.bot._me
+
+Every Bot API call funnels through ``bot.session``, so pointing the global instance at the
+environment's fake one routes its calls into the same world — messages it sends are
+attributed to the blueprint's bot exactly as calls through ``bot_env.bot`` are, regardless
+of what token the global instance itself was built with. Copying ``_me`` is the same
+pre-seeding the environment already does for its own bot, so ``await bot.me()`` returns the
+declared identity immediately rather than paying for a round trip the first time something
+calls it. Calls made through the global instance land in the same call log as calls made
+through the injected one, so ``env.calls`` and ``env.chat(...)`` see both.
 
 Joining and leaving
 ===================
