@@ -164,7 +164,9 @@ class TestSending:
 
         message = await env.bot.send_message(chat_id=private.id, text="hi", reply_markup=markup)
 
-        assert message.reply_markup == markup
+        # Results come back mounted to the bot, so they compare by content, not by
+        # instance — exactly as they would after a real response was parsed.
+        assert message.reply_markup.model_dump() == markup.model_dump()
 
     async def test_reply_keyboard_is_not_stored_on_the_message(self, env, private):
         markup = ReplyKeyboardMarkup(keyboard=[[{"text": "Go"}]])
@@ -309,7 +311,7 @@ class TestEditing:
             reply_markup=markup,
         )
 
-        assert edited.reply_markup == markup
+        assert edited.reply_markup.model_dump() == markup.model_dump()
 
     async def test_edit_missing_message(self, env, private):
         with pytest.raises(TelegramBadRequest, match="message to edit not found"):

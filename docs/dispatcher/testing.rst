@@ -229,6 +229,33 @@ The **call log** shows what was requested, with bot-level defaults already resol
     assert bot_env.calls.last(AnswerCallbackQuery).text == "Saved"
     assert bot_env.calls.count(DeleteMessage) == 0
 
+Results carry the bot
+=====================
+
+A real session parses every response with the bot in the validation context, which is what
+lets you call a shortcut on whatever a method returned. The fake does the same to the
+objects it hands back, so results — and everything nested inside them, including the items
+of a list result — are usable, not just readable:
+
+.. code-block:: python
+
+    message = await bot_env.bot.send_message(chat_id=bot_chat.id, text="hi")
+    await message.edit_text("bye")
+
+    reply = await message.reply("re")
+    await reply.reply_to_message.delete()  # nested objects are mounted too
+
+    for admin in await bot_env.bot.get_chat_administrators(chat_id=bot_chat.id):
+        await admin.user.get_profile_photos()  # so are the items of a list result
+
+One consequence is shared with production: the bot an object is mounted to is part of its
+identity for pydantic, so a returned object never compares equal to an identical one built
+inside the test. Compare the payload instead:
+
+.. code-block:: python
+
+    assert message.reply_markup.model_dump() == markup.model_dump()
+
 What the fake models
 ====================
 

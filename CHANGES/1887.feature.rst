@@ -12,6 +12,9 @@ topics, business connections, communities and invite links — then drive it thr
 chat state or on the recorded calls. There is a trigger for every
 :class:`aiogram.types.Update` variant, so no registered handler is unreachable from a test.
 
+Results are mounted to the bot exactly as parsed responses are, so shortcuts work on them
+and on every object nested inside them.
+
 The world models the surfaces a bot's own logic depends on: sending, editing, moving,
 pinning and deleting messages; polls and reactions; chat administration and membership,
 including join requests; the bot's own profile; forum topics; business connections; invite

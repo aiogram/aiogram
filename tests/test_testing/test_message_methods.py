@@ -118,7 +118,7 @@ class TestEditingMedia:
             media=InputMediaPhoto(media="b"),
         )
 
-        assert edited.reply_markup == markup
+        assert edited.reply_markup.model_dump() == markup.model_dump()
 
     @pytest.mark.parametrize(
         "member",
@@ -485,4 +485,4 @@ class TestEditingMediaWithMarkup:
             reply_markup=replacement,
         )
 
-        assert edited.reply_markup == replacement
+        assert edited.reply_markup.model_dump() == replacement.model_dump()
