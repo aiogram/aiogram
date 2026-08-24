@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from collections.abc import Callable
 from http import HTTPStatus
 from typing import TYPE_CHECKING, Any, NoReturn
 
@@ -27,6 +28,7 @@ from .modeling import find_handler
 from .overrides import OverrideBuilder, OverrideRegistry
 from .session import FakeTelegramSession
 from .synthesis import SynthesisContext, synthesize_result
+from .waiting import describe_callable, poll_until
 from .world import (
     BusinessConnectionState,
     ChatState,
@@ -196,6 +198,58 @@ class BotTestEnvironment:
 
     async def feed(self, update: Update, **kwargs: Any) -> Any:
         return await self.dispatcher.feed_update(self.bot, update, **kwargs)
+
+    # -- waiting ----------------------------------------------------------------------
+
+    async def wait_for(
+        self,
+        predicate: Callable[[], object],
+        *,
+        timeout: float = 5.0,
+        interval: float = 0.01,
+        description: str | None = None,
+    ) -> Any:
+        """
+        Wait until ``predicate`` returns something truthy, and return that value.
+
+        A bot that runs an engine of its own — background tasks, timers, a scheduler —
+        changes the world after the trigger returns, while every assertion on the world is
+        an instant snapshot. This is the poller for that gap: it re-checks ``predicate``
+        every ``interval`` seconds, yielding to the event loop in between so those tasks
+        get to run.
+
+        ``predicate`` takes no arguments and may be synchronous or return an awaitable.
+        Whatever it returns is handed back, so it can both test and fetch::
+
+            await bot_env.wait_for(lambda: game.phase is Phase.NIGHT)
+            victim = await bot_env.wait_for(lambda: game.find_victim())
+
+        It is checked immediately before any sleeping, so an already-satisfied wait is
+        free, and once more after the deadline passes, so a change landing exactly on the
+        deadline still counts.
+
+        ``description`` names the condition in the failure message; without it the
+        message can only identify the predicate itself, which for a lambda is not much.
+
+        :raises aiogram.test.errors.WaitTimeoutError: if the condition never became true.
+        """
+
+        def describe_timeout() -> str:
+            if description is not None:
+                return f"Timed out after {timeout}s waiting for {description}."
+            return (
+                f"Timed out after {timeout}s waiting for predicate "
+                f"{describe_callable(predicate)} to return a truthy value. Pass "
+                f"`description='...'` to say what was expected — it is the only thing "
+                f"this message can show about a lambda."
+            )
+
+        return await poll_until(
+            predicate,
+            timeout=timeout,
+            interval=interval,
+            describe_timeout=describe_timeout,
+        )
 
     # -- call handling ----------------------------------------------------------------
 

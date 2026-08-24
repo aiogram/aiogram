@@ -1024,7 +1024,7 @@ API reference
     :undoc-members: False
 
 .. autoclass:: aiogram.test.world.ChatState
-    :members: messages, members, pinned_message_ids, member, find_message
+    :members: messages, members, pinned_message_ids, member, find_message, wait_for_message
     :member-order: bysource
 
 .. autoclass:: aiogram.test.overrides.OverrideBuilder

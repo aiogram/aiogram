@@ -23,6 +23,7 @@ from .blueprint import (
 )
 from .calls import CallLog, NoSuchCallError
 from .environment import BotTestEnvironment, build_environment
+from .errors import WaitTimeoutError
 from .overrides import Outcome, OverrideBuilder
 from .routing import detach_router
 from .session import FakeTelegramSession
@@ -67,6 +68,7 @@ __all__ = (
     "UserActor",
     "UserSpec",
     "UserState",
+    "WaitTimeoutError",
     "World",
     "WorldLookupError",
     "build_environment",

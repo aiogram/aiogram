@@ -31,6 +31,14 @@ test, and other content is declared with :meth:`aiogram.test.Blueprint.add_file`
 Downloading content the environment does not hold raises rather than returning empty
 bytes, which would be indistinguishable from a genuinely empty file.
 
+Bots that keep their own background tasks change the world after a trigger returns, so the
+toolkit ships the waiting helpers such a test would otherwise hand-roll:
+:meth:`aiogram.test.BotTestEnvironment.wait_for` polls any condition and returns whatever
+truthy value it produced, and ``chat.wait_for_message(...)`` waits for a matching message
+in one chat. Both give up with a
+:class:`aiogram.test.WaitTimeoutError` — a :class:`TimeoutError` — whose message says what
+was awaited and what the chat holds instead.
+
 .. warning::
 
     This is a **proof of concept**. The module name, the fixtures, the blueprint and actor

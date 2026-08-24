@@ -1,9 +1,10 @@
 from __future__ import annotations
 
 import datetime
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any
+from typing import Any, cast
 
 from aiogram.enums import ChatMemberStatus, ChatType
 from aiogram.types import (
@@ -38,6 +39,8 @@ from aiogram.types import (
     User,
 )
 
+from .waiting import describe_callable, poll_until
+
 BASE_DATE: datetime.datetime = datetime.datetime(
     2026,
     1,
@@ -50,6 +53,8 @@ BASE_DATE: datetime.datetime = datetime.datetime(
 
 DEFAULT_TOPIC_ICON_COLOR = 0x6FB9F0
 GENERAL_TOPIC_NAME = "General"
+#: How much of a message's text a failure message shows before cutting it off.
+MESSAGE_PREVIEW_LIMIT = 60
 
 
 class QueryKind(str, Enum):
@@ -63,6 +68,24 @@ class QueryKind(str, Enum):
 
 class WorldLookupError(LookupError):
     """Raised when the world is asked about a chat, user or message it does not contain."""
+
+
+def describe_message(message: Message) -> str:
+    """
+    Identify one stored message in a failure message.
+
+    Shows what a test would recognise it by — its id, a truncated text or caption, and
+    whether it carries an inline keyboard — rather than a full dump nobody reads.
+    """
+    body = message.text if message.text is not None else message.caption
+    if body is None:
+        preview = "<no text>"
+    elif len(body) > MESSAGE_PREVIEW_LIMIT:
+        preview = f"{body[:MESSAGE_PREVIEW_LIMIT]!r}..."
+    else:
+        preview = repr(body)
+    keyboard = " [inline keyboard]" if message.reply_markup is not None else ""
+    return f"#{message.message_id} {preview}{keyboard}"
 
 
 @dataclass
@@ -521,6 +544,67 @@ class ChatState:
         self.deleted_message_ids.add(message_id)
         if message_id in self.pinned_message_ids:
             self.pinned_message_ids.remove(message_id)
+
+    async def wait_for_message(
+        self,
+        predicate: Callable[[Message], object] | None = None,
+        *,
+        timeout: float = 5.0,
+        interval: float = 0.01,
+    ) -> Message:
+        """
+        Wait until a message matching ``predicate`` is in this chat, and return it.
+
+        The specialized form of :meth:`aiogram.test.BotTestEnvironment.wait_for` for the
+        case that dominates tests of bots with background work: something the test did not
+        await is expected to post into this chat. Between checks it yields to the event
+        loop, which is what lets those tasks run at all.
+
+        ``predicate`` is matched against **every** message the chat holds, not only the
+        ones that arrive after the call: a message that is already there satisfies the
+        wait immediately, so a test never has to race the send it is waiting for. When
+        several match, the newest one is returned. ``predicate=None`` waits for any
+        message::
+
+            reply = await bot_chat.wait_for_message(lambda m: m.text.startswith("Night"))
+
+        :raises aiogram.test.errors.WaitTimeoutError: if no such message ever appeared.
+        """
+
+        def find() -> Message | None:
+            for message in reversed(self.messages):
+                if predicate is None or predicate(message):
+                    return message
+            return None
+
+        def describe_timeout() -> str:
+            wanted = (
+                "any message"
+                if predicate is None
+                else f"a message matching {describe_callable(predicate)}"
+            )
+            return (
+                f"Timed out after {timeout}s waiting for {wanted} in chat {self.id}. "
+                f"{self.describe_messages()}"
+            )
+
+        return cast(
+            Message,
+            await poll_until(
+                find,
+                timeout=timeout,
+                interval=interval,
+                describe_timeout=describe_timeout,
+            ),
+        )
+
+    def describe_messages(self) -> str:
+        """One-line-per-message rendering of the chat, for failure messages."""
+        if not self.messages:
+            return "The chat holds no messages."
+        lines = [f"The chat holds {len(self.messages)} message(s):"]
+        lines.extend(f"  {describe_message(message)}" for message in self.messages)
+        return "\n".join(lines)
 
     def invite_link(self, url: str) -> InviteLinkState:
         for link in self.invite_links:

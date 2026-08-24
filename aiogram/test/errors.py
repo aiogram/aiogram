@@ -29,6 +29,16 @@ class NoFileContentError(LookupError):
         self.file_id = file_id
 
 
+class WaitTimeoutError(TimeoutError):
+    """
+    Raised when a waiting helper gives up before its condition became true.
+
+    Subclasses the built-in :class:`TimeoutError`, so a test that catches the generic
+    timeout — ``pytest.raises(TimeoutError)`` — catches this too. The message is assembled
+    by the caller, which knows what was being waited for and what the world holds instead.
+    """
+
+
 def raise_api_error(
     session: BaseSession,
     bot: Bot,
