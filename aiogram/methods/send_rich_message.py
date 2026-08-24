@@ -1,7 +1,9 @@
 from typing import TYPE_CHECKING, Any
 
+from ..client.default import Default
 from ..types import (
     ChatIdUnion,
+    EphemeralMessageParameters,
     InputRichMessage,
     Message,
     ReplyMarkupUnion,
@@ -33,7 +35,7 @@ class SendRichMessage(TelegramMethod[Message]):
     """Identifier of the direct messages topic to which the message will be sent; required if the message is sent to a direct messages chat"""
     disable_notification: bool | None = None
     """Sends the message `silently <https://telegram.org/blog/channels-2-0#silent-messages>`_. Users will receive a notification with no sound"""
-    protect_content: bool | None = None
+    protect_content: bool | Default | None = Default("protect_content")
     """Protects the contents of the sent message from forwarding and saving"""
     allow_paid_broadcast: bool | None = None
     """Pass :code:`True` to allow up to 1000 messages per second, ignoring `broadcasting limits <https://core.telegram.org/bots/faq#how-can-i-message-all-of-my-bot-39s-subscribers-at-once>`_ for a fee of 0.1 Telegram Stars per message. The relevant Stars will be withdrawn from the bot's balance"""
@@ -45,6 +47,8 @@ class SendRichMessage(TelegramMethod[Message]):
     """Description of the message to reply to"""
     reply_markup: ReplyMarkupUnion | None = None
     """Additional interface options. A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_, `custom reply keyboard <https://core.telegram.org/bots/features#keyboards>`_, instructions to remove a reply keyboard or to force a reply from the user"""
+    ephemeral_message_parameters: EphemeralMessageParameters | None = None
+    """A JSON-serialized object containing the parameters of the ephemeral message to send"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!
@@ -59,12 +63,13 @@ class SendRichMessage(TelegramMethod[Message]):
             message_thread_id: int | None = None,
             direct_messages_topic_id: int | None = None,
             disable_notification: bool | None = None,
-            protect_content: bool | None = None,
+            protect_content: bool | Default | None = Default("protect_content"),
             allow_paid_broadcast: bool | None = None,
             message_effect_id: str | None = None,
             suggested_post_parameters: SuggestedPostParameters | None = None,
             reply_parameters: ReplyParameters | None = None,
             reply_markup: ReplyMarkupUnion | None = None,
+            ephemeral_message_parameters: EphemeralMessageParameters | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!
@@ -84,5 +89,6 @@ class SendRichMessage(TelegramMethod[Message]):
                 suggested_post_parameters=suggested_post_parameters,
                 reply_parameters=reply_parameters,
                 reply_markup=reply_markup,
+                ephemeral_message_parameters=ephemeral_message_parameters,
                 **__pydantic_kwargs,
             )

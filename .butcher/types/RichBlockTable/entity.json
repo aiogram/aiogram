@@ -50,6 +50,14 @@
         "rst_description": "*Optional*. Caption of the table\n",
         "name": "caption",
         "required": false
+      },
+      {
+        "type": "True",
+        "description": "True, if table cells have smaller indents",
+        "html_description": "<td><em>Optional</em>. <em>True</em>, if table cells have smaller indents</td>",
+        "rst_description": "*Optional*. :code:`True`, if table cells have smaller indents\n",
+        "name": "is_compact",
+        "required": false
       }
     ],
     "category": "types"

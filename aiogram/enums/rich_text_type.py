@@ -29,6 +29,7 @@ class RichTextType(str, Enum):
     HASHTAG = "hashtag"
     CASHTAG = "cashtag"
     BOT_COMMAND = "bot_command"
+    BUTTON = "button"
     ANCHOR = "anchor"
     ANCHOR_LINK = "anchor_link"
     REFERENCE = "reference"

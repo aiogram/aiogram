@@ -6,9 +6,12 @@ from .input_rich_block_anchor import InputRichBlockAnchor
 from .input_rich_block_animation import InputRichBlockAnimation
 from .input_rich_block_audio import InputRichBlockAudio
 from .input_rich_block_block_quotation import InputRichBlockBlockQuotation
+from .input_rich_block_buttons import InputRichBlockButtons
 from .input_rich_block_collage import InputRichBlockCollage
 from .input_rich_block_details import InputRichBlockDetails
 from .input_rich_block_divider import InputRichBlockDivider
+from .input_rich_block_document import InputRichBlockDocument
+from .input_rich_block_expandable_block_quotation import InputRichBlockExpandableBlockQuotation
 from .input_rich_block_footer import InputRichBlockFooter
 from .input_rich_block_list import InputRichBlockList
 from .input_rich_block_map import InputRichBlockMap
@@ -34,14 +37,17 @@ InputRichBlockUnion: TypeAlias = Annotated[
     | InputRichBlockAnchor
     | InputRichBlockList
     | InputRichBlockBlockQuotation
+    | InputRichBlockExpandableBlockQuotation
     | InputRichBlockPullQuotation
     | InputRichBlockCollage
     | InputRichBlockSlideshow
     | InputRichBlockTable
     | InputRichBlockDetails
     | InputRichBlockMap
+    | InputRichBlockButtons
     | InputRichBlockAnimation
     | InputRichBlockAudio
+    | InputRichBlockDocument
     | InputRichBlockPhoto
     | InputRichBlockVideo
     | InputRichBlockVoiceNote

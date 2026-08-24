@@ -1,0 +1,15 @@
+Fixed bot-level defaults being ignored by ten generated entities.
+
+:code:`Bot(default=DefaultBotProperties(protect_content=..., show_caption_above_media=..., link_preview=...))`
+was silently dropped by :class:`aiogram.methods.copy_messages.CopyMessages`,
+:class:`aiogram.methods.forward_messages.ForwardMessages`,
+:class:`aiogram.methods.post_story.PostStory`,
+:class:`aiogram.methods.repost_story.RepostStory`,
+:class:`aiogram.methods.send_checklist.SendChecklist`,
+:class:`aiogram.methods.send_live_photo.SendLivePhoto`,
+:class:`aiogram.methods.send_paid_media.SendPaidMedia`,
+:class:`aiogram.methods.send_rich_message.SendRichMessage`,
+:class:`aiogram.methods.edit_ephemeral_message_text.EditEphemeralMessageText` and
+:class:`aiogram.types.input_media_live_photo.InputMediaLivePhoto`,
+which declared no :code:`Default(...)` sentinel for those fields.
+This is the same class of bug as the :code:`parse_mode` one fixed in 3.30.0.

@@ -38,9 +38,9 @@
       {
         "type": "InputMedia",
         "required": true,
-        "description": "A JSON-serialized object for the new media content of the message. A new file can't be uploaded; use a previously uploaded file via its file_id or specify a URL.",
-        "html_description": "<td>A JSON-serialized object for the new media content of the message. A new file can't be uploaded; use a previously uploaded file via its file_id or specify a URL.</td>",
-        "rst_description": "A JSON-serialized object for the new media content of the message. A new file can't be uploaded; use a previously uploaded file via its file_id or specify a URL.\n",
+        "description": "A JSON-serialized object for the new media content of the message",
+        "html_description": "<td>A JSON-serialized object for the new media content of the message</td>",
+        "rst_description": "A JSON-serialized object for the new media content of the message\n",
         "name": "media"
       },
       {

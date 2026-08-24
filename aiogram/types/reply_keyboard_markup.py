@@ -27,6 +27,8 @@ class ReplyKeyboardMarkup(MutableTelegramObject):
     """*Optional*. The placeholder to be shown in the input field when the keyboard is active; 1-64 characters"""
     selective: bool | None = None
     """*Optional*. Use this parameter if you want to show the keyboard to specific users only. Targets: 1) users that are @mentioned in the *text* of the :class:`aiogram.types.message.Message` object; 2) if the bot's message is a reply to a message in the same chat and forum topic, sender of the original message"""
+    force_reply: bool | None = None
+    """*Optional*. Pass :code:`True` if the reply interface must be shown to the user, as if they had manually selected the bot's message and tapped 'Reply'"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!
@@ -41,6 +43,7 @@ class ReplyKeyboardMarkup(MutableTelegramObject):
             one_time_keyboard: bool | None = None,
             input_field_placeholder: str | None = None,
             selective: bool | None = None,
+            force_reply: bool | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!
@@ -54,5 +57,6 @@ class ReplyKeyboardMarkup(MutableTelegramObject):
                 one_time_keyboard=one_time_keyboard,
                 input_field_placeholder=input_field_placeholder,
                 selective=selective,
+                force_reply=force_reply,
                 **__pydantic_kwargs,
             )

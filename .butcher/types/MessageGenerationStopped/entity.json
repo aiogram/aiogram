@@ -1,0 +1,41 @@
+{
+  "meta": {},
+  "group": {
+    "title": "Available types",
+    "anchor": "available-types"
+  },
+  "object": {
+    "anchor": "messagegenerationstopped",
+    "name": "MessageGenerationStopped",
+    "description": "This object describes an update about a user stopping message generation.",
+    "html_description": "<p>This object describes an update about a user stopping message generation.</p>",
+    "rst_description": "This object describes an update about a user stopping message generation.",
+    "annotations": [
+      {
+        "type": "Chat",
+        "description": "Chat in which the message is generated",
+        "html_description": "<td>Chat in which the message is generated</td>",
+        "rst_description": "Chat in which the message is generated\n",
+        "name": "chat",
+        "required": true
+      },
+      {
+        "type": "Integer",
+        "description": "Unique identifier of the message thread in which the message is generated",
+        "html_description": "<td><em>Optional</em>. Unique identifier of the message thread in which the message is generated</td>",
+        "rst_description": "*Optional*. Unique identifier of the message thread in which the message is generated\n",
+        "name": "message_thread_id",
+        "required": false
+      },
+      {
+        "type": "Integer",
+        "description": "Unique identifier of the message draft which was stopped",
+        "html_description": "<td>Unique identifier of the message draft which was stopped</td>",
+        "rst_description": "Unique identifier of the message draft which was stopped\n",
+        "name": "draft_id",
+        "required": true
+      }
+    ],
+    "category": "types"
+  }
+}

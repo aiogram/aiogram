@@ -63,12 +63,14 @@ from aiogram.types import (
     ChecklistTasksDone,
     Community,
     CommunityChatAdded,
+    CommunityChatJoined,
     CommunityChatRemoved,
     Contact,
     Dice,
     DirectMessagePriceChanged,
     Document,
     EncryptedCredentials,
+    EphemeralMessageParameters,
     ForumTopicClosed,
     ForumTopicCreated,
     ForumTopicEdited,
@@ -948,6 +950,15 @@ TEST_MESSAGE_COMMUNITY_CHAT_REMOVED = Message(
     from_user=User(id=42, is_bot=False, first_name="Test"),
     community_chat_removed=CommunityChatRemoved(),
 )
+TEST_MESSAGE_COMMUNITY_CHAT_JOINED = Message(
+    message_id=42,
+    date=datetime.datetime.now(),
+    chat=Chat(id=42, type="private"),
+    from_user=User(id=42, is_bot=False, first_name="Test"),
+    community_chat_joined=CommunityChatJoined(
+        community=Community(id=42, name="Test community"),
+    ),
+)
 TEST_MESSAGE_EPHEMERAL = Message(
     # The API sends `message_id=0` for ephemeral messages; they are addressed
     # by `ephemeral_message_id` instead.
@@ -1045,6 +1056,7 @@ MESSAGES_AND_CONTENT_TYPES = [
     [TEST_MESSAGE_RICH_MESSAGE, ContentType.RICH_MESSAGE],
     [TEST_MESSAGE_COMMUNITY_CHAT_ADDED, ContentType.COMMUNITY_CHAT_ADDED],
     [TEST_MESSAGE_COMMUNITY_CHAT_REMOVED, ContentType.COMMUNITY_CHAT_REMOVED],
+    [TEST_MESSAGE_COMMUNITY_CHAT_JOINED, ContentType.COMMUNITY_CHAT_JOINED],
     [TEST_MESSAGE_UNKNOWN, ContentType.UNKNOWN],
 ]
 
@@ -1128,6 +1140,7 @@ MESSAGES_AND_COPY_METHODS = [
     [TEST_MESSAGE_RICH_MESSAGE, None],
     [TEST_MESSAGE_COMMUNITY_CHAT_ADDED, None],
     [TEST_MESSAGE_COMMUNITY_CHAT_REMOVED, None],
+    [TEST_MESSAGE_COMMUNITY_CHAT_JOINED, None],
     [TEST_MESSAGE_UNKNOWN, None],
 ]
 
@@ -1219,10 +1232,10 @@ class TestMessage:
 
     def test_reply_to_ephemeral_message_is_ephemeral(self):
         # A reply to an ephemeral message must itself be an ephemeral message,
-        # so `receiver_user_id` is filled from the replied-to message.
+        # so `ephemeral_message_parameters` is filled from the replied-to message.
         message = TEST_MESSAGE_EPHEMERAL
         method = message.reply("pong")
-        assert method.receiver_user_id == message.from_user.id
+        assert method.ephemeral_message_parameters.receiver_user_id == message.from_user.id
         assert method.reply_parameters.ephemeral_message_id == message.ephemeral_message_id
 
     def test_reply_to_regular_message_is_not_ephemeral(self):
@@ -1230,24 +1243,29 @@ class TestMessage:
             message_id=42, chat=Chat(id=42, type="private"), date=datetime.datetime.now()
         )
         method = message.reply("pong")
-        assert method.receiver_user_id is None
+        assert method.ephemeral_message_parameters is None
         assert method.reply_parameters.message_id == message.message_id
 
-    def test_reply_does_not_accept_receiver_user_id(self):
-        # `receiver_user_id` is filled from the message itself, so it is intentionally
-        # not accepted here. Sending an ephemeral message in reply to a regular one is
-        # done via `answer()` with an explicit `receiver_user_id`. `**kwargs` means mypy
-        # cannot catch this, so pin the behaviour instead.
+    def test_reply_does_not_accept_ephemeral_message_parameters(self):
+        # `ephemeral_message_parameters` is filled from the message itself, so it is
+        # intentionally not accepted here. Sending an ephemeral message in reply to a
+        # regular one is done via `answer()` with explicit parameters. `**kwargs` means
+        # mypy cannot catch this, so pin the behaviour instead.
         message = Message(
             message_id=42, chat=Chat(id=42, type="private"), date=datetime.datetime.now()
         )
         with pytest.raises(TypeError, match="multiple values for keyword argument"):
-            message.reply("pong", receiver_user_id=777)
+            message.reply(
+                "pong",
+                ephemeral_message_parameters=EphemeralMessageParameters(receiver_user_id=777),
+            )
 
         method = message.answer(
-            "pong", receiver_user_id=777, reply_parameters=message.as_reply_parameters()
+            "pong",
+            ephemeral_message_parameters=EphemeralMessageParameters(receiver_user_id=777),
+            reply_parameters=message.as_reply_parameters(),
         )
-        assert method.receiver_user_id == 777
+        assert method.ephemeral_message_parameters.receiver_user_id == 777
         assert method.reply_parameters.message_id == message.message_id
 
     @pytest.mark.parametrize("alias_name,kwargs,method_class", EPHEMERAL_ALIASES)

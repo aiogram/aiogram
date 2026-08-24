@@ -58,6 +58,14 @@
         "rst_description": "*Optional*. Use this parameter if you want to show the keyboard to specific users only. Targets: 1) users that are @mentioned in the *text* of the :class:`aiogram.types.message.Message` object; 2) if the bot's message is a reply to a message in the same chat and forum topic, sender of the original message.\n\n\n\n*Example:* A user requests to change the bot's language, bot replies to the request with a keyboard to select the new language. Other users in the group don't see the keyboard.\n",
         "name": "selective",
         "required": false
+      },
+      {
+        "type": "Boolean",
+        "description": "Pass True if the reply interface must be shown to the user, as if they had manually selected the bot's message and tapped 'Reply'",
+        "html_description": "<td><em>Optional</em>. Pass <em>True</em> if the reply interface must be shown to the user, as if they had manually selected the bot's message and tapped 'Reply'</td>",
+        "rst_description": "*Optional*. Pass :code:`True` if the reply interface must be shown to the user, as if they had manually selected the bot's message and tapped 'Reply'\n",
+        "name": "force_reply",
+        "required": false
       }
     ],
     "category": "types"

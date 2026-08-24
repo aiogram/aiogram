@@ -10,13 +10,13 @@ if TYPE_CHECKING:
 
 class CommunityChatAdded(TelegramObject):
     """
-    Describes a service message about a chat being added to a community.
+    Describes a service message about a chat or a bot being added to a community.
 
     Source: https://core.telegram.org/bots/api#communitychatadded
     """
 
     community: Community
-    """The new community to which the chat belongs"""
+    """The new community to which the chat or the bot belongs"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!

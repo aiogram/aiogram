@@ -28,6 +28,8 @@ class InputRichBlockTable(InputRichBlock):
     """*Optional*. Pass :code:`True` if the table is striped"""
     caption: RichTextUnion | None = None
     """*Optional*. Caption of the table"""
+    is_compact: bool | None = None
+    """*Optional*. Pass :code:`True` if table cells must have smaller indents"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!
@@ -41,6 +43,7 @@ class InputRichBlockTable(InputRichBlock):
             is_bordered: bool | None = None,
             is_striped: bool | None = None,
             caption: RichTextUnion | None = None,
+            is_compact: bool | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!
@@ -53,5 +56,6 @@ class InputRichBlockTable(InputRichBlock):
                 is_bordered=is_bordered,
                 is_striped=is_striped,
                 caption=caption,
+                is_compact=is_compact,
                 **__pydantic_kwargs,
             )

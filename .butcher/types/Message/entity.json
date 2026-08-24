@@ -677,9 +677,9 @@
       },
       {
         "type": "ProximityAlertTriggered",
-        "description": "Service message. A user in the chat triggered another user's proximity alert while sharing Live Location.",
-        "html_description": "<td><em>Optional</em>. Service message. A user in the chat triggered another user's proximity alert while sharing Live Location.</td>",
-        "rst_description": "*Optional*. Service message. A user in the chat triggered another user's proximity alert while sharing Live Location.\n",
+        "description": "Service message: a user in the chat triggered another user's proximity alert while sharing Live Location",
+        "html_description": "<td><em>Optional</em>. Service message: a user in the chat triggered another user's proximity alert while sharing Live Location</td>",
+        "rst_description": "*Optional*. Service message: a user in the chat triggered another user's proximity alert while sharing Live Location\n",
         "name": "proximity_alert_triggered",
         "required": false
       },
@@ -949,18 +949,26 @@
       },
       {
         "type": "CommunityChatAdded",
-        "description": "Service message: chat added to a Community",
-        "html_description": "<td><em>Optional</em>. Service message: chat added to a <a href=\"#community\">Community</a></td>",
-        "rst_description": "*Optional*. Service message: chat added to a :class:`aiogram.types.community.Community`\n",
+        "description": "Service message: chat or bot added to a Community",
+        "html_description": "<td><em>Optional</em>. Service message: chat or bot added to a <a href=\"#community\">Community</a></td>",
+        "rst_description": "*Optional*. Service message: chat or bot added to a :class:`aiogram.types.community.Community`\n",
         "name": "community_chat_added",
         "required": false
       },
       {
         "type": "CommunityChatRemoved",
-        "description": "Service message: chat removed from a Community",
-        "html_description": "<td><em>Optional</em>. Service message: chat removed from a <a href=\"#community\">Community</a></td>",
-        "rst_description": "*Optional*. Service message: chat removed from a :class:`aiogram.types.community.Community`\n",
+        "description": "Service message: chat or bot removed from a Community",
+        "html_description": "<td><em>Optional</em>. Service message: chat or bot removed from a <a href=\"#community\">Community</a></td>",
+        "rst_description": "*Optional*. Service message: chat or bot removed from a :class:`aiogram.types.community.Community`\n",
         "name": "community_chat_removed",
+        "required": false
+      },
+      {
+        "type": "CommunityChatJoined",
+        "description": "Service message: chat was joined by a user from a Community",
+        "html_description": "<td><em>Optional</em>. Service message: chat was joined by a user from a <a href=\"#community\">Community</a></td>",
+        "rst_description": "*Optional*. Service message: chat was joined by a user from a :class:`aiogram.types.community.Community`\n",
+        "name": "community_chat_joined",
         "required": false
       },
       {

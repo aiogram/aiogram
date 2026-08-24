@@ -226,6 +226,14 @@
         "rst_description": "*Optional*. User payment subscription has changed\n",
         "name": "subscription",
         "required": false
+      },
+      {
+        "type": "MessageGenerationStopped",
+        "description": "A user asked the bot to stop the generation of a message",
+        "html_description": "<td><em>Optional</em>. A user asked the bot to stop the generation of a message</td>",
+        "rst_description": "*Optional*. A user asked the bot to stop the generation of a message\n",
+        "name": "stopped_message_generation",
+        "required": false
       }
     ],
     "category": "types"

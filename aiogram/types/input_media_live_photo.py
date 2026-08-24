@@ -31,7 +31,7 @@ class InputMediaLivePhoto(InputMedia, InputPollMedia, InputPollOptionMedia):
     """*Optional*. Mode for parsing entities in the live photo caption. See `formatting options <https://core.telegram.org/bots/api#formatting-options>`_ for more details"""
     caption_entities: list[MessageEntity] | None = None
     """*Optional*. List of special entities that appear in the caption, which can be specified instead of *parse_mode*"""
-    show_caption_above_media: bool | None = None
+    show_caption_above_media: bool | Default | None = Default("show_caption_above_media")
     """*Optional*. Pass :code:`True` if the caption must be shown above the message media"""
     has_spoiler: bool | None = None
     """*Optional*. Pass :code:`True` if the live photo needs to be covered with a spoiler animation"""
@@ -49,7 +49,7 @@ class InputMediaLivePhoto(InputMedia, InputPollMedia, InputPollOptionMedia):
             caption: str | None = None,
             parse_mode: str | Default | None = Default("parse_mode"),
             caption_entities: list[MessageEntity] | None = None,
-            show_caption_above_media: bool | None = None,
+            show_caption_above_media: bool | Default | None = Default("show_caption_above_media"),
             has_spoiler: bool | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:

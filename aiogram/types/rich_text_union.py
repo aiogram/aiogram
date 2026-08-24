@@ -9,6 +9,7 @@ from .rich_text_anchor_link import RichTextAnchorLink
 from .rich_text_bank_card_number import RichTextBankCardNumber
 from .rich_text_bold import RichTextBold
 from .rich_text_bot_command import RichTextBotCommand
+from .rich_text_button import RichTextButton
 from .rich_text_cashtag import RichTextCashtag
 from .rich_text_code import RichTextCode
 from .rich_text_custom_emoji import RichTextCustomEmoji
@@ -55,6 +56,7 @@ if TYPE_CHECKING:
         | RichTextHashtag
         | RichTextCashtag
         | RichTextBotCommand
+        | RichTextButton
         | RichTextAnchor
         | RichTextAnchorLink
         | RichTextReference
@@ -86,6 +88,7 @@ else:
         | RichTextHashtag
         | RichTextCashtag
         | RichTextBotCommand
+        | RichTextButton
         | RichTextAnchor
         | RichTextAnchorLink
         | RichTextReference

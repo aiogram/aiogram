@@ -22,12 +22,12 @@ class InputRichBlockMap(InputRichBlock):
     """Type of the block, always 'map'"""
     location: Location
     """Location of the center of the map"""
-    zoom: int
-    """Map zoom level; 0-24"""
-    width: int
-    """Map width; 0-10000"""
-    height: int
-    """Map height; 0-10000"""
+    zoom: int | None = None
+    """*Optional*. Map zoom level; 0-24"""
+    width: int | None = None
+    """*Optional*. Map width; 0-10000"""
+    height: int | None = None
+    """*Optional*. Map height; 0-10000"""
     caption: RichBlockCaption | None = None
     """*Optional*. Caption of the block"""
 
@@ -40,9 +40,9 @@ class InputRichBlockMap(InputRichBlock):
             *,
             type: Literal[InputRichBlockType.MAP] = InputRichBlockType.MAP,
             location: Location,
-            zoom: int,
-            width: int,
-            height: int,
+            zoom: int | None = None,
+            width: int | None = None,
+            height: int | None = None,
             caption: RichBlockCaption | None = None,
             **__pydantic_kwargs: Any,
         ) -> None:

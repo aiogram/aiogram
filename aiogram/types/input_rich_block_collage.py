@@ -7,7 +7,6 @@ from .base import TelegramObject
 from .input_rich_block import InputRichBlock
 
 if TYPE_CHECKING:
-    from .input_rich_block import InputRichBlock
     from .input_rich_block_union import InputRichBlockUnion
     from .rich_block_caption import RichBlockCaption
 

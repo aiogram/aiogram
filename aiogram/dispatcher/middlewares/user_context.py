@@ -197,4 +197,9 @@ class UserContextMiddleware(BaseMiddleware):
             )
         if event.subscription:
             return EventContext(user=event.subscription.user)
+        if event.stopped_message_generation:
+            return EventContext(
+                chat=event.stopped_message_generation.chat,
+                thread_id=event.stopped_message_generation.message_thread_id,
+            )
         return EventContext()

@@ -29,6 +29,8 @@ class EditEphemeralMessageCaption(TelegramMethod[bool]):
     """A JSON-serialized list of special entities that appear in the caption, which can be specified instead of *parse_mode*"""
     reply_markup: InlineKeyboardMarkup | None = None
     """A JSON-serialized object for an `inline keyboard <https://core.telegram.org/bots/features#inline-keyboards>`_"""
+    show_caption_above_media: bool | Default | None = Default("show_caption_above_media")
+    """Pass :code:`True` if the caption must be shown above the message media. Supported only for animation, photo and video messages"""
 
     if TYPE_CHECKING:
         # DO NOT EDIT MANUALLY!!!
@@ -44,6 +46,7 @@ class EditEphemeralMessageCaption(TelegramMethod[bool]):
             parse_mode: str | Default | None = Default("parse_mode"),
             caption_entities: list[MessageEntity] | None = None,
             reply_markup: InlineKeyboardMarkup | None = None,
+            show_caption_above_media: bool | Default | None = Default("show_caption_above_media"),
             **__pydantic_kwargs: Any,
         ) -> None:
             # DO NOT EDIT MANUALLY!!!
@@ -58,5 +61,6 @@ class EditEphemeralMessageCaption(TelegramMethod[bool]):
                 parse_mode=parse_mode,
                 caption_entities=caption_entities,
                 reply_markup=reply_markup,
+                show_caption_above_media=show_caption_above_media,
                 **__pydantic_kwargs,
             )
