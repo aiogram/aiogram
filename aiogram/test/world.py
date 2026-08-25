@@ -1208,8 +1208,16 @@ class World:
         assignment makes the guarantee hold for the attribute rather than for one moment in
         its life, and covers ``__post_init__`` too: the generated ``__init__`` assigns
         ``chats`` like anything else, so the declared mapping is converted right here.
+
+        A :class:`ChatRegistry` that belongs to a *different* world is rewrapped too, not
+        merely converted: ``w2.chats = w1.chats`` passes the ``isinstance`` check as-is, so
+        without checking ``value.world`` every chat already in it — and every chat added to
+        w2 afterwards, since assignment leaves the registry's own ``world`` pointer at
+        ``w1`` — would be wired to the wrong world and bind its messages to the wrong bot.
+        A registry that already belongs to *this* world is left alone by identity, so
+        ``world.chats = world.chats`` stays a no-op rather than rebuilding the mapping.
         """
-        if name == "chats" and not isinstance(value, ChatRegistry):
+        if name == "chats" and (not isinstance(value, ChatRegistry) or value.world is not self):
             registry = ChatRegistry(self)
             registry.update(value)
             value = registry
@@ -1253,7 +1261,7 @@ class World:
             raise WorldLookupError(msg)
         return chat
 
-    def ensure_private_chat(self, user: UserState) -> ChatState:
+    def ensure_private_chat(self, user: UserState | UserSpec | int) -> ChatState:
         """
         The user's private chat with the bot, opened if it does not exist yet.
 
@@ -1263,7 +1271,22 @@ class World:
         saying the test did not need to name it. So the chat is created here, from the same
         description :meth:`aiogram.test.Blueprint.add_private_chat` declares one from,
         rather than the world refusing an interaction Telegram itself would allow.
+
+        ``user`` accepts a `UserSpec`, a `UserState` or a bare id, so a test does not have to
+        resolve the user itself first — all three of these name the same chat::
+
+            world.ensure_private_chat(alice)                 # a UserSpec
+            world.ensure_private_chat(alice.id)               # a bare id
+            world.ensure_private_chat(world.user(alice.id))  # a UserState — still works
+
+        A `UserSpec` or an id goes through :meth:`user`, so it is validated the same way
+        every other lookup is: an id the blueprint never declared raises `WorldLookupError`
+        rather than opening a chat for nobody. A `UserState` is trusted as already resolved,
+        since the only way to hold one is to have gotten it from this world in the first
+        place.
         """
+        if not isinstance(user, UserState):
+            user = self.user(user if isinstance(user, int) else user.id)
         chat = self.chats.get(user.id)
         if chat is None:
             chat = ChatState(

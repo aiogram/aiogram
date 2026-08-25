@@ -109,8 +109,8 @@ would never allow, and there is no honest world state to invent for it.
 therefore raises :class:`aiogram.test.WorldLookupError`, listing the chats this world does
 have, rather than a :class:`~aiogram.exceptions.TelegramBadRequest` the bot's own error
 handling would swallow. Declare the chat with ``blueprint.add_private_chat(alice)``, open it
-with ``bot_env.world.ensure_private_chat(bot_env.world.user(alice.id))``, or have the user
-write first.
+with ``bot_env.world.ensure_private_chat(alice)`` — it also accepts the user's id or an
+already-resolved ``UserState`` — or have the user write first.
 
 The handles returned by ``add_user`` / ``add_private_chat`` / ``add_group`` are how you
 address participants later:
@@ -246,22 +246,37 @@ bare profile link — ``https://t.me/<username>`` with no parameter — is follo
 replays as a plain ``/start``, because that is what tapping it sends. A link to a *different*
 bot is not followable.
 
-An explicit ``start`` **wins** over a start-ish parameter sharing its query, in either order:
-``?start=team-42&startapp=abc`` is a followable start carrying ``team-42``. Telegram itself
-hands out links shaped that way — a Mini App button carries both, so a client that cannot
-open the app still opens the bot — and a real client reads only the parameter it recognizes.
-The precedence needs a real ``start`` to take it, though: ``?startapp=abc`` on its own is
-still refused by name.
+One documented format addresses a bot the other way round: an attachment-menu link addresses
+the *chat* by username and names the bot in its ``attach`` parameter instead —
+``t.me/<chat>?attach=<bot>`` opens the attachment menu of ``@<bot>`` in ``<chat>``. Such a
+button still counts as this bot's — the scan surfaces it, and an explicit follow reaches the
+kind's own refusal, rather than either treating ``<chat>`` as the addressed bot or skipping the
+button as another bot's — because the parameter, not the username, is where its bot lives.
+
+An explicit ``start`` **with a non-empty value** wins over a start-ish parameter sharing its
+query, in either order: ``?start=team-42&startapp=abc`` is a followable start carrying
+``team-42``. Telegram itself hands out links shaped that way — a Mini App button carries both,
+so a client that cannot open the app still opens the bot — and a real client reads only the
+parameter it recognizes. The precedence needs a real, non-empty ``start`` to take it, though:
+``?startapp=abc`` on its own is still refused by name, and so is ``?start=&startapp=y`` — an
+*empty* ``start`` carries no value a real client could have read as one, so the link is still
+the ``startapp`` Mini App link it also is, not a bare ``/start``.
+
+A parameter another format carries as its own companion never outranks the format that carries
+it: ``?startapp=x&text=y`` is the Mini App link ``startapp`` names, not the draft ``text``
+would be alone.
 
 ``start`` is the only followable kind. Every other format `Telegram documents
 <https://core.telegram.org/api/links>`_ is refused with a message naming that format and
 what a real client does with it, rather than being quietly downgraded to a plain ``/start``
 or lumped into one generic rejection: ``startgroup`` and ``startchannel`` (a chooser — drive
 that flow directly with ``add_bot()`` instead), ``startapp``, ``startattach`` and ``attach``;
-a direct Mini App link (``t.me/<bot>/<short_name>``); message, story and share links; sticker-
-and emoji-set links; game and referral links; a profile link; and Telegram's service links (a
-proxy, theme, language pack, chat folder and the like). Two kinds point at the trigger that
-models the action instead of merely naming it: an invoice link (``t.me/$<slug>``,
+a direct Mini App link (``t.me/<bot>/<short_name>``); message, story and share links; a
+channel's web-preview link (``t.me/s/<username>``, ``t.me``'s own web page of a channel's
+posts, not a Mini App despite the shared ``t.me/<name>`` shape); sticker- and emoji-set links;
+game and referral links; a profile link; and Telegram's service links (a proxy, theme,
+language pack, chat folder and the like). Two kinds point at the trigger that models the
+action instead of merely naming it: an invoice link (``t.me/$<slug>``,
 ``tg://invoice?slug=...``) says to use ``pay()`` or ``pre_checkout_query()``, and a boost link
 says to use ``boost()``. A prefilled-draft link (``?text=...``) is refused naming the text it
 would have left sitting unsent in the composer, and pointing at ``send()`` with that same text
@@ -285,7 +300,12 @@ A ``start`` payload is validated before it is followed: Bot API deep linking all
 characters of ``A-Z``, ``a-z``, ``0-9``, ``_`` and ``-``, so a payload outside that alphabet —
 too long, percent-encoded, non-Latin — is a link a real client would never have sent ``/start``
 for. Following it raises naming the rule, rather than handing the handler a payload production
-could not have produced.
+could not have produced. Pass ``validate_payload=False`` to drop that check and replay the
+payload exactly as the button carries it: the Bot API states the rule but does not promise a
+client enforces it, and production bots do receive payloads outside it — base64 padding
+(``=``), dots, more than 64 characters — so this reproduces what such a client actually
+delivers. The default stays strict, so a payload the bot itself built wrong is still named as
+the bug it is.
 
 Every update kind has a trigger
 -------------------------------
@@ -873,21 +893,22 @@ message registered from another environment — exactly the case where a test as
 newest reply must not silently get a stale one.
 
 How long a wait runs before giving up is set once, on the environment — override the
-``bot_env`` fixture to say it for a whole suite:
+``bot_env_wait_timeout`` fixture to say it for a whole suite, the same way ``bot_blueprint``
+and ``bot_dispatcher`` are overridden:
 
 .. code-block:: python
 
     @pytest.fixture
-    def bot_env(bot_blueprint, bot_dispatcher):
-        environment = BotTestEnvironment(
-            blueprint=bot_blueprint,
-            dispatcher=bot_dispatcher,
-            default_wait_timeout=1.0,
-        )
-        try:
-            yield environment
-        finally:
-            environment.dispose_sync()
+    def bot_env_wait_timeout():
+        return 1.0
+
+That is what :class:`~aiogram.test.BotTestEnvironment`'s own ``default_wait_timeout``
+parameter is for — the plugin's ``bot_env`` fixture just reads ``bot_env_wait_timeout`` and
+passes it along, so a project using the fixtures never has to reconstruct ``bot_env`` from
+scratch just to change one number. Building a :class:`~aiogram.test.BotTestEnvironment`
+directly, outside the fixtures, still passes it the same way::
+
+    BotTestEnvironment(blueprint=blueprint, dispatcher=dispatcher, default_wait_timeout=1.0)
 
 ``default_wait_timeout`` is the single place for it: ``wait_for``, every chat's
 ``wait_for_message`` and every topic's read it, so a bot whose background work is slow — or a
@@ -988,11 +1009,18 @@ than a second or so.
 .. note::
 
     ``looptime`` virtualizes the event loop's own clock — ``asyncio.sleep``,
-    ``loop.call_later``, ``loop.call_at`` — and nothing outside it. A real network call, a
-    Redis or database connection with its own timeout, or anything that blocks outside the
-    event loop (``time.sleep``, a thread, a subprocess) still takes real wall-clock time and
-    can still time out for real under the fake clock. Mark only the tests whose slowness is
-    the engine's own ``sleep()`` calls, not ones exercising a genuine external dependency.
+    ``loop.call_later``, ``loop.call_at`` — not only the calls a test's own engine makes. The
+    real risk is not that a genuinely blocking call stays real-time and slips past it; it is
+    that most async database drivers schedule their *own* deadlines the same way — Mongo's
+    ``serverSelectionTimeoutMS`` and redis-py's ``socket_timeout`` both resolve through
+    ``loop.call_later`` under the hood — so a virtual-time jump burns through them exactly as
+    it burns through an engine's ``asyncio.sleep``. A 60-virtual-second jump can consume a
+    driver's 30-second deadline in the middle of a real handshake that would otherwise finish
+    in milliseconds (measured: 60 virtual seconds cost about 0.05s of real time), raising a
+    timeout the driver would never have hit at a real clock's pace. It will not reproduce
+    against a local database, where a round trip is sub-millisecond and a jump is unlikely to
+    land inside one; against a slow or remote one it is a live hazard, so mark a test
+    ``looptime`` only once its database calls are mocked, faked, or genuinely local.
 
 Bots that use a global Bot instance
 ===================================

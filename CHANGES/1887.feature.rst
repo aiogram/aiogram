@@ -15,15 +15,20 @@ resulting chat state or on the recorded calls. There is a trigger for every
 A user's own private chat with the bot does not have to be declared at all: Telegram lets
 anyone open one, so it opens on demand, shaped exactly like a declared one — on the paths a
 user drives, which are the only ones where it can happen, since a bot cannot write into a
-private chat first. Deep links are followed the way tapping them behaves — including a bare
+private chat first. It can also be opened directly with
+:meth:`aiogram.test.World.ensure_private_chat`, which accepts the user's spec, its resolved
+state, or a bare id. Deep links are followed the way tapping them behaves — including a bare
 profile link, which replays as a plain ``/start``, and a link carrying an explicit ``start``
-alongside anything else, which a real client reads as that start. Every other link format
-`Telegram documents <https://core.telegram.org/api/links>`_ is classified against that spec
-and refused by name with what a real client does instead — an invoice link and a boost link
-point at ``pay()`` and ``boost()``, a phone-number link is told apart from a chat invite link,
-and a prefilled-draft link names the text it left unsent — rather than being quietly
-downgraded or lumped into one generic rejection, and a ``start`` payload outside the
-characters Bot API deep linking allows is refused rather than delivered to the handler.
+with a non-empty value alongside anything else, which a real client reads as that start.
+Every other link format `Telegram documents <https://core.telegram.org/api/links>`_ is
+classified against that spec and refused by name with what a real client does instead — an
+invoice link and a boost link point at ``pay()`` and ``boost()``, a phone-number link is told
+apart from a chat invite link, a prefilled-draft link names the text it left unsent, and a
+channel's web-preview link is told apart from a direct Mini App link despite sharing its
+``t.me/<name>`` shape — rather than being quietly downgraded or lumped into one generic
+rejection, and a ``start`` payload outside the characters Bot API deep linking allows is
+refused rather than delivered to the handler, unless the call opts out with
+``validate_payload=False`` to replay a payload exactly as a real client delivered it.
 
 Results are mounted to the bot exactly as parsed responses are, so shortcuts work on them
 and on every object nested inside them, while the objects a test hands to a call stay the
@@ -53,7 +58,10 @@ handed to the bot's error handling to swallow. That includes a chat the bot itse
 into: writing to an undeclared chat fails the test and names the chats that do exist,
 instead of arriving as the "chat not found" a bot's own "the user blocked me" branch would
 catch and pass. A test that wants that branch declares the refusal outright with
-``env.on(SendMessage).raises(...)``.
+``env.on(SendMessage).raises(...)``. Feeding an update whose carried message collides by id
+with a different message the destination environment already holds fails the same way,
+naming both messages, rather than silently keeping the one already there and leaving a
+handler working on a message the world will never store.
 
 File content is supported where it can be honest: a file uploaded as a
 :class:`aiogram.types.input_file.BufferedInputFile` can be downloaded again in the same
@@ -71,7 +79,8 @@ with it is the only thing a failure can say about what was expected, and both gi
 :class:`aiogram.test.WaitTimeoutError` — a :class:`TimeoutError` — whose message says what
 was awaited and what the chat holds instead. How long they wait is one setting per
 environment, ``BotTestEnvironment(..., default_wait_timeout=...)``, with an explicit
-``timeout=`` still winning per call.
+``timeout=`` still winning per call. The pytest plugin reads it from its own overridable
+``bot_env_wait_timeout`` fixture, so a suite changes it without reconstructing ``bot_env``.
 
 .. warning::
 

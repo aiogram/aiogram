@@ -336,6 +336,33 @@ class TestWorld:
 
         assert world.ensure_private_chat(world.user(1)) is declared
 
+    def test_ensure_private_chat_accepts_a_bare_id(self):
+        """Widened signature: a caller does not have to resolve the `UserState` itself."""
+        world = World(bot_user=UserState(id=42, is_bot=True))
+        world.users[1] = UserState(id=1, first_name="Alice", username="alice")
+
+        chat = world.ensure_private_chat(1)
+
+        assert chat.id == 1
+        assert chat.username == "alice"
+
+    def test_ensure_private_chat_accepts_a_user_spec(self):
+        blueprint = Blueprint()
+        alice = blueprint.add_user("Alice", username="alice")
+        world = blueprint.build()
+
+        chat = world.ensure_private_chat(alice)
+
+        assert chat.id == alice.id
+        assert chat.username == "alice"
+
+    def test_ensure_private_chat_still_validates_a_bare_id(self):
+        """The id form goes through `World.user`, so an undeclared id is still refused."""
+        world = World(bot_user=UserState(id=42, is_bot=True))
+
+        with pytest.raises(WorldLookupError, match="not declared in the blueprint"):
+            world.ensure_private_chat(999)
+
 
 class TestChatRegistration:
     """
@@ -459,6 +486,43 @@ class TestChatRegistration:
 
     def test_the_mapping_is_a_registry_from_the_start(self):
         assert isinstance(World(bot_user=UserState(id=42, is_bot=True)).chats, ChatRegistry)
+
+    def test_a_foreign_registry_is_rewrapped_to_this_world(self, env):
+        """
+        Regression: ``w2.chats = w1.chats`` passed the ``isinstance`` check as-is, so w2
+        went on literally using w1's registry — whose own ``world`` pointer still named
+        w1. Every chat added to w2 afterwards was inserted through *that* registry's
+        ``__setitem__``, so it got wired to w1 and bound to w1's bot instead of w2's.
+        """
+        world_one = World(bot_user=UserState(id=1, is_bot=True))
+        world_two = World(bot_user=UserState(id=2, is_bot=True))
+        world_two.bind(env.bot)
+        chat = ChatState(id=1)
+        world_one.chats[1] = chat
+
+        world_two.chats = world_one.chats
+
+        # w2 got its own registry, not a shared reference to w1's.
+        assert world_two.chats is not world_one.chats
+        assert isinstance(world_two.chats, ChatRegistry)
+        # The chat that came along is the very object w1 held — re-registering does not
+        # copy it — but it is now wired to w2, since that is what registering it there
+        # means.
+        assert world_two.chats[1] is chat
+        assert chat.world is world_two
+        assert chat.bound_bot is env.bot
+
+        # The bug: w1's *registry* is untouched by the assignment — it is still the one
+        # `World.__setattr__` installed for w1 — so a chat added to it afterwards is
+        # still correctly wired to w1, not silently redirected to w2.
+        world_one.chats[2] = ChatState(id=2)
+        assert world_one.chats[2].world is world_one
+
+        # And a chat added to w2 afterwards is correctly wired to w2 — this is exactly
+        # what used to break: it used to land in w1's registry and bind to w1's bot.
+        world_two.chats[3] = ChatState(id=3)
+        assert world_two.chats[3].world is world_two
+        assert world_two.chats[3].bound_bot is env.bot
 
 
 class TestDerivedMessages:

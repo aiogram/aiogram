@@ -46,14 +46,21 @@ class TestFixtures:
 
         assert isinstance(call_fixture(plugin.bot_dispatcher), Dispatcher)
 
+    def test_wait_timeout_default(self):
+        from aiogram.test import plugin
+        from aiogram.test.waiting import DEFAULT_WAIT_TIMEOUT
+
+        assert call_fixture(plugin.bot_env_wait_timeout) == DEFAULT_WAIT_TIMEOUT
+
     def test_environment_is_disposed_after_the_test(self):
         from aiogram.test import plugin
 
         blueprint = call_fixture(plugin.bot_blueprint)
         dispatcher = call_fixture(plugin.bot_dispatcher)
+        wait_timeout = call_fixture(plugin.bot_env_wait_timeout)
         original_storage = dispatcher.fsm.storage
 
-        generator = call_fixture(plugin.bot_env, blueprint, dispatcher)
+        generator = call_fixture(plugin.bot_env, blueprint, dispatcher, wait_timeout)
         environment = next(generator)
         assert dispatcher.fsm.storage is not original_storage
         with pytest.raises(StopIteration):
@@ -67,15 +74,30 @@ class TestFixtures:
 
         blueprint = call_fixture(plugin.bot_blueprint)
         dispatcher = call_fixture(plugin.bot_dispatcher)
+        wait_timeout = call_fixture(plugin.bot_env_wait_timeout)
         original_storage = dispatcher.fsm.storage
 
-        generator = call_fixture(plugin.bot_env, blueprint, dispatcher)
+        generator = call_fixture(plugin.bot_env, blueprint, dispatcher, wait_timeout)
         environment = next(generator)
         with pytest.raises(RuntimeError, match="boom"):
             generator.throw(RuntimeError("boom"))
 
         assert environment.session.closed is True
         assert dispatcher.fsm.storage is original_storage
+
+    def test_environment_picks_up_the_wait_timeout_fixture(self):
+        from aiogram.test import plugin
+
+        blueprint = call_fixture(plugin.bot_blueprint)
+        dispatcher = call_fixture(plugin.bot_dispatcher)
+
+        generator = call_fixture(plugin.bot_env, blueprint, dispatcher, 12.5)
+        environment = next(generator)
+        try:
+            assert environment.world.default_wait_timeout == 12.5
+        finally:
+            with pytest.raises(StopIteration):
+                next(generator)
 
     def test_chat_and_user_accessors(self, env):
         from aiogram.test import plugin
@@ -92,7 +114,7 @@ class TestFixtures:
         blueprint = Blueprint()
         blueprint.add_user("Lonely")
         dispatcher = Dispatcher()
-        generator = call_fixture(plugin.bot_env, blueprint, dispatcher)
+        generator = call_fixture(plugin.bot_env, blueprint, dispatcher, 5.0)
         environment = next(generator)
         try:
             actor = call_fixture(plugin.bot_user, environment)
@@ -223,6 +245,39 @@ class TestPluginDiscovery:
                     assert bot_env.bot.id
                     assert bot_chat.id
                     assert bot_user.user.id
+                """,
+            ),
+        )
+
+        result = subprocess.run(
+            [sys.executable, "-m", "pytest", str(test_file), "-q", "-p", "no:cacheprovider"],
+            capture_output=True,
+            text=True,
+            cwd=tmp_path,
+            check=False,
+        )
+
+        assert result.returncode == 0, result.stdout + result.stderr
+
+    def test_fixture_override_reaches_bot_env(self, tmp_path):
+        """
+        A project overrides ``bot_env_wait_timeout`` the same way it would override
+        ``bot_blueprint`` or ``bot_dispatcher`` — a plain fixture, no ``bot_env`` copy.
+        """
+        test_file = tmp_path / "test_generated.py"
+        test_file.write_text(
+            textwrap.dedent(
+                """
+                import pytest
+
+
+                @pytest.fixture
+                def bot_env_wait_timeout():
+                    return 12.5
+
+
+                def test_environment_picked_up_the_override(bot_env):
+                    assert bot_env.world.default_wait_timeout == 12.5
                 """,
             ),
         )

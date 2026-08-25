@@ -11,6 +11,7 @@ from aiogram.types import Message, TelegramObject
 
 from .blueprint import Blueprint, default_blueprint
 from .environment import BotTestEnvironment
+from .waiting import DEFAULT_WAIT_TIMEOUT
 from .world import ChatState
 
 __all__ = (
@@ -18,6 +19,7 @@ __all__ = (
     "bot_chat",
     "bot_dispatcher",
     "bot_env",
+    "bot_env_wait_timeout",
     "bot_user",
     "pytest_assertrepr_compare",
 )
@@ -39,12 +41,31 @@ def bot_dispatcher() -> Dispatcher:
 
 
 @pytest.fixture
+def bot_env_wait_timeout() -> float:
+    """
+    Override this fixture — at any scope — to change how long every wait in ``bot_env``
+    runs by default, without copying the whole fixture just to pass
+    ``default_wait_timeout=...`` to :class:`~aiogram.test.BotTestEnvironment` by hand.
+
+    Mirrors ``bot_blueprint`` and ``bot_dispatcher``: a value fixture the plugin's own
+    fixture reads, rather than a setting only reachable by rebuilding the environment
+    fixture from scratch. An explicit ``timeout=`` on a single wait still wins over it.
+    """
+    return DEFAULT_WAIT_TIMEOUT
+
+
+@pytest.fixture
 def bot_env(
     bot_blueprint: Blueprint,
     bot_dispatcher: Dispatcher,
+    bot_env_wait_timeout: float,
 ) -> Iterator[BotTestEnvironment]:
     """An isolated fake Telegram world for exactly one test."""
-    environment = BotTestEnvironment(blueprint=bot_blueprint, dispatcher=bot_dispatcher)
+    environment = BotTestEnvironment(
+        blueprint=bot_blueprint,
+        dispatcher=bot_dispatcher,
+        default_wait_timeout=bot_env_wait_timeout,
+    )
     try:
         yield environment
     finally:

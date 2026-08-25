@@ -60,12 +60,14 @@ class _DeepLink(NamedTuple):
 
     username: str
     """
-    The username the link addresses, empty for the kinds that address something else.
+    The bot username the link addresses, empty for the kinds that address something else.
 
-    Which kinds those are is `_LINK_KINDS[kind].addresses_username`, a property of the
-    kind rather than of the individual link — a boost or video-chat link names a channel
-    and a message link names its author, so neither can ever be "this bot", and
-    `follow_deep_link` refuses them without comparing anything.
+    Which kinds those are is `_LINK_KINDS[kind].match_by`, a property of the kind rather
+    than of the individual link — a boost or video-chat link names a channel and a
+    message link names its author, so neither can ever be "this bot", and
+    `follow_deep_link` refuses them without comparing anything. The one kind whose
+    username slot names something else *and* still concerns a bot is `attach`, where the
+    bot is the payload instead; see `_addressed_bot`.
     """
 
     kind: str
@@ -74,7 +76,9 @@ class _DeepLink(NamedTuple):
     payload: str
     """
     Whatever that kind carries: a `start` payload, a Mini App short name, an invite hash,
-    the raw query of an `unknown_query`. Only the messages that interpolate it read it.
+    the bot username of an `attach`, the raw query of an `unknown_query`. Read by the
+    messages that interpolate it, and by `_addressed_bot` for the one kind that keeps its
+    bot here.
     """
 
 
@@ -98,16 +102,33 @@ class _LinkKindPolicy(NamedTuple):
     same row through `_QUERY_KIND_ALIASES` instead.
     """
 
-    addresses_username: bool = False
+    match_by: str = ""
     """
-    Whether the parsed `username` names the link's target, so it is worth comparing
-    against the bot's. False for every link that addresses a chat, a slug or an app
-    screen rather than a bot.
+    Which slot of the parsed link names the bot this link concerns, if any.
+
+    ``"username"`` for every kind whose username slot is the bot's own
+    (``t.me/<bot>?start=…``), ``"payload"`` for `attach`, where the username slot names
+    the chat the attachment menu opens in and the bot is the parameter
+    (``t.me/<chat>?attach=<bot>``), and empty for the kinds that concern no bot at all —
+    a boost, an invite, a message link — which `follow_deep_link` refuses without
+    comparing anything. `_parse_deep_link` keeps the parsed username only for the first,
+    so a kind that matches on something else never carries a username to be mistaken for
+    the bot's.
     """
 
 
-def _bot_link(reason: str, *, instead: str, query_key: bool = True) -> _LinkKindPolicy:
-    """A link that addresses a bot by username, but is not the followable `start`."""
+_MATCH_USERNAME = "username"
+_MATCH_PAYLOAD = "payload"
+
+
+def _bot_link(
+    reason: str,
+    *,
+    instead: str,
+    query_key: bool = True,
+    match_by: str = _MATCH_USERNAME,
+) -> _LinkKindPolicy:
+    """A link that concerns a bot, but is not the followable `start`."""
     return _LinkKindPolicy(
         followable=False,
         rejection=(
@@ -115,7 +136,7 @@ def _bot_link(reason: str, *, instead: str, query_key: bool = True) -> _LinkKind
             f"only `start` deep links can be followed here — {instead}"
         ),
         query_key=query_key,
-        addresses_username=True,
+        match_by=match_by,
     )
 
 
@@ -150,7 +171,7 @@ _LINK_KINDS: dict[str, _LinkKindPolicy] = {
         followable=True,
         rejection="",
         query_key=True,
-        addresses_username=True,
+        match_by=_MATCH_USERNAME,
     ),
     "startgroup": _bot_link(
         "opens a group chooser, and the bot receives `/start@<bot> <payload>` in the "
@@ -167,12 +188,20 @@ _LINK_KINDS: dict[str, _LinkKindPolicy] = {
         instead=_MINI_APPS_NOT_SIMULATED,
         query_key=False,
     ),
-    "startattach": _bot_link(
-        "installs the bot's attachment menu and opens it in the current chat",
-        instead="the attachment menu is not simulated",
-    ),
+    # `attach` is listed before `startattach` on purpose: the two co-occur in the form
+    # Telegram documents for opening the menu in a specific chat
+    # (`t.me/<chat>?attach=<bot>&startattach=<param>`), and there the `attach` reading is
+    # the right one — `startattach` is only its parameter. `_QUERY_KIND_LOOKUP` derives
+    # its order from this table, so the row order is where that precedence lives.
     "attach": _bot_link(
         "opens the attachment menu of @{payload} in the chat the link names",
+        instead="the attachment menu is not simulated",
+        # `t.me/<chat>?attach=<bot>` addresses the *chat* by username and names the bot in
+        # the parameter, so the parameter is what tells whether the link is this bot's.
+        match_by=_MATCH_PAYLOAD,
+    ),
+    "startattach": _bot_link(
+        "installs the bot's attachment menu and opens it in the current chat",
         instead="the attachment menu is not simulated",
     ),
     "game": _bot_link(
@@ -197,7 +226,7 @@ _LINK_KINDS: dict[str, _LinkKindPolicy] = {
             "only `start` deep links can be followed here — call `send({payload!r})` if "
             "the test needs that text delivered"
         ),
-        addresses_username=True,
+        match_by=_MATCH_USERNAME,
     ),
     "unknown_query": _LinkKindPolicy(
         followable=False,
@@ -208,7 +237,7 @@ _LINK_KINDS: dict[str, _LinkKindPolicy] = {
             "`tg://resolve?domain=<username>[&start=<payload>]` deep links can be "
             "followed here"
         ),
-        addresses_username=True,
+        match_by=_MATCH_USERNAME,
     ),
     # -- links that address a chat, a slug or the app itself ---------------------------
     "phone": _foreign_link(
@@ -226,6 +255,15 @@ _LINK_KINDS: dict[str, _LinkKindPolicy] = {
     "story": _foreign_link(
         "a story link, which opens a story viewer",
         query_key=True,
+    ),
+    # Not in https://core.telegram.org/api/links — that page documents the links clients
+    # must *handle*, and this one is served by t.me itself: `t.me/s/<username>` returns
+    # the channel's posts as a web page. It is still a `t.me` link a bot can put on a
+    # button, and it used to parse as `miniapp` of a bot called `s`, which is the one
+    # thing it certainly is not.
+    "channel_preview": _foreign_link(
+        "a channel web-preview link (`t.me/s/<username>`), which opens a channel's posts "
+        "as a web page rather than in a chat"
     ),
     "share": _foreign_link(
         "a share link, which opens a chat chooser with a draft the user still has to send"
@@ -275,20 +313,38 @@ _QUERY_KIND_ALIASES: dict[str, str] = {
     "post": "message_link",
 }
 
+# Query parameters Telegram documents as *companions* of another link format as well as
+# a format of their own: `startapp` is the Mini App start parameter carried by both
+# `?startapp=` (the bot's main app) and `?appname=<short_name>` (a named one), and
+# `startattach` the one carried by both `?startattach` (the current chat) and
+# `?attach=<bot>` (a named chat), while `text` is the draft a public username link may
+# carry alongside `?profile`. Each still names a kind when it arrives alone; it is simply
+# the last thing consulted, so a query carrying one of these *and* the parameter that
+# owns it is read as the owning format.
+_COMPANION_QUERY_KEYS = frozenset({"startapp", "startattach", "text"})
+
 # `(query key, kind)` pairs checked on a `t.me` / `tg://resolve` url, in the order they
-# are looked for. `start` comes first, not in table order: it is the one kind that wins
-# over the others when they co-occur, and iterating the table alone made
-# `?start=x&startapp=y` classify as the `startapp` the table happens to list earlier —
-# refusing a link a real client would open the bot with. Every other kind is exclusive in
-# practice, so among those the order is only a tie-break that never has to break a tie.
-_QUERY_KIND_LOOKUP: tuple[tuple[str, str], ...] = (
-    ("start", "start"),
-    *_QUERY_KIND_ALIASES.items(),
-    *(
-        (kind, kind)
-        for kind, policy in _LINK_KINDS.items()
-        if policy.query_key and kind != "start"
-    ),
+# are looked for: everything else first, the companions above last. Order used to put the
+# aliases first, which made `?startapp=x&text=y` a `draft` — refused as an unsent draft
+# rather than as the Mini App a tapping user actually gets — while plain table order made
+# `?appname=shop&startapp=ref` the bot's main app rather than the named one it opens.
+# Within each half the table's own kinds come before the aliases, and `attach` sitting
+# above `startattach` in the table is the one place that half's order decides anything.
+#
+# `start` is in neither half: it is not a plain lookup, because it only wins with a value
+# — see `_parse_deep_link`.
+_QUERY_KIND_LOOKUP: tuple[tuple[str, str], ...] = tuple(
+    sorted(
+        (
+            *(
+                (kind, kind)
+                for kind, policy in _LINK_KINDS.items()
+                if policy.query_key and kind != "start"
+            ),
+            *_QUERY_KIND_ALIASES.items(),
+        ),
+        key=lambda pair: pair[0] in _COMPANION_QUERY_KEYS,
+    )
 )
 
 # First path segments `t.me` reserves, so they are never usernames. Everything Telegram
@@ -304,6 +360,9 @@ _RESERVED_PATH_KINDS: dict[str, str] = {
     "addemoji": "stickerset",
     "m": "business",
     "c": "message_link",
+    # `t.me/s/<username>`, the channel web preview. Reserved rather than parsed as a
+    # username: `s` is a single letter, which Telegram's own username rules exclude.
+    "s": "channel_preview",
     "addlist": "service_path",
     "addstyle": "service_path",
     "addtheme": "service_path",
@@ -352,21 +411,49 @@ def _rejection_message(url: str, deep_link: _DeepLink) -> str:
     )
 
 
-def _path_deep_link(segments: list[str]) -> _DeepLink | None:
+def _addressed_bot(deep_link: _DeepLink) -> str | None:
     """
-    Classify a `t.me` path, or return `None` when it is a bare username the query decides.
+    The bot username this link concerns, or `None` when it concerns no bot at all.
+
+    The one lookup both `follow_deep_link` and the automatic scan use to ask "is this
+    button about this bot?", so the two can never disagree. Which slot holds the answer
+    is `_LINK_KINDS[kind].match_by`: usually the username the link addresses, but an
+    attachment-menu link addresses the *chat* and names the bot in `?attach=`, and asking
+    the username there produced both halves of the same bug — the scan skipped such a
+    button as another chat's, and an explicit follow refused it as "not to this bot".
+    """
+    match_by = _LINK_KINDS[deep_link.kind].match_by
+    if match_by == _MATCH_USERNAME:
+        return deep_link.username
+    if match_by == _MATCH_PAYLOAD:
+        return deep_link.payload
+    return None
+
+
+def _path_deep_link(segments: list[str], query: dict[str, list[str]]) -> _DeepLink | None:
+    """
+    Classify a `t.me` path, or return `None` when the query is what decides the kind.
 
     The path shapes come from https://core.telegram.org/api/links: an invite hash or a
     phone number behind `+`, an invoice behind `$`, a reserved service segment, a story
     under `/s/`, a message by its numeric id, and a direct Mini App by its short name.
+    The path decides first, with one documented exception the `query` is read for: see
+    the phone branch.
     """
     first = segments[0]
     if first.startswith("+"):
         # `t.me/+<digits>` addresses a phone number and `t.me/+<hash>` a private chat;
         # an all-digit tail is exactly how Telegram's own clients tell the two apart.
         rest = first[1:]
-        kind = "phone" if _PHONE_NUMBER.fullmatch(rest) else "invite"
-        return _DeepLink(username="", kind=kind, payload=rest)
+        if _PHONE_NUMBER.fullmatch(rest):
+            if "attach" in query:
+                # `t.me/+<phone>?attach=<bot>` is the attachment-menu link documented
+                # right beside `t.me/<username>?attach=<bot>`: the phone number is the
+                # chat the menu opens in, so the link is about the bot in the query, and
+                # calling it a phone link would hide that bot from the scan.
+                return None
+            return _DeepLink(username="", kind="phone", payload=rest)
+        return _DeepLink(username="", kind="invite", payload=rest)
     if first.startswith("$"):
         return _DeepLink(username="", kind="invoice", payload=first[1:])
     reserved = _RESERVED_PATH_KINDS.get(first.lower())
@@ -395,6 +482,10 @@ def _require_valid_start_payload(url: str, payload: str) -> None:
     payload does not send `/start` with it — the link is simply broken. Handing the
     handler a payload production cannot produce would let a test pass on a bug in the
     button the bot built, so the toolkit names the rule instead.
+
+    The Bot API states the rule but does not promise clients enforce it, and payloads
+    that break it do reach production bots — which is what `follow_deep_link`'s
+    ``validate_payload=False`` is for; this function is simply not called then.
     """
     if not payload or _START_PAYLOAD.fullmatch(payload):
         return
@@ -601,6 +692,7 @@ class UserActor:
         target: str | InlineKeyboardButton | None = None,
         *,
         message: Message | None = None,
+        validate_payload: bool = True,
         **data: Any,
     ) -> Any:
         """
@@ -618,6 +710,14 @@ class UserActor:
         launch opens an app, an invite link joins a chat, a share link only fills a draft
         — and so is a ``start`` link whose payload Telegram itself would not deliver; see
         `_parse_deep_link` and `_require_valid_start_payload`.
+
+        Pass ``validate_payload=False`` to drop that last check and replay the payload
+        exactly as the button carries it. The Bot API states the rule for what a bot
+        should *put* in a link (1-64 characters of ``A-Za-z0-9_-``), but nothing enforces
+        it on the way back, and production bots do receive payloads that break it —
+        base64 padding (``=``), dots, more than 64 characters. Reproducing one of those
+        in a test is what the escape hatch is for; the default stays strict, so a payload
+        the bot itself built wrong is still named as the bug it is.
         """
         bot_username = self.bot_user.username or ""
         if isinstance(target, InlineKeyboardButton):
@@ -644,15 +744,16 @@ class UserActor:
                 f"tg://resolve link)"
             )
             raise WorldLookupError(msg)
-        policy = _LINK_KINDS[deep_link.kind]
-        if not policy.addresses_username:
+        addressed = _addressed_bot(deep_link)
+        if addressed is None:
             raise WorldLookupError(_rejection_message(url, deep_link))
-        if deep_link.username.lower() != bot_username.lower():
-            msg = f"{url!r} deep-links to @{deep_link.username}, not to this bot (@{bot_username})"
+        if addressed.lower() != bot_username.lower():
+            msg = f"{url!r} deep-links to @{addressed}, not to this bot (@{bot_username})"
             raise WorldLookupError(msg)
-        if not policy.followable:
+        if not _LINK_KINDS[deep_link.kind].followable:
             raise WorldLookupError(_rejection_message(url, deep_link))
-        _require_valid_start_payload(url, deep_link.payload)
+        if validate_payload:
+            _require_valid_start_payload(url, deep_link.payload)
 
         text = f"/start {deep_link.payload}" if deep_link.payload else "/start"
         # Tapping the link is what opens the private chat — `UserActor.chat` now does
@@ -1095,7 +1196,10 @@ class UserActor:
             if button.url is None:
                 continue
             deep_link = self._parse_deep_link(button.url)
-            if deep_link is None or deep_link.username.lower() != bot_username.lower():
+            if deep_link is None:
+                continue
+            addressed = _addressed_bot(deep_link)
+            if addressed is None or addressed.lower() != bot_username.lower():
                 continue
             if _LINK_KINDS[deep_link.kind].followable:
                 return button.url, deep_link
@@ -1144,11 +1248,13 @@ class UserActor:
         Recognizes ``https://t.me/<username>[?start=<payload>]`` (also ``http://`` and
         schemeless ``t.me/...``) and ``tg://resolve?domain=<username>[&start=<payload>]``.
         A query with no ``start`` key at all — most of all no query, a bare profile link
-        — parses as a plain start with no payload; ``start`` wins whenever it is present,
-        alongside any other query parameter, harmless (``utm_source=...``) or not, and
-        including the start-ish ones (``?start=x&startapp=y`` is a followable start
-        carrying ``x``), since a real Telegram client reads only the parameter it
-        recognizes and ignores the rest of the query.
+        — parses as a plain start with no payload; a ``start`` *with a value* wins over
+        every other parameter, harmless (``utm_source=...``) or not, including the
+        start-ish ones (``?start=x&startapp=y`` is a followable start carrying ``x``),
+        since a real Telegram client reads only the parameter it recognizes and ignores
+        the rest of the query. An empty ``?start=`` carries no such reading: it wins over
+        nothing, so ``?start=&startapp=y`` is the Mini App link it is, and ``?start=``
+        alone is the bare ``/start`` that ``t.me/<bot>`` already is.
 
         Every other documented format is recognized too, and tagged with its own `kind`
         rather than silently downgraded to a plain start or lumped into one bucket: the
@@ -1176,7 +1282,7 @@ class UserActor:
             segments = [segment for segment in parsed.path.split("/") if segment]
             if not segments:
                 return None
-            by_path = _path_deep_link(segments)
+            by_path = _path_deep_link(segments, query)
             if by_path is not None:
                 return by_path
             username = segments[0]
@@ -1187,31 +1293,50 @@ class UserActor:
                 return _DeepLink(username="", kind=kind, payload=parsed.query)
             phones = query.get("phone")
             if phones and phones[0]:
-                return _DeepLink(username="", kind="phone", payload=phones[0])
-            domains = query.get("domain")
-            if not domains or not domains[0]:
-                return None
-            username = domains[0]
-            # On the `tg://resolve` form `domain` is the address, not a deep-link
-            # parameter — `tg://resolve?domain=x` must classify exactly like the bare
-            # `t.me/x` it mirrors.
-            query.pop("domain")
+                if "attach" not in query:
+                    return _DeepLink(username="", kind="phone", payload=phones[0])
+                # `tg://resolve?phone=<phone>&attach=<bot>` is the `tg:` twin of
+                # `t.me/+<phone>?attach=<bot>` and reads the same way: the phone number
+                # is the chat the attachment menu opens in, so it addresses no bot and
+                # the query is what says which bot the link is about.
+                username = ""
+            else:
+                domains = query.get("domain")
+                if not domains or not domains[0]:
+                    return None
+                username = domains[0]
+                # On the `tg://resolve` form `domain` is the address, not a deep-link
+                # parameter — `tg://resolve?domain=x` must classify exactly like the bare
+                # `t.me/x` it mirrors.
+                query.pop("domain")
         else:
             return None
 
         if not query:
             return _DeepLink(username=username, kind="start", payload="")
+        starts = query.get("start")
+        if starts and starts[0]:
+            # A `start` with a value is the one parameter that wins over every other, and
+            # it is checked before the table rather than inside it: a real client opens
+            # the bot with `?start=x&startapp=y`, ignoring the parameter it has no use
+            # for. An *empty* `?start=` says nothing of the sort, so it does not win —
+            # it only survives below, once nothing else has claimed the link.
+            return _DeepLink(username=username, kind="start", payload=starts[0])
         for key, kind in _QUERY_KIND_LOOKUP:
             if key in query:
                 policy = _LINK_KINDS[kind]
                 return _DeepLink(
-                    # A `?boost` or `?videochat` names a channel, never this bot, so the
-                    # username is dropped exactly as it is for the path forms of those
-                    # same kinds rather than being carried and then ignored.
-                    username=username if policy.addresses_username else "",
+                    # A `?boost` or `?videochat` names a channel, never this bot, and an
+                    # `?attach=` names the chat the menu opens in, so the username is
+                    # dropped for both rather than carried where it would read as the
+                    # bot's — only `match_by="username"` keeps it.
+                    username=username if policy.match_by == _MATCH_USERNAME else "",
                     kind=kind,
                     payload=query[key][0],
                 )
+        if starts is not None:
+            # `?start=` with nothing else to be: the bare `/start` that `t.me/<bot>` is.
+            return _DeepLink(username=username, kind="start", payload="")
         return _DeepLink(username=username, kind="unknown_query", payload=parsed.query)
 
     @property

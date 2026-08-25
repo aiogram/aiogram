@@ -36,6 +36,7 @@ from .world import (
     CommunityState,
     TopicState,
     WorldLookupError,
+    describe_message,
     resolve_topic,
 )
 
@@ -282,6 +283,17 @@ class BotTestEnvironment:
         :meth:`aiogram.test.world.ChatState.add_message` places a message by id rather than
         appending it. Registering an id 50 into a chat whose last message is 101 must not
         leave ``chat.messages[-1]`` pointing at the carried message.
+
+        **A collision is loud, not silent.** If the id is already taken by a message that is
+        genuinely different, keeping the old one and dropping the incoming one would leave a
+        handler processing a message the world will never hold — nothing it does to that
+        message is ever observable, and a ``wait_for_message`` waiting for it waits forever,
+        with no clue why. So this raises :class:`~aiogram.test.world.WorldLookupError` naming
+        both messages, rather than picking one silently. It does not raise on a re-feed of an
+        update that is already registered, or of an equal one built the same way twice: by
+        the time this runs the incoming message is bound to this environment's bot, same as
+        anything already stored, so comparing equal is exactly what "the same message, again"
+        means, and that case stays the silent no-op it always was.
         """
         for name in _CARRIED_MESSAGE_FIELDS:
             message: Message | None = getattr(update, name, None)
@@ -291,8 +303,22 @@ class BotTestEnvironment:
             if chat is None:
                 # Not a chat this world declared; nothing to keep it in.
                 return
-            if chat.find_message(message.message_id) is None:
+            existing = chat.find_message(message.message_id)
+            if existing is None:
                 chat.add_message(message)
+            elif existing != message:
+                msg = (
+                    f"Chat {chat.id} already holds a different message under id "
+                    f"{message.message_id}, so the incoming one cannot be registered:\n"
+                    f"  already there: {describe_message(existing)}\n"
+                    f"  incoming:      {describe_message(message)}\n"
+                    "A handler that reacts to the incoming update would be working on a "
+                    "message this world never stores, and a wait_for_message waiting for it "
+                    "would wait forever. Feed updates whose message ids the destination "
+                    "environment has not already used, or let the toolkit allocate the id "
+                    "instead of carrying one minted by another environment."
+                )
+                raise WorldLookupError(msg)
             # Even an already-known message may have been allocated elsewhere.
             chat.last_message_id = max(chat.last_message_id, message.message_id)
             return

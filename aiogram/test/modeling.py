@@ -479,8 +479,7 @@ def _undeclared_chat_message(env: BotTestEnvironment, chat_id: Any) -> str:
             f"bot cannot write into a private chat first — it may only answer a user who "
             f"wrote to it — so this path does not open one on demand the way a user actor "
             f"does. Declare it with `blueprint.add_private_chat(user)`, open it with "
-            f"`env.world.ensure_private_chat(env.world.user({user.id}))`, or have the user "
-            f"write first."
+            f"`env.world.ensure_private_chat({user.id})`, or have the user write first."
         )
     else:
         hint = (

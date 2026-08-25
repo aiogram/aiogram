@@ -134,6 +134,16 @@ chat. Following SHALL replay what tapping causes in a real client — the user's
 with the bot receives `/start <payload>`, or a bare `/start` when the link carries none — so
 filters, the command parser, middlewares and FSM all run as they do in production.
 
+Which parsed slot of a link names "the bot" depends on the link's kind, not on a fixed
+position: for every kind that addresses a bot by username, the button matches this bot when
+that username is the bot's own. The attachment-menu link is the one documented exception —
+`t.me/<chat>?attach=<bot>` addresses the *chat* in its username slot and names the bot in the
+`attach` parameter instead — so the button matches this bot when that parameter is, and the
+automatic scan surfaces such a button as this bot's the same way it surfaces a username match.
+A kind that addresses neither a username nor a parameter at any bot — a boost, an invite, a
+message link — never matches any bot, so a button of that kind is never treated as this bot's
+by either an explicit target or the scan.
+
 #### Scenario: Following a group button opens the conversation in the DM
 
 - **WHEN** the bot posts a group message carrying a `t.me` start-link button and a user actor
@@ -156,17 +166,37 @@ filters, the command parser, middlewares and FSM all run as they do in productio
 - **WHEN** no target is given and several messages carry deep-link buttons
 - **THEN** the most recent followable link to this bot is the one followed
 
+#### Scenario: An attachment-menu link matches by its parameter, not its address
+
+- **WHEN** the button's url addresses a chat by username and carries `?attach=<bot>` naming
+  this bot
+- **THEN** the button is treated as this bot's — refused as an attachment-menu link, not as a
+  link to a different bot — and the automatic scan surfaces it as a candidate
+
 ### Requirement: Only start links are followed, and the rest are refused by name
 
 The toolkit SHALL classify every `t.me` / `telegram.me` / `tg://resolve` url, and every other
 `tg://<host>` url, into the kind Telegram documents at https://core.telegram.org/api/links —
 one policy per kind, not one bucket for "recognized" and another for "everything else". `start`
 SHALL be the only followable kind, including a link with no query, which SHALL parse as a plain
-start with no payload. A `start` payload SHALL be honored alongside any other query parameter,
-since a real client reads the parameter it recognizes and ignores the rest; that precedence
-SHALL hold in either query order, so a link carrying both `start` and a Mini App, group or
-channel launch SHALL be followed as the start it also is. The precedence SHALL need a real
-`start` to take it, so one of those kinds appearing alone is refused as before.
+start with no payload. A `start` payload with a non-empty value SHALL be honored alongside any
+other query parameter, since a real client reads the parameter it recognizes and ignores the
+rest; that precedence SHALL hold in either query order, so a link carrying both a non-empty
+`start` and a Mini App, group or channel launch SHALL be followed as the start it also is. An
+empty `start` SHALL NOT take this precedence, since it carries no value a real client could
+have read as one — `?start=&startapp=y` SHALL classify as the `startapp` link it also is, not
+as a bare start, while a bare `?start=` with nothing else in the query is still the plain start
+it already was. The precedence SHALL need a real, non-empty `start` to take it, so one of those
+kinds appearing alone is refused as before.
+
+A query parameter Telegram documents as also being the companion of another format —
+`startapp` and `startattach`, each of which also serves as the start parameter of a named-app
+or named-chat attachment-menu link, and `text`, which a public username link may carry as a
+prefilled draft alongside another parameter — SHALL NOT outrank the format that carries it:
+`?startapp=x&text=y` SHALL classify as the Mini App link `startapp` names, not the draft `text`
+would be alone, and `?appname=<name>&startapp=<param>` SHALL classify as the direct Mini App
+link `appname` names, with `startapp` read as its parameter. A companion parameter appearing
+alone in the query still classifies by the format it names.
 
 Every other documented kind SHALL be refused with a message naming that kind and what a real
 client does with it, rather than being replayed as a plain start or lumped into a generic
@@ -174,7 +204,9 @@ rejection: group, Mini App, channel and attachment-menu launches; a direct Mini 
 game-share link; an affiliate-referral link; a profile link; a prefilled-draft link; chat invite
 links (including the legacy `joinchat` path and the `tg://join` form); a phone-number link,
 told apart from an invite link by its all-digit tail rather than folded into the same kind; a
-message link and its threaded and private-channel forms; a story link; a share link; an invoice
+message link and its threaded and private-channel forms; a story link; a channel's web-preview
+link (`t.me/s/<username>`), distinguished from a direct Mini App link despite sharing the
+`t.me/<name>` shape; a share link; an invoice
 link, on its `$<slug>`, `/invoice/<slug>` and `tg://invoice` forms alike; a boost link, on its
 path, query and `tg://` forms; a video-chat link, including its `livestream` and legacy
 `voicechat` query spellings; a business-chat link; a sticker- or emoji-set link; and any Telegram
@@ -191,18 +223,35 @@ surface SHALL be refused as not a Telegram link at all.
 A `start` payload SHALL be validated against the alphabet Bot API deep linking defines —
 `A-Z`, `a-z`, `0-9`, `_` and `-`, 1 to 64 characters — before being followed. A payload outside
 that alphabet SHALL be refused naming the rule, rather than delivered to the handler, since a
-real client never sends `/start` for a link its own payload makes invalid.
+real client never sends `/start` for a link its own payload makes invalid. The caller MAY opt
+out of this validation, since the Bot API states the rule for what a bot should put in a link
+but does not promise a client enforces it, and production bots do receive payloads outside it;
+opting out SHALL replay the payload exactly as the button carries it, and SHALL NOT change
+which kinds are followable — a `startapp` link opted out of payload validation is still refused
+as a Mini App link, not silently followed as a start.
 
 #### Scenario: A bare profile link replays as a plain start
 
 - **WHEN** the button's url is `https://t.me/<bot>` with no query
 - **THEN** following it sends `/start` with no payload
 
-#### Scenario: An explicit start wins over a start-ish parameter beside it
+#### Scenario: An explicit non-empty start wins over a start-ish parameter beside it
 
-- **WHEN** the button's url carries both `start` and one of `startapp`, `startgroup` or
-  `startchannel`, in either order
+- **WHEN** the button's url carries both a non-empty `start` and one of `startapp`,
+  `startgroup` or `startchannel`, in either order
 - **THEN** following it sends `/start` with the `start` payload rather than being refused
+
+#### Scenario: An empty start does not win over a start-ish parameter beside it
+
+- **WHEN** the button's url carries `?start=` with an empty value alongside `startapp`,
+  `startgroup`, `startchannel`, `startattach` or `attach`, in either order
+- **THEN** following it raises as that other kind, rather than sending a bare `/start`
+
+#### Scenario: A companion parameter does not outrank the format that carries it
+
+- **WHEN** the button's url carries a companion parameter (`startapp`, `startattach` or `text`)
+  alongside a parameter of another documented format, in either order
+- **THEN** following it raises as that other format, not as the companion's own kind
 
 #### Scenario: Every documented format is refused as the format it is
 
@@ -214,6 +263,13 @@ real client never sends `/start` for a link its own payload makes invalid.
 - **THEN** following it raises, naming that kind and what a real client does with it, and — for
   an invoice or a boost link — pointing at the trigger (`pay()`, `pre_checkout_query()`,
   `boost()`) that models the underlying action instead
+
+#### Scenario: A channel web-preview link is not mistaken for a Mini App
+
+- **WHEN** the button's url is `t.me/s/<username>`, `t.me`'s own web preview of a channel's
+  posts
+- **THEN** following it raises naming it a channel web-preview link, not a direct Mini App link
+  of a bot named `s`
 
 #### Scenario: A phone link is not mistaken for an invite link
 
@@ -242,6 +298,13 @@ real client never sends `/start` for a link its own payload makes invalid.
   otherwise outside `A-Z`, `a-z`, `0-9`, `_` and `-`
 - **THEN** following it raises naming the deep-linking payload rule, and no `/start` is sent to
   the handler
+
+#### Scenario: Payload validation can be dropped to reproduce what a client actually delivered
+
+- **WHEN** the caller opts out of `start` payload validation and the button's payload is
+  outside the deep-linking alphabet
+- **THEN** the payload is replayed exactly as carried, and a kind other than `start` is still
+  refused rather than made followable
 
 #### Scenario: An unrecognized query is refused rather than guessed
 
@@ -426,6 +489,9 @@ objects.
 The binding SHALL be a property of the world's chat registry rather than of one moment in its
 life: a chat SHALL be wired to its world however it is registered, including when the whole
 mapping is replaced after construction, so that messages stored afterwards are bound as usual.
+This SHALL hold even when the replacement mapping is itself another world's chat registry:
+assigning it SHALL install a registry wired to *this* world rather than reusing the donor's,
+so a chat later added through it is bound to this world's bot and not the donor's.
 
 #### Scenario: A shortcut on a result reaches the world
 
@@ -455,12 +521,26 @@ mapping is replaced after construction, so that messages stored afterwards are b
 - **THEN** those chats are wired to the world as declared ones are, and messages stored in
   them afterwards carry the bot
 
+#### Scenario: Assigning another world's registry does not carry its wiring along
+
+- **WHEN** a test assigns one world's chat registry to another world's `chats` attribute
+- **THEN** the assignment installs a registry wired to the receiving world, and a chat added
+  through it afterwards is bound to the receiving world's bot rather than the donor's
+
 ### Requirement: Handlers receive the world's own objects
 
 An update SHALL arrive at the dispatcher already bound, so that the framework does not
 re-create it and the object a handler receives is the object the world stores. An update
 carrying objects that belong to a *different* environment SHALL be copied instead of
 claimed, and the message it carries SHALL be registered in the destination chat.
+
+Registering a carried message whose id is already taken by a *different* message in the
+destination chat SHALL raise `WorldLookupError` naming both messages, rather than silently
+keeping the one already there — a handler reacting to the incoming update would otherwise work
+on a message the world never stores, and a `wait_for_message` waiting for it would wait
+forever with nothing to explain why. Registering one whose id is taken by an equal message —
+the same update fed again, or an equal one built the same way twice — SHALL stay the silent
+no-op it always was.
 
 #### Scenario: Identity survives the dispatcher
 
@@ -472,6 +552,19 @@ claimed, and the message it carries SHALL be registered in the destination chat.
 - **WHEN** one update object is fed to two environments
 - **THEN** the second environment answers in its own world, and the reply it sends does not
   reuse the incoming message's identifier
+
+#### Scenario: A carried message id colliding with a different message is refused
+
+- **WHEN** an update carries a message whose id is already taken in the destination chat by a
+  message with different content
+- **THEN** registering it raises `WorldLookupError` describing both the message already there
+  and the incoming one, rather than silently discarding the incoming one
+
+#### Scenario: Re-registering an equal carried message is still a no-op
+
+- **WHEN** an update carrying a message equal to one already registered under the same id is
+  fed again
+- **THEN** no error is raised and the chat's state is unchanged
 
 ### Requirement: A chat's messages are ordered by identifier
 

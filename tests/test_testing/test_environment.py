@@ -244,6 +244,54 @@ class TestTriggers:
         finally:
             env.dispose_sync()
 
+    async def test_a_carried_message_id_collision_is_loud(self, blueprint, dp):
+        """
+        Design decision: an id already taken by a *different* message must not be silently
+        dropped — the handler would go on to work on a message the world never stores, and a
+        `wait_for_message` waiting for it would hang forever with no clue why.
+        """
+        first_foreign = BotTestEnvironment(blueprint=blueprint, dispatcher=Dispatcher())
+        second_foreign = BotTestEnvironment(blueprint=blueprint, dispatcher=Dispatcher())
+        env = BotTestEnvironment(blueprint=blueprint, dispatcher=dp)
+        try:
+            chat_id = blueprint.chats[0].id
+            await first_foreign.user(blueprint.users[0].id).in_(chat_id).send("hello")
+            await second_foreign.user(blueprint.users[0].id).in_(chat_id).send("world")
+            one = first_foreign.chat(chat_id).messages[-1]
+            two = second_foreign.chat(chat_id).messages[-1]
+            # Both environments allocate ids independently, starting from the same blank
+            # chat, so the first message either one sends collides by construction.
+            assert one.message_id == two.message_id
+
+            await env.feed(Update(update_id=1, message=one))
+
+            with pytest.raises(WorldLookupError, match="already holds a different message"):
+                await env.feed(Update(update_id=2, message=two))
+        finally:
+            env.dispose_sync()
+            first_foreign.dispose_sync()
+            second_foreign.dispose_sync()
+
+    async def test_a_carried_message_re_fed_with_equal_content_is_a_no_op(self, blueprint, dp):
+        """The collision guard must not fire on the same message arriving a second time."""
+        foreign = BotTestEnvironment(blueprint=blueprint, dispatcher=Dispatcher())
+        env = BotTestEnvironment(blueprint=blueprint, dispatcher=dp)
+        try:
+            chat_id = blueprint.chats[0].id
+            await foreign.user(blueprint.users[0].id).in_(chat_id).send("ping")
+            carried = foreign.chat(chat_id).messages[-1]
+
+            await env.feed(Update(update_id=1, message=carried))
+            # Fed again, wrapped in a fresh `Update` — each `feed` mints its own detached
+            # copy of `carried` since it still belongs to `foreign`'s bot, so this is two
+            # structurally equal but distinct objects sharing one id, not the exact same one.
+            await env.feed(Update(update_id=2, message=carried))
+
+            assert len(env.chat(chat_id).messages) == 1
+        finally:
+            env.dispose_sync()
+            foreign.dispose_sync()
+
     async def test_a_message_for_an_undeclared_chat_is_left_alone(self, env, dp):
         """There is no chat here to keep it in, and inventing one would hide the mistake."""
         stray = Message(
