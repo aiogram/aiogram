@@ -13,10 +13,17 @@ communities and invite links — then drive it through actors (``await user.send
 resulting chat state or on the recorded calls. There is a trigger for every
 :class:`aiogram.types.Update` variant, so no registered handler is unreachable from a test.
 A user's own private chat with the bot does not have to be declared at all: Telegram lets
-anyone open one, so it opens on demand, shaped exactly like a declared one. Deep links are
-followed the way tapping them behaves — including a bare profile link, which replays as a
-plain ``/start`` — and the kinds the toolkit does not simulate are refused by name rather
-than quietly downgraded.
+anyone open one, so it opens on demand, shaped exactly like a declared one — on the paths a
+user drives, which are the only ones where it can happen, since a bot cannot write into a
+private chat first. Deep links are followed the way tapping them behaves — including a bare
+profile link, which replays as a plain ``/start``, and a link carrying an explicit ``start``
+alongside anything else, which a real client reads as that start. Every other link format
+`Telegram documents <https://core.telegram.org/api/links>`_ is classified against that spec
+and refused by name with what a real client does instead — an invoice link and a boost link
+point at ``pay()`` and ``boost()``, a phone-number link is told apart from a chat invite link,
+and a prefilled-draft link names the text it left unsent — rather than being quietly
+downgraded or lumped into one generic rejection, and a ``start`` payload outside the
+characters Bot API deep linking allows is refused rather than delivered to the handler.
 
 Results are mounted to the bot exactly as parsed responses are, so shortcuts work on them
 and on every object nested inside them, while the objects a test hands to a call stay the
@@ -25,8 +32,10 @@ test's own — the world keeps copies of them, and hands out copies of what it s
 The world models the surfaces a bot's own logic depends on: sending, editing, moving,
 pinning and deleting messages; polls and reactions; chat administration and membership,
 including join requests and administrator rights — which are declared and granted as a whole
-and reported per chat type rather than assumed; the bot's own profile; forum topics; business
-connections; invite links; sticker sets; and Telegram Stars and gifts, where a payment
+and reported per chat type rather than assumed — and member permissions, which carry the Bot
+API's own couplings, so granting the right to send stickers grants the right to send messages
+unless ``use_independent_chat_permissions`` says otherwise; the bot's own profile; forum
+topics; business connections; invite links; sticker sets; and Telegram Stars and gifts, where a payment
 credits a real balance and a refund resolves the charge id the handler was given. Methods
 it does not model are recorded and answered with a schema-valid result derived from their
 declared return type, so no test has to pre-register results just to keep the bot running, and
@@ -40,7 +49,11 @@ Telegram's own wording, so a bot's ``except`` branch is testable. A gap in the *
 setup — a user, chat, sticker set, poll or business connection the blueprint never declared
 — raises :class:`aiogram.test.WorldLookupError` instead, and nothing converts it: it
 propagates and fails the test with a message that says what to declare, rather than being
-handed to the bot's error handling to swallow.
+handed to the bot's error handling to swallow. That includes a chat the bot itself calls
+into: writing to an undeclared chat fails the test and names the chats that do exist,
+instead of arriving as the "chat not found" a bot's own "the user blocked me" branch would
+catch and pass. A test that wants that branch declares the refusal outright with
+``env.on(SendMessage).raises(...)``.
 
 File content is supported where it can be honest: a file uploaded as a
 :class:`aiogram.types.input_file.BufferedInputFile` can be downloaded again in the same
@@ -52,9 +65,13 @@ Bots that keep their own background tasks change the world after a trigger retur
 toolkit ships the waiting helpers such a test would otherwise hand-roll:
 :meth:`aiogram.test.BotTestEnvironment.wait_for` polls any condition and returns whatever
 truthy value it produced, and ``chat.wait_for_message(...)`` waits for a matching message
-in one chat — or in one forum topic. Both give up with a
+in one chat — or in one forum topic, returning the newest match. Both take an optional
+``description`` as their second positional argument, since for the lambdas they are written
+with it is the only thing a failure can say about what was expected, and both give up with a
 :class:`aiogram.test.WaitTimeoutError` — a :class:`TimeoutError` — whose message says what
-was awaited and what the chat holds instead.
+was awaited and what the chat holds instead. How long they wait is one setting per
+environment, ``BotTestEnvironment(..., default_wait_timeout=...)``, with an explicit
+``timeout=`` still winning per call.
 
 .. warning::
 

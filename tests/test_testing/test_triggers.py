@@ -542,6 +542,68 @@ class TestWorldOwnedFieldValues:
         stored = private.messages[-1]
         assert stored.reply_to_message is first
 
+    async def test_an_edit_keeps_the_identity_a_send_keeps(self, env, private, alice):
+        """
+        Regression: the same ``fields`` aliased through `send` and were copied through
+        `edit`.
+
+        A trigger's input already exempted the world's own objects from copying, but the
+        edit path then handed the whole change set to the derivation, which copied
+        unconditionally — so `send(fields=...)` and `edit(fields=...)` disagreed about the
+        very same value, and only the second one broke the alias.
+        """
+        await alice.send("first")
+        first = private.messages[-1]
+        await alice.send("second")
+
+        await alice.edit(
+            private.messages[-1],
+            "second, edited",
+            fields={"reply_to_message": first},
+        )
+
+        assert private.messages[-1].reply_to_message is first
+
+    async def test_two_fields_of_an_edit_naming_one_world_object_keep_sharing_it(
+        self, env, private, alice
+    ):
+        await alice.send("first")
+        first = private.messages[-1]
+        await alice.send("second")
+
+        await alice.edit(
+            private.messages[-1],
+            "second, edited",
+            fields={"reply_to_message": first, "pinned_message": first},
+        )
+
+        stored = private.messages[-1]
+        assert stored.reply_to_message is first
+        assert stored.pinned_message is first
+
+    async def test_an_edit_still_copies_a_value_from_another_environment(
+        self, env, private, alice, blueprint, dp
+    ):
+        """The exemption is ownership, not "anything that happens to be bound already"."""
+        other = BotTestEnvironment(blueprint=blueprint, dispatcher=dp)
+        try:
+            await other.user(blueprint.users[0]).send("from the other world")
+            foreign = other.chat(blueprint.users[0].id).messages[-1]
+            await alice.send("mine")
+
+            await alice.edit(
+                private.messages[-1],
+                "mine, edited",
+                fields={"reply_to_message": foreign},
+            )
+
+            stored = private.messages[-1].reply_to_message
+            assert stored is not foreign
+            assert stored.bot is env.bot
+            assert foreign.bot is other.bot
+        finally:
+            other.dispose_sync()
+
     async def test_an_edited_reply_target_is_visible_through_the_stored_reply(
         self, env, private, alice
     ):

@@ -365,7 +365,7 @@ class TestBatchForwardAndCopy:
 
     @pytest.mark.parametrize("method_name", ["forward_messages", "copy_messages"])
     async def test_an_unknown_source_chat_fails(self, env, team, method_name):
-        with pytest.raises(TelegramBadRequest, match="chat not found"):
+        with pytest.raises(WorldLookupError, match="not declared in the blueprint"):
             await getattr(env.bot, method_name)(
                 chat_id=team.id,
                 from_chat_id=-99,
@@ -460,7 +460,7 @@ class TestUnpinningEverything:
         assert private.pinned_message_ids == []
 
     async def test_unpin_all_on_an_unknown_chat_fails(self, env):
-        with pytest.raises(TelegramBadRequest, match="chat not found"):
+        with pytest.raises(WorldLookupError, match="not declared in the blueprint"):
             await env.bot.unpin_all_chat_messages(chat_id=-99)
 
 
@@ -470,7 +470,7 @@ class TestSeededAnswers:
         assert env.calls.last(SendChatAction).action == "typing"
 
     async def test_chat_action_against_an_unknown_chat_fails(self, env):
-        with pytest.raises(TelegramBadRequest, match="chat not found"):
+        with pytest.raises(WorldLookupError, match="not declared in the blueprint"):
             await env.bot.send_chat_action(chat_id=-99, action="typing")
 
     async def test_get_file_echoes_the_requested_id(self, env, private):

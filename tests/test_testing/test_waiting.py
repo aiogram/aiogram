@@ -2,7 +2,13 @@ import asyncio
 
 import pytest
 
-from aiogram.test import Blueprint, BotTestEnvironment, TopicState, WaitTimeoutError
+from aiogram.test import (
+    Blueprint,
+    BotTestEnvironment,
+    ChatState,
+    TopicState,
+    WaitTimeoutError,
+)
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
 
@@ -128,6 +134,24 @@ class TestWaitForMessage:
         message = await private.wait_for_message(lambda item: item.text.startswith("tick"))
 
         assert message.text == "tick 2"
+
+    async def test_the_newest_is_by_id_and_not_by_position(self, env, private):
+        """
+        Regression: "the newest one" was implemented as "the last one in the list".
+
+        The docstring promises the newest match, and a test asking for the bot's latest
+        reply is relying on that word. Reading the last element instead made the promise
+        depend on the list happening to be sorted — and got an id-50 message out of a chat
+        whose newest was 101 the one time it was not.
+        """
+        await env.bot.send_message(chat_id=private.id, text="tick 1")
+        await env.bot.send_message(chat_id=private.id, text="tick 2")
+        private.messages.reverse()
+
+        message = await private.wait_for_message(lambda item: item.text.startswith("tick"))
+
+        assert message.text == "tick 2"
+        assert await private.wait_for_message() is message
 
     async def test_without_a_predicate_any_message_matches(self, env, private):
         async def chatter():
@@ -344,3 +368,108 @@ class TestWaitForMessageInATopic:
         support = chat.topic(topics[0].message_thread_id)
 
         assert support.describe_messages().startswith("The topic holds 1 message(s)")
+
+
+class TestDescriptionIsPositional:
+    """
+    ``description`` is what the failure message can say about a lambda, so it comes second.
+
+    Keyword-only, it was the parameter everybody needed and nobody passed. Positional it
+    stays backward compatible — ``description=`` still works — while costing nothing to
+    write.
+    """
+
+    async def test_wait_for_takes_it_positionally(self, env):
+        with pytest.raises(WaitTimeoutError) as exc_info:
+            await env.wait_for(lambda: False, "the night phase", timeout=0.05)
+
+        assert "waiting for the night phase" in str(exc_info.value)
+
+    async def test_wait_for_still_takes_it_as_a_keyword(self, env):
+        with pytest.raises(WaitTimeoutError) as exc_info:
+            await env.wait_for(lambda: False, timeout=0.05, description="the night phase")
+
+        assert "waiting for the night phase" in str(exc_info.value)
+
+    async def test_wait_for_message_takes_it_positionally(self, env, private):
+        with pytest.raises(WaitTimeoutError) as exc_info:
+            await private.wait_for_message(
+                lambda item: False,
+                "the dawn announcement",
+                timeout=0.05,
+            )
+
+        assert "waiting for the dawn announcement" in str(exc_info.value)
+
+    async def test_a_topic_wait_describes_itself_too(self, env, team):
+        topic = await env.bot.create_forum_topic(chat_id=team.id, name="Support")
+        support = env.chat(team.id).topic(topic.message_thread_id)
+
+        with pytest.raises(WaitTimeoutError) as exc_info:
+            await support.wait_for_message(lambda item: False, "the ticket reply", timeout=0.05)
+
+        assert "waiting for the ticket reply" in str(exc_info.value)
+
+
+class TestDefaultWaitTimeout:
+    """
+    One setting for every wait in an environment, overridable per call.
+
+    A bot with slow background work would otherwise repeat ``timeout=`` on every wait in
+    its suite, and a suite that wants fast failures would repeat a small one — while the
+    chat-scoped waits, which are the ones tests actually use, had no way to be told at all.
+    """
+
+    @pytest.fixture
+    def quick(self, blueprint, dp):
+        environment = BotTestEnvironment(
+            blueprint=blueprint,
+            dispatcher=dp,
+            default_wait_timeout=0.05,
+        )
+        try:
+            yield environment
+        finally:
+            environment.dispose_sync()
+
+    async def test_wait_for_uses_it(self, quick):
+        with pytest.raises(WaitTimeoutError) as exc_info:
+            await quick.wait_for(lambda: False)
+
+        assert "after 0.05s" in str(exc_info.value)
+
+    async def test_a_chat_wait_reaches_it_through_the_world(self, quick, blueprint):
+        chat = quick.chat(blueprint.chats[0].id)
+
+        with pytest.raises(WaitTimeoutError) as exc_info:
+            await chat.wait_for_message()
+
+        assert "after 0.05s" in str(exc_info.value)
+        assert chat.default_wait_timeout == 0.05
+
+    async def test_a_topic_wait_reaches_it_through_the_chat(self, quick, blueprint):
+        chat = quick.chat(blueprint.chats[1].id)
+
+        with pytest.raises(WaitTimeoutError) as exc_info:
+            await chat.general_topic.wait_for_message()
+
+        assert "after 0.05s" in str(exc_info.value)
+
+    async def test_an_explicit_timeout_still_wins(self, quick, blueprint):
+        chat = quick.chat(blueprint.chats[0].id)
+
+        with pytest.raises(WaitTimeoutError) as exc_info:
+            await chat.wait_for_message(timeout=0.01)
+
+        assert "after 0.01s" in str(exc_info.value)
+
+    async def test_the_default_default_is_five_seconds(self, env, private):
+        assert env.world.default_wait_timeout == 5.0
+        assert private.default_wait_timeout == 5.0
+        assert private.general_topic.default_wait_timeout == 5.0
+
+    def test_a_chat_outside_any_world_falls_back(self):
+        loose = ChatState(id=1)
+
+        assert loose.default_wait_timeout == 5.0
+        assert TopicState(message_thread_id=7).default_wait_timeout == 5.0

@@ -7,7 +7,13 @@ from typing import Any
 
 from .errors import WaitTimeoutError
 
-__all__ = ("describe_callable", "poll_until")
+__all__ = ("DEFAULT_WAIT_TIMEOUT", "describe_callable", "poll_until")
+
+#: How long a wait runs before giving up, when neither the call nor the environment says.
+#: :class:`aiogram.test.BotTestEnvironment` takes a ``default_wait_timeout`` that replaces
+#: it for every wait in that environment, and an explicit ``timeout=`` replaces it for one
+#: call; this is only the floor under both.
+DEFAULT_WAIT_TIMEOUT = 5.0
 
 
 async def poll_until(

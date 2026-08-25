@@ -247,6 +247,41 @@ class TestDetachedCopy:
         assert isinstance(copied, set)
         assert copied.pop() is not reaction
 
+    def test_a_set_of_models_keeps_every_element_findable(self, env):
+        """
+        The elements are rehashed as the set is rebuilt, and land in the right buckets.
+
+        The worry is real in shape — a model copy is hashed here while it may still be an
+        unfilled shell — but not in effect: the shell is a ``copy.copy``, so it hashes like
+        the original from the moment it exists, and filling it swaps each child for a copy
+        that is equal to, and therefore hashes like, what it replaced. Membership, length
+        and lookup all survive; what does not carry over is the binding, which pydantic
+        keeps in the private attributes the hash never reads.
+        """
+        original = frozenset({message(text="one"), message(text="two")})
+
+        copied = detached_copy(original, bot=env.bot)
+
+        assert isinstance(copied, frozenset)
+        assert len(copied) == 2
+        assert {item.text for item in copied} == {"one", "two"}
+        for item in copied:
+            assert item in copied
+            assert item not in original
+            assert item.bot is env.bot
+
+    def test_a_set_of_models_nested_in_a_model_survives_too(self, env):
+        """The same, reached through the fill loop rather than through the final `copied`."""
+        inner = message(text="held")
+        original = message(future_field=frozenset({inner}))
+
+        copied = detached_copy(original)
+
+        (held,) = copied.future_field
+        assert held is not inner
+        assert held in copied.future_field
+        assert held.text == "held"
+
     def test_a_mapping_is_copied_key_by_key(self):
         original = {"outer": {"inner": message(text="nested")}}
 

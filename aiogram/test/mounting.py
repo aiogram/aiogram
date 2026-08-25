@@ -9,7 +9,10 @@ owns both halves of that policy, and nothing else does:
   under test, and leaves alone anything that already has an owner;
 * :func:`detach` and :func:`detached_copy` produce objects nobody owns, for the moments
   something crosses the boundary the other way — a canned result handed out, a caller's
-  constant taken into the world, an update arriving from another environment.
+  constant taken into the world, an update arriving from another environment;
+* :func:`owned_or_copied` is the boundary *inwards*, where the two are mixed: a value a
+  test hands the world may be the test's own or may be the world's own, and only the
+  former may be copied.
 
 :func:`bindables` is the single walk underneath all of them.
 """
@@ -27,7 +30,14 @@ from aiogram.client.context_controller import BotContextController
 if TYPE_CHECKING:
     from aiogram.client.bot import Bot
 
-__all__ = ("bindables", "bound_elsewhere", "detach", "detached_copy", "mount")
+__all__ = (
+    "bindables",
+    "bound_elsewhere",
+    "detach",
+    "detached_copy",
+    "mount",
+    "owned_or_copied",
+)
 
 _Value = TypeVar("_Value")
 
@@ -189,6 +199,16 @@ def detached_copy(value: Any, *, bot: Bot | None = None) -> Any:
             # finished children. Recursion is bounded by how deeply such containers nest —
             # no Bot API type has a tuple, set or frozenset field at all, so in practice
             # this is one level of whatever a test wrapped a result in.
+            #
+            # A `set` rehashes its elements here, and a model copy may still be an unfilled
+            # shell at this point — but its hash cannot move underneath the set, so the
+            # buckets it lands in are the final ones. A shell is `copy.copy`, which carries
+            # the original's ``__dict__`` over, so it hashes like the original from the
+            # moment it exists; filling it then swaps each child for a copy of that child,
+            # and pydantic hashes a model by the tuple of its field values, where a copy is
+            # equal to — and therefore hashes like — what it was copied from, all the way
+            # down to the shared scalar leaves. What a copy does *not* carry over is the
+            # binding, which lives in the private attributes the hash never reads.
             contents = [copied(inner) for inner in item]
             rebuilt = tuple(contents) if isinstance(item, tuple) else type(item)(contents)
             memo[id(item)] = rebuilt
@@ -209,6 +229,42 @@ def detached_copy(value: Any, *, bot: Bot | None = None) -> Any:
             shell.extend(copied(item) for item in node)
 
     return copied(value)
+
+
+def owned_or_copied(value: Any, *, owner: Bot | None, bind: Bot | None = None) -> Any:
+    """
+    ``value`` itself wherever it already belongs to ``owner``, a copy everywhere else.
+
+    The rule for everything a test hands *into* the world — the ``fields`` of a trigger, the
+    ``changes`` of an edit — where the values are of two kinds and only one of them may be
+    copied.
+
+    A value the caller built is the caller's: a module-level ``MENU`` keyboard, a constant
+    reaction list. Letting one of those into the world binds it to a bot as the world mounts
+    whatever it stores, so a constant shared across a session stops being equal to the
+    unbound copy the world keeps. Those are copied, exactly as
+    :func:`detached_copy` describes.
+
+    A value already bound to ``owner`` is the *world's* own object instead — most often a
+    message the same chat already holds, passed as ``reply_to_message`` — and copying it is
+    the bug this exists to prevent: the copy is a snapshot, so a later edit to the stored
+    message no longer shows through it, and two fields that aliased one stored object become
+    two unrelated copies. Such a value is returned untouched.
+
+    ``dict`` and ``list`` are walked so that a world object nested inside them is recognised
+    too; everything else — unbound, or bound to some *other* bot — is copied. Copies are
+    minted bound to ``bind``, for the callers whose result goes straight into the world and
+    would otherwise have to be bound by a second walk.
+    """
+    if isinstance(value, dict):
+        return {
+            name: owned_or_copied(item, owner=owner, bind=bind) for name, item in value.items()
+        }
+    if isinstance(value, list):
+        return [owned_or_copied(item, owner=owner, bind=bind) for item in value]
+    if owner is not None and isinstance(value, BotContextController) and value.bot is owner:
+        return value
+    return detached_copy(value, bot=bind)
 
 
 def bindables(value: Any, *, prune_bound: bool = False) -> Iterator[BotContextController]:

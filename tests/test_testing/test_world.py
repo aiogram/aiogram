@@ -7,6 +7,7 @@ from aiogram.test import ApiRejection, Blueprint
 from aiogram.test.world import (
     BASE_DATE,
     CHAT_TYPE_SCOPED_RIGHTS,
+    ChatRegistry,
     ChatState,
     MemberState,
     UserState,
@@ -425,6 +426,39 @@ class TestChatRegistration:
 
         assert chat.bound_bot is None
         assert chat.add_message(make_message(chat)).bot is None
+
+    def test_replacing_the_mapping_after_construction_keeps_the_registry(self, env):
+        """
+        Regression: ``world.chats = {...}`` swapped the registry for a plain ``dict``.
+
+        The wiring was installed once, in ``__post_init__``, so a test rebuilding the
+        world's chats the obvious way detached every one of them: ``chat.bound_bot`` was
+        ``None``, and every message stored afterwards was unbound — surfacing much later
+        as a shortcut raising on a message that looks perfectly ordinary.
+        """
+        world = World(bot_user=UserState(id=42, is_bot=True))
+        world.bind(env.bot)
+        chat = ChatState(id=1)
+
+        world.chats = {1: chat}
+
+        assert isinstance(world.chats, ChatRegistry)
+        assert world.chats[1] is chat
+        assert chat.world is world
+        assert chat.bound_bot is env.bot
+        assert chat.add_message(make_message(chat)).bot is env.bot
+
+    def test_a_registry_assigned_as_is_is_left_alone(self, env):
+        world = World(bot_user=UserState(id=42, is_bot=True))
+        registry = world.chats
+        registry[1] = ChatState(id=1)
+
+        world.chats = registry
+
+        assert world.chats is registry
+
+    def test_the_mapping_is_a_registry_from_the_start(self):
+        assert isinstance(World(bot_user=UserState(id=42, is_bot=True)).chats, ChatRegistry)
 
 
 class TestDerivedMessages:

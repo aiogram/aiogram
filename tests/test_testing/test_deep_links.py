@@ -119,26 +119,71 @@ class TestFollowDeepLink:
 
         assert seen == ["team-9"]
 
+    @pytest.mark.parametrize(
+        "url",
+        [
+            "https://t.me/test_bot?start=team-9&startapp=abc",
+            "https://t.me/test_bot?startapp=abc&start=team-9",
+            "https://t.me/test_bot?startgroup=g&start=team-9&startchannel=c",
+            "tg://resolve?domain=test_bot&startapp=abc&start=team-9",
+        ],
+    )
+    async def test_an_explicit_start_wins_over_a_start_ish_param(self, env, team, alice, url):
+        """
+        Regression: classification iterated the policy table, where `start` comes last.
+
+        So `?start=x&startapp=y` was read as the `startapp` the table happens to list
+        earlier and refused — a link a real client opens the bot with, and one Telegram
+        itself hands out, since a Mini App button carries both for clients that cannot open
+        the app. The docstring already promised that `start` wins whenever it is present;
+        the code now agrees, in either query order.
+        """
+        seen = []
+        env.dispatcher.message.register(
+            lambda message, command: seen.append(command.args),
+            CommandStart(deep_link=True),
+        )
+        await _post_deep_link(env, team, url)
+
+        await alice.in_(team).follow_deep_link()
+
+        assert seen == ["team-9"]
+
+    async def test_a_start_ish_param_alone_is_still_refused(self, env, team, alice):
+        """The precedence only applies when a real `start` is there to take it."""
+        await _post_deep_link(env, team, "https://t.me/test_bot?startapp=abc")
+
+        with pytest.raises(WorldLookupError, match="startapp"):
+            await alice.in_(team).follow_deep_link()
+
+    async def test_startgroup_without_start_still_classifies_as_startgroup(self, env, team, alice):
+        await _post_deep_link(env, team, "https://t.me/test_bot?startgroup=true")
+
+        with pytest.raises(WorldLookupError, match="startgroup"):
+            await alice.in_(team).follow_deep_link()
+
     async def test_unrecognized_query_param_link_is_rejected(self, env, team, alice):
         """
-        A prefilled-share button (`?text=...`) is not a `start` link and must not be
-        silently replayed as a bare `/start` — the toolkit does not know what a real
-        Telegram client would do with it, so it refuses to guess.
+        A query Telegram does not define is not a `start` link and must not be silently
+        replayed as a bare `/start` — the toolkit does not know what a real Telegram
+        client would do with it, so it refuses to guess and quotes the query back.
         """
-        await _post_deep_link(env, team, "https://t.me/test_bot?text=hi")
+        url = "https://t.me/test_bot?utm_source=newsletter"
+        await _post_deep_link(env, team, url)
 
-        with pytest.raises(WorldLookupError, match="text=hi"):
-            await alice.in_(team).follow_deep_link("https://t.me/test_bot?text=hi")
+        with pytest.raises(WorldLookupError, match="utm_source=newsletter"):
+            await alice.in_(team).follow_deep_link(url)
 
     async def test_unrecognized_query_params_with_start_still_reject_only_start_is_missing(
         self, env, team, alice
     ):
         """A junk param alongside `start` still resolves as `start` — see above — but a
         junk param on its own, with no `start` in sight, is rejected."""
-        await _post_deep_link(env, team, "https://t.me/test_bot?voicechat=1&profile=abc")
+        url = "https://t.me/test_bot?utm_source=x&fbclid=abc"
+        await _post_deep_link(env, team, url)
 
-        with pytest.raises(WorldLookupError, match="voicechat=1&profile=abc"):
-            await alice.in_(team).follow_deep_link("https://t.me/test_bot?voicechat=1&profile=abc")
+        with pytest.raises(WorldLookupError, match="utm_source=x&fbclid=abc"):
+            await alice.in_(team).follow_deep_link(url)
 
     async def test_unrecognized_query_param_button_is_not_silently_followed_as_plain_start(
         self, env, team, alice
@@ -153,15 +198,15 @@ class TestFollowDeepLink:
             lambda message, command: seen.append(message.text),
             CommandStart(deep_link=True),
         )
-        await _post_deep_link(env, team, "https://t.me/test_bot?text=hi")
+        await _post_deep_link(env, team, "https://t.me/test_bot?utm_source=x")
 
-        with pytest.raises(WorldLookupError, match="text=hi"):
+        with pytest.raises(WorldLookupError, match="utm_source=x"):
             await alice.in_(team).follow_deep_link()
 
         assert seen == []
 
     async def test_scan_skips_a_button_with_unrecognized_query_params(self, env, team, alice):
-        """A keyboard mixing a share (`?text=`) button with a real `start` button must
+        """A keyboard mixing an unrecognized-query button with a real `start` button must
         still find the `start` link — the unfollowable one never shadows it."""
         seen = []
         env.dispatcher.message.register(
@@ -174,7 +219,9 @@ class TestFollowDeepLink:
             reply_markup=InlineKeyboardMarkup(
                 inline_keyboard=[
                     [
-                        InlineKeyboardButton(text="Share", url="https://t.me/test_bot?text=hi"),
+                        InlineKeyboardButton(
+                            text="Promo", url="https://t.me/test_bot?utm_source=x"
+                        ),
                     ],
                     [
                         InlineKeyboardButton(
@@ -339,14 +386,15 @@ class TestFollowDeepLink:
     async def test_message_link_is_rejected(self, env, team, alice):
         await _post_deep_link(env, team, "https://t.me/test_bot/42")
 
-        with pytest.raises(WorldLookupError, match="extra path segments"):
+        with pytest.raises(WorldLookupError, match="a message link"):
             await alice.in_(team).follow_deep_link("https://t.me/test_bot/42")
 
-    async def test_extra_path_link_is_rejected(self, env, team, alice):
-        await _post_deep_link(env, team, "https://t.me/test_bot/shop")
+    async def test_unrecognized_path_shape_is_rejected(self, env, team, alice):
+        """The bucket left for paths matching none of Telegram's documented formats."""
+        await _post_deep_link(env, team, "https://t.me/test_bot/shop/cart")
 
         with pytest.raises(WorldLookupError, match="extra path segments"):
-            await alice.in_(team).follow_deep_link("https://t.me/test_bot/shop")
+            await alice.in_(team).follow_deep_link("https://t.me/test_bot/shop/cart")
 
     async def test_invite_hash_link_is_rejected(self, env, team, alice):
         await _post_deep_link(env, team, "https://t.me/+AbCdEfGhIj")
@@ -438,8 +486,8 @@ class TestUrlsThatAreNotDeepLinks:
         [
             pytest.param("https://example.com/promo", id="another-host"),
             pytest.param("https://t.me/", id="no-username"),
-            pytest.param("tg://join?invite=abc", id="tg-but-not-resolve"),
             pytest.param("tg://resolve?domain=", id="tg-resolve-without-domain"),
+            pytest.param("tg://resolve?phone=", id="tg-resolve-without-phone"),
             pytest.param("ftp://t.me/test_bot", id="another-scheme"),
         ],
     )
@@ -478,3 +526,350 @@ class TestUrlsThatAreNotDeepLinks:
                 "https://t.me/test_bot?start=here",
                 message=other,
             )
+
+
+class TestLinkFormatsFromTheSpec:
+    """
+    Every documented link format is refused as the format it actually is.
+
+    The classification and the wording follow https://core.telegram.org/api/links: what a
+    real Telegram client does with the url is the whole content of the refusal, so a test
+    that put the wrong kind of link on a button is told which kind it put there — not
+    that it is "a link with extra path segments" or "a query Telegram does not define".
+    """
+
+    @pytest.mark.parametrize(
+        ("url", "expected"),
+        [
+            pytest.param(
+                "https://t.me/test_bot/shop",
+                "opens one of the bot's Mini Apps directly",
+                id="direct-mini-app",
+            ),
+            pytest.param(
+                "tg://resolve?domain=test_bot&appname=shop&startapp=ref",
+                "opens one of the bot's Mini Apps directly",
+                id="direct-mini-app-tg",
+            ),
+            pytest.param("https://t.me/test_bot/42", "a message link", id="message"),
+            pytest.param("https://t.me/test_bot/9/42", "a message link", id="message-in-topic"),
+            pytest.param("https://t.me/c/1234567/42", "a message link", id="message-private"),
+            pytest.param(
+                "tg://privatepost?channel=1234567&post=42",
+                "a message link",
+                id="message-private-tg",
+            ),
+            pytest.param("https://t.me/durov/s/5", "a story link", id="story"),
+            pytest.param("https://t.me/share?url=https%3A%2F%2Fexample.com", "a share link"),
+            pytest.param("https://t.me/share/url?url=x&text=hi", "a share link", id="share-url"),
+            pytest.param("https://t.me/msg/url?url=x", "a share link", id="share-msg"),
+            pytest.param("tg://msg_url?url=x&text=hi", "a share link", id="share-tg"),
+            pytest.param("https://t.me/$AbCdEfGhIj", "an invoice link", id="invoice-dollar"),
+            pytest.param("https://t.me/invoice/AbCdEfGhIj", "an invoice link", id="invoice-path"),
+            pytest.param("tg://invoice?slug=AbCdEfGhIj", "an invoice link", id="invoice-tg"),
+            pytest.param("https://t.me/boost/durov", "a boost link", id="boost-path"),
+            pytest.param("https://t.me/test_bot?boost", "a boost link", id="boost-query"),
+            pytest.param("https://t.me/boost?c=1234567", "a boost link", id="boost-private"),
+            pytest.param("tg://boost?domain=durov", "a boost link", id="boost-tg"),
+            pytest.param("https://t.me/durov?videochat", "a video-chat link", id="videochat"),
+            pytest.param("https://t.me/durov?livestream", "a video-chat link", id="livestream"),
+            pytest.param(
+                "https://t.me/durov?voicechat=hash",
+                "a video-chat link",
+                id="voicechat-legacy",
+            ),
+            pytest.param("https://t.me/m/AbCdEfGhIj", "a business chat link", id="business"),
+            pytest.param("tg://message?slug=AbCdEfGhIj", "a business chat link", id="business-tg"),
+            pytest.param(
+                "https://t.me/addstickers/AnimatedEmojies",
+                "a sticker- or emoji-set link",
+                id="stickers",
+            ),
+            pytest.param(
+                "https://t.me/addemoji/CustomPack",
+                "a sticker- or emoji-set link",
+                id="emoji-set",
+            ),
+            pytest.param(
+                "tg://addstickers?set=AnimatedEmojies",
+                "a sticker- or emoji-set link",
+                id="stickers-tg",
+            ),
+            pytest.param(
+                "https://t.me/test_bot?game=chess",
+                "share the bot's `chess` game",
+                id="game",
+            ),
+            pytest.param(
+                "https://t.me/test_bot?text=hi%20there",
+                "waiting as an unsent draft",
+                id="prefilled-draft",
+            ),
+            pytest.param(
+                "https://t.me/test_bot?ref=affiliate-7",
+                "crediting `affiliate-7`",
+                id="affiliate",
+            ),
+            pytest.param(
+                "https://t.me/test_bot?profile",
+                "opens the profile page rather than the chat view",
+                id="profile",
+            ),
+            pytest.param(
+                "https://t.me/proxy?server=1.2.3.4&port=443&secret=ee",
+                "a Telegram service link",
+                id="proxy",
+            ),
+            pytest.param(
+                "https://t.me/setlanguage/klingon",
+                "a Telegram service link",
+                id="language-pack",
+            ),
+            pytest.param("https://t.me/login/12345", "a Telegram service link", id="login-code"),
+            pytest.param(
+                "https://t.me/addlist/AbCdEfGhIj",
+                "a Telegram service link",
+                id="chat-folder",
+            ),
+        ],
+    )
+    async def test_it_is_refused_as_what_it_is(self, env, team, alice, url, expected):
+        await _post_deep_link(env, team, url)
+
+        with pytest.raises(WorldLookupError, match=expected):
+            await alice.in_(team).follow_deep_link(url)
+
+    async def test_a_draft_link_names_the_text_and_points_at_send(self, env, team, alice):
+        """
+        `?text=` fills a draft the user still has to send, so the bot receives nothing —
+        the one thing a test must not conclude is that the text was delivered.
+        """
+        url = "https://t.me/test_bot?text=hi%20there"
+        await _post_deep_link(env, team, url)
+
+        with pytest.raises(WorldLookupError) as exc_info:
+            await alice.in_(team).follow_deep_link(url)
+
+        message = str(exc_info.value)
+        assert "'hi there'" in message
+        assert "send('hi there')" in message
+
+    async def test_an_invoice_link_points_at_the_payment_triggers(self, env, team, alice):
+        await _post_deep_link(env, team, "https://t.me/$AbCdEfGhIj")
+
+        with pytest.raises(WorldLookupError, match="use `pay..` to complete a payment"):
+            await alice.in_(team).follow_deep_link("https://t.me/$AbCdEfGhIj")
+
+    async def test_a_boost_link_points_at_the_boost_trigger(self, env, team, alice):
+        await _post_deep_link(env, team, "https://t.me/boost/durov")
+
+        with pytest.raises(WorldLookupError, match="use `boost..` to deliver"):
+            await alice.in_(team).follow_deep_link("https://t.me/boost/durov")
+
+    async def test_a_direct_mini_app_button_is_surfaced_by_the_scan_as_this_bot_s(
+        self, env, team, alice
+    ):
+        """
+        `t.me/<bot>/<short_name>` is the one path form that does name a bot, so the scan
+        reports it as an unfollowable button of this bot's rather than ignoring it the
+        way it ignores links addressed to a chat.
+        """
+        await _post_deep_link(env, team, "https://t.me/test_bot/shop")
+
+        with pytest.raises(WorldLookupError, match="only unfollowable ones") as exc_info:
+            await alice.in_(team).follow_deep_link()
+
+        assert "Mini Apps" in str(exc_info.value)
+
+    async def test_the_scan_ignores_links_that_address_a_chat_rather_than_the_bot(
+        self, env, team, alice
+    ):
+        """
+        A boost or video-chat button names a channel and can never name this bot, so the
+        scan does not list it as an unfollowable candidate "to @test_bot" — it reports
+        the plain absence of a deep-link button instead.
+        """
+        await _post_deep_link(env, team, "https://t.me/durov?videochat")
+
+        with pytest.raises(WorldLookupError, match="carries a deep-link button") as exc_info:
+            await alice.in_(team).follow_deep_link()
+
+        assert "unfollowable" not in str(exc_info.value)
+
+
+class TestPhoneLinksAreNotInviteLinks:
+    """
+    `t.me/+<digits>` addresses a phone number, `t.me/+<hash>` a private chat.
+
+    Telegram's own clients tell the two apart by the all-digit tail, and calling a phone
+    link an invite link would send a test looking for a chat that was never in the link.
+    """
+
+    @pytest.mark.parametrize(
+        "url",
+        [
+            pytest.param("https://t.me/+15551234567", id="t-me"),
+            pytest.param("tg://resolve?phone=15551234567", id="tg-resolve"),
+        ],
+    )
+    async def test_a_phone_link_is_refused_as_a_phone_link(self, env, team, alice, url):
+        await _post_deep_link(env, team, url)
+
+        with pytest.raises(WorldLookupError, match="a phone-number link") as exc_info:
+            await alice.in_(team).follow_deep_link(url)
+
+        assert "invite" not in str(exc_info.value)
+
+    async def test_an_invite_hash_is_still_an_invite_link(self, env, team, alice):
+        await _post_deep_link(env, team, "https://t.me/+AbCdEfGhIj")
+
+        with pytest.raises(WorldLookupError, match="a chat invite link") as exc_info:
+            await alice.in_(team).follow_deep_link("https://t.me/+AbCdEfGhIj")
+
+        assert "phone" not in str(exc_info.value)
+
+
+class TestTgSchemeVariants:
+    """
+    A `tg://` url other than `tg://resolve` is still a Telegram link.
+
+    Refusing it as "not a Telegram deep-link url" was a lie about the url; each known
+    host is classified like its `t.me` twin, and the rest are honestly described as app
+    screens rather than as something the toolkit failed to recognize.
+    """
+
+    async def test_tg_join_is_an_invite_link_like_its_t_me_twin(self, env, team, alice):
+        await _post_deep_link(env, team, "tg://join?invite=AbCdEfGhIj")
+
+        with pytest.raises(WorldLookupError, match="a chat invite link"):
+            await alice.in_(team).follow_deep_link("tg://join?invite=AbCdEfGhIj")
+
+    async def test_tg_user_is_named_as_the_bot_api_abstraction_it_is(self, env, team, alice):
+        await _post_deep_link(env, team, "tg://user?id=42")
+
+        with pytest.raises(WorldLookupError, match="entity reference"):
+            await alice.in_(team).follow_deep_link("tg://user?id=42")
+
+    @pytest.mark.parametrize(
+        "url",
+        [
+            pytest.param("tg://settings/privacy", id="settings"),
+            pytest.param("tg://proxy?server=1.2.3.4&port=443&secret=ee", id="proxy"),
+            pytest.param("tg://stars", id="a-host-the-toolkit-does-not-enumerate"),
+        ],
+    )
+    async def test_an_app_screen_is_refused_as_a_service_link(self, env, team, alice, url):
+        await _post_deep_link(env, team, url)
+
+        with pytest.raises(WorldLookupError, match="a Telegram service link"):
+            await alice.in_(team).follow_deep_link(url)
+
+
+class TestStartPayloadValidation:
+    """
+    A `start` payload Telegram would not deliver is refused, naming the rule.
+
+    Bot API deep linking allows 1-64 characters of `A-Z`, `a-z`, `0-9`, `_` and `-`, so a
+    real client tapping a button with anything else never sends `/start` at all. Feeding
+    the handler such a payload would let a test pass on a button the bot built wrong.
+    """
+
+    @pytest.mark.parametrize(
+        "payload",
+        [
+            pytest.param("a" * 64, id="64-characters"),
+            pytest.param("a-b_c", id="dash-and-underscore"),
+            pytest.param("MjAyNS0wMS0wMQ", id="base64url"),
+        ],
+    )
+    async def test_a_valid_payload_is_followed(self, env, team, alice, payload):
+        seen = []
+        env.dispatcher.message.register(
+            lambda message, command: seen.append(command.args),
+            CommandStart(deep_link=True),
+        )
+        await _post_deep_link(env, team, f"https://t.me/test_bot?start={payload}")
+
+        await alice.in_(team).follow_deep_link()
+
+        assert seen == [payload]
+
+    @pytest.mark.parametrize(
+        ("url", "expected"),
+        [
+            pytest.param(
+                f"https://t.me/test_bot?start={'a' * 65}",
+                "1-64 characters",
+                id="65-characters",
+            ),
+            pytest.param(
+                "https://t.me/test_bot?start=team%2042",
+                "'team 42'",
+                id="percent-encoded-space",
+            ),
+            pytest.param(
+                "https://t.me/test_bot?start=привет",
+                "'привет'",
+                id="non-latin",
+            ),
+            pytest.param(
+                "tg://resolve?domain=test_bot&start=a+b",
+                "'a b'",
+                id="tg-resolve-form",
+            ),
+        ],
+    )
+    async def test_an_invalid_payload_is_refused(self, env, team, alice, url, expected):
+        seen = []
+        env.dispatcher.message.register(
+            lambda message, command: seen.append(command.args),
+            CommandStart(deep_link=True),
+        )
+        await _post_deep_link(env, team, url)
+
+        with pytest.raises(WorldLookupError, match=expected):
+            await alice.in_(team).follow_deep_link(url)
+
+        assert seen == []
+
+    async def test_the_scan_refuses_it_too_rather_than_looking_past_it(self, env, team, alice):
+        """The link is a `start` link — it is simply broken, and saying so is the point."""
+        await _post_deep_link(env, team, "https://t.me/test_bot?start=team%2042")
+
+        with pytest.raises(WorldLookupError, match="Telegram would not deliver"):
+            await alice.in_(team).follow_deep_link()
+
+
+class TestStartGroupAdminCompanion:
+    """
+    `admin=` only preselects the rights the chooser asks for; the kind does not change.
+
+    Telegram documents it as a companion of `startgroup` / `startchannel`, so a link
+    carrying it is still a chooser link and must be refused as one.
+    """
+
+    @pytest.mark.parametrize(
+        ("url", "kind"),
+        [
+            pytest.param(
+                "https://t.me/test_bot?startgroup=team&admin=delete_messages+ban_users",
+                "startgroup",
+                id="group",
+            ),
+            pytest.param(
+                "https://t.me/test_bot?startchannel&admin=post_messages",
+                "startchannel",
+                id="channel",
+            ),
+            pytest.param(
+                "tg://resolve?domain=test_bot&startgroup&admin=change_info",
+                "startgroup",
+                id="tg-resolve",
+            ),
+        ],
+    )
+    async def test_it_is_still_a_chooser_link(self, env, team, alice, url, kind):
+        await _post_deep_link(env, team, url)
+
+        with pytest.raises(WorldLookupError, match=f"is a `{kind}` link"):
+            await alice.in_(team).follow_deep_link(url)

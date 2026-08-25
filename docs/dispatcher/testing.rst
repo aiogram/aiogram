@@ -78,14 +78,39 @@ independent world from it:
         )
         return blueprint
 
-A user's own private chat with the bot opens on demand; every other chat must be declared.
-Telegram lets any user open a DM with any bot — tapping a ``/start`` deep link does it as a
-side effect — so a blueprint that never called ``add_private_chat`` is not saying "this user
-has no private chat", only that the test did not need to name it. Both
-``bot_env.user(alice).send("/start")`` and a followed deep link therefore work, and open a
-chat shaped exactly like a declared one. A *group*, on the other hand, is a place the bot
-was added to: ``.in_(chat)`` on a chat nobody declared raises, because a bot cannot post
-into a chat it does not know.
+``Blueprint(default=...)`` takes a :class:`~aiogram.client.default.DefaultBotProperties`,
+the same object a production bot is built with. World messages are bound to ``bot_env.bot``,
+so its shortcuts — ``message.answer(...)``, ``message.reply(...)`` — resolve ``parse_mode``
+and the rest of the defaults through it exactly as they would through the real bot. Passing
+a blueprint that does not match the production ``Bot(default=...)`` is easy to miss, because
+nothing raises: the mismatch only shows up as a wrong value in a call log assertion. Give
+the blueprint the same defaults the bot actually runs with:
+
+.. code-block:: python
+
+    from aiogram.client.default import DefaultBotProperties
+    from aiogram.enums import ParseMode
+
+    blueprint = Blueprint(default=DefaultBotProperties(parse_mode=ParseMode.HTML))
+
+A user's own private chat with the bot opens on demand **when the user is the one acting**;
+every other chat must be declared. Telegram lets any user open a DM with any bot — tapping a
+``/start`` deep link does it as a side effect — so a blueprint that never called
+``add_private_chat`` is not saying "this user has no private chat", only that the test did
+not need to name it. Both ``bot_env.user(alice).send("/start")`` and a followed deep link
+therefore work, and open a chat shaped exactly like a declared one. A *group*, on the other
+hand, is a place the bot was added to: ``.in_(chat)`` on a chat nobody declared raises,
+because a bot cannot post into a chat it does not know.
+
+The bot's own calls open nothing. A real bot cannot write first — it may only answer a user
+who wrote to it — so a test whose bot opens the conversation is describing something Telegram
+would never allow, and there is no honest world state to invent for it.
+``bot_env.bot.send_message(chat_id=alice.id, ...)`` into a private chat nobody declared
+therefore raises :class:`aiogram.test.WorldLookupError`, listing the chats this world does
+have, rather than a :class:`~aiogram.exceptions.TelegramBadRequest` the bot's own error
+handling would swallow. Declare the chat with ``blueprint.add_private_chat(alice)``, open it
+with ``bot_env.world.ensure_private_chat(bot_env.world.user(alice.id))``, or have the user
+write first.
 
 The handles returned by ``add_user`` / ``add_private_chat`` / ``add_group`` are how you
 address participants later:
@@ -219,10 +244,48 @@ has a DM with the bot from the moment they follow the link.
 schemeless ``t.me/...`` forms, and ``tg://resolve?domain=<username>&start=<payload>``. A
 bare profile link — ``https://t.me/<username>`` with no parameter — is followable too, and
 replays as a plain ``/start``, because that is what tapping it sends. A link to a *different*
-bot is not followable, and neither are the kinds that open something this toolkit does not
-simulate: ``startgroup`` (a group chooser — drive that flow directly with ``add_bot()``
-instead), ``startapp``, ``startchannel``, ``startattach`` and ``attach``. Each is refused by
-name rather than quietly downgraded to a plain ``/start``.
+bot is not followable.
+
+An explicit ``start`` **wins** over a start-ish parameter sharing its query, in either order:
+``?start=team-42&startapp=abc`` is a followable start carrying ``team-42``. Telegram itself
+hands out links shaped that way — a Mini App button carries both, so a client that cannot
+open the app still opens the bot — and a real client reads only the parameter it recognizes.
+The precedence needs a real ``start`` to take it, though: ``?startapp=abc`` on its own is
+still refused by name.
+
+``start`` is the only followable kind. Every other format `Telegram documents
+<https://core.telegram.org/api/links>`_ is refused with a message naming that format and
+what a real client does with it, rather than being quietly downgraded to a plain ``/start``
+or lumped into one generic rejection: ``startgroup`` and ``startchannel`` (a chooser — drive
+that flow directly with ``add_bot()`` instead), ``startapp``, ``startattach`` and ``attach``;
+a direct Mini App link (``t.me/<bot>/<short_name>``); message, story and share links; sticker-
+and emoji-set links; game and referral links; a profile link; and Telegram's service links (a
+proxy, theme, language pack, chat folder and the like). Two kinds point at the trigger that
+models the action instead of merely naming it: an invoice link (``t.me/$<slug>``,
+``tg://invoice?slug=...``) says to use ``pay()`` or ``pre_checkout_query()``, and a boost link
+says to use ``boost()``. A prefilled-draft link (``?text=...``) is refused naming the text it
+would have left sitting unsent in the composer, and pointing at ``send()`` with that same text
+— tapping it never delivers anything to the bot until the user presses send. A phone-number
+link (``t.me/+15551234567``) is told apart from a chat invite link (``t.me/+<hash>``) by its
+all-digit tail, the same way Telegram's own clients tell them apart, so the refusal never calls
+one the other. A ``tg://`` url whose host is not ``resolve`` — ``tg://join``, ``tg://boost``,
+an app screen such as ``tg://settings`` — is still recognized as a Telegram link and refused by
+the kind that host documents, never reported as "not a Telegram link" just because its host is
+unfamiliar:
+
+.. code-block:: python
+
+    await bot_env.user(alice).in_(team).follow_deep_link("https://t.me/boost/durov")
+    # WorldLookupError: 'https://t.me/boost/durov' is a boost link, which opens the boost
+    # screen of a channel, not a bot deep link; only `t.me/<username>[?start=<payload>]`
+    # and `tg://resolve?domain=<username>[&start=<payload>]` links can be followed here —
+    # use `boost()` to deliver the `chat_boost` update instead
+
+A ``start`` payload is validated before it is followed: Bot API deep linking allows 1-64
+characters of ``A-Z``, ``a-z``, ``0-9``, ``_`` and ``-``, so a payload outside that alphabet —
+too long, percent-encoded, non-Latin — is a link a real client would never have sent ``/start``
+for. Following it raises naming the rule, rather than handing the handler a payload production
+could not have produced.
 
 Every update kind has a trigger
 -------------------------------
@@ -682,11 +745,25 @@ call the bot made and fails the test with a message that says what to declare:
 
     aiogram.test.WorldLookupError: User 999999 is not declared in the blueprint
 
+A chat the bot addresses is on that list too. Any outbound call naming a chat this world does
+not have — ``send_message``, ``ban_chat_member``, ``get_chat`` — raises the same way,
+enumerating the chats that *are* declared and pointing at ``add_private_chat`` and its
+siblings, or at ``env.world.ensure_private_chat(...)``.
+
 That distinction is the whole reason there are two types. Reporting a missing declaration as
 a Bad Request would hand it straight to the bot's own error handling, which would swallow it
-and quietly exercise the wrong branch — the test would pass while testing nothing. The same
-goes for the few things the fake genuinely cannot model, such as editing a message by
-``inline_message_id``: those raise loudly rather than pretending Telegram refused.
+and quietly exercise the wrong branch — the test would pass while testing nothing. The chat
+case is where that bites hardest: "chat not found" is the branch a bot writes for the user
+who blocked it, so a missing declaration used to run the blocked-user path and pass while
+asserting on it. A test that genuinely wants that branch declares the refusal instead of
+starving the world of a chat:
+
+.. code-block:: python
+
+    bot_env.on(SendMessage).raises(TelegramBadRequest, "Bad Request: chat not found")
+
+The same goes for the few things the fake genuinely cannot model, such as editing a message
+by ``inline_message_id``: those raise loudly rather than pretending Telegram refused.
 
 Reaching into the world directly — ``chat.topic(999)``, ``chat.require_message(999)`` — is
 outside any call, so there is nothing to convert the refusal into: those raise
@@ -765,7 +842,7 @@ chance to run.
 
 .. code-block:: python
 
-    await env.wait_for(lambda: game.mode is Mode.NIGHT, description="night to begin")
+    await env.wait_for(lambda: game.mode is Mode.NIGHT, "night to begin")
 
     message = await env.chat(group).wait_for_message(lambda m: m.reply_markup is not None)
     await message.answer("go on")  # whatever a wait returns is mounted, like any result
@@ -779,6 +856,45 @@ view of the chat's messages, so a message posted into a sibling topic never sati
 
     message = await env.topic(forum, support).wait_for_message(lambda m: m.text == "done")
 
+What a wait is *for* is the second **positional** argument of both, as in the first example
+above, rather than a keyword — these are written with lambdas, and for a lambda that
+description is the only thing a failure message has to go on, so saying it should cost no
+ceremony::
+
+    await bot_chat.wait_for_message(lambda m: m.text == "Dawn", "the dawn announcement")
+
+A message that is already there satisfies the wait immediately — the predicate is matched
+against every message the view holds, not only the ones arriving after the call — so a test
+never has to race the send it is waiting for. When more than one matches, the one with the
+highest ``message_id`` is returned: the newest as Telegram numbers them, rather than
+whichever the list happens to hold last. A chat is normally in id order anyway, but
+"normally" is not something a test can act on, and the one path that could break it is a
+message registered from another environment — exactly the case where a test asking for the
+newest reply must not silently get a stale one.
+
+How long a wait runs before giving up is set once, on the environment — override the
+``bot_env`` fixture to say it for a whole suite:
+
+.. code-block:: python
+
+    @pytest.fixture
+    def bot_env(bot_blueprint, bot_dispatcher):
+        environment = BotTestEnvironment(
+            blueprint=bot_blueprint,
+            dispatcher=bot_dispatcher,
+            default_wait_timeout=1.0,
+        )
+        try:
+            yield environment
+        finally:
+            environment.dispose_sync()
+
+``default_wait_timeout`` is the single place for it: ``wait_for``, every chat's
+``wait_for_message`` and every topic's read it, so a bot whose background work is slow — or a
+suite that wants a fast failure instead of a five-second pause per timing bug — says so once
+rather than on every call. It defaults to five seconds, and an explicit ``timeout=`` on a
+single call still wins over it.
+
 Both give up with
 :class:`aiogram.test.WaitTimeoutError`, a :class:`TimeoutError` whose message names what
 was awaited and enumerates the messages of the chat or topic it waited in, so a failure
@@ -786,20 +902,97 @@ shows what actually arrived
 instead of just "timed out"; neither overshoots its ``timeout``, whatever ``interval`` it
 was given.
 
-``wait_for_message`` matches its predicate against every message the chat holds, and those
-come in every shape — so a predicate that raises on one of them counts as "no match" rather
-than failing the wait. ``lambda m: m.text.startswith("Night")`` would otherwise die on the
-first service message, whose ``text`` is ``None``, having nothing to do with what the test
-is waiting for. The exceptions are not swallowed: if the wait times out, the failure
-message reports what the predicate raised and on which message, so a predicate that is
-simply wrong still fails with its real cause.
+The messages a predicate is matched against come in every shape, so one that raises on a
+message counts as "no match" rather than failing the wait.
+``lambda m: m.text.startswith("Night")`` would otherwise die on the first service message,
+whose ``text`` is ``None``, having nothing to do with what the test is waiting for. The
+exceptions are not swallowed: if the wait times out, the failure message reports what the
+predicate raised and on which message, so a predicate that is simply wrong still fails with
+its real cause.
 
-A real engine's own ``sleep()`` calls make a test that waits on them real-time slow, and
-this proof of concept deliberately ships no fake clock of its own. A time-control library
-that reimplements the event loop's own clock — ``looptime`` is one — can in principle be
-layered on top without conflict, since the fake world never touches the network or the
-wall clock itself; that combination has not been exercised here, so treat it as a starting
-point rather than a promise.
+A real engine's own ``sleep()`` calls make a test that waits on them real-time slow —
+``wait_for`` removes the boilerplate of polling, not the wall-clock time a fifteen-second
+game phase actually takes. This proof of concept deliberately ships no fake clock of its
+own, but a fake clock is not something the toolkit needs to own: nothing in the fake world
+touches the network or the wall clock itself, so a library that virtualizes the event
+loop's own clock composes underneath it without conflict.
+
+`looptime <https://pypi.org/project/looptime/>`_ is one such library — a pytest plugin
+that makes ``asyncio.sleep`` and ``loop.call_at`` resolve the instant their deadline is
+reached, with no real delay:
+
+.. code-block:: bash
+
+    pip install looptime
+
+No conftest is required — ``looptime`` registers itself the same way the toolkit does, and
+marking one test is enough to run it on the fake clock:
+
+.. code-block:: python
+
+    import asyncio
+
+    import pytest
+
+    from aiogram import Bot, Dispatcher, Router
+
+    router = Router()
+
+
+    @router.message()
+    async def start_night(message, bot: Bot) -> None:
+        asyncio.create_task(run_night_phase(bot, message.chat.id))
+
+
+    async def run_night_phase(bot: Bot, chat_id: int) -> None:
+        await asyncio.sleep(15)  # the engine's own hardcoded sleep
+        await bot.send_message(chat_id=chat_id, text="Night falls.")
+
+
+    @pytest.fixture
+    def bot_dispatcher() -> Dispatcher:
+        dispatcher = Dispatcher()
+        dispatcher.include_router(router)
+        return dispatcher
+
+
+    @pytest.mark.looptime
+    async def test_night_phase_begins(bot_env, bot_user, bot_chat):
+        await bot_user.send("/start")
+
+        message = await bot_chat.wait_for_message(
+            lambda m: m.text == "Night falls.",
+            timeout=20.0,
+            interval=0.5,
+        )
+
+        assert message.text == "Night falls."
+
+On a real clock this test takes just over fifteen seconds. Verified under ``looptime`` it
+ran in under 20 milliseconds — a background task's fifteen-second ``asyncio.sleep``
+resolves the moment the virtual clock reaches it rather than fifteen real seconds later,
+and the wait's own deadline, built on the same event loop's ``loop.time()``, keeps its
+timing promises unchanged: a wait that should time out still does, and still does so in
+milliseconds even when ``timeout`` is generously large.
+
+``interval=0.5`` above is deliberate, not decoration. Both waits still poll by sleeping
+``interval`` seconds between checks, and each of those sleeps is a real iteration of the
+event loop even under ``looptime`` — the clock jumps, the loop's own bookkeeping does not.
+Left at the default ``interval=0.01`` against this same fifteen-second wait, that is
+fifteen hundred iterations, and their per-iteration overhead stopped being negligible: the
+identical scenario measured close to a full second of real time instead of milliseconds.
+Pick an interval that matches the coarseness of what a test is waiting for, not the
+toolkit's real-time-tuned default, whenever the wait spans a virtualized sleep of more
+than a second or so.
+
+.. note::
+
+    ``looptime`` virtualizes the event loop's own clock — ``asyncio.sleep``,
+    ``loop.call_later``, ``loop.call_at`` — and nothing outside it. A real network call, a
+    Redis or database connection with its own timeout, or anything that blocks outside the
+    event loop (``time.sleep``, a thread, a subprocess) still takes real wall-clock time and
+    can still time out for real under the fake clock. Mark only the tests whose slowness is
+    the engine's own ``sleep()`` calls, not ones exercising a genuine external dependency.
 
 Bots that use a global Bot instance
 ===================================
@@ -900,15 +1093,51 @@ is the demotion the Bot API documents; anything true keeps the member an adminis
 ``is_anonymous`` included. The chat's **owner** cannot be promoted, demoted, banned or
 restricted: all four raise :class:`aiogram.exceptions.TelegramBadRequest` with Telegram's
 own "can't remove chat owner", so a bot that moderates a list of users fails here rather
-than only in production. :code:`restrictChatMember` likewise persists the
-:class:`aiogram.types.chat_permissions.ChatPermissions` it was given, so
-:code:`getChatMember` reports the permissions that were actually set.
+than only in production.
+
+A demotion also drops the member's ``custom_title``, because a title is an *administrator's*:
+:class:`~aiogram.types.chat_member_administrator.ChatMemberAdministrator` and
+:class:`~aiogram.types.chat_member_owner.ChatMemberOwner` carry one and
+:class:`~aiogram.types.chat_member_member.ChatMemberMember` has no field for it, so a title
+outliving the status is nothing :code:`getChatMember` could report — it could only reappear,
+ungranted, on some later promotion. ``tag`` is deliberately **not** dropped with it, and the
+asymmetry is the Bot API's own: ``tag`` is a field of ``ChatMemberMember`` as much as of the
+administrator variants, so it describes the membership rather than the administrator status,
+and a demotion is not the API's way of taking one away.
 
 What a member's rights *are* also depends on where they hold them, and so do the answers
 here: ``can_post_messages`` and ``can_edit_messages`` are reported only in channels,
 ``can_manage_topics`` only in supergroups, ``can_pin_messages`` only in groups and
 supergroups — everywhere else they come back ``None``, exactly as from the real API. A
 right granted where it cannot exist is dropped rather than reported back as if it did.
+
+Permissions are stored the way the Bot API grants them, which is not always the mask the
+request passed. :code:`restrictChatMember` and :code:`setChatPermissions` both apply the
+couplings they document: unless the call passes ``use_independent_chat_permissions=True``,
+``can_send_other_messages`` and ``can_add_web_page_previews`` each grant every kind of
+message, and ``can_send_polls`` grants ``can_send_messages``. So the permissions read back
+may be **broader** than the ones handed in — as they would be against real Telegram, which
+will not let a member send stickers while forbidding text:
+
+.. code-block:: python
+
+    await env.bot.restrict_chat_member(
+        chat_id=group.id,
+        user_id=alice.id,
+        permissions=ChatPermissions(can_send_other_messages=True),
+    )
+
+    member = await env.bot.get_chat_member(chat_id=group.id, user_id=alice.id)
+    assert member.can_send_messages is True    # implied, never passed
+    assert member.can_send_photos is True      # implied, never passed
+
+Passing ``use_independent_chat_permissions=True`` stores the mask exactly as given. It does
+not switch off the three permissions that default to another one — ``can_react_to_messages``
+follows ``can_send_messages``, ``can_edit_tag`` and ``can_manage_topics`` follow
+``can_pin_messages`` — because the Bot API documents those on the
+:class:`~aiogram.types.chat_permissions.ChatPermissions` fields themselves rather than on
+either method. A bot that gates itself on ``can_send_messages`` therefore takes the same
+branch here as it does in production.
 
 Where Telegram posts a service message, so does the environment:
 

@@ -3,7 +3,7 @@ from typing import get_args
 import pytest
 
 from aiogram import Dispatcher
-from aiogram.test import Blueprint, BotTestEnvironment
+from aiogram.test import Blueprint, BotTestEnvironment, WorldLookupError
 from aiogram.test.world import scope_key
 from aiogram.types import (
     BotCommand,
@@ -244,9 +244,7 @@ class TestMenuButton:
 
     @pytest.mark.parametrize("method_name", ["set_chat_menu_button", "get_chat_menu_button"])
     async def test_an_unknown_chat_fails(self, env, method_name):
-        from aiogram.exceptions import TelegramBadRequest
-
-        with pytest.raises(TelegramBadRequest, match="chat not found"):
+        with pytest.raises(WorldLookupError, match="not declared in the blueprint"):
             await getattr(env.bot, method_name)(chat_id=-99)
 
 

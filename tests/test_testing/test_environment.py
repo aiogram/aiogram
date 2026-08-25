@@ -192,6 +192,39 @@ class TestTriggers:
             env.dispose_sync()
             foreign.dispose_sync()
 
+    async def test_a_carried_message_lands_in_message_id_order(self, blueprint, dp):
+        """
+        Regression: a carried message was appended, so an older id landed last.
+
+        The two environments allocate ids independently, so the one that arrives from
+        outside can be *older* than everything this chat already holds. Appending it left
+        ``chat.messages`` unsorted, and ``chat.messages[-1]`` — which every test writes to
+        mean "the newest message" — pointed at the oldest one instead.
+        """
+        chat_id = blueprint.chats[0].id
+        foreign = BotTestEnvironment(blueprint=blueprint, dispatcher=Dispatcher())
+        env = BotTestEnvironment(blueprint=blueprint, dispatcher=dp)
+        try:
+            speaker = foreign.user(blueprint.users[0].id).in_(chat_id)
+            for index in range(4):
+                await speaker.send(f"far away {index}")
+            older, newer = foreign.chat(chat_id).messages[1], foreign.chat(chat_id).messages[-1]
+            assert older.message_id < newer.message_id
+
+            # Out of order, which is all it takes: the second one is older than the chat's
+            # newest, and its id was never allocated here.
+            await env.feed(Update(update_id=1, message=newer))
+            await env.feed(Update(update_id=2, message=older))
+
+            chat = env.chat(chat_id)
+            ids = [item.message_id for item in chat.messages]
+            assert ids == sorted(ids)
+            assert chat.messages[-1].message_id == newer.message_id
+            assert chat.messages[0].message_id == older.message_id
+        finally:
+            env.dispose_sync()
+            foreign.dispose_sync()
+
     async def test_a_carried_channel_post_is_registered_too(self, blueprint, dp):
         """The rule is about the message, not about which field carried it."""
         channel = blueprint.add_channel("News")

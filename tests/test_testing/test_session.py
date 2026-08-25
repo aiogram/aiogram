@@ -449,12 +449,19 @@ class TestTheWorldsValueObjectsStayTheWorlds:
     """
 
     async def test_get_chat_does_not_hand_out_the_stored_permissions(self, env, team):
-        permissions = ChatPermissions(can_send_messages=True)
-        await env.bot.set_chat_permissions(chat_id=team.id, permissions=permissions)
+        # `use_independent_chat_permissions` so that what is stored is the mask as passed;
+        # the couplings the other setting applies are `TestPermissionCoupling`'s subject.
+        permissions = ChatPermissions(can_send_messages=True, can_react_to_messages=True)
+        await env.bot.set_chat_permissions(
+            chat_id=team.id,
+            permissions=permissions,
+            use_independent_chat_permissions=True,
+        )
 
         full = await env.bot.get_chat(chat_id=team.id)
 
         assert full.permissions is not team.permissions
+        assert team.permissions is not permissions
         assert team.permissions.bot is None
         assert team.permissions == permissions
 

@@ -29,7 +29,7 @@ from .mounting import bindables, detached_copy
 from .overrides import OverrideBuilder, OverrideRegistry
 from .session import FakeTelegramSession
 from .synthesis import SynthesisContext, synthesize_result
-from .waiting import describe_callable, poll_until
+from .waiting import DEFAULT_WAIT_TIMEOUT, describe_callable, poll_until
 from .world import (
     BusinessConnectionState,
     ChatState,
@@ -67,9 +67,22 @@ class BotTestEnvironment:
         self,
         blueprint: Blueprint | None = None,
         dispatcher: Dispatcher | None = None,
+        *,
+        default_wait_timeout: float = DEFAULT_WAIT_TIMEOUT,
     ) -> None:
+        """
+        ``default_wait_timeout`` is how long every wait in this environment runs.
+
+        It is the default for :meth:`wait_for` and for
+        :meth:`aiogram.test.world.ChatState.wait_for_message` and its topic-scoped twin
+        alike — a bot whose background work is slow, or a suite that wants a fast failure
+        instead of a five-second pause per timing bug, says so once here rather than on
+        every call. It is stored on the world, which is how a chat reaches it; an explicit
+        ``timeout=`` on a single call still wins over it.
+        """
         self.blueprint = blueprint if blueprint is not None else default_blueprint()
         self.world = self.blueprint.build()
+        self.world.default_wait_timeout = default_wait_timeout
         self.session = FakeTelegramSession(self)
         self.bot = Bot(
             token=self.blueprint.token,
@@ -263,6 +276,12 @@ class BotTestEnvironment:
 
         Storing it is also simply what Telegram does: a message the bot is told about is in
         the chat, and a test that goes on to assert on ``chat.messages`` should see it.
+
+        The id such a message carries was allocated in the *other* world, so it may be older
+        than what this chat already holds — which is why
+        :meth:`aiogram.test.world.ChatState.add_message` places a message by id rather than
+        appending it. Registering an id 50 into a chat whose last message is 101 must not
+        leave ``chat.messages[-1]`` pointing at the carried message.
         """
         for name in _CARRIED_MESSAGE_FIELDS:
             message: Message | None = getattr(update, name, None)
@@ -283,10 +302,10 @@ class BotTestEnvironment:
     async def wait_for(
         self,
         predicate: Callable[[], object],
-        *,
-        timeout: float = 5.0,
-        interval: float = 0.01,
         description: str | None = None,
+        *,
+        timeout: float | None = None,
+        interval: float = 0.01,
     ) -> Any:
         """
         Wait until ``predicate`` returns something truthy, and return that value.
@@ -309,9 +328,18 @@ class BotTestEnvironment:
 
         ``description`` names the condition in the failure message; without it the
         message can only identify the predicate itself, which for a lambda is not much.
+        Since a lambda is what this is written with, it is the second **positional**
+        parameter, so saying what is awaited costs no ceremony::
+
+            await bot_env.wait_for(lambda: game.phase is Phase.NIGHT, "night to fall")
+
+        ``timeout`` defaults to this environment's ``default_wait_timeout``, set once when
+        the environment is built; passing one here wins over it for this call.
 
         :raises aiogram.test.errors.WaitTimeoutError: if the condition never became true.
         """
+        if timeout is None:
+            timeout = self.world.default_wait_timeout
 
         def describe_timeout() -> str:
             if description is not None:

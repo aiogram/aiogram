@@ -42,8 +42,8 @@ from aiogram.types import (
 )
 
 from .errors import ApiRejection
-from .mounting import detached_copy, mount
-from .waiting import describe_callable, poll_until
+from .mounting import detached_copy, mount, owned_or_copied
+from .waiting import DEFAULT_WAIT_TIMEOUT, describe_callable, poll_until
 
 if TYPE_CHECKING:
     from aiogram.client.bot import Bot
@@ -231,6 +231,7 @@ def _describe_messages(messages: list[Message], noun: str) -> str:
 async def _wait_for_message(
     view: Callable[[], list[Message]],
     predicate: Callable[[Message], object] | None,
+    description: str | None,
     *,
     noun: str,
     where: str,
@@ -244,30 +245,40 @@ async def _wait_for_message(
     view recomputed on every read — capturing the list once would wait on a snapshot taken
     before the message being waited for arrived. ``noun`` and ``where`` are how the failure
     message names the view ("the topic holds…", "…in topic #7 'Support' of chat -100").
+
+    **The newest match wins, by id and not by position.** Every match is evaluated and the
+    highest ``message_id`` among them is returned, rather than the last one the list
+    happens to hold: a chat is normally sorted by id, but "normally" is not a promise a
+    caller can act on, and the one path that could break it — a message registered from
+    another environment — is exactly the one where a test then asks for the newest reply
+    and would silently get a stale one instead.
     """
     # message id -> what the predicate raised on it during the most recent pass.
     raised: dict[int, Exception] = {}
 
     def find() -> Message | None:
         raised.clear()
-        for message in reversed(view()):
-            if predicate is None:
-                return message
-            try:
-                matched = predicate(message)
-            except Exception as error:
-                raised[message.message_id] = error
-                continue
-            if matched:
-                return message
-        return None
+        newest: Message | None = None
+        for message in view():
+            if predicate is not None:
+                try:
+                    matched = predicate(message)
+                except Exception as error:
+                    raised[message.message_id] = error
+                    continue
+                if not matched:
+                    continue
+            if newest is None or message.message_id > newest.message_id:
+                newest = message
+        return newest
 
     def describe_timeout() -> str:
-        wanted = (
-            "any message"
-            if predicate is None
-            else f"a message matching {describe_callable(predicate)}"
-        )
+        if description is not None:
+            wanted = description
+        elif predicate is None:
+            wanted = "any message"
+        else:
+            wanted = f"a message matching {describe_callable(predicate)}"
         problems = ""
         if raised:
             details = "; ".join(
@@ -423,11 +434,18 @@ class TopicState:
             return f"the General topic{chat}"
         return f"topic #{self.message_thread_id} {self.name!r}{chat}"
 
+    @property
+    def default_wait_timeout(self) -> float:
+        """The environment's wait timeout, read through the chat this topic belongs to."""
+        # A topic is always registered on a chat; a hand-built one still has a timeout.
+        return self.chat.default_wait_timeout if self.chat is not None else DEFAULT_WAIT_TIMEOUT
+
     async def wait_for_message(
         self,
         predicate: Callable[[Message], object] | None = None,
+        description: str | None = None,
         *,
-        timeout: float = 5.0,
+        timeout: float | None = None,
         interval: float = 0.01,
     ) -> Message:
         """
@@ -437,17 +455,19 @@ class TopicState:
         filtered view :attr:`messages` exposes, so a message posted into a sibling topic
         never satisfies it, and the failure message enumerates this topic rather than the
         whole forum. Everything else — matching against messages that are already there,
-        a raising predicate counting as "no match", the reporting of what it raised — works
-        exactly as it does for a chat, because it is the same implementation.
+        the newest match winning, ``description``, ``timeout``, a raising predicate counting
+        as "no match", the reporting of what it raised — works exactly as it does for a
+        chat, because it is the same implementation.
 
         :raises aiogram.test.errors.WaitTimeoutError: if no such message ever appeared.
         """
         return await _wait_for_message(
             lambda: self.messages,
             predicate,
+            description,
             noun="topic",
             where=self.label,
-            timeout=timeout,
+            timeout=self.default_wait_timeout if timeout is None else timeout,
             interval=interval,
         )
 
@@ -729,13 +749,17 @@ def derive_message(original: Message, changes: dict[str, Any], bot: Bot | None) 
     message it derives from, a forward and a copy landing in some other chat. They differ
     in where the result goes, not in what it is, and what it is has to be said once.
 
-    **Only the changes are new.** The ``changes`` are copied on the way in, for the reason
-    :func:`~aiogram.test.mounting.detached_copy` gives: an edit carries the caller's own
+    **Only the changes are new.** The ``changes`` go through
+    :func:`~aiogram.test.mounting.owned_or_copied`, which is the same rule the input side of
+    a trigger uses and had to become the same rule here: an edit carries the caller's own
     ``reply_markup`` or entities, and what the world stores must not be an object the code
-    under test still holds. They are minted already bound to ``bot``, and the root shell
-    :meth:`~pydantic.BaseModel.model_copy` produces is bound explicitly — because
-    ``model_copy`` carries the original's ``_bot`` over, and a derived message that goes to
-    another chat is not the original's to own.
+    under test still holds — but an edit may equally carry an object the world *already*
+    owns, and ``edit(fields={"reply_to_message": some_world_message})`` copying it is how a
+    field that should alias a stored message stopped tracking edits to it, while the very
+    same ``fields`` passed to ``send`` aliased it correctly. Copies are minted already bound
+    to ``bot``, and the root shell :meth:`~pydantic.BaseModel.model_copy` produces is bound
+    explicitly — because ``model_copy`` carries the original's ``_bot`` over, and a derived
+    message that goes to another chat is not the original's to own.
 
     Everything the change did *not* touch is the original's own subtree, shared with it.
     That is deliberate on both counts. Detaching the copy — as this used to — walks that
@@ -745,7 +769,7 @@ def derive_message(original: Message, changes: dict[str, Any], bot: Bot | None) 
     the chat cost about six walks over it per edit, forward or copy, where the changes alone
     need one.
     """
-    derived = original.model_copy(update=detached_copy(changes, bot=bot))
+    derived = original.model_copy(update=owned_or_copied(changes, owner=bot, bind=bot))
     derived.as_(bot)
     return derived
 
@@ -798,6 +822,17 @@ class ChatState:
         """
         return self.world.bound_bot if self.world is not None else None
 
+    @property
+    def default_wait_timeout(self) -> float:
+        """
+        How long :meth:`wait_for_message` waits when the call does not say, from the world.
+
+        Derived rather than stored, for the reason :attr:`bound_bot` is: there is one
+        setting, configured once on the environment, and a per-chat copy would be one more
+        thing to keep in step.
+        """
+        return self.world.default_wait_timeout if self.world is not None else DEFAULT_WAIT_TIMEOUT
+
     def as_chat(self) -> Chat:
         return Chat(
             id=self.id,
@@ -815,15 +850,28 @@ class ChatState:
 
     def add_message(self, message: Message) -> Message:
         """
-        Store a message, bound to the bot this world belongs to.
+        Store a message in message-id order, bound to the bot this world belongs to.
 
         Storage is the moment an object *enters* the fake world, and it is the only such
         moment for every producer at once — a user actor's message, a modeled send, a
         service message no result ever carries. Binding here is therefore what makes the
         rule "everything the world holds is usable" hold without a special case per
         producer: ``chat.messages[-1].answer(...)`` works whoever put the message there.
+
+        It is also the only moment that can keep :attr:`messages` sorted by id, which every
+        reader assumes — ``messages[-1]`` for the newest, ``messages[:n]`` for a prefix, a
+        failure message listing a chat in the order it happened. Almost every producer
+        allocates its id here and appends, but not all: an update built by *another*
+        environment is registered by
+        :meth:`aiogram.test.BotTestEnvironment._register_carried_message` carrying whatever
+        id it was minted with over there, and appending that one left the list unsorted for
+        everything after it. The scan runs backwards from the end, so the overwhelming
+        append case costs one comparison.
         """
-        self.messages.append(message)
+        index = len(self.messages)
+        while index and self.messages[index - 1].message_id > message.message_id:
+            index -= 1
+        self.messages.insert(index, message)
         return self._bind(message)
 
     def find_message(self, message_id: int) -> Message | None:
@@ -866,8 +914,9 @@ class ChatState:
     async def wait_for_message(
         self,
         predicate: Callable[[Message], object] | None = None,
+        description: str | None = None,
         *,
-        timeout: float = 5.0,
+        timeout: float | None = None,
         interval: float = 0.01,
     ) -> Message:
         """
@@ -881,10 +930,21 @@ class ChatState:
         ``predicate`` is matched against **every** message the chat holds, not only the
         ones that arrive after the call: a message that is already there satisfies the
         wait immediately, so a test never has to race the send it is waiting for. When
-        several match, the newest one is returned. ``predicate=None`` waits for any
-        message::
+        several match, the one with the highest ``message_id`` is returned — the newest,
+        as Telegram numbers them, not merely the last one the list holds.
+        ``predicate=None`` waits for any message::
 
             reply = await bot_chat.wait_for_message(lambda m: m.text.startswith("Night"))
+
+        ``description`` names what was awaited in the failure message, and is the second
+        positional parameter because for the lambdas this is written with it is the only
+        thing that message can say::
+
+            await bot_chat.wait_for_message(lambda m: m.text == "Dawn", "the dawn message")
+
+        ``timeout`` defaults to the ``default_wait_timeout`` of the environment this chat
+        belongs to — a bot whose background work is slow sets it once there instead of on
+        every call — and passing one here still wins.
 
         A predicate that *raises* on a message counts as "does not match" rather than
         failing the wait, because a chat holds messages of every shape: the natural
@@ -900,9 +960,10 @@ class ChatState:
         return await _wait_for_message(
             lambda: self.messages,
             predicate,
+            description,
             noun="chat",
             where=f"chat {self.id}",
-            timeout=timeout,
+            timeout=self.default_wait_timeout if timeout is None else timeout,
             interval=interval,
         )
 
@@ -1127,12 +1188,32 @@ class World:
     last_query_id: int = 0
     #: The bot this world belongs to; see :meth:`bind`.
     bound_bot: Bot | None = field(default=None, compare=False, repr=False)
+    #: How long the waiting helpers wait when the call does not say. Set by
+    #: :class:`aiogram.test.BotTestEnvironment` from its ``default_wait_timeout``, and read
+    #: by every :meth:`ChatState.wait_for_message` in this world. Configuration rather than
+    #: state, so two worlds that hold the same things still compare equal.
+    default_wait_timeout: float = field(default=DEFAULT_WAIT_TIMEOUT, compare=False)
 
-    def __post_init__(self) -> None:
-        declared = self.chats
-        self.chats = ChatRegistry(self)
-        for chat_id, chat in declared.items():
-            self.chats[chat_id] = chat
+    def __setattr__(self, name: str, value: Any) -> None:
+        """
+        Keep :attr:`chats` a :class:`ChatRegistry`, whenever and however it is assigned.
+
+        The registry is what hands a chat its way back to the world, and it used to be
+        installed once in ``__post_init__`` — which covered the declared mapping and
+        nothing else. ``world.chats = {chat.id: chat}`` after construction, the obvious way
+        to rebuild a world in a test, silently replaced it with a plain :class:`dict`: the
+        chats went in unwired, ``chat.bound_bot`` was ``None`` for all of them, and every
+        message stored afterwards was unbound — a failure that surfaces much later, as a
+        shortcut raising on a message that looks perfectly ordinary. Converting on
+        assignment makes the guarantee hold for the attribute rather than for one moment in
+        its life, and covers ``__post_init__`` too: the generated ``__init__`` assigns
+        ``chats`` like anything else, so the declared mapping is converted right here.
+        """
+        if name == "chats" and not isinstance(value, ChatRegistry):
+            registry = ChatRegistry(self)
+            registry.update(value)
+            value = registry
+        super().__setattr__(name, value)
 
     def bind(self, bot: Bot) -> None:
         """

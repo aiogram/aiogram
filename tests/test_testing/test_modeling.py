@@ -2,7 +2,7 @@ import datetime
 
 import pytest
 
-from aiogram.enums import ChatMemberStatus, ContentType
+from aiogram.enums import ChatMemberStatus, ChatType, ContentType
 from aiogram.exceptions import TelegramBadRequest
 from aiogram.methods import (
     GetUserProfilePhotos,
@@ -11,7 +11,7 @@ from aiogram.methods import (
     SendRichMessage,
     VerifyUser,
 )
-from aiogram.test import WorldLookupError
+from aiogram.test import Blueprint, BotTestEnvironment, WorldLookupError
 from aiogram.test.modeling import MEDIA_FIELDS
 from aiogram.test.world import BASE_DATE
 from aiogram.types import (
@@ -217,8 +217,116 @@ class TestSending:
         assert message.chat.id == private.id
 
     async def test_unknown_chat(self, env):
-        with pytest.raises(TelegramBadRequest, match="chat not found"):
+        with pytest.raises(WorldLookupError, match="not declared in the blueprint"):
             await env.bot.send_message(chat_id=-1, text="hi")
+
+
+class TestAnUndeclaredChatOnTheOutboundPath:
+    """
+    A chat the bot writes to and the world does not have is a setup gap, loudly.
+
+    It used to be an :class:`ApiRejection` — "chat not found", the wording Telegram uses
+    when a *user* has never opened the chat or has blocked the bot. So the bot's own
+    ``except TelegramBadRequest`` branch caught it, the test exercised the "user blocked
+    me" path it never meant to reach, and it passed. That is precisely what the toolkit's
+    two-kinds-of-failure rule exists to prevent, and this path was the one place breaking
+    it.
+
+    The outbound path deliberately does *not* open a private chat on demand the way the
+    actor paths do: a real bot cannot write into a private chat first, so there is no
+    Telegram behavior to imitate. See `test_deep_links.py` and `test_world.py` for the
+    inbound half, where opening one is exactly right.
+    """
+
+    async def test_it_raises_a_world_lookup_error(self, env):
+        with pytest.raises(WorldLookupError):
+            await env.bot.send_message(chat_id=-424242, text="hi")
+
+    async def test_the_message_enumerates_the_declared_chats(self, env, private, team):
+        with pytest.raises(WorldLookupError) as exc_info:
+            await env.bot.send_message(chat_id=-424242, text="hi")
+
+        text = str(exc_info.value)
+        assert "Declared chats:" in text
+        assert f"{private.id} ({private.type}) @alice" in text
+        assert f"{team.id} ({team.type}) Team" in text
+
+    async def test_a_declared_user_gets_the_private_chat_hint(self, env, blueprint, dp):
+        """The blueprint declared the user but not their chat — say exactly that."""
+        bare = Blueprint()
+        user = bare.add_user("Bob", username="bob")
+        bare.add_supergroup("Team")
+        environment = BotTestEnvironment(blueprint=bare, dispatcher=dp)
+        try:
+            with pytest.raises(WorldLookupError) as exc_info:
+                await environment.bot.send_message(chat_id=user.id, text="hi")
+
+            text = str(exc_info.value)
+            assert f"User {user.id} is declared" in text
+            assert "blueprint.add_private_chat(user)" in text
+            assert "ensure_private_chat" in text
+            assert "cannot write into a private chat first" in text
+        finally:
+            environment.dispose_sync()
+
+    async def test_a_world_with_no_chats_says_so(self, dp):
+        bare = Blueprint()
+        environment = BotTestEnvironment(blueprint=bare, dispatcher=dp)
+        try:
+            with pytest.raises(WorldLookupError, match="declares no chats at all"):
+                await environment.bot.send_message(chat_id=-1, text="hi")
+        finally:
+            environment.dispose_sync()
+
+    async def test_a_chat_with_no_readable_name_is_listed_by_id_alone(self, dp):
+        bare = Blueprint()
+        bare.add_group("")
+        environment = BotTestEnvironment(blueprint=bare, dispatcher=dp)
+        try:
+            with pytest.raises(WorldLookupError) as exc_info:
+                await environment.bot.send_message(chat_id=-1, text="hi")
+
+            chat_id = bare.chats[0].id
+            assert f"  {chat_id} ({ChatType.GROUP})\n" in f"{exc_info.value}\n"
+        finally:
+            environment.dispose_sync()
+
+    async def test_an_unknown_username_is_a_setup_gap_too(self, env):
+        with pytest.raises(WorldLookupError, match="'@nobody' is not declared"):
+            await env.bot.send_message(chat_id="@nobody", text="hi")
+
+    async def test_a_test_that_wants_the_api_branch_declares_it(self, env, dp):
+        """
+        The escape hatch the message names: an override answers as the API would.
+
+        A bot that really does handle "chat not found" — the user blocked it, say — still
+        has that branch tested, without the world pretending to be short of a chat.
+        """
+        blocked = []
+
+        @dp.message()
+        async def handler(message):
+            try:
+                await message.answer("hi")
+            except TelegramBadRequest as error:
+                blocked.append(str(error))
+
+        env.on(SendMessage).raises(TelegramBadRequest, "Bad Request: chat not found")
+        await env.user(env.blueprint.users[0]).send("/start")
+
+        assert blocked and "chat not found" in blocked[0]
+
+    async def test_the_actor_path_still_opens_a_private_chat(self, dp):
+        """The inbound half is unchanged: a user may always open a chat with a bot."""
+        bare = Blueprint()
+        user = bare.add_user("Bob")
+        environment = BotTestEnvironment(blueprint=bare, dispatcher=dp)
+        try:
+            await environment.user(user).send("/start")
+
+            assert environment.chat(user.id).messages[-1].text == "/start"
+        finally:
+            environment.dispose_sync()
 
 
 class TestMovingMessages:

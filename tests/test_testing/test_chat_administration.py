@@ -50,7 +50,7 @@ class TestChatMetadata:
         assert (await env.bot.get_chat(chat_id=private.id)).description is None
 
     async def test_administering_an_unknown_chat_fails(self, env):
-        with pytest.raises(TelegramBadRequest, match="chat not found"):
+        with pytest.raises(WorldLookupError, match="not declared in the blueprint"):
             await env.bot.set_chat_title(chat_id=-99, title="Nope")
 
     @pytest.mark.parametrize(
@@ -190,7 +190,7 @@ class TestMembershipReads:
         ["get_chat_member_count", "get_chat_administrators"],
     )
     async def test_reading_an_unknown_chat_fails(self, env, method_name):
-        with pytest.raises(TelegramBadRequest, match="chat not found"):
+        with pytest.raises(WorldLookupError, match="not declared in the blueprint"):
             await getattr(env.bot, method_name)(chat_id=-99)
 
 
@@ -561,6 +561,58 @@ class TestPromoteAndRestrictPersist:
         assert member.can_manage_chat is True
         assert member.can_delete_messages is False
 
+    async def test_a_demotion_drops_the_custom_title(self, env, team, alice):
+        """
+        Regression: the title outlived the status and came back on the next promotion.
+
+        A custom title is an administrator's — ``ChatMemberMember`` has no field for one —
+        so keeping it through a demotion stored a title ``getChatMember`` could not report,
+        and a later promotion resurrected a title nobody had granted.
+        """
+        await env.bot.promote_chat_member(
+            chat_id=team.id,
+            user_id=alice.user.id,
+            can_pin_messages=True,
+        )
+        await env.bot.set_chat_administrator_custom_title(
+            chat_id=team.id,
+            user_id=alice.user.id,
+            custom_title="Boss",
+        )
+
+        await env.bot.promote_chat_member(chat_id=team.id, user_id=alice.user.id)
+        await env.bot.promote_chat_member(
+            chat_id=team.id,
+            user_id=alice.user.id,
+            can_pin_messages=True,
+        )
+
+        member = await env.bot.get_chat_member(chat_id=team.id, user_id=alice.user.id)
+        assert isinstance(member, ChatMemberAdministrator)
+        assert member.custom_title is None
+
+    async def test_a_demotion_keeps_the_tag(self, env, team, alice):
+        """
+        ``tag`` is not a title: ``ChatMemberMember`` carries one, so it survives.
+
+        The asymmetry with ``custom_title`` is the Bot API's own — a tag is a field of the
+        plain-member variant as much as of the administrator ones, so it describes the
+        membership rather than the administrator status, and a demotion is not the API's
+        way of taking one away.
+        """
+        team.member(alice.user.id).tag = "veteran"
+        await env.bot.promote_chat_member(
+            chat_id=team.id,
+            user_id=alice.user.id,
+            can_pin_messages=True,
+        )
+
+        await env.bot.promote_chat_member(chat_id=team.id, user_id=alice.user.id)
+
+        member = await env.bot.get_chat_member(chat_id=team.id, user_id=alice.user.id)
+        assert isinstance(member, ChatMemberMember)
+        assert member.tag == "veteran"
+
     async def test_the_chat_owner_cannot_be_promoted(self, owned):
         """
         Telegram refuses; without the guard the fake was more permissive than the API.
@@ -678,6 +730,125 @@ class TestPromoteAndRestrictPersist:
 
         assert isinstance(member, ChatMemberAdministrator)
         assert member.can_pin_messages is True
+
+
+class TestPermissionCoupling:
+    """
+    ``restrictChatMember`` and ``setChatPermissions`` do not store the mask they are given.
+
+    Unless the request passes ``use_independent_chat_permissions=True``, some permissions
+    imply others, and the fake used to store the raw mask — reporting a member who may send
+    stickers but not text, a state the real API cannot produce. A bot gating itself on
+    ``can_send_messages`` then took the wrong branch against a world Telegram would never
+    hand it.
+    """
+
+    @pytest.mark.parametrize(
+        "granted",
+        ["can_send_other_messages", "can_add_web_page_previews"],
+    )
+    async def test_a_media_permission_implies_every_message_kind(self, env, team, alice, granted):
+        await env.bot.restrict_chat_member(
+            chat_id=team.id,
+            user_id=alice.user.id,
+            permissions=ChatPermissions(**{granted: True}),
+        )
+
+        member = await env.bot.get_chat_member(chat_id=team.id, user_id=alice.user.id)
+
+        assert member.can_send_messages is True
+        assert member.can_send_audios is True
+        assert member.can_send_documents is True
+        assert member.can_send_photos is True
+        assert member.can_send_videos is True
+        assert member.can_send_video_notes is True
+        assert member.can_send_voice_notes is True
+
+    async def test_polls_imply_messages_only(self, env, team, alice):
+        await env.bot.restrict_chat_member(
+            chat_id=team.id,
+            user_id=alice.user.id,
+            permissions=ChatPermissions(can_send_polls=True),
+        )
+
+        member = await env.bot.get_chat_member(chat_id=team.id, user_id=alice.user.id)
+
+        assert member.can_send_messages is True
+        assert member.can_send_photos is False
+
+    async def test_independent_permissions_are_stored_as_passed(self, env, team, alice):
+        await env.bot.restrict_chat_member(
+            chat_id=team.id,
+            user_id=alice.user.id,
+            permissions=ChatPermissions(can_send_other_messages=True),
+            use_independent_chat_permissions=True,
+        )
+
+        member = await env.bot.get_chat_member(chat_id=team.id, user_id=alice.user.id)
+
+        assert member.can_send_other_messages is True
+        assert member.can_send_messages is False
+        assert member.can_send_photos is False
+
+    @pytest.mark.parametrize("independent", [None, True])
+    @pytest.mark.parametrize(
+        ("implied", "source"),
+        [
+            ("can_react_to_messages", "can_send_messages"),
+            ("can_edit_tag", "can_pin_messages"),
+            ("can_manage_topics", "can_pin_messages"),
+        ],
+    )
+    async def test_an_omitted_permission_defaults_to_the_one_it_follows(
+        self, env, team, alice, implied, source, independent
+    ):
+        """
+        These three are documented on the fields, not on the method.
+
+        Which is why ``use_independent_chat_permissions`` does not switch them off: it
+        speaks only about the couplings ``restrictChatMember`` itself lists.
+        """
+        await env.bot.restrict_chat_member(
+            chat_id=team.id,
+            user_id=alice.user.id,
+            permissions=ChatPermissions(**{source: True}),
+            use_independent_chat_permissions=independent,
+        )
+
+        assert getattr(team.member(alice.user.id).permissions, implied) is True
+
+    async def test_a_coupling_feeds_the_defaults_that_follow_it(self, env, team, alice):
+        """`can_send_polls` grants `can_send_messages`, which `can_react_to_messages` copies."""
+        await env.bot.restrict_chat_member(
+            chat_id=team.id,
+            user_id=alice.user.id,
+            permissions=ChatPermissions(can_send_polls=True),
+        )
+
+        assert team.member(alice.user.id).permissions.can_react_to_messages is True
+
+    async def test_set_chat_permissions_applies_the_same_couplings(self, env, team):
+        await env.bot.set_chat_permissions(
+            chat_id=team.id,
+            permissions=ChatPermissions(can_send_other_messages=True),
+        )
+
+        full = await env.bot.get_chat(chat_id=team.id)
+
+        assert full.permissions.can_send_messages is True
+        assert full.permissions.can_send_video_notes is True
+
+    async def test_the_callers_object_is_not_the_one_that_grew(self, env, team, alice):
+        permissions = ChatPermissions(can_send_polls=True)
+
+        await env.bot.restrict_chat_member(
+            chat_id=team.id,
+            user_id=alice.user.id,
+            permissions=permissions,
+        )
+
+        assert permissions.can_send_messages is None
+        assert team.member(alice.user.id).permissions is not permissions
 
 
 class TestPermissionsAreNotEnforced:

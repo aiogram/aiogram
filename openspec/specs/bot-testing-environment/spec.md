@@ -158,32 +158,94 @@ filters, the command parser, middlewares and FSM all run as they do in productio
 
 ### Requirement: Only start links are followed, and the rest are refused by name
 
-The toolkit SHALL recognize the deep-link forms `https://t.me/<username>` — including its
-`http://` and schemeless spellings — and `tg://resolve?domain=<username>`, and SHALL treat a
-link with no query as a plain start. A `start` payload SHALL be honored alongside any other
-query parameter, since a real client reads the parameter it recognizes and ignores the rest.
+The toolkit SHALL classify every `t.me` / `telegram.me` / `tg://resolve` url, and every other
+`tg://<host>` url, into the kind Telegram documents at https://core.telegram.org/api/links —
+one policy per kind, not one bucket for "recognized" and another for "everything else". `start`
+SHALL be the only followable kind, including a link with no query, which SHALL parse as a plain
+start with no payload. A `start` payload SHALL be honored alongside any other query parameter,
+since a real client reads the parameter it recognizes and ignores the rest; that precedence
+SHALL hold in either query order, so a link carrying both `start` and a Mini App, group or
+channel launch SHALL be followed as the start it also is. The precedence SHALL need a real
+`start` to take it, so one of those kinds appearing alone is refused as before.
 
-Every other recognized kind SHALL be refused with a message naming the kind and what a real
-client would do with it, rather than being replayed as a plain start: group, Mini App, channel
-and attachment-menu launches, chat invite links, links carrying extra path segments such as
-message links and Mini App shortlinks, and any query the toolkit does not recognize. A url
-that is not a Telegram link at all SHALL be refused as such.
+Every other documented kind SHALL be refused with a message naming that kind and what a real
+client does with it, rather than being replayed as a plain start or lumped into a generic
+rejection: group, Mini App, channel and attachment-menu launches; a direct Mini App link and a
+game-share link; an affiliate-referral link; a profile link; a prefilled-draft link; chat invite
+links (including the legacy `joinchat` path and the `tg://join` form); a phone-number link,
+told apart from an invite link by its all-digit tail rather than folded into the same kind; a
+message link and its threaded and private-channel forms; a story link; a share link; an invoice
+link, on its `$<slug>`, `/invoice/<slug>` and `tg://invoice` forms alike; a boost link, on its
+path, query and `tg://` forms; a video-chat link, including its `livestream` and legacy
+`voicechat` query spellings; a business-chat link; a sticker- or emoji-set link; and any Telegram
+service link (a proxy, theme, language pack, wallpaper, login code, chat folder or an app
+screen). Where the toolkit models the action a link only opens a screen for, the message SHALL
+point at the trigger that does: an invoice link SHALL point at `pay()` and `pre_checkout_query()`,
+a boost link SHALL point at `boost()`, and a prefilled-draft link SHALL name the text it would
+have left unsent and point at `send()` with that text. A `tg://` url whose host is not `resolve`
+SHALL still be classified as a Telegram link — by host where the host is one of the documented
+ones, and as a service link otherwise — never reported as "not a Telegram link" merely because
+its host is unfamiliar. A url that addresses neither a bot nor any other documented Telegram
+surface SHALL be refused as not a Telegram link at all.
+
+A `start` payload SHALL be validated against the alphabet Bot API deep linking defines —
+`A-Z`, `a-z`, `0-9`, `_` and `-`, 1 to 64 characters — before being followed. A payload outside
+that alphabet SHALL be refused naming the rule, rather than delivered to the handler, since a
+real client never sends `/start` for a link its own payload makes invalid.
 
 #### Scenario: A bare profile link replays as a plain start
 
 - **WHEN** the button's url is `https://t.me/<bot>` with no query
 - **THEN** following it sends `/start` with no payload
 
+#### Scenario: An explicit start wins over a start-ish parameter beside it
+
+- **WHEN** the button's url carries both `start` and one of `startapp`, `startgroup` or
+  `startchannel`, in either order
+- **THEN** following it sends `/start` with the `start` payload rather than being refused
+
+#### Scenario: Every documented format is refused as the format it is
+
+- **WHEN** the button's url is one of the link forms https://core.telegram.org/api/links
+  documents — a direct Mini App link, a message link, a story link, a share link, an invoice
+  link, a boost link, a video-chat link, a business-chat link, a sticker-set link, a
+  prefilled-draft link, an affiliate-referral link, a profile link, or a service link such as a
+  proxy or language pack
+- **THEN** following it raises, naming that kind and what a real client does with it, and — for
+  an invoice or a boost link — pointing at the trigger (`pay()`, `pre_checkout_query()`,
+  `boost()`) that models the underlying action instead
+
+#### Scenario: A phone link is not mistaken for an invite link
+
+- **WHEN** the button's url is `t.me/+<digits>` or `tg://resolve?phone=<digits>`
+- **THEN** following it raises naming it a phone-number link, and the message does not call it
+  an invite link
+
+#### Scenario: A `tg://` host other than `resolve` is still a Telegram link
+
+- **WHEN** the button's url is a `tg://` url whose host is not `resolve`, whether or not the
+  toolkit enumerates that host by name
+- **THEN** following it raises naming the kind that host documents, or naming it a Telegram
+  service link when the host is not individually enumerated — never claiming the url is not a
+  Telegram link
+
 #### Scenario: An unsupported kind is named, not downgraded
 
 - **WHEN** the button opens a group chooser, a Mini App, a channel chooser or the attachment
-  menu
+  menu, with no `start` beside it
 - **THEN** following it raises, naming that kind and what to do instead, rather than sending
   a plain `/start`
 
+#### Scenario: A start payload outside the deep-linking alphabet is refused
+
+- **WHEN** the button's `start` payload is longer than 64 characters, percent-encoded, or
+  otherwise outside `A-Z`, `a-z`, `0-9`, `_` and `-`
+- **THEN** following it raises naming the deep-linking payload rule, and no `/start` is sent to
+  the handler
+
 #### Scenario: An unrecognized query is refused rather than guessed
 
-- **WHEN** the button's url carries a query parameter the toolkit does not define
+- **WHEN** the button's url carries a query parameter none of the documented kinds define
 - **THEN** following it raises, saying that what a real client would do with it is not
   simulated
 
@@ -197,9 +259,14 @@ that is not a Telegram link at all SHALL be refused as such.
 
 A blueprint SHALL NOT have to declare a user's private chat with the bot: every Telegram user
 can open one, so the environment SHALL create it, shaped exactly as a declared one, the first
-time it is needed — when a deep link is followed, when an unbound actor sends, and when an
-actor binds to its own id. Any *other* chat the blueprint never declared SHALL still be
-refused, since the world cannot invent a group's title, type or membership from an identifier.
+time it is needed on a *user-driven* path — when a deep link is followed, when an unbound
+actor sends, and when an actor binds to its own id. Any *other* chat the blueprint never
+declared SHALL still be refused, since the world cannot invent a group's title, type or
+membership from an identifier.
+
+The bot's own calls SHALL open nothing. A real bot cannot write into a private chat first — it
+may only answer a user who wrote to it — so a chat named by an outbound call and not declared
+SHALL be reported as a gap in the test's setup rather than opened on demand.
 
 #### Scenario: A followed link opens the chat
 
@@ -216,6 +283,13 @@ refused, since the world cannot invent a group's title, type or membership from 
 
 - **WHEN** an actor binds to the identifier of a group nobody declared
 - **THEN** the call raises, because the world has nothing to build that chat from
+
+#### Scenario: The bot writing first does not open one
+
+- **WHEN** a handler sends a message to a declared user whose private chat was never declared
+  and never opened
+- **THEN** the call raises rather than opening the chat, because a real bot cannot start the
+  conversation
 
 ### Requirement: Modeled Bot API methods mutate world state
 
@@ -349,6 +423,10 @@ An object that already carries a bot belongs to whoever owns it and SHALL NOT be
 so a second `Bot` sharing the environment's session never takes over the world's own
 objects.
 
+The binding SHALL be a property of the world's chat registry rather than of one moment in its
+life: a chat SHALL be wired to its world however it is registered, including when the whole
+mapping is replaced after construction, so that messages stored afterwards are bound as usual.
+
 #### Scenario: A shortcut on a result reaches the world
 
 - **WHEN** a handler sends a message and calls `edit_text` on the returned `Message`
@@ -371,6 +449,12 @@ objects.
 - **THEN** that message stays bound to the environment's own bot, while objects minted for
   that call are bound to the calling bot
 
+#### Scenario: Replacing the chat mapping does not detach the world
+
+- **WHEN** a test assigns a plain mapping of chats to the world after it was built
+- **THEN** those chats are wired to the world as declared ones are, and messages stored in
+  them afterwards carry the bot
+
 ### Requirement: Handlers receive the world's own objects
 
 An update SHALL arrive at the dispatcher already bound, so that the framework does not
@@ -389,6 +473,27 @@ claimed, and the message it carries SHALL be registered in the destination chat.
 - **THEN** the second environment answers in its own world, and the reply it sends does not
   reuse the incoming message's identifier
 
+### Requirement: A chat's messages are ordered by identifier
+
+The list of messages a chat holds SHALL be kept in ascending `message_id` order as messages
+are stored, so that reading its last element means the newest message whoever produced it.
+Almost every producer allocates its identifier from the chat itself, but a message an update
+carried in from another environment was numbered there, and appending one could leave the list
+unsorted. The identifier a message carries SHALL NOT be rewritten to achieve the ordering,
+since it is how a test correlates what it fed with what the world holds.
+
+#### Scenario: A message carried in from elsewhere lands in order
+
+- **WHEN** an update built by another environment carries a message older than the ones the
+  destination chat already holds, and is fed to this one
+- **THEN** the chat's messages are still in ascending identifier order, and its last element is
+  the newest message rather than the carried one
+
+#### Scenario: The carried identifier is preserved
+
+- **WHEN** such a message is registered
+- **THEN** it is found under the identifier it arrived with
+
 ### Requirement: Objects a test hands to a call stay the test's own
 
 Values the code under test passes into a Bot API call SHALL be copied before they reach
@@ -397,6 +502,14 @@ world state, so an object a test declares once — a shared `reply_markup`, a
 never keeps a disposed environment alive. The value objects the world stores SHALL likewise
 be copied on the way out. A `Message` is the deliberate exception: the message a call returns
 is the one the chat holds.
+
+A value that already belongs to *this* environment's bot is the world's own object, not the
+caller's, and SHALL be passed through by identity instead of copied — so a stored message
+named as a field keeps tracking later edits to it, and two fields naming one stored object go
+on sharing it. That rule SHALL be the same one on every path a value enters the world by: a
+trigger's fields and an edit's changes SHALL NOT disagree about the same value. Ownership
+SHALL be decided by identity, so a value belonging to a *different* environment is still
+copied.
 
 #### Scenario: A shared constant is not captured by the world
 
@@ -425,6 +538,18 @@ is the one the chat holds.
 - **WHEN** a test declares a result once and the method is called several times
 - **THEN** each call is answered with its own copy, and the declared object is neither
   mutated nor left bound to any bot
+
+#### Scenario: An edit aliases what a send aliases
+
+- **WHEN** a test names a message the world already holds in the fields of an edit trigger,
+  as it would in the fields of a send
+- **THEN** the stored message points at that very object, and two fields naming it share it
+
+#### Scenario: A value from another environment is still copied
+
+- **WHEN** a trigger field names an object bound to a different environment's bot
+- **THEN** the world stores a copy bound to this environment's bot, and the original is left
+  as it was
 
 ### Requirement: Telegram errors behave like production errors
 
@@ -462,12 +587,39 @@ The two kinds SHALL be distinguishable by type: `ApiRejection` is something Tele
 would answer, and is what `handle_call` turns into a `TelegramBadRequest`, while
 `WorldLookupError` is not.
 
+A chat named by an outbound call and not declared SHALL be one of these gaps. Because the
+wording Telegram uses for it — "chat not found" — is a branch bots really do handle, reporting
+it as a Telegram error let a missing declaration run the blocked-user path and pass. Its
+message SHALL enumerate the chats the world does declare, SHALL point at the declaration and
+the on-demand helper that would add the missing one, and SHALL name the override that produces
+the real API refusal for a test that wants that branch.
+
 #### Scenario: An undeclared entity is not reported as a Bad Request
 
 - **WHEN** a handler calls a method naming a user, chat, sticker set, poll, gift, charge or
   business connection the blueprint never declared
 - **THEN** the call raises `WorldLookupError` rather than `TelegramBadRequest`, and the
   message names what is missing
+
+#### Scenario: An undeclared chat says what this world has
+
+- **WHEN** an outbound call names a chat identifier or `@username` the blueprint never
+  declared
+- **THEN** the failure lists the declared chats with their type and readable name, or says the
+  world declares none, and names how to declare the missing one
+
+#### Scenario: A declared user with no private chat is told exactly that
+
+- **WHEN** the identifier belongs to a declared user whose private chat was never opened
+- **THEN** the failure says a bot cannot write first, and names declaring the chat, opening it
+  through the world, and having the user write first
+
+#### Scenario: The real refusal stays testable
+
+- **WHEN** a test declares `TelegramBadRequest` with Telegram's "chat not found" wording as
+  the outcome of the sending method
+- **THEN** the bot's own `except TelegramBadRequest` branch runs, without the world pretending
+  to be short of a chat
 
 #### Scenario: The bot's own error handling cannot hide it
 
@@ -495,6 +647,11 @@ truthy value it produces SHALL be returned, so a wait can fetch as well as test.
 SHALL be satisfied immediately when the condition already holds, and SHALL NOT exceed its
 stated timeout whatever polling interval it was given.
 
+The description of what is awaited SHALL be the second **positional** parameter, since these
+waits are written with lambdas and that description is the only thing a failure message can
+say about one; it SHALL still be accepted as a keyword. The timing parameters SHALL stay
+keyword-only.
+
 #### Scenario: A background task satisfies the wait
 
 - **WHEN** a handler schedules work that changes the world after it returns, and the test
@@ -516,24 +673,36 @@ stated timeout whatever polling interval it was given.
 - **WHEN** a wait is given a polling interval coarser than the time left
 - **THEN** it gives up at the timeout rather than overshooting by a whole interval
 
+#### Scenario: The description is passed without ceremony
+
+- **WHEN** a test passes what it is waiting for as the argument after the predicate
+- **THEN** a timeout quotes it, exactly as when it is passed by keyword
+
 ### Requirement: Waiting for a message in a chat or a topic
 
 A chat SHALL provide a wait for a message matching a predicate, and a forum topic SHALL
 provide the same wait over its own messages, so a message posted into a sibling topic never
 satisfies it. The predicate SHALL be matched against every message the view holds, not only
-the ones arriving after the call, and the newest match SHALL be returned; an omitted predicate
-SHALL match any message. The message returned SHALL be usable like any other object the world
-holds.
+the ones arriving after the call; an omitted predicate SHALL match any message. The message
+returned SHALL be usable like any other object the world holds.
+
+When more than one message matches, the one with the **highest `message_id`** SHALL be
+returned — the newest as Telegram numbers them, rather than whichever the view holds last, so
+the result does not depend on the list happening to be sorted.
+
+Both forms SHALL take the description of what is awaited as their second positional
+parameter, on the same terms as the condition wait.
 
 #### Scenario: A message that is already there matches
 
 - **WHEN** the message being waited for arrived before the wait started
 - **THEN** the wait returns it immediately
 
-#### Scenario: The newest match wins
+#### Scenario: The newest match wins, by identifier
 
-- **WHEN** several messages in the chat match the predicate
-- **THEN** the most recent one is returned
+- **WHEN** several messages in the chat match the predicate, in whatever order the view holds
+  them
+- **THEN** the one with the highest `message_id` is returned
 
 #### Scenario: A topic waits only on its own thread
 
@@ -544,6 +713,11 @@ holds.
 
 - **WHEN** a test calls a shortcut on the message a wait returned
 - **THEN** it works, exactly as on any message read out of the world
+
+#### Scenario: A message wait names what it wanted
+
+- **WHEN** a chat or topic wait is given a description as its second argument and times out
+- **THEN** the failure quotes it rather than only the predicate's identity
 
 ### Requirement: A predicate that raises does not fail the wait
 
@@ -581,6 +755,32 @@ messages the chat or topic holds, or the description the test gave for a conditi
 
 - **WHEN** a wait for a condition is given a description and times out
 - **THEN** the failure quotes that description rather than only the predicate's identity
+
+### Requirement: One wait timeout for a whole environment
+
+An environment SHALL accept a default timeout for every wait it owns, so a bot whose
+background work is slow, or a suite that would rather fail fast than pause on every timing
+bug, states it once instead of on every call. It SHALL apply to the condition wait and to
+every chat and topic message wait alike, SHALL be reachable by a chat added after the
+environment was built, and SHALL be overridden by an explicit timeout on a single call. Absent
+any setting, the default SHALL be five seconds.
+
+#### Scenario: One setting reaches every wait
+
+- **WHEN** an environment is built with a default wait timeout and a condition wait, a chat
+  wait and a topic wait each time out
+- **THEN** all three gave up after that timeout
+
+#### Scenario: A single call can still say otherwise
+
+- **WHEN** one wait passes its own timeout
+- **THEN** that call uses it while the rest of the environment keeps the default
+
+#### Scenario: The setting is configuration, not state
+
+- **WHEN** two worlds hold the same chats, users and messages but were given different wait
+  timeouts
+- **THEN** they still compare equal
 
 ### Requirement: FSM state is inspectable and settable
 
@@ -1242,7 +1442,10 @@ rather than being synthesized.
 Setting an administrator's custom title or a member's tag SHALL write to that member's
 stored state, and `getChatMember` SHALL surface both. The two apply to different members
 and SHALL enforce that distinction: a custom title belongs to an administrator, while a
-tag belongs to a regular member.
+tag belongs to a regular member. That distinction SHALL hold over time as well as at the
+moment of writing: losing the administrator status SHALL take the custom title with it, while
+a tag SHALL outlive any status change, because the Bot API carries it on every membership
+variant.
 
 #### Scenario: Custom title round-trips
 
@@ -1330,8 +1533,18 @@ about — an administrator lacking one right — is a single declaration.
 `promoteChatMember` SHALL store the whole rights mask the request carried, so a right the
 request did not pass is not granted and is reported as such. A request in which no right comes
 out true SHALL demote the member, as the Bot API documents; any right that is true — including
-the anonymity flag alone — SHALL keep the member an administrator. `restrictChatMember` SHALL
-store the permissions it was given and clear any administrator rights the member held.
+the anonymity flag alone — SHALL keep the member an administrator. A demotion SHALL also clear
+the member's custom title, since that is an administrator's and the plain-member variant has no
+field for one; the member's tag SHALL survive it. `restrictChatMember` SHALL clear any
+administrator rights the member held.
+
+`restrictChatMember` and `setChatPermissions` SHALL store what the request *grants* rather than
+the mask it passed. Unless the request sets `use_independent_chat_permissions`, granting
+permission to send other message kinds or web page previews SHALL grant every kind of message,
+and granting polls SHALL grant messages — so the permissions read back may be broader than the
+ones handed in, as they are against the real API. Independently of that switch, a permission
+the request leaves unset SHALL take the value of the one the Bot API documents it as following.
+Neither method SHALL mutate or retain the caller's own permissions object.
 
 #### Scenario: A promotion grants exactly what was asked for
 
@@ -1353,10 +1566,37 @@ store the permissions it was given and clear any administrator rights the member
 - **WHEN** a handler promotes a member passing no rights, or every right as false
 - **THEN** the member becomes an ordinary member, and can be promoted again later
 
-#### Scenario: A restriction is read back as it was set
+#### Scenario: A demotion does not leave a title behind
 
-- **WHEN** a handler restricts a member with a set of permissions
-- **THEN** `getChatMember` reports those permissions
+- **WHEN** a member with a custom title is demoted and later promoted again
+- **THEN** the later promotion reports no custom title, since none was granted
+
+#### Scenario: A demotion keeps the member's tag
+
+- **WHEN** a member carrying a tag is demoted
+- **THEN** `getChatMember` reports the tag on the plain-member result
+
+#### Scenario: A restriction stores what it grants
+
+- **WHEN** a handler restricts a member granting only other message kinds
+- **THEN** `getChatMember` reports every message kind as permitted, because the Bot API
+  couples them
+
+#### Scenario: Independent permissions are stored as passed
+
+- **WHEN** the same restriction sets `use_independent_chat_permissions`
+- **THEN** only the permission that was passed is reported as granted
+
+#### Scenario: An omitted permission follows the one it defaults to
+
+- **WHEN** a request grants a permission that another one defaults to, with or without
+  independent permissions
+- **THEN** the dependent permission is reported as granted too
+
+#### Scenario: Setting chat permissions applies the same couplings
+
+- **WHEN** a handler sets chat permissions granting other message kinds
+- **THEN** a later `getChat` reports every message kind as permitted
 
 ### Requirement: Rights are reported per chat type
 
