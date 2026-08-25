@@ -18,6 +18,6 @@ context: |
   - See AGENTS.md for the full contribution workflow.
 
 rules:
-  spec:
+  specs:
     - Describe observable framework behavior, not implementation details.
     - Reference public API names (classes, methods) that users actually import.

@@ -78,6 +78,9 @@ cli = [
 signature = [
     "cryptography>=46.0.0",
 ]
+test = [
+    "pytest>=8,<10",
+]
 docs = [
     "Sphinx~=8.0.2",
     "sphinx-intl~=2.2.0",
@@ -112,6 +115,9 @@ test = [
     "pytz>=2026,<2027",
     "pycryptodomex==3.23.0",
 ]
+
+[project.entry-points.pytest11]
+aiogram = "aiogram.test.plugin"
 
 [project.urls]
 Homepage = "https://aiogram.dev/"
@@ -202,6 +208,10 @@ known-first-party = [
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
+# aiogram ships its own pytest plugin (aiogram.test.plugin). Loading it here would
+# import aiogram/test/** before coverage starts, leaving that package unmeasured;
+# its fixtures are tested explicitly instead, including in a real subprocess run.
+addopts = "-p no:aiogram"
 testpaths = [
     "tests",
 ]
