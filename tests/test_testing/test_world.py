@@ -36,6 +36,30 @@ from aiogram.types import (
 )
 
 
+def recipes(message: str) -> list[str]:
+    """
+    The runnable blocks out of an ownership refusal, as the reader would copy them.
+
+    An error message that recommends a remedy is only worth as much as the remedy: both of
+    these used to point at lines that raise the very error they were printed by. So the
+    tests below do not paraphrase the advice — they ``exec`` it, exactly as written, and
+    a message whose recipe stops working fails here rather than in somebody's test suite.
+    """
+    blocks: list[str] = []
+    current: list[str] = []
+    for line in message.splitlines():
+        code = line[2:] if line.startswith("  ") else None
+        if code is None or code.lstrip().startswith("#"):
+            if current:
+                blocks.append("\n".join(current))
+                current = []
+            continue
+        current.append(code)
+    if current:
+        blocks.append("\n".join(current))
+    return blocks
+
+
 def make_message(chat: ChatState, text: str = "hi") -> Message:
     return Message(
         message_id=chat.allocate_message_id(),
@@ -573,6 +597,70 @@ class TestChatRegistration:
 
         assert world.chats[1] is chat
         assert chat.world is world
+
+    def test_every_recipe_in_the_per_chat_refusal_actually_runs(self):
+        """
+        The message used to recommend a line that raises the message.
+
+        ``world.chats[id] = blueprint.build().chats[id]`` was the first thing it suggested,
+        and a chat straight out of ``build()`` is owned by the world that built it — so the
+        reader who followed the advice landed right back on the same refusal, with the same
+        advice, and nothing in the message said what the missing step was. Each recipe is
+        run here verbatim.
+        """
+        blueprint = Blueprint()
+        blueprint.add_user("Alice")
+        group = blueprint.add_supergroup("Team")
+
+        donor = blueprint.build()
+        with pytest.raises(WorldLookupError) as failure:
+            blueprint.build().chats[group.id] = donor.chats[group.id]
+
+        found = recipes(str(failure.value))
+        assert len(found) == 3, str(failure.value)
+
+        for recipe in found:
+            donor = blueprint.build()
+            world = blueprint.build()
+            namespace = {
+                "copy": copy,
+                "blueprint": blueprint,
+                "donor": donor,
+                "chat": donor.chats[group.id],
+                "world": world,
+            }
+            exec(recipe, namespace)  # noqa: S102 - the message's own lines, verbatim
+
+            assert world.chats[group.id].id == group.id
+            assert world.chats[group.id].world is world
+
+    def test_both_recipes_in_the_registry_refusal_actually_run(self):
+        """
+        Same rule for the outer check, which used to recommend ``dict(other.chats)`` — the
+        one thing that corrupts the donor chat by chat — and then, once that was withdrawn,
+        recommended nothing runnable at all.
+        """
+        blueprint = Blueprint()
+        blueprint.add_user("Alice")
+        group = blueprint.add_supergroup("Team")
+
+        with pytest.raises(WorldLookupError) as failure:
+            blueprint.build().chats = blueprint.build().chats
+
+        found = recipes(str(failure.value))
+        assert len(found) == 2, str(failure.value)
+
+        for recipe in found:
+            namespace = {
+                "blueprint": blueprint,
+                "other": blueprint.build(),
+                "world": blueprint.build(),
+            }
+            exec(recipe, namespace)  # noqa: S102 - the message's own lines, verbatim
+
+            rebuilt = namespace["world"]
+            assert isinstance(rebuilt.chats, ChatRegistry)
+            assert rebuilt.chats[group.id].world is rebuilt
 
     def test_a_deep_copy_of_a_world_keeps_its_chats_wired_to_the_copy(self, env):
         """

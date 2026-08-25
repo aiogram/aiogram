@@ -569,7 +569,8 @@ class TestDrain:
     it has already passed and long after anyone could trace it back.
     """
 
-    async def test_a_leaked_sleeping_task_is_cancelled_and_awaited(self, env):
+    async def test_a_leaked_sleeping_task_is_cancelled_and_awaited(self, env, alice):
+        await alice.send("hi")  # the environment's first async entry: it now owns the loop
         started = asyncio.Event()
 
         async def forever():
@@ -583,29 +584,52 @@ class TestDrain:
 
         assert task.cancelled()
 
-    async def test_it_reports_how_many_it_drained(self, env):
+    async def test_it_reports_how_many_it_drained(self, env, alice):
+        await alice.send("hi")
         tasks = [asyncio.create_task(asyncio.sleep(3600)) for _ in range(3)]
         await asyncio.sleep(0)
 
         assert await env.drain() == 3
         assert all(task.done() for task in tasks)
 
-    async def test_nothing_to_drain_is_free(self, env):
+    async def test_nothing_to_drain_is_free(self, env, alice):
+        await alice.send("hi")
         assert await env.drain() == 0
 
-    async def test_a_task_that_finished_on_its_own_is_not_counted(self, env):
+    async def test_an_environment_that_never_ran_drains_nothing(self, env):
+        """
+        The other half of the protection, and the dangerous half.
+
+        ``bot_env`` is a synchronous fixture, so an environment built by it has an **empty**
+        creation-time snapshot, and the second snapshot is only taken at its first
+        asynchronous entry. Drained in between, "every unprotected task" would have meant
+        every task in the loop — the session-scoped fixtures' workers included. An
+        environment that never ran owns nothing, so it cancels nothing and says so.
+        """
+        outsider = asyncio.create_task(asyncio.sleep(3600))
+        await asyncio.sleep(0)
+
+        try:
+            assert await env.drain() == 0
+            assert not outsider.done()
+        finally:
+            outsider.cancel()
+
+    async def test_a_task_that_finished_on_its_own_is_not_counted(self, env, alice):
+        await alice.send("hi")
         task = asyncio.create_task(asyncio.sleep(0))
         await task
 
         assert await env.drain() == 0
 
-    async def test_a_task_that_fails_while_being_cancelled_surfaces_its_error(self, env):
+    async def test_a_task_that_fails_while_being_cancelled_surfaces_its_error(self, env, alice):
         """
         Its exception is retrieved — which is what stops the garbage collector complaining
         about it later — and then **raised**, rather than dropped on the floor. A helper
         whose job is silencing noise must not silence a real failure: a night timer that
         died with a bug would otherwise look exactly like one that was cancelled on time.
         """
+        await alice.send("hi")
         started = asyncio.Event()
 
         async def explode_on_cancel():
@@ -628,8 +652,19 @@ class TestDrain:
         assert isinstance(failure.value.__cause__, ValueError)
         assert not task.cancelled()
 
-    async def test_a_task_that_fails_of_its_own_accord_surfaces_its_error(self, env):
-        """The commoner half of the same rule: the task was already dead when drain ran."""
+    async def test_a_task_that_fails_of_its_own_accord_surfaces_its_error(self, env, alice):
+        """
+        The commoner half of the same rule, and the one that used to be silently lost: the
+        task was **already dead** when the drain ran.
+
+        ``asyncio.all_tasks()`` answers with unfinished tasks only, so a night timer that
+        blew up three lines into the test was not in the set the drain looked at — it
+        reported "0 tasks" and the ``KeyError`` surfaced, if at all, as a stray
+        ``Task exception was never retrieved`` at collection time, attributed to no test in
+        particular. Every task created while the environment is live is now remembered, so a
+        dead one is inspected exactly as a cancelled one is.
+        """
+        await alice.send("hi")
 
         async def explode():
             msg = "night timer blew up"
@@ -639,13 +674,18 @@ class TestDrain:
         await asyncio.sleep(0)
         assert task.done()
 
-        # Already finished, so it is not part of the pending set — nothing to drain, and
-        # nothing this helper ever promised to notice.
-        assert await env.drain() == 0
+        with pytest.raises(DrainedTaskError, match="ended with an exception") as failure:
+            await env.drain()
+
+        assert "KeyError" in str(failure.value)
+        assert task.get_name() in str(failure.value)
+        assert isinstance(failure.value.__cause__, KeyError)
+        # Retrieved, so nothing complains about it later.
         assert isinstance(task.exception(), KeyError)
 
-    async def test_a_stuck_task_is_reported_together_with_a_failed_one(self, env):
+    async def test_a_stuck_task_is_reported_together_with_a_failed_one(self, env, alice):
         """Neither half of the news is dropped when both happen at once."""
+        await alice.send("hi")
         started = asyncio.Event()
 
         async def slow_to_die():
@@ -671,6 +711,9 @@ class TestDrain:
                 await env.drain(timeout=0.05)
             assert "still running" in str(failure.value)
             assert "ValueError: cleanup failed" in str(failure.value)
+            # The chaining follows the error that is actually raised, so the first real
+            # failure's traceback is one link away here too.
+            assert isinstance(failure.value.__cause__, ValueError)
         finally:
             await asyncio.wait([stuck, failing], timeout=2.0)
 
@@ -724,7 +767,8 @@ class TestDrain:
         finally:
             outsider.cancel()
 
-    async def test_a_task_that_already_finished_is_not_drained(self, env):
+    async def test_a_task_that_already_finished_is_not_drained(self, env, alice):
+        await alice.send("hi")
         task = asyncio.create_task(asyncio.sleep(0))
         await task
 
@@ -735,12 +779,13 @@ class TestDrain:
 
         assert not asyncio.current_task().cancelled()
 
-    async def test_a_task_that_outlives_its_cancellation_is_reported(self, env):
+    async def test_a_task_that_outlives_its_cancellation_is_reported(self, env, alice):
         """
         Exactly the "a `finally` that awaits" the failure message points at: the task
         accepts the cancellation but takes longer to unwind than the drain waits, so the
         drain must say so rather than leave it running and claim success.
         """
+        await alice.send("hi")
         started = asyncio.Event()
 
         async def slow_to_die():
@@ -782,6 +827,42 @@ class TestDrain:
         finally:
             await environment.dispose()
             outsider.cancel()
+
+    async def test_two_environments_nest_their_tracking_and_unwind_it(self, env, alice, blueprint):
+        """
+        Remembering spawned tasks means wrapping the loop's task factory, and the two-
+        environment recipe the documentation shows has two of them alive at once.
+
+        The inner one must chain to the outer rather than replace it, and restoring must go
+        by identity: an environment whose factory is no longer the loop's leaves it alone
+        instead of tearing the other's out from under it. Both still see what they spawned,
+        and the loop is left exactly as it was found.
+        """
+        loop = asyncio.get_running_loop()
+        original = loop.get_task_factory()
+
+        await alice.send("hi")  # the outer environment installs its tracking here
+        outer_factory = loop.get_task_factory()
+        assert outer_factory is not original
+
+        other = BotTestEnvironment(blueprint=blueprint, dispatcher=Dispatcher())
+        try:
+            await other.user(blueprint.users[0]).send("hi")
+            assert loop.get_task_factory() is not outer_factory
+
+            leaked = asyncio.create_task(asyncio.sleep(3600))
+            await asyncio.sleep(0)
+
+            # The task went through both factories, so either environment can drain it.
+            assert await other.drain() == 1
+            assert leaked.cancelled()
+        finally:
+            other.dispose_sync()
+
+        # The inner one restored the outer one's factory rather than the original.
+        assert loop.get_task_factory() is outer_factory
+        env.dispose_sync()
+        assert loop.get_task_factory() is original
 
     async def test_dispose_does_not_drain(self, blueprint, dp):
         """

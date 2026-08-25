@@ -790,3 +790,123 @@ class TestNeverMatchedOverridesAreNamed:
             await table.wait_for_message_in([party.users[0].id], timeout=0.01)
 
         assert "never matched a call" in str(failure.value)
+
+
+class TestASimulationIsNotAnExpectation:
+    """
+    ``blocked()`` used to be reported as forty-two unfired declarations.
+
+    ``env.on(SendMessage, chat_id=alice.id).raises()`` is one expectation spelled as one
+    rule, and a rule that never fired is a finding. ``env.blocked(alice)`` is not: it spells
+    **one** simulation — "Alice has blocked the bot" — as one rule per method a block stops,
+    and all but the one or two the bot actually calls are supposed to sit there untouched.
+
+    Reporting them made the two places the listing appears useless in exactly the block the
+    documentation recommends them for: every timeout inside ``with env.blocked(alice):``
+    ended in a wall of forty lines about methods nobody expected to be called, and
+    ``assert_overrides_consumed()`` could not pass there at all.
+    """
+
+    async def test_a_timeout_inside_a_block_has_a_clean_footer(self, table, party):
+        alice = table.chat(party.users[0].id)
+
+        with table.blocked(chat_id=alice.id):
+            with pytest.raises(TelegramForbiddenError):
+                await table.bot.send_message(chat_id=alice.id, text="hi")
+
+            with pytest.raises(WaitTimeoutError) as failure:
+                await table.wait_for(lambda: False, "the night to fall", timeout=0.01)
+
+        message = str(failure.value)
+        assert "never matched a call" not in message
+        assert "SendPhoto" not in message
+
+    async def test_assert_overrides_consumed_passes_inside_a_block_that_fired(
+        self,
+        table,
+        party,
+    ):
+        """The idiom the docstring of ``assert_overrides_consumed`` recommends, verbatim."""
+        alice = table.chat(party.users[0].id)
+
+        with table.blocked(chat_id=alice.id):
+            with pytest.raises(TelegramForbiddenError):
+                await table.bot.send_message(chat_id=alice.id, text="hi")
+            table.assert_overrides_consumed()
+
+    async def test_a_block_that_never_fired_is_not_a_finding_either(self, table, party):
+        """
+        A block nothing tripped over is the ordinary shape of "prove the bot never went
+        there", so it is excluded outright rather than merely forgiven once it has fired.
+        """
+        alice = table.chat(party.users[0].id)
+
+        with table.blocked(chat_id=alice.id):
+            table.assert_overrides_consumed()
+
+    async def test_a_targeted_rule_inside_a_block_is_still_reported(self, table, party):
+        """The exclusion is per rule, not per registry: a real expectation still speaks."""
+        alice = table.chat(party.users[0].id)
+        table.on(SendMessage, chat_id=alice.id + 999).raises(TelegramForbiddenError)
+
+        with table.blocked(chat_id=alice.id):
+            with pytest.raises(AssertionError, match="never matched a call") as failure:
+                table.assert_overrides_consumed()
+
+        message = str(failure.value)
+        assert "1 declared override(s)" in message
+        assert "SendMessage(chat_id=" in message
+
+
+class TestBlockedCoversTheWholeReactionFamily:
+    """
+    Removing a reaction is as much "acting on that chat" as putting one there.
+
+    ``setMessageReaction`` was covered and its two counterparts were not, so a bot whose
+    recovery path is "clear the reaction I put on my own message" passed a test its users
+    never pass — the same gap the edit and pin families were added to close.
+    """
+
+    async def test_deleting_a_reaction_in_the_blocked_chat_fails(self, table, party):
+        alice = table.chat(party.users[0].id)
+        posted = await table.bot.send_message(chat_id=alice.id, text="your role")
+
+        with table.blocked(chat_id=alice.id):
+            with pytest.raises(TelegramForbiddenError):
+                await table.bot.delete_message_reaction(
+                    chat_id=alice.id,
+                    message_id=posted.message_id,
+                )
+            with pytest.raises(TelegramForbiddenError):
+                await table.bot.delete_all_message_reactions(chat_id=alice.id)
+
+    async def test_clearing_the_users_reaction_elsewhere_is_not_blocked(self, table, party):
+        """
+        ``user_id`` on these two names *whose* reaction, not who is unreachable.
+
+        A block keyed on it would have made "clear Alice's reaction in the group" fail — a
+        call a real block never touches, since the group is still perfectly reachable.
+        """
+        alice = party.users[0]
+        group = table.chat(party.chats[-1].id)
+        posted = await table.bot.send_message(chat_id=group.id, text="vote")
+
+        with table.blocked(chat_id=alice.id):
+            assert await table.bot.delete_message_reaction(
+                chat_id=group.id,
+                message_id=posted.message_id,
+                user_id=alice.id,
+            )
+            assert await table.bot.delete_all_message_reactions(
+                chat_id=group.id,
+                user_id=alice.id,
+            )
+
+    def test_the_reaction_family_is_listed_whole(self):
+        names = {method.__name__ for method in BLOCKED_METHODS}
+
+        assert {
+            "SetMessageReaction",
+            "DeleteMessageReaction",
+            "DeleteAllMessageReactions",
+        } <= names

@@ -1191,11 +1191,19 @@ class ChatRegistry(dict[int, ChatState]):
                 f"Chat {chat.id} already belongs to another world, and registering it here "
                 f"would rewrite `chat.world` on the very object that world still holds — "
                 f"binding its messages to this world's bot. Worlds own their chats.\n"
-                f"If a chat of the same shape is what you meant, build one:\n"
-                f"  world.chats[{chat.id}] = blueprint.build().chats[{chat.id}]  # from the "
-                f"declaration\n"
-                f"If moving this very object is what you meant, say so by detaching it "
-                f"first:\n"
+                f"Detaching is what says which of these you meant, and every one of them "
+                f"needs it — a chat straight out of `blueprint.build()` is owned by the "
+                f"world that built it, so handing it on undetached lands right back here:\n"
+                f"  # an independent copy, leaving the donor untouched\n"
+                f"  clone = copy.deepcopy(chat)\n"
+                f"  clone.world = None\n"
+                f"  world.chats[{chat.id}] = clone\n"
+                f"  # or a fresh chat of the same shape, from the declaration\n"
+                f"  clone = blueprint.build().chats[{chat.id}]\n"
+                f"  clone.world = None\n"
+                f"  world.chats[{chat.id}] = clone\n"
+                f"  # or this very object, moved — the donor gives it up\n"
+                f"  del donor.chats[{chat.id}]\n"
                 f"  chat.world = None\n"
                 f"  world.chats[{chat.id}] = chat"
             )
@@ -1280,7 +1288,8 @@ class World:
         :meth:`ChatRegistry.__setitem__` refuses a foreign-owned chat whatever container it
         arrived in, which is what closes the hole this message used to point straight at —
         ``dict(other.chats)`` unwraps the registry and corrupts the donor one item at a
-        time. So the recommendation is gone from the message, because it was wrong.
+        time. So the message no longer recommends that; what it recommends instead is what
+        the rule leaves genuinely open, and each of those lines runs.
 
         A plain mapping is still converted, which is the case that motivated all of this:
         ``world.chats = {chat.id: chat}`` is the obvious way to rebuild a world in a test,
@@ -1297,10 +1306,15 @@ class World:
                     "very objects the donor world still holds — binding its messages to "
                     "this world's bot.\n"
                     "Unwrapping it does not help — `world.chats = dict(other.chats)` is "
-                    "refused chat by chat for the same reason. Build the chats this world "
-                    "needs from their declaration (`blueprint.build()`), or detach each "
-                    "chat explicitly (`chat.world = None`) if moving the objects "
-                    "themselves is really what you meant."
+                    "refused chat by chat for the same reason.\n"
+                    "If a world of that shape is what you want, build one and use it "
+                    "whole rather than transplanting its chats into this one:\n"
+                    "  world = blueprint.build()\n"
+                    "If moving these very objects is what you meant, detach them first — "
+                    "the donor gives them up:\n"
+                    "  for chat in other.chats.values():\n"
+                    "      chat.world = None\n"
+                    "  world.chats = dict(other.chats)"
                 )
                 raise WorldLookupError(msg)
             registry = ChatRegistry(self)

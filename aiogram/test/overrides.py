@@ -61,8 +61,19 @@ DELIVERY_METHODS: tuple[type[TelegramMethod[Any]], ...] = tuple(
 #:
 #: * the ``editMessage*`` family, ``stopMessageLiveLocation`` and ``stopPoll`` — editing is
 #:   an operation on a chat the bot must still be able to reach;
-#: * ``setMessageReaction`` — same;
+#: * ``setMessageReaction``, ``deleteMessageReaction``, ``deleteAllMessageReactions`` —
+#:   same. The whole reaction family belongs here together: a bot that reacts to a failed
+#:   send by clearing the reaction it had already put on its own message must be seen to
+#:   fail at *that* too, and covering only the setter let exactly that recovery path pass
+#:   a test its users never pass;
 #: * ``pinChatMessage``, ``unpinChatMessage``, ``unpinAllChatMessages`` — same.
+#:
+#: **The converse is the maintenance rule.** A new ``Send*``/``Copy*``/``Forward*`` method
+#: joins :data:`DELIVERY_METHODS` — and therefore this set — on its own, by prefix. A new
+#: ``Edit*``/``Stop*``/``Pin*``/``Unpin*`` method, or a new reaction method, does **not**:
+#: it needs a row added below, or a line in the exclusions saying why it stays out. Both
+#: halves are the review surface, which is why the exclusions are written down rather than
+#: left as the absence of a row.
 #:
 #: **Deliberately excluded**, so the exclusions are as reviewable as the inclusions:
 #:
@@ -79,6 +90,8 @@ DELIVERY_METHODS: tuple[type[TelegramMethod[Any]], ...] = tuple(
 #:
 #:     env.on(DeleteMessage, chat_id=alice.id).raises(TelegramForbiddenError)
 _BLOCKED_EXTRA_METHOD_NAMES: tuple[str, ...] = (
+    "DeleteAllMessageReactions",
+    "DeleteMessageReaction",
     "EditMessageCaption",
     "EditMessageChecklist",
     "EditMessageLiveLocation",
@@ -261,6 +274,21 @@ class OverrideRule:
     #: name: it was declared, it never matched anything, and the test failed somewhere else
     #: entirely — as "the bot sent the message it was supposed to fail to send".
     fired: int = field(default=0, compare=False)
+    #: Whether *this rule* is something the test said it expects to happen.
+    #:
+    #: ``env.on(SendMessage, chat_id=alice.id).raises()`` is one expectation spelled as one
+    #: rule, so a rule that never fired is a finding. :func:`block_chat` is not: it spells
+    #: **one** simulation — "Alice has blocked the bot" — as forty-odd rules, one per method
+    #: a block stops, and all but the one or two the bot actually calls are supposed to sit
+    #: there untouched. Reporting them made every timeout inside ``with env.blocked(alice):``
+    #: end in a wall of forty "never matched" lines that said nothing about the timeout, and
+    #: made :meth:`~aiogram.test.BotTestEnvironment.assert_overrides_consumed` unusable in
+    #: exactly the block that documentation recommends it for.
+    #:
+    #: So the flag is set where the *shape* of the declaration is known: a rule a test wrote
+    #: by hand is an expectation, a rule a simulation generated is not. See
+    #: :meth:`OverrideRegistry.unfired`.
+    expected: bool = field(default=True, compare=False)
 
 
 class OverrideRegistry:
@@ -315,13 +343,19 @@ class OverrideRegistry:
 
     def unfired(self) -> list[OverrideRule]:
         """
-        The rules still registered that have never answered a call.
+        The rules still registered that a test **expected** to fire and that never did.
 
         A rule leaves the registry only by being cancelled or by spending its ``times``
         budget, and spending the budget requires having fired — so what is still here at
         ``fired == 0`` really is a declaration nothing ever matched.
+
+        Rules with :attr:`OverrideRule.expected` unset are left out entirely rather than
+        counted as fired: they are the alternatives of a simulation — the forty methods
+        :func:`block_chat` refuses — and a simulation is not a prediction of which of its
+        alternatives the bot will take. Silence about them is the correct report whether the
+        block fired or not.
         """
-        return [rule for rule in self._rules if rule.fired == 0]
+        return [rule for rule in self._rules if rule.expected and rule.fired == 0]
 
     def describe_unfired(self) -> str:
         """A block naming the never-matched rules, or ``''`` when they all fired."""
@@ -360,9 +394,20 @@ class OverrideHandle:
         self._registry = registry
         self._rules: list[OverrideRule] = []
 
-    def register(self, matcher: MethodMatcher, outcome: Outcome) -> OverrideRule:
-        """Declare one rule and keep it under this handle's ``cancel``."""
-        rule = OverrideRule(matcher=matcher, outcome=outcome)
+    def register(
+        self,
+        matcher: MethodMatcher,
+        outcome: Outcome,
+        *,
+        expected: bool = True,
+    ) -> OverrideRule:
+        """
+        Declare one rule and keep it under this handle's ``cancel``.
+
+        ``expected=False`` marks the rule as one alternative of a simulation rather than
+        something the test predicted would happen — see :attr:`OverrideRule.expected`.
+        """
+        rule = OverrideRule(matcher=matcher, outcome=outcome, expected=expected)
         self._rules.append(rule)
         self._registry.add(rule)
         return rule
@@ -478,17 +523,33 @@ def block_chat(
     :meth:`OverrideRegistry.take` walks past a rule whose field is absent without consuming
     it.
 
+    ``user_id`` earns a rule only on a **delivery** method, though, because that is the only
+    family where it names the addressee. On the hand-listed extras it names a participant of
+    a chat the call addresses by ``chat_id``: ``deleteMessageReaction`` takes both, and the
+    blocked party there is whoever ``chat_id`` names — clearing Alice's reaction in a group
+    the bot is perfectly able to reach is not something a block stops. Keyed on ``user_id``
+    it would have been, and the test would have proved a failure production never sees.
+
     The rules carry no ``times`` budget: a blocked user stays blocked for as long as the
     block is in force, and a budget would silently un-block them on call *n+1*.
+
+    **The rules are registered unexpected** (:attr:`OverrideRule.expected` is ``False``).
+    A block is one *simulation* spelled as a set of alternatives, not forty predictions:
+    the bot is supposed to take one or two of these paths and leave the rest untouched, so
+    counting each unfired rule as a never-matched declaration turned every timeout inside
+    ``with env.blocked(alice):`` into a forty-line wall about methods nobody expected to be
+    called. See :meth:`OverrideRegistry.unfired`.
     """
     handle = OverrideHandle(registry)
     for method_type in BLOCKED_METHODS:
-        for name in ("chat_id", "user_id"):
+        addressing = ("chat_id", "user_id") if method_type in DELIVERY_METHODS else ("chat_id",)
+        for name in addressing:
             if name not in method_type.model_fields:
                 continue
             handle.register(
                 MethodMatcher(method_type=method_type, fields=((name, chat_id),)),
                 Outcome(error=TelegramForbiddenError, message=message),
+                expected=False,
             )
     return handle
 

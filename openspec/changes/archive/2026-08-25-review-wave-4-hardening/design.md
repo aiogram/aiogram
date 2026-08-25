@@ -96,40 +96,92 @@ environment opened it.
 
 ### D2. `last_route`/`routes`/`assert_handled_by` reason about a trigger **scope**, not a single update
 
-Resolves R1/R2. `BotTestEnvironment.trigger()` is a re-entrant context manager: entering it
-at depth zero clears the scope's record list, and every update fed inside it — directly, or
-through a multi-update actor trigger like `join()` — appends to that same list. A bare `feed`
-outside any explicit `trigger()` block, and not itself nested inside a handler already
-routing an update, opens a scope of its own, which is what keeps the common one-update case
-free of ceremony. `routes` exposes every record of the current scope in completion order.
-`last_route` is the **newest handled** record among them, falling back to the newest record
-of any kind only when nothing in the scope was handled — the ordering that makes
-`member.join()` report the `chat_member` update its handler claimed rather than the
-`new_chat_members` service message nobody wanted, while a scope nothing reacted to still
-reports "NOT handled" instead of hiding behind an earlier, unrelated success.
-`assert_handled_by` scans **every** record of the scope rather than only the most relevant
-one, and its failure dumps all of them, including any captured exception — the fix R2 asked
-for once R1's records were actually reachable.
+Resolves R1/R2. Every update fed inside one scope — directly, or through a multi-update actor
+trigger like `join()` — belongs to that scope. A bare `feed` outside any explicit `trigger()`
+block, and not itself nested inside one already open, opens a scope of its own, which is what
+keeps the common one-update case free of ceremony. `routes` exposes every record of the scope
+in completion order. `assert_handled_by` scans **every** record of the scope rather than only
+the most relevant one, and its failure dumps all of them, including any captured exception —
+the fix R2 asked for once R1's records were actually reachable.
+
+**A scope is a context-local object keyed to an environment, not a counter and a list on the
+environment.** The first implementation was `_trigger_routes` plus a `_trigger_depth` counter,
+with "are we nested?" answered by reading the module-level `_ROUTE_IN_FLIGHT` from D1 — and
+that was wrong three times over, each reproducible:
+
+- `asyncio.gather` of two feeds that never suspend erased the first one's record, because the
+  second feed's prologue cleared the one shared list;
+- a feed running concurrently with, but unrelated to, an open `trigger()` block was absorbed
+  into it, because the depth counter said "inside a trigger" for the whole environment rather
+  than for the task that opened one;
+- and the nesting flag was not even per environment — it was "some record is in flight,
+  anywhere" — so an update fed to environment B *from a handler of environment A* looked
+  nested to B and appended to whatever B had recorded minutes earlier.
+
+So the open scope is a `_TriggerFrame` — a record list plus the environment it belongs to,
+plus a `closed` flag — held in a `_TRIGGER_SCOPES` context variable (a tuple, innermost last).
+`trigger()` pushes a frame if this environment has none open *in this context* and reuses the
+outer one otherwise, which is how nesting keeps working; `feed` does the same; closing a frame
+marks it closed, resets the token and publishes it as the environment's last completed
+trigger. Records append to the innermost open frame of their own environment. A task copies
+the context when it is created, so concurrent triggers get frames of their own by
+construction, and the `closed` flag covers the copied context a background task keeps after
+the block that created it ended — an update fed from there starts a fresh scope rather than
+appending to a finished one. `routes`/`last_route`/`assert_handled_by` read the frame open in
+this context if there is one, else the last completed frame; under `gather` that means "the
+trigger that completed last," and a concurrent test asserts per branch by giving each branch a
+`trigger()` block of its own. A record completing with no frame at all — `dispatcher.feed_update`
+called directly, bypassing `feed` — becomes a finished one-record scope rather than being
+dropped.
+
+**`last_route` prefers the record that raised.** The order is: newest record carrying an
+exception, else newest handled, else newest of any kind. The middle tier alone was wrong for
+the case the diagnostic exists for: aiogram's error middleware sits outside anything an
+environment can install, so a handler that raises leaves its record "not handled" with the
+exception attached, while the trigger's *other* update is handled normally — and
+`assert env.last_route.handled, env.last_route.describe()`, the idiom the docs recommend,
+passed while the bot was on fire. The remaining two tiers are unchanged: `member.join()` still
+reports the `chat_member` update its handler claimed rather than the `new_chat_members` service
+message nobody wanted, and a scope nothing reacted to still reports "NOT handled".
 
 Rejected: keeping a full session-long log of every route ever recorded. The diagnostic this
 closes is "what did *this* trigger do," which a scope answers directly; a full log adds a
 memory-growth question and a query API nothing has asked for.
 
+Rejected: locking, or making concurrent triggers merge into one scope. Merging is what the
+depth counter accidentally did, and it is the failure — two branches of a `gather` are two
+things the test did, not one.
+
 ### D3. `BLOCKED_METHODS` extends `DELIVERY_METHODS` with a reviewed, explicit, exclusion-documented list
 
 Resolves R3/R4. `BLOCKED_METHODS` is `DELIVERY_METHODS` plus a hand-listed tuple of the
-`editMessage*` family, `stopMessageLiveLocation`, `stopPoll`, `setMessageReaction` and the
+`editMessage*` family, `stopMessageLiveLocation`, `stopPoll`, the **whole reaction family**
+(`setMessageReaction`, `deleteMessageReaction`, `deleteAllMessageReactions`) and the
 pin/unpin trio — every one of them an operation the bot performs *inside* a chat it must
-still be able to reach, which a real block also refuses. `deleteMessage`/`deleteMessages` are
+still be able to reach, which a real block also refuses. The reaction family belongs in the
+list together: covering only the setter let "clear the reaction I put on my own message", a
+perfectly ordinary recovery path, pass a test its users never pass — the same gap the edit and
+pin families were added to close. `deleteMessage`/`deleteMessages` are
 a **documented exclusion**, not an oversight: the Bot API states their limits in terms of
 message age and administrator rights, not of reachability, so a bot dropping its own
 leftovers is not delivering anything, and guessing a 403 there would fail a cleanup path in
 tests that succeeds in production — the more expensive of the two possible mistakes.
-`block_chat` registers one rule per `BLOCKED_METHODS` entry **per addressing field it
-actually has** — `chat_id` and, where present, `user_id` — rather than one predicate trying
-to cover both, which keeps `MethodMatcher.describe()` readable for a failure message and
-costs nothing at match time, since a rule whose field the call lacks is walked past without
-being consumed. This is what makes `sendGift`, addressed by `user_id` alone, block correctly.
+
+**The converse is written down as a maintenance rule**, because the list is only as good as
+the next Bot API bump leaves it: a new `Send*`/`Copy*`/`Forward*` method joins by prefix on
+its own, while a new `Edit*`/`Stop*`/`Pin*`/reaction method needs a row added here — or a line
+in the exclusions saying why it stays out. Both halves are the review surface, which is why
+the exclusions are written rather than left as the absence of a row.
+
+`block_chat` registers one rule per `BLOCKED_METHODS` entry **per addressing field that names
+the addressee** rather than one predicate trying to cover both, which keeps
+`MethodMatcher.describe()` readable for a failure message and costs nothing at match time,
+since a rule whose field the call lacks is walked past without being consumed. `chat_id`
+always qualifies; `user_id` qualifies **only on a delivery method**, which is what makes
+`sendGift`, addressed by `user_id` alone, block correctly. On the hand-listed extras `user_id`
+names a *participant* of a chat the call addresses by `chat_id` — `deleteMessageReaction` takes
+both — so keying on it would have blocked "clear the blocked user's reaction in a group", a
+call a real block never touches, proving a failure production never sees.
 
 Rejected: a single predicate matching "any of `chat_id`/`user_id` equals the blocked party."
 A predicate cannot describe itself the way a field-equality matcher can, and
@@ -159,6 +211,27 @@ budget is spent, so a rule that leaves the registry by exhausting its budget nec
 footer both reuse — one function, every diagnostic surface, so the two error messages stay
 consistent by construction rather than by coincidence.
 
+**But a rule is only reportable if it was an expectation**, which is the second half of this
+decision and the one the first pass missed. `env.on(SendMessage, chat_id=alice.id).raises()`
+is one expectation spelled as one rule. `env.blocked(alice)` is one *simulation* spelled as
+forty-odd rules — one per method a block stops, per addressing field — of which the bot is
+supposed to take one or two and leave the rest untouched. Counting each of those as a
+never-matched declaration made both surfaces useless in exactly the block the documentation
+recommends them for: `assert_overrides_consumed()` could not pass inside
+`with env.blocked(alice):` at all, and every wait timeout in that block ended in a forty-line
+wall about methods nobody expected to be called, burying the actual diagnosis.
+
+So `OverrideRule` gains `expected: bool`, set where the *shape* of the declaration is known:
+`OverrideHandle.register(..., expected=False)` for the rules a simulation generates,
+defaulting to `True` for everything a test writes by hand. `unfired()` filters on it, which
+excludes a block's rules **entirely** — not "forgiven once one of them fired". A simulation is
+not a prediction of which of its alternatives the bot will take, so a block that never fired
+is not a finding either; that is the ordinary shape of "prove the bot never went there".
+
+Rejected: comparing rule counts per handle, or treating a handle as fired if any of its rules
+fired. Both are the same idea one layer too high — they would report a hand-written handle
+that declared several rules of which only one matched, which *is* a finding.
+
 Rejected: making this checked automatically at teardown. A test that declares a rule for a
 path it does *not* expect to be taken is a perfectly good test — proving the bot never went
 there — so consumption-checking has to stay something a test opts into, exactly as `drain()`
@@ -176,9 +249,33 @@ check and then flows through `update()` — implemented, like `setdefault` and `
 of `__setitem__` precisely so nothing can route around it — one chat at a time. The
 recommendation in `__setattr__`'s own error message changes accordingly: it no longer
 suggests `dict(other.chats)`, since that is refused for the same reason and one layer closer
-to where the actual mutation happens; it instead points at detaching a chat explicitly
-(`chat.world = None`) before re-registering it, or building the chats a world needs from
-their declaration.
+to where the actual mutation happens.
+
+**What both messages recommend instead is verified to run**, which the first pass was not.
+`ChatRegistry.__setitem__` used to open with
+`world.chats[id] = blueprint.build().chats[id]  # from the declaration` — and a chat straight
+out of `build()` is owned by the world that built it, so the reader who followed the advice
+landed on the same refusal, printed by the same line, with nothing saying what the missing
+step was. `World.__setattr__`'s message, having correctly withdrawn `dict(other.chats)`,
+was left recommending nothing runnable at all. So:
+
+- the per-chat refusal spells out three remedies, each with its detach step shown —
+  `copy.deepcopy(chat)` for an independent copy, `blueprint.build().chats[id]` for a fresh
+  chat of the same shape, and `del donor.chats[id]` for moving this very object — with the
+  message stating outright that *every* one of them needs `chat.world = None` before the
+  registration, because a chat handed over undetached lands right back here;
+- the whole-registry refusal points at building the world you want and using it whole
+  (`world = blueprint.build()`) rather than transplanting chats between worlds at all, and,
+  for the case where moving the objects really is meant, at detaching them in a loop first.
+
+The tests do not paraphrase this advice: they parse the code blocks out of the raised message
+and `exec` them, so a recommendation that stops working fails here rather than in somebody
+else's suite.
+
+Rejected: making `del`/`pop` on a registry detach the chat automatically, so
+`world.chats[id] = donor.chats.pop(id)` would read as one line. It hides a `chat.world`
+mutation inside a removal, and the explicit detach is the thing that says which of the three
+remedies the reader meant.
 
 A **fresh** chat — one whose `.world` is still `None` — is always adopted normally, and a
 chat already wired to *this same* world is left alone by identity, so re-assigning a world's
@@ -244,11 +341,57 @@ the first one's traceback chained as `__cause__`, rather than being retrieved-an
 that noise was pointing at) or conflated with a task that is merely still running after its
 cancellation, which stays a `WaitTimeoutError` — a different bug, a different exception.
 
+Three gaps in that first pass are closed here:
+
+- **A task that already died is inspected too.** `asyncio.all_tasks()` answers with the
+  *unfinished* tasks only, so a night timer that raised three lines into the test was simply
+  not in the set `drain()` looked at: it reported "0 tasks" and the `KeyError` surfaced, if at
+  all, as a stray "Task exception was never retrieved" at collection time, attributed to no
+  test. The only place asyncio records a task at all is its creation, so the environment wraps
+  the loop's **task factory** at the same first asynchronous door, remembers every task made
+  while it is live, and inspects the finished ones exactly as it inspects the cancelled ones.
+  They are not cancelled (they are over) and do not count towards the returned number, which
+  stays "how many tasks this drained". The wrapper delegates to any previous factory, so an
+  eager or framework factory stays in force, and it is removed by identity at `_restore` — an
+  environment whose factory is no longer the loop's leaves it alone rather than tearing a
+  second environment's out from under it. References are strong until `_restore`, since a
+  failed task collected before the drain takes its exception with it, which is the noise
+  being prevented.
+- **`drain()` on an environment that never ran does nothing.** With no snapshot at
+  construction (the synchronous `bot_env` fixture) *and* no asynchronous entry since, "every
+  unprotected task" means every task in the loop — so the first `await bot_env.drain()` of a
+  test that only set things up would have cancelled the session-scoped fixtures' workers, the
+  exact accident this protection exists to prevent. The environment owns nothing, so it
+  cancels nothing and answers `0`.
+- **A stuck task and a failed one, together, chain properly.** The stuck task stays the raised
+  error, being the more structural failure, and the failure is named in its message as before
+  — but the `raise ... from failures[0]` moves onto that `WaitTimeoutError` instead of being
+  lost with the `DrainedTaskError` that is no longer raised. One `raise ... from` either way:
+  whichever error comes out carries the first real failure's traceback.
+
 Rejected: extending the protection on every `feed`/`handle_call` rather than once. The gap is
 specifically about the moment *before* a loop can be observed running; once it has been
 observed once, every task alive at that instant is already covered, and re-snapshotting on
 every call would risk protecting a task the bot itself spawned later, defeating the point of
 `drain()` in the first place.
+
+Rejected: replacing the protection heuristic with the task factory's own record of "tasks
+created after this environment's first asynchronous action". It would be more exact, but it is
+a larger behavioral change than the reported gap asks for; the factory is used here only to
+*observe*, never to decide what gets cancelled.
+
+### D11. A user is part of the watch vocabulary, standing for their private chat
+
+`as_views` — the one resolver behind `wait_for(watch=...)` and `wait_for_message_in(chats=...)`
+— accepted chat and topic declarations, live states and bare ids, but not a `UserSpec` or a
+`UserState`. The broadcast the whole family exists for is "every player got the night
+keyboard", and what a test holds for a player is the declaration `add_user` handed back: the
+example in `wait_for_message_in`'s own docstring is literally `wait_for_message_in(players, ...)`,
+and passing that list raised `WorldLookupError` from inside the resolver. So a user is in the
+vocabulary, resolved through `BotTestEnvironment.chat`, which means the private chat is *opened*
+if the blueprint never declared one — the same rule `env.user(alice).chat` already follows, and
+the same accessor, so the two cannot drift. None of the six accepted types is iterable, so
+accepting a lone item alongside iterables still cannot guess wrong.
 
 ## Testing
 

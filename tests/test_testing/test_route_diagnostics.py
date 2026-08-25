@@ -12,7 +12,7 @@ import asyncio
 
 import pytest
 
-from aiogram import F, BaseMiddleware, Router
+from aiogram import F, BaseMiddleware, Dispatcher, Router
 from aiogram.filters import Command
 from aiogram.test import BotTestEnvironment
 from aiogram.types import CallbackQuery, Update
@@ -296,10 +296,15 @@ class TestConcurrentFeedsDoNotCrossAttribute:
         alice = env.user(blueprint.users[0])
         group = env.chat(blueprint.chats[1].id)
 
-        results = await asyncio.gather(
-            alice.send("/alpha"),
-            alice.in_(group).send("/beta"),
-        )
+        # One block around the gather is what makes both branches one trigger: the frame is
+        # pushed before the tasks are created, so each task's copied context finds it and
+        # appends to it. Without it each concurrent feed is a trigger of its own — which is
+        # the point of TestConcurrentTriggersKeepSeparateScopes.
+        with env.trigger():
+            results = await asyncio.gather(
+                alice.send("/alpha"),
+                alice.in_(group).send("/beta"),
+            )
 
         assert sorted(results) == ["alpha", "beta"]
         records = {record.update_id: record for record in env.routes}
@@ -540,3 +545,220 @@ class TestTriggerScope:
 
         assert len(env.routes) == 3
         env.assert_handled_by("on_deal")
+
+
+class TestConcurrentTriggersKeepSeparateScopes:
+    """
+    A trigger scope belongs to the task that opened it, not to the environment.
+
+    The scope used to be two attributes on the environment — a list of records and a
+    nesting counter — and three things went wrong, all of them only under concurrency,
+    which is to say only in the tests of a bot that fans work out:
+
+    * ``gather`` of two feeds that never suspend erased the first one's record, because the
+      second feed's prologue cleared the one shared list;
+    * a feed running alongside — but unrelated to — an open ``with env.trigger():`` block
+      was swallowed by that block, because the counter said "inside a trigger" for the whole
+      environment rather than for the task that opened one;
+    * and the nesting flag was not even per environment: it was "some record is in flight",
+      read off a module-level context variable, so an update fed to a *second* environment
+      from a handler of the first looked nested to it and appended to whatever that
+      environment had recorded before.
+    """
+
+    async def test_two_concurrent_feeds_each_keep_their_record(self, env, dp, blueprint):
+        """
+        Neither feed suspends, so the second one used to run start-to-finish inside the
+        first one's ``await`` — clearing the list the first had already written to. The
+        first record was simply gone, and ``env.routes`` reported one update where two
+        had been fed.
+        """
+        scopes = []
+
+        @dp.message(Command("alpha"))
+        async def on_alpha(message):
+            return "alpha"
+
+        @dp.message(Command("beta"))
+        async def on_beta(message):
+            return "beta"
+
+        alice = env.user(blueprint.users[0])
+        group = env.chat(blueprint.chats[1].id)
+
+        async def branch(actor, text):
+            with env.trigger():
+                await actor.send(text)
+                scopes.append([record.handler for record in env.routes])
+
+        await asyncio.gather(
+            branch(alice, "/alpha"),
+            branch(alice.in_(group), "/beta"),
+        )
+
+        # Each branch saw exactly its own record, and neither erased the other's.
+        assert sorted(len(scope) for scope in scopes) == [1, 1]
+        handlers = sorted(scope[0] for scope in scopes)
+        assert "on_alpha" in handlers[0]
+        assert "on_beta" in handlers[1]
+
+    async def test_an_unrelated_feed_is_not_absorbed_by_an_open_block(
+        self,
+        env,
+        dp,
+        blueprint,
+    ):
+        """
+        The block belongs to the task that opened it. A feed from another task, started
+        before that block existed, is a trigger of its own however long the block stays
+        open.
+        """
+        opened = asyncio.Event()
+        released = asyncio.Event()
+
+        @dp.message()
+        async def on_message(message):
+            return "seen"
+
+        alice = env.user(blueprint.users[0])
+        group = env.chat(blueprint.chats[1].id)
+
+        async def holds_a_block():
+            with env.trigger():
+                await alice.send("/first")
+                opened.set()
+                await released.wait()
+                await alice.send("/second")
+                return [record.update_id for record in env.routes]
+
+        async def unrelated():
+            await opened.wait()
+            await alice.in_(group).send("elsewhere")
+            outside = [record.update_id for record in env.routes]
+            released.set()
+            return outside
+
+        blocked, outside = await asyncio.gather(holds_a_block(), unrelated())
+
+        assert len(blocked) == 2
+        assert len(outside) == 1
+        assert not set(blocked) & set(outside)
+
+    async def test_a_second_environment_fed_from_a_handler_opens_its_own_scope(
+        self,
+        env,
+        dp,
+        blueprint,
+    ):
+        """
+        Two environments, the first one's handler feeding the second — the bridge recipe the
+        documentation shows. The "are we nested?" flag was module-level, so the second
+        environment saw the first's record in flight, decided it was a nested feed, and kept
+        reporting a scope of its own from minutes earlier.
+        """
+        other_dp = Dispatcher()
+        other = BotTestEnvironment(blueprint=blueprint, dispatcher=other_dp)
+
+        @other_dp.message(Command("bridged"))
+        async def on_bridged(message):
+            return "bridged"
+
+        @other_dp.message(Command("stale"))
+        async def on_stale(message):
+            return "stale"
+
+        try:
+            # Something for the second environment to remember from before.
+            await other.user(blueprint.users[0]).send("/stale")
+            assert len(other.routes) == 1
+
+            @dp.message(Command("bridge"))
+            async def on_bridge(message):
+                await other.user(blueprint.users[0]).send("/bridged")
+                return "ok"
+
+            await env.user(blueprint.users[0]).send("/bridge")
+
+            assert len(other.routes) == 1
+            other.assert_handled_by("on_bridged")
+            assert len(env.routes) == 1
+            env.assert_handled_by("on_bridge")
+        finally:
+            other.dispose_sync()
+
+    async def test_a_feed_bypassing_the_environment_is_still_one_scope(self, env, dp, alice):
+        """
+        ``dispatcher.feed_update`` called directly opens no scope, so the record has no
+        frame to join. It is still one thing that happened, and becomes a finished scope of
+        its own rather than being dropped or piled onto the previous one.
+        """
+
+        @dp.message()
+        async def on_message(message):
+            return "seen"
+
+        await alice.send("first")
+        assert len(env.routes) == 1
+        assert env.last_route.event_type == "message"
+
+        with pytest.warns(RuntimeWarning, match="unknown update type"):
+            await env.dispatcher.feed_update(env.bot, Update(update_id=4242))
+
+        assert len(env.routes) == 1
+        assert env.last_route.update_id == 4242
+
+
+class TestLastRoutePrefersTheRecordThatRaised:
+    """
+    An exception a bot swallowed used to be hidden by a *later* update that went fine.
+
+    ``member.join()`` feeds two updates, and aiogram's own error middleware sits outside
+    everything an environment can install: a handler that raises leaves its record marked
+    "not handled" with the exception attached, while the trigger's other update is handled
+    normally. Preferring "the newest handled record" then answered with the update that
+    worked, and the documented idiom —
+    ``assert env.last_route.handled, env.last_route.describe()`` — passed while the bot was
+    on fire.
+    """
+
+    async def test_the_raising_record_wins_over_a_later_handled_one(self, env, dp, blueprint):
+        @dp.chat_member()
+        async def on_membership(event):
+            return "seen"
+
+        @dp.message(F.new_chat_members)
+        async def on_service_message(message):
+            msg = "welcome pack failed"
+            raise RuntimeError(msg)
+
+        @dp.errors()
+        async def swallow(event):
+            return "handled, apparently"
+
+        member = env.user(blueprint.users[0]).in_(blueprint.chats[1])
+
+        await member.join()
+
+        assert env.last_route.exception is not None
+        assert isinstance(env.last_route.exception, RuntimeError)
+        assert env.last_route.event_type == "message"
+        assert "welcome pack failed" in env.last_route.describe()
+
+    async def test_a_trigger_with_no_exception_still_prefers_the_handled_record(
+        self,
+        env,
+        dp,
+        blueprint,
+    ):
+        """The new preference is a first tier, not a replacement of the other two."""
+
+        @dp.chat_member()
+        async def on_user_joined(event):
+            return "welcomed"
+
+        member = env.user(blueprint.users[0]).in_(blueprint.chats[1])
+
+        await member.join()
+
+        assert env.last_route.event_type == "chat_member"
+        assert env.last_route.handled is True

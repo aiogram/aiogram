@@ -103,10 +103,17 @@ let a test open this scope explicitly around several trigger calls of its own. A
 outside any explicitly opened scope, and not itself fed from within a handler already
 routing one, SHALL open a scope of its own, so the common one-update case needs no explicit
 scope at all. The environment SHALL expose every record of the current scope, in the order
-each finished routing, and SHALL expose the single most relevant one: the **newest handled**
-record in the scope, falling back to the newest record of any kind only when nothing in the
-scope was handled at all. Opening a new scope SHALL replace the previous one entirely, and
-both SHALL be empty/absent until the first update is fed.
+each finished routing, and SHALL expose the single most relevant one, preferring in order:
+the newest record **carrying an exception**, else the newest **handled** record, else the
+newest record of any kind. Both SHALL be empty/absent until the first update is fed.
+
+A scope SHALL belong to the task and the environment that opened it, not to the environment
+alone: two scopes opened concurrently SHALL neither share nor discard each other's records, a
+fed update SHALL NOT join a scope opened by a different task, and a fed update SHALL NOT join
+a scope opened by a *different environment*. Outside any scope open in the current task, the
+environment SHALL report the scope that most recently finished. An update routed with no scope
+open at all — fed through the dispatcher directly rather than through the environment — SHALL
+become a finished scope of its own rather than being discarded or added to the previous one.
 
 The environment SHALL also provide an assertion spelled directly against this diagnosis,
 matched by a substring of the winning handler's qualified name, which SHALL scan **every**
@@ -163,11 +170,36 @@ that the named handler did not run.
 - **THEN** the failure names the handler and router that actually claimed it, including any
   captured exception
 
+#### Scenario: A swallowed exception outranks a later update that went fine
+
+- **WHEN** one update of a scope is handled normally and another raises an exception the
+  bot's own error handler swallows
+- **THEN** the most-relevant record is the one carrying the exception, so an assertion on
+  "was this handled" reports the failure rather than the update that worked
+
 #### Scenario: The report resets between scopes
 
 - **WHEN** a second trigger is fed after a first one was handled
 - **THEN** the report reflects only the second trigger's scope, not anything left over from
   the first
+
+#### Scenario: Concurrent triggers keep separate scopes
+
+- **WHEN** two updates are fed concurrently, each inside a scope opened by its own task
+- **THEN** each scope holds exactly its own record, neither erases the other's, and each
+  task reading the report inside its own scope sees only what it fed
+
+#### Scenario: An unrelated feed is not absorbed by a scope another task holds open
+
+- **WHEN** one task holds a scope open while another task, running concurrently, feeds an
+  update of its own
+- **THEN** the second update forms a scope of its own rather than joining the open one
+
+#### Scenario: A second environment fed from the first one's handler opens its own scope
+
+- **WHEN** a handler of one environment feeds an update to a second environment
+- **THEN** the second environment opens a scope of its own for it, rather than treating the
+  first environment's in-flight update as a scope of its own to append to
 
 ### Requirement: Supported event triggers
 
@@ -684,12 +716,16 @@ override but carrying no call-count budget — it SHALL hold for as long as it i
 rather than for a fixed number of calls. This SHALL cover every method that delivers content
 into a chat, **and** every method that acts on content already in that chat instead of
 delivering into it, since a bot's own recovery path for a failed delivery — editing,
-(un)pinning or reacting to what it already sent — must be seen to fail there too; the
+(un)pinning, or setting *and clearing* a reaction on what it already sent — must be seen to
+fail there too; the
 environment MAY name specific methods it deliberately excludes from this recipe, documenting
 why, without that exclusion being a defect. The party SHALL be matchable however a call
 addresses it, including by an addressing field other than the one primarily used to declare
 the block, so that "this recipient" is caught whichever field the intercepted call happens
-to name it with. Wherever a call's shape includes a chat-addressing field that Telegram
+to name it with — but only where that field names the **addressee**: a field that names some
+other participant of a chat the call addresses separately SHALL NOT be treated as naming the
+blocked party, so an operation the bot performs in a chat it can still reach is not refused
+merely because it mentions the blocked user. Wherever a call's shape includes a chat-addressing field that Telegram
 allows to be given either by numeric id or by `@username`, an override's declared value and
 the call's actual value SHALL both be resolved through the world before comparison, so a
 rule declared with one spelling still answers a call made with the other.
@@ -703,6 +739,13 @@ answered at least one call, failing by naming each one that has not — the sing
 reason a bot behaves as though a declared override were never registered at all. The same
 naming SHALL be appended to a wait's timeout message, since a never-matched override is
 frequently the reason the awaited condition never became true.
+
+Only rules a test declared as **expectations** SHALL be reportable that way. A rule generated
+as one alternative of a *simulation* — the set of methods the blocked-party recipe refuses,
+of which a bot is expected to take one or two and leave the rest untouched — SHALL be excluded
+from both the assertion and the timeout listing entirely, whether or not any of that
+simulation's rules ever fired, since a simulation is not a prediction of which alternative the
+bot will take. An expectation declared alongside a simulation SHALL still be reported.
 
 #### Scenario: Overriding a result
 
@@ -760,8 +803,16 @@ frequently the reason the awaited condition never became true.
 #### Scenario: Acting on content already in the blocked chat also fails
 
 - **WHEN** a test declares the blocked-chat recipe for one chat id, and the bot then edits,
-  pins or reacts to a message already stored in that chat
+  pins, reacts to, or *clears its reaction from* a message already stored in that chat
 - **THEN** each of those calls fails the same way a delivery into that chat fails
+
+#### Scenario: A field naming someone other than the addressee does not trigger the recipe
+
+- **WHEN** a test declares the blocked-chat recipe for one party, and the bot then makes a
+  call addressed at a *different*, reachable chat that merely mentions the blocked party
+  through a field naming whose content is acted on
+- **THEN** that call succeeds, since a block stops what the bot does in the blocked party's
+  own chat rather than everything that mentions them
 
 #### Scenario: A deliberately excluded method is unaffected by the recipe
 
@@ -801,6 +852,14 @@ frequently the reason the awaited condition never became true.
   test, and then asks whether every declared override fired
 - **THEN** the assertion fails, naming that override, rather than the test passing silently
   while the bot behaved as though the override did not exist
+
+#### Scenario: A simulation's untaken alternatives are not reported as never-fired
+
+- **WHEN** a test runs inside the blocked-chat recipe's scope, where the bot takes one or two
+  of the methods the recipe refuses and never calls the rest, and then asks whether every
+  declared override fired — or a wait inside that scope times out
+- **THEN** neither the assertion nor the timeout mentions the recipe's untaken alternatives,
+  while an expectation the test declared by hand alongside it is still named if it never fired
 
 #### Scenario: A never-fired override is named in a wait's timeout
 
@@ -860,6 +919,14 @@ registered here as the fresh chat it has been made to be, is one way; handing ov
 independent copy of it, or one rebuilt from the same declaration, are others — none of which
 require the registry itself to guess which one a test meant.
 
+The refusal SHALL name remedies that **work as written**: every remedy it offers SHALL be
+spelled with the detaching step included, since a chat obtained from a declaration or a copy
+of the world is itself owned by the world it came from and would otherwise land the reader on
+the same refusal again. The whole-mapping refusal SHALL likewise point at building the world
+that is wanted and using it whole, rather than at any form of transplanting chats between
+worlds — including the unwrapped plain mapping, which is refused chat by chat for the same
+reason.
+
 #### Scenario: A shortcut on a result reaches the world
 
 - **WHEN** a handler sends a message and calls `edit_text` on the returned `Message`
@@ -906,6 +973,13 @@ require the registry itself to guess which one a test meant.
 - **WHEN** a test removes a chat from its current world's registry, marks it as belonging to
   no world, and then registers it in a different world
 - **THEN** the registration succeeds, and the chat is now wired to the new world alone
+
+#### Scenario: Every remedy a refusal names actually runs
+
+- **WHEN** a test takes the code the refusal message recommends and runs it exactly as
+  printed
+- **THEN** the destination world ends up holding a correctly wired chat, rather than the same
+  refusal being raised by the very line the message recommended
 
 #### Scenario: A fresh chat is adopted normally
 
@@ -1136,7 +1210,9 @@ say about one; it SHALL still be accepted as a keyword. The timing parameters SH
 keyword-only.
 
 The condition wait SHALL accept one view to watch, or an iterable of several, named by
-declaration, by resolved chat or topic state, or by bare chat id, mixed freely — the same
+declaration, by resolved chat or topic state, by a **user** — standing for that user's private
+chat with the bot, opened on demand exactly as the actor path opens it — or by bare chat id,
+mixed freely — the same
 vocabulary every waiting helper that names a chat or topic accepts — whose contents are
 appended to the timeout message when it gives up — because the condition is a lambda over
 state the failure cannot otherwise describe, while what the bot posted instead is usually
@@ -1223,9 +1299,11 @@ The environment SHALL provide a wait that polls several views together and retur
 **every** one of them holds a matching message, rather than requiring a test to await each
 view's own message wait in turn. It SHALL accept the same vocabulary a single condition
 wait's `watch=` accepts for naming what to watch — a declaration, a resolved chat or topic
-state, or a bare chat id, one on its own or any iterable of them mixed freely — so that a
+state, a user standing for their private chat with the bot, or a bare chat id, one on its own
+or any iterable of them mixed freely — so that a
 broadcast confined to one topic of a forum is expressible the same way a broadcast across
-whole chats is. It SHALL apply the same newest-match rule a single view's own message wait
+whole chats is, and so that the broadcast this helper exists for — every player got their
+message — is written with the list of user declarations a test already holds. It SHALL apply the same newest-match rule a single view's own message wait
 applies, and a predicate that raises on a message SHALL count as "no match" for that message
 exactly as it does for a single view's own wait, with what it raised reported per view once
 the wait gives up. A timeout SHALL name only the views still missing a match, not the ones
@@ -1243,6 +1321,13 @@ that already have one.
 - **WHEN** the chats passed to the broadcast wait mix a blueprint declaration, a resolved
   chat state and a bare id
 - **THEN** all three resolve to their chats and are waited on together
+
+#### Scenario: A list of users names their private chats
+
+- **WHEN** a broadcast wait is given the user declarations a blueprint handed back, for users
+  whose private chats were never declared
+- **THEN** each user's private chat is opened and waited on, so the documented "every player
+  got the message" broadcast is written with the objects the test already holds
 
 #### Scenario: A broadcast wait can be confined to a topic
 
@@ -1336,12 +1421,25 @@ construction may happen with no event loop running at all, "already running" SHA
 established as of this environment's first asynchronous action if that comes later than
 construction, so that a task belonging to another, wider-scoped fixture — one already alive
 by the time this environment's own tasks could possibly begin — is spared regardless of
-whether the environment could observe it at construction time. A task that does not finish
+whether the environment could observe it at construction time. Where **neither** of those two
+moments could observe anything — the environment was built with no loop running and has since
+done nothing asynchronous at all — it SHALL be treated as owning no tasks: nothing is
+cancelled and the reported number is zero, since every task in the loop would otherwise count
+as this environment's own.
+
+A task that does not finish
 within a stated timeout after being cancelled SHALL fail loudly rather than being abandoned
 a second time. A task that ends with anything other than the cancellation it was sent SHALL
 also fail loudly, distinctly from a task that merely failed to finish in time, naming every
 such task and preserving the original failure so it can be inspected rather than only
-noted. This SHALL NOT be invoked automatically by environment teardown, since teardown has
+noted. This SHALL hold for a task that ended **before** the drain as much as for one it
+cancelled: a task that died of its own bug earlier in the test SHALL be reported the same way,
+which requires the environment to remember the tasks created while it is live rather than to
+rely on a listing of unfinished ones. Such a task SHALL NOT be counted in the number reported,
+which counts what was drained. Where a task that outlived its cancellation and a task that
+failed on its own are found together, the unfinished task SHALL be the failure raised, naming
+the other alongside it, and the preserved original failure SHALL be attached to whichever
+error is actually raised. This SHALL NOT be invoked automatically by environment teardown, since teardown has
 both an asynchronous and a synchronous path and an automatic drain would behave differently
 between them, and since cancelling tasks a test never mentioned as an invisible side effect
 of teardown would obscure a stopped background process as a mystery rather than a stated
@@ -1378,6 +1476,19 @@ outcome.
   cancellation it was sent
 - **THEN** draining raises, naming that task and preserving its original failure, rather
   than treating it the same as a task that was simply cancelled on time
+
+#### Scenario: A task that died before the drain is reported too
+
+- **WHEN** a task spawned during the test raises and finishes on its own well before the
+  test asks to drain
+- **THEN** draining still raises, naming that task and preserving its failure, rather than
+  reporting that there was nothing to drain
+
+#### Scenario: An environment that never acted asynchronously drains nothing
+
+- **WHEN** an environment built with no event loop running is asked to drain before it has
+  fed any update or handled any call, while unrelated tasks are running in the loop
+- **THEN** nothing is cancelled and the reported number is zero
 
 #### Scenario: Draining is not automatic
 

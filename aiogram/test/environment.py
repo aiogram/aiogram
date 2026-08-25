@@ -4,7 +4,7 @@ import asyncio
 import contextlib
 import contextvars
 from collections.abc import Callable, Iterable, Iterator
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from http import HTTPStatus
 from typing import TYPE_CHECKING, Any, NoReturn, TypeAlias, cast
 
@@ -104,6 +104,15 @@ _ROUTE_IN_FLIGHT: contextvars.ContextVar[RouteRecord | None] = contextvars.Conte
     default=None,
 )
 
+#: The trigger scopes open **in this context**, innermost last.
+#:
+#: See :meth:`BotTestEnvironment.trigger` for what a scope is and :class:`_TriggerFrame`
+#: for why the active one has to be context-local *and* keyed to an environment.
+_TRIGGER_SCOPES: contextvars.ContextVar[tuple[_TriggerFrame, ...]] = contextvars.ContextVar(
+    "aiogram_test_trigger_scopes",
+    default=(),
+)
+
 #: A chat or a topic a wait may be told to dump when it gives up. Both render themselves
 #: with ``describe_messages()`` and name themselves with ``label``.
 MessageView: TypeAlias = "ChatState | TopicState"
@@ -116,7 +125,14 @@ MessageView: TypeAlias = "ChatState | TopicState"
 #: ids, the other took states only, and a *declaration* — the ``ChatSpec`` an
 #: ``add_supergroup`` hands back, which is what a test holds — worked in neither, failing
 #: in the second with an ``AttributeError`` from inside the failure message it was building.
-ViewSelector: TypeAlias = "ChatSpec | ChatState | TopicSpec | TopicState | int"
+#:
+#: A **user** is in the vocabulary too, standing for their private chat with the bot: the
+#: broadcast the whole family exists for is "every player got the night keyboard", and what
+#: a test holds for a player is the ``UserSpec`` its ``add_user`` returned. Passing that
+#: list used to raise, so the documented example did not run.
+ViewSelector: TypeAlias = (
+    "ChatSpec | ChatState | TopicSpec | TopicState | UserSpec | UserState | int"
+)
 
 
 @dataclass(eq=False)
@@ -190,6 +206,46 @@ class RouteRecord:
                 f"  raised:  {type(self.exception).__name__}: {self.exception}",
             )
         return "\n".join(lines)
+
+
+@dataclass(eq=False)
+class _TriggerFrame:
+    """
+    One trigger's worth of records, as the context that trigger runs in holds it.
+
+    The scope :attr:`BotTestEnvironment.routes` reports used to be two attributes on the
+    environment — a list of records and a nesting counter — and both were wrong for the
+    same reason: "the trigger being fed right now" is a property of the **task**, not of
+    the environment, in exactly the way "the update being routed right now" is (see
+    :data:`_ROUTE_IN_FLIGHT`). Three failures followed from that, all reproducible:
+
+    * ``asyncio.gather`` of two feeds that never suspend erased the first one's record
+      outright, because the second feed's prologue cleared the one shared list;
+    * a feed running concurrently with — but unrelated to — an open ``with env.trigger():``
+      block was absorbed into that block's scope, because the nesting counter said "we are
+      inside a trigger" for the whole environment rather than for the task that opened one;
+    * and the nesting *flag* was worse than per-environment, it was global: the flag was
+      "some record is in flight", read off a module-level context variable, so an update
+      fed to environment B **from a handler of environment A** looked nested to B and
+      silently appended to whatever B had recorded minutes earlier.
+
+    So a scope is an object: it lives in :data:`_TRIGGER_SCOPES`, which a task copies when
+    it is created, and it carries the environment it belongs to so a frame of another
+    environment is not mistaken for nesting. Concurrent triggers each get a frame of their
+    own and can neither share nor erase each other's records.
+
+    A frame is **closed** rather than only popped, because a context can outlive the block
+    that pushed the frame: a background task the bot spawned inside a trigger copies the
+    context and keeps it, and an update fed from that task after the block ended must start
+    a scope of its own instead of appending to a finished one.
+    """
+
+    #: Which environment's trigger this is. Compared by identity, never by value: two
+    #: environments built from one blueprint are equal in every way a test can see.
+    environment: BotTestEnvironment
+    records: list[RouteRecord] = field(default_factory=list)
+    #: Set when the block that opened this frame ends; see the class docstring.
+    closed: bool = False
 
 
 class _RouteMiddleware:
@@ -421,15 +477,23 @@ class BotTestEnvironment:
         self.dispatcher.fsm.storage = self._storage
         self._disposed = False
 
-        # Which update is in flight lives in `_ROUTE_IN_FLIGHT`, a context variable; see
-        # there for why it is neither a stack nor per-environment.
-        self._trigger_routes: list[RouteRecord] = []
-        self._trigger_depth = 0
+        # Which update is in flight lives in `_ROUTE_IN_FLIGHT` and which trigger is open
+        # in `_TRIGGER_SCOPES`, both context variables; see `_TriggerFrame` for why the
+        # open scope is neither a counter nor a list on this object. What *is* on this
+        # object is the last scope that finished, which is what the readers report.
+        self._last_trigger: _TriggerFrame | None = None
         self._route_middleware = _RouteMiddleware(self)
         self._handler_middleware = _HandlerMiddleware(self)
         self._instrument_routing()
         self._protected_tasks = set(_running_tasks())
         self._protection_extended = False
+        # Every task created while this environment was live, so `drain` can also report a
+        # task that already *finished* — `asyncio.all_tasks()` only ever answers with the
+        # unfinished ones. See `_track_spawned_tasks`.
+        self._spawned_tasks: set[asyncio.Task[Any]] = set()
+        self._tracking_loop: asyncio.AbstractEventLoop | None = None
+        self._installed_task_factory: Any = None
+        self._previous_task_factory: Any = None
 
     # -- lifecycle --------------------------------------------------------------------
 
@@ -464,6 +528,8 @@ class BotTestEnvironment:
         self.dispatcher.workflow_data.clear()
         self.dispatcher.workflow_data.update(self._original_workflow_data)
         self._uninstrument_routing()
+        self._untrack_spawned_tasks()
+        self._spawned_tasks.clear()
 
     # -- routing diagnostics ----------------------------------------------------------
 
@@ -497,13 +563,58 @@ class BotTestEnvironment:
         token: contextvars.Token[RouteRecord | None],
     ) -> None:
         _ROUTE_IN_FLIGHT.reset(token)
-        self._trigger_routes.append(record)
+        frame = self._open_scope()
+        if frame is None:
+            # Nothing opened a scope for this record, which means the update did not come
+            # through `feed` — `dispatcher.feed_update(env.bot, update)` called directly is
+            # the way that happens. It is still one thing that happened, so it becomes a
+            # finished scope of its own rather than being dropped.
+            self._last_trigger = _TriggerFrame(environment=self, records=[record], closed=True)
+        else:
+            frame.records.append(record)
 
     def _current_route(self) -> RouteRecord | None:
         """The record still in flight *in this task* — a handler may itself feed an update."""
         return _ROUTE_IN_FLIGHT.get()
 
     # -- trigger scope ----------------------------------------------------------------
+
+    def _open_scope(self) -> _TriggerFrame | None:
+        """
+        The innermost scope of **this** environment still open in **this** context.
+
+        Both qualifiers are the fix; see :class:`_TriggerFrame`. Another environment's frame
+        is not this one's nesting, and a frame left in a context by a block that has already
+        ended is not open.
+        """
+        for frame in reversed(_TRIGGER_SCOPES.get()):
+            if frame.environment is self and not frame.closed:
+                return frame
+        return None
+
+    def _push_scope(self) -> tuple[_TriggerFrame, contextvars.Token[tuple[_TriggerFrame, ...]]]:
+        frame = _TriggerFrame(environment=self)
+        return frame, _TRIGGER_SCOPES.set((*_TRIGGER_SCOPES.get(), frame))
+
+    def _pop_scope(
+        self,
+        frame: _TriggerFrame,
+        token: contextvars.Token[tuple[_TriggerFrame, ...]],
+    ) -> None:
+        frame.closed = True
+        _TRIGGER_SCOPES.reset(token)
+        self._last_trigger = frame
+
+    def _scope(self) -> _TriggerFrame | None:
+        """
+        The scope the readers report on: the one open here, else the last one that finished.
+
+        Preferring the open frame is what makes the concurrency advice in :meth:`trigger`
+        work — inside ``with env.trigger():`` a branch reads its own records, whichever
+        other branches are running — while falling back to the last completed frame is what
+        keeps the ordinary one-feed-then-assert case needing no ceremony.
+        """
+        return self._open_scope() or self._last_trigger
 
     @contextlib.contextmanager
     def trigger(self) -> Iterator[None]:
@@ -527,33 +638,55 @@ class BotTestEnvironment:
                 await bob.send("/deal")
             bot_env.assert_handled_by("on_deal")   # scans both
 
-        Nesting is counted, so an inner block does not close the outer one's scope. A bare
-        :meth:`feed` outside any block is its own scope, which is what makes the common
-        one-update case need no ceremony at all.
+        Nesting reuses the outer block's scope, so an inner block — the one an actor's own
+        multi-update trigger opens — does not close it. A bare :meth:`feed` outside any
+        block is its own scope, which is what makes the common one-update case need no
+        ceremony at all.
+
+        **A scope belongs to the task that opened it**, not to the environment: it is
+        pushed onto a context variable, and a task copies the context when it is created.
+        Two triggers running concurrently under :func:`asyncio.gather` therefore never
+        share a scope and never erase each other's records, and a feed that happens to run
+        while some *other* task holds a block open is not swallowed by it. What follows is
+        the rule to remember when writing concurrent tests: after a ``gather``,
+        :attr:`routes` reports the trigger that **completed last**, since that is the only
+        thing "the most recent trigger" can mean once several ran at once. To assert per
+        branch, give each branch a block of its own and read inside it::
+
+            async def deal(player):
+                with bot_env.trigger():
+                    await player.send("/deal")
+                    bot_env.assert_handled_by("on_deal")   # this branch's records
+
+            await asyncio.gather(deal(alice), deal(bob))
         """
-        if self._trigger_depth == 0:
-            self._trigger_routes = []
-        self._trigger_depth += 1
+        if self._open_scope() is not None:
+            yield
+            return
+        frame, token = self._push_scope()
         try:
             yield
         finally:
-            self._trigger_depth -= 1
+            self._pop_scope(frame, token)
 
     @property
     def routes(self) -> list[RouteRecord]:
         """
-        Every update of the most recent trigger, in the order the records were completed.
+        Every update of the trigger in scope, in the order the records were completed.
 
         A short history rather than the whole session: the question a failing test asks is
-        "where did *that* go", and one action's worth of updates is the answer. See
-        :meth:`trigger` for what delimits it.
+        "where did *that* go", and one action's worth of updates is the answer. Read inside
+        a :meth:`trigger` block it is that block's records so far; read outside one, the
+        records of the trigger that completed most recently. See :meth:`trigger` for what
+        delimits a scope and for what "most recently" means under :func:`asyncio.gather`.
         """
-        return list(self._trigger_routes)
+        scope = self._scope()
+        return list(scope.records) if scope is not None else []
 
     @property
     def last_route(self) -> RouteRecord | None:
         """
-        Where the most recent trigger went, or ``None`` if nothing has been routed.
+        Where the trigger in scope went, or ``None`` if nothing has been routed.
 
         The answer to "the test timed out and I have no idea what ran"::
 
@@ -561,12 +694,20 @@ class BotTestEnvironment:
             assert bot_env.last_route.handled, bot_env.last_route.describe()
 
         For a trigger that fed one update this is simply that update's record. For one that
-        fed several — see :meth:`trigger` — it is the **most recent handled** record, and
-        only when nothing was handled at all the most recent record of any kind. That
-        ordering is what makes the two cases both read correctly: ``member.join()`` reports
-        the ``chat_member`` update its handler claimed rather than the service message
-        nobody wanted, while a trigger nothing reacted to still says "NOT handled" instead
-        of hiding behind an earlier success.
+        fed several — see :meth:`trigger` — the preference is, in order:
+
+        1. the **newest record carrying an exception**, because a handler that raised is the
+           answer to every question a failing test is asking, and it is precisely the record
+           that hides otherwise: aiogram's error middleware swallows the exception, the
+           update reports itself as *not* handled, and the trigger's other updates go on
+           being handled normally. ``await alice.join()`` on a bot whose message handler
+           raises is the case — the membership update was handled, the service message blew
+           up, and the idiom above used to answer "handled" and print the wrong record;
+        2. else the **newest handled** record, so ``member.join()`` reports the
+           ``chat_member`` update its handler claimed rather than the service message nobody
+           wanted;
+        3. else the newest record of any kind, so a trigger nothing reacted to still says
+           "NOT handled" instead of hiding behind an earlier success.
 
         A nested feed follows from the same rule: records complete innermost first, so an
         outer update that was handled is the newest handled one and stays the answer.
@@ -576,12 +717,16 @@ class BotTestEnvironment:
         dispatcher *before* this environment was created returned without calling the next
         one. That is itself the answer to where the update went.
         """
-        if not self._trigger_routes:
+        records = self.routes
+        if not records:
             return None
-        for record in reversed(self._trigger_routes):
+        for record in reversed(records):
+            if record.exception is not None:
+                return record
+        for record in reversed(records):
             if record.handled:
                 return record
-        return self._trigger_routes[-1]
+        return records[-1]
 
     def assert_handled_by(self, name: str) -> RouteRecord:
         """
@@ -600,7 +745,8 @@ class BotTestEnvironment:
         The failure message is the whole point: it says where the updates *did* go — all of
         them — including any exception raised and swallowed on the way.
         """
-        if not self._trigger_routes:
+        records = self.routes
+        if not records:
             msg = (
                 f"Expected the last trigger to be handled by {name!r}, but no update has "
                 f"been routed through this environment yet — or an update-level outer "
@@ -608,14 +754,14 @@ class BotTestEnvironment:
                 f"without calling the next one, so nothing was recorded."
             )
             raise AssertionError(msg)
-        for record in reversed(self._trigger_routes):
+        for record in reversed(records):
             path = record.handler_path
             if path is not None and name in path:
                 return record
-        went = "\n".join(record.describe() for record in self._trigger_routes)
+        went = "\n".join(record.describe() for record in records)
         msg = (
             f"Expected the last trigger to be handled by {name!r}, but its "
-            f"{len(self._trigger_routes)} update(s) went here:\n{went}"
+            f"{len(records)} update(s) went here:\n{went}"
         )
         raise AssertionError(msg)
 
@@ -828,15 +974,20 @@ class BotTestEnvironment:
                 if node.bot is None:
                     node.as_(self.bot)
         self._register_carried_message(update)
-        # A feed that is neither inside an explicit `trigger()` block nor nested in a
-        # handler is a trigger of its own, so its records replace the previous trigger's
-        # rather than piling onto them. Clearing here rather than after the dispatcher
+        # A feed that is neither inside an explicit `trigger()` block of this environment
+        # nor nested in one of its handlers is a trigger of its own, so it opens a scope of
+        # its own. Opening it here rather than reporting on records after the dispatcher
         # returns is what keeps `last_route` from ever being a *previous* update's route
         # mistaken for this one's — the case that happens exactly when an outer middleware
-        # the dispatcher already had swallows the update before the recorder.
-        if self._trigger_depth == 0 and self._current_route() is None:
-            self._trigger_routes = []
-        return await self.dispatcher.feed_update(self.bot, update, **kwargs)
+        # the dispatcher already had swallows the update before the recorder: the scope is
+        # opened, stays empty, and closes as an empty trigger.
+        if self._open_scope() is not None:
+            return await self.dispatcher.feed_update(self.bot, update, **kwargs)
+        frame, token = self._push_scope()
+        try:
+            return await self.dispatcher.feed_update(self.bot, update, **kwargs)
+        finally:
+            self._pop_scope(frame, token)
 
     def _register_carried_message(self, update: Update) -> None:
         """
@@ -913,20 +1064,31 @@ class BotTestEnvironment:
         :meth:`wait_for` and ``chats=`` on :meth:`wait_for_message_in` accept the same
         things: a :class:`~aiogram.test.ChatSpec` or :class:`~aiogram.test.TopicSpec`
         declaration, a live :class:`~aiogram.test.ChatState` or
-        :class:`~aiogram.test.TopicState`, a bare chat id — one of them, or any iterable of
-        them mixed freely.
+        :class:`~aiogram.test.TopicState`, a :class:`~aiogram.test.UserSpec` or
+        :class:`~aiogram.test.world.UserState` standing for that user's private chat with
+        the bot, a bare chat id — one of them, or any iterable of them mixed freely.
 
         Accepting a lone item alongside iterables cannot guess wrong, because none of the
-        four types is iterable. Accepting declarations is what closes the gap that made
+        six types is iterable. Accepting declarations is what closes the gap that made
         ``watch=group_spec`` fail: a test holds the ``ChatSpec`` its ``add_supergroup``
         returned, and passing it used to survive registration and then blow up with an
         ``AttributeError`` from inside :func:`_describe_view` — while the failure message
         for the *real* problem was being assembled.
+
+        A user resolves through :meth:`chat`, so the private chat is **opened** if the
+        blueprint never declared one — the same rule ``env.user(alice).chat`` follows. That
+        is what makes the broadcast this family exists for expressible with the objects a
+        test actually holds: ``await env.wait_for_message_in(players, ...)`` where
+        ``players`` is the list of ``add_user`` declarations. It used to raise
+        ``WorldLookupError``, or, if some other test had opened the chat first, silently
+        work — which is worse.
         """
         if watch is None:
             return ()
         items: Iterable[ViewSelector]
-        if isinstance(watch, (ChatState, TopicState, ChatSpec, TopicSpec, int)):
+        if isinstance(
+            watch, (ChatState, TopicState, ChatSpec, TopicSpec, UserSpec, UserState, int)
+        ):
             items = (watch,)
         else:
             items = watch
@@ -937,6 +1099,8 @@ class BotTestEnvironment:
             return item
         if isinstance(item, TopicSpec):
             return self.topic(item.chat_id, item)
+        if isinstance(item, (UserSpec, UserState)):
+            return self.chat(item.id)
         return self.chat(item)
 
     def assert_overrides_consumed(self) -> None:
@@ -1167,6 +1331,26 @@ class BotTestEnvironment:
         Tasks that were already running when the environment was built are left alone: a
         session-scoped fixture's background worker is not this test's litter.
 
+        **A task that already died is reported too.** ``asyncio.all_tasks()`` answers with
+        the *unfinished* tasks only, so a night timer that raised a ``KeyError`` three lines
+        into the test was simply not in the set this looks at: the drain reported "0 tasks"
+        and the bug surfaced, if at all, as an unrelated ``Task exception was never
+        retrieved`` printed at garbage-collection time. Every task created while this
+        environment is live is therefore remembered — through the loop's task factory, which
+        is the only place asyncio does record it — and the finished ones are inspected for an
+        exception nobody retrieved, exactly as the cancelled ones are. They are *not*
+        cancelled (they are over) and do not count towards the returned number, which stays
+        "how many tasks this drained".
+
+        **Called with no protection snapshot at all, it does nothing and answers ``0``.**
+        That is the environment the synchronous ``bot_env`` fixture builds — no loop running
+        at construction, so the creation-time snapshot is empty — on which nothing has been
+        fed, no call has been handled, and therefore the second snapshot has not been taken
+        either. The environment never ran, so it owns no tasks, and "everything unprotected"
+        would here mean *every task in the loop*: the first ``await bot_env.drain()`` of a
+        test that only set things up would have cancelled the session-scoped fixtures'
+        workers, which is the exact accident this method's protection exists to prevent.
+
         **The protected set is snapshotted twice**, and the second time is the one that
         matters in practice. The ``bot_env`` fixture is synchronous, so an environment is
         normally built with no event loop running at all and the creation-time snapshot is
@@ -1198,35 +1382,42 @@ class BotTestEnvironment:
         cancelled. So anything other than :class:`asyncio.CancelledError` is collected and
         raised as :class:`~aiogram.test.errors.DrainedTaskError`, naming every task that
         failed, with the first failure chained as ``__cause__`` so the real traceback is
-        right there.
+        right there — **unless** a task also refused to stop, in which case the timeout is
+        what is raised and the first failure is chained onto *that* instead. One
+        ``raise ... from`` either way: whichever error comes out carries the traceback of
+        the first thing that actually went wrong.
 
         :raises aiogram.test.errors.WaitTimeoutError: if a task refuses to finish within
             ``timeout`` after being cancelled — a task that swallows
             :class:`asyncio.CancelledError` is a real bug in the bot, and silently leaving
-            it running would be the same stderr noise this exists to remove.
+            it running would be the same stderr noise this exists to remove. Any failure
+            collected alongside is named in the message and the first is chained as the
+            cause.
         :raises aiogram.test.errors.DrainedTaskError: if a drained task ended with an
             exception of its own.
         """
-        current = asyncio.current_task()
-        pending = {
-            task
-            for task in asyncio.all_tasks()
-            if task is not current and task not in self._protected_tasks and not task.done()
-        }
-        if not pending:
+        if not (self._protection_extended or self._protected_tasks):
+            # No snapshot at construction *and* no asynchronous entry since: this
+            # environment never ran, so it owns nothing — and "everything unprotected"
+            # would here mean "every task in the loop". See the docstring.
             return 0
-        for task in pending:
-            task.cancel()
-        _, still_running = await asyncio.wait(pending, timeout=timeout)
+        current = asyncio.current_task()
+        mine = {
+            task
+            for task in (*asyncio.all_tasks(), *self._spawned_tasks)
+            if task is not current and task not in self._protected_tasks
+        }
+        pending = {task for task in mine if not task.done()}
         failures: list[tuple[str, BaseException]] = []
-        for task in pending - still_running:
-            # Retrieve whatever the task ended with, or asyncio complains about the
-            # never-retrieved exception at collection time — the very noise being removed.
-            if task.cancelled():
-                continue
-            error = task.exception()
-            if error is not None:
-                failures.append((task.get_name(), error))
+        # Tasks that finished on their own before the drain. `asyncio.all_tasks()` does not
+        # list them, which is why they are tracked as they are created.
+        self._collect_failures(mine - pending, failures)
+        still_running: set[asyncio.Task[Any]] = set()
+        if pending:
+            for task in pending:
+                task.cancel()
+            _, still_running = await asyncio.wait(pending, timeout=timeout)
+            self._collect_failures(pending - still_running, failures)
         if still_running:
             names = ", ".join(sorted(task.get_name() for task in still_running))
             msg = (
@@ -1238,12 +1429,32 @@ class BotTestEnvironment:
             if failures:
                 # Reported here rather than raised separately: the stuck task is the more
                 # structural failure, and losing the other half would be exactly the
-                # swallowing this method refuses to do.
+                # swallowing this method refuses to do. The chaining moves here with it.
                 msg += f"\n{_describe_failures(failures)}"
+                raise WaitTimeoutError(msg) from failures[0][1]
             raise WaitTimeoutError(msg)
         if failures:
             raise DrainedTaskError(_describe_failures(failures)) from failures[0][1]
         return len(pending)
+
+    @staticmethod
+    def _collect_failures(
+        tasks: Iterable[asyncio.Task[Any]],
+        failures: list[tuple[str, BaseException]],
+    ) -> None:
+        """
+        Retrieve what each finished task ended with, keeping whatever was not a cancellation.
+
+        Retrieving is the point as much as reporting is: an exception nobody asks a task for
+        is what asyncio complains about at collection time, which is the very noise
+        :meth:`drain` exists to remove.
+        """
+        for task in tasks:
+            if task.cancelled():
+                continue
+            error = task.exception()
+            if error is not None:
+                failures.append((task.get_name(), error))
 
     # -- call handling ----------------------------------------------------------------
 
@@ -1254,13 +1465,61 @@ class BotTestEnvironment:
         Called from :meth:`feed` and :meth:`handle_call` — the two doors through which this
         environment first does anything asynchronous. Runs its body once; after that it is
         a boolean check on a hot path. See :meth:`drain` for why the creation-time snapshot
-        is not enough on its own.
+        is not enough on its own, and why :meth:`drain` does nothing at all until this has
+        run once.
         """
         if self._protection_extended:
             return
         self._protection_extended = True
         current = asyncio.current_task()
         self._protected_tasks |= {task for task in _running_tasks() if task is not current}
+        self._track_spawned_tasks()
+
+    def _track_spawned_tasks(self) -> None:
+        """
+        Remember every task created from here on, by wrapping the loop's task factory.
+
+        The only hook asyncio offers. ``asyncio.all_tasks()`` filters out finished tasks, so
+        a task that died before the drain is invisible to :meth:`drain` unless it was seen
+        while it was being made — and a task that died of its own bug is precisely the one
+        worth reporting.
+
+        The previous factory is called rather than replaced, so an eager task factory or a
+        framework's own stays in force and this only observes. Tasks are held by a **strong**
+        reference until :meth:`_restore`: a failed task collected before the drain takes its
+        exception with it, and asyncio then prints the never-retrieved warning this exists to
+        prevent.
+
+        Two environments alive at once nest, and restoring is by identity — an environment
+        whose factory is no longer the loop's leaves it alone rather than tearing another
+        environment's out from under it. The chain then unwinds when that one restores.
+        """
+        loop = asyncio.get_running_loop()
+        previous: Any = loop.get_task_factory()
+        spawned = self._spawned_tasks
+
+        def factory(loop: Any, coro: Any, **kwargs: Any) -> Any:
+            task: Any = (
+                asyncio.Task(coro, loop=loop, **kwargs)
+                if previous is None
+                else previous(loop, coro, **kwargs)
+            )
+            spawned.add(cast("asyncio.Task[Any]", task))
+            return task
+
+        self._tracking_loop = loop
+        self._previous_task_factory = previous
+        self._installed_task_factory = factory
+        loop.set_task_factory(factory)
+
+    def _untrack_spawned_tasks(self) -> None:
+        loop = self._tracking_loop
+        installed = self._installed_task_factory
+        self._tracking_loop = None
+        self._installed_task_factory = None
+        if loop is not None and loop.get_task_factory() is installed:
+            loop.set_task_factory(self._previous_task_factory)
+        self._previous_task_factory = None
 
     def resolve_addressing(self, value: Any) -> Any:
         """

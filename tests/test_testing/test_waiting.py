@@ -883,3 +883,81 @@ class TestBroadcastTimeoutReportsARaisingPredicate:
             await quick.wait_for_message_in([group], lambda m: m.text == "Night")
 
         assert "The predicate raised" not in str(exc_info.value)
+
+
+class TestThePlayersListIsTheVocabularyToo:
+    """
+    A user stands for their private chat with the bot, everywhere a chat may be named.
+
+    The broadcast this whole family exists for is "every player got the night keyboard",
+    and what a test holds for a player is the ``UserSpec`` its ``add_user`` returned — the
+    example in ``wait_for_message_in``'s own docstring is literally
+    ``wait_for_message_in(players, ...)``. Passing that list raised ``WorldLookupError``
+    from inside the resolver, so the documented example did not run.
+    """
+
+    @pytest.fixture
+    def party(self):
+        blueprint = Blueprint()
+        for name in ("Alice", "Bob", "Carol"):
+            blueprint.add_user(name)
+        return blueprint
+
+    @pytest.fixture
+    def table(self, party):
+        environment = BotTestEnvironment(blueprint=party, default_wait_timeout=0.05)
+        try:
+            yield environment
+        finally:
+            environment.dispose_sync()
+
+    async def deal(self, environment, chat_ids):
+        for chat_id in chat_ids:
+            await asyncio.sleep(0.005)
+            await environment.bot.send_message(chat_id=chat_id, text="Night falls")
+
+    async def test_the_documented_players_example_runs(self, table, party):
+        """
+        And note the blueprint declares no private chats: a user's private chat is opened
+        on demand, the same rule ``env.user(alice).chat`` follows.
+        """
+        players = party.users
+        task = asyncio.create_task(self.deal(table, [player.id for player in players]))
+
+        try:
+            keyboards = await table.wait_for_message_in(
+                players,
+                lambda m: m.text == "Night falls",
+                "the night keyboard",
+            )
+        finally:
+            await task
+
+        assert set(keyboards) == {player.id for player in players}
+
+    async def test_watch_accepts_a_user_declaration(self, table, party):
+        alice = party.users[0]
+        await table.user(alice).send("hello?")  # a bot may only answer, never write first
+        await table.bot.send_message(chat_id=alice.id, text="the real reason")
+
+        with pytest.raises(WaitTimeoutError) as failure:
+            await table.wait_for(lambda: False, "the phase", watch=alice, timeout=0.01)
+
+        assert f"In chat {alice.id}" in str(failure.value)
+        assert "the real reason" in str(failure.value)
+
+    async def test_watch_accepts_a_live_user_state(self, table, party):
+        alice = table.world.user(party.users[0].id)
+        await table.user(party.users[0]).send("hello?")
+        await table.bot.send_message(chat_id=alice.id, text="the real reason")
+
+        with pytest.raises(WaitTimeoutError) as failure:
+            await table.wait_for(lambda: False, "the phase", watch=[alice], timeout=0.01)
+
+        assert f"In chat {alice.id}" in str(failure.value)
+
+    async def test_a_user_mixes_freely_with_the_rest_of_the_vocabulary(self, table, party):
+        alice, bob = party.users[0], table.world.user(party.users[1].id)
+        views = table.as_views([alice, bob, party.users[2].id])
+
+        assert [view.id for view in views] == [alice.id, bob.id, party.users[2].id]

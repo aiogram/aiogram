@@ -944,9 +944,13 @@ block stops *every* call that delivers into that chat —
 photos, chat actions, copies, forwards, and any future ``send*``/``copy*``/``forward*`` method
 a Bot API bump adds, via :data:`aiogram.test.DELIVERY_METHODS` — **and** every call that acts
 on what is already in that chat instead of delivering into it: the ``editMessage*`` family,
-``stopMessageLiveLocation``, ``stopPoll``, ``setMessageReaction``, and
+``stopMessageLiveLocation``, ``stopPoll``, the whole reaction family
+(``setMessageReaction``/``deleteMessageReaction``/``deleteAllMessageReactions``), and
 ``pinChatMessage``/``unpinChatMessage``/``unpinAllChatMessages``. The full set a block stops is
-:data:`aiogram.test.BLOCKED_METHODS`, which extends ``DELIVERY_METHODS`` with those additions:
+:data:`aiogram.test.BLOCKED_METHODS`, which extends ``DELIVERY_METHODS`` with those additions.
+The converse is the maintenance rule: a new ``send*``/``copy*``/``forward*`` method joins by
+prefix on its own, while a new ``edit*``/``stop*``/``pin*`` or reaction method needs a row added
+to that list — or a line in its documented exclusions saying why it stays out.
 
 .. code-block:: python
 
@@ -972,8 +976,11 @@ mistake of the two. A test that knows better declares it in one line:
 
 Some methods name the blocked party as ``user_id`` rather than ``chat_id`` — ``sendGift`` is
 the one that forces the question, since a bot thanking a user reaches for ``user_id`` with no
-``chat_id`` in sight. ``blocked(...)`` still catches it: the recipe registers a rule on every
-addressing field a blocked method actually has, ``chat_id`` **or** ``user_id``:
+``chat_id`` in sight. ``blocked(...)`` still catches it: on a *delivery* method the recipe
+registers a rule on ``chat_id`` **or** ``user_id``, since either can name the addressee there.
+On the others ``user_id`` names a participant rather than the addressee — ``deleteMessageReaction``
+takes both — so only ``chat_id`` is keyed, and clearing the blocked user's reaction in a group
+the bot can still reach goes through, as it does in production:
 
 .. code-block:: python
 
@@ -1027,6 +1034,13 @@ does *not* expect to be taken is a perfectly good test — proving the bot never
 same listing is appended to every ``wait_for`` and ``wait_for_message_in`` timeout, since a
 never-matched override is the single most common reason a message a test is waiting for never
 arrives.
+
+Only the rules a test wrote by hand are reported. ``blocked()`` is one *simulation* spelled as
+a set of alternatives — one rule per method a block stops — and the bot is meant to take one or
+two of those paths and leave the rest alone, so its rules are excluded from the listing
+entirely, whether or not the block ever fired. Otherwise the assertion above could never pass
+inside the very block it is written for, and every timeout in that block ended in a wall of
+forty lines about methods nobody expected to be called.
 
 Recording happens before an override answers
 -----------------------------------------------
@@ -1121,20 +1135,43 @@ A test writing a multi-update helper of its own opens the same scope explicitly 
     bot_env.assert_handled_by("on_deal")   # scans both updates
 
 :attr:`~aiogram.test.BotTestEnvironment.routes` is every record of the current scope, in the
-order routing finished. :attr:`~aiogram.test.BotTestEnvironment.last_route` is the **newest
-handled** record among them, falling back to the newest record of any kind only when nothing
-in the scope was handled at all — the ordering that lets the join example above report the
-update the handler actually claimed, rather than whichever of the two Telegram happens to
-deliver last, while a scope nothing reacted to still reports "NOT handled" instead of hiding
-behind an earlier, unrelated success. ``assert_handled_by`` scans **every** record of the
-scope, not only the newest, and its failure message dumps all of them — including any
-exception raised and swallowed along the way.
+order routing finished. :attr:`~aiogram.test.BotTestEnvironment.last_route` picks one of them,
+preferring, in order:
 
-Nesting is counted, so a helper that opens its own ``trigger()`` inside a wider one does not
-close the outer scope early. A bare ``feed`` — a plain ``await bot_user.send(...)`` outside any
+#. the **newest record carrying an exception**, because a handler that raised answers every
+   question a failing test is asking — and it is exactly the record that hides otherwise,
+   since aiogram's error middleware swallows the exception and the *other* updates of the
+   trigger go on being handled normally;
+#. else the **newest handled** record, which is what lets the join example above report the
+   update the handler actually claimed rather than whichever of the two Telegram happens to
+   deliver last;
+#. else the newest record of any kind, so a scope nothing reacted to still reports "NOT
+   handled" instead of hiding behind an earlier, unrelated success.
+
+``assert_handled_by`` scans **every** record of the scope, not only the newest, and its failure
+message dumps all of them — including any exception raised and swallowed along the way.
+
+Nesting reuses the outer scope, so a helper that opens its own ``trigger()`` inside a wider one
+does not close it early. A bare ``feed`` — a plain ``await bot_user.send(...)`` outside any
 explicit ``trigger()`` block and not itself fed from inside a running handler — opens a scope
 of its own, which is what keeps the common one-update case free of ceremony. ``routes`` is
 empty and ``last_route`` is ``None`` until the first update is fed.
+
+A scope belongs to the **task** that opened it, not to the environment: two triggers running
+at once under ``asyncio.gather`` never share a scope, never erase each other's records, and a
+feed that happens to run while some other task holds a block open is not swallowed by it.
+Outside any block, ``routes`` therefore reports the trigger that **completed last**, which is
+the only thing "the most recent trigger" can mean once several ran concurrently. To assert per
+branch, give each branch a block of its own and read inside it:
+
+.. code-block:: python
+
+    async def deal(player):
+        with bot_env.trigger():
+            await player.send("/deal")
+            bot_env.assert_handled_by("on_deal")   # this branch's records
+
+    await asyncio.gather(deal(alice), deal(bob))
 
 Finite state machine
 ====================
@@ -1227,10 +1264,13 @@ any iterable of them, and each is appended to the timeout message the way
 
 ``watch=`` and ``wait_for_message_in``'s ``chats=`` speak one shared vocabulary, resolved by
 :meth:`~aiogram.test.BotTestEnvironment.as_views`: a blueprint's ``ChatSpec``/``TopicSpec``
-declaration, a live ``ChatState``/``TopicState``, or a bare chat id — one of them on its own,
-or any iterable of them mixed freely. A timeout also appends a listing of any override this
-environment declared that never answered a call — see `An override that never fires`_ — since
-that is the single most common reason a message a wait is looking for never arrives.
+declaration, a live ``ChatState``/``TopicState``, a ``UserSpec``/``UserState`` standing for
+that user's private chat with the bot, or a bare chat id — one of them on its own, or any
+iterable of them mixed freely. A user's private chat is opened on demand if the blueprint never
+declared one, the same rule ``env.user(alice).chat`` follows. A timeout also appends a listing
+of any override this environment declared that never answered a call — see `An override that
+never fires`_ — since that is the single most common reason a message a wait is looking for
+never arrives.
 
 Waiting for a broadcast
 -------------------------
@@ -1245,16 +1285,16 @@ together and returns once all of them hold a match:
 
 .. code-block:: python
 
-    player_ids = [alice.id, bob.id, carol.id]
+    players = [alice, bob, carol]   # the declarations `add_user` handed back
 
     keyboards = await env.wait_for_message_in(
-        player_ids, lambda m: m.reply_markup is not None, "the night keyboard"
+        players, lambda m: m.reply_markup is not None, "the night keyboard"
     )
     assert keyboards[alice.id].reply_markup is not None
 
 ``chats`` accepts the same vocabulary as ``watch=`` above — declarations, live chat and topic
-states, bare ids, one or an iterable, mixed freely — so a broadcast into one thread of a forum
-is expressible too, and the newest match per chat wins, exactly as a single
+states, users, bare ids, one or an iterable, mixed freely — so a broadcast into one thread of a
+forum is expressible too, and the newest match per chat wins, exactly as a single
 ``wait_for_message`` picks it. A predicate that raises on a message counts as "no match" for
 that message rather than failing the wait, and — again as the single-chat wait does — what it
 raised is reported once the wait gives up, per chat. A timeout names only the chats that are
@@ -1421,12 +1461,20 @@ by the time this environment does anything asynchronous, so it is protected exac
 task that predates construction, and the first test in a session to call ``drain()`` does not
 kill it out from under every later test.
 
+An environment with **no** snapshot at all — built by the synchronous fixture and then drained
+before it ever fed an update or handled a call — owns nothing, cancels nothing and answers
+``0``. Anything else would have meant "every task in the loop", the fixtures' workers included.
+
 A task that fails on its own, or ends with something other than the cancellation ``drain()``
 sent it, is not swallowed: retrieving its result is what stops asyncio complaining about it
 later, and discarding that result would make ``drain()`` itself the thing hiding a real bug —
 a night timer that died with a ``KeyError`` would look exactly like one cancelled on time. So
 a failure is re-raised as :class:`aiogram.test.DrainedTaskError`, naming every task that
-failed, with the first one's real traceback chained as its cause:
+failed, with the first one's real traceback chained as its cause. This holds for a task that
+died **before** the drain, too: those are not in ``asyncio.all_tasks()``, so the environment
+remembers every task created while it is live and inspects the finished ones as well as the
+cancelled ones. They are not counted in the number ``drain`` returns, which stays "how many
+tasks this drained":
 
 .. code-block:: python
 
@@ -1440,7 +1488,10 @@ failed, with the first one's real traceback chained as its cause:
 
 A task that instead swallows its own cancellation and is still running after ``timeout``
 raises :class:`~aiogram.test.WaitTimeoutError`, distinct from a task that ran and failed —
-the two are different bugs and get different exceptions.
+the two are different bugs and get different exceptions. When both happen at once the stuck
+task wins, being the more structural failure, and the message names the other half as well;
+the chaining follows the error that is actually raised, so the first real failure's traceback
+is one ``__cause__`` away either way.
 
 ``drain`` is deliberately **not** called by ``dispose`` / ``dispose_sync``: the pytest
 fixture's teardown is synchronous and cannot await anything, so an automatic drain would work
