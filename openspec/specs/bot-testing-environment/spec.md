@@ -7,7 +7,9 @@ describing a world of chats, users, members, topics, business connections and co
 isolated environments materialized from it; actors that trigger real updates through the
 real dispatcher; and Bot API interception that applies modeled calls to world state,
 answers everything else with a schema-valid synthesized result, and records every call for
-assertion.
+assertion. Everything crossing the boundary between the world and the code under test is
+bound to the environment's bot the way a parsed response is, and copied where the two sides
+must not share state.
 ## Requirements
 ### Requirement: Environment blueprint declares a reusable world
 
@@ -122,6 +124,98 @@ indistinguishable in shape from one Telegram would deliver.
 - **WHEN** a post is made to a chat declared as a channel
 - **THEN** a `channel_post` update is dispatched rather than a `message` update, and the
   post is stored in that chat
+
+### Requirement: Deep-link buttons can be followed
+
+A user actor SHALL be able to follow a `url` button that deep-links to the bot under test,
+with the same validation a callback button gets: the button SHALL have to be carried by a
+message the environment actually holds, either a named one or any message of the actor's
+chat. Following SHALL replay what tapping causes in a real client — the user's private chat
+with the bot receives `/start <payload>`, or a bare `/start` when the link carries none — so
+filters, the command parser, middlewares and FSM all run as they do in production.
+
+#### Scenario: Following a group button opens the conversation in the DM
+
+- **WHEN** the bot posts a group message carrying a `t.me` start-link button and a user actor
+  follows it
+- **THEN** the user's private chat with the bot holds a `/start` message carrying the link's
+  payload, and the handler registered for it ran
+
+#### Scenario: The button has to be real
+
+- **WHEN** a test follows a url that no message in scope carries
+- **THEN** the call raises, naming the chat or the message it looked in
+
+#### Scenario: A link to another bot is not followable
+
+- **WHEN** the button deep-links to a different bot's username
+- **THEN** the call raises rather than sending a `/start` to the bot under test
+
+#### Scenario: The newest followable button is chosen
+
+- **WHEN** no target is given and several messages carry deep-link buttons
+- **THEN** the most recent followable link to this bot is the one followed
+
+### Requirement: Only start links are followed, and the rest are refused by name
+
+The toolkit SHALL recognize the deep-link forms `https://t.me/<username>` — including its
+`http://` and schemeless spellings — and `tg://resolve?domain=<username>`, and SHALL treat a
+link with no query as a plain start. A `start` payload SHALL be honored alongside any other
+query parameter, since a real client reads the parameter it recognizes and ignores the rest.
+
+Every other recognized kind SHALL be refused with a message naming the kind and what a real
+client would do with it, rather than being replayed as a plain start: group, Mini App, channel
+and attachment-menu launches, chat invite links, links carrying extra path segments such as
+message links and Mini App shortlinks, and any query the toolkit does not recognize. A url
+that is not a Telegram link at all SHALL be refused as such.
+
+#### Scenario: A bare profile link replays as a plain start
+
+- **WHEN** the button's url is `https://t.me/<bot>` with no query
+- **THEN** following it sends `/start` with no payload
+
+#### Scenario: An unsupported kind is named, not downgraded
+
+- **WHEN** the button opens a group chooser, a Mini App, a channel chooser or the attachment
+  menu
+- **THEN** following it raises, naming that kind and what to do instead, rather than sending
+  a plain `/start`
+
+#### Scenario: An unrecognized query is refused rather than guessed
+
+- **WHEN** the button's url carries a query parameter the toolkit does not define
+- **THEN** following it raises, saying that what a real client would do with it is not
+  simulated
+
+#### Scenario: The scan skips what it cannot follow
+
+- **WHEN** a keyboard carries both an unfollowable deep link and a real start link to this bot
+- **THEN** the start link is followed; and when only unfollowable ones are present, the
+  failure names each url and why it was rejected
+
+### Requirement: A user's own private chat opens on demand
+
+A blueprint SHALL NOT have to declare a user's private chat with the bot: every Telegram user
+can open one, so the environment SHALL create it, shaped exactly as a declared one, the first
+time it is needed — when a deep link is followed, when an unbound actor sends, and when an
+actor binds to its own id. Any *other* chat the blueprint never declared SHALL still be
+refused, since the world cannot invent a group's title, type or membership from an identifier.
+
+#### Scenario: A followed link opens the chat
+
+- **WHEN** a user with no declared private chat follows a start link
+- **THEN** the chat exists afterwards, holds the `/start` message, and behaves like a declared
+  private chat
+
+#### Scenario: Sending from an unbound actor opens it too
+
+- **WHEN** an actor that was never bound to a chat sends a message
+- **THEN** it lands in that user's private chat with the bot
+
+#### Scenario: An undeclared group is still refused
+
+- **WHEN** an actor binds to the identifier of a group nobody declared
+- **THEN** the call raises, because the world has nothing to build that chat from
 
 ### Requirement: Modeled Bot API methods mutate world state
 
@@ -242,13 +336,104 @@ already resolved.
 - **WHEN** a test asserts the count of a method type is zero
 - **THEN** the assertion reflects the calls made during that test only
 
+### Requirement: Everything the world hands out carries the bot
+
+Every object the environment gives to the code under test SHALL be bound to a `Bot` the way
+a parsed Bot API response is, so that its shortcuts work — including objects nested inside a
+result and the items of a list result. This SHALL hold for modeled, synthesized and
+overridden results alike, and SHALL also hold for objects read directly out of the world,
+whoever put them there: a message a user actor sent, and a service message produced as a
+side effect of a modeled call.
+
+An object that already carries a bot belongs to whoever owns it and SHALL NOT be re-bound,
+so a second `Bot` sharing the environment's session never takes over the world's own
+objects.
+
+#### Scenario: A shortcut on a result reaches the world
+
+- **WHEN** a handler sends a message and calls `edit_text` on the returned `Message`
+- **THEN** the edit is applied to the stored message, without the test attaching a bot by hand
+
+#### Scenario: Nested objects and list items are bound too
+
+- **WHEN** a result carries another object inside it, or the result is a list
+- **THEN** shortcuts work on the nested object and on every item of the list
+
+#### Scenario: A message no call returned is usable
+
+- **WHEN** a user actor sends a message and the test reads it back out of the chat
+- **THEN** calling a shortcut on it works, exactly as on a message a call returned
+
+#### Scenario: An object the world already owns is not re-bound
+
+- **WHEN** a second `Bot` shares the environment's session and a call through it returns a
+  message the world already stored
+- **THEN** that message stays bound to the environment's own bot, while objects minted for
+  that call are bound to the calling bot
+
+### Requirement: Handlers receive the world's own objects
+
+An update SHALL arrive at the dispatcher already bound, so that the framework does not
+re-create it and the object a handler receives is the object the world stores. An update
+carrying objects that belong to a *different* environment SHALL be copied instead of
+claimed, and the message it carries SHALL be registered in the destination chat.
+
+#### Scenario: Identity survives the dispatcher
+
+- **WHEN** a user actor sends a message and the handler records the `Message` it received
+- **THEN** that object is the very one the chat's message list holds
+
+#### Scenario: An update built for another environment does not act on it
+
+- **WHEN** one update object is fed to two environments
+- **THEN** the second environment answers in its own world, and the reply it sends does not
+  reuse the incoming message's identifier
+
+### Requirement: Objects a test hands to a call stay the test's own
+
+Values the code under test passes into a Bot API call SHALL be copied before they reach
+world state, so an object a test declares once — a shared `reply_markup`, a
+`ChatPermissions` constant, a list of commands — is never mutated, never bound to a bot, and
+never keeps a disposed environment alive. The value objects the world stores SHALL likewise
+be copied on the way out. A `Message` is the deliberate exception: the message a call returns
+is the one the chat holds.
+
+#### Scenario: A shared constant is not captured by the world
+
+- **WHEN** a test passes the same module-level `reply_markup` to a call in several tests
+- **THEN** the constant is unbound and unchanged afterwards, and the world holds a copy
+
+#### Scenario: The call log shows what the caller built
+
+- **WHEN** a test asserts on a recorded call after the world has stored the same values
+- **THEN** the recorded entry carries the values the code under test passed, not the copies
+  the world went on to keep
+
+#### Scenario: Reading state back does not bind it
+
+- **WHEN** a handler sets chat permissions and a later `getChat` returns them
+- **THEN** the returned permissions are a copy, and the permissions the world stores still
+  compare equal to the constant the test declared
+
+#### Scenario: A returned message is the stored message
+
+- **WHEN** a handler sends a message
+- **THEN** the returned `Message` is the same object the chat's message list holds
+
+#### Scenario: A declared override result is answered fresh each time
+
+- **WHEN** a test declares a result once and the method is called several times
+- **THEN** each call is answered with its own copy, and the declared object is neither
+  mutated nor left bound to any bot
+
 ### Requirement: Telegram errors behave like production errors
 
-Errors produced by the environment — whether from modeling rules, from a declared
-override, or from an invalid operation such as editing a deleted message — SHALL be
-raised as the framework's own exception types from `aiogram.exceptions`, carrying a
-description, so error handlers and `except` blocks under test behave as they do against
-real Telegram.
+A call the real Bot API would refuse SHALL fail the way it fails in production: the
+framework's own exception types from `aiogram.exceptions`, raised through the session's own
+response check, carrying Telegram's wording — whether the refusal comes from a modeling rule,
+from a declared override, or from an invalid operation such as editing a deleted message. So
+an `except` branch in the bot under test is exercised exactly as it would be against real
+Telegram.
 
 #### Scenario: Invalid operation raises a framework exception
 
@@ -259,6 +444,143 @@ real Telegram.
 
 - **WHEN** the dispatcher has an error handler and an intercepted call raises
 - **THEN** the error handler runs through the normal dispatcher error pipeline
+
+#### Scenario: A handler can catch the refusal itself
+
+- **WHEN** a handler wraps a call in `except TelegramBadRequest`
+- **THEN** it catches the refusal and reads Telegram's own wording out of it
+
+### Requirement: A gap in the test's own setup fails the test, not the bot
+
+A refusal caused by something the blueprint never declared, or by a surface the toolkit does
+not model, SHALL be raised as `WorldLookupError`, which the environment never converts into a
+Telegram error. It SHALL propagate out of the call the bot made and fail the test, so the
+bot's own error handling cannot swallow it and leave a green test that exercised the wrong
+branch. Its message SHALL say what to declare or how to proceed.
+
+The two kinds SHALL be distinguishable by type: `ApiRejection` is something Telegram itself
+would answer, and is what `handle_call` turns into a `TelegramBadRequest`, while
+`WorldLookupError` is not.
+
+#### Scenario: An undeclared entity is not reported as a Bad Request
+
+- **WHEN** a handler calls a method naming a user, chat, sticker set, poll, gift, charge or
+  business connection the blueprint never declared
+- **THEN** the call raises `WorldLookupError` rather than `TelegramBadRequest`, and the
+  message names what is missing
+
+#### Scenario: The bot's own error handling cannot hide it
+
+- **WHEN** the bot under test wraps its calls in `except TelegramBadRequest`
+- **THEN** a setup gap still reaches the test, because it is not a Telegram error
+
+#### Scenario: Something the toolkit does not model says so
+
+- **WHEN** a handler edits a message addressed by `inline_message_id`
+- **THEN** the call raises `WorldLookupError` naming inline messages as unmodeled, rather
+  than claiming Telegram refused it
+
+#### Scenario: Reaching into the world directly surfaces the rejection unconverted
+
+- **WHEN** a test asks a chat for a message or a topic that is not there, outside any call
+- **THEN** `ApiRejection` is raised as it is, since there is no call to convert it into a
+  Telegram error
+
+### Requirement: Waiting for a condition the bot reaches on its own
+
+The environment SHALL provide a way to wait for an arbitrary condition, re-checking it and
+yielding to the event loop in between so that background work the trigger did not await can
+run. The condition SHALL be allowed to be synchronous or to return an awaitable, and whatever
+truthy value it produces SHALL be returned, so a wait can fetch as well as test. The wait
+SHALL be satisfied immediately when the condition already holds, and SHALL NOT exceed its
+stated timeout whatever polling interval it was given.
+
+#### Scenario: A background task satisfies the wait
+
+- **WHEN** a handler schedules work that changes the world after it returns, and the test
+  waits for that change
+- **THEN** the wait returns once the work has run
+
+#### Scenario: An already-true condition costs nothing
+
+- **WHEN** the condition holds before the wait starts
+- **THEN** it returns without yielding to the event loop first
+
+#### Scenario: The wait returns what it found
+
+- **WHEN** the condition produces a value rather than a plain flag
+- **THEN** that value is returned to the test
+
+#### Scenario: The timeout is honored
+
+- **WHEN** a wait is given a polling interval coarser than the time left
+- **THEN** it gives up at the timeout rather than overshooting by a whole interval
+
+### Requirement: Waiting for a message in a chat or a topic
+
+A chat SHALL provide a wait for a message matching a predicate, and a forum topic SHALL
+provide the same wait over its own messages, so a message posted into a sibling topic never
+satisfies it. The predicate SHALL be matched against every message the view holds, not only
+the ones arriving after the call, and the newest match SHALL be returned; an omitted predicate
+SHALL match any message. The message returned SHALL be usable like any other object the world
+holds.
+
+#### Scenario: A message that is already there matches
+
+- **WHEN** the message being waited for arrived before the wait started
+- **THEN** the wait returns it immediately
+
+#### Scenario: The newest match wins
+
+- **WHEN** several messages in the chat match the predicate
+- **THEN** the most recent one is returned
+
+#### Scenario: A topic waits only on its own thread
+
+- **WHEN** a matching message is posted into a different topic of the same chat
+- **THEN** the wait is not satisfied by it
+
+#### Scenario: What the wait returns is usable
+
+- **WHEN** a test calls a shortcut on the message a wait returned
+- **THEN** it works, exactly as on any message read out of the world
+
+### Requirement: A predicate that raises does not fail the wait
+
+Because a chat holds messages of every shape, an exception raised by a message predicate SHALL
+count as "does not match" rather than ending the wait. Such exceptions SHALL NOT be swallowed:
+if the wait times out, the failure SHALL report what the predicate raised and on which message.
+
+#### Scenario: A service message does not break a text predicate
+
+- **WHEN** the chat contains a service message with no text and the predicate reads the text
+- **THEN** the wait continues and is satisfied by the message it was actually asking about
+
+#### Scenario: A predicate that always raises still fails with its cause
+
+- **WHEN** the predicate raises on every message and the wait times out
+- **THEN** the failure names the exception type, its message and the message it happened on
+
+### Requirement: A wait that gives up says what it was waiting for
+
+Every waiting helper SHALL fail with a `WaitTimeoutError`, which SHALL be a `TimeoutError`,
+and its message SHALL name what was awaited and show the state that was there instead — the
+messages the chat or topic holds, or the description the test gave for a condition.
+
+#### Scenario: A generic timeout assertion catches it
+
+- **WHEN** a test asserts that a wait raises the built-in `TimeoutError`
+- **THEN** the assertion holds
+
+#### Scenario: The failure enumerates what was there
+
+- **WHEN** a wait for a message times out
+- **THEN** the message lists the messages the chat or topic holds, identifying each one
+
+#### Scenario: A condition names itself when the test said so
+
+- **WHEN** a wait for a condition is given a description and times out
+- **THEN** the failure quotes that description rather than only the predicate's identity
 
 ### Requirement: FSM state is inspectable and settable
 
@@ -378,8 +700,8 @@ environment SHALL answer `getBusinessConnection` from that state, and SHALL appl
 #### Scenario: Unknown connection
 
 - **WHEN** a handler asks for a connection that was never declared
-- **THEN** the call fails with the framework's own error type rather than a synthesized
-  connection
+- **THEN** the call fails with `WorldLookupError` — a gap in the blueprint, not a Telegram
+  rejection — rather than returning a synthesized connection
 
 ### Requirement: Business messages are attributed to the business account
 
@@ -449,8 +771,9 @@ community service messages for a chat being added to, or removed from, a communi
 Editing a stored message's media, live location or checklist SHALL mutate that message in
 place rather than returning a synthesized result, and stopping a live location SHALL
 return the stored message. Each SHALL fail with `TelegramBadRequest` when the target
-message is unknown or deleted, and when the target is an inline message, matching the
-behavior of the already-modeled text and caption edits.
+message is unknown or deleted, matching the behavior of the already-modeled text and caption
+edits, and SHALL fail with `WorldLookupError` when the target is an inline message, which the
+toolkit does not model.
 
 #### Scenario: Editing media replaces the stored media
 
@@ -477,8 +800,8 @@ behavior of the already-modeled text and caption edits.
 #### Scenario: Editing an inline message says it is unmodeled
 
 - **WHEN** a handler edits the media of a message addressed by `inline_message_id`
-- **THEN** the call raises `TelegramBadRequest` naming inline messages as unmodeled,
-  rather than silently succeeding
+- **THEN** the call raises `WorldLookupError` naming inline messages as unmodeled, rather
+  than silently succeeding or claiming Telegram refused it
 
 ### Requirement: A sent message carries the values its request stated
 
@@ -941,6 +1264,138 @@ tag belongs to a regular member.
 - **WHEN** a handler sets a tag for an administrator
 - **THEN** the call raises `TelegramBadRequest`, because the Bot API tags regular members
 
+### Requirement: The bot's own standing in a chat is declarable
+
+A blueprint SHALL be able to declare what status the bot itself holds in a group, supergroup
+or channel, either through a `bot_status` argument of the `add_*` helper or by naming
+`blueprint.bot` in that chat's `members`. Declaring it both ways SHALL be rejected rather than
+resolved, so neither spelling can silently shadow the other. Absent any declaration the bot
+SHALL be an ordinary member of every such chat.
+
+#### Scenario: Declaring the bot as an administrator
+
+- **WHEN** a blueprint declares a supergroup with `bot_status` set to administrator and a
+  handler calls `getChatMember` for the bot's own id
+- **THEN** the administrator status is reported, so a handler gating itself on its own
+  standing takes the same branch it would in production
+
+#### Scenario: The two spellings are equivalent
+
+- **WHEN** the bot's status is declared through `members` instead
+- **THEN** the same status is reported
+
+#### Scenario: Declaring it twice is rejected
+
+- **WHEN** a blueprint passes both `bot_status` and an explicit `members` entry for the bot
+- **THEN** the declaration raises, including when the status passed is the default one
+
+### Requirement: Membership rights and permissions are declared state
+
+A member's administrator rights and a restricted member's permissions SHALL be part of the
+declared and stored membership, not invented when the membership is read. A blueprint SHALL be
+able to declare them for any member, the bot included, through `Blueprint.set_member`; an
+administrator declared without rights SHALL hold the ordinary administrator rights, and a
+restriction declared without permissions SHALL deny everything. `administrator_rights(...)`
+SHALL build the ordinary administrator rights with named overrides, so the case a test cares
+about — an administrator lacking one right — is a single declaration.
+
+#### Scenario: The bot is declared to lack a right
+
+- **WHEN** a blueprint declares the bot as an administrator whose rights deny message
+  deletion, and a handler reads its own membership
+- **THEN** that right is reported as denied and the others as granted
+
+#### Scenario: An administrator declared without rights has the ordinary ones
+
+- **WHEN** a member is declared with the administrator status and nothing else
+- **THEN** reading the membership reports the ordinary administrator rights
+
+#### Scenario: A restricted member can be declared
+
+- **WHEN** a member is declared with permissions
+- **THEN** the membership is reported as restricted, carrying those permissions
+
+#### Scenario: Rights and permissions belong to different statuses
+
+- **WHEN** a declaration names both rights and permissions for one member
+- **THEN** it is rejected, because no single membership carries both
+
+#### Scenario: Declared rights reach the administrator list
+
+- **WHEN** `getChatAdministrators` is called for a chat with a declared administrator
+- **THEN** the entry for that administrator carries the declared rights
+
+### Requirement: Promotion and restriction persist what they granted
+
+`promoteChatMember` SHALL store the whole rights mask the request carried, so a right the
+request did not pass is not granted and is reported as such. A request in which no right comes
+out true SHALL demote the member, as the Bot API documents; any right that is true — including
+the anonymity flag alone — SHALL keep the member an administrator. `restrictChatMember` SHALL
+store the permissions it was given and clear any administrator rights the member held.
+
+#### Scenario: A promotion grants exactly what was asked for
+
+- **WHEN** a handler promotes a member passing only one right
+- **THEN** reading the member back reports that right as granted and the others as not
+
+#### Scenario: A second promotion replaces the first
+
+- **WHEN** a handler promotes the same member again with a different set of rights
+- **THEN** the member holds the second set, not the union of both
+
+#### Scenario: Hiding an administrator is not a demotion
+
+- **WHEN** a handler promotes a member passing only the anonymity flag
+- **THEN** the member remains an administrator
+
+#### Scenario: A promotion that grants nothing demotes
+
+- **WHEN** a handler promotes a member passing no rights, or every right as false
+- **THEN** the member becomes an ordinary member, and can be promoted again later
+
+#### Scenario: A restriction is read back as it was set
+
+- **WHEN** a handler restricts a member with a set of permissions
+- **THEN** `getChatMember` reports those permissions
+
+### Requirement: Rights are reported per chat type
+
+A membership read SHALL report each administrator right the way the Bot API reports it for
+that chat's type: a right the API does not report there SHALL come back unset however it was
+declared or granted, and a right it does report SHALL come back as a plain boolean even when
+it was never stated.
+
+#### Scenario: A supergroup administrator
+
+- **WHEN** a handler reads an administrator's membership in a supergroup
+- **THEN** the channel-only rights are unset while the supergroup rights carry booleans
+
+#### Scenario: A channel administrator
+
+- **WHEN** a handler reads an administrator's membership in a channel
+- **THEN** the channel rights carry booleans while the supergroup-only rights are unset
+
+#### Scenario: Granting a right where it cannot exist
+
+- **WHEN** a handler promotes a member granting a right the chat's type does not report
+- **THEN** reading the member back reports that right as unset rather than granted
+
+### Requirement: The chat owner cannot be demoted, banned or restricted
+
+Promoting, demoting, banning or restricting the chat's creator SHALL fail with the error
+Telegram answers all four with, so a bot that moderates a list of users fails in the test
+rather than only in production.
+
+#### Scenario: Acting on the owner fails
+
+- **WHEN** a handler bans, restricts, promotes or demotes the chat's creator
+- **THEN** the call raises `TelegramBadRequest` reporting that the chat owner cannot be removed
+
+#### Scenario: Banning first is not a way around the guard
+
+- **WHEN** a handler bans the owner and then promotes them
+- **THEN** the first call already fails, so the owner's standing is never lost
+
 ### Requirement: Permissions are stored but not enforced
 
 The environment SHALL store chat permissions and member restrictions without enforcing
@@ -1126,8 +1581,10 @@ blueprint SHALL be able to declare a starting balance. `getMyStarBalance` and
 ### Requirement: Refunds resolve a real charge
 
 `refundStarPayment` SHALL resolve the `telegram_payment_charge_id` of a payment the
-environment recorded, debit the bot's balance, and mark the charge refunded. Refunding an
-unknown charge, or one already refunded, SHALL raise `TelegramBadRequest`.
+environment recorded, debit the bot's balance, and mark the charge refunded. Refunding a
+charge already refunded SHALL raise `TelegramBadRequest`; refunding a charge the environment
+never recorded SHALL raise `WorldLookupError`, since there is no payment for the test to have
+refunded.
 
 #### Scenario: Refunding a payment the bot received
 
@@ -1144,7 +1601,7 @@ unknown charge, or one already refunded, SHALL raise `TelegramBadRequest`.
 #### Scenario: Refunding a charge that never existed fails
 
 - **WHEN** a handler refunds a fabricated charge id
-- **THEN** the call raises `TelegramBadRequest`
+- **THEN** the call raises `WorldLookupError`
 
 ### Requirement: Star subscriptions can be cancelled and re-enabled
 
@@ -1160,7 +1617,7 @@ environment SHALL reflect whether that subscription is cancelled.
 #### Scenario: Acting on an unknown subscription fails
 
 - **WHEN** a handler cancels a subscription for a charge the environment does not know
-- **THEN** the call raises `TelegramBadRequest`
+- **THEN** the call raises `WorldLookupError`
 
 ### Requirement: Gifts are owned inventory
 
@@ -1195,7 +1652,13 @@ inventory, and `convertGiftToStars`, `upgradeGift` and `transferGift` SHALL move
 
 - **WHEN** a handler converts, upgrades or transfers an `owned_gift_id` the environment
   does not know
-- **THEN** the call raises `TelegramBadRequest`
+- **THEN** the call raises `WorldLookupError`
+
+#### Scenario: A gift id outside the catalogue says what the catalogue holds
+
+- **WHEN** a handler sends a gift whose id is not one the fake offers
+- **THEN** the call raises `WorldLookupError` listing the available ids and naming the
+  override to use for a real one
 
 ### Requirement: Star rights are not enforced
 
@@ -1226,9 +1689,11 @@ environment built from it SHALL start from an independent copy.
 ### Requirement: The sticker set lifecycle is modeled
 
 Creating a set, adding, deleting and replacing its stickers, renaming it and deleting it
-SHALL be applied to that registry, and `getStickerSet` SHALL report the result. Each SHALL
-fail with `TelegramBadRequest` where Telegram would: a name already taken, a set that does
-not exist, or a sticker that is not in the set.
+SHALL be applied to that registry, and `getStickerSet` SHALL report the result. A name
+already taken, and replacing a sticker the named set does not contain, SHALL fail with
+`TelegramBadRequest`, as Telegram does. Naming a set that does not exist, or a sticker that is
+in no set at all, SHALL fail with `WorldLookupError`: the environment holds only the sets the
+test declared or created, so that is a gap in the setup rather than a Telegram rejection.
 
 #### Scenario: Create then add then read back
 
@@ -1248,17 +1713,18 @@ not exist, or a sticker that is not in the set.
 #### Scenario: Reading or writing an unknown set fails
 
 - **WHEN** a handler reads, renames, deletes or adds to a set that does not exist
-- **THEN** the call raises `TelegramBadRequest`
+- **THEN** the call raises `WorldLookupError`
 
 #### Scenario: Removing a sticker that is not in the set fails
 
-- **WHEN** a handler deletes or replaces a sticker the set does not contain
-- **THEN** the call raises `TelegramBadRequest`
+- **WHEN** a handler replaces a sticker the named set does not contain
+- **THEN** the call raises `TelegramBadRequest`, while deleting a sticker that is in no set at
+  all raises `WorldLookupError`, since no set is named to reject it
 
 #### Scenario: Deleting a set removes it
 
 - **WHEN** a handler deletes a set and then reads it
-- **THEN** the read raises `TelegramBadRequest`
+- **THEN** the read raises `WorldLookupError`
 
 ### Requirement: Sticker files are seeded, not modeled
 

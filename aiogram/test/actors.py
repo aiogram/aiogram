@@ -974,6 +974,9 @@ class UserActor:
             return None
 
         query = parse_qs(parsed.query, keep_blank_values=True)
+        # On the `tg://resolve` form `domain` is the address, not a deep-link parameter —
+        # `tg://resolve?domain=x` must classify exactly like the bare `t.me/x` it mirrors.
+        query.pop("domain", None)
         if not query:
             return _DeepLink(username=username, kind="start", payload="")
         for kind in _QUERY_PARAM_KINDS:

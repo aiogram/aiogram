@@ -62,6 +62,20 @@ class TestFollowDeepLink:
         with pytest.raises(WorldLookupError, match="startgroup"):
             await alice.in_(team).follow_deep_link("https://t.me/test_bot?startgroup=team-42")
 
+    async def test_tg_resolve_without_start_is_a_plain_start_like_the_bare_link(
+        self, env, team, alice
+    ):
+        seen = []
+        env.dispatcher.message.register(
+            lambda message, command: seen.append(message.text),
+            Command("start"),
+        )
+        await _post_deep_link(env, team, "tg://resolve?domain=test_bot")
+
+        await alice.in_(team).follow_deep_link()
+
+        assert seen == ["/start"]
+
     async def test_tg_resolve_form_works(self, env, team, alice):
         seen = []
         env.dispatcher.message.register(
