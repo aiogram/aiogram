@@ -100,12 +100,23 @@ def pytest_assertrepr_compare(op: str, left: object, right: object) -> list[str]
 
 
 def _differ_only_in_binding(left: object, right: object) -> bool:
-    """Same type, same payload, different bot — the only thing left to disagree about."""
+    """
+    Same type, same payload, different bot — the only thing left to disagree about.
+
+    The dump is guarded because this hook runs on **every** failing ``==`` in every project
+    that installs aiogram, whether or not it uses the toolkit: pydantic-core's serializer
+    gives up on a deep graph and reports the depth as a circular reference, and an
+    explanation that raises replaces the user's real assertion failure with its own
+    traceback. A comparison this cannot explain is one it declines to explain.
+    """
     if not isinstance(left, TelegramObject) or not isinstance(right, TelegramObject):
         return False
     if type(left) is not type(right) or left.bot is right.bot:
         return False
-    return left.model_dump() == right.model_dump()
+    try:
+        return left.model_dump() == right.model_dump()
+    except Exception:
+        return False
 
 
 def _describe_binding(item: TelegramObject) -> str:

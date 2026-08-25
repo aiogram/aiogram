@@ -11,6 +11,7 @@ from aiogram.methods import (
     SendRichMessage,
     VerifyUser,
 )
+from aiogram.test import WorldLookupError
 from aiogram.test.modeling import MEDIA_FIELDS
 from aiogram.test.world import BASE_DATE
 from aiogram.types import (
@@ -329,7 +330,7 @@ class TestEditing:
             )
 
     async def test_inline_messages_are_not_modeled(self, env):
-        with pytest.raises(TelegramBadRequest, match="inline messages are not modeled"):
+        with pytest.raises(WorldLookupError, match="inline messages are not modeled"):
             await env.bot.edit_message_text(inline_message_id="abc", text="x")
 
 

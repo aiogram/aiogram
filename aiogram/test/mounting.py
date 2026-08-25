@@ -108,36 +108,47 @@ def bound_elsewhere(value: Any, bot: Bot) -> bool:
 
 def detached_copy(value: Any, *, bot: Bot | None = None) -> Any:
     """
-    A deep copy of ``value`` that shares nothing with it, bound to ``bot`` or to nobody.
+    A copy of ``value`` that shares no *state* with it, bound to ``bot`` or to nobody.
 
     Copying is what keeps two owners apart when neither may be disturbed: a canned result
     the test declared once at module level and the answer a call hands out, a caller's
     ``reply_markup`` constant and the message the world stores, an update fed to a second
     environment and the first environment that still owns it.
 
-    The copy is built iteratively, for the same reason :func:`bindables` is: a reply chain
-    or a canned result is as deep as a test cares to build, and :func:`copy.deepcopy`
+    **What is rebuilt, and what is shared.** The copy is assembled out of the three shapes
+    a Bot API value is made of — pydantic models, mappings and lists — plus the immutable
+    containers a test may wrap them in. Everything else is a *leaf* and is handed on as it
+    is: a date, an enum, a sentinel, an uploaded :class:`~aiogram.types.input_file.InputFile`.
+    That is the rule that makes a live :class:`~aiogram.client.bot.Bot` impossible to clone.
+    :func:`copy.deepcopy` would follow a leaf's attributes, and one leaf really does hold a
+    bot — ``URLInputFile(url, bot=...)`` keeps one to stream through — so copying leaves
+    used to mint a twin of the bot, of its session, of the whole environment and world
+    behind it. Nothing here ever constructs an object it does not recognise, so nothing
+    reachable through a leaf can be duplicated; a shared leaf carries no world state and no
+    binding of its own, which is why sharing it is also correct.
+
+    Bindings are decided as the copy is made rather than by a second pass over it: a model's
+    ``_bot`` lives in its private attributes, which the walk never follows. Passing ``bot``
+    also lets the answer path hand the session an already-owned object, whose :func:`mount`
+    then prunes at the root instead of walking the whole graph again.
+
+    The model graph is walked iteratively, for the same reason :func:`bindables` is: a reply
+    chain or a canned result is as deep as a test cares to build, and :func:`copy.deepcopy`
     recurses once per level — it gives up around 200 levels deep, far short of what the
     mount walk handles. Round-tripping through ``model_dump``/``model_validate`` is no
     better: pydantic-core's serializer refuses even sooner, reporting the depth as a
     circular reference.
-
-    Binding is decided while the copy is made rather than by a second pass over it: a
-    model's ``_bot`` lives in its private attributes, which the walk never follows, so the
-    live :class:`~aiogram.client.bot.Bot` behind an object — a session, a world and a
-    dispatcher — is never something the copy could reach into. Passing ``bot`` also lets
-    the answer path hand the session an already-owned object, whose :func:`mount` then
-    prunes at the root instead of walking the whole graph again.
     """
     # id() -> the copy of the object with that id. Every original stays alive through
-    # `value` for as long as this runs, so the ids cannot be recycled underneath us.
+    # `value` for as long as this runs, so the ids cannot be recycled underneath us. No
+    # entry is ever a reservation, so a lookup that hits is always a finished copy.
     memo: dict[int, Any] = {}
     # Containers whose copy exists but is still empty, in discovery order.
     shells: list[tuple[Any, Any]] = []
-    # Containers that cannot be filled after the fact, so they have to be built from
-    # finished children — innermost first, and before the mutable shells start looking
-    # them up. Reserved with `None` in the memo until then.
-    immutable: list[Any] = []
+    # Immutable containers already walked. They have no shell to fill — they are built from
+    # finished children by `copied`, on the way into whatever holds them — so the memo
+    # cannot stand in for "seen" while the walk is still running.
+    walked: set[int] = set()
 
     stack: list[Any] = [value]
     while stack:
@@ -158,40 +169,31 @@ def detached_copy(value: Any, *, bot: Bot | None = None) -> Any:
             memo[id(node)] = mapping
             shells.append((node, mapping))
             stack.extend(node.values())
-        elif isinstance(node, (tuple, set, frozenset)):
-            # Reserved, so the walk does not revisit it; resolved below.
-            memo[id(node)] = None
-            immutable.append(node)
-            stack.extend(node)
         elif isinstance(node, list):
             items: list[Any] = []
             memo[id(node)] = items
             shells.append((node, items))
             stack.extend(node)
-        # Anything else is a leaf — a date, an enum, a plain object — and is copied by
-        # `copied` on the way into whatever holds it.
+        elif isinstance(node, (tuple, set, frozenset)) and id(node) not in walked:
+            # Only to give whatever is inside a shell of its own; the container itself is
+            # rebuilt by `copied`.
+            walked.add(id(node))
+            stack.extend(node)
+        # Anything else is a leaf, and is shared rather than copied.
 
     def copied(item: Any) -> Any:
         if id(item) in memo:
             return memo[id(item)]
-        # Leaves only, so this cannot recurse deeply; the memo is shared so a leaf that
-        # several holders point at is copied once.
-        return copy.deepcopy(item, memo)
-
-    # Discovery order is no help here: a nested tuple reachable through a list as well may
-    # be found before the tuple that holds it. So each pass builds whatever has no
-    # unfinished sibling left, and defers the rest — which terminates, because a tuple
-    # cannot contain itself.
-    while immutable:
-        deferred: list[Any] = []
-        for node in immutable:
-            # `False` stands in for "absent", since `None` is the reservation itself.
-            if any(memo.get(id(item), False) is None for item in node):
-                deferred.append(node)
-                continue
-            contents = [copied(item) for item in node]
-            memo[id(node)] = tuple(contents) if isinstance(node, tuple) else type(node)(contents)
-        immutable = deferred
+        if isinstance(item, (tuple, set, frozenset)):
+            # An immutable container cannot be filled after the fact, so it is built from
+            # finished children. Recursion is bounded by how deeply such containers nest —
+            # no Bot API type has a tuple, set or frozenset field at all, so in practice
+            # this is one level of whatever a test wrapped a result in.
+            contents = [copied(inner) for inner in item]
+            rebuilt = tuple(contents) if isinstance(item, tuple) else type(item)(contents)
+            memo[id(item)] = rebuilt
+            return rebuilt
+        return item
 
     for node, shell in shells:
         if isinstance(node, BaseModel):

@@ -520,3 +520,85 @@ class TestCallerSuppliedObjects:
         assert stored.inline_keyboard[0][0].callback_data == "go"
         assert stored is not markup
         assert markup.bot is None
+
+
+class TestWorldOwnedFieldValues:
+    """
+    A field value that already belongs to this world is not the caller's constant.
+
+    `reply_to_message` most of all: naming a message the world already holds names that
+    very object, an actor's own state a test built up earlier — not a copy the world
+    forgets about the moment it is made. Copying it anyway would hand the handler a
+    stale snapshot the rest of the world has moved on from, and would turn two fields
+    naming the same stored object into two unrelated copies.
+    """
+
+    async def test_a_reply_target_keeps_its_identity(self, env, private, alice):
+        await alice.send("first")
+        first = private.messages[-1]
+
+        await alice.send("second", fields={"reply_to_message": first})
+
+        stored = private.messages[-1]
+        assert stored.reply_to_message is first
+
+    async def test_an_edited_reply_target_is_visible_through_the_stored_reply(
+        self, env, private, alice
+    ):
+        """
+        Naming the *current* copy of an already-edited message — the one `chat.messages`
+        actually holds — must not resurrect a stale pre-edit copy: the reply keeps
+        pointing at that very object, edited text included.
+        """
+        await alice.send("first")
+        await alice.edit(private.messages[-1], "first, edited")
+        current = private.messages[-1]
+
+        await alice.send("second", fields={"reply_to_message": current})
+
+        stored = private.messages[-1]
+        assert stored.reply_to_message is current
+        assert stored.reply_to_message.text == "first, edited"
+
+    async def test_two_fields_naming_the_same_world_object_keep_sharing_it(
+        self, env, private, alice
+    ):
+        await alice.send("first")
+        first = private.messages[-1]
+
+        await alice.send(
+            "second",
+            fields={"reply_to_message": first, "pinned_message": first},
+        )
+
+        stored = private.messages[-1]
+        assert stored.reply_to_message is first
+        assert stored.pinned_message is first
+
+    async def test_a_value_bound_to_another_environment_is_still_copied(
+        self, env, private, alice, blueprint, dp
+    ):
+        """
+        A value bound to a *different* bot is not this world's own object, even though
+        two environments built from the same blueprint have equal bots — `Bot.__eq__`
+        compares token hashes, so only identity tells them apart (see
+        `TestBoundElsewhere.test_an_equal_bot_is_still_a_different_owner` in
+        `test_mounting.py`). Only a value already bound to *this* environment's bot is
+        exempt from copying.
+        """
+        other = BotTestEnvironment(blueprint=blueprint, dispatcher=dp)
+        try:
+            await other.user(blueprint.users[0]).send("from the other world")
+            foreign = other.chat(blueprint.users[0].id).messages[-1]
+            assert foreign.bot is other.bot
+            assert env.bot == other.bot
+            assert env.bot is not other.bot
+
+            await alice.send("second", fields={"reply_to_message": foreign})
+
+            stored = private.messages[-1]
+            assert stored.reply_to_message is not foreign
+            assert stored.reply_to_message.bot is env.bot
+            assert foreign.bot is other.bot
+        finally:
+            other.dispose_sync()

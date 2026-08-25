@@ -86,6 +86,95 @@ class TestFollowDeepLink:
 
         assert seen == ["/start"]
 
+    async def test_start_with_extra_harmless_params_is_still_followable(self, env, team, alice):
+        """
+        A real Telegram client reads only the `start` parameter and ignores the rest of
+        the query, so an explicit `start` alongside tracking params such as `utm_source`
+        must stay a plain followable start, not fall into `unknown_query`.
+        """
+        seen = []
+        env.dispatcher.message.register(
+            lambda message, command: seen.append(command.args),
+            CommandStart(deep_link=True),
+        )
+        await _post_deep_link(
+            env, team, "https://t.me/test_bot?utm_source=newsletter&start=team-9"
+        )
+
+        await alice.in_(team).follow_deep_link()
+
+        assert seen == ["team-9"]
+
+    async def test_unrecognized_query_param_link_is_rejected(self, env, team, alice):
+        """
+        A prefilled-share button (`?text=...`) is not a `start` link and must not be
+        silently replayed as a bare `/start` — the toolkit does not know what a real
+        Telegram client would do with it, so it refuses to guess.
+        """
+        await _post_deep_link(env, team, "https://t.me/test_bot?text=hi")
+
+        with pytest.raises(WorldLookupError, match="text=hi"):
+            await alice.in_(team).follow_deep_link("https://t.me/test_bot?text=hi")
+
+    async def test_unrecognized_query_params_with_start_still_reject_only_start_is_missing(
+        self, env, team, alice
+    ):
+        """A junk param alongside `start` still resolves as `start` — see above — but a
+        junk param on its own, with no `start` in sight, is rejected."""
+        await _post_deep_link(env, team, "https://t.me/test_bot?voicechat=1&profile=abc")
+
+        with pytest.raises(WorldLookupError, match="voicechat=1&profile=abc"):
+            await alice.in_(team).follow_deep_link("https://t.me/test_bot?voicechat=1&profile=abc")
+
+    async def test_unrecognized_query_param_button_is_not_silently_followed_as_plain_start(
+        self, env, team, alice
+    ):
+        """
+        The automatic scan (no explicit target) must surface an unrecognized-query
+        button and reject it rather than misreading it as a bare start link — mirrors
+        `test_mini_app_button_is_not_silently_followed_as_plain_start` for `startapp`.
+        """
+        seen = []
+        env.dispatcher.message.register(
+            lambda message, command: seen.append(message.text),
+            CommandStart(deep_link=True),
+        )
+        await _post_deep_link(env, team, "https://t.me/test_bot?text=hi")
+
+        with pytest.raises(WorldLookupError, match="text=hi"):
+            await alice.in_(team).follow_deep_link()
+
+        assert seen == []
+
+    async def test_scan_skips_a_button_with_unrecognized_query_params(self, env, team, alice):
+        """A keyboard mixing a share (`?text=`) button with a real `start` button must
+        still find the `start` link — the unfollowable one never shadows it."""
+        seen = []
+        env.dispatcher.message.register(
+            lambda message, command: seen.append(command.args),
+            CommandStart(deep_link=True),
+        )
+        await env.bot.send_message(
+            chat_id=team.id,
+            text="Choose one",
+            reply_markup=InlineKeyboardMarkup(
+                inline_keyboard=[
+                    [
+                        InlineKeyboardButton(text="Share", url="https://t.me/test_bot?text=hi"),
+                    ],
+                    [
+                        InlineKeyboardButton(
+                            text="Start", url="https://t.me/test_bot?start=team-1"
+                        ),
+                    ],
+                ],
+            ),
+        )
+
+        await alice.in_(team).follow_deep_link()
+
+        assert seen == ["team-1"]
+
     async def test_startapp_link_is_rejected(self, env, team, alice):
         await _post_deep_link(env, team, "https://t.me/test_bot?startapp=abc")
 

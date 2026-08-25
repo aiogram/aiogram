@@ -154,11 +154,75 @@ class TestTriggers:
             assert seen == [first.bot, second.bot]
             assert first.calls.count(SendMessage) == 1
             assert second.calls.count(SendMessage) == 1
-            assert [item.text for item in first.chat(chat_id).messages] == ["pong"]
-            assert [item.text for item in second.chat(chat_id).messages] == ["pong"]
+            assert [item.text for item in first.chat(chat_id).messages] == ["ping", "pong"]
+            assert [item.text for item in second.chat(chat_id).messages] == ["ping", "pong"]
         finally:
             first.dispose_sync()
             second.dispose_sync()
+
+    async def test_a_carried_message_does_not_collide_with_the_reply(self, blueprint, dp):
+        """
+        Regression: the copied message was never registered, so its id was handed out twice.
+
+        The chat's allocator knew nothing about the message the update carried, so the
+        bot's first reply was minted with the *same* ``message_id`` — and the next edit,
+        which finds a message by id, landed on whichever of the two came first.
+        """
+
+        @dp.message()
+        async def handler(message):
+            reply = await message.answer("pong")
+            await reply.edit_text("edited")
+
+        chat_id = blueprint.chats[0].id
+        foreign = BotTestEnvironment(blueprint=blueprint, dispatcher=Dispatcher())
+        env = BotTestEnvironment(blueprint=blueprint, dispatcher=dp)
+        try:
+            await foreign.user(blueprint.users[0].id).in_(chat_id).send("ping")
+            carried = foreign.chat(chat_id).messages[-1]
+
+            await env.feed(Update(update_id=1, message=carried))
+
+            texts = [item.text for item in env.chat(chat_id).messages]
+            assert texts == ["ping", "edited"]
+            ids = [item.message_id for item in env.chat(chat_id).messages]
+            assert len(set(ids)) == len(ids)
+            assert ids[1] > carried.message_id
+        finally:
+            env.dispose_sync()
+            foreign.dispose_sync()
+
+    async def test_a_carried_channel_post_is_registered_too(self, blueprint, dp):
+        """The rule is about the message, not about which field carried it."""
+        channel = blueprint.add_channel("News")
+        env = BotTestEnvironment(blueprint=blueprint, dispatcher=dp)
+        try:
+            post = Message(
+                message_id=17,
+                date=BASE_DATE,
+                chat=Chat(id=channel.id, type=ChatType.CHANNEL),
+                text="headline",
+            )
+
+            await env.feed(Update(update_id=1, channel_post=post))
+
+            assert env.chat(channel.id).messages == [post]
+            assert env.chat(channel.id).last_message_id == 17
+        finally:
+            env.dispose_sync()
+
+    async def test_a_message_for_an_undeclared_chat_is_left_alone(self, env, dp):
+        """There is no chat here to keep it in, and inventing one would hide the mistake."""
+        stray = Message(
+            message_id=3,
+            date=BASE_DATE,
+            chat=Chat(id=-999999, type=ChatType.SUPERGROUP),
+            text="elsewhere",
+        )
+
+        await env.feed(Update(update_id=1, message=stray))
+
+        assert -999999 not in env.world.chats
 
     async def test_an_actor_built_update_is_fed_without_a_copy(self, env, dp, alice, private):
         """

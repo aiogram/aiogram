@@ -23,7 +23,7 @@ from .blueprint import (
 )
 from .calls import CallLog, NoSuchCallError
 from .environment import BotTestEnvironment, build_environment
-from .errors import WaitTimeoutError
+from .errors import ApiRejection, WaitTimeoutError
 from .overrides import Outcome, OverrideBuilder
 from .routing import detach_router
 from .session import FakeTelegramSession
@@ -45,6 +45,7 @@ from .world import (
 
 __all__ = (
     "BASE_DATE",
+    "ApiRejection",
     "Blueprint",
     "BotProfileState",
     "BotTestEnvironment",

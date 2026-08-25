@@ -4,6 +4,7 @@ from collections.abc import Iterable, Iterator
 from typing import TYPE_CHECKING, Any, NamedTuple
 from urllib.parse import parse_qs, urlsplit
 
+from aiogram.client.context_controller import BotContextController
 from aiogram.enums import ChatMemberStatus, ChatType
 from aiogram.types import (
     BotSubscriptionUpdated,
@@ -32,7 +33,7 @@ from aiogram.types import (
     Update,
 )
 
-from .overrides import fresh_result
+from .mounting import detached_copy
 from .synthesis import SynthesisContext, synthesize
 from .world import (
     BusinessConnectionState,
@@ -47,6 +48,7 @@ from .world import (
 )
 
 if TYPE_CHECKING:
+    from aiogram.client.bot import Bot
     from aiogram.fsm.context import FSMContext
 
     from .blueprint import BusinessConnectionSpec, ChatSpec, CommunitySpec, TopicSpec
@@ -60,20 +62,19 @@ class _DeepLink(NamedTuple):
     kind: str
     """
     One of ``"start"``, ``"startgroup"``, ``"startapp"``, ``"startchannel"``,
-    ``"startattach"``, ``"attach"``, ``"invite"``, ``"joinchat"`` or ``"extra_path"``.
+    ``"startattach"``, ``"attach"``, ``"invite"``, ``"joinchat"``, ``"extra_path"`` or
+    ``"unknown_query"``.
     """
     payload: str
 
 
 class _LinkKindPolicy(NamedTuple):
-    """How a parsed deep-link `kind` behaves in `follow_deep_link`."""
-
-    resolvable: bool
     """
-    Whether `username` is meaningful for this kind. False for a chat invite link or a
-    link with extra path segments, where the parsed username should never be compared
-    against the bot's — `follow_deep_link` rejects these before that comparison, and the
-    automatic scan never treats them as targeting this bot in the first place.
+    How a parsed deep-link `kind` behaves in `follow_deep_link`.
+
+    Whether `username` is meaningful for a `kind` is not carried here — it is a function
+    of `kind` alone, membership in `_PATH_DERIVED_KINDS`, so it is not duplicated per
+    entry the way it would be as a third field here.
     """
 
     followable: bool
@@ -83,7 +84,7 @@ class _LinkKindPolicy(NamedTuple):
     """
     The message raised when this kind is used as an explicit target, or is the reason
     given when it is the only kind the automatic scan finds. A format string taking
-    `url` and `kind`; unused (left empty) for the one followable kind.
+    `url`, `kind` and `payload`; unused (left empty) for the one followable kind.
     """
 
 
@@ -103,15 +104,34 @@ def _unfollowable_start_rejection(reason: str) -> str:
     )
 
 
-# Single source of truth for how each parsed `kind` behaves: whether `username` is
-# meaningful for it, whether `follow_deep_link` can replay it, and the message when it
-# can't. `_parse_deep_link` classifies by iterating this table's keys (via
-# `_QUERY_PARAM_KINDS`), and `follow_deep_link` and the automatic scan each do a single
-# lookup here instead of consulting separate dicts and a bespoke `if` that have to be
-# kept in sync by hand. Adding a future kind is a one-row change.
+def _unknown_query_rejection() -> str:
+    return (
+        "{url!r} carries a query Telegram does not define ({payload}); what a real "
+        "Telegram client would do with it is not simulated — only "
+        "`t.me/<username>[?start=<payload>]` and "
+        "`tg://resolve?domain=<username>[&start=<payload>]` deep links can be followed "
+        "here"
+    )
+
+
+# Kinds `_parse_deep_link` recognizes from the path shape alone, before any query
+# parameter is looked at: a chat invite link or a link with extra path segments. The
+# parsed `username` is never meaningful for these, so `follow_deep_link` rejects them
+# before comparing it against the bot's, and the automatic scan never treats them as
+# targeting this bot in the first place. Every other kind is derived from a query
+# parameter instead — `_QUERY_PARAM_KINDS` is this set's complement within `_LINK_KINDS`,
+# so the two never have to be kept in sync by hand.
+_PATH_DERIVED_KINDS = frozenset({"invite", "joinchat", "extra_path"})
+
+# Single source of truth for how each parsed `kind` behaves: whether `follow_deep_link`
+# can replay it, and the message when it can't. `_parse_deep_link` classifies by
+# iterating this table's keys (via `_QUERY_PARAM_KINDS`), and `follow_deep_link` and the
+# automatic scan each do a single lookup here instead of consulting separate dicts and a
+# bespoke `if` that have to be kept in sync by hand. Adding a future kind is a one-row
+# change (two, for one derived from the path shape rather than a query parameter — see
+# `_PATH_DERIVED_KINDS`).
 _LINK_KINDS: dict[str, _LinkKindPolicy] = {
     "startgroup": _LinkKindPolicy(
-        resolvable=True,
         followable=False,
         rejection=(
             "{url!r} is a `startgroup` link, which opens a group chooser in a real "
@@ -120,38 +140,32 @@ _LINK_KINDS: dict[str, _LinkKindPolicy] = {
         ),
     ),
     "startapp": _LinkKindPolicy(
-        resolvable=True,
         followable=False,
         rejection=_unfollowable_start_rejection("opens a Mini App"),
     ),
     "startchannel": _LinkKindPolicy(
-        resolvable=True,
         followable=False,
         rejection=_unfollowable_start_rejection("opens a channel chooser"),
     ),
     "startattach": _LinkKindPolicy(
-        resolvable=True,
         followable=False,
         rejection=_unfollowable_start_rejection("opens the attachment-menu chooser"),
     ),
     "attach": _LinkKindPolicy(
-        resolvable=True,
         followable=False,
         rejection=_unfollowable_start_rejection("opens the attachment menu"),
     ),
-    "start": _LinkKindPolicy(resolvable=True, followable=True, rejection=""),
+    "start": _LinkKindPolicy(followable=True, rejection=""),
+    "unknown_query": _LinkKindPolicy(followable=False, rejection=_unknown_query_rejection()),
     "invite": _LinkKindPolicy(
-        resolvable=False,
         followable=False,
         rejection=_unresolvable_rejection("a chat invite link"),
     ),
     "joinchat": _LinkKindPolicy(
-        resolvable=False,
         followable=False,
         rejection=_unresolvable_rejection("a chat invite link"),
     ),
     "extra_path": _LinkKindPolicy(
-        resolvable=False,
         followable=False,
         rejection=_unresolvable_rejection(
             "a link with extra path segments (a message link or a Mini App shortlink)"
@@ -160,19 +174,21 @@ _LINK_KINDS: dict[str, _LinkKindPolicy] = {
 }
 
 # `kind` values checked as query parameters on a `t.me` / `tg://resolve` url, in the
-# order they are looked for — every table entry except the path-derived ones (`invite`,
-# `joinchat`, `extra_path`), which `_parse_deep_link` recognizes from the path shape
-# before any query parameter is looked at.
+# order they are looked for — every table entry except the path-derived ones (see
+# `_PATH_DERIVED_KINDS`) and `"unknown_query"`, which is never itself a query key but
+# the bucket `_parse_deep_link` falls back to when none of the others matched.
 _QUERY_PARAM_KINDS = tuple(
-    kind for kind in _LINK_KINDS if kind not in ("invite", "joinchat", "extra_path")
+    kind for kind in _LINK_KINDS if kind not in _PATH_DERIVED_KINDS and kind != "unknown_query"
 )
 
 
 def _rejection_message(url: str, deep_link: _DeepLink) -> str:
-    return _LINK_KINDS[deep_link.kind].rejection.format(url=url, kind=deep_link.kind)
+    return _LINK_KINDS[deep_link.kind].rejection.format(
+        url=url, kind=deep_link.kind, payload=deep_link.payload
+    )
 
 
-def _detached(value: Any) -> Any:
+def _detached(value: Any, bot: Bot) -> Any:
     """
     Copy what the caller handed a trigger, before an update carries it into the world.
 
@@ -182,12 +198,25 @@ def _detached(value: Any) -> Any:
     and a module-level constant stays bound for the rest of the session, no longer equal
     to the unbound copy the world keeps. The same reasoning made declared results copies
     rather than the test's own objects, so this reuses
-    :func:`aiogram.test.overrides.fresh_result` — the input side of a trigger is that
+    :func:`aiogram.test.mounting.detached_copy` — the input side of a trigger is that
     problem seen from the other end.
+
+    A value already bound to *this* environment's ``bot`` is different: it is not the
+    caller's constant, it is the world's own object — most often ``reply_to_message``
+    pointing back at a message the same actor sent earlier — and copying it would hand
+    the handler a stale snapshot that edits to the original no longer show through, and
+    would turn two fields that alias the same stored object into two unrelated copies.
+    Such a value is returned untouched instead; ``dict`` and ``list`` are walked to find
+    one nested inside (a reply buried in ``fields``, a world message mixed into a list),
+    and everything else — unbound, or bound to some other bot — is still copied.
     """
     if isinstance(value, dict):
-        return {name: _detached(item) for name, item in value.items()}
-    return fresh_result(value)
+        return {name: _detached(item, bot) for name, item in value.items()}
+    if isinstance(value, list):
+        return [_detached(item, bot) for item in value]
+    if isinstance(value, BotContextController) and value.bot is bot:
+        return value
+    return detached_copy(value)
 
 
 class UserActor:
@@ -226,12 +255,24 @@ class UserActor:
 
         Returns a new actor, leaving this one untouched. The binding decides what the
         triggers produce: a plain message, a topic-tagged message, or a business message.
+
+        Binding to the actor's own id is the one case an undeclared chat is still
+        allowed: every Telegram user *can* open a private chat with the bot, the same
+        rule ``.chat`` applies to an unbound actor and a followed `/start` link opens on
+        demand — see :meth:`~aiogram.test.world.World.ensure_private_chat`. Binding to
+        any other undeclared chat id keeps raising: the world cannot invent a group's
+        title, type or membership from a bare id.
         """
         if isinstance(chat, ChatState):
             state = chat
         else:
             chat_id = chat if isinstance(chat, int) else chat.id
-            state = self.environment.world.chat(chat_id)
+            world = self.environment.world
+            state = (
+                world.ensure_private_chat(self.user)
+                if chat_id == self.user.id
+                else world.chat(chat_id)
+            )
         return UserActor(
             self.environment,
             self.user,
@@ -304,7 +345,7 @@ class UserActor:
         **data: Any,
     ) -> Any:
         """Edit a message this user sent earlier."""
-        changes: dict[str, Any] = {"text": text, **_detached(fields or {})}
+        changes: dict[str, Any] = {"text": text, **_detached(fields or {}, self.environment.bot)}
         edited = self.chat.update_message(message.message_id, **changes)
         if self.business is not None:
             return await self._feed(
@@ -389,7 +430,7 @@ class UserActor:
             )
             raise WorldLookupError(msg)
         policy = _LINK_KINDS[deep_link.kind]
-        if not policy.resolvable:
+        if deep_link.kind in _PATH_DERIVED_KINDS:
             raise WorldLookupError(_rejection_message(url, deep_link))
         if deep_link.username.lower() != bot_username.lower():
             msg = f"{url!r} deep-links to @{deep_link.username}, not to this bot (@{bot_username})"
@@ -685,11 +726,13 @@ class UserActor:
         if isinstance(reaction, str):
             new_reaction: list[ReactionTypeUnion] = [ReactionTypeEmoji(emoji=reaction)]
         else:
-            new_reaction = _detached(reaction or [])
+            new_reaction = _detached(reaction or [], self.environment.bot)
         # The stored reactions are copied out for the same reason the incoming ones are
         # copied in: the update binds whatever it carries, and the world's own objects are
         # compared against plainly declared ones.
-        old = _detached(list(chat.reactions_for(message_id).get(self.user.id, [])))
+        old = _detached(
+            list(chat.reactions_for(message_id).get(self.user.id, [])), self.environment.bot
+        )
         chat.set_reaction(message_id, self.user.id, new_reaction)
         event = MessageReactionUpdated(
             chat=chat.as_chat(),
@@ -790,7 +833,7 @@ class UserActor:
             values["is_topic_message"] = True
         if self.business is not None:
             values["business_connection_id"] = self.business.id
-        values.update(_detached(fields or {}))
+        values.update(_detached(fields or {}, self.environment.bot))
         return Message(**values)
 
     @staticmethod
@@ -883,16 +926,22 @@ class UserActor:
         Parse a `t.me` / `tg://resolve` url into a bot username, kind and start payload.
 
         Recognizes ``https://t.me/<username>[?start=<payload>]`` (also ``http://`` and
-        schemeless ``t.me/...``) and ``tg://resolve?domain=<username>[&start=<payload>]``,
-        with no path beyond the username — a bare profile link parses as a plain start
-        with no payload.
+        schemeless ``t.me/...``) and ``tg://resolve?domain=<username>[&start=<payload>]``.
+        A query with no ``start`` key at all — most of all no query, a bare profile link
+        — parses as a plain start with no payload; ``start`` wins whenever it is present,
+        alongside any other query parameter, harmless (``utm_source=...``) or not, since
+        a real Telegram client reads only the parameter it recognizes and ignores the
+        rest of the query.
 
         Also recognizes, but tags as unsupported rather than silently downgrading to a
         plain start: Mini App / channel / attachment-menu launches (``startapp``,
         ``startchannel``, ``startattach``, ``attach``), chat invite links
-        (``t.me/+<hash>``, ``t.me/joinchat/<hash>``), and any url with extra path
-        segments beyond the username (a message link like ``t.me/<username>/42``, or a
-        Mini App shortlink like ``t.me/<username>/<shortname>``). Callers reject these
+        (``t.me/+<hash>``, ``t.me/joinchat/<hash>``), any url with extra path segments
+        beyond the username (a message link like ``t.me/<username>/42``, or a Mini App
+        shortlink like ``t.me/<username>/<shortname>``), and a query that carries some
+        parameter but none of the ones above — a prefilled-share link
+        (``t.me/<username>?text=hi``) or anything else this toolkit does not know the
+        real client's behavior for (``kind="unknown_query"``). Callers reject these
         `kind`s explicitly instead of treating every recognized url as a bare `/start`.
 
         Returns ``None`` only for urls that are not Telegram links at all.
@@ -900,8 +949,8 @@ class UserActor:
         candidate = url if "://" in url else f"https://{url}"
         parsed = urlsplit(candidate)
         scheme = parsed.scheme.lower()
-        if scheme in ("http", "https"):
-            if parsed.netloc.lower() not in ("t.me", "telegram.me"):
+        if scheme in {"http", "https"}:
+            if parsed.netloc.lower() not in {"t.me", "telegram.me"}:
                 return None
             segments = [segment for segment in parsed.path.split("/") if segment]
             if not segments:
@@ -925,11 +974,13 @@ class UserActor:
             return None
 
         query = parse_qs(parsed.query, keep_blank_values=True)
+        if not query:
+            return _DeepLink(username=username, kind="start", payload="")
         for kind in _QUERY_PARAM_KINDS:
             if kind in query:
                 payload = query[kind][0] if query[kind] else ""
                 return _DeepLink(username=username, kind=kind, payload=payload)
-        return _DeepLink(username=username, kind="start", payload="")
+        return _DeepLink(username=username, kind="unknown_query", payload=parsed.query)
 
     @property
     def bot_user(self) -> UserState:

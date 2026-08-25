@@ -10,6 +10,28 @@ if TYPE_CHECKING:
     from aiogram.client.session.base import BaseSession
 
 
+class ApiRejection(Exception):
+    """
+    Raised when the modeled world refuses a call the way the Bot API would refuse it.
+
+    The counterpart of :class:`aiogram.test.WorldLookupError`, and the whole reason the two
+    are different types. Both used to be one, and
+    :meth:`aiogram.test.BotTestEnvironment.handle_call` turned it into a
+    :class:`~aiogram.exceptions.TelegramBadRequest` — which is right for *this* half and
+    quietly wrong for the other. A rejection here is something Telegram itself would answer:
+    forwarding a message that does not exist, demoting the chat owner, closing a closed
+    poll. Bot code legitimately catches those, and a test of that ``except`` branch is a
+    real test. A blueprint gap is not: "User 999999 is not declared in the blueprint" is a
+    broken test setup, and converting it made the bot's own error handling swallow it and
+    exercise the wrong branch in silence. So that half raises
+    :class:`~aiogram.test.WorldLookupError`, which nothing converts and nothing catches, and
+    the test fails with the message that says how to fix it.
+
+    The message is Telegram's own wording, without the ``Bad Request:`` prefix that
+    ``handle_call`` adds, so a test can assert on the string a real bot would see.
+    """
+
+
 class NoFileContentError(LookupError):
     """
     Raised when a download asks for content the environment does not hold.

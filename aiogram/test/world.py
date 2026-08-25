@@ -1,10 +1,10 @@
 from __future__ import annotations
 
 import datetime
-from collections.abc import Callable
+from collections.abc import Callable, Iterable, Mapping
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import TYPE_CHECKING, Any, cast
+from typing import TYPE_CHECKING, Any, TypeAlias, cast
 
 from pydantic import BaseModel
 
@@ -41,7 +41,8 @@ from aiogram.types import (
     User,
 )
 
-from .mounting import detach, detached_copy, mount
+from .errors import ApiRejection
+from .mounting import detached_copy, mount
 from .waiting import describe_callable, poll_until
 
 if TYPE_CHECKING:
@@ -76,6 +77,10 @@ CHAT_TYPE_SCOPED_RIGHTS: dict[str, frozenset[str]] = {
     "can_manage_tags": frozenset({ChatType.GROUP, ChatType.SUPERGROUP}),
     "can_manage_topics": frozenset({ChatType.SUPERGROUP}),
 }
+
+#: Every administrator right, denied. Both masks the toolkit hands out start here, so the
+#: "all False" shape is derived from ``model_fields`` once rather than in each of them.
+_NO_ADMIN_RIGHTS: dict[str, bool] = dict.fromkeys(ChatAdministratorRights.model_fields, False)
 
 #: What an administrator promoted the ordinary way can do: everything a moderator needs,
 #: minus the two things a chat owner grants deliberately (promoting others, stories).
@@ -156,10 +161,22 @@ def administrator_rights(**overrides: bool | None) -> ChatAdministratorRights:
         set_member(channel, bot, rights=administrator_rights(can_post_messages=True))
         set_member(channel, bot, status=ChatMemberStatus.ADMINISTRATOR)
     """
-    values: dict[str, Any] = dict.fromkeys(ChatAdministratorRights.model_fields, False)
+    values: dict[str, Any] = dict(_NO_ADMIN_RIGHTS)
     values.update(_ORDINARY_ADMIN_RIGHTS)
     values.update(overrides)
     return ChatAdministratorRights(**values)
+
+
+def no_administrator_rights() -> ChatAdministratorRights:
+    """
+    Every right the Bot API knows, denied.
+
+    What ``getMyDefaultAdministratorRights`` reports for a bot that never set any, and the
+    floor :func:`administrator_rights` builds its permissive default on top of — one
+    all-``False`` mask, derived from ``model_fields`` in a single place, so a right a future
+    Bot API version adds is denied by both without either being edited.
+    """
+    return ChatAdministratorRights(**_NO_ADMIN_RIGHTS)
 
 
 class QueryKind(str, Enum):
@@ -172,7 +189,16 @@ class QueryKind(str, Enum):
 
 
 class WorldLookupError(LookupError):
-    """Raised when the world is asked about a chat, user or message it does not contain."""
+    """
+    Raised when a test asks the world for something its blueprint never declared.
+
+    A setup gap, not a Bot API rejection: an undeclared user, a chat that is not in this
+    world, a sticker set or a business connection nobody described, a poll this environment
+    never saw. Nothing converts it — it propagates out of the call the bot made and fails
+    the test with the message that says what to declare, instead of arriving as a
+    :class:`~aiogram.exceptions.TelegramBadRequest` the bot's own ``except`` branch would
+    swallow. See :class:`aiogram.test.errors.ApiRejection` for the other half.
+    """
 
 
 def describe_message(message: Message) -> str:
@@ -487,7 +513,7 @@ class StickerSetState:
             if sticker.file_id == file_id:
                 return index
         msg = f"Sticker {file_id!r} is not in set {self.name!r}"
-        raise WorldLookupError(msg)
+        raise ApiRejection(msg)
 
     def as_sticker_set(self) -> StickerSet:
         """
@@ -695,26 +721,33 @@ class CommunityState:
         return Community(id=self.id, name=self.name)
 
 
-def derive_message(original: Message, **changes: Any) -> Message:
+def derive_message(original: Message, changes: dict[str, Any], bot: Bot | None) -> Message:
     """
-    A copy of ``original`` with ``changes`` applied — a genuinely fresh message.
+    A copy of ``original`` with ``changes`` applied, belonging to ``bot``.
 
     Every message the world derives from another goes through here: an edit replacing the
     message it derives from, a forward and a copy landing in some other chat. They differ
-    in where the result goes, not in what it is, and what it is has to be said once:
-    :meth:`~pydantic.BaseModel.model_copy` carries the original's ``_bot`` over, which makes
-    :func:`~aiogram.test.mounting.mount` prune the new message at its root and leave
-    everything the change brought along — a new chat, a new sender, a forward origin, a new
-    keyboard — unbound, raising on its first shortcut. Detaching says what a copy is, and
-    the mount that follows binds all of it.
+    in where the result goes, not in what it is, and what it is has to be said once.
 
-    The ``changes`` are copied on the way in, for the reason
+    **Only the changes are new.** The ``changes`` are copied on the way in, for the reason
     :func:`~aiogram.test.mounting.detached_copy` gives: an edit carries the caller's own
     ``reply_markup`` or entities, and what the world stores must not be an object the code
-    under test still holds — it would be bound to a bot the moment the edited message is
-    handed back.
+    under test still holds. They are minted already bound to ``bot``, and the root shell
+    :meth:`~pydantic.BaseModel.model_copy` produces is bound explicitly — because
+    ``model_copy`` carries the original's ``_bot`` over, and a derived message that goes to
+    another chat is not the original's to own.
+
+    Everything the change did *not* touch is the original's own subtree, shared with it.
+    That is deliberate on both counts. Detaching the copy — as this used to — walks that
+    shared subtree and unbinds the **original's** children with it, so a message the chat
+    still holds loses its shortcuts as a side effect of something else being edited. And
+    even when nothing broke, unbinding the whole tree only to bind it again on the way into
+    the chat cost about six walks over it per edit, forward or copy, where the changes alone
+    need one.
     """
-    return detach(original.model_copy(update=detached_copy(changes)))
+    derived = original.model_copy(update=detached_copy(changes, bot=bot))
+    derived.as_(bot)
+    return derived
 
 
 @dataclass
@@ -803,19 +836,19 @@ class ChatState:
         message = self.find_message(message_id)
         if message is None:
             msg = f"Message {message_id} does not exist in chat {self.id}"
-            raise WorldLookupError(msg)
+            raise ApiRejection(msg)
         return message
 
     def update_message(self, message_id: int, **changes: Any) -> Message:
         """Replace a stored message with an edited copy — API types are frozen."""
         message = self.require_message(message_id)
-        edited = derive_message(message, **changes)
+        edited = derive_message(message, changes, self.bound_bot)
         self.messages[self.messages.index(message)] = edited
         return self._bind(edited)
 
     def add_derived(self, original: Message, **changes: Any) -> Message:
         """Store a copy of ``original`` in this chat — see :func:`derive_message`."""
-        return self.add_message(derive_message(original, **changes))
+        return self.add_message(derive_message(original, changes, self.bound_bot))
 
     def _bind(self, message: Message) -> Message:
         """Mount a message and everything new in it to the world's bot, if there is one."""
@@ -882,7 +915,7 @@ class ChatState:
             if link.invite_link == url:
                 return link
         msg = f"Invite link {url} does not exist in chat {self.id}"
-        raise WorldLookupError(msg)
+        raise ApiRejection(msg)
 
     @property
     def primary_invite_link(self) -> InviteLinkState | None:
@@ -957,7 +990,7 @@ class ChatState:
         topic = self.topics.get(message_thread_id)
         if topic is None:
             msg = f"Topic {message_thread_id} does not exist in chat {self.id}"
-            raise WorldLookupError(msg)
+            raise ApiRejection(msg)
         return topic
 
     def member(self, user_id: int) -> MemberState:
@@ -1023,6 +1056,10 @@ class BotProfileState:
             texts.pop(key, None)
 
 
+#: What the mutating halves of the mapping protocol accept.
+_Chats: TypeAlias = "Mapping[int, ChatState] | Iterable[tuple[int, ChatState]]"
+
+
 class ChatRegistry(dict[int, ChatState]):
     """
     The world's chats, which hand every chat put into them a way back to the world.
@@ -1032,6 +1069,11 @@ class ChatRegistry(dict[int, ChatState]):
     wiring at that moment rather than in a later sweep is what lets every reader be a plain
     reader — ``world.chats.get(id)`` is as safe as :meth:`World.chat`, and a test that
     drops a chat straight into the mapping gets a working one.
+
+    *Every* way of putting one in, that is. :class:`dict` implements ``update``,
+    ``setdefault`` and ``|=`` in C, without going through ``__setitem__``, so overriding
+    that alone left three doors into the world that skipped the wiring and produced a chat
+    whose messages were silently never bound. They are routed here instead.
     """
 
     def __init__(self, world: World) -> None:
@@ -1041,6 +1083,25 @@ class ChatRegistry(dict[int, ChatState]):
     def __setitem__(self, chat_id: int, chat: ChatState) -> None:
         chat.world = self.world
         super().__setitem__(chat_id, chat)
+
+    def update(self, other: _Chats = (), /) -> None:  # type: ignore[override]
+        items = other.items() if isinstance(other, Mapping) else other
+        for chat_id, chat in items:
+            self[chat_id] = chat
+
+    def setdefault(self, chat_id: int, chat: ChatState | None = None) -> ChatState:
+        existing = self.get(chat_id)
+        if existing is not None:
+            return existing
+        if chat is None:
+            msg = f"Chat {chat_id} is not in this world, and no chat was given to add"
+            raise WorldLookupError(msg)
+        self[chat_id] = chat
+        return chat
+
+    def __ior__(self, other: _Chats) -> ChatRegistry:  # type: ignore[misc,override]
+        self.update(other)
+        return self
 
 
 @dataclass
@@ -1075,16 +1136,25 @@ class World:
 
     def bind(self, bot: Bot) -> None:
         """
-        Declare which bot owns this world, so stored objects can be bound to it.
+        Declare which bot owns this world, and claim what it already holds.
 
         Called once by :class:`aiogram.test.BotTestEnvironment` as soon as it has a bot.
         A world without an owner still works — it just stores unbound objects, which is
         all a world built and inspected on its own can offer.
 
-        One assignment, and every chat follows: a chat reads the owner off the world it was
-        registered in rather than keeping a copy that would have to be kept in step.
+        One assignment, and every chat follows for everything stored *after* it: a chat
+        reads the owner off the world it was registered in rather than keeping a copy that
+        would have to be kept in step. Content stored *before* it needs the one sweep this
+        does — :meth:`aiogram.test.Blueprint.build` materializes a declared forum topic
+        through the same path ``createForumTopic`` takes, so its ``forum_topic_created``
+        service message is in the chat before any bot exists, and without this sweep
+        ``chat.messages[0].bot`` would be ``None`` and every shortcut on it would raise.
+        One walk over the stored messages, once per environment, and :func:`mount` prunes
+        at anything already bound.
         """
         self.bound_bot = bot
+        for chat in self.chats.values():
+            mount(chat.messages, bot)
 
     def user(self, user_id: int) -> UserState:
         if user_id == self.bot_user.id:
@@ -1127,7 +1197,7 @@ class World:
     def business_connection(self, connection_id: str) -> BusinessConnectionState:
         connection = self.business_connections.get(connection_id)
         if connection is None:
-            msg = f"business connection {connection_id} not found"
+            msg = f"Business connection {connection_id!r} is not declared in the blueprint"
             raise WorldLookupError(msg)
         return connection
 
@@ -1194,7 +1264,7 @@ class World:
                 "query is too old and response timeout expired or query ID is invalid "
                 f"({kind} {query_id!r} is not outstanding)"
             )
-            raise WorldLookupError(msg)
+            raise ApiRejection(msg)
 
     def next_date(self) -> datetime.datetime:
         return BASE_DATE + datetime.timedelta(seconds=self.last_update_id)

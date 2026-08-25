@@ -8,10 +8,20 @@ from aiogram.types import (
     Chat,
     InlineKeyboardButton,
     InlineKeyboardMarkup,
+    InputMediaPhoto,
     Message,
     ReactionTypeEmoji,
+    URLInputFile,
     User,
 )
+
+
+class _Leaf:
+    """An object the copy walk does not recognise, standing in for an `InputFile`."""
+
+    def __init__(self, ref):
+        self.ref = ref
+
 
 DATE = datetime.datetime(2026, 1, 1, tzinfo=datetime.timezone.utc)
 #: Deeper than `copy.deepcopy` survives (~200 levels) and than pydantic-core will
@@ -253,6 +263,56 @@ class TestDetachedCopy:
 
         assert copied.future_field["deep"] is not original.future_field["deep"]
         assert copied.future_field["deep"].text == "from the future"
+
+    def test_a_leaf_is_shared_rather_than_copied(self):
+        """
+        The copy is assembled only out of shapes it recognises; the rest is handed on.
+
+        That is not an optimization — it is what makes a live bot impossible to clone, and
+        it is safe because a leaf carries no binding and no world state of its own.
+        """
+        leaf = _Leaf(ref="whatever")
+        original = message(future_field=leaf)
+
+        copied = detached_copy(original)
+
+        assert copied is not original
+        assert copied.future_field is leaf
+
+    def test_a_bot_behind_a_leaf_is_never_cloned(self, env):
+        """
+        Regression: `URLInputFile` keeps a bot to stream through, and it is not a model.
+
+        The walk did not recognise it, so `copy.deepcopy` took it — and pydantic copies
+        private attributes, so the deepcopy went on to mint a twin of the bot, of its fake
+        session, and of the environment, world and dispatcher behind it.
+        """
+        media = InputMediaPhoto(media=URLInputFile("https://example.org/x", bot=env.bot))
+
+        copied = detached_copy(media)
+
+        assert copied is not media
+        assert copied.media is media.media
+        assert copied.media.bot is env.bot
+        assert copied.media.bot.session is env.session
+        assert copied.media.bot.session.environment is env
+
+    def test_a_container_reached_from_two_sides_is_never_left_unresolved(self):
+        """
+        Regression: an unbuilt immutable container used to be reserved with `None`.
+
+        The reservation lived in the same memo `copy.deepcopy` was handed for leaves, so a
+        leaf pointing at a container that had not been built yet came back holding `None`
+        instead of the container. Nothing reserves anything now, and nothing is deepcopied.
+        """
+        inner = (message(text="inner"),)
+        leaf = _Leaf(ref=inner)
+
+        copied = detached_copy([(leaf,), inner])
+
+        assert copied[0][0].ref is not None
+        assert copied[0][0].ref is inner
+        assert copied[1][0].text == "inner"
 
     def test_a_live_bot_is_never_followed(self, env):
         """

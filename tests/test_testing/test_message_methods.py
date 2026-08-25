@@ -4,7 +4,7 @@ import pytest
 
 from aiogram.exceptions import TelegramBadRequest
 from aiogram.methods import EditMessageMedia, SendChatAction
-from aiogram.test import Blueprint, BotTestEnvironment
+from aiogram.test import Blueprint, BotTestEnvironment, WorldLookupError
 from aiogram.test.modeling import EDITABLE_MEDIA_FIELDS, media_field
 from aiogram.types import (
     InlineKeyboardButton,
@@ -294,7 +294,7 @@ class TestEditingUnknownTargets:
 
     async def test_inline_message_targets_fail_loudly(self, env):
         """Inline messages have no chat to live in, so the fake says so rather than guessing."""
-        with pytest.raises(TelegramBadRequest, match="inline messages are not modeled"):
+        with pytest.raises(WorldLookupError, match="inline messages are not modeled"):
             await env.bot.edit_message_media(
                 inline_message_id="inline-1",
                 media=InputMediaPhoto(media="x"),

@@ -2,7 +2,7 @@ import pytest
 
 from aiogram.exceptions import TelegramBadRequest
 from aiogram.methods import GetForumTopicIconStickers
-from aiogram.test import Blueprint, BotTestEnvironment
+from aiogram.test import ApiRejection, Blueprint, BotTestEnvironment
 from aiogram.test.world import (
     BASE_DATE,
     DEFAULT_TOPIC_ICON_COLOR,
@@ -86,7 +86,7 @@ class TestTopicWorldState:
         assert forum.general_topic.is_general
 
     def test_unknown_topic_lookup(self, forum):
-        with pytest.raises(WorldLookupError, match="does not exist"):
+        with pytest.raises(ApiRejection, match="does not exist"):
             forum.topic(999)
 
     def test_general_topic_is_not_a_forum_topic(self, forum):
@@ -106,6 +106,22 @@ class TestTopicDeclaration:
 
     def test_chat_reports_itself_as_a_forum_to_handlers(self, forum_env, forum):
         assert forum.as_chat().is_forum is True
+
+    def test_a_declared_topics_service_message_is_usable(self, forum_env, forum):
+        """
+        Regression: `Blueprint.build()` runs before there is a bot to bind to.
+
+        A declared topic goes through the same path `createForumTopic` takes, so its
+        `forum_topic_created` message is in the chat before `World.bind` is ever called —
+        and nothing used to claim it afterwards, so it and everything inside it came back
+        unbound and every shortcut on it raised.
+        """
+        service = forum.messages[0]
+
+        assert service.forum_topic_created is not None
+        assert service.bot is forum_env.bot
+        assert service.chat.bot is forum_env.bot
+        assert service.forum_topic_created.bot is forum_env.bot
 
     def test_environments_do_not_share_topic_state(self, forum_blueprint, dp):
         first = BotTestEnvironment(blueprint=forum_blueprint, dispatcher=dp)

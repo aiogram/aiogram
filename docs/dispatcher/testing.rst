@@ -393,7 +393,9 @@ bound to a bot and never left holding a disposed environment; the value objects 
 stores are copied again on the way out, so reading them back does not bind the world's own
 state. Messages are the deliberate exception — a returned message *is* the one the chat
 holds, and that identity is the point. The same applies to an ``Update`` you build once and
-feed to two environments: the second one gets a copy, so its replies land in its own world.
+feed to two environments: the second one gets a copy, so its replies land in its own world,
+and the message that copy carries is registered in the destination chat — otherwise that
+chat would keep handing out message ids the incoming message already used.
 
 One consequence is shared with production: the bot an object is mounted to is part of its
 identity for pydantic, so an object the fake hands out never compares equal to an identical
@@ -655,6 +657,42 @@ difference between "no" and "not yet":
 * **Stories** — posting, editing and deleting against a story registry.
 * **Business account profile** — name, username and bio on a connected account.
 
+When a call fails
+=================
+
+Two different things can go wrong, and they are deliberately different exceptions.
+
+A call the real Bot API would have refused fails the way it fails in production: a
+:class:`aiogram.exceptions.TelegramBadRequest` carrying Telegram's own wording. Forwarding a
+message that is not there, demoting the chat owner, stopping a poll that is already closed,
+answering a query twice — bot code legitimately catches those, and a test of that ``except``
+branch is a real test:
+
+.. code-block:: python
+
+    with pytest.raises(TelegramBadRequest, match="message to forward not found"):
+        await bot_env.bot.forward_message(chat_id=chat.id, from_chat_id=chat.id, message_id=999)
+
+A gap in the *test's own setup* does not. Asking for a user, chat, sticker set, poll or
+business connection the blueprint never declared raises
+:class:`aiogram.test.WorldLookupError`, and nothing converts it — it propagates out of the
+call the bot made and fails the test with a message that says what to declare:
+
+.. code-block:: python
+
+    aiogram.test.WorldLookupError: User 999999 is not declared in the blueprint
+
+That distinction is the whole reason there are two types. Reporting a missing declaration as
+a Bad Request would hand it straight to the bot's own error handling, which would swallow it
+and quietly exercise the wrong branch — the test would pass while testing nothing. The same
+goes for the few things the fake genuinely cannot model, such as editing a message by
+``inline_message_id``: those raise loudly rather than pretending Telegram refused.
+
+Reaching into the world directly — ``chat.topic(999)``, ``chat.require_message(999)`` — is
+outside any call, so there is nothing to convert the refusal into: those raise
+:class:`aiogram.test.ApiRejection`, the type the environment turns into a Bad Request when
+the bot is the one asking.
+
 Overriding results and simulating failures
 ==========================================
 
@@ -859,10 +897,10 @@ granted, and reading the member back says so.
 
 A promotion in which nothing comes out true — every flag ``False``, or none passed at all —
 is the demotion the Bot API documents; anything true keeps the member an administrator,
-``is_anonymous`` included. The chat's **owner** is neither promotable nor demotable, and
-promoting one raises :class:`aiogram.exceptions.TelegramBadRequest` the way Telegram does —
-so a bot that promotes a list of users fails here rather than only in production.
-:code:`restrictChatMember` likewise persists the
+``is_anonymous`` included. The chat's **owner** cannot be promoted, demoted, banned or
+restricted: all four raise :class:`aiogram.exceptions.TelegramBadRequest` with Telegram's
+own "can't remove chat owner", so a bot that moderates a list of users fails here rather
+than only in production. :code:`restrictChatMember` likewise persists the
 :class:`aiogram.types.chat_permissions.ChatPermissions` it was given, so
 :code:`getChatMember` reports the permissions that were actually set.
 
@@ -1303,6 +1341,12 @@ API reference
 .. autoclass:: aiogram.test.overrides.OverrideBuilder
     :members:
     :member-order: bysource
+
+.. autoclass:: aiogram.test.WorldLookupError
+
+.. autoclass:: aiogram.test.ApiRejection
+
+.. autoclass:: aiogram.test.WaitTimeoutError
 
 Fixtures
 --------

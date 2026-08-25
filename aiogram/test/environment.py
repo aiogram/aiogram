@@ -9,7 +9,7 @@ from aiogram.dispatcher.dispatcher import Dispatcher
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.methods import TelegramMethod
-from aiogram.types import Update
+from aiogram.types import Message, Update
 
 from .actors import UserActor
 from .blueprint import (
@@ -23,9 +23,9 @@ from .blueprint import (
 )
 from .calls import CallLog
 from .defaults import resolve_defaults
-from .errors import raise_api_error
+from .errors import ApiRejection, raise_api_error
 from .modeling import find_handler
-from .mounting import bound_elsewhere, detached_copy, mount
+from .mounting import bindables, detached_copy
 from .overrides import OverrideBuilder, OverrideRegistry
 from .session import FakeTelegramSession
 from .synthesis import SynthesisContext, synthesize_result
@@ -41,6 +41,17 @@ from .world import (
 
 if TYPE_CHECKING:
     from aiogram.methods.base import TelegramType
+
+#: Update fields that carry a message living in a chat, in the order a single update could
+#: plausibly fill them — an update carries exactly one event, so the first hit is the one.
+_CARRIED_MESSAGE_FIELDS: tuple[str, ...] = (
+    "message",
+    "edited_message",
+    "channel_post",
+    "edited_channel_post",
+    "business_message",
+    "edited_business_message",
+)
 
 
 class BotTestEnvironment:
@@ -210,18 +221,62 @@ class BotTestEnvironment:
         an edit applied through the handler's object would land on an orphan. Arriving
         already mounted skips that round-trip: handlers work on the world's own objects.
 
-        An update built by an actor is mounted in place, because that identity is the whole
-        point. An update carrying objects that belong to *another* environment cannot be:
-        :func:`~aiogram.test.mounting.mount` stops at anything already bound, so a
-        module-level update fed to two environments would keep the first one's bot and every
-        reply the second one's handlers send would land in the first one's world — silently,
-        since two bots built from one blueprint compare equal. Such an update is copied
-        first, and the copy is this environment's.
+        There are three cases, and one walk tells them apart. An update built by an actor is
+        **this environment's** and is mounted in place, because that identity is the whole
+        point. An update a test constructed by hand is **unbound**, and the same pass claims
+        it. An update carrying objects that belong to **another** environment cannot be
+        claimed at all: :func:`~aiogram.test.mounting.mount` stops at anything already bound,
+        so a module-level update fed to two environments would keep the first one's bot and
+        every reply the second one's handlers send would land in the first one's world —
+        silently, since two bots built from one blueprint compare equal. Such an update is
+        copied, and the copy is this environment's.
+
+        Whatever the case, the message the update carries ends up **registered in its chat**
+        — see :meth:`_register_carried_message`.
         """
-        if bound_elsewhere(update, self.bot):
+        # One pass over the bindables instead of one to ask whose they are and another to
+        # claim them: `bound_elsewhere` and `mount` walk the same graph with the same
+        # pruning, and an update is walked on every single trigger.
+        nodes = list(bindables(update, prune_bound=True))
+        if any(node.bot is not None and node.bot is not self.bot for node in nodes):
             update = detached_copy(update, bot=self.bot)
-        mount(update, self.bot)
+        else:
+            for node in nodes:
+                if node.bot is None:
+                    node.as_(self.bot)
+        self._register_carried_message(update)
         return await self.dispatcher.feed_update(self.bot, update, **kwargs)
+
+    def _register_carried_message(self, update: Update) -> None:
+        """
+        Let the destination chat know about a message arriving from outside it.
+
+        An actor puts its message in the chat and *then* builds the update around it, so
+        there is normally nothing to do here — the message is found by id and left alone,
+        which is what keeps ``message is chat.messages[-1]`` true. The case this exists for
+        is the update that did not come from this world: the two-environment recipe in the
+        documentation feeds one environment an update the other one built, and the copy that
+        makes is a message no chat here has ever seen. Without registering it, the chat's
+        allocator is still behind — so the bot's first reply is minted with the *same*
+        ``message_id`` as the incoming message, and the next edit hits whichever of the two
+        ``find_message`` reaches first.
+
+        Storing it is also simply what Telegram does: a message the bot is told about is in
+        the chat, and a test that goes on to assert on ``chat.messages`` should see it.
+        """
+        for name in _CARRIED_MESSAGE_FIELDS:
+            message: Message | None = getattr(update, name, None)
+            if message is None:
+                continue
+            chat = self.world.chats.get(message.chat.id)
+            if chat is None:
+                # Not a chat this world declared; nothing to keep it in.
+                return
+            if chat.find_message(message.message_id) is None:
+                chat.add_message(message)
+            # Even an already-known message may have been allocated elsewhere.
+            chat.last_message_id = max(chat.last_message_id, message.message_id)
+            return
 
     # -- waiting ----------------------------------------------------------------------
 
@@ -304,9 +359,26 @@ class BotTestEnvironment:
         bot: Bot,
         method: TelegramMethod[TelegramType],
     ) -> Any:
-        """Override, then model, then synthesize — see design decision D3."""
+        """
+        Override, then model, then synthesize — see design decision D3.
+
+        This is also the toolkit's **copy-in choke point**. The call log records the object
+        the caller actually built, and everything downstream gets a
+        :func:`~aiogram.test.mounting.detached_copy` of it — so a handler may store whatever
+        it reads off the method without a copy of its own, and the test's module-level
+        ``reply_markup`` constant never ends up *in* the world, bound to a bot and no longer
+        equal to its unbound twin. Doing it once here rather than per handler is what makes
+        the rule impossible for the next handler to forget; see the module docstring of
+        :mod:`aiogram.test.modeling` for the boundary as a whole.
+
+        A modeled rejection comes back as the :class:`~aiogram.exceptions.TelegramBadRequest`
+        Telegram would have answered with. A :class:`~aiogram.test.WorldLookupError`
+        deliberately does **not**: a gap in the test's own setup must fail the test rather
+        than arrive as an error the bot under test can catch.
+        """
         resolved = resolve_defaults(method, bot)
         self.calls.record(resolved)
+        resolved = detached_copy(resolved)
 
         outcome = self.overrides.take(resolved)
         if outcome is not None:
@@ -318,7 +390,7 @@ class BotTestEnvironment:
         if handler is not None:
             try:
                 return handler(self, resolved)
-            except WorldLookupError as error:
+            except ApiRejection as error:
                 self.fail(resolved, f"Bad Request: {error}")
 
         return synthesize_result(resolved.__returning__, self.synthesis_context())

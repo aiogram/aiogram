@@ -3,7 +3,7 @@ import datetime
 import pytest
 
 from aiogram.enums import ChatMemberStatus, ChatType
-from aiogram.test import Blueprint
+from aiogram.test import ApiRejection, Blueprint
 from aiogram.test.world import (
     BASE_DATE,
     CHAT_TYPE_SCOPED_RIGHTS,
@@ -27,6 +27,8 @@ from aiogram.types import (
     ChatMemberOwner,
     ChatMemberRestricted,
     ChatPermissions,
+    InlineKeyboardButton,
+    InlineKeyboardMarkup,
     Message,
     MessageEntity,
 )
@@ -250,7 +252,7 @@ class TestChatState:
     def test_require_missing_message(self):
         chat = ChatState(id=1)
 
-        with pytest.raises(WorldLookupError, match="does not exist"):
+        with pytest.raises(ApiRejection, match="does not exist"):
             chat.require_message(1)
 
     def test_update_replaces_the_stored_message(self):
@@ -362,6 +364,44 @@ class TestChatRegistration:
 
         assert world.chats[1].bound_bot is env.bot
 
+    @pytest.mark.parametrize(
+        "add",
+        [
+            pytest.param(lambda chats, chat: chats.update({1: chat}), id="update"),
+            pytest.param(lambda chats, chat: chats.update([(1, chat)]), id="update-pairs"),
+            pytest.param(lambda chats, chat: chats.setdefault(1, chat), id="setdefault"),
+            pytest.param(lambda chats, chat: chats.__ior__({1: chat}), id="ior"),
+        ],
+    )
+    def test_every_way_of_adding_a_chat_wires_it(self, env, add):
+        """
+        `dict` implements these in C, without going through `__setitem__`.
+
+        So overriding that alone left three doors into the world that skipped the wiring
+        and produced a chat whose messages were silently never bound.
+        """
+        world = World(bot_user=UserState(id=42, is_bot=True))
+        world.bind(env.bot)
+        chat = ChatState(id=1)
+
+        add(world.chats, chat)
+
+        assert world.chats[1] is chat
+        assert chat.bound_bot is env.bot
+        assert chat.add_message(make_message(chat)).bot is env.bot
+
+    def test_setdefault_returns_the_chat_already_there(self, env):
+        world = World(bot_user=UserState(id=42, is_bot=True))
+        world.chats[1] = ChatState(id=1)
+
+        assert world.chats.setdefault(1, ChatState(id=1)) is world.chats[1]
+
+    def test_setdefault_without_a_chat_says_so(self):
+        world = World(bot_user=UserState(id=42, is_bot=True))
+
+        with pytest.raises(WorldLookupError, match="no chat was given"):
+            world.chats.setdefault(1)
+
     def test_a_chat_read_straight_out_of_the_mapping_is_wired(self, env):
         """The readers that bypass `World.chat()` must not see a half-wired chat."""
         world = World(bot_user=UserState(id=42, is_bot=True))
@@ -388,19 +428,62 @@ class TestChatRegistration:
 
 
 class TestDerivedMessages:
-    def test_a_derived_message_is_detached_from_the_original(self, env):
+    def test_a_derived_message_belongs_to_the_destination(self, env):
         world = World(bot_user=UserState(id=42, is_bot=True))
         world.bind(env.bot)
         world.chats[1] = ChatState(id=1)
         chat = world.chats[1]
         original = chat.add_message(make_message(chat))
 
-        derived = derive_message(original, text="edited")
+        derived = derive_message(original, {"text": "edited"}, env.bot)
 
         assert original.bot is env.bot
-        assert derived.bot is None
-        assert derived.chat.bot is None
+        assert derived is not original
+        assert derived.bot is env.bot
         assert derived.text == "edited"
+
+    def test_what_the_change_did_not_touch_is_shared_with_the_original(self, env):
+        world = World(bot_user=UserState(id=42, is_bot=True))
+        world.bind(env.bot)
+        world.chats[1] = ChatState(id=1)
+        chat = world.chats[1]
+        original = chat.add_message(make_message(chat))
+
+        derived = derive_message(original, {"text": "edited"}, env.bot)
+
+        assert derived.chat is original.chat
+
+    def test_deriving_does_not_unbind_the_originals_children(self, env):
+        """
+        Regression: the derived copy used to be detached whole.
+
+        `model_copy` shares every untouched child with the original, so unbinding the copy
+        walked straight into the world's own message and unbound *its* keyboard. Inside a
+        bound chat the mount that follows papered over it; deriving into a chat with no
+        owner — a world built and inspected on its own — left the original corrupted.
+        """
+        world = World(bot_user=UserState(id=42, is_bot=True))
+        world.bind(env.bot)
+        world.chats[1] = ChatState(id=1)
+        chat = world.chats[1]
+        keyboard = InlineKeyboardMarkup(
+            inline_keyboard=[[InlineKeyboardButton(text="Go", callback_data="go")]],
+        )
+        original = chat.add_message(
+            Message(
+                message_id=chat.allocate_message_id(),
+                date=BASE_DATE,
+                chat=chat.as_chat(),
+                text="hi",
+                reply_markup=keyboard,
+            ),
+        )
+        orphan = ChatState(id=2)
+
+        orphan.add_derived(original, message_id=99)
+
+        assert original.reply_markup.bot is env.bot
+        assert original.reply_markup.inline_keyboard[0][0].bot is env.bot
 
     def test_the_changes_are_copied_in(self, env):
         """What an edit carries belongs to the caller until the world copies it."""
@@ -491,5 +574,5 @@ class TestResolveTopic:
     def test_an_unknown_thread_id_fails(self, forum):
         chat, _spec = forum
 
-        with pytest.raises(WorldLookupError, match="Topic 999 does not exist"):
+        with pytest.raises(ApiRejection, match="Topic 999 does not exist"):
             resolve_topic(chat, 999)

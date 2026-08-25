@@ -12,6 +12,11 @@ communities and invite links — then drive it through actors (``await user.send
 ``await user.click(button)``, ``await user.follow_deep_link()``) and assert on the
 resulting chat state or on the recorded calls. There is a trigger for every
 :class:`aiogram.types.Update` variant, so no registered handler is unreachable from a test.
+A user's own private chat with the bot does not have to be declared at all: Telegram lets
+anyone open one, so it opens on demand, shaped exactly like a declared one. Deep links are
+followed the way tapping them behaves — including a bare profile link, which replays as a
+plain ``/start`` — and the kinds the toolkit does not simulate are refused by name rather
+than quietly downgraded.
 
 Results are mounted to the bot exactly as parsed responses are, so shortcuts work on them
 and on every object nested inside them, while the objects a test hands to a call stay the
@@ -28,6 +33,14 @@ declared return type, so no test has to pre-register results just to keep the bo
 :meth:`aiogram.test.BotTestEnvironment.on` overrides any of them per test. The
 documentation names which surfaces are deliberately left that way, and which are merely
 waiting for demand.
+
+Failures are two things, not one. A call the real Bot API would refuse fails as the
+:class:`aiogram.exceptions.TelegramBadRequest` it fails as in production, carrying
+Telegram's own wording, so a bot's ``except`` branch is testable. A gap in the *test's* own
+setup — a user, chat, sticker set, poll or business connection the blueprint never declared
+— raises :class:`aiogram.test.WorldLookupError` instead, and nothing converts it: it
+propagates and fails the test with a message that says what to declare, rather than being
+handed to the bot's error handling to swallow.
 
 File content is supported where it can be honest: a file uploaded as a
 :class:`aiogram.types.input_file.BufferedInputFile` can be downloaded again in the same

@@ -6,14 +6,30 @@ import pytest
 
 from aiogram import Dispatcher
 from aiogram.methods import SendMessage
-from aiogram.test import Blueprint
+from aiogram.test import BASE_DATE, Blueprint
 from aiogram.test.plugin import pytest_assertrepr_compare
 from aiogram.test.world import ChatState
+from aiogram.types import Chat, Message
+
+#: Deeper than pydantic-core will serialize — see `test_a_graph_too_deep_to_dump`.
+DEEP = 1500
 
 
 def call_fixture(fixture, *args, **kwargs):
     """Fixtures cannot be called directly; reach the function they wrap."""
     return fixture.__wrapped__(*args, **kwargs)
+
+
+def _reply_chain(length):
+    chain = Message(message_id=1, date=BASE_DATE, chat=Chat(id=1, type="private"), text="0")
+    for index in range(1, length):
+        chain = Message(
+            message_id=index + 1,
+            date=BASE_DATE,
+            chat=Chat(id=1, type="private"),
+            reply_to_message=chain,
+        )
+    return chain
 
 
 class TestFixtures:
@@ -128,6 +144,18 @@ class TestAssertionReporting:
         assert any("differ only in the bot they are bound to" in line for line in lines)
         assert any("mounted to bot id=42" in line and "not mounted" in line for line in lines)
         assert any("model_dump()" in line for line in lines)
+
+    def test_a_graph_too_deep_to_dump_gets_no_explanation(self, env):
+        """
+        The hook runs on every failing `==` in every project that installs aiogram.
+
+        `model_dump` gives up on a deep chain and reports the depth as a circular
+        reference; unguarded, that traceback replaced the user's own assertion failure.
+        """
+        chain = _reply_chain(DEEP)
+        twin = _reply_chain(DEEP).as_(env.bot)
+
+        assert pytest_assertrepr_compare("==", chain, twin) is None
 
     async def test_objects_that_really_differ_are_left_alone(self, env, private):
         returned = await env.bot.send_message(chat_id=private.id, text="hi")

@@ -2,11 +2,14 @@ import pytest
 
 from aiogram import Bot
 from aiogram.client.default import DefaultBotProperties
-from aiogram.methods import GetChatAdministrators, GetMe, SendMessage
+from aiogram.methods import GetChatAdministrators, GetMe, SendMessage, SetChatPermissions
 from aiogram.test import BotTestEnvironment, FakeTelegramSession
 from aiogram.test.errors import NoFileContentError
 from aiogram.test.mounting import mount
+from aiogram.test.world import scope_key
 from aiogram.types import (
+    BotCommand,
+    BotCommandScopeDefault,
     Chat,
     ChatPermissions,
     ChatPhoto,
@@ -385,6 +388,37 @@ class TestTheCallersObjectsStayTheCallers:
 
         assert private.messages[-1].reply_markup is not markup
         assert markup.bot is None
+
+    async def test_the_copy_happens_once_at_the_choke_point(self, env, team):
+        """
+        `handle_call` copies the whole method, so no handler has to remember to.
+
+        Eight handlers used to copy field by field, and the ninth would have forgotten.
+        The call log is recorded *before* the copy, so what a test asserts on is still the
+        object the caller built.
+        """
+        permissions = ChatPermissions(can_send_messages=True)
+
+        await env.bot.set_chat_permissions(chat_id=team.id, permissions=permissions)
+
+        assert env.calls.last(SetChatPermissions).permissions is permissions
+        assert env.world.chat(team.id).permissions is not permissions
+
+    async def test_a_value_stored_by_an_unguarded_handler_is_a_copy_too(self, env, team):
+        """The rule holds for every handler, including the ones that never copied by hand."""
+        permissions = ChatPermissions(can_send_messages=True)
+        commands = [BotCommand(command="start", description="Start")]
+
+        await env.bot.set_chat_permissions(chat_id=team.id, permissions=permissions)
+        await env.bot.set_my_commands(commands=commands)
+
+        assert env.world.chat(team.id).permissions is not permissions
+        assert permissions.bot is None
+        assert (
+            env.world.profile.commands[scope_key(BotCommandScopeDefault(), None)][0]
+            is not (commands[0])
+        )
+        assert commands[0].bot is None
 
     async def test_a_disposed_environment_is_not_kept_alive_by_a_constant(self, blueprint, dp):
         """The reason it matters beyond equality: constants outlive environments."""

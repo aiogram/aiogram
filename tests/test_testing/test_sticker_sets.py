@@ -3,7 +3,7 @@ import pytest
 from aiogram import Dispatcher
 from aiogram.exceptions import TelegramBadRequest
 from aiogram.methods import SetStickerKeywords
-from aiogram.test import Blueprint, BotTestEnvironment
+from aiogram.test import Blueprint, BotTestEnvironment, WorldLookupError
 from aiogram.types import BufferedInputFile, InputSticker
 
 PACK = "my_pack_by_test_bot"
@@ -113,7 +113,7 @@ class TestTheLifecycle:
 
         await env.bot.delete_sticker_set(name=PACK)
 
-        with pytest.raises(TelegramBadRequest, match="does not exist"):
+        with pytest.raises(WorldLookupError, match="does not exist in this environment"):
             await env.bot.get_sticker_set(name=PACK)
 
     async def test_the_sticker_type_is_kept(self, packs):
@@ -176,13 +176,13 @@ class TestErrors:
     async def test_an_unknown_set_fails(self, packs, method_name, kwargs):
         env, _ = packs
 
-        with pytest.raises(TelegramBadRequest, match="does not exist"):
+        with pytest.raises(WorldLookupError, match="does not exist in this environment"):
             await getattr(env.bot, method_name)(name="no_such_pack", **kwargs)
 
     async def test_deleting_a_sticker_in_no_set_fails(self, packs):
         env, _ = packs
 
-        with pytest.raises(TelegramBadRequest, match="not in any sticker set"):
+        with pytest.raises(WorldLookupError, match="not in any sticker set"):
             await env.bot.delete_sticker_from_set(sticker="never-added")
 
     async def test_replacing_a_sticker_the_set_lacks_fails(self, packs):

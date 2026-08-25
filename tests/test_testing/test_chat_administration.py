@@ -2,7 +2,12 @@ import pytest
 
 from aiogram.enums import ChatMemberStatus
 from aiogram.exceptions import TelegramBadRequest
-from aiogram.test import Blueprint, BotTestEnvironment, administrator_rights
+from aiogram.test import (
+    Blueprint,
+    BotTestEnvironment,
+    WorldLookupError,
+    administrator_rights,
+)
 from aiogram.types import (
     ChatMemberAdministrator,
     ChatMemberMember,
@@ -239,7 +244,7 @@ class TestMemberAnnotations:
             )
 
     async def test_annotating_an_unknown_user_fails(self, env, team):
-        with pytest.raises(TelegramBadRequest, match="not declared in the blueprint"):
+        with pytest.raises(WorldLookupError, match="not declared in the blueprint"):
             await env.bot.set_chat_member_tag(chat_id=team.id, user_id=424242, tag="VIP")
 
 
@@ -584,6 +589,52 @@ class TestPromoteAndRestrictPersist:
 
         member = await env.bot.get_chat_member(chat_id=team.id, user_id=owner.id)
         assert member.status == ChatMemberStatus.CREATOR
+
+    async def test_the_chat_owner_cannot_be_banned(self, owned):
+        """
+        Telegram refuses all three the same way; the fake used to refuse only the promotion.
+
+        A bot that bans a list of users would quietly kick the chat owner out here — the
+        one direction a test cannot notice — and fail only in production.
+        """
+        env, team, owner = owned
+
+        with pytest.raises(TelegramBadRequest, match="can't remove chat owner"):
+            await env.bot.ban_chat_member(chat_id=team.id, user_id=owner.id)
+
+        assert env.chat(team.id).member(owner.id).status == ChatMemberStatus.CREATOR
+
+    async def test_the_chat_owner_cannot_be_restricted(self, owned):
+        env, team, owner = owned
+
+        with pytest.raises(TelegramBadRequest, match="can't remove chat owner"):
+            await env.bot.restrict_chat_member(
+                chat_id=team.id,
+                user_id=owner.id,
+                permissions=ChatPermissions(can_send_messages=False),
+            )
+
+        assert env.chat(team.id).member(owner.id).status == ChatMemberStatus.CREATOR
+
+    async def test_banning_is_not_a_way_around_the_promote_guard(self, owned):
+        """
+        Regression: a ban demoted the owner, and the promote guard then no longer matched.
+
+        The guard reads the *current* status, so with the ban going through the ex-owner
+        was a plain `KICKED` member the bot could promote at will.
+        """
+        env, team, owner = owned
+
+        with pytest.raises(TelegramBadRequest, match="can't remove chat owner"):
+            await env.bot.ban_chat_member(chat_id=team.id, user_id=owner.id)
+        with pytest.raises(TelegramBadRequest, match="can't remove chat owner"):
+            await env.bot.promote_chat_member(
+                chat_id=team.id,
+                user_id=owner.id,
+                can_delete_messages=True,
+            )
+
+        assert env.chat(team.id).member(owner.id).status == ChatMemberStatus.CREATOR
 
     async def test_restrict_persists_the_permissions_it_was_given(self, env, team, alice):
         await env.bot.restrict_chat_member(
